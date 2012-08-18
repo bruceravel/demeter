@@ -101,7 +101,7 @@ sub fix {
   ## -------- write the project file and clean up
   my $journal = Demeter::Journal->new;
   $journal->text(join($/, $mc->get_titles));
-  $mc->dispose("erase \@group ".$mc->group);
+  $mc->dispense('process', 'erase', {items=>"\@group ".$mc->group});
   $data[0]->write_athena($prj, @data, $journal);
   $_ -> DEMOLISH foreach (@data, $mc);
 

@@ -90,6 +90,11 @@ sub _ansify {
 };
 
 
+sub dispense {
+  my ($self, $set, $template, $args) = @_;
+  $self->dispose($self->template($set, $template, $args));
+};
+
 
 ##-----------------------------------------------------------------
 ## dispose commands to ifeffit and elsewhere
@@ -507,6 +512,18 @@ value.
 =head2 other methods
 
 =over 4
+
+=item C<dispense>
+
+This wraps calls to C<template> and C<dispose>.  This:
+
+  $self->dispense('process', 'deriv');
+
+is the same as
+
+  $self->dispose($self->template('process', 'deriv'));
+
+which is a common idiom in Demeter.
 
 =item C<Reset>
 

@@ -224,9 +224,9 @@ sub chi {
   $first->group("h_i_s_t_o");
   $first->randstring($randstr);
   $first->_update('fft');
-  $first->dispose($first->template('process', 'histogram_first'));
+  $first->dispense('process', 'histogram_first');
   $first->group($save);
-  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  $first->dispense('process', 'histogram_clean', {index=>255});
   my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
   unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;
@@ -245,9 +245,9 @@ sub chi {
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->dispense('process', 'histogram_add');
     $paths->[$i]->group($save);
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $paths->[$i]->dispense('process', 'histogram_clean', {index=>255});
     $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
     unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;

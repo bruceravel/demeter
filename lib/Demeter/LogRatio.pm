@@ -47,7 +47,7 @@ sub fit {
   $self->data->_update('all');
   $self->standard->_update('all');
 
-  $self->dispose($self->template("analysis", "lr_fit"));
+  $self->dispense("analysis", "lr_fit");
   my @cumulants = (sprintf("%.5f", $self->fetch_scalar("lr___pd0")),
 		   sprintf("%.5f", $self->fetch_scalar("lr___pd1")),
 		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
@@ -85,7 +85,7 @@ sub plot_odd {
 sub save {
   my ($self, $fname) = @_;
   $fname ||= 'lrpd.dat';
-  $self->dispose($self->template("analysis", "lr_save", {file=>$fname}));
+  $self->dispense("analysis", "lr_save", {file=>$fname});
   return $fname;
 };
 

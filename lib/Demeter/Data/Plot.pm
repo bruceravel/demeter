@@ -197,9 +197,9 @@ sub _plotR_command {
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
   if ((lc($pf->r_pl) eq 'p') and $self->po->dphase) {
-    $self->dispose($self->template('process', 'dphase'));
+    $self->dispense('process', 'dphase');
     $title{p} = sprintf("Derivative of phase * %.4f", $self->fetch_scalar('___dphase_scale'));
-    $self->dispose("erase ___dphase_scale");
+    $self->dispense('process', 'erase', {items=>'___dphase_scale'});
   };
   $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
   $string = ($pf->New)

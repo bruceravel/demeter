@@ -118,14 +118,15 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;
-  $self->dispose("read_data(file=$a, group=a)\n");
+  $self->dispense('process', 'read_group', {file=>$a, group=>'a'});
   my $col_string = $self->fetch_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
     printf "%s\n\t%s    col_string=%s\n", $a, $passfail, $col_string;
   };
-  $self->dispose("erase \@group a\n"), return 0 if ($col_string =~ /^(\s*|--undefined--)$/);
+  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0
+    if ($col_string =~ /^(\s*|--undefined--)$/);
   $self->clear_ifeffit_titles('a');
 
   ## now check that the data file had more  than 1 data point
@@ -135,7 +136,7 @@ sub is_data {
     my $scalar = "a_".$l;
     if ($self->fetch_scalar($scalar)) {
       $onepoint = 1;
-      $self->dispose("erase $scalar");
+      $self->dispense('process', 'erase', {items=>$scalar});
     };
     my @array = $self->fetch_array("a.$l");
     if (@array) {
@@ -143,9 +144,9 @@ sub is_data {
       $tooshort = 1 if ($npts < $self->co->default(qw(file minlength)));
     };
   };
-  $self->dispose("erase \@group a\n"), return 0 if $onepoint;
-  $self->dispose("erase \@group a\n"), return 0 if $tooshort;
-  $self->dispose("erase \@group a\n");
+  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0 if $onepoint;
+  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0 if $tooshort;
+  $self->dispense('process', 'erase', {items=>"\@group a"});
   return 1;
 };
 

@@ -51,7 +51,7 @@ sub BUILD {
 #   $self->alldone;
 #   ## --- this would be nice, but it seems to happen after Ifeffit is
 #   ##     shut down in certain cases when exiting Artemis
-#   # $self->dispose("erase ".$self->name);
+#   # $self->dispense('process', 'erase', {items=>$self->name});
 # };
 
 ## return a list of valid GDS attributes

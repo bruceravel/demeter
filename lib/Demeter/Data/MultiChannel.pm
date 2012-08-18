@@ -90,7 +90,7 @@ sub make_data {
 
 override 'discard' => sub {
   my ($self) = @_;
-  $self->dispose("erase \@group " . $self->group);
+  $self->dispense('process', 'erase', {items=>"\@group " . $self->group});
   $self->alldone;
   $self->DEMOLISH;
 };

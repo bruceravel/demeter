@@ -1,0 +1,9 @@
+{
+  ## show any ol' thing from Ifeffit's memory, taking care not to
+  ## exceed the line length restriction
+   use Text::Wrap;
+  local $Text::Wrap::columns = 200;
+  $all = wrap('show ', 'show ', $items);
+  q{}
+}
+{$all}

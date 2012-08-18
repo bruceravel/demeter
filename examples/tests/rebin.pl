@@ -52,7 +52,7 @@ $rebinned->plot('k');
 
 $d0->toggle_echo(1);
 print "--> original data is ", $d0->group, "\n--> rebinned data is ", $rebinned->group, $/;
-$d0->dispose("show " . $d0->group . ".energy " . $rebinned->group . ".energy");
+$d0->dispense('process', 'show', {items=>$d0->group . ".energy " . $rebinned->group . ".energy"});
 $d0->toggle_echo(0);
 
 print "all done!\n";

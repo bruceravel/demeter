@@ -1819,7 +1819,7 @@ sub discard_data {
 
   ## destroy the data object
   $dataobject->clear_ifeffit_titles;
-  $dataobject->dispose("erase \@group ".$dataobject->group);
+  $dataobject->dispense('process', 'erase', {items=>"\@group ".$dataobject->group});
   $dataobject->DEMOLISH;
 
   ## remove the frame with the datapage

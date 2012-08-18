@@ -138,7 +138,7 @@ sub Remove {
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
       my $this = $app->{main}->{list}->GetIndexedData($i);
       $this->clear_ifeffit_titles;
-      $this->dispose("erase \@group ".$this->group);
+      $this->dispense('process', 'erase', {items=>"\@group " . $this->group});
       $this->DEMOLISH;
     };
     $app->{main}->{list}->ClearAll;
@@ -160,7 +160,7 @@ sub remove_one {
   my ($app, $i) = @_;
   my $data = $app->{main}->{list}->GetIndexedData($i);
   $data->clear_ifeffit_titles;
-  $data->dispose("erase \@group ".$data->group);
+  $data->dispense('process', 'erase', {items=>"\@group " . $data->group});
   $data->DEMOLISH;
   $app->{main}->{list}->DeleteData($i); # this calls the selection event on the new item
 };

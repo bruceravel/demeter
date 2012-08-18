@@ -174,8 +174,8 @@ sub put_data {
       $self->update_columns(0);
       return 0;
     } elsif ($self->is_kev) {
-      $self->dispose($self->template('process', 'kev'));
-      $self->dispose($self->template("process", "deriv"));
+      $self->dispense('process', 'kev');
+      $self->dispense("process", "deriv");
       return 0;
     } elsif ($self->from_athena) {
       $self->update_columns(0);
@@ -236,7 +236,7 @@ sub put_data {
   $self->energy_string($energy_string);
 
   if (($self->display) and ($self->datatype ne 'chi')) {
-    $self->dispose($self->template("process", "display"));
+    $self->dispense("process", "display");
     return;
   };
 
@@ -346,10 +346,9 @@ sub normalize {
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
-    #$self->dispose($self->template("process", "is_nor"));
+    #$self->dispense("process", "is_nor");
   };
-  my $command .= $self->template("process", "nderiv") if not $self->is_nor;
-  $self->dispose($command);
+  $self->dispose($self->template("process", "nderiv")) if not $self->is_nor;
 
   $self->update_norm(0);
   return $self;
@@ -487,7 +486,7 @@ sub _plotE_command {
     };
     if ($self->po->e_smooth) {
       $self -> co -> set(smooth_suffix => $this);
-      $self->dispose($self->template('process', 'smoothed'));
+      $self->dispense('process', 'smoothed');
       $this = 'smooth';
     };
     push @suffix_list, $this;

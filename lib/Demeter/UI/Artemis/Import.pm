@@ -103,7 +103,7 @@ sub _prj {
       };
     };
     ## clean up a few straggler arrays in Ifeffit and the spare Data object
-    $data->dispose("erase \@group $toss");
+    $data->dispense('process', 'erase', {items=>"\@group $toss"});
     $toss = Demeter->mo->fetch('Data', $toss);
     $toss->DESTROY;
   };

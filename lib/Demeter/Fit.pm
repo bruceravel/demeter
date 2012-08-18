@@ -393,7 +393,8 @@ sub fit {
   $self->mo->fit($self);
   $self->mo->pathindex(1);
   foreach my $p (@{ $self->paths }) {
-    $self->dispose("set path_index = " . $p->Index) if ($p->default_path);
+    $self->dispense('fit', 'path_index') if ($p->default_path);
+    ##$self->dispose("set path_index = " . $p->Index) if ($p->default_path);
   };
   my $command = q{};
 
@@ -1005,7 +1006,7 @@ sub fetch_correlations {
   my $d = $self -> data -> [0];
   #my $correl_lines;
   #$self->set_mode(buffer=>\$correl_lines);
-  $self->dispose($d->template("fit", "correl"));
+  $self->dispense("fit", "correl");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 

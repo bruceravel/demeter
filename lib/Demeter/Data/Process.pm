@@ -29,8 +29,16 @@ sub rebin {
   #$$rhash{group} ||= q{};
   my $standard = $self->mo->standard;
   $self -> _update('fft');
+
+  if (not $rhash) {
+    my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.column_selection");
+    my $yaml = YAML::Tiny::Load(Demeter->slurp($persist));
+    foreach my $p (qw(emin emax exafs pre xanes)) {
+      $$rhash{$p} = $yaml->{"rebin_$p"};
+    };
+  };
   foreach my $k (keys %$rhash) {
-    $self -> co -> set("rebin_$k" => $$rhash{$k});
+    $self -> co -> set_default("rebin", $k, $$rhash{$k});
   };
   my $rebinned = $self->clone;
 
@@ -46,6 +54,7 @@ sub rebin {
   $string = $rebinned->template("process", "deriv");
   $rebinned->dispose($string);
   $rebinned->resolve_defaults;
+  $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;

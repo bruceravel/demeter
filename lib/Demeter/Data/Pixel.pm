@@ -91,8 +91,8 @@ sub pixel {
   $self->_update('fft');
   $self->standard->_update('fft');
 
-  $self->dispose($self->template('process', 'pixel_setup'));
-  $self->dispose($self->template('process', 'pixel_fit'));
+  $self->dispense('process', 'pixel_setup');
+  $self->dispense('process', 'pixel_fit');
 
   $self->offset($self->fetch_scalar("pixel___a"));
   $self->linear($self->fetch_scalar("pixel___b"));
@@ -111,7 +111,7 @@ sub apply {
   $convert -> set(offset=>$self->offset, linear=>$self->linear, quadratic=>$self->quadratic);
   my $new = Demeter::Data->new(name=>$convert->name);
   $new    -> mo -> standard($convert);
-  $new    -> dispose($new->template('process', 'pixel_set'));
+  $new    -> dispense('process', 'pixel_set');
   $new    -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
   $new    -> e0;
   $new    -> resolve_defaults;

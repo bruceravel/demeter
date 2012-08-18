@@ -984,7 +984,7 @@ sub show_ifeffit {
            : ($id == $SHOW_FEFFPATHS) ? "\@feffpaths"
            :                            q{};
   return if not $text;
-  $demeter->dispose("show $text");
+  $demeter->dispense('process', 'show', {items=>$text});
   $frames{Buffer}->Show(1);
 };
 

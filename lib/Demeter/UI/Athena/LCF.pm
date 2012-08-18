@@ -791,7 +791,7 @@ sub seq_select {
   $this->{LCF}->data($data);
   $this->{LCF}->restore($result);
   my $which = ($this->{LCF}->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $this->{LCF}->dispose($this->{LCF}->template("analysis", $which));
+  $this->{LCF}->dispense("analysis", $which);
   $this->{mreport}->SetValue($this->{LCF}->report);
 
   $this->{result}->Clear;

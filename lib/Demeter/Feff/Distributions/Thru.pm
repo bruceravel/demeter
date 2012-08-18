@@ -280,18 +280,18 @@ sub chi {
   $first->dspath->Index(255);
   $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring an Ifeffit group for each one
   $first->dspath->path(1);
-  $first->dspath->dispose($first->dspath->template('process', 'histogram_first'));
+  $first->dspath->dispense('process', 'histogram_first');
   $first->dspath->group($save);
-  $first->dspath->dispose($first->dspath->template('process', 'histogram_clean', {index=>255}));
+  $first->dspath->dispense('process', 'histogram_clean', {index=>255});
   my $nnnn = File::Spec->catfile($first->folder, $first->dsstring);
   unlink $nnnn if (-e $nnnn);
 
   $first->tspath->Index(255);
   $first->tspath->group("h_i_s_t_o");
   $first->tspath->path(1);
-  $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
+  $first->tspath->dispense('process', 'histogram_add');
   $first->tspath->group($save);
-  $first->tspath->dispose($first->tspath->template('process', 'histogram_clean', {index=>255}));
+  $first->tspath->dispense('process', 'histogram_clean', {index=>255});
   $nnnn = File::Spec->catfile($first->folder, $first->tsstring);
   unlink $nnnn if (-e $nnnn);
 

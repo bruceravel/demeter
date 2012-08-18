@@ -92,10 +92,10 @@ sub sa_troger {
   $self->place_array("s___a.mut", \@mut);
   $self->place_array("s___a.mua", \@mua);
 
-  $self->dispose($self->template("process", "sa_troger", {angle_in  => $angle_in,
-							  angle_out => $angle_out,
-							  muf       => $muf,
-							 }));
+  $self->dispense("process", "sa_troger", {angle_in  => $angle_in,
+					   angle_out => $angle_out,
+					   muf       => $muf,
+					  });
 
   my $text = "Troger algorithm\n";
   $text .= $self->_summary($efluo, $line, \%count);
@@ -156,20 +156,20 @@ sub sa_booth {
 
   $thickness *= 10e-4;
 
-  $self->dispose($self->template("process", "sa_booth_pre", {angle_in  => $angle_in,
-							     angle_out => $angle_out,
-							     thickness => $thickness,
-							     muf       => $muf,
-							    }));
+  $self->dispense("process", "sa_booth_pre", {angle_in  => $angle_in,
+					      angle_out => $angle_out,
+					      thickness => $thickness,
+					      muf       => $muf,
+					     });
   my $betamin = $self->fetch_scalar("s___a___x");
   my $isneg = $self->fetch_scalar("s___a___xx");
   my $thickcheck = ($betamin < 10e-7) || ($isneg < 0);
   my $text = "Booth and Bridges algorithm, ";
   if ($thickcheck > 0.005) {	# huh????
-    $self->dispose($self->template("process", "sa_booth_thick"));
+    $self->dispense("process", "sa_booth_thick");
     $text .= "thick sample limit\n";
   } else {
-    $self->dispose($self->template("process", "sa_booth_thin"));
+    $self->dispense("process", "sa_booth_thin");
     $text .= "thin sample limit\n";
   };
   $text .= $self->_summary($efluo, $line, \%count);
@@ -207,7 +207,7 @@ sub sa_atoms {
 			    norm => sprintf("%.6f", $mm_sigsqr),
 			    i0   => sprintf("%.6f", $i0_sigsqr)});
 
-  $self->dispose($self->template("process", "sa_atoms", {amp=>$self_amp, ss=>$net_sigsqr}));
+  $self->dispense("process", "sa_atoms", {amp=>$self_amp, ss=>$net_sigsqr});
   my @k   = $self->fetch_array('s___a.k');
   my @chi = $self->fetch_array('s___a.chi');
   my $sadata = $self->sa_group(\@k, \@chi, 'chi');
@@ -267,12 +267,12 @@ sub sa_fluo {
   };
   $self->place_array("s___a.mub", \@mub);
 
-  $self->dispose($self->template("process", "sa_fluo", {angle_in  => $angle_in,
-							angle_out => $angle_out,
-						        mut_fluo  => $barns_fluo,
-						        mub_plus  => $barns_plus,
-						        mue_plus  => $mue_plus,
-						       }));
+  $self->dispense("process", "sa_fluo", {angle_in  => $angle_in,
+					 angle_out => $angle_out,
+					 mut_fluo  => $barns_fluo,
+					 mub_plus  => $barns_plus,
+					 mue_plus  => $mue_plus,
+					});
   my $maxval = $self->fetch_scalar("s___a_x");
 
   my $text = "Fluo algorithm\n";
@@ -349,10 +349,10 @@ sub info_depth {
   };
   $self->place_array("s___a.mut", \@mut);
 
-  $self->dispose($self->template("process", "sa_info_depth", {in  => $angle_in,
-							      out => $angle_out,
-							      muf => $muf,
-							     }));
+  $self->dispense("process", "sa_info_depth", {in  => $angle_in,
+					       out => $angle_out,
+					       muf => $muf,
+					      });
   my @x = $self->get_array('k');
   my @y = $self->fetch_array('s___a.info');
   return (\@x, \@y);

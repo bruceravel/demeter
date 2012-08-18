@@ -435,13 +435,13 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  ##$self->dispose("erase \@group ".$self->group);
+  ##$self->dispense('process', 'erase', {items=>"\@group ".$self->group});
   $self->alldone;
 };
 
 sub discard {
   my ($self) = @_;
-  $self->dispose("erase \@group " . $self->group);
+  $self->dispense('process', 'erase', {items=>"\@group " . $self->group});
   $self->DEMOLISH;
 };
 
@@ -475,13 +475,13 @@ override clone => sub {
 
   my $standard = $self->get_mode('standard');
   $new  -> standard;
-  $self -> dispose($self->template("process", "clone"));
+  $self -> dispense("process", "clone");
   if (ref($standard) =~ m{Data}) {
     $standard->standard;
   } else {
     $new  -> unset_standard;
   };
-  $new  -> dispose($new->template("process", "deriv"));
+  $new  -> dispense("process", "deriv");
   $new  -> update_data(0);
   $new  -> update_columns(0);
   $new  -> update_norm($self->datatype =~ m{(?:xmu|xanes)});
@@ -525,8 +525,7 @@ sub _nidp {
 }
 sub chi_noise {
   my ($self) = @_;
-  my $string = $self->template("process", "chi_noise");
-  $self->dispose($string);
+  $self->dispense("process", "chi_noise");
   my $epsk = $self->fetch_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
   $epsk = ($epsk =~ m{nan|\#}i) ? 1 : $epsk; # unix returns '+/-NaN', windows returns '+/-1.#IOe000'
@@ -588,10 +587,10 @@ sub determine_data_type {
   return 0 if is_Empty($file);
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
-    $self->dispose("read_data(file=\"$file\", group=deter___mine)\n");
+    $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine'});
     my $f = (split(" ", $self->fetch_string('$column_label')))[0];
     my @x = $self->fetch_array("deter___mine.$f");
-    $self->dispose("erase \@group deter___mine\n");
+    $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
       $self->update_columns(0);
@@ -765,7 +764,8 @@ sub sort_data {
 
     ## now feed columns back to ifeffit
     my $group = $self->group;
-    $self->dispose("##| replacing arrays for $group with sorted versions\nerase \@group $group"); #.$cols[$c]");
+    $self->dispense('process', 'comment', {comment=>"replacing arrays for $group with sorted versions"});
+    $self->dispense('process', 'erase', {items=>"\@group $group"});
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};

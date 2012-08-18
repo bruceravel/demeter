@@ -162,7 +162,7 @@ sub align {
     $self->mo->current($d);	# these two lines allow a GUI to
     $self->call_sentinal;  	# display progress messages
     $d -> _update("background") if not $d->quickmerge;
-    $d -> dispose( $d-> template("process", "align") );
+    $d -> dispense("process", "align");
     $shift = sprintf("%.3f", $d->fetch_scalar("aa___esh"));
     #print ">>>>>>", $shift, $/;
     $d -> bkg_eshift($shift);
@@ -192,7 +192,7 @@ sub align_with_reference {
     };
     my $this = ($useref) ? $d->reference : $d;
     $this -> _update("background");
-    $this -> dispose( $this-> template("process", "align") );
+    $this -> dispense("process", "align");
     $shift = sprintf("%.3f", $self->fetch_scalar("aa___esh"));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);

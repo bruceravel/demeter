@@ -458,7 +458,7 @@ sub fetch {
 	      $self->get_mode("feedback"));
 
   $self->set_mode(feedback=>sub{push @path_text, $_[0]}); # set feedback coderef
-  $self->dispose($self->template("fit", "show_path"));
+  $self->dispense("fit", "show_path");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(feedback=>$save[1]);
 

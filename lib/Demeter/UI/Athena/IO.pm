@@ -390,7 +390,7 @@ sub _data {
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
-      $data->dispose("erase \@group ".$data->group);
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
       $data->DEMOLISH;
       return 0;
     };
@@ -524,7 +524,7 @@ sub _group {
       foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($data->$att);
       };
-      $data->dispose("erase \@group ".$data->group);
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
       $data->DEMOLISH;
       $data = $rebin;
     } else {
@@ -542,7 +542,7 @@ sub _group {
   if (any {$_ == 0} @signal) {
     my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
     my $response = $md -> ShowModal;
-    $data->dispose("erase \@group ".$data->group);
+    $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
     $data->DEMOLISH;
     return;
   };
@@ -623,7 +623,7 @@ sub _group {
 	foreach my $att (qw(energy numerator denominator ln name)) {
 	  $rebin->$att($ref->$att);
 	};
-	$ref->dispose("erase \@group ".$ref->group);
+	$ref->dispense('process', 'erase', {items=>"\@group ".$ref->group});
 	$ref->DEMOLISH;
 	$ref = $rebin;
       };

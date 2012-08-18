@@ -294,7 +294,7 @@ sub prep_arrays {
   my $n2 = $self->data->iofx('energy', $self->xmax);
   $self->data -> _update($ud);
   my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $self -> dispose($self->template("analysis", $which));
+  $self -> dispense("analysis", $which);
 
   ## interpolate all the standards onto the grid of the data
   my @all = @{ $self->standards };
@@ -302,19 +302,19 @@ sub prep_arrays {
   $self->mo->standard($self);
   foreach my $stan (@all[0..$#all-1]) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $stan -> dispose($stan->template("analysis", $which));
+    $stan -> dispense("analysis", $which);
   };
   if ($self->nstan eq 1) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   } elsif ($self->unity) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   } else {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   };
-  $self -> dispose($self->template("analysis", 'lcf_prep_lcf', {how=>$how}));
+  $self -> dispense("analysis", 'lcf_prep_lcf', {how=>$how});
   $self->mo->standard(q{});
   return $self;
 };
@@ -328,7 +328,7 @@ sub fit {
 
   $self->prep_arrays('def');
   ## create the array to minimize and perform the fit
-  $self -> dispose($self->template("analysis", "lcf_fit"));
+  $self -> dispense("analysis", "lcf_fit");
 
   my $sumsqr = 0;
   foreach my $st (@all) {
@@ -525,7 +525,7 @@ sub clear {
 
 sub clean {
   my ($self) = @_;
-  $self->dispose($self->template('analysis', 'lcf_clean'));
+  $self->dispense('analysis', 'lcf_clean');
   return $self;
 };
 
@@ -620,7 +620,7 @@ sub restore {
     #$self->e0($this_data->group, $e0, $de0);
     $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
   };
-  $self->dispose($self->template('analysis', 'lcf_sum'));
+  $self->dispense('analysis', 'lcf_sum');
   $self->mo->standard(q{});
   return $self;
 };
@@ -783,7 +783,7 @@ sub sequence {
   $self->clean;
   $self->data($first);
   my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $self->dispose($self->template("analysis", $which));
+  $self->dispense("analysis", $which);
   $self->set(doing_seq=>0, seq_results=>\@results);
   $self->restore($results[0]);
   $self->plot_fit if $self->co->default('lcf', 'plot_during');

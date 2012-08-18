@@ -535,7 +535,7 @@ sub discard {
   $grid -> SetCellValue($row, 2, q{});
   $grid -> SetCellValue($row, 3, q{});
   if ((exists $grid->{$name}) and ($grid->{$name} =~ m{GDS})) {
-    $grid->{$name}->dispose("erase ".$grid->{$name}->name);
+    $grid->{$name}->dispense('process', 'erase', {items=>$grid->{$name}->name});
     $grid->{$name}->DEMOLISH;
     delete $grid->{$name};
   };
@@ -702,7 +702,7 @@ sub cut {
     my $name = (defined $g) ? $g->name : q{};
     foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
       next if ($name ne $grid->GetCellValue($r, 1));
-      $grid->{$g->name}->dispose("erase ".$grid->{$name}->name);
+      $grid->{$g->name}->dispense('process', 'erase', {items=>"\@group ".$grid->{$name}->name});
       $grid->DeleteRows($r,1,1);
       $grid->{$g->name}->DEMOLISH;
     };

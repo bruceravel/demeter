@@ -1151,7 +1151,7 @@ sub OnMenuClick {
 
 sub show_ifeffit {
   my ($app, $which) = @_;
-  $demeter->dispose('show @'.$which);
+  $demeter->dispense('process', 'show', {items=>'@'.$which});
   $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
   $app->{Buffer}->Show(1);
 };

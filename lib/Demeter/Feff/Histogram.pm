@@ -55,7 +55,7 @@ sub chi_from_histogram {
   $first->Index(255);
   $first->group("h_i_s_t_o");
   $first->_update('fft');
-  $first->dispose($first->template('process', 'histogram_first'));
+  $first->dispense('process', 'histogram_first');
   $first->group($save);
   my $rbar  = $first->population * $first->R;
   my $rave  = $first->population / $first->R;

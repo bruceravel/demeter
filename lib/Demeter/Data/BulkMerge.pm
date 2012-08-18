@@ -121,13 +121,13 @@ sub merge {
     };
     $thisdata -> _update('data');
     $self->master -> align($thisdata) if $self->align;
-    $thisdata -> dispose($thisdata->template('process', 'musum'));
+    $thisdata -> dispense('process', 'musum');
     if (any {$count == $_} @{$self->subsample}) {
-      $self -> dispose("##| Quick merge subsample of $count spectra");
+      $self -> dispense('process', 'comment', {comment=>"Quick merge subsample of $count spectra"});
       my $sample = $self->sum->clone;
       $sample -> set(name=>"Merge of $count scans", is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
       $sample -> update_norm(1);
-      $sample -> dispose($sample->template('process', 'muave', {count=>$count}));
+      $sample -> dispense('process', 'muave', {count=>$count});
       $self->push_sequence($sample);
     };
     $thisdata->DEMOLISH;
@@ -136,7 +136,7 @@ sub merge {
   $self->sum -> stop_counter if $self->mo->ui eq 'screen';
   $self->count($count);
 
-  $self->sum -> dispose($self->sum->template('process', 'muave', {count=>$self->count}));
+  $self->sum -> dispense('process', 'muave', {count=>$self->count});
   $self->sum -> update_norm(1);
   $self->sum -> name("Merge of $count scans");
 

@@ -83,7 +83,7 @@ sub fix {
 			     );
   };
 
-  $mc->dispose("erase \@group ".$mc->group);
+  $self->dispense('process', 'erase', {items=>"\@group ".$mc->group});
   $data[0]->write_athena($prj, @data);
   $_ -> DEMOLISH foreach (@data, $mc);
 

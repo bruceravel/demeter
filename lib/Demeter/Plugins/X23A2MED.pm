@@ -58,8 +58,9 @@ sub fix {
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
   ## read the raw data file into Ifeffit
-  my $command = "read_data(file=\"$file\", group=v___ortex)\n";
-  $demeter->dispose($command);
+  $demeter->dispense('process', 'read_group', {file=>$file, group=>'v___ortex'});
+  #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
+  #$demeter->dispose($command);
 
   #my $labels = $self->fetch_string('$column_label');
   my @labels = split(" ", $self->fetch_string('$column_label'));
@@ -124,7 +125,7 @@ sub fix {
 
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
 
-  $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
+  my $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
   $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
   $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
   $command .= "write_data(file=\"$new\", \$title*, \$v___ortex_title_*, v___ortex." . join(", v___ortex.", @labs) . ")\n";

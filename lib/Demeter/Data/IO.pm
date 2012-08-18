@@ -55,7 +55,7 @@ sub save {
     };
     (lc($what) eq 'r') and do {
       $self->_update("bft");
-      $self->dispose($self->template('process', 'dphase'));
+      $self->dispense('process', 'dphase');
       $string = $self->_save_chi_command('r', $filename);
       last WHAT;
     };
@@ -241,7 +241,7 @@ sub _save_many_command {
       croak "save_many can take Data, Path, and Path-like objects as its argument, but cannot take ScatteringPath objects";
     };
     $g->_update($level);
-    $g->dispose($self->template('process', 'dphase')) if ($which eq 'dph');
+    $g->dispense('process', 'dphase') if ($which eq 'dph');
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
       $command .= $g->template("process", "chikn");
     } elsif ($which =~ m{$e_regexp}) { # interpolate energy data onto $self's grid
@@ -310,7 +310,7 @@ sub title_glob {
   my @titles = split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
-  $self->dispose("erase \$$globname\*");
+  $self->dispense('process', 'erase',  {items=>"\$$globname\*"});
   my $apps = join(" ", "XDI/1.0", $self->data->xdi_applications, "Demeter/$Demeter::VERSION");
   foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
     ++$i;

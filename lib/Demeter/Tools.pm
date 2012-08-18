@@ -360,7 +360,7 @@ sub clear_ifeffit_titles {
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
   $self->set_mode(screen=>0, plotscreen=>0, feedback=>sub{push @titles_text, $_[0]});
-  $self->dispose($self->template("process", "show_strings"));
+  $self->dispense("process", "show_strings");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
   my $target = '\$' . $group . '_title_';
@@ -370,7 +370,7 @@ sub clear_ifeffit_titles {
       push @all, (split(/\s*=\s*/, $l))[0];
     };
   };
-  $self->dispose($self->template('process', 'erase', {items=>join(" ", @all)}));
+  $self->dispense('process', 'erase', {items=>join(" ", @all)});
   return $self;
 };
 

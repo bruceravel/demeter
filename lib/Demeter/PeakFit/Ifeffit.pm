@@ -57,7 +57,7 @@ sub prep_data {
   my $i1 = $self->data->iofx('energy', $e1);
   my $e2 = $self->xmax;
   my $i2 = $self->data->iofx('energy', $e2);
-  $self->dispose($self->template('analysis', 'peak_prep', {i1=>$i1, i2=>$i2}));
+  $self->dispense('analysis', 'peak_prep', {i1=>$i1, i2=>$i2});
   return $self;
 };
 
@@ -71,7 +71,7 @@ sub guess_set {
 sub define {
   my ($self, $ls) = @_;
   my $template = "peak_".$ls->function;
-  $self->dispose($self->template('analysis', $template, {L=>\$ls}));
+  $self->dispense('analysis', $template, {L=>\$ls});
   return $self;
 };
 
@@ -93,7 +93,7 @@ sub fetch_model_y {
 
 sub put_arrays {
   my ($self, $ls, $rx) = @_;
-  $self->dispose($self->template('analysis', 'peak_put', {L=>\$ls}));
+  $self->dispense('analysis', 'peak_put', {L=>\$ls});
 };
 
 sub resid {

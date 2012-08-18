@@ -136,7 +136,7 @@ sub labelline {
 sub _filter {
   my ($self) = @_;
   $self->source->_update('fft');
-  $self->dispose($self->template('process', 'filtered_filter'));
+  $self->dispense('process', 'filtered_filter');
   return $self;
 };
 

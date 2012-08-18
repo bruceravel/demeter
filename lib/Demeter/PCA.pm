@@ -210,10 +210,10 @@ sub tt {
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
   # #$self->toggle_echo(1);
-  # #$self->dispose("show \@group ".$self->group);
+  # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_tt', {ncomp=>$ncomp}));
+  $self->dispense('analysis', 'pca_tt', {ncomp=>$ncomp});
   my @coef = ();
   foreach my $i (0 .. $self->ndata-1) {
     push @coef, $self->fetch_scalar("_p$i");
@@ -363,23 +363,23 @@ sub header {
 
 sub save_components {
   my ($self, $filename) = @_;
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'components'}));
-  $self->dispose($self->template('analysis', 'pca_save', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'components'});
+  $self->dispense('analysis', 'pca_save', {filename=>$filename});
   return $self;
 };
 
 sub save_stack {
   my ($self, $filename) = @_;
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'data stack'}));
-  $self->dispose($self->template('analysis', 'pca_save_stack', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'data stack'});
+  $self->dispense('analysis', 'pca_save_stack', {filename=>$filename});
   return $self;
 };
 
 sub save_reconstruction {
   my ($self, $index, $filename) = @_;
   $self->data($self->stack->[$index]);
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'reconstruction'}));
-  $self->dispose($self->template('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
+  $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
   $self->data(q{});
   return $self;
 };
@@ -387,8 +387,8 @@ sub save_reconstruction {
 sub save_tt {
   my ($self, $target, $filename) = @_;
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'target transform'}));
-  $self->dispose($self->template('analysis', 'pca_save_tt', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'target transform'});
+  $self->dispense('analysis', 'pca_save_tt', {filename=>$filename});
   $self->data(q{});
   return $self;
 };

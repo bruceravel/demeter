@@ -155,7 +155,7 @@ sub arrays {
   my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
 	      $self->get_mode("feedback"));
   $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
-  $self->dispose($self->template("process", "show_group"));
+  $self->dispense("process", "show_group");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(feedback=>$save[1]);
   my $group = $self->group;
@@ -197,7 +197,7 @@ sub points {
   my @z = ();
   if (($args{suffix} eq 'chir_pha') and $args{dphase}) {
     $args{suffix} = 'dph';
-    #$self->dispose("erase ___dp_scale");
+    #$self->dispense('process', 'erase', {items=>'___dp_scale'});
   };
   if ($args{space} eq 'lcf') {
     @y = $self->get_array($args{suffix});

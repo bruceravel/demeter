@@ -78,7 +78,7 @@ sub diff {
   $self->dataspace('flat') if (($self->space eq 'norm') and $self->data->bkg_flatten);
 
   $self->standard->standard;
-  $self->dispose($self->template("analysis", "diff_diff"));
+  $self->dispense("analysis", "diff_diff");
   $self->standard->unset_standard;
 
   my @x = $self->data->get_array('energy');
@@ -124,8 +124,8 @@ sub make_group {
     sprintf("diff %s - %s", $self->standard->name, $self->data->name):
       sprintf("diff %s - %s", $self->data->name, $self->standard->name);
   my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>1, name=>$name);
-  $data->dispose($data->template("process", "deriv"));
-  $data->dispose($data->template("analysis", "diff_make"));
+  $data->dispense("process", "deriv");
+  $data->dispense("analysis", "diff_make");
   foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)) {
     $data->$w($self->data->$w);
   };

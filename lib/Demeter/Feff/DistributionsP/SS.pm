@@ -192,9 +192,9 @@ sub chi {
   $first->group("h_i_s_t_o");
   $first->randstring($randstr);
   $first->_update('fft');
-  $first->dispose($first->template('process', 'histogram_first'));
+  $first->dispense('process', 'histogram_first');
   $first->group($save);
-  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  $first->dispense('process', 'histogram_clean', {index=>255});
   my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
   unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;

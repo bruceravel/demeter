@@ -26,7 +26,7 @@ sub interpolate_data {
   my ($self, $data) = @_;
   $self->update($data);
   $self->data($data);
-  $self->dispose($self->template('analysis', 'pca_interpolate', {suff=>$data->nsuff}));
+  $self->dispense('analysis', 'pca_interpolate', {suff=>$data->nsuff});
   $self->data(q{});
   return $self;
 };
@@ -50,7 +50,7 @@ sub interpolate_stack {
   $self->observations($i2-$i1+1);
   $self->undersampled($self->observations <= $#{$self->stack});
   $first->standard;
-  $self->dispose($self->template('analysis', 'pca_prep', {suff=>$first->nsuff, i1=>$i1, i2=>$i2}));
+  $self->dispense('analysis', 'pca_prep', {suff=>$first->nsuff, i1=>$i1, i2=>$i2});
 
   foreach my $g (@groups) {
     $self->interpolate_data($g);

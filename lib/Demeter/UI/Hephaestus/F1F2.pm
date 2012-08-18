@@ -161,7 +161,7 @@ sub f1f2_get_data {
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  Demeter->dispose(Demeter->template("plot", 'prep_f1f2'));
+  Demeter->dispense("plot", 'prep_f1f2');
   Demeter->dispose(Demeter->template("plot", $which), "plotting");
 
   #$demeter->po->cleantemp;
@@ -196,7 +196,7 @@ sub save_f1f2_data {
 		       f1f2_save => $file,
 		      );
   undef($fd);
-  Demeter->dispose(Demeter->template("plot", 'save_f1f2'));
+  Demeter->dispense("plot", 'save_f1f2');
 };
 
 
