@@ -911,7 +911,7 @@ sub fetch_statistics {
   ## !!!! need to abstract out these words... see Demeter::Constants
   #foreach my $stat (qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total)) {
   foreach my $stat (split(" ", $STATS)) {
-    $self->$stat($self->fetch_scalar($stat));
+    $self->$stat(sprintf("%.7f", $self->fetch_scalar($stat)));
   };
 
   ## in the case of a sum and with ifeffit, the stats cannot be obtained via the normal mechanism

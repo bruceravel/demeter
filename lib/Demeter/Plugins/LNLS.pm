@@ -37,10 +37,15 @@ sub fix {
   open N, ">".$new or die "could not write to $new (fix in LNLS)\n";
 
   while (<D>) {
-    if (/^"Data"\s*"Hora"/) { 
+    if (/^"Data"\s*"Hora"/) {
+      if (/"Fluorescencia"/) {
+	$self->is_transmission(0);
+      } else {
+	$self->is_transmission(1);
+      }
       my @list = split(" ", $_);
       print N "# ", join("  ", @list[2..$#list]), "\n";
-      $self->is_transmission(0);
+	  #    $self->is_transmission(0);
     } else {
       chomp;
       my @line = split(" ", $_);
@@ -69,7 +74,7 @@ sub suggest {
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$2',
-	    denominator => '$4', # ???
+	    denominator => '$3', 
 	    ln          =>  1,);
   } else {
     return (energy      => '$1',
@@ -123,7 +128,7 @@ Strip the first two columns from the LNLS data file.
 
 =head1 ACKNOWLEDGMENTS
 
-This module was started by to Eric Breynaert.
+This module was written by Eric Breynaert and touched up by Bruce.
 
 =head1 BUGS AND LIMITATIONS
 
