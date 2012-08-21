@@ -44,6 +44,7 @@ sub ACTION_build {
 sub ACTION_ghpages {
   my $self = shift;
   $self->dispatch("build_dpg");
+  $self->dispatch("build_artug");
   $self->dispatch("doctree");
   $self->dispatch("org2html");
 };
@@ -136,6 +137,9 @@ sub ACTION_post_build {
 			   flatten => 1);
 };
 
+######
+## need to manage moving images across for DPG and ARTUG
+######
 sub ACTION_build_dpg {
   my $self = shift;
   my $here = cwd;
@@ -147,6 +151,19 @@ sub ACTION_build_dpg {
   chdir $here;
   rmtree(File::Spec->catfile($ghpages, 'dpg'), 1, 1);
   move('doc/dpg/html', File::Spec->catfile($ghpages, 'dpg'));
+};
+
+sub ACTION_build_artug {
+  my $self = shift;
+  my $here = cwd;
+  chdir 'doc/artug/';
+  #do 'build_dpg.PL';
+  mkdir 'html' if not -d 'html';
+  system(q(./configure));
+  system(q(./bin/build));
+  chdir $here;
+  rmtree(File::Spec->catfile($ghpages, 'artug'), 1, 1);
+  move('doc/artug/html', File::Spec->catfile($ghpages, 'artug'));
 };
 
 sub ACTION_org2html {

@@ -1,5 +1,9 @@
 {
   ## read an arbitrary file into an arbitrary & temporary group
+  $text = q{};
+  $text = ", type=$type" if ($type eq 'raw');
+  undef $type;
+  q{}
 }
 ##| Reading data file "{$file}" as temporary group {$group}
-read_data(file="{$file}", group={$group})
+read_data(file="{$file}", group={$group}{$text})

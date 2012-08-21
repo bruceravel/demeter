@@ -320,9 +320,9 @@ sub plot {
   $self->place_array(join(".", $self->group, 'y'), $self->populations);
   $self->po->start_plot;
   if ($self->po->output) {
-    $self->dispose($self->template('plot', 'output'), 'plotting');
+    $self->chart('plot', 'output');
   };
-  $self->dispose($self->template('plot', 'histo'), 'plotting');
+  $self->chart('plot', 'histo');
   return $self;
 };
 

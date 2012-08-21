@@ -407,7 +407,7 @@ sub plot_fit {
   my $step = 0;
   if ($self->space =~ m{\Achi}) {
     #$self->data->plot('k');
-    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset});
     $self->po->increment;
     my ($floor, $ceil) = $self->data->floor_ceil('chi');
     $step = min(abs($floor), abs($ceil));
@@ -415,17 +415,17 @@ sub plot_fit {
     $self->po->set(e_norm=>1, e_markers=>0, e_der=>0);
     $self->po->e_der(1) if ($self->space =~ m{\An?der});
     #self->data->plot('E');
-    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset});
     $self->po->increment;
     if ($self->space =~ m{\An?der}) {
       my ($floor, $ceil) = $self->data->floor_ceil('nder');
       $step = min(abs($floor), abs($ceil));
     };
   };
-  $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
+  $self->chart("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset});
   $self->po->increment;
   if ($self->plot_difference) {
-    $self->dispose($self->template("plot", "overlcf", {suffix=>'resid', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>'resid', yoffset=>$self->data->y_offset});
     $self->po->increment;
   };
   if ($self->plot_components) {
@@ -436,7 +436,7 @@ sub plot_fit {
 	$self->data->y_offset($yoff - $step);
 	#print join(" ", $step, $self->data->y_offset), $/;
       };
-      $self->dispose($self->template("plot", "overlcf", {suffix=>$stan->group, yoffset=>$self->data->y_offset}), 'plotting');
+      $self->chart("plot", "overlcf", {suffix=>$stan->group, yoffset=>$self->data->y_offset});
       $self->po->increment;
     };
     $self->data->y_offset($save_yoff);
@@ -472,7 +472,7 @@ sub plot {
 
   if ($do_plot) {
     ## if space is chi and plot ir R, do FFTs and plot those...
-    $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset});
   };
   if (($self->po->space eq 'r') and ($self->space =~ m{\Achi})) {
     my $suff = ($self->po->r_pl eq 'm') ? 'chir_mag'
@@ -480,7 +480,7 @@ sub plot {
              : ($self->po->r_pl eq 'i') ? 'chir_im'
              : ($self->po->r_pl eq 'p') ? 'chir_pha'
 	     :                            'chir_mag';
-    $self->dispose($self->template("plot", "overlcf", {suffix=>$suff, yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>$suff, yoffset=>$self->data->y_offset});
   };
 
   return $self;
@@ -813,11 +813,11 @@ sub sequence_plot {
   my @all = keys(%$first);
   my @stan = grep {$_ !~ m{\A[A-Z]}} @all;
   my $st1 = shift @stan;
-  $self->dispose($self->template('plot', 'newlcf_seq', {file=>$tempfile, col=>2, title=>$self->mo->fetch('Data', $st1)->name}), 'plotting');
+  $self->chart('plot', 'newlcf_seq', {file=>$tempfile, col=>2, title=>$self->mo->fetch('Data', $st1)->name});
   my $col = 4;
   foreach my $st (@stan) {
     $self->po->increment;
-    $self->dispose($self->template('plot', 'overlcf_seq', {file=>$tempfile, col=>$col, title=>$self->mo->fetch('Data', $st)->name}), 'plotting');
+    $self->chart('plot', 'overlcf_seq', {file=>$tempfile, col=>$col, title=>$self->mo->fetch('Data', $st)->name});
     $col += 2;
   };
   return $self;

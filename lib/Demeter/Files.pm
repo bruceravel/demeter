@@ -118,7 +118,7 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;
-  $self->dispense('process', 'read_group', {file=>$a, group=>'a'});
+  $self->dispense('process', 'read_group', {file=>$a, group=>'a', type=>'raw'});
   my $col_string = $self->fetch_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?

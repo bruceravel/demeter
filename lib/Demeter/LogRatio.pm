@@ -72,13 +72,13 @@ sub report {
 
 sub plot_even {
   my ($self) = @_;
-  $self->dispose($self->template("plot", "lreven"), 'plotting');
+  $self->chart("plot", "lreven");
   return $self;
 };
 
 sub plot_odd {
   my ($self) = @_;
-  $self->dispose($self->template("plot", "lrodd"), 'plotting');
+  $self->chart("plot", "lrodd");
   return $self;
 };
 

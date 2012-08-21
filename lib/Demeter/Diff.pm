@@ -99,11 +99,11 @@ sub plot {
     $self->po->start_plot;
     $self->data->plot('E');
     $self->standard->plot('E');
-    $self->dispose($self->template("plot", "overdiff"), 'plotting');
+    $self->chart("plot", "overdiff");
     $self->po->e_markers($save);
   } else {
     my $which = ($self->po->New) ? 'newdiff' : 'overdiff';
-    $self->dispose($self->template("plot", $which), 'plotting');
+    $self->chart("plot", $which);
     $self->po->increment;
   };
   if ($self->po->e_markers) {

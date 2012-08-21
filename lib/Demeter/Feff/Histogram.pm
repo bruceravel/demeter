@@ -70,9 +70,9 @@ sub chi_from_histogram {
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->_update('fft');
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->dispense('process', 'histogram_add');
     $paths->[$i]->group($save);
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $paths->[$i]->dispense('process', 'histogram_clean', {index=>255});
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
     $rave  += $paths->[$i]->population / $paths->[$i]->R;
     $rnorm += $paths->[$i]->population / ($paths->[$i]->R**2);

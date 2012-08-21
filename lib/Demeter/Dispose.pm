@@ -95,6 +95,12 @@ sub dispense {
   $self->dispose($self->template($set, $template, $args));
 };
 
+sub chart {
+  my ($self, $set, $template, $args) = @_;
+  $self->dispose($self->template($set, $template, $args), 'plotting');
+};
+
+
 
 ##-----------------------------------------------------------------
 ## dispose commands to ifeffit and elsewhere
@@ -524,6 +530,19 @@ is the same as
   $self->dispose($self->template('process', 'deriv'));
 
 which is a common idiom in Demeter.
+
+=item C<chart>
+
+This wraps calls to C<template> and to C<dispose> with the C<plotting>
+argument.  This:
+
+  $self->chart('process', 'deriv');
+
+is the same as
+
+  $self->dispose($self->template('process', 'deriv'), 'plotting');
+
+which is a common plotting idiom in Demeter.
 
 =item C<Reset>
 

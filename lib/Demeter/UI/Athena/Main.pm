@@ -833,10 +833,13 @@ sub OnParameter {
   } elsif (($which =~ m{bkg_(?:nor|pre)}) and $data->co->default('athena', 'interactive_fixstep')) {
     $data->bkg_fixstep(0);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
-    $data->$which($value)
+    $data->$which($value);
+
+  } elsif ($which !~ m{fixstep}) { # toggle
+    $data->$which($value);
 
   } elsif ($which !~ m{nnorm}) { # everything else...
-    $data->$which($value)
+    $data->$which($value);
   };
   $app->modified(1);
   #$widget->SetFocus;

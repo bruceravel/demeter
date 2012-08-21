@@ -162,7 +162,7 @@ sub f1f2_get_data {
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
   Demeter->dispense("plot", 'prep_f1f2');
-  Demeter->dispose(Demeter->template("plot", $which), "plotting");
+  Demeter->chart("plot", $which);
 
   #$demeter->po->cleantemp;
   #undef $demeter;

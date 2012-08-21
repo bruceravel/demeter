@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 33;
+use Test::More tests => 36;
 
 use Demeter qw(:data);
 
@@ -40,6 +40,7 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      X23A2MED	=> [7133.748,  'fluorescence'],
 	      Lytle 	=> [8979.15,   'transmission'],
 	      DUBBLE    => [12660.9,   'fluorescence'],
+	      LNLS      => [6983.6,    'fluorescence'],
 	     );
 Demeter->register_plugins;
 

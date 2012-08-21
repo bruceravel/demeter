@@ -274,7 +274,7 @@ sub plot {
 
   $self->po->start_plot;
   $self->data->plot('E');
-  $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+  $self->chart('plot', 'overpeak');
   $self->po->increment;
   if ($self->plot_residual) {
     ## prep the residual plot
@@ -285,7 +285,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+    $self->chart('plot', 'overpeak');
 
     ## restore values and increment the plot
     $self->yaxis($save);
@@ -295,7 +295,7 @@ sub plot {
   };
   if ($self->plot_components) {
     foreach my $ls (@{$self->lineshapes}) {
-      $ls->dispose($ls->template('plot', 'overpeak'), 'plotting');
+      $ls->chart('plot', 'overpeak');
       $self->po->increment;
     };
   };

@@ -18,6 +18,7 @@ package Demeter::Data::SelfAbsorption;
 
 use Moose::Role;
 
+use Demeter::Constants qw($ETOK);
 use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
 use List::Util qw(min);
@@ -318,7 +319,7 @@ sub sa_group {
 };
 
 sub info_depth {
-  my ($self, $formula, $angle_in, $angle_out) = @_;
+  my ($self, $formula, $angle_in, $angle_out, $space) = @_;
 
   my %count;
   my $ok = parse_formula($formula, \%count);
@@ -354,6 +355,9 @@ sub info_depth {
 					       muf => $muf,
 					      });
   my @x = $self->get_array('k');
+  if (lc($space) eq 'e') {
+    @x = map {$self->bkg_e0 + $_**2/$ETOK} @x;
+  };
   my @y = $self->fetch_array('s___a.info');
   return (\@x, \@y);
 };

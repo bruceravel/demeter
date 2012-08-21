@@ -1,0 +1,6 @@
+set title "\{/*1.5 Information depth above the absorption edge\}"
+set xrange [{$D->bkg_e0+$P->kmin**2/0.262468292}:{$D->bkg_e0+$P->kmax**2/0.262468292}]
+set xlabel "\{/*1.2 Energy&\{aa\}(eV)\}"
+set ylabel "\{/*1.2 Information depth&\{a\}(\{/Symbol m\}m)\}"
+unset key
+plot '{$file}' using 1:2 with lines ls {$P->increm+1} title ''

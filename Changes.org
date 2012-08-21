@@ -7,6 +7,24 @@
 
 ** 0.9.10 17 July 2012
 *** Athena
+   - Self absorption: plot information depth in energy and check to be
+     sure that absorber is in the formula
+   - Fixed a bug reading data files with very line column label lines
+   - Added a filetype plugin for LNLS data files
+   - Fixed a bug where edge step value may not have been updated after
+     a plot
+
+*** Artemis
+
+*** Demeter
+   - dispense method at a wrapper around dispose and template
+   - chart method at a wrapper around dispose and template for plotting
+   - several new templates to abstract out direct calls to Ifeffit in
+     preparation for Larch integration
+
+
+** 0.9.10 17 July 2012
+*** Athena
    - Improved X23A2 and HXMA plugins
    - Add a select range button to column selection dialog to help
      process data with a large number of columns (e.g. NSLS X3b)
@@ -52,7 +70,7 @@
      created
 
 *** Atoms
-   - Disable path DnD for stand-along Atoms
+   - Disable path DnD for stand-alone Atoms
    - Added a right click action to the paths list to display details
      of scattering geometry
 

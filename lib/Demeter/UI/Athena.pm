@@ -1708,6 +1708,7 @@ sub plot {
   $app->postplot($data[0], $is_fixed[0]);
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
+  $app->OnGroupSelect(0,0,0);
   undef $busy;
 };
 

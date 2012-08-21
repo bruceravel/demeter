@@ -90,7 +90,7 @@ sub put_arrays {
 
 sub plot {
   my ($self) = @_;
-  $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+  $self->chart('plot', 'overpeak');
   $self->po->increment;
   return $self;
 };

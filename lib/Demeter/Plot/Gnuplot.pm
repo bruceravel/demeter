@@ -120,7 +120,7 @@ override 'font' => sub {
   ## need to verify that font exists...
   $self->co->set_default('gnuplot', 'font',     $args{font});
   $self->co->set_default('gnuplot', 'fontsize', $args{size});
-  $self->dispose($self->template("plot", "start"), "plotting");
+  $self->chart("plot", "start");
   return $self;
 };
 

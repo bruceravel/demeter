@@ -356,10 +356,9 @@ sub plot {
   };
   close $f2;
   if ($self->po->output) {
-    $self->dispose($self->template('plot', 'output'), 'plotting');
+    $self->chart('plot', 'output');
   };
-  my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
-  $self->dispose($text, 'plotting');
+  $self->chart('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
   return $self;
 };
 

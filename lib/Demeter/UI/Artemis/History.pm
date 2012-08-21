@@ -407,9 +407,9 @@ sub write_report {
   close $T;
   if ($param eq 'Statistcal parameters') {
     my $col = $self->{plotas}->GetSelection + 2;
-    $Demeter::UI::Artemis::demeter->dispose($Demeter::UI::Artemis::demeter->template('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue}), 'plotting');
+    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue});
   } else {
-    $Demeter::UI::Artemis::demeter->dispose($Demeter::UI::Artemis::demeter->template('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue}), 'plotting');
+    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue});
   };
   $self->status("Reported on $param");
 };

@@ -213,9 +213,9 @@ sub chi {
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->dispense('process', 'histogram_add');
     $paths->[$i]->group($save);
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $paths->[$i]->dispense('process', 'histogram_clean', {index=>255});
     $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
     unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
@@ -288,9 +288,9 @@ sub plot {
   $self->place_array(join(".", $self->group, 'y'), $self->populations);
   $self->po->start_plot;
   if ($self->po->output) {
-    $self->dispose($self->template('plot', 'output'), 'plotting');
+    $self->chart('plot', 'output');
   };
-  $self->dispose($self->template('plot', 'histo'), 'plotting');
+  $self->chart('plot', 'histo');
   return $self;
 };
 
