@@ -116,8 +116,10 @@ sub plot {
 };
 
 sub state {
-  print GREEN, $_[0], BOLD, RED;
-  $demeter->po->title($_[0]);
+  my ($t) = @_;
+  print GREEN, $t, BOLD, RED;
+  chomp($t);
+  $demeter->po->title($t);
 };
 
 sub spew {

@@ -34,7 +34,10 @@ sub rebin {
     my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.column_selection");
     my $yaml = YAML::Tiny::Load(Demeter->slurp($persist));
     foreach my $p (qw(emin emax exafs pre xanes)) {
-      $$rhash{$p} = $yaml->{"rebin_$p"};
+      $$rhash{$p} = $$rhash{$p}	                     # value passed
+	         || $yaml->{"rebin_$p"}		     # value from most recent use in Athena
+	         || $self->co->default("rebin", $p)  # user default
+	         || $self->co->demeter("rebin", $p); # system default
     };
   };
   foreach my $k (keys %$rhash) {

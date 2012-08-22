@@ -352,11 +352,11 @@ sub _data {
       if ($w eq 'do_rebin') {
 	$value = $yaml->{$key} || 0;
       } else {
-	$value = $yaml->{$key} || $data->co->default('rebin', $w);
+	$value = $yaml->{$key} || $data->co->default('rebin', $w) || $data->co->demeter("rebin", $w);
       };
-      $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
+      $colsel->{Rebin}->{$w}->SetValue($value);
       next if (any {$w eq $_} qw(do_rebin abs));
-      $data->co->set_default('rebin', $w, $yaml->{$key});
+      $data->co->set_default('rebin', $w, $value);
     };
     if ($data->columns ne $yaml->{columns}) {
       $colsel->{Rebin}->{do_rebin}->SetValue(0)

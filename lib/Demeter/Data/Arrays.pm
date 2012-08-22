@@ -157,7 +157,7 @@ sub arrays {
   $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
   $self->dispense("process", "show_group");
   $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(feedback=>$save[1]);
+  $self->set_mode(feedback=>$save[1]||q{});
   my $group = $self->group;
   foreach my $l (@arrays_text) {
     if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {

@@ -22,7 +22,7 @@ sub fetch_scalar {
   my ($self, $param) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       return Ifeffit::get_scalar($param);
     };
 
@@ -37,7 +37,7 @@ sub fetch_string {
   my ($self, $param) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       return Ifeffit::get_string($param);
     };
 
@@ -52,7 +52,7 @@ sub fetch_array {
   my ($self, $param) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       return Ifeffit::get_array($param);
     };
 
@@ -70,7 +70,7 @@ sub toggle_echo {
   my $prior = 1;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       $prior = $self->fetch_scalar("\&screen_echo");
       $self->dispose("set \&screen_echo = $onoff\n");
       return $prior;
@@ -89,7 +89,7 @@ sub echo_lines {
   my @lines = ();
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
 
       my $save = $self->fetch_scalar("\&screen_echo");
       $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
@@ -114,7 +114,7 @@ sub place_scalar {
   my ($self, $param, $value) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       Ifeffit::put_scalar($param, $value);
     };
 
@@ -130,7 +130,7 @@ sub place_string {
   my ($self, $param, $value) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       Ifeffit::put_string($param, $value);
     };
 
@@ -146,7 +146,7 @@ sub place_array {
   my ($self, $param, $arrayref) = @_;
   given (Demeter->mo->template_process) {
 
-    when ('ifeffit') {
+    when (/ifeffit|iff_columns/) {
       Ifeffit::put_array($param, $arrayref);
     };
 
@@ -240,6 +240,10 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+Demeter and feffit backends ...
 
 =item *
 

@@ -21,6 +21,7 @@
    - chart method at a wrapper around dispose and template for plotting
    - several new templates to abstract out direct calls to Ifeffit in
      preparation for Larch integration
+   - fixed bugs in how rebinning parameters were determined and used
 
 
 ** 0.9.10 17 July 2012
