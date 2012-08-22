@@ -21,11 +21,11 @@
 
   $suffix ||= 'diff';
   $file = $P->tempfile;
-  $D->points(file    => $file,
-             space   => 'diff', 
-	     suffix  => 'diff',
-	     yoffset => $D->y_offset,
-	    );
+  $DS->points(file    => $file,
+              space   => 'diff', 
+              suffix  => 'diff',
+              yoffset => $D->y_offset,
+             );
   $thiskey = "difference";
   $thiskey =~ s{_}{\\\\_}g;
   q{}

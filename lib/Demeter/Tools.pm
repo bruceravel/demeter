@@ -354,6 +354,7 @@ sub ifeffit_heap {
 my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
+  @titles_text = ();
   $group ||= $self->group;
   my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),
@@ -363,9 +364,10 @@ sub clear_ifeffit_titles {
   $self->dispense("process", "show_strings");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
-  my $target = '\$' . $group . '_title_';
+  my $target = $group . '_title_';
   my @all = ();
   foreach my $l (@titles_text) {
+    #print $l, $/;
     if ($l =~ m{$target}) {
       push @all, (split(/\s*=\s*/, $l))[0];
     };

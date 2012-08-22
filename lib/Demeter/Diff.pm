@@ -83,7 +83,7 @@ sub diff {
 
   my @x = $self->data->get_array('energy');
   @x = map {$_ + $self->data->bkg_eshift} @x;
-  my @y = $self->data->get_array('diff');
+  my @y = $self->standard->get_array('diff');
   $self->spline(Math::Spline->new(\@x,\@y));
   $self->_integrate;
   return $self;
@@ -174,7 +174,10 @@ sub _integrate {
     }
 
     # Are we close enough?
-    return $est[$i][$i] if (abs($est[$i][$i] - $est[$i-1][$i-1]) <= $self->epsilon);
+    if (abs($est[$i][$i] - $est[$i-1][$i-1]) <= $self->epsilon) {
+      $self->area($est[$i][$i]);
+      return $est[$i][$i];
+    };
   }
   $self->area($est[$self->steps][$self->steps]);
   return $self->area;

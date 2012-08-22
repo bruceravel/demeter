@@ -33,7 +33,7 @@ use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
 #use Demeter::NumTypes qw( PosInt Natural NonNeg );
-#with "Demeter::ScatteringPath::Importance";
+with "Demeter::ScatteringPath::Importance";
 
 use Chemistry::Elements qw(get_symbol);
 use Carp;

@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 61;
+use Test::More tests => 62;
 
 use File::Basename;
 use File::Spec;
@@ -203,8 +203,9 @@ ok( abs($fa->bkg_e0 - 7105.506) < $fuzz,                     'Data from arrays w
 my @z = $data3->get_array('not_an_array');
 ok( $#z == -1,                     'Non existent array');
 
-#print $data3->group.'_title_01', $/;
-#print $data3->fetch_string($data3->group.'_title_01'), $/;
-#print Ifeffit::get_string('$'.$data3->group.'_title_01'), $/;
-#$data3->set_mode(screen=>1);
-#$data3->clear_ifeffit_titles;
+my $str1 = $data3->fetch_string($data3->group.'_title_01');
+$data3->clear_ifeffit_titles;
+my $str2 = $data3->fetch_string($data3->group.'_title_01');
+#print ">$str1<\n";
+#print ">$str2<\n";
+ok( (($str1 !~ m{\A\s*\z}) and ($str2 =~ m{\A\s*\z})), 'clear_ifeffit_titles works' );

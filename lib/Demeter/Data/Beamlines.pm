@@ -111,7 +111,9 @@ sub is_xdac {
 	};
 
 	($flag) and do {
-	  $remove_ifeffit_comments = 1;
+	  $remove_ifeffit_comments = 0; # may want to set this to 1 once XDI is properly
+                                        # integrated into Demeter.  will then need to fix
+				        # clear_ifeffit_titles test in 004_data.t
 	  $self->push_xdi_comment($li);
 	  last SWITCH;
 	};
