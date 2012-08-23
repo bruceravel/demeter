@@ -1,4 +1,4 @@
-package Demeter::ScatteringPath::Importance;
+package Demeter::ScatteringPath::Rank;
 
 use Moose::Role;
 
@@ -9,20 +9,20 @@ use Math::Spline;
 
 has 'group_name' => (is => 'rw', isa => 'Str', default => q{_rankpath},);
 has 'rankdata'   => (is => 'rw', isa => 'Any', default => q{},);
-has 'importance' => (
-		     traits    => ['Hash'],
-		     is        => 'rw',
-		     isa       => 'HashRef',
-		     default   => sub { {} },
-		     handles   => {
-				   'set_importance'      => 'set',
-				   'get_importance'      => 'get',
-				   'get_importance_list' => 'keys',
-				   'clear_importance'    => 'clear',
-				   'importance_exists'   => 'exists',
-				  },
-		    );
-has 'steps'  => (is => 'rw', isa => 'Int',     default =>  6);
+has 'rankings' => (
+		   traits    => ['Hash'],
+		   is        => 'rw',
+		   isa       => 'HashRef',
+		   default   => sub { {} },
+		   handles   => {
+				 'set_rank'      => 'set',
+				 'get_rank'      => 'get',
+				 'get_rank_list' => 'keys',
+				 'clear_rank'    => 'clear',
+				 'rank_exists'   => 'exists',
+				},
+		  );
+has 'steps'  => (is => 'rw', isa => 'Int',     default => 6); # more precision?
 has 'spline' => (is => 'rw', isa => 'Any',     default => 0);
 has 'xmin'   => (is => 'rw', isa => 'Num',     default => 1);
 has 'xmax'   => (is => 'rw', isa => 'Num',     default => 10);
@@ -32,14 +32,21 @@ sub rank {
   my $path = $self->temppath;
   my $save = $path->po->kweight;
 
-  $path->po->kweight(2);
-  $path->_update('bft');
+  ## area and peak height/position for each of kw=1,2,3
+  foreach my $i (1 .. 3) {
+    $path->po->kweight($i);
+    $path->update_fft(1);
+    $path->_update('bft');
 
-  $self->set_importance('area2', $self->rank_area($path));
+    my @x = $path->get_array('r');
+    my @y = $path->get_array('chir_mag');
 
-  my ($c, $h) = $self->rank_height($path);
-  $self->set_importance('peakpos2', $c);
-  $self->set_importance('height2',  $h);
+    $self->set_rank('area'.$i, $self->rank_area($path, \@x, \@y));
+
+    my ($c, $h) = $self->rank_height($path, \@x, \@y);
+    $self->set_rank('peakpos'.$i, $c);
+    $self->set_rank('height'.$i,  $h);
+  };
 
   $path->plot('r') if $plot;
   $path->po->kweight($save);
@@ -49,8 +56,8 @@ sub rank {
 sub temppath {
   my ($self) = @_;
   my $path = Demeter::Path->new(sp=>$self, data=>Demeter->dd, parent=>$self->feff,
-				s02=>1, sigma2=>0.003, delr=>0, e0=>0,
-			       );
+				group=>$self->group_name,
+				s02=>1, sigma2=>0.003, delr=>0, e0=>0, );
   return $path;
 };
 
@@ -58,32 +65,27 @@ sub temppath {
 sub normalize {
   my ($self, @list) = @_;
   @list = uniq($self, @list);
-  foreach my $test ($self->get_importance_list) {
+  foreach my $test ($self->get_rank_list) {
     next if ($test =~ m{peakpos});
-    my @values = map {$_->get_importance($test)} @list;
+    my @values = map {$_->get_rank($test)} @list;
     my $scale = max(@values);
     foreach my $sp (@list) {
-      $sp->set_importance($test."_n", sprintf("%.2f", 100*$sp->get_importance($test)/$scale));
+      $sp->set_rank($test."_n", sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
     };
   };
 };
 
 sub rank_area {
-  my ($self, $path) = @_;
-
-  my @x = $path->get_array('r');
-  my @y = $path->get_array('chir_mag');
-  $self->spline(Math::Spline->new(\@x,\@y));
+  my ($self, $path, $x, $y) = @_;
+  $self->spline(Math::Spline->new($x,$y));
   return $self->_integrate;
 };
 
 sub rank_height {
-  my ($self, $path) = @_;
-  my @x = $path->get_array('r');
-  my @y = $path->get_array('chir_mag');
-  my $max = max(@y);
-  my $i = firstidx {$_ == $max} @y;
-  my $centroid = $x[$i];
+  my ($self, $path, $x, $y) = @_;
+  my $max = max(@$y);
+  my $i = firstidx {$_ == $max} @$y;
+  my $centroid = $x->[$i];
   return ($centroid, $max);
 };
 
@@ -141,7 +143,7 @@ sub _integrate {
 
 =head1 NAME
 
-Demeter::ScatteringPath::Importance - Ranking paths in a Feff calculation
+Demeter::ScatteringPath::Rank - Ranking paths in a Feff calculation
 
 =head1 VERSION
 
@@ -154,6 +156,9 @@ and associating the results with ScatteringPath objects.  These
 rankings can be used to evaluate the magnitude of a path in a Feff
 calculation and, hopefully, provide some guidance about which paths to
 include in a fit.
+
+This module is adapted from similar work by Karine Provost of Institut
+de Chimie et des Materiaux Paris-Est.
 
 =head1 DESCRIPTION
 
@@ -172,21 +177,31 @@ hopefully provides much better guidance for creating fitting models.
 
 =over 4
 
-=item C<area2>
+=item C<areaW>
 
 Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of 2.
+perform a Fourier transform on the path using k-weight of W=(1,2,3).
 Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.
 
-=time C<height2>
+=item C<areaW_n>
+
+The value of C<areaW> normalized over a list by the C<normalize>
+method.  The largest ranking in the list will be 100.
+
+=time C<heightW>
 
 Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of 2.  Return
-the maximum value of the magnitude of chi(R).
+perform a Fourier transform on the path using k-weight of W=(1,2,3).
+Return the maximum value of the magnitude of chi(R).
 
-=time C<peakpos2>
+=item C<heightW_n>
 
-Return the position of the maximum value from the C<height2> test.
+The value of C<heightW> normalized over a list by the C<normalize>
+method.  The largest ranking in the list will be 100.
+
+=time C<peakposW>
+
+Return the position of the maximum value from the C<heightW> test.
 
 =back
 
@@ -197,7 +212,7 @@ Return the position of the maximum value from the C<height2> test.
 =item C<rank>
 
 Run the sequence of path ranking tests on a ScatteringPath object and
-store the results in the C<importance> attribute, which is a hash
+store the results in the C<rankings> attribute, which is a hash
 reference.  The keys of the referenced hash are given above.
 
   $sp -> rank($plot);
@@ -207,9 +222,27 @@ If C<$plot> is true, the path will be plotted in R.
 =item C<normalize>
 
 For amplitude-valued rankings, scale each path in a list such that the
-largest path has a value of 100.
+largest path in the input list has a value of 100.
 
   $sp -> normalize(@list_of_sp);
+
+C<$sp> will be included in the list, but care will be taken not to
+include it twice.
+
+=item C<get_rank>
+
+Return a path's value for a given test.
+
+  $x = $sp->get_rank('area2');
+
+=item C<get_rank_list>
+
+Return a list of identifying names for all the tests.
+
+  @all = $sp -> get_rank_list;
+  foreach my $r (@all) {
+    print $r, " = ", $sp->get_rank($r);
+  };
 
 =back
 

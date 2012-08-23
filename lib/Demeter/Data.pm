@@ -663,7 +663,7 @@ sub _update {
     };
 
   };
-  $self->ifeffit_heap;
+  #$self->ifeffit_heap;
   return $self;
 };
 

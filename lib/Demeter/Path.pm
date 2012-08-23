@@ -213,7 +213,7 @@ sub _update {
       last WHICH;
     };
   };
-  $self->ifeffit_heap;
+  #$self->ifeffit_heap;
   return $self;
 };
 

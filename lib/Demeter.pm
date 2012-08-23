@@ -65,7 +65,6 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
-with 'Demeter::Get';
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Files';
@@ -98,6 +97,7 @@ use vars qw($mode);
 $mode = Demeter::Mode -> instance;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
+with 'Demeter::Get';
 
 ###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};

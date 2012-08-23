@@ -341,6 +341,7 @@ sub randomstring {
 
 sub ifeffit_heap {
   my ($self, $length) = @_;
+  ##return $self if not $self->mo->check_heap;
   $self->mo->heap_used($self->fetch_scalar('&heap_used'));
   $self->mo->heap_free($self->fetch_scalar('&heap_free'));
   if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
