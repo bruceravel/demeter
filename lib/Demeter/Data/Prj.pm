@@ -443,7 +443,7 @@ Demeter::Data::Prj - Read data from Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

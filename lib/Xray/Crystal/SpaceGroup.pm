@@ -34,7 +34,7 @@ const my $EPSILON  => 0.00001;
 
 use vars qw($VERSION);
 use version;
-$VERSION = version->new("0.9.10");
+$VERSION = version->new("0.9.11");
 
 has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal/SpaceGroup.pm"}),
 										   'share',
@@ -523,7 +523,7 @@ Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crysta
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

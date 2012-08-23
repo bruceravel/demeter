@@ -200,7 +200,7 @@ Demeter::UI::Wx::ColourDatabase - An objective interface to Wx::ColourDatabase
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

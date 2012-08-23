@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.10 17 July 2012
+** 0.9.11 1 September 2012
 *** Athena
    - Self absorption: plot information depth in energy and check to be
      sure that absorber is in the formula
@@ -23,6 +23,12 @@
      preparation for Larch integration
    - fixed bugs in how rebinning parameters were determined and used
 
+*** Acknowledgements for this release
+   - Eric Breynaert
+   - Karine Provost
+   - Amy Gandy
+   - Bradley Miller
+   - The participants of the 2012 ASEAN Workshop on XAS
 
 ** 0.9.10 17 July 2012
 *** Athena
