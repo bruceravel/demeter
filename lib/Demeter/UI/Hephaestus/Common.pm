@@ -30,7 +30,7 @@ require Exporter;
 @EXPORT_OK = qw(e2l hversion hcopyright hdescription);
 
 sub hversion {
-  return $VERSION;
+  return $Demeter::VERSION;
 };
 
 sub hcopyright {

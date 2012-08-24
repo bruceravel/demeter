@@ -145,7 +145,7 @@ sub import_xdi {
     my $att = 'xdi_' . $f;
     $self->$att($xdi->$f);
   };
-  ## move data into Ifeffit arrays
+  ## move data into backend (Ifeffit/Larch) arrays
   my $ncol = $#{$xdi->labels};
   my $npts = $#{$xdi->data};
   my $data = $xdi->data;

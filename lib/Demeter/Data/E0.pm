@@ -351,20 +351,21 @@ omitted, it defaults to "ifeffit".
 
 =item I<ifeffit>
 
-Use Ifeffit's internal algorithm for finding the edge energy.  This is
-very similar to, but not exactly the same as, the first peak of the
-first derivative.  Ifeffit actually uses a simple peak-finding
-algorithm to distinguish the edge from noise in the pre-edge.  The
-result of this is that Ifeffit often chooses an energy that is one or
-two data points above what the human eye would recognize as the peak
-of the first derivative.
+Use the internal algorithm from the data processing backend
+(Ifeffit/Larch) for finding the edge energy.  This is very similar to,
+but not exactly the same as, the first peak of the first derivative.
+Ifeffit and Larch actually uses a simple peak-finding algorithm to
+distinguish the edge from noise in the pre-edge.  The result of this
+is that an energy is often chosen that is one or two data points above
+what the human eye would recognize as the peak of the first
+derivative.
 
 =item I<zero>
 
 Find the zero crossing of the second derivative of mu(E).  Starting
 from the current value of the edge energy (or from the value returned
-by Ifeffit's algorithm if the edge energy has not yet been set), step
-forward and backward until the parity of the second derivative
+by the backend algorithm if the edge energy has not yet been set),
+step forward and backward until the parity of the second derivative
 spectrum switches.  Then, linearly interpolate between the values
 bracketing the parity change to find the zero value.
 

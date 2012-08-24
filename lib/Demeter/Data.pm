@@ -920,7 +920,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data - Process and analyze EXAFS data with Ifeffit
+Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 
 =head1 VERSION
@@ -964,12 +964,12 @@ gathered into a Fit object.  See L<Demeter::Fit> for details.
 =item C<group> (string) I<[random 5-letter string]>
 
 This is the name associated with the data.  It's primary use is as the
-group name for the arrays associated with the data in Ifeffit.  That
-is, its arrays will be called I<group>.k, I<group>.chi, and so on.  It
-is best if this is a reasonably short word and it B<must> follow the
-conventions of a valid group name in Ifeffit.  The default group is a
-random five-letter string generated automatically when the object is
-created.
+group name for the arrays associated with the data in Ifeffit or
+Larch.  That is, its arrays will be called I<group>.k, I<group>.chi,
+and so on.  It is best if this is a reasonably short word and it
+B<must> follow the conventions of a valid group name in Ifeffit or
+Larch.  The default group is a random five-letter string generated
+automatically when the object is created.
 
 =item C<tag> (string) I<[same random 5-letter string as group]>
 
@@ -1048,8 +1048,8 @@ one of C<e> for mu(E), C<n> for norm(E>, and C<k> for chi(k).
 
 =item C<columns> (string)
 
-This string contains Ifeffit's C<$column_label> string from importing
-the data file.
+This string contains Ifeffit's C<$column_label> or Larch's C<...>
+string from importing the data file.
 
 =item C<energy> (string)
 
@@ -1301,9 +1301,10 @@ C<fft_kmax> will be sorted by Demeter.
 
 =item C<fft_dk> (number) I<[2]>
 
-The width of the window sill used for the forward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.
+The width of the window sill used for the forward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.
 
 =item C<fft_kwindow> (list) I<[Hanning]>
 
@@ -1319,7 +1320,7 @@ Fourier transform.
 
 =item C<rmax_out> (number) I<[10]>
 
-This tells Ifeffit how to size output arrays after doing a Fourier transform.
+This tells Ifeffit/Larch how to size output arrays after doing a Fourier transform.
 
 =back
 
@@ -1346,9 +1347,10 @@ C<bft_rmin> and C<bft_rmax> will be sorted by Demeter.
 
 =item C<bft_dr> (number) I<[0.2]>
 
-The width of the window sill used for the backward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.
+The width of the window sill used for the backward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.
 
 =back
 
@@ -1404,7 +1406,7 @@ C<k>, C<r>, or C<q>.
 
 If this number is non-zero, it will be used as the measurement
 uncertainty in k-space when the fit is evaluated.  If it is zero, then
-Ifeffit's default will be used.
+the default in Ifeffit or Larch will be used.
 
 =item C<fit_cormin> (number) I<[0.4]>
 
@@ -1482,9 +1484,9 @@ method of the parent class.
 
 =item C<save>
 
-This method returns the Ifeffit commands necessary to write column
-data files based on the data object.  See C<Demeter::Data::IO> for
-details.
+This method returns the Ifeffit/Larch commands necessary to write
+column data files based on the data object.  See C<Demeter::Data::IO>
+for details.
 
 =item C<data_parameter_report>
 
@@ -1505,8 +1507,8 @@ r-factor is computed as part of the report.
 
 This returns an evaluation of the R-factor from a fit for a single
 data set.  This is different from the R-factor for a multiple data set
-fit as reported by Ifeffit in that this number includes only the
-misfit of the single data set.
+fit as reported by Ifeffit or Larch in that this number includes only
+the misfit of the single data set.
 
   $r = $data_object -> r_factor;
 
@@ -1591,9 +1593,9 @@ converted to mu(E) data.
 
 =item *
 
-The data will be read by Ifeffit.  If the first data point is greater
-than 100, it will be assumed that these data are mu(E) and that the
-energy axis is absolute energy.
+The data will be read by Ifeffit or Larch.  If the first data point is
+greater than 100, it will be assumed that these data are mu(E) and
+that the energy axis is absolute energy.
 
 =item *
 

@@ -136,7 +136,7 @@ sub OnInit {
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
   $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
-  $app->{Buffer}->SetTitle("Athena [Ifeffit \& Plot Buffer]");
+  $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
   $demeter->set_mode(callback     => \&ifeffit_buffer,
 		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
@@ -260,7 +260,7 @@ sub on_about {
   $info->SetName( 'Athena' );
   #$info->SetVersion( $demeter->version );
   $info->SetDescription( "XAS Data Processing" );
-  $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Demeter->fetch_string('&build'));
+  $info->SetCopyright( $demeter->identify . "\nusing " . $demeter->backend_id );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
   #			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville"
@@ -487,7 +487,7 @@ sub menubar {
   $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
 
 
-  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
+  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
   $ifeffitmenu->Append($IFEFFIT_STRINGS, "strings",      "Examine all the strings currently defined in Ifeffit");
@@ -495,7 +495,7 @@ sub menubar {
   $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
   $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
@@ -2113,6 +2113,7 @@ sub Clear {
 ## in future times, check to see if Ifeffit is being used
 sub heap_check {
   my ($app, $show) = @_;
+  return if (Demeter->mo->template_process eq 'Larch');
   if ($app->current_data->mo->heap_used > 0.98) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.95) {

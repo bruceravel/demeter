@@ -679,7 +679,7 @@ reference.
 
 =item C<feedback>
 
-A code ref for disposing of feedback from Ifeffit.
+A code ref for disposing of feedback from Ifeffit or Larch.
 
 =back
 

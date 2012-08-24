@@ -223,9 +223,9 @@ A GDS object has these attributes:
 =item C<name> (string)
 
 This is the name of the parameter.  It must respect the conventions
-for a parameter name in Ifeffit.  They can contain only letters,
-numbers, '&', '?', ':', and '_' (underscore).  They are limited to 64
-characters and cannot begin with a numeral.
+for a parameter name in Ifeffit or Larch.  They can contain only
+letters, numbers, '&', '?', ':', and '_' (underscore).  They are
+limited to 64 characters and cannot begin with a numeral.
 
 =item C<gds> (guess def set lguess restrain after merge skip)
 
@@ -292,7 +292,7 @@ rewriting for local parameters.
 After the fit is evaluated, this contains the result of the fit for this
 parameter.  This is normally not set explicitly with the C<set> method.
 Rather it is set using the C<evaluate> method so that the math expression is
-correctly evaluated by Ifeffit.
+correctly evaluated by Ifeffit/Larch.
 
 =item C<error> (number)
 
@@ -358,7 +358,7 @@ C<autonote> attribute.
 =item C<write_gds>
 
 This returns a string which is the command to define the parameter in
-Ifeffit.
+Ifeffit/Larch.
 
    $string = $gds_object -> write_gds
 
@@ -368,7 +368,7 @@ This returns a string something like
 
 The first word is the parameter type.  "def" is used for after and
 restrain parameters.  Other parameter types (skip and merge) return
-string which will not be valid Ifeffit commands.
+strings which will not be valid Ifeffit/Larch commands.
 
 =item C<report>
 

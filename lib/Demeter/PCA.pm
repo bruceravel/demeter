@@ -183,7 +183,7 @@ sub do_pca {
 
   ## create the decomposition vectors (these are piddles)
   my $decomposed = $self->eigenvectors x $self->data_matrix;
-  ## write each decomposition vector to an Ifeffit array in the PCA object's group
+  ## write each decomposition vector to an array in the PCA object's group
   foreach my $row (0 .. $self->ndata-1) {
     my $this = $decomposed->slice(":,($row)");
     my @array = $this->list;

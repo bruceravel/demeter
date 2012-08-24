@@ -219,7 +219,7 @@ This documentation refers to Demeter version 0.9.11.
 =head1 DESCRIPTION
 
 This role contains several methods for identifying files common to the
-Feff and Ifeffit universe.
+Feff and Ifeffit/Larch universes.
 
 =head1 METHODS
 

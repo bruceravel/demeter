@@ -282,21 +282,22 @@ chi(k) data you must explicitly specify it.
 
 =item C<get_array>
 
-Read an array from Ifeffit.  The argument is the Ifeffit array suffix
-of the array to import.
+Read an array from the data processing backend (Ifeffit/Larch).  The
+argument is the Ifeffit array suffix of the array to import.
 
   @array = $dataobject->get_array("xmu");
 
 =item C<ref_array>
 
-Get a reference to an array from Ifeffit.  The argument is the Ifeffit
-array suffix of the array to import.
+Get a reference to an array from the data processing backend
+(Ifeffit/Larch).  The argument is the Ifeffit array suffix of the
+array to import.
 
   $ref_to_array = $dataobject->ref_array("xmu");
 
 =item C<put_xmu>
 
-Push an array onto the Ifeffit array representing the xmu data
+Push an array onto a backend array representing the xmu data
 associated with the Data object.  The purpose of this is to modify the
 mu(E) data for a Data object in place.  An example would be to apply a
 dead time correction without creating a new group to contain the
@@ -307,7 +308,7 @@ corrected data.
 =item C<floor_ceil>
 
 Return a two element list containing the smallest and largest values
-of an array in Ifeffit.
+of an array in the data processing backend (Ifeffit/Larch).
 
   ($min, $max) = $dataobject->floor_ceil("xmu");
 

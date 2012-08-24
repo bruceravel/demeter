@@ -983,7 +983,7 @@ current plot.
 
   $dataobject -> running($space);
 
-The array is then stored in the same Ifeffit group as the data itself
+The array is then stored in the same backend group as the data itself
 but with a suffix of C<krun>, C<rrun>, or C<qrun> depending on when
 space is being plotted.
 

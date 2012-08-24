@@ -20,6 +20,51 @@ use Moose::Role;
 
 my $mode = Demeter->mo;
 
+sub backend_name {
+  my ($self) = @_;
+  given ($mode->template_process) {
+
+    when (/ifeffit|iff_columns/) {
+      return 'Ifeffit';
+    };
+
+    when ('larch') {
+      return 'Larch';
+    };
+
+  };
+};
+
+sub backend_id {
+  my ($self) = @_;
+  given ($mode->template_process) {
+
+    when (/ifeffit|iff_columns/) {
+      return "Ifeffit " . Ifeffit::get_string('&build')
+    };
+
+    when ('larch') {
+      return 1;
+    };
+
+  };
+};
+
+sub backend_version {
+  my ($self) = @_;
+  given ($mode->template_process) {
+
+    when (/ifeffit|iff_columns/) {
+      return (split(" ", Ifeffit::get_string('&build')))[0];
+    };
+
+    when ('larch') {
+      return 1;
+    };
+
+  };
+};
+
 sub fetch_scalar {
   my ($self, $param) = @_;
   given ($mode->template_process) {

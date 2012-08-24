@@ -307,7 +307,7 @@ sub OnInit {
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
-  $help->Append( wxID_ABOUT, "&About..." );
+  $help->Append( wxID_ABOUT, "&About Atoms" );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );

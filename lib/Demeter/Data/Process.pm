@@ -490,7 +490,8 @@ Note that these data processing methods are not reversable (without
 reimporting the data).  Many of the examples suggest the use of the
 C<clone> method for easy comparison between the processed and original
 data.  In those cases cloning is a good idea because the methods
-B<will> alter the arrays in Ifeffit.
+B<will> alter the arrays in the data processing backend
+(Ifeffit/Larch).
 
 =over 4
 
@@ -499,7 +500,7 @@ B<will> alter the arrays in Ifeffit.
 This method rebins EXAFS data onto a standard EXAFS grid defined by
 parameters that can be passed to the method via an anonymous hash.  It
 returns the reference to the new object and creates an appropriate set
-of Ifeffit arrays.  The new object is a clone of the original object.
+of arrays.  The new object is a clone of the original object.
 
   $rebinned_group = $data -> rebin(pre=>-35, xanes=>0.3);
   $rebinned_group -> plot('E');
@@ -558,7 +559,8 @@ are Data objects to be included in the merge.
 =item C<Truncate>
 
 Truncate data before or after a given value.  This discards the
-truncated points from the arrays in Ifeffit.
+truncated points from the arrays in the data processing backend
+(Ifeffit/Larch).
 
   $data -> Truncate("after", 7700);
 
@@ -593,9 +595,9 @@ points.  This is a bug, but not, I don't think, a horrible one.
 
 =item C<smooth>
 
-Perform Ifeffit's three-point smoothing on the mu(E) or chi(k) data,
-as appropriate.  The argument tells Demeter how many times to reapply
-the smoothing.
+Perform three-point smoothing on the mu(E) or chi(k) data, as
+appropriate.  The argument tells Demeter how many times to reapply the
+smoothing.
 
   $copy = $data -> clone;
   $copy -> smooth(5);
@@ -604,10 +606,11 @@ the smoothing.
 
 Perform a Gaussian or Lorentzian convolution on the data.  Becuase
 this has a number of possible arguments, named arguments in an
-anonymous hash are used.  The width is Ifeffit's sigma value and is a
-possitive number.  A negative number will be interpretted as zero.
-The type is either "Gaussian" or "Lorentzian".  The type is either
-"xmu" or "chi" -- that is convolute mu(E) or chi(k) data.
+anonymous hash are used.  The width is sigma as defined in the data
+processing backend (Ifeffit/Larch) and is a possitive number.  A
+negative number will be interpretted as zero.  The type is either
+"Gaussian" or "Lorentzian".  The type is either "xmu" or "chi" -- that
+is convolute mu(E) or chi(k) data.
 
   $copy = $data -> clone;
   $copy -> convolve(width=>2, type=>'gaussian', which=>'xmu');

@@ -650,9 +650,9 @@ values:
 
 =item C<screen>
 
-The data will be plotted on screen in the typical Ifeffit manner.  For
-this target the return value will be an empty string is no problems
-are encountered or a error message explaining the source of the error.
+The data will be plotted on screen.  For this target the return value
+will be an empty string is no problems are encountered or a error
+message explaining the source of the error.
 
 =item C<athena>
 

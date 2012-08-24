@@ -175,9 +175,9 @@ statistical quality of the data.
   $_->plot('E') foreach ($data, $merged);
 
 The trick is that each file is only imported to the point of having
-arrays for energy and xmu in Ifeffit.  Each file in the list is
-imported to the same Ifeffit group.  The merge is computed by
-accumulation and divided by the total numberof scans.
+arrays for energy and xmu.  Each file in the list is imported to the
+same group.  The merge is computed by accumulation and divided by the
+total numberof scans.
 
 This requires that one data file be considered carefully.  This is the
 C<master>.  All other data are interpolated to the energy grid of the
@@ -257,9 +257,9 @@ Data objects from a sub-sampling sequence.
 =item C<merge>
 
 Performs the merge using some special optimizations that minimize the
-interaction with Ifeffit.  This returns a Data object containing the
-merged spectrum, divided by the number of spectra included in the
-merge.
+interaction with the data processing backend (Ifeffit/Larch).  This
+returns a Data object containing the merged spectrum, divided by the
+number of spectra included in the merge.
 
 =back
 

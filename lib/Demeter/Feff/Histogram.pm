@@ -66,7 +66,7 @@ sub chi_from_histogram {
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
     $self->call_sentinal;
-    my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
+    my $save = $paths->[$i]->group; # add up the SSPaths without requiring a group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->_update('fft');
@@ -153,7 +153,7 @@ sub histogram_from_file {
 sub histogram_from_function {
   my ($self, $string, $rmin, $rmax) = @_;
   my (@x, @y);
-  ## use string to generate arrays in Ifeffit
+  ## use string to generate arrays in Ifeffit -- huh?
   return \@x, \@y;
 };
 

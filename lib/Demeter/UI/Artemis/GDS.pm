@@ -84,7 +84,7 @@ my %explain = (#                                                                
 	      );
 my %hints = (
 	     grab      => "Use the best fit values from the last fit as the initial values for all guess parameters",
-	     reset     => "Restore all parameters to their initial values in Ifeffit",
+	     reset     => "Restore all parameters to their initial values in ".Demeter->backend_name,
 	     convert   => "Change all guess parameters to set",
 	     discard   => "Discard all parameters",
 	     highlight => "Toggle highlighting of parameters which match a regular expression",
@@ -302,7 +302,7 @@ sub reset_all {
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
   $parent->{uptodate} = 1;
-  $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
+  $parent->status("Reset all parameter values in ".Demeter->backend_name.".") if (not $no_ifeffit);
   return \@gds;
 };
 
@@ -1019,15 +1019,15 @@ sub OnDropText {
 
   ## text with white space
   if ($text =~ m{\s}) {
-    $parent->status("Ifeffit guess/def/set parameters names cannot have white space ($text)");
+    $parent->status("guess/def/set parameters names cannot have white space ($text)");
 
   ## text starting with a number
   } elsif ($text =~ m{\A\d}) {
-    $parent->status("Ifeffit guess/def/set parameters names cannot start with numbers ($text)");
+    $parent->status("guess/def/set parameters names cannot start with numbers ($text)");
 
   ## text with unallowed characters
   } elsif ($text =~ m{[^a-z0-9_?]}i) {
-    $parent->status("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
+    $parent->status("guess/def/set parameters names can only use [a-z0-9_?] ($text)");
 
   ## parameter name already exists
   } elsif ($parent->param_present($text)) {

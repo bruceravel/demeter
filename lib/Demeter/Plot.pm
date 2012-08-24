@@ -742,7 +742,7 @@ q{},
 
 =item C<e_smooth> (integer) I<[0]>
 
-When non-zero, data plotted in energy will be smoothed using Ifeffit's
+When non-zero, data plotted in energy will be smoothed using a
 three-point smoothing function.  The number is the number of
 repititions of the smoothing function.
 

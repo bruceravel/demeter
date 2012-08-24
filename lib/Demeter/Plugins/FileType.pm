@@ -106,12 +106,13 @@ change the troublesome data into a more easily handled from.
 
 =back
 
-Demeter adopts the second option.  Ifeffit is used for data import.
-All data files must be readable by Ifeffit.  For those kinds of data
-file that are not easily read by Ifeffit, a plugin is used to convert
-the data from the troublesome format into a standard, well-formatted,
-column data file.  The normal input mechanism is then used to import
-the data into a L<Demeter::Data> object.
+Demeter adopts the second option.  Ifeffit (or Larch) is used for data
+import.  All data files must be readable by Ifeffit (or Larch).  For
+those kinds of data file that are not easily read by Ifeffit, a plugin
+is used to convert the data from the troublesome format into a
+standard, well-formatted, column data file.  The normal input
+mechanism is then used to import the data into a L<Demeter::Data>
+object.
 
 All file type plugins are implemented as L<Moose> objects.  As such,
 all file type plugins must have certain attributes and methods so that
@@ -168,7 +169,7 @@ the same chore, yielding a file easily read by Ifeffit.
 =item C<SSRLA>
 
 Convert SSRL ASCII data file.  Presumably, these ASCII files are the
-result of the SSRL conversion program.  These AsCII files are
+result of the SSRL conversion program.  These ASCII files are
 unreadable by Ifeffit.  This plugin, comments out the header lines,
 constructs a column label line out of the Data: section, moves the
 first column (real time clock) to the third column, and swaps the

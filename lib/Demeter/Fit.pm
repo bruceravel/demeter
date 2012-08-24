@@ -1576,7 +1576,7 @@ override 'deserialize' => sub {
     };
   };
 
-  ## -------- import the fit files and push arrays into Ifeffit
+  ## -------- import the fit files and push arrays into Ifeffit/Larch
   foreach my $d (@data) {
     my $dd = $d->group;
     ## import the fit data
@@ -1619,7 +1619,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Fit - Fit EXAFS data using Ifeffit
+Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
@@ -1638,15 +1638,15 @@ This documentation refers to Demeter version 0.9.11.
 =head1 DESCRIPTION
 
 This class collects and organizes all the components of a fit using
-Ifeffit.  The bulk of a script to fit EXAFS data involves setting up
-all the data, paths, and parameters that go into the fit.  Once that
-is done, you pass that information to the Fit object as array
-references.  It collates all of the information, resolves the
+Ifeffit or Larch.  The bulk of a script to fit EXAFS data involves
+setting up all the data, paths, and parameters that go into the fit.
+Once that is done, you pass that information to the Fit object as
+array references.  It collates all of the information, resolves the
 connections between Path and Data objects, performs a number of sanity
 checks on the input information, and generates the sequence of Ifeffit
-commands needed to perform the fit.  After the hard work of setting up
-the Data, Path, and GDS objects is done, you are just a few lines away
-from a complete fitting script!
+or Larch commands needed to perform the fit.  After the hard work of
+setting up the Data, Path, and GDS objects is done, you are just a few
+lines away from a complete fitting script!
 
 =head1 ATTRIBUTES
 
@@ -1740,12 +1740,12 @@ reliably interpreted in a statistical sense.
 =item C<fit>
 
 This method returns the sequence of commands to perform a fit in
-Ifeffit.  This sequence will include lines defining each guess, def,
-set, and restrain parameter.  The data will be imported by the
-C<read_data> command.  Each path associated with the data set will be
-defined.  Then the text of the Ifeffit's C<feffit> command is
-generated.  Finally, commands for defining the after parameters and
-for computing the residual arrays are made.
+Ifeffit or Larch.  This sequence will include lines defining each
+guess, def, set, and restrain parameter.  The data will be imported by
+the C<read_data> command.  Each path associated with the data set will
+be defined.  Then the text of the Ifeffit's C<feffit> or Larch's
+C<...> command is generated.  Finally, commands for defining the after
+parameters and for computing the residual arrays are made.
 
    $fitobject -> fit;
 

@@ -389,8 +389,7 @@ This module provides an abstract framework for enabling peak fitting
 in Demeter.  This abstraction allows (well ... in principle) the use
 of various backends for performing the actual fit.  Currently the only
 one available is Fityk (http://www.unipress.waw.pl/fityk/), which is
-implemented as L<Demeter::PeakFit::Fityk>.  I plan to implement an
-Ifeffit backend in te future.
+implemented as L<Demeter::PeakFit::Fityk>.
 
 Any suggestions?
 

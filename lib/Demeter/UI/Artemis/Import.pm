@@ -102,7 +102,7 @@ sub _prj {
 	$data->bkg_stan($ref->group);
       };
     };
-    ## clean up a few straggler arrays in Ifeffit and the spare Data object
+    ## clean up a few straggler arrays in Ifeffit/Larch and the spare Data object
     $data->dispense('process', 'erase', {items=>"\@group $toss"});
     $toss = Demeter->mo->fetch('Data', $toss);
     $toss->DESTROY;

@@ -57,7 +57,7 @@ sub fix {
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
-  ## read the raw data file into Ifeffit
+  ## read the raw data file
   $demeter->dispense('process', 'read_group', {file=>$file, group=>'v___ortex', type=>'data'});
   #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
   #$demeter->dispose($command);

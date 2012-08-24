@@ -112,7 +112,8 @@ This documentation refers to Demeter version 0.9.11.
 =head1 DESCRIPTION
 
 This object provides a way to read multiple channels of data from a
-single column data file that uses Ifeffit as efficiently as possible.
+single column data file that uses the data processing backend
+(Ifeffit/Larch) as efficiently as possible.
 
   my $mc = Demeter::Data::MultiChannel->new(file => $file,
                                             energy => '$1');
@@ -133,9 +134,9 @@ single column data file that uses Ifeffit as efficiently as possible.
 The data file containing multiple channels of data is imported by the
 Data::MultiChannel object.  Normal Data objects are created using the
 C<make_data> method.  The advantage of this over simply re-importing
-the data file for each Data object is that Ifeffit arrays for the raw
-data columns are only created once, greatly reducing the amount of array
-wrangling that Ifeffit must perform.
+the data file for each Data object is that backend arrays for the raw
+data columns are only created once, greatly reducing the amount of
+array wrangling that the backend must perform.
 
 This method was written for the mutichannel ioniziation chambers
 discussed in (give reference).  This class would also be useful for
@@ -170,10 +171,10 @@ along to the data object.
 =item C<discard>
 
 This method destroys the Data::MultiChannel object and also removes
-all its associated arrays from Ifeffit.  It is hard to make all that
-happen automatically B<and> at the proper time, so it is a good idea
-to explicitly do this when you are finished with a Data::MultiChannel
-object.
+all its associated arrays from the backend.  It is hard to make all
+that happen automatically B<and> at the proper time, so it is a good
+idea to explicitly do this when you are finished with a
+Data::MultiChannel object.
 
 =back
 

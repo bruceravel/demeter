@@ -1101,7 +1101,7 @@ The number of variable parameters used in the fit.
 =item C<rfactor>
 
 An R-factor for the fit.  For fits to chi(k) or the derivative
-spectrum, this is an Ifeffit-normal R-factor:
+spectrum, this is a normal R-factor in Ifeffit or Larch:
 
    sum( [data_i - fit_i]^2 ]
   --------------------------
@@ -1119,11 +1119,11 @@ where <data> is the geometric mean of the data in the fitting range.
 
 =item C<chisqr>
 
-This is Ifeffit's chi-square for the fit.
+This is the chi-square for the fit.
 
 =item C<chinu>
 
-This is Ifeffit's reduced chi-square for the fit.
+This is the reduced chi-square for the fit.
 
 =back
 
@@ -1296,7 +1296,8 @@ fit is in energy and the C<e_norm> Plot attribute is true.
 
 =item C<clean>
 
-This method clears all scalars and arrays our of Ifeffit's memory.
+This method clears all scalars and arrays out of the memory of the
+data processing backend (Ifeffit/Larch).
 
   $lcf->clean;
 

@@ -63,14 +63,14 @@ methods as needed.
 =item C<fft>
 
 Perform a forward Fourier transform by generating and disposing of the
-appropriate sequence of Ifeffit commands.
+appropriate sequence of commands.
 
   $data_object -> fft;
 
 =item C<bft>
 
 Perform a backward Fourier transform by generating and disposing of the
-appropriate sequence of Ifeffit commands.
+appropriate sequence of commands.
 
   $data_object -> bft;
 

@@ -626,11 +626,11 @@ details.
 
 =item C<group> (string)
 
-This is the Ifeffit group name used for this path.  That is, its
-arrays will be called I<group>.k, I<group>.chi, and so on.  It is best
-if this is a reasonably short word and it B<must> follow the
-conventions of a valid group name in Ifeffit.  By default, this is a
-random, four-letter string.
+This is the Ifeffit or Larch group name used for this path.  That is,
+its arrays will be called I<group>.k, I<group>.chi, and so on.  It is
+best if this is a reasonably short word and it B<must> follow the
+conventions of a valid group name in Ifeffit or Larch.  By default,
+this is a random, five-letter string.
 
 =item C<name> (string)
 
@@ -663,8 +663,8 @@ an empty string.
 =item C<folder> (string)
 
 This is a string that takes the fully qualified path (in the file
-system sense, not the Ifeffit sense) to the C<`feffNNNN.dat'> file
-associated with this Path object.
+system sense) to the C<`feffNNNN.dat'> file associated with this Path
+object.
 
 If the C<SP> attribute is set, then this attribute will be set
 automatically and changing it via the Path object's C<set> method will
@@ -724,9 +724,9 @@ re-evaluate the fit using either of the C<fit> or C<sum> methods.
 
 =item C<n> (number)
 
-This is the path degeneracy in the definition of an Ifeffit path.
-This is a number, not a math expression.  Use the C<s02> attribute to
-parameterize the amplitude of the path.
+This is the path degeneracy in the definition of an Ifeffit or Larch
+path.  This is a number, not a math expression.  Use the C<s02>
+attribute to parameterize the amplitude of the path.
 
 =item C<s02> (string)
 
@@ -867,10 +867,10 @@ Additionally the Path object provides these methods:
 
 =item C<save>
 
-This method returns the Ifeffit commands necessary to write column
-data files based on the Path object.  See C<Demeter::Data::IO> for
-details.  Only the C<chi>, C<r>, and C<q> options are available for
-writing Path column data files.
+This method returns the Ifeffit or Larch commands necessary to write
+column data files based on the Path object.  See C<Demeter::Data::IO>
+for details.  Only the C<chi>, C<r>, and C<q> options are available
+for writing Path column data files.
 
 =back
 
@@ -908,7 +908,7 @@ Delete the F<feffNNNN.dat> file associated with this Path.
 
 =back
 
-=head2 Ifeffit interaction methods
+=head2 Ifeffit/Larch interaction methods
 
 =over 4
 
@@ -918,23 +918,23 @@ This is completely different from the C<read_data> method called on a
 Data object.  Or, it's exactly the same, depending on your
 perspective.  It is not normally necessary to call read_data on a
 F<feffNNNN.dat> file in the course of data analysis.  That file is
-imported into Ifeffit as a part of the C<write_path> method.
+imported into Ifeffit or Larch as a part of the C<write_path> method.
 
-When C<read_data> is called on a Path object, the Ifeffit command for
-reading the F<feffNNNN.dat> file as a column data file is returned.
-This is useful if you ever need to examine the raw columns of the
-F<feffNNNN.dat> file.
+When C<read_data> is called on a Path object, the Ifeffit/Larch
+command for reading the F<feffNNNN.dat> file as a column data file is
+returned.  This is useful if you ever need to examine the raw columns
+of the F<feffNNNN.dat> file.
 
   $command = $path_object -> read_data;
 
 =item C<write_path>
 
-This method returns the Ifeffit commands to import and define a Feff
-path.  It takes a boolean argument which tells the method whether to
-also generate the Ifeffit command for converting the defined path into
-Ifeffit arrays for plotting or other manipulations.  That argument is
-set true as part of the C<display> method, but false when the fit is
-defined.
+This method returns the Ifeffit or Larch commands to import and define
+a Feff path.  It takes a boolean argument which tells the method
+whether to also generate the Ifeffit or Larch command for converting
+the defined path into arrays for plotting or other manipulations.
+That argument is set true as part of the C<display> method, but false
+when the fit is defined.
 
   $command = $path_object -> write_path($do_ff2chi);
 
@@ -1033,10 +1033,11 @@ associated ScatteringPath object and returning the longest value.
 
 =item C<Demeter::Path: "group" is not a valid group name>
 
-(F) You have used a group name that does not follow Ifeffit's rules for group
-names.  The group name must start with a letter.  After that only letters,
-numbers, &, ?, _, and : are acceptable characters.  The group name must be no
-longer than 64 characters.
+(F) You have used a group name that does not follow Ifeffit's or
+Larch's rules for group names.  The group name must start with a
+letter.  After that only letters, numbers, &, ?, _, and : are
+acceptable characters.  The group name must be no longer than 64
+characters.
 
 =item C<Demeter::Path: the sp attribute must be ScatteringPath object>
 

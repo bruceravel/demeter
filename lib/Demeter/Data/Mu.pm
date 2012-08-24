@@ -845,10 +845,10 @@ completeness.
 
 =item C<step>
 
-This method generates code for making an Ifeffit array containing a
-Heaviside step function centered at the edge energy and placed on the
-grid of the energy array associated with the object.  The resulting
-array containing the step function will have the suffix C<step>.
+This method generates code for making an array containing a Heaviside
+step function centered at the edge energy and placed on the grid of
+the energy array associated with the object.  The resulting array
+containing the step function will have the suffix C<step>.
 
     $string = $self->step;
 

@@ -427,7 +427,7 @@ sub new {
 
   EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
-  $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
+  $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let " . Demeter->backend_name . " determine the uncertainty.");
   $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");
 
   $leftpane -> SetSizerAndFit($left);
@@ -666,7 +666,7 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_EXPORT,     "Export parameters to other data sets", "Export these FT and fitting parameters to other data sets.");
-  $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to ".Demeter->backend_name."'s suggestion", "Set kmax to ".Demeter->backend_name."'s suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
 
@@ -715,7 +715,7 @@ sub make_menubar {
   #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
-  $self->{debugmenu}->Append($DATA_SHOW, "Show Ifeffit group for this Data", "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
+  $self->{debugmenu}->Append($DATA_SHOW, "Show ".Demeter->backend_name." group for this Data", "Show the arrays associated with this group in ".Demeter->backend_name,  wxITEM_NORMAL );
   $self->{debugmenu}->Append($PATH_SHOW, "Show displayed path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
   $self->{debugmenu}->AppendSeparator;
   $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
@@ -981,7 +981,7 @@ sub OnMenuClick {
 	$text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
 	$datapage->status($text);
       } else {
-	$text = "Ifeffit returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
+	$text = Demeter->backend_name." returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
 	$datapage->status($text, 'error');
       };
       last SWITCH;

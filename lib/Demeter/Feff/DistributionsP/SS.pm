@@ -208,7 +208,7 @@ sub chi {
     #$paths->[$i]->update_path(1);
     $self->fpath_count($i);
     $self->call_sentinal;
-    my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
+    my $save = $paths->[$i]->group; # add up the SSPaths without requiring a group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->randstring($randstr);

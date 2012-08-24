@@ -262,7 +262,7 @@ sub chi {
 
   $self->count if ($self->mo->ui eq 'screen');
   $first->dspath->Index(255);
-  $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring an Ifeffit group for each one
+  $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring a group for each one
   $first->dspath->path(1);
   $first->dspath->dispense('process', 'histogram_first');
   $first->dspath->group($save);
