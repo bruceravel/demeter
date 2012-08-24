@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Demeter::Constants qw($ENDOFLINE);
+use Ifeffit qw(ifeffit get_echo get_scalar);
 
 use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
@@ -242,19 +243,19 @@ sub dispose {
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
     if ($self->is_windows) {
-      Ifeffit::ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
+      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
     } else {
-      Ifeffit::ifeffit($reprocessed);
+      ifeffit($reprocessed);
     };
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
     ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
-      my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
+      my ($lines, $response) = (get_scalar('&echo_lines')||0, "");
       if ($lines) {		# is there feedback?
 	foreach my $i (1 .. $lines) {
-	  my $response = Ifeffit::get_echo();
+	  my $response = get_echo();
 
 	  ## send to feedback code ref
 	  if ($coderef) {
@@ -301,7 +302,7 @@ sub Reset {
 sub cursor {
   my ($self) = @_;
   $self->dispose("cursor(show, cross-hair)");
-  return(Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
+  return(get_scalar("cursor_x"), get_scalar("cursor_y"));
 };
 
 1;

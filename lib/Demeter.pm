@@ -33,8 +33,8 @@ use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
-use Ifeffit;
-Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+use Ifeffit qw(ifeffit);
+ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -65,13 +65,13 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
+with 'MooseX::SetGet';		# this is mine....
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
-with 'MooseX::SetGet';		# this is mine....
 use Demeter::Constants qw($NUMBER $PI);
 
 my %seen_group;
@@ -97,7 +97,7 @@ use vars qw($mode);
 $mode = Demeter::Mode -> instance;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
-with 'Demeter::Get';
+with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::mode lexical can be defined
 
 ###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
