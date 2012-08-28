@@ -178,7 +178,7 @@ sub save {
   my ($this, $event) = @_;
   (my $name = $this->{LR}->data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save log-ratio fit to a file", cwd, $name.".lrpd",
-				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files|*",
+				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

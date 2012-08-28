@@ -37,6 +37,7 @@ InfoAfterFile=Demeter.readme.txt
 
 [Run]
 Filename: "{app}\relocation.pl.bat";
+Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
 
 [Dirs]
 Name: "{userappdata}\demeter"

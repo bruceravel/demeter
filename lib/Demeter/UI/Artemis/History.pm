@@ -566,7 +566,7 @@ sub export {
   my $fname = "$name.fpj";
   $fname =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save $name project file", cwd, $fname,
-				"Artemis project (*.fpj)|*.fpj|All files|*",
+				"Artemis project (*.fpj)|*.fpj|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Saving project cancelled.");

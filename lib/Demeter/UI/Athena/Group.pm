@@ -236,7 +236,7 @@ sub Report {
 
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save spreadsheet report", cwd, q{athena.xls},
-				  "Athena project (*.xls)|*.xls|All files|*",
+				  "Athena project (*.xls)|*.xls|All files|*.*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

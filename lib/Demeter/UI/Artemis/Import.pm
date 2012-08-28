@@ -47,7 +47,7 @@ sub prjrecord {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Athena project", cwd, q{},
-				  "Athena project (*.prj)|*.prj|All files|*",
+				  "Athena project (*.prj)|*.prj|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -129,7 +129,7 @@ sub _feff {
   my $file = $fname;
   if (not $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import crystal data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -161,7 +161,7 @@ sub _chi {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import $CHI(k) data", cwd, q{},
-				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files|*",
+				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -194,7 +194,7 @@ sub _dpj {
   $nomru ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Demeter fit serialization file", cwd, q{},
-				  "Fit serialization (*.dpj)|*.dpj|All files|*",
+				  "Fit serialization (*.dpj)|*.dpj|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -312,7 +312,7 @@ sub _external_feff {
   $noshow ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Atoms or Feff input file", cwd, q{},
-				  "Atoms/Feff input (*.inp)|*.inp|All files|*",
+				  "Atoms/Feff input (*.inp)|*.inp|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -413,7 +413,7 @@ sub _old {
   $file ||= q{};
   if (not -e $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
-				  "old-style Artemis project (*.apj)|*.apj|All files|*",
+				  "old-style Artemis project (*.apj)|*.apj|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -464,7 +464,7 @@ sub _feffit {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Feffit input file", cwd, q{},
-				  "Feffit input (*.inp)|*.inp|All files|*",
+				  "Feffit input (*.inp)|*.inp|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

@@ -371,7 +371,7 @@ sub get_filename {
   my %descr   = ( pca=>'components', stack=>'data stack', recon=>'reconstruction', tt=>'target transform' );
   my $name = $given || basename($::app->{main}->{currentproject}, '.prj') || $defname{$suff};
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save PCA $descr{$suff} to a file", cwd, join(".", $name, $suff),
-				uc($suff)." (*.$suff)|*.$suff|All files|*",
+				uc($suff)." (*.$suff)|*.$suff|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

@@ -430,7 +430,7 @@ sub import {
   my ($parent) = @_;
   my $grid = $parent->{grid};
   my $fd = Wx::FileDialog->new( $parent, "Import parameters from a text file", cwd, q{},
-				"Text file|*.txt|All files|*",
+				"Text file|*.txt|All files|*.*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
@@ -474,7 +474,7 @@ sub export {
   my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
-				"Text file|*.txt|All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				"Text file|*.txt|All files|*.*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->status("Parameter export aborted.");
