@@ -15,6 +15,8 @@
      a plot
 
 *** Artemis
+   - fixed a bug in Artemis' quick first shell interface to allow Am
+     through Cf as absorbers (although Feff only allows up to Cm)
 
 *** Demeter
    - dispense method at a wrapper around dispose and template
@@ -22,12 +24,28 @@
    - several new templates to abstract out direct calls to Ifeffit in
      preparation for Larch integration
    - fixed bugs in how rebinning parameters were determined and used
+   - extensive preparation for Larch
+   - added a test for clear_ifeffit_methods in 004_data.t
+   - fixed several bugs in difference spectrum calculation
+   - fixed various problems involving the use of rebin parameters
+
+*** Windows
+   - updated to most recent Ifeffit from github + patched Feff6L to
+     allow Am and Cm as absorbers
+   - fixed a problem following shortcuts into folders in certain
+     situations
+   - explicitly call demeter's version of perl from BAT files, this
+     invloved a post-installation script run by Inno
 
 *** Acknowledgements for this release
    - Eric Breynaert
+   - Shelly Kelly
    - Karine Provost
    - Amy Gandy
    - Bradley Miller
+   - Jason Gaudet
+   - Alfred Hummer
+   - Daniel Whittaker
    - The participants of the 2012 ASEAN Workshop on XAS
 
 ** 0.9.10 17 July 2012
