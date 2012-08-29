@@ -2041,7 +2041,7 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      sr y zr nb mo tc ru rh pd ag cd in sn sb te i xe cs
 		      ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
 		      ta w re os ir pt au hg tl pb bi po at rn fr ra ac
-		      th pa u np pu);
+		      th pa u np pu am cm bk cf);
 my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 
 sub fourparam {
