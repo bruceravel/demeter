@@ -121,7 +121,7 @@ has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
 		       trigger => sub{ my ($self, $new) = @_; 
 				       return if not exists $self->potentials->[$new];
 				       return if not exists $self->potentials->[$new]->[2];
-				       my $elem = $self->potentials->[$new]->[2] || 'He';
+				       my $elem = get_symbol($self->potentials->[$new]->[1]) || 'He';
 				       $self->abs_species($elem);
 				     });
 has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1, alias=>'abs_element');

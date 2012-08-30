@@ -4,6 +4,7 @@ use Demeter::StrTypes qw( Element );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
+use Chemistry::Elements qw(get_Z);
 use File::Spec;
 
 use Wx qw( :everything );
@@ -102,7 +103,7 @@ sub OnToolRightClick {
   $self->{parent}->status("There are no recent Feff files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{parent}->status("Import cancelled.");
+    $self->{parent}->status("Import canceled.");
   } else {
    $self->import( $dialog->GetMruSelection );
   };
@@ -189,9 +190,20 @@ sub run_feff {
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
 
-  if ($feff->rmax > 6.01) {
+  #my $zabs = $feff->potentials->[$feff->abs_index]->[1];
+  if (get_Z($feff->abs_species) > 95) {
+    my $error = Wx::MessageDialog->new($rframes->{main},
+				       "The version of Feff you are using cannot calculate for absorbers above Z=95.",
+				       "Cannot run Feff",
+				       wxOK|wxICON_EXCLAMATION);
+    my $result = $error->ShowModal;
+    $self->{parent}->status("The version of Feff you are using cannot calculate for absorbers above Z=95.", 'alert');
+    return 0;
+  };
+
+  if ($feff->rmax > 6.51) {
     my $yesno = Wx::MessageDialog->new($self,
-				       'You have set RMAX to larger than 6 Angstroms.
+				       'You have set RMAX to larger than 6.5 Angstroms.
 
 The pathfinder will likely be quite time consuming,
 as will reading and writing a project file
@@ -203,7 +215,7 @@ Should we continue?',
 				      );
     my $ok = $yesno->ShowModal;
     if ($ok == wxID_NO) {
-      $self->{parent}->status("Cancelling Feff calculation");
+      $self->{parent}->status("Canceling Feff calculation");
       return 0;
     };
 
@@ -224,7 +236,7 @@ Should we continue?',
 
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
-  $self->{parent}->status("Computing potentials using Feff6 ...");
+  $self->{parent}->status("Computing potentials using Feff ...");
 
   ## rerunning, so clean upprevious results
   my $phbin = File::Spec->catfile($feff->workspace, 'phase.bin');

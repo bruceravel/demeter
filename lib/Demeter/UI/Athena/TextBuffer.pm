@@ -82,7 +82,7 @@ Later:
                                      q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app->set_text_buffer($ted, "some");
   if ($ted->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Renaming cancelled.");
+    $app->{main}->status("Renaming canceled.");
     return;
   };
   my $string = $ted->GetValue;

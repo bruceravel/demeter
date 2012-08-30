@@ -1003,7 +1003,7 @@ sub OnDataRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
   $frames{main}->status("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->status("Import cancelled.");
+    $frames{main}->status("Import canceled.");
   } else {
     Import('prj', $dialog->GetMruSelection);
   };
@@ -1075,7 +1075,7 @@ sub OnFeffRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Start a new Atoms input or select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
   $frames{main}->status("There are no recent crystal files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->status("Import cancelled.");
+    $frames{main}->status("Import canceled.");
   } else {
     my $which = $dialog->GetMruSelection;
     if ($which eq 'Open a blank Atoms window') {
@@ -1244,7 +1244,7 @@ sub export {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Exporting fitting model cancelled.");
+    $::app->{main}->status("Exporting fitting model canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

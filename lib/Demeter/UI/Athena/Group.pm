@@ -30,7 +30,7 @@ sub Rename {
     $app->set_text_buffer($ted, "rename");
     $ted->SetValue($name);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Renaming cancelled.");
+      $app->{main}->status("Renaming canceled.");
       $app->{rename_pointer} = $#{$app->{rename_buffer}};
       return;
     };
@@ -240,7 +240,7 @@ sub Report {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving report cancelled.");
+      $app->{main}->status("Saving report canceled.");
       return;
     };
     $fname = $fd->GetPath;

@@ -79,7 +79,7 @@ sub save_project {
 				  "Artemis project (*.fpj)|*.fpj|All files|*.*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Saving project cancelled.");
+      $rframes->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath;
@@ -146,7 +146,7 @@ sub import_autosave {
     if ($dialog == -1);
   $dialog->SetFocus;
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $Demeter::UI::Artemis::frames{main}->status("Autosave import cancelled.");
+    $Demeter::UI::Artemis::frames{main}->status("Autosave import canceled.");
   } else {
     my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);
@@ -179,7 +179,7 @@ sub read_project {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Project import cancelled.");
+      $rframes->{main}->status("Project import canceled.");
       return;
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

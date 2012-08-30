@@ -52,7 +52,7 @@ sub prjrecord {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Data import cancelled.");
+      $rframes->{main}->status("Data import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -89,7 +89,7 @@ sub _prj {
     return;
   };
   if ((not $prj) or (not $record)) {
-    $rframes->{main}->status("Data import cancelled.");
+    $rframes->{main}->status("Data import canceled.");
     return;
   };
 
@@ -148,7 +148,7 @@ sub _feff {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Crystal/Feff data import cancelled.");
+      $rframes->{main}->status("Crystal/Feff data import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -180,7 +180,7 @@ sub _chi {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -213,7 +213,7 @@ sub _dpj {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status(".dpj file import cancelled.");
+      $rframes->{main}->status(".dpj file import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -229,7 +229,7 @@ sub _dpj {
 
   my $zip = Archive::Zip->new;
   if ($zip->read($file) != AZ_OK) {
-    $rframes->{main}->status("$CHI(k) import cancelled.");
+    $rframes->{main}->status("$CHI(k) import canceled.");
     return;
   };
   if (not defined($zip->memberNamed('FIT.SERIALIZATION'))) {
@@ -331,7 +331,7 @@ sub _external_feff {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -432,7 +432,7 @@ sub _old {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("old-style Artemis import cancelled.");
+      $rframes->{main}->status("old-style Artemis import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -483,7 +483,7 @@ sub _feffit {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Feffit import cancelled.");
+      $rframes->{main}->status("Feffit import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

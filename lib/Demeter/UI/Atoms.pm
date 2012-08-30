@@ -186,7 +186,7 @@ sub on_rename {
 				      wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     my $this = (exists $self->{Atoms}->{atomsobject}) ? $self->{Atoms}->{atomsobject}->name : $self->{Feff}->{feffobject}->name;
-    $self->status("Renaming Feff calculation \"$this\" cancelled.");
+    $self->status("Renaming Feff calculation \"$this\" canceled.");
     return;
   };
   my $name = $ted->GetValue;

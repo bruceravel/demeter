@@ -32,7 +32,7 @@ sub Export {
     push @data, $app->{main}->{list}->GetIndexedData($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving marked groups to a project cancelled -- no marked groups.");
+    $app->{main}->status("Saving marked groups to a project canceled -- no marked groups.");
     return;
   };
   if (not $fname) {
@@ -41,7 +41,7 @@ sub Export {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving project cancelled.");
+      $app->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath; #File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -84,7 +84,7 @@ sub Import {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Data import cancelled.");
+      $app->{main}->status("Data import canceled.");
       return;
     };
     @files = map {File::Spec->catfile($fd->GetDirectory, $_)} $fd->GetFilenames;
@@ -389,7 +389,7 @@ sub _data {
 
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
-      $app->{main}->status("Cancelled column selection.");
+      $app->{main}->status("Canceled column selection.");
       $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
       $data->DEMOLISH;
       return 0;
@@ -769,7 +769,7 @@ sub save_column {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data cancelled.");
+    $app->{main}->status("Saving column data canceled.");
     return;
   };
   my $fname = $fd->GetPath;
@@ -787,7 +787,7 @@ sub save_marked {
     push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving marked cancelled. There are no marked groups.");
+    $app->{main}->status("Saving marked canceled. There are no marked groups.");
     return;
   };
 
@@ -817,7 +817,7 @@ sub save_marked {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data for marked groups cancelled.");
+    $app->{main}->status("Saving column data for marked groups canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -834,7 +834,7 @@ sub save_each {
     push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving each cancelled. There are no marked groups.");
+    $app->{main}->status("Saving each canceled. There are no marked groups.");
     return;
   };
 
@@ -847,7 +847,7 @@ sub save_each {
   my $dd = Wx::DirDialog->new( $app->{main}, "Save $desc data for each marked group",
 			       cwd, wxDD_DEFAULT_STYLE|wxDD_CHANGE_DIR);
   if ($dd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data for each marked group cancelled.");
+    $app->{main}->status("Saving column data for each marked group canceled.");
     return;
   };
   my $busy = Wx::BusyCursor->new();
@@ -876,7 +876,7 @@ sub FPath {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving empirical standard from current group cancelled.");
+    $app->{main}->status("Saving empirical standard from current group canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

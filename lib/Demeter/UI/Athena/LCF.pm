@@ -699,7 +699,7 @@ sub combi_report {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving combinatorial results has been cancelled.");
+    $::app->{main}->status("Saving combinatorial results has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -819,7 +819,7 @@ sub seq_report {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving fit sequence results has been cancelled.");
+    $::app->{main}->status("Saving fit sequence results has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -862,7 +862,7 @@ sub save {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving LCF results to a file has been cancelled.");
+    $::app->{main}->status("Saving LCF results to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

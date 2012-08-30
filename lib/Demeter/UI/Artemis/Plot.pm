@@ -275,7 +275,7 @@ sub plot {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $::app->{main}->status("Saving plot to a file has been cancelled.");
+      $::app->{main}->status("Saving plot to a file has been canceled.");
       $self->{fileout}->SetValue(0);
       return;
     };

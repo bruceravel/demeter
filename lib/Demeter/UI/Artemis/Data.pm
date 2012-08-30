@@ -889,7 +889,7 @@ sub plot {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving plot to a file has been cancelled.");
+      $self->status("Saving plot to a file has been canceled.");
       $pf->{fileout}->SetValue(0);
       return;
     };
@@ -1064,7 +1064,7 @@ sub OnMenuClick {
       my $param_dialog = Demeter::UI::Artemis::Data::AddParameter->new($datapage);
       my $result = $param_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {
-	$datapage->status("Path parameter editing cancelled.");
+	$datapage->status("Path parameter editing canceled.");
 	return;
       };
       my ($param, $me, $how) = ($param_dialog->{param}, $param_dialog->{me}->GetValue, $param_dialog->{apply}->GetSelection);
@@ -1231,7 +1231,7 @@ sub Rename {
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $datapage->status("Data renaming cancelled.");
+      $datapage->status("Data renaming canceled.");
       return;
     };
     $newname = $ted->GetValue;
@@ -1390,7 +1390,7 @@ sub save_fit {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data and fit cancelled.");
+      $self->status("Saving data and fit canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1420,7 +1420,7 @@ sub save_path {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving path cancelled.");
+      $self->status("Saving path canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1450,7 +1450,7 @@ sub save_data {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data cancelled.");
+      $self->status("Saving data canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1499,7 +1499,7 @@ sub save_marked_paths {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data and fit cancelled.");
+      $self->status("Saving data and fit canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1554,7 +1554,7 @@ sub mark {
       my $regex = q{};
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path marking cancelled.");
+	$self->status("Path marking canceled.");
 	return;
       };
       $regex = $ted->GetValue;
@@ -1614,7 +1614,7 @@ sub mark {
     (($how eq 'longer') or ($how eq 'shorter')) and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths $how than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path marking cancelled.");
+	$self->status("Path marking canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -1771,7 +1771,7 @@ sub include {
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Include shorter than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path inclusion cancelled.");
+	$self->status("Path inclusion canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -1941,7 +1941,7 @@ sub discard {
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Discard paths longer than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path discarding cancelled.");
+	$self->status("Path discarding canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -2079,7 +2079,7 @@ sub quickfs {
   my $dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
   my $result = $dialog -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $datapage->status("Cancelled quick first shell model creation.");
+    $datapage->status("Canceled quick first shell model creation.");
     return;
   };
 
@@ -2134,7 +2134,7 @@ sub empirical {
 				"Empirical standard (*.es)|*.es|All files|*.*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
-  $datapage->status("Empirical standard import cancelled."), return if $fd->ShowModal == wxID_CANCEL;
+  $datapage->status("Empirical standard import canceled."), return if $fd->ShowModal == wxID_CANCEL;
   my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fpath = Demeter::FPath->new();
   my $is_ok = $fpath -> deserialize($file);

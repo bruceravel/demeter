@@ -156,7 +156,7 @@ sub DoContextMenu {
     #$::app->set_text_buffer($ted, "xdi");
     $ted->SetValue($value);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $::app->{main}->status("Resetting XDI parameter cancelled.");
+      $::app->{main}->status("Resetting XDI parameter canceled.");
       return;
     };
     my $newvalue = $ted->GetValue;
@@ -167,7 +167,7 @@ sub DoContextMenu {
     my $addparam = Demeter::UI::Athena::XDIAddParameter->new($xditool, $data, $namespace);
     my $response = $addparam->ShowModal;
     if ($response eq wxID_CANCEL) {
-      $::app->{main}->status("Adding metadata cancelled");
+      $::app->{main}->status("Adding metadata canceled");
       return;
     };
     return if ($addparam->{param}->GetValue =~ m{\A\s*\z});

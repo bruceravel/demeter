@@ -321,13 +321,13 @@ sub set_highlight {
   if (not $regex) {
     my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $parent->status("Parameter highlighting cancelled.");
+      $parent->status("Parameter highlighting canceled.");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
     $regex = $ted->GetValue;
     if ($regex =~ m{\A\s*\z}) {
-      $parent->status("Parameter highlighting cancelled (no regular expression provided).");
+      $parent->status("Parameter highlighting canceled (no regular expression provided).");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
@@ -794,7 +794,7 @@ sub build_restraint {
 
   my $result = $restraint_builder -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $parent->status("Building restraint cancelled.");
+    $parent->status("Building restraint canceled.");
     return;
   };
   my $res  = "res_" . $name;
@@ -824,7 +824,7 @@ sub annotate {
   my $name = $parent->{grid}->GetCellValue($row,1);
   my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->status("Parameter annotation cancelled.");
+    $parent->status("Parameter annotation canceled.");
     return;
   };
   my $note = $ted->GetValue;
@@ -884,7 +884,7 @@ sub rename_global {
   ## -------- get new name
   my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->status("Parameter renaming cancelled.");
+    $parent->status("Parameter renaming canceled.");
     return;
   };
   my $newname = $ted->GetValue;

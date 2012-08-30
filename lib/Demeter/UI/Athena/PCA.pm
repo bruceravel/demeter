@@ -375,7 +375,7 @@ sub get_filename {
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving PCA $descr{$suff} to a file has been cancelled.");
+    $::app->{main}->status("Saving PCA $descr{$suff} to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

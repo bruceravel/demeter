@@ -305,7 +305,7 @@ sub mark {
   if ($how eq 'regexp') {
     my $ted = Wx::TextEntryDialog->new( $self, "Mark fits matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $self->status("Fit marking cancelled.");
+      $self->status("Fit marking canceled.");
       return;
     };
     my $regex = $ted->GetValue;
@@ -569,7 +569,7 @@ sub export {
 				"Artemis project (*.fpj)|*.fpj|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
   if ($fd->ShowModal == wxID_CANCEL) {
-    $self->status("Saving project cancelled.");
+    $self->status("Saving project canceled.");
     return;
   };
   $fname = $fd->GetPath;

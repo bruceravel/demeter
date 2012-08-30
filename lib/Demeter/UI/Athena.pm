@@ -1619,7 +1619,7 @@ sub plot {
   my @is_fixed = map {$_->bkg_fixstep} @data;
 
   if (not @data and ($how eq 'marked')) {
-    $app->{main}->status("No groups are marked.  Marked plot cancelled.");
+    $app->{main}->status("No groups are marked.  Marked plot canceled.");
     return;
   };
 
@@ -1727,7 +1727,7 @@ sub preplot {
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving plot to a file has been cancelled.");
+      $app->{main}->status("Saving plot to a file has been canceled.");
       $app->{main}->{Other}->{singlefile}->SetValue(0);
       return 0;
     };
@@ -1900,7 +1900,7 @@ sub mark {
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     $app->set_text_buffer($ted, "regexp");
     if ($ted->ShowModal == wxID_CANCEL) {
-      $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{main}->status($word."ing by regular expression canceled.");
       $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
@@ -1963,7 +1963,7 @@ sub quench {
       my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       $app->set_text_buffer($ted, "regexp");
       if ($ted->ShowModal == wxID_CANCEL) {
-	$app->{main}->status(chomp($word)."ing by regular expression cancelled.");
+	$app->{main}->status(chomp($word)."ing by regular expression canceled.");
 	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
@@ -2004,7 +2004,7 @@ sub merge {
     push(@data, $this) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("No groups are marked.  Merge cancelled.");
+    $app->{main}->status("No groups are marked.  Merge canceled.");
     undef $busy;
     return;
   };
