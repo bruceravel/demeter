@@ -13,6 +13,7 @@ my $make_feff_frame = \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;
+use Chemistry::Elements qw(get_Z);
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -106,6 +107,20 @@ sub _prj {
     $data->dispense('process', 'erase', {items=>"\@group $toss"});
     $toss = Demeter->mo->fetch('Data', $toss);
     $toss->DESTROY;
+  };
+
+  ## refuse to move forward for actinides above Am
+  if (get_Z($data->bkg_z) > 95) {
+    $prj->DESTROY;
+    $rframes->{prj} -> Destroy;
+    delete $rframes->{prj};
+    my $error = Wx::MessageDialog->new($rframes->{main},
+				       "The version of Feff you are using cannot calculate for absorbers above Z=95.",
+				       "Error importing data",
+				       wxOK|wxICON_EXCLAMATION);
+    my $result = $error->ShowModal;
+    $rframes->{main}->status("The version of Feff you are using cannot calculate for absorbers above Z=95.", 'alert');
+    return 0;
   };
 
   my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
