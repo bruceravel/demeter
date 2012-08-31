@@ -17,7 +17,7 @@ my $stan = Demeter::Data->new(file=>'ESRF_ID24/gete/Ge4SbTe5_ref', bkg_nor2=>100
 $stan->set_mode(screen=>0);
 my $data = Demeter::Data::Pixel->new(file=>'ESRF_ID24/gete/reference5', bkg_nor2=>900, bkg_kw=>3,
 				     quadratic=>8e-5);
-$stan->po->set(e_norm=>1, emin=>-100, emax=>1200, e_post=>0, e_der=>0, e_smooth=>3);
+$stan->po->set(e_norm=>1, emin=>-100, emax=>1200, e_post=>0, e_der=>0, e_smooth=>3, e_bkg=>0);
 $data->Truncate('after', 1200);
 
 # $stan->plot('e');

@@ -1240,7 +1240,7 @@ sub export {
   my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
 
   my $fd = Wx::FileDialog->new( $::app->{main}, "Export this fitting model", cwd, "artemis.$suffix",
-				"fitting scripts (*.$suffix)|*.$suffix|All files|*.*",
+				"fitting scripts (*.$suffix)|*.$suffix|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

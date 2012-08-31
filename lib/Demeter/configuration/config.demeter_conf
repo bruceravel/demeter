@@ -76,6 +76,8 @@ include bft.demeter_conf           ## backward Fourier transform parameters
 
 include xanes.demeter_conf         ## XANES parameters
 
+include dispersive.demeter_conf    ## dispersive XAS parameters
+
 include fit.demeter_conf           ## fit parameters
 
 include interpolation.demeter_conf ## interpolation parameters

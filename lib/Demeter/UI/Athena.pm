@@ -1206,6 +1206,7 @@ sub main_window {
 		   ConvoluteNoise   => "Convolute and add noise to data",
 		   Deconvolute	    => "Deconvolute data",
 		   SelfAbsorption   => "Self-absorption correction",
+		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
 		   LCF		    => "Linear combination fitting",
 		   PCA		    => "Principle components analysis",
@@ -1235,19 +1236,20 @@ sub main_window {
 		     'ConvoluteNoise',	  # 6
 		     'Deconvolute',	  # 7
 		     'SelfAbsorption',	  # 8
-		     'Series',            # 9
+		     'Dispersive',	  # 9
+		     'Series',            # 10
 		     # -----------------------
-		     'LCF',		  # 11
-		     'PCA',		  # 12
-		     'PeakFit',		  # 13
-		     'LogRatio',	  # 14
-		     'Difference',	  # 15
+		     'LCF',		  # 12
+		     'PCA',		  # 13
+		     'PeakFit',		  # 14
+		     'LogRatio',	  # 15
+		     'Difference',	  # 16
 		     # -----------------------
-		     'XDI',               # 17
-		     'Watcher',           # 18
-		     'Journal',		  # 19
-		     'PluginRegistry',    # 20
-		     'Prefs',		  # 21
+		     'XDI',               # 18
+		     'Watcher',           # 19
+		     'Journal',		  # 20
+		     'PluginRegistry',    # 21
+		     'Prefs',		  # 22
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
@@ -1285,8 +1287,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(10, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(16, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(11, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(17, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1522,22 +1524,23 @@ sub get_view {
 	       'ConvoluteNoise',	   # 6
 	       'Deconvolute',		   # 7
 	       'SelfAbsorption',	   # 8
-	       'Series',		   # 9
+	       'Dispersive',	           # 9
+	       'Series',		   # 10
 	       q{}, # -----------------------
-	       'LCF',			   # 11
-	       'PCA',			   # 12
-	       'PeakFit',		   # 13
-	       'LogRatio',		   # 14
-	       'Difference',		   # 15
+	       'LCF',			   # 12
+	       'PCA',			   # 13
+	       'PeakFit',		   # 14
+	       'LogRatio',		   # 15
+	       'Difference',		   # 16
 	       q{}, # -----------------------
-	       'XDI',			   # 17
-	       'Watcher',		   # 18
-	       'Journal',		   # 19
-	       'PluginRegistry',	   # 20
-	       'Prefs',		           # 21
+	       'XDI',			   # 18
+	       'Watcher',		   # 19
+	       'Journal',		   # 20
+	       'PluginRegistry',	   # 21
+	       'Prefs',		           # 22
 	      );
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 18, 1);
+    splice(@views, 19, 1);
   };
   return $views[$i];
 };
@@ -1723,7 +1726,7 @@ sub preplot {
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*.*",
+				  "Data (*.dat)|*.dat|All files|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

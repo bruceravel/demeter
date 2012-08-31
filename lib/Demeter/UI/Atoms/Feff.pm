@@ -118,7 +118,7 @@ sub import {
   return if not $self->clear_all;
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import a feff.inp file", cwd, q{},
-				  "input file (*.inp)|*.inp|All files|*.*",
+				  "input file (*.inp)|*.inp|All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     $fd -> ShowModal;
@@ -137,7 +137,7 @@ sub import {
 sub save_file {
   my ($self) = @_;
   my $fd = Wx::FileDialog->new( $self, "Save feff input file", cwd, q{feff.inp},
-				"input file (*.inp)|*.inp|All files|*.*",
+				"input file (*.inp)|*.inp|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {

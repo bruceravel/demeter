@@ -404,7 +404,7 @@ sub save {
   my $data = $::app->current_data;
   (my $name = $data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save peak fit to a file", cwd, $name.".peak",
-				"peak fit (*.peak)|*.peak|All files|*.*",
+				"peak fit (*.peak)|*.peak|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

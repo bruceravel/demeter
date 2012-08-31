@@ -8,7 +8,7 @@ set(c___enter      = {$S->standard->bkg_e0} - {$S->standard->bkg_eshift},
 
 set p___ixel.ateht   = -1*(p___ixel.theta - 1)
 
-def(p___ixel.first  = p___ixel.ateht * ({$S->standard->group}.flat - {$S->group.xc}),
+def(p___ixel.first  = p___ixel.ateht * ({$S->standard->group}.flat - {$S->group}.xc),
     p___ixel.scale  = (abs({$S->standard->group}.energy-{$S->standard->bkg_e0}))**0.25,
     p___ixel.second = p___ixel.theta * p___ixel.scale * ({$S->standard->group}.flat - {$S->group}.xc),
     p___ixel.diff   = p___ixel.first + p___ixel.second)
