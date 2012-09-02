@@ -57,6 +57,7 @@ sub BUILD {
 after read_data => sub {
   my ($self) = @_;
   $self->name($self->name . ' (pixel)') if ($self->name !~ m{\(pixel\)\z});
+  $self->source($self->name);
   return $self;
 };
 
@@ -123,13 +124,14 @@ sub apply {
   $convert ||= $self;
   $convert -> _update('data');
   $convert -> set(offset=>$self->offset, linear=>$self->linear, quadratic=>$self->quadratic);
-  my $new = Demeter::Data->new(name=>$convert->name);
-  $new    -> mo -> standard($convert);
-  $new    -> dispense('process', 'pixel_set');
-  $new    -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
-  $new    -> e0;
-  $new    -> resolve_defaults;
-  $new    -> unset_standard;
+  my $new  = Demeter::Data->new(name=>$convert->name);
+  $new     -> source('DXAS: '.$convert->file);
+  $new     -> mo -> standard($convert);
+  $new     -> dispense('process', 'pixel_set');
+  $new     -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
+  $new     -> e0;
+  $new     -> resolve_defaults;
+  $new     -> unset_standard;
   return $new;
 };
 

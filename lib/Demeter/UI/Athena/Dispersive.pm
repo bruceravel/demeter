@@ -226,6 +226,7 @@ sub make {
     $this->{pixel}->quadratic($this->{quadratic} -> GetValue);
   };
   my $dxas = $this->{pixel} -> apply;
+
   my $index = $::app->current_index;
   if ($index == $::app->{main}->{list}->GetCount-1) {
     $::app->{main}->{list}->AddData($dxas->name, $dxas);
