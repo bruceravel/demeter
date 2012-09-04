@@ -1726,7 +1726,7 @@ sub preplot {
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*",
+				  "Data (*.dat)|*.dat|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

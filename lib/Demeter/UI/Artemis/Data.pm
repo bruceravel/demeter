@@ -885,7 +885,7 @@ sub plot {
   if ($pf->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*",
+				  "Data (*.dat)|*.dat|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -1386,7 +1386,7 @@ sub save_fit {
     $suggest =~ s{\s+}{_}g;
     $suggest = sprintf("%s.%s", $suggest, $how);
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
-				  "Data and fit (*.$how)|*.$how|All files|*",
+				  "Data and fit (*.$how)|*.$how|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -1416,7 +1416,7 @@ sub save_path {
     $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
-				  "Demeter fitting project (*.$suff)|*.$suff|All files|*",
+				  "Demeter fitting project (*.$suff)|*.$suff|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -1446,7 +1446,7 @@ sub save_data {
     $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save data in $space-space", cwd, $suggest,
-				  "Data file (*.$suff)|*.$suff|All files|*",
+				  "Data file (*.$suff)|*.$suff|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -1495,7 +1495,7 @@ sub save_marked_paths {
     $suggest =~ s{\s+}{_}g;
     $suggest = sprintf("%s%s.%s", $suggest, '+paths', $how);
     my $fd = Wx::FileDialog->new( $self, "Save data and marked paths", cwd, $suggest,
-				  "Data and paths (*.$how)|*.$how|All files|*",
+				  "Data and paths (*.$how)|*.$how|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -2131,7 +2131,7 @@ sub quickfs {
 sub empirical {
   my ($datapage) = @_;
   my $fd = Wx::FileDialog->new( $datapage, "Import an empirical standard", cwd, q{},
-				"Empirical standard (*.es)|*.es|All files|*",
+				"Empirical standard (*.es)|*.es|All files (*)|*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   $datapage->status("Empirical standard import canceled."), return if $fd->ShowModal == wxID_CANCEL;

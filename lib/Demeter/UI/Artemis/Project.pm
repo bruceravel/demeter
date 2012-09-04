@@ -76,7 +76,7 @@ sub save_project {
   };
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
-				  "Artemis project (*.fpj)|*.fpj|All files|*",
+				  "Artemis project (*.fpj)|*.fpj|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
     if ($fd->ShowModal == wxID_CANCEL) {
       $rframes->{main}->status("Saving project canceled.");
@@ -175,7 +175,7 @@ sub read_project {
 				  "Demeter serializations (*.dpj)|*.dpj|".
 				  "Feff or crystal data (*.inp;*.cif)|*.inp;*.cif|".
 				  "chi(k) column data (*.chi;*.dat)|*.chi;*.dat|".
-				  "All files|*",
+				  "All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

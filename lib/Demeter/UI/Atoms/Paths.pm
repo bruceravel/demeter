@@ -178,7 +178,7 @@ sub save {
   my ($self) = @_;
   return if not $self->{paths}->GetItemCount;
   my $fd = Wx::FileDialog->new( $self, "Save Feff calculation", cwd, q{feff.yaml},
-				"Feff calculations (*.yaml)|*.yaml|All files|*",
+				"Feff calculations (*.yaml)|*.yaml|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
