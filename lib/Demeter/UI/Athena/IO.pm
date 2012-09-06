@@ -612,8 +612,13 @@ sub _group {
       $ref->fft_edge($data->fft_edge);
     };
     $ref -> _update('normalize');
-    if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
-      $ref->e0('atomic');
+    ## need to fix the e0 of the reference in two situations
+    if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
+      if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
+	$ref->e0('atomic');
+      };
+    } else {			# for ref of a different edge, the edge might be out of ifeffit's range
+      $ref -> e0('dmax');
     };
     if ($do_rebin) {
       my $ret = $data->rebin_is_sensible;

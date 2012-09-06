@@ -13,6 +13,8 @@
    - Added a filetype plugin for LNLS data files
    - Fixed a bug where edge step value may not have been updated after
      a plot
+   - Correctly import reference spectra of a different edge from the
+     data
 
 *** Artemis
    - fixed a bug in Artemis' quick first shell interface to allow Am

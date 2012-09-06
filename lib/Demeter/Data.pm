@@ -621,7 +621,7 @@ sub _update {
     };
     ($which eq 'normalize') and do {
       $self->read_data if ($self->update_data);
-      $self->put_data  if ($self->update_columns);
+      $self->put_data  if ($self->update_columns); # put_data is in Demeter::Data::Mu
       last WHICH;
     };
     ($self->display) and do {	# bail if the display flag is set

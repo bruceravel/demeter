@@ -218,7 +218,7 @@ sub merge {
   $merged -> source("Merge of  " . join(', ', map {$_->name} (@used))   );
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
-  if ($#used != uniq($self, @data)) {
+  if ($#excluded != -1) {
     $merged->annotation("These groups were excluded from the merge for being too short: " . join(", ", map {$_->name} @excluded));
   };
 

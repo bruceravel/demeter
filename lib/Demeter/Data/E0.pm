@@ -24,12 +24,14 @@ use Demeter::StrTypes qw( Element Edge );
 use Carp;
 use Demeter::Constants qw($EPSILON3 $NUMBER);
 
+use List::Util qw(max);
+use List::MoreUtils qw(firstidx);
 use Xray::Absorption;
 
 sub e0 {
   my ($self, $how) = @_;
   ($how = "ifeffit") if (!$how);
-  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
+  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
   $self->_update('normalize');
   my $e0;
  MODE: {
@@ -37,7 +39,8 @@ sub e0 {
     $e0 = $self->e0_zero_crossing,  last MODE if ($how eq "zero");
     $e0 = $self->e0_fraction,       last MODE if ($how eq "fraction");
     $e0 = $self->e0_atomic,         last MODE if ($how eq "atomic");
-    $e0 = $how->bkg_e0,             last MODE if (ref($how) =~ m{Data});
+    $e0 = $self->e0_dmax,           last MODE if ($how eq "dmax");
+    $e0 = $self->bkg_e0,            last MODE if (ref($how) =~ m{Data});
     ($how =~ m{\A$NUMBER\z}) and do {
       $self->bkg_e0($how);
       $e0 = $how;
@@ -45,6 +48,11 @@ sub e0 {
     };
   };
   $self->bkg_e0($e0);
+  if ($how eq 'dmax') {
+    my ($elem, $edge) = $self->find_edge($e0);
+    $self->bkg_z($elem);
+    $self->fft_edge($edge);
+  };
   $self->update_norm(1);
   return $e0;
 };
@@ -52,7 +60,7 @@ sub e0 {
 sub e0_ifeffit {
   my ($self) = @_;
   $self->bkg_e0(-9999999);	# force ifeffit to find e0
-  $self->normalize;
+  $self->normalize;		# fft_edge and bkg_z get set therein
   my $e0 = $self->bkg_e0;
   return $e0;
 };
@@ -128,6 +136,15 @@ sub e0_atomic {
   return $e0;
 };
 
+
+sub e0_dmax {
+  my ($self) = @_;
+  my @x = $self->get_array('energy');
+  my @y = $self->get_array('der');
+  my $max = max(@y);
+  my $i = firstidx {$_ >= $max} @y;
+  return $x[$i];
+};
 
 sub calibrate {
   my ($self, $ref, $e0) = @_;
