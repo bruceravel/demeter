@@ -295,6 +295,7 @@ sub import {
   $class -> register_plugins if $doplugins;
 };
 
+our @banned = ('SLRIBL4');
 sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
@@ -307,6 +308,8 @@ sub register_plugins {
     my @pm = grep {m{.pm\z}} readdir $FL;
     closedir $FL;
     foreach my $pm (@pm) {
+      next if any {$_.'.pm' eq $pm} @banned;
+      print $pm, $/;
       require File::Spec->catfile($f, $pm);
       $pm =~ s{\.pm\z}{};
       my $this = join('::', 'Demeter', 'Plugins', $pm);

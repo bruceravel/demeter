@@ -1,4 +1,4 @@
-#!/usr/bin/perl  -I/home/bruce/git/XAS-Data-Interchange/perl/lib
+#!/usr/bin/perl
 
 ## Test import of XDI data file
 
