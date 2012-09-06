@@ -94,7 +94,8 @@ has 'sentinal'  => (traits  => ['Code'],
 
 use Demeter::Mode;
 use vars qw($mode);
-$mode = Demeter::Mode -> instance;
+#$mode = Demeter::Mode -> instance;
+$mode = Demeter::Mode -> new;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
 with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::mode lexical can be defined

@@ -1,6 +1,6 @@
 package Demeter::Mode;
 
-use MooseX::Singleton;
+use Moose; #X::Singleton;
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
