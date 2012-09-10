@@ -107,7 +107,7 @@ sub apj2dpj {
 	  my $args = <$DESC>;
 	  $current_feff = $self->horae_feff($unzip, \%map, $old_path, $args);
 	  push @feff, $current_feff;
-	  if ($current_feff->inp_is_feff8) {
+	  if ($current_feff->feff_version == 8) {
 	    $trouble .= "The old-style project file $apj appears to use Feff8, which Demeter cannot yet handle.";
 	    last DESC;
 	  };

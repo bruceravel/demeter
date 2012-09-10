@@ -1379,8 +1379,9 @@ override 'deserialize' => sub {
     : $self->slurp(File::Spec->catfile($args{folder}, "gds.yaml"));
   my @list = YAML::Tiny::Load($yaml);
   foreach (@list) {
-    my @array = %{ $_ };
-    my $this = Demeter::GDS->new(@array);
+    my %hash = %{ $_ };
+    $hash{initial} ||= q{};
+    my $this = Demeter::GDS->new(%hash);
     push @gds, $this;
     my $command;
     if ($this->gds eq 'guess') {
@@ -1424,34 +1425,36 @@ override 'deserialize' => sub {
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
   #print File::Spec->catfile($args{folder}, "paths.yaml"),$/;
   @list = YAML::Tiny::Load($yaml);
-  foreach my $plotlike (@list) {
-    my $dg = $plotlike->{datagroup};
-    $plotlike->{data} = $datae{$dg};
-    if (exists $plotlike->{absorber}) {  # this is an FSPath
-      delete $plotlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
-    } elsif (exists $plotlike->{ipot}) { # this is an SSPath
-      delete $plotlike->{$_} foreach qw(Type weight string pathtype plottable);
-    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+  my $i=0;
+  foreach my $pathlike (@list) {
+    my $dg = $pathlike->{datagroup};
+    $pathlike->{data} = $datae{$dg} || Demeter->mo->fetch('Data', $dg);
+    #Demeter->trace;
+    if (exists $pathlike->{absorber}) {  # this is an FSPath
+      delete $pathlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    } elsif (exists $pathlike->{ipot}) { # this is an SSPath
+      delete $pathlike->{$_} foreach qw(Type weight string pathtype plottable);
+    } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       1;
     };
-    my %hash = %{ $plotlike };
+    my %hash = %{ $pathlike };
     my $this;
-    if (exists $plotlike->{ipot}) {          # this is an SSPath
-      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+    if (exists $pathlike->{ipot}) {          # this is an SSPath
+      my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
       $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
-    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+    } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
       $this -> set(%hash);
       $this -> sp($this);
       $this -> parentgroup($this->group);
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
-    } elsif (exists $plotlike->{absorber}) { # this is an FSPath
-      #my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      my $feff = $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+    } elsif (exists $pathlike->{absorber}) { # this is an FSPath
+      #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
+      my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       my $ws = $feff->workspace;
       $ws =~ s{\\}{/}g;		# path separators...
       my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));

@@ -19,6 +19,8 @@
 *** Artemis
    - fixed a bug in Artemis' quick first shell interface to allow Am
      through Cf as absorbers (although Feff only allows up to Cm)
+   - fixed some problems related to importing old-style Artemis
+     projects
 
 *** Demeter
    - dispense method at a wrapper around dispose and template
@@ -48,6 +50,7 @@
    - Jason Gaudet
    - Alfred Hummer
    - Daniel Whittaker
+   - Matt Frith
    - The participants of the 2012 ASEAN Workshop on XAS
 
 ** 0.9.10 17 July 2012

@@ -296,7 +296,7 @@ sub _dpj {
       ## skip Readme and FIT.SERIALIZATION
     };
   };
-  $fit->deserialize(folder=>$fitdir, regenerate=>1); #$regen);
+  $fit->deserialize(folder=>$fitdir, regenerate=>0); #$regen);
   my $import_problems .= Demeter::UI::Artemis::Project::restore_fit($rframes, $fit, $fit);
   if ($import_problems) {
     Wx::MessageDialog->new($rframes->{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
