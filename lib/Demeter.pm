@@ -131,7 +131,8 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists
+	    $dispersive_allowed);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -139,6 +140,7 @@ $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
+$dispersive_allowed = 0;
 ######################################################################
 
 use Demeter::Plot;
@@ -310,7 +312,6 @@ sub register_plugins {
     closedir $FL;
     foreach my $pm (@pm) {
       next if any {$_.'.pm' eq $pm} @banned;
-      print $pm, $/;
       require File::Spec->catfile($f, $pm);
       $pm =~ s{\.pm\z}{};
       my $this = join('::', 'Demeter', 'Plugins', $pm);
@@ -791,16 +792,17 @@ sub Croak {
 sub conditional_features {
   my ($self) = @_;
   my $text = "The following conditional features are available:\n\n";
-  $text .= "Graphics::GnuplotIF: " . $self->yesno($Gnuplot_exists);
+  $text .= "Graphics::GnuplotIF:         " . $self->yesno($Gnuplot_exists);
   $text .= ($Gnuplot_exists)     ? " -- plotting with Gnuplot\n" : "  -- plotting with Gnuplot is disabled.\n";
-  $text .= "STAR::Parser:        " . $self->yesno($STAR_Parser_exists);
+  $text .= "STAR::Parser:                " . $self->yesno($STAR_Parser_exists);
   $text .= ($STAR_Parser_exists) ? " -- importing CIF files\n"   : "  -- importing CIF files is disabled.\n";
-  $text .= "Xray::XDI:           " . $self->yesno($XDI_exists);
+  $text .= "Xray::XDI:                   " . $self->yesno($XDI_exists);
   $text .= ($XDI_exists)         ? " -- file metadata\n"         : "  -- file metadata is disabled.\n";
-  $text .= "PDL:                 " . $self->yesno($PDL_exists);
+  $text .= "PDL:                         " . $self->yesno($PDL_exists);
   $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
-  $text .= "File::Monitor::Lite: " . $self->yesno($FML_exists);
+  $text .= "File::Monitor::Lite:         " . $self->yesno($FML_exists);
   $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
+  $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
 

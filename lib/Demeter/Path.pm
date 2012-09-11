@@ -80,6 +80,8 @@ has 'k_array'	      => (is=>'rw', isa=>'Str', default => q{});
 has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
 has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 
+has 'save_mag'        => (is=>'rw', isa=>'Bool', default => 0);
+
 ## these four provide a generic way of storing cumulant information
 ## about a Path or Path-like object.  this is used, for instance, in
 ## Demeter::Feff::Distributions to store the cumulants computed from
@@ -327,7 +329,7 @@ sub _path_command {
   my ($self, $do_ff2chi) = @_;
   ## fret about long file names
   my $string = $self->template("fit", "path");
-  $string   .= $self->template("fit", "ff2chi") if $do_ff2chi;
+  $string   .= $self->template("fit", "ff2chi", {do_mag=>$self->save_mag}) if $do_ff2chi;
   return $string;
 };
 sub rewrite_cv {

@@ -2,5 +2,7 @@
   # ff2chi command template
   #   {$S->group} returns the ifeffit group name
   #   {$S->parameter} returns the value of that parameter
+  $mag = ($do_mag) ? ', do_mag' : q{} ;
+  q{};
 }
-ff2chi({$S->Index}, group={$S->group})
+ff2chi({$S->Index}, group={$S->group}{$mag})

@@ -26,70 +26,76 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  if (not $Demeter::UI::Athena::dispersive_allowed) {
+    $box->Add(Wx::StaticText->new($this, -1, "Dispersive data calibration is disabled at this time."),
+	      0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+    $box->Add(1,1,1);
+  } else {
 
-  ################################################################################
-  ## show calibration standard
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
-  $hbox -> Add(Wx::StaticText->new($this, -1, 'Calibration standard: '), 0, wxALL, 3);
-  $this->{group}   = Wx::StaticText->new($this, -1, q{});
-  $hbox -> Add($this->{group}, 0, wxGROW|wxALL, 3);
-  $box -> Add($hbox, 0, wxGROW|wxALL, 5);
+    ################################################################################
+    ## show calibration standard
+    my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+    $hbox -> Add(Wx::StaticText->new($this, -1, 'Calibration standard: '), 0, wxALL, 3);
+    $this->{group}   = Wx::StaticText->new($this, -1, q{});
+    $hbox -> Add($this->{group}, 0, wxGROW|wxALL, 3);
+    $box -> Add($hbox, 0, wxGROW|wxALL, 5);
 
-  ################################################################################
-  ## control for importing dispersive standard
-  my $dispbox       = Wx::StaticBox->new($this, -1, 'Import dispersive standard', wxDefaultPosition, wxDefaultSize);
-  my $dispboxsizer  = Wx::StaticBoxSizer->new( $dispbox, wxVERTICAL );
-  ##$dispbox         -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
+    ################################################################################
+    ## control for importing dispersive standard
+    my $dispbox       = Wx::StaticBox->new($this, -1, 'Import dispersive standard', wxDefaultPosition, wxDefaultSize);
+    my $dispboxsizer  = Wx::StaticBoxSizer->new( $dispbox, wxVERTICAL );
+    ##$dispbox         -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
 
-  $this->{import}  = Wx::FilePickerCtrl->new($this, -1, cwd, 'Select a file', "*",
-					     wxDefaultPosition, wxDefaultSize,
-					     wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR);
-  $dispboxsizer -> Add($this->{import}, 1, wxGROW|wxALL, 5);
-  $box -> Add($dispboxsizer, 0, wxGROW|wxALL, 5);
-
-
-  ################################################################################
-  ## controls for calibration parameters
-  my $gbs = Wx::GridBagSizer->new( 5, 5 );
-
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Offset'),    Wx::GBPosition->new(0,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Linear'),    Wx::GBPosition->new(1,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Quadratic'), Wx::GBPosition->new(2,0));
-
-  $this->{offset}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{linear}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{quadratic} = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{constrain} = Wx::CheckBox->new($this, -1, "Constrain offset to linear term",);
-  $this->{reset}     = Wx::Button  ->new($this, -1, "Reset parameters",);
+    $this->{import}  = Wx::FilePickerCtrl->new($this, -1, cwd, 'Select a file', "*",
+					       wxDefaultPosition, wxDefaultSize,
+					       wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR);
+    $dispboxsizer -> Add($this->{import}, 1, wxGROW|wxALL, 5);
+    $box -> Add($dispboxsizer, 0, wxGROW|wxALL, 5);
 
 
-  $gbs->Add($this->{offset},    Wx::GBPosition->new(0,1));
-  $gbs->Add($this->{linear},    Wx::GBPosition->new(1,1));
-  $gbs->Add($this->{quadratic}, Wx::GBPosition->new(2,1));
-  #$gbs->Add($this->{constrain}, Wx::GBPosition->new(0,2));
-  $gbs->Add($this->{reset},     Wx::GBPosition->new(1,2));
+    ################################################################################
+    ## controls for calibration parameters
+    my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    $gbs->Add(Wx::StaticText->new($this, -1, 'Offset'),    Wx::GBPosition->new(0,0));
+    $gbs->Add(Wx::StaticText->new($this, -1, 'Linear'),    Wx::GBPosition->new(1,0));
+    $gbs->Add(Wx::StaticText->new($this, -1, 'Quadratic'), Wx::GBPosition->new(2,0));
 
-
-  ################################################################################
-  ## actions
-  $this->{refine} = Wx::Button->new($this, -1, 'Refine calibration parameters', wxDefaultPosition, $tcsize);
-  $this->{replot} = Wx::Button->new($this, -1, 'Replot calibration data',       wxDefaultPosition, $tcsize);
-  $this->{make}   = Wx::Button->new($this, -1, 'Make data group',               wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(refine replot make));
-
-  EVT_BUTTON  ($this, $this->{reset},     \&Reset);
-  EVT_BUTTON  ($this, $this->{refine},    \&refine);
-  EVT_BUTTON  ($this, $this->{replot},    \&replot);
-  EVT_BUTTON  ($this, $this->{make},      \&make);
-  EVT_CHECKBOX($this, $this->{constrain}, \&constrain);
-  EVT_FILEPICKER_CHANGED($this, $this->{import}, \&set);
-  map {$this->{$_}->Enable(0)} qw(reset refine replot make constrain);
-  $this->{constrain}->Show(0);
+    $this->{offset}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+    $this->{linear}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+    $this->{quadratic} = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+    $this->{constrain} = Wx::CheckBox->new($this, -1, "Constrain offset to linear term",);
+    $this->{reset}     = Wx::Button  ->new($this, -1, "Reset parameters",);
 
 
-  $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+    $gbs->Add($this->{offset},    Wx::GBPosition->new(0,1));
+    $gbs->Add($this->{linear},    Wx::GBPosition->new(1,1));
+    $gbs->Add($this->{quadratic}, Wx::GBPosition->new(2,1));
+    #$gbs->Add($this->{constrain}, Wx::GBPosition->new(0,2));
+    $gbs->Add($this->{reset},     Wx::GBPosition->new(1,2));
+
+    $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+
+    ################################################################################
+    ## actions
+    $this->{refine} = Wx::Button->new($this, -1, 'Refine calibration parameters', wxDefaultPosition, $tcsize);
+    $this->{replot} = Wx::Button->new($this, -1, 'Replot calibration data',       wxDefaultPosition, $tcsize);
+    $this->{make}   = Wx::Button->new($this, -1, 'Make data group',               wxDefaultPosition, $tcsize);
+    $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(refine replot make));
+
+    EVT_BUTTON  ($this, $this->{reset},     \&Reset);
+    EVT_BUTTON  ($this, $this->{refine},    \&refine);
+    EVT_BUTTON  ($this, $this->{replot},    \&replot);
+    EVT_BUTTON  ($this, $this->{make},      \&make);
+    EVT_CHECKBOX($this, $this->{constrain}, \&constrain);
+    EVT_FILEPICKER_CHANGED($this, $this->{import}, \&set);
+    map {$this->{$_}->Enable(0)} qw(reset refine replot make constrain);
+    $this->{constrain}->Show(0);
+
+
+    $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+  };
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: Dispersive XAS');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -108,6 +114,7 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
+  return if not $Demeter::UI::Athena::dispersive_allowed;
   $this->{group}->SetLabel($data->name);
   my $onoff = ($this->filecheck(1)) ? 1 : 0;
   map {$this->{$_}->Enable($onoff)} qw(reset refine replot make constrain);

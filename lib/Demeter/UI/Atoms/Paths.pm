@@ -70,7 +70,7 @@ sub new {
   $self->{paths}->InsertColumn( 1, "Degen"	     );
   $self->{paths}->InsertColumn( 2, "Reff"	     );
   $self->{paths}->InsertColumn( 3, "Scattering path" );
-  $self->{paths}->InsertColumn( 4, "Imp."	     );
+  $self->{paths}->InsertColumn( 4, "Rank"	     );
   $self->{paths}->InsertColumn( 5, "Legs"	     );
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
@@ -78,7 +78,7 @@ sub new {
   $self->{paths}->SetColumnWidth( 1,  50 );
   $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
-  $self->{paths}->SetColumnWidth( 4,  35 );
+  $self->{paths}->SetColumnWidth( 4,  50 );
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 

@@ -54,6 +54,7 @@ my $style = ($nocolor) ? q{}
 			  0       => q{},
 			 }
           :             q{};
+$feff->rank_paths;
 print header($latex, $html) if not $noframe;
 print body($feff->intrp($style, $rmax), $latex, $html);
 print footer($latex, $html) if not $noframe;

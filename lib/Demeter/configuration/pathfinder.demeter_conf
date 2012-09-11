@@ -195,3 +195,28 @@ description
   As an example, if you wanted a path name that indicated the length,
   degeneracy, and number of legs you might set this to: "R=%r degen=%d
   nleg=%n".
+
+variable=rank
+type=list
+options=feff kw2 all
+default=feff
+description
+  This tells Demeter how to perform path rankings after a Feff
+  caluclation.  The feff option means to only fetch Feff's curved wave
+  importance factors.  The kw2 option adds computation of various
+  ranking computed with k-weight of 2.  The all option add computation
+  of all the rankings at k-weight of 1, 2, and 3 and also computes the
+  average normalized ranking for the three k-weights.  These options
+  are in order of how time-consuming the ranking is.
+
+variable=rank_high
+type=real
+default=15
+description
+  A ranking above this value is considered a high importance path.
+
+variable=rank_low
+type=real
+default=7
+description
+  A ranking above this value is considered a low importance path.

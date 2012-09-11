@@ -3,8 +3,8 @@ package Demeter::ScatteringPath::Rank;
 use Moose::Role;
 
 use Demeter::Constants qw($EPSILON5);
-use List::Util qw(max);
-use List::MoreUtils qw(firstidx uniq);
+use List::Util qw(max sum);
+use List::MoreUtils qw(firstidx uniq pairwise);
 use Math::Spline;
 
 has 'group_name' => (is => 'rw', isa => 'Str', default => q{_rankpath},);
@@ -33,7 +33,8 @@ sub rank {
   my $save = $path->po->kweight;
 
   ## area and peak height/position for each of kw=1,2,3
-  foreach my $i (1 .. 3) {
+  my @weights = ($self->co->default('pathfinder', 'rank') eq 'all') ? (1..3) : (2);
+  foreach my $i (@weights) {
     $path->po->kweight($i);
     $path->update_fft(1);
     $path->_update('bft');
@@ -46,6 +47,12 @@ sub rank {
     my ($c, $h) = $self->rank_height($path, \@x, \@y);
     $self->set_rank('peakpos'.$i, $c);
     $self->set_rank('height'.$i,  $h);
+
+    my @k = $path->get_array('k');
+    my @m = $path->get_array('chi_mag');
+    @m = pairwise {$a * $b**$i} @m, @k;
+    my $mag = $self->rank_chimag($path, \@k, \@m);
+    $self->set_rank('chimag'.$i, $mag);
   };
 
   $path->plot('r') if $plot;
@@ -56,7 +63,7 @@ sub rank {
 sub temppath {
   my ($self) = @_;
   my $path = Demeter::Path->new(sp=>$self, data=>Demeter->dd, parent=>$self->feff,
-				group=>$self->group_name,
+				group=>$self->group_name, save_mag=>1,
 				s02=>1, sigma2=>0.003, delr=>0, e0=>0, );
   return $path;
 };
@@ -67,10 +74,21 @@ sub normalize {
   @list = uniq($self, @list);
   foreach my $test ($self->get_rank_list) {
     next if ($test =~ m{peakpos});
+    next if ($test eq 'zcwif');
     my @values = map {$_->get_rank($test)} @list;
     my $scale = max(@values);
     foreach my $sp (@list) {
       $sp->set_rank($test."_n", sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
+    };
+  };
+  if ($self->co->default('pathfinder', 'rank') eq 'all') {
+    foreach my $type (qw(area height chimag)) {
+      foreach my $sp (@list) {
+	my $sum = $sp->get_rank($type.'1_n') +
+	          $sp->get_rank($type.'2_n') +
+	          $sp->get_rank($type.'3_n');
+	$sp->set_rank($type, sprintf("%.2f", $sum/3));
+      };
     };
   };
 };
@@ -89,6 +107,10 @@ sub rank_height {
   return ($centroid, $max);
 };
 
+sub rank_chimag {
+  my ($self, $path, $x, $y) = @_;
+  return sum @$y;
+};
 
 # adapted from Mastering Algorithms with Perl by Orwant, Hietaniemi,
 # and Macdonald Chapter 16, p 632
