@@ -218,8 +218,8 @@ sub populate {
   #$geometry =~ s{index, }{};
   $this->{geometry} -> SetValue(q{});
   my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
-  my $imp = sprintf(" %s, %s (%.2f)\n", $pathobject->sp->Type,
-		    (qw(low medium high))[$pathobject->sp->weight], $pathobject->sp->get_rank($which));
+  my $rank = (ref($pathobject->sp) =~ m{ScatteringPath}) ? $pathobject->sp->get_rank($which) : 100.00;
+  my $imp = sprintf(" %s, %s (%.2f)\n", $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
   $this->{geometry} -> WriteText($imp);
   $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
   $this->{geometry} -> WriteText($geometry);
