@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.11 1 September 2012
+** 0.9.11 18 September 2012
 *** Athena
    - Self absorption: plot information depth in energy and check to be
      sure that absorber is in the formula
@@ -21,6 +21,8 @@
      through Cf as absorbers (although Feff only allows up to Cm)
    - fixed some problems related to importing old-style Artemis
      projects
+   - Control-w now hides Data window
+   - Implement use of path ranking
 
 *** Demeter
    - dispense method at a wrapper around dispose and template
@@ -32,6 +34,8 @@
    - added a test for clear_ifeffit_methods in 004_data.t
    - fixed several bugs in difference spectrum calculation
    - fixed various problems involving the use of rebin parameters
+   - framework for path ranking
+   - Better values of Type attribute for FPath and FSPath
 
 *** Windows
    - updated to most recent Ifeffit from github + patched Feff6L to
@@ -45,6 +49,7 @@
    - Eric Breynaert
    - Shelly Kelly
    - Karine Provost
+   - Andreas Voegelin
    - Amy Gandy
    - Bradley Miller
    - Jason Gaudet

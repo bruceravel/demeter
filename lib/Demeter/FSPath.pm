@@ -81,7 +81,7 @@ has 'workspace'    => (is => 'rw', isa => 'Str',   default => q{},
 has 'fuzzy'	 => (is => 'rw', isa =>  PosNum,  default => 2.0);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
-has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'first shell single scattering');
+has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'quick first shell SS');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
@@ -187,6 +187,7 @@ override path => sub {
   #$self->n(1);
   $self->_update_from_ScatteringPath;
   $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
+  $self->sp->Type("quick first shell path");
   $self->dispose($self->_path_command(1));
   $self->update_path(0);
   return $self;

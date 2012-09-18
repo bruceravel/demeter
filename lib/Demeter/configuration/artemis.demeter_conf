@@ -132,3 +132,13 @@ description
   correct location to place the Plot frame.  This is an adjustment in
   the x position on screen to align the Plot frame underneath the main
   Frame.
+
+variable=window_function
+type=list
+default=hanning
+options=hanning kaiser-bessel welch parzen sine user
+restart=1
+description
+  The default window type to use in Artemis.  The "user" value tells
+  artemis to show controls allowing the user to set the window
+  function seperately in k- and R-space.
