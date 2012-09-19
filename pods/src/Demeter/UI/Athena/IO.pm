@@ -917,6 +917,7 @@ sub FPath {
 			       scatterer => $scatterer,
 			       reff      => $reff,
 			       source    => $app->current_data,
+			       Type      => 'empirical standard',
 			       n         => 1,
 			       delr      => 0.0,
 			       s02       => 1,

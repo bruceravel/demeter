@@ -316,6 +316,7 @@ sub chi {
 				   scatterer => $self->feff->potentials->[$paths[0]->ipot2]->[2],
 				   reff      => $ravg,
 				   source    => $data,
+				   Type      => 'nearly collinear histogram',
 				   n         => 1,
 				   degen     => 1,
 				   @$common

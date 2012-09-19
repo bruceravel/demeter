@@ -254,6 +254,7 @@ sub chi {
 				   scatterer => $self->feff->potentials->[$first->ipot]->[2],
 				   reff      => $rave,
 				   source    => $data,
+				   Type      => 'SS histogram',
 				   n         => 1,
 				   degen     => 1,
 				   c1        => $rave,

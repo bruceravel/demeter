@@ -319,6 +319,7 @@ sub chi {
 				   scatterer => $self->feff->potentials->[$paths[0]->ipot2]->[2],
 				   reff      => $ravg,
 				   source    => $data,
+				   Type      => 'through-absorber histogram',
 				   n         => 1,
 				   degen     => 1,
 				   @$common

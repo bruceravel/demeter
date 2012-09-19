@@ -158,6 +158,14 @@ const my $DISCARD_THIS	      => Wx::NewId();
 const my $DISCARD_MARKED      => Wx::NewId();
 const my $DISCARD_UNMARKED    => Wx::NewId();
 
+const my $WINDOW_HANNING      => Wx::NewId();
+const my $WINDOW_KB           => Wx::NewId();
+const my $WINDOW_WELCH        => Wx::NewId();
+const my $WINDOW_PARZEN       => Wx::NewId();
+const my $WINDOW_SINE         => Wx::NewId();
+
+const my $CLOSE               => Wx::NewId();
+
 sub new {
   my ($class, $parent, $nset) = @_;
 
@@ -170,6 +178,23 @@ sub new {
   EVT_MENU($this, -1, sub{OnMenuClick(@_);} );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
+  given (Demeter->co->default('artemis', 'window_function')) {
+    when ('hanning') {
+      $this->{menubar}->Check($WINDOW_HANNING, 1);
+    };
+    when ('kaiser-bessel') {
+      $this->{menubar}->Check($WINDOW_KB, 1);
+    };
+    when ('welch') {
+      $this->{menubar}->Check($WINDOW_WELCH, 1);
+    };
+    when ('parzen') {
+      $this->{menubar}->Check($WINDOW_PARZEN, 1);
+    };
+    when ('sine') {
+      $this->{menubar}->Check($WINDOW_SINE, 1);
+    };
+  };
 
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
@@ -243,10 +268,10 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,75],
-					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,100],
+					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH|wxTE_DONTWRAP);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
-  $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
+  $left           -> Add($titlesboxsizer, 2, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
 
 
@@ -333,23 +358,25 @@ sub new {
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
-  my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
+    $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "k window");
-  $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
-  $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
+    $label     = Wx::StaticText->new($leftpane, -1, "k window");
+    $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+    $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+    $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
+    $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "R window");
-  $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
-  $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
+    $label     = Wx::StaticText->new($leftpane, -1, "R window");
+    $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+    $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+    $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
+    $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
-  $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
-  $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
+    $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
+    $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
+  };
 
 
   ## -------- k-weights
@@ -413,6 +440,7 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
+  $this->{pcplot}->Enable(0);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
@@ -461,6 +489,12 @@ sub new {
   EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
+
+
+  my $accelerator = Wx::AcceleratorTable->new(
+   					      [wxACCEL_CTRL, 119, wxID_CLOSE],
+   					     );
+  $this->SetAcceleratorTable( $accelerator );
 
 
   #$splitter -> SplitVertically($leftpane, $rightpane, -500);
@@ -648,6 +682,14 @@ sub make_menubar {
   $self->{importmenu}->Append($PATH_EMPIRICAL, "Import empirical standard", "Import an empirical standard exported from Athen", wxITEM_NORMAL );
   $self->{importmenu}->Append($PATH_SU,        "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
 
+  $self->{windowmenu}  = Wx::Menu->new;
+  $self->{windowmenu}->AppendRadioItem($WINDOW_HANNING, 'Hanning', 'A Hanning window has sills that ramp as cos^2');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_KB, 'Kaiser-Bessel', 'A Kaiser-Bessel window is a modified Bessel function over the entire range');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_WELCH, 'Welch', 'A Welch window has sills that ramp linearly in k^2');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_PARZEN, 'Parzen', 'A Parzen window has sills that ramp linearly in k');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_SINE, 'Sine', 'A Sine window is a sin function over the full range');
+
+
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
@@ -665,10 +707,14 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->AppendSubMenu($self->{windowmenu}, "Set window function");
   $self->{datamenu}->Append($DATA_EXPORT,     "Export parameters to other data sets", "Export these FT and fitting parameters to other data sets.");
   $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to ".Demeter->backend_name."'s suggestion", "Set kmax to ".Demeter->backend_name."'s suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
+  $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->Append(wxID_CLOSE, "&Close\tCtrl+w" );
+
 
   ## -------- paths menu
   my $export_menu   = Wx::Menu->new;
@@ -811,9 +857,10 @@ sub populate {
 
   #EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
-  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
-  EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
-
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
+    EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
+  };
   return $self;
 }
 
@@ -831,8 +878,10 @@ sub fetch_parameters {
   $this->{data}->bft_rmin	    ($this->{rmin}      ->GetValue	    );
   $this->{data}->bft_rmax	    ($this->{rmax}      ->GetValue	    );
   $this->{data}->bft_dr		    ($this->{dr}        ->GetValue	    );
-  $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
-  $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
+    $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
+  };
   $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
   $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
   $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );
@@ -933,8 +982,13 @@ sub plot {
 sub OnMenuClick {
   my ($datapage, $event)  = @_;
   my $id = $event->GetId;
-  #print "1  $id  $PATH_ADD\n";
+  #print "1  $id\n";
  SWITCH: {
+
+    ($id == wxID_CLOSE) and do {
+      $datapage->Iconize(1);
+      last SWITCH;
+    };
 
     ($id == $DATA_RENAME) and do {
       $datapage->Rename;
@@ -1199,6 +1253,32 @@ sub OnMenuClick {
     };
     ($id == $PATH_EXP_FOURTH) and do {
       $datapage->status($Demeter::UI::Artemis::Path::explanation{fourth});
+      last SWITCH;
+    };
+
+    ($id == $WINDOW_HANNING) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'hanning');
+      $datapage->status("Using a Hanning window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_KB) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'kaiser-bessel');
+      $datapage->status("Using a Kaiser-Bessel window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_WELCH) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'welch');
+      $datapage->status("Using a Welch window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_PARZEN) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'parzen');
+      $datapage->status("Using a Parzen window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_SINE) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'sine');
+      $datapage->status("Using a Sine window for all Fourier transforms.");
       last SWITCH;
     };
 

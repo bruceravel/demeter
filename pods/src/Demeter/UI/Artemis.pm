@@ -610,6 +610,10 @@ sub fit {
   $fit_space = 'q' if $frames{main}->{fitspace}->[2]->GetValue;
   foreach my $d (@data) {
     $d->fit_space($fit_space);
+    if ($d->co->default('artemis', 'window_function') ne 'user') {
+      $d->fft_kwindow($d->co->default('artemis', 'window_function'));
+      $d->bft_rwindow($d->co->default('artemis', 'window_function'));
+    };
   };
 
   $fit->set_mode(ifeffit=>1, screen=>0);
