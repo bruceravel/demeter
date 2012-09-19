@@ -37,7 +37,7 @@ sub cursor {
   if (Demeter->mo->template_plot eq 'pgplot') {
     $app->{main}->status("Click on a point to pluck its value...", "wait");
     Demeter->dispose("cursor(crosshair=true)");
-    ($x, $y) = (Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
+    ($x, $y) = (Demeter->fetch_scalar("cursor_x"), Demeter->fetch_scalar("cursor_y"));
 
   } elsif (Demeter->mo->template_plot eq 'gnuplot') {
     my $yesno = Wx::MessageDialog
@@ -96,7 +96,7 @@ Demeter::UI::Athena::Cursor - interact with a plotting cursor
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

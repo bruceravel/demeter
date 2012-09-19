@@ -186,7 +186,7 @@ sub on_rename {
 				      wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     my $this = (exists $self->{Atoms}->{atomsobject}) ? $self->{Atoms}->{atomsobject}->name : $self->{Feff}->{feffobject}->name;
-    $self->status("Renaming Feff calculation \"$this\" cancelled.");
+    $self->status("Renaming Feff calculation \"$this\" canceled.");
     return;
   };
   my $name = $ted->GetValue;
@@ -307,7 +307,7 @@ sub OnInit {
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
-  $help->Append( wxID_ABOUT, "&About..." );
+  $help->Append( wxID_ABOUT, "&About Atoms" );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
@@ -381,7 +381,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

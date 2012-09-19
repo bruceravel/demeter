@@ -140,7 +140,7 @@ sub OnInit {
   $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;
-  $exportmenu->Append($EXPORT_IFEFFIT,  "to an Ifeffit script",  "Export the current fitting model as an Ifeffit script");
+  $exportmenu->Append($EXPORT_IFEFFIT,  "to an ".Demeter->backend_name." script",  "Export the current fitting model as an ".Demeter->backend_name." script");
   $exportmenu->Append($EXPORT_DEMETER,  "to a Demeter script",   "Export the current fitting model as a perl script using Demeter");
 
   $filemenu->Append(wxID_OPEN,       "Open project or data\tCtrl+o", "Read from a project file or import data" );
@@ -193,12 +193,12 @@ sub OnInit {
   $fitmenu->Check($IGNORE_NIDP, 0);
 
   my $feedbackmenu = Wx::Menu->new;
-  $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
+  $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer');
   $feedbackmenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
-  $feedbackmenu->AppendSubMenu($showmenu,  "Show Ifeffit ...",  'Show variables from Ifeffit');
+  $feedbackmenu->AppendSubMenu($showmenu,  "Show ".Demeter->backend_name." ...",  'Show variables from '.Demeter->backend_name);
   $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools');
     ##if ($demeter->co->default("artemis", "debug_menus"));
-  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
 
   #my $settingsmenu = Wx::Menu->new;
 
@@ -211,7 +211,7 @@ sub OnInit {
 
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append($DOCUMENT,  "Read user manual" );
-  $helpmenu->Append(wxID_ABOUT, "&About..." );
+  $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
   $helpmenu->Enable($DOCUMENT,0);
 
   $bar->Append( $filemenu,      "&File" );
@@ -400,7 +400,7 @@ sub OnInit {
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
-  ## display Ifeffit commands in the buffer window
+  ## display Ifeffit/Larch commands in the buffer window
   $demeter->set_mode(callback     => \&ifeffit_buffer,
 		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
 		     feedback     => \&feedback,
@@ -472,11 +472,11 @@ sub on_about {
 
   $info->SetName( 'Artemis' );
   #$info->SetVersion( $demeter->version );
-  $info->SetDescription( "EXAFS analysis using Feff and Ifeffit" );
+  $info->SetDescription( "EXAFS analysis using Feff and ".$demeter->backend_name );
   $info->SetCopyright( $demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n" .
-			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville\n" .
+			 $demeter->backend_name." ".$demeter->backend_id."\n" .
 			 "Artemis is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
 			 "and Moose $Moose::VERSION"]
 		      );
@@ -498,6 +498,7 @@ EOH
 
 sub heap_check {
   my ($app, $show) = @_;
+  return if (Demeter->mo->template_process eq 'Larch');
   if ($demeter->mo->heap_used > 0.99) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($demeter->mo->heap_used > 0.95) {
@@ -984,7 +985,7 @@ sub show_ifeffit {
            : ($id == $SHOW_FEFFPATHS) ? "\@feffpaths"
            :                            q{};
   return if not $text;
-  $demeter->dispose("show $text");
+  $demeter->dispense('process', 'show', {items=>$text});
   $frames{Buffer}->Show(1);
 };
 
@@ -1002,7 +1003,7 @@ sub OnDataRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
   $frames{main}->status("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->status("Import cancelled.");
+    $frames{main}->status("Import canceled.");
   } else {
     Import('prj', $dialog->GetMruSelection);
   };
@@ -1074,7 +1075,7 @@ sub OnFeffRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Start a new Atoms input or select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
   $frames{main}->status("There are no recent crystal files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->status("Import cancelled.");
+    $frames{main}->status("Import canceled.");
   } else {
     my $which = $dialog->GetMruSelection;
     if ($which eq 'Open a blank Atoms window') {
@@ -1239,11 +1240,11 @@ sub export {
   my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
 
   my $fd = Wx::FileDialog->new( $::app->{main}, "Export this fitting model", cwd, "artemis.$suffix",
-				"fitting scripts (*.$suffix)|*.$suffix|All files|*",
+				"fitting scripts (*.$suffix)|*.$suffix|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Exporting fitting model cancelled.");
+    $::app->{main}->status("Exporting fitting model canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -1398,11 +1399,11 @@ sub ClearAll {
 
 =head1 NAME
 
-Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit
+Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

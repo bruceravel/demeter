@@ -217,7 +217,9 @@ sub populate {
   #$geometry =~ s{\d+\s* }{};
   #$geometry =~ s{index, }{};
   $this->{geometry} -> SetValue(q{});
-  my $imp = sprintf(" %s, %s\n", $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight]);
+  my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
+  my $rank = (ref($pathobject->sp) =~ m{ScatteringPath}) ? $pathobject->sp->get_rank($which) : 100.00;
+  my $imp = sprintf(" %s, %s (%.2f)\n", $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
   $this->{geometry} -> WriteText($imp);
   $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
   $this->{geometry} -> WriteText($geometry);
@@ -597,7 +599,7 @@ Demeter::UI::Artemis::Path - Path group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

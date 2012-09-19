@@ -174,8 +174,8 @@ sub put_data {
       $self->update_columns(0);
       return 0;
     } elsif ($self->is_kev) {
-      $self->dispose($self->template('process', 'kev'));
-      $self->dispose($self->template("process", "deriv"));
+      $self->dispense('process', 'kev');
+      $self->dispense("process", "deriv");
       return 0;
     } elsif ($self->from_athena) {
       $self->update_columns(0);
@@ -236,7 +236,7 @@ sub put_data {
   $self->energy_string($energy_string);
 
   if (($self->display) and ($self->datatype ne 'chi')) {
-    $self->dispose($self->template("process", "display"));
+    $self->dispense("process", "display");
     return;
   };
 
@@ -257,8 +257,8 @@ sub put_data {
       my $command = $self->template("process", "columns");
       $command   .= $self->template("process", "deriv");
       $self->dispose($command);
-      $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-      $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+      $self->i0_scale($self->fetch_scalar('__i0_scale'));
+      $self->signal_scale($self->fetch_scalar('__signal_scale'));
       $self->update_columns(0);
       $self->update_data(0);
       $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
@@ -282,7 +282,7 @@ sub initialize_e0 {
   ### entering initialize_e0
   #my $command = $self->template("process", "find_e0");
   #$self->dispose($command);
-  #$self->bkg_e0(Ifeffit::get_scalar("e0"));
+  #$self->bkg_e0($self->fetch_scalar("e0"));
   $self->e0('ifeffit') if not $self->bkg_e0;
   $self->resolve_defaults;
 };
@@ -304,7 +304,7 @@ sub normalize {
     my $precmd = $self->template("process", "normalize");
     $self->dispose($precmd);
 
-    my $e0 = Ifeffit::get_scalar("e0");
+    my $e0 = $self->fetch_scalar("e0");
     $self->bkg_e0($e0);
     if (lc($self->bkg_z) eq 'h') {
       my ($elem, $edge) = $self->find_edge($e0);
@@ -316,9 +316,9 @@ sub normalize {
 				      # new value of e0
 
     ## incorporate results of pre_edge() into data object
-    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
-    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
-    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
+    $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
 
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
@@ -326,10 +326,10 @@ sub normalize {
     } else {
       $self->bkg_step(1);
       #$self->bkg_fixstep(1);
-      $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
-      $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
+      $self->bkg_slope(sprintf("%.14f", $self->fetch_scalar("pre_slope")));
+      $self->bkg_int(sprintf("%.14f", $self->fetch_scalar("pre_offset")));
     };
-    $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
+    $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
 
     my $command = q{};
@@ -340,16 +340,15 @@ sub normalize {
       $command .= $self->template("process", "flatten_set");
     };
     $self->dispose($command);
-    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
-    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
-    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
+    $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
-    #$self->dispose($self->template("process", "is_nor"));
+    #$self->dispense("process", "is_nor");
   };
-  my $command .= $self->template("process", "nderiv") if not $self->is_nor;
-  $self->dispose($command);
+  $self->dispense("process", "nderiv") if not $self->is_nor;
 
   $self->update_norm(0);
   return $self;
@@ -379,7 +378,7 @@ sub autobk {
   $fixed = $self->bkg_step if $self->bkg_fixstep;
 
   if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
-    my $e0 = Ifeffit::get_scalar("e0");
+    my $e0 = $self->fetch_scalar("e0");
     my ($elem, $edge) = $self->find_edge($e0);
     $self->bkg_e0($e0);
     $self->bkg_z($elem);
@@ -391,7 +390,7 @@ sub autobk {
     $self->resolve_defaults;
   };
   $self->dispose($command);
-  $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
+  $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
 
 
 ## is it necessary to do post_autobk and flatten templates here?  they
@@ -420,9 +419,9 @@ sub autobk {
   #$command .= $self->template("process", "deriv");
   $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
-    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
-    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
-    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
+    $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');
@@ -487,7 +486,7 @@ sub _plotE_command {
     };
     if ($self->po->e_smooth) {
       $self -> co -> set(smooth_suffix => $this);
-      $self->dispose($self->template('process', 'smoothed'));
+      $self->dispense('process', 'smoothed');
       $this = 'smooth';
     };
     push @suffix_list, $this;
@@ -732,7 +731,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -846,10 +845,10 @@ completeness.
 
 =item C<step>
 
-This method generates code for making an Ifeffit array containing a
-Heaviside step function centered at the edge energy and placed on the
-grid of the energy array associated with the object.  The resulting
-array containing the step function will have the suffix C<step>.
+This method generates code for making an array containing a Heaviside
+step function centered at the edge energy and placed on the grid of
+the energy array associated with the object.  The resulting array
+containing the step function will have the suffix C<step>.
 
     $string = $self->step;
 

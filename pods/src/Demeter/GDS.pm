@@ -51,7 +51,7 @@ sub BUILD {
 #   $self->alldone;
 #   ## --- this would be nice, but it seems to happen after Ifeffit is
 #   ##     shut down in certain cases when exiting Artemis
-#   # $self->dispose("erase ".$self->name);
+#   # $self->dispense('process', 'erase', {items=>$self->name});
 # };
 
 ## return a list of valid GDS attributes
@@ -163,9 +163,9 @@ sub evaluate {
   return 0 if (($self->gds eq 'skip') or ($self->gds eq 'merge'));
   $self->modified(0);
   my $name = $self->name;
-  my $value = Ifeffit::get_scalar(lc($name));
+  my $value = $self->fetch_scalar(lc($name));
   if ($self->gds eq 'guess') {
-    my $error = Ifeffit::get_scalar("delta_".lc($name));
+    my $error = $self->fetch_scalar("delta_".lc($name));
     $self -> set(bestfit=>$value, error=>$error);
   } else {
     $self -> set(bestfit=>$value, error=>0);
@@ -196,7 +196,7 @@ Demeter::GDS - Guess, Set, Def, and other parameters for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -223,9 +223,9 @@ A GDS object has these attributes:
 =item C<name> (string)
 
 This is the name of the parameter.  It must respect the conventions
-for a parameter name in Ifeffit.  They can contain only letters,
-numbers, '&', '?', ':', and '_' (underscore).  They are limited to 64
-characters and cannot begin with a numeral.
+for a parameter name in Ifeffit or Larch.  They can contain only
+letters, numbers, '&', '?', ':', and '_' (underscore).  They are
+limited to 64 characters and cannot begin with a numeral.
 
 =item C<gds> (guess def set lguess restrain after merge skip)
 
@@ -292,7 +292,7 @@ rewriting for local parameters.
 After the fit is evaluated, this contains the result of the fit for this
 parameter.  This is normally not set explicitly with the C<set> method.
 Rather it is set using the C<evaluate> method so that the math expression is
-correctly evaluated by Ifeffit.
+correctly evaluated by Ifeffit/Larch.
 
 =item C<error> (number)
 
@@ -358,7 +358,7 @@ C<autonote> attribute.
 =item C<write_gds>
 
 This returns a string which is the command to define the parameter in
-Ifeffit.
+Ifeffit/Larch.
 
    $string = $gds_object -> write_gds
 
@@ -368,7 +368,7 @@ This returns a string something like
 
 The first word is the parameter type.  "def" is used for after and
 restrain parameters.  Other parameter types (skip and merge) return
-string which will not be valid Ifeffit commands.
+strings which will not be valid Ifeffit/Larch commands.
 
 =item C<report>
 

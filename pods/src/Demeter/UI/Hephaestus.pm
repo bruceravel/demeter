@@ -230,7 +230,7 @@ sub OnInit {
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure" );
   $help->Append( $DOCUMENT,  "&Document" );
-  $help->Append( wxID_ABOUT, "&About..." );
+  $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
@@ -268,8 +268,8 @@ sub on_about {
   $info->SetCopyright( hcopyright() );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-			 "See the document for literature references\nfor the data resources.\n",
-			 "Much of the data displayed in the Data\nutility was swiped from Kalzium (website...)\n",
+			 "See the document for literature references\nfor the data resources.\n\n",
+			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/",
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
@@ -287,7 +287,7 @@ The Absorption (gold), Formulas (mortar), Data
 from Wikimedia http://commons.wikimedia.org
 (search terms)
 
-The F1F2 icon is adapted from graphics at Matt's
+The F1F2 icon is adapted from an image at Matt's
 diffkk homepage http://cars9.uchicago.edu/dafs/diffkk/
 
 The ion chamber icon is taken from the ADC website
@@ -317,7 +317,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

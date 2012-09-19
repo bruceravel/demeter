@@ -284,8 +284,8 @@ sub put_arrays {
   $self->pf_dispose($self->init_data);
   $self->pf_dispose($self->set_model('%'.$ls->group));
   my $model_y = $self->engine_object->get_model_vector($rx, 0);
-  Ifeffit::put_array($ls->group.".".$self->xaxis, $rx);
-  Ifeffit::put_array($ls->group.".".$self->yaxis, $model_y);
+  $self->place_array($ls->group.".".$self->xaxis, $rx);
+  $self->place_array($ls->group.".".$self->yaxis, $model_y);
   return $model_y;
 };
 
@@ -311,7 +311,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

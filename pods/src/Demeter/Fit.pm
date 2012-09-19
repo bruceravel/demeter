@@ -45,9 +45,7 @@ use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none zip uniq);
 use Regexp::Assemble;
-use Demeter::Constants qw($NUMBER $NULLFILE);
-use Const::Fast;
-const my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
+use Demeter::Constants qw($NUMBER $NULLFILE $STATS);
 use Text::Wrap;
 use YAML::Tiny;
 
@@ -395,7 +393,8 @@ sub fit {
   $self->mo->fit($self);
   $self->mo->pathindex(1);
   foreach my $p (@{ $self->paths }) {
-    $self->dispose("set path_index = " . $p->Index) if ($p->default_path);
+    $self->dispense('fit', 'path_index') if ($p->default_path);
+    ##$self->dispose("set path_index = " . $p->Index) if ($p->default_path);
   };
   my $command = q{};
 
@@ -511,7 +510,7 @@ sub fit {
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
-  $self->ifeffit_heap;
+  #$self->ifeffit_heap;
   return $self;
 };
 alias feffit => 'fit';
@@ -909,29 +908,13 @@ sub gds_report {
 sub fetch_statistics {
   my ($self) = @_;
 
-  my $save = Ifeffit::get_scalar("\&screen_echo");
-  ## not using dispose so that the get_echo lines gets captured here
-  ## rather than in the dispose method
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  Ifeffit::ifeffit("show $STAT_TEXT\n");
-
-  my $lines = Ifeffit::get_scalar('&echo_lines');
-  if (not $lines) {
-    $self->dispose("\&screen_echo = $save\n") if $save;
+  ## !!!! need to abstract out these words... see Demeter::Constants
+  #foreach my $stat (qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total)) {
+  foreach my $stat (split(" ", $STATS)) {
+    $self->$stat(sprintf("%.7f", $self->fetch_scalar($stat)));
   };
 
-  my $fit_stats_regexp = Regexp::Assemble->new()->add(@Demeter::StrTypes::stat_list)->re;
-  foreach (1 .. $lines) {
-    my $response = Ifeffit::get_echo()."\n";
-    if ($response =~ m{($fit_stats_regexp)
-		       \s*=\s*
-		       ($NUMBER)
-		    }x) {
-      $self->$1($2);
-    };
-  };
-
-  ## in the case of a sum, the stats cannot be obtained via get_echo
+  ## in the case of a sum and with ifeffit, the stats cannot be obtained via the normal mechanism
   if ($self->n_idp == 0) {
     my $nidp = 0;
     foreach my $d (@ {$self->data} ) {
@@ -958,7 +941,6 @@ sub fetch_statistics {
     $self->epsilon_r($which->epsr);
   };
 
-  $self->dispose("\&screen_echo = $save\n") if $save;
   return 0;
 };
 
@@ -1006,41 +988,32 @@ sub fetch_parameters {
 ## object.  provide a variety of convenience functions for accessing
 ## this information as relatively flat data
 
-######## FIX ME!!! ####################################################################
-## ack!! the echo_lines are not available if something else captures Ifeffit's feedback
-## this happens if set_mode(screen=>1) is turned on or in Artemis's buffer
-######## FIX ME!!! ####################################################################
 
+## use the Mode objects feedback attribute (takes a coderef) to gather
+## up the echo-ed text containing the correlations
+my @correl_text = ();
 sub fetch_correlations {
   my ($self) = @_;
 
-  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+  @correl_text = ();		     # initialize array buffer for accumulating correlations text
+  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
+  $self->set_mode(screen=>0, plotscreen=>0,
+		  feedback=>sub{push @correl_text, $_[0]}); # set feedback coderef
   my %correlations_of;
   my $d = $self -> data -> [0];
-  my $correl_lines;
-  $self->set_mode(buffer=>\$correl_lines);
-  $self->dispose($d->template("fit", "correl"));
-  #my $correl_text = Demeter->get_mode("echo");
-  my $lines = Ifeffit::get_scalar('&echo_lines');
-  my @correl_text = ();
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    if ($response =~ m{\A\s*correl}) {
-      push @correl_text, $response;
-    };
-  };
-  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  #my $correl_lines;
+  #$self->set_mode(buffer=>\$correl_lines);
+  $self->dispense("fit", "correl");
+  $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 
   my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
-  foreach my $line (@correl_text) {
+  foreach my $line (@correl_text) { # parse the correlations text
     if ($line =~ m{correl_
 		   ($regex)_   # first variable name followed by underscore
 		   ($regex)    # second variable name
@@ -1058,7 +1031,7 @@ sub fetch_correlations {
 		   ($NUMBER)	       # a number
 		}xi) {
       my ($x, $y, $correl) = ($1, $2, $3);
-      #print join(" ", $x, $y, $correl), $/;
+      print join(" ", $x, $y, $correl), $/;
       $correlations_of{$x}{$y} = $correl;
     };
     if ($self->co->default("fit", "bkg_corr")) {
@@ -1390,11 +1363,11 @@ override 'deserialize' => sub {
     $datae{$d} = $this;
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
-      Ifeffit::put_array($this->group.".energy", $r_x);
-      Ifeffit::put_array($this->group.".xmu",    $r_y);
+      $self->place_array($this->group.".energy", $r_x);
+      $self->place_array($this->group.".xmu",    $r_y);
     } elsif  ($this->datatype eq 'chi') {
-      Ifeffit::put_array($this->group.".k",      $r_x);
-      Ifeffit::put_array($this->group.".chi",    $r_y);
+      $self->place_array($this->group.".k",      $r_x);
+      $self->place_array($this->group.".chi",    $r_y);
     };
     $this -> set(update_data=>0, update_columns=>0);
     push @data, $this;
@@ -1406,8 +1379,9 @@ override 'deserialize' => sub {
     : $self->slurp(File::Spec->catfile($args{folder}, "gds.yaml"));
   my @list = YAML::Tiny::Load($yaml);
   foreach (@list) {
-    my @array = %{ $_ };
-    my $this = Demeter::GDS->new(@array);
+    my %hash = %{ $_ };
+    $hash{initial} ||= q{};
+    my $this = Demeter::GDS->new(%hash);
     push @gds, $this;
     my $command;
     if ($this->gds eq 'guess') {
@@ -1451,34 +1425,36 @@ override 'deserialize' => sub {
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
   #print File::Spec->catfile($args{folder}, "paths.yaml"),$/;
   @list = YAML::Tiny::Load($yaml);
-  foreach my $plotlike (@list) {
-    my $dg = $plotlike->{datagroup};
-    $plotlike->{data} = $datae{$dg};
-    if (exists $plotlike->{absorber}) {  # this is an FSPath
-      delete $plotlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
-    } elsif (exists $plotlike->{ipot}) { # this is an SSPath
-      delete $plotlike->{$_} foreach qw(Type weight string pathtype plottable);
-    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+  my $i=0;
+  foreach my $pathlike (@list) {
+    my $dg = $pathlike->{datagroup};
+    $pathlike->{data} = $datae{$dg} || Demeter->mo->fetch('Data', $dg);
+    #Demeter->trace;
+    if (exists $pathlike->{absorber}) {  # this is an FSPath
+      delete $pathlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    } elsif (exists $pathlike->{ipot}) { # this is an SSPath
+      delete $pathlike->{$_} foreach qw(Type weight string pathtype plottable);
+    } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       1;
     };
-    my %hash = %{ $plotlike };
+    my %hash = %{ $pathlike };
     my $this;
-    if (exists $plotlike->{ipot}) {          # this is an SSPath
-      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+    if (exists $pathlike->{ipot}) {          # this is an SSPath
+      my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
       $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
-    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+    } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
       $this -> set(%hash);
       $this -> sp($this);
       $this -> parentgroup($this->group);
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
-    } elsif (exists $plotlike->{absorber}) { # this is an FSPath
-      #my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      my $feff = $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+    } elsif (exists $pathlike->{absorber}) { # this is an FSPath
+      #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
+      my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       my $ws = $feff->workspace;
       $ws =~ s{\\}{/}g;		# path separators...
       my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
@@ -1603,7 +1579,7 @@ override 'deserialize' => sub {
     };
   };
 
-  ## -------- import the fit files and push arrays into Ifeffit
+  ## -------- import the fit files and push arrays into Ifeffit/Larch
   foreach my $d (@data) {
     my $dd = $d->group;
     ## import the fit data
@@ -1646,11 +1622,11 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Fit - Fit EXAFS data using Ifeffit
+Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -1665,15 +1641,15 @@ This documentation refers to Demeter version 0.9.10.
 =head1 DESCRIPTION
 
 This class collects and organizes all the components of a fit using
-Ifeffit.  The bulk of a script to fit EXAFS data involves setting up
-all the data, paths, and parameters that go into the fit.  Once that
-is done, you pass that information to the Fit object as array
-references.  It collates all of the information, resolves the
+Ifeffit or Larch.  The bulk of a script to fit EXAFS data involves
+setting up all the data, paths, and parameters that go into the fit.
+Once that is done, you pass that information to the Fit object as
+array references.  It collates all of the information, resolves the
 connections between Path and Data objects, performs a number of sanity
 checks on the input information, and generates the sequence of Ifeffit
-commands needed to perform the fit.  After the hard work of setting up
-the Data, Path, and GDS objects is done, you are just a few lines away
-from a complete fitting script!
+or Larch commands needed to perform the fit.  After the hard work of
+setting up the Data, Path, and GDS objects is done, you are just a few
+lines away from a complete fitting script!
 
 =head1 ATTRIBUTES
 
@@ -1767,12 +1743,12 @@ reliably interpreted in a statistical sense.
 =item C<fit>
 
 This method returns the sequence of commands to perform a fit in
-Ifeffit.  This sequence will include lines defining each guess, def,
-set, and restrain parameter.  The data will be imported by the
-C<read_data> command.  Each path associated with the data set will be
-defined.  Then the text of the Ifeffit's C<feffit> command is
-generated.  Finally, commands for defining the after parameters and
-for computing the residual arrays are made.
+Ifeffit or Larch.  This sequence will include lines defining each
+guess, def, set, and restrain parameter.  The data will be imported by
+the C<read_data> command.  Each path associated with the data set will
+be defined.  Then the text of the Ifeffit's C<feffit> or Larch's
+C<...> command is generated.  Finally, commands for defining the after
+parameters and for computing the residual arrays are made.
 
    $fitobject -> fit;
 

@@ -59,14 +59,14 @@ sub make_style {
   my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a name for this style", "Name this style", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app->set_text_buffer($ted, "style");
   if ($ted->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Making new style cancelled.");
+    $app->{main}->status("Making new style canceled.");
     $app->{style_pointer} = $#{$app->{style_buffer}}+1;
     return;
   };
   my $name = $ted->GetValue;
   $app->update_text_buffer("style", $name, 1);
   if ($name =~ m{\A\s*\z}) {
-    $app->{main}->status("No name provided.  Making new style cancelled.");
+    $app->{main}->status("No name provided.  Making new style canceled.");
     $app->{style_pointer} = $#{$app->{style_buffer}}+1;
     return;
   };
@@ -168,7 +168,7 @@ Demeter::UI::Athena::Plot::Style - plotting style controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

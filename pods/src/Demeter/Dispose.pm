@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Demeter::Constants qw($ENDOFLINE);
+use Ifeffit qw(ifeffit get_echo get_scalar);
 
 use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
@@ -90,6 +91,17 @@ sub _ansify {
 };
 
 
+sub dispense {
+  my ($self, $set, $template, $args) = @_;
+  $self->dispose($self->template($set, $template, $args));
+};
+
+sub chart {
+  my ($self, $set, $template, $args) = @_;
+  $self->dispose($self->template($set, $template, $args), 'plotting');
+};
+
+
 
 ##-----------------------------------------------------------------
 ## dispose commands to ifeffit and elsewhere
@@ -103,7 +115,7 @@ sub dispose {
   $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
   $command  =~ s{- *-}{+}g;  # suppress "--" in command strings math expressions
   return 0 if ($command =~ m{\A\s*\z});
-  ($command .= "\n") if ($command !~ /\n$/);
+  ($command .= "\n") if ($command !~ m{\n$});
 
   ## -------- spit everything to the screen, use ANSI colors if available and ui=screen
   if ($self->get_mode("screen")) {
@@ -190,7 +202,7 @@ sub dispose {
     my $gather = $self->po->lastplot;
     $gather .= $command;
     $self -> po -> lastplot($gather);
-    return 0; ## need to short-circuit this so the gnuplot commands do not go to Ifeffit
+    return 0; ## need to short-circuit this so the gnuplot commands do not go to Ifeffit/Larch
   };
 
   ## -------- don't bother reprocessing unless an output channel that
@@ -231,19 +243,19 @@ sub dispose {
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
     if ($self->is_windows) {
-      Ifeffit::ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
+      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
     } else {
-      Ifeffit::ifeffit($reprocessed);
+      ifeffit($reprocessed);
     };
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
     ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
-      my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
+      my ($lines, $response) = (get_scalar('&echo_lines')||0, "");
       if ($lines) {		# is there feedback?
 	foreach my $i (1 .. $lines) {
-	  my $response = Ifeffit::get_echo();
+	  my $response = get_echo();
 
 	  ## send to feedback code ref
 	  if ($coderef) {
@@ -273,6 +285,7 @@ sub dispose {
   return 0;
 };
 
+
 sub nl {
   my ($self) = @_;
   $self->dispose("\n");
@@ -289,13 +302,7 @@ sub Reset {
 sub cursor {
   my ($self) = @_;
   $self->dispose("cursor(show, cross-hair)");
-  return(Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
-};
-
-sub screen_echo {
-  my ($self, $value) = @_;
-  Ifeffit::ifeffit("set \&screen_echo = $value");
-  return $self;
+  return(get_scalar("cursor_x"), get_scalar("cursor_y"));
 };
 
 1;
@@ -303,11 +310,11 @@ sub screen_echo {
 
 =head1 NAME
 
-Demeter::Dispose - Process Ifeffit and plotting command strings
+Demeter::Dispose - Process Ifeffit, Larch, and plotting command strings
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -319,9 +326,9 @@ This documentation refers to Demeter version 0.9.10.
 =head1 DESCRIPTION
 
 This module contains contains the dispose method, which is used to
-dispatch Ifeffit command strings to various places.  This is part of
-the base of all other objects in the Demeter system, thus any object
-can dispose text.
+dispatch Ifeffit or Larch command strings to various places.  This is
+part of the base of all other objects in the Demeter system, thus any
+object can dispose text.
 
 The command strings which are handled by the C<dispose> method are
 typically generated using the command templating system, which is
@@ -399,8 +406,8 @@ The default colors are:
   red           data processing comments
   pink          plotting comments
   yellow        fitting comments
-  light blue    feedback from Ifeffit
-  white on red  error messages from Ifeffit
+  light blue    feedback from Ifeffit/Larch
+  white on red  error messages from Ifeffit/Larch
 
 These colors are configurable in the screen group.
 
@@ -484,9 +491,10 @@ to C<callback>'s code ref.
 
 =item feedback
 
-This channel sends feedback from Ifeffit to a user supplied code
-reference.  Note that lines indicating a problem in Ifeffit's output
-start with a star (*).  Information lines start with text.
+This channel sends feedback from Ifeffit or Larch to a user supplied
+code reference.  Note that lines indicating a problem in Ifeffit's or
+Larch's output start with a star (*).  Information lines start with
+text.
 
 =item repscreen
 
@@ -513,6 +521,31 @@ value.
 
 =over 4
 
+=item C<dispense>
+
+This wraps calls to C<template> and C<dispose>.  This:
+
+  $self->dispense('process', 'deriv');
+
+is the same as
+
+  $self->dispose($self->template('process', 'deriv'));
+
+which is a common idiom in Demeter.
+
+=item C<chart>
+
+This wraps calls to C<template> and to C<dispose> with the C<plotting>
+argument.  This:
+
+  $self->chart('process', 'deriv');
+
+is the same as
+
+  $self->dispose($self->template('process', 'deriv'), 'plotting');
+
+which is a common plotting idiom in Demeter.
+
 =item C<Reset>
 
 This method sends the C<reset> command to ifeffit.  The method name is
@@ -528,13 +561,6 @@ cursor click.
 
 Note that this is a blocking operation.  Your program will pause until
 a click event happens in the plot window.
-
-=item C<screen_echo>
-
-This method sets the value of the Ifeffit program variable
-C<&screen_echo>.  When set to 1, Ifeffit writes its feedback to STDOUT
-
-  $object -> screen_echo(1);
 
 =back
 
@@ -573,6 +599,10 @@ will be dealt with should it ever come up.
 The screen, plotscreen, and repscreen disposal channels currently
 write to STDOUT.  The user can direct STDOUT elsewhere.  It may be
 useful to have the option of specifying a filehandle for this channel.
+
+=item *
+
+Will reprocessed commands be needed with Larch?
 
 =back
 

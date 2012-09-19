@@ -136,7 +136,7 @@ sub labelline {
 sub _filter {
   my ($self) = @_;
   $self->source->_update('fft');
-  $self->dispose($self->template('process', 'filtered_filter'));
+  $self->dispense('process', 'filtered_filter');
   return $self;
 };
 
@@ -223,7 +223,7 @@ Demeter::FPath - Filtered paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

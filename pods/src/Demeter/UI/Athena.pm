@@ -136,7 +136,7 @@ sub OnInit {
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
   $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
-  $app->{Buffer}->SetTitle("Athena [Ifeffit \& Plot Buffer]");
+  $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
   $demeter->set_mode(callback     => \&ifeffit_buffer,
 		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
@@ -260,7 +260,7 @@ sub on_about {
   $info->SetName( 'Athena' );
   #$info->SetVersion( $demeter->version );
   $info->SetDescription( "XAS Data Processing" );
-  $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Ifeffit::get_string('&build'));
+  $info->SetCopyright( $demeter->identify . "\nusing " . $demeter->backend_id );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
   #			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville"
@@ -487,7 +487,7 @@ sub menubar {
   $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
 
 
-  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
+  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
   $ifeffitmenu->Append($IFEFFIT_STRINGS, "strings",      "Examine all the strings currently defined in Ifeffit");
@@ -495,7 +495,7 @@ sub menubar {
   $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
   $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
@@ -1151,7 +1151,7 @@ sub OnMenuClick {
 
 sub show_ifeffit {
   my ($app, $which) = @_;
-  $demeter->dispose('show @'.$which);
+  $demeter->dispense('process', 'show', {items=>'@'.$which});
   $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
   $app->{Buffer}->Show(1);
 };
@@ -1206,6 +1206,7 @@ sub main_window {
 		   ConvoluteNoise   => "Convolute and add noise to data",
 		   Deconvolute	    => "Deconvolute data",
 		   SelfAbsorption   => "Self-absorption correction",
+		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
 		   LCF		    => "Linear combination fitting",
 		   PCA		    => "Principle components analysis",
@@ -1235,19 +1236,20 @@ sub main_window {
 		     'ConvoluteNoise',	  # 6
 		     'Deconvolute',	  # 7
 		     'SelfAbsorption',	  # 8
-		     'Series',            # 9
+		     'Dispersive',	  # 9
+		     'Series',            # 10
 		     # -----------------------
-		     'LCF',		  # 11
-		     'PCA',		  # 12
-		     'PeakFit',		  # 13
-		     'LogRatio',	  # 14
-		     'Difference',	  # 15
+		     'LCF',		  # 12
+		     'PCA',		  # 13
+		     'PeakFit',		  # 14
+		     'LogRatio',	  # 15
+		     'Difference',	  # 16
 		     # -----------------------
-		     'XDI',               # 17
-		     'Watcher',           # 18
-		     'Journal',		  # 19
-		     'PluginRegistry',    # 20
-		     'Prefs',		  # 21
+		     'XDI',               # 18
+		     'Watcher',           # 19
+		     'Journal',		  # 20
+		     'PluginRegistry',    # 21
+		     'Prefs',		  # 22
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
@@ -1285,8 +1287,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(10, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(16, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(11, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(17, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1522,22 +1524,23 @@ sub get_view {
 	       'ConvoluteNoise',	   # 6
 	       'Deconvolute',		   # 7
 	       'SelfAbsorption',	   # 8
-	       'Series',		   # 9
+	       'Dispersive',	           # 9
+	       'Series',		   # 10
 	       q{}, # -----------------------
-	       'LCF',			   # 11
-	       'PCA',			   # 12
-	       'PeakFit',		   # 13
-	       'LogRatio',		   # 14
-	       'Difference',		   # 15
+	       'LCF',			   # 12
+	       'PCA',			   # 13
+	       'PeakFit',		   # 14
+	       'LogRatio',		   # 15
+	       'Difference',		   # 16
 	       q{}, # -----------------------
-	       'XDI',			   # 17
-	       'Watcher',		   # 18
-	       'Journal',		   # 19
-	       'PluginRegistry',	   # 20
-	       'Prefs',		           # 21
+	       'XDI',			   # 18
+	       'Watcher',		   # 19
+	       'Journal',		   # 20
+	       'PluginRegistry',	   # 21
+	       'Prefs',		           # 22
 	      );
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 18, 1);
+    splice(@views, 19, 1);
   };
   return $views[$i];
 };
@@ -1619,7 +1622,7 @@ sub plot {
   my @is_fixed = map {$_->bkg_fixstep} @data;
 
   if (not @data and ($how eq 'marked')) {
-    $app->{main}->status("No groups are marked.  Marked plot cancelled.");
+    $app->{main}->status("No groups are marked.  Marked plot canceled.");
     return;
   };
 
@@ -1708,6 +1711,7 @@ sub plot {
   $app->postplot($data[0], $is_fixed[0]);
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
+  $app->OnGroupSelect(0,0,0);
   undef $busy;
 };
 
@@ -1722,11 +1726,11 @@ sub preplot {
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*",
+				  "Data (*.dat)|*.dat|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving plot to a file has been cancelled.");
+      $app->{main}->status("Saving plot to a file has been canceled.");
       $app->{main}->{Other}->{singlefile}->SetValue(0);
       return 0;
     };
@@ -1899,7 +1903,7 @@ sub mark {
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     $app->set_text_buffer($ted, "regexp");
     if ($ted->ShowModal == wxID_CANCEL) {
-      $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{main}->status($word."ing by regular expression canceled.");
       $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
@@ -1962,7 +1966,7 @@ sub quench {
       my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       $app->set_text_buffer($ted, "regexp");
       if ($ted->ShowModal == wxID_CANCEL) {
-	$app->{main}->status(chomp($word)."ing by regular expression cancelled.");
+	$app->{main}->status(chomp($word)."ing by regular expression canceled.");
 	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
@@ -2003,7 +2007,7 @@ sub merge {
     push(@data, $this) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("No groups are marked.  Merge cancelled.");
+    $app->{main}->status("No groups are marked.  Merge canceled.");
     undef $busy;
     return;
   };
@@ -2112,6 +2116,7 @@ sub Clear {
 ## in future times, check to see if Ifeffit is being used
 sub heap_check {
   my ($app, $show) = @_;
+  return if (Demeter->mo->template_process eq 'Larch');
   if ($app->current_data->mo->heap_used > 0.98) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.95) {
@@ -2339,7 +2344,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

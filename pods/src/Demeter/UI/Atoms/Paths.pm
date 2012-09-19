@@ -70,7 +70,7 @@ sub new {
   $self->{paths}->InsertColumn( 1, "Degen"	     );
   $self->{paths}->InsertColumn( 2, "Reff"	     );
   $self->{paths}->InsertColumn( 3, "Scattering path" );
-  $self->{paths}->InsertColumn( 4, "Imp."	     );
+  $self->{paths}->InsertColumn( 4, "Rank"	     );
   $self->{paths}->InsertColumn( 5, "Legs"	     );
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
@@ -78,7 +78,7 @@ sub new {
   $self->{paths}->SetColumnWidth( 1,  50 );
   $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
-  $self->{paths}->SetColumnWidth( 4,  35 );
+  $self->{paths}->SetColumnWidth( 4,  50 );
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
@@ -178,7 +178,7 @@ sub save {
   my ($self) = @_;
   return if not $self->{paths}->GetItemCount;
   my $fd = Wx::FileDialog->new( $self, "Save Feff calculation", cwd, q{feff.yaml},
-				"Feff calculations (*.yaml)|*.yaml|All files|*",
+				"Feff calculations (*.yaml)|*.yaml|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
@@ -226,7 +226,7 @@ Demeter::UI::Atoms::Paths - Atoms' path organizer utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

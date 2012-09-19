@@ -435,13 +435,13 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  ##$self->dispose("erase \@group ".$self->group);
+  ##$self->dispense('process', 'erase', {items=>"\@group ".$self->group});
   $self->alldone;
 };
 
 sub discard {
   my ($self) = @_;
-  $self->dispose("erase \@group " . $self->group);
+  $self->dispense('process', 'erase', {items=>"\@group " . $self->group});
   $self->DEMOLISH;
 };
 
@@ -475,13 +475,13 @@ override clone => sub {
 
   my $standard = $self->get_mode('standard');
   $new  -> standard;
-  $self -> dispose($self->template("process", "clone"));
+  $self -> dispense("process", "clone");
   if (ref($standard) =~ m{Data}) {
     $standard->standard;
   } else {
     $new  -> unset_standard;
   };
-  $new  -> dispose($new->template("process", "deriv"));
+  $new  -> dispense("process", "deriv");
   $new  -> update_data(0);
   $new  -> update_columns(0);
   $new  -> update_norm($self->datatype =~ m{(?:xmu|xanes)});
@@ -525,17 +525,16 @@ sub _nidp {
 }
 sub chi_noise {
   my ($self) = @_;
-  my $string = $self->template("process", "chi_noise");
-  $self->dispose($string);
-  my $epsk = Ifeffit::get_scalar("epsilon_k");
+  $self->dispense("process", "chi_noise");
+  my $epsk = $self->fetch_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
   $epsk = ($epsk =~ m{nan|\#}i) ? 1 : $epsk; # unix returns '+/-NaN', windows returns '+/-1.#IOe000'
-  my $epsr = Ifeffit::get_scalar("epsilon_r");
+  my $epsr = $self->fetch_scalar("epsilon_r");
   $epsr = (looks_like_number($epsr)) ? $epsr : 1;
   $epsr = ($epsk =~ m{nan|\#}i) ? 1 : $epsr;
   $self->epsk( sprintf("%.3e", $epsk) );
   $self->epsr( sprintf("%.3e", $epsr) );
-  $self->recommended_kmax( sprintf("%.3f", Ifeffit::get_scalar("kmax_suggest")) );
+  $self->recommended_kmax( sprintf("%.3f", $self->fetch_scalar("kmax_suggest")) );
   return $self;
 };
 
@@ -588,10 +587,10 @@ sub determine_data_type {
   return 0 if is_Empty($file);
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
-    $self->dispose("read_data(file=\"$file\", group=deter___mine)\n");
-    my $f = (split(" ", Ifeffit::get_string('$column_label')))[0];
-    my @x = Ifeffit::get_array("deter___mine.$f");
-    $self->dispose("erase \@group deter___mine\n");
+    $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine', type=>'raw'});
+    my $f = (split(" ", $self->fetch_string('$column_label')))[0];
+    my @x = $self->fetch_array("deter___mine.$f");
+    $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
       $self->update_columns(0);
@@ -622,7 +621,7 @@ sub _update {
     };
     ($which eq 'normalize') and do {
       $self->read_data if ($self->update_data);
-      $self->put_data  if ($self->update_columns);
+      $self->put_data  if ($self->update_columns); # put_data is in Demeter::Data::Mu
       last WHICH;
     };
     ($self->display) and do {	# bail if the display flag is set
@@ -664,7 +663,7 @@ sub _update {
     };
 
   };
-  $self->ifeffit_heap;
+  #$self->ifeffit_heap;
   return $self;
 };
 
@@ -683,7 +682,7 @@ sub read_data {
   $self->dispose($string);
   $self->update_data(0);
   if ($self->is_col) {
-    $self->columns(Ifeffit::get_string("column_label"));
+    $self->columns($self->fetch_string("column_label"));
   };
   $self->sort_data;
   $self->put_data;
@@ -765,11 +764,12 @@ sub sort_data {
 
     ## now feed columns back to ifeffit
     my $group = $self->group;
-    $self->dispose("##| replacing arrays for $group with sorted versions\nerase \@group $group"); #.$cols[$c]");
+    $self->dispense('process', 'comment', {comment=>"replacing arrays for $group with sorted versions"});
+    $self->dispense('process', 'erase', {items=>"\@group $group"});
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
-      Ifeffit::put_array("$group.$cols[$c]", \@array);
+      $self->place_array("$group.$cols[$c]", \@array);
     };
     # @array = $self->get_array($cols[$ecol]);
     # print join(" ", @array), $/, $/, $/;
@@ -900,14 +900,14 @@ override 'deserialize' => sub {
   my @i0 = @{ $stuff[3] };
 
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
-    Ifeffit::put_array($self->group.".energy",    \@x);
-    Ifeffit::put_array($self->group.".xmu", \@y);
+    $self->place_array($self->group.".energy",    \@x);
+    $self->place_array($self->group.".xmu", \@y);
     if ($self->is_col) {
-      Ifeffit::put_array($self->group.".i0",   \@i0);
+      $self->place_array($self->group.".i0",   \@i0);
     };
   } elsif ($self->datatype eq 'chi') {
-    Ifeffit::put_array($self->group.".k",      \@x);
-    Ifeffit::put_array($self->group.".chi",    \@y);
+    $self->place_array($self->group.".k",      \@x);
+    $self->place_array($self->group.".chi",    \@y);
   };
 
   return $self;
@@ -920,12 +920,12 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data - Process and analyze EXAFS data with Ifeffit
+Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 
 =head1 SYNOPSIS
@@ -964,12 +964,12 @@ gathered into a Fit object.  See L<Demeter::Fit> for details.
 =item C<group> (string) I<[random 5-letter string]>
 
 This is the name associated with the data.  It's primary use is as the
-group name for the arrays associated with the data in Ifeffit.  That
-is, its arrays will be called I<group>.k, I<group>.chi, and so on.  It
-is best if this is a reasonably short word and it B<must> follow the
-conventions of a valid group name in Ifeffit.  The default group is a
-random five-letter string generated automatically when the object is
-created.
+group name for the arrays associated with the data in Ifeffit or
+Larch.  That is, its arrays will be called I<group>.k, I<group>.chi,
+and so on.  It is best if this is a reasonably short word and it
+B<must> follow the conventions of a valid group name in Ifeffit or
+Larch.  The default group is a random five-letter string generated
+automatically when the object is created.
 
 =item C<tag> (string) I<[same random 5-letter string as group]>
 
@@ -1048,8 +1048,8 @@ one of C<e> for mu(E), C<n> for norm(E>, and C<k> for chi(k).
 
 =item C<columns> (string)
 
-This string contains Ifeffit's C<$column_label> string from importing
-the data file.
+This string contains Ifeffit's C<$column_label> or Larch's C<...>
+string from importing the data file.
 
 =item C<energy> (string)
 
@@ -1301,9 +1301,10 @@ C<fft_kmax> will be sorted by Demeter.
 
 =item C<fft_dk> (number) I<[2]>
 
-The width of the window sill used for the forward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.
+The width of the window sill used for the forward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.
 
 =item C<fft_kwindow> (list) I<[Hanning]>
 
@@ -1319,7 +1320,7 @@ Fourier transform.
 
 =item C<rmax_out> (number) I<[10]>
 
-This tells Ifeffit how to size output arrays after doing a Fourier transform.
+This tells Ifeffit/Larch how to size output arrays after doing a Fourier transform.
 
 =back
 
@@ -1346,9 +1347,10 @@ C<bft_rmin> and C<bft_rmax> will be sorted by Demeter.
 
 =item C<bft_dr> (number) I<[0.2]>
 
-The width of the window sill used for the backward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.
+The width of the window sill used for the backward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.
 
 =back
 
@@ -1404,7 +1406,7 @@ C<k>, C<r>, or C<q>.
 
 If this number is non-zero, it will be used as the measurement
 uncertainty in k-space when the fit is evaluated.  If it is zero, then
-Ifeffit's default will be used.
+the default in Ifeffit or Larch will be used.
 
 =item C<fit_cormin> (number) I<[0.4]>
 
@@ -1482,9 +1484,9 @@ method of the parent class.
 
 =item C<save>
 
-This method returns the Ifeffit commands necessary to write column
-data files based on the data object.  See C<Demeter::Data::IO> for
-details.
+This method returns the Ifeffit/Larch commands necessary to write
+column data files based on the data object.  See C<Demeter::Data::IO>
+for details.
 
 =item C<data_parameter_report>
 
@@ -1505,8 +1507,8 @@ r-factor is computed as part of the report.
 
 This returns an evaluation of the R-factor from a fit for a single
 data set.  This is different from the R-factor for a multiple data set
-fit as reported by Ifeffit in that this number includes only the
-misfit of the single data set.
+fit as reported by Ifeffit or Larch in that this number includes only
+the misfit of the single data set.
 
   $r = $data_object -> r_factor;
 
@@ -1591,9 +1593,9 @@ converted to mu(E) data.
 
 =item *
 
-The data will be read by Ifeffit.  If the first data point is greater
-than 100, it will be assumed that these data are mu(E) and that the
-energy axis is absolute energy.
+The data will be read by Ifeffit or Larch.  If the first data point is
+greater than 100, it will be assumed that these data are mu(E) and
+that the energy axis is absolute energy.
 
 =item *
 

@@ -404,11 +404,11 @@ sub save {
   my $data = $::app->current_data;
   (my $name = $data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save peak fit to a file", cwd, $name.".peak",
-				"peak fit (*.peak)|*.peak|All files|*",
+				"peak fit (*.peak)|*.peak|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving peak fitting results to a file has been cancelled.");
+    $::app->{main}->status("Saving peak fitting results to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -484,7 +484,7 @@ Demeter::UI::Athena::PeakFit - A peak fitting for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

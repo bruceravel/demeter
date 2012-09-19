@@ -14,18 +14,18 @@ This documentation refers to Demeter version 0.9.
 =head1 DESCRIPTION
 
 Demeter uses L<Text::Template> to construct all text destined for
-Ifeffit as well as for atoms and feff input files and the plotting
-backends.  The use of templating system add a bit of complexity to
-Demeter in the sense that the actual content of Ifeffit commands (or
-input files) is generated quite far away from the location in the code
-where that text is used.  However, the use of a templating system adds
-a lot to Demeter.  Output can be highly customized or directed to a
-different target altogether.  For example, it is already possible in
-version 0.2 to generate content for a F<feffit.inp> file rather than
-for an Ifeffit script.  In the future, templates will make it easy for
-Demeter to target multiple plotting backends, write out functional
-Demeter scripts, or upgrade to Ifeffit 2.0 (whenever that becomes
-available).
+Ifeffit or Larch as well as for atoms and feff input files and the
+plotting backends.  The use of templating system add a bit of
+complexity to Demeter in the sense that the actual content of Ifeffit
+or Larch commands (or input files) is generated quite far away from
+the location in the code where that text is used.  However, the use of
+a templating system adds a lot to Demeter.  Output can be highly
+customized or directed to a different target altogether.  For example,
+it is already possible in version 0.2 to generate content for a
+F<feffit.inp> file rather than for an Ifeffit/Larch script.  In the
+future, templates will make it easy for Demeter to target multiple
+plotting backends, write out functional Demeter scripts, or upgrade to
+Larch (whenever that becomes available).
 
 L<Text::Template> is wonderful -- it hits a real sweet spot between
 simple and powerful.  A template in this system is plain text with
@@ -61,7 +61,7 @@ The first line chooses the L<template set|/TEMPLATE SETS>.  The second
 line fills in the C<fft> template from the I<process> L<template
 group|/TEMPLATE GROUPS> using the parameters of the Data objects
 contained in C<$data>.  The C<template> method returns a string
-containing the appropriate Ifeffit commands.  This string is
+containing the appropriate Ifeffit or Larch commands.  This string is
 L<disposed|Demeter::Dispose> in the last line.
 
 Demeter uses certain conventions to push particular data into a
@@ -220,14 +220,14 @@ here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<fit> and I<process>
 
-Template sets exist for Ifeffit, Feffit, and Demeter.  There are two
-version of the Ifeffit template set called "ifeffit" and
-"iff_columns".  The first set uses a fairly terse style while the
-second one tries to align ifeffit command arguments into columns
-aligned at the equals sign wherever possible.  The second one may be a
-bit more human readable.  The fit and process template sets are chosen
-by setting the C<template_fit> and C<template_process> modes, as
-L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+Template sets exist for Ifeffit, Larch (coming...) Feffit, and
+Demeter.  There are two version of the Ifeffit template set called
+"ifeffit" and "iff_columns".  The first set uses a fairly terse style
+while the second one tries to align ifeffit command arguments into
+columns aligned at the equals sign wherever possible.  The second one
+may be a bit more human readable.  The fit and process template sets
+are chosen by setting the C<template_fit> and C<template_process>
+modes, as L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =back
 

@@ -66,7 +66,7 @@ Demeter::UI::Wx::TextBuffer - Manage a text buffers for a TextEntryDialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -82,7 +82,7 @@ Later:
                                      q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app->set_text_buffer($ted, "some");
   if ($ted->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Renaming cancelled.");
+    $app->{main}->status("Renaming canceled.");
     return;
   };
   my $string = $ted->GetValue;

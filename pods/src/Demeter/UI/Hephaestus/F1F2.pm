@@ -161,8 +161,8 @@ sub f1f2_get_data {
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  Demeter->dispose(Demeter->template("plot", 'prep_f1f2'));
-  Demeter->dispose(Demeter->template("plot", $which), "plotting");
+  Demeter->dispense("plot", 'prep_f1f2');
+  Demeter->chart("plot", $which);
 
   #$demeter->po->cleantemp;
   #undef $demeter;
@@ -177,7 +177,7 @@ sub save_f1f2_data {
 
   my $default = join('.', get_name($parent->{element}), 'f1f2');
   my $fd = Wx::FileDialog->new( $self, "Output File", cwd, $default,
-				"f1f2 files (*.f1f2)|*.f1f2|All files|*",
+				"f1f2 files (*.f1f2)|*.f1f2|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   return if ($fd->ShowModal == wxID_CANCEL);
@@ -196,7 +196,7 @@ sub save_f1f2_data {
 		       f1f2_save => $file,
 		      );
   undef($fd);
-  Demeter->dispose(Demeter->template("plot", 'save_f1f2'));
+  Demeter->dispense("plot", 'save_f1f2');
 };
 
 
@@ -208,7 +208,7 @@ Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

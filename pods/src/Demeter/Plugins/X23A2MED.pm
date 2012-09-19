@@ -57,12 +57,13 @@ sub fix {
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
-  ## read the raw data file into Ifeffit
-  my $command = "read_data(file=\"$file\", group=v___ortex)\n";
-  $demeter->dispose($command);
+  ## read the raw data file
+  $demeter->dispense('process', 'read_group', {file=>$file, group=>'v___ortex', type=>'data'});
+  #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
+  #$demeter->dispose($command);
 
-  #my $labels = Ifeffit::get_string('$column_label');
-  my @labels = split(" ", Ifeffit::get_string('$column_label'));
+  #my $labels = $self->fetch_string('$column_label');
+  my @labels = split(" ", $self->fetch_string('$column_label'));
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
@@ -104,15 +105,15 @@ sub fix {
   my $dts     = q{};
   my $time    = Demeter->co->default("x23a2med", "time");
   my $inttime = Demeter->co->default("x23a2med", "inttime");
-  my @intcol  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
+  my @intcol  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
-    my @roi  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
-    my @slow = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
-    my @fast = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
+    my @roi  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
+    my @slow = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
+    my @fast = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
-    Ifeffit::put_array("v___ortex.corr$ch", \@corr);
+    $self->place_array("v___ortex.corr$ch", \@corr);
     push @labs, "corr$ch";
     $maxints .= " $max";
     $dts .= " $deadtime";
@@ -124,7 +125,7 @@ sub fix {
 
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
 
-  $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
+  my $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
   $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
   $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
   $command .= "write_data(file=\"$new\", \$title*, \$v___ortex_title_*, v___ortex." . join(", v___ortex.", @labs) . ")\n";
@@ -219,7 +220,7 @@ Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

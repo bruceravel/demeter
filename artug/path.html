@@ -49,81 +49,8 @@
 </div>
 
 <p>
-In this chapter, the method for associating paths with data sets is
-explained.  We will also see how to begin constructing a fitting
-model.
+blah
 </p>
-
-<p>
-Shown below is the Data window, which we have already seen, with some
-data from a gold foil already imported.  I have passed the cursor over
-the active text which says
-&ldquo;Import crystal data or a Feff calculation&rdquo;.
-Clicking will open the standard file selection dialog, prompting you for
-an <span class=file>atoms.inp</span>, <span class=file>feff.inp</span>
-or CIF file.  The same thing can be done by clicking the
-&ldquo;Add&rdquo; button above the Feff list in the Main
-window, by selecting &ldquo;Open project of data&rdquo;
-from the File menu in  the Main window, or by using the 
-<tt>Control-o</tt> keyboaard shortcut.
-</p>
-
-
-<a href="../images/path.empty.png" target=_blank><img src="../images/path.empty.png" alt="
-The Data window with no paths associated.
-"></a>
-
-
-<p>
-From the file dialog, I select an <span class=file>atoms.inp</span>
-file containing these crystal data:
-<pre>
-title  gold
-space  f m 3 m
-a = 4.08   rmax = 6.00    core = Au1
-atoms
-  Au     0.00000   0.00000   0.00000  Au1
-</pre>
-This crystal data is entered in a  <span class=program>FEFF</span> window and posted to the
-screen.
-</p>
-
-
-<a href="../images/path.atoms.png" target=_blank><img src="../images/path.atoms.png" alt="
-The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window containing gold metal crystal data.
-"></a>
-
-<p>
-Running  <span class=program>ATOMS</span> then  <span class=program>FEFF</span> results in this path list:
-</p>
-
-
-<a href="../images/path.pathlist.png" target=_blank><img src="../images/path.pathlist.png" alt="
-The path list for the gold metal calculation.
-"></a>
-
-<p>
-By clicking on path #0000 in the list then shift-clicking on
-path #0012, the first 13 paths are selected
-</p>
-
-
-<a href="../images/path.selected.png" target=_blank><img src="../images/path.selected.png" alt="
-The first 13 paths have been selected.
-"></a>
-
-<p>
-Now click on any of the selected paths.  While holding down the left
-mouse button, drag those paths over to the right side of the Data
-window and drop them by releasing the mouse button.  This will place
-all 13 of those paths in the path list on the Data window containing
-the data on the gold foil.
-</p>
-
-
-<a href="../images/path.populated.png" target=_blank><img src="../images/path.populated.png" alt="
-The Data window has been populated with the 13 paths from the  <span class=program>FEFF</span> calculation.
-"></a>
 
 <br />
 <hr class=hide />

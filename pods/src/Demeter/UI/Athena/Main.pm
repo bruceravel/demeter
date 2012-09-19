@@ -833,10 +833,13 @@ sub OnParameter {
   } elsif (($which =~ m{bkg_(?:nor|pre)}) and $data->co->default('athena', 'interactive_fixstep')) {
     $data->bkg_fixstep(0);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
-    $data->$which($value)
+    $data->$which($value);
+
+  } elsif ($which !~ m{fixstep}) { # toggle
+    $data->$which($value);
 
   } elsif ($which !~ m{nnorm}) { # everything else...
-    $data->$which($value)
+    $data->$which($value);
   };
   $app->modified(1);
   #$widget->SetFocus;
@@ -1052,7 +1055,7 @@ sub ContextMenu {
   };
   if ($text eq 'k-range') {
     $menu->AppendSeparator;
-    $menu->Append($KMAX_RECOMMENDED, "Set kmax to Ifeffit's suggestion");
+    $menu->Append($KMAX_RECOMMENDED, "Set kmax to ".Demeter->backend_name."'s suggestion");
   } elsif ($which eq 'importance') {
     $menu->AppendSeparator;
     $menu->Append($ALL_TO_1,    "Set Importance to 1 for all groups");
@@ -1071,7 +1074,7 @@ sub ContextMenu {
     $menu->Append($ESHIFT_MARKED,  "Show e0 shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
-    $menu->Append($E0_IFEFFIT,   "Set E0 to Ifeffit's default");
+    $menu->Append($E0_IFEFFIT,   "Set E0 to ".Demeter->backend_name."'s default");
     $menu->Append($E0_TABULATED, "Set E0 to the tabulated value");
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
@@ -1128,7 +1131,7 @@ sub DoContextMenu {
       $data->fft_kmax($data->recommended_kmax);
       $app->{main}->{Main}->{fft_kmax}->SetValue($data->fft_kmax);
       if ($data->fft_kmax < 5) {
-	$app->{main}->status("Ifeffit returned an oddly low value for its recommended k-weight.", 'error');
+	$app->{main}->status(Demeter->backend_name." returned an oddly low value for its recommended k-weight.", 'error');
       };
       $app->modified(1);
       last SWITCH;
@@ -1311,7 +1314,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

@@ -74,7 +74,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -109,12 +109,13 @@ dealing with each such case, or</p></dd>
 dropped in some well-advertised location and which can be used to
 change the troublesome data into a more easily handled from.</p></dd>
 </dl>
-<p>Demeter adopts the second option.  Ifeffit is used for data import.
-All data files must be readable by Ifeffit.  For those kinds of data
-file that are not easily read by Ifeffit, a plugin is used to convert
-the data from the troublesome format into a standard, well-formatted,
-column data file.  The normal input mechanism is then used to import
-the data into a <a href="../Data.pm.html">Demeter::Data</a> object.</p>
+<p>Demeter adopts the second option.  Ifeffit (or Larch) is used for data
+import.  All data files must be readable by Ifeffit (or Larch).  For
+those kinds of data file that are not easily read by Ifeffit, a plugin
+is used to convert the data from the troublesome format into a
+standard, well-formatted, column data file.  The normal input
+mechanism is then used to import the data into a <a href="../Data.pm.html">Demeter::Data</a>
+object.</p>
 
 <p>All file type plugins are implemented as <a href="http://search.cpan.org/perldoc?Moose">Moose</a> objects.  As such,
 all file type plugins must have certain attributes and methods so that
@@ -161,7 +162,7 @@ converting these binary files to column ASCII data.  This plugin does
 the same chore, yielding a file easily read by Ifeffit.</p></dd>
 	<dt><code>SSRLA</code></dt>
 		<dd><p>Convert SSRL ASCII data file.  Presumably, these ASCII files are the
-result of the SSRL conversion program.  These AsCII files are
+result of the SSRL conversion program.  These ASCII files are
 unreadable by Ifeffit.  This plugin, comments out the header lines,
 constructs a column label line out of the Data: section, moves the
 first column (real time clock) to the third column, and swaps the

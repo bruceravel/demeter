@@ -44,7 +44,7 @@ Demeter::Data::FT - Fourier transform mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 
@@ -63,14 +63,14 @@ methods as needed.
 =item C<fft>
 
 Perform a forward Fourier transform by generating and disposing of the
-appropriate sequence of Ifeffit commands.
+appropriate sequence of commands.
 
   $data_object -> fft;
 
 =item C<bft>
 
 Perform a backward Fourier transform by generating and disposing of the
-appropriate sequence of Ifeffit commands.
+appropriate sequence of commands.
 
   $data_object -> bft;
 

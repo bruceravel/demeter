@@ -271,11 +271,11 @@ sub plot {
   if ($self->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*",
+				  "Data (*.dat)|*.dat|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $::app->{main}->status("Saving plot to a file has been cancelled.");
+      $::app->{main}->status("Saving plot to a file has been canceled.");
       $self->{fileout}->SetValue(0);
       return;
     };
@@ -515,7 +515,7 @@ Demeter::UI::Artemis::Plot - Plot interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

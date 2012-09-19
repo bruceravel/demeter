@@ -111,7 +111,9 @@ sub is_xdac {
 	};
 
 	($flag) and do {
-	  $remove_ifeffit_comments = 1;
+	  $remove_ifeffit_comments = 0; # may want to set this to 1 once XDI is properly
+                                        # integrated into Demeter.  will then need to fix
+				        # clear_ifeffit_titles test in 004_data.t
 	  $self->push_xdi_comment($li);
 	  last SWITCH;
 	};
@@ -138,7 +140,7 @@ Demeter::Data::Athena - Role for identifying the beamline provenance of data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

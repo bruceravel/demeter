@@ -371,11 +371,11 @@ sub get_filename {
   my %descr   = ( pca=>'components', stack=>'data stack', recon=>'reconstruction', tt=>'target transform' );
   my $name = $given || basename($::app->{main}->{currentproject}, '.prj') || $defname{$suff};
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save PCA $descr{$suff} to a file", cwd, join(".", $name, $suff),
-				uc($suff)." (*.$suff)|*.$suff|All files|*",
+				uc($suff)." (*.$suff)|*.$suff|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving PCA $descr{$suff} to a file has been cancelled.");
+    $::app->{main}->status("Saving PCA $descr{$suff} to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -430,7 +430,7 @@ Demeter::UI::Athena::PCA - A principle components analysis tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

@@ -262,20 +262,20 @@ sub chi {
 
   $self->count if ($self->mo->ui eq 'screen');
   $first->dspath->Index(255);
-  $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring an Ifeffit group for each one
+  $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring a group for each one
   $first->dspath->path(1);
-  $first->dspath->dispose($first->dspath->template('process', 'histogram_first'));
+  $first->dspath->dispense('process', 'histogram_first');
   $first->dspath->group($save);
-  $first->dspath->dispose($first->dspath->template('process', 'histogram_clean', {index=>255}));
+  $first->dspath->dispense('process', 'histogram_clean', {index=>255});
   my $nnnn = File::Spec->catfile($first->folder, $first->dsstring);
   unlink $nnnn if (-e $nnnn);
 
   $first->tspath->Index(255);
   $first->tspath->group("h_i_s_t_o");
   $first->tspath->path(1);
-  $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
+  $first->tspath->dispense('process', 'histogram_add');
   $first->tspath->group($save);
-  $first->tspath->dispose($first->tspath->template('process', 'histogram_clean', {index=>255}));
+  $first->tspath->dispense('process', 'histogram_clean', {index=>255});
   $nnnn = File::Spec->catfile($first->folder, $first->tsstring);
   unlink $nnnn if (-e $nnnn);
 
@@ -311,8 +311,8 @@ sub chi {
     $n += $paths[$i]->s02;
   }
   $self->mo->pathindex($index);
-  my @k    = Ifeffit::get_array('h___isto.k');
-  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my @k    = $self->fetch_array('h___isto.k');
+  my @chi  = $self->fetch_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
 				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
   my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
@@ -356,10 +356,9 @@ sub plot {
   };
   close $f2;
   if ($self->po->output) {
-    $self->dispose($self->template('plot', 'output'), 'plotting');
+    $self->chart('plot', 'output');
   };
-  my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
-  $self->dispose($text, 'plotting');
+  $self->chart('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
   return $self;
 };
 
@@ -386,7 +385,7 @@ Demeter::Feff::DistributionsP::Thru - Histograms for MS paths through the absorb
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

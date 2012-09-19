@@ -33,6 +33,7 @@ use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
 #use Demeter::NumTypes qw( PosInt Natural NonNeg );
+with "Demeter::ScatteringPath::Rank";
 
 use Chemistry::Elements qw(get_symbol);
 use Carp;
@@ -174,8 +175,10 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
-  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
-    $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight, $self->nleg , $self->Type;
+  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %6.2f  %d  %s",
+    $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
+      $self->get_rank('zcwif') || 0,
+	$self->nleg, $self->Type;
 };
 
 sub labelline {
@@ -709,7 +712,7 @@ Demeter::ScatteringPath - Create and manipulate scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 
 =head1 SYNOPSIS

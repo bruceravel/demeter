@@ -77,7 +77,7 @@ sub prep {
 override after_plot_hook => sub {
   my ($self, $data, $part) = @_;
   $part ||= q{};
-  $self->add_columns(Ifeffit::get_string('p___lot_string'));
+  $self->add_columns($self->fetch_string('p___lot_string'));
   if ($part eq 'win') {
     $self->add_labels('window');
   } else {
@@ -115,7 +115,7 @@ Demeter::Plot::SingleFile - Sending a plot to a single file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

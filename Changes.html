@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Demeter revision history</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-07-17 14:36:12 EDT"/>
+<meta name="generated" content="2012-09-19 14:03:11 EDT"/>
 <meta name="author" content="Bruce Ravel"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -80,17 +80,18 @@ lang="en" xml:lang="en">
 <ul>
 <li><a href="#sec-1">1 Initial release </a>
 <ul>
-<li><a href="#sec-1.1">1.1 0.9.10 17 July 2012 </a></li>
-<li><a href="#sec-1.2">1.2 0.9.9 20 April 2012 </a></li>
-<li><a href="#sec-1.3">1.3 0.9.8 30 January 2012 </a></li>
-<li><a href="#sec-1.4">1.4 0.9.7 12 January 2012 </a></li>
-<li><a href="#sec-1.5">1.5 0.9.6 12 December 2011 </a></li>
-<li><a href="#sec-1.6">1.6 0.9.5 11 November 2011 </a></li>
-<li><a href="#sec-1.7">1.7 0.9.4 10 November 2011 </a></li>
-<li><a href="#sec-1.8">1.8 0.9.3 8 November 2011 </a></li>
-<li><a href="#sec-1.9">1.9 0.9.2 7 November 2011 </a></li>
-<li><a href="#sec-1.10">1.10 0.9.1 2 November 2011 </a></li>
-<li><a href="#sec-1.11">1.11 0.9.0 31 October, 2011 </a></li>
+<li><a href="#sec-1.1">1.1 0.9.11 1 September 2012 </a></li>
+<li><a href="#sec-1.2">1.2 0.9.10 17 July 2012 </a></li>
+<li><a href="#sec-1.3">1.3 0.9.9 20 April 2012 </a></li>
+<li><a href="#sec-1.4">1.4 0.9.8 30 January 2012 </a></li>
+<li><a href="#sec-1.5">1.5 0.9.7 12 January 2012 </a></li>
+<li><a href="#sec-1.6">1.6 0.9.6 12 December 2011 </a></li>
+<li><a href="#sec-1.7">1.7 0.9.5 11 November 2011 </a></li>
+<li><a href="#sec-1.8">1.8 0.9.4 10 November 2011 </a></li>
+<li><a href="#sec-1.9">1.9 0.9.3 8 November 2011 </a></li>
+<li><a href="#sec-1.10">1.10 0.9.2 7 November 2011 </a></li>
+<li><a href="#sec-1.11">1.11 0.9.1 2 November 2011 </a></li>
+<li><a href="#sec-1.12">1.12 0.9.0 31 October, 2011 </a></li>
 </ul>
 </li>
 <li><a href="#sec-2">2 Beta testing releases: </a>
@@ -119,11 +120,139 @@ lang="en" xml:lang="en">
 </div>
 
 <div id="outline-container-1.1" class="outline-3">
-<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 0.9.10 17 July 2012 </h3>
+<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 0.9.11 1 September 2012 </h3>
 <div class="outline-text-3" id="text-1.1">
 
 <ul>
 <li id="sec-1.1.1">Athena <br/>
+<ul>
+<li>
+Self absorption: plot information depth in energy and check to be
+sure that absorber is in the formula
+</li>
+<li>
+Fixed a bug reading data files with very line column label lines
+</li>
+<li>
+Added a filetype plugin for LNLS data files
+</li>
+<li>
+Fixed a bug where edge step value may not have been updated after
+a plot
+</li>
+<li>
+Correctly import reference spectra of a different edge from the
+data
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.2">Artemis <br/>
+<ul>
+<li>
+fixed a bug in Artemis' quick first shell interface to allow Am
+through Cf as absorbers (although Feff only allows up to Cm)
+</li>
+<li>
+fixed some problems related to importing old-style Artemis
+projects
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.3">Demeter <br/>
+<ul>
+<li>
+dispense method at a wrapper around dispose and template
+</li>
+<li>
+chart method at a wrapper around dispose and template for plotting
+</li>
+<li>
+several new templates to abstract out direct calls to Ifeffit in
+preparation for Larch integration
+</li>
+<li>
+fixed bugs in how rebinning parameters were determined and used
+</li>
+<li>
+extensive preparation for Larch
+</li>
+<li>
+added a test for clear<sub>ifeffit</sub><sub>methods</sub> in 004<sub>data</sub>.t
+</li>
+<li>
+fixed several bugs in difference spectrum calculation
+</li>
+<li>
+fixed various problems involving the use of rebin parameters
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.4">Windows <br/>
+<ul>
+<li>
+updated to most recent Ifeffit from github + patched Feff6L to
+allow Am and Cm as absorbers
+</li>
+<li>
+fixed a problem following shortcuts into folders in certain
+situations
+</li>
+<li>
+explicitly call demeter's version of perl from BAT files, this
+invloved a post-installation script run by Inno
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.5">Acknowledgements for this release <br/>
+<ul>
+<li>
+Eric Breynaert
+</li>
+<li>
+Shelly Kelly
+</li>
+<li>
+Karine Provost
+</li>
+<li>
+Amy Gandy
+</li>
+<li>
+Bradley Miller
+</li>
+<li>
+Jason Gaudet
+</li>
+<li>
+Alfred Hummer
+</li>
+<li>
+Daniel Whittaker
+</li>
+<li>
+Matt Frith
+</li>
+<li>
+The participants of the 2012 ASEAN Workshop on XAS
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.2" class="outline-3">
+<h3 id="sec-1.2"><span class="section-number-3">1.2</span> 0.9.10 17 July 2012 </h3>
+<div class="outline-text-3" id="text-1.2">
+
+<ul>
+<li id="sec-1.2.1">Athena <br/>
 <ul>
 <li>
 Improved X23A2 and HXMA plugins
@@ -164,7 +293,7 @@ Force dk and dr to 0 when making empirical standards.
 </li>
 </ul>
 </li>
-<li id="sec-1.1.2">Artemis <br/>
+<li id="sec-1.2.2">Artemis <br/>
 <ul>
 <li>
 Display a useful error message when the phase.bin file is not
@@ -214,10 +343,10 @@ created
 </li>
 </ul>
 </li>
-<li id="sec-1.1.3">Atoms <br/>
+<li id="sec-1.2.3">Atoms <br/>
 <ul>
 <li>
-Disable path DnD for stand-along Atoms
+Disable path DnD for stand-alone Atoms
 </li>
 <li>
 Added a right click action to the paths list to display details
@@ -226,7 +355,7 @@ of scattering geometry
 </li>
 </ul>
 </li>
-<li id="sec-1.1.4">Hephaestus <br/>
+<li id="sec-1.2.4">Hephaestus <br/>
 <ul>
 <li>
 Prevent notebook from capturing carriage return on Windows
@@ -234,7 +363,7 @@ Prevent notebook from capturing carriage return on Windows
 </li>
 </ul>
 </li>
-<li id="sec-1.1.5">Demeter <br/>
+<li id="sec-1.2.5">Demeter <br/>
 <ul>
 <li>
 Convert histogram calculations to use PDL &ndash; much faster!
@@ -270,12 +399,12 @@ that the right choice?)
 
 </div>
 
-<div id="outline-container-1.2" class="outline-3">
-<h3 id="sec-1.2"><span class="section-number-3">1.2</span> 0.9.9 20 April 2012 </h3>
-<div class="outline-text-3" id="text-1.2">
+<div id="outline-container-1.3" class="outline-3">
+<h3 id="sec-1.3"><span class="section-number-3">1.3</span> 0.9.9 20 April 2012 </h3>
+<div class="outline-text-3" id="text-1.3">
 
 <ul>
-<li id="sec-1.2.1">Athena <br/>
+<li id="sec-1.3.1">Athena <br/>
 <ul>
 <li>
 Delay laying out most windows until needed for the first time.
@@ -345,7 +474,7 @@ Edge step was not reliably updated after a new plot
 </li>
 </ul>
 </li>
-<li id="sec-1.2.2">Artemis <br/>
+<li id="sec-1.3.2">Artemis <br/>
 <ul>
 <li>
 Fixed (mostly) a bug laying out Atoms/Feff notebook tabs when
@@ -363,7 +492,7 @@ when replacing a data group
 </li>
 </ul>
 </li>
-<li id="sec-1.2.3">Hephaestus <br/>
+<li id="sec-1.3.3">Hephaestus <br/>
 <ul>
 <li>
 Delay laying out most windows until needed for the first time.
@@ -377,7 +506,7 @@ divide by zero crash
 </li>
 </ul>
 </li>
-<li id="sec-1.2.4">Atoms stand-alone <br/>
+<li id="sec-1.3.4">Atoms stand-alone <br/>
 <ul>
 <li>
 Used delayed layout and careful loading of Demeter modules to
@@ -391,7 +520,7 @@ posted without any content &ndash; not so helpful.
 </li>
 </ul>
 </li>
-<li id="sec-1.2.5">Demeter <br/>
+<li id="sec-1.3.5">Demeter <br/>
 <ul>
 <li>
 Begin using Perl::Version to manage version numbering of files
@@ -462,12 +591,12 @@ calculated.
 
 </div>
 
-<div id="outline-container-1.3" class="outline-3">
-<h3 id="sec-1.3"><span class="section-number-3">1.3</span> 0.9.8 30 January 2012 </h3>
-<div class="outline-text-3" id="text-1.3">
+<div id="outline-container-1.4" class="outline-3">
+<h3 id="sec-1.4"><span class="section-number-3">1.4</span> 0.9.8 30 January 2012 </h3>
+<div class="outline-text-3" id="text-1.4">
 
 <ul>
-<li id="sec-1.3.1">Athena <br/>
+<li id="sec-1.4.1">Athena <br/>
 <ul>
 <li>
 Only set project name if the project name is unset and an entire
@@ -488,7 +617,7 @@ chi(k) as the data type
 </li>
 </ul>
 </li>
-<li id="sec-1.3.2">Artemis <br/>
+<li id="sec-1.4.2">Artemis <br/>
 <ul>
 <li>
 Can now export a particular fit from the history to an fpj file
@@ -504,7 +633,7 @@ broken.
 </li>
 </ul>
 </li>
-<li id="sec-1.3.3">Demeter <br/>
+<li id="sec-1.4.3">Demeter <br/>
 <ul>
 <li>
 Add file-chik<sub>out</sub> parameter to control how writing a chi(K)
@@ -521,7 +650,7 @@ Added denergy script
 </li>
 </ul>
 </li>
-<li id="sec-1.3.4">Acknowledgements for this release <br/>
+<li id="sec-1.4.4">Acknowledgements for this release <br/>
 <ul>
 <li>
 Eric Breynaert
@@ -540,12 +669,12 @@ Andreas Voegelin
 
 </div>
 
-<div id="outline-container-1.4" class="outline-3">
-<h3 id="sec-1.4"><span class="section-number-3">1.4</span> 0.9.7 12 January 2012 </h3>
-<div class="outline-text-3" id="text-1.4">
+<div id="outline-container-1.5" class="outline-3">
+<h3 id="sec-1.5"><span class="section-number-3">1.5</span> 0.9.7 12 January 2012 </h3>
+<div class="outline-text-3" id="text-1.5">
 
 <ul>
-<li id="sec-1.4.1">Athena <br/>
+<li id="sec-1.5.1">Athena <br/>
 <ul>
 <li>
 Fixed a problem in the X23A2MED plugin &ndash; it was getting confused
@@ -585,7 +714,7 @@ Reorganized Monitor and debug menus
 </li>
 </ul>
 </li>
-<li id="sec-1.4.2">Artemis <br/>
+<li id="sec-1.5.2">Artemis <br/>
 <ul>
 <li>
 New icons!
@@ -622,7 +751,7 @@ Can now restore a previous fit reliably.
 </li>
 </ul>
 </li>
-<li id="sec-1.4.3">Demeter <br/>
+<li id="sec-1.5.3">Demeter <br/>
 <ul>
 <li>
 explicitly unset xrange at the start of every gnuplot plot.  this
@@ -648,7 +777,7 @@ plugin
 </li>
 </ul>
 </li>
-<li id="sec-1.4.4">Acknowledgements for this release <br/>
+<li id="sec-1.5.4">Acknowledgements for this release <br/>
 <ul>
 <li>
 Eric Breynaert
@@ -673,12 +802,12 @@ Andreas Voegelin
 
 </div>
 
-<div id="outline-container-1.5" class="outline-3">
-<h3 id="sec-1.5"><span class="section-number-3">1.5</span> 0.9.6 12 December 2011 </h3>
-<div class="outline-text-3" id="text-1.5">
+<div id="outline-container-1.6" class="outline-3">
+<h3 id="sec-1.6"><span class="section-number-3">1.6</span> 0.9.6 12 December 2011 </h3>
+<div class="outline-text-3" id="text-1.6">
 
 <ul>
-<li id="sec-1.5.1">Athena <br/>
+<li id="sec-1.6.1">Athena <br/>
 <ul>
 <li>
 Fixed bug preventing import of multiple files with each channel
@@ -726,7 +855,7 @@ Fixed a bug in both Plot-&gt;marked groups menu options
 </li>
 </ul>
 </li>
-<li id="sec-1.5.2">Artemis <br/>
+<li id="sec-1.6.2">Artemis <br/>
 <ul>
 <li>
 Trim leading and trailing spaces from gds names.
@@ -753,7 +882,7 @@ disable selection of that tab was guaranteed to fail on Windows
 </li>
 </ul>
 </li>
-<li id="sec-1.5.3">Hephaestus <br/>
+<li id="sec-1.6.3">Hephaestus <br/>
 <ul>
 <li>
 Allow floats as values in the ion chamber tool
@@ -761,7 +890,7 @@ Allow floats as values in the ion chamber tool
 </li>
 </ul>
 </li>
-<li id="sec-1.5.4">Demeter <br/>
+<li id="sec-1.6.4">Demeter <br/>
 <ul>
 <li>
 Check that user value, then default value of executable
@@ -829,7 +958,7 @@ points in a data file.
 </li>
 </ul>
 </li>
-<li id="sec-1.5.5">Acknowledgements for this release <br/>
+<li id="sec-1.6.5">Acknowledgements for this release <br/>
 <ul>
 <li>
 The participants of the Diamond 2011 XAFS course who unwittingly
@@ -852,12 +981,12 @@ Brian Mattern
 
 </div>
 
-<div id="outline-container-1.6" class="outline-3">
-<h3 id="sec-1.6"><span class="section-number-3">1.6</span> 0.9.5 11 November 2011 </h3>
-<div class="outline-text-3" id="text-1.6">
+<div id="outline-container-1.7" class="outline-3">
+<h3 id="sec-1.7"><span class="section-number-3">1.7</span> 0.9.5 11 November 2011 </h3>
+<div class="outline-text-3" id="text-1.7">
 
 <ul>
-<li id="sec-1.6.1">Athena <br/>
+<li id="sec-1.7.1">Athena <br/>
 <ul>
 <li>
 Fixed a crash caused by constraining all parameters
@@ -870,12 +999,12 @@ Fixed a crash caused by constraining all parameters
 
 </div>
 
-<div id="outline-container-1.7" class="outline-3">
-<h3 id="sec-1.7"><span class="section-number-3">1.7</span> 0.9.4 10 November 2011 </h3>
-<div class="outline-text-3" id="text-1.7">
+<div id="outline-container-1.8" class="outline-3">
+<h3 id="sec-1.8"><span class="section-number-3">1.8</span> 0.9.4 10 November 2011 </h3>
+<div class="outline-text-3" id="text-1.8">
 
 <ul>
-<li id="sec-1.7.1">Athena <br/>
+<li id="sec-1.8.1">Athena <br/>
 <ul>
 <li>
 Fixed a problem accessing the column selection persitance file
@@ -887,7 +1016,7 @@ Fixed a possible crash when importing a damaged project file
 </li>
 </ul>
 </li>
-<li id="sec-1.7.2">Artemis <br/>
+<li id="sec-1.8.2">Artemis <br/>
 <ul>
 <li>
 Don't list excluded paths in the log file
@@ -901,12 +1030,12 @@ Don't list excluded paths in the log file
 
 </div>
 
-<div id="outline-container-1.8" class="outline-3">
-<h3 id="sec-1.8"><span class="section-number-3">1.8</span> 0.9.3 8 November 2011 </h3>
-<div class="outline-text-3" id="text-1.8">
+<div id="outline-container-1.9" class="outline-3">
+<h3 id="sec-1.9"><span class="section-number-3">1.9</span> 0.9.3 8 November 2011 </h3>
+<div class="outline-text-3" id="text-1.9">
 
 <ul>
-<li id="sec-1.8.1">Athena <br/>
+<li id="sec-1.9.1">Athena <br/>
 <ul>
 <li>
 Progress messages when autoaligning marked groups (also truncating)
@@ -917,7 +1046,7 @@ Better first guess for autoalignment ($DS-&gt;bkg<sub>e0</sub> - $D-&gt;bkg<sub>
 </li>
 </ul>
 </li>
-<li id="sec-1.8.2">Artemis <br/>
+<li id="sec-1.9.2">Artemis <br/>
 <ul>
 <li>
 Fix a problem importing a project file into which data and Feff
@@ -930,7 +1059,7 @@ Check parameter types when importing GDS parameters from a text file
 </li>
 </ul>
 </li>
-<li id="sec-1.8.3">Demeter <br/>
+<li id="sec-1.9.3">Demeter <br/>
 <ul>
 <li>
 Added <code>current</code> attribute to Mode as a way of identifying data
@@ -944,12 +1073,12 @@ groups in asequence when making progress messages in a GUI
 
 </div>
 
-<div id="outline-container-1.9" class="outline-3">
-<h3 id="sec-1.9"><span class="section-number-3">1.9</span> 0.9.2 7 November 2011 </h3>
-<div class="outline-text-3" id="text-1.9">
+<div id="outline-container-1.10" class="outline-3">
+<h3 id="sec-1.10"><span class="section-number-3">1.10</span> 0.9.2 7 November 2011 </h3>
+<div class="outline-text-3" id="text-1.10">
 
 <ul>
-<li id="sec-1.9.1">Athena <br/>
+<li id="sec-1.10.1">Athena <br/>
 <ul>
 <li>
 Preserve source attribute when reading a project, display it as a
@@ -970,7 +1099,7 @@ Fixed a problem with DUBBLE plugin
 </li>
 </ul>
 </li>
-<li id="sec-1.9.2">Artemis <br/>
+<li id="sec-1.10.2">Artemis <br/>
 <ul>
 <li>
 Fixed spurious creation of feff workspaces when importoing
@@ -990,7 +1119,7 @@ correctly in the history.  Oh well&hellip;.
 </li>
 </ul>
 </li>
-<li id="sec-1.9.3">Thanks to <br/>
+<li id="sec-1.10.3">Thanks to <br/>
 <ul>
 <li>
 Jason Gaudet
@@ -1006,13 +1135,13 @@ Eric Breynaert
 
 </div>
 
-<div id="outline-container-1.10" class="outline-3">
-<h3 id="sec-1.10"><span class="section-number-3">1.10</span> 0.9.1 2 November 2011 </h3>
-<div class="outline-text-3" id="text-1.10">
+<div id="outline-container-1.11" class="outline-3">
+<h3 id="sec-1.11"><span class="section-number-3">1.11</span> 0.9.1 2 November 2011 </h3>
+<div class="outline-text-3" id="text-1.11">
 
 
 <ul>
-<li id="sec-1.10.1">Artemis <br/>
+<li id="sec-1.11.1">Artemis <br/>
 <ul>
 <li>
 Take care with fit<sub>include</sub> attribute of the Data in a Fit.  Need
@@ -1036,7 +1165,7 @@ one path associated with it
 </li>
 </ul>
 </li>
-<li id="sec-1.10.2">Thanks to <br/>
+<li id="sec-1.11.2">Thanks to <br/>
 <ul>
 <li>
 Jason Gaudet
@@ -1049,9 +1178,9 @@ Jason Gaudet
 
 </div>
 
-<div id="outline-container-1.11" class="outline-3">
-<h3 id="sec-1.11"><span class="section-number-3">1.11</span> 0.9.0 31 October, 2011 </h3>
-<div class="outline-text-3" id="text-1.11">
+<div id="outline-container-1.12" class="outline-3">
+<h3 id="sec-1.12"><span class="section-number-3">1.12</span> 0.9.0 31 October, 2011 </h3>
+<div class="outline-text-3" id="text-1.12">
 
 
 <p>
@@ -1074,7 +1203,7 @@ Histogram fully implemented in Artemis
 </li>
 </ol>
 <ul>
-<li id="sec-1.11.1">Artemis <br/>
+<li id="sec-1.12.1">Artemis <br/>
 <ul>
 <li>
 Verify that fit folder exists before trying to deserialize it
@@ -2091,7 +2220,7 @@ Andreas Voegelin
 <p class="author"> Author: Bruce Ravel
 <a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
 </p>
-<p class="date"> Date: 2012-07-17 14:36:12 EDT</p>
+<p class="date"> Date: 2012-09-19 14:03:11 EDT</p>
 <p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
 </div>
 </div>

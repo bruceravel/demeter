@@ -695,11 +695,11 @@ sub combi_select {
 sub combi_report {
   my ($this, $event) = @_;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, "combinatorial.xls",
-				"Excel (*.xls)|*.xls|All files|*",
+				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving combinatorial results has been cancelled.");
+    $::app->{main}->status("Saving combinatorial results has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -791,7 +791,7 @@ sub seq_select {
   $this->{LCF}->data($data);
   $this->{LCF}->restore($result);
   my $which = ($this->{LCF}->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $this->{LCF}->dispose($this->{LCF}->template("analysis", $which));
+  $this->{LCF}->dispense("analysis", $which);
   $this->{mreport}->SetValue($this->{LCF}->report);
 
   $this->{result}->Clear;
@@ -815,11 +815,11 @@ sub seq_select {
 sub seq_report {
   my ($this, $event) = @_;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, "sequence.xls",
-				"Excel (*.xls)|*.xls|All files|*",
+				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving fit sequence results has been cancelled.");
+    $::app->{main}->status("Saving fit sequence results has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -858,11 +858,11 @@ sub save {
   my $data = $::app->current_data;
   (my $name = $data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit to a file", cwd, $name.".lcf",
-				"LCF (*.lcf)|*.lcf|All files|*",
+				"LCF (*.lcf)|*.lcf|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving LCF results to a file has been cancelled.");
+    $::app->{main}->status("Saving LCF results to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -925,7 +925,7 @@ Demeter::UI::Athena::LCF - A linear combination fitting tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

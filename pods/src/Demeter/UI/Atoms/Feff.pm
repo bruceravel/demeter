@@ -4,6 +4,7 @@ use Demeter::StrTypes qw( Element );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
+use Chemistry::Elements qw(get_Z);
 use File::Spec;
 
 use Wx qw( :everything );
@@ -102,7 +103,7 @@ sub OnToolRightClick {
   $self->{parent}->status("There are no recent Feff files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{parent}->status("Import cancelled.");
+    $self->{parent}->status("Import canceled.");
   } else {
    $self->import( $dialog->GetMruSelection );
   };
@@ -117,7 +118,7 @@ sub import {
   return if not $self->clear_all;
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import a feff.inp file", cwd, q{},
-				  "input file (*.inp)|*.inp|All files|*",
+				  "input file (*.inp)|*.inp|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     $fd -> ShowModal;
@@ -136,7 +137,7 @@ sub import {
 sub save_file {
   my ($self) = @_;
   my $fd = Wx::FileDialog->new( $self, "Save feff input file", cwd, q{feff.inp},
-				"input file (*.inp)|*.inp|All files|*",
+				"input file (*.inp)|*.inp|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
@@ -189,9 +190,20 @@ sub run_feff {
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
 
-  if ($feff->rmax > 6.01) {
+  #my $zabs = $feff->potentials->[$feff->abs_index]->[1];
+  if (get_Z($feff->abs_species) > 95) {
+    my $error = Wx::MessageDialog->new($rframes->{main},
+				       "The version of Feff you are using cannot calculate for absorbers above Z=95.",
+				       "Cannot run Feff",
+				       wxOK|wxICON_EXCLAMATION);
+    my $result = $error->ShowModal;
+    $self->{parent}->status("The version of Feff you are using cannot calculate for absorbers above Z=95.", 'alert');
+    return 0;
+  };
+
+  if ($feff->rmax > 6.51) {
     my $yesno = Wx::MessageDialog->new($self,
-				       'You have set RMAX to larger than 6 Angstroms.
+				       'You have set RMAX to larger than 6.5 Angstroms.
 
 The pathfinder will likely be quite time consuming,
 as will reading and writing a project file
@@ -203,7 +215,7 @@ Should we continue?',
 				      );
     my $ok = $yesno->ShowModal;
     if ($ok == wxID_NO) {
-      $self->{parent}->status("Cancelling Feff calculation");
+      $self->{parent}->status("Canceling Feff calculation");
       return 0;
     };
 
@@ -224,7 +236,7 @@ Should we continue?',
 
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
-  $self->{parent}->status("Computing potentials using Feff6 ...");
+  $self->{parent}->status("Computing potentials using Feff ...");
 
   ## rerunning, so clean upprevious results
   my $phbin = File::Spec->catfile($feff->workspace, 'phase.bin');
@@ -283,6 +295,9 @@ sub fill_intrp_page {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
   my $i = 0;
+  $self->{parent}->status("Ranking paths...");
+  $feff->rank_paths;
+  my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
   foreach my $p (@{ $feff->pathlist }) {
     my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
     $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
@@ -291,7 +306,8 @@ sub fill_intrp_page {
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
+    #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
+    $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
     ++$i;
@@ -378,7 +394,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

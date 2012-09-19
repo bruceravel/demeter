@@ -57,7 +57,7 @@ sub prep_data {
   my $i1 = $self->data->iofx('energy', $e1);
   my $e2 = $self->xmax;
   my $i2 = $self->data->iofx('energy', $e2);
-  $self->dispose($self->template('analysis', 'peak_prep', {i1=>$i1, i2=>$i2}));
+  $self->dispense('analysis', 'peak_prep', {i1=>$i1, i2=>$i2});
   return $self;
 };
 
@@ -71,7 +71,7 @@ sub guess_set {
 sub define {
   my ($self, $ls) = @_;
   my $template = "peak_".$ls->function;
-  $self->dispose($self->template('analysis', $template, {L=>\$ls}));
+  $self->dispense('analysis', $template, {L=>\$ls});
   return $self;
 };
 
@@ -88,12 +88,12 @@ sub fetch_data_x {
 
 sub fetch_model_y {
   my ($self) = @_;
-  return Ifeffit::get_array($self->group.".func");
+  return $self->fetch_array($self->group.".func");
 };
 
 sub put_arrays {
   my ($self, $ls, $rx) = @_;
-  $self->dispose($self->template('analysis', 'peak_put', {L=>\$ls}));
+  $self->dispense('analysis', 'peak_put', {L=>\$ls});
 };
 
 sub resid {
@@ -112,10 +112,10 @@ sub fetch_statistics {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
       my $scalar = $ls->group.'_'.$n;
-      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
+      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
       $att = 'e'.$n;
       $scalar = 'delta_'.$scalar;
-      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
+      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
     };
     $ls->area($ls->a0);
   };
@@ -138,7 +138,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

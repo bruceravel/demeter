@@ -83,14 +83,14 @@ sub nparams {
 sub put_arrays {
   my ($self, $rx) = @_;
   my $model_y = $self->parent->put_arrays($self, $rx);
-  Ifeffit::put_array($self->group.".".$self->xaxis, $rx);
-  Ifeffit::put_array($self->group.".".$self->yaxis, $model_y);
+  $self->place_array($self->group.".".$self->xaxis, $rx);
+  $self->place_array($self->group.".".$self->yaxis, $model_y);
   return $self;
 };
 
 sub plot {
   my ($self) = @_;
-  $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+  $self->chart('plot', 'overpeak');
   $self->po->increment;
   return $self;
 };
@@ -192,7 +192,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

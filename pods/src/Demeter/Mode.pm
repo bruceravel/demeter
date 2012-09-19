@@ -1,6 +1,6 @@
 package Demeter::Mode;
 
-use MooseX::Singleton;
+use Moose; #X::Singleton;
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -21,7 +21,7 @@ has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
 has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
 has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
-has 'buffer'     => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'buffer'     => (is => 'rw', isa => Empty.'|ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
 has 'callback'     => (is => 'rw', isa => 'CodeRef');
@@ -433,8 +433,9 @@ has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',)
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'heap_free'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'heap_used'	   => (is => 'rw', isa => 'Num', default => 0);
+has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
+has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
+has 'heap_used'	   => (is => 'rw', isa => 'Num',  default => 0);
 
 sub increment_fit {
   my ($self) = @_;
@@ -592,7 +593,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 
@@ -678,7 +679,7 @@ reference.
 
 =item C<feedback>
 
-A code ref for disposing of feedback from Ifeffit.
+A code ref for disposing of feedback from Ifeffit or Larch.
 
 =back
 

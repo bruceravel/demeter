@@ -376,7 +376,7 @@ sub OnToolRightClick {
   $self->{parent}->status("There are no recent crystal data files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{parent}->status("Import cancelled.");
+    $self->{parent}->status("Import canceled.");
   } else {
    $self->open_file( $dialog->GetMruSelection );
   };
@@ -457,11 +457,11 @@ sub open_file {
   $atoms->partial_occupancy(0);
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{parent}->status("Crystal data import cancelled.");
+      $self->{parent}->status("Crystal data import canceled.");
       return 0;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -482,7 +482,7 @@ sub open_file {
       my $dialog = Wx::SingleChoiceDialog->new( $self, "Choose a record from this CIF file",
 						"CIF file", \@records );
       if( $dialog->ShowModal == wxID_CANCEL ) {
-	$self->{parent}->status("Import cancelled.");
+	$self->{parent}->status("Import canceled.");
 	return 0;
       } else {
 	my $which = $dialog->GetSelection||0;
@@ -746,7 +746,7 @@ sub save_file {
   if ($seems_ok) {
     if (not $file) {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
-				    "input file (*.inp)|*.inp|All files|*",
+				    "input file (*.inp)|*.inp|All files (*)|*",
 				    wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				    wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
@@ -846,10 +846,11 @@ sub write_output {
 					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption"]
 					    );
     if( $dialog->ShowModal == wxID_CANCEL ) {
-      $self->{parent}->status("Writing Atoms output cancelled.");
+      $self->{parent}->status("Writing Atoms output canceled.");
     } else {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data to a special file", cwd, q{},
-				    "All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition);
+				    "All files (*.*)|*.*|All files (*)|*",
+				    wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
 	$self->{parent}->status("Saving output file aborted.")
       } else {
@@ -873,7 +874,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

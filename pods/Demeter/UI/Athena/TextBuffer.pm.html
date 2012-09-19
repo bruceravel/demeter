@@ -65,7 +65,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
@@ -81,7 +81,7 @@
                                      q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app-&gt;set_text_buffer($ted, &quot;some&quot;);
   if ($ted-&gt;ShowModal == wxID_CANCEL) {
-    $app-&gt;{main}-&gt;status(&quot;Renaming cancelled.&quot;);
+    $app-&gt;{main}-&gt;status(&quot;Renaming canceled.&quot;);
     return;
   };
   my $string = $ted-&gt;GetValue;

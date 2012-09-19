@@ -128,7 +128,7 @@ sub save_standard {
   $choice =~ s{\s+}{_}g;
   my $default = join('.', $choice, 'xmu');
   my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
-				"data (*.dat,*.xmu)|*.data,*.xmu|All files|*",
+				"data (*.dat,*.xmu)|*.data,*.xmu|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   return if ($fd->ShowModal == wxID_CANCEL);
@@ -165,7 +165,7 @@ Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

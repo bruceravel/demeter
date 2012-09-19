@@ -294,7 +294,7 @@ sub prep_arrays {
   my $n2 = $self->data->iofx('energy', $self->xmax);
   $self->data -> _update($ud);
   my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $self -> dispose($self->template("analysis", $which));
+  $self -> dispense("analysis", $which);
 
   ## interpolate all the standards onto the grid of the data
   my @all = @{ $self->standards };
@@ -302,19 +302,19 @@ sub prep_arrays {
   $self->mo->standard($self);
   foreach my $stan (@all[0..$#all-1]) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $stan -> dispose($stan->template("analysis", $which));
+    $stan -> dispense("analysis", $which);
   };
   if ($self->nstan eq 1) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   } elsif ($self->unity) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   } else {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+    $all[$#all] -> dispense("analysis", $which);
   };
-  $self -> dispose($self->template("analysis", 'lcf_prep_lcf', {how=>$how}));
+  $self -> dispense("analysis", 'lcf_prep_lcf', {how=>$how});
   $self->mo->standard(q{});
   return $self;
 };
@@ -328,16 +328,16 @@ sub fit {
 
   $self->prep_arrays('def');
   ## create the array to minimize and perform the fit
-  $self -> dispose($self->template("analysis", "lcf_fit"));
+  $self -> dispense("analysis", "lcf_fit");
 
   my $sumsqr = 0;
   foreach my $st (@all) {
-    my ($w, $dw) = $self->weight($st, Ifeffit::get_scalar("aa_".$st->group), Ifeffit::get_scalar("delta_a_".$st->group));
+    my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
     $sumsqr += $dw**2;
     if ($self->one_e0) {
-      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$self->group));
+      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
     } else {
-      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$st->group));
+      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
     };
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
@@ -347,7 +347,7 @@ sub fit {
   $self->_statistics;
 
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
-  $self->ifeffit_heap;
+  #$self->ifeffit_heap;
   return $self;
 };
 
@@ -380,9 +380,9 @@ sub _statistics {
   } else {
     $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
   };
-  $self->chisqr(sprintf("%.5f", Ifeffit::get_scalar('chi_square')));
-  $self->chinu(sprintf("%.7f", Ifeffit::get_scalar('chi_reduced')));
-  $self->nvarys(Ifeffit::get_scalar('n_varys'));
+  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+  $self->nvarys($self->fetch_scalar('n_varys'));
 
   my $sum = 0;
   foreach my $stan (@{ $self->standards }) {
@@ -407,7 +407,7 @@ sub plot_fit {
   my $step = 0;
   if ($self->space =~ m{\Achi}) {
     #$self->data->plot('k');
-    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset});
     $self->po->increment;
     my ($floor, $ceil) = $self->data->floor_ceil('chi');
     $step = min(abs($floor), abs($ceil));
@@ -415,17 +415,17 @@ sub plot_fit {
     $self->po->set(e_norm=>1, e_markers=>0, e_der=>0);
     $self->po->e_der(1) if ($self->space =~ m{\An?der});
     #self->data->plot('E');
-    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset});
     $self->po->increment;
     if ($self->space =~ m{\An?der}) {
       my ($floor, $ceil) = $self->data->floor_ceil('nder');
       $step = min(abs($floor), abs($ceil));
     };
   };
-  $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
+  $self->chart("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset});
   $self->po->increment;
   if ($self->plot_difference) {
-    $self->dispose($self->template("plot", "overlcf", {suffix=>'resid', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>'resid', yoffset=>$self->data->y_offset});
     $self->po->increment;
   };
   if ($self->plot_components) {
@@ -436,7 +436,7 @@ sub plot_fit {
 	$self->data->y_offset($yoff - $step);
 	#print join(" ", $step, $self->data->y_offset), $/;
       };
-      $self->dispose($self->template("plot", "overlcf", {suffix=>$stan->group, yoffset=>$self->data->y_offset}), 'plotting');
+      $self->chart("plot", "overlcf", {suffix=>$stan->group, yoffset=>$self->data->y_offset});
       $self->po->increment;
     };
     $self->data->y_offset($save_yoff);
@@ -472,7 +472,7 @@ sub plot {
 
   if ($do_plot) {
     ## if space is chi and plot ir R, do FFTs and plot those...
-    $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset});
   };
   if (($self->po->space eq 'r') and ($self->space =~ m{\Achi})) {
     my $suff = ($self->po->r_pl eq 'm') ? 'chir_mag'
@@ -480,7 +480,7 @@ sub plot {
              : ($self->po->r_pl eq 'i') ? 'chir_im'
              : ($self->po->r_pl eq 'p') ? 'chir_pha'
 	     :                            'chir_mag';
-    $self->dispose($self->template("plot", "overlcf", {suffix=>$suff, yoffset=>$self->data->y_offset}), 'plotting');
+    $self->chart("plot", "overlcf", {suffix=>$suff, yoffset=>$self->data->y_offset});
   };
 
   return $self;
@@ -525,7 +525,7 @@ sub clear {
 
 sub clean {
   my ($self) = @_;
-  $self->dispose($self->template('analysis', 'lcf_clean'));
+  $self->dispense('analysis', 'lcf_clean');
   return $self;
 };
 
@@ -620,7 +620,7 @@ sub restore {
     #$self->e0($this_data->group, $e0, $de0);
     $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
   };
-  $self->dispose($self->template('analysis', 'lcf_sum'));
+  $self->dispense('analysis', 'lcf_sum');
   $self->mo->standard(q{});
   return $self;
 };
@@ -783,7 +783,7 @@ sub sequence {
   $self->clean;
   $self->data($first);
   my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
-  $self->dispose($self->template("analysis", $which));
+  $self->dispense("analysis", $which);
   $self->set(doing_seq=>0, seq_results=>\@results);
   $self->restore($results[0]);
   $self->plot_fit if $self->co->default('lcf', 'plot_during');
@@ -813,11 +813,11 @@ sub sequence_plot {
   my @all = keys(%$first);
   my @stan = grep {$_ !~ m{\A[A-Z]}} @all;
   my $st1 = shift @stan;
-  $self->dispose($self->template('plot', 'newlcf_seq', {file=>$tempfile, col=>2, title=>$self->mo->fetch('Data', $st1)->name}), 'plotting');
+  $self->chart('plot', 'newlcf_seq', {file=>$tempfile, col=>2, title=>$self->mo->fetch('Data', $st1)->name});
   my $col = 4;
   foreach my $st (@stan) {
     $self->po->increment;
-    $self->dispose($self->template('plot', 'overlcf_seq', {file=>$tempfile, col=>$col, title=>$self->mo->fetch('Data', $st)->name}), 'plotting');
+    $self->chart('plot', 'overlcf_seq', {file=>$tempfile, col=>$col, title=>$self->mo->fetch('Data', $st)->name});
     $col += 2;
   };
   return $self;
@@ -897,7 +897,7 @@ Demeter::LCF - Linear combination fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -1101,7 +1101,7 @@ The number of variable parameters used in the fit.
 =item C<rfactor>
 
 An R-factor for the fit.  For fits to chi(k) or the derivative
-spectrum, this is an Ifeffit-normal R-factor:
+spectrum, this is a normal R-factor in Ifeffit or Larch:
 
    sum( [data_i - fit_i]^2 ]
   --------------------------
@@ -1119,11 +1119,11 @@ where <data> is the geometric mean of the data in the fitting range.
 
 =item C<chisqr>
 
-This is Ifeffit's chi-square for the fit.
+This is the chi-square for the fit.
 
 =item C<chinu>
 
-This is Ifeffit's reduced chi-square for the fit.
+This is the reduced chi-square for the fit.
 
 =back
 
@@ -1296,7 +1296,8 @@ fit is in energy and the C<e_norm> Plot attribute is true.
 
 =item C<clean>
 
-This method clears all scalars and arrays our of Ifeffit's memory.
+This method clears all scalars and arrays out of the memory of the
+data processing backend (Ifeffit/Larch).
 
   $lcf->clean;
 

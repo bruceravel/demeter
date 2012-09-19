@@ -72,13 +72,15 @@ sub new {
   $top -> Add($gbs, 0, wxLEFT|wxRIGHT, 25);
 
 
-  $this->{plot} = Wx::Button->new($this, -1, 'Plot data and correction',  wxDefaultPosition, $tcsize);
-  $this->{info} = Wx::Button->new($this, -1, 'Plot information depth',    wxDefaultPosition, $tcsize);
-  $this->{make} = Wx::Button->new($this, -1, 'Make corrected data group', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot info make));
+  $this->{plot}  = Wx::Button->new($this, -1, 'Plot data and correction',         wxDefaultPosition, $tcsize);
+  $this->{infoe} = Wx::Button->new($this, -1, 'Plot information depth in energy', wxDefaultPosition, $tcsize);
+  $this->{info}  = Wx::Button->new($this, -1, 'Plot information depth in k',      wxDefaultPosition, $tcsize);
+  $this->{make}  = Wx::Button->new($this, -1, 'Make corrected data group',        wxDefaultPosition, $tcsize);
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot infoe info make));
   $this->{make}->Enable(0);
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot($app->current_data)});
-  EVT_BUTTON($this, $this->{info},    sub{$this->info($app->current_data)});
+  EVT_BUTTON($this, $this->{infoe},   sub{$this->info($app->current_data, 'E')});
+  EVT_BUTTON($this, $this->{info},    sub{$this->info($app->current_data, 'k')});
   EVT_BUTTON($this, $this->{make},    sub{$this->make($app)});
 
   my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
@@ -150,14 +152,19 @@ sub plot {
 
   if ($formula =~ m{\A\s*\z}) {
     $this->{feedback}->SetValue("You did not provide a formula.");
-    $::app->{main}->status("You did not provide a formula.");
+    $::app->{main}->status("You did not provide a formula.", 'error');
     return;
   };
   my %count = ();
   my $ok = parse_formula($formula, \%count);
   if (not $ok) {
     $this->{feedback}->SetValue($count{error});
-    $::app->{main}->status("The formula \"$formula\" could not be parsed.");
+    $::app->{main}->status("The formula \"$formula\" could not be parsed.", 'error');
+    return;
+  };
+  if (not exists($count{ucfirst($data->bkg_z)})) {
+    $this->{feedback}->SetValue("Your formula does not contain the absorber.");
+    $::app->{main}->status("Your formula does not contain the absorber.", 'error');
     return;
   };
 
@@ -194,27 +201,32 @@ sub make {
 };
 
 sub info {
-  my ($this, $data) = @_;
+  my ($this, $data, $space) = @_;
   my $formula   = $this->{formula}   -> GetValue;
   my $in        = $this->{in}        -> GetValue;
   my $out       = $this->{out}       -> GetValue;
   if ($formula =~ m{\A\s*\z}) {
     $this->{feedback}->SetValue("You did not provide a formula.");
-    $::app->{main}->status("You did not provide a formula.");
+    $::app->{main}->status("You did not provide a formula.", 'error');
     return;
   };
   my %count = ();
   my $ok = parse_formula($formula, \%count);
   if (not $ok) {
     $this->{feedback}->SetValue($count{error});
-    $::app->{main}->status("The formula \"$formula\" could not be parsed.");
+    $::app->{main}->status("The formula \"$formula\" could not be parsed.", 'error');
+    return;
+  };
+  if (not exists($count{ucfirst($data->bkg_z)})) {
+    $this->{feedback}->SetValue("Your formula does not contain the absorber.");
+    $::app->{main}->status("Your formula does not contain the absorber.", 'error');
     return;
   };
 
   $::app->{main}->{PlotK}->pull_single_values;
 
   $data->po->start_plot;
-  my ($x, $y) = $data->info_depth($formula, $in, $out);
+  my ($x, $y) = $data->info_depth($formula, $in, $out, $space);
   my $tempfile = $data->po->tempfile;
   open my $T, '>'.$tempfile;
   foreach my $i (0 .. $#{$x}) {
@@ -222,8 +234,11 @@ sub info {
   };
   close $T;
 
-  my $text = $data->template('plot', 'plot_info_depth', {file  => $tempfile});
-  $data -> dispose($text, 'plotting');
+  if (lc($space) eq 'e') {
+    $data -> chart('plot', 'plot_info_depth_e', {file  => $tempfile});
+  } else {
+    $data -> chart('plot', 'plot_info_depth',   {file  => $tempfile});
+  };
 };
 
 
@@ -236,7 +251,7 @@ Demeter::UI::Athena::SelfAbsorption - A self-absorption correction tool for Athe
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

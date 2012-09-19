@@ -13,6 +13,7 @@ my $make_feff_frame = \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;
+use Chemistry::Elements qw(get_Z);
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -47,11 +48,11 @@ sub prjrecord {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Athena project", cwd, q{},
-				  "Athena project (*.prj)|*.prj|All files|*",
+				  "Athena project (*.prj)|*.prj|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Data import cancelled.");
+      $rframes->{main}->status("Data import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -88,7 +89,7 @@ sub _prj {
     return;
   };
   if ((not $prj) or (not $record)) {
-    $rframes->{main}->status("Data import cancelled.");
+    $rframes->{main}->status("Data import canceled.");
     return;
   };
 
@@ -102,10 +103,24 @@ sub _prj {
 	$data->bkg_stan($ref->group);
       };
     };
-    ## clean up a few straggler arrays in Ifeffit and the spare Data object
-    $data->dispose("erase \@group $toss");
+    ## clean up a few straggler arrays in Ifeffit/Larch and the spare Data object
+    $data->dispense('process', 'erase', {items=>"\@group $toss"});
     $toss = Demeter->mo->fetch('Data', $toss);
     $toss->DESTROY;
+  };
+
+  ## refuse to move forward for actinides above Am
+  if (get_Z($data->bkg_z) > 95) {
+    $prj->DESTROY;
+    $rframes->{prj} -> Destroy;
+    delete $rframes->{prj};
+    my $error = Wx::MessageDialog->new($rframes->{main},
+				       "The version of Feff you are using cannot calculate for absorbers above Z=95.",
+				       "Error importing data",
+				       wxOK|wxICON_EXCLAMATION);
+    my $result = $error->ShowModal;
+    $rframes->{main}->status("The version of Feff you are using cannot calculate for absorbers above Z=95.", 'alert');
+    return 0;
   };
 
   my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
@@ -129,11 +144,11 @@ sub _feff {
   my $file = $fname;
   if (not $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import crystal data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Crystal/Feff data import cancelled.");
+      $rframes->{main}->status("Crystal/Feff data import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -161,11 +176,11 @@ sub _chi {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import $CHI(k) data", cwd, q{},
-				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files|*",
+				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -194,11 +209,11 @@ sub _dpj {
   $nomru ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Demeter fit serialization file", cwd, q{},
-				  "Fit serialization (*.dpj)|*.dpj|All files|*",
+				  "Fit serialization (*.dpj)|*.dpj|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status(".dpj file import cancelled.");
+      $rframes->{main}->status(".dpj file import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -214,7 +229,7 @@ sub _dpj {
 
   my $zip = Archive::Zip->new;
   if ($zip->read($file) != AZ_OK) {
-    $rframes->{main}->status("$CHI(k) import cancelled.");
+    $rframes->{main}->status("$CHI(k) import canceled.");
     return;
   };
   if (not defined($zip->memberNamed('FIT.SERIALIZATION'))) {
@@ -281,7 +296,7 @@ sub _dpj {
       ## skip Readme and FIT.SERIALIZATION
     };
   };
-  $fit->deserialize(folder=>$fitdir, regenerate=>1); #$regen);
+  $fit->deserialize(folder=>$fitdir, regenerate=>0); #$regen);
   my $import_problems .= Demeter::UI::Artemis::Project::restore_fit($rframes, $fit, $fit);
   if ($import_problems) {
     Wx::MessageDialog->new($rframes->{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
@@ -312,11 +327,11 @@ sub _external_feff {
   $noshow ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Atoms or Feff input file", cwd, q{},
-				  "Atoms/Feff input (*.inp)|*.inp|All files|*",
+				  "Atoms/Feff input (*.inp)|*.inp|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -413,11 +428,11 @@ sub _old {
   $file ||= q{};
   if (not -e $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
-				  "old-style Artemis project (*.apj)|*.apj|All files|*",
+				  "old-style Artemis project (*.apj)|*.apj|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("old-style Artemis import cancelled.");
+      $rframes->{main}->status("old-style Artemis import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -464,11 +479,11 @@ sub _feffit {
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Feffit input file", cwd, q{},
-				  "Feffit input (*.inp)|*.inp|All files|*",
+				  "Feffit input (*.inp)|*.inp|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Feffit import cancelled.");
+      $rframes->{main}->status("Feffit import canceled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -607,7 +622,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

@@ -80,18 +80,18 @@
 </pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>Demeter uses <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> to construct all text destined for
-Ifeffit as well as for atoms and feff input files and the plotting
-backends.  The use of templating system add a bit of complexity to
-Demeter in the sense that the actual content of Ifeffit commands (or
-input files) is generated quite far away from the location in the code
-where that text is used.  However, the use of a templating system adds
-a lot to Demeter.  Output can be highly customized or directed to a
-different target altogether.  For example, it is already possible in
-version 0.2 to generate content for a <cite>feffit.inp</cite> file rather than
-for an Ifeffit script.  In the future, templates will make it easy for
-Demeter to target multiple plotting backends, write out functional
-Demeter scripts, or upgrade to Ifeffit 2.0 (whenever that becomes
-available).</p>
+Ifeffit or Larch as well as for atoms and feff input files and the
+plotting backends.  The use of templating system add a bit of
+complexity to Demeter in the sense that the actual content of Ifeffit
+or Larch commands (or input files) is generated quite far away from
+the location in the code where that text is used.  However, the use of
+a templating system adds a lot to Demeter.  Output can be highly
+customized or directed to a different target altogether.  For example,
+it is already possible in version 0.2 to generate content for a
+<cite>feffit.inp</cite> file rather than for an Ifeffit/Larch script.  In the
+future, templates will make it easy for Demeter to target multiple
+plotting backends, write out functional Demeter scripts, or upgrade to
+Larch (whenever that becomes available).</p>
 
 <p><a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> is wonderful -- it hits a real sweet spot between
 simple and powerful.  A template in this system is plain text with
@@ -126,7 +126,7 @@ system unaltered.</p>
 </pre><p>The first line chooses the <a href="#TEMPLATE_SETS">template set</a>.  The second
 line fills in the <code>fft</code> template from the <i>process</i> <a href="#TEMPLATE_GROUPS">template group</a> using the parameters of the Data objects
 contained in <code>$data</code>.  The <code>template</code> method returns a string
-containing the appropriate Ifeffit commands.  This string is
+containing the appropriate Ifeffit or Larch commands.  This string is
 <a href="Dispose.pm.html">disposed</a> in the last line.</p>
 
 <p>Demeter uses certain conventions to push particular data into a
@@ -247,14 +247,14 @@ different plotting backends (for example, Grace would be a target that
 would work very well within Demeter).  The plot template set is chosen
 by setting the <code>template_plot</code> mode, as <a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
 	<dt><i>fit</i> and <i>process</i></dt>
-		<dd><p>Template sets exist for Ifeffit, Feffit, and Demeter.  There are two
-version of the Ifeffit template set called &quot;ifeffit&quot; and
-&quot;iff_columns&quot;.  The first set uses a fairly terse style while the
-second one tries to align ifeffit command arguments into columns
-aligned at the equals sign wherever possible.  The second one may be a
-bit more human readable.  The fit and process template sets are chosen
-by setting the <code>template_fit</code> and <code>template_process</code> modes, as
-<a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
+		<dd><p>Template sets exist for Ifeffit, Larch (coming...) Feffit, and
+Demeter.  There are two version of the Ifeffit template set called
+&quot;ifeffit&quot; and &quot;iff_columns&quot;.  The first set uses a fairly terse style
+while the second one tries to align ifeffit command arguments into
+columns aligned at the equals sign wherever possible.  The second one
+may be a bit more human readable.  The fit and process template sets
+are chosen by setting the <code>template_fit</code> and <code>template_process</code>
+modes, as <a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
 </dl>
 <p>Atoms does not use template sets and currently there is only an
 ifeffit set for the <i>analysis</i> group.</p>

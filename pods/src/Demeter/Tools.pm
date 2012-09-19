@@ -66,7 +66,7 @@ sub module_environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
   my $string = "Demeter " . $Demeter::VERSION . " with perl $] on $os\n";
-  $string .= "using Ifeffit " . (split(" ", Ifeffit::get_string('&build')))[0] . "\n";
+  $string .= "using " . $self->backend_name . " " . $self->backend_version . "\n";
   $string .= "\n Major modules                   version\n";
   $string .= '=' x 50 . "\n";
   foreach my $p (qw(
@@ -341,8 +341,9 @@ sub randomstring {
 
 sub ifeffit_heap {
   my ($self, $length) = @_;
-  $self->mo->heap_used(Ifeffit::get_scalar('&heap_used'));
-  $self->mo->heap_free(Ifeffit::get_scalar('&heap_free'));
+  ##return $self if not $self->mo->check_heap;
+  $self->mo->heap_used($self->fetch_scalar('&heap_used'));
+  $self->mo->heap_free($self->fetch_scalar('&heap_free'));
   if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
     warn sprintf("You have used %.1f%% of Ifeffit's %.1f Mb of memory",
 		 100*$self->mo->heap_used,
@@ -351,32 +352,28 @@ sub ifeffit_heap {
   return $self;
 };
 
+my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
+  @titles_text = ();
   $group ||= $self->group;
-  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+  my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
-  $self->dispose('show @strings');
-  my $lines = Ifeffit::get_scalar('&echo_lines');
-  my $target = '\$' . $group . '_title_';
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>sub{push @titles_text, $_[0]});
+  $self->dispense("process", "show_strings");
+  $self->toggle_echo($save[0]);	# reset everything
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+  my $target = $group . '_title_';
   my @all = ();
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    if ($response =~ m{$target}) {
-      (my $title = $response) =~ s{=.+\z}{};
-      $title =~ s{\s+\z}{};
-      push @all, $title;
+  foreach my $l (@titles_text) {
+    #print $l, $/;
+    if ($l =~ m{$target}) {
+      push @all, (split(/\s*=\s*/, $l))[0];
     };
   };
-  local $Text::Wrap::columns = 200;
-  my $all_titles = wrap('erase ', 'erase ', join(" ", @all));
-  $self->dispose($all_titles);
-  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
-  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+  $self->dispense('process', 'erase', {items=>join(" ", @all)});
   return $self;
 };
 
@@ -449,7 +446,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

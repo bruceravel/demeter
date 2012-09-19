@@ -82,14 +82,14 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Demeter::Data - Process and analyze EXAFS data with Ifeffit</p>
+<p>Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch</p>
 
 
 
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 
 
@@ -128,12 +128,12 @@ gathered into a Fit object.  See <a href="Fit.pm.html">Demeter::Fit</a> for deta
 <dl>
 	<dt><code>group</code> (string) <i>[random 5-letter string]</i></dt>
 		<dd><p>This is the name associated with the data.  It's primary use is as the
-group name for the arrays associated with the data in Ifeffit.  That
-is, its arrays will be called <i>group</i>.k, <i>group</i>.chi, and so on.  It
-is best if this is a reasonably short word and it <strong>must</strong> follow the
-conventions of a valid group name in Ifeffit.  The default group is a
-random five-letter string generated automatically when the object is
-created.</p></dd>
+group name for the arrays associated with the data in Ifeffit or
+Larch.  That is, its arrays will be called <i>group</i>.k, <i>group</i>.chi,
+and so on.  It is best if this is a reasonably short word and it
+<strong>must</strong> follow the conventions of a valid group name in Ifeffit or
+Larch.  The default group is a random five-letter string generated
+automatically when the object is created.</p></dd>
 	<dt><code>tag</code> (string) <i>[same random 5-letter string as group]</i></dt>
 		<dd><p>Use to disambiguate guess parameter names when doing variable name
 substitution for local parameters.</p></dd>
@@ -188,8 +188,8 @@ automatically and when you may need to set it by hand.</p></dd>
 string value is set to themanner in which the merge was made, which is
 one of <code>e</code> for mu(E), <code>n</code> for norm(E&gt;, and <code>k</code> for chi(k).</p></dd>
 	<dt><code>columns</code> (string)</dt>
-		<dd><p>This string contains Ifeffit's <code>$column_label</code> string from importing
-the data file.</p></dd>
+		<dd><p>This string contains Ifeffit's <code>$column_label</code> or Larch's <code>...</code>
+string from importing the data file.</p></dd>
 	<dt><code>energy</code> (string)</dt>
 		<dd><p>This string uses gnuplot-like notation to indicate which column in the
 data file contains the energy axis.  As an example, the default is that the
@@ -351,9 +351,10 @@ central-atom-only phase correction to the Fourier transform.</p></dd>
 		<dd><p>The upper end of the k-range for the forward transform.  <code>fft_kmin</code> and
 <code>fft_kmax</code> will be sorted by Demeter.</p></dd>
 	<dt><code>fft_dk</code> (number) <i>[2]</i></dt>
-		<dd><p>The width of the window sill used for the forward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.</p></dd>
+		<dd><p>The width of the window sill used for the forward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.</p></dd>
 	<dt><code>fft_kwindow</code> (list) <i>[Hanning]</i></dt>
 		<dd><p>This is the functional form of the Fourier transform window used in
 the forward transform.  It is one of</p></dd>
@@ -363,7 +364,7 @@ the forward transform.  It is one of</p></dd>
 		<dd><p>This is set to the Path object to be used for a full phase correction to the
 Fourier transform.</p></dd>
 	<dt><code>rmax_out</code> (number) <i>[10]</i></dt>
-		<dd><p>This tells Ifeffit how to size output arrays after doing a Fourier transform.</p></dd>
+		<dd><p>This tells Ifeffit/Larch how to size output arrays after doing a Fourier transform.</p></dd>
 </dl>
 <h2 id="Back_Transform_Attributes">Back Transform Attributes</h2>
 
@@ -380,9 +381,10 @@ the backward transform.  It is one of</p></dd>
 		<dd><p>The upper end of the R-range for the backward transform or the fitting range.
 <code>bft_rmin</code> and <code>bft_rmax</code> will be sorted by Demeter.</p></dd>
 	<dt><code>bft_dr</code> (number) <i>[0.2]</i></dt>
-		<dd><p>The width of the window sill used for the backward transform.  The meaning of
-this parameter depends on the functional form of the window.  See the Ifeffit
-document for a full discussion of the functional forms.</p></dd>
+		<dd><p>The width of the window sill used for the backward transform.  The
+meaning of this parameter depends on the functional form of the
+window.  See the Ifeffit/Larch document for a full discussion of the
+functional forms.</p></dd>
 </dl>
 <h2 id="Fitting_Attributes">Fitting Attributes</h2>
 
@@ -420,7 +422,7 @@ fit is <code>fit_karb</code> is true.</p></dd>
 	<dt><code>fit_epsilon</code> (number) <i>[0]</i></dt>
 		<dd><p>If this number is non-zero, it will be used as the measurement
 uncertainty in k-space when the fit is evaluated.  If it is zero, then
-Ifeffit's default will be used.</p></dd>
+the default in Ifeffit or Larch will be used.</p></dd>
 	<dt><code>fit_cormin</code> (number) <i>[0.4]</i></dt>
 		<dd><p>This is the minimum value of correlation to be reported in the log
 file after a fit.</p></dd>
@@ -474,9 +476,9 @@ method of the parent class.</p>
 
 <dl>
 	<dt><code>save</code></dt>
-		<dd><p>This method returns the Ifeffit commands necessary to write column
-data files based on the data object.  See <code>Demeter::Data::IO</code> for
-details.</p></dd>
+		<dd><p>This method returns the Ifeffit/Larch commands necessary to write
+column data files based on the data object.  See <code>Demeter::Data::IO</code>
+for details.</p></dd>
 	<dt><code>data_parameter_report</code></dt>
 		<dd><p>This method returns a simple, textual summary of the attributes of the data
 object related to background removal and data processing.  It is used in log
@@ -491,8 +493,8 @@ r-factor is computed as part of the report.</p></dd>
 	<dt><code>r_factor</code></dt>
 		<dd><p>This returns an evaluation of the R-factor from a fit for a single
 data set.  This is different from the R-factor for a multiple data set
-fit as reported by Ifeffit in that this number includes only the
-misfit of the single data set.</p></dd>
+fit as reported by Ifeffit or Larch in that this number includes only
+the misfit of the single data set.</p></dd>
 <dd><pre>  $r = $data_object -&gt; r_factor;
 
 </pre></dd>	<dt><code>nidp</code></dt>
@@ -556,9 +558,9 @@ The heuristics are as follows:</p>
 	<li>If the <code>numerator</code> or <code>denominator</code> attributes are set, this is data
 is assumed to be column data that will be interpreted as raw data and
 converted to mu(E) data.</li>
-	<li>The data will be read by Ifeffit.  If the first data point is greater
-than 100, it will be assumed that these data are mu(E) and that the
-energy axis is absolute energy.</li>
+	<li>The data will be read by Ifeffit or Larch.  If the first data point is
+greater than 100, it will be assumed that these data are mu(E) and
+that the energy axis is absolute energy.</li>
 	<li>If the last data point is greater than 35, it will be assumed that
 these data are mu(E) and that the energy axis is relative energy.</li>
 	<li>If none of the above are true, then the data must be chi(k) data.</li>
