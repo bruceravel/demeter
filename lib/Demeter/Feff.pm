@@ -583,9 +583,9 @@ sub rank_paths {
   foreach my $sp (@{ $self->pathlist }) {
     $sp->rank if ($self->co->default('pathfinder', 'rank') ne 'feff');
     $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]));
-    if ($sp->get_rank('zcwif') > $self->co->default('pathfinder', 'rank_high')) {
+    if ($sp->get_rank('zcwif') >= $self->co->default('pathfinder', 'rank_high')) {
       $sp->weight(2);
-    } elsif ($sp->get_rank('zcwif') < $self->co->default('pathfinder', 'rank_low')) {
+    } elsif ($sp->get_rank('zcwif') <= $self->co->default('pathfinder', 'rank_low')) {
       $sp->weight(0);
     } else {
       $sp->weight(1);
