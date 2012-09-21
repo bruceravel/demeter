@@ -5,10 +5,11 @@
   #   {$C->parameter} returns a Cell attribute
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
   $prefix ||= q{};
+  $space = ($is_p1) ? 'P 1' : $A->space;
   q{}
 }
 <<>>{foreach $t (@{ $A->titles }) { $OUT .= "${prefix}title = $t\n";}}<<->>
-{$prefix}space = {$A->space}
+{$prefix}space = {$space}
 {$prefix}a     = {$A->out("a")}    b    = {$A->out("b")}    c     = {$A->out("c")}
 {$prefix}alpha = {$A->out("alpha")}    beta = {$A->out("beta")}    gamma = {$A->out("gamma")}
 {$prefix}rmax  = {$A->out("rmax")}    core  = {$A->core}

@@ -835,6 +835,9 @@ sub OnParameter {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
     $data->$which($value);
 
+  } elsif ($which =~ m{nnorm_(\d)}) { # norm order
+    $data->bkg_nnorm($1);
+
   } elsif ($which !~ m{fixstep}) { # toggle
     $data->$which($value);
 

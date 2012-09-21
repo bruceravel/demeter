@@ -885,7 +885,7 @@ sub atoms_file {
            : ($is_p1)         ? q{}
 	                      : 'Atoms';
   $string   .= $self->template("copyright", {prefix=>$prefix, type=>$type}) if $type;
-  $string   .= $self->template("atoms_header", {prefix=>$prefix});
+  $string   .= $self->template("atoms_header", {prefix=>$prefix, is_p1=>($type eq 'P1')});
   $string   .= ($type eq 'P1') ? $self->p1_list({prefix=>$prefix}) : $self->sites_list({prefix=>$prefix});
   return $string;
 };

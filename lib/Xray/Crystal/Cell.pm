@@ -520,10 +520,24 @@ sub populate {
     my @list = @{$occ{$k}};
     my $val = shift @list;
     if ($val > (1+$EPSILON)) {
-      croak("These sites:\n\t" .
-	    join("  ", map {sprintf "\"%s\"", $_} @list) .
-	    "\ngenerate one or more common positions and their occupancies\n" .
-	    "sum to more than 1.");
+      carp("These sites:\n\t" .
+	   join("  ", map {sprintf "\"%s\"", $_} @list) .
+	   "
+generate one or more common positions and their occupancies
+sum to more than 1.
+
+The Feff input data is likely to contain obvious mistakes, such
+as multiple atoms at the same position or an unphiscially large
+value for the calculated specific gravity.
+
+Some possible solutions to this problem include:
+  * removing dopant atoms from the crystal data
+  * removing symmetry-related sites from the crystal data
+  * specifying the space group as \"P 1\" if your crystal
+    data include positions for a fully decorated unit cell
+
+"
+	  );
     };
   };
   return $self;
