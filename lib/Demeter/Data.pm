@@ -132,7 +132,7 @@ has  denominator  => (is => 'rw', isa => 'Str',  default => q{1},
 					$self->is_col(1)
 				      }
 				    });
-has 'chi_column' => (is => 'rw', isa => 'Str',  default => q{1},
+has 'chi_column' => (is => 'rw', isa => 'Str',  default => q{},
 		     trigger => sub{ my ($self, $new) = @_;
 				     if ($new) {
 				       $self->datatype('chi') if $self->datatype ne 'chi';

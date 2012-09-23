@@ -374,7 +374,7 @@ sub OnDatatype {
       $d->Enable(1);
     };
 
-    my $num = ($data->chi_column eq '1') ? $data->numerator : $data->chi_column;
+    my $num = ($data->chi_column eq q{}) ? $data->numerator : $data->chi_column;
     $data->chi_column(q{});
     $data->numerator($num);
   };

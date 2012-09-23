@@ -9,6 +9,8 @@
 *** Athena
    - Fixed a crashy bug when changing normalization order
    - Flag for setting difference group as re-normalizable
+   - Fix bugs in selecting XANES as datatype in column selection
+     dialog
 
 *** Artemis
    - P1 output from Atoms now correctly sets space group as "P 1"

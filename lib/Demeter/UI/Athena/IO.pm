@@ -431,6 +431,7 @@ sub _data {
     $mc->discard;
   } else {
     $message = $data->name;
+    $data->datatype($dtp);
     _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
