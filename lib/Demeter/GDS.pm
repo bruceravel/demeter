@@ -27,7 +27,7 @@ use Demeter::Constants qw($NUMBER);
 has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');
 has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
-has 'initial'	  => (is => 'rw', isa => 'Str');
+has 'initial'	  => (is => 'rw', isa => 'Str',   default => q{});
 has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
 has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
 		      trigger => sub{my ($self, $new) = @_; $self->modified(1) if $new} );

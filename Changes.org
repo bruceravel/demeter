@@ -16,6 +16,8 @@
    - P1 output from Atoms now correctly sets space group as "P 1"
    - Better (and less crashy) error message in case of multiple
      occupancy in crystal data
+   - Fixed a problem importing a project file containing only a feff
+     calclation and no data
 
 *** Demeter
    - Added CONTRIBUTING file to distro for use at GitHub
