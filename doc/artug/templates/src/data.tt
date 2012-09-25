@@ -130,11 +130,13 @@ The [% artemis %] data window.
 
 [% PROCESS section label="Special plots" %]
 
+[% FILTER html_para -%]
 The five plot buttons on the Data window make special plots of that
 data set along with its fit (if a fit has been run).  Each of these is
 an elaborate, multi-component plot that cannot be made using the tools
 on the Plot window.  The examples shown here are for a fit to gold
 metal out to the fourth coordination shell.
+[% END %]
 
 [% WRAPPER scriptcaption this="plot_k123.png" %]
 This is the [% INCLUDE font/quote a="k123" %] plot.  It shows the data

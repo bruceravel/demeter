@@ -77,8 +77,8 @@ setting the plotting range in each of the three spaces.
 
 [% END %] [%# end of unordered list%]
 
-The [% INCLUDE font/quote a="VPaths" %] tab will explained in a later
-chapter.
+The other tabs will explained in 
+[% INCLUDE html/link link="../plot/index.html" text="the plotting chapter" %].
 
 The last item on the Plot window is a button labeled 
 [% INCLUDE font/quote a="Save next plot to a file" %].  When
@@ -89,44 +89,4 @@ plot from [% artemis %] as closely as possible using some other
 plotting program.
 [% END %] [%# end of caption%]
 
-[% WRAPPER scriptcaption this="stacktab.png" %]
-The [% INCLUDE font/quote a="stack" %] tab holds controls for
-providing vertical offset between traces in a plot.  This is most
-useful for plots containing lots of traces, for example one which
-plots many paths along with data.  The top set of controls works very
-similarly to the similar feature in [% athena %].  When the check
-button is clicked on, paths will be offset vertically as indicated by
-the the two values.  The initial value is the offset applied to the
-data.  All parts of the data (fit, window, etc) will also be plotrted
-with that offset.  The second value is a vertical displacement between
-successive paths.  Note that the displacement is downward -- that is,
-a value of +2 means to displace each path by -2 on the y-axis.  In
-this way, traces appear in the same top-to-bottom order as the plot
-legend.
 
-The second group of controls is used to multiple paths by -1 before
-plotting.  This results in the data pointing up and the individual
-paths pointing down.  This feature is turned off when the check button
-for a stacked plot is clicked on.
-
-The last control is used to specify a vertical offset between data
-sets when plotting more than one data set from a multiple data set
-fit.  Note that this stacking parameter and the individual data set
-stacking parameters will interact, requiring careful consideration for
-an attractive plot.
-[% END %]
-
-[% WRAPPER quadplot files=["indicplot.png", "indictab.png"] %]
-In [% demeter %], an indicator is a vertical line used to mark a
-specific position on the x-axis.  In this example, it is the pink line
-at 2.076 [% AA %]. An indicator for a position in R is
-not plotted in k or q.  An indicator for a position in k or q is not
-plotted in R.  Inidactors for positions in k or q are also plotted in
-q or k.
-
-To set an indicator, click the target button, then click on a point in
-the current plot.  Once set, the position and space can be edited
-using the associated choice menu and text control.  The check button
-turns the indicator on or off in subsequent plots.  The buttons at the
-bottom toggle the check buttons for each indicator. 
-[% END %]

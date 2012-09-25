@@ -13,6 +13,7 @@
 		'path',
 		'gds',
 		'fit',
+		'plot',
 		'logjournal',
 		'history',
 		'monitor',
@@ -56,6 +57,15 @@
 		    	   sanity = { name = 'Sanity checking your model' }
 			   happiness = { name = 'The happiness parameter' }
 			   pathlike = { name = 'Using path-like objects' }
+			   }
+		    }
+	    plot = {
+	    	    name = 'The Plot window'
+		    menu = ['stack', 'indic', 'vpaths']
+		    page = {
+		    	   stack = {name = 'Stacked plots'}
+		    	   indic = {name = 'Indicators'}
+		    	   vpaths = {name = 'Creating and plotting VPaths'}
 			   }
 		    }
 	    logjournal = { name = 'The Log & Journal windows'}

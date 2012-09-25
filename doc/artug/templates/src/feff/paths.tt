@@ -69,6 +69,13 @@ contributor to the EXAFS.  The low importance fourth shell path, which
 also scatters among first coordination shell atoms, cannot even be
 seen on this scale.  It truly is a low importance path.
 
+The meaning of a [% INCLUDE font/quote a="raw" %] [%feff%] calculation
+is that it is displayed as [%chik%] with [%s02%] set to 1.0 and each
+of [%e0%], [%delr%], and [%sigma2%] set to 0.  A plot of [%chir%] for
+the [% INCLUDE font/quote a="raw" %] [%feff%] calculation, then,
+displays the Foruier transform of [%chik%] parameterized with those
+values.
+
 It is, therefore, very quick and easy to examine the results of a
 [%feff%] calculation.  The other four buttons are used to select how
 the plot of paths is made.  The options are [%chik%], [%chir_mag%],
