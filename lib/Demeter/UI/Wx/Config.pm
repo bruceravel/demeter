@@ -402,7 +402,7 @@ Demeter::UI::Wx::Config - A configuration widget for Demeter applications
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 
