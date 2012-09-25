@@ -27,7 +27,9 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
 
-has '+name' => (default => 'pixel data',);
+use List::MoreUtils qw(minmax);
+
+#has '+name' => (default => 'pixel data',);
 has '+datatype' => (default => 'xmu',);
 has '+is_special' => (default => 1,);
 
@@ -37,18 +39,26 @@ has 'standard' => (is => 'rw', isa => Empty.'|Demeter::Data',  default => q{},
 				     $self->standardgroup($new->group);
 				     $self->_update('background');
 				     $new ->_update('background');
-				     $self->offset($new->bkg_e0 - $self->linear*$self->bkg_e0);
+				     #$self->offset($new->bkg_e0 - $self->linear*$self->bkg_e0);
 				   }
 				 });
 has 'standardgroup' => (is => 'rw', isa => 'Str',  default => q{});
 
 has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
 has 'linear'    => (is => 'rw', isa => 'Num',  default => 0.4);
-has 'quadratic' => (is => 'rw', isa => 'Num',  default => 0);
+has 'quadratic' => (is => 'rw', isa => 'Num',  default => sub{ shift->co->default("dispersive", "quadratic")  || 0});
 
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Pixel($self);
+};
+
+
+after read_data => sub {
+  my ($self) = @_;
+  $self->name($self->name . ' (pixel)') if ($self->name !~ m{\(pixel\)\z});
+  $self->source($self->name);
+  return $self;
 };
 
 sub _sanity {
@@ -76,6 +86,11 @@ sub guess {
   my $da9 = $self->e0('fraction');
   $self->e0('ifeffit');
 
+  #print "\n$st1  $st9 \n";
+  #print "\n$da1  $da9 \n";
+  #printf "%.9f\n", ($st9-$st1)/($da9-$da1);
+  #printf "%.9f\n",  $st1 - (($st9-$st1)/($da9-$da1)) * $da1;
+
   $self->linear(($st9-$st1)/($da9-$da1));
   $self->offset($st1 - ($self->linear * $da1));
 
@@ -91,13 +106,13 @@ sub pixel {
   $self->_update('fft');
   $self->standard->_update('fft');
 
-  $self->dispose($self->template('process', 'pixel_setup'));
-  $self->dispose($self->template('process', 'pixel_fit'));
+  $self->dispense('process', 'pixel_setup');
+  $self->dispense('process', 'pixel_fit');
 
-  $self->offset(Ifeffit::get_scalar("pixel___a"));
-  $self->linear(Ifeffit::get_scalar("pixel___b"));
-  $self->quadratic(Ifeffit::get_scalar("pixel___c"));
-  #print Ifeffit::get_scalar('pixel___xmin'), " ",Ifeffit::get_scalar('pixel___xmax'), $/;
+  $self->offset($self->fetch_scalar("pixel___a"));
+  $self->linear($self->fetch_scalar("pixel___b"));
+  $self->quadratic($self->fetch_scalar("pixel___c"));
+  #print $self->fetch_scalar('pixel___xmin'), " ",$self->fetch_scalar('pixel___xmax'), $/;
   #print $self->linear, "  ", $self->offset, "  ", $self->quadratic, $/;
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
   return $self;
@@ -109,13 +124,14 @@ sub apply {
   $convert ||= $self;
   $convert -> _update('data');
   $convert -> set(offset=>$self->offset, linear=>$self->linear, quadratic=>$self->quadratic);
-  my $new = Demeter::Data->new(name=>$convert->name);
-  $new    -> mo -> standard($convert);
-  $new    -> dispose($new->template('process', 'pixel_set'));
-  $new    -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
-  $new    -> e0;
-  $new    -> resolve_defaults;
-  $new    -> unset_standard;
+  my $new  = Demeter::Data->new(name=>$convert->name);
+  $new     -> source('DXAS: '.$convert->file);
+  $new     -> mo -> standard($convert);
+  $new     -> dispense('process', 'pixel_set');
+  $new     -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
+  $new     -> e0;
+  $new     -> resolve_defaults;
+  $new     -> unset_standard;
   return $new;
 };
 
@@ -133,7 +149,7 @@ Demeter::Data::Pixel - Handle dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

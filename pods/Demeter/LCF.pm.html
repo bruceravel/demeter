@@ -88,7 +88,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -237,7 +237,7 @@ a value appropriate to recently completed fit.</p>
 		<dd><p>The number of variable parameters used in the fit.</p></dd>
 	<dt><code>rfactor</code></dt>
 		<dd><p>An R-factor for the fit.  For fits to chi(k) or the derivative
-spectrum, this is an Ifeffit-normal R-factor:</p></dd>
+spectrum, this is a normal R-factor in Ifeffit or Larch:</p></dd>
 <dd><pre>   sum( [data_i - fit_i]^2 ]
   --------------------------
       sum ( data_i^2 )
@@ -251,9 +251,9 @@ make it somewhat closer to 10^-2.</p></dd>
 
 </pre></dd>		<dd><p>where &lt;data&gt; is the geometric mean of the data in the fitting range.</p></dd>
 	<dt><code>chisqr</code></dt>
-		<dd><p>This is Ifeffit's chi-square for the fit.</p></dd>
+		<dd><p>This is the chi-square for the fit.</p></dd>
 	<dt><code>chinu</code></dt>
-		<dd><p>This is Ifeffit's reduced chi-square for the fit.</p></dd>
+		<dd><p>This is the reduced chi-square for the fit.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -378,7 +378,8 @@ at all) if the plot conditions do not match the fitting space of the
 fit.  E.g., an LCF fit to normalized data will only be plotted if the
 fit is in energy and the <code>e_norm</code> Plot attribute is true.</p></dd>
 	<dt><code>clean</code></dt>
-		<dd><p>This method clears all scalars and arrays our of Ifeffit's memory.</p></dd>
+		<dd><p>This method clears all scalars and arrays out of the memory of the
+data processing backend (Ifeffit/Larch).</p></dd>
 <dd><pre>  $lcf-&gt;clean;
 
 </pre></dd></dl>

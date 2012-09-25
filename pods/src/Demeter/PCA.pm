@@ -183,7 +183,7 @@ sub do_pca {
 
   ## create the decomposition vectors (these are piddles)
   my $decomposed = $self->eigenvectors x $self->data_matrix;
-  ## write each decomposition vector to an Ifeffit array in the PCA object's group
+  ## write each decomposition vector to an array in the PCA object's group
   foreach my $row (0 .. $self->ndata-1) {
     my $this = $decomposed->slice(":,($row)");
     my @array = $this->list;
@@ -209,14 +209,14 @@ sub tt {
   $ncomp ||= $self->ndata;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
-  # #$self->dispose("\&screen_echo = 1");
-  # #$self->dispose("show \@group ".$self->group);
+  # #$self->toggle_echo(1);
+  # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_tt', {ncomp=>$ncomp}));
+  $self->dispense('analysis', 'pca_tt', {ncomp=>$ncomp});
   my @coef = ();
   foreach my $i (0 .. $self->ndata-1) {
-    push @coef, Ifeffit::get_scalar("_p$i");
+    push @coef, $self->fetch_scalar("_p$i");
   };
   $self->ttcoefficients(\@coef);
 
@@ -244,7 +244,7 @@ sub plot_scree {
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('scree', \@array);
   $self->po->start_plot;
-  $self->dispose($self->template('plot', 'pca_plot_scree', {log=>$do_log}), 'plotting');
+  $self->chart('plot', 'pca_plot_scree', {log=>$do_log});
   return $self;
 };
 
@@ -255,7 +255,7 @@ sub plot_variance {
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('cumvar', \@array);
   $self->po->start_plot;
-  $self->dispose($self->template('plot', 'pca_plot_variance'), 'plotting');
+  $self->chart('plot', 'pca_plot_variance');
   return $self;
 };
 
@@ -266,7 +266,7 @@ sub plot_components {
   my $which = 'pca_new_component';
   @list = (0 .. $#{ $self->stack }) if not @list;
   foreach my $i (@list) {
-    $self->dispose($self->template('plot', $which, {component=>$i}), 'plotting');
+    $self->chart('plot', $which, {component=>$i});
     $self->po->increment;
     $which = 'pca_over_component';
   };
@@ -281,7 +281,7 @@ sub plot_stack {
   @list = (0 .. $#{ $self->stack }) if not @list;
   foreach my $i (@list) {
     $self->data($self->stack->[$i]);
-    $self->dispose($self->template('plot', $which), 'plotting');
+    $self->chart('plot', $which);
     $self->po->increment;
     $which = 'pca_over_stack';
     $self->data(q{});
@@ -299,7 +299,7 @@ sub plot_reconstruction {
   my @diff  = pairwise {$a - $b} @recon, @data;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
-  $self->dispose($self->template('plot', 'pca_plot_reconstruction', {index=>$index}), 'plotting');
+  $self->chart('plot', 'pca_plot_reconstruction', {index=>$index});
   $self->data(q{});
   return $self;
 };
@@ -313,7 +313,7 @@ sub plot_tt {
   my @diff  = pairwise {$a - $b} @tt, @data;
   $self->put_array("diff", \@diff);
   $self->data($target);
-  $self->dispose($self->template('plot', 'pca_plot_tt'), 'plotting');
+  $self->chart('plot', 'pca_plot_tt');
   $self->data(q{});
   return $self;
 };
@@ -363,23 +363,23 @@ sub header {
 
 sub save_components {
   my ($self, $filename) = @_;
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'components'}));
-  $self->dispose($self->template('analysis', 'pca_save', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'components'});
+  $self->dispense('analysis', 'pca_save', {filename=>$filename});
   return $self;
 };
 
 sub save_stack {
   my ($self, $filename) = @_;
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'data stack'}));
-  $self->dispose($self->template('analysis', 'pca_save_stack', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'data stack'});
+  $self->dispense('analysis', 'pca_save_stack', {filename=>$filename});
   return $self;
 };
 
 sub save_reconstruction {
   my ($self, $index, $filename) = @_;
   $self->data($self->stack->[$index]);
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'reconstruction'}));
-  $self->dispose($self->template('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
+  $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
   $self->data(q{});
   return $self;
 };
@@ -387,8 +387,8 @@ sub save_reconstruction {
 sub save_tt {
   my ($self, $target, $filename) = @_;
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_header', {which=>'target transform'}));
-  $self->dispose($self->template('analysis', 'pca_save_tt', {filename=>$filename}));
+  $self->dispense('analysis', 'pca_header', {which=>'target transform'});
+  $self->dispense('analysis', 'pca_save_tt', {filename=>$filename});
   $self->data(q{});
   return $self;
 };
@@ -460,7 +460,7 @@ Demeter::PCA - Principle components analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

@@ -67,12 +67,13 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>This object provides a way to read multiple channels of data from a
-single column data file that uses Ifeffit as efficiently as possible.</p>
+single column data file that uses the data processing backend
+(Ifeffit/Larch) as efficiently as possible.</p>
 
 <pre>  my $mc = Demeter::Data::MultiChannel-&gt;new(file =&gt; $file,
                                             energy =&gt; '$1');
@@ -93,9 +94,9 @@ single column data file that uses Ifeffit as efficiently as possible.</p>
 </pre><p>The data file containing multiple channels of data is imported by the
 Data::MultiChannel object.  Normal Data objects are created using the
 <code>make_data</code> method.  The advantage of this over simply re-importing
-the data file for each Data object is that Ifeffit arrays for the raw
-data columns are only created once, greatly reducing the amount of array
-wrangling that Ifeffit must perform.</p>
+the data file for each Data object is that backend arrays for the raw
+data columns are only created once, greatly reducing the amount of
+array wrangling that the backend must perform.</p>
 
 <p>This method was written for the mutichannel ioniziation chambers
 discussed in (give reference).  This class would also be useful for
@@ -125,10 +126,10 @@ attributes specified in the <code>make_data</code> method call will be passed
 along to the data object.</p></dd>
 	<dt><code>discard</code></dt>
 		<dd><p>This method destroys the Data::MultiChannel object and also removes
-all its associated arrays from Ifeffit.  It is hard to make all that
-happen automatically <strong>and</strong> at the proper time, so it is a good idea
-to explicitly do this when you are finished with a Data::MultiChannel
-object.</p></dd>
+all its associated arrays from the backend.  It is hard to make all
+that happen automatically <strong>and</strong> at the proper time, so it is a good
+idea to explicitly do this when you are finished with a
+Data::MultiChannel object.</p></dd>
 </dl>
 <h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

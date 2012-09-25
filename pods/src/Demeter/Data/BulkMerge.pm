@@ -121,13 +121,13 @@ sub merge {
     };
     $thisdata -> _update('data');
     $self->master -> align($thisdata) if $self->align;
-    $thisdata -> dispose($thisdata->template('process', 'musum'));
+    $thisdata -> dispense('process', 'musum');
     if (any {$count == $_} @{$self->subsample}) {
-      $self -> dispose("##| Quick merge subsample of $count spectra");
+      $self -> dispense('process', 'comment', {comment=>"Quick merge subsample of $count spectra"});
       my $sample = $self->sum->clone;
       $sample -> set(name=>"Merge of $count scans", is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
       $sample -> update_norm(1);
-      $sample -> dispose($sample->template('process', 'muave', {count=>$count}));
+      $sample -> dispense('process', 'muave', {count=>$count});
       $self->push_sequence($sample);
     };
     $thisdata->DEMOLISH;
@@ -136,7 +136,7 @@ sub merge {
   $self->sum -> stop_counter if $self->mo->ui eq 'screen';
   $self->count($count);
 
-  $self->sum -> dispose($self->sum->template('process', 'muave', {count=>$self->count}));
+  $self->sum -> dispense('process', 'muave', {count=>$self->count});
   $self->sum -> update_norm(1);
   $self->sum -> name("Merge of $count scans");
 
@@ -158,7 +158,7 @@ Demeter::Data::MultiChannel - Efficiantly merge many files into a single spectru
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 
@@ -175,9 +175,9 @@ statistical quality of the data.
   $_->plot('E') foreach ($data, $merged);
 
 The trick is that each file is only imported to the point of having
-arrays for energy and xmu in Ifeffit.  Each file in the list is
-imported to the same Ifeffit group.  The merge is computed by
-accumulation and divided by the total numberof scans.
+arrays for energy and xmu.  Each file in the list is imported to the
+same group.  The merge is computed by accumulation and divided by the
+total numberof scans.
 
 This requires that one data file be considered carefully.  This is the
 C<master>.  All other data are interpolated to the energy grid of the
@@ -257,9 +257,9 @@ Data objects from a sub-sampling sequence.
 =item C<merge>
 
 Performs the merge using some special optimizations that minimize the
-interaction with Ifeffit.  This returns a Data object containing the
-merged spectrum, divided by the number of spectra included in the
-merge.
+interaction with the data processing backend (Ifeffit/Larch).  This
+returns a Data object containing the merged spectrum, divided by the
+number of spectra included in the merge.
 
 =back
 

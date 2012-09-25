@@ -65,7 +65,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -89,17 +89,18 @@ of the Data object:</p></dd>
 </pre></dd>		<dd><p>Note that the <code>put</code> method sets the datatype to 'xmu', so to make
 chi(k) data you must explicitly specify it.</p></dd>
 	<dt><code>get_array</code></dt>
-		<dd><p>Read an array from Ifeffit.  The argument is the Ifeffit array suffix
-of the array to import.</p></dd>
+		<dd><p>Read an array from the data processing backend (Ifeffit/Larch).  The
+argument is the Ifeffit array suffix of the array to import.</p></dd>
 <dd><pre>  @array = $dataobject-&gt;get_array(&quot;xmu&quot;);
 
 </pre></dd>	<dt><code>ref_array</code></dt>
-		<dd><p>Get a reference to an array from Ifeffit.  The argument is the Ifeffit
-array suffix of the array to import.</p></dd>
+		<dd><p>Get a reference to an array from the data processing backend
+(Ifeffit/Larch).  The argument is the Ifeffit array suffix of the
+array to import.</p></dd>
 <dd><pre>  $ref_to_array = $dataobject-&gt;ref_array(&quot;xmu&quot;);
 
 </pre></dd>	<dt><code>put_xmu</code></dt>
-		<dd><p>Push an array onto the Ifeffit array representing the xmu data
+		<dd><p>Push an array onto a backend array representing the xmu data
 associated with the Data object.  The purpose of this is to modify the
 mu(E) data for a Data object in place.  An example would be to apply a
 dead time correction without creating a new group to contain the
@@ -108,7 +109,7 @@ corrected data.</p></dd>
 
 </pre></dd>	<dt><code>floor_ceil</code></dt>
 		<dd><p>Return a two element list containing the smallest and largest values
-of an array in Ifeffit.</p></dd>
+of an array in the data processing backend (Ifeffit/Larch).</p></dd>
 <dd><pre>  ($min, $max) = $dataobject-&gt;floor_ceil(&quot;xmu&quot;);
 
 </pre></dd>	<dt><code>yofx</code></dt>

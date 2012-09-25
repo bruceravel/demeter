@@ -81,7 +81,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 
 
@@ -297,6 +297,17 @@ usually call the <code>make_feffinp</code> method just before calling this.</p><
 		<dd><p>Dispose of text, possibly gathered from a Feff run, to the channels
 specified by the <code>screen</code> and <code>buffer</code> attributes.</p></dd>
 <dd><pre>  $feff -&gt; report($some_text);
+
+</pre></dd>	<dt><code>rank_paths</code></dt>
+		<dd><p>Perform various rankins of the importance of the various paths found
+using Demeter's pathfinder.  One of these is to run Feff on the entire
+path list and extract the curved wave importance factors from the
+<cite>files.dat</cite> file.  Other rankings are performed using
+<a href="ScatteringPath/Rank.pm.html">Demeter::ScatteringPath::Rank</a>.  The rankings are stored in the
+ScatteringPath object.</p></dd>
+<dd><pre>  $feff -&gt; pathfinder;
+  ## some time later ...
+  $feff-&gt;rank_paths;
 
 </pre></dd></dl>
 <h2 id="Reporting_methods">Reporting methods</h2>

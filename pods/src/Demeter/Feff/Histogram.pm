@@ -55,7 +55,7 @@ sub chi_from_histogram {
   $first->Index(255);
   $first->group("h_i_s_t_o");
   $first->_update('fft');
-  $first->dispose($first->template('process', 'histogram_first'));
+  $first->dispense('process', 'histogram_first');
   $first->group($save);
   my $rbar  = $first->population * $first->R;
   my $rave  = $first->population / $first->R;
@@ -66,13 +66,13 @@ sub chi_from_histogram {
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
     $self->call_sentinal;
-    my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
+    my $save = $paths->[$i]->group; # add up the SSPaths without requiring a group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->_update('fft');
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->dispense('process', 'histogram_add');
     $paths->[$i]->group($save);
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $paths->[$i]->dispense('process', 'histogram_clean', {index=>255});
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
     $rave  += $paths->[$i]->population / $paths->[$i]->R;
     $rnorm += $paths->[$i]->population / ($paths->[$i]->R**2);
@@ -101,8 +101,8 @@ sub chi_from_histogram {
   $fourth -= 3*$sigsqr**2;
 
   $self->mo->pathindex($index);
-  my @k    = Ifeffit::get_array('h___isto.k');
-  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my @k    = $self->fetch_array('h___isto.k');
+  my @chi  = $self->fetch_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
 				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
   my $path = Demeter::FPath -> new(absorber  => $self->abs_species,
@@ -153,7 +153,7 @@ sub histogram_from_file {
 sub histogram_from_function {
   my ($self, $string, $rmin, $rmax) = @_;
   my (@x, @y);
-  ## use string to generate arrays in Ifeffit
+  ## use string to generate arrays in Ifeffit -- huh?
   return \@x, \@y;
 };
 
@@ -218,7 +218,7 @@ Demeter::Feff::Histogram - Arbitrary distribution functions
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

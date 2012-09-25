@@ -47,17 +47,17 @@ sub fit {
   $self->data->_update('all');
   $self->standard->_update('all');
 
-  $self->dispose($self->template("analysis", "lr_fit"));
-  my @cumulants = (sprintf("%.5f", Ifeffit::get_scalar("lr___pd0")),
-		   sprintf("%.5f", Ifeffit::get_scalar("lr___pd1")),
-		   sprintf("%.5f", Ifeffit::get_scalar("lr___pd2")),
-		   sprintf("%.8f", Ifeffit::get_scalar("lr___pd3")),
-		   sprintf("%.8f", Ifeffit::get_scalar("lr___pd4")));
-  my @errorbars = (sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd0")),
-		   sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd1")),
-		   sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd2")),
-		   sprintf("%.8f", Ifeffit::get_scalar("delta_lr___pd3")),
-		   sprintf("%.8f", Ifeffit::get_scalar("delta_lr___pd4")));
+  $self->dispense("analysis", "lr_fit");
+  my @cumulants = (sprintf("%.5f", $self->fetch_scalar("lr___pd0")),
+		   sprintf("%.5f", $self->fetch_scalar("lr___pd1")),
+		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
+		   sprintf("%.8f", $self->fetch_scalar("lr___pd3")),
+		   sprintf("%.8f", $self->fetch_scalar("lr___pd4")));
+  my @errorbars = (sprintf("%.5f", $self->fetch_scalar("delta_lr___pd0")),
+		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd1")),
+		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd2")),
+		   sprintf("%.8f", $self->fetch_scalar("delta_lr___pd3")),
+		   sprintf("%.8f", $self->fetch_scalar("delta_lr___pd4")));
   $self->cumulants(\@cumulants);
   $self->errorbars(\@errorbars);
 
@@ -72,20 +72,20 @@ sub report {
 
 sub plot_even {
   my ($self) = @_;
-  $self->dispose($self->template("plot", "lreven"), 'plotting');
+  $self->chart("plot", "lreven");
   return $self;
 };
 
 sub plot_odd {
   my ($self) = @_;
-  $self->dispose($self->template("plot", "lrodd"), 'plotting');
+  $self->chart("plot", "lrodd");
   return $self;
 };
 
 sub save {
   my ($self, $fname) = @_;
   $fname ||= 'lrpd.dat';
-  $self->dispose($self->template("analysis", "lr_save", {file=>$fname}));
+  $self->dispense("analysis", "lr_save", {file=>$fname});
   return $fname;
 };
 
@@ -97,7 +97,7 @@ Demeter::LogRatio - Log-ratio/phase-difference analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

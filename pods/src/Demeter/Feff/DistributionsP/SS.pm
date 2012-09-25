@@ -192,9 +192,9 @@ sub chi {
   $first->group("h_i_s_t_o");
   $first->randstring($randstr);
   $first->_update('fft');
-  $first->dispose($first->template('process', 'histogram_first'));
+  $first->dispense('process', 'histogram_first');
   $first->group($save);
-  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  $first->dispense('process', 'histogram_clean', {index=>255});
   my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
   unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;
@@ -208,14 +208,14 @@ sub chi {
     #$paths->[$i]->update_path(1);
     $self->fpath_count($i);
     $self->call_sentinal;
-    my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
+    my $save = $paths->[$i]->group; # add up the SSPaths without requiring a group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->dispense('process', 'histogram_add');
     $paths->[$i]->group($save);
-    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $paths->[$i]->dispense('process', 'histogram_clean', {index=>255});
     $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
     unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
@@ -246,14 +246,15 @@ sub chi {
   $fourth -= 3*$sigsqr**2;
 
   $self->mo->pathindex($index);
-  my @k    = Ifeffit::get_array('h___isto.k');
-  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my @k    = $self->fetch_array('h___isto.k');
+  my @chi  = $self->fetch_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
 				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
   my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
 				   scatterer => $self->feff->potentials->[$first->ipot]->[2],
 				   reff      => $rave,
 				   source    => $data,
+				   Type      => 'SS histogram',
 				   n         => 1,
 				   degen     => 1,
 				   c1        => $rave,
@@ -284,13 +285,13 @@ sub describe {
 
 sub plot {
   my ($self) = @_;
-  Ifeffit::put_array(join(".", $self->group, 'x'), $self->positions);
-  Ifeffit::put_array(join(".", $self->group, 'y'), $self->populations);
+  $self->place_array(join(".", $self->group, 'x'), $self->positions);
+  $self->place_array(join(".", $self->group, 'y'), $self->populations);
   $self->po->start_plot;
   if ($self->po->output) {
-    $self->dispose($self->template('plot', 'output'), 'plotting');
+    $self->chart('plot', 'output');
   };
-  $self->dispose($self->template('plot', 'histo'), 'plotting');
+  $self->chart('plot', 'histo');
   return $self;
 };
 
@@ -319,7 +320,7 @@ Demeter::Feff::DistributionsP::SS - Histograms for single scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

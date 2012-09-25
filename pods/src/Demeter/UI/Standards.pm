@@ -511,7 +511,7 @@ Demeter::UI::Standards - Standard reference material database interaction
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -650,9 +650,9 @@ values:
 
 =item C<screen>
 
-The data will be plotted on screen in the typical Ifeffit manner.  For
-this target the return value will be an empty string is no problems
-are encountered or a error message explaining the source of the error.
+The data will be plotted on screen.  For this target the return value
+will be an empty string is no problems are encountered or a error
+message explaining the source of the error.
 
 =item C<athena>
 

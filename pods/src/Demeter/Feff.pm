@@ -121,7 +121,7 @@ has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
 		       trigger => sub{ my ($self, $new) = @_; 
 				       return if not exists $self->potentials->[$new];
 				       return if not exists $self->potentials->[$new]->[2];
-				       my $elem = $self->potentials->[$new]->[2] || 'He';
+				       my $elem = get_symbol($self->potentials->[$new]->[1]) || 'He';
 				       $self->abs_species($elem);
 				     });
 has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1, alias=>'abs_element');
@@ -551,6 +551,51 @@ sub make_one_path {
 #     return 1;
 #   };
 
+sub fetch_zcwifs {
+  my ($self) = @_;
+  $self -> pathsdat;
+  $self -> make_feffinp("genfmt") -> run_feff;
+
+  opendir(my $D, $self->workspace);
+  map {unlink File::Spec->catfile($self->workspace, $_) if $_ =~ m{feff\d+\.dat}} readdir $D;
+  closedir $D;
+
+  my @zcwifs;
+  open(my $FD, '<', File::Spec->catfile($self->workspace, 'files.dat'));
+  my $flag = 0;
+  while (<$FD>) {
+    $flag = 1, next if ($_ =~ m{amp ratio});
+    next if not $flag;
+    my @list = split(" ", $_);
+    push @zcwifs, $list[2];
+  };
+  close $FD;
+  unlink File::Spec->catfile($self->workspace, 'files.dat');
+  unlink File::Spec->catfile($self->workspace, 'paths.dat');
+
+  return @zcwifs;
+};
+
+sub rank_paths {
+  my ($self) = @_;
+  my @z = $self->fetch_zcwifs;
+  my $i = 0;
+  foreach my $sp (@{ $self->pathlist }) {
+    $sp->rank if ($self->co->default('pathfinder', 'rank') ne 'feff');
+    $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]));
+    if ($sp->get_rank('zcwif') > $self->co->default('pathfinder', 'rank_high')) {
+      $sp->weight(2);
+    } elsif ($sp->get_rank('zcwif') < $self->co->default('pathfinder', 'rank_low')) {
+      $sp->weight(0);
+    } else {
+      $sp->weight(1);
+    }
+    $i++;
+  };
+  $self->pathlist->[0]->normalize(@{ $self->pathlist });
+  return $self;
+};
+
 
 ##----------------------------------------------------------------------------
 ## pathfinder http://xkcd.com/835/
@@ -883,7 +928,7 @@ sub intrp {
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
   $text .= $self->intrp_header(%markup);
-  $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
+  $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I   Rank  legs   type" .  $markup{close} . "\n";
   my $i = 0;
   foreach my $sp (@list_of_paths) {
     last if ($rmax and ($sp->halflength > $rmax));
@@ -1081,7 +1126,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 
 =head1 SYNOPSIS
@@ -1385,6 +1430,19 @@ Dispose of text, possibly gathered from a Feff run, to the channels
 specified by the C<screen> and C<buffer> attributes.
 
   $feff -> report($some_text);
+
+=item C<rank_paths>
+
+Perform various rankins of the importance of the various paths found
+using Demeter's pathfinder.  One of these is to run Feff on the entire
+path list and extract the curved wave importance factors from the
+F<files.dat> file.  Other rankings are performed using
+L<Demeter::ScatteringPath::Rank>.  The rankings are stored in the
+ScatteringPath object.
+
+  $feff -> pathfinder;
+  ## some time later ...
+  $feff->rank_paths;
 
 =back
 

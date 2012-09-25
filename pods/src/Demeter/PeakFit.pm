@@ -242,8 +242,8 @@ sub fit {
   $self->pf_dispose($self->fit_command($nofit));
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
-  Ifeffit::put_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
-  Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
+  $self->place_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
+  $self->place_array($self->group.".".$self->yaxis, \@model_y);
   $self -> ndata($#model_y+1);
   $self -> resid;
 
@@ -274,7 +274,7 @@ sub plot {
 
   $self->po->start_plot;
   $self->data->plot('E');
-  $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+  $self->chart('plot', 'overpeak');
   $self->po->increment;
   if ($self->plot_residual) {
     ## prep the residual plot
@@ -285,7 +285,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->dispose($self->template('plot', 'overpeak'), 'plotting');
+    $self->chart('plot', 'overpeak');
 
     ## restore values and increment the plot
     $self->yaxis($save);
@@ -295,7 +295,7 @@ sub plot {
   };
   if ($self->plot_components) {
     foreach my $ls (@{$self->lineshapes}) {
-      $ls->dispose($ls->template('plot', 'overpeak'), 'plotting');
+      $ls->chart('plot', 'overpeak');
       $self->po->increment;
     };
   };
@@ -349,7 +349,7 @@ Demeter::PeakFit - A peak fitting object for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -389,8 +389,7 @@ This module provides an abstract framework for enabling peak fitting
 in Demeter.  This abstraction allows (well ... in principle) the use
 of various backends for performing the actual fit.  Currently the only
 one available is Fityk (http://www.unipress.waw.pl/fityk/), which is
-implemented as L<Demeter::PeakFit::Fityk>.  I plan to implement an
-Ifeffit backend in te future.
+implemented as L<Demeter::PeakFit::Fityk>.
 
 Any suggestions?
 

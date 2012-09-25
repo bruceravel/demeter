@@ -107,7 +107,7 @@ sub _histo {
 
   $self->{DISTRIBUTION} = q{};
   $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose an MD output file", 
-						 "DL_POLY HISTORY files|HISTORY|VASP OUTCAR files|OUTCAR|All files|*",
+						 "DL_POLY HISTORY files|HISTORY|VASP OUTCAR files|OUTCAR|All files (*)|*",
 						 wxDefaultPosition, wxDefaultSize,
 						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
@@ -1003,7 +1003,7 @@ Demeter::UI::Atoms::SS - Create SSPath objects in Atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 DESCRIPTION
 

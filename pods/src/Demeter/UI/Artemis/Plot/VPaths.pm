@@ -45,7 +45,7 @@ sub add_vpath {
 
   my $ted = Wx::TextEntryDialog->new( $self, "Enter a name for this virtual path", "Enter a VPath name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->status("VPath creation cancelled.");
+    $Demeter::UI::Artemis::frames{main}->status("VPath creation canceled.");
     return;
   };
   my $name = $ted->GetValue;
@@ -115,12 +115,12 @@ sub OnMenu {
       my $name = $vp->name;
       my $ted = Wx::TextEntryDialog->new($self, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("VPath renaming cancelled.");
+	$self->status("VPath renaming canceled.");
 	return;
       };
       my $newname = $ted->GetValue;
       if ($name eq $newname) {
-	$self->status("VPath renaming cancelled.");
+	$self->status("VPath renaming canceled.");
 	return;
       };
       $vp->name($newname);
@@ -196,7 +196,7 @@ Demeter::UI::Artemis::Plot::VPaths - controls for managing VPaths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

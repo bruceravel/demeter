@@ -84,7 +84,7 @@ my %explain = (#                                                                
 	      );
 my %hints = (
 	     grab      => "Use the best fit values from the last fit as the initial values for all guess parameters",
-	     reset     => "Restore all parameters to their initial values in Ifeffit",
+	     reset     => "Restore all parameters to their initial values in ".Demeter->backend_name,
 	     convert   => "Change all guess parameters to set",
 	     discard   => "Discard all parameters",
 	     highlight => "Toggle highlighting of parameters which match a regular expression",
@@ -302,7 +302,7 @@ sub reset_all {
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
   $parent->{uptodate} = 1;
-  $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
+  $parent->status("Reset all parameter values in ".Demeter->backend_name.".") if (not $no_ifeffit);
   return \@gds;
 };
 
@@ -321,13 +321,13 @@ sub set_highlight {
   if (not $regex) {
     my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $parent->status("Parameter highlighting cancelled.");
+      $parent->status("Parameter highlighting canceled.");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
     $regex = $ted->GetValue;
     if ($regex =~ m{\A\s*\z}) {
-      $parent->status("Parameter highlighting cancelled (no regular expression provided).");
+      $parent->status("Parameter highlighting canceled (no regular expression provided).");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
@@ -430,7 +430,7 @@ sub import {
   my ($parent) = @_;
   my $grid = $parent->{grid};
   my $fd = Wx::FileDialog->new( $parent, "Import parameters from a text file", cwd, q{},
-				"Text file|*.txt|All files|*",
+				"Text file|*.txt|All files (*)|*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
@@ -474,7 +474,7 @@ sub export {
   my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
-				"Text file|*.txt|All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				"Text file|*.txt|All files (*)|*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->status("Parameter export aborted.");
@@ -535,7 +535,7 @@ sub discard {
   $grid -> SetCellValue($row, 2, q{});
   $grid -> SetCellValue($row, 3, q{});
   if ((exists $grid->{$name}) and ($grid->{$name} =~ m{GDS})) {
-    $grid->{$name}->dispose("erase ".$grid->{$name}->name);
+    $grid->{$name}->dispense('process', 'erase', {items=>$grid->{$name}->name});
     $grid->{$name}->DEMOLISH;
     delete $grid->{$name};
   };
@@ -702,7 +702,7 @@ sub cut {
     my $name = (defined $g) ? $g->name : q{};
     foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
       next if ($name ne $grid->GetCellValue($r, 1));
-      $grid->{$g->name}->dispose("erase ".$grid->{$name}->name);
+      $grid->{$g->name}->dispense('process', 'erase', {items=>"\@group ".$grid->{$name}->name});
       $grid->DeleteRows($r,1,1);
       $grid->{$g->name}->DEMOLISH;
     };
@@ -794,7 +794,7 @@ sub build_restraint {
 
   my $result = $restraint_builder -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $parent->status("Building restraint cancelled.");
+    $parent->status("Building restraint canceled.");
     return;
   };
   my $res  = "res_" . $name;
@@ -824,7 +824,7 @@ sub annotate {
   my $name = $parent->{grid}->GetCellValue($row,1);
   my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->status("Parameter annotation cancelled.");
+    $parent->status("Parameter annotation canceled.");
     return;
   };
   my $note = $ted->GetValue;
@@ -884,7 +884,7 @@ sub rename_global {
   ## -------- get new name
   my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->status("Parameter renaming cancelled.");
+    $parent->status("Parameter renaming canceled.");
     return;
   };
   my $newname = $ted->GetValue;
@@ -1019,15 +1019,15 @@ sub OnDropText {
 
   ## text with white space
   if ($text =~ m{\s}) {
-    $parent->status("Ifeffit guess/def/set parameters names cannot have white space ($text)");
+    $parent->status("guess/def/set parameters names cannot have white space ($text)");
 
   ## text starting with a number
   } elsif ($text =~ m{\A\d}) {
-    $parent->status("Ifeffit guess/def/set parameters names cannot start with numbers ($text)");
+    $parent->status("guess/def/set parameters names cannot start with numbers ($text)");
 
   ## text with unallowed characters
   } elsif ($text =~ m{[^a-z0-9_?]}i) {
-    $parent->status("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
+    $parent->status("guess/def/set parameters names can only use [a-z0-9_?] ($text)");
 
   ## parameter name already exists
   } elsif ($parent->param_present($text)) {
@@ -1086,7 +1086,7 @@ Demeter::UI::Artemis::GDS - A Guess/Def/Set interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

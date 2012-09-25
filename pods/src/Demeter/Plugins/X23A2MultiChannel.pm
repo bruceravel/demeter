@@ -83,7 +83,7 @@ sub fix {
 			     );
   };
 
-  $mc->dispose("erase \@group ".$mc->group);
+  $self->dispense('process', 'erase', {items=>"\@group ".$mc->group});
   $data[0]->write_athena($prj, @data);
   $_ -> DEMOLISH foreach (@data, $mc);
 
@@ -114,7 +114,7 @@ Demeter::Plugin::X23A2MultiChannel - filetype plugin for X23A2 multi-channel dat
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

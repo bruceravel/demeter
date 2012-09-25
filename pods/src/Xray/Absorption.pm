@@ -209,17 +209,8 @@ sub identify_self {
   return dirname($caller[1]);
 };
 
-#$data_dir = ($Ifeffit::FindFile::is_windows) ?
-#  Ifeffit::FindFile->find("other", "absorption") :
-#  File::Spec->catfile(identify_self(), "Absorption");
-
 $data_dir = q{};
-#if ($is_windows and defined($ENV{IFEFFIT_DIR})) {
-#  eval "use Ifeffit::FindFile;
-#        $data_dir = Ifeffit::FindFile->find('other', 'absorption')";
-#} else {
 $data_dir = File::Spec->catfile(identify_self(), 'Absorption');
-#};
 
 sub load {
   shift;

@@ -36,7 +36,7 @@ has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 		     trigger => sub{ my($self, $new) = @_; $self->set_sourcegroup($new->group) if $new});
 has 'sourcegroup'=> (is => 'rw', isa => 'Str',    default => q{});
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
-has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'filtered scattering path');
+has 'Type'	 => (is => 'rw', isa => 'Str',    default => 'filtered scattering path');
 has 'pdtext'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
@@ -136,7 +136,7 @@ sub labelline {
 sub _filter {
   my ($self) = @_;
   $self->source->_update('fft');
-  $self->dispose($self->template('process', 'filtered_filter'));
+  $self->dispense('process', 'filtered_filter');
   return $self;
 };
 
@@ -185,7 +185,7 @@ sub pathsdat {
 override all => sub {
   my ($self) = @_;
   my %all = $self->SUPER::all;
-  delete $all{$_} foreach (qw(data source weight Type string kgrid sentinal));
+  delete $all{$_} foreach (qw(data source weight string kgrid sentinal));
   return %all;
 };
 
@@ -223,7 +223,7 @@ Demeter::FPath - Filtered paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

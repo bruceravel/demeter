@@ -76,7 +76,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -101,9 +101,9 @@ pertaining to guess, def, set, and other parameters for use in a fit.</p>
 <dl>
 	<dt><code>name</code> (string)</dt>
 		<dd><p>This is the name of the parameter.  It must respect the conventions
-for a parameter name in Ifeffit.  They can contain only letters,
-numbers, '&amp;', '?', ':', and '_' (underscore).  They are limited to 64
-characters and cannot begin with a numeral.</p></dd>
+for a parameter name in Ifeffit or Larch.  They can contain only
+letters, numbers, '&amp;', '?', ':', and '_' (underscore).  They are
+limited to 64 characters and cannot begin with a numeral.</p></dd>
 	<dt><code>gds</code> (guess def set lguess restrain after merge skip)</dt>
 		<dd><p>This is one of:</p></dd>
 <dd><dl>
@@ -145,7 +145,7 @@ rewriting for local parameters.</p></dd>
 		<dd><p>After the fit is evaluated, this contains the result of the fit for this
 parameter.  This is normally not set explicitly with the <code>set</code> method.
 Rather it is set using the <code>evaluate</code> method so that the math expression is
-correctly evaluated by Ifeffit.</p></dd>
+correctly evaluated by Ifeffit/Larch.</p></dd>
 	<dt><code>error</code> (number)</dt>
 		<dd><p>After the fit is evaluated, this contains the error on this guess parameter.
 For all other types, this is 0.  This is normally not set explicitly with the
@@ -191,7 +191,7 @@ are completely equivalent to</p></dd>
 <dl>
 	<dt><code>write_gds</code></dt>
 		<dd><p>This returns a string which is the command to define the parameter in
-Ifeffit.</p></dd>
+Ifeffit/Larch.</p></dd>
 <dd><pre>   $string = $gds_object -&gt; write_gds
 
 </pre></dd>		<dd><p>This returns a string something like</p></dd>
@@ -199,7 +199,7 @@ Ifeffit.</p></dd>
 
 </pre></dd>		<dd><p>The first word is the parameter type.  &quot;def&quot; is used for after and
 restrain parameters.  Other parameter types (skip and merge) return
-string which will not be valid Ifeffit commands.</p></dd>
+strings which will not be valid Ifeffit/Larch commands.</p></dd>
 	<dt><code>report</code></dt>
 		<dd><p>This returns a one-line string which reports on the value of a
 parameter after a fit is complete.  This method is used in the

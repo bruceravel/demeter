@@ -63,7 +63,7 @@
 <ul>
 	<li><a href="#I_O_methods">I/O methods</a></li>
 	<li><a href="#Convenience_methods">Convenience methods</a></li>
-	<li><a href="#Ifeffit_interaction_methods">Ifeffit interaction methods</a></li>
+	<li><a href="#Ifeffit_Larch_interaction_methods">Ifeffit/Larch interaction methods</a></li>
 	<li><a href="#Information_reporting_methods">Information reporting methods</a></li>
 </ul>
 </li>
@@ -87,7 +87,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 
 
@@ -149,11 +149,11 @@ details.</p>
 
 <dl>
 	<dt><code>group</code> (string)</dt>
-		<dd><p>This is the Ifeffit group name used for this path.  That is, its
-arrays will be called <i>group</i>.k, <i>group</i>.chi, and so on.  It is best
-if this is a reasonably short word and it <strong>must</strong> follow the
-conventions of a valid group name in Ifeffit.  By default, this is a
-random, four-letter string.</p></dd>
+		<dd><p>This is the Ifeffit or Larch group name used for this path.  That is,
+its arrays will be called <i>group</i>.k, <i>group</i>.chi, and so on.  It is
+best if this is a reasonably short word and it <strong>must</strong> follow the
+conventions of a valid group name in Ifeffit or Larch.  By default,
+this is a random, five-letter string.</p></dd>
 	<dt><code>name</code> (string)</dt>
 		<dd><p>This is a text string used to describe this object in a user
 interface.  While the <code>group</code> attribute should be short, this can be
@@ -176,8 +176,8 @@ specific <cite>feffNNNN.dat</cite> file, you must also set the sp attribute to
 an empty string.</p></dd>
 	<dt><code>folder</code> (string)</dt>
 		<dd><p>This is a string that takes the fully qualified path (in the file
-system sense, not the Ifeffit sense) to the <code>`feffNNNN.dat'</code> file
-associated with this Path object.</p></dd>
+system sense) to the <code>`feffNNNN.dat'</code> file associated with this Path
+object.</p></dd>
 		<dd><p>If the <code>SP</code> attribute is set, then this attribute will be set
 automatically and changing it via the Path object's <code>set</code> method will
 be forbidden.</p></dd>
@@ -219,9 +219,9 @@ re-evaluate the fit using either of the <code>fit</code> or <code>sum</code> met
 
 <dl>
 	<dt><code>n</code> (number)</dt>
-		<dd><p>This is the path degeneracy in the definition of an Ifeffit path.
-This is a number, not a math expression.  Use the <code>s02</code> attribute to
-parameterize the amplitude of the path.</p></dd>
+		<dd><p>This is the path degeneracy in the definition of an Ifeffit or Larch
+path.  This is a number, not a math expression.  Use the <code>s02</code>
+attribute to parameterize the amplitude of the path.</p></dd>
 	<dt><code>s02</code> (string)</dt>
 	<dt><code>s02_value</code> (number)</dt>
 		<dd><p>This is the amplitude term for the path.</p></dd>
@@ -307,10 +307,10 @@ methods (<code>set</code>, <code>get</code>) from the parent class described in 
 
 <dl>
 	<dt><code>save</code></dt>
-		<dd><p>This method returns the Ifeffit commands necessary to write column
-data files based on the Path object.  See <code>Demeter::Data::IO</code> for
-details.  Only the <code>chi</code>, <code>r</code>, and <code>q</code> options are available for
-writing Path column data files.</p></dd>
+		<dd><p>This method returns the Ifeffit or Larch commands necessary to write
+column data files based on the Path object.  See <code>Demeter::Data::IO</code>
+for details.  Only the <code>chi</code>, <code>r</code>, and <code>q</code> options are available
+for writing Path column data files.</p></dd>
 </dl>
 <h2 id="Convenience_methods">Convenience methods</h2>
 
@@ -337,7 +337,7 @@ fit is made or a path is otherwise evaluated.</p></dd>
 <dd><pre>  $path -&gt; rm;
 
 </pre></dd></dl>
-<h2 id="Ifeffit_interaction_methods">Ifeffit interaction methods</h2>
+<h2 id="Ifeffit_Larch_interaction_methods">Ifeffit/Larch interaction methods</h2>
 
 <dl>
 	<dt><code>read_data</code></dt>
@@ -345,20 +345,20 @@ fit is made or a path is otherwise evaluated.</p></dd>
 Data object.  Or, it's exactly the same, depending on your
 perspective.  It is not normally necessary to call read_data on a
 <cite>feffNNNN.dat</cite> file in the course of data analysis.  That file is
-imported into Ifeffit as a part of the <code>write_path</code> method.</p></dd>
-		<dd><p>When <code>read_data</code> is called on a Path object, the Ifeffit command for
-reading the <cite>feffNNNN.dat</cite> file as a column data file is returned.
-This is useful if you ever need to examine the raw columns of the
-<cite>feffNNNN.dat</cite> file.</p></dd>
+imported into Ifeffit or Larch as a part of the <code>write_path</code> method.</p></dd>
+		<dd><p>When <code>read_data</code> is called on a Path object, the Ifeffit/Larch
+command for reading the <cite>feffNNNN.dat</cite> file as a column data file is
+returned.  This is useful if you ever need to examine the raw columns
+of the <cite>feffNNNN.dat</cite> file.</p></dd>
 <dd><pre>  $command = $path_object -&gt; read_data;
 
 </pre></dd>	<dt><code>write_path</code></dt>
-		<dd><p>This method returns the Ifeffit commands to import and define a Feff
-path.  It takes a boolean argument which tells the method whether to
-also generate the Ifeffit command for converting the defined path into
-Ifeffit arrays for plotting or other manipulations.  That argument is
-set true as part of the <code>display</code> method, but false when the fit is
-defined.</p></dd>
+		<dd><p>This method returns the Ifeffit or Larch commands to import and define
+a Feff path.  It takes a boolean argument which tells the method
+whether to also generate the Ifeffit or Larch command for converting
+the defined path into arrays for plotting or other manipulations.
+That argument is set true as part of the <code>display</code> method, but false
+when the fit is defined.</p></dd>
 <dd><pre>  $command = $path_object -&gt; write_path($do_ff2chi);
 
 </pre></dd></dl>
@@ -433,10 +433,11 @@ associated ScatteringPath object and returning the longest value.</p></dd>
 
 <dl>
 	<dt><code>Demeter::Path: &quot;group&quot; is not a valid group name</code></dt>
-		<dd><p>(F) You have used a group name that does not follow Ifeffit's rules for group
-names.  The group name must start with a letter.  After that only letters,
-numbers, &amp;, ?, _, and : are acceptable characters.  The group name must be no
-longer than 64 characters.</p></dd>
+		<dd><p>(F) You have used a group name that does not follow Ifeffit's or
+Larch's rules for group names.  The group name must start with a
+letter.  After that only letters, numbers, &amp;, ?, _, and : are
+acceptable characters.  The group name must be no longer than 64
+characters.</p></dd>
 	<dt><code>Demeter::Path: the sp attribute must be ScatteringPath object</code></dt>
 		<dd><p>(F) You have set the <code>sp</code> attribute to something other than a
 ScatteringPath object.</p></dd>

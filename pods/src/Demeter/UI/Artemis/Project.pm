@@ -76,10 +76,10 @@ sub save_project {
   };
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
-				  "Artemis project (*.fpj)|*.fpj|All files|*",
+				  "Artemis project (*.fpj)|*.fpj|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Saving project cancelled.");
+      $rframes->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath;
@@ -146,7 +146,7 @@ sub import_autosave {
     if ($dialog == -1);
   $dialog->SetFocus;
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $Demeter::UI::Artemis::frames{main}->status("Autosave import cancelled.");
+    $Demeter::UI::Artemis::frames{main}->status("Autosave import canceled.");
   } else {
     my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);
@@ -175,11 +175,11 @@ sub read_project {
 				  "Demeter serializations (*.dpj)|*.dpj|".
 				  "Feff or crystal data (*.inp;*.cif)|*.inp;*.cif|".
 				  "chi(k) column data (*.chi;*.dat)|*.chi;*.dat|".
-				  "All files|*",
+				  "All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->status("Project import cancelled.");
+      $rframes->{main}->status("Project import canceled.");
       return;
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -651,7 +651,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

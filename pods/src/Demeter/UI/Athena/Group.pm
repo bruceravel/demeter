@@ -30,7 +30,7 @@ sub Rename {
     $app->set_text_buffer($ted, "rename");
     $ted->SetValue($name);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Renaming cancelled.");
+      $app->{main}->status("Renaming canceled.");
       $app->{rename_pointer} = $#{$app->{rename_buffer}};
       return;
     };
@@ -138,7 +138,7 @@ sub Remove {
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
       my $this = $app->{main}->{list}->GetIndexedData($i);
       $this->clear_ifeffit_titles;
-      $this->dispose("erase \@group ".$this->group);
+      $this->dispense('process', 'erase', {items=>"\@group " . $this->group});
       $this->DEMOLISH;
     };
     $app->{main}->{list}->ClearAll;
@@ -160,7 +160,7 @@ sub remove_one {
   my ($app, $i) = @_;
   my $data = $app->{main}->{list}->GetIndexedData($i);
   $data->clear_ifeffit_titles;
-  $data->dispose("erase \@group ".$data->group);
+  $data->dispense('process', 'erase', {items=>"\@group " . $data->group});
   $data->DEMOLISH;
   $app->{main}->{list}->DeleteData($i); # this calls the selection event on the new item
 };
@@ -236,11 +236,11 @@ sub Report {
 
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save spreadsheet report", cwd, q{athena.xls},
-				  "Athena project (*.xls)|*.xls|All files|*",
+				  "Athena project (*.xls)|*.xls|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving report cancelled.");
+      $app->{main}->status("Saving report canceled.");
       return;
     };
     $fname = $fd->GetPath;
@@ -391,7 +391,7 @@ Demeter::UI::Athena::Group - data group functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

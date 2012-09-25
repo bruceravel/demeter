@@ -66,7 +66,8 @@ sub new {
   $this->{abs}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   $this->{edge}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
-    $this->{$w}  = Wx::TextCtrl->new($this, -1, $demeter->co->default('rebin', $w), wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
+    my $value = $demeter->co->default('rebin', $w) || $demeter->co->demeter('rebin', $w);
+    $this->{$w}  = Wx::TextCtrl->new($this, -1, $value, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
     my $re = ($w eq 'emin') ? qr([-0-9.]) : qr([0-9.]);
     $this->{$w} -> SetValidator( Wx::Perl::TextValidator->new( $re ) );
     EVT_TEXT_ENTER($this, $this->{$w}, sub{$this->plot($app->current_data)});
@@ -79,18 +80,28 @@ sub new {
   $gbs->Add($this->{xanes}, Wx::GBPosition->new(4,2));
   $gbs->Add($this->{exafs}, Wx::GBPosition->new(5,2));
 
-  $box->Add($gbs, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $box->Add($gbs, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2);
 
   $this->{replot} = Wx::Button->new($this, -1, 'Plot data and rebinned data',       wxDefaultPosition, $tcsize);
+  $this->{plotk}  = Wx::Button->new($this, -1, 'Plot data and rebinned data in k',  wxDefaultPosition, $tcsize);
   $this->{make}   = Wx::Button->new($this, -1, 'Make rebinned data group',          wxDefaultPosition, $tcsize);
   $this->{marked} = Wx::Button->new($this, -1, 'Rebin marked data and make groups', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(replot make marked));
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(replot plotk make marked));
 
-  EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data, 'E')});
+  EVT_BUTTON($this, $this->{plotk},  sub{$this->plot($app->current_data, 'k')});
   EVT_BUTTON($this, $this->{make},   sub{$this->make($app)});
   EVT_BUTTON($this, $this->{marked}, sub{$this->make_marked($app)});
 
-  $box->Add(1,1,1);
+  my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
+  my $textboxsizer   = Wx::StaticBoxSizer->new( $textbox, wxVERTICAL );
+  $box              -> Add($textboxsizer, 1, wxBOTTOM|wxGROW, 5);
+  $this->{feedback}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+					 wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2);
+  $this->{feedback} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $textboxsizer     -> Add($this->{feedback}, 1, wxGROW|wxALL, 5);
+
+  #$box->Add(1,1,1);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: rebinning');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -120,7 +131,7 @@ sub push_values {
   } elsif ($data->datatype eq 'chi') {
     $this->Enable(0);
   } else {
-    $this->{rebinned} = $data->rebin;
+    #$this->{rebinned} = $data->rebin;
     $this->plot($data);
   };
 };
@@ -130,7 +141,9 @@ sub mode {
 };
 
 sub plot {
-  my ($this, $data) = @_;
+  my ($this, $data, $space) = @_;
+  $this->{feedback}->Clear;
+  my %hash;
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -138,13 +151,18 @@ sub plot {
       $::app->{main}->status("Not rebinning -- your value for $w is not a number!", 'error|nobuffer');
       return;
     };
-    $data->co->set_default('rebin', $w, $value);
+    $hash{$w} = $value;
+    #$data->co->set_default('rebin', $w, $value);
   };
-  $this->{rebinned} = $data->rebin;
+  $this->{rebinned} = $data->rebin(\%hash);
   $::app->{main}->{PlotE}->pull_single_values;
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $data->po->start_plot;
-  $_->plot('e') foreach ($data, $this->{rebinned});
+  $_->plot($space) foreach ($data, $this->{rebinned});
+  my @datax = $data->get_array('energy');
+  my @binx  = $this->{rebinned}->get_array('energy');
+  my $text  = sprintf("Rebinned data from %d points to %d points", $#datax+1, $#binx+1);
+  $this->{feedback}->SetValue($text);
   $::app->{main}->status("Plotted ".$data->name." with its rebinned data");
   $::app->heap_check(0);
 };
@@ -213,7 +231,7 @@ Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athen
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

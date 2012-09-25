@@ -209,7 +209,7 @@ __END__
 
 =head1 NAME
 
-Ifeffit::Demeter::FluorescenceEXAFS - Corrections for fluorescence EXAFS data
+Xray::FluorescenceEXAFS - Corrections for fluorescence EXAFS data
 
 =head1 DESCRIPTION
 

@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.10');
+our $VERSION = version->new('0.9.11');
 use feature "switch";
 
 ############################
@@ -33,8 +33,8 @@ use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
-use Ifeffit;
-Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+use Ifeffit qw(ifeffit);
+ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -65,13 +65,13 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
+with 'MooseX::SetGet';		# this is mine....
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
-with 'MooseX::SetGet';		# this is mine....
 use Demeter::Constants qw($NUMBER $PI);
 
 my %seen_group;
@@ -94,9 +94,11 @@ has 'sentinal'  => (traits  => ['Code'],
 
 use Demeter::Mode;
 use vars qw($mode);
-$mode = Demeter::Mode -> instance;
+#$mode = Demeter::Mode -> instance;
+$mode = Demeter::Mode -> new;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
+with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::mode lexical can be defined
 
 ###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
@@ -129,7 +131,8 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists
+	    $dispersive_allowed);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -137,12 +140,13 @@ $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
+$dispersive_allowed = 0;
 ######################################################################
 
 use Demeter::Plot;
 use vars qw($plot);
 $plot = Demeter::Plot -> new() if not $mode->plot;
-$plot -> screen_echo(0);
+$plot -> toggle_echo(0);
 my $backend = $config->default('plot', 'plotwith');
 if ($backend eq 'gnuplot') {
   if (Demeter->is_windows) {
@@ -294,6 +298,7 @@ sub import {
   $class -> register_plugins if $doplugins;
 };
 
+our @banned = ('SLRIBL4');
 sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
@@ -306,6 +311,7 @@ sub register_plugins {
     my @pm = grep {m{.pm\z}} readdir $FL;
     closedir $FL;
     foreach my $pm (@pm) {
+      next if any {$_.'.pm' eq $pm} @banned;
       require File::Spec->catfile($f, $pm);
       $pm =~ s{\.pm\z}{};
       my $this = join('::', 'Demeter', 'Plugins', $pm);
@@ -650,7 +656,7 @@ sub translate_trouble {
       ## limits on things
       if ($content =~ m{\((\&\w+)\)}) {
 	my $var = $1;
-	my $subst = Ifeffit::get_scalar($var);
+	my $subst = $self->fetch_scalar($var);
 	$content =~ s{$var}{$subst};
       };
       $text = $content;
@@ -786,16 +792,17 @@ sub Croak {
 sub conditional_features {
   my ($self) = @_;
   my $text = "The following conditional features are available:\n\n";
-  $text .= "Graphics::GnuplotIF: " . $self->yesno($Gnuplot_exists);
+  $text .= "Graphics::GnuplotIF:         " . $self->yesno($Gnuplot_exists);
   $text .= ($Gnuplot_exists)     ? " -- plotting with Gnuplot\n" : "  -- plotting with Gnuplot is disabled.\n";
-  $text .= "STAR::Parser:        " . $self->yesno($STAR_Parser_exists);
+  $text .= "STAR::Parser:                " . $self->yesno($STAR_Parser_exists);
   $text .= ($STAR_Parser_exists) ? " -- importing CIF files\n"   : "  -- importing CIF files is disabled.\n";
-  $text .= "Xray::XDI:           " . $self->yesno($XDI_exists);
+  $text .= "Xray::XDI:                   " . $self->yesno($XDI_exists);
   $text .= ($XDI_exists)         ? " -- file metadata\n"         : "  -- file metadata is disabled.\n";
-  $text .= "PDL:                 " . $self->yesno($PDL_exists);
+  $text .= "PDL:                         " . $self->yesno($PDL_exists);
   $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
-  $text .= "File::Monitor::Lite: " . $self->yesno($FML_exists);
+  $text .= "File::Monitor::Lite:         " . $self->yesno($FML_exists);
   $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
+  $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
 
@@ -805,11 +812,11 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
+Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10
+This documentation refers to Demeter version 0.9.11
 
 =head1 SYNOPSIS
 
@@ -823,22 +830,22 @@ Using Demeter automatically turns on L<strict> and L<warnings>.
 =head1 DESCRIPTION
 
 This module provides an object oriented interface to the EXAFS data
-analysis capabilities of the popular and powerful Ifeffit package.
-Mindful that the Ifeffit API involves streams of text commands, this
-package is, at heart, a code generator.  Many methods of this package
-return text.  All actual interaction with Ifeffit is handled through a
-single method, C<dispose>, which is described below.  The internal
-structure of this package involves accumulating text in a scalar
-variable through successive calls to the various code generating
-methods.  This text is then disposed to Ifeffit, to a file, or
-elsewhere.  The outward looking methods, as shown in the example
-above, organize all of the complicated interactions of your data with
-Ifeffit.
+analysis capabilities of the popular and powerful Ifeffit package and
+its successor Larch.  Mindful that the Ifeffit and Larch APIs involve
+streams of text commands, this package is, at heart, a code generator.
+Many methods of this package return text.  All actual interaction with
+Ifeffit or Larch is handled through a single method, C<dispose>, which
+is described below.  The internal structure of this package involves
+accumulating text in a scalar variable through successive calls to the
+various code generating methods.  This text is then disposed to
+Ifeffit, to Larch, to a file, or elsewhere.  The outward looking
+methods, as shown in the example above, organize all of the
+complicated interactions of your data with Ifeffit or Larch.
 
 This package is aimed at many targets.  It can be the back-end of a
 graphical data analysis program, providing the glue between the
 on-screen representation of the fit and the actual command executed by
-Ifeffit.  It can be used for one-off data analysis chores -- indeed
+Ifeffit or Larch.  It can be used for one-off data analysis chores -- indeed
 most of the examples that come with the package can be reworked into
 useful one-off scripts.  It can also be the back-end to sophisticated
 data analysis chores such as high-throughout data processing and
@@ -961,8 +968,9 @@ Future UI options might include C<tk>, C<wx>, or C<rpc>.
 Specify the template set to use for data processing and fitting
 chores.  See L<Demeter::templates>.
 
-In the future, a template set will be written for L<Ifeffit
-2|http://cars9.uchicago.edu/ifeffit/tdl> when it becomes available.
+In the future, a template set will be written for
+L<Larch|http://cars9.uchicago.edu/ifeffit/Larch> when it becomes
+available.
 
 These can also be set during run-time using the C<set_mode> method -- see
 L<Demeter::Mode>.
@@ -1185,11 +1193,11 @@ for your use.
 =item C<hashes>
 
 This returns a string which can be used as a comment character in
-Ifeffit.  The idea is that every comment included in the commands
-generated by methods of this class use this string.  That provides a
-way of distinguishing comments generated by the methods of this class
-from other comment lines sent to Ifeffit.  This is a user interface
-convenience.
+Ifeffit or Larch.  The idea is that every comment included in the
+commands generated by methods of this class use this string.  That
+provides a way of distinguishing comments generated by the methods of
+this class from other comment lines sent to Ifeffit or Larch.  This is
+a user interface convenience.
 
    print $object->hashes, "\n";
        ===prints===> ###___
@@ -1197,8 +1205,8 @@ convenience.
 =item C<group>
 
 This returns a unique five-character string for the object.  For Data
-and Path objects, this is used as the Ifeffit group name for this
-object.
+and Path objects, this is used as the Ifeffit or Larch group name for
+this object.
 
 =item C<name>
 

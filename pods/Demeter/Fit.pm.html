@@ -67,11 +67,11 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Demeter::Fit - Fit EXAFS data using Ifeffit</p>
+<p>Demeter::Fit - Fit EXAFS data using Ifeffit or Larch</p>
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -86,15 +86,15 @@
 </pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>This class collects and organizes all the components of a fit using
-Ifeffit.  The bulk of a script to fit EXAFS data involves setting up
-all the data, paths, and parameters that go into the fit.  Once that
-is done, you pass that information to the Fit object as array
-references.  It collates all of the information, resolves the
+Ifeffit or Larch.  The bulk of a script to fit EXAFS data involves
+setting up all the data, paths, and parameters that go into the fit.
+Once that is done, you pass that information to the Fit object as
+array references.  It collates all of the information, resolves the
 connections between Path and Data objects, performs a number of sanity
 checks on the input information, and generates the sequence of Ifeffit
-commands needed to perform the fit.  After the hard work of setting up
-the Data, Path, and GDS objects is done, you are just a few lines away
-from a complete fitting script!</p>
+or Larch commands needed to perform the fit.  After the hard work of
+setting up the Data, Path, and GDS objects is done, you are just a few
+lines away from a complete fitting script!</p>
 
 <h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -164,12 +164,12 @@ reliably interpreted in a statistical sense.</p></dd>
 <dl>
 	<dt><code>fit</code></dt>
 		<dd><p>This method returns the sequence of commands to perform a fit in
-Ifeffit.  This sequence will include lines defining each guess, def,
-set, and restrain parameter.  The data will be imported by the
-<code>read_data</code> command.  Each path associated with the data set will be
-defined.  Then the text of the Ifeffit's <code>feffit</code> command is
-generated.  Finally, commands for defining the after parameters and
-for computing the residual arrays are made.</p></dd>
+Ifeffit or Larch.  This sequence will include lines defining each
+guess, def, set, and restrain parameter.  The data will be imported by
+the <code>read_data</code> command.  Each path associated with the data set will
+be defined.  Then the text of the Ifeffit's <code>feffit</code> or Larch's
+<code>...</code> command is generated.  Finally, commands for defining the after
+parameters and for computing the residual arrays are made.</p></dd>
 <dd><pre>   $fitobject -&gt; fit;
 
 </pre></dd>		<dd><p>A number of sanity checks are made on the fitting model before the fit is

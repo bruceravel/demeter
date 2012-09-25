@@ -68,7 +68,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -85,9 +85,9 @@ statistical quality of the data.</p>
   $_-&gt;plot('E') foreach ($data, $merged);
 
 </pre><p>The trick is that each file is only imported to the point of having
-arrays for energy and xmu in Ifeffit.  Each file in the list is
-imported to the same Ifeffit group.  The merge is computed by
-accumulation and divided by the total numberof scans.</p>
+arrays for energy and xmu.  Each file in the list is imported to the
+same group.  The merge is computed by accumulation and divided by the
+total numberof scans.</p>
 
 <p>This requires that one data file be considered carefully.  This is the
 <code>master</code>.  All other data are interpolated to the energy grid of the
@@ -147,9 +147,9 @@ included in the merge.  The sub-sampled Data groups are saved to the
 <dl>
 	<dt><code>merge</code></dt>
 		<dd><p>Performs the merge using some special optimizations that minimize the
-interaction with Ifeffit.  This returns a Data object containing the
-merged spectrum, divided by the number of spectra included in the
-merge.</p></dd>
+interaction with the data processing backend (Ifeffit/Larch).  This
+returns a Data object containing the merged spectrum, divided by the
+number of spectra included in the merge.</p></dd>
 </dl>
 <h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

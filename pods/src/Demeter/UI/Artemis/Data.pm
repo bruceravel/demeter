@@ -158,6 +158,14 @@ const my $DISCARD_THIS	      => Wx::NewId();
 const my $DISCARD_MARKED      => Wx::NewId();
 const my $DISCARD_UNMARKED    => Wx::NewId();
 
+const my $WINDOW_HANNING      => Wx::NewId();
+const my $WINDOW_KB           => Wx::NewId();
+const my $WINDOW_WELCH        => Wx::NewId();
+const my $WINDOW_PARZEN       => Wx::NewId();
+const my $WINDOW_SINE         => Wx::NewId();
+
+const my $CLOSE               => Wx::NewId();
+
 sub new {
   my ($class, $parent, $nset) = @_;
 
@@ -170,6 +178,23 @@ sub new {
   EVT_MENU($this, -1, sub{OnMenuClick(@_);} );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
+  given (Demeter->co->default('artemis', 'window_function')) {
+    when ('hanning') {
+      $this->{menubar}->Check($WINDOW_HANNING, 1);
+    };
+    when ('kaiser-bessel') {
+      $this->{menubar}->Check($WINDOW_KB, 1);
+    };
+    when ('welch') {
+      $this->{menubar}->Check($WINDOW_WELCH, 1);
+    };
+    when ('parzen') {
+      $this->{menubar}->Check($WINDOW_PARZEN, 1);
+    };
+    when ('sine') {
+      $this->{menubar}->Check($WINDOW_SINE, 1);
+    };
+  };
 
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
@@ -243,10 +268,10 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,75],
-					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,100],
+					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH|wxTE_DONTWRAP);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
-  $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
+  $left           -> Add($titlesboxsizer, 2, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
 
 
@@ -333,23 +358,25 @@ sub new {
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
-  my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
+    $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "k window");
-  $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
-  $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
+    $label     = Wx::StaticText->new($leftpane, -1, "k window");
+    $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+    $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+    $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
+    $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "R window");
-  $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
-  $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
+    $label     = Wx::StaticText->new($leftpane, -1, "R window");
+    $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+    $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+    $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
+    $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
-  $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
-  $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
+    $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
+    $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
+  };
 
 
   ## -------- k-weights
@@ -413,6 +440,7 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
+  $this->{pcplot}->Enable(0);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
@@ -427,7 +455,7 @@ sub new {
 
   EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
-  $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
+  $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let " . Demeter->backend_name . " determine the uncertainty.");
   $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");
 
   $leftpane -> SetSizerAndFit($left);
@@ -461,6 +489,12 @@ sub new {
   EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
+
+
+  my $accelerator = Wx::AcceleratorTable->new(
+   					      [wxACCEL_CTRL, 119, wxID_CLOSE],
+   					     );
+  $this->SetAcceleratorTable( $accelerator );
 
 
   #$splitter -> SplitVertically($leftpane, $rightpane, -500);
@@ -648,6 +682,14 @@ sub make_menubar {
   $self->{importmenu}->Append($PATH_EMPIRICAL, "Import empirical standard", "Import an empirical standard exported from Athen", wxITEM_NORMAL );
   $self->{importmenu}->Append($PATH_SU,        "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
 
+  $self->{windowmenu}  = Wx::Menu->new;
+  $self->{windowmenu}->AppendRadioItem($WINDOW_HANNING, 'Hanning', 'A Hanning window has sills that ramp as cos^2');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_KB, 'Kaiser-Bessel', 'A Kaiser-Bessel window is a modified Bessel function over the entire range');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_WELCH, 'Welch', 'A Welch window has sills that ramp linearly in k^2');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_PARZEN, 'Parzen', 'A Parzen window has sills that ramp linearly in k');
+  $self->{windowmenu}->AppendRadioItem($WINDOW_SINE, 'Sine', 'A Sine window is a sin function over the full range');
+
+
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
@@ -665,10 +707,14 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->AppendSubMenu($self->{windowmenu}, "Set window function");
   $self->{datamenu}->Append($DATA_EXPORT,     "Export parameters to other data sets", "Export these FT and fitting parameters to other data sets.");
-  $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to ".Demeter->backend_name."'s suggestion", "Set kmax to ".Demeter->backend_name."'s suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
+  $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->Append(wxID_CLOSE, "&Close\tCtrl+w" );
+
 
   ## -------- paths menu
   my $export_menu   = Wx::Menu->new;
@@ -715,7 +761,7 @@ sub make_menubar {
   #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
-  $self->{debugmenu}->Append($DATA_SHOW, "Show Ifeffit group for this Data", "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
+  $self->{debugmenu}->Append($DATA_SHOW, "Show ".Demeter->backend_name." group for this Data", "Show the arrays associated with this group in ".Demeter->backend_name,  wxITEM_NORMAL );
   $self->{debugmenu}->Append($PATH_SHOW, "Show displayed path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
   $self->{debugmenu}->AppendSeparator;
   $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
@@ -811,9 +857,10 @@ sub populate {
 
   #EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
-  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
-  EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
-
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
+    EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
+  };
   return $self;
 }
 
@@ -831,8 +878,10 @@ sub fetch_parameters {
   $this->{data}->bft_rmin	    ($this->{rmin}      ->GetValue	    );
   $this->{data}->bft_rmax	    ($this->{rmax}      ->GetValue	    );
   $this->{data}->bft_dr		    ($this->{dr}        ->GetValue	    );
-  $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
-  $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
+  if (Demeter->co->default('artemis', 'window_function') eq 'user') {
+    $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
+    $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
+  };
   $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
   $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
   $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );
@@ -885,11 +934,11 @@ sub plot {
   if ($pf->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
-				  "Data (*.dat)|*.dat|All files|*",
+				  "Data (*.dat)|*.dat|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving plot to a file has been cancelled.");
+      $self->status("Saving plot to a file has been canceled.");
       $pf->{fileout}->SetValue(0);
       return;
     };
@@ -933,8 +982,13 @@ sub plot {
 sub OnMenuClick {
   my ($datapage, $event)  = @_;
   my $id = $event->GetId;
-  #print "1  $id  $PATH_ADD\n";
+  #print "1  $id\n";
  SWITCH: {
+
+    ($id == wxID_CLOSE) and do {
+      $datapage->Iconize(1);
+      last SWITCH;
+    };
 
     ($id == $DATA_RENAME) and do {
       $datapage->Rename;
@@ -981,7 +1035,7 @@ sub OnMenuClick {
 	$text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
 	$datapage->status($text);
       } else {
-	$text = "Ifeffit returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
+	$text = Demeter->backend_name." returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
 	$datapage->status($text, 'error');
       };
       last SWITCH;
@@ -1064,7 +1118,7 @@ sub OnMenuClick {
       my $param_dialog = Demeter::UI::Artemis::Data::AddParameter->new($datapage);
       my $result = $param_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {
-	$datapage->status("Path parameter editing cancelled.");
+	$datapage->status("Path parameter editing canceled.");
 	return;
       };
       my ($param, $me, $how) = ($param_dialog->{param}, $param_dialog->{me}->GetValue, $param_dialog->{apply}->GetSelection);
@@ -1202,6 +1256,32 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $WINDOW_HANNING) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'hanning');
+      $datapage->status("Using a Hanning window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_KB) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'kaiser-bessel');
+      $datapage->status("Using a Kaiser-Bessel window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_WELCH) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'welch');
+      $datapage->status("Using a Welch window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_PARZEN) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'parzen');
+      $datapage->status("Using a Parzen window for all Fourier transforms.");
+      last SWITCH;
+    };
+    ($id == $WINDOW_SINE) and do {
+      Demeter->co->set_default('artemis', 'window_function', 'sine');
+      $datapage->status("Using a Sine window for all Fourier transforms.");
+      last SWITCH;
+    };
+
 
   };
 };
@@ -1231,7 +1311,7 @@ sub Rename {
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $datapage->status("Data renaming cancelled.");
+      $datapage->status("Data renaming canceled.");
       return;
     };
     $newname = $ted->GetValue;
@@ -1386,11 +1466,11 @@ sub save_fit {
     $suggest =~ s{\s+}{_}g;
     $suggest = sprintf("%s.%s", $suggest, $how);
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
-				  "Data and fit (*.$how)|*.$how|All files|*",
+				  "Data and fit (*.$how)|*.$how|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data and fit cancelled.");
+      $self->status("Saving data and fit canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1416,11 +1496,11 @@ sub save_path {
     $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
-				  "Demeter fitting project (*.$suff)|*.$suff|All files|*",
+				  "Demeter fitting project (*.$suff)|*.$suff|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving path cancelled.");
+      $self->status("Saving path canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1446,11 +1526,11 @@ sub save_data {
     $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save data in $space-space", cwd, $suggest,
-				  "Data file (*.$suff)|*.$suff|All files|*",
+				  "Data file (*.$suff)|*.$suff|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data cancelled.");
+      $self->status("Saving data canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1495,11 +1575,11 @@ sub save_marked_paths {
     $suggest =~ s{\s+}{_}g;
     $suggest = sprintf("%s%s.%s", $suggest, '+paths', $how);
     my $fd = Wx::FileDialog->new( $self, "Save data and marked paths", cwd, $suggest,
-				  "Data and paths (*.$how)|*.$how|All files|*",
+				  "Data and paths (*.$how)|*.$how|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->status("Saving data and fit cancelled.");
+      $self->status("Saving data and fit canceled.");
       return;
     };
     $filename = $fd->GetPath;
@@ -1554,7 +1634,7 @@ sub mark {
       my $regex = q{};
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path marking cancelled.");
+	$self->status("Path marking canceled.");
 	return;
       };
       $regex = $ted->GetValue;
@@ -1614,7 +1694,7 @@ sub mark {
     (($how eq 'longer') or ($how eq 'shorter')) and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths $how than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path marking cancelled.");
+	$self->status("Path marking canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -1771,7 +1851,7 @@ sub include {
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Include shorter than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path inclusion cancelled.");
+	$self->status("Path inclusion canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -1819,7 +1899,7 @@ sub discard_data {
 
   ## destroy the data object
   $dataobject->clear_ifeffit_titles;
-  $dataobject->dispose("erase \@group ".$dataobject->group);
+  $dataobject->dispense('process', 'erase', {items=>"\@group ".$dataobject->group});
   $dataobject->DEMOLISH;
 
   ## remove the frame with the datapage
@@ -1941,7 +2021,7 @@ sub discard {
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Discard paths longer than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->status("Path discarding cancelled.");
+	$self->status("Path discarding canceled.");
 	return;
       };
       my $r = $ted->GetValue;
@@ -2041,7 +2121,7 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      sr y zr nb mo tc ru rh pd ag cd in sn sb te i xe cs
 		      ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
 		      ta w re os ir pt au hg tl pb bi po at rn fr ra ac
-		      th pa u np pu);
+		      th pa u np pu am cm bk cf);
 my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 
 sub fourparam {
@@ -2079,7 +2159,7 @@ sub quickfs {
   my $dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
   my $result = $dialog -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $datapage->status("Cancelled quick first shell model creation.");
+    $datapage->status("Canceled quick first shell model creation.");
     return;
   };
 
@@ -2131,10 +2211,10 @@ sub quickfs {
 sub empirical {
   my ($datapage) = @_;
   my $fd = Wx::FileDialog->new( $datapage, "Import an empirical standard", cwd, q{},
-				"Empirical standard (*.es)|*.es|All files|*",
+				"Empirical standard (*.es)|*.es|All files (*)|*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
-  $datapage->status("Empirical standard import cancelled."), return if $fd->ShowModal == wxID_CANCEL;
+  $datapage->status("Empirical standard import canceled."), return if $fd->ShowModal == wxID_CANCEL;
   my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fpath = Demeter::FPath->new();
   my $is_ok = $fpath -> deserialize($file);
@@ -2557,7 +2637,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

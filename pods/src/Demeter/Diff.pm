@@ -78,12 +78,12 @@ sub diff {
   $self->dataspace('flat') if (($self->space eq 'norm') and $self->data->bkg_flatten);
 
   $self->standard->standard;
-  $self->dispose($self->template("analysis", "diff_diff"));
+  $self->dispense("analysis", "diff_diff");
   $self->standard->unset_standard;
 
   my @x = $self->data->get_array('energy');
   @x = map {$_ + $self->data->bkg_eshift} @x;
-  my @y = $self->data->get_array('diff');
+  my @y = $self->standard->get_array('diff');
   $self->spline(Math::Spline->new(\@x,\@y));
   $self->_integrate;
   return $self;
@@ -99,11 +99,11 @@ sub plot {
     $self->po->start_plot;
     $self->data->plot('E');
     $self->standard->plot('E');
-    $self->dispose($self->template("plot", "overdiff"), 'plotting');
+    $self->chart("plot", "overdiff");
     $self->po->e_markers($save);
   } else {
     my $which = ($self->po->New) ? 'newdiff' : 'overdiff';
-    $self->dispose($self->template("plot", $which), 'plotting');
+    $self->chart("plot", $which);
     $self->po->increment;
   };
   if ($self->po->e_markers) {
@@ -124,8 +124,8 @@ sub make_group {
     sprintf("diff %s - %s", $self->standard->name, $self->data->name):
       sprintf("diff %s - %s", $self->data->name, $self->standard->name);
   my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>1, name=>$name);
-  $data->dispose($data->template("process", "deriv"));
-  $data->dispose($data->template("analysis", "diff_make"));
+  $data->dispense("process", "deriv");
+  $data->dispense("analysis", "diff_make");
   foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)) {
     $data->$w($self->data->$w);
   };
@@ -174,7 +174,10 @@ sub _integrate {
     }
 
     # Are we close enough?
-    return $est[$i][$i] if (abs($est[$i][$i] - $est[$i-1][$i-1]) <= $self->epsilon);
+    if (abs($est[$i][$i] - $est[$i-1][$i-1]) <= $self->epsilon) {
+      $self->area($est[$i][$i]);
+      return $est[$i][$i];
+    };
   }
   $self->area($est[$self->steps][$self->steps]);
   return $self->area;
@@ -188,7 +191,7 @@ Demeter::Diff - Difference spectra
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

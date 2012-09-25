@@ -324,9 +324,9 @@ sub legend {
     my $k = "key_".$key;
     $self->$k($args{$key});
   };
-  Ifeffit::put_scalar('&plot_key_x' , $self->key_x);
-  Ifeffit::put_scalar('&plot_key_y0', $self->key_y);
-  Ifeffit::put_scalar('&plot_key_dy', $self->key_dy);
+  $self->place_scalar('&plot_key_x' , $self->key_x);
+  $self->place_scalar('&plot_key_y0', $self->key_y);
+  $self->place_scalar('&plot_key_dy', $self->key_dy);
   return $self;
 };
 
@@ -472,7 +472,7 @@ Demeter::Plot - Controlling plots of XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -742,7 +742,7 @@ q{},
 
 =item C<e_smooth> (integer) I<[0]>
 
-When non-zero, data plotted in energy will be smoothed using Ifeffit's
+When non-zero, data plotted in energy will be smoothed using a
 three-point smoothing function.  The number is the number of
 repititions of the smoothing function.
 

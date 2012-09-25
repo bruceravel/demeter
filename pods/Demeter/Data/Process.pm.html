@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.10.</p>
+<p>This documentation refers to Demeter version 0.9.11.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -80,14 +80,15 @@ mu(E) data and adjusting e0.</p>
 reimporting the data).  Many of the examples suggest the use of the
 <code>clone</code> method for easy comparison between the processed and original
 data.  In those cases cloning is a good idea because the methods
-<strong>will</strong> alter the arrays in Ifeffit.</p>
+<strong>will</strong> alter the arrays in the data processing backend
+(Ifeffit/Larch).</p>
 
 <dl>
 	<dt><code>rebin</code></dt>
 		<dd><p>This method rebins EXAFS data onto a standard EXAFS grid defined by
 parameters that can be passed to the method via an anonymous hash.  It
 returns the reference to the new object and creates an appropriate set
-of Ifeffit arrays.  The new object is a clone of the original object.</p></dd>
+of arrays.  The new object is a clone of the original object.</p></dd>
 <dd><pre>  $rebinned_group = $data -&gt; rebin(pre=&gt;-35, xanes=&gt;0.3);
   $rebinned_group -&gt; plot('E');
 
@@ -126,7 +127,8 @@ with <code>$data</code>.</p></dd>
 are Data objects to be included in the merge.</p></dd>
 	<dt><code>Truncate</code></dt>
 		<dd><p>Truncate data before or after a given value.  This discards the
-truncated points from the arrays in Ifeffit.</p></dd>
+truncated points from the arrays in the data processing backend
+(Ifeffit/Larch).</p></dd>
 <dd><pre>  $data -&gt; Truncate(&quot;after&quot;, 7700);
 
 </pre></dd>		<dd><p>The truncation is exclusive -- that is the value closest in energy or
@@ -151,19 +153,20 @@ attempting to deglitch any of the last two points of data will result
 in both points being removed.  The same is true of the first two
 points.  This is a bug, but not, I don't think, a horrible one.</p></dd>
 	<dt><code>smooth</code></dt>
-		<dd><p>Perform Ifeffit's three-point smoothing on the mu(E) or chi(k) data,
-as appropriate.  The argument tells Demeter how many times to reapply
-the smoothing.</p></dd>
+		<dd><p>Perform three-point smoothing on the mu(E) or chi(k) data, as
+appropriate.  The argument tells Demeter how many times to reapply the
+smoothing.</p></dd>
 <dd><pre>  $copy = $data -&gt; clone;
   $copy -&gt; smooth(5);
 
 </pre></dd>	<dt><code>convolve</code></dt>
 		<dd><p>Perform a Gaussian or Lorentzian convolution on the data.  Becuase
 this has a number of possible arguments, named arguments in an
-anonymous hash are used.  The width is Ifeffit's sigma value and is a
-possitive number.  A negative number will be interpretted as zero.
-The type is either &quot;Gaussian&quot; or &quot;Lorentzian&quot;.  The type is either
-&quot;xmu&quot; or &quot;chi&quot; -- that is convolute mu(E) or chi(k) data.</p></dd>
+anonymous hash are used.  The width is sigma as defined in the data
+processing backend (Ifeffit/Larch) and is a possitive number.  A
+negative number will be interpretted as zero.  The type is either
+&quot;Gaussian&quot; or &quot;Lorentzian&quot;.  The type is either &quot;xmu&quot; or &quot;chi&quot; -- that
+is convolute mu(E) or chi(k) data.</p></dd>
 <dd><pre>  $copy = $data -&gt; clone;
   $copy -&gt; convolve(width=&gt;2, type=&gt;'gaussian', which=&gt;'xmu');
 

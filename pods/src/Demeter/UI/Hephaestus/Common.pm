@@ -30,7 +30,7 @@ require Exporter;
 @EXPORT_OK = qw(e2l hversion hcopyright hdescription);
 
 sub hversion {
-  return $VERSION;
+  return $Demeter::VERSION;
 };
 
 sub hcopyright {
@@ -55,7 +55,7 @@ Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

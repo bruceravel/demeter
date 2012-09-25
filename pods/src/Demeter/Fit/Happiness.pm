@@ -210,7 +210,7 @@ Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
@@ -222,28 +222,28 @@ make the person running the fit.
 
 =head1 DESCRIPTION
 
-Ifeffit, and therefor Demeter, offers a number of parameters after the
-completion of the fit.  These include the chi-square, the reduced
-chi-square, an R-factor, error bars, uncertainties, and restraint
-evaluations.  These various parameters serve different purposes.  The
-chi-square is the actual fitting metric, i.e. the quantity which is
-minimized in the fit.  The reduced chi-square is the fitting metric
-normalized by the degrees of freedom (i.e. the difference in the
-number of independent points and the number of guess parameters used)
-and is a true statistical parameter.  The reduced chi-square can be
-used to compare two different fitting models against a data set.  The
-R-factor is merely a percentage misfit, a numerical measure of how
-well the fit over-plots the data.  Taken together the reduced
-chi-square and the R-factor go a long way towards helping you evaluate
-your fit.
+Ifeffit and Larch, and therefor Demeter, offers a number of parameters
+after the completion of the fit.  These include the chi-square, the
+reduced chi-square, an R-factor, error bars, uncertainties, and
+restraint evaluations.  These various parameters serve different
+purposes.  The chi-square is the actual fitting metric, i.e. the
+quantity which is minimized in the fit.  The reduced chi-square is the
+fitting metric normalized by the degrees of freedom (i.e. the
+difference in the number of independent points and the number of guess
+parameters used) and is a true statistical parameter.  The reduced
+chi-square can be used to compare two different fitting models against
+a data set.  The R-factor is merely a percentage misfit, a numerical
+measure of how well the fit over-plots the data.  Taken together the
+reduced chi-square and the R-factor go a long way towards helping you
+evaluate your fit.
 
 Unfortunately, the EXAFS fitting problem is not a well-defined
-Gaussian fitting problem.  That's a shame, given that Ifeffit applies
-the concepts of Gaussian statistics.  In principle, one can do much
-better than a simple application of Gaussian statistics.  Several
+Gaussian fitting problem.  That's a shame, given that Ifeffit & Larch
+apply the concepts of Gaussian statistics.  In principle, one can do
+much better than a simple application of Gaussian statistics.  Several
 workers, notably Krappe and Rossner, have applied Bayesian concepts to
-the EXAFS problem.  In practice Demeter uses Ifeffit because Ifeffit
-offers so many useful tools for arbitrary model building.
+the EXAFS problem.  In practice Demeter uses Ifeffit or Larch because
+they offer so many useful tools for arbitrary model building.
 Consequently, Demeter and its users need to find a way to live with
 the shortcomings of the Gaussian approach to the EXAFS problem.
 

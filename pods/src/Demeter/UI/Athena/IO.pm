@@ -32,16 +32,16 @@ sub Export {
     push @data, $app->{main}->{list}->GetIndexedData($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving marked groups to a project cancelled -- no marked groups.");
+    $app->{main}->status("Saving marked groups to a project canceled -- no marked groups.");
     return;
   };
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save project file", cwd, q{athena.prj},
-				  "Athena project (*.prj)|*.prj|All files|*",
+				  "Athena project (*.prj)|*.prj|All files (*)|*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Saving project cancelled.");
+      $app->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath; #File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -80,11 +80,11 @@ sub Import {
   my @files = ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
-				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
+				  "All files |*.*;*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $app->{main}->status("Data import cancelled.");
+      $app->{main}->status("Data import canceled.");
       return;
     };
     @files = map {File::Spec->catfile($fd->GetDirectory, $_)} $fd->GetFilenames;
@@ -303,7 +303,7 @@ sub _data {
   my $colsel;
   my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
-    Ifeffit::put_scalar("e0", 0);
+    $data->place_scalar("e0", 0);
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
@@ -352,11 +352,11 @@ sub _data {
       if ($w eq 'do_rebin') {
 	$value = $yaml->{$key} || 0;
       } else {
-	$value = $yaml->{$key} || $data->co->default('rebin', $w);
+	$value = $yaml->{$key} || $data->co->default('rebin', $w) || $data->co->demeter("rebin", $w);
       };
-      $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
+      $colsel->{Rebin}->{$w}->SetValue($value);
       next if (any {$w eq $_} qw(do_rebin abs));
-      $data->co->set_default('rebin', $w, $yaml->{$key});
+      $data->co->set_default('rebin', $w, $value);
     };
     if ($data->columns ne $yaml->{columns}) {
       $colsel->{Rebin}->{do_rebin}->SetValue(0)
@@ -389,8 +389,8 @@ sub _data {
 
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
-      $app->{main}->status("Cancelled column selection.");
-      $data->dispose("erase \@group ".$data->group);
+      $app->{main}->status("Canceled column selection.");
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
       $data->DEMOLISH;
       return 0;
     };
@@ -524,7 +524,7 @@ sub _group {
       foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($data->$att);
       };
-      $data->dispose("erase \@group ".$data->group);
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
       $data->DEMOLISH;
       $data = $rebin;
     } else {
@@ -542,7 +542,7 @@ sub _group {
   if (any {$_ == 0} @signal) {
     my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
     my $response = $md -> ShowModal;
-    $data->dispose("erase \@group ".$data->group);
+    $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
     $data->DEMOLISH;
     return;
   };
@@ -612,8 +612,13 @@ sub _group {
       $ref->fft_edge($data->fft_edge);
     };
     $ref -> _update('normalize');
-    if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
-      $ref->e0('atomic');
+    ## need to fix the e0 of the reference in two situations
+    if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
+      if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
+	$ref->e0('atomic');
+      };
+    } else {			# for ref of a different edge, the edge might be out of ifeffit's range
+      $ref -> e0('dmax');
     };
     if ($do_rebin) {
       my $ret = $data->rebin_is_sensible;
@@ -623,7 +628,7 @@ sub _group {
 	foreach my $att (qw(energy numerator denominator ln name)) {
 	  $rebin->$att($ref->$att);
 	};
-	$ref->dispose("erase \@group ".$ref->group);
+	$ref->dispense('process', 'erase', {items=>"\@group ".$ref->group});
 	$ref->DEMOLISH;
 	$ref = $rebin;
       };
@@ -765,11 +770,11 @@ sub save_column {
 		          :                    ('???',     '.???',  '???');
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data", cwd, $base.$suff,
-				"$desc data (*$suff)|*$suff|All files|*",
+				"$desc data (*$suff)|*$suff|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data cancelled.");
+    $app->{main}->status("Saving column data canceled.");
     return;
   };
   my $fname = $fd->GetPath;
@@ -787,7 +792,7 @@ sub save_marked {
     push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving marked cancelled. There are no marked groups.");
+    $app->{main}->status("Saving marked canceled. There are no marked groups.");
     return;
   };
 
@@ -813,11 +818,11 @@ sub save_marked {
 		    :                        ('???',             '.???');
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
-				"$desc data (*$suff)|*$suff|All files|*",
+				"$desc data (*$suff)|*$suff|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data for marked groups cancelled.");
+    $app->{main}->status("Saving column data for marked groups canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -834,7 +839,7 @@ sub save_each {
     push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
-    $app->{main}->status("Saving each cancelled. There are no marked groups.");
+    $app->{main}->status("Saving each canceled. There are no marked groups.");
     return;
   };
 
@@ -847,7 +852,7 @@ sub save_each {
   my $dd = Wx::DirDialog->new( $app->{main}, "Save $desc data for each marked group",
 			       cwd, wxDD_DEFAULT_STYLE|wxDD_CHANGE_DIR);
   if ($dd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving column data for each marked group cancelled.");
+    $app->{main}->status("Saving column data for each marked group canceled.");
     return;
   };
   my $busy = Wx::BusyCursor->new();
@@ -872,11 +877,11 @@ sub FPath {
 
   (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
   my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.es',
-				"epirical standards (*.es)|*.es|All files|*",
+				"epirical standards (*.es)|*.es|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $app->{main}->status("Saving empirical standard from current group cancelled.");
+    $app->{main}->status("Saving empirical standard from current group canceled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -912,6 +917,7 @@ sub FPath {
 			       scatterer => $scatterer,
 			       reff      => $reff,
 			       source    => $app->current_data,
+			       Type      => 'empirical standard',
 			       n         => 1,
 			       delr      => 0.0,
 			       s02       => 1,
@@ -931,7 +937,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

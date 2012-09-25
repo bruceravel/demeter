@@ -42,12 +42,12 @@ sub iofx {
 sub get_titles {
   my ($self) = @_;
   my @titles;
-  my $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, 1));
+  my $string = $self->fetch_string(sprintf("%s_title_%2.2d", $self->group, 1));
   my $i = 1;
   while ($string !~ m{\A\s+\z}) {
     push @titles, $string;
     ++$i;
-    $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, $i));
+    $string = $self->fetch_string(sprintf("%s_title_%2.2d", $self->group, $i));
     #print sprintf("%s_title_%2.2d", $self->group, $i), ":  ", $string, $/;
   };
   return @titles;
@@ -71,26 +71,26 @@ sub put {
 
 sub put_energy {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.energy', $arrayref);
+  $self->place_array($self->group.'.energy', $arrayref);
   $self -> update_norm(1);
   return $self;
 };
 sub put_xmu {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.xmu', $arrayref);
+  $self->place_array($self->group.'.xmu', $arrayref);
   $self -> update_norm(1);
   return $self;
 };
 
 sub put_k {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.k', $arrayref);
+  $self->place_array($self->group.'.k', $arrayref);
   $self -> update_bft(1);
   return $self;
 };
 sub put_chi {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.chi', $arrayref);
+  $self->place_array($self->group.'.chi', $arrayref);
   $self -> update_bft(1);
   return $self;
 };
@@ -98,7 +98,7 @@ sub put_chi {
 sub put_array {
   my ($self, $suffix, $arrayref) = @_;
   $suffix ||= '___';
-  Ifeffit::put_array(join('.', $self->group, $suffix), $arrayref);
+  $self->place_array(join('.', $self->group, $suffix), $arrayref);
   return $self;
 };
 
@@ -111,7 +111,7 @@ sub get_array {
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
-  my @array = Ifeffit::get_array($text);
+  my @array = $self->fetch_array($text);
   if (not @array) {		# only do this error check if the specified array is not returned
     my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
     my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
@@ -143,25 +143,27 @@ sub floor_ceil {
   return ($min, $max);
 };
 
+my @arrays_text = ();
 sub arrays {
   my ($self) = @_;
   if (not $self->plottable) {
     my $class = ref $self;
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
-  my $save = Ifeffit::get_scalar("\&screen_echo");
-  $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
   my @arrays = ();
-  my $lines = Ifeffit::get_scalar('&echo_lines');
-  $self->dispose("\&screen_echo = $save\n"), return if not $lines;
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    my $group = $self->group;
-    if ($response =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+  @arrays_text = ();		     # initialize array buffer for accumulating correlations text
+  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+	      $self->get_mode("feedback"));
+  $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
+  $self->dispense("process", "show_group");
+  $self->toggle_echo($save[0]);	# reset everything
+  $self->set_mode(feedback=>$save[1]||q{});
+  my $group = $self->group;
+  foreach my $l (@arrays_text) {
+    if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
       push @arrays, $1;
     };
   };
-  $self->dispose("\&screen_echo = $save\n") if $save;
   return @arrays;
 };
 
@@ -195,7 +197,7 @@ sub points {
   my @z = ();
   if (($args{suffix} eq 'chir_pha') and $args{dphase}) {
     $args{suffix} = 'dph';
-    #$self->dispose("erase ___dp_scale");
+    #$self->dispense('process', 'erase', {items=>'___dp_scale'});
   };
   if ($args{space} eq 'lcf') {
     @y = $self->get_array($args{suffix});
@@ -248,7 +250,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 METHODS
 
@@ -280,21 +282,22 @@ chi(k) data you must explicitly specify it.
 
 =item C<get_array>
 
-Read an array from Ifeffit.  The argument is the Ifeffit array suffix
-of the array to import.
+Read an array from the data processing backend (Ifeffit/Larch).  The
+argument is the Ifeffit array suffix of the array to import.
 
   @array = $dataobject->get_array("xmu");
 
 =item C<ref_array>
 
-Get a reference to an array from Ifeffit.  The argument is the Ifeffit
-array suffix of the array to import.
+Get a reference to an array from the data processing backend
+(Ifeffit/Larch).  The argument is the Ifeffit array suffix of the
+array to import.
 
   $ref_to_array = $dataobject->ref_array("xmu");
 
 =item C<put_xmu>
 
-Push an array onto the Ifeffit array representing the xmu data
+Push an array onto a backend array representing the xmu data
 associated with the Data object.  The purpose of this is to modify the
 mu(E) data for a Data object in place.  An example would be to apply a
 dead time correction without creating a new group to contain the
@@ -305,7 +308,7 @@ corrected data.
 =item C<floor_ceil>
 
 Return a two element list containing the smallest and largest values
-of an array in Ifeffit.
+of an array in the data processing backend (Ifeffit/Larch).
 
   ($min, $max) = $dataobject->floor_ceil("xmu");
 

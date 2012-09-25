@@ -178,11 +178,11 @@ sub save {
   my ($this, $event) = @_;
   (my $name = $this->{LR}->data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save log-ratio fit to a file", cwd, $name.".lrpd",
-				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files|*",
+				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $::app->{main}->status("Saving log-ratio results to a file has been cancelled.");
+    $::app->{main}->status("Saving log-ratio results to a file has been canceled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -200,7 +200,7 @@ Demeter::UI::Athena::LogRatio - A log-ratio/phase-difference analysis for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 

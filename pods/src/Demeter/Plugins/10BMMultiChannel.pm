@@ -101,7 +101,7 @@ sub fix {
   ## -------- write the project file and clean up
   my $journal = Demeter::Journal->new;
   $journal->text(join($/, $mc->get_titles));
-  $mc->dispose("erase \@group ".$mc->group);
+  $mc->dispense('process', 'erase', {items=>"\@group ".$mc->group});
   $data[0]->write_athena($prj, @data, $journal);
   $_ -> DEMOLISH foreach (@data, $mc);
 
@@ -122,7 +122,7 @@ Demeter::Plugins::10BMMultiChannel - filetype plugin for 10BM multi-channel data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.10.
+This documentation refers to Demeter version 0.9.11.
 
 =head1 SYNOPSIS
 
