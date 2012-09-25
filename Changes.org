@@ -18,6 +18,8 @@
      occupancy in crystal data
    - Fixed a problem importing a project file containing only a feff
      calclation and no data
+   - Fits folder underneath project folder was not cleaned out when
+     closing a project
 
 *** Demeter
    - Added CONTRIBUTING file to distro for use at GitHub

@@ -614,7 +614,9 @@ sub close_project {
   $rframes->{History}->{plottool} -> SetSizer($plottoolbox, 1);
   $rframes->{History}->{plottool} -> SetScrollbars(20, 20, 50, 50);
   $rframes->{History}->{scrollbox} = $plottoolbox;
-
+  my $fittree = File::Spec->catfile($rframes->{main}->{project_folder}, 'fits');
+  rmtree($fittree);
+  mkdir $fittree;
 
   ## -------- clear Journal
   $rframes->{Journal}->{journal}->SetValue(q{});
