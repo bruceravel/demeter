@@ -97,6 +97,7 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  $demeter -> po -> space('R');
 
   ## -------- import all of Artemis' various parts
   foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {

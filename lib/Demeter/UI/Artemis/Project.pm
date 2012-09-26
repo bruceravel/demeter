@@ -241,6 +241,27 @@ sub read_project {
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
 
+  ## -------- plot and indicator yamls, journal
+  $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
+  my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
+  if (-e $py) {
+    my %hash = %{YAML::Tiny::LoadFile($py)};
+    delete $hash{nindicators};
+    $Demeter::UI::Artemis::demeter->po->set(%hash);
+    $rframes->{Plot}->populate;
+  };
+  my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
+  if (-e $iy) {
+    my @list = YAML::Tiny::LoadFile($iy);
+    $rframes->{Plot}->{indicators}->populate(@list);
+  };
+  my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
+  if (-e $journal) {
+    $rframes->{Journal}->{journal}->SetValue(Demeter->slurp($journal));
+  };
+
+
+
   ## -------- import feff calculations from the project file
   my %feffs;
   my $feffdir = File::Spec->catfile($projfolder, 'feff/');
@@ -364,25 +385,6 @@ sub read_project {
       my $current = $fit->number || 1;
       #++$current;
     };
-  };
-
-  ## -------- plot and indicator yamls, journal
-  $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
-  my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
-  if (-e $py) {
-    my %hash = %{YAML::Tiny::LoadFile($py)};
-    delete $hash{nindicators};
-    $Demeter::UI::Artemis::demeter->po->set(%hash);
-    $rframes->{Plot}->populate;
-  };
-  my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
-  if (-e $iy) {
-    my @list = YAML::Tiny::LoadFile($iy);
-    $rframes->{Plot}->{indicators}->populate(@list);
-  };
-  my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
-  if (-e $journal) {
-    $rframes->{Journal}->{journal}->SetValue(Demeter->slurp($journal));
   };
 
   $import_problems .= restore_fit($rframes, $currentfit, $lastfit);
