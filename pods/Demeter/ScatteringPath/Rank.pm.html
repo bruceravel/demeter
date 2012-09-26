@@ -53,6 +53,7 @@
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
 	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
 	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
 	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
@@ -67,13 +68,13 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.11.</p>
+<p>This documentation refers to Demeter version 0.9.12.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>This module provides a framework for evaluating path ranking formulas
 and associating the results with ScatteringPath objects.  These
-rankings can be used to evaluate the magnitude of a path in a Feff
+rankings can be used to evaluate the importance of a path in a Feff
 calculation and, hopefully, provide some guidance about which paths to
 include in a fit.</p>
 
@@ -94,6 +95,12 @@ information about the list of paths from a Feff calculation and
 hopefully provides much better guidance for creating fitting models.</p>
 
 <dl>
+	<dt><code>chimagW</code></dt>
+		<dd><p>The sum of the magnitude of chi(k) is computed after k-weighting by
+W=(1,2,3).  The magnitude is obtained by running Ifeffit's <code>ff2chi</code>
+function with the flag set for saving the magnitude of chi.  This is
+controlled by the <code>save_mag</code> attribute of the Path object which is
+used to compute the various tests.</p></dd>
 	<dt><code>areaW</code></dt>
 		<dd><p>Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
 perform a Fourier transform on the path using k-weight of W=(1,2,3).
@@ -138,6 +145,13 @@ include it twice.</p></dd>
   };
 
 </pre></dd></dl>
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The <code>pathfinder -&gt; rank</code> parameter is used to determine which
+tests are run.  If set to <code>all</code>, the tests will be evaluated at all
+three k-weights.  If set to <code>kw2</code>, the tests will only be evaluated
+with k-weight of 2.</p>
+
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>

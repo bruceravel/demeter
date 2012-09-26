@@ -566,7 +566,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 
 =head1 SYNOPSIS
@@ -709,6 +709,12 @@ evaluation of the Debye or Eins functions.
 
 This is a flag indicating that the phase of this path should be used
 to perform phase corrected plots.
+
+=item C<save_mag> (boolean)
+
+When true, this tells Ifeffit to save an array containing the
+magnitude of chi(k).  This is used in ranking paths -- see
+L<Demeter::ScatteringPath::Rank>.
 
 =back
 

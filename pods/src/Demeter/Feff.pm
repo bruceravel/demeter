@@ -582,10 +582,10 @@ sub rank_paths {
   my $i = 0;
   foreach my $sp (@{ $self->pathlist }) {
     $sp->rank if ($self->co->default('pathfinder', 'rank') ne 'feff');
-    $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]));
-    if ($sp->get_rank('zcwif') > $self->co->default('pathfinder', 'rank_high')) {
+    $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]||0));
+    if ($sp->get_rank('zcwif') >= $self->co->default('pathfinder', 'rank_high')) {
       $sp->weight(2);
-    } elsif ($sp->get_rank('zcwif') < $self->co->default('pathfinder', 'rank_low')) {
+    } elsif ($sp->get_rank('zcwif') <= $self->co->default('pathfinder', 'rank_low')) {
       $sp->weight(0);
     } else {
       $sp->weight(1);
@@ -1126,7 +1126,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 
 =head1 SYNOPSIS

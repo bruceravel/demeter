@@ -312,6 +312,19 @@ sub fill_intrp_page {
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
     ++$i;
   };
+  my $which = 6;
+  if (Demeter->po->space eq 'k') {
+    $which = 5;
+  } elsif (Demeter->po->space eq 'q') {
+    $which = 5;
+  } elsif (Demeter->po->r_pl eq 'm') {
+    $which = 6;
+  } elsif (Demeter->po->r_pl eq 'r') {
+    $which = 7;
+  } elsif (Demeter->po->r_pl eq 'i') {
+    $which = 8;
+  };
+  $self->{parent}->{Paths}->{toolbar} -> ToggleTool($which, 1);
 };
 
 sub fill_ss_page {
@@ -394,7 +407,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 DESCRIPTION
 

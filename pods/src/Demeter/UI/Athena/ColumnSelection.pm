@@ -374,7 +374,7 @@ sub OnDatatype {
       $d->Enable(1);
     };
 
-    my $num = ($data->chi_column eq '1') ? $data->numerator : $data->chi_column;
+    my $num = ($data->chi_column eq q{}) ? $data->numerator : $data->chi_column;
     $data->chi_column(q{});
     $data->numerator($num);
   };
@@ -488,7 +488,7 @@ Demeter::UI::Athena::ColumnSelection - Athena's column selection dialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

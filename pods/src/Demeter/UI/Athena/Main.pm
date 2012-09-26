@@ -835,6 +835,9 @@ sub OnParameter {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
     $data->$which($value);
 
+  } elsif ($which =~ m{nnorm_(\d)}) { # norm order
+    $data->bkg_nnorm($1);
+
   } elsif ($which !~ m{fixstep}) { # toggle
     $data->$which($value);
 
@@ -1314,7 +1317,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

@@ -40,9 +40,13 @@ sub new {
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
+  $this->{make_nor} = Wx::CheckBox->new($this, -1, 'Allow difference group to be renormalized');
   $gbs->Add($this->{invert},  Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
   $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
+  $this->{invert}->SetValue(0);
   $this->{plotspectra}->SetValue(1);
+  $this->{make_nor}->SetValue(0);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
@@ -162,6 +166,7 @@ sub plot {
 
 sub make {
   my ($this) = @_;
+  $this->{Diff}->is_nor(not $this->{make_nor}->GetValue);
   my $data = $this->{Diff}->make_group;
   my $index = $::app->current_index;
   if ($index == $::app->{main}->{list}->GetCount-1) {
@@ -199,7 +204,7 @@ Demeter::UI::Athena::Difference - A difference spectrum tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

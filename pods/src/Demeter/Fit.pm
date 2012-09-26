@@ -1610,7 +1610,7 @@ override 'deserialize' => sub {
 
   $self->grabbed(1);
   $self->thawed(1);
-  $self->location($project_folder);
+  $self->location($project_folder||q{});
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
 };
@@ -1626,7 +1626,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

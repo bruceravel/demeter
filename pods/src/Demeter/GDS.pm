@@ -27,7 +27,7 @@ use Demeter::Constants qw($NUMBER);
 has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');
 has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
-has 'initial'	  => (is => 'rw', isa => 'Str');
+has 'initial'	  => (is => 'rw', isa => 'Str',   default => q{});
 has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
 has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
 		      trigger => sub{my ($self, $new) = @_; $self->modified(1) if $new} );
@@ -196,7 +196,7 @@ Demeter::GDS - Guess, Set, Def, and other parameters for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

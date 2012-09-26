@@ -169,13 +169,13 @@ Demeter::ScatteringPath::Rank - Ranking paths in a Feff calculation
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 
 This module provides a framework for evaluating path ranking formulas
 and associating the results with ScatteringPath objects.  These
-rankings can be used to evaluate the magnitude of a path in a Feff
+rankings can be used to evaluate the importance of a path in a Feff
 calculation and, hopefully, provide some guidance about which paths to
 include in a fit.
 
@@ -198,6 +198,14 @@ hopefully provides much better guidance for creating fitting models.
 =head TESTS
 
 =over 4
+
+=item C<chimagW>
+
+The sum of the magnitude of chi(k) is computed after k-weighting by
+W=(1,2,3).  The magnitude is obtained by running Ifeffit's C<ff2chi>
+function with the flag set for saving the magnitude of chi.  This is
+controlled by the C<save_mag> attribute of the Path object which is
+used to compute the various tests.
 
 =item C<areaW>
 
@@ -267,6 +275,13 @@ Return a list of identifying names for all the tests.
   };
 
 =back
+
+=head1 CONFIGURATION
+
+The C<pathfinder -&gt; rank> parameter is used to determine which
+tests are run.  If set to C<all>, the tests will be evaluated at all
+three k-weights.  If set to C<kw2>, the tests will only be evaluated
+with k-weight of 2.
 
 =head1 DEPENDENCIES
 

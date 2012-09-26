@@ -106,7 +106,7 @@ Demeter::Plugin::SSRLA - SSRL XAFS Data Collector 1.3 ASCII filetype plugin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

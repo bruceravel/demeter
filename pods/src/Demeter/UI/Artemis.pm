@@ -97,6 +97,7 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  $demeter -> po -> space('R');
 
   ## -------- import all of Artemis' various parts
   foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {
@@ -1407,7 +1408,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 

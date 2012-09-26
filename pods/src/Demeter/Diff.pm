@@ -57,6 +57,8 @@ has 'xsuff'         => (is => 'rw', isa => 'Str',     default => 'energy');
 has 'plotspectra'   => (is => 'rw', isa => 'Bool',    default => 0);
 has 'spline'        => (is => 'rw', isa => 'Any',     default => 0);
 
+has 'is_nor'        => (is => 'rw', isa => 'Bool',    default => 1);
+
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Diff($self);
@@ -123,7 +125,7 @@ sub make_group {
   my $name = ($self->invert) ?
     sprintf("diff %s - %s", $self->standard->name, $self->data->name):
       sprintf("diff %s - %s", $self->data->name, $self->standard->name);
-  my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>1, name=>$name);
+  my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>$self->is_nor, name=>$name);
   $data->dispense("process", "deriv");
   $data->dispense("analysis", "diff_make");
   foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)) {
@@ -191,7 +193,7 @@ Demeter::Diff - Difference spectra
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.11.
+This documentation refers to Demeter version 0.9.12.
 
 =head1 SYNOPSIS
 
