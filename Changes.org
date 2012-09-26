@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.12 ? October 2012
+** 0.9.12 26 September 2012
 *** Athena
    - Fixed a crashy bug when changing normalization order
    - Flag for setting difference group as re-normalizable
@@ -20,13 +20,10 @@
      calclation and no data
    - Fits folder underneath project folder was not cleaned out when
      closing a project
+   - Plot space is set correctly on intrp tab
 
 *** Demeter
    - Added CONTRIBUTING file to distro for use at GitHub
-
-*** Windows
-
-*** Acknowledgements for this release
 
 ** 0.9.11 18 September 2012
 *** Athena
