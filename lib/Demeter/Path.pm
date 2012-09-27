@@ -287,6 +287,7 @@ sub _update_from_ScatteringPath {
   ## generate from a ScatteringPath object
   my $sp     = $self->sp;
   my $feff   = $self->parent;
+  Demeter->trace;
   my ($workspace, $fname) = ($feff->workspace, $sp->randstring);
 
   ## this feffNNNN.dat has already been generated

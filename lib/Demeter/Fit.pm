@@ -1264,6 +1264,11 @@ override 'serialize' => sub {
       my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
       my $phase_to   = File::Spec->catfile($self->folder, $ff.".bin");
       copy($phase_from, $phase_to);
+      if (-e File::Spec->catfile($f->get("workspace"), "files.dat")) {
+	my $files_from = File::Spec->catfile($f->get("workspace"), "files.dat");
+	my $files_to   = File::Spec->catfile($self->folder, $ff.".files");
+	copy($files_from, $files_to);
+      };
     };
   };
 
@@ -1574,6 +1579,10 @@ override 'deserialize' => sub {
       $ok = $zip -> extractMemberWithoutPaths("$ff.bin");
       croak("Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
       rename("$ff.bin", "phase.bin");
+
+      $ok = $zip -> extractMemberWithoutPaths("$ff.files");
+      croak("Demeter::Fit::deserialize: could not extract $f.files from $dpj")  if ($ok != AZ_OK);
+      rename("$ff.files", "files.dat");
 
       chdir $thisdir;
     };

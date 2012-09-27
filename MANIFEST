@@ -536,12 +536,8 @@ lib/Demeter/ScatteringPath.pm
 lib/Demeter/share/Demeter.png
 lib/Demeter/share/Demeter_icon.ico
 lib/Demeter/share/Demeter_icon.png
-lib/Demeter/share/Demeter_large.png
-lib/Demeter/share/DemeterBanner.bmp
-lib/Demeter/share/DemeterDialog.bmp
 lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/ini/athena.styles.ini
-lib/Demeter/share/peacock.jpeg
 lib/Demeter/share/pgplot/grfont.dat
 lib/Demeter/share/pgplot/rgb.txt
 lib/Demeter/share/Readme.fit_serialization
@@ -1021,8 +1017,6 @@ lib/Demeter/UI/Artemis/share/artemis_icon.ico
 lib/Demeter/UI/Artemis/share/artemis_icon.png
 lib/Demeter/UI/Artemis/share/GPL.dem
 lib/Demeter/UI/Artemis/share/temple-logo.jpg
-lib/Demeter/UI/Artemis/share/temple.jpeg
-lib/Demeter/UI/Artemis/share/temple.png
 lib/Demeter/UI/Artemis/ShowText.pm
 lib/Demeter/UI/Artemis/Status.pm
 lib/Demeter/UI/Athena.pm
@@ -1069,7 +1063,6 @@ lib/Demeter/UI/Athena/Series.pm
 lib/Demeter/UI/Athena/share/athena_icon.ico
 lib/Demeter/UI/Athena/share/athena_icon.jpeg
 lib/Demeter/UI/Athena/share/athena_icon.png
-lib/Demeter/UI/Athena/share/Brygos_Painter_lekythos_Athena_holding_spear_MET.jpeg
 lib/Demeter/UI/Athena/share/GPL.dem
 lib/Demeter/UI/Athena/share/logo.jpg
 lib/Demeter/UI/Athena/share/logo.readme

@@ -252,8 +252,9 @@ sub _dpj {
 	#print "found feff $1\n";
 	my $feffdir = File::Spec->catfile($rframes->{main}->{project_folder}, 'feff', $1);
 	mkpath $feffdir;
-	$zip->extractMember("$1.bin",  File::Spec->catfile($feffdir, "phase.bin"));
-	$zip->extractMember("$1.yaml", File::Spec->catfile($feffdir, "$1.yaml"));
+	$zip->extractMember("$1.bin",   File::Spec->catfile($feffdir, "phase.bin"));
+	$zip->extractMember("$1.files", File::Spec->catfile($feffdir, "files.dat"));
+	$zip->extractMember("$1.yaml",  File::Spec->catfile($feffdir, "$1.yaml"));
 
 	my $feffobject = Demeter::Feff->new(yaml=>File::Spec->catfile($feffdir, "$1.yaml"), group=>$1); # force group to be the same as before
 	$feffobject -> workspace($feffdir);

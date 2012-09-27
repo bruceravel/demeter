@@ -5,6 +5,22 @@
 
 * Initial release
 
+** 0.9.13  XX October 2012
+*** Athena
+   - Updated the HXMA plugin
+   - Attempt to deal better with unreadable data file by bailing out
+     before the column selection dialog
+
+*** Artemis
+   - read files.dat from old-style fit serialization so that ranking
+     can be done
+
+*** Demeter
+   - Coerce numbers 0-5 into sensible window functions in
+     Demeter::StrTypes for Demeter::Data
+   - save files.dat (if it exists) to the fit serialization
+   - removed several images from repository
+
 ** 0.9.12 26 September 2012
 *** Athena
    - Fixed a crashy bug when changing normalization order

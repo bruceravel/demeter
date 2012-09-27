@@ -302,7 +302,7 @@ stash folder which is unlinked after being imported into Artemis.
 =item 3.
 
 A reference to a scalar which will be filled with the contents of the
-journal from the C<.apj> file.  InArtemis, this is inserted as text
+journal from the C<.apj> file.  In Artemis, this is inserted as text
 into the Journal buffer.
 
 =back

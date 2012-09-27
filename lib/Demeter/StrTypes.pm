@@ -117,6 +117,9 @@ subtype Window,
   where { lc($_) =~ m{\A$window_regexp\z} },
   message { "That string ($_) is not the name of Fourier transform window type" };
 
+coerce Window, from Str, via { ($_ =~ m{[0-5]}) ? $window_list[$_] : $_ };
+
+
 ## -------- Path Parameters
 use vars qw(@pathparam_list $pathparam_regexp);
 @pathparam_list = qw(e0 ei sigma2 s02 delr third fourth dphase);

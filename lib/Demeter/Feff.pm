@@ -561,6 +561,7 @@ sub fetch_zcwifs {
   closedir $D;
 
   my @zcwifs;
+  return () if (not -e File::Spec->catfile($self->workspace, 'files.dat'));
   open(my $FD, '<', File::Spec->catfile($self->workspace, 'files.dat'));
   my $flag = 0;
   while (<$FD>) {
