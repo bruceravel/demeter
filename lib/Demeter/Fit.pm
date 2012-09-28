@@ -1444,12 +1444,14 @@ override 'deserialize' => sub {
     };
     my %hash = %{ $pathlike };
     my $this;
+
     if (exists $pathlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
       $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
+
     } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
       $this -> set(%hash);
@@ -1457,6 +1459,7 @@ override 'deserialize' => sub {
       $this -> parentgroup($this->group);
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
+
     } elsif (exists $pathlike->{absorber}) { # this is an FSPath
       #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
@@ -1473,12 +1476,13 @@ override 'deserialize' => sub {
       delete $hash{feff_done};
       delete $hash{workspace};
       delete $hash{folder};
-      $this -> set(parent=>$feff);
-      $this -> set(workspace=>$where, folder=>$where);
+      $this -> set(parent=>$feff, workspace=>$where, folder=>$where);
+      $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };
+
     } else {
       $hash{data} ||= $self->mo->fetch('Data', $hash{datagroup});
       $this = Demeter::Path->new(%hash);

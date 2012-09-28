@@ -197,11 +197,19 @@ sub mouseover {
 
 sub populate {
   my ($this, $parent, $pathobject) = @_;
+
+  $pathobject->sp($pathobject -> mo -> fetch('ScatteringPath', $pathobject->spgroup))
+    if ((not $pathobject->sp) and $pathobject->spgroup);
   $this->{path} = $pathobject;
-  return if not ($pathobject->sp); # it is kind of a disaster for a path not to have an sp associated with it
-				   # this is non-ideal as it will leave a blank path page, but it
-				   # is better than crashing.  even better would be to figure out how it
-                                   # gets here....
+  #return if ((ref($pathobject) !~ m{FSPath}) and (not $pathobject->sp));
+  return if (not $pathobject->sp);
+                                   # it is kind of a disaster for a
+                                   # path not to have an sp associated
+                                   # with it this is non-ideal as it
+                                   # will leave a blank path page, but
+                                   # it is better than crashing.  even
+                                   # better would be to figure out how
+                                   # it gets here....
 
   $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ') if $pathobject->parent;
   $this->{fefflabel} -> SetLabel(q{[Emp.] }) if ref($pathobject) =~ m{FPath};
@@ -233,6 +241,7 @@ sub populate {
     };
 
   };
+
 
   my $imp = sprintf(" %s, %s%s\n", $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
   $this->{geometry} -> WriteText($imp);
