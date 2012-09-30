@@ -1,0 +1,20 @@
+First:
+
+  perl-reversion -bump -current 0.9.12
+
+with "0.9.12" replaced with current version number
+
+The perl-reversion script does not preserve execution bit, so
+
+  cd bin
+  chmod +x d* intrp redfit standards
+
+then, perl-reversion misses examples in
+
+ - bin/bugs.pod
+ - bin/contribute.pod
+ - bin/help.pod
+ - bin/installation.pod
+ - Build.PL
+
+Finally, git push and tag.

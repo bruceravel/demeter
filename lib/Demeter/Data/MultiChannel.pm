@@ -107,7 +107,7 @@ Demeter::Data::MultiChannel - Efficiantly read multiple data channels from a sin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 DESCRIPTION
 

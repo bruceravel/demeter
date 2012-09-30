@@ -2344,7 +2344,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 
