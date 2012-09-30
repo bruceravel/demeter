@@ -12,20 +12,24 @@
      before the column selection dialog
 
 *** Artemis
-   - read files.dat from old-style fit serialization so that ranking
-     can be done
-   - projects with quick first shell paths were not being imported
-     properly
+   - read files.dat from old-style fit serialization so that path
+     ranking can be done
+   - projects with quick first shell paths now imported properly
+   - display warning about excessively long QFS distances in a better
+     manner
 
 *** Demeter
    - Coerce numbers 0-5 into sensible window functions in
      Demeter::StrTypes for Demeter::Data
    - save files.dat (if it exists) to the fit serialization
    - removed several images from repository
+   - error attribute for FSPath object to facilitate warning reporting
+     in Artemis
 
 *** Windows
-   - Implementing updater packages using Inno and wrapping upi the
-     entire Demeter folder under {app}\perl\site\lib\
+   - Implemented updater packages using Inno and wrapping up the
+     entire Demeter folder under {app}\perl\site\lib\.  Also added
+     Inno script updater.iss to repo
 
 ** 0.9.12 26 September 2012
 *** Athena

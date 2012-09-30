@@ -108,6 +108,7 @@ has 'gds' => (
 			      'splice_gds'  => 'splice',
 			     },
 	       );
+has 'error' => (is => 'rw', isa => 'Str',    default => q{});
 
 
 ## the sp attribute must be set to this FSPath object so that the Path
@@ -294,13 +295,16 @@ sub verify_distance {
   return $self if (not $self->scatterer);
   $d ||= $self->distance;
   if ($d < $self->co->default("fspath", "min")) {
-    carp(sprintf("%f is awfully short to be a scatterer!\n", $d));
+    $self->error(sprintf("%f is awfully short to be a scatterer!\n", $d));
   } elsif (get_Z($self->scatterer) > 17) {
-    carp(sprintf("%f is awfully long for a metal scatterer (%s)!\n", $d, $self->scatterer))
+    $self->error(sprintf("%f is awfully long for a metal scatterer (%s)!\n", $d, $self->scatterer))
       if ($d > $self->co->default("fspath", "max_metal"));
   } elsif (get_Z($self->scatterer) < 18) {
-    carp(sprintf("%f is awfully long for a low Z scatterer (%s)!\n", $d, $self->scatterer))
+    $self->error(sprintf("%f is awfully long for a low Z scatterer (%s)!\n", $d, $self->scatterer))
       if ($d > $self->co->default("fspath", "max_lowz"));
+  };
+  if (lc($self->mo->ui) ne 'wx') {
+    carp($self->error);
   };
 };
 

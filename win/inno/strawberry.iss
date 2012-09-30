@@ -1,5 +1,11 @@
 ; -- demeter_and_strawberry_perl.iss --
 
+#define MyInstName "Demeter Installer for Windows"
+#define MyAppVersion "0.9.12"
+#define MyAppPublisher "Bruce Ravel"
+#define MyAppURL "http://bruceravel.github.com/demeter"
+#define Demeter "Demeter with Strawberry Perl"
+
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
 
@@ -11,25 +17,32 @@
 ; TODO: check for other perl installations (eg. in the Path variable) and warn or even abort if there is another one
 
 [Setup]
-AppName=Demeter with Strawberry Perl 0.9.11
-AppVersion=0.9.11
+;AppId={{D68911A8-D821-4411-AE5D-DA36327C000E}
+AppId=Strawberry_Perl_with_Demeter
+AppName={#Demeter} {#MyAppVersion}
+AppVersion={#MyAppVersion}
 DefaultDirName=\strawberry
-DefaultGroupName=Demeter with Strawberry Perl
+DefaultGroupName={#Demeter}
 ; UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output
-OutputBaseFilename=demeter-with-strawberry-perl-0_9_11
+OutputBaseFilename={#MyInstName} {#MyAppVersion}
 AppComments=XAS Data Processing and Analysis
-AppContact=http://bruceravel.github.com/demeter/
+AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
-AppId=Strawberry_Perl_with_Demeter
 ; AppMutex= TODO!
-AppPublisherURL=http://bruceravel.github.com/demeter/
+AppSupportURL={#MyAppURL}
+AppUpdatesURL={#MyAppURL}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
 
 ChangesAssociations=yes
 ChangesEnvironment=yes
+
+SetupIconFile=Demeter.ico
+WizardImageFile=Demeter_installer.bmp
 
 LicenseFile=Demeter.license.txt
 InfoAfterFile=Demeter.readme.txt
