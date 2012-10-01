@@ -62,7 +62,7 @@ Demeter::Plugin::SLRIBL4 - filetype plugin for SLRI BL4 dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

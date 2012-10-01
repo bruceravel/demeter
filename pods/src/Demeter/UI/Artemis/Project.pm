@@ -424,6 +424,7 @@ sub restore_fit {
   my ($rframes, $fit, $lastfit) = @_;
   $lastfit ||= $fit;
   my $import_problems = q{};
+  $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
 
   ## -------- load up the GDS parameters
   my $grid  = $rframes->{GDS}->{grid};
@@ -474,24 +475,21 @@ sub restore_fit {
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     my $datapaths = 0;
     foreach my $p (@{$fit->paths}) {
-#      if (not $p->sp) {
-#	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
-#	next;
-#      };
-      #my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
-      my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->{parentgroup});
+
+      my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->parentgroup);
       $p->set(file=>q{}, update_path=>1);
       $p->set(folder=>$feff->workspace) if (ref($p) !~ m{FPath});
       next if ($p->data ne $d);
       ++$datapaths;
       $p->parent($feff);
-      #my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
-      #$p->sp($this_sp);
+
+      $p -> sp($p -> mo -> fetch('ScatteringPath', $p->spgroup)) if ($p->spgroup and not $p->sp);
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       my $n = $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;
       $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
     };
+
     $rframes->{$dnum}->{pathlist}->SetSelection(0) if $datapaths; #($#{$fit->paths} > -1);
     $rframes->{$dnum}->Show(0);
     $rframes->{main}->{$dnum}->SetValue(0);
@@ -504,7 +502,6 @@ sub restore_fit {
 
   ## -------- labels and suchlike
   $rframes->{Log}->{name} = $fit->name;
-  $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
   $rframes->{Log}->put_log($lastfit);
   $rframes->{Log}->SetTitle("Artemis [Log] " . $fit->name);
   $rframes->{Log}->Show(0);
@@ -514,6 +511,7 @@ sub restore_fit {
   } else {
     $rframes->{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($fit->co->default("happiness", "average_color")));
   };
+
 
   return $import_problems;
 };
@@ -655,7 +653,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

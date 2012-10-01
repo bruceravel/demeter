@@ -28,7 +28,7 @@ use Demeter::UI::Wx::PeriodicTableDialog;
 sub new {
   my ($class, $parent) = @_;
 
-  my $this = $class->SUPER::new($parent, -1, "Artemis: Set up a quick first shell fit",
+  my $this = $class->SUPER::new($parent, -1, "Artemis: Set up a quick first shell path",
 				Wx::GetMousePosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
 			       );
@@ -110,7 +110,7 @@ Demeter::UI::Artemis::Data::Quickfs - Dialog to set up a quick first shell fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

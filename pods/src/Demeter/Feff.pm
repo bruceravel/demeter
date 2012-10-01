@@ -561,6 +561,7 @@ sub fetch_zcwifs {
   closedir $D;
 
   my @zcwifs;
+  return () if (not -e File::Spec->catfile($self->workspace, 'files.dat'));
   open(my $FD, '<', File::Spec->catfile($self->workspace, 'files.dat'));
   my $flag = 0;
   while (<$FD>) {
@@ -1126,7 +1127,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 
 =head1 SYNOPSIS

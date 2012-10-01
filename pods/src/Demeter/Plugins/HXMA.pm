@@ -27,6 +27,7 @@ sub fix {
   open N, ">".$new or die "could not write to $new (fix in HXMA)\n";
 
   my $first = 1;
+  my $identified_file_contents = 0;
 
   my $found_headers = 0;
   my ($energy, $lytle, $i0, $it, $ir) = (0,0,0,0,0);
@@ -41,6 +42,7 @@ sub fix {
    	($it     = $i-1) if ($headers[$i] =~ m{mcs05:fbk});
    	($ir     = $i-1) if ($headers[$i] =~ m{mcs06:fbk});
       };
+      $identified_file_contents = 1;
     };
 
     if ($_ !~ m{^\#}) {
@@ -49,7 +51,7 @@ sub fix {
 
 	printf N "# %s %s demystified:\n", $self->beamline, $file;
 	print N "# ", "-" x 60, $/;
-	if ($self->beamline eq 'HXMA') {
+	if (($self->beamline eq 'HXMA') and $identified_file_contents) {
 	  print N "# Energy        I0        It        Ir        Lytle$/";
 	} else {
 	  print N "# energy ", join(" ", (2..$#data)), $/;
@@ -57,7 +59,7 @@ sub fix {
 	$first = 0;
       };
 
-      if ($self->beamline eq 'HXMA') {
+      if (($self->beamline eq 'HXMA') and $identified_file_contents) {
 	printf N "  %s  %s  %s  %s  %s$/",
 	  $data[$energy], $data[$i0], $data[$it], $data[$ir], $data[$lytle];
       } else {
@@ -104,7 +106,7 @@ Demeter::Plugin::HXMA - Demystify files from the HXMA beamline at the CLS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

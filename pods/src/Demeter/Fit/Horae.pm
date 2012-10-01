@@ -269,7 +269,7 @@ Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter f
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 DESCRIPTION
 
@@ -302,7 +302,7 @@ stash folder which is unlinked after being imported into Artemis.
 =item 3.
 
 A reference to a scalar which will be filled with the contents of the
-journal from the C<.apj> file.  InArtemis, this is inserted as text
+journal from the C<.apj> file.  In Artemis, this is inserted as text
 into the Journal buffer.
 
 =back

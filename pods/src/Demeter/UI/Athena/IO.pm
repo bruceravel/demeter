@@ -248,6 +248,12 @@ sub _data {
 	       display	   => 1);
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
+  if ($data->unreadable) {
+    $app->{main}->status($data->file." could not be read as data.", 'alert');
+    $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
+    $data->DEMOLISH;
+    return 0;
+  };
   my $yaml;
   $yaml->{columns} = q{};
   my $do_guess = 0;
@@ -938,7 +944,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

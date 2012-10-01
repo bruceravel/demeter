@@ -2187,6 +2187,17 @@ sub quickfs {
 		     distance  => $distance,
 		     data      => $datapage->{data},
 		    );
+  if ($firstshell->error) {
+    my $okcancel = Wx::MessageDialog->new($datapage,
+					  $firstshell->error . "\n\nDo you want to carry on?",
+					  "Warning!",
+					  wxOK|wxCANCEL|wxICON_ERROR);
+    if ($okcancel->ShowModal == wxID_CANCEL) {
+      $datapage->status("Making quick first shell path canceled.");
+      $firstshell -> DEMOLISH;
+      return;
+    };
+  };
   $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
@@ -2203,6 +2214,9 @@ sub quickfs {
   };
 
   autosave();
+  if ($firstshell->error) {
+    $datapage->status("QFS path made, but ".$firstshell->error, 'alert');
+  };
 
   undef $busy;
 
@@ -2637,7 +2651,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 

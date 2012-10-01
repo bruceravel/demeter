@@ -1264,6 +1264,11 @@ override 'serialize' => sub {
       my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
       my $phase_to   = File::Spec->catfile($self->folder, $ff.".bin");
       copy($phase_from, $phase_to);
+      if (-e File::Spec->catfile($f->get("workspace"), "files.dat")) {
+	my $files_from = File::Spec->catfile($f->get("workspace"), "files.dat");
+	my $files_to   = File::Spec->catfile($self->folder, $ff.".files");
+	copy($files_from, $files_to);
+      };
     };
   };
 
@@ -1439,12 +1444,14 @@ override 'deserialize' => sub {
     };
     my %hash = %{ $pathlike };
     my $this;
+
     if (exists $pathlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
       $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
+
     } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
       $this -> set(%hash);
@@ -1452,6 +1459,7 @@ override 'deserialize' => sub {
       $this -> parentgroup($this->group);
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
+
     } elsif (exists $pathlike->{absorber}) { # this is an FSPath
       #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
@@ -1468,12 +1476,13 @@ override 'deserialize' => sub {
       delete $hash{feff_done};
       delete $hash{workspace};
       delete $hash{folder};
-      $this -> set(parent=>$feff);
-      $this -> set(workspace=>$where, folder=>$where);
+      $this -> set(parent=>$feff, workspace=>$where, folder=>$where);
+      $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };
+
     } else {
       $hash{data} ||= $self->mo->fetch('Data', $hash{datagroup});
       $this = Demeter::Path->new(%hash);
@@ -1575,6 +1584,10 @@ override 'deserialize' => sub {
       croak("Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
       rename("$ff.bin", "phase.bin");
 
+      $ok = $zip -> extractMemberWithoutPaths("$ff.files");
+      croak("Demeter::Fit::deserialize: could not extract $f.files from $dpj")  if ($ok != AZ_OK);
+      rename("$ff.files", "files.dat");
+
       chdir $thisdir;
     };
   };
@@ -1626,7 +1639,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.12.
+This documentation refers to Demeter version 0.9.13.
 
 =head1 SYNOPSIS
 
