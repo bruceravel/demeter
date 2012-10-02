@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.13  XX October 2012
+** 0.9.13  2 October 2012
 *** Athena
    - Updated the HXMA plugin
    - Attempt to deal better with unreadable data file by bailing out
@@ -25,6 +25,7 @@
    - removed several images from repository
    - error attribute for FSPath object to facilitate warning reporting
      in Artemis
+   - spiffier product page at github
 
 *** Windows
    - Implemented updater packages using Inno and wrapping up the
