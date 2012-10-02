@@ -1,0 +1,178 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Truncating data</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../mue/deglitch.html" class="menu" >Deglitching data</a> &nbsp;&nbsp;
+        Next: <a href="../mue/noise.html" class="menu" >Adding artificial noise to data</a>
+        &nbsp;&nbsp;
+        Up: <a href="../mue/index.html" class="menu" >Processing mu(E) data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Truncating data
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<br />
+<a href="../mue/index.html" class="menuselect" >Processing mu(E) data</a><br />
+&nbsp;-&nbsp;<a href="../mue/align.html" class="menu" >Aligning data</a><br />
+&nbsp;-&nbsp;<a href="../mue/merge.html" class="menu" >Merging data</a><br />
+&nbsp;-&nbsp;<a href="../mue/deglitch.html" class="menu" >Deglitching data</a><br />
+&nbsp;-&nbsp;<a href="../mue/truncate.html" class="menuselect" >Truncating data</a><br />
+&nbsp;-&nbsp;<a href="../mue/noise.html" class="menu" >Adding artificial noise to data</a><br />
+&nbsp;-&nbsp;<a href="../mue/smooth.html" class="menu" >Smoothing data</a><br />
+&nbsp;-&nbsp;<a href="../mue/convolve.html" class="menu" >Convolving data</a><br />
+&nbsp;-&nbsp;<a href="../mue/deconvolve.html" class="menu" >Deconvolving data</a><br />
+&nbsp;-&nbsp;<a href="../mue/rebin.html" class="menu" >Rebinning data</a><br />
+&nbsp;-&nbsp;<a href="../mue/dispersive.html" class="menu" >Processing dispersive XAS data</a><br /><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+Truncating is the process of removing data from one end or the other
+of a data set.  The <tt>Truncate</tt> method takes
+two arguments.  The first is either of the words 
+&ldquo;before&rdquo; or
+&ldquo;after&rdquo; and indicates whether data is to be
+removed from the front or back end of the data.  The second argument
+is the energy value before/after which all data points are removed.
+</p>
+
+<p>
+Truncating changes the representation of the data within
+both  <span class=program>DEMETER</span> and  <span class=program>IFEFFIT</span>.  This method 
+<em>does not</em> return a new object.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li><span class="keyword">my</span> <span class="symbol">$d0</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;$where/data/fe.060&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="literal">q{$1}</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="literal">q{$2}</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="literal">q{$3}</span><span class="structure">);</span>
+<li><span class="symbol">$d0</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+<li>
+<li><span class="symbol">$d0</span> <span class="operator">-&gt;</span> <span class="word">Truncate</span><span class="structure">(</span><span class="single">'after'</span><span class="operator">,</span> <span class="number">7500</span><span class="structure">);</span>
+<li><span class="symbol">$d0</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+</pre>
+<p>
+
+In the example above, all points after 7500 eV are removed from the
+data.  Here is an example of removing points from  the front end of
+the data. 
+</p>
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$d0</span> <span class="operator">-&gt;</span> <span class="word">Truncate</span><span class="structure">(</span><span class="single">'before'</span><span class="operator">,</span> <span class="number">7050</span><span class="structure">);</span>
+</ol>
+
+
+<table>
+<tr>
+<td>
+<p>
+
+These are the data as plotted by the example script above.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/truncate.png" target=_blank><img border=0 src="../../images/truncate.png" alt="truncate.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../mue/deglitch.html" class="menu" >Deglitching data</a> &nbsp;&nbsp;
+        Next: <a href="../mue/noise.html" class="menu" >Adding artificial noise to data</a>
+        &nbsp;&nbsp;
+        Up: <a href="../mue/index.html" class="menu" >Processing mu(E) data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

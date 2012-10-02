@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Chemistry::Formula</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Chemistry-Formula
+</div>
+<div>
+<a href="../src/Chemistry/Formula.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Chemistry::Formula - Enumerate elements in a chemical formula</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>   use Chemistry::Formula qw(parse_formula);
+   parse_formula('Pb (H (TiO3)2 )2 U [(H2O)3]2', \%count);
+
+</pre><p>That is obviously not a real compound, but it demonstrates the
+capabilities of the routine.  This returns</p>
+
+<pre>  %count = (
+	    'O' =&gt; 18,
+	    'H' =&gt; 14,
+	    'Ti' =&gt; 4,
+	    'U' =&gt; 1,
+	    'Pb' =&gt; 1
+	   );
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This module provides a function which parses a string containing a
+chemical formula and returns the number of each element in the string.
+It can handle nested parentheses and square brackets and correctly
+computes stoichiometry given numbers outside the (possibly nested)
+parentheses.</p>
+
+<p>No effort is made to evaluate the chemical plausibility of the
+formula.  The example above parses just fine using this module, even
+though it is clearly not a viable compound.  Charge balancing, bond
+valence, and so on is beyond the scope of this module.</p>
+
+<p>Only one function is exported, <code>parse_formula</code>.  This takes a string
+and a hash reference as its arguments and returns 0 or 1.</p>
+
+<pre>    $ok = parse_formula('PbTiO3', \%count);
+
+</pre><p>If the formula was parsed without trouble, <code>parse_formula</code> returns
+1. If there was any problem, it returns 0 and $count{error} is filled
+with a string describing the problem.  It throws an error afer the
+<strong>first</strong> error encountered without testing the rest of the string.</p>
+
+<p>If the formula was parsed correctly, the %count hash contains element
+symbols as its keys and the number of each element as its values.</p>
+
+<p>Here is an example of a program that reads a string from the command
+line and, for the formula unit described in the string, writes the
+weight and absorption in barns.</p>
+
+<pre>    use Data::Dumper;
+    use Xray::Absorption;
+    use Chemistry::Formula qw(parse_formula);
+
+    parse_formula($ARGV[0], \%count);
+
+    print  Data::Dumper-&gt;Dump([\%count], [qw(*count)]);
+    my ($weight, $barns) = (0,0);
+    foreach my $k (keys(%$count)) {
+      $weight +=
+	Xray::Absorption -&gt; get_atomic_weight($k) * $count{$k};
+      $barns  +=
+	Xray::Absorption -&gt; cross_section($k, 9000) * $count{$k};
+    };
+    printf &quot;This weighs %.3f amu and absorbs %.3f barns at 9 keV.\n&quot;,
+      $weight, $barns;
+
+</pre><p>Pretty simple.</p>
+
+<p>The parser is not brilliant.  Here are the ground rules:</p>
+
+<dl>
+	<dt>1.</dt>
+		<dd><p>Element symbols must be first letter capitalized.</p></dd>
+	<dt>2.</dt>
+		<dd><p>Whitespace is unimportant -- it will be removed from the string.  So
+will dollar signs, underscores, and curly braces (in an attempt to
+handle TeX).  Also a sequence like this: '/sub 3/' will be converted
+to '3' (in an attempt to handle INSPEC).</p></dd>
+	<dt>3.</dt>
+		<dd><p>Numbers can be integers or floating point numbers.  Things like 5,
+0.5, 12.87, and .5 are all acceptible, as is exponential notation like
+1e-2.  Note that exponential notation must use a leading number to
+avoid confusion with element symbols.  That is, 1e-2 is ok, but e-2 is
+not.</p></dd>
+	<dt>4.</dt>
+		<dd><p>Uncapitalized symbols or unrecognized symbols will flag an error.</p></dd>
+	<dt>5.</dt>
+		<dd><p>An error will be flagged if the number of open parens is different
+from the number of close parens.</p></dd>
+	<dt>6.</dt>
+		<dd><p>An error will be flagged if any unusual symbols are found in the
+string.</p></dd>
+</dl>
+<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This was written at the suggestion of Matt Newville, who tested early
+versions.</p>
+
+<p>The routine <code>matchingbrace</code> was swiped from the C::Scan module, which
+can be found on CPAN.  C::Scan is maintained by Hugo van der Sanden.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel &lt;bravel AT bnl DOT gov&gt;</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+<p>SVN repository: http://cars9.uchicago.edu/svn/libperlxray/</p>
+
+
+
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

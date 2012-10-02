@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Screen::Progress</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Screen-Progress
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Screen/Progress.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Screen::Progress - On screen indicators for lengthy operations</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>A spinner indicating and ongoing operation:</p>
+
+<pre>   $fitobject-&gt;start_spinner(&quot;Demeter is performing a fit&quot;);
+    ...
+   $fitobject-&gt;stop_spinner;
+
+</pre><p>A counter indicating an operation of known length:</p>
+
+<pre>   $n = 100;
+   $object-&gt;start_counter(&quot;Demeter is doing something $n times&quot;, $n);
+    ...
+   loop {
+     $object-&gt;count;
+   }
+    ...
+   $object-&gt;stop_counter;
+
+</pre><p>Both spinner and counter are disabled if screen disposal mode is turned on.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This role for a Demeter object provides some on-screen feedback for
+lengthy procedures.  This role is imported when the UI mode is set to
+&quot;screen&quot;.  See <a href="../../../Demeter.pm.html#PRAGMATA">PRAGMATA in Demeter</a>.  The idea is to provide either a
+spinny thing for the user to look at when running something time
+consuming from the command line or a counter for when the number of
+steps to the time consuming operation is known.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>The spinner attributes of this role take their names from parameters
+for <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a>.  Like all Moose attributes, their accessors take
+the same names.</p>
+
+<dl>
+	<dt><code>thingy</code></dt>
+		<dd><p>An array with the sequence of text strings comprising the spinner.
+The default is a throbber that goes from &quot;[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&quot; to &quot;-+-&quot; and
+back.</p></dd>
+	<dt><code>rate</code></dt>
+		<dd><p>The speed at which the thingy changes.  Default is 0.1.</p></dd>
+	<dt><code>progress</code></dt>
+		<dd><p>The text string which formats the progress meter.  See <a href="http://search.cpan.org/perldoc?Text%3A%3ASk">Text::Sk</a> for
+full details.  The default is</p></dd>
+<dd><pre>  Elapsed: %8t %30b (%c of %m)
+
+</pre></dd>		<dd><p>This shows the elapsed time, a progress bar, and a count.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>start_spinner</code></dt>
+		<dd><p>Start the spinner.  This is typically called just before a time
+consuming operation.</p></dd>
+<dd><pre>   $fitobject-&gt;start_spinner(&quot;Demeter is performing a fit&quot;);
+
+</pre></dd>		<dd><p>The optional argument is some text to print to the screen in front of
+the spinner.  This text would typically not include a new line.</p></dd>
+	<dt><code>stop_spinner</code></dt>
+		<dd><p>Stop the spinner.  This is typically called at the end of a time
+consuming operation.</p></dd>
+<dd><pre>   $fitobject-&gt;stop_spinner;
+
+</pre></dd>	<dt><code>start_counter</code></dt>
+		<dd><p>Start the counter.  This is typically called just before a time
+consuming operation of a known number of steps.</p></dd>
+<dd><pre>   $object-&gt;start_spinner(&quot;Demeter is doing many things&quot;, 100);
+
+</pre></dd>		<dd><p>The first argument is a bit of text describing what's going on.  A new
+line will be appended if the text does not end in a newline.  The
+second argument is the total number of steps in the operation.</p></dd>
+	<dt><code>count</code></dt>
+		<dd><p>Update the counter.</p></dd>
+<dd><pre>  $object-&gt;count;
+
+</pre></dd>	<dt><code>stop_counter</code></dt>
+		<dd><p>Stop the counter.  This is typically called after the last step is
+completed.</p></dd>
+<dd><pre>   $object-&gt;stop_counter;
+
+</pre></dd></dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.
+This module uses <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a> to generate the indicator and
+<a href="http://search.cpan.org/perldoc?Term%3A%3ASk">Term::Sk</a> for the counter.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>Configuring the form and rate of the twiddler would be nice.</li>
+	<li>A way to access the Term::Sk whisper method would be helpful.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

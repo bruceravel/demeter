@@ -1,0 +1,381 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Importing column data files</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/chi.html" class="menu" >chi(k) data files</a> &nbsp;&nbsp;
+        Next: <a href="../data/athena.html" class="menu" >Athena project files</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Importing column data files
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<br />
+<a href="../data/index.html" class="menuselect" >Importing data</a><br />
+&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/columns.html" class="menuselect" >Column data files</a><br />
+&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
+&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
+&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
+&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
+&nbsp;-&nbsp;<a href="../data/plot.html" class="menu" >Basic plotting and data processing</a><br /><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The most common situation for data import involves raw data from a
+beamline.  In this case,  <span class=program>DEMETER</span> assumes that your data are in
+columns, that one of the columns represents energy, and that two or
+more of the remaining columns represent signals on the various
+detectors.  You must explicitly specify which column is which when you
+define the Data object.
+</p>
+
+
+<a name="transmissiondata">
+
+<h3>  Transmission data</h3>
+</a>
+
+<p>
+
+This first example is for a file containing transmission XAS data:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;data/fe.060.dat&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span> <span class="comment"># column 1 is energy</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span> <span class="comment"># column 2 is I0</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$3'</span><span class="operator">,</span> <span class="comment"># column 3 is It</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># these are transmission data</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+The details of how to turn the columns into  &mu;(E)     data are given at
+lines 7 to 10.  The energy column is identified as the first column
+in the data file.  The manner in which the columns are identified,
+i.e. the use of the dollar sign (<tt>$</tt>) is
+borrowed from the Gnuplot plotting program.  This introduces a
+potential stumbling block in a perl script.  The
+<tt>$</tt> symbol is, of course, the sigil denoting
+a scalar in perl and things like 
+<tt>$1</tt> and <tt>$2</tt>
+are the text capturing special variables (see
+<a href="http://perldoc.perl.org/perlvar.html">the perlvar document</a>
+for details).  It is therefore necessary to single-quote the column
+specifiers to avoid having the <tt>$</tt> symbols
+iterpolated, as they would be with double quotes.  Another useful
+syntax for column speficiation would be to use 
+<a href="http://perldoc.perl.org/perlop.html#Quote-and-Quote-like-Operators">the non-interpolating quote operator</a>, like so:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;data/fe.060.dat&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="literal">q{$1}</span><span class="operator">,</span> <span class="comment"># column 1 is energy</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="literal">q{$2}</span><span class="operator">,</span> <span class="comment"># column 2 is I0</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="literal">q{$3}</span><span class="operator">,</span> <span class="comment"># column 3 is It</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># these are transmission data</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+Once the file is imported and the column information is given, the
+Data object can be used for other things, such as plotting or using in
+a fit.  Using the Data object in various ways will be discussed in
+later sections of the document.
+</p>
+
+<p>
+That these are transmission data is indicated by the value of the
+<tt>ln</tt> attribute.  Set to 1, the columns will
+be processed as transmission data, i.e. 
+ &mu;(E)    =ln( I&#8320;   / I<sub>t</sub>   ) .  Set to 0 (or unspecified as
+zero is the default), the columns will be processed as fluorescence
+data, i.e.  &mu;(E)    = I<sub>f</sub>   / I&#8320;   .
+</p>
+
+<p>
+In this example, the  I&#8320;    detector is in column 2 of the data file
+and the  I<sub>t</sub>    detector is in column 3.
+</p>
+
+
+<a name="fluorescencedata">
+
+<h3>  Fluorescence data</h3>
+</a>
+
+<p>
+
+The next example is for a file containing fluorescence XAS data:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'soil.dat'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'dilute soil sample'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="comment"># column 1 is energy</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="comment"># column 4 is If</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="comment"># column 2 is I0</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># these are fluorescence data</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+Here the <tt>ln</tt> attribute is set to 0 to
+indicate that these are fluorescence data.  The 
+<tt>numerator</tt> attribute is set to the column
+containing the fluorescence detector and the 
+<tt>denominator</tt> attribute is set to the
+ I&#8320;    column.  Again, once the file is imported and the columns are
+set, the Data object is ready for use.
+</p>
+
+
+<a name="multi-elementdetectorfluorescencedata">
+
+<h3>  Multi-element detector fluorescence data</h3>
+</a>
+
+<p>
+
+When fluorescence data is measured using a multi-element detector
+(MED), you will want to sum up the detector channels
+before dividing by  I&#8320;   .  This is accomplished by adding
+multiple channels in the <tt>numerator</tt>
+attribute: 
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'soil.dat'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'dilute soil sample'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4+$5+$6+$7'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="comment"># four fluo channels</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+This will add up the contents of columns 4 through 7 then divide by
+column 2.
+</p>
+
+<p>
+You may also wish to import each channel of the MED into individual
+Data groups so each channel may be examined, processed, and plotted
+individually.  An efficient way of doing so is explained in
+<a href="mc.html">the section on multichannel data</a>.
+</p>
+
+
+<a name="preprocessingcolumndataonthefly">
+
+<h3>  Preprocessing column data on the fly</h3>
+</a>
+
+<p>
+
+You may have some reason to do a bit of additional processing of the
+columns in the data file.  As an example, the
+<a href="http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling">data handling section of the Ifeffit FAQ</a>
+explains how to import data from the Ferrel Lytle database which were
+recorded as a function of motor position for the monochromator angle.
+For data like thse, it is necessary to convert motor position to
+energy using some knowledge of the monochromator crystal and motor and
+a few fundamental constants.  This can be implemented in  <span class=program>DEMETER</span>
+like so:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## d-spacing = 1.92017&nbsp;&nbsp;&nbsp;&nbsp;steps/deg = 4000&nbsp;&nbsp;&nbsp;&nbsp;hc = 12398.61&nbsp;&nbsp;&nbsp;&nbsp;rads-&gt;degs = 57.29577951
+<li></span><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;lytle.dat&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'12398.61 / (2*1.92017) / sin($1/(57.29577951*4000))'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$3'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+As another example, you might wish to do a simple deadtime correction
+for MED data based on the measured input and output count-rates of the
+detectors.  This information is often recorded as columns in the data
+file so that this deadtime correction can be applied as needed.  The
+basic concept of the deadtime correction is that the ratio of the
+input and output count-rates for the entire energy range of the
+detector is an accurate measure of the lost count rate in any region
+of interest (ROI) of the detector.  Thus the counts in the ROI can be
+corrected by multiplying by the measured input/output ratio.  This can
+be implemented for a single channel like so:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'soil.dat'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'dilute soil sample, DT corrected'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">energy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4*$8/$12'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+In this example, column 4 contains the signal in the ROI for one of
+the detector channels, column 8 contains the input count rate for the
+channel, and column 12 contains the output count rate for that channel.
+</p>
+
+<p>
+Note that there is no simple way to recover the signal in the ROI
+channel once this pre-processing is done.  If you wish to compare
+dead-time corrected data with the uncorrected data, you should create
+two separete Data objects.  This is best accomplished using the
+efficient technique explained in
+<a href="mc.html">the section on multichannel data</a>.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/chi.html" class="menu" >chi(k) data files</a> &nbsp;&nbsp;
+        Next: <a href="../data/athena.html" class="menu" >Athena project files</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Wx::Config</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Wx-Config
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Wx/Config.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#USING_THE_CONFIGURATION_WIDGET">USING THE CONFIGURATION WIDGET</a><br />
+<ul>
+	<li><a href="#Using_the_tree">Using the tree</a></li>
+	<li><a href="#Using_the_controls">Using the controls</a></li>
+	<li><a href="#Applying_and_saving_parameter_values">Applying and saving parameter values</a></li>
+</ul>
+</li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Wx::Config - A configuration widget for Demeter applications</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>A configuration widget can be added to a Wx application:</p>
+
+<pre>  my $config = Demeter::UI::Wx::Config -&gt; new($parent, \&amp;callback);
+  $sizer -&gt; Add($config, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+</pre><p>The first argument is the window in which the configuration widget is
+to be packed.  The second is a reference to a callback that will be
+called whenever a parameter is altered.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This is a widget for managing the rather dizzying array of
+configuration parameters controled by the <a href="../../Config.pm.html">Demeter::Config</a> object.
+Creating and packing the widget will give your user a way of examining
+the various parameters and and altering their values.</p>
+
+<p>To use this widget, you must provide a reference to a callback that
+will be called when a parameter value is changed.  For the example in
+the synopsis, the callback will be called like so:</p>
+
+<pre>  $config -&gt; &amp;$callback($group, $parameter, $value, $save);
+
+</pre><p>Thus the callback must be a method of the object using this widget.
+The other things passed are the group and name of the configuration
+parameter, its new value, and a flag which is true if the ini file was
+saved.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt>populate</dt>
+		<dd><p>This is the only user servicable method of this widget.  It is used to
+populate the parameter tree with the desired subset of parameters.</p></dd>
+<dd><pre>   $config-&gt;populate('all');
+     or
+   $config-&gt;populate('plot', 'bkg', 'fft', 'bft');
+     or
+   $config-&gt;populate('hephaestus');
+
+</pre></dd>		<dd><p>The second example might be used for a simple Athena-like application
+while the third example is what is actually used in Hephaestus.</p></dd>
+<dd><dl>
+	<dt><code>all</code></dt>
+		<dd><p>Display all groups known to the Config object.</p></dd>
+	<dt><code>base</code></dt>
+		<dd><p>Display all groups known that are part of Demeter's principle set of
+groups.  Those are the ones that are imported into the Config object
+regardless of what the application is.  As an example of the
+difference between <code>all</code> and <code>base</code>, Hephaestus defines an
+application-specific parameter group called <code>hephaestus</code>.  The
+<code>hephaestus</code> group will be included in <code>all</code> but not in <code>base</code>.</p></dd>
+	<dt>a list of specific groups</dt>
+		<dd><p>The other option is to specify a list of one or more specific
+parameter groups to display in the tree.</p></dd>
+</dl>
+</dd>
+		<dd><p>The default is to display all groups.</p></dd>
+</dl>
+<h1 id="USING_THE_CONFIGURATION_WIDGET">USING THE CONFIGURATION WIDGET <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<h2 id="Using_the_tree">Using the tree</h2>
+
+<p>Each parameter group is displayed to the right of an expander button.
+Under wxGtk, this is a little triangle that points down when the group
+is expaned and to the right when the group is collapsed.  Click on
+this button to open or close the parameter group.</p>
+
+<p>When you click on a parameter group, its description will be displayed
+in the description box.</p>
+
+<p>When you click on a parameter from a group that has been expanded in
+the list, its description will be displayed in the description box and
+other information will be displayed in the other controls on the right
+side of the window.</p>
+
+<p>You can only alter the value of a parameter that is selected in the
+tree.</p>
+
+<h2 id="Using_the_controls">Using the controls</h2>
+
+<p>A control appropriate to the type of widget will be displayed just
+above the description box.  For many parameter types, this is a box
+for entering text.  For integer-valued parameters, this is spin box
+that you can alter by typing in it directly or by clicking the little
+up and down arrows.  For true/false parameters, a check box is used.
+For color-valued parameters, a button which pops up a color picker is
+used.</p>
+
+<p>The buttons labeled as &quot;your value&quot; and &quot;Demeter's value&quot; can be used
+to restore the value of the control used to set the parameter value.
+&quot;Demeter's value&quot; is the system-wide default read from Demeter's
+configuration files, while the other value is the user's own value
+read from the user's ini file.</p>
+
+<h2 id="Applying_and_saving_parameter_values">Applying and saving parameter values</h2>
+
+<p>To alter a parameter value for use within the current instance of a
+Demeter-based application, click the &quot;Apply&quot; button.  This will set
+the current parameter value in the Config object.  To alter a
+paremeter value <i>and</i> save it for future use, click the button which
+says &quot;Apply and save&quot;.  This will also write out the user's ini file.</p>
+
+<p>If a parameter is flagged as only taking effect when the application
+is restarted, the &quot;Apply&quot; button will be disabled.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

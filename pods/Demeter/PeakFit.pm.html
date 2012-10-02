@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::PeakFit</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-PeakFit
+</div>
+<div>
+<a href="../src/Demeter/PeakFit.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#FITTING_ENGINES">FITTING ENGINES</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::PeakFit - A peak fitting object for Demeter</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Here is a simple fit of three peak shapes to normalized XES data.</p>
+
+<pre>  #!/usr/bin/perl
+  use Demeter qw(:ui=screen :plotwith=gnuplot);
+
+  my $xes = Demeter::XES-&gt;new(file=&gt;'../XES/7725.11',
+                              energy =&gt; 2, emission =&gt; 3,
+                              e1 =&gt; 7610, e2 =&gt; 7624, e3 =&gt; 7664, e4 =&gt; 7690,
+                             );
+  my $peak = Demeter::PeakFit-&gt;new(screen =&gt; 0, yaxis=&gt; 'norm', name=&gt;'fit');
+  $peak -&gt; data($xes);
+
+  $peak -&gt; add('gaussian',   center=&gt;7649.5, name=&gt;'peak 1');
+  $peak -&gt; add('gaussian',   center=&gt;7647.7, name=&gt;'peak 2');
+  $peak -&gt; add('lorentzian', center=&gt;7636.8, name=&gt;'peak 3');
+
+  $peak -&gt; fit;
+  print $peak -&gt; report;
+  $_  -&gt; plot('norm') foreach ($xes, $peak, @{$peak-&gt;lineshapes});
+  $peak -&gt; pause;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This object is a sort of container for holding Data (either XANES data
+in a normal Data object or XES data in an XES object) along with some
+number of lineshapes.  It organizes the parameterization of the
+lineshapes and shuffles all of this off to the fitting engine for
+fitting, all wihtout having to master whatever quirky syntax it might
+have.</p>
+
+<h1 id="FITTING_ENGINES">FITTING ENGINES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This module provides an abstract framework for enabling peak fitting
+in Demeter.  This abstraction allows (well ... in principle) the use
+of various backends for performing the actual fit.  Currently the only
+one available is Fityk (http://www.unipress.waw.pl/fityk/), which is
+implemented as <a href="PeakFit/Fityk.pm.html">Demeter::PeakFit::Fityk</a>.</p>
+
+<p>Any suggestions?</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>screen</code> (boolean) [0]</dt>
+		<dd><p>This is a flag telling Demeter to echo instructions to the screen.</p></dd>
+	<dt><code>engine</code> (boolean) [1]</dt>
+		<dd><p>This is a flag telling Demeter to echo instructions to the fitting engine
+process.</p></dd>
+	<dt><code>buffer</code></dt>
+		<dd><p>Dispose commands to a string or array when given a reference to a
+string or array.  This allows you to accumulate instructions in a
+string or an array an save them for future use, e.g. writing a script
+or displaying a text widget in a GUI.</p></dd>
+	<dt><code>xaxis</code> (string) [energy]</dt>
+		<dd><p>The string denoting the array containing the ordinate axis of the
+data.  For most XANES and XES data, this is <code>energy</code>.</p></dd>
+	<dt><code>yaxis</code> (string) [flat]</dt>
+		<dd><p>The string denoting the array containing the abscisa axis of the data.
+For most XANES, this is typically either <code>flat</code> or <code>norm</code>.  For XES
+data, this might be <code>raw</code>, <code>sub</code>, or <code>norm</code>.  Note that the default
+will trigger an error if you try to fit XES data without changing its
+value appropriately.</p></dd>
+	<dt><code>sigma</code> (string) []</dt>
+		<dd><p>The string denoting the array containing the varience of the data.</p></dd>
+	<dt><code>xmin</code> (float)</dt>
+		<dd><p>The lower bound of the fit range.  For XANES data, this will be
+interpreted relative to the edge, while for XES data it is
+intepretated as an absolute energy.</p></dd>
+	<dt><code>xmax</code> (float)</dt>
+		<dd><p>The upper bound of the fit range.  For XANES data, this will be
+interpreted relative to the edge, while for XES data it is
+intepretated as an absolute energy.</p></dd>
+	<dt><code>lineshapes</code></dt>
+		<dd><p>This contains a reference to the array of LineShape objects included
+in the fit.  This array can be manipulated with the standard Moose-y
+sort of automatically generated methods:</p></dd>
+<dd><pre>  push_lineshapes
+  pop_lineshapes
+  shift_lineshapes
+  unshift_lineshapes
+  clear_lineshapes
+
+</pre></dd></dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>add</code></dt>
+		<dd><p>Use this to add new lineshapes to the fitting model.</p></dd>
+<dd><pre>  $ls = $peak -&gt; add(&quot;Gaussian&quot;, center =&gt; 4967, name =&gt; &quot;First peak&quot;)
+
+</pre></dd>		<dd><p>This returns a <cite>Demeter::PeakFit::LineShape</cite> object.  This is the
+standard way of creating such an object as this properly associates
+the LineShape object with the current peak fitting effort.  It should
+never be necessary (or desirable) to create a LineShape by hand.</p></dd>
+	<dt><code>fit</code></dt>
+		<dd><p>Perform the fit after adding one or more LineShapes.</p></dd>
+<dd><pre>  $peak -&gt; fit;
+
+</pre></dd>		<dd><p>After the fit finishes, the statistics of the fit will be accumulated
+from the fitting engine and stored in this and all the LineShape
+objects.</p></dd>
+	<dt><code>engine_objectt</code></dt>
+		<dd><p>This returns the object for interacting with the fitting engine (if
+there is one).  This is used extensively by
+<cite>Demeter::PeakFit::LineShape</cite>.</p></dd>
+	<dt><code>plot</code></dt>
+		<dd><p>Use this to plot the result of the fit.  Note that this only plots the
+full model and (optionally) the residual.  To plot the individual
+function, use the <code>plot</code> method of the the LineShape object.</p></dd>
+		<dd><p>This plots the data along with the fitting model and each function:</p></dd>
+<dd><pre>  $xanes_data -&gt; po -&gt; e_norm(1);
+  $_ -&gt; plot('E') foreach ($xanes_data, $peak, @{$peak-&gt;lineshapes});
+
+</pre></dd>		<dd><p>Note that the C('E') argument and the setting of <code>e_norm</code> are ignored
+by the PeakFit and LineShape objects, but they are required to plot a
+fit to XANES data as the fit is made to the normalized data.  In fact,
+the fit is made to the flattened data if the Data's <code>bkg_flatten</code>
+attribute is true.</p></dd>
+		<dd><p>For a fit to raw XES data, you might make the plot like so:</p></dd>
+<dd><pre>  $_ -&gt; plot('raw') foreach ($xanes_data, $peak, @{$peak-&gt;lineshapes});
+
+</pre></dd>		<dd><p>Specifically, you want to plot the data in the manner indicated by the
+<code>yaxis</code> attribute of the PeakFit object, which indicates the form of
+the data used in the fit.</p></dd>
+		<dd><p>When the PeakFit object is plotted, the residual from the fit will
+also be plotted if the <code>plot_res</code> attribute of the Plot object is
+true.</p></dd>
+	<dt><code>pf_dispose</code></dt>
+		<dd><p>This is the choke point for sending instructions to the fitting
+engine, much like the normal <code>dispose</code> method handles text intended
+for Ifeffit or Gnuplot.  See the descriptions of the <code>engine</code> and
+<code>screen</code> attributes.</p></dd>
+	<dt><code>report</code></dt>
+		<dd><p>This returns a tring summarizing the results of a fit.</p></dd>
+<dd><pre>  print $peak-&gt;report;
+
+</pre></dd></dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>How to capture errors without bailing?</li>
+	<li>more testing with xanes data</li>
+	<li>better interface for fixing parameters</li>
+	<li>need to test more functions</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

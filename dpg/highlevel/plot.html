@@ -1,0 +1,734 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Plot object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/mode.html" class="menu" >The Mode object</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/config.html" class="menu" >The Config object</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Plot object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<br />
+<a href="../highlevel/index.html" class="menuselect" >High level actions for Demeter objects</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/mode.html" class="menu" >The Mode object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/plot.html" class="menuselect" >The Plot object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/config.html" class="menu" >The Config object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/methods.html" class="menu" >Other high level methods</a><br /><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The Plot object is used to control the details of how plots are made
+and displayed by  <span class=program>DEMETER</span> programs.  It is useful to consider how
+ <span class=program>ATHENA</span> works in order to understand the relationship of the Plot
+object to the rest of  <span class=program>DEMETER</span>.  In  <span class=program>ATHENA</span>, the plot
+controls are separate from the controls for the parameters of any
+individual data set.  For example, the range over which data are
+plotted in energy or R-space is, in some, sense, a global parameter
+not associated with a particular data set.  The Plot object serves
+this role.  The details of the plot in  <span class=program>DEMETER</span> are global.  To
+plot a plottable object (Data, Path, or any of the Path-like objects),
+ <span class=program>DEMETER</span> consults the Plot object for those details.
+</p>
+
+<p>
+To make the Plot object readily accessible at all times in your
+program, the <tt>po</tt> method is a method of the
+base class and is inherited by all  <span class=program>DEMETER</span> objects.  Thus, given
+any object, you can &ldquo;find&rdquo; the Plot object
+like so:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$the_plot_object</span> <span class="operator">=</span> <span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">po</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+Any method of the plot object is easily called by chaining with the 
+<tt>po</tt> method.  For example to start a new
+plot (as opposed to overplotting), you do this
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+The <tt>start_plot</tt> method reinitializes the
+Plot object to begin a new plot.  Along with clearing the plotting
+display, this restarts the trace colors and resets the plot title.
+</p>
+
+
+<a name="plottinginenergy">
+
+<h3>  Plotting in energy</h3>
+</a>
+
+
+<br>
+<span class=plottitle>Data, background, pre-edge, & post-edge</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@eplot</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_der</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_i0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_signal</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_markers</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-200</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2000</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">space</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'E'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>&nbsp;&nbsp;<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="symbol">@eplot</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This example demonstrates the common and useful plot showing the data
+along with the background function and the regressed polynomials used
+to normalize the data.  Note that the Plot object has a number of
+boolean attributes which turn features of the energy plot on and off.
+Also note that the range of the plot is set by
+the values of the <tt>emin</tt> and 
+<tt>emax</tt> attributes of the Plot object.
+</p>
+
+<p>
+Also note that, as was discussed in
+<a href="../data/index.html">the chapter on the Data object</a>,
+there is no need to explicitly perform the data normalization or
+background removal.   <span class=program>DEMETER</span> knows what needs to be done to
+bring the data up to date for plotting and will perform all necessary
+chores before actually generating the plot.  This allows you to focus
+on what you need to accomplish.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_prepost.png" target=_blank><img border=0 src="../../images/plot_e_prepost.png" alt="plot_e_prepost.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+
+One final point about this example.  I have created the
+<tt>@eplot</tt>
+array to hold the attributes of the Plot object.  I then pass that
+array as the argument of the <tt>set</tt> method of
+the Plot object.  Those attributes could be listed as explicit
+arguments of the <tt>set</tt> method.  As always in
+perl, 
+<a href="http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it">there's more than one way to do it</a>.
+</p>
+
+
+<br>
+<span class=plottitle>Normalized data & background</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@eplot</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_der</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_i0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_signal</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_markers</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-200</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2000</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">space</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'E'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>&nbsp;&nbsp;<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="symbol">@eplot</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">bkg_flatten</span><span class="structure">(</span><span class="number">0</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This example shows how to plot data and background function after
+normalization. 
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_norm.png" target=_blank><img border=0 src="../../images/plot_e_norm.png" alt="plot_e_norm.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Flattened data & background</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@eplot</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_der</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_i0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_signal</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_markers</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-200</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2000</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">space</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'E'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>&nbsp;&nbsp;<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="symbol">@eplot</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">bkg_flatten</span><span class="structure">(</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This example shows how to plot the flattened data and background
+function, that is, the normalized data with the difference in slope
+and quadrature between the pre- and post-edge lines subtracted out
+after the edge.  Note that the switch for turning flattening on and
+off is an attribute of the Data object  
+<strong>not</strong> the Plot object.  This allows the option
+of overplotting one data set that is normalized with another that is
+flattened. 
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_flat.png" target=_blank><img border=0 src="../../images/plot_e_flat.png" alt="plot_e_flat.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Derivative of mu</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@eplot</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_der</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_i0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_signal</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_markers</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-20</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">120</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">space</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'E'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>&nbsp;&nbsp;<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'derivative'</span><span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">e_norm</span><span class="structure">(</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'norm. deriv.'</span><span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This example shows two interesting features we haven't yet seen.  This
+shows how things get overplotted, in this case the derivative of 
+ &mu;(E)     and the derivative of normalized  &mu;(E)    .  The overplotting
+happens simply by calling the <tt>plot</tt> mthod a
+second time without calling <tt>start_plot</tt>.
+In this way, any number of things can be overplotted.
+</p>
+
+<p>
+Also note the use of chained method calls to set the Data object's
+<tt>name</tt> attribute appropriately before
+plotting.  The <tt>name</tt> method always returns
+the object that called it, which allows for this sort of chaining
+magic to happen.  There is no advantage to chained method calls -- you
+could rename the Data object and then plot it in the subsequent line.
+The cahined calls are a bit more concise.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_deriv.png" target=_blank><img border=0 src="../../images/plot_e_deriv.png" alt="plot_e_deriv.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Data, I0 channel, & signal channel</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@eplot</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_der</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_i0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_signal</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_markers</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-20</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">120</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">space</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'E'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>&nbsp;&nbsp;<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+ <span class=program>DEMETER</span> saves arrays containing  I&#8320;    and the signal
+channel, which can then be plotted along with the data.  
+ <span class=program>DEMETER</span> takes care to scale these arrays so that they plot
+nicely with the data.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_i0signal.png" target=_blank><img border=0 src="../../images/plot_e_i0signal.png" alt="plot_e_i0signal.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+
+<br>
+<span class=plottitle>Data at two different edges with E0 subtracted</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">@common</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">bkg_rbkg</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">1.5</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl1</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">18</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_nor2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1800</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_flatten</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">@data</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">()</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">()</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="keyword">foreach</span> <span class="structure">(</span><span class="symbol">@data</span><span class="structure">)</span> <span class="structure">{</span> <span class="magic">$_</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="symbol">@common</span><span class="structure">)</span> <span class="structure">};</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;$where/data/fe.060.xmu&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;$where/data/cu010k.dat&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'Cu 10K'</span><span class="operator">,</span> <span class="structure">);</span>
+<li>
+<li><span class="comment">## decide how to plot the data
+<li></span><span class="symbol">$plot</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">e_mu</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">e_bkg</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_norm</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_pre</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">e_post</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e_zero</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">emin</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">-30</span><span class="operator">,</span> <span class="word">emax</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">150</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="keyword">foreach</span> <span class="structure">(</span><span class="symbol">@data</span><span class="structure">)</span> <span class="structure">{</span> <span class="magic">$_</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">)</span> <span class="structure">};</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+ <span class=program>DEMETER</span> offers an easy way to plot  &mu;(E)     data with the 
+ E&#8320;  value subtracted.  This places the edge at 0 on the x-axis,
+allowing you to overplot data from different edges.  When the
+<tt>e_zero</tt> attribute of the Plot object is set
+to 1, each Data object's <tt>bkg_eshift</tt>
+attribute is temporarily set so that the edge will show up at 0 in the
+plot. 
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_e_ezero.png" target=_blank><img border=0 src="../../images/plot_e_ezero.png" alt="plot_e_ezero.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<a name="plottingink">
+
+<h3>  Plotting in k</h3>
+</a>
+
+<br>
+<span class=plottitle>Plotting in k-space</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">kweight</span><span class="structure">(</span><span class="number">2</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'k'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+Again,  <span class=program>DEMETER</span> will take care of the background removal when you
+request a plot in k-space.  Note that the k-weight to use for plotting
+is an attribute of the Plot object.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_k.png" target=_blank><img border=0 src="../../images/plot_k.png" alt="plot_k.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Plotting in chi(k) in energy</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span><span class="operator">=&gt;</span><span class="number">2</span><span class="operator">,</span> <span class="word">chie</span><span class="operator">=&gt;</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'k'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+Here the x-axis of the  &chi;(k)    plot has been converted to absolute
+energy. 
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_chie.png" target=_blank><img border=0 src="../../images/plot_chie.png" alt="plot_chie.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>k-space with all three k-weights</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'k123'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+ <span class=program>DEMETER</span> has several types of interesting, pre-defined plots.
+One of these, the &ldquo;k123 plot&rdquo;, will overplot
+the data three times, once each with k-weight values of 1, 2, and 3.
+The copy of the data with k-weight of two is plotted normally.  The
+other two copies are scaled up or down to be about the same size as
+the k-weight of 2 copy.  The data are analyzed and the scaling and
+offset constents are chosen to be apprporiate to the data.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_k_k123.png" target=_blank><img border=0 src="../../images/plot_k_k123.png" alt="plot_k_k123.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<a name="plottinginr">
+
+<h3>  Plotting in R</h3>
+</a>
+
+<br>
+<span class=plottitle>Magnitude in R-space & R-space window</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span> <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span> <span class="word">r_pl</span> <span class="operator">=&gt;</span> <span class="single">'m'</span><span class="operator">,</span> <span class="word">space</span> <span class="operator">=&gt;</span> <span class="single">'r'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span> <span class="operator">-&gt;</span> <span class="word">plot_window</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This example shows a common kind of plot,  &chi;(R)    data with the
+back-Transform windowsing function, which is also used by 
+ <span class=program>DEMETER</span> as the fitting range when a fit is evaluated in R-space.
+The <tt>r_pl</tt> attribute of the Plot object is
+set to <tt>m</tt>, indicating that the magnitude of
+ &chi;(R)    should be plotted.
+</p>
+
+<p>
+Note that the <tt>plot_window</tt> method was
+indicated in a chained method call.  This is not required, but is
+possible because the <tt>plot</tt> method returns
+the calling object.
+</p>
+
+<p>
+The <tt>plot_window</tt> method observes the value
+of the Plot object's <tt>space</tt> attribute.
+That is, if the plot s being made in k or q, the k-space window will
+be plotted.  If the plot is being made in R, the R-space window will
+be plotted.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_r_magwin.png" target=_blank><img border=0 src="../../images/plot_r_magwin.png" alt="plot_r_magwin.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Data in R-space as envelope, real part, & imaginary part</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span> <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span> <span class="word">r_pl</span> <span class="operator">=&gt;</span> <span class="single">'e'</span><span class="operator">,</span> <span class="word">space</span> <span class="operator">=&gt;</span> <span class="single">'r'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+<li>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'Real part'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">r_pl</span> <span class="operator">=&gt;</span> <span class="single">'r'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+<li>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'Imaginary part'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">r_pl</span> <span class="operator">=&gt;</span> <span class="single">'i'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+Multiple parts of the complex  &chi;(k)    are overplotted by
+repeatedly plotting data in R-space without calling the
+<tt>start_plot</tt> method.  The value of 
+<tt>r_pl</tt> is set between each part of the
+plot.  Note that the &ldquo;envelope&rdquo; is the
+magnitude plotted twice, once multiplied by -1.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_r_mri.png" target=_blank><img border=0 src="../../images/plot_r_mri.png" alt="plot_r_mri.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+
+<br>
+<span class=plottitle>R-space
+with all three k-weights</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'r123'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+The &ldquo;R123 plot&rdquo; is the second of the
+pre-packaged specialty plot types.  This one, is just like the k123
+plot in that three copies of the data are overplotted using each of
+the three k-weights with scaling and offset computed automatically.
+This R123 plot was plotted as the magnitude of  &chi;(R)   .  The R123
+plot respects the value of the <tt>r_pl</tt>
+attribute of the Plot object.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_r_r123.png" target=_blank><img border=0 src="../../images/plot_r_r123.png" alt="plot_r_r123.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>Magnitude and real
+part in R space</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">kweight</span><span class="structure">(</span><span class="number">2</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'rmr'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+The &ldquo;Rmr plot&rdquo; is the third of the
+pre-packaged specialty plot types.  This one plots the magnitude and
+real part of  &chi;(R)    with an appropriate offset between them.  This
+is the default plot type made after a fit finishes.  In that case, the
+data and fit are overplotted as magnitude and real.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_r_rmr.png" target=_blank><img border=0 src="../../images/plot_r_rmr.png" alt="plot_r_rmr.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<a name="plottinginq">
+
+<h3>  Plotting in q</h3>
+</a>
+
+<br>
+<span class=plottitle>Plotting in back-transform k-space</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span> <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span> <span class="word">q_pl</span> <span class="operator">=&gt;</span> <span class="single">'r'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'q'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+Plotting the back-transformed  &chi;(q)    is specified by plotting in
+&ldquo;q&rdquo;.  The part of the complex  &chi;(q)    is
+specified using the <tt>q_pl</tt> attribute of the
+Plot object.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_q.png" target=_blank><img border=0 src="../../images/plot_q.png" alt="plot_q.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br>
+<span class=plottitle>k-space & the real part of back-transform k-space</span>
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">kweight</span><span class="structure">(</span><span class="number">2</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'kq'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+The final specialty plot type in  <span class=program>DEMETER</span> is the 
+&ldquo;kq plot&rdquo;.  This overplots  &chi;(k)    with
+the real part of  &chi;(q)   .
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/plot_kq.png" target=_blank><img border=0 src="../../images/plot_kq.png" alt="plot_kq.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/mode.html" class="menu" >The Mode object</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/config.html" class="menu" >The Config object</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

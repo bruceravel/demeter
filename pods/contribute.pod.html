@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Contributing to the Demeter project</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  contribute
+</div>
+<div>
+<a href="src/contribute.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#OVERVIEW">OVERVIEW</a><br />
+<ul>
+	<li><a href="#Day_to_day_contributions">Day to day contributions</a></li>
+	<li><a href="#Documentation_contributions">Documentation contributions</a></li>
+	<li><a href="#Packaging_contributions">Packaging contributions</a></li>
+	<li><a href="#Programming_contributions">Programming contributions</a></li>
+</ul>
+</li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Contributing to the Demeter project</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Have you benefited by Ifeffit and its community of friendly people.
+Ever thought about doing something to contribute to the community?
+This document offers some suggestion for things you can do to help the
+Ifeffit community.</p>
+
+<p>This page was inspired by <a href="http://www.softwarequalityconnection.com/2012/03/14-ways-to-contribute-to-open-source-without-being-a-programming-genius-or-a-rock-star/">these two</a>
+<a href="http://www.berkshirelug.org/mediawiki/index.php/ContributingToFOSS">excellent pages</a>
+about contributing to open source software projects.</p>
+
+<h2 id="Day_to_day_contributions">Day to day contributions</h2>
+
+<ul>
+	<li>Answer a question on the mailing list.</li>
+	<li>Report a bug or make a suggestion for improving the codes.  Do this on
+the <a href="http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit">Ifeffit mailing list</a>.</li>
+</ul>
+
+<h2 id="Documentation_contributions">Documentation contributions</h2>
+
+<ul>
+	<li>Write a web page explaining something about XAS.</li>
+	<li>Measure a library of reference materials for some element and share an
+Athena project file containing the processed data.</li>
+	<li>Explain a data analysis problem in the form of a series of annotated
+project files.</li>
+	<li>Make a video explaining how to do something with the software.</li>
+	<li>Give a lecture at an XAS training course.  Post your presentation and
+any relevant data on <a href="http://xafs.org">http://xafs.org</a>.</li>
+	<li>Design a spiffy new web presence for Demeter.</li>
+</ul>
+
+<h2 id="Packaging_contributions">Packaging contributions</h2>
+
+<ul>
+	<li>Update the horae Mac installer to use the new Demeter codes.</li>
+	<li>Make, support, and keep up-to-date installer packages for Red Hat
+based systems, other Linux distributions, or BSD.</li>
+	<li>Improve the Windows installer: add more XAS-related Start menu
+options, add more perl-related Start menu options, write a better
+README file for display upon installation, fix the problems with
+relocating the installation location, figure out how to dispense with
+the useless dosbox, etc.</li>
+	<li>There is no Windows updater.  One has to download the entire package
+at each release.  Could something be done with git and automating the
+build process?</li>
+	<li>Desktop functionality for Windows, Mac, KDE, GNOME/Unity, etc.  By
+this I mean things like looking inside an Athena project file (a la
+<code>dlsprj</code>) and displaying that information in the file manager.  Or
+showing an image of the most recent fit when an Artemis project file
+is selected.</li>
+</ul>
+
+<h2 id="Programming_contributions">Programming contributions</h2>
+
+<ul>
+	<li>Identify and fix a bug in the codes.  Submit a patch to Bruce or issue
+a pull request at <a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a>.</li>
+	<li>Write a file type plugin for the weird data files from some weird
+beamline.</li>
+	<li>Write an interesting and novel program using Demeter and share it with
+the world.</li>
+	<li>I have long wanted to integrate
+<a href="http://openbabel.org/wiki/Main_Page">OpenBabel</a> into Artemis.
+OpenBabel is a framework for converting between molecule file formats.
+The <cite>feff.inp</cite> format could be integrated into OpenBabel by writing a
+bit of C++.  With Feff integrated into OpenBabel, Demeter could use
+OpenBabel's <a href="http://openbabel.org/wiki/Perl">Perl interface</a>.  This
+means that any molecule format could be imported into Artemis and used
+as the basis of a Feff calculation.  Writing the OpenBabel interface
+and contributing it the OpenBabel project would be a most splendid
+contribution to Demeter while at the same time opening up Feff support
+to the many projects that use OpenBabel.</li>
+</ul>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

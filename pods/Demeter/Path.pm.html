@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Path
+</div>
+<div>
+<a href="../src/Demeter/Path.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#General_attributes">General attributes</a></li>
+	<li><a href="#Path_parameters">Path parameters</a></li>
+	<li><a href="#Feff_interpretation_attributes">Feff interpretation attributes</a></li>
+</ul>
+</li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#I_O_methods">I/O methods</a></li>
+	<li><a href="#Convenience_methods">Convenience methods</a></li>
+	<li><a href="#Ifeffit_Larch_interaction_methods">Ifeffit/Larch interaction methods</a></li>
+	<li><a href="#Information_reporting_methods">Information reporting methods</a></li>
+</ul>
+</li>
+	<li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter - Single and multiple scattering paths for EXAFS fitting</p>
+
+
+
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+
+
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>  $path_object -&gt; new();
+  $path_object -&gt; set(data     =&gt; $dobject,
+		      folder   =&gt; 'example/cu/',
+		      file     =&gt; &quot;feff0001.dat&quot;,
+		      name     =&gt; &quot;path 1&quot;,
+		      s02      =&gt; 'amp',
+		      e0       =&gt; 'enot',
+		      delr     =&gt; 'alpha*reff',
+		      sigma2   =&gt; 'debye(temp, theta) + sigmm',
+		     );
+
+</pre><p>or</p>
+
+<pre>  $path_object -&gt; new();
+  $path_object -&gt; set(data     =&gt; $dobject,
+                      sp       =&gt; $scattering_path_object
+		      name     =&gt; &quot;path 1&quot;,
+		      s02      =&gt; 'amp',
+		      e0       =&gt; 'enot',
+		      delr     =&gt; 'alpha*reff',
+		      sigma2   =&gt; 'debye(temp, theta) + sigmm',
+		     );
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This subclass of the Demeter class is for holding information
+pertaining to theoretical paths from Feff for use in a fit.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The following are the attributes of the Path object.  Attempting to
+access an attribute not on this list will throw and exception.</p>
+
+<p>The type of argument expected in given in parentheses.  Several of the
+attributes take an anonymous array as the value.  In each case, the
+zeroth element of the annonymous array is the math expressionfor the
+path and the first element is its evaluation.  See the discussion
+below in <a href="#METHODS">METHODS</a> for a description of how these attributes
+interacts with the accessor methods.  See also the description of the
+<code>evaluate</code> method for how the second element of the anonymous array
+gets set.</p>
+
+<p>The defaults for all path parameter math expressions is 0 except for
+<code>s02</code>, which is 1.  The <code>*_value</code> path parameter attributes contain
+the evaluation of the path parameter after the fit is made or the path
+is otherwise evaluated.</p>
+
+<p>For this Path object to be included in a fit, it is necessary that it
+be gathered into a Fit object.  See <a href="Fit.pm.html">Demeter::Fit</a> for
+details.</p>
+
+<h2 id="General_attributes">General attributes</h2>
+
+<dl>
+	<dt><code>group</code> (string)</dt>
+		<dd><p>This is the Ifeffit or Larch group name used for this path.  That is,
+its arrays will be called <i>group</i>.k, <i>group</i>.chi, and so on.  It is
+best if this is a reasonably short word and it <strong>must</strong> follow the
+conventions of a valid group name in Ifeffit or Larch.  By default,
+this is a random, five-letter string.</p></dd>
+	<dt><code>name</code> (string)</dt>
+		<dd><p>This is a text string used to describe this object in a user
+interface.  While the <code>group</code> attribute should be short, this can be
+more verbose.  But it should be a single line, unlike the <code>title</code>
+attibute.</p></dd>
+	<dt><code>parent</code> (Feff object)</dt>
+		<dd><p>This is the reference to the Feff object that this Path is a part of.
+<code>feff</code> is an alias for <code>parent</code>.</p></dd>
+	<dt><code>data</code> (Data object)</dt>
+		<dd><p>This is the reference to the Data object that this path is associated
+with.  There exists a default Data object so that you can successfully
+Fourier transform and plot Path objects which are not associated with
+a Data object, as might be the case for a sum of paths.</p></dd>
+	<dt><code>sp</code> (ScatteringPath object)</dt>
+		<dd><p>This is the reference to the ScatteringPath object that is used to
+generate the <cite>feffNNNN.dat</cite> file.  Once the sp attribute is set,
+the file and folder attributes will be overwritten based on the
+settings and actions of the Feff and ScatteringPath objects.  To set a
+specific <cite>feffNNNN.dat</cite> file, you must also set the sp attribute to
+an empty string.</p></dd>
+	<dt><code>folder</code> (string)</dt>
+		<dd><p>This is a string that takes the fully qualified path (in the file
+system sense) to the <code>`feffNNNN.dat'</code> file associated with this Path
+object.</p></dd>
+		<dd><p>If the <code>SP</code> attribute is set, then this attribute will be set
+automatically and changing it via the Path object's <code>set</code> method will
+be forbidden.</p></dd>
+	<dt><code>file</code> (filename)</dt>
+		<dd><p>This is the name of the <cite>feffNNNN.dat</cite> file associated with this
+Path object.</p></dd>
+		<dd><p>If the <code>sp</code> attribute is set, then this attribute will be set
+automatically.</p></dd>
+	<dt><code>Index</code> (integer)</dt>
+		<dd><p>This is the path index as required in the definition of an Ifeffit
+Path.  It is rarely necessary to set this by hand.  Indexing is
+typically handled by Demeter.  Demeter organization of the fit makes
+use of lists of Path objects, so you are encouraged to think that way
+rather than to fret about the path indeces.</p></dd>
+	<dt><code>include</code> (boolean)</dt>
+		<dd><p>When this is true, this Path will be included in the next fit.</p></dd>
+	<dt><code>plot_after_fit</code> (boolean)</dt>
+		<dd><p>This is a flag for use by a user interface to indicate that after a
+fit is finished, this Path should be plotted.</p></dd>
+	<dt><code>default_path</code> (boolean)</dt>
+		<dd><p>This path will be set to the default path after the fit for the
+purpose of evaluating <code>def</code>, <code>after</code>, and other parameters.  This is
+only relevant if any <code>def</code>, <code>after</code> or other parameters depend
+explicitly on path-specific quantites such as <code>reff</code> or the
+evaluation of the Debye or Eins functions.</p></dd>
+	<dt><code>pc</code> (boolean)</dt>
+		<dd><p>This is a flag indicating that the phase of this path should be used
+to perform phase corrected plots.</p></dd>
+	<dt><code>save_mag</code> (boolean)</dt>
+		<dd><p>When true, this tells Ifeffit to save an array containing the
+magnitude of chi(k).  This is used in ranking paths -- see
+<a href="ScatteringPath/Rank.pm.html">Demeter::ScatteringPath::Rank</a>.</p></dd>
+</dl>
+<h2 id="Path_parameters">Path parameters</h2>
+
+<p>For each of these (except <code>n</code> and <code>id</code> which do not take math
+expressions and the array path parameters which do not evaluate to
+scalars), the first item listed is the attribute which takes the math
+expression.  The second item listed is the evaluation of the math
+expression after the fit is prefromed.  The evaluation cannot be set
+by hand.  Instead you must change the values of GDS objects and
+re-evaluate the fit using either of the <code>fit</code> or <code>sum</code> methods.</p>
+
+<dl>
+	<dt><code>n</code> (number)</dt>
+		<dd><p>This is the path degeneracy in the definition of an Ifeffit or Larch
+path.  This is a number, not a math expression.  Use the <code>s02</code>
+attribute to parameterize the amplitude of the path.</p></dd>
+	<dt><code>s02</code> (string)</dt>
+	<dt><code>s02_value</code> (number)</dt>
+		<dd><p>This is the amplitude term for the path.</p></dd>
+	<dt><code>e0</code> (string)</dt>
+	<dt><code>e0_value</code> (number)</dt>
+		<dd><p>This is the energy shift term for the path.</p></dd>
+	<dt><code>delr</code> (string)</dt>
+	<dt><code>delr_value</code> (number)</dt>
+		<dd><p>This is the path length correction term for the path.</p></dd>
+	<dt><code>sigma2</code> (string)</dt>
+	<dt><code>sigma2_value</code> (number)</dt>
+		<dd><p>This is the mean square displacement shift term for the path.</p></dd>
+	<dt><code>ei</code> (string)</dt>
+	<dt><code>ei_value</code> (number)</dt>
+		<dd><p>This is the imaginary energy correction term for the path.</p></dd>
+	<dt><code>third</code> (string)</dt>
+	<dt><code>third_value</code> (number)</dt>
+		<dd><p>This is the third cumulant term for the path.</p></dd>
+	<dt><code>fourth</code> (string)</dt>
+	<dt><code>fourth_value</code> (number)</dt>
+		<dd><p>This is the fourth cumulant term for the path.</p></dd>
+	<dt><code>dphase</code> (string)</dt>
+	<dt><code>dphase_value</code> (number)</dt>
+		<dd><p>This is the constant phase shift term for the path.</p></dd>
+	<dt><code>id</code> (string)</dt>
+		<dd><p>This is Ifeffit's identification string for the path.</p></dd>
+	<dt><code>k_array</code> (string)</dt>
+		<dd><p>This takes the math expression for the infrequently used <code>k_array</code>
+path parameter.  You really need to know what you are doing to use the
+array valued path parameters!</p></dd>
+	<dt><code>amp_array</code> (string)</dt>
+		<dd><p>This takes the math expression for the infrequently used <code>amp_array</code>
+path parameter.  You really need to know what you are doing to use the
+array valued path parameters!</p></dd>
+	<dt><code>phase_array</code> (string)</dt>
+		<dd><p>This takes the math expression for the infrequently used
+<code>phase_array</code> path parameter.  You really need to know what you are
+doing to use the array valued path parameters!</p></dd>
+</dl>
+<h2 id="Feff_interpretation_attributes">Feff interpretation attributes</h2>
+
+<p>Where possible, these attributes will be taken from the ScatteringPath
+object associated with the Path.</p>
+
+<dl>
+	<dt><code>degen</code> (number)</dt>
+		<dd><p>This is the degeneracy in the <cite>feffNNNN.dat</cite> file associated with
+this Path object.</p></dd>
+	<dt><code>nleg</code> (integer)</dt>
+		<dd><p>This is the number of legs in the <cite>feffNNNN.dat</cite> file associated
+with this Path object.</p></dd>
+	<dt><code>reff</code> (number)</dt>
+		<dd><p>This is the effective path length in the <cite>feffNNNN.dat</cite> file
+associated with this Path object.</p></dd>
+	<dt><code>zcwif</code> (number)</dt>
+		<dd><p>This is the amplitude (i.e. &quot;Zabinsky curved wave importance factor&quot;)
+for the <cite>feffNNNN.dat</cite> file associated with this Path object.</p></dd>
+		<dd><p>Note that this is always 0 for paths that come from ScatteringPath
+objects, since the ScatteringPath objct does not, at this time, have a
+way of computing the ZCWIF.</p></dd>
+	<dt><code>intrpline</code> (string)</dt>
+		<dd><p>This is a line of text relating to this path from the interpretation
+the Feff calculation.</p></dd>
+	<dt><code>geometry</code> (multiline string)</dt>
+		<dd><p>This is a textual description of the scattering geometry associated
+with this path.</p></dd>
+	<dt><code>is_col</code> (boolean)</dt>
+		<dd><p>This is true when the path associated with this object is a colinear
+or nearly colinear multiple scattering path.</p></dd>
+	<dt><code>is_ss</code> (boolean)</dt>
+		<dd><p>This is true when the path associated with this object is a single
+scattering path.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The Path object inherits creation (<code>new</code> and <code>clone</code>) and accessor
+methods (<code>set</code>, <code>get</code>) from the parent class described in the
+<a href="../Demeter.pm.html">Demeter</a> documentation.</p>
+
+<p>Additionally the Path object provides these methods:</p>
+
+<h2 id="I_O_methods">I/O methods</h2>
+
+<dl>
+	<dt><code>save</code></dt>
+		<dd><p>This method returns the Ifeffit or Larch commands necessary to write
+column data files based on the Path object.  See <code>Demeter::Data::IO</code>
+for details.  Only the <code>chi</code>, <code>r</code>, and <code>q</code> options are available
+for writing Path column data files.</p></dd>
+</dl>
+<h2 id="Convenience_methods">Convenience methods</h2>
+
+<dl>
+	<dt><code>data</code></dt>
+		<dd><p>This method returns the reference to the Data object that this Path is
+associated with.  This method is meant to be used with the Data
+object's <code>data</code> method.  Path and Data objects can be put into a loop
+and the correct Data object can be identified for each kind of object.</p></dd>
+<dd><pre>  foreach my $obj (@data_objects, @paths_objects) {
+     my $d = $obj-&gt;data;
+     ## do something with $d
+  };
+
+</pre></dd>		<dd><p>Note that this works because Data objects have a <code>data</code> method which
+self-identifies.</p></dd>
+	<dt><code>value</code></dt>
+		<dd><p>This method returns the evaluated value of a path parameter after a
+fit is made or a path is otherwise evaluated.</p></dd>
+<dd><pre>   my $val = $path_object-&gt;value(&quot;sigma2&quot;);
+
+</pre></dd>	<dt><code>rm</code></dt>
+		<dd><p>Delete the <cite>feffNNNN.dat</cite> file associated with this Path.</p></dd>
+<dd><pre>  $path -&gt; rm;
+
+</pre></dd></dl>
+<h2 id="Ifeffit_Larch_interaction_methods">Ifeffit/Larch interaction methods</h2>
+
+<dl>
+	<dt><code>read_data</code></dt>
+		<dd><p>This is completely different from the <code>read_data</code> method called on a
+Data object.  Or, it's exactly the same, depending on your
+perspective.  It is not normally necessary to call read_data on a
+<cite>feffNNNN.dat</cite> file in the course of data analysis.  That file is
+imported into Ifeffit or Larch as a part of the <code>write_path</code> method.</p></dd>
+		<dd><p>When <code>read_data</code> is called on a Path object, the Ifeffit/Larch
+command for reading the <cite>feffNNNN.dat</cite> file as a column data file is
+returned.  This is useful if you ever need to examine the raw columns
+of the <cite>feffNNNN.dat</cite> file.</p></dd>
+<dd><pre>  $command = $path_object -&gt; read_data;
+
+</pre></dd>	<dt><code>write_path</code></dt>
+		<dd><p>This method returns the Ifeffit or Larch commands to import and define
+a Feff path.  It takes a boolean argument which tells the method
+whether to also generate the Ifeffit or Larch command for converting
+the defined path into arrays for plotting or other manipulations.
+That argument is set true as part of the <code>display</code> method, but false
+when the fit is defined.</p></dd>
+<dd><pre>  $command = $path_object -&gt; write_path($do_ff2chi);
+
+</pre></dd></dl>
+<h2 id="Information_reporting_methods">Information reporting methods</h2>
+
+<p>These methods are useful for generating log files and other reports.</p>
+
+<dl>
+	<dt><code>paragraph</code></dt>
+		<dd><p>This method returns a multiline text string reporting on the
+evaluation of the Path's math expressions.  This text looks very much
+like the text that Ifeffit returns when you use Ifeffit's <code>show
+@group</code> command.</p></dd>
+<dd><pre>  print $path_object -&gt; paragraph;
+
+</pre></dd>	<dt><code>row_main</code></dt>
+		<dd><p>This method returns a newline-terminated line of text containing the
+values of several path parameters in a format suitable for making a
+table of fitting results.  The path parameters included in this line
+are <code>n</code>, <code>s02</code>, <code>e0</code>, <code>sigma2</code>, <code>delr</code>, <code>reff</code>, and the sum of
+<code>delr</code> and <code>reff</code>.</p></dd>
+		<dd><p>The optional argument specifies the width of the first column, which
+contains the path labels.</p></dd>
+<dd><pre>  print $path[0] -&gt; row_main($width);
+
+</pre></dd>		<dd><p>With this optional argument, you can scan the path labels before
+creating the table and pre-size the first column, leading to a much
+more attractive table.  The default width is 10 characters.  The
+<code>row_main_label</code>, <code>row_second</code>, and <code>row_second_label</code> methods also
+take this same optional argument.</p></dd>
+	<dt><code>row_main_label</code></dt>
+		<dd><p>This method returns a newline-terminated line of text suitable for the
+header of the table made by repeated calls to the <code>row_main</code> method.
+Something like this will make a nice table</p></dd>
+<dd><pre>   print $path[0] -&gt; row_main_label;
+   print $path[0] -&gt; row_main;
+   print $path[1] -&gt; row_main;
+   print $path[2] -&gt; row_main;
+
+</pre></dd>	<dt><code>row_second</code></dt>
+		<dd><p>This method returns a newline-terminated line of text containing the
+values of several path parameters in a format suitable for making a
+table of fitting results.  The path parameters included in this line
+are <code>ei</code>, <code>dphase</code>, <code>third</code>, <code>fourth</code>.</p></dd>
+	<dt><code>row_second_label</code></dt>
+		<dd><p>This method returns a newline-terminated line of text suitable for the
+header of the table made by repeated calls to the <code>row_second</code>
+method.  Something like this will make a nice table</p></dd>
+<dd><pre>   print $path[0] -&gt; row_second_label;
+   print $path[0] -&gt; row_second;
+   print $path[1] -&gt; row_second;
+   print $path[2] -&gt; row_second;
+
+</pre></dd>	<dt><code>R</code></dt>
+		<dd><p>This method returns the sum of the <code>reff</code> attribute and the
+evaluation of the <code>delr</code> path parameter.  This:</p></dd>
+<dd><pre>  print $path_object -&gt; R, $/;
+
+</pre></dd>		<dd><p>is equivalent to (and fewer keystrokes than):</p></dd>
+<dd><pre>  ($reff, $delr) = $path_object-&gt;get(qw(reff delr_value));
+  $R = $reff + $delr;
+  print $R, $/;
+
+</pre></dd>	<dt><code>longest_leg</code></dt>
+		<dd><p>This returns the length in Angstroms of the longest leg of a path.</p></dd>
+<dd><pre>  print $path_object -&gt; longest_leg, $/;
+
+</pre></dd>		<dd><p>This is determined by searching the <code>rleg</code> attribute of the
+associated ScatteringPath object and returning the longest value.</p></dd>
+</dl>
+<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>Demeter::Path: &quot;group&quot; is not a valid group name</code></dt>
+		<dd><p>(F) You have used a group name that does not follow Ifeffit's or
+Larch's rules for group names.  The group name must start with a
+letter.  After that only letters, numbers, &amp;, ?, _, and : are
+acceptable characters.  The group name must be no longer than 64
+characters.</p></dd>
+	<dt><code>Demeter::Path: the sp attribute must be ScatteringPath object</code></dt>
+		<dd><p>(F) You have set the <code>sp</code> attribute to something other than a
+ScatteringPath object.</p></dd>
+</dl>
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See the discussion of serialization and deserialization in
+<code>Demeter::Fit</code>.</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Automated indexing currently only works when doing a fit.  If you want
+to plot paths before doing a fit, you will need to assign indeces by
+hand.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

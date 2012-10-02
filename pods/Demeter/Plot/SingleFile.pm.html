@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Plot::SingleFile</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Plot-SingleFile
+</div>
+<div>
+<a href="../../src/Demeter/Plot/SingleFile.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Plot::SingleFile - Sending a plot to a single file</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This is used to send a plot to a single file for easy import into an
+external plotting program.</p>
+
+<pre>  #!/usr/bin/perl
+  use Demeter qw(:ui=screen);
+
+  my $file = 'examples/data/fe.060';
+  my $data = Demeter::Data-&gt;new(file=&gt;$file,);
+  $data -&gt; set(fft_kmax    =&gt; 3,    fft_kmin  =&gt; 14,
+	       bkg_spl2    =&gt; 18,
+	       bkg_nor2    =&gt; 1800,
+	       energy      =&gt; '$1',
+	       numerator   =&gt; '$2',
+	       denominator =&gt; '$3',
+	       ln          =&gt; 1,
+	      );
+
+  ## set up the plot to output file
+  $data-&gt;plot_with('singlefile');  # 1
+
+  ## prep for the singlefile plot
+  $data-&gt;po-&gt;prep(file=&gt;&quot;foo.dat&quot;, standard=&gt;$data, space=&gt;'k');
+
+  ## prep is the same as doing the following
+  #$data-&gt;standard;                 # 2
+  #$data-&gt;po-&gt;space('k');           # 3
+  #$data-&gt;po-&gt;file(&quot;foo.dat&quot;);      # 4
+  #$data-&gt;po-&gt;start_plot;
+
+  ## make a sequence of plots
+  $data-&gt;po-&gt;set(kweight =&gt; 1, kmax =&gt; 17, space =&gt; 'k');
+  $data-&gt;set(plot_multiplier =&gt; 5,   'y_offset'=&gt;14, name=&gt;'kw=1, scaled by 5');
+  $data-&gt;plot;
+
+  $data-&gt;po-&gt;kweight(2);
+  $data-&gt;set(plot_multiplier =&gt; 1,   'y_offset'=&gt;7,  name=&gt;'kw=2, unscaled');
+  $data-&gt;plot;
+
+  $data-&gt;po-&gt;kweight(3);
+  $data-&gt;set(plot_multiplier =&gt; 0.2, 'y_offset'=&gt;0,  name=&gt;'kw=3, scaled by 0.2');
+  $data-&gt;plot;
+
+  ## the finish method of the Demeter::Plot::SingleFile actually writes out the file
+  $data-&gt;po-&gt;finish;               # 5
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This plotting backend does not work quite as transparently as the
+other plotting backends.  In order to get the figure you actually want
+written correctly to an output file, a bit more care is required than
+for this than for other plotting backends.  The following steps
+(marked by their numbers in the example above) must be taken when
+using this plotting backend:</p>
+
+<dl>
+	<dt>1.</dt>
+		<dd><p>You must use the <code>plot_with</code> method to change to this plotting
+backend.  You <strong>may not</strong> use the <code>:plotwith=</code> pragma at the top of
+your script to generate a column data file -- you must explicitly
+switch to this backend in the run-time part of your script.  If you
+try to use the pragma, your script will fail with a confusing and
+misleading error message.</p></dd>
+		<dd><p>Note that the <code>start_plot</code> method gets called automatically when you
+change plotting backends.</p></dd>
+	<dt>2.</dt>
+		<dd><p>You <strong>must</strong> set a data standard.  This is required to correctly set
+the column containing the x-axis and is particularly important in
+energy plots where some data might need to be interpolated onto the
+correct grid.</p></dd>
+	<dt>3.</dt>
+		<dd><p>It is a good idea to explicitly declare the plotting space before
+calling <code>start_plot</code>.  This is particularly true for kq plots, for
+which you should set the space to <code>q</code>.</p></dd>
+	<dt>4.</dt>
+		<dd><p>You <strong>must</strong> set the <code>file</code> attribute to the name of the target output
+file which will contain the data required to replicate the plot in
+another program.  You should set this before starting to actually
+generate the plot.</p></dd>
+	<dt>2-4.</dt>
+		<dd><p>Alternately, you can use the <code>prep</code> method of the SingleFile object
+to do steps 2 through 4 in one swoop.</p></dd>
+	<dt>5.</dt>
+		<dd><p>Calling the <code>finish</code> method of the SingleFile backend is what
+actually writes the output file to disk.</p></dd>
+</dl>
+<p>In a GUI, of course, all these steps will be handled behind the
+scenes.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>markers and indicators</li>
+	<li>quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq)</li>
+	<li>stddev and variance, filter, f1f2</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Data::IO</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Data-IO
+</div>
+<div>
+<a href="../../src/Demeter/Data/IO.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Data::IO - Data Input/Output methods for Demeter</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>  use Demeter;
+  my $data  = Demeter::Data -&gt; new(file=&gt;'t/fe.060', @common_attributes);
+  $data-&gt;save('xmu', 'data.xmu');
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This Demeter::Data role contains methods for dealing
+with data input/output.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>save</code></dt>
+		<dd><p>This method is a wrapper around command generators for saving the
+various kinds of output files.  The syntax is</p></dd>
+<dd><pre>  $dataobject -&gt; save($type, $filename);
+
+</pre></dd>		<dd><p>The <code>$type</code> argument is one of <code>xmu</code>, <code>norm</code>, <code>chi</code>, <code>r</code>, <code>q</code>,
+<code>fit</code>, and <code>bkgsub</code>.  The second argument is the output file name.</p></dd>
+		<dd><p>This method will automatically generate useful headers for the output
+data file.  These headers will include the title lines associated with
+the data and the text of the <code>fit_parameter_report</code> method.</p></dd>
+<dd><dl>
+	<dt><code>xmu</code></dt>
+		<dd><p>This is a seven column file of energy, mu(E), bkg(E), preline(E),
+postline(E), first derivative of mu(E), and second derivative of
+mu(E).</p></dd>
+	<dt><code>norm</code></dt>
+		<dd><p>This is a seven column file of energy, norm(E), normalized bkg(E),
+flattened mu(E), flattened bkg(E), first derivative of norm(E), and
+second derivative of norm(E).</p></dd>
+	<dt><code>chi</code></dt>
+		<dd><p>This is a five column file of k, chi(k), k*chi(k), k^2*chi(k),
+k^3*chi(k), and the window in k.</p></dd>
+	<dt><code>r</code></dt>
+		<dd><p>This is a six column file of R, real part of chi(r), imaginary part of
+chi(r), magnitude of chi(r), phase of chi(r), and the window in R.
+The current value of kweight of the Plot object is used to generate chi(R).</p></dd>
+	<dt><code>q</code></dt>
+		<dd><p>This is a seven column file of q, real part of chi(q), imaginary part
+of chi(q), magnitude of chi(q), phase of chi(q), the window in k, the
+k-weighted chi(k) used in the Fourier transform.  The current value of
+kweight of the Plot object is used to generate chi(R).</p></dd>
+	<dt><code>fit</code></dt>
+		<dd><p>This is one of a variety of five or six column files.  The default fit
+file contains k, chi(k), the fit in k, the residual in k, the
+background in k (if the background was fit), and the window.  When
+passing an additional parameter, the fit file can be written out in
+another way.</p></dd>
+<dd><pre>    $dataobject -&gt; save('fit', 'my.fit', $type);
+
+</pre></dd>		<dd><p>If <code>$type</code> is left off, the default, un-k-weighted fit file is
+written.  The other options for <code>$type</code> are:</p></dd>
+<dd><pre>    k1 k2 k3 rmag rre rim qmag qre qim
+
+</pre></dd>		<dd><p>The first three export k-weighted data.  The next three are for the
+magnitude, real, or imaginary parts of chi(R).  The final three are
+for the magnitude, real, or imaginary parts of chi(q).</p></dd>
+		<dd><p>This will also accept the the k-, R-, and q-space arguments in the
+format accepted the <code>save_many</code> method.</p></dd>
+	<dt><code>bkgsub</code></dt>
+		<dd><p>Background subtracted chi(k) data....</p></dd>
+</dl>
+</dd>
+	<dt><code>save_many</code></dt>
+		<dd><p>This method writes out a multi-column file containing a specified
+array from many Data objects.</p></dd>
+<dd><pre>  $dataobjects[0] -&gt; save_many($outfile, $which, @dataobjects);
+
+</pre></dd>		<dd><p>The first argument is a file name for the output file containing the
+data columns.  The second argument is one of:</p></dd>
+<dd><pre>  xmu norm der sec nder nsec
+  chi chik chik2 chik3
+  chir_mag chir_re chir_im chir_pha
+  chiq_mag chiq_re chiq_im chiq_pha
+
+</pre></dd>		<dd><p>These are followed by the list of data groups to write to the file.
+The refering object will be added to the front of the list if it is
+not already included in the list.</p></dd>
+		<dd><p>The arguments used with the <code>save</code> method when saving a fit are also
+accepted for k-, R-, and q-space.</p></dd>
+	<dt><code>read_fit</code></dt>
+		<dd><p>Reimport a fit written out by a previous instance of Demeter....</p></dd>
+	<dt><code>title_glob</code></dt>
+		<dd><p>This pushes the title generated by the <code>data_parameter_report</code> or
+<code>fit_parameter_report</code> methods into the backend which can then be
+accessed by a title glob.</p></dd>
+<dd><pre>   $object -&gt; title_glob($name, $which)
+
+</pre></dd>		<dd><p><code>$name</code> is the base of the name of the string scalars in the backend
+and <code>$which</code> is one of <code>e</code>, <code>n</code>, <code>k</code>, <code>r</code>, <code>q</code>, or <code>f</code>
+depending on whether you wish to generate title lines for mu(E),
+normalized mu(E), chi(k), chi(R), chi(q), or a fit.</p></dd>
+</dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<p><a href="http://search.cpan.org/perldoc?Moose">Moose</a> is the basis of Demeter.  This module is implemented as a
+role and used by the <a href="../Data.pm.html">Demeter::Data</a> object.  I feel obloged
+to admit that I am using Moose roles in the most trivial fashion here.
+This is mostly an organization tool to keep modules small and methods
+organized by common functionality.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

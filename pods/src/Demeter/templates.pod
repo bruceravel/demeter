@@ -1,0 +1,296 @@
+=head1 NAME
+
+An overview of Demeter's templating system.
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+      $string = $self->template($group, $template);
+      $data -> dispose($string)
+
+=head1 DESCRIPTION
+
+Demeter uses L<Text::Template> to construct all text destined for
+Ifeffit or Larch as well as for atoms and feff input files and the
+plotting backends.  The use of templating system add a bit of
+complexity to Demeter in the sense that the actual content of Ifeffit
+or Larch commands (or input files) is generated quite far away from
+the location in the code where that text is used.  However, the use of
+a templating system adds a lot to Demeter.  Output can be highly
+customized or directed to a different target altogether.  For example,
+it is already possible in version 0.2 to generate content for a
+F<feffit.inp> file rather than for an Ifeffit/Larch script.  In the
+future, templates will make it easy for Demeter to target multiple
+plotting backends, write out functional Demeter scripts, or upgrade to
+Larch (whenever that becomes available).
+
+L<Text::Template> is wonderful -- it hits a real sweet spot between
+simple and powerful.  A template in this system is plain text with
+snippets of perl code interspersed.  Here is an example:
+
+   { # -*- ifm -*-
+     # Forward transform template
+     #   {$D} returns the ifeffit group name
+     #   {$D->get(""parameter")} returns the value of that parameter
+   }
+   fftf({$D->group}.chi,
+        k        = {$D}.k,
+        kmin     = {$D->fft_kmin},
+        kmax     = {$D->fft_kmax},
+        dk       = {$D->fft_dk"},
+        kwindow  = {$D->fft_kwindow},
+        kweight  = {$D->get_kweight},
+        rmax_out = {$D->rmax_out})
+
+This is the template for generating a forward Fourier transform
+command using the C<iff_columns> L<template set|/TEMPLATE SETS>.
+Anything contained in curly brackets is interpreted as perl,
+everything else is plain text that gets passed through the templating
+system unaltered.
+
+The way that this template gets used is like so:
+
+  $data -> set_mode(template_process => "iff_columns");
+  $string = $data -> template("process", "fft");
+  $data -> dispose($string);
+
+The first line chooses the L<template set|/TEMPLATE SETS>.  The second
+line fills in the C<fft> template from the I<process> L<template
+group|/TEMPLATE GROUPS> using the parameters of the Data objects
+contained in C<$data>.  The C<template> method returns a string
+containing the appropriate Ifeffit or Larch commands.  This string is
+L<disposed|Demeter::Dispose> in the last line.
+
+Demeter uses certain conventions to push particular data into a
+template.  You can see two of those conventions in this example.
+C<$D>, when used inside of curly braces, refers to the Data object of
+the referent.  C<$P> refers to the current Plot object, which is
+defined as the C<plot> mode parameter and
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+
+Within the curly braces, Demeter syntax is used and Demeter methods
+are used to get data out of Demeetr objects.  Some templates contain
+more complicated blocks of code, such as loops or control structures.
+Most curly-brackets perl blocks are simply object accesses, such as in
+the example above.
+
+Here is a complete list of the special scalars for accessing Demeetr
+objects in templates.
+
+=over 4
+
+=item C<$S>
+
+This refers to the object that invoked the C<template> method.
+
+=item C<$D>
+
+This refers to the Data object associated with the object that invoked
+the C<template> method.  For a Data object, C<$S> and C<$D> point at
+the same object.  For a Path, SSPath, or VPath object, however, C<$D>
+points at the Data object to which that Path object belongs.
+
+=item C<$P>
+
+This refers to the default Plot object.  This is the same object that
+gets returned by C<po> method of the base class.
+
+=item C<$C>
+
+This refers to the Config object containing all the data from the
+configuration subsystem.  Note that you should use the C<default> (or
+possibly C<demeter>) method to access system configuration parameters.
+
+The other use of C<$C> is to access user-defined parameters.  The
+merge templates for example make extensive use of this to set, for
+example, the boundaries of the merge range and the space in which the
+merge takes place.  See L<Demeter::Config> for details on
+setting user-defined Config parameetrs.  For user-defined parameters,
+you should use the C<get> method.
+
+=item C<$F>
+
+This refers to the current Fit object.  Normally, the C<fit> or C<sum>
+method of the L<Demeter::Fit> class will set the default for
+you.
+
+=item C<$DS>
+
+This refers to the data object chosen as the data standard, as
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+Data processing methods such as C<align> will set the data standard so
+that C<$DS> evaluates correctly in templates.
+
+=item C<$T>
+
+This refers to the active Feff object and is mostly used to generate
+F<feff.inp> files.
+
+=item C<$A>
+
+This refers to the Atoms object from which a F<feff.inp> is being
+generated.
+
+=back
+
+There is one final mechanism for moving data into a template.  This
+method is quite similar to user-defined Config attributes, but may be
+more convenient.  You can supply an additional argument to the
+C<template> method which is an anonymous hash.  An example would be
+the C<save_xmu> template from the I<process> tamplate group.  It is
+called like so in C<save_xmu> in C<Demeter::Data::Mu>:
+
+   my $string = $self->template("process", "save_xmu",
+                                {filename => $filename,
+				 titles   => "dem_data_*"});
+
+The corresponding template looks like this:
+
+  write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
+             {$D->group}.energy, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.preline,
+             {$D->group}.postline, {$D->group}.der, {$D->group}.sec)
+
+Here the filename and titles glob are passed in the anonymous hash and
+accessed in the template via their hash keys inside of curly brackets.
+
+=head1 TEMPLATE GROUPS
+
+Demeter has a lot of templates and they are grouped according to
+general function as a way fo imposing some order on their large
+numbers.  The (currently) five template groups are:
+
+=over
+
+=item I<analysis>
+
+These templates are used for analysis chores that do not involve
+Feff. Things such as linear combination fitting and difference
+spectra go into this template group.
+
+=item I<atoms>
+
+These templates are used by the Atoms object to structure its output
+files.  Although in the future I hope to use OpenBabel to direct lists
+of atomic coordinates to differnt output targets, you could put a
+template in this group to make, say, an alchemy file.
+
+=item I<feff>
+
+These templates are used to structure F<feff.inp> files made using
+Feff objects as part of Demeter's rewrite of Feff fucntionality.
+
+=item I<plot>
+
+These templates are used to generate plotting commands from Data or
+Path objects.
+
+=item I<process>
+
+All the rest of the templates go into this group.  Everything involved
+in reading, writing, or processing data goes in this template group.
+
+=back
+
+=head1 TEMPLATE SETS
+
+Within the different template groups, you may find multiple template
+sets.
+
+=over 4
+
+=item I<feff>
+
+The I<feff> template group has sets for "feff6", "feff7", and "feff8".
+The feff template set is chosen by setting the C<template_feff> mode,
+as L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+
+=item I<plot>
+
+The plotting template sets are "pgplot", "gnuplot", and "demeter".
+The first two generate commands for the currently available plotting
+backends.  The last is intended for use with the Demeter fitting and
+processing template set.  In the future new sets may be written for
+different plotting backends (for example, Grace would be a target that
+would work very well within Demeter).  The plot template set is chosen
+by setting the C<template_plot> mode, as L<explained
+here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+
+=item I<fit> and I<process>
+
+Template sets exist for Ifeffit, Larch (coming...) Feffit, and
+Demeter.  There are two version of the Ifeffit template set called
+"ifeffit" and "iff_columns".  The first set uses a fairly terse style
+while the second one tries to align ifeffit command arguments into
+columns aligned at the equals sign wherever possible.  The second one
+may be a bit more human readable.  The fit and process template sets
+are chosen by setting the C<template_fit> and C<template_process>
+modes, as L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+
+=back
+
+Atoms does not use template sets and currently there is only an
+ifeffit set for the I<analysis> group.
+
+=head1 DIAGNOSTICS
+
+=over 4
+
+=item C<Unknown Demeter template file: group $group; type $file; $tmpl>
+
+You specified a combination of template group and template file that
+does not exist.
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+See L<Demeter::Config> for details about the configuration
+system.
+
+=head1 DEPENDENCIES
+
+The dependencies of the Demeter system are in the
+F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+New template sets:
+
+=item *
+
+More plotting backends?  Grace?  others?
+
+=item *
+
+tdl/ifeffit 2.0 target
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+http://cars9.uchicago.edu/~ravel/software/
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

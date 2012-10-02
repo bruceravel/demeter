@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>atoms</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Trigger Scripts &gt;
+  datoms
+</div>
+<div>
+<a href="src/datoms.pl">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES</a></li>
+	<li><a href="#CIF_FILES">CIF FILES</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>atoms - Convert crystallography data to a feff.inp file</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  atoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
+
+</pre><p>If no input or CIF file is specified at the command line, <cite>atoms.inp</cite>
+in the current working directory will be used, if available.</p>
+
+<p>If the <code>--wx</code> flag for running the GUI is given, all other command
+line arguments are ignored.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This reads an atoms input file or a CIF file (CIF is not working at
+this time) and writes out the results of a calculation using that
+crystallography data.  Typically the output is a <cite>feff.inp</cite> file, but
+it may also be a summary of the space group, calculation using tables
+of X-ray absorption coefficients, etc.</p>
+
+<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>By default, an input file for Feff6 is written.  This and aspects of
+the <cite>feff.inp</cite> file can be overridden from the command line.</p>
+
+<dl>
+	<dt><code>--wx</code></dt>
+		<dd><p>Run the wxWidgets-based GUI (ignoring all other command-line flags).</p></dd>
+	<dt><code>-6</code></dt>
+		<dd><p>Write an input file for Feff6 (which is the default).</p></dd>
+	<dt><code>-8</code></dt>
+		<dd><p>Write an input file for Feff8.</p></dd>
+	<dt><code>-a</code></dt>
+		<dd><p>Write the results of calculations using tables of X-ray absorption
+coefficients.</p></dd>
+	<dt><code>-s</code></dt>
+		<dd><p>Write a space group summary file.</p></dd>
+	<dt><code>--atoms</code></dt>
+		<dd><p>Write an atoms input file.  This is most useful for interacting with a
+CIF file for which the central atom cannot be identified by Demeter's
+simplistic algorithm.</p></dd>
+	<dt><code>--rmax=#</code> or <code>-r #</code></dt>
+		<dd><p>Specify a cluster size from the command line.</p></dd>
+<dd><pre>  datoms -r 5.2 mydata.inp
+
+</pre></dd></dl>
+<h1 id="CIF_FILES">CIF FILES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Reding CIF files requires the use of one or two additional command
+line switches:</p>
+
+<dl>
+	<dt><code>--cif</code> or <code>-c</code></dt>
+		<dd><p>This flag indicates that the file given on the command line is a CIF
+file rather than an Atoms input file.  <strong>No effort</strong> is made to figure
+out whether your file is CIF or Atoms input -- it is up to you to
+correctly identify it using this command line flag.</p></dd>
+<dd><pre>  datoms --cif --rec=2 my_cif_file.cif
+
+</pre></dd>	<dt><code>--rec=#</code></dt>
+		<dd><p>If your CIF file is a multi-record file, use this switch to indicate
+which record to import.  The default is to read the first record, so
+this switch does not need to be used for a single-record file.</p></dd>
+</dl>
+<p>Note that a CIF file does not identify a central atom.  Demeter's CIF
+importer assuems that the heaviest atom in the material is the
+absorber.  As a command line utility, there is no convenient way to
+unambiguously identify the central atom.  Probably the best solution
+is to use this script to convert the CIF file to an atoms input file,
+edit that, then rerun this script to generate the Feff input file.</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for a description of Demeter's
+configuration system.  Atoms uses the <code>atoms</code> configuration group.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Atoms.pm.html">Demeter::Atoms</a> for bugs and limitations of the
+underlying libraries.</p>
+
+<p>Missing command line switches:</p>
+
+<ul>
+	<li>-v and -h</li>
+	<li>ipot style</li>
+	<li>feff7, overfull</li>
+	<li>OpenBabel integration</li>
+	<li>snarf atoms.inp files from Matt's database or CIF files from the web</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

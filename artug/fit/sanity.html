@@ -1,0 +1,224 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Sanity checking your fitting model</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Next: <a href="../fit/happiness.html" class="menu" >The happiness parameter</a>
+        &nbsp;&nbsp;
+        Up: <a href="../fit/index.html" class="menu" >Running a fit</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Sanity checking your fitting model
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="../data.html" class="menu" >The Data window</a><br />
+<a href="../feff/index.html" class="menu" >The Atoms/Feff window</a><br />
+<a href="../path/index.html" class="menu" >The Path page</a><br />
+<a href="../gds.html" class="menu" >The GDS window</a><br />
+<br />
+<a href="../fit/index.html" class="menuselect" >Running a fit</a><br />
+&nbsp;-&nbsp;<a href="../fit/sanity.html" class="menuselect" >Sanity checking your model</a><br />
+&nbsp;-&nbsp;<a href="../fit/happiness.html" class="menu" >The happiness parameter</a><br />
+&nbsp;-&nbsp;<a href="../fit/pathlike.html" class="menu" >Using path-like objects</a><br /><br />
+<a href="../plot/index.html" class="menu" >The Plot window</a><br />
+<a href="../logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="../history.html" class="menu" >The History window</a><br />
+<a href="../monitor.html" class="menu" >Monitoring things</a><br />
+<a href="../prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+ <span class=program>ARTEMIS</span> is complex and it is quite easy to make mistakes.  Many
+common mistakes are obvious and discoverable by automated analysis of
+the fitting model.  Before running a fit,  <span class=program>ARTEMIS</span> applies each of
+the following test to your fitting model.  If any of them are
+triggered, the fit is halted and a (hopefully) useful error message is
+posted in the Log window.  Think of this like  <span class=program>ARTEMIS</span>' 
+spell checker!
+</p>
+
+<p>
+Any problems that are found must be corrected before  <span class=program>ARTEMIS</span> will
+allow the fit to proceed.
+</p>
+
+
+<ol>
+  
+
+<li>
+Check that any files associated with the  data or the  <span class=program>FEFF</span>
+calculations exist.
+</li>
+
+<li>
+Check that all guess parameters are used in at least one def parameter.
+or path parameter.
+</li>
+
+<li>
+Check that no def parameter or path parameter uses an undefined parameters.
+</li>
+
+<li>
+Check that none of 
+&ldquo;++&rdquo;,
+&ldquo;--&rdquo;,
+&ldquo;//&rdquo;, or
+&ldquo;***&rdquo; appear in a math expression.
+</li>
+
+<li>
+Check that all function names used in math expression (i.e. a word
+followed by parentheses) are valid functions in  <span class=program>IFEFFIT</span>.
+</li>
+
+<li>
+Check that all GDS parameters have unique names.
+</li>
+
+<li>
+Check that parentheses match in all math expressions.
+</li>
+
+<li>
+Check that Fourier transform and fit parameters are sensible (for
+example  R<sub>min</sub>    <  R<sub>max</sub>   ) for all data sets.
+</li>
+
+<li>
+Check that the number of guess parameters is less than  N<sub>idp</sub>   .
+</li>
+
+<li>
+Verify that  R<sub>min</sub>    is >=  R<sub>bkg</sub>  for data imported from an
+ <span class=program>ATHENA</span> project file.
+</li>
+
+<li>
+Verify that  R<sub>eff</sub>  for each path is not well beyond  R<sub>max</sub>   .
+</li>
+
+<li>
+Check that various compiled-in limits (e.g. maximum number of paths or
+maximum number of set parameters) in  <span class=program>IFEFFIT</span> are not exceeded.
+</li>
+
+<li>
+Check that parameters do not have the same names as  <span class=program>IFEFFIT</span>
+program variables.  For example, things like
+<tt>pi</tt> or <tt>dr1</tt>
+are not allowed since  <span class=program>IFEFFIT</span> uses those strings for other purposes.
+</li>
+
+<li>
+Check that there are no unresolved merge parameters.
+</li>
+
+<li>
+Check that GDS math expressions do not have loops or cycles in their
+definitions.  For example, either of the following would trigger this error.
+<pre>
+guess x = x  # with apologies to Laurie Anderson fans....
+</pre>
+<pre>
+guess a = b
+def   b = c
+def   c = a
+</pre>
+</li>
+
+<li>
+Check for obvious cases of a data set used more than once.
+</li>
+
+<li>
+Check that each data set used in the fit has at least one  path
+assigned to it.
+</li>
+
+</ol> 
+
+<p>
+As a side note, item #15 is particularly interesting.   <span class=program>DEMETER</span>
+does a simple lexical analysis on the ensemble of math expressions
+defined on the GDS window then uses a formal graph theory tool
+(links...) to develop a graph depiction of the parameters.  Loops
+(like the first example) and cycles (like the second) a trivially
+evident when the parameters are viewed as a formal graph.  That was a
+really fun part of  <span class=program>DEMETER</span> to write.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Next: <a href="../fit/happiness.html" class="menu" >The happiness parameter</a>
+        &nbsp;&nbsp;
+        Up: <a href="../fit/index.html" class="menu" >Running a fit</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

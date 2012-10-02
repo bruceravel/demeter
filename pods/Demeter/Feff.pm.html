@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Feff</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Feff
+</div>
+<div>
+<a href="../src/Demeter/Feff.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#Accessor_methods">Accessor methods</a></li>
+	<li><a href="#Feff_replacement_methods">Feff replacement methods</a></li>
+	<li><a href="#Feff_running_methods">Feff running methods</a></li>
+	<li><a href="#Reporting_methods">Reporting methods</a></li>
+	<li><a href="#Convenience_methods">Convenience methods</a></li>
+</ul>
+</li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::Feff - Make and manipulate Feff calculations</p>
+
+
+
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+
+
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>  my $feff = Demeter::Feff -&gt; new(file =&gt; 'feff.inp');
+  $feff-&gt;set(workspace=&gt;&quot;temp&quot;, screen=&gt;1);
+  $feff-&gt;run;
+  $feff-&gt;intrp;
+
+
+
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This subclass of the Demeter class is for interacting with theory from
+Feff.  Computing the <code>phase.bin</code> file is done by Feff via a pipe, as
+is running the genfmt portion of Feff.  Parsing the input file,
+pathfinding, and generating the <code>paths.dat</code> to control genfmt have
+been implemented as methods of this object.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>file</code></dt>
+		<dd><p>The name of a <cite>feff.inp</cite> file.</p></dd>
+	<dt><code>yaml</code></dt>
+		<dd><p>The name of a file containing a serialization of a Feff calculation.</p></dd>
+	<dt><code>atoms</code></dt>
+		<dd><p>A <a href="Atoms.pm.html">Demeter::Atoms</a> object from which a <cite>feff.inp</cite> file will be
+generated automatically.</p></dd>
+	<dt><code>sites</code></dt>
+		<dd><p>Reference to a list containing all the sites found in the input
+structure.  Each element of the list is a reference to a list
+containing the site's x, y , and z coordinates, followed by its
+potential index.</p></dd>
+	<dt><code>potentials</code></dt>
+		<dd><p>Reference to a list containing all the unique potentials.  Each
+element of the list is a reference to a list containing the site's ipot,
+Z-number, and tag.</p></dd>
+	<dt><code>titles</code></dt>
+		<dd><p>Reference to a list containing all the title lines.</p></dd>
+	<dt><code>absorber</code></dt>
+		<dd><p>Reference to a list containing the x, y, and z coordinates of the
+absorbing atoms.</p></dd>
+	<dt><code>abs_index</code></dt>
+		<dd><p>Index, starting at 0, of the absorber in the <code>sites</code> list.</p></dd>
+	<dt><code>edge</code></dt>
+		<dd><p>The edge of the calculation.  This can be any of 1, 2, 3, 4, K, L1,
+L2, or L3.</p></dd>
+	<dt><code>s02</code></dt>
+		<dd><p>The S02 value.  This can be other than 1, which is a really bad idea
+for the Feff calculation, but that's how Feff works.</p></dd>
+	<dt><code>rmax</code></dt>
+		<dd><p>The Rmax value, i.e. the half length of the longest path.</p></dd>
+	<dt><code>nlegs</code></dt>
+		<dd><p>The maximum number of legs of paths to be calculated.  In Feff this
+can be as large as 7.  Demeter's implementation of the path finder is
+currently limited to 4.</p></dd>
+	<dt><code>rmultiplier</code></dt>
+		<dd><p>The value of Rmultiplier, an isotropic scaling factor for all atomic
+coordinates in the atoms list.</p></dd>
+	<dt><code>pcrit</code></dt>
+		<dd><p>The value of the plane wave criterion.  This is not used by Demeter's
+pathfinder.</p></dd>
+	<dt><code>ccrit</code></dt>
+		<dd><p>The value of the curved wave criterion.  This may be used by the
+<code>genfmt</code> method.</p></dd>
+	<dt><code>workspace</code></dt>
+		<dd><p>A valid directory in which to run Feff.  Demeter will cd into this
+directory before writing out a <cite>feff.inp</cite> file, computing the
+potentials, running the pathfinder, or running genfmt.</p></dd>
+	<dt><code>miscdat</code></dt>
+		<dd><p>The contents of the <cite>misc.dat</cite> file, slurped up after the
+<cite>phase.bin</cite> file is generated.</p></dd>
+	<dt><code>pathlist</code></dt>
+		<dd><p>A reference to the list of ScatteringPath objects generated by the
+<code>pathfinder</code> method.</p></dd>
+	<dt><code>hidden</code></dt>
+		<dd><p>This boolean attribute is true if this is a &quot;hidden&quot; Feff calculation.
+As example of this is the Feff calculation associated with a
+<a href="FSPath.pm.html">Demeter::FSPath</a> object.  In that case, the Feff calculation is
+intended to be done completely bihind the scenes and the user will
+normally not interact with it directly.  In the contextof Artemis,
+this means that an entry in the Feff toolbar will not be shown for the
+FSPath object.</p></dd>
+	<dt><code>source</code></dt>
+		<dd><p>This is a string that is used to identify the provenance of the Feff
+calculation.  The default is &quot;demeter/feff6&quot;, indicating that the Feff
+calculation was handled entirely by Demeter.  For a
+Demeter::Feff::External object, this is set to &quot;external&quot;, indicating
+that the Feff calculation was imported from outside of Demeter.</p></dd>
+	<dt><code>screen</code></dt>
+		<dd><p>A boolean controlling whether Feff's output is printed to STDOUT.</p></dd>
+	<dt><code>buffer</code></dt>
+		<dd><p>A reference to a array or scalar for containing the output from Feff.
+This array or scalar can then be handled by the caller.</p></dd>
+	<dt><code>save</code></dt>
+		<dd><p>A boolean saying whether to save the minimal <code>feff.inp</code> file after a
+Feff running step is finished.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="Accessor_methods">Accessor methods</h2>
+
+<p>This uses the <code>set</code> and <code>get</code> methods of the parent class,
+<a href="../Demeter.pm.html">Demeter</a>.</p>
+
+<h2 id="Feff_replacement_methods">Feff replacement methods</h2>
+
+<dl>
+	<dt><code>rdinp</code></dt>
+		<dd><p>Parse the feff input file and store its information.  It can read from
+an arbitrarily named file, which is an improvement over Feff itself..</p></dd>
+<dd><pre>  $feff -&gt; rdinp(&quot;yourfeff.inp&quot;);
+
+</pre></dd>		<dd><p>If called without an argument, it will look for <cite>feff.inp</cite> in the
+current working directory.</p></dd>
+		<dd><p>This is triggered when the <code>file</code> attribute is set.</p></dd>
+	<dt><code>pathfinder</code></dt>
+		<dd><p>Find all unique paths in the input atoms list.  All degenerate
+geometries will be preserved.</p></dd>
+<dd><pre>  $feff -&gt; rdinp(&quot;somefeff.inp&quot;) -&gt; pathfinder;
+
+</pre></dd>		<dd><p>This implementation of the path finder has two advantages over Feff's
+implementation.</p></dd>
+<dd><ul>
+	<li>The degeneracy is determined with fuzziness. Paths with similar, but not
+equal, half-lengths and/or scattering angles will be grouped together
+as effectively degenerate. The width of these fuzzily degenerate bins
+is configurable.</li>
+	<li>The geometries of the degenerate paths are preserved. This will aid in
+the identification of paths in a ball-and-stick view and allow easier
+tracking of how structural distortions propagate into the path list.</li>
+</ul>
+
+</dd>
+		<dd><p>There are three shortcomings of Demeter's path finder compared to
+Feff's:</p></dd>
+<dd><ul>
+	<li>Implemented in an interpreted language, it is considerably
+slower. This is exponentially true for larger clusters.</li>
+	<li>It is currently limited to 4-legged paths. This is not a fundamental
+limitation, merely a lazy one. Eventually all leggedness limitations
+will be removed from Demeter's implementation.</li>
+	<li>Demeter cannot compute the so-called importance factor which is used
+to limit the size of the heap and to convey approximate information
+about path size to the user.  This is actually a pretty serious
+problem as it means that one of Feff's most important ways of trimming
+the size of the pathfinder heap is unavailable to Demeter.</li>
+</ul>
+
+</dd>
+		<dd><p>This is not simply a drop-in-place replacement.  It actually produces
+different output than Feff's path finder.  It will not miss any of the
+important paths, but it treats degeneracies differently and will
+include some small paths that Feff would normally exclude.</p></dd>
+	<dt><code>pathsdat</code></dt>
+		<dd><p>Write a <cite>paths.dat</cite> file from some or all of the ScatteringPath
+objects found by the path finder.</p></dd>
+<dd><pre>  $feff -&gt; pathsdat()
+  # or
+  $feff -&gt; pathsdat(7 .. 13);
+
+</pre></dd>		<dd><p>With no argument, all paths will be written to the <cite>paths.dat</cite> file.
+The optional argument is a list of numbers interpreted as indeces of
+the list returned by the <code>pathlist</code> method.</p></dd>
+</dl>
+<h2 id="Feff_running_methods">Feff running methods</h2>
+
+<dl>
+	<dt><code>run</code></dt>
+		<dd><p>This calls <code>potph</code> then <code>pathfinder</code>.  It is proving common to chain
+these two methods, so it seems useful to provide a shortcut.</p></dd>
+	<dt><code>make_feffinp</code></dt>
+		<dd><p>Write out a feff.inp file suitable for computing the potentials,
+running genfmt, or running all of Feff.</p></dd>
+<dd><pre>  $feff -&gt; make_feffinp(&quot;potentials&quot;);
+    # or
+  $feff -&gt; make_feffinp(&quot;genfmt&quot;);
+    # or
+  $feff -&gt; make_feffinp(&quot;full&quot;);
+
+</pre></dd>	<dt><code>potph</code></dt>
+		<dd><p>Run Feff to compute the potentials.  The <code>make_feffinp</code> method will
+be run if needed.</p></dd>
+<dd><pre>  $feff -&gt; potph;
+
+</pre></dd>		<dd><p>This runs just the first segment of Feff, generating the <cite>phase.bin</cite>
+file.  Note that, when transfering a feff calculation between machines
+with different CPU or different operating system, this binary file
+will not be read correctly (possibly not at all) by Feff on the new
+machine.</p></dd>
+	<dt><code>genfmt</code></dt>
+		<dd><p>Run the third segment of Feff, which imports the <cite>phase.bin</cite> file and
+generates a <cite>feffNNNN.dat</cite> file for every entry int he <cite>paths.dat</cite>
+file.</p></dd>
+<dd><pre>  $feff -&gt; genfmt();
+  # or
+  $feff -&gt; genfmt(7 .. 13);
+
+</pre></dd>		<dd><p>The optional argument is a list of indeces passed to the <code>pathsdat</code>
+method.  WIthout that argument, <code>pathsdat</code> is used to write out data
+for every path found by the path finder.</p></dd>
+	<dt><code>run_feff</code></dt>
+		<dd><p>This cds to the directory specified by the <code>workspace</code> attribute and
+runs feff using whatever <cite>feff.inp</cite> file is found there.  You would
+usually call the <code>make_feffinp</code> method just before calling this.</p></dd>
+<dd><pre>  $feff -&gt; make_feffinp(&quot;potentials&quot;) -&gt; run_feff;
+
+</pre></dd>	<dt><code>report</code></dt>
+		<dd><p>Dispose of text, possibly gathered from a Feff run, to the channels
+specified by the <code>screen</code> and <code>buffer</code> attributes.</p></dd>
+<dd><pre>  $feff -&gt; report($some_text);
+
+</pre></dd>	<dt><code>rank_paths</code></dt>
+		<dd><p>Perform various rankins of the importance of the various paths found
+using Demeter's pathfinder.  One of these is to run Feff on the entire
+path list and extract the curved wave importance factors from the
+<cite>files.dat</cite> file.  Other rankings are performed using
+<a href="ScatteringPath/Rank.pm.html">Demeter::ScatteringPath::Rank</a>.  The rankings are stored in the
+ScatteringPath object.</p></dd>
+<dd><pre>  $feff -&gt; pathfinder;
+  ## some time later ...
+  $feff-&gt;rank_paths;
+
+</pre></dd></dl>
+<h2 id="Reporting_methods">Reporting methods</h2>
+
+<dl>
+	<dt><code>intrp</code></dt>
+		<dd><p>Write an interpretation of the Feff calculation.  This summarizes each
+path, reporting on the <cite>feffNNNN.dat</cite> index, the degeneracy, the half
+path length, and a description of the scattering geometry.</p></dd>
+		<dd><p>The optional argument is used to add markup to add some style to the
+text written.</p></dd>
+		<dd><p>To mark up the interpretation for an html page using CSS</p></dd>
+<dd><pre>   print $feff-&gt;intrp('css');
+
+</pre></dd>		<dd><p>You will need to define CSS text styles called <code>comment</code>, <code>major</code>,
+<code>minor</code>, and <code>normal</code> for the header, the major paths, the minor
+paths, and the small paths respectively.  Here is a very simple
+example:</p></dd>
+<dd><pre>  .comment {
+    font: 1em monospace;
+    color: #990000;
+  }
+  .major {
+    font: 1em monospace;
+    color: #009900;
+  }
+  .minor {
+    font: 1em monospace;
+    color: #775500;
+  }
+  .normal {
+    font: 1em monospace;
+    color: #777777;
+  }
+
+</pre></dd>		<dd><p>To mark up the interpretation for LaTeX</p></dd>
+<dd><pre>   print $feff-&gt;intrp('latex');
+
+</pre></dd>		<dd><p>You will need to define colors called <code>commentcolor</code>, <code>majorcolor</code>,
+and <code>minorcolor</code> for the header, the major paths, and the minor
+paths, respectively.  One way of defining colors in your LaTeX
+document is</p></dd>
+<dd><pre>   \usepackage[pdftex]{color}
+   \definecolor{commentcolor}{rgb}{0.70,0.00,0.00}
+
+</pre></dd>		<dd><p>The argument can also be a hash reference defining some other kind of
+markup.  There are five markup tags:</p></dd>
+<dd><dl>
+	<dt><code>comment</code></dt>
+		<dd><p>The beginning of a header line.  In the latex style,
+this is &quot;<code>{\color{commentcolor}\texttt{</code>&quot;.  In css style, this is
+&quot;<code>&lt;span class=comment&gt;</code>&quot;.</p></dd>
+	<dt><code>2</code></dt>
+		<dd><p>The beginning of a path of importance level 2.  In the latex style,
+this is &quot;<code>{\color{majorcolor}\texttt{</code>&quot;.  In css style, this is
+&quot;<code>&lt;span class=major&gt;</code>&quot;.</p></dd>
+	<dt><code>1</code></dt>
+		<dd><p>The beginning of a path of importance level 1.  In the latex style,
+this is &quot;<code>{\color{minorcolor}\texttt{</code>&quot;.  In css style, this is
+&quot;<code>&lt;span class=minor&gt;</code>&quot;.</p></dd>
+	<dt><code>0</code></dt>
+		<dd><p>The beginning of a path of importance level 0.  In the latex style,
+this is &quot;<code>{\texttt{</code>&quot;.  In css style, this is
+&quot;<code>&lt;span class=normal&gt;</code>&quot;.</p></dd>
+	<dt><code>close</code></dt>
+		<dd><p>The markup for the end of a style block.  In the latex style, this is
+two closing curly brackets, &quot;<code>}}</code>&quot;.  In css style, this is
+&quot;<code>&lt;/span&gt;&lt;br&gt;</code>&quot;.</p></dd>
+</dl>
+</dd>
+		<dd><p>Here is an example of adding some color when writing to a
+terminal capable of displaying ANSI color:</p></dd>
+<dd><pre>    use Term::ANSIColor qw(:constants);
+    $style = {comment =&gt; BOLD.RED,
+              close   =&gt; RESET,
+              1       =&gt; BOLD.YELLOW,
+              2       =&gt; BOLD.GREEN,
+              0       =&gt; q{},
+             };
+    print $feff-&gt;intrp($style);
+
+</pre></dd>		<dd><p>The ANSI color example is not pre-defined so that Term::ANSIColor does
+not have to be a Demeter requirement.  That said, it is probably the
+most useful style.</p></dd>
+</dl>
+<h2 id="Convenience_methods">Convenience methods</h2>
+
+<p>These are simple wrappers around the <code>get</code> accessor.</p>
+
+<dl>
+	<dt><code>central</code></dt>
+		<dd><p>Returns a list of the x, y, and z coordinates of the central atom.</p></dd>
+	<dt><code>list_of_paths</code></dt>
+		<dd><p>Returns a list of ScatteringPath objects found by the path finder.
+This simply dereferences the anonymous array contained in the
+<code>pathlist</code> attribute and returns the list.</p></dd>
+	<dt><code>nsites</code></dt>
+		<dd><p>Returns the number of sites in the atoms list.</p></dd>
+</dl>
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The Feff object uses <a href="http://search.cpan.org/perldoc?YAML">YAML</a> for its serialization format.  All of the
+scalar valued attributes are collected into a hash, which is the first
+thing serialized into the YAML file.  This is followed by the
+array-valued attributes in this order: <code>titles</code>, <code>othercards</code>,
+<code>potentials</code>, <code>absorber</code>, then <code>sites</code>.  Finally each of the
+ScatteringPath objects are serialized in the order they appear in the
+<code>pathlist</code> attribute.  <code>freeze</code> is an alias for <code>serialize</code>.</p>
+
+<pre>  $feff -&gt; serialize($yaml_filename);
+    # or
+  $feff -&gt; freeze($yaml_filename);
+
+</pre><p>There is a second, optional argument to <code>serialize</code>.  If true, the
+serialization file is written without compression.  By default, the
+serialization file is compressed using the gzip algorithm.</p>
+
+<p>You can deserialize the YAML file and store it in a Feff object and a
+list of ScatteringPath objects.  <code>thaw</code> is an alias for
+<code>deserialize</code>.</p>
+
+<pre>  $feff -&gt; deserialize($yaml_filename);
+    # or
+  $feff -&gt; thaw($yaml_filename);
+
+</pre><h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="../Demeter.pm.html">Demeter</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Need methods for identifying particular paths, for example &quot;the single
+scattering path with the phosphorous atom as the scatterer&quot;.</li>
+	<li>Automated indexing currently only works when doing a fit.  If you want
+to plot paths before doing a fit, you will need to assign indeces by
+hand.</li>
+	<li>Feff8 functionality is incomplete.  For instance, the <code>potentials</code>
+attribute needs to allow for longer lists for the additional
+parameters in Feff8.</li>
+	<li>The <code>edge</code> attribute should recognize M, N, O edges.</li>
+	<li>Need to keep and <code>iedge</code> attribute, as in the Atoms object</li>
+	<li>The <code>pathsdat</code> method should accept special arguments, like &quot;SS&quot; for
+all single scattering paths, or &quot;collinear&quot; for all collinear MS
+paths.</li>
+	<li>Look into doing a better job of caching halflengths.
+Tools::halflength is a significanty fraction of the time spent by the
+pathfinder.</li>
+</ul>
+
+<p>See <a href="ScatteringPath.pm.html">Demeter::ScatteringPath</a> for limitations of the pathfinder.</p>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>
