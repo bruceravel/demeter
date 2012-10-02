@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Plot</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Plot
+</div>
+<div>
+<a href="../src/Demeter/Plot.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#Text_and_colors">Text and colors</a></li>
+	<li><a href="#Line_types">Line types</a></li>
+	<li><a href="#Energy_plots">Energy plots</a></li>
+	<li><a href="#k_plots">k plots</a></li>
+	<li><a href="#R_plots">R plots</a></li>
+	<li><a href="#q_plots">q plots</a></li>
+	<li><a href="#Data_parts">Data parts</a></li>
+	<li><a href="#Plot_ornaments">Plot ornaments</a></li>
+</ul>
+</li>
+	<li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::Plot - Controlling plots of XAS data</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>  $object -&gt; po -&gt; set(kweight=&gt;3);
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This subclass of Demeter is for holding information pertaining to how
+plots of data and paths are made.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This uses the <code>set</code>, and <code>get</code> methods of the parent class.</p>
+
+<p>The typical way of accessing these methods is in a chain with the
+<code>po</code> method.  All of the examples below demonstrate that.  You can
+also store the reference to the plot object as a scalar and used that:</p>
+
+<pre>  $plot_object - $other_object -&gt; po;
+  $plot_object -&gt; set(kweight=&gt;3);
+
+</pre><dl>
+	<dt><code>start_plot</code></dt>
+		<dd><p>This method reinitializes a plot.  In terms of Ifeffit, the next plot made
+after running this method will be a <code>newplot()</code>.  Each subsequent plot until
+the next time <code>start_plot</code> is called will be a <code>plot()</code>.  Also, the sequence
+of colors is reset when this method is called.</p></dd>
+<dd><pre>  $object -&gt; po -&gt; start_plot;
+
+</pre></dd>	<dt><code>legend</code></dt>
+		<dd><p>This is a convenience method for controlling the appearence of the legend in
+the plot.  This will set the legend parameters (<code>key_x</code>, <code>key_y</code>, and
+<code>key_dy</code>) and return the Ifeffit command to reset the legend.</p></dd>
+<dd><pre>  $object -&gt; po -&gt; legend(x=&gt;0.6, y=&gt;0.8, dy=&gt;0.05);
+
+</pre></dd>		<dd><p>Note that you get to drop &quot;key&quot; in the arguments to this method,
+although <code>x</code> and <code>key_x</code> will be interpreted the same.</p></dd>
+	<dt><code>font</code></dt>
+		<dd><p>This is a convenience method for controlling the appearence of the text in
+the plot.  This will set the text attributes (<code>charfont</code> and
+<code>charsize</code>) and return the Ifeffit command to reset the text.</p></dd>
+<dd><pre>  $object -&gt; po -&gt; font(font=&gt;4, size=&gt;1.8)
+
+</pre></dd>		<dd><p>Note that you get to drop &quot;char&quot; in the arguments to this method,
+although <code>font</code> and <code>charfont</code> will be interpreted the same.</p></dd>
+		<dd><p>The available pgplot fonts are: 1=sans serif, 2=roman, 3=italic,
+4=script.  If the font is not one of those numbers, it will fall back
+to 1.  The size cannot be negative.  Values larger than around 1.8 are
+allowed, but are probably a poor idea.</p></dd>
+	<dt><code>label</code></dt>
+		<dd><p>Place a textual label on the plot at a specified point.</p></dd>
+<dd><pre>  $object -&gt; po -&gt; label($x, $y, $text);
+
+</pre></dd>	<dt><code>plot_kylabel</code></dt>
+		<dd><p>Construct the label for the y-axis of a plot in k using the correct
+value of k-weighting according to the current value of the <code>kweight</code>
+attribute.</p></dd>
+	<dt><code>plot_rylabel</code></dt>
+		<dd><p>Construct the label for the y-axis of a plot in R using the correct
+value of k-weighting according to the current value of the <code>kweight</code>
+attribute.</p></dd>
+	<dt><code>plot_qylabel</code></dt>
+		<dd><p>Construct the label for the y-axis of a plot in q using the correct
+value of k-weighting according to the current value of the <code>kweight</code>
+attribute.</p></dd>
+</dl>
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The following are the attributes of the Plot object.  Attempting to
+access an attribute not on this list will throw an exception.</p>
+
+<p>The type of argument expected in given in parentheses. i.e. number,
+integer, string, and so on.  The default value, if one exists, is
+given in square brackets.</p>
+
+<dl>
+	<dt><code>group</code> (string) <i>[a random five-letter string]</i></dt>
+		<dd><p>This string is used as the unique identifier for the Plot object.</p></dd>
+	<dt><code>space</code> (letter) <i>[r]</i></dt>
+		<dd><p>The space in which to preform the plot.  It must be one of E, k, r, or q.</p></dd>
+	<dt><code>color</code></dt>
+		<dd><p>The next line color to be used.  This is updated automatically by the
+plotting methods.</p></dd>
+	<dt><code>increment</code></dt>
+		<dd><p>A counter for the number of traces already drawn in the current plot.</p></dd>
+	<dt><code>new</code></dt>
+		<dd><p>A flag indicating whether to start a new plot or to plot over the
+current one.</p></dd>
+</dl>
+<h2 id="Text_and_colors">Text and colors</h2>
+
+<dl>
+	<dt><code>charsize</code> (number) <i>[1.2]</i></dt>
+		<dd><p>The character size in PGPLOT plots.</p></dd>
+	<dt><code>charfont</code> (integer) <i>[1]</i></dt>
+		<dd><p>The font type used in plots with PGPLOT.  The available fonts are:
+1=sans serif, 2=roman, 3=italic, 4=script.</p></dd>
+	<dt><code>key_x</code> (number) <i>[0.8]</i></dt>
+		<dd><p>The location in x of the plot legend as a fraction of the full window
+width.</p></dd>
+	<dt><code>key_y</code> (number) <i>[0.9]</i></dt>
+		<dd><p>The location in y of the plot legend as a fraction of the full window
+height.</p></dd>
+	<dt><code>key_dy</code> (number) <i>[0.075]</i></dt>
+		<dd><p>The separation in y of the entried in the plot legend as a fraction of
+the full window height.</p></dd>
+	<dt><code>bg</code> (color) <i>[white]</i></dt>
+		<dd><p>The plot background color.</p></dd>
+	<dt><code>fg</code> (color) <i>[black]</i></dt>
+		<dd><p>The plot foreground color, used for text and the plot frame.</p></dd>
+	<dt><code>showlegend</code> (boolean) <i>[1]</i></dt>
+		<dd><p>When true, a legend will be shown on the plot.</p></dd>
+	<dt><code>showgrid</code> (boolean) <i>[1]</i></dt>
+		<dd><p>When true, a grid will be shown on the plot.</p></dd>
+	<dt><code>gridcolor</code> (color) <i>[grey82]</i></dt>
+		<dd><p>The color of the grid drawn on the plot.</p></dd>
+	<dt><code>c0</code> to <code>c9</code> (color)</dt>
+		<dd><p>The line colors.  These are the default colors (as defined in the X
+windows <cite>rgb.txt</cite> file) in order: blue red green4 darkviolet
+darkorange brown deeppink gold3 cyan3 yellowgreen.</p></dd>
+</dl>
+<h2 id="Line_types">Line types</h2>
+
+<p>The line type attributes take these possible values:</p>
+
+<pre>   solid dashed dotted dot-dash points linespoints
+
+</pre><dl>
+	<dt><code>datastyle</code> (string) <i>[solid]</i></dt>
+		<dd><p>The line type for plots of data.</p></dd>
+	<dt><code>fitstyle</code> (string) <i>[solid]</i></dt>
+		<dd><p>The line type for the fit array.</p></dd>
+	<dt><code>partstyle</code> (string) <i>[solid]</i></dt>
+		<dd><p>The line type for a part of the data, such as the window or the
+background.</p></dd>
+	<dt><code>pathstyle</code> (string) <i>[solid]</i></dt>
+		<dd><p>The line type for a path.</p></dd>
+</dl>
+<h2 id="Energy_plots">Energy plots</h2>
+
+<dl>
+	<dt><code>emin</code> (number) <i>[-200]</i></dt>
+		<dd><p>The lower bound of the plot range in energy, relative to e0 of the
+data group.</p></dd>
+	<dt><code>emax</code> (number) <i>[800]</i></dt>
+		<dd><p>The upper bound of the plot range in energy, relative to e0 of the
+data group.</p></dd>
+	<dt><code>e_mu</code> (boolean) <i>[1]</i></dt>
+		<dd><p>A flag for whether to plot mu(E) in an energy plot.</p></dd>
+	<dt><code>e_bkg</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot the background in an energy plot.</p></dd>
+	<dt><code>e_pre</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot the pre-edge line in an energy plot.</p></dd>
+	<dt><code>e_post</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot the post-edge line in an energy plot.</p></dd>
+	<dt><code>e_norm</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot mu(E) and the background as normalized data
+in an energy plot.</p></dd>
+	<dt><code>e_der</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot muE() as a derivative spectrum in an energy
+plot.</p></dd>
+	<dt><code>e_sec</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot the mu(E) as a second derivative spectrum
+in an energy plot.</p></dd>
+	<dt><code>e_i0</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot I0 in an energy plot.</p></dd>
+	<dt><code>e_signal</code> (boolean) <i>[0]</i></dt>
+		<dd><p>A flag for whether to plot the signal (i.e. the unormalized
+transmission or fluorescence channel -- this combined with the I0
+signal make up mu(E)) in an energy plot.</p></dd>
+	<dt><code><code>e_markers</code></code> (boolean) <i>[0]</i></dt>
+		<dd><p>If true, than markers will be plotted in energy as appropriate to indicate the
+positions of E0 and the boundaries of the pre- and post-edge resions.</p></dd>
+	<dt><code>e_part</code> () <i>[]</i></dt>
+		<dd><p>q{},</p></dd>
+	<dt><code>e_smooth</code> (integer) <i>[0]</i></dt>
+		<dd><p>When non-zero, data plotted in energy will be smoothed using a
+three-point smoothing function.  The number is the number of
+repititions of the smoothing function.</p></dd>
+	<dt><code>e_zero</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When true, data plotted in energy have <code>bkg_e0</code> subtracted from the
+energy array.  Thus mu(E) data are plotted with the edge energy at 0.
+The purpose of this is to facilitate overplotting mu(E) data from
+different edges.</p></dd>
+</dl>
+<h2 id="k_plots">k plots</h2>
+
+<dl>
+	<dt><code>kmin</code> (number) <i>[0]</i></dt>
+		<dd><p>The lower bound of the plot range in k.</p></dd>
+	<dt><code>kmax</code> (number) <i>[15]</i></dt>
+		<dd><p>The upper bound of the plot range in k.</p></dd>
+	<dt><code>kweight</code> (number) <i>[1]</i></dt>
+		<dd><p>The k-weighting to use when plotting in k or in a Fourier transform
+before plotting in R or q.  Typically, this is 1, 2, or 3, but can
+actually be any number.  When this gets changed, all Data, Path, and
+VPath objects will be flagged as needing to be brought up-to-date for
+their forward Fourier transform.</p></dd>
+		<dd><p>A negative value is interpreted to mean that the value of
+<code>fit_karb_value</code> should be used as the k-weighting to each data
+group.  This allows data to be overplotted with variable k-weighting.</p></dd>
+	<dt><code>chie</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When this flag is true, plots of chi(k) will be plotted instead as
+chi(E).</p></dd>
+</dl>
+<h2 id="R_plots">R plots</h2>
+
+<p><a href="#" onclick="toggleCode('method_R');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_R">
+                                        <pre>
+
+sub R {
+  my ($self) = @_;
+  return $self->reff + $self->delr_value;
+};
+</pre></div>
+
+<dl>
+	<dt><code>rmin</code> (number) <i>[0]</i></dt>
+		<dd><p>The lower bound of the plot range in R.</p></dd>
+	<dt><code>rmax</code> (number) <i>[6]</i></dt>
+		<dd><p>The upper bound of the plot range in R.</p></dd>
+	<dt><code>r_pl</code> (letter) <i>[m]</i></dt>
+		<dd><p>The part of the Fourier transform to plot when making a multiple data
+set plot in R.  The choices are m, p, r, and i for magnitude, phase,
+real, and imaginary.</p></dd>
+	<dt><code>dphase</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When this flag is true, plots of the phase of chi(R) will be plotted
+in the derivative.</p></dd>
+	<dt><code>smag</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When this flag is true, plots of the magnitude of chi(R) will be plotted
+in the second derivative.  (Not implemented yet.)</p></dd>
+</dl>
+<h2 id="q_plots">q plots</h2>
+
+<dl>
+	<dt><code>qmin</code> (number) <i>[0]</i></dt>
+		<dd><p>The lower bound of the plot range in backtransform k.</p></dd>
+	<dt><code>qmax</code> (number) <i>[15]</i></dt>
+		<dd><p>The upper bound of the plot range in backtransform k.</p></dd>
+	<dt><code>q_pl</code> (letter) <i>[r]</i></dt>
+		<dd><p>The part of the Fourier transform to plot when making a multiple data
+set plot in q.  The choices are m, p, r, and i for magnitude, phase,
+real, and imaginary.</p></dd>
+</dl>
+<h2 id="Data_parts">Data parts</h2>
+
+<dl>
+	<dt><code>plot_data</code> (boolean) <i>[1]</i></dt>
+		<dd><p>When making a plot after a fit, the data will be plotted when
+this is true.</p></dd>
+	<dt><code>plot_fit</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, the fit will be plotted when this is
+true.</p></dd>
+	<dt><code>plot_win</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, the Fourier transform window will be
+plotted when this is true.</p></dd>
+	<dt><code>window_multiplier</code> (number) <i>[1.05]</i></dt>
+		<dd><p>This is the scaling factor by which the window is multipled so that it
+plots nicely with the data.  The window will be multiplied by the
+value of the largest point in the plot, then by this number.	        =&gt; (is =&gt; 'rw', isa =&gt;  'Bool',     default =&gt; 0);</p></dd>
+	<dt><code>plot_res</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, the residual will be plotted when this
+is true.</p></dd>
+	<dt><code>plot_run</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, the running R-factor will be plotted
+when this is true.</p></dd>
+	<dt><code>plot_bkg</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, the background will be plotted when
+this is true, if the background was corefined in the fit..</p></dd>
+	<dt><code>plot_paths</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When making a plot after a fit, all paths used in the fit will be
+plotted when this is true.</p></dd>
+</dl>
+<h2 id="Plot_ornaments">Plot ornaments</h2>
+
+<dl>
+	<dt><code>indicatorcolor</code> (color) <i>[violetred]</i></dt>
+		<dd><p>The color of the plot indicators.</p></dd>
+	<dt><code>indicatorline</code> (string) <i>[solid]</i></dt>
+		<dd><p>The line type of the plot indicator.  It must be one of</p></dd>
+<dd><pre>   solid dashed dotted dot-dash points linespoints
+
+</pre></dd>	<dt><code>showmarker</code> (boolean) <i>[1]</i></dt>
+		<dd><p>Plot markers for things like e0 and the normalization range will be
+displayed when this true.</p></dd>
+	<dt><code>markertype</code> (number) <i>[9]</i></dt>
+		<dd><p>The point style of t he plot marker.  In PGPLOT, this can be a number
+between 1 and 29 and 9 is a dotted circle.</p></dd>
+	<dt><code>markersize</code> (number) <i>[2]</i></dt>
+		<dd><p>The size of the plot marker.</p></dd>
+	<dt><code>markercolor</code> (color) <i>[orange]</i></dt>
+		<dd><p>The color of the plot marker.</p></dd>
+</dl>
+<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+
+
+<p>These messages are classified as follows (listed in increasing order
+of desperation):</p>
+
+<pre>    (W) A warning (optional).
+    (F) A fatal error (trappable).
+
+
+
+
+</pre><dl>
+	<dt><code>$key is not a valid Demeter::Data parameter</code></dt>
+		<dd><p>You have tried to set in invalid Plot parameter</p></dd>
+	<dt><code>Demeter::Plot: $k must be a number</code></dt>
+		<dd><p>You have attempted to set an attribute that takes a numerical value to
+something other than a number.</p></dd>
+	<dt><code>key_X must be a positive number</code></dt>
+		<dd><p>(W) You have tried to set one of the legend parameters to something that is
+not a positive number.  It was reset to its default.</p></dd>
+	<dt><code>The font must be an integer from 1 to 4.</code></dt>
+		<dd><p>(W) There are only four types of fonts available and they are numbered 1
+through 4.  The font was reset to sans-serif, which is number 1.</p></dd>
+	<dt><code>The size must be a positive number</code></dt>
+		<dd><p>(W) You have tried to set the font size to something that is not a positive
+number.  It was reset to size 1.2.</p></dd>
+	<dt><code>Demeter::Plot: $k must be one of solid, dashed, dotted, dot-dash, points, or linespoints</code></dt>
+		<dd><p>You have attempted to set an attribute controlling a line to an
+unknown line type.</p></dd>
+	<dt><code>Demeter::Plot: $k must be one of m, e, r, i, or p</code></dt>
+		<dd><p>You have set an attribute controlling which part of complex function
+is plotted to something that is not understood as complex function
+part.  The choices are <code>m</code>agnitude, <code>e</code>nvelope, <code>r</code>eal,
+<code>i</code>maginary, and <code>p</code>hase.</p></dd>
+</dl>
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Serialization of a Plot object is still an open question.</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
+The plot and ornaments configuration groups control the attributes of
+the Plot object.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Need a boolean flag for indicating energy plots from 0 (i.e. with
+bkg_e0 subtracted from the energy array).  With this mu(E) from
+different edges can be easily overplotted.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

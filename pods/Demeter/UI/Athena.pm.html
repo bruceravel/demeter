@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Athena</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Athena
+</div>
+<div>
+<a href="../../src/Demeter/UI/Athena.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#USE">USE</a></li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<p>Every window in Athena is a Wx::Frame.  This inserts a method into
+that namespace which serves as a choke point for writing messages to
+the status bar.  The two purposes served are (1) to apply some color
+to the text in the status bar and (2) to log all such messages.  The
+neat thing about doing it this way is that each window will write to
+its own status bar yet all messages get captured to a common log.</p>
+
+<pre>  $wxframe-&gt;status($text, $type);
+
+</pre><p>where the optional $type is one of &quot;normal&quot;, &quot;error&quot;, or &quot;wait&quot;, each
+of which corresponds to a different text style in both the status bar
+and the log buffer.  $type of &quot;nobuffer&quot; will display the status
+message, but not push it into the buffer.</p>
+
+<p>According to the wxWidgets documentation, &quot;Please note that
+wxCheckListBox uses client data in its implementation, and therefore
+this is not available to the application.&quot;  This appears either not to
+be true on Linux or, perhaps, that the client data is overwritable
+with no ill effect.  On Windows, however, attempting to set client
+data crashes the application.</p>
+
+<p>On the wxperl-users mailing list Mattia Barbon said: &quot;It's a wxWidgets
+limitation: it uses the same Win32 client data slot in wxListBox to
+store client data, in wxCheckListBox to store the boolean state of the
+item.&quot;</p>
+
+<p>Sigh....</p>
+
+<p>These methods are an attempt to replicate the effect of client data by
+maintaining a list of pointers to data that is indexed to the
+CheckListBox.  This list is stored in the underlying hash of the
+CheckListBox object.  The trick is to keep the list in sync with the
+displayed content of the CheckListBox at all times.</p>
+
+<p>Yes, this *is* much to complicated.</p>
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Athena - XAS data processing</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This short program launches Athena:</p>
+
+<pre>  use Wx;
+  use Demeter::UI::Athena;
+  Wx::InitAllImageHandlers();
+  my $window = Demeter::UI::Athena-&gt;new;
+  $window -&gt; MainLoop;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Athena is ...</p>
+
+<h1 id="USE">USE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Using ...</p>
+
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Many aspects of Athena and its UI are configurable using the
+configuration ...</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This is a Wx application.  Demeter's dependencies are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>Many, many, many ...</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

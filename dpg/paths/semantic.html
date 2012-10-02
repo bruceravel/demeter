@@ -1,0 +1,325 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Semantic path descriptions</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../paths/paths.html" class="menu" >Calculating individual paths</a> &nbsp;&nbsp;
+        Next: <a href="../paths/pathparams.html" class="menu" >Setting path parameters</a>
+        &nbsp;&nbsp;
+        Up: <a href="../paths/index.html" class="menu" >Scattering paths</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Semantic path descriptions
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<br />
+<a href="../paths/index.html" class="menuselect" >Scattering paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/paths.html" class="menu" >Calculating individual paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/semantic.html" class="menuselect" >Semantic path descriptions</a><br />
+&nbsp;-&nbsp;<a href="../paths/pathparams.html" class="menu" >Setting path parameters</a><br />
+&nbsp;-&nbsp;<a href="../paths/plot.html" class="menu" >Plotting individual paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/existing.html" class="menu" >Using an existing Feff calculation</a><br /><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+ <span class=program>DEMETER</span> does away with the old-fashioned way of organizing the
+paths calculated in a  <span class=program>FEFF</span> calculation.  The 
+&ldquo;path index&rdquo; is no longer explicitly used
+in a  <span class=program>DEMETER</span> program.  Nonetheless, to build Path objects from a
+list of ScatteringPath objects, you need to know something about which
+path is which.  The 
+<a href="../feff/intrp.tt">path interpretation</a>
+is one good way of obtaining information about the list of paths, but
+it is not especially useful for finding automated solutions to
+building fitting models.
+</p>
+
+<p>
+Consider a situation where a molecule is adsorbed to a surface.  As an
+example, consider a ruthenium complex on an aluminum oxide support.
+One might run a series of DFT or molecular dynamics calculations in an
+attempt to determine the position at the surface where the molecule
+rests.  Presumably the scattering from the atoms in the surface will
+be used to identify the surface position by analysis of the EXAFS
+data.  Given several candidate positions, one would automate the
+construction of a simple fitting model which includes scattering from
+surface atoms.
+</p>
+
+<p>
+The difficulty of this approach is that the single scattering paths
+from atoms in the surface might be in different positions in 
+ <span class=program>FEFF</span>'s path list depending on details of the structural
+geometry.  If you want to include a single scattering path from, to
+use the example with the aluminum oxide support, an aluminum atom in
+the surface.  Doing so is difficult to automate as you may not know
+ <span class=program>FEFF</span>'s path index for that path going into the fit.
+</p>
+
+<p>
+ <span class=program>DEMETER</span> offers a solution to this problem.  You can specify a
+path using a semnatic description of the path.  For example, you can
+find the single scattering path which scatters from aluminum and is
+between 3 and 4  &Aring;     from the scatterer.  The following snippet of
+code imports a  <span class=program>FEFF</span> calculation from its serialization file and
+finds the path meeting that description:
+</p>
+
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">yaml</span><span class="operator">=&gt;</span><span class="single">'myfeff.yaml'</span><span class="operator">,</span> <span class="word">workspace</span><span class="operator">=&gt;</span><span class="single">'mycalc'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$this_sp</span> <span class="operator">=</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">find_path</span><span class="structure">(</span><span class="word">gt</span> <span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span> <span class="word">lt</span><span class="operator">=&gt;</span><span class="number">4</span><span class="operator">,</span> <span class="word">tag</span><span class="operator">=&gt;</span><span class="structure">[</span><span class="single">'Al'</span><span class="structure">]);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$path</span> <span class="operator">=</span> <span class="word">Demeter::Path</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">feff</span> <span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$this_sp</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+
+<p>
+
+The <tt>find_path</tt> method examines all the
+paths in a Feff objects path list and compares them against the
+semantic descriptions given as arguments to the method.  In this case,
+the path that gets returned must have a half path length greater than
+3  &Aring;     and less that 4  &Aring;    .  As the anonymous list given as
+the tag argument has only one element, the path that returns must be a
+single scattering path.  The scatterer must have a site tag that
+equals the string &ldquo;Al&rdquo;.
+</p>
+
+<p>
+If there are more than one path meeting the criteria outlined in the
+argument,  then the <tt>find_path</tt> method
+returns the shortest such path.  The 
+<tt>find_all_paths</tt> takes the same sort of
+argument list as <tt>find_path</tt> and
+will return a list of paths meeting the criteria.
+</p>
+
+<p>
+Here are all the criteria available to the 
+<tt>find_path</tt> and
+<tt>find_all_paths</tt> methods:
+</p>
+
+
+<dl>
+  
+<dt>
+  lt
+</dt>
+<dd>
+This criterion takes a number and requires that the returned path be
+shorter in half path length than that number.
+  <br />
+  <br />
+</dd>
+<dt>
+  gt
+</dt>
+<dd>
+This criterion takes a number and requires that the returned path be
+longer in half path length than that number.
+  <br />
+  <br />
+</dd>
+<dt>
+  nleg
+</dt>
+<dd>
+This criterion takes an integer and requires that the returned path
+have this number of scattering legs. This criterion is redundant when
+the list-valued criteria are also used.
+  <br />
+  <br />
+</dd>
+<dt>
+  sp
+</dt>
+<dd>
+This criterion takes a ScatteringPath object and requires that the
+returned path be longer in half path length than that path.
+  <br />
+  <br />
+</dd>
+<dt>
+  tag
+</dt>
+<dd>
+This criterion takes a string or an anonymous array of strings and
+requires that the returned path contain the atoms which have this
+(these) tags. The tag is the optional fifth column in a feff.inp file
+written by Demeter's Atoms. This criterion requires that the tags are
+lexically equal. See the tagmatch criterion for matching tags in the
+sense of regular expressions.
+  <br />
+  <br />
+</dd>
+<dt>
+  tagmatch
+</dt>
+<dd>
+This criterion takes a string or an anonymous array of strings and
+requires that the returned path contain the atoms which have tags
+matching the arguments of this criterion. The tag is the optional
+fifth column in a feff.inp file written by Demeter's Atoms. This
+criterion requires that the tags match in the sense of regular
+expressions. See the tag criterion for requiring that tags be
+lexically equal.
+  <br />
+  <br />
+</dd>
+<dt>
+  ipot
+</dt>
+<dd>
+This criterion takes an integer from 0 to 7 or an anonymous array of
+such integers and requires that the returned path contain the atoms
+which have ipots equal to the arguments of this criterion.
+  <br />
+  <br />
+</dd>
+<dt>
+  element
+</dt>
+<dd>
+This criterion takes a string identifying an element (its name, its
+one or two letter symbol or its Z number) or an anonymous array of
+such strings and requires that the returned path contain the atoms
+which have the elements specified.
+  <br />
+  <br />
+</dd>
+</dl>
+        
+
+
+<p>
+
+This method returns 0 if a path meeting the criteria cannot be found
+or if there is an error in specifying the criteria.
+</p>
+
+<p>
+The list-valued criterion are compared in order with the scattering
+atoms in a path and the match is only true is each element mataches a
+scatterer in a path.  Thus is not necessary to specify the nleg
+criterion when any of the list valued criteria are used.
+</p>
+
+<p>
+Here is an example of using the <tt>find_all_paths</tt>
+method to find all single scattering paths in a  <span class=program>FEFF</span>
+calculcation which are shorter than 6  &Aring;    .
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@list</span> <span class="operator">=</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">find_all_paths</span><span class="structure">(</span> <span class="word">lt</span><span class="operator">=&gt;</span><span class="number">6</span><span class="operator">,</span> <span class="word">nleg</span><span class="operator">=&gt;</span><span class="number">2</span> <span class="structure">);</span>
+</ol>
+
+<p>
+
+For more details, see the 
+<span class=file>Demeter::Feff::Paths</span> documentation.
+</p>
+
+<p>
+The 
+<a href="../examples/hgdna.tt">example of Hg absorbed to DNA</a>
+demonstrates extensive use of the 
+<tt>find_path</tt> method.  The 
+<a href="../examples/agau.tt">silver/gold alloy example</a> also makes strategic use of this tool.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../paths/paths.html" class="menu" >Calculating individual paths</a> &nbsp;&nbsp;
+        Next: <a href="../paths/pathparams.html" class="menu" >Setting path parameters</a>
+        &nbsp;&nbsp;
+        Up: <a href="../paths/index.html" class="menu" >Scattering paths</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

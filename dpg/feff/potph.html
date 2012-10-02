@@ -1,0 +1,170 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Computng potentials</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/input.html" class="menu" >Feff input</a> &nbsp;&nbsp;
+        Next: <a href="../feff/pathfinder.html" class="menu" >Running the path finder</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Computng potentials
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<br />
+<a href="../feff/index.html" class="menuselect" >Feff</a><br />
+&nbsp;-&nbsp;<a href="../feff/input.html" class="menu" >Feff input</a><br />
+&nbsp;-&nbsp;<a href="../feff/potph.html" class="menuselect" >Calculating potentials</a><br />
+&nbsp;-&nbsp;<a href="../feff/pathfinder.html" class="menu" >Running the path finder</a><br />
+&nbsp;-&nbsp;<a href="../feff/intrp.html" class="menu" >Path interpretation</a><br /><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The part of  <span class=program>FEFF</span> that computes potentials is one of its
+essential parts and is used by  <span class=program>DEMETER</span>.  Continuing with the
+example from the previous section, we can use an instrumented Feff
+object to compute potentials.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;feff/feff.inp&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">workspace</span> <span class="operator">=&gt;</span> <span class="double">&quot;feff/&quot;</span><span class="operator">,</span> <span class="word">screen</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">potph</span>
+</ol>
+</pre>
+
+<p>
+
+When the <tt>potph</tt> method is called, 
+ <span class=program>DEMETER</span> writes a <span class=file>feff.inp</span> file using
+the data from the original input file but with the 
+<tt>CONTROL</tt> keyword set such that only the 
+<em>potph</em> part of  <span class=program>FEFF</span> gets run.  At the
+end of this,  <span class=program>FEFF</span>'s <span class=file>phase.bin</span> file
+will be written into the <tt>workspace</tt>
+directory.
+</p>
+
+<p>
+That's it.  This part of  <span class=program>FEFF</span> is used as-is by  <span class=program>DEMETER</span>.
+In the course of fitting, you might find that you need to move an atom
+by such a large amount that you will want to recompute the potentials.
+For smaller moves,  <span class=program>DEMETER</span> (and  <span class=program>IFEFFIT</span>) assume that the
+primary effect of the move on the EXAFS is from changing the value of
+R in the EXAFS equation.  Thus we assume that the changes in the
+scattering amplitude and phase shift due to the small change in the
+potential surface caused by a readjustment of the interatomic distance
+are small compared to effect of R in the EXAFS equation.
+</p>
+
+<p>
+At this time, there is not an obvious mechanism in  <span class=program>DEMETER</span> to
+close this loop in the situation where the potentials need to be
+recalculated.  That is, there are no tools for rewriting the atoms
+list in <span class=file>feff.inp</span> based on changes in
+inter-atomic distance uncovered in a fit.
+</p>
+
+
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp; 
+Track geometric parameters from  <span class=program>ATOMS</span> to every site in the 
+ <span class=program>FEFF</span> input file.  Then provide tools for parameterizing
+interatomic distances based on the geometry.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/input.html" class="menu" >Feff input</a> &nbsp;&nbsp;
+        Next: <a href="../feff/pathfinder.html" class="menu" >Running the path finder</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

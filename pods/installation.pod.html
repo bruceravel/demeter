@@ -1,0 +1,475 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Installing Demeter from source</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  installation
+</div>
+<div>
+<a href="src/installation.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#OVERVIEW">OVERVIEW</a><br />
+<ul>
+	<li><a href="#Installing_from_packages">Installing from packages</a></li>
+	<li><a href="#Installing_source_code">Installing source code</a></li>
+</ul>
+</li>
+	<li><a href="#BUILD_DEMETER_AND_ITS_DEPENDENCIES">BUILD DEMETER AND ITS DEPENDENCIES</a><br />
+<ul>
+	<li><a href="#Step_1_Install_Ifeffit_and_PGPLOT">Step 1: Install Ifeffit and PGPLOT</a></li>
+	<li><a href="#Step_2_Download_a_copy_of_Demeter">Step 2: Download a copy of Demeter</a></li>
+	<li><a href="#Step_3_Download_and_install_the_depe">Step 3: Download and install the dependencies</a><br />
+<ul>
+	<li><a href="#Step_3a_Configure_cpan_optional">Step 3a: Configure cpan (optional)</a></li>
+	<li><a href="#Step_3b_Install_Demeter_s_dependenci">Step 3b: Install Demeter's dependencies (not optional!)</a></li>
+</ul>
+</li>
+	<li><a href="#Step_4_Build_and_install_Demeter">Step 4: Build and install Demeter</a></li>
+</ul>
+</li>
+	<li><a href="#SPECIAL_CASES">SPECIAL CASES</a><br />
+<ul>
+	<li><a href="#Installing_Demeter_without_root_priv">Installing Demeter without root privileges</a></li>
+	<li><a href="#Working_behind_a_proxy_server">Working behind a proxy server</a></li>
+	<li><a href="#Installing_and_using_source_code_on_">Installing and using source code on Windows</a></li>
+	<li><a href="#WxPerl_GUIs_on_KDE">WxPerl GUIs on KDE</a></li>
+</ul>
+</li>
+	<li><a href="#MISCELLANY">MISCELLANY</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Installing Demeter from source</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<h2 id="Installing_from_packages">Installing from packages</h2>
+
+<p>Most people will want to install pre-built, ready-to-run packages.</p>
+
+<dl>
+	<dt><strong>Windows</strong></dt>
+		<dd><p>Most people installing Demeter on a Windows machine will want to use
+the installer and updater packages.  The latest packages can be found
+at <a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a>.</p></dd>
+		<dd><p>There you will (usually) find two packages.  One is called <i>Demeter
+Installer for Windows</i>, the other is called <i>Demeter Updater for
+Windows</i>. The updater will have a later version number in its
+filename.</p></dd>
+		<dd><p>The corect procedure is to install the <i>Installer</i> first.  The
+<i>Updater</i> will then apply all updates that have come along since the
+Installer was posted.</p></dd>
+		<dd><p>Every updater package is a cumulative updater which incorporates all
+changes since the installer package.  Thus only the most recent
+updater needs to be applied.</p></dd>
+		<dd><p>It is <strong>not</strong> sufficent to simply install the updater.  You must
+install the installer package first.</p></dd>
+		<dd><p>There is <strong>not</strong> an automated updater for the software.  You must
+download the updater and install it yourself.</p></dd>
+		<dd><p>If the version installed on your computer is smaller than the version
+number of the updater but larger or equal to the version number of the
+installer, you will only need to download and apply the updater.</p></dd>
+		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater">http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater</a>.</p></dd>
+	<dt><strong>Debian, Ubuntu, and Debian-based Linux</strong></dt>
+		<dd><p>Not yet available.</p></dd>
+		<dd><p>(Information will be forthcoming)</p></dd>
+	<dt><strong>Macintosh OSX</strong></dt>
+		<dd><p>Not yet available.</p></dd>
+		<dd><p>(Information will be forthcoming)</p></dd>
+		<dd><p>The Windows installer can be used under emulation.  <a href="http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels">Here are some notes</a>
+from Scott Calvin on doing so using
+<a href="http://www.parallels.com/">Parallels</a>.</p></dd>
+		<dd><p>For compiling see Wx on the Mac, see
+<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html</a>
+and similar threads from around that time.  Also, this more recent thread
+<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html">http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html</a>.</p></dd>
+</dl>
+<h2 id="Installing_source_code">Installing source code</h2>
+
+<p>The instructions for installing the Demeter source code on a Linux
+machine are not trivial, but also not difficult. If you follow these
+instructions patiently, everything will work. The main issue is the
+large number of dependencies. The instructions on this page should
+work on any flavor of Linux, any other Unix, and probably OSX as
+well. Everything here except for installing Ifeffit and PGPLOT will
+work on a Windows machine with Strawberry perl.</p>
+
+<p>These instructions are for installing system-wide, which requires root
+privileges.  All instructions are given assuming that you use a system
+which uses <a href="http://en.wikipedia.org/wiki/Sudo">sudo</a>.  If your
+machine does not use <code>sudo</code>, then replace <code>sudo</code> with <code>su -s</code> in
+the instructions that follow.</p>
+
+<p>In a section below (see <a href="#quot_Installing_Demeter_without_root">&quot;Installing Demeter without root privileges&quot;</a>)
+instructions are given for installation without root privileges.  All
+the instructions are the same, once you do an additional preparatory
+step.</p>
+
+<p>Demeter is written in perl. <strong>You must install perl on your
+computer</strong>. On Ubuntu, the package name is simply &quot;perl&quot;. (My computers
+are all Ubuntu, hence all of my hints about packages that need
+installing refer to the Ubuntu package names.  Package names on other
+systems are likely to be similar.)  You must use at least perl 5.10.
+Some &quot;enterprise&quot; versions of Linux (notably Red Hat based ones like
+RHEL, CentOS, and Scientific Linux) may ship with an ancient version
+of perl.  Demeter will not run under perl 5.6 or 5.8.  You <strong>will</strong>
+have to upgrade perl before using Demeter.</p>
+
+<p>Demeter benefits <strong>tremendously</strong> by having
+<a href="http://gnuplot.info">Gnuplot</a> installed. All Linux distributions
+should have a package for Gnuplot. On Ubuntu, the package is called
+&quot;gnuplot&quot;.  Or you can grab the latest source code from <a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/">Gnuplot's SourceForge site</a> and
+install it from scratch.</p>
+
+<h1 id="BUILD_DEMETER_AND_ITS_DEPENDENCIES">BUILD DEMETER AND ITS DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<h2 id="Step_1_Install_Ifeffit_and_PGPLOT">Step 1: Install Ifeffit and PGPLOT</h2>
+
+<p>You will need the <code>gcc</code> and <code>gfortran</code> compilers as well as a few
+development libraries installed on your computer</p>
+
+<ul>
+	<li>Grab the latest Ifeffit source code from <i>its git
+site|https://github.com/newville/ifeffit</i>.</li>
+	<li>cd into the Ifeffit source directory</li>
+	<li>Run the <cite>PGPLOT_install</cite> script. This streamlines the rather unwieldy
+chore of building PGPLOT. This step will require root access to the
+computer.<pre>   sudo ./PGPLOT_install
+
+</pre></li>
+	<li>Do <code>./configure</code></li>
+	<li>Do <code>make</code></li>
+	<li>Do <code>sudo make install</code></li>
+</ul>
+
+<p>On my Ubuntu machine, the following development libraries are needed
+to get Ifeffit and PGPLOT compiled. On other flavors of Linux, these
+packages might be called by different names, but hopefully this list
+will help you resolve which packages are needed.</p>
+
+<ul>
+	<li><code>libx11-dev</code></li>
+	<li><code>libncurses5</code>, <code>libncurses5-dev</code></li>
+	<li><code>libpng3</code>, <code>libpng3-dev</code></li>
+	<li><code>libgif4</code></li>
+	<li><code>libwxgtk2.8-dev</code> (the version number, here 2.8, might be different
+in your distribution)</li>
+</ul>
+
+<h2 id="Step_2_Download_a_copy_of_Demeter">Step 2: Download a copy of Demeter</h2>
+
+<p>The source code for Demeter is currently managed on github:
+<a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a>.</p>
+
+<p>To download a copy of the source code, do one of the following:</p>
+
+<ul>
+	<li>Use git to clone a copy.  You will need to have
+<a href="http://git-scm.com/">git</a>, which is a version control system used to
+manage the Demeter source code, installed on your computer. On Ubuntu
+machines, the package is called &quot;git-core&quot;.  At the command line, do:<pre>   git clone git://github.com/bruceravel/demeter.git
+
+</pre>
+<br /><br />then follow along with developments by doing<pre>   git pull
+
+</pre>
+<br /><br />to download future modifications to the code.</li>
+	<li>Grab the most recent archive file containing the Demeter source code.
+Go to <a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a> and click on
+one of the download buttons near the top of the page to get either the
+<cite>tar.gz</cite> or <cite>.zip</cite> archive file containing the entire source code.</li>
+</ul>
+
+<p>Cloning a copy with git is far more convenient as it allows you to
+easily more easily as Demeter evolves.</p>
+
+<h2 id="Step_3_Download_and_install_the_depe">Step 3: Download and install the dependencies</h2>
+
+<p>After checking out a copy of Demeter from git (or unpacking the
+archive), cd into the new subdirectory and do</p>
+
+<pre>   perl ./Build.PL
+
+</pre><p>If this is the first time you are installing Demeter on this computer,
+you will see a very large number of warnings about missing
+dependencies. If no warnings are issued, proceed to Step 4.</p>
+
+<h3 id="Step_3a_Configure_cpan_optional">Step 3a: Configure cpan (optional)</h3>
+
+<p>You will use the <a href="https://metacpan.org/module/cpan">cpan</a> program to
+download most of the dependencies from <a href="http://metacpan.org">the CPAN repository</a>. You can make this process easier by
+configuring the cpan program. Start cpan:</p>
+
+<pre>   sudo cpan
+
+</pre><p>At the <code>cpan&gt;</code> prompt, issue the following commands:</p>
+
+<pre>   o conf build_requires_install_policy yes
+   o conf prerequisites_policy follow
+   o conf commit
+
+</pre><p>Now, when one of Demeter's dependencies itself has a dependency, this
+configuration will tell the cpan program to automatically follow them.</p>
+
+<p>Skipping this step is ok, but it means that you will need to answer
+&quot;yes&quot; to <strong>a lot</strong> of questions in Step 3b.</p>
+
+<h3 id="Step_3b_Install_Demeter_s_dependenci">Step 3b: Install Demeter's dependencies (not optional!)</h3>
+
+<p>Now that cpan is correctly configured, do the following</p>
+
+<pre>   sudo ./Build installdeps
+
+</pre><p>Go get a cup of coffee. This takes a while.</p>
+
+<p>Although step 3a configures cpan in such a way that most of the
+interaction is handled automatically, a few packages will still ask
+you questions. Answering yes to all of these questions is a good idea
+as these optional dependencies enable some nice features in
+Demeter. (However, if you do not have Gnuplot on you computer, answer
+&quot;no&quot; to the question about Graphics::GnuplotIF.  But, really, use
+Gnuplot.  Your Demeter experience will be much better.)</p>
+
+<p>In my experience, all dependencies install smoothly on recent Linux
+installations.  They also all install smoothly under <a href="http://strawberryperl.com/">Strawberry Perl</a> on Windows.  If there are any
+failures, you will need to track down the problems and fix them in
+order to proceed.</p>
+
+<h2 id="Step_4_Build_and_install_Demeter">Step 4: Build and install Demeter</h2>
+
+<p>Almost done! Just do each of the following:</p>
+
+<pre>   perl Build.PL
+   ./Build
+   ./Build test
+   sudo ./Build install
+
+</pre><p>You need to redo the <code>perl Build.PL</code> step to verify that all the
+dependencies are installed and available. If any failed to install
+correctly, you will be told at that stage.</p>
+
+<p>This will put all of Demeter, all the executable programs, and all the
+documentation in in the proper place on your computer. You are now
+good to go.</p>
+
+<p>The Demeter package now includes components (e.g. <a href="Xray/Absorption.pm.html">Xray::Absorption</a>
+and <a href="STAR/Parser.pm.html">STAR::Parser</a>) that used to be handled separately. Demeter is
+now one stop shopping!</p>
+
+<p>If any errors are reported during the <code>./Build test</code> step, you should
+report them to Bruce. The best report includes a complete capture of
+everything written to the screen. The easiest way to capture screen
+text is to use
+<a href="http://www.gnu.org/software/coreutils/manual/coreutils.html#tee-invocation">tee</a>.
+Here is an example:</p>
+
+<pre>   ./Build test | tee screen_messages.txt
+
+</pre><h1 id="SPECIAL_CASES">SPECIAL CASES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<h2 id="Installing_Demeter_without_root_priv">Installing Demeter without root privileges</h2>
+
+<p>In step 1, replace the command</p>
+
+<pre>   ./configure
+
+</pre><p>with</p>
+
+<pre>   ./configure --prefix=/path/to/installation/location
+
+</pre><p>Here you need to specify a location in your own disk space in which to
+install Ifeffit and all the rest.  I'd recommend something like
+<code>$HOME/local</code>.  You will also need to put <code>$HOME/local/bin/</code> in your
+execution path, which can be done by adding this to your <cite>.bashrc</cite> file:</p>
+
+<pre>   export PATH=$PATH:$HOME/local/bin/
+
+</pre><p>Even if you are installing Demeter without root, it is probably easier
+to get Ifeffit and PGPLOT installed system-wide. On a Debian-based
+system, even better would be to install Carlo Segre's pre-built
+versions of Ifeffit and PGPLOT by following the instructions at
+<a href="http://debian-xray.iit.edu/">http://debian-xray.iit.edu/</a>.</p>
+
+<p>Prior to Step 3a, go to <a href="https://metacpan.org/module/local::lib">https://metacpan.org/module/local::lib</a> and
+download the latest version of the <a href="http://search.cpan.org/perldoc?local%3A%3Alib">local::lib</a> module.  Unpack it and
+cd into the newly created directory.</p>
+
+<p>Do</p>
+
+<pre>   perl Makefile.PL --bootstrap
+
+</pre><p>Then do</p>
+
+<pre>   make test &amp;&amp; make install
+
+</pre><p>If you use the bash shell, do</p>
+
+<pre>   echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' &gt;&gt;~/.bashrc
+
+</pre><p>If you use a shell that uses C shell syntax, follow the instructions
+at <a href="https://metacpan.org/module/local::lib#The-bootstrapping-technique">https://metacpan.org/module/local::lib#The-bootstrapping-technique</a>.</p>
+
+<p>This last step adds a line to your login file. The easiest way for
+this to take effect is to log out and log in again or to open a new
+terminal window.</p>
+
+<p>Once <a href="http://search.cpan.org/perldoc?local%3A%3Alib">local::lib</a> is installed, follow all the instructions in Steps
+3a, 3b, and 4, except that you now do not need to install using
+<code>sudo</code> (that is, type the command as given, but without &quot;sudo&quot;).  The
+whole point of installing <a href="http://search.cpan.org/perldoc?local%3A%3Alib">local::lib</a> is to be able to install all
+of this software in your own disk space without needing root
+privileges.</p>
+
+<h2 id="Working_behind_a_proxy_server">Working behind a proxy server</h2>
+
+<p>Each of the steps that involves going out onto the big, bad Internet
+will require special configuration if you are working from behind a
+proxy server.</p>
+
+<p>For example, here at Brookhaven National Laboratory, the proxy URL and
+port number is <code>http://192.168.1.130:3128</code>.  In the examples that follow,
+you will need to replace that with the correct proxy configuration for
+your institution.</p>
+
+<dl>
+	<dt><strong>git</strong></dt>
+		<dd><p>To have <code>git</code> talk through the proxy, I had to do this:</p></dd>
+<dd><pre>   git config --global https.proxy http://192.168.1.130:3128
+
+</pre></dd>	<dt><strong>cpan</strong></dt>
+		<dd><p>First, fire up <code>cpan</code> as root</p></dd>
+<dd><pre>   sudo cpan
+
+</pre></dd>		<dd><p>At the <code>cpan&gt;</code> prompt, issue the following commands:</p></dd>
+<dd><pre>   o conf http_proxy http://192.168.1.130:3128
+   o conf ftp_proxy http://192.168.1.130:3128
+   o conf commit
+
+</pre></dd></dl>
+<p><code>cpan</code> should now work properly through the proxy.</p>
+
+<h2 id="Installing_and_using_source_code_on_">Installing and using source code on Windows</h2>
+
+<p>You can easily follow Demeter's developments or hack on Demeter's
+source code on a Windows machine. </p>
+
+<ul>
+	<li>Install the most recent Windows installer package from
+<a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a>.</li>
+	<li>Next install <a href="http://git-scm.com/">git</a> on your computer.</li>
+	<li>Proceed with Steps 2 and 4 from the instructions above.  This will
+keep you up to date with the latest developments.</li>
+</ul>
+
+<h2 id="WxPerl_GUIs_on_KDE">WxPerl GUIs on KDE</h2>
+
+<p>WxPerl on linux uses GTK.  This means that the GUIs may not match your
+desktop if you are a KDE user.  The solution to this &quot;problem&quot; is to
+install the tool for configuring GTK applications under KDE.  On
+Ubuntu, this package is called <code>kde-config-gtk</code>.  You will then want
+to install the <code>gtk2-engines</code> package.  There are several GTK2 themes
+with names like <code>gtk2-engines-clearlooks</code> that you can also install.
+The key to making Athena and Artemis look like the rest of your
+desktop is to synchronize your choice of KDE and GTK2 themes.  I use
+KDE's &quot;cleanlooks&quot; theme with GTK2's &quot;clearlooks&quot; theme.  &quot;Oxygen&quot; is
+another possibility.</p>
+
+<p>Upon upgrading to Ubuntu 12.04 on one of my computers, I observed
+frequent crashes in Artemis related to drag and drop (e.g. when
+importing paths from a Feff calculation).  This turned out to be
+related to a problem with the &quot;oxygen-gtk&quot; GTK2 theme.  Changing the
+GTK2 theme to any other choice made the problem go away.</p>
+
+<h1 id="MISCELLANY">MISCELLANY <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<dl>
+	<dt>Building the Ifeffit SWIG wrapper</dt>
+		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/SwigModuleBuild">http://cars9.uchicago.edu/ifeffit/Demeter/SwigModuleBuild</a></p></dd>
+	<dt>(The mess that is) Scientific Linux 5</dt>
+		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/ScientificLinux">http://cars9.uchicago.edu/ifeffit/Demeter/ScientificLinux</a></p></dd>
+		<dd><p>Have the problems with perl and gnuplot described on that page been
+fixed in SL 6?</p></dd>
+	<dt>Building Ifeffit on Windows with MinGW and Strawberry</dt>
+		<dd><p>I recorded my notes at <a href="http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw">http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw</a></p></dd>
+</dl>
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+
+
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Constants</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Constants
+</div>
+<div>
+<a href="../src/Demeter/Constants.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a><br />
+<ul>
+	<li><a href="#Numbers">Numbers</a></li>
+	<li><a href="#Strings">Strings</a></li>
+	<li><a href="#Regular_expressions">Regular expressions</a></li>
+</ul>
+</li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::Constants - A library of constants</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This provides a library of constants so as to avoid redefining then
+over and over.</p>
+
+<pre>  use Demeter::Constants qw(:all);
+
+</pre><p>or</p>
+
+<pre>  use Demeter::Constants qw($NUMBER);
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This collects all the commonly defined constants into one place.
+Please note that this exports <strong>variables</strong> into your module's
+namespace.  This is a against good practice, but is a huge
+convenience, they are all upper case, and I am telling you about it!</p>
+
+<p>The <code>:all</code> tag can be used to import the entire library.</p>
+
+<h2 id="Numbers">Numbers</h2>
+
+<p>The following constants are numbers.  They can be imported as a set
+using the <code>:numbers</code> export tag.</p>
+
+<dl>
+	<dt><code>$PI</code></dt>
+		<dd><p>This is <code>4*atan2(1,1)</code>.</p></dd>
+	<dt><code>$ETOK</code></dt>
+		<dd><p>The conversion constant between energy and wavenumber.</p></dd>
+<dd><pre>  k = sqrt( ETOK * (E-E0) )
+
+</pre></dd>		<dd><p><code>$ETOK</code> is about equal to 1 / 3.81.  10 inverse Angstroms is about
+381 volts above the edge.</p></dd>
+	<dt><code>$HBARC</code></dt>
+		<dd><p>This is hbar*c in eV*Angstrom units.</p></dd>
+	<dt><code>$HC</code></dt>
+		<dd><p>This is h*c in eV*Angstrom units.</p></dd>
+<dd><pre>  $HC = $HBARC * 2 * $PI;
+
+</pre></dd>	<dt><code>$R2D</code></dt>
+		<dd><p>The conversion constant between degrees and radians, 180/PI.</p></dd>
+	<dt><code>$EPSILONn</code></dt>
+		<dd><p>1e-n, for instance <code>$EPSILON2</code> = 1e-2 and <code>$EPSILON2</code> = 1e-7.  These
+are defined for 2 through 7.</p></dd>
+</dl>
+<h2 id="Strings">Strings</h2>
+
+<p>The following constants are strings.  They can be imported as a set
+using the <code>:strings</code> export tag.</p>
+
+<dl>
+	<dt><code>$NULLFILE</code></dt>
+		<dd><p>This is <code>@&amp;^^null^^&amp;@</code>, a nonesense string to indicate an undefined
+filename.</p></dd>
+	<dt><code>$ENDOFLINE</code></dt>
+		<dd><p>The platform specific end of line character.</p></dd>
+	<dt><code>$CTOKEN</code></dt>
+		<dd><p>The token, <code>+</code>, denoting the central atom in a short representation
+of the path geometry.</p></dd>
+</dl>
+<h2 id="Regular_expressions">Regular expressions</h2>
+
+<p>The following constants are regular expressions.  They can be imported
+as a set using the <code>:regexps</code> export tag.</p>
+
+<dl>
+	<dt><code>$NUMBER</code></dt>
+		<dd><p>This is <code>$RE{num}{real}</code> from <a href="http://search.cpan.org/perldoc?Regexp%3A%3ACommon">Regexp::Common</a>, i.e. a match for
+floats.</p></dd>
+	<dt><code>$INTEGER</code></dt>
+		<dd><p>This is <code>$RE{num}{int}</code> from <a href="http://search.cpan.org/perldoc?Regexp%3A%3ACommon">Regexp::Common</a>, i.e. a match for
+integers.</p></dd>
+	<dt><code>$SEPARATOR</code></dt>
+		<dd><p>This is <code>[ \t]*[ \t=,][ \t]*</code>, the regular expression defining the
+separation between keyword and value in an input file for Feff, Atoms,
+etc.</p></dd>
+</dl>
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

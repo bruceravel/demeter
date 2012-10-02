@@ -1,0 +1,295 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Output</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../atoms/methods.html" class="menu" >Atoms methods</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../atoms/index.html" class="menu" >Atoms</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Output
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<br />
+<a href="../atoms/index.html" class="menuselect" >Atoms</a><br />
+&nbsp;-&nbsp;<a href="../atoms/input.html" class="menu" >Input crystal data</a><br />
+&nbsp;-&nbsp;<a href="../atoms/methods.html" class="menu" >Atoms methods</a><br />
+&nbsp;-&nbsp;<a href="../atoms/output.html" class="menuselect" >Output Feff data</a><br /><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+Output from the Atoms object is handled by the 
+<tt>Write</tt> method.  Note that this is
+capitalized to avoid any possible confusion (by perl or by a syntax
+highlighting text editor) with perl's 
+<a href="http://perldoc.perl.org/functions/write.html">write function</a>, as shown in
+this example:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$atoms</span> <span class="operator">=</span> <span class="word">Demeter::Atoms</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;ybco.inp&quot;</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="symbol">$atoms</span><span class="operator">-&gt;</span><span class="word">Write</span><span class="structure">(</span><span class="double">&quot;feff6&quot;</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+There are several output targets, which are formatted using
+<a href="../highlevel/dispose.html">templates</a>
+from the Atoms template set.  The output targets, i.e. the arguments
+of the  <tt>Write</tt> method, that come with 
+ <span class=program>DEMETER</span> are:
+</p>
+
+
+<dl>
+  
+<dt>
+  feff6
+</dt>
+<dd>
+Input file for  <span class=program>FEFF6</span>.
+  <br />
+  <br />
+</dd>
+<dt>
+  feff7
+</dt>
+<dd>
+Input file for  <span class=program>FEFF7</span> (which is not really very different from
+the  <span class=program>FEFF6</span> input file).
+  <br />
+  <br />
+</dd>
+<dt>
+  feff8
+</dt>
+<dd>
+Input file for  <span class=program>FEFF8</span>.
+  <br />
+  <br />
+</dd>
+<dt>
+  atoms
+</dt>
+<dd>
+Input file for  <span class=program>ATOMS</span>.  This used as the save-file target for a
+GUI.
+  <br />
+  <br />
+</dd>
+<dt>
+  p1
+</dt>
+<dd>
+Input file for  <span class=program>ATOMS</span> using the <tt>P 1</tt>
+spacegroup and the fully populated unit cell.  Here's an example:
+<pre>
+title = YBCO: Y Ba2 Cu3 O7
+space = P M M M
+a     =   3.82300    b    =   3.88600    c     =  11.68100
+alpha =  90.00000    beta =  90.00000    gamma =  90.00000
+rmax  =   5.20000    core  = cu2
+shift =
+atoms
+# el.     x           y           z        tag
+  Y      0.50000     0.50000     0.50000   Y
+  Ba     0.50000     0.50000     0.18400   Ba
+  Ba     0.50000     0.50000     0.81600   Ba
+  Cu     0.00000     0.00000     0.00000   cu1
+  Cu     0.00000     0.00000     0.35600   cu2
+  Cu     0.00000     0.00000     0.64400   cu2
+  O      0.00000     0.50000     0.00000   o1
+  O      0.00000     0.00000     0.15800   o2
+  O      0.00000     0.00000     0.84200   o2
+  O      0.00000     0.50000     0.37900   o3
+  O      0.00000     0.50000     0.62100   o3
+  O      0.50000     0.00000     0.37700   o4
+  O      0.50000     0.00000     0.62300   o4
+</pre>
+  <br />
+  <br />
+</dd>
+<dt>
+  absorption
+</dt>
+<dd>
+A file containing several interesting calculations using tables of
+absorption coefficients.  Here's an example:
+<pre>
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  total mu*x=1:  8.160 microns,  unit edge step:  23.243 microns
+##  specific gravity:  6.375
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  normalization correction:     0.00046 ang^2
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+</pre>
+  <br />
+  <br />
+</dd>
+<dt>
+  spacegroup
+</dt>
+<dd>
+A file containing a description of the space group.  Here's an example:
+<pre>
+# title = YBCO: Y Ba2 Cu3 O7
+# space = P M M M
+# a     =   3.82300    b    =   3.88600    c     =  11.68100
+# alpha =  90.00000    beta =  90.00000    gamma =  90.00000
+# rmax  =   5.20000    core  = cu2
+# shift =
+# atoms
+# # el.     x           y           z        tag
+#   Y      0.50000     0.50000     0.50000   Y
+#   Ba     0.50000     0.50000     0.18400   Ba
+#   Cu     0.00000     0.00000     0.00000   cu1
+#   Cu     0.00000     0.00000     0.35600   cu2
+#   O      0.00000     0.50000     0.00000   o1
+#   O      0.00000     0.00000     0.15800   o2
+#   O      0.00000     0.50000     0.37900   o3
+#   O      0.50000     0.00000     0.37700   o4
+
+Spacegroup P M M M (#47)
+
+  Schoenflies: D_2h^1
+  Full symbol: p 2/m 2/m 2/m
+  New symbol : <none>
+  Thirtyfive : <none>
+  Nicknames  : <none>
+
+  Common shift vector:
+      <none>
+
+  Bravais translations:
+
+  8 positions:
+       x         y         z
+      -x        -y         z
+      -x         y        -z
+       x        -y        -z
+      -x        -y        -z
+       x         y        -z
+       x        -y         z
+      -x         y         z
+</pre>
+  <br />
+  <br />
+</dd>
+</dl>
+
+
+<p>
+
+It is certainly possible to make output templates for other cluster
+formats, such as alchemy or xyz.  Indeed, this was a stadard part of
+ <span class=program>ATOMS</span> before  <span class=program>DEMETER</span>.  I eventually intend to integrate
+<a href="http://openbabel.org/">OpenBabel</a>
+with  <span class=program>DEMETER</span>'s  <span class=program>FEFF</span> capabilities, which will obviate the
+need to write  <span class=program>ATOMS</span> templates for other cluster formats.
+</p>
+
+
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp; 
+A method of the Feff
+object to directly import an Atoms object without needing to write
+and read a <span class=file>feff.inp</span> file.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../atoms/methods.html" class="menu" >Atoms methods</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../atoms/index.html" class="menu" >Atoms</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

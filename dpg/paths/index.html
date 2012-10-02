@@ -1,0 +1,213 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Scattering paths</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/index.html" class="menu" >Feff</a> &nbsp;&nbsp;
+        Next: <a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a> &nbsp;&nbsp;
+        Down: <a href="../paths/paths.html" class="menu" >Calculating individual paths</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Scattering paths
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<br />
+<a href="../paths/index.html" class="menuselect" >Scattering paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/paths.html" class="menu" >Calculating individual paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/semantic.html" class="menu" >Semantic path descriptions</a><br />
+&nbsp;-&nbsp;<a href="../paths/pathparams.html" class="menu" >Setting path parameters</a><br />
+&nbsp;-&nbsp;<a href="../paths/plot.html" class="menu" >Plotting individual paths</a><br />
+&nbsp;-&nbsp;<a href="../paths/existing.html" class="menu" >Using an existing Feff calculation</a><br /><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+This chapter explains how to use the results of a  <span class=program>FEFF</span>
+calculation.  The Path object is the component of a fitting model that
+encapsolates the contribution from an individual scattering geometry.
+Here is an example of a typical Path object:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">$paths</span> <span class="operator">=</span> <span class="word">Demeter::Path</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">parent</span> <span class="operator">=&gt;</span> <span class="symbol">$feff_object</span><span class="operator">,</span>&nbsp;&nbsp;<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data_object</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$sp_object</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">s02</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;amp&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;enot&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;deltaa&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span> <span class="operator">=&gt;</span> <span class="double">&quot;ssn&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+In lines 4 through 7, the path parameters are set using the names of
+<a href="../gds/index.html">GDS parameters</a>.
+More information about setting and querying path parameter values 
+<a href="pathparams.html">later in this chapter</a>.
+</p>
+
+<p>
+Lines 1 through 3 show the hierarchy of the Path object.  The Path
+object relies upon connections to  <span class=program>DEMETER</span> objects to do its
+work.  
+</p>
+
+
+<dl>
+  
+<dt>
+  parent
+</dt>
+<dd>
+At line 1, the &ldquo;parent&rdquo; 
+<a href="../feff/index.html">Feff object</a>.
+is identified.  The parent is the Feff object that was used to run the
+ <span class=program>FEFF</span> calulcation that generated this scattering path.  The Path
+object needs to know 
+  <br />
+  <br />
+</dd>
+<dt>
+  data
+</dt>
+<dd>
+<p>
+At line 2, the <a href="../feff/index.html">Data object</a>
+containing the data for which this scattering path is being used to
+model.  This connection is required for two reasons.  The 
+<a href="../feff/index.html">Fit object</a>
+uses this linkage to properly create the  <span class=program>IFEFFIT</span> commands
+involved in running the fit.  The other use of the Data object
+connection is to plot the Path object properly.  The Fourier transform
+parameters of the Data object are used to process the scattering path
+for plotting.
+</p>
+
+<p>
+The <tt>data</tt> attribute is not stricly
+required.  When  <span class=program>DEMETER</span> is imported at the beginning of your
+program, a <a href="../highlevel/methods.html">default Data object</a>
+is created using a sensible set of processing parameters.  If the 
+<tt>data</tt> attribute is not explicitly set, the
+default Data object is used.  This allows you to sensibly plot
+scattering paths without actually importing data into a Data object.
+When using a Path object as part of a simulation or a fit, it is
+important to properly identify the <tt>data</tt> 
+attribute so that the path is Fourier transformed in the same manner
+as its associated data.
+</p>
+
+  <br />
+  <br />
+</dd>
+<dt>
+  sp
+</dt>
+<dd>
+The final part of the Path object's hierarchy is shown in line 3.  The
+ScatteringPath object is the thing that links the  <span class=program>FEFF</span>
+calculation with the Path object.  This is explained in detail in 
+<a href="paths.html">the next section</a>.
+As it might seem confusing that two different objects are involved
+in defining a scattering path, here is the way to think about it.  The
+Path object is outward expression of the scattering path and is
+intended to resemble a path paragraph in a
+<span class=file>feffit.inp</span> file or a 
+<tt></tt> command in an  <span class=program>IFEFFIT</span>
+script.  The ScatteringPath object is aware of all the details of the
+path finder and encapsolates the results of the  <span class=program>FEFF</span>
+calculation, much like the <span class=file>feffNNNN.dat</span>
+but with lots of object-oriented functionality surrounding it.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/index.html" class="menu" >Feff</a> &nbsp;&nbsp;
+        Next: <a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a> &nbsp;&nbsp;
+        Down: <a href="../paths/paths.html" class="menu" >Calculating individual paths</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

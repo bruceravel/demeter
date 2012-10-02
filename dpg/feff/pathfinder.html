@@ -1,0 +1,333 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The path finder</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/potph.html" class="menu" >Calculating potentials</a> &nbsp;&nbsp;
+        Next: <a href="../feff/intrp.html" class="menu" >Path interpretation</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  The path finder
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<br />
+<a href="../feff/index.html" class="menuselect" >Feff</a><br />
+&nbsp;-&nbsp;<a href="../feff/input.html" class="menu" >Feff input</a><br />
+&nbsp;-&nbsp;<a href="../feff/potph.html" class="menu" >Calculating potentials</a><br />
+&nbsp;-&nbsp;<a href="../feff/pathfinder.html" class="menuselect" >Running the path finder</a><br />
+&nbsp;-&nbsp;<a href="../feff/intrp.html" class="menu" >Path interpretation</a><br /><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The path finder is the tool that digs through the atoms list in the 
+<span class=file>feff.inp</span> file and determines all possible
+scattering geometries.  This has been reimplemented in  <span class=program>DEMETER</span>
+to add some important features that are missing in  <span class=program>FEFF</span>'s path
+finder.  Continuing with the example from the previous section, we can
+use an instrumented Feff object to compute potentials.  It is not
+essential to run the potentials calculation (line 6) before the path
+finder (line 7), however both must be run before anything else
+(plotting, fitting) is done with the  <span class=program>FEFF</span> calculation.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;feff/feff.inp&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">workspace</span> <span class="operator">=&gt;</span> <span class="double">&quot;feff/&quot;</span><span class="operator">,</span> <span class="word">screen</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">potph</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">pathfinder</span><span class="structure">;</span>
+<li>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">freeze</span><span class="structure">(</span><span class="double">&quot;feff/feff.yaml&quot;</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+At line 9, the attributes of the Feff object, including results of the
+path finder, are written to a save file.  This save file is in the
+<a href="http://search.cpan.org/~adamk/YAML/">YAML format</a>,
+which is a simple, textual serialization format for data structures.
+As you will see in subsequent sections, these YAML files (along with
+the <span class=file>phase.bin</span>) can be used to restore a 
+ <span class=program>FEFF</span> calculation for future use.
+</p>
+
+<p>
+The rest of this chapter will cover ways of finding out information
+about the  <span class=program>FEFF</span> calculation.  The next chapter will cover in
+detail how information from the  <span class=program>FEFF</span> calculation is used to
+create Path object and how those Path objects can be plotted and used
+in a fitting model.
+</p>
+
+
+<a name="comparingpathfinders">
+
+<h3>  Comparing Pathfinders</h3>
+</a>
+
+<p>
+
+ <span class=program>DEMETER</span>'s path finder has two huge advantages over  <span class=program>FEFF</span>'s:
+</p>
+
+
+<ol>
+  
+<li>
+User configurable fuzzy degeneracy (explained in detail below).  
+ <span class=program>FEFF</span> considers paths that differ in length by 0.00001 
+ &Aring;     to be non-degenerate. 
+</li>
+<li>
+The scattering geometries of the degenerate paths are stored and are
+available for use and examination.   <span class=program>FEFF</span> discard the details of
+the degenerate paths.
+</li>
+</ol>
+
+<p>
+
+ <span class=program>FEFF</span>'s path finder, however, has its advantages over  <span class=program>DEMETER</span>'s.
+</p>
+
+
+<ol>
+  
+<li>
+As it is written in a compiled language, it is considerably faster.
+Fortunately, the path finder does not need to be called very often.
+</li>
+<li>
+ <span class=program>FEFF</span> uses its fast plane wave calculation to approximate the
+importance of path.  Low importance paths can be removed from
+consideration, as can all higher order paths built from that path.  
+ <span class=program>DEMETER</span> does not have access to the plane wave calculation, so
+it must consider many more paths that  <span class=program>FEFF</span>'s and relies instead
+on some simple heuristics to trim the tree of paths.
+</li>
+<li>
+ <span class=program>FEFF</span> path finder considers up to seven-legged paths.  
+ <span class=program>DEMETER</span> currently stops at four-legged paths.  This could be
+fixed in  <span class=program>DEMETER</span>, but without the plane wave approximation, the
+cost of computing some many paths would be quite enormous.
+</li>
+</ol>
+
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp; 
+Give the  <span class=program>DEMETER</span> user the option of choosing which path finder
+to use, with as many of  <span class=program>DEMETER</span>'s bells and whistle implemented
+for  <span class=program>FEFF</span>'s path finder as possible.
+</p>
+
+
+<a name="fuzzydegeneracy">
+
+<h3>  Fuzzy degeneracy</h3>
+</a>
+
+<p>
+
+As the path finder organizes all the scattering geometries it finds
+among the atoms in the input atoms list, it will make a fuzzy
+comparison to sort the paths into nearly-degenerate bins.  That is,
+all paths whose lengths are within a small margin will be considered
+degenerate.  The width of this bin is set by the
+<span class=pref>&nbsp;&nbsp;&diams;Pathfinder &rarr;
+fuzz</span>&nbsp;
+preference.  Consider this <span class=file>feff.inp</span>.
+</p>
+
+
+<pre>
+ TITLE magnetoplumbite  PbFe_12O_19
+ HOLE 4   1.0   *  Pb L3 edge  (13035.0 eV), second number is S0^2
+
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX        5.0
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   82   Pb        
+        1   82   Pb        
+        2   26   Fe        
+        3    8   O         
+
+ ATOMS                          * this list contains 39 atoms
+ *   x          y          z      ipot  tag              distance
+    0.00000    0.00000    0.00000  0 Pb1             0.00000
+    1.65468    0.00003    2.30070  3 O_1             2.83393
+   -0.82737   -1.43298    2.30070  3 O_1             2.83394
+    1.65468    0.00003   -2.30070  3 O_1             2.83393
+   -0.82737   -1.43298   -2.30070  3 O_1             2.83394
+   -0.82737    1.43304    2.30070  3 O_2             2.83397
+   -0.82737    1.43304   -2.30070  3 O_2             2.83397
+    2.63123   -1.31552    0.00000  3 O_3             2.94176
+   -0.17634   -2.93647    0.00000  3 O_3             2.94176
+    2.63123    1.31558    0.00000  3 O_4             2.94179
+   -2.45494   -1.62092    0.00000  3 O_4             2.94179
+   -2.45494    1.62098    0.00000  3 O_5             2.94182
+   -0.17634    2.93653    0.00000  3 O_5             2.94182
+    1.69537   -2.93647    0.00000  2 Fe2_1           3.39074
+   -3.39080    0.00003    0.00000  2 Fe2_2           3.39080
+    1.69537    2.93653    0.00000  2 Fe2_2           3.39079
+    0.83581   -1.44767    3.24399  2 Fe5_1           3.64936
+    0.83581   -1.44767   -3.24399  2 Fe5_1           3.64936
+   -1.67167    0.00003    3.24399  2 Fe5_2           3.64938
+    0.83581    1.44772    3.24399  2 Fe5_2           3.64938
+   -1.67167    0.00003   -3.24399  2 Fe5_2           3.64938
+    0.83581    1.44772   -3.24399  2 Fe5_2           3.64938
+    3.39074    0.00006    1.38042  2 Fe4_1           3.66097
+   -1.69542   -2.93644    1.38042  2 Fe4_1           3.66097
+    3.39074    0.00006   -1.38042  2 Fe4_1           3.66097
+   -1.69542   -2.93644   -1.38042  2 Fe4_1           3.66097
+   -1.69542    2.93656    1.38042  2 Fe4_2           3.66106
+   -1.69542    2.93656   -1.38042  2 Fe4_2           3.66106
+ END
+</pre>
+
+<p>
+
+Using the default <span class=pref>&nbsp;&nbsp;&diams;Pathfinder &rarr;
+fuzz</span>&nbsp;
+parameter of 0.03  &Aring;    , will give these
+paths.  Note that the <tt>Fe4</tt> and
+<tt>Fe5</tt> scatterers, which differ by about 0.11
+ &Aring;    , get merged into a single scattering path with an  R<sub>eff</sub> 
+value that is the average of the constituent paths.
+</p>
+
+
+
+<pre>
+#     degen   Reff       scattering path                       I legs   type              
+ 0001   6    2.834  ----  <+> O_1    <+>                       2  2 single scattering     
+ 0002   6    2.942  ----  <+> O_3    <+>                       2  2 single scattering
+ 0003   3    3.391  ----  <+> Fe2_1  <+>                       2  2 single scattering
+ 0004  12    3.655  ----  <+> Fe5_1  <+>                       2  2 single scattering
+</pre>
+
+
+<p>
+
+Resetting the <span class=pref>&nbsp;&nbsp;&diams;Pathfinder &rarr;
+fuzz</span>&nbsp; 
+to 0.01 separates those two nearly degenerate paths into separate
+scattering paths.
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">co</span> <span class="operator">-&gt;</span> <span class="word">set_default</span><span class="structure">(</span><span class="single">'pathfinder'</span><span class="operator">,</span> <span class="single">'fuzz'</span><span class="operator">,</span> <span class="float">0.01</span><span class="structure">);</span>
+</ol>
+
+
+<pre>
+#     degen   Reff       scattering path                       I legs   type              
+ 0001   6    2.834  ----  <+> O_1    <+>                       2  2 single scattering     
+ 0002   6    2.942  ----  <+> O_3    <+>                       2  2 single scattering     
+ 0003   3    3.391  ----  <+> Fe2_1  <+>                       2  2 single scattering     
+ 0004   6    3.649  ----  <+> Fe5_1  <+>                       2  2 single scattering
+ 0005   6    3.661  ----  <+> Fe4_1  <+>                       2  2 single scattering
+</pre>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../feff/potph.html" class="menu" >Calculating potentials</a> &nbsp;&nbsp;
+        Next: <a href="../feff/intrp.html" class="menu" >Path interpretation</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

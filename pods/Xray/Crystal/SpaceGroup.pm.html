@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Xray::Crystal::SpaceGroup</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Xray-Crystal-SpaceGroup
+</div>
+<div>
+<a href="../../src/Xray/Crystal/SpaceGroup.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#set_rhombohedral">set_rhombohedral</a></li>
+	<li><a href="#report">report</a></li>
+</ul>
+</li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crystallography</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>  use Xray::Crystal;
+  my $sg   = Xray::Crystal::SpaceGroup-&gt;new;
+  $sg -&gt; group(&quot;pm3m&quot;);
+  print $sg -&gt; report;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This provides an interface to the tables of space group symmetries
+from the International Tables of Crystallography.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This class uses Moose.  Like all Moose-y objects, each attribute
+shares a name with its accessor method.</p>
+
+<dl>
+	<dt><code>group</code></dt>
+		<dd><p>The space group symbol.  This is you point of entry into this class
+and this should be the only attribute you ever need to explicitly set.
+When you do so, the space group symbol will be canonicalized and all
+other attributes will be set with data from the sapce groups database.
+Once that is done, this attribute will contain the canonicalized
+Hermann-Maguin symbol for the requested space group.</p></dd>
+	<dt><code>given</code></dt>
+		<dd><p>This is the symbol that was given to the <code>group</code> accessor.</p></dd>
+	<dt><code>number</code></dt>
+		<dd><p>This is the number of the space group as listed in the International
+Tables.</p></dd>
+	<dt><code>full</code></dt>
+		<dd><p>This is the full Hermann-Maguin symbol for this space group, which,
+for some groups, is the same as canonical symbol.</p></dd>
+	<dt><code>schoenflies</code></dt>
+		<dd><p>This is the Schoenflies symbol for this space group.</p></dd>
+	<dt><code>thirtyfive</code></dt>
+		<dd><p>For groups that had a different symbol in the 1935 edition of the
+International Tables, that symbol is contained in this attribute.  For
+other groups, this is an empty string.</p></dd>
+	<dt><code>newsymbol</code></dt>
+		<dd><p>For groups that have a new symbol (for instance to indicate a glide
+plane), that symbol is contained in this attribute.  For other groups,
+this is an empty string.</p></dd>
+	<dt><code>class</code></dt>
+		<dd><p>The crystal class -- one of triclinic, monoclinic, orthorhombic,
+trigonal, tetragonal, hexagonal, or cubic.</p></dd>
+	<dt><code>setting</code></dt>
+		<dd><p>A string indicating the crystal setting as determined from the space
+group symbol.  For groups without alternate setting choices, this is
+&quot;positions&quot;.  For others, the string indicates the setting choice,
+which is used to fill the <code>positions</code> attribute.</p></dd>
+	<dt><code>warning</code></dt>
+		<dd><p>If the symbol supplied can be interpreted, this is filled with a text
+string indicating the reason.  Under normal conditions this is an
+empty string.</p></dd>
+	<dt><code>data</code></dt>
+		<dd><p>This is filled with a hash reference containing all information about
+this group taken from the space groups database.</p></dd>
+	<dt><code>nicknames</code></dt>
+		<dd><p>This is an array reference containing any nicknames by which this
+group can be recognized.  For example <code>I m -3 m</code> has <code>BCC</code> (for
+body-centered cubic) as a nickname.</p></dd>
+	<dt><code>bravais</code></dt>
+		<dd><p>This is an array reference containing the Bravais translations
+associated with this space group.</p></dd>
+	<dt><code>shiftvec</code></dt>
+		<dd><p>This is an array reference containing the vector that shifts an
+alternate centering in the International Tables to the &quot;centre at
+origin&quot; entry.  Only a few space groups have such alternate entries --
+for those groups this returns an empty array reference.</p></dd>
+	<dt><code>positions</code></dt>
+		<dd><p>This is an array reference containing array refernces to the symmetry
+positions associated with this space group.  This is the information
+used, along with the Bravais translations, to populate a unit cell.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+
+
+<h2 id="set_rhombohedral">set_rhombohedral</h2>
+
+<p><a href="#" onclick="toggleCode('method_set_rhombohedral');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_set_rhombohedral">
+                                        <pre>
+
+sub set_rhombohedral {
+  my ($self) = @_;
+  my $group = $self->group;
+  my $given = $self->given;
+  my $class = $self->class;
+  return $self if ($class ne "trigonal");
+  return $self if ($group !~ m{\Ar});
+  $self->setting('rhombohedral');
+  my $rhash = $self->data;
+  $self->positions($$rhash{rhombohedral});
+  return $self;
+};
+</pre></div>
+
+<p>If your trigonal group is specified with just the <code>A</code> lattice
+constant and all angles of equal value, then you are using the
+rhombohedral setting.  Use this method to set the <code>setting</code> and
+positions attributes correctly.  If the space group is not an <code>R</code>
+group, then this method does nothing.</p>
+
+<h2 id="report">report</h2>
+
+<p><a href="#" onclick="toggleCode('method_report');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_report">
+                                        <pre>
+
+sub report {
+  my ($self) = @_;
+  return $self->warning.$/ if not $self->group;
+  my $message = sprintf("Space group: %s (#%d)\n",         $self->group, $self->number);
+  $message   .= sprintf("  supplied symbol        : %s\n", $self->given);
+  $message   .= sprintf("  crystal class          : %s\n", $self->class);
+  $message   .= sprintf("    Schoenflies symbol   : %s\n", $self->schoenflies);
+  $message   .= sprintf("    full symbol          : %s\n", $self->full)                     if $self->full;
+  $message   .= sprintf("    1935 symbol          : %s\n", $self->thirtyfive)               if $self->thirtyfive;
+  $message   .= sprintf("    new symbol           : %s\n", $self->newsymbol)                if $self->newsymbol;
+  $message   .= sprintf("    nicknames            : %s\n", join(", ", @{$self->nicknames})) if $self->nicknames;
+  $message   .= sprintf("    crystal setting      : %s\n", $self->setting);
+  $message   .= "    Bravais translations :\n";
+  my @brav    = map { _simple_fraction($_) } @{ $self->bravais };
+  $message   .= "      none\n"                                                                                   if not @brav;
+  $message   .= sprintf("      %-8s   %-8s   %-8s\n",                                                     @brav) if ($#brav == 2);
+  $message   .= sprintf("      %-8s   %-8s   %-8s\n      %-8s   %-8s   %-8s\n",                           @brav) if ($#brav == 5);
+  $message   .= sprintf("      %-8s   %-8s   %-8s\n      %-8s   %-8s   %-8s\n      %-8s   %-8s   %-8s\n", @brav) if ($#brav == 8);
+  $message   .= "    Positions :\n";
+  foreach my $p (@{ $self->positions }) {
+    $message .= sprintf("      %-8s   %-8s   %-8s\n", map {($_ =~ m{\A\-}) ? $_ : " $_"} @$p);
+  };
+  return $message;
+};
+</pre></div>
+
+<p>Print out a simple textual summary of a space group.</p>
+
+<pre>  my $sg=Xray::Crystal::SpaceGroup-&gt;new;
+  $sg -&gt; group('p63mc');
+  print $sg-&gt;report;
+
+  Space group: p 63 m c (#186)
+    supplied symbol        : p63mc
+    crystal class          : hexagonal
+      Schoenflies symbol   : c_6v^4
+      full symbol          : p 63 m c
+      nicknames            : graphite, gra
+      crystal setting      : positions
+      Bravais translations :
+        none
+      Positions :
+         $x         $y         $z
+        -$y         $x-$y      $z
+        -$x+$y     -$x         $z
+        -$x        -$y         $z+1/2
+         $y        -$x+$y      $z+1/2
+         $x-$y      $x         $z+1/2
+        -$y        -$x         $z
+        -$x+$y      $y         $z
+         $x         $x-$y      $z
+         $y         $x         $z+1/2
+         $x-$y     -$y         $z+1/2
+        -$x        -$x+$y      $z+1/2
+
+
+
+
+</pre><h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li><a href="http://search.cpan.org/perldoc?Moose">Moose</a></li>
+	<li><a href="http://search.cpan.org/perldoc?Carp">Carp</a></li>
+	<li><a href="http://search.cpan.org/perldoc?File%3A%3ABasename">File::Basename</a></li>
+	<li><a href="http://search.cpan.org/perldoc?File%3A%3ASpec">File::Spec</a></li>
+	<li><a href="http://search.cpan.org/perldoc?List%3A%3AMoreUtils">List::MoreUtils</a></li>
+	<li><a href="http://search.cpan.org/perldoc?Regexp%3A%3AAssemble">Regexp::Assemble</a></li>
+	<li><a href="http://search.cpan.org/perldoc?Storable">Storable</a></li>
+	<li><a href="http://search.cpan.org/perldoc?Const%3A%3AFast">Const::Fast</a></li>
+	<li><a href="http://search.cpan.org/perldoc?version">version</a></li>
+</ul>
+
+
+
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

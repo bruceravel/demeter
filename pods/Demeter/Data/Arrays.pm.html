@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Data::Arrays</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Data-Arrays
+</div>
+<div>
+<a href="../../src/Demeter/Data/Arrays.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Data::Arrays - Data array methods for Demeter</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>put</code></dt>
+		<dd><p>This method is used to make a new Data object from two arrays
+containing the energy and xmu data.</p></dd>
+<dd><pre>  $new_data = Demeter::Data -&gt; put(\@energy, \@xmu);
+
+</pre></dd>		<dd><p>The new Data object if returned.  In every way, this is like any Data
+object that comes from a file.  The use would be for converting some
+complex data format, e.g. a spreadsheet, into one or more Data
+objects.  This method could also be used in a filetype plugin.</p></dd>
+		<dd><p>You can specify additional arguments like the <code>new</code> or <code>set</code> methods
+of the Data object:</p></dd>
+<dd><pre>  $new_data = Demeter::Data -&gt; put(\@energy, \@xmu, @args);
+
+</pre></dd>		<dd><p>This second form must be used to make chi(k) data from arrays:</p></dd>
+<dd><pre>  $new_data = Demeter::Data -&gt; put(\@energy, \@chi, datatype=&gt;'chi');
+
+</pre></dd>		<dd><p>Note that the <code>put</code> method sets the datatype to 'xmu', so to make
+chi(k) data you must explicitly specify it.</p></dd>
+	<dt><code>get_array</code></dt>
+		<dd><p>Read an array from the data processing backend (Ifeffit/Larch).  The
+argument is the Ifeffit array suffix of the array to import.</p></dd>
+<dd><pre>  @array = $dataobject-&gt;get_array(&quot;xmu&quot;);
+
+</pre></dd>	<dt><code>ref_array</code></dt>
+		<dd><p>Get a reference to an array from the data processing backend
+(Ifeffit/Larch).  The argument is the Ifeffit array suffix of the
+array to import.</p></dd>
+<dd><pre>  $ref_to_array = $dataobject-&gt;ref_array(&quot;xmu&quot;);
+
+</pre></dd>	<dt><code>put_xmu</code></dt>
+		<dd><p>Push an array onto a backend array representing the xmu data
+associated with the Data object.  The purpose of this is to modify the
+mu(E) data for a Data object in place.  An example would be to apply a
+dead time correction without creating a new group to contain the
+corrected data.</p></dd>
+<dd><pre>  $dataobject -&gt; put_xmu(\@xmu_array);
+
+</pre></dd>	<dt><code>floor_ceil</code></dt>
+		<dd><p>Return a two element list containing the smallest and largest values
+of an array in the data processing backend (Ifeffit/Larch).</p></dd>
+<dd><pre>  ($min, $max) = $dataobject-&gt;floor_ceil(&quot;xmu&quot;);
+
+</pre></dd>	<dt><code>yofx</code></dt>
+		<dd><p>Return the y value corresponding to a given x-value.  This is found
+by interpolation from the specified array.</p></dd>
+<dd><pre>  $y = $dataobject-&gt;yofx(&quot;xmu&quot;, q{}, $x);
+
+</pre></dd>		<dd><p>The second argument (<code>q{}</code> in this example) is used to specify a part
+of a fit, i.e. <code>bkg</code> or <code>res</code>.</p></dd>
+	<dt><code>iofx</code></dt>
+		<dd><p>Return the index of the value just lower than a given x-value.  This
+is found by simple comparison with the values in the specified array.</p></dd>
+<dd><pre>  $i = $dataobject-&gt;iofx($space, $x);
+
+</pre></dd>		<dd><p>This is intended to probe the x-axis of a data space, so the first
+argument must be one of <code>energy</code>, <code>k</code>, <code>R</code>, or <code>q</code>).</p></dd>
+	<dt><code>points</code></dt>
+		<dd><p>This method is used extensively by the gnuplot plotting template set
+to generate temporary files for plotting with Gnuplot.  See any of
+those plotting templates for examples of how this is used.</p></dd>
+</dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<p><a href="http://search.cpan.org/perldoc?Moose">Moose</a> is the basis of Demeter.  This module is implemented as a
+role and used by the <a href="../Data.pm.html">Demeter::Data</a> object.  I feel obliged to admit
+that I am using Moose roles in the most trivial fashion here.  This is
+mostly an organization tool to keep modules small and methods
+organized by common functionality.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

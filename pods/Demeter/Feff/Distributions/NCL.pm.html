@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Feff::Distributions::NCL</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Feff-Distributions-NCL
+</div>
+<div>
+<a href="../../../src/Demeter/Feff/Distributions/NCL.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::Feff::Distributions::NCL - Histograms for nearly collinear paths</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.13.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This provides methods for generating two-dimensional histograms in
+path length and forward scattering angle for nearly collinear
+arrangements of three atoms, like so:</p>
+
+<pre>   Absorber ---&gt; Scatterer ---&gt; Scatterer
+
+</pre><p>Given two radial ranges for the nearer and more distant scatterers and
+bin sizes for </p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>file</code> (string)</dt>
+		<dd><p>The path to and name of the HISTORY file.  Setting this will trigger
+reading of the file and construction of a histogram using the values
+of the other attributes.</p></dd>
+	<dt><code>nsteps</code> (integer)</dt>
+		<dd><p>When the HISTORY file is first read, it will be parsed to obtain the
+number of time steps contained in the file.  This number will be
+stored in this attribute.</p></dd>
+	<dt><code>r1</code> and <code>r2</code>; <code>r3</code> and <code>r4</code> (numbers)</dt>
+		<dd><p>The lower and upper bounds of the radial distribution function for the
+near and distant scatterer.</p></dd>
+	<dt><code>rbin</code> (number)</dt>
+		<dd><p>The width of the histogram bin to be extracted from the RDF.</p></dd>
+	<dt><code>betabin</code> (number)</dt>
+		<dd><p>The forward scattering angular range of the histogram bin to be
+extracted from the RDF.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>fpath</code></dt>
+		<dd><p>Return a <a href="../../FPath.pm.html">Demeter::FPath</a> object representing the sum of the bins of
+the histogram extracted from the cluster.</p></dd>
+	<dt><code>plot</code></dt>
+		<dd><p>Make a plot of the the RDF.</p></dd>
+</dl>
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>See <a href="../../Config.pm.html">Demeter::Config</a> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
+configuration system.  See, among others, the <code>bkg</code>, <code>fft</code>, <code>bft</code>,
+and <code>fit</code> configuration groups.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+
+
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>This currently only works for a monoatomic cluster.  See rdf in SS.pm
+for species checks</li>
+	<li>Feff interaction is a bit unclear</li>
+	<li>Triangles and nearly colinear paths</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

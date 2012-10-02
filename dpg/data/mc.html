@@ -1,0 +1,334 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Importing multichannel data files</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/athena.html" class="menu" >Athena project files</a> &nbsp;&nbsp;
+        Next: <a href="../data/special.html" class="menu" >Special data types</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Importing multichannel data files
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<br />
+<a href="../data/index.html" class="menuselect" >Importing data</a><br />
+&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/columns.html" class="menu" >Column data files</a><br />
+&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
+&nbsp;-&nbsp;<a href="../data/mc.html" class="menuselect" >Multichannel data files</a><br />
+&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
+&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
+&nbsp;-&nbsp;<a href="../data/plot.html" class="menu" >Basic plotting and data processing</a><br /><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+Often data files contain multiple columns of data that can be
+independently processed as  &mu;(E)     data.  One way of handling that
+situation is to simply point several Data objects at the same file,
+specifying different columns for each object.  That is fine and it
+certainly works, but it makes inefficient use of  <span class=program>IFEFFIT</span>.
+</p>
+
+<p>
+Each time that a Data object imports its data file, it makes temporary
+arrays in  <span class=program>IFEFFIT</span> to hold the contents of each column.  The
+creation and destruction of a possibly large number of unused arrays
+is noticeably time consuming.  To get around the problem of repeatedly
+creating the same set of temporary arrays, use the Data::MultiChannel
+object. 
+</p>
+
+<p>
+<a name="importingmulti-elementdetectordata">
+</p>
+
+<p>
+<h3>  Importing multi-element detector data</h3>
+</a>
+Like the 
+<a href="athena.html">Data::Prj object</a>,
+The Data::MultiChannel object is a transitional object from which Data
+objects are created.  
+</p>
+
+
+
+<p>
+
+In this example, a four-element detector was
+used to measure fluorescence data and each data channel is imported
+into an individual Data object.  Once all the channels are imported,
+they are plotted in energy for direct comparison.
+</p>
+
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$file</span> <span class="operator">=</span> <span class="single">'med_data.000'</span>
+<li><span class="keyword">my</span> <span class="symbol">$mc</span> <span class="operator">=</span> <span class="word">Demeter::Data::MultiChannel</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$file</span><span class="operator">,</span> <span class="word">energy</span> <span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'MED Channel 1'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$5'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'MED Channel 2'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">2</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$6'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'MED Channel 3'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">3</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$7'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'MED Channel 4'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="magic">$_</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">)</span> <span class="word">foreach</span> <span class="symbol">@data</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+
+The Data::MultiChannel object is defined at line 5.  This
+object is inherited from the normal Data object, which allows
+it to use the Data object's existing methods for file import.  Although
+the Data::MultiChannel object has all the same attributes as the Data
+object, the only two that matter are <tt>file</tt>
+and <tt>energy</tt>.  The column containing the
+energy must be specified so that the data can be sorted ( <span class=program>DEMETER</span>
+deals gracefully with data that are not in monotonically ascending
+order, which sometimes happens in some impementations of quick XAS).
+This value for the <tt>energy</tt> attribute is
+pushed onto the Data object created using the 
+<tt>make_data</tt> method.
+</p>
+
+<p>
+The <tt>make_data</tt> method is used to generate a
+Data object from the Data::MultiChannel object.  You 
+<strong>must</strong> specify the 
+<tt>numerator</tt>,
+<tt>denominator</tt>, and
+<tt>ln</tt> attributes as arguments of the 
+<tt>make_data</tt> method.  You can specify any
+other Data attributes in the same manner as the Data creator method,
+<tt>new</tt>.
+</p>
+
+<p>
+Once created by <tt>make_data</tt>, these Data
+objects are identical in every way to Data objects created in other
+ways.
+</p>
+
+<p>
+Of course, another option is to use a normal Data object to import MED
+data and do the summation on the fly, like so
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4+$5+$6+$7'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'MED data'</span> <span class="structure">);</span>
+</ol>
+<p>
+
+The performance penalty discussed above wouold not be a problem for
+the on-the-fly summation.  However, importing each individual channel
+into its own Data object is certainly better done with the
+Data::MultiChannel transitional object.
+</p>
+
+
+<a name="importingdataandreference">
+
+<h3>  Importing data and reference</h3>
+</a>
+
+<p>
+
+Another common use of the Data::MultiChannel object is to import the
+reference channel from a normal XAS data file.  Here is an example:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$file</span> <span class="operator">=</span> <span class="single">'fe2o3.000'</span>
+<li><span class="keyword">my</span> <span class="symbol">$mc</span> <span class="operator">=</span> <span class="word">Demeter::Data::MultiChannel</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$file</span><span class="operator">,</span> <span class="word">energy</span> <span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span> <span class="structure">);</span>
+<li>
+<li><span class="symbol">$data</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$3'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'Fe2O3'</span> <span class="structure">);</span>
+<li><span class="symbol">$ref</span>&nbsp;&nbsp;<span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$3'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$4'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'&nbsp;&nbsp;Ref Fe2O3 (Fe foil)'</span> <span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">reference</span><span class="structure">(</span><span class="symbol">$ref</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+In this example, the data are from a transmission experiment with a
+reference foil between the  I<sub>t</sub>    and  I<sub>r</sub>    detectors.  In this
+case,  &mu;(E)     for the reference is ln( I<sub>t</sub>   / I<sub>r</sub>   ), which are
+in columns 3 and 4.  Line 11 then sets up the data/reference
+relationship so that energy shifts applied to the reference will also
+be applied to the data.
+</p>
+
+
+<a name="multicolumntransmissiondata">
+
+<h3>  Multicolumn transmission data</h3>
+</a>
+
+<p>
+
+Using the four-channel ionization chamber described in 
+B. Ravel, et al., <em>J. Synchrotron Rad.</em>, <strong>17</strong>, 
+(2010) p. 380
+yields files which contain four independent transmission measurements
+on a common energy axis.  For each measurement, there is a  I&#8320;   
+and an  I<sub>t</sub>    column.  The following script disentangles these
+columns by constructing the four measurements, plotting the four XANES
+spectra, and writing out an 
+ <span class=program>ATHENA</span> project file.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span> <span class="comment"># qw(:plotwith=gnuplot);</span>
+<li><span class="keyword">use</span> <span class="word">File::Basename</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$datafile</span> <span class="operator">=</span> <span class="core">shift</span><span class="structure">(</span><span class="symbol">@ARGV</span><span class="structure">);</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># take file name from command line</span>
+<li><span class="keyword">my</span> <span class="symbol">$mc</span> <span class="operator">=</span> <span class="word">Demeter::Data::MultiChannel</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$file</span><span class="operator">,</span> <span class="word">energy</span> <span class="operator">=&gt;</span> <span class="single">'$1'</span><span class="operator">,</span> <span class="structure">);</span>
+<li><span class="symbol">$mc</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">title</span> <span class="operator">=&gt;</span> <span class="symbol">$datafile</span><span class="operator">,</span> <span class="word">e_norm</span><span class="operator">=&gt;</span><span class="number">1</span><span class="operator">,</span> <span class="word">e_markers</span><span class="operator">=&gt;</span><span class="number">0</span><span class="operator">,</span> <span class="word">emin</span><span class="operator">=&gt;</span><span class="number">-40</span><span class="operator">,</span> <span class="word">emax</span><span class="operator">=&gt;</span><span class="number">60</span><span class="structure">);</span>
+<li><span class="symbol">$mc</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">@data</span><span class="structure">;</span>
+<li><span class="word">print</span> <span class="double">&quot;channel 1, &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$2'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$6'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'channel 1'</span><span class="operator">,</span> <span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'e'</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="double">&quot;channel 2, &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$3'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$7'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'channel 2'</span><span class="operator">,</span> <span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'e'</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="double">&quot;channel 3, &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">2</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$4'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$8'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'channel 3'</span><span class="operator">,</span> <span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'e'</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="double">&quot;channel 4, &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">3</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$5'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$9'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'channel 4'</span><span class="operator">,</span> <span class="structure">)</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'e'</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="double">&quot;reference, &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">4</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">make_data</span><span class="structure">(</span><span class="word">numerator</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'$9'</span><span class="operator">,</span> <span class="word">denominator</span> <span class="operator">=&gt;</span> <span class="single">'$10'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;$file Ref&quot;</span><span class="operator">,</span> <span class="structure">);</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$prjname</span> <span class="operator">=</span> <span class="word">basename</span><span class="structure">(</span><span class="symbol">$datafile</span><span class="structure">)</span> <span class="operator">.</span> <span class="single">'.prj'</span><span class="structure">;</span>
+<li><span class="word">print</span> <span class="double">&quot;exporting $prjfile ... &quot;</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">write_athena</span><span class="structure">(</span><span class="symbol">$prjfile</span><span class="operator">,</span> <span class="symbol">@data</span><span class="structure">);</span>
+<li><span class="word">print</span> <span class="magic">$/</span><span class="structure">;</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">end_plot</span><span class="structure">;</span>
+<li><span class="symbol">$mc</span><span class="operator">-&gt;</span><span class="word">discard</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+
+Note that, at this time, the data/reference relationship can only be
+made between two Data objects.  In a future version of  <span class=program>DEMETER</span>,
+the reference relationship will be extended to an arbitrary number of
+Data objects, which will be useful in this case, as well as for MED
+data. 
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/athena.html" class="menu" >Athena project files</a> &nbsp;&nbsp;
+        Next: <a href="../data/special.html" class="menu" >Special data types</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

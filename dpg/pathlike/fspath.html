@@ -1,0 +1,254 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>FSPath object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/vpath.html" class="menu" >VPath</a> &nbsp;&nbsp;
+        Next: <a href="../pathlike/fpath.html" class="menu" >FPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  FSPath object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<br />
+<a href="../pathlike/index.html" class="menuselect" >Path-like objects</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/vpath.html" class="menu" >VPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fspath.html" class="menuselect" >FSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fpath.html" class="menu" >FPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/sspath.html" class="menu" >SSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/mspath.html" class="menu" >MSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/threebody.html" class="menu" >ThreeBody</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/forward.html" class="menu" >Forward</a><br /><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+Sometimes  <span class=program>DEMETER</span> is just too much.  A simple, first shell,
+single scattering problem should have a simple solution.  The FSPath,
+or &ldquo;first shell path&rdquo;, 
+is intended to be that simple solution.
+</p>
+
+<p>
+You provide the element symbol of the absorber and scatterer, their
+distance apart, and the absorption edge.   <span class=program>DEMETER</span> will then
+construct a simple  <span class=program>FEFF</span> input file, run  <span class=program>FEFF</span>, return the
+single scattering path at the specified distance, and even create a
+set of guess parameters for you.  It's pretty simple.  In this
+example, we create an oxygen scattering shell at 2  &Aring;     around an
+iron absorber and use it to fit some iron oxide data contained in an 
+ <span class=program>ATHENA</span> project file.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li><span class="keyword">my</span> <span class="symbol">$prj</span> <span class="operator">=</span> <span class="word">Demeter::Data::Prj</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="single">'FeO.prj'</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="symbol">$prj</span> <span class="operator">-&gt;</span> <span class="word">record</span><span class="structure">(</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$fspath</span> <span class="operator">=</span> <span class="word">Demeter::FSPath</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">abs</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'Fe'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">scat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'O'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">edge</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">distance</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">2.0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">workspace</span> <span class="operator">=&gt;</span> <span class="double">&quot;/path/to/work/space&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$fit</span> <span class="operator">=</span> <span class="word">Demeter::Fit</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">data</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">[</span><span class="symbol">$data_object</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">paths</span> <span class="operator">=&gt;</span> <span class="structure">[</span><span class="symbol">$fspath</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">gds</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">gds</span><span class="structure">);</span>
+<li><span class="comment">## now do something with the results of the fit ...</span>
+</ol>
+</pre>
+
+<p>
+
+When the object if created,  <span class=program>DEMETER</span> will construct a
+<span class=file>feff.inp</span> for a simple cubic structure
+containing the absorber and scatterer.  The lattice constant of this
+notional crystal is such that the first neighbor distance is as
+specified.  The edge can be asserted explicitly, but it can usually be
+guessed from the atomic species of the absorber -- the K edge is
+assumed for elements lighter than La, otherwise the  L<sub>III</sub>       edge is
+assumed.
+</p>
+
+<p>
+Like a normal Path, the FSPath must be associated with a Data object
+via its <tt>data</tt> attribute.  Because, a 
+ <span class=program>FEFF</span> calculation is done behind the scenes, a 
+<tt>workspace</tt> attribute must be specified so
+that  <span class=program>DEMETER</span> has a place to perform the calculation.
+</p>
+
+<p>
+All the details of the  <span class=program>FEFF</span> calculation are handled
+automatically.  The FSPath will always be up-to-date for use in a plot
+or a fit.
+</p>
+
+<p>
+Also behind the scenes, a set of guess parameters is created.  For the
+example shown, these parameters will be named
+<tt>aa_fe_o</tt>,
+<tt>ee_fe_o</tt>,
+<tt>dr_fe_o</tt>, and
+<tt>ss_fe_o</tt>.  The second and third parts of
+those names are taken from the element symbols of the abosorber and
+scatterer.  The <tt>new</tt> method can also take
+<tt>use_third</tt> and
+<tt>use_fourth</tt> as arguments.  When true,
+additional guess parameters will be made to represent the third and
+fourth cumulants and will be called 
+<tt>c3_fe_o</tt> and
+<tt>c4_fe_o</tt>.  These parameters are then used
+as the math expressions for the appropriate pathparameters of the
+path.  If you choose to use this simple parameterization of the
+FSPath, you are then ready to begin fitting.
+</p>
+
+<p>
+The <tt>gds</tt> method, shown at line 14, returns
+a list containing the GDS objects associated with the automatically
+generated parameters.  Because the FSPath is derived from the Path
+object, it behaves in every other way like a normal Path object.
+Thus, if you want to overwrite the path parameter math expressions,
+simply set them the way you would for any Path object.
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$fspath</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">s02</span> <span class="operator">=&gt;</span> <span class="single">'(1-x)*amp'</span><span class="operator">,</span> <span class="word">enot</span><span class="operator">=&gt;</span><span class="single">'enot_o'</span><span class="structure">);</span>
+</ol>
+
+
+<p>
+
+The values of the <tt>scat</tt> and 
+<tt>abs</tt> attributes can be the one- or
+two-letter symbols, the full English names of the elements, or the Z
+number.  The <tt>absorber</tt> and 
+<tt>scatterer</tt> attributes are filled
+automatically with the resolved one- or two-letter atomic symbols.
+</p>
+
+<p>
+There are a couple more methods involved with the automatically
+generated parameters.  The <tt>parameter</tt>
+method is used to obtain the GDS objects that were automatically
+created.  It takes a single argument for identifying the parameter
+being queried.  Here is every possible example of its use.  In each
+case, the reference to the GDS object is returned.
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$amp_gds</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'s02'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$e0_gds</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'e0'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$delr_gds</span>&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'delr'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$sigma2_gds</span> <span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'sigma2'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$third_gds</span>&nbsp;&nbsp;<span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'third'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$fourth_gds</span> <span class="operator">=</span> <span class="symbol">$fspath</span><span class="operator">-&gt;</span><span class="word">parameter</span><span class="structure">(</span><span class="single">'fourth'</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+Finally, the <tt>unset_parameters</tt> method is
+used to clear the autogenerated path parameters, setting them all
+literally to 0 -- except for s02, which is set literally to 1.  This is
+useful in a situation where you wish to use the quick first shell
+scattering path in some other context than the quick first shell fit.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/vpath.html" class="menu" >VPath</a> &nbsp;&nbsp;
+        Next: <a href="../pathlike/fpath.html" class="menu" >FPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

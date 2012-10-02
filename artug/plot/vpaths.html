@@ -1,0 +1,200 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Creating and plotting VPaths</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../plot/indic.html" class="menu" >Indicators</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../plot/index.html" class="menu" >The Plot window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Creating and plotting VPaths
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="../data.html" class="menu" >The Data window</a><br />
+<a href="../feff/index.html" class="menu" >The Atoms/Feff window</a><br />
+<a href="../path/index.html" class="menu" >The Path page</a><br />
+<a href="../gds.html" class="menu" >The GDS window</a><br />
+<a href="../fit/index.html" class="menu" >Running a fit</a><br />
+<br />
+<a href="../plot/index.html" class="menuselect" >The Plot window</a><br />
+&nbsp;-&nbsp;<a href="../plot/stack.html" class="menu" >Stacked plots</a><br />
+&nbsp;-&nbsp;<a href="../plot/indic.html" class="menu" >Indicators</a><br />
+&nbsp;-&nbsp;<a href="../plot/vpaths.html" class="menuselect" >Creating and plotting VPaths</a><br /><br />
+<a href="../logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="../history.html" class="menu" >The History window</a><br />
+<a href="../monitor.html" class="menu" >Monitoring things</a><br />
+<a href="../prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+Here is a fairly common problem with visualizing the paths that
+contribute to a fit.  In a well-ordered material like these data on a
+cobalt foil, a distant single scattering path may be of the same
+length as two or more important collinear multiple scattering paths.
+The fit involves a subtle superposition of all the paths in the fit.
+This single scattering path and its related multiple scattering paths
+all contribute spectral weight in the same region of R-space.
+</p>
+
+<p>
+<a href="../../images/plot.overlapping.png" target=_blank><img src="../../images/plot.overlapping.png" alt="
+A plot of overlapping paths
+"></a>
+</p>
+
+<p>
+Plotting them together results in a complicated figure with lots of
+overlapping traces.  It is hard to see how each path contributes to
+the fit.  Indeed, it is hard to ascertain much beyond the fact that
+these three paths have a complicated phase relationship between them.
+</p>
+
+<p>
+ <span class=program>ARTEMIS</span> offers a handy visualization tool called a virtual path,
+or VPath.  A VPath is simply a group of paths which are added together
+after being evaluated in a fit.  The sum of these paths is then
+plotted as a single item in a fit.  Here is the plot made with the
+VPath constructed from the three paths in the previous figure.  While
+this plot hides the individual contributions of the three path, it
+shows how those three affect the fit when added together.
+</p>
+
+<p>
+<a href="../../images/plot.vpath.png" target=_blank><img src="../../images/plot.vpath.png" alt="
+A plot with the overlapping paths made into a single VPath
+"></a>
+</p>
+
+
+<table>
+<tr>
+<td>
+<p>
+
+Here is another example of how a VPath can help visualize the
+components of a fit.  The data in the follow two figures are of
+uranium  L<sub>III</sub>       edge EXAFS of uranyl acetate in solution.  Uranyl
+compounds are notable for having two, very short double-bonded oxygen
+atoms in a trans configuration and at a distance of about 1.78
+ &Aring;    .  The remaining oxygen atoms lie in an equatorial plane.  These
+are single-bonded and at a distance of around 2.4  &Aring;    .
+</p>
+
+<p>
+The two axial oxygen atoms usually have a rather small  &sigma;&sup2;  and
+contribute very strongly at low R in the Fourier transform.  Because
+those oxygen atoms are at such a short distance, there are a few
+multiple scattering paths that contribute significant spectral weight
+just beyond the region dominated by single scattering from the
+equatorial oxygen atoms.
+</p>
+
+</td>
+<td width=469>
+<a href="../../images/uranyl.png" target=_blank><img border=0 src="../../images/uranyl.png" alt="uranyl.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+
+Here is the plot the fit to the uranyl acetate data along with each of
+the single and multiple scattering paths  that involve the axial
+oxygen atoms.    Again, it is ahrd to appreciate how the various
+multiple scattering paths contribute to the fit.
+</p>
+
+<p>
+<a href="../../images/plot.uace_oax.png" target=_blank><img src="../../images/plot.uace_oax.png" alt="
+A plot of the axial oxygen paths in uranyl acetate
+"></a>
+</p>
+
+<p>
+In this case, it is nice to combine all these paths into a VPath
+which represents the entire contribution to the EXAFS from the axial
+oxygen atoms.
+</p>
+
+<p>
+<a href="../../images/plot.uace_vpath.png" target=_blank><img src="../../images/plot.uace_vpath.png" alt="
+A plot with the axial oxygen paths made into a VPath
+"></a>
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../plot/indic.html" class="menu" >Indicators</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../plot/index.html" class="menu" >The Plot window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>
