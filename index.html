@@ -1,180 +1,83 @@
 <!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Demeter by bruceravel</title>
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Demeter</h1>
+        <p class="header">Processing and Analyzing X-ray Absorption Spectroscopy Data Using Feff and Ifeffit.</p>
 
-  <title>Demeter</title>
-  <meta name="description" content="Educational materials for XAS training courses">
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/bruceravel/demeter/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/bruceravel/demeter/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/bruceravel/demeter">View On GitHub</a></li>
+        </ul>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-
-</head>
-
-<body>
-
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Demeter</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">XAS Data Processing and Analysis Using Feff and Ifeffit</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/bruceravel/demeter/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/bruceravel/demeter/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/bruceravel/demeter" class="code">View Demeter on GitHub</a>
-        </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <!-- <h1>Demeter: XAS Data Processing and Analysis Using Feff and Ifeffit</h1> -->
-
-<h2>About Demeter</h2>
-
-	  <p>
-	    Demeter is a comprehensive system for processing and
-	    analyzing X-ray Absorption Spectroscopy data.  
-	  </p>
-	  <p>
-	    Demeter is:
-	    <ul>
-              <li>currently at version 0.9.9</li>
-              <li>a set of <a href="http://www.perl.org">perl</a>
-		modules and related files</li>
-              <li>a programming tool but not an application -- it is the
-		thing from which applications are built</li>
-              <li><a href="http://www.gnu.org/philosophy/free-sw.html">
-		  free software</a>, freely available
-		from a <a href="https://github.com/bruceravel/demeter">
-		  git server</a></li>
-              <li>under heavy development</li>
-              <li>in use by its author for real data analysis problems</li>
-              <li>a front end to <a href="http://feff.phys.washington.edu">Feff</a>
-		and <a href="http://cars9.uchicago.edu/ifeffit/About">Ifeffit</a></li>
-              <li>the code base that replaces <emph>Athena</emph> and Artemis</li>
-              <li>named for the <a href="http://en.wikipedia.org/wiki/Demeter">
-		  Greek goddess of the harvest</a></li>
-	    </ul>
-	  </p>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/bruceravel">bruceravel</a></p>
 
 
+      </header>
+      <section>
+        <h1>About Demeter</h1>
 
-<h2>Documentation</h2>
+<p>Demeter is a comprehensive system for processing and analyzing X-ray Absorption Spectroscopy data.</p>
 
-<dl>
-  <dt> <a href="pods/index.html">Programming documentation</a> </dt>
-  <dd>
-    This is the documentation embedded into each module which
-    is part of the Demeter distribution.  The PODs have been
-    nicely formatted for html and organized into a
-    hierarchical structure that looks like a CPAN project
-    page. <p>
-  </dd>
-  <dt> <a href="dpg/index.html">Demeter Programming Guide</a> </dt>
-  <dd>
-    The DPG is a how-to guide written at a higher level than the
-    programming documentation.  It includes descriptions of how to use the
-    main components of Demeter as well as several complete examples.<p>
-  </dd>
-  <dt> <a href="http://cars9.uchicago.edu/~ravel/software/doc/Athena/html/">Athena Users' Guide</a></dt>
-  <dd>
-    This is the manual for the older version of Athena.  It
-    has not yet been updated for the new, Demeter-based
-    version.  The new version is, however, sufficiently
-    similar to the old that this is still useful for
-    understanding how to use Athena effectively.<p>
-  </dd>
-  <dt> <a href="artug/index.html">Artemis Users' Guide</a></dt>
-  <dd>
-    This is the users' guide for the new version of Artemis.
-    While it is unfinished, much of the text and many of the
-    screenshots are in place.  Keep checking back for
-    updates.<p>
-  </dd>
-  <dt> <a href="http://vimeo.com/channels/exafs">Artemis instruction videos</a></dt>
-  <dd>
-    These are screencast videos demonstrating the use of the Artemis
-    program for EXAFS data analysis.<p>
-  </dd>
-  <dt> <a href="http://www.diamond.ac.uk/Home/Events/Past_events/XAS-workshop-2011.html?mgnlCK=1339516257183">
-      Lecture videos</a></dt>
-  <dd>
-    In November 2011, I presented an XAS training course at
-    the Diamond Light Source.  All my lectures and software
-    demonstrations were recorded along with the computer
-    desktop.  The Diamond technical staff did a great job
-    assembling all of this material in streaming video.
-    (Linux
-    users: <a href="http://support.mozilla.org/en-US/questions/747274">Click
-      here</a> for a hint about using Microsoft Media Server
-    (mms:) links with Firefox.) <p>
-  </dd>
-  <dt> <a href="http://bruceravel.github.com/XAS-Education/">XAS Education</a> </dt>
-  <dd>
-    My collection of presentations that I give during XAS
-    training courses.  You can also find all the data used in
-    the presentations and in the various videos linked above.
-    PDF files of presentations and a zip file containing all
-    the example data can be found at 
-    <a href="https://github.com/bruceravel/XAS-Education/downloads">the
-      XAS Education downloads page</a><p>
-  </dd>
-  <dt> <a href="Changes.html">Demeter Changes list</a></dt>
-  <dd>
-    The changes file for  Demeter, Athena, Artemis, and
-    Hephaestus.  <a href="https://github.com/bruceravel/demeter/blob/master/Changes.org">This
-      version</a> might be slightly more up-to-date.<p>
-  </dd>
-  <dt> <a href="todo.html">Demeter To Do list</a></dt>
-  <dd>
-    Bruce's "To Do" list for Demeter, Athena, Artemis, and
-    Hephaestus.  <a href="https://github.com/bruceravel/demeter/blob/master/todo.org">This
-      version</a> might be slightly more up-to-date.<p>
-  </dd>
-</dl>
-
+<p>Demeter is:</p>
 
 <ul>
-  <li> <a href="http://bruceravel.github.com/demeter/pods/installation.pod.html">Demeter installation instructions</a>
-  <li> <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Hints for submitting a helpful bug report</a>
-  <li> <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">Hints on how to ask questions on the Ifeffit mailing list</a>
-  <li> <a href="http://bruceravel.github.com/demeter/pods/contribute.pod.html">Suggestions for contributiong to Demeter</a>
-  <li> <a href="http://cars9.uchicago.edu/~ravel/misc/Albums/demeter/">Screenshots of the new Athena</a>
-  <li> <a href="http://cars9.uchicago.edu/ifeffit/Demeter/WxHephaestus">Screenshots of the new Hephaestus</a>
-  <li> <a href="http://cars9.uchicago.edu/ifeffit/Demeter/AthenaPCA">A quick overview of Athena's PCA tool</a>
+<li>currently at version 0.9.9</li>
+<li>a set of <a href="http://www.perl.org">perl</a> modules and related files</li>
+<li>a programming tool but not an application -- it is the thing from which applications are built</li>
+<li>
+<a href="http://www.gnu.org/philosophy/free-sw.html">free software</a>, freely available from a <a href="https://github.com/bruceravel/demeter">git server</a>
+</li>
+<li>under heavy development</li>
+<li>in use by its author for real data analysis problems</li>
+<li>a front end to <a href="http://feff.phys.washington.edu/">Feff</a> and <a href="http://cars9.uchicago.edu/ifeffit/About">Ifeffit</a>
+</li>
+<li>the code base that replaces Athena and Artemis</li>
+<li>named for the <a href="http://en.wikipedia.org/wiki/Demeter">Greek goddess of the harvest</a>
+</li>
+</ul><h1>Windows Installer and Updater</h1>
+
+<h1>Documentation</h1>
+
+<ul>
+<li><p><a href="pods/index.html">Programming documentation</a>: This is the documentation embedded into each module which is part of the Demeter distribution. The PODs have been nicely formatted for html and organized into a hierarchical structure that looks like a CPAN project page.</p></li>
+<li><p><a href="dpg/index.html">Demeter Programming Guide</a>: The DPG is a how-to guide written at a higher level than the programming documentation. It includes descriptions of how to use the main components of Demeter as well as several complete examples.</p></li>
+<li><p><a href="http://cars9.uchicago.edu/%7Eravel/software/doc/Athena/html/">Athena Users' Guide</a>: This is the manual for the older version of Athena. It has not yet been updated for the new, Demeter-based version. The new version is, however, sufficiently similar to the old that this is still useful for understanding how to use Athena effectively.</p></li>
+<li><p><a href="artug/index.html">Artemis Users' Guide</a>: This is the users' guide for the new version of Artemis. While it is unfinished, much of the text and many of the screenshots are in place. Keep checking back for updates.</p></li>
+<li><p><a href="http://vimeo.com/channels/exafs">Artemis instruction videos</a>: These are screencast videos demonstrating the use of the Artemis program for EXAFS data analysis.</p></li>
+<li><p><a href="http://www.diamond.ac.uk/Home/Events/Past_events/XAS-workshop-2011.html?mgnlCK=1339516257183">Lecture videos</a>: In November 2011, I presented an XAS training course at the Diamond Light Source. All my lectures and software demonstrations were recorded along with the computer desktop. The Diamond technical staff did a great job assembling all of this material in streaming video. (Linux users: <a href="http://support.mozilla.org/en-US/questions/747274">Click here</a> for a hint about using Microsoft Media Server (mms:) links with Firefox.) </p></li>
+<li><p><a href="http://bruceravel.github.com/XAS-Education/">XAS Education</a>: My collection of presentations that I give during XAS training courses. You can also find all the data used in the presentations and in the various videos linked above. PDF files of presentations and a zip file containing all the example data can be found at the XAS Education downloads page</p></li>
+<li><p><a href="Changes.html">Demeter Changes list</a>: The changes file for Demeter, Athena, Artemis, and Hephaestus. <a href="https://github.com/bruceravel/demeter/blob/master/Changes.org">This version</a> might be slightly more up-to-date.</p></li>
+<li><p><a href="todo.html">Demeter To Do list</a>: Bruce's "To Do" list for Demeter, Athena, Artemis, and Hephaestus. <a href="https://github.com/bruceravel/demeter/blob/master/todo.org">This version</a> might be slightly more up-to-date.</p></li>
+<li><p><a href="http://bruceravel.github.com/demeter/pods/installation.pod.html">Demeter installation instructions</a></p></li>
+<li><p><a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Hints for submitting a helpful bug report</a></p></li>
+<li><p><a href="http://bruceravel.github.com/demeter/pods/help.pod.html">Hints on how to ask questions on the Ifeffit mailing list</a></p></li>
+<li><p><a href="http://bruceravel.github.com/demeter/pods/contribute.pod.html">Suggestions for contributing to Demeter</a></p></li>
+<li><p><a href="http://cars9.uchicago.edu/%7Eravel/misc/Albums/demeter/">Screenshots of the new Athena</a></p></li>
+<li><p><a href="http://cars9.uchicago.edu/ifeffit/Demeter/WxHephaestus">Screenshots of the new Hephaestus</a></p></li>
+<li><p><a href="http://cars9.uchicago.edu/ifeffit/Demeter/AthenaPCA">A quick overview of Athena's PCA tool</a></p></li>
 </ul>
-
-
-
-        </article>
-      </div>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/bruceravel" class="avatar"><img src="https://secure.gravatar.com/avatar/36b429d92ffc266d1abf718a18865c0e?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="48" height="48"/></a> <a href="https://github.com/bruceravel">bruceravel</a> maintains <a href="https://github.com/bruceravel/demeter">Demeter</a></p>
-
-
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/bruceravel/demeter/tarball/master" class="tar">tar</a><a href="https://github.com/bruceravel/demeter/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
-
-  
-</body>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
 </html>
