@@ -175,6 +175,11 @@ sub plot {
   my $space = ($this->{plotas}->GetSelection) ? 'k' : 'e';
   $data->po->chie(1) if ($space eq 'k');
   $data->plot($space);
+
+  $data->standard;
+  $::app->{main}->{Indicators}->plot;
+  $data->unset_standard;
+
   $this->{remove}->Enable(0);
   $::app->{main}->status(sprintf("Plotted %s as points for deglitching", $data->name));
   $::app->heap_check(0);

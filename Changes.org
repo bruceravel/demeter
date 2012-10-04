@@ -5,6 +5,22 @@
 
 * Initial release
 
+** 0.9.14  ?? October 2012
+*** Athena
+   - Plot indicators when plotting from deglitch tool
+   - Filename for combinatorial output spreadsheet uses group name
+
+*** Artemis
+   - fixed a problem where crystal data entered by hand got flagged as
+     unused, resulting in crashy behavior when running Atoms
+
+*** Atoms
+
+*** Demeter
+
+*** Windows
+
+
 ** 0.9.13  2 October 2012
 *** Athena
    - Updated the HXMA plugin
