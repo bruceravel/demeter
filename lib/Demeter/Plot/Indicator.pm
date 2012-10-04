@@ -54,6 +54,7 @@ sub plot {
   $space ||= $self->po->space;
   ($space  = 'kq') if (lc($space) eq 'qk');
   $space   = lc($space);
+  $space   = 'e' if ($self->po->chie);
   $self->po->space(substr($space, 0, 1));
 
   return if ( (lc($self->po->space) eq 'r') and (lc($self->space) ne 'r') );
@@ -82,10 +83,18 @@ sub y1coord {
     $x     = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
     $x     = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
 
-    my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
-    my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
-    my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
-    my $sy = abs($m[0] - $m[1]) / 4;
+    my $kw = (($self->po->space eq 'k') or $self->po->chie) ? ($self->po->kweight) : 0;
+    my ($yy, $sy, @m);
+    if ($self->po->chie) {
+      $yy = $self->mo->standard->yofx('chi', q{}, $self->mo->standard->e2k($self->xcoord, 'abs'))
+	* $self->mo->standard->e2k($self->xcoord, 'abs')**$kw;
+      @m  = $self->mo->standard->floor_ceil('chi');
+      $sy = abs($m[0] - $m[1]) / 4;
+    } else {
+      $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
+      @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
+      $sy = abs($m[0] - $m[1]) / 4;
+    };
     $y1    = $yy-$sy;
   };
   return sprintf("%.8g", $y1 + $self->mo->standard->y_offset);
@@ -100,10 +109,18 @@ sub y2coord {
     $x     = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
     $x     = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
 
-    my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
-    my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
-    my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
-    my $sy = abs($m[0] - $m[1]) / 4;
+    my $kw = (($self->po->space eq 'k') or $self->po->chie) ? ($self->po->kweight) : 0;
+    my ($yy, $sy, @m);
+    if ($self->po->chie) {
+      $yy = $self->mo->standard->yofx('chi', q{}, $self->mo->standard->e2k($self->xcoord, 'abs'))
+	* $self->mo->standard->e2k($self->xcoord, 'abs')**$kw;
+      @m  = $self->mo->standard->floor_ceil('chi');
+      $sy = abs($m[0] - $m[1]) / 4;
+    } else {
+      $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
+      @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
+      $sy = abs($m[0] - $m[1]) / 4;
+    };
     $y2    = $yy+$sy;
   };
   return sprintf("%.8g", $y2 + $self->mo->standard->y_offset);
