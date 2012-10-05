@@ -33,7 +33,7 @@ in the Preferences window, which can be displayed from the File Menu.
 Shown here, the [% INCLUDE font/quote a="artemis" %] group has been
 opened and the [% INCLUDE preference group="artemis" option="plot_after_fit" %]
 option has been selected.  Since it takes one of predefined list of
-possible values, you are rpesented with an option menu for selecting
+possible values, you are presented with an option menu for selecting
 among the possibilities.  The default value can be restored by
 pressing the button labeled as [%demeter%]'s [%#'%] default.  In the
 text area, the option is described.

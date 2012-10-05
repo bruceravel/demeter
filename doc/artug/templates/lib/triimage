@@ -1,0 +1,20 @@
+[%# quadplot: place two to four figures in a boardered div element
+  # ARGS:
+  #     files : list of image files
+  # see http://rjohara.net/server/css-figures-captions/ #
+-%]
+[% fst = files.first %]
+[% USE image "${rootdir}/images/${fst}" %]
+[% ww    = image.width;
+   parts = fst.split('\.');
+   label = parts.first;
+   dots  = template.nosubpages ? "../images" : "../../images";
+%]
+<a name=[% label %]>&nbsp;</a><br>
+[%- fl = files.shift; this = "${dots}/${fl}" -%] 
+<a href=[% this %]><img src="[% this %]" width=32%></a>
+[%- fl = files.shift; this = "${dots}/${fl}" -%] 
+<a href=[% this %]><img src="[% this %]" width=32%></a>
+[%- fl = files.shift; this = "${dots}/${fl}" -%] 
+<a href=[% this %]><img src="[% this %]" width=32%></a>
+

@@ -1,0 +1,5 @@
+[% META title = 'Example 1: FeS2' %]
+
+[% FILTER html_para -%]
+[%fes2%] blah blah
+[% END %]

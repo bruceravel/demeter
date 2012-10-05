@@ -1,0 +1,5 @@
+[% META title = 'Extended discussions'   chapter = 1 %]
+
+[% FILTER html_para -%]
+Blah blah
+[% END %]

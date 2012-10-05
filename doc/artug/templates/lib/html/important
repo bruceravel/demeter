@@ -1,0 +1,3 @@
+<p class=premise>
+[%- content -%]
+</p>

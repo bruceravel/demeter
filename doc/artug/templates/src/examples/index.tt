@@ -1,0 +1,5 @@
+[% META title = 'Worked examples'   chapter = 1 %]
+
+[% FILTER html_para -%]
+
+[% END %]
