@@ -330,7 +330,7 @@ sub OnDatatype {
   $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm'), is_nor=>0) if ($this->{datatype}->GetSelection == 1);
   $data->set(datatype=>'xmu', is_nor=>1)      if ($this->{datatype}->GetSelection == 2);
   $data->datatype('chi')                      if ($this->{datatype}->GetSelection == 3);
-  $data->datatype('xmudat')                   if ($this->{datatype}->GetSelection == 4);
+  $data->set(datatype=>'xmudat', is_nor=>1)   if ($this->{datatype}->GetSelection == 4);
 
   if ($this->{datatype}->GetSelection == 3) { # chi data
     ## disable widgets needed for processing mu(E) data

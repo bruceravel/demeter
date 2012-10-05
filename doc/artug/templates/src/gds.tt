@@ -49,24 +49,28 @@ in the grid to give you a visual indication of each parameter's [%#'%]
 type. 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="guess" %]
-(purple) This is a parameter of the fit.  Its value will be adjusted
+([%INCLUDE font/color color="a300a3" text="purple"%]) This is a
+parameter of the fit.  Its value will be adjusted 
 to find the best fit of the model to your data.
 [% END %]
 [% WRAPPER html/dt dt="def" %]
-(green) This is a parameter that is defined as a math expression
+([%INCLUDE font/color color="008b00" text="green"%]) This is a
+parameter that is defined as a math expression 
 dependent upon other guess, def, or set parameters.  Its value is
 updated throughout the fit.  As discussed below, sophisticated use of
 def parameters is key to successful model building and effective use
 of [%artemis%]. 
 [% END %]
 [% WRAPPER html/dt dt="set" %]
-(black) A set parameter is one that is evaluated at the beginning of
+([%INCLUDE font/color color="000000" text="black"%]) A set parameter
+is one that is evaluated at the beginning of 
 the fit, but not evaluated subsequently.  Although a set parameter can
 take a math expression as its value, it is more typically used to
 represent a constant value used elsewhere in the fitting model.
 [% END %]
 [% WRAPPER html/dt dt="lguess" %]
-(dark purple) An lguess parameter is tool used to simplify model
+([%INCLUDE font/color color="3E1C8F" text="dark purple"%]) An lguess
+parameter is tool used to simplify model 
 creation for a multiple data set fit.  It can be used in math
 expressions for two or more data sets.  When the fit started, an
 actual guess parameter will be created for each data set in which the
@@ -83,18 +87,21 @@ parameter math expressions using [%artemis%]' [%#'%] tools for pushing
 path parameter values across paths.
 [% END %]
 [% WRAPPER html/dt dt="skip" %]
-(gray) A skip parameter is one that is not used in any capacity in the
+([%INCLUDE font/color color="b2b2b2" text="gray"%]) A skip parameter
+is one that is not used in any capacity in the 
 fit, but which you do not want to discard from your fitting project.
 [% END %]
 [% WRAPPER html/dt dt="restrain" %]
-(dark yellow) A restraint is a math expression that is evaluated and
+([%INCLUDE font/color color="cd9b1d" text="dark yellow"%]) A restraint
+is a math expression that is evaluated and 
 added in quadrature to [%chisqr%] to evaluate the fit.  That is, the
 fit is optimized in the presence of the restraint.  The point of this
 is to add prior knowledge to a fit.  Restraints will be discussed in
 more detail later in this document.
 [% END %]
 [% WRAPPER html/dt dt="after" %]
-(blue) An after parameter is very similar to a def parameter in that
+([%INCLUDE font/color color="4a708b" text="blue"%]) An after parameter
+is very similar to a def parameter in that 
 it takes a math expression that depends on other parameters.  It is
 not, however, used in any way in the fit.  Instead, it is evaluated at
 the end of the fit and reported to the log file.  This is used to make
@@ -102,12 +109,14 @@ interesting calculations based on other parameters as part of the
 record of the fit.
 [% END %]
 [% WRAPPER html/dt dt="penalty" %]
-(brown) This takes a math expression representing a user defined
+([%INCLUDE font/color color="8b5a2b" text="brown"%]) This takes a math
+expression representing a user defined 
 penalty to the happiness calculation.  This feature has not yet been
 implemented in [%artemis%].
 [% END %]
 [% WRAPPER html/dt dt="merge" %]
-(white on red) A merge parameter is a parameter which has been
+([%INCLUDE font/color color="ffffff" bg="ee0000" text="white on
+red"%]) A merge parameter is a parameter which has been 
 multiply defined under the same name as part of combining fitting
 projects or importing structural units.  A fit cannot proceed with any
 parameters in this state.  This feature has not yet been implemented
@@ -115,6 +124,9 @@ in [%artemis%].
 [% END %]
 [% END %] [%# end of description list %]
 
+[% WRAPPER html/todo %]
+Implement penalty and merge parameters.
+[% END %]
 [% END %]
 
 [%# ################################################################ %]

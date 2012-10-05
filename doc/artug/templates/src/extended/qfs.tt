@@ -32,7 +32,7 @@ first shell data" %]
 
 To demonstrate what QFS does and to explain the constraints on the
 situations in which it can be expected to work, let's[%#'%] take a
-look at my favorite fitting example, [%fes2%]. Anyone who has attended
+look at my favorite teaching example, [%fes2%]. Anyone who has attended
 one of my XAS training courses has seen this example.
 
 These three figures show the S atom in the 1st coordination shell
@@ -52,42 +52,44 @@ the contribution from the nearest neighbor.
 
 Why does this work?
 
-[%feff%] starts by calculating neutral atoms then placing these neutral
-atoms at the positions indicated by [%feff%]'s[%#'%] input data. Each
-neutral atom has an associated radius – the radius within which the 
-[% INCLUDE font/quote a="cloud" %] of electrons has the same charge as
-the nucleus of the atom. The neutral-atom radii are fairly large. When
-placed at the positions in the [%feff%] input data, these neutral-atom
-radii overlap significantly. This is a problem for [%feff%]'s[%#'%]
-calculation of the atomic potentials in the material because it means
-that electrons in the overlapping regions cannot be positively
-identified as belonging to a particular atom.
+[%feff%] starts by calculating neutral atoms then placing these
+neutral atoms at the positions indicated by [%feff%]'s[%#'%] input
+data. Each neutral atom has an associated radius [%ndash%] the radius
+within which the [% INCLUDE font/quote a="cloud" %] of electrons has
+the same charge as the nucleus of the atom. The neutral-atom radii are
+fairly large. When placed at the positions in the [%feff%] input data,
+these neutral-atom radii overlap significantly. This is a problem for
+[%feff%]'s[%#'%] calculation of the atomic potentials in the material
+because it means that electrons in the overlapping regions cannot be
+positively identified as belonging to a particular atom.
 
-To address this situation, [%feff%] uses an algorithm called the Mattheis
-prescription to reduce the radii of all atoms in the material together
-until the reduced radii are just touching and never overlapping. These
-smaller radii are called the muffin-tin radii. The electron density
-within one muffin-tin radius is associated with the atom at the center
-of that sphere. All of the electron density that falls outside of the
-muffin-tin spheres is volumetrically averaged and treated as
-interstitial electron density. All the details are explained in the 
-[% INCLUDE html/link
+To address this situation, [%feff%] uses an algorithm called the
+Mattheis prescription, which inscribes spheres in [% INCLUDE html/link
+link="http://en.wikipedia.org/wiki/Wigner%E2%80%93Seitz_cell"
+text="Wigner-Seitz cells" %], to reduce the radii of all atoms in the
+material together until the reduced radii are just touching and never
+overlapping. These smaller radii are called the muffin-tin radii. The
+electron density within one muffin-tin radius is associated with the
+atom at the center of that sphere. All of the electron density that
+falls outside of the muffin-tin spheres is volumetrically averaged and
+treated as interstitial electron density. All the details are
+explained in the [% INCLUDE html/link
 link="http://link.aps.org/doi/10.1103/RevModPhys.72.621" text="Rehr &
 Albers paper" %] from Review of Modern Physics.
 
 The scattering amplitude and phase shift is then computed from atoms
-that have a specific size [%ndash%] the size of the muffin-tin spheres [%ndash%] and
-with the electron density associated with those spheres.
+that have a specific size [%ndash%] the size of the muffin-tin spheres
+[%ndash%] and with the electron density associated with those spheres.
 
 The reason that the two calculations shown above are so similar is
 because the muffin-tin radii of the Fe and S atoms are almost
 identical. This should not be surprising. Either way of constructing
-the muffin tins [%ndash%] using the proper [%fes2%] structure or using the
-rock-salt structure [%ndash%] start with Fe and S atoms separated by the same
-amount. The application of the algorithm for producing muffin-tin
-sizes ends up with nearly identical values. As a result the scattering
-amplitudes and phase shifts are nearly the same and the resulting
-[%chik%] functions are nearly the same.
+the muffin tins [%ndash%] using the proper [%fes2%] structure or using
+the rock-salt structure [%ndash%] start with Fe and S atoms separated
+by the same amount. The application of the algorithm for producing
+muffin-tin sizes ends up with nearly identical values. As a result the
+scattering amplitudes and phase shifts are nearly the same and the
+resulting [%chik%] functions are nearly the same.
 
 
 [% PROCESS section label="(Mis)Using the quick first shell tool beyond

@@ -323,6 +323,7 @@ sub normalize {
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
       $self->bkg_int(0);
+      $self->is_nor(1);
     } else {
       $self->bkg_step(1);
       #$self->bkg_fixstep(1);
@@ -346,7 +347,7 @@ sub normalize {
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
-    #$self->dispense("process", "is_nor");
+    $self->dispense("process", "is_nor");
   };
   $self->dispense("process", "nderiv") if not $self->is_nor;
 

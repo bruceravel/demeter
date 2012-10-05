@@ -1,0 +1,4 @@
+[%
+  background = bg ? bg : 'white';
+-%]
+<span style="color:#[%color%]; background-color:[%background%]">[%text%]</span>

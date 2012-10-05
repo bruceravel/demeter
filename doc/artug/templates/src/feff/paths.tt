@@ -38,6 +38,10 @@ Don't [%#'%] put too much faith in this assessment of importance.  You
 should explicitly check all paths to decide if they should be included
 in a fit.
 
+[% WRAPPER html/todo %]
+Explain path ranking
+[% END %]
+
 The fifth column gives the number of legs in each path.  The final
 column is a simple explanation of the shape of the scattering
 geometry.
