@@ -9,13 +9,13 @@
 	 thisurl = item.url.replace("$site.url.root", "$dots");
          pad;
   
-         IF item.subs;
-             "<br />\n";
-         END;
+         #IF item.subs;
+         #    "<br />\n";
+         #END;
          INCLUDE menu/text
            link = {
              text     = item.name
-             url      = thisurl
+             url      = item.here ? 0 : thisurl
              class    = item.hot ? 'menuselect' : 'menu'
            };
   
@@ -24,9 +24,11 @@
              INCLUDE menu/nest 
                menu = item 
                pad  = pad ? "&nbsp;&nbsp;&nbsp;$pad" 
-                          : "&nbsp;-&nbsp;";
+                          : "&nbsp;&#8618;&nbsp;";
          END;
   
-         "<br />\n";
+         UNLESS item.subs;
+           "<br />\n";
+         END;
      END
  -%]

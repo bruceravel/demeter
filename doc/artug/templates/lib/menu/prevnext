@@ -8,7 +8,7 @@
 -%]
 [% FILTER collapse %]
 [% IF page.prev -%]
-  Back: [% PROCESS menu/text link = {
+  Back: [% PROCESS menu/navtext link = {
 					text  = page.prev.name
 					url   = prev
 					class = 'menu'
@@ -20,7 +20,7 @@
         [% FILTER collapse %]
 [% IF page.next -%]
   Next: 
-  [% PROCESS menu/text link = {
+  [% PROCESS menu/navtext link = {
 			      text  = page.next.name
 			      url   = next
 			      class = 'menu'
@@ -32,7 +32,7 @@
         [% FILTER collapse %]
   [% IF page.down -%]
     Down: 
-    [% PROCESS menu/text link = {
+    [% PROCESS menu/navtext link = {
 			      text  = page.down.name
 			      url   = down
 			      class = 'menu'
@@ -45,7 +45,7 @@
   [% IF page.trail.size == 2 -%]
   [% up   = page.trail.first.url.replace("$site.url.root", '..') -%]
     Up: 
-    [% PROCESS menu/text link = {
+    [% PROCESS menu/navtext link = {
 			      text  = page.trail.first.name
 			      url   = up
 			      class = 'menu'

@@ -53,8 +53,8 @@ In the prior version of [%artemis%], a lot of users attempted to do
 this sort of thing using the quick first shell theory functionality
 (which still exists and which is described elsewhere).  This is a much
 superior approach.  The advantage of this approach is that it uses
-well constructed scattering potentials -- i.e. potentials from a real
-structure -- to make the special path.  Using the quick first shell
+well constructed scattering potentials [%ndash%] i.e. potentials from a real
+structure [%ndash%] to make the special path.  Using the quick first shell
 technique on a path this long results in poorly constructed
 potentials.
 [% END %]

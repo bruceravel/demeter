@@ -1,0 +1,1 @@
+<a class=navtable href="[% link.url %]" [%- " class=\"$link.class\"" IF link.class -%]>[%- link.text -%]</a>

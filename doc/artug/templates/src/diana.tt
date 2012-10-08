@@ -1,0 +1,40 @@
+[% META title = 'About Artemis' nosubpages = 1%]
+
+
+[% FILTER html_para %] 
+[%artemis%] is the goddess of the hunt, which is an apt metaphor for
+the chore of data analysis.  The name also includes a fallacious pun
+which works in English and in the Romance languages and which suggests
+that EXAFS data analysis is more an art than a science.
+[% END %]
+
+[% WRAPPER image75 file="Artemis.jpg" %]
+Temple of Artemis at Jerash, Jordan
+[% END %]
+
+[% FILTER html_para %]
+[% INCLUDE html/link
+link="http://en.wikipedia.org/wiki/Temple_of_Artemis_(Jerash)"
+text="Temple of Artemis at Jerash, Jordan"%].  Photo courtesy of
+Matthew Marcus.
+
+[% INCLUDE html/link text="The image used as the icon for the Windows
+installer package "
+   	   	     link="http://commons.wikimedia.org/wiki/File:Demeter_Pio-Clementino_Inv254.jpg" %]
+is a statue of a goddess restored as Demeter from the Vatican Museums,
+Vatican City. It is a Roman copy in marble after a Greek original from
+ca. 420 BC.
+
+[% INCLUDE html/link
+link="http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg"
+text="The image at the top of the navigation sidebar"%] is a votive
+relief from the Archaeological Museum of Brauron in Brauron, Greece.
+It depicts a family of worshippers sacrificing a goat to the goddess
+Artemis.
+
+
+[% WRAPPER html/todo %]
+Identify image used as desktop icon
+[% END %]
+
+[% END %]

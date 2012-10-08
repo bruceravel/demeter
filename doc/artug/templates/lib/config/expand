@@ -29,7 +29,8 @@
          # is this item on the path to the current page?
          item.hot  = page.file.match("^$item.path");
          item.subs = item.hot and item.menu;
-         item.here = (item.file == page.file);
+	 # item.here = (item.file == page.file);
+         item.here = (item.file == page.file.replace('tt', 'html'));
   
          # set next/prev if this is the actual page
          IF item.hot;

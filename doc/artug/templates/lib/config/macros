@@ -84,3 +84,4 @@
 [% MACRO latex  BLOCK -%] L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X [%- END -%]
 [% MACRO pm  BLOCK -%] +/- [%- END -%]
 [% MACRO ndash  BLOCK -%] &ndash; [%- END -%]
+[% MACRO hr  BLOCK -%] <hr class=bottomdivider /> [%- END -%]

@@ -1,5 +1,5 @@
-<a href="[% link.url %]"
- [%- " class=\"$link.class\"" 
-         IF link.class 
- -%]
- >[%- link.text -%]</a>
+[% IF link.url %]
+<a href="[% link.url %]" [%- " class=\"$link.class\"" IF link.class -%]>[%- link.text -%]</a>
+[% ELSE %]
+<span style="font-style: italic;">[%- link.text -%]</span>
+[% END %]

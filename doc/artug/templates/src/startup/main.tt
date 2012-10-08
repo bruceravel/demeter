@@ -235,7 +235,7 @@ extension.
 [% END %]
 
 [% WRAPPER scriptcaption this="datalist.png" %]
-As you import data, a stack of buttons -- one for each data group --
+As you import data, a stack of buttons [%ndash%] one for each data group [%ndash%]
 is made.  These buttons are used to show or hide the windows
 associated with each data group.  In this example, a multiple data set
 fit (i.e. one in which models for more than one data set are
@@ -308,8 +308,8 @@ will, by default, look for files with the
 [% END %]
 
 [% WRAPPER scriptcaption this="fefflist.png" %]
-As you import structural data, a stack of buttons -- one for each 
-[% feff %] calculation -- is made.  These buttons are used to show or
+As you import structural data, a stack of buttons [%ndash%] one for each 
+[% feff %] calculation [%ndash%] is made.  These buttons are used to show or
 hide the windows associated with each data group.  In this example,
 two [% feff %] calculations have been made.  Neither is being
 displayed on screen.

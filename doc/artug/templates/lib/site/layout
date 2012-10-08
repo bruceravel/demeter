@@ -1,25 +1,29 @@
 [% dots  = template.nosubpages ? "." : ".." -%]
+
 <div class=topbar>
   [% PROCESS navbar %]
-  [% INCLUDE site/logo %]
 </div>
 
-<hr class=hide />
-
-
 <div class=sidebar>
-  <a href="[% dots %]/diana.html"><img src=[% dots %]/../images/artemis_icon.png
-    width=100% border=0 alt='[Demeter logo]'></a>
+  <a href="[% dots %]/diana.html"><img src=[% dots %]/../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
   [% INCLUDE menu/nest menu = site.map %]
 </div>
 
+<div class=contentarea>
+
+
+[% INCLUDE site/logo %]
+
 [% content %]
 
+</div>
+
 <br />
-<hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  [% PROCESS navbar %]
   [% PROCESS copyright %]
 </div>
+

@@ -5,12 +5,13 @@
 %]
 
 
-[% WRAPPER scriptcaption this="Artemis.jpg" %]
+[% FILTER html_para -%]
 This document explains the operation of [%artemis%], a program for
 analysis of EXAFS data using [%feff%] and [%ifeffit%].  It is built
 using [% INCLUDE html/link link="http://bruceravel.github.com/demeter/" text="Demeter" %].
 
 [%demeter%] is:
+[% END %]
 
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
@@ -18,7 +19,7 @@ a set of [% INCLUDE html/link link="http://www.perl.org/" text="perl" %]
 modules and related files
 [% END %]
 [% WRAPPER html/li %]
-a programming tool but not an application -- it is the thing from which applications are built
+a programming tool but not an application [%ndash%] it is the thing from which applications are built
 [% END %]
 [% WRAPPER html/li %]
 [% INCLUDE html/link link="http://www.gnu.org/philosophy/free-sw.html"
@@ -27,7 +28,7 @@ text="free software"%], freely available from a
 text="git server"%]
 [% END %]
 [% WRAPPER html/li %]
-under heavy development
+actively developed and maintained
 [% END %]
 [% WRAPPER html/li %]
 in use by [% INCLUDE html/link link="http://xafs.org/BruceRavel"
@@ -37,6 +38,11 @@ text="its author"%] for real data analysis problems
 a front end to [% INCLUDE html/link
 link="http://feff.phys.washington.edu/" text="Feff"%] 
 and [% INCLUDE html/link link="http://cars9.uchicago.edu/ifeffit/About" text="Ifeffit"%]
+(and soon [% INCLUDE html/link
+link="http://xraypy.github.com/xraylarch/index.html" text="Larch"%]!) 
+[% END %]
+[% WRAPPER html/li %]
+the code base for Athena and Artemis
 [% END %]
 [% WRAPPER html/li %]
 named for [% INCLUDE html/link
@@ -44,7 +50,9 @@ link="http://en.wikipedia.org/wiki/Demeter" text="the Greek goddess of the harve
 [% END %]
 [% END %]
 
+[% FILTER html_para -%]
 [%artemis%] is:
+[% END %]
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
 a graphical front-end built using [%demeter%]
@@ -59,17 +67,27 @@ in use by hundreds of scientists world-wide
 [% END %]
 
 
-
-Sanctuary of Artemis in Jerash, Jordan.  Photo courtesy of Matthew Marcus.
-[% END %]
-
-
-[% FILTER html_para %]
+[% PROCESS subsection label="Useful links" %]
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
 [% INCLUDE html/link
 link="http://bruceravel.github.com/demeter/pods/installation.pod.html"
-text="Follow this link for installation instructions"%]
+text="Installation instructions"%]
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE html/link
+link="http://bruceravel.github.com/demeter/pods/bugs.pod.html"
+text="Hints on submitting a helpful bug report"%]
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE html/link
+link="http://bruceravel.github.com/demeter/pods/help.pod.html"
+text="Hints on how to ask questions on the Ifeffit mailing list"%]
+[% END %]
+[% END %]
 
-Document version [% document_version %] for [% demeter %] version [% demeter_version %].
+[% PROCESS subsection label="Version" %]
+[% FILTER html_para %]Document version [% document_version %] for [% demeter %] version [% demeter_version %].
 
 [% IF document_style == 'pod' %]
 [% PROCESS menu/splay %]

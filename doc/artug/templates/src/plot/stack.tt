@@ -12,7 +12,7 @@ as indicated by the the two values.  The initial value is the offset
 applied to the data.  All parts of the data (fit, window, etc) will
 also be plotrted with that offset.  The second value is a vertical
 displacement between successive paths.  Note that the displacement is
-downward -- that is, a value of +2 means to displace each path by -2
+downward [%ndash%] that is, a value of +2 means to displace each path by -2
 on the y-axis.  In this way, traces appear in the same top-to-bottom
 order as the plot legend when a positive value is chosen.
 
@@ -39,7 +39,7 @@ fit function, and the fitting window.  Offset downward are the paths
 from the first two coordination shells as evaluated in the fit.  Note
 that the size of an appropriate offset depends on the k-weighting and
 on the space the plot is made it.  [%artemis%] does not attempt to
-compute a sensible value  -- that is up to you.
+compute a sensible value  [%ndash%] that is up to you.
 
 [% WRAPPER image file="plot.invert.png" %]
 Plotting with inversion

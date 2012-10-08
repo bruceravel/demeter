@@ -14,15 +14,15 @@ Unfortunately, [%chinu%] is difficult to interpret directly.  In
 practice, the EXAFS analysis problem using [%feff%] is not a
 well-posed problem in the sense required by Gaussian statistics.  This
 is true for a variety of reasons.  In EXAFS, the signal is not ideally
-packed -- that is, the signal is not composed of pure sine waves.  In
+packed [%ndash%] that is, the signal is not composed of pure sine waves.  In
 general, you cannot guarantee that errors in your fitting parameters
 are normally distributed.  In general, we cannot actually identify and
 enumerate all sources of measurement error, many of which are complex
 and systematic, such as sample inhomogeneity, detector non-linearity,
 and so on.  Finally, we do not know the true line shape of our signal
--- instead we use [%feff%] to approximate the lineshape.
+[%ndash%] instead we use [%feff%] to approximate the lineshape.
 
-For all those reasons, [%chinu%] is rarely -- if ever -- close to 1 as
+For all those reasons, [%chinu%] is rarely [%ndash%] if ever [%ndash%] close to 1 as
 expected for a good fit.  Although [%chinu%] for different fitting
 models can be compared effectively, it is, generally speaking, not a
 sufficient criterion for evaluating the quality of an individual fit.

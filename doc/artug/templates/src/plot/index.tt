@@ -10,7 +10,7 @@ Gnuplot, Origin, Excel, Kaleidagraph, and others, it does provide
 enough options to create interesting and instructive visualization of
 your EXAFS fitting project.
 
-Let's [%#'%] breifly go over the basic features of the Plot window.
+Let's [%#'%] briefly go over the basic features of the Plot window.
 The buttons at the top are used to make plots of data and paths in one
 o fthe three spaces.  The data listed in the plotting list at the bottom
 of the Plot window will be included in the plots made with those three
@@ -18,8 +18,8 @@ buttons.
 
 The part of the complex [%chir%] or [%chiq%] functions is controled by
 the two sets of radiobuttons at the top of the [% INCLUDE font/quote
-a="limits" %] tab.  Additional traces -- the fit, the window, and so
-on -- can be included by clicking on their check buttons.  Finally,
+a="limits" %] tab.  Additional traces [%ndash%] the fit, the window, and so
+on [%ndash%] can be included by clicking on their check buttons.  Finally,
 the plotting range along the x-axis can be set for each of the three
 spaces.  At the top of the Plot window are a series of radio buttons
 used to set the k-weighting used in plots.  A plot of [%chik%] will be

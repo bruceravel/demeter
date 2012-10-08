@@ -68,7 +68,7 @@ forward and backward Fourier transforms.  The [% rmin %] and
 [% WRAPPER html/li %]
 These check buttons are used to set the k-weight values used to
 evaluate the fit.  Note that these are [% INCLUDE font/em a="check" %]
-buttons -- more than one can be selected at a time.  The default is to
+buttons [%ndash%] more than one can be selected at a time.  The default is to
 have all of 1, 2, and 3 checked, resulting in a multiple k-weight fit.
 [% END %]
 [% WRAPPER html/li %]
@@ -305,7 +305,7 @@ window and use those four parameters as the math expressions for
 [%s02%], [%e0%], [%delr%], and [%sigsqr%] for each path assigned to
 this data set.  This is intended only for a one-path, one-shell fit.
 While it may be tempting to expect broader utility out of this
-function -- don't do so. [%#'%]
+function [%ndash%] don't do so. [%#'%]
 [% END %]
 [% WRAPPER html/dt dt="Discard" %]
 Discard the displayed path, removing it from the path list.

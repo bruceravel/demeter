@@ -53,8 +53,8 @@ sections.
 [% PROCESS section label="Crystal data" %]
 
 [% FILTER html_para -%]
-The crystal cell data -- including lattice constants and angles, the
-space group symbol, and the shift vector elements -- are placed in
+The crystal cell data [%ndash%] including lattice constants and angles, the
+space group symbol, and the shift vector elements [%ndash%] are placed in
 text boxes for easy editing.  The coordinates of the unique sites are
 listed in the grid at the bottom of the window.  The absorber is
 chosen by clicking one of the boxes on the 
