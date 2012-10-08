@@ -293,6 +293,7 @@ pre {
 .navbar {
     background-color: #2E3434;
     float: top;
+    width: 100%;
     text-align: center;
     font: 0.9em sans-serif;
     border-top: 0px solid #2E3434;
@@ -343,6 +344,7 @@ a.navtable:hover {
     /* background-color: #2E3434 */
     /* color: #2E3434; */
     float: top;
+    width: 93%;
     position: fixed;
     border: none;
     border-top: 0;

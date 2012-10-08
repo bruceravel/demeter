@@ -3,7 +3,7 @@
 [% MACRO artemis BLOCK -%] [% PROCESS font/program a="artemis" | trim %] [%- END -%]
 [% MACRO feffit  BLOCK -%] [% PROCESS font/program a="feffit"  | trim %] [%- END -%]
 [% MACRO ifeffit BLOCK -%] [% PROCESS font/program a="ifeffit" | trim %] [%- END -%]
-[% MACRO ifeffit2 BLOCK -%] [% PROCESS font/program a="ifeffit2" | trim %] [%- END -%]
+[% MACRO larch   BLOCK -%] [% PROCESS font/program a="larch"   | trim %] [%- END -%]
 [% MACRO xfit    BLOCK -%] [% PROCESS font/program a="xfit"    | trim %] [%- END -%]
 [% MACRO atoms   BLOCK -%] [% PROCESS font/program a="atoms"   | trim %] [%- END -%]
 [% MACRO feff    BLOCK -%] [% PROCESS font/program a="feff"    | trim %] [%- END -%]

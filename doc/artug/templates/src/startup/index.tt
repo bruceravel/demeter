@@ -10,11 +10,11 @@ installed [% demeter %] using the standard installer package, you can
 also double click on an [% artemis %] project file (i.e. one with a
 [% INCLUDE font/file a=".fpj" %] extension) to open it in [% artemis %].
 
-On a unix computer, [% artemis %] is launched by typing 
-[% INCLUDE font/mono a="dartemis" %] in the shell.  Depending on how 
-[% demeter %] was installed on your computer, there may be some kind
-of application launcher, such as a desktop icon, a panel launcher, or
-an entry in some kind of application menu.
+On a unix computer, [% artemis %] is launched by typing [% INCLUDE
+font/mono a="dartemis" %] in the shell.  Depending on how [%demeter%]
+was installed on your computer, there may be some kind of application
+launcher, such as a desktop icon, a panel or dashboard launcher, or an
+entry in some kind of application menu.
 [% END %]
 
 
@@ -36,7 +36,7 @@ Everything will certainly look a little different on your computer.
 This and all other screenshots in this document were taken on one an
 Ubuntu Linux computer running KDE with custom window decorations.
 Although the details of the appearance may differ, all functionality
-is the same on all platforms.  (Also, you may not have a cool insect
+is the same on all platforms.  (You may not have a cool insect
 as the background image.  Your loss.)
 
 The window across the top of your screen is the 
@@ -52,7 +52,7 @@ window.  Clicking that button again will make the plot window reappear
 in the same place on your screen.
 
 The following two sections provide an overview of the functionality in
-these two windows.  We will return these amny times throughout this
+these two windows.  We will return these many times throughout this
 document. 
 [% END %]
 

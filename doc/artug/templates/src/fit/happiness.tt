@@ -1,4 +1,4 @@
-[% META title = 'The heuristic sanity parameter' %]
+[% META title = 'The heuristic happiness parameter' %]
 
 [% FILTER html_para -%]
 [%artemis%] evaluates a variety of statistical parameters relevant to

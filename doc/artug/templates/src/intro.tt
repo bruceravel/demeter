@@ -7,20 +7,23 @@
 
 [% FILTER html_para %]
 [% feff %] and [% ifeffit %] are amazing tools, but they can be
-somewhat hard to use.  [%feff%] reuires the use of clunky text files
-as its input.  [%ifeffit%] has a wordy, finicky syntax.  Both need to
-be wrapped up inside of something easier to use.  Hopefully,
-[%artemis%] is that something.
+somewhat hard to use.  [%feff%] requires the use of clunky text files
+with confusing syntax
+as its input.  [%ifeffit%] has a wordy, finicky syntax.  Both benefit
+by being wrapped up inside of something easier to use.  Hopefully,
+[%artemis%] is that something. 
 [% END %]
 
 [% PROCESS section label="The technology behind Artemis" %]
+
+[% PROCESS subsection label="perl" %]
 
 [% FILTER html_para %]
 [% demeter %] uses [% INCLUDE html/link
 link="http://perl.org" text="perl" %].  This is, I suppose, an unsexy
 choice these days.  All the cool kids are, after all, using python or
 ruby.  I like perl.  I can think in perl.  And I can code quickly and
-fluently in perl.  What's [%# ' %] more, perl has [% INCLUDE html/link
+fluently in perl.  What's [%#'%] more, perl has [% INCLUDE html/link
 link="http://www.cpan.org/" text="CPAN" %], the worlds largest
 repository of language extensions.  CPAN means that I have far fewer
 wheels to recreate (and probably get wrong).  Virtually any language
@@ -28,9 +31,17 @@ extension I need in pursuit of making [% demeter %] awesome probably
 already exists.
 [% END %]
 
-
-
-[% PROCESS subsection label="Wx" %]
+[% PROCESS subsection label="wxWidgets and wxPerl" %]
+[%artemis%] uses 
+[% INCLUDE html/link link="http://wxwidgets.org/" text="wxWidgets" %]
+and its perl wrapper 
+[% INCLUDE html/link link="http://wxperl.sourceforge.net/" text="wxPerl" %]
+as its graphical toolkit.  This cross-platform tool
+gives [%artemis%] a truly native look and feel because
+it uses the platform's [%#'%] native API rather than emulating the
+GUI.  Using wx's[%#'%] rich set of graphical tools, [%artemis%]
+strives to provide a powerful yet user-friendly environment in which
+to perform EXAFS data analysis.
 
 [% PROCESS subsection label="Moose" %]
 
@@ -77,11 +88,44 @@ that the rest of [% demeter %] is worth the wait.
 [% PROCESS subsection label="Templates and backends" %]
 
 [% FILTER html_para %]
-[%ifeffit%], upgradable to [%ifeffit2%].  Twp plotting backends, can
-use more.
+All of [%artemis%]'[%#'%] interactions with [%feff%], [%ifeffit%], and
+its plotting tools use [% INCLUDE html/link
+link="https://metacpan.org/module/Text::Template" text="a templating
+library"%].  Along with a clean separation between function within the
+[%demeter%] code base and syntax of the various tools used by
+[%demeter%], the use of templated interactions provides a clear
+upgrade path for all parts of [%artemis%].  
+[% END %]
 
-Also uses PDL
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Feff" %]
+Although [%demeter%] ships with a freely redistributable version of
+[%feff6%], it is possible to upgrade to use later versions of [%feff%]
+by providing an appropriate set of templates.  At this time, [%feff8%]
+is partially supported, with better support coming soon.
+[% END %]
+[% WRAPPER html/dt dt="Ifeffit and Larch" %]
+Matt Newville, the author of [%ifeffit%], is hard at work on
+[%ifeffit%]'s[%#'%] successor, called [%larch%].  The path to supporting
+[%larch%] will be relatively shallow, requiring only authorship of a
+new set of templates.
+[% END %]
+[% WRAPPER html/dt dt="plotting" %]
+[%demeter%] currently supports two plotting backends: PGPLOT, which is
+the native plotting tool in [%ifeffit%], and [%gnuplot%].  New
+plotting backends can be supported, again simply by creation of new
+set of templates.
+[% END %]
+[% END %]
 
-Can use anything for which a programming backend is available and
-which uses text-based instruction.
+[% FILTER html_para %]
+For numerically intensive parts of the code, [%artemis%] relies on
+[% INCLUDE html/link link="http://pdl.perl.org/" text="the Perl Data Language"%],
+a natively vector-oriented numerical language.
+
+[%artemis%] makes use a host of other tools from CPAN, the online perl
+library, including tools for date and time manipulation; heap and tree
+data structures; tools for formal graph theory; tools for manipulating
+zip, INI, and yaml files; and many others.  These tools from CPAN are
+extensively tested and highly reliable.
 [% END %]

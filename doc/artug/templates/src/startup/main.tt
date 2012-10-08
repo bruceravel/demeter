@@ -242,7 +242,8 @@ fit (i.e. one in which models for more than one data set are
 co-refined) is shown.  One of the associated data windows is displayed
 on screen, as indicated by the depressed state of the button labeld
 [% INCLUDE font/quote a="Dimethyltin dichloride" %].  The other data
-window is hidden.
+window is hidden.  [% INCLUDE html/link link="../data.html"
+text="See the Data window chapter."%]
 [% END %]
 
 
@@ -251,12 +252,12 @@ window is hidden.
 [% PROCESS subsection label="The Athena project selection dialog" %]
 
 [% WRAPPER scriptcaption this="athenaselection.png" %]
-When importing data from an [% athena %] project file, this dialog is
-shown.  It presents you with a list of all data groups from the
-project file.  The file listing is configured such that only one item
-can be selected at a time.  The selected data group is also plotted.  
-Any title lines from that data group are displayed in the text box on
-the upper right.
+When importing data from an [% athena %] project file, the project
+selection dialog is shown.  It presents you with a list of all data
+groups from the project file.  The file listing is configured such
+that only one item can be selected at a time.  The selected data group
+is also plotted.  Any title lines from that data group are displayed
+in the text box on the upper right.
 
 Beneath that is a series of radio buttons for selecting how the data
 are plotted.  Each time you click on a data group from the list, it
@@ -312,7 +313,8 @@ As you import structural data, a stack of buttons [%ndash%] one for each
 [% feff %] calculation [%ndash%] is made.  These buttons are used to show or
 hide the windows associated with each data group.  In this example,
 two [% feff %] calculations have been made.  Neither is being
-displayed on screen.
+displayed on screen.  [% INCLUDE html/link link="../feff/index.html"
+text="See the Atoms/Feff chapter."%]
 [% END %]
 
 
@@ -331,7 +333,10 @@ This section of the main window is used to specify properties of the
 fit.  The name is a short bit of text that will be used as a label for
 each fit.  The number will be auto-incremented unless you explicitly
 set it.
+[% END %]
 
+
+[% FILTER html_para %]
 The description is a longer bit of text which you can use to describe
 the current fitting model.  Here, too, the number is auto-incremented
 unless you explcitly set it.  The text from this box is written to the
@@ -356,12 +361,16 @@ All the way to the right of the main window are the
 [% INCLUDE font/quote a="Fit" %] and
 [% INCLUDE font/quote a="log" %] buttons.  Click the Fit button to
 initiate the fit.  The log button is used to show and hide a window
-which displays the log from the most recent fit.  In the event of a
+which displays the log from the most recent fit.  
+[% INCLUDE html/link link="../logjournal.html" text="See the chapter on
+the Log and Journal windows."%]
+In the event of a
 fit that exits abnormally, error messages explaining the problems will
 be show in the log window.
 
 At start-up the Fit button is yellow.  After each fit, the color of
 this button will range from red to green as a heuristic indication of
-the fit quality.  See the happiness chapter for more details.
+the fit quality.  [% INCLUDE html/link link="../fit/happiness.html"
+text="See the happiness chapter for more details."%]
 [% END %]
 
