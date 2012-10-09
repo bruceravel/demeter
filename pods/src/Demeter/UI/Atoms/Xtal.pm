@@ -581,6 +581,8 @@ sub get_crystal_data {
 
   foreach my $param (qw(b c)) {
     next if $self->{$param}->GetValue;
+    next if (($self->{$param}->GetValue =~ m{$NUMBER}) and
+	     ($self->{$param}->GetValue > 0));
     $self->{$param}->SetValue($self->{a}->GetValue);
   };
   foreach my $param (qw(rmax rpath)) {
@@ -589,7 +591,8 @@ sub get_crystal_data {
   };
 
   foreach my $param (qw(a b c alpha beta gamma rmax rpath)) {
-    $this = $self->{$param}->GetValue || 0;
+    my $val = ($param =~ m{alpha|beta|gamma}) ? 90 : 0;
+    $this = $self->{$param}->GetValue || $val;;
     if (is_PosNum($this)) {
       $atoms->$param($this);
     } else {

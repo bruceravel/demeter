@@ -14,53 +14,57 @@
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../startup/main.html" class="menu" >The main window</a>
+        Back: <a class=navtable href="../startup/main.html" class="menu">The main window</a>
         
         &nbsp;&nbsp;
-        Up: <a href="../startup/index.html" class="menu" >Starting Artemis</a>      </td>
+        Up: <a class=navtable href="../startup/index.html" class="menu">Starting Artemis</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  The plot window
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
-  <a href="../diana.html"><img src=../../images/artemis_icon.png
-    width=100% border=0 alt='[Demeter logo]'></a>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<br />
-<a href="../startup/index.html" class="menuselect" >Starting Artemis</a><br />
-&nbsp;-&nbsp;<a href="../startup/main.html" class="menu" >The main window</a><br />
-&nbsp;-&nbsp;<a href="../startup/plot.html" class="menuselect" >The plot window</a><br /><br />
-<a href="../data.html" class="menu" >The Data window</a><br />
-<a href="../feff/index.html" class="menu" >The Atoms/Feff window</a><br />
-<a href="../path/index.html" class="menu" >The Path page</a><br />
-<a href="../gds.html" class="menu" >The GDS window</a><br />
-<a href="../fit/index.html" class="menu" >Running a fit</a><br />
-<a href="../plot/index.html" class="menu" >The Plot window</a><br />
-<a href="../logjournal.html" class="menu" >The Log & Journal windows</a><br />
-<a href="../history.html" class="menu" >The History window</a><br />
-<a href="../monitor.html" class="menu" >Monitoring things</a><br />
-<a href="../prefs.html" class="menu" >Managing preferences</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menuselect">Starting Artemis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../startup/main.html"  class="menu">The main window</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">The plot window</span><br /><a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../extended/index.html"  class="menu">Extended topics</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  The plot window
+</h1>
 
 <p>
 
+</td>
+<td width=243>
+<a class=floatright href="../../images/plot.png" target=_blank><img border=0 src="../../images/plot.png" alt="plot.png"></a>
 The second window that appears when  <span class=program>ARTEMIS</span> starts is the Plot
 window.  An overview of the functionality of this window will be
 presented here, but the full picture of how plots are made in 
@@ -68,17 +72,7 @@ presented here, but the full picture of how plots are made in
 explained. 
 </p>
 
-
-<table>
-<tr>
-<td width=243>
-<a href="../../images/plot.png" target=_blank><img border=0 src="../../images/plot.png" alt="plot.png" width=100%></a>
-</td>
-<td width=10px>
-</td>
-<td>
 <p>
-
 At the top of the Plot window is a row of three buttons used to make
 plots in k, R, or q space.  These plots will be made using the
 contents of the &ldquo;Plotting list&rdquo; near the
@@ -179,48 +173,35 @@ plot from  <span class=program>ARTEMIS</span> as closely as possible using some 
 plotting program.
 </p>
 
-</td>
-</tr>
-</table>
+</div>
 
 <br />
-<hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../startup/main.html" class="menu" >The main window</a>
-        
-        &nbsp;&nbsp;
-        Up: <a href="../startup/index.html" class="menu" >Starting Artemis</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

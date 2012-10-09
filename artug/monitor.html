@@ -14,45 +14,48 @@
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+        [&nbsp;<a class=navtable href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="./history.html" class="menu" >The History window</a> &nbsp;&nbsp;
-        Next: <a href="./prefs.html" class="menu" >Managing preferences</a>      </td>
+        Back: <a class=navtable href="./history.html" class="menu">The History window</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="./prefs.html" class="menu">Managing preferences</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Monitoring things
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
-  <a href="./diana.html"><img src=./../images/artemis_icon.png
-    width=100% border=0 alt='[Demeter logo]'></a>
+  <a href="./diana.html"><img src=./../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="./index.html" class="menu" >Home</a><br />
-<a href="./intro.html" class="menu" >Introduction</a><br />
-<a href="./startup/index.html" class="menu" >Starting Artemis</a><br />
-<a href="./data.html" class="menu" >The Data window</a><br />
-<a href="./feff/index.html" class="menu" >The Atoms/Feff window</a><br />
-<a href="./path/index.html" class="menu" >The Path page</a><br />
-<a href="./gds.html" class="menu" >The GDS window</a><br />
-<a href="./fit/index.html" class="menu" >Running a fit</a><br />
-<a href="./plot/index.html" class="menu" >The Plot window</a><br />
-<a href="./logjournal.html" class="menu" >The Log & Journal windows</a><br />
-<a href="./history.html" class="menu" >The History window</a><br />
-<a href="./monitor.html" class="menuselect" >Monitoring things</a><br />
-<a href="./prefs.html" class="menu" >Managing preferences</a><br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<a href="./intro.html"  class="menu">Introduction</a><br />
+<a href="./startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="./data.html"  class="menu">The Data window</a><br />
+<a href="./feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="./path/index.html"  class="menu">The Path page</a><br />
+<a href="./gds.html"  class="menu">The GDS window</a><br />
+<a href="./fit/index.html"  class="menu">Running a fit</a><br />
+<a href="./plot/index.html"  class="menu">The Plot window</a><br />
+<a href="./logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="./history.html"  class="menu">The History window</a><br />
+<span style="font-style: italic;">Monitoring things</span><br />
+<a href="./prefs.html"  class="menu">Managing preferences</a><br />
+<a href="./examples/index.html"  class="menu">Worked examples</a><br />
+<a href="./extended/index.html"  class="menu">Extended topics</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Monitoring things
+</h1>
 
 <p>
  <span class=program>ARTEMIS</span> provides a number of tools for keeping track of things
@@ -68,21 +71,23 @@ they can be invaluable for diagnosing the problem.
 
 
 
+<hr class=hide /> 
 <a name="commandandstatusbuffers">
 
-<h3>  Command and status buffers</h3>
+<h2>  Command and status buffers</h2>
 </a>
 
+<hr class=hide /> 
 <a name="thecommandbuffer">
 
-<h4>  The Command buffer</h4>
+<h3>  The Command buffer</h3>
 </a>
 
-<table>
-<tr>
-<td>
 <p>
 
+</td>
+<td width=504>
+<a class=floatright href="../images/command_buffer.png" target=_blank><img border=0 src="../images/command_buffer.png" alt="command_buffer.png"></a>
 The command buffer window contains a record of every data processing
 and fitting command sent to  <span class=program>IFEFFIT</span>.  At the bottom of this window
 is the plotting buffer, which contains every command sent to the
@@ -94,47 +99,35 @@ These are very useful both for diagnosing problems and for learning
 the details of how  <span class=program>IFEFFIT</span> and Gnuplot work.
 </p>
 
-</td>
-<td width=504>
-<a href="../images/command_buffer.png" target=_blank><img border=0 src="../images/command_buffer.png" alt="command_buffer.png" width=100%></a>
-</td>
-</tr>
-</table>
-
+<hr class=hide /> 
 <a name="thestatusbuffer">
 
-<h4>  The Status buffer</h4>
+<h3>  The Status buffer</h3>
 </a>
 
-<table>
-<tr>
-<td>
 <p>
 
+</td>
+<td width=654>
+<a class=floatright href="../images/status_buffer.png" target=_blank><img border=0 src="../images/status_buffer.png" alt="status_buffer.png"></a>
 Every message sent to any of the status bars in  <span class=program>ARTEMIS</span> is
 time-stamped and logged in the status buffer.  This provides a sort of
 record of the major actions taken during your current  <span class=program>ARTEMIS</span>
 session. 
 </p>
 
-</td>
-<td width=654>
-<a href="../images/status_buffer.png" target=_blank><img border=0 src="../images/status_buffer.png" alt="status_buffer.png" width=100%></a>
-</td>
-</tr>
-</table>
 
-
+<hr class=hide /> 
 <a name="interactingwithifeffit">
 
-<h3>  Interacting with Ifeffit</h3>
+<h2>  Interacting with Ifeffit</h2>
 </a>
 
-<table>
-<tr>
-<td>
 <p>
 
+</td>
+<td width=504>
+<a class=floatright href="../images/show_arrays.png" target=_blank><img border=0 src="../images/show_arrays.png" alt="show_arrays.png"></a>
 One of the submenus in the Monitor menu on the Main window allows you
 to examine  <span class=program>IFEFFIT</span> data structures.  The results of these
 examination commands are displayed in the command buffer.  In this
@@ -155,55 +148,49 @@ capacity.  This information is displayed in the Main window status
 bar.  
 </p>
 
-</td>
-<td width=504>
-<a href="../images/show_arrays.png" target=_blank><img border=0 src="../images/show_arrays.png" alt="show_arrays.png" width=100%></a>
-</td>
-</tr>
-</table>
 
-
+<hr class=hide /> 
 <a name="debuggingdemeter">
 
-<h3>  Debugging Demeter</h3>
+<h2>  Debugging Demeter</h2>
 </a>
 
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp;
+Explain configuration for turning on debug menus, explain utility of
+debug menus
+</p>
+
+</div>
+
 <br />
-<hr class=hide />
+ <hr class=hide /> 
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="./history.html" class="menu" >The History window</a> &nbsp;&nbsp;
-        Next: <a href="./prefs.html" class="menu" >Managing preferences</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

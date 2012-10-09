@@ -14,59 +14,68 @@
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+        [&nbsp;<a class=navtable href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
-        Next: <a href="./startup/index.html" class="menu" >Starting Artemis</a>      </td>
+        Back: <a class=navtable href="./index.html" class="menu">Home</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="./startup/index.html" class="menu">Starting Artemis</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Introduction
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
-  <a href="./diana.html"><img src=./../images/artemis_icon.png
-    width=100% border=0 alt='[Demeter logo]'></a>
+  <a href="./diana.html"><img src=./../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="./index.html" class="menu" >Home</a><br />
-<a href="./intro.html" class="menuselect" >Introduction</a><br />
-<a href="./startup/index.html" class="menu" >Starting Artemis</a><br />
-<a href="./data.html" class="menu" >The Data window</a><br />
-<a href="./feff/index.html" class="menu" >The Atoms/Feff window</a><br />
-<a href="./path/index.html" class="menu" >The Path page</a><br />
-<a href="./gds.html" class="menu" >The GDS window</a><br />
-<a href="./fit/index.html" class="menu" >Running a fit</a><br />
-<a href="./plot/index.html" class="menu" >The Plot window</a><br />
-<a href="./logjournal.html" class="menu" >The Log & Journal windows</a><br />
-<a href="./history.html" class="menu" >The History window</a><br />
-<a href="./monitor.html" class="menu" >Monitoring things</a><br />
-<a href="./prefs.html" class="menu" >Managing preferences</a><br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<span style="font-style: italic;">Introduction</span><br />
+<a href="./startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="./data.html"  class="menu">The Data window</a><br />
+<a href="./feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="./path/index.html"  class="menu">The Path page</a><br />
+<a href="./gds.html"  class="menu">The GDS window</a><br />
+<a href="./fit/index.html"  class="menu">Running a fit</a><br />
+<a href="./plot/index.html"  class="menu">The Plot window</a><br />
+<a href="./logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="./history.html"  class="menu">The History window</a><br />
+<a href="./monitor.html"  class="menu">Monitoring things</a><br />
+<a href="./prefs.html"  class="menu">Managing preferences</a><br />
+<a href="./examples/index.html"  class="menu">Worked examples</a><br />
+<a href="./extended/index.html"  class="menu">Extended topics</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Introduction
+</h1>
 
 <p>
 
  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> are amazing tools, but they can be
-somewhat hard to use.   <span class=program>FEFF</span> reuires the use of clunky text files
-as its input.   <span class=program>IFEFFIT</span> has a wordy, finicky syntax.  Both need to
-be wrapped up inside of something easier to use.  Hopefully,
- <span class=program>ARTEMIS</span> is that something.
+somewhat hard to use.   <span class=program>FEFF</span> requires the use of clunky text files
+with confusing syntax
+as its input.   <span class=program>IFEFFIT</span> has a wordy, finicky syntax.  Both benefit
+by being wrapped up inside of something easier to use.  Hopefully,
+ <span class=program>ARTEMIS</span> is that something. 
 </p>
 
 
 <a name="thetechnologybehindartemis">
 
-<h3>  The technology behind Artemis</h3>
+<h2>  The technology behind Artemis</h2>
+</a>
+
+<a name="perl">
+
+<h3>  perl</h3>
 </a>
 
 <p>
@@ -82,16 +91,24 @@ already exists.
 </p>
 
 
+<a name="wxwidgetsandwxperl">
 
-
-<a name="wx">
-
-<h4>  Wx</h4>
+<h3>  wxWidgets and wxPerl</h3>
 </a>
+ <span class=program>ARTEMIS</span> uses 
+<a href="http://wxwidgets.org/">wxWidgets</a>
+and its perl wrapper 
+<a href="http://wxperl.sourceforge.net/">wxPerl</a>
+as its graphical toolkit.  This cross-platform tool
+gives  <span class=program>ARTEMIS</span> a truly native look and feel because
+it uses the platform's  native API rather than emulating the
+GUI.  Using wx's rich set of graphical tools,  <span class=program>ARTEMIS</span>
+strives to provide a powerful yet user-friendly environment in which
+to perform EXAFS data analysis.
 
 <a name="moose">
 
-<h4>  Moose</h4>
+<h3>  Moose</h3>
 </a>
 
 <p>
@@ -139,62 +156,103 @@ that the rest of  <span class=program>DEMETER</span> is worth the wait.
 </p>
 
 
-<a name="templatesandbackends">
+<a name="templates,backends,andothertools">
 
-<h4>  Templates and backends</h4>
+<h3>  Templates, backends, and other tools</h3>
 </a>
 
 <p>
 
- <span class=program>IFEFFIT</span>, upgradable to  <span class=program>IFEFFIT2</span>.  Twp plotting backends, can
-use more.
+All of  <span class=program>ARTEMIS</span>' interactions with  <span class=program>FEFF</span>,  <span class=program>IFEFFIT</span>, and
+its plotting tools use <a href="https://metacpan.org/module/Text::Template">a templating
+library</a>.  Along with a clean separation between function within the
+ <span class=program>DEMETER</span> code base and syntax of the various tools used by
+ <span class=program>DEMETER</span>, the use of templated interactions provides a clear
+upgrade path for all parts of  <span class=program>ARTEMIS</span>.  
+</p>
+
+
+<dl>
+  
+<dt>
+  Feff
+</dt>
+<dd>
+Although  <span class=program>DEMETER</span> ships with a freely redistributable version of
+ <span class=program>FEFF6</span>, it is possible to upgrade to use later versions of  <span class=program>FEFF</span>
+by providing an appropriate set of templates.  At this time,  <span class=program>FEFF8</span>
+is partially supported, with better support coming soon.
+  <br />
+  <br />
+</dd>
+<dt>
+  Ifeffit and Larch
+</dt>
+<dd>
+Matt Newville, the author of  <span class=program>IFEFFIT</span>, is hard at work on
+ <span class=program>IFEFFIT</span>'s successor, called  <span class=program>LARCH</span>.  The path to supporting
+ <span class=program>LARCH</span> will be relatively shallow, requiring only authorship of a
+new set of templates.
+  <br />
+  <br />
+</dd>
+<dt>
+  plotting
+</dt>
+<dd>
+ <span class=program>DEMETER</span> currently supports two plotting backends: PGPLOT, which is
+the native plotting tool in  <span class=program>IFEFFIT</span>, and  <span class=program>GNUPLOT</span>.  New
+plotting backends can be supported, again simply by creation of new
+set of templates.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<p>
+
+For numerically intensive parts of the code,  <span class=program>ARTEMIS</span> relies on
+<a href="http://pdl.perl.org/">the Perl Data Language</a>,
+a natively vector-oriented numerical language.
 </p>
 
 <p>
-Also uses PDL
+ <span class=program>ARTEMIS</span> makes use a host of other tools from CPAN, the online perl
+library, including tools for date and time manipulation; heap and tree
+data structures; tools for formal graph theory; tools for manipulating
+zip, INI, and yaml files; and many others.  These tools from CPAN are
+extensively tested and highly reliable.
 </p>
 
-<p>
-Can use anything for which a programming backend is available and
-which uses text-based instruction.
-</p>
+</div>
 
 <br />
-<hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
-        Next: <a href="./startup/index.html" class="menu" >Starting Artemis</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

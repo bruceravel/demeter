@@ -1,0 +1,355 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Using a data group's characteristic value</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/qfs.html" class="menu">Quick first shell theory</a>
+        
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Characteristic value</span><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Using a data group's characteristic value
+</h1>
+
+<p>
+At the top of
+<a href="../data.html">the Data window</a>
+is the control for setting the
+<em>characteristic value</em>, or 
+<em>CV</em>, of a data group.  In this section, the
+purpose and use of the CV is explained.
+</p>
+
+<p>
+The CV is a user-defined number which is associated with the data set
+and is used for special purposes when evaluating the math expressions
+associated with def and path parameters.  By default,  <span class=program>ARTEMIS</span>
+simply increments the CV value for each data set imported  &ndash; 
+the first is set to 1, the second to 2, and so on.  These values can
+be changed, but should always be integer-valued.
+</p>
+
+<p>
+The CV value is used in two ways to construct rich math expressions
+and expressive fitting models.
+</p>
+
+
+<a name="thecvtoken">
+
+<h2>  The CV token</h2>
+</a>
+
+<p>
+Consider a multiple data set fit to a material measured at various
+temperatures.  For this discussion, let's consider a rock salt
+structured metal oxide, for instance ZnO.  Let's also suppose
+that we have measured data at three temperatures, 10 K, 300 K, and 500 K.
+</p>
+
+<p>
+In a multiple data set fit, you may choose to model the  &sigma;&sup2;  of
+the first shell Zn-O bond using an Einstein model.  This allows you to
+parameterize the  &sigma;&sup2;  at each temperature as a function of a
+single variable parameter, the Einstein temperature. To do this, you
+must define a <span style="color:#a300a3; background-color:white">guess</span>
+parameter to represent the Einstein temperature like so:
+</p>
+
+<pre>
+guess thetae = 500
+</pre>
+
+<p>
+The functional form of 
+<a href="http://dx.doi.org/10.1103/PhysRevB.20.4908">the Einstein model</a> takes the variable Einstein temperature
+and the sample's measurement temperature as its arguments.
+</p>
+
+<pre>
+path {
+       sigma2 = eins(temp, thetae)
+}
+</pre>
+<p>
+where <tt>temp</tt> represents the sample
+temparature.  The pseudo-syntax used here is simply meant to represent
+the  &sigma;&sup2;  parameter on a <a href="../path/index.html">the Path page</a>.
+</p>
+
+<p>
+In a multiple data set fit, you would have to take care that 
+<tt>temp</tt> is replaced each time it is used.
+That could be done in two ways.  You could use various set
+parameters:
+</p>
+
+
+<pre>
+set temp1 = 10
+set temp2 = 300
+set temp3 = 500
+
+path for data set 1 {
+       sigma2 = eins(temp1, thetae)
+}
+path for data set 2 {
+       sigma2 = eins(temp2, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(temp3, thetae)
+}
+</pre>
+<p>
+Or you could simply state the temperature explicitly in the path
+parameter math expressions:
+</p>
+
+<pre>
+path for data set 1 {
+       sigma2 = eins(10,  thetae)
+}
+path for data set 2 {
+       sigma2 = eins(300, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(500, thetae)
+}
+</pre>
+
+
+<p>
+Both of those solutions work.  But neither make effective use of the
+model building automation in  <span class=program>ARTEMIS</span>.  In the chapter on
+<a href="../path/mathexp.html">the Path
+window</a>, you learned about various ways of pushing path parameter
+values onto other paths.  One efficient way of setting up a multiple
+data set fit would be to edit the path parameters for one of the data
+sets, then push the path parameters onto the other data sets.
+</p>
+
+<p>
+Using the two strategies summarized above, you would need to do
+considerable editing after pushing the path parameter values.  That
+sort of editing is often error-prone.
+</p>
+
+<p>
+Here is a third way of solving this problem.  
+</p>
+
+<ol>
+  
+<li>
+  
+Set the CV for the three data sets to the temperature at which the
+data were measured.  In our example, the three data sets would get CV
+values of 10, 300, and 500.
+</li>
+<li>
+  
+Next, edit the  &sigma;&sup2;  path parameter for one of the data sets to
+read
+<pre>
+path for data set 1 {
+       sigma2 = eins([CV],  thetae)
+}
+</pre>
+</li>
+<li>
+  
+Finally, push this  &sigma;&sup2;  value on the other data sets without
+editing those to which it is pushed.
+</li>
+</ol>
+
+<p>
+When  <span class=program>ARTEMIS</span> evaluates the fitting model, it will replace the
+<tt>[CV]</tt> token with the appropriate
+characteristic value.  In short, the computer handles the error-prone
+(for a human) task of editing the many  &sigma;&sup2;  path parameters.
+</p>
+
+<p>
+While this may seem like a small improvement over handling the editing
+chores yourself, use of the CV really pays off for large or
+complicated fitting models.  For a multiple data set fit with many
+data sets, use of the CV saves quite a bit of editing.  Furthermore,
+you can use the CV value in many path parameter math expressions.  For
+example, suppose you were to model the  &Delta;R  values with a
+temperature-dependent, linear explansion coefficient.  The use of the
+CV in those math expressions saves even more error-prone, manual editing!
+</p>
+
+
+<a name="useinlguessparameters">
+
+<h2>  Use in lguess parameters</h2>
+</a>
+
+<p>
+The second use of the CV is along with <span style="color:#3E1C8F; background-color:white">lguess</span> parameters.  These parameters are an
+eficient way of generating per-data-set guess parameters in a multiple
+data set fit while still making good use of the automation in
+ <span class=program>ARTEMIS</span> for pushing path parameter math expressions between data
+sets. 
+</p>
+
+<p>
+Let's again consider the ZnO sample measured at the same three
+temparatures.  This time, however, we choose to float an independent
+ &sigma;&sup2;  parameter at each temperature.
+</p>
+
+<p>
+The straightforward way of doing this would be something like
+</p>
+
+<pre>
+guess ss1 = 0.002
+guess ss2 = 0.004
+guess ss3 = 0.006
+
+path for data set 1 {
+       sigma2 = ss1
+}
+path for data set 2 {
+       sigma2 = ss2
+}
+path for data set 3 {
+       sigma2 = ss3
+}
+</pre>
+
+<p>
+Here is how this can be done using the CV and an lguess parameter.
+First, set the CV values to the temperature values, as before.  Next,
+do the following:
+</p>
+
+<pre>
+lguess ss = 0.002
+
+path for data set 1 {
+       sigma2 = ss
+}
+path for data set 2 {
+       sigma2 = ss
+}
+path for data set 3 {
+       sigma2 = ss
+}
+</pre>
+
+<p>
+ <span class=program>ARTEMIS</span> will notice that <tt>ss</tt> is an
+lguess parameter.  For each data set in which it is used,  <span class=program>ARTEMIS</span>
+will create a guess parameters named <tt>ss_[CV]</tt>, where, as before, the <tt>[CV]</tt>
+is replaced by the CV value.
+</p>
+
+<p>
+In the case of our example, three guess parameters will be created
+called 
+<tt>ss_10</tt>,
+<tt>ss_300</tt>, and
+<tt>ss_500</tt>.  Each of those will be given the
+initial value of the coresponding lguess parameter (0.002 in this
+case).  The lguess parameter will not be used in the fit, but each of
+the generated guess parameters will be floated.  At the end of the
+fit, the log file will report on each as for any other guess
+parameter. 
+</p>
+
+<p>
+The utility of the lguess parameter is that it allows you to define a
+common fitting model used across many data sets.  You can use the
+automation built into  <span class=program>ARTEMIS</span> to push those path parameter math
+expressions between paths and data sets.  Without further editing,
+the desired fitting model  &ndash;  with one guess parameter for each
+data set  &ndash;  is correctly made.
+</p>
+
+</div>
+
+<br />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

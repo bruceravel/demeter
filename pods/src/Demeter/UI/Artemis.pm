@@ -1140,7 +1140,7 @@ sub make_feff_frame {
       return;
     };
   } else {
-    $frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->{Atoms}->{used} = 1;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
 
     if ($file ne $BLANK) {
