@@ -1,13 +1,13 @@
 [% dots  = template.nosubpages ? "." : ".." %]
   <div class=navbar>
+  <a class=navhead href="[% dots %]/index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="[% dots %]/index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="[% site.url.demeter %]">[% demeter_link %]</a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="[% site.url.ifeffit %]">[% ifeffit_link %]</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="[% site.url.feff %]">[% feff_link %]</a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="[% site.url.xafsorg %]">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="[% site.url.demeter %]">[% demeter_link %]</a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="[% site.url.ifeffit %]">[% ifeffit_link %]</a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="[% site.url.feff %]">[% feff_link %]</a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="[% site.url.xafsorg %]">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="[% dots %]/demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>

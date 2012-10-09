@@ -313,8 +313,8 @@ pre {
     background-color: #2E3434;
     float: top;
     width: 100%;
-    text-align: center;
-    font: 0.9em sans-serif;
+    /* text-align: center; */
+    /* font: 0.9em sans-serif; */
     border-top: 0px solid #2E3434;
     border-left: 0px solid #2E3434;
     border-right: 0px solid #2E3434;
@@ -331,9 +331,27 @@ pre {
     margin-right: 10px;
     margin-left: -8px;
 }
+.navhead {
+    color: #ffffff;
+    font: 1.3em bold;
+    width: 100%
+}
+
+a.navhead:link {
+    text-decoration: none;
+    color: yellow;
+}
+a.navhead:visited {
+    text-decoration: none;
+    color: yellow;
+}
+a.navhead:hover {
+    text-decoration: none;
+    color: cyan;
+}
 .navtable {
     color: #ffffff;
-    font: 1.1em bold;
+    font: 1.0em bold;
     width: 100%;
 }
 a.navtable:link {
@@ -397,7 +415,7 @@ a.navtable:hover {
     background: #ffffff;
     color: #000;
     float: right;
-    margin-top: 5em;
+    margin-top: 7em;
     margin-bottom: 10;
     margin-left: 80%;
     margin-right: 0;
