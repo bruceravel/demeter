@@ -19,3 +19,7 @@ for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
 [% END %]
 [% END %]
+
+[% WRAPPER html/todo %]
+Pages for (1) Empirical paths, (2) Histograms
+[% END %]

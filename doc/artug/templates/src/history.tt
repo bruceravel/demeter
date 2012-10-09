@@ -10,13 +10,15 @@ part of the fitting project.  When a project file is written, this
 history is stored in the project file.  This allows you to compare
 fits or even to revert [%artemis%] to an earlier fit.
 
+[% WRAPPER image file="history.log.png" %]
+Fit history window
+[% END %]
+
 Interactions with the fit history are via the History window, which is
 shown and hidden using the History button on the left side of the Main
 window. 
-[% END %]
 
-[% WRAPPER scriptcaption this="history.log.png" %]
-Tie History window shows two major controls.  On the left is a list
+The History window shows two major controls.  On the left is a list
 all fits performed as part of the fitting prject.  Like many other
 lists in [%artemis%], this contains elements that can be selected and
 marked.  This list uses multiple selection, so control-clicking can be
@@ -36,7 +38,7 @@ For a large project file, this greatly speeds up import at the small
 cost of a pause when examining log files.
 [% END %]
 
-[% WRAPPER scriptcaption this="history.menu.png" %]
+[% WRAPPER floatright this="history.menu.png" %]
 Each fit in the list will display a context menu when right clicked.
 Again, there may be a short pause before the menu gets posted.  In
 that menu are a variety of functions related to the fit history.

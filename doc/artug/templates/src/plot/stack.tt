@@ -1,6 +1,6 @@
 [% META title = 'Stacked plots' %]
 
-[% WRAPPER scriptcaption this="stacktab.png" %] With a large number of
+[% WRAPPER floatright this="stacktab.png" %] With a large number of
 items in the plotting list, a plot may become quite hard to understand
 due to the large number of overlapping traces.
 

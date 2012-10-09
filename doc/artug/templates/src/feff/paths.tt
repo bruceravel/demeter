@@ -62,7 +62,7 @@ or used in some other context in a [%demeter%] script.  The remaining
 buttons are related to making plots of the selected paths.
 [% END %]
 
-[% WRAPPER scriptcaption this="feff.plot.png" %]
+[% WRAPPER floatleft this="feff.plot.png" %]
 A plot of paths from raw [%feff%] calculation.  In this example, the
 first four paths from the nickel metal calculation were selected, then
 the [% INCLUDE font/quote a="Plot selection" %] button was pressed.
@@ -85,9 +85,7 @@ It is, therefore, very quick and easy to examine the results of a
 the plot of paths is made.  The options are [%chik%], [%chir_mag%],
 [%chir_re%], and [%chir_im%].  The k-weight selected in the Plot
 window is used to make the plot of paths.
-[% END %]
 
-[% FILTER html_para -%]
 Right clicking on an entry in the paths list will open a dialog window
 with more details about the geomtery of the scattering path.  In the
 following figure, the selected path (#0012) was right-clicked on,

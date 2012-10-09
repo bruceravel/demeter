@@ -138,7 +138,11 @@ on the Plot window.  The examples shown here are for a fit to gold
 metal out to the fourth coordination shell.
 [% END %]
 
-[% WRAPPER scriptcaption this="plot_k123.png" %]
+[% PROCESS paragraph label="The k123 plot" %]
+[% WRAPPER image file="plot_k123.png" %]
+k123 plot
+[% END %]
+[% FILTER html_para -%]
 This is the [% INCLUDE font/quote a="k123" %] plot.  It shows the data
 and fit as [% chik %].  Each k-weighting from 1 to 3 is shown.  The
 data with k-weighting of 2 is plotted normally.  The other two
@@ -147,8 +151,13 @@ k-weighting appear to be about the same size in the plot.  The Fourier
 transform window function is drawn over the k-weight of 1 spectrum.
 [% END %]
 
-[% WRAPPER scriptcaption this="plot_r123.png" %]
-This is the [% INCLUDE font/quote a="k123" %] plot.  It shows the data
+
+[% PROCESS paragraph label="The R123 plot" %]
+[% WRAPPER image file="plot_r123.png" %]
+R123 plot
+[% END %]
+[% FILTER html_para -%]
+This is the [% INCLUDE font/quote a="R123" %] plot.  It shows the data
 and fit as [% chir %].  The Fourier transform has been done with each
 k-weighting from 1 to 3.  The data with k-weighting of 2 is plotted
 normally.  The other two k-weightings are scaled by the appropriate
@@ -158,7 +167,12 @@ over the k-weight of 1 spectrum to indicate the range over which the
 fit was evaluated (assuming the fit space is R, as is the default).
 [% END %]
 
-[% WRAPPER scriptcaption this="plot_rmr.png" %]
+
+[% PROCESS paragraph label="The Rmr plot" %]
+[% WRAPPER image file="plot_rmr.png" %]
+Rmr plot
+[% END %]
+[% FILTER html_para -%]
 The [% INCLUDE font/quote a="Rmr" %] plot is the default plot
 displayed after a fit.  It shows the magnitude and real part of 
 [% chir %] using the value of k-weighting selected in the Plot window.
@@ -169,7 +183,12 @@ the Plot window for selecting the part of [% chir %] is respected when
 this plot is made.
 [% END %]
 
-[% WRAPPER rscriptcaption this="plot_rk.png" %]
+
+[% PROCESS paragraph label="The Rk plot" %]
+[% WRAPPER image file="plot_rk.png" %]
+Rk plot
+[% END %]
+[% FILTER html_para -%]
 The [% INCLUDE font/quote a="Rk" %] plot is a stacked plot with the
 [% INCLUDE font/quote a="Rmr" %] on the bottom and [% chik %] on the
 top.  The value of k-weighting selected in the Plot window is used.
@@ -177,7 +196,13 @@ Fourier transform windows are drawn over the [% chik %] and
 [% chir_mag %] spectra.
 [% END %]
 
-[% WRAPPER scriptcaption this="plot_kq.png" %]
+
+
+[% PROCESS paragraph label="The kq plot" %]
+[% WRAPPER image file="plot_kq.png" %]
+kq plot
+[% END %]
+[% FILTER html_para -%]
 The [% INCLUDE font/quote a="kq" %] plot shows the data and fit as 
 [% chik %] and [% chiq %].  The value of k-weighting selected in the
 Plot window is used.  The Fourier transform windows are drawn over 
@@ -191,7 +216,7 @@ the [% chik %] spectra.
 
 [% PROCESS subsection label="The Data menu" %]
 
-[% WRAPPER scriptcaption this="data.datamenu.png" %]
+[% WRAPPER floatright this="data.datamenu.png" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Rename" %]
 Change the name of this data set.  This is the name displayed next to
@@ -257,7 +282,7 @@ window status bar.
 
 [% PROCESS subsection label="The Path menu" %]
 
-[% WRAPPER scriptcaption this="data.pathmenu.png" %]
+[% WRAPPER floatright this="data.pathmenu.png" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Transfer" %]
 Transfer the displayed path to the plotting list in the Ploy window.
@@ -315,7 +340,7 @@ Discard the displayed path, removing it from the path list.
 
 [% PROCESS subsection label="The Marks menu" %]
 
-[% WRAPPER scriptcaption this="data.marksmenu.png" %]
+[% WRAPPER floatright this="data.marksmenu.png" %]
 Much of [%artemis%]'[%#'%] functionality revolves around groups of
 marked paths.  This menu contains a number of shortcuts for marking
 paths.  Note that each of these has a keyboard shortcut
@@ -343,7 +368,7 @@ of the label at the top of the path page.
 
 [% PROCESS subsection label="The Actions menu" %]
 
-[% WRAPPER scriptcaption this="data.actionsmenu.png" %]
+[% WRAPPER floatright this="data.actionsmenu.png" %]
 Every item in this menu operates on the set of marked paths.  Again,
 keyboard shortcuts are given in the menu.
 

@@ -51,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
 /*   margin:0 0 22px; */
 /* } */
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     /* font-family: Arvo, Monaco, serif; */
     /* font-family: Constantia,Georgia,'Nimbus Roman No9 L',serif; */
     font-family:'Courier New',Courier,'Nimbus Mono L','Lucida Console','DejaVu Sans Mono',monospace;
@@ -69,6 +69,11 @@ h2, h3 {
     border-top: 1px solid #ccc;
     padding-bottom: 5px;
 }
+h4 {
+    display: block;
+    border-top: 1px dashed #ccc;
+    padding-bottom: 5px;
+}
 
 h1 {
     font-size: 30px;
@@ -82,7 +87,11 @@ h3 {
     font-size: 22px;
 }
 
-h4, h5, h6 {
+h4 {
+    font-size: 18px;
+}
+
+h5, h6 {
     font-family: Arvo, Monaco, serif;
     font-weight: 700;
 }
@@ -436,4 +445,17 @@ a.navtable:hover {
     background-color: #460078;
     height: 2px;
     border: 0;
+}
+
+.floatright {
+    float: right;
+    margin: 0 0 10px 10px;
+    border: 0;
+    padding: 2px;
+}
+.floatleft {
+    float: left;
+    margin: 0 10px 10px 0;
+    border: 0;
+    padding: 2px;
 }

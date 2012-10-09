@@ -157,13 +157,13 @@ This is mostly used in the stand-along version of [%atoms%].  Right
 clicking this button will post the recent files dialog populated with
 recently imported [% INCLUDE font/file a="atoms.inp" %], 
 [% INCLUDE font/file a="feff.inp" %], and CIF files.
+[% END %]
 
+[% WRAPPER floatleft this="feff.export.png" %]
 The save button will prompt you for a filename for an output 
 [% INCLUDE font/file a="atoms.inp" %] saving the current state of the
 tab.
-[% END %]
 
-[% WRAPPER scriptcaption this="feff.export.png" %]
 Clicking the export button will post this dialog offering several
 different kinds of output files based on the current crystal data.
 The [% INCLUDE font/quote a="Feff6" %] and [% INCLUDE font/quote
@@ -176,9 +176,7 @@ font/quote a="Spacegroup" %] option writes a file that fully describes
 the current crystal space group. the [% INCLUDE font/quote
 a="Absorption" %] option writes a file containing some calculations
 based on tables of X-ray absorption coefficients.
-[% END %]
 
-[% FILTER html_para -%]
 The clear button is used to clear all data from all controls on the
 [%atoms%] tab.
 

@@ -15,7 +15,7 @@ window.
 
 
 
-[% WRAPPER scriptcaption this="log.png" %]
+[% WRAPPER floatright this="log.png" %]
 All of the details of the fit are recorded in the text displayed in
 this window.  Below the descriptive fitting properties displayed at
 the top in blue text are the main fitting statistics, including
@@ -50,7 +50,7 @@ log to a text file or to print its contents.
 [%# ################################################################ %]
 [% PROCESS section label="The Journal window" %]
 
-[% WRAPPER scriptcaption this="journal.png" %]
+[% WRAPPER floatright this="journal.png" %]
 Clicking the [% INCLUDE font/quote a="Journal" %] button on the right
 side of the Main window displays and hides the Journal window.  This
 is simply a blank text box in which you can write notes about your

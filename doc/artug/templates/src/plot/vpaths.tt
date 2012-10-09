@@ -31,7 +31,7 @@ A plot with the overlapping paths made into a single VPath
 [% END %]
 [% END %]
 
-[% WRAPPER scriptcaption this="uranyl.png" %]
+[% WRAPPER floatright this="uranyl.png" %]
 Here is another example of how a VPath can help visualize the
 components of a fit.  The data in the follow two figures are of
 uranium [%l3%] edge EXAFS of uranyl acetate in solution.  Uranyl
@@ -46,14 +46,14 @@ those oxygen atoms are at such a short distance, there are a few
 multiple scattering paths that contribute significant spectral weight
 just beyond the region dominated by single scattering from the
 equatorial oxygen atoms.
-[% END %]
-
-[% FILTER html_para -%]
 
 Here is the plot the fit to the uranyl acetate data along with each of
 the single and multiple scattering paths  that involve the axial
 oxygen atoms.    Again, it is ahrd to appreciate how the various
 multiple scattering paths contribute to the fit.
+[% END %]
+
+[% FILTER html_para -%]
 
 [% WRAPPER image file="plot.uace_oax.png" %]
 A plot of the axial oxygen paths in uranyl acetate

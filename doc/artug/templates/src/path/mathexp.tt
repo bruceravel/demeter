@@ -54,12 +54,12 @@ each successive path in the path list, then click into each text box,
 then type in the math expressions.  That, however, is really tedious.
 [% END %]
 
-[% WRAPPER scriptcaption this="path.menu.png" %]
+[% WRAPPER floatright this="path.menu.png" %]
 For math expressions that are the same for every path [%ndash%] [%e0%] is a
 common example [%ndash%] [%artemis%] provides some automation tools.  Each of
 the path parameter labels on the Path page is sensitive to either left
-or right click.  Either kond of click posts a menu like the one of the
-left.  The top option is used to erase the contents of the associated
+or right click.  Either kind of click posts a menu like the one of the
+right.  The top option is used to erase the contents of the associated
 text both, but only on this path.
 
 The next four options are used to push the math expression for the

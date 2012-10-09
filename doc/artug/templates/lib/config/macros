@@ -85,3 +85,5 @@
 [% MACRO pm  BLOCK -%] +/- [%- END -%]
 [% MACRO ndash  BLOCK -%] &ndash; [%- END -%]
 [% MACRO hr  BLOCK -%] <hr class=bottomdivider /> [%- END -%]
+[% MACRO br  BLOCK -%] <br /> [%- END -%]
+[% MACRO break  BLOCK -%] <hr class=hide /> [%- END -%]

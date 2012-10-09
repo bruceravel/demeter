@@ -1,14 +1,12 @@
 [% META title = 'The plot window' %]
 
-[% FILTER html_para %]
+[% WRAPPER floatright this="plot.png" %]
 The second window that appears when [% artemis %] starts is the Plot
 window.  An overview of the functionality of this window will be
 presented here, but the full picture of how plots are made in 
 [% artemis %] will have to wait until the Data and Path windows are
 explained. 
-[% END %]
 
-[% WRAPPER rscriptcaption this="plot.png" %]
 At the top of the Plot window is a row of three buttons used to make
 plots in k, R, or q space.  These plots will be made using the
 contents of the [% INCLUDE font/quote a="Plotting list" %] near the

@@ -1,6 +1,6 @@
 [% META title = 'Plotting data'   chapter = 1 %]
 
-[% WRAPPER rscriptcaption this="plotlist.png" %]
+[% WRAPPER floatright this="plotlist.png" %]
 You have [% INCLUDE html/link link="../startup/plot.html"
 text="already been introduced" %] to the basic functionality of the
 Plot window.  In this chapter, all the details of [%artemis%]' [%#'%]

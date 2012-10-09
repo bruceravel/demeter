@@ -77,7 +77,7 @@ The main Artemis window.
 
 [% PROCESS subsection label="The File menu" %]
 
-[% WRAPPER scriptcaption this="filemenu.png" %]
+[% WRAPPER floatright this="filemenu.png" %]
 Clicking on [% INCLUDE font/quote a="File" %] displays this menu,
 which is mostly used for various kinds of input and output.  Note that
 some menu items that have keyboard shortcuts attached and that these
@@ -133,7 +133,7 @@ your fitting option if you have not recently done so.
 
 [% PROCESS subsection label="The Monitor menu" %]
 
-[% WRAPPER scriptcaption this="monitormenu.png" %]
+[% WRAPPER floatright this="monitormenu.png" %]
 This menu provides several options for monitoring the state of 
 [% artemis %], [% ifeffit %], and the plotting backend (usually
 [% gnuplot %]).
@@ -227,14 +227,14 @@ import data into your fitting project.  Clicking the
 dialog for your platform.  That is, on Windows, the standard Windows
 file selection dialog is used; on Linux, the standard Gnome file
 selection dialog is used; and so on.
+[% END %]
 
+[% WRAPPER floatright this="datalist.png" %]
 The standard manner of importing data into [% artemis %] is to use an
 [% athena %] project file.  Thus the file selection dialog will, by
 default, look for files with the [% INCLUDE font/file a=".prj" %]
 extension. 
-[% END %]
 
-[% WRAPPER scriptcaption this="datalist.png" %]
 As you import data, a stack of buttons [%ndash%] one for each data group [%ndash%]
 is made.  These buttons are used to show or hide the windows
 associated with each data group.  In this example, a multiple data set
@@ -298,7 +298,9 @@ import structural data into your fitting project.  Clicking the
 dialog for your platform.  That is, on Windows, the standard Windows
 file selection dialog is used; on Linux, the standard Gnome file
 selection dialog is used; and so on.
+[% END %]
 
+[% WRAPPER floatright this="fefflist.png" %]
 The standard manner of importing structural data into [% artemis %] is
 to import an input file for [% atoms %] or [% feff %] or to import a
 CIF file containing crystal data.  Thus the file selection dialog
@@ -306,9 +308,6 @@ will, by default, look for files with the
 [% INCLUDE font/file a=".inp" %] or 
 [% INCLUDE font/file a=".cif" %] extension.
 
-[% END %]
-
-[% WRAPPER scriptcaption this="fefflist.png" %]
 As you import structural data, a stack of buttons [%ndash%] one for each 
 [% feff %] calculation [%ndash%] is made.  These buttons are used to show or
 hide the windows associated with each data group.  In this example,
@@ -328,15 +327,12 @@ imported [% atoms %], [% feff %], or CIF files.
 
 [% PROCESS section label="Fit information" %]
 
-[% WRAPPER scriptcaption this="fitproperties.png" %]
+[% WRAPPER floatright this="fitproperties.png" %]
 This section of the main window is used to specify properties of the
 fit.  The name is a short bit of text that will be used as a label for
 each fit.  The number will be auto-incremented unless you explicitly
 set it.
-[% END %]
 
-
-[% FILTER html_para %]
 The description is a longer bit of text which you can use to describe
 the current fitting model.  Here, too, the number is auto-incremented
 unless you explcitly set it.  The text from this box is written to the
