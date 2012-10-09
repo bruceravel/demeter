@@ -79,76 +79,76 @@ allow the fit to proceed.
 <ol>
   
 
-<li>
+<li><p>
 Check that any files associated with the  data or the  <span class=program>FEFF</span>
 calculations exist.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that all guess parameters are used in at least one def parameter.
 or path parameter.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that no def parameter or path parameter uses an undefined parameters.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that none of 
 &ldquo;++&rdquo;,
 &ldquo;--&rdquo;,
 &ldquo;//&rdquo;, or
 &ldquo;***&rdquo; appear in a math expression.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that all function names used in math expression (i.e. a word
 followed by parentheses) are valid functions in  <span class=program>IFEFFIT</span>.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that all GDS parameters have unique names.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that parentheses match in all math expressions.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that Fourier transform and fit parameters are sensible (for
 example  R<sub>min</sub>    <  R<sub>max</sub>   ) for all data sets.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that the number of guess parameters is less than  N<sub>idp</sub>   .
-</li>
+</p></li>
 
-<li>
+<li><p>
 Verify that  R<sub>min</sub>    is >=  R<sub>bkg</sub>  for data imported from an
  <span class=program>ATHENA</span> project file.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Verify that  R<sub>eff</sub>  for each path is not well beyond  R<sub>max</sub>   .
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that various compiled-in limits (e.g. maximum number of paths or
 maximum number of set parameters) in  <span class=program>IFEFFIT</span> are not exceeded.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that parameters do not have the same names as  <span class=program>IFEFFIT</span>
 program variables.  For example, things like
 <tt>pi</tt> or <tt>dr1</tt>
 are not allowed since  <span class=program>IFEFFIT</span> uses those strings for other purposes.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that there are no unresolved merge parameters.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that GDS math expressions do not have loops or cycles in their
 definitions.  For example, either of the following would trigger this error.
 <pre>
@@ -159,16 +159,16 @@ guess a = b
 def   b = c
 def   c = a
 </pre>
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check for obvious cases of a data set used more than once.
-</li>
+</p></li>
 
-<li>
+<li><p>
 Check that each data set used in the fit has at least one  path
 assigned to it.
-</li>
+</p></li>
 
 </ol> 
 
@@ -185,6 +185,7 @@ really fun part of  <span class=program>DEMETER</span> to write.
 </div>
 
 <br />
+ <hr class=hide /> 
 <hr class=bottomdivider />
 
 <div class=bottombar>
