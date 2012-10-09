@@ -18,13 +18,6 @@ link="http://en.wikipedia.org/wiki/Temple_of_Artemis_(Jerash)"
 text="Temple of Artemis at Jerash, Jordan"%].  Photo courtesy of
 Matthew Marcus.
 
-[% INCLUDE html/link text="The image used as the icon for the Windows
-installer package "
-   	   	     link="http://commons.wikimedia.org/wiki/File:Demeter_Pio-Clementino_Inv254.jpg" %]
-is a statue of a goddess restored as Demeter from the Vatican Museums,
-Vatican City. It is a Roman copy in marble after a Greek original from
-ca. 420 BC.
-
 [% INCLUDE html/link
 link="http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg"
 text="The image at the top of the navigation sidebar"%] is a votive
@@ -32,6 +25,12 @@ relief from the Archaeological Museum of Brauron in Brauron, Greece.
 It depicts a family of worshippers sacrificing a goat to the goddess
 Artemis.
 
+[% INCLUDE html/link text="The image used as the icon for the Windows
+installer package "
+   	   	     link="http://commons.wikimedia.org/wiki/File:Demeter_Pio-Clementino_Inv254.jpg" %]
+is a statue of a goddess restored as Demeter from the Vatican Museums,
+Vatican City. It is a Roman copy in marble after a Greek original from
+ca. 420 BC.
 
 [% WRAPPER html/todo %]
 Identify image used as desktop icon

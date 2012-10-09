@@ -14,11 +14,16 @@ function for the path you click on.  If you drop the path on the same
 path list, that is equivalent to cloning the dragged path, with the
 clone being appended to the end of the path list.  This drag
 action can also be used to copy paths between Data windows in a
-multiple data set fit.  See the XXXXX chapter for an example.
+multiple data set fit.
+
+[% WRAPPER html/todo %]
+Write a page about tools for building MDS fits
+[% END %]
+
 
 [% WRAPPER html/caution %]
-Mistakenly control-clicking rather than shift-clicking will often
-result in a path being cloned.  This can be surprising.
+Mistakenly control-clicking rather than shift-clicking will likely
+result in a path being cloned.  This can be surprising and confusing!
 [% END %]
 [% END %]
 
@@ -35,7 +40,7 @@ The blue button with the squiggly line in the upper left corner of the
 Path page transfers that path to the Plotting list.
 [% END %]
 [% WRAPPER html/li %]
-A paths will be transferred automatically after a fit if its 
+A path will be transferred automatically after a fit if its 
 [% INCLUDE font/quote a="Plot after fit" %] button is checked.
 [% END %]
 [% WRAPPER html/li %]
@@ -46,8 +51,8 @@ Actions menu.
 [% END %] [%# end of ordered list%]
 
 Another new feature in this version of [%artemis%] related to plotting
-is called a VPath, which is short for 
-[% INCLUDE font/quote a="virtual path" %].  A VPath is an ensemble of
+is called a [% INCLUDE font/quote a="virtual path" %], or a 
+[% INCLUDE font/quote a="VPath" %].  A VPath is an ensemble of
 normal paths which are summed.  The sum is then plotted in k-, R-, or
 q-space.  A VPath is made by marking a set of paths then selecting
 [% INCLUDE font/quote a="Make VPath from marked" %] from the Actions menu.
@@ -55,7 +60,7 @@ q-space.  A VPath is made by marking a set of paths then selecting
 
 [% WRAPPER quadplot files=["path.au4.png", "path.au4vpath.png"] %]
 Here is an example of a VPath.  On the left is data on a gold foil
-plotted as [%chir_re%]with the fourth shell single scattering path and the two
+plotted as [%chir_re%] with the fourth shell single scattering path and the two
 collinear multiple scattering paths involving the fourth neighbor and
 the intervening first shell neighbor.  This is a rather cluttered plot
 due to the phase relationship between these three paths.  
@@ -69,7 +74,7 @@ When the VPath is created, it is placed in the VPath tab in the
 Plot window and in the Plotting list.  The VPath list contains tools
 for renaming and discarding VPaths, displaying its constituants in the
 Main window status bar, and a VPath onto the
-Plotting list.  (Remember that the, unless the 
+Plotting list.  (Remember that, unless the 
 [% INCLUDE font/quote a="Freeze" %] button is clicked, the Plotting
 list is cleared and repopulated after each fit.)  
 [% END %]

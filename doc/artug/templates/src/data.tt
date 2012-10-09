@@ -388,7 +388,7 @@ of things transferred
 
 [% PROCESS subsection label="The Debug menu" %]
 
-[% WRAPPER scriptcaption this="data.debugmenu.png" %]
+[% WRAPPER floatright this="data.debugmenu.png" %]
 This menu displays various dialog boxes showing aspects of the current
 state if [%ifeffit%] or [%artemis%].  These are mostly used for
 debugging purposes.

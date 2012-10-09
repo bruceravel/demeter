@@ -114,7 +114,8 @@ evaluation to report on fit quality in a way that is meaningful and
 useful for your data and your fits.
 
 The configuration parameters are spread over two configuration groups
-(see Chapter XXX).  The parameters in the Happiness group control the
+([% INCLUDE html/link link="../prefs.html" text="see the chapter on
+the preferences dialog"%]).  The parameters in the Happiness group control the
 evaluation of the penalties.  Those in the Warning group control the
 assessment of path parameter values.
 

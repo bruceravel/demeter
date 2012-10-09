@@ -64,9 +64,12 @@ and the various colored buttons are set according to the fit happiness.
 That's [%#'%] a fit!
 
 There are some details of the fitting process that are configurable
-(see Chapter XXX).  The log file can be displayed in either the Log
+([% INCLUDE html/link link="../prefs.html" text="see the chapter on
+the preferences dialog"%]).
+The log file can be displayed in either the Log
 window or in the History window after the fit finishes.  You can also
-choose not to have it display automatically.
+choose not to have it display automatically.  This is set by
+[% INCLUDE preference group="artemis" option="show_after_fit" %].
 
 The plot that is made upon completion of the fit is also configurable.
 The default is to have an Rmr plot made containing the data and the
@@ -75,7 +78,8 @@ the after-fit plot.  You may also choose to have the contents of the
 plotting list plotted in k-, R-, or q-space.  This adds value to the 
 [% INCLUDE font/quote a="Plot after fit" %] buttons on the Data window
 and Path pages.  You may also choose not to have a plot displayed
-automatically after the fit.
+automatically after the fit.  This is set by
+[% INCLUDE preference group="artemis" option="plot_after_fit" %].
 
 The fit name and fit description text boxes from the Main window are
 also useful for customizing your fit as well as the course of a

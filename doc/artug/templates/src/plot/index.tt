@@ -49,17 +49,16 @@ completion of a fit.
 [% PROCESS subsection label="Populating the plotting list manually" %]
 
 
-[% WRAPPER image file="plot.transfer.png" %]
-The plot transfer buttons
-[% END %]
-
-
 [% FILTER html_para -%]
 The most basic way of moving a data set or a path to the plotting list
 is to click on a plot transfer button.  These are the light blue
 buttons at the top of the Data window.  There is one to the left of
 the name of the data set.  Clicking on this button inserts that data
 at the end of the plotting list.
+
+[% WRAPPER image file="plot.transfer.png" %]
+The plot transfer buttons
+[% END %]
 
 There is also a transfer button on each Path page.  It is the light
 blue button to the left of the path's [%#'%] name.  Clicking on any of

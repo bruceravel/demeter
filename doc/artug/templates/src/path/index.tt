@@ -73,9 +73,10 @@ The Data window has been populated with the 13 paths from the [%feff%] calculati
 [% END %]
 
 [% FILTER html_para -%]
-At this point we can begin examining the paths by plotting them with
-the data.  The path plotting tools are explained in a subsequent
-section.
+At this point we can begin examining the paths by plotting them along
+with the data.  The path plotting tools are explained in [% INCLUDE
+html/link link="../plot/index.html" text="the chapter on the Plot
+window" %].
 
 Also at this point, we can begin creating a fitting model to fit the
 gold foil data using these paths from the [%feff%] calculation.

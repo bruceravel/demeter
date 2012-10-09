@@ -1,2 +1,1 @@
-<span class=pref>&nbsp;&nbsp;&diams;[% group | ucfirst %] &rarr;
-[% option | lower %]</span>&nbsp;
+<span class=pref>&diams;[%- group | ucfirst -%]&nbsp;&rarr;&nbsp;[%- option | lower -%]</span>

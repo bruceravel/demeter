@@ -1,3 +1,7 @@
+[% dots  = template.nosubpages ? "../images" : "../../images";
+   file  = "${dots}/bend.png";
+%]
 <p class=caution>
+<img class=floatleft border=0 src="[%file%]" alt="Caution!">
 [%- content -%]
 </p>
