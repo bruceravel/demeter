@@ -37,7 +37,9 @@ possible values, you are presented with an option menu for selecting
 among the possibilities.  The default value can be restored by
 pressing the button labeled as [%demeter%]'s [%#'%] default.  In the
 text area, the option is described.
+[% END %]
 
+[% FILTER html_para -%]
 Once you change an option, you can apply it to the current session or
 apply it and save its value to [%demeter%]'s [%#'%] initialization
 file. 
@@ -46,9 +48,7 @@ Different configuration options take different kinds of values.  For
 example, some are filenames, strings, real numbers, integers, colors,
 and so on.  Controls appropriate to the value type will be provided
 when the option is clicked on.
-[% END %]
 
-[% FILTER html_para -%]
 Some particularly useful configuration parameters include:
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]

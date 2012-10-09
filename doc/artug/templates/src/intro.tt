@@ -85,7 +85,7 @@ fingers crossed.  Until then, I live with the slow start-up, confident
 that the rest of [% demeter %] is worth the wait.
 [% END %]
 
-[% PROCESS subsection label="Templates and backends" %]
+[% PROCESS subsection label="Templates, backends, and other tools" %]
 
 [% FILTER html_para %]
 All of [%artemis%]'[%#'%] interactions with [%feff%], [%ifeffit%], and

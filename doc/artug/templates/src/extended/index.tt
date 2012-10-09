@@ -1,5 +1,21 @@
 [% META title = 'Extended discussions'   chapter = 1 %]
 
 [% FILTER html_para -%]
-Blah blah
+This section is a catch-all for topics of data analysis and the
+operation of [%artemis%] that simply did not fit in other parts of this
+users'[%#'%] guide.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Quick first shell theory" %]
+An in-depth discussion of how the [%INCLUDE html/link
+link="../extended/qfs.html" text="quick first shell theory tool" %]
+works, what it is used for, and how it can be misused.
+[% END %]
+[% WRAPPER html/dt dt="Characteristic values" %]
+An explanation of the [%INCLUDE html/link link="../extended/cv.html"
+text="characteristic value" %], or CV, Data attribute.  This is a tool
+for building expressive, flexible, and powerful models for multiple
+data set fitting problems.
+[% END %]
 [% END %]

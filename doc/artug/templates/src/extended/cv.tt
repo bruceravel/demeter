@@ -1,0 +1,223 @@
+[% META title = 'Using a data group\'s characteristic value' %]
+
+[% FILTER html_para -%]
+At the top of
+[% INCLUDE html/link link="../data.html" text="the Data window"%]
+is the control for setting the
+[% INCLUDE font/em a="characteristic value" %], or 
+[% INCLUDE font/em a="CV" %], of a data group.  In this section, the
+purpose and use of the CV is explained.
+
+The CV is a user-defined number which is associated with the data set
+and is used for special purposes when evaluating the math expressions
+associated with def and path parameters.  By default, [%artemis%]
+simply increments the CV value for each data set imported [%ndash%]
+the first is set to 1, the second to 2, and so on.  These values can
+be changed, but should always be integer-valued.
+
+The CV value is used in two ways to construct rich math expressions
+and expressive fitting models.
+[% END %]
+
+[% PROCESS section label="The CV token" %]
+
+[% FILTER html_para -%]
+Consider a multiple data set fit to a material measured at various
+temperatures.  For this discussion, let's[%#'%] consider a rock salt
+structured metal oxide, for instance ZnO.  Let's[%#'%] also suppose
+that we have measured data at three temperatures, 10 K, 300 K, and 500 K.
+
+In a multiple data set fit, you may choose to model the [%sigsqr%] of
+the first shell Zn-O bond using an Einstein model.  This allows you to
+parameterize the [%sigsqr%] at each temperature as a function of a
+single variable parameter, the Einstein temperature. To do this, you
+must define a [%INCLUDE font/color color="a300a3" text="guess"%]
+parameter to represent the Einstein temperature like so:
+[% END %]
+[% WRAPPER html/pre %]
+guess thetae = 500
+[% END %]
+
+[% FILTER html_para -%]
+The functional form of 
+[% INCLUDE html/link link="http://dx.doi.org/10.1103/PhysRevB.20.4908"
+text="the Einstein model"%] takes the variable Einstein temperature
+and the sample's[%#'%] measurement temperature as its arguments.
+[% END %]
+[% WRAPPER html/pre %]
+path {
+       sigma2 = eins(temp, thetae)
+}
+[% END %]
+[% FILTER html_para -%]
+where [% INCLUDE font/mono a="temp" %] represents the sample
+temparature.  The pseudo-syntax used here is simply meant to represent
+the [%sigsqr%] parameter on a [% INCLUDE html/link
+link="../path/index.html" text="the Path page"%].
+
+In a multiple data set fit, you would have to take care that 
+[% INCLUDE font/mono a="temp" %] is replaced each time it is used.
+That could be done in two ways.  You could use various set
+parameters:
+[% END %]
+
+[% WRAPPER html/pre %]
+set temp1 = 10
+set temp2 = 300
+set temp3 = 500
+
+path for data set 1 {
+       sigma2 = eins(temp1, thetae)
+}
+path for data set 2 {
+       sigma2 = eins(temp2, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(temp3, thetae)
+}
+[% END %]
+[% FILTER html_para -%]
+Or you could simply state the temperature explicitly in the path
+parameter math expressions:
+[% END %]
+[% WRAPPER html/pre %]
+path for data set 1 {
+       sigma2 = eins(10,  thetae)
+}
+path for data set 2 {
+       sigma2 = eins(300, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(500, thetae)
+}
+[% END %]
+
+
+[% FILTER html_para -%]
+Both of those solutions work.  But neither make effective use of the
+model building automation in [%artemis%].  In the chapter on
+[% INCLUDE html/link link="../path/mathexp.html" text="the Path
+window"%], you learned about various ways of pushing path parameter
+values onto other paths.  One efficient way of setting up a multiple
+data set fit would be to edit the path parameters for one of the data
+sets, then push the path parameters onto the other data sets.
+
+Using the two strategies summarized above, you would need to do
+considerable editing after pushing the path parameter values.  That
+sort of editing is often error-prone.
+
+Here is a third way of solving this problem.  
+[% END %]
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/list type="li" %]
+Set the CV for the three data sets to the temperature at which the
+data were measured.  In our example, the three data sets would get CV
+values of 10, 300, and 500.
+[% END %]
+[% WRAPPER html/list type="li" %]
+Next, edit the [%sigsqr%] path parameter for one of the data sets to
+read
+[% WRAPPER html/pre %]
+path for data set 1 {
+       sigma2 = eins([CV],  thetae)
+}
+[% END %]
+[% END %]
+[% WRAPPER html/list type="li" %]
+Finally, push this [%sigsqr%] value on the other data sets without
+editing those to which it is pushed.
+[% END %]
+[% END %]
+
+[% FILTER html_para -%]
+When [%artemis%] evaluates the fitting model, it will replace the
+[%INCLUDE font/mono a="[CV]" %] token with the appropriate
+characteristic value.  In short, the computer handles the error-prone
+(for a human) task of editing the many [%sigsqr%] path parameters.
+
+While this may seem like a small improvement over handling the editing
+chores yourself, use of the CV really pays off for large or
+complicated fitting models.  For a multiple data set fit with many
+data sets, use of the CV saves quite a bit of editing.  Furthermore,
+you can use the CV value in many path parameter math expressions.  For
+example, suppose you were to model the [%delr%] values with a
+temperature-dependent, linear explansion coefficient.  The use of the
+CV in those math expressions saves even more error-prone, manual editing!
+[% END %]
+
+[% PROCESS section label="Use in lguess parameters" %]
+
+[% FILTER html_para -%]
+The second use of the CV is along with [%INCLUDE font/color
+color="3E1C8F" text="lguess"%] parameters.  These parameters are an
+eficient way of generating per-data-set guess parameters in a multiple
+data set fit while still making good use of the automation in
+[%artemis%] for pushing path parameter math expressions between data
+sets. 
+
+Let's[%#'%] again consider the ZnO sample measured at the same three
+temparatures.  This time, however, we choose to float an independent
+[%sigma2%] parameter at each temperature.
+
+The straightforward way of doing this would be something like
+[% END %]
+[% WRAPPER html/pre %]
+guess ss1 = 0.002
+guess ss2 = 0.004
+guess ss3 = 0.006
+
+path for data set 1 {
+       sigma2 = ss1
+}
+path for data set 2 {
+       sigma2 = ss2
+}
+path for data set 3 {
+       sigma2 = ss3
+}
+[% END %]
+
+[% FILTER html_para -%]
+Here is how this can be done using the CV and an lguess parameter.
+First, set the CV values to the temperature values, as before.  Next,
+do the following:
+[% END %]
+[% WRAPPER html/pre %]
+lguess ss = 0.002
+
+path for data set 1 {
+       sigma2 = ss
+}
+path for data set 2 {
+       sigma2 = ss
+}
+path for data set 3 {
+       sigma2 = ss
+}
+[% END %]
+
+[% FILTER html_para -%]
+[%artemis%] will notice that [% INCLUDE font/mono a="ss" %] is an
+lguess parameter.  For each data set in which it is used, [%artemis%]
+will create a guess parameters named [% INCLUDE font/mono
+a="ss_[CV]"%], where, as before, the [% INCLUDE font/mono a="[CV]"%]
+is replaced by the CV value.
+
+In the case of our example, three guess parameters will be created
+called 
+[% INCLUDE font/mono a="ss_10"%],
+[% INCLUDE font/mono a="ss_300"%], and
+[% INCLUDE font/mono a="ss_500"%].  Each of those will be given the
+initial value of the coresponding lguess parameter (0.002 in this
+case).  The lguess parameter will not be used in the fit, but each of
+the generated guess parameters will be floated.  At the end of the
+fit, the log file will report on each as for any other guess
+parameter. 
+
+The utility of the lguess parameter is that it allows you to define a
+common fitting model used across many data sets.  You can use the
+automation built into [%artemis%] to push those path parameter math
+expressions between paths and data sets.  Without further editing,
+the desired fitting model [%ndash%] with one guess parameter for each
+data set [%ndash%] is correctly made.
+[% END %]

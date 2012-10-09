@@ -84,9 +84,10 @@
 			   }
 		extended = {
 			    name = 'Extended topics'
-			    menu = ['qfs']
+			    menu = ['qfs', 'cv']
 			    page = {
 				    qfs = {name = 'Quick first shell theory'}
+				    cv  = {name = 'Characteristic value'}
 				   }
 			   }
 	       }
