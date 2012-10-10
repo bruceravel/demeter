@@ -66,7 +66,8 @@ a single click.
 [% WRAPPER html/li %]
 On the far right is the [% INCLUDE font/quote a="Fit" %] button.  As
 you might guess, this button is clicked to initiate a fit.  The color
-of this button will change to provide a heuristic evaluation of the
+of this button will change to provide a [% INCLUDE html/link
+link="../fit/happiness.html" text="heuristic evaluation"%] of the
 quality of each fit.  Below the Fit button is a button used to show or
 hide a window containing the log from the most recent fit.
 [% END %]
@@ -91,6 +92,8 @@ including [% artemis %] or [% athena %] project files, ASCII files
 containing [% chik %] data, [% feff %] or [% atoms %] input files, or
 a few other things.  [% artemis %] is usually good about properly
 identifyin the type of input file and doing the right thing with it.
+You can use the [% INCLUDE font/quote a="import" %] submenu to be more
+specific. 
 [% END %]
 [% WRAPPER html/li %]
 The second option provides a submenu of recently imported files broken
@@ -108,20 +111,19 @@ provided for the rare situation when [% artemis %] fails to recognize
 one of its standard input data types.
 [% END %]
 [% WRAPPER html/li %]
-The [% INCLUDE font/quote a="import" %] submenu is used to generate
+The [% INCLUDE font/quote a="export" %] submenu is used to generate
 files in the format of an [% ifeffit %] script or a perl script using
 [% demeter %].  These files attempt to capture the current state of
 your fitting project.  It is unlikely that the output of either of
 these export options will be immediately useful without some editing.
 The purpose of these export options is to allow you to use 
 [% artemis %] to develop a fitting model, then use the exported file
-in some other way, for instance as part of an automated batch
-processing system.
+in some other way, for instance as part of a script for automated batch
+processing.
 [% END %]
 [% WRAPPER html/li %]
-The next menu item diplsays a window used to set program preferences.
-This window will be described in detail in its own chapter of this
-document.
+The next menu item diplsays a window used to set 
+[% INCLUDE html/link link="../prefs.html" text="program preferences."%]
 [% END %]
 [% WRAPPER html/li %]
 Finally, there are menu items for closing the current fitting project
@@ -165,10 +167,14 @@ items used to display technical information about the current state of
 [% artemis %].  Again, this is a tool Bruce uses when developing the
 program.  After reporting a bug to the [% ifeffit %] mailing list,
 Bruce may ask for information obtained using these menu items.
+This submenu is only displayed if the
+[% INCLUDE preference group="artemis" option="debug_menus" %]
+configuration parameter is set to a true value.
 [% END %]
 [% WRAPPER html/li %]
 [% INCLUDE font/quote a="Show Ifeffit's memory use" %] item displays a
-crude calculation of the resources still available to [% ifeffit %].
+crude, somewhat unreliable calculation of the resources still
+available to [% ifeffit %]. 
 [% END %]
 [% END %] [%# end of list%]
 [% END %] [%# end of caption%]
@@ -189,7 +195,9 @@ which of four such plot displays is active.
 This menu is used to display this document or to display information
 about [% artemis %], including its open source licensing terms.
 [% END %]
-
+[% WRAPPER html/todo %]
+Integrate this manual into Artemis
+[% END %]
 
 [% PROCESS section label="Status bar" %]
 
@@ -241,13 +249,23 @@ is made.  These buttons are used to show or hide the windows
 associated with each data group.  In this example, a multiple data set
 fit (i.e. one in which models for more than one data set are
 co-refined) is shown.  One of the associated data windows is displayed
-on screen, as indicated by the depressed state of the button labeld
+on screen, as indicated by the depressed state of the button labeled
 [% INCLUDE font/quote a="Dimethyltin dichloride" %].  The other data
 window is hidden.  [% INCLUDE html/link link="../data.html"
 text="See the Data window chapter."%]
 [% END %]
 
-
+[% WRAPPER html/caution %]
+[%artemis%] has a very different relationship to your data than
+[%athena%].  The very purpose of [%athena%] is to process large
+quantities of data, thus a typical [%athena%] project will contain
+many [%ndash%] perhaps dozens [%ndash%] of data groups.  [%artemis%]
+expects that you will import only that data whose EXAFS you intend to
+analyze.  If you doing a single-data-set analysis, the Data list
+will contain only that item.  If you import many data sets without
+actually using them in the fitting model, [%artemis%]
+[% INCLUDE font/b a="will" %] get confused.  And so will you.
+[% END %]
 
 
 [% PROCESS subsection label="The Athena project selection dialog" %]

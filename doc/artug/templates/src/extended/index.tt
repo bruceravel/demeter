@@ -22,5 +22,5 @@ data set fitting problems.
 
 [% WRAPPER html/todo %]
 Pages for (1) Empirical paths, (2) Histograms, (3) examples of
-feff.inp with tags/sites/elements
+feff.inp with tags/sites/elements, (4) background co-refinement
 [% END %]

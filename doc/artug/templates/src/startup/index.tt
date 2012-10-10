@@ -33,7 +33,7 @@ Once started, [% artemis %] displays two windows, as shown below.
 
 [% FILTER html_para -%]
 Everything will certainly look a little different on your computer.
-This and all other screenshots in this document were taken on one an
+This and all other screenshots in this document were taken on an
 Ubuntu Linux computer running KDE with custom window decorations.
 Although the details of the appearance may differ, all functionality
 is the same on all platforms.  (You may not have a cool insect

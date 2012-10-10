@@ -14,6 +14,68 @@ by being wrapped up inside of something easier to use.  Hopefully,
 [%artemis%] is that something. 
 [% END %]
 
+[% PROCESS section label="Using this document" %]
+
+[% IF document_style == 'html' %]
+[% FILTER html_para %]
+The side bar shows the top-level table of contents of the document
+along with the contents of the current chapter.  The top bar provides
+additional navigation linking directly to chapters immediately before
+or after the current chapter or up and down within the current chapter.
+
+Copyright and licensing information is found at the bottom of every
+page.
+
+This is document version [% document_version %] for [% demeter %]
+version [% demeter_version %].
+[% END %]
+[% END %]
+
+[% PROCESS subsection label="Typesetting" %]
+[% FILTER html_para %]
+I use some typesetting conventions to convey certain kinds of
+information in this manual.
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+The names of programs look like this: [%artemis%], [%feff%]
+[% END %]
+[% WRAPPER html/li %]
+The names of files look like this: [% INCLUDE font/file a="atoms.inp" %]
+[% END %]
+[% WRAPPER html/li %]
+Configuration parameters (i.e. preferences) for [%artemis%] and
+[%demeter%] look like this:
+[% INCLUDE preference group="artemis" option="plot_after_fit" %]
+[% END %]
+[% WRAPPER html/li %]
+Verbatim text, such as represent specific input to or output from
+[%artemis%] or text typed into a computer, looks like
+this:
+[% WRAPPER html/pre %]
+This is verbatim text!
+[% END %]
+[% END %]
+[% WRAPPER html/li %]
+[% WRAPPER html/caution %]
+Words of caution intended to point out some specific pitfall of the
+use or [%artemis%] are found in boxes that look like this.
+[% END %]
+[% END %]
+[% WRAPPER html/li %]
+[% WRAPPER html/todo %]
+Aspects of this document, or possibly of [%artemis%] itself, which
+are incomplete are indicated with boxes like this.  (The icon comes
+from the Gartoon Redux icon set.)
+[% END %]
+[% END %]
+
+
+[% END %]
+
+
+
 [% PROCESS section label="The technology behind Artemis" %]
 
 [% PROCESS subsection label="perl" %]

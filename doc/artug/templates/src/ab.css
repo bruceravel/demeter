@@ -209,6 +209,7 @@ pre {
     padding: 8px;
     margin-left: 4%;
     margin-right: 10%;
+    min-height:36px;
 }
 
 .key {
@@ -465,6 +466,12 @@ a.navtable:hover {
     border: 0;
 }
 
+.tinyfloatleft {
+    float: left;
+    margin: 0 10px 0 0;
+    border: 0;
+    padding: 2px;
+}
 .floatright {
     float: right;
     margin: 0 0 10px 10px;

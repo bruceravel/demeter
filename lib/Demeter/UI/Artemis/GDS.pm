@@ -679,7 +679,8 @@ sub OnGridMenu {
   };
 };
 
-sub copy {
+
+sub make_copy {
   my ($parent) = @_;
   my $grid = $parent->{grid};
   my @list = ();
@@ -688,24 +689,29 @@ sub copy {
     push @list, $grid->{$name};
   };
   $grid->{buffer} = \@list;
-  my $s = ($#list > 0) ? q{s} : q{};
+};
+sub copy {
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
+  $parent->make_copy;
+  my $s = ($#{ $parent->{selected} } > 0) ? q{s} : q{};
   $parent->{grid}->ClearSelection;
-  $parent->status("Copied parameter$s ".join(", ", map {defined($_) and $_->name} @list));
+  $parent->status("Copied parameter$s ".join(", ", map {defined($_) and $_->name} @{ $grid->{buffer} }));
 };
 sub cut {
   my ($parent) = @_;
   my $grid = $parent->{grid};
-  $parent->copy;
-  $parent->{grid}->ClearSelection;
+  $parent->make_copy;
 
-  foreach my $g (@{ $grid->{buffer} }) {
-    my $name = (defined $g) ? $g->name : q{};
-    foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
-      next if ($name ne $grid->GetCellValue($r, 1));
-      $grid->{$g->name}->dispense('process', 'erase', {items=>"\@group ".$grid->{$name}->name});
-      $grid->DeleteRows($r,1,1);
-      $grid->{$g->name}->DEMOLISH;
-    };
+  foreach my $r (reverse @{ $parent->{selected} }) {
+    my $name = $grid -> GetCellValue($r, 1);
+    $grid->{$name}->dispense('process', 'erase', {items=>$name}) if defined($grid->{$name});
+    $grid->DeleteRows($r,1,1);
+  };
+  foreach my $g (@{ $grid->{buffer} }) { # object name and name in grid may be different
+    next if not defined($g);
+    $grid->{$g->name}->dispense('process', 'erase', {items=>$g->name});
+    $grid->{$g->name}->DEMOLISH;
   };
   while ($grid->GetNumberRows < 12) {
     $grid->AppendRows(1,1);

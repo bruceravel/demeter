@@ -1,4 +1,7 @@
+[% dots  = template.nosubpages ? "../images" : "../../images";
+   file  = "${dots}/todo.png";
+%]
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
+<img class=tinyfloatleft border=0 src="[%file%]" alt="To do!">
 [%- content -%]
 </p>

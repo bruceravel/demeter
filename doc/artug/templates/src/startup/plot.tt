@@ -20,7 +20,7 @@ including those made when pressingt he buttons above.  Note that these
 k-weight values are [% INCLUDE font/em a="only" %] used for making
 plots.  The k-weight values used to evaluate fits are set in the Data
 window.  The [% INCLUDE font/quote a="kw" %] option uses the arbitrary
-(possibly non-integre) k-weighting value specified in the Data window.
+(possibly non-integer) k-weighting value specified in the Data window.
 
 Beneath the k-weight buttons is a set of tabs used to control differnt
 aspects of plots.  The [% INCLUDE font/quote a="limits" %] tab provides
@@ -40,27 +40,23 @@ parts of the complex functions in the manner of [% athena %].
 Beneath the [% chir %] and [% chiq %] radio buttons are a set of check
 buttons used to display additional functions related to the data.
 These are:
-[% WRAPPER html/list type="ol" %]
-[% WRAPPER html/li %]
-[% INCLUDE font/em a="Fit" %]: When checked, the most recent fit will
-be plotted whenever data is plotted.
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Fit" %] When checked, whenever the data is
+plotted the current, corresponding fit will be plotted.
 [% END %]
-[% WRAPPER html/li %]
-[% INCLUDE font/em a="Background" %]: When checked, the background
-function will be plotted if it was refined in the most recent fit.
+[% WRAPPER html/dt dt="Background" %] When checked, the background
+function will be plotted, but only if it was refined in the most
+recent fit.
 [% END %]
-[% WRAPPER html/li %]
-[% INCLUDE font/em a="Window" %]: When checked the window function
+[% WRAPPER html/dt dt="Window" %] When checked the window function
 will be plotted over the data.  The window will be scaled appropriate
 to the current k-weight value.  When plotting in q, the k-space window
 will be used.
 [% END %]
-[% WRAPPER html/li %]
-[% INCLUDE font/em a="Residual" %]: When checked, the difference
+[% WRAPPER html/dt dt="Residual" %] When checked, the difference
 between the data and the fit will be plotted.
 [% END %]
-[% WRAPPER html/li %]
-[% INCLUDE font/em a="Running R-factor" %]: When checked, a running
+[% WRAPPER html/dt dt="Running R-factor" %] When checked, a running
 sum of the residual will be plotted, providing another way of
 visualizing the misfit.
 [% END %]
@@ -80,11 +76,9 @@ The other tabs will explained in
 
 The last item on the Plot window is a button labeled 
 [% INCLUDE font/quote a="Save next plot to a file" %].  When
-depressed, the next plot made will, instead of displaying on screen,
-write a column data file with columns representing the traces as they
-would have been plotted.  The purpose of this file is to reproduce a
-plot from [% artemis %] as closely as possible using some other
-plotting program.
-[% END %] [%# end of caption%]
-
-
+depressed, the next plot made will write a column data file with
+columns representing the traces as they would have been plotted.  The
+plot will not be shown on the screen. The purpose of this file is to
+reproduce a plot from [% artemis %] as closely as possible using some
+other plotting program.
+[% END %]

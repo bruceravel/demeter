@@ -1,4 +1,4 @@
-[% META title = "Artemis User's Guide"
+[% META title = "Artemis Users' Guide"
         about = "EXAFS Data Analysis using Feff and Ifeffit"
         chapter = 1
 	nosubpages = 1
@@ -55,7 +55,7 @@ link="http://en.wikipedia.org/wiki/Demeter" text="the Greek goddess of the harve
 [% END %]
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
-a graphical front-end built using [%demeter%]
+a graphical front-end for [%feff%] and [%ifeffit%] built using [%demeter%]
 [% END %]
 [% WRAPPER html/li %]
 a tool which makes easy analysis problems easy and hard analysis
