@@ -22,9 +22,16 @@ Implement and explain the two items in the "other path options" pane.
 [% END %]
 
 The text box contains a brief description of the geometry of the
-scattering path.  For a degenerate path, this shows an example
-scattering geometry.  The simple explanation of the shape of the path
-and its heuristic importance are also given in the text box.
+scattering path.  For a path with degeneracy greater than 1, the
+scattering geometry of one of the degenerate paths is shown.  The
+simple explanation of the shape of the path and its heuristic
+importance are also given in the text box.
+
+[% WRAPPER html/todo %]
+Implement a way to display a text box which shows all the paths
+contributing to the degeneracy + report on fuzziness of the
+degeneracy. 
+[% END %]
 
 Beneath the scattering geometry is a table of path parameters labels
 and text boxes.  Math expressions are entered into these text boxes.

@@ -142,7 +142,7 @@ have no way of quantifying this systematic error. Your results for
 coordination number, [%delr%], and [%sigsqr%] [% INCLUDE font/b a="will" %] be wrong. And you
 have [% INCLUDE font/b a="no way of knowing" %] by how much.
 
-[% WRAPPER html/important %]
+[% WRAPPER html/caution %]
 In short, if you misuse the QFS tool in this way, you cannot
 possibly report a defensible analysis of your data.
 [% END %]
