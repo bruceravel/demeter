@@ -2,7 +2,7 @@
 
 
 [% FILTER html_para -%]
-Among the most powerful new features in [%artemis%] is the ability to
+One of the powerful new features in [%artemis%] is the ability to
 define [% INCLUDE font/quote a="path-like" %] objects.  A path-like
 object is one which can be treated like a normal path from [%feff%].
 It can be used in a fit and it can be plotted.  It is not, however,
@@ -38,26 +38,31 @@ scatterers at 1.93 [%AA%], 8 La scatterers at 3.28 [%AA%] or 3.34
 [%AA%], and 6 Co scatterers at 3.83 [%AA%].  
 
 Suppose we had some reason to wonder what a Co scatterer at a distance
-of 3 [%AA%] would look like in a fit.  In that case, the distance on
+of 3 [%AA%] would look like in a fit. (For example, we might suspect
+that some phase segregation happened during synthesis, resulting in
+some CoO.)  In that case, the distance on
 the SSPath page would be set to 3.0 and the Co scatterer would be
-selected from the group of radio buttons.  This groups of radio
-buttons is generated from the list of unique potentials in the input
+selected from the group of radio buttons.  This group of radio
+buttons corresponds to the list of unique potentials in the input
 data for [%feff%].
 
-The method for associating this notional path with data will be
-explained in the next chapter.  For now, we simply jump ahead and
-compare the normal Co scatterer at 3.83 [%AA%] (blue) with the SSPath
-computed at 3 [%AA%] (red).
+The method for associating this SSPath with data will be
+explained in the 
+[% INCLUDE html/link link="../path/index.html" text="next chapter"%].
+For now, we simply jump ahead and compare the normal Co scatterer at
+3.83 [%AA%] (blue) with the SSPath computed at 3 [%AA%] (red).
 
-In the prior version of [%artemis%], a lot of users attempted to do
-this sort of thing using the quick first shell theory functionality
-(which still exists and which is described elsewhere).  This is a much
-superior approach.  The advantage of this approach is that it uses
+Use of SSPath for modeling scatterers at such a long distance is much
+superior to using a [% INCLUDE html/link link="../path/pathlike.html"
+text="quick first shell theory"%].  The advantage of this approach is that it uses
 well constructed scattering potentials [%ndash%] i.e. potentials from a real
 structure [%ndash%] to make the special path.  Using the quick first shell
 technique on a path this long results in poorly constructed
-potentials.
+potentials.  This is explained in detail in
+[% INCLUDE html/link link="../extended/qfs.html"
+text="the extended discussions chapter"%].
 [% END %]
+
 
 
 [% PROCESS section label="FSPaths" %]

@@ -25,7 +25,7 @@ An entry is placed in the [%feff%] list on the main window.
 [% FILTER html_para -%]
 You can also import a [% INCLUDE font/file a="feff.inp" %] file
 directly.  This is discussed in the
-[% INCLUDE html/link link="./feff.html" link="next section"%]
+[% INCLUDE html/link link="./feff.html" text="next section"%]
 
 This new window looks like this.  In this example, crystal data for Ni
 metal have been imported from an [% INCLUDE font/file a="atoms.inp" %]
@@ -83,15 +83,18 @@ a="RMAX" %] in the [% INCLUDE font/file a="feff.inp" %] file.  In
 general, you do not want this to be much larger than the extent of the
 data you intend to analyze.  5 [%AA%] or 6 [%AA%] is usually the
 largest sensible value for longest path.  The reason for this is that
-the path finder part of [%feff%] has been rewritten for this version
-of [%artemis%].  While the new path finder implementation offers a
+the pathfinder part of [%feff%] has been rewritten for this version
+of [%artemis%].  While the new pathfinder implementation offers a
 number of useful new features, it is substantially slower than
-[%feff%]'s [%#'%] native path finder.  In any case, there is no
+[%feff%]'s [%#'%] native pathfinder.  In any case, there is no
 benefit to computing paths that you will never use in your fit.
 
 The absorption edge for the calculation is chosen from the menu to the
 left of the lattice constant area.  This is usually determined from
-the input data, but may need to be explicitly selected.
+the input data, but may need to be explicitly selected.  If not
+specified in the [% INCLUDE font/file a="atoms.inp" %] file, the edge
+will be set to K for element lighter than Ce (Z=58), and to [%l3%]
+for heavier elements.
 
 The style menu is another new feature in this version of Atoms.  It is
 used to set how the list of unique potentials is determined from the
@@ -99,14 +102,14 @@ elements in the atoms list.  The choices are
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="elements" %]
+Each unique element species is assigned a potential number.
+[% END %]
 [% WRAPPER html/dt dt="tags" %]
 Each unique tag is assigned a potential number.
 [% END %]
 [% WRAPPER html/dt dt="sites" %]
 Each crystallographic site is assigned a potential number.
-[% END %]
-[% WRAPPER html/dt dt="elements" %]
-Each unique element species is assigned a potential number.
 [% END %]
 [% END %] [%# end of description list %]
 
@@ -126,6 +129,10 @@ atoms double bonded to the uranium atoms at about 1.8 [%AA%] and a
 number of equatorial oxygen atoms at a much longer distance.  The
 axial and equatorial oxygen positions are distinguished by their tags
 and will given separate unique potentials when using the tags style.
+
+The assignment of potential indeces is explained in detail and with
+examples in the [% INCLUDE html/link link="../extended/ipots.html"
+text="extended explanations chapter"%].
 [% END %]
 [% WRAPPER html/pre %]
 title        Templeton et al.
@@ -150,14 +157,15 @@ atoms
 [% PROCESS section label="Atoms tool bar" %]
 
 [% FILTER html_para -%]
-Across the top of the [%atoms%] tab is a tool bar with several basic
-functions.  
+The toolbar across the top of the [%atoms%] tab offers several functions.
 
 Clicking the open button will post the standard file selection dialog
 for importing a new [% INCLUDE font/file a="atoms.inp" %] or CIF file.
-This is mostly used in the stand-along version of [%atoms%].  Right
-clicking this button will post the recent files dialog populated with
-recently imported [% INCLUDE font/file a="atoms.inp" %], 
+This is more useful in the stand-along version of [%atoms%] than in
+[%artemis%] where the crystal data file imported in other ways.
+[% INCLUDE font/em a="Right clicking"%] this button will post the
+recent files dialog populated with recently imported 
+[% INCLUDE font/file a="atoms.inp" %], 
 [% INCLUDE font/file a="feff.inp" %], and CIF files.
 [% END %]
 
@@ -166,22 +174,23 @@ The save button will prompt you for a filename for an output
 [% INCLUDE font/file a="atoms.inp" %] saving the current state of the
 tab.
 
-Clicking the export button will post this dialog offering several
-different kinds of output files based on the current crystal data.
+Clicking the export button will post dialog on the right, which offers several
+different kinds of output files based on the crystal data.
 The [% INCLUDE font/quote a="Feff6" %] and [% INCLUDE font/quote
 a="Feff8" %] options will write input files for [%feff6%] and
 [%feff8%].  The [% INCLUDE font/quote a="Atoms" %] option write the
 same file as the save button.  The [% INCLUDE font/quote a="P1" %]
 option writes the cyrstal data using the [% INCLUDE font/mono a="P 1"
-%] space group and a fully decorated unit cell. The [% INCLUDE
+%] space group and with a fully decorated unit cell. The [% INCLUDE
 font/quote a="Spacegroup" %] option writes a file that fully describes
-the current crystal space group. the [% INCLUDE font/quote
-a="Absorption" %] option writes a file containing some calculations
-based on tables of X-ray absorption coefficients.
+the space group. the [% INCLUDE font/quote a="Absorption" %] option
+writes a file containing some calculations based on tables of X-ray
+absorption coefficients.
 
 The clear button is used to clear all data from all controls on the
 [%atoms%] tab.
 
-Finally the run button is pressed to convert the current crystal data
-into input data for [%feff%].
+Finally the run button is pressed to convert the crystal data
+into input data for [%feff%].  Pressing this displays 
+[% INCLUDE html/link link="./feff.html" text="the next tab"%].
 [% END %]

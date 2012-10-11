@@ -15,26 +15,27 @@ The [%feff%] tab.
 [% FILTER html_para -%]
 The box containing the [%feff%] input data is a simple text entry
 box.  If you wish to make any modifications to the input data for the
-[%feff%] calculation, you can edit the text directly.  While the most
-common course is probably to run the [%feff%] calculation immediately,
+[%feff%] calculation, you can edit the text directly.  Although it is
+most common to run the [%feff%] calculation straight away,
 there are a number of situations where directly editing the input data
 prior to running [%feff%] is desirable.
 
 The [% INCLUDE font/quote a="Open" %] button can be used to import a
-different [% INCLUDE font/file a="feff.inp" %] file.  Right clicking
+different [% INCLUDE font/file a="feff.inp" %] file.  
+[% INCLUDE font/em a="Right clicking"%]
 that button posts the recently used file dialog.  The [% INCLUDE
 font/quote a="Save" %] button will post the standard column selection
 dialog for choosing a file name for saving the current [%feff%] input
 data.  The [% INCLUDE font/quote a="Clear" %] button will remove all
 text from the big text box.
 
-The [%feff%] calculation is made by clicking the 
+The [%feff%] calculation is started by clicking the 
 [% INCLUDE font/quote a="Run Feff" %] button.
 
 The [% INCLUDE font/quote a="Template" %] button is used to put
 boilerplate for [%feff%] input data into the big text box.  This is
 useful if your list of Cartesian coordinates comes from some other
-source.  in that case, you might cut and paste that text from the
+source.  In that case, you might cut and paste that text from the
 other source and fill in the indicated blanks and the [% INCLUDE
 font/mono a="POTENTIALS" %] list as appropriate for your calculation.
 [% END %]

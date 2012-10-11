@@ -45,10 +45,11 @@
 			 }
 		path   = {
 			  name = 'The Path page'
-			  menu = ['mathexp', 'plot']
+			  menu = ['mathexp', 'plot', 'pathlike']
 			  page = {
-				  mathexp = { name = 'Setting math expressions' }
-				  plot    = { name = 'Marking and plotting' }
+				  mathexp  = { name = 'Setting math expressions' }
+				  plot     = { name = 'Marking and plotting' }
+				  pathlike = { name = 'Using path-like objects' }
 				 }
 			 }
 		gds    = { name = 'The GDS window'}
@@ -84,10 +85,11 @@
 			   }
 		extended = {
 			    name = 'Extended topics'
-			    menu = ['qfs', 'cv']
+			    menu = ['qfs', 'cv', 'ipots']
 			    page = {
 				    qfs = {name = 'Quick first shell theory'}
 				    cv  = {name = 'Characteristic value'}
+				    ipots = {name = 'Unique potentials'}
 				   }
 			   }
 	       }

@@ -1,0 +1,17 @@
+[% META title = 'Using path-like objects' %]
+
+
+[% PROCESS section label="SSPaths" %]
+
+[% FILTER html_para -%]
+[% END %]
+
+[% PROCESS section label="Quick first shell paths" %]
+
+[% FILTER html_para -%]
+[% END %]
+
+[% PROCESS section label="Empirical paths" %]
+
+[% FILTER html_para -%]
+[% END %]

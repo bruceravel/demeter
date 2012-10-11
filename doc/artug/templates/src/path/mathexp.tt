@@ -51,7 +51,8 @@ the fit.
 
 The most straightforward way to do this editing chore is to click on
 each successive path in the path list, then click into each text box,
-then type in the math expressions.  That, however, is really tedious.
+then type in the math expressions.  That, however, is both tedious and
+error-prone.
 [% END %]
 
 [% WRAPPER floatright this="path.menu.png" %]
@@ -64,8 +65,8 @@ text both, but only on this path.
 
 The next four options are used to push the math expression for the
 associated path parameter onto other paths.  These four options work
-much the same way as the similar function from the Path menu in  the
-Data window, except only for a single path parameter.
+allow some control over the paths that are targeted to receive the
+pushed path parameter values.
 
 The last two options are used to grab a math expression from one of
 the surrounding paths.
@@ -77,5 +78,19 @@ Einstein model.  Both the Debye and Einstein function depend on the
 measurement temeprature and a characteristic temperature.  Typically,
 the measurement temperature is a set variable and the characteristic
 temperature is a guess.  When either function is inserted into the
-text box, parameters are created on the GDS page.
+text box, parameters are created 
+[% INCLUDE html/link link="../gds.html" text="on the GDS page"%].
+
+[% WRAPPER html/todo %]
+Extended discussion on Debye and Einstein models
+[% END %]
+
+The Path menu on the Data page offers a way of pushing all the path
+parameters from the displayed path to other paths.  The same options
+for targeting other paths are presented.
+
+[% WRAPPER image file="path.push.png" %]
+Push all path parameters to other paths.
+[% END %]
+
 [% END %]

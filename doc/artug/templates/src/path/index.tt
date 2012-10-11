@@ -7,9 +7,10 @@ In this chapter, the method for associating paths with data sets is
 explained.  We will also see how to begin constructing a fitting
 model.
 
-Shown below is the Data window, which we have already seen, with some
-data from a gold foil already imported.  I have passed the cursor over
-the active text which says
+Shown below is the Data window, 
+[% INCLUDE html/link link="../data.html" text="which we have already seen"%],
+with some data from a gold foil already imported.  I have passed the
+cursor over the active text which says
 [% INCLUDE font/quote a="Import crystal data or a Feff calculation"%].
 Clicking will open the standard file selection dialog, prompting you for
 an [% INCLUDE font/file a="atoms.inp" %], [% INCLUDE font/file a="feff.inp" %]
@@ -17,7 +18,7 @@ or CIF file.  The same thing can be done by clicking the
 [% INCLUDE font/quote a="Add"%] button above the Feff list in the Main
 window, by selecting [% INCLUDE font/quote a="Open project of data"%]
 from the File menu in  the Main window, or by using the 
-[% INCLUDE font/mono a="Control-o"%] keyboaard shortcut.
+[% INCLUDE font/mono a="Control-o"%] keyboard shortcut.
 [% END %]
 
 [% WRAPPER image file="path.empty.png" %]

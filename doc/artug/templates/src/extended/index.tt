@@ -9,19 +9,24 @@ users'[%#'%] guide.
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Quick first shell theory" %]
 An in-depth discussion of how the [%INCLUDE html/link
-link="../extended/qfs.html" text="quick first shell theory tool" %]
+link="./qfs.html" text="quick first shell theory tool" %]
 works, what it is used for, and how it can be misused.
 [% END %]
 [% WRAPPER html/dt dt="Characteristic values" %]
-An explanation of the [%INCLUDE html/link link="../extended/cv.html"
+An explanation of the [%INCLUDE html/link link="./cv.html"
 text="characteristic value" %], or CV, Data attribute.  This is a tool
 for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
 [% END %]
+[% WRAPPER html/dt dt="Unique potentials" %]
+The [%INCLUDE html/link link="../feff/index.html" text="Atoms page" %]
+offers three ways of styling the potential indeces of the [%feff%]
+input data.  They are [%INCLUDE html/link link="./ipots.html" text="explained" %]
+by example using crystal data.
+[% END %]
 [% END %]
 
 [% WRAPPER html/todo %]
-Pages for (1) Empirical paths, (2) Histograms, (3) examples of
-feff.inp with tags/sites/elements, (4) background co-refinement, (5)
-dealing with dopants
+Pages for (1) Empirical paths, (2) Histograms, (3) background co-refinement, (4)
+dealing with dopants (5) explain correlated Debye and Einstein models
 [% END %]

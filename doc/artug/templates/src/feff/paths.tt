@@ -14,33 +14,42 @@ The Paths tab.
 Some statistics about the [%feff%] calculation are shown in the
 Description text box.  Below that is the summary of the paths found in
 the [%feff%] calculation.  This summary is presented in the form of a
-table.  Each row describes a unique scattering path.
+table.  Each row describes a scattering path.
 
 The first column shows the degeneracy of the path.  The second column
 shows its nominal path length, [%reff%].  That is value that will be
-used in any math expression containing the 
+used in any 
+[% INCLUDE html/link link="../path/mathexp.html" text="path parameter math expression"%]
+containing the 
 [% INCLUDE font/mono a="reff" %] token.
 
 The third column shows a simple view of the scattering path.  The 
 [% INCLUDE font/mono a="@" %] token represents the absorber, thus
 appears as  the first and last token in each description.  The tokens
 representing the scattering atoms are taken from the tags on the
-[%feff%] tab.
+[%feff%] tab.  You can change the absorber token by setting the
+[% INCLUDE preference group="pathfinder" option="token" %]
+configuration parameter.
 
-The fourth column contains a heuristic assessment of the importance of
-the path.  Single scattering paths and collinear multiple scattering
-paths are considered high importance paths.  They have a value of 2 in
-this column and are colored with green text.  Certain kinds of
-triangle paths are considered of intermediate importance.  These have
-a value of 1 and are colored with yellow text.  Other paths are
-considered to be of low importance and are colored with grey text.
+
+The fourth column contains the rank of the path.  This is an attempt
+to predict how important of each path will be to your fitting model.
+Paths with large spectral weight have a large rank and paths with
+little spectral weight have small rank.  Highly ranked paths are
+colored [%INCLUDE font/color color="046a15" text="green"%], mid-rank
+paths are colored [%INCLUDE font/color color="78670e" text="yellow"%],
+and low-rank paths are [%INCLUDE font/color color="787878"
+text="grey"%].
+
 Don't [%#'%] put too much faith in this assessment of importance.  You
 should explicitly check all paths to decide if they should be included
 in a fit.
 
-[% WRAPPER html/todo %]
-Explain path ranking
-[% END %]
+Currently, there is only one scheme for assigning path ranks.  The
+curved-wave importance factors from [%feff6%] are used.  These are
+rather unreliable as they are computed using a very crude algorithm.
+Future versions of [%artemis%] will offer several path ranking schemes
+to improve upon [%feff%]'s[$#'%] simple algorithm.
 
 The fifth column gives the number of legs in each path.  The final
 column is a simple explanation of the shape of the scattering
@@ -53,7 +62,8 @@ the one clicked upon and the previously clicked upon row.
 
 Much of the functionality of this page rests upon the set of selected
 paths.  Most importantly, selecting paths is the first step to using
-paths in a fitting model.  This will be explained in the next chapter.
+paths in a fitting model.  This will be explained in the 
+[% INCLUDE html/link link="../path/index.html" text="next chapter"%].
 
 At the top of the Paths tab are a series of buttons.  The 
 [% INCLUDE font/quote a="Save" %] button will write the entire
@@ -63,15 +73,13 @@ buttons are related to making plots of the selected paths.
 [% END %]
 
 [% WRAPPER floatleft this="feff.plot.png" %]
-A plot of paths from raw [%feff%] calculation.  In this example, the
-first four paths from the nickel metal calculation were selected, then
-the [% INCLUDE font/quote a="Plot selection" %] button was pressed.
-In this plot, we see that the first two single scattering paths are,
-indeed, quite large.  The intermediate importance third path, which
-scatters among first coordination shell Ni atoms, is a modest
-contributor to the EXAFS.  The low importance fourth shell path, which
-also scatters among first coordination shell atoms, cannot even be
-seen on this scale.  It truly is a low importance path.
+A plot of paths from the raw [%feff%] calculation.  In this example, the
+first three single scattering paths from the sodium uranyl triacetate
+calculation were selected along with a low-rank multiple scattering
+path.  Then the [% INCLUDE font/quote a="Plot selection" %] button was
+pressed.  In this plot, we see that the three single scattering
+paths are, indeed, quite large.  The multiple scattering path can
+barely be seen on this scale.  It truly is a low importance path.
 
 The meaning of a [% INCLUDE font/quote a="raw" %] [%feff%] calculation
 is that it is displayed as [%chik%] with [%s02%] set to 1.0 and each
@@ -88,8 +96,8 @@ window is used to make the plot of paths.
 
 Right clicking on an entry in the paths list will open a dialog window
 with more details about the geomtery of the scattering path.  In the
-following figure, the selected path (#0012) was right-clicked on,
-opening the dialog depicted.
+following figure, the selected path (#0006) was right-clicked on,
+opening the dialog depicted below.
 [% END %]
 
 [% WRAPPER image file="feff.pathsinfo.png" %]
