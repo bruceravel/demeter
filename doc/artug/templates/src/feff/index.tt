@@ -3,10 +3,9 @@
 %]
 
 [% FILTER html_para -%]
-After importing crystal data from an [% INCLUDE font/file
-a="atoms.inp" %] or CIF file.
+When you import crystal data from an [% INCLUDE font/file
+a="atoms.inp" %] or CIF file, three things happen:
 [% END %]
-
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
@@ -23,19 +22,22 @@ An entry is placed in the [%feff%] list on the main window.
 [% END %]
 [% END %] [%# end of ordered list%]
 
-
 [% FILTER html_para -%]
+You can also import a [% INCLUDE font/file a="feff.inp" %] file
+directly.  This is discussed in the
+[% INCLUDE html/link link="./feff.html" link="next section"%]
+
 This new window looks like this.  In this example, crystal data for Ni
 metal have been imported from an [% INCLUDE font/file a="atoms.inp" %]
 file.
 [% END %]
 
 [% WRAPPER image file="feff.atoms.png" %]
-The [% artemis %] [%atoms%] and [%feff%] window.
+The [%atoms%] and [%feff%] window in [% artemis %].
 [% END %]
 
 [% FILTER html_para -%]
-At the very top of the window is a tool bar with three buttons.  The
+At the top of the window is a tool bar with three buttons.  The
 first of these is used to change the label for this [%feff%]
 calculation.  Among other things, this is the label used in the
 [%feff%] list on the Main window.  The second button is used to
@@ -54,7 +56,7 @@ sections.
 
 [% FILTER html_para -%]
 The crystal cell data [%ndash%] including lattice constants and angles, the
-space group symbol, and the shift vector elements [%ndash%] are placed in
+space group symbol, and the elements of the shift vector [%ndash%] are placed in
 text boxes for easy editing.  The coordinates of the unique sites are
 listed in the grid at the bottom of the window.  The absorber is
 chosen by clicking one of the boxes on the 
