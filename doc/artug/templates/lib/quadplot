@@ -28,7 +28,7 @@
 <a href=[% this %]><img src="[% this %]" width=[%- IF ww < 640 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 [%- END -%]
 </a>
-<p align=center>
+<p>
 [%- content -%]
 </p>
 </div>

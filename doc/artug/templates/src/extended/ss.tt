@@ -1,0 +1,42 @@
+[% META title = 'Modeling disorder' %]
+
+[% FILTER html_para -%]
+Explain equivalence between thermal and structural disorder.  Discuss
+strategies for disentangling them, i.e. temperature and pressure.
+[% END %]
+
+
+[% PROCESS section label="Debye and Einstein models" %]
+
+[% FILTER html_para -%]
+
+[% INCLUDE citation
+author = "S. Sevillano, H. Meuth, and J.J. Rehr"
+journal = "Phys. Rev."
+volume = "B20:12"
+pages = "4908-4911"
+year = 1979
+doi = "10.1103/PhysRevB.20.4908"
+%]
+
+[% END %]
+
+[% PROCESS section label="Collinear multiple scattering paths" %]
+
+[% FILTER html_para -%]
+
+[% INCLUDE citation
+author = "E.A. Hudeson et al."
+journal = "Phys. Rev."
+volume = "B54:1"
+pages = "156-165"
+year = 1996
+doi = "10.1103/PhysRevB.54.156"
+%]
+
+[% END %]
+
+[% PROCESS section label="Sensible approximations for multiple scattering paths" %]
+
+[% FILTER html_para -%]
+[% END %]

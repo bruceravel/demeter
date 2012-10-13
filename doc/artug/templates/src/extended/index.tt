@@ -6,6 +6,8 @@ operation of [%artemis%] that simply did not fit in other parts of this
 users'[%#'%] guide.
 [% END %]
 
+[% PROCESS section label="Topics related to fitting EXAFS data" %]
+
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Quick first shell theory" %]
 An in-depth discussion of how the [%INCLUDE html/link
@@ -18,11 +20,24 @@ text="characteristic value" %], or CV, Data attribute.  This is a tool
 for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
 [% END %]
+[% WRAPPER html/dt dt="Geometric parametrization of bond length" %]
+[% END %]
+[% WRAPPER html/dt dt="Modeling the disorder parameter" %]
+[% END %]
+[% END %]
+
+[% PROCESS section label="Topics related to Feff" %]
+
+[% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Unique potentials" %]
 The [%INCLUDE html/link link="../feff/index.html" text="Atoms page" %]
 offers three ways of styling the potential indeces of the [%feff%]
 input data.  They are [%INCLUDE html/link link="./ipots.html" text="explained" %]
 by example using crystal data.
+[% END %]
+[% WRAPPER html/dt dt="The pathfinder and fuzzy degeneracy" %]
+An [%INCLUDE html/link link="./ipots.html" text="explanation" %] of
+the pathfinder and of the concept of fuzzy degeneracy. 
 [% END %]
 [% END %]
 
@@ -32,7 +47,5 @@ Pages for
 [%br%]* Histograms, 
 [%br%]* background co-refinement
 [%br%]* dealing with dopants 
-[%br%]* explain correlated Debye and Einstein models
-[%br%]* fuzzy degeneracy
-[%br%]* explain when and why [%alpha%]*[%reff%] works for [%delr%]
+[%br%]* constraints and restraints
 [% END %]

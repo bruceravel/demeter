@@ -49,6 +49,7 @@
 [% MACRO rmin    BLOCK -%] R<sub>min</sub>   [%- END -%]
 [% MACRO rmax    BLOCK -%] R<sub>max</sub>   [%- END -%]
 [% MACRO nidp    BLOCK -%] N<sub>idp</sub>   [%- END -%]
+[% MACRO ne      BLOCK -%] &ne; [%- END -%]
 
 [% MACRO i0      BLOCK -%] I&#8320;   [%- END -%]
 [% MACRO it      BLOCK -%] I<sub>t</sub>   [%- END -%]

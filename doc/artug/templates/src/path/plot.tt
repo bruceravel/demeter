@@ -9,30 +9,34 @@ shift key.  Doing so marks all paths between the selected one and the
 one shift-clicked upon.
 
 Control-clicking on the path list is also a special function used for
-two purposes.  Doing a control-click initiates a drag-and-drop
-function for the path you click on.  If you drop the path on the same
-path list, that is equivalent to cloning the dragged path, with the
-clone being appended to the end of the path list.  This drag
-action can also be used to copy paths between Data windows in a
-multiple data set fit.
+two purposes.  Doing a control-click starts a drag-and-drop with the
+path you click on.  Dropping the path on another data window, copies
+If you drop the path on the same path list, that path to that Data
+set.  Dropping the path on the same path list
+is equivalent to cloning the dragged path, with the clone being
+appended to the end of the path list.
+
+[% WRAPPER html/caution %]
+Mistakenly control-clicking rather than shift-clicking will likely
+result in a path being cloned.  This can be surprising and confusing,
+so take care!
+[% END %]
 
 [% WRAPPER html/todo %]
 Write a page about tools for building MDS fits
 [% END %]
 
-
-[% WRAPPER html/caution %]
-Mistakenly control-clicking rather than shift-clicking will likely
-result in a path being cloned.  This can be surprising and confusing!
-[% END %]
 [% END %]
 
 [% PROCESS section label="Moving paths to the Plotting list" %]
 
 [% FILTER html_para -%]
-[%artemis%] has no built-in plot types involving individual paths.
+[%artemis%] has no special plot types involving individual paths like
+[% INCLUDE html/link link='../data.html#specialplots'
+text="those for the data sets"%].
 Any plots with paths are constructed using the Plotting list on the
-Plot window.  There are three ways of moving individual paths to the Plotting
+[% INCLUDE html/link link="../plot/index.html" text="Plot window"%].
+There are three ways of moving individual paths to the Plotting
 list.
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
@@ -46,7 +50,8 @@ A path will be transferred automatically after a fit if its
 [% WRAPPER html/li %]
 The set of marked groups will be transferred when 
 [% INCLUDE font/quote a="Transfer marked" %] is selected from the
-Actions menu.
+Actions menu.  This is probably the most common way of constructing
+plots involving paths.
 [% END %]
 [% END %] [%# end of ordered list%]
 
@@ -56,6 +61,9 @@ is called a [% INCLUDE font/quote a="virtual path" %], or a
 normal paths which are summed.  The sum is then plotted in k-, R-, or
 q-space.  A VPath is made by marking a set of paths then selecting
 [% INCLUDE font/quote a="Make VPath from marked" %] from the Actions menu.
+VPaths are discussed in more detail 
+[% INCLUDE html/link link='../plot/vpaths.html' text="the chapter on
+the Plot window"%].
 [% END %]
 
 [% WRAPPER quadplot files=["path.au4.png", "path.au4vpath.png"] %]

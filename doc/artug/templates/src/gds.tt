@@ -11,7 +11,9 @@ expressions" %].  These math expressions are functions of the actual
 fitting parameters.
 
 Some of these math expressions are quite simple.  For example, in the
-gold metal example in the previous chapter, the math expressions for
+gold metal example in 
+[% INCLUDE html/link link="./path/mathexp.html" text="the previous chapter"%],
+the math expressions for
 [%s02%] and [%e0%] were simple function of a single parameter.  The
 math expression for [%delr%], however, was a function of 
 [% INCLUDE font/mono a="alpha" %] and [% INCLUDE font/mono a="reff"%],
@@ -125,7 +127,7 @@ in [%artemis%].
 [% END %] [%# end of description list %]
 
 [% WRAPPER html/todo %]
-Implement penalty and merge parameters.
+Penalty and merge parameters have not been implemented.
 [% END %]
 [% END %]
 
@@ -140,12 +142,13 @@ of the main functions of the GDS window.  The
 [% INCLUDE font/quote a="Use best fit" %] button makes the most recent
 best fit value into the initial guess for every guess parameter in the
 grid.  The [% INCLUDE font/quote a="Reset all" %] button tells
-[%ifeffit%] to reset all parameters to their initial values.  The 
-[% INCLUDE font/quote a="Highlight" %] button prompts you for a
+[%ifeffit%] to reset all parameters to their initial values.  
+
+The [% INCLUDE font/quote a="Highlight" %] button prompts you for a
 string.  All parameters with names or math expressions which match the
 string provided will be highlighted with a yellow background.  This
-feature is particularly useful for large fitting models with many
-parameters. 
+feature is particularly useful in large fitting models with many
+parameters.
 
 The next two buttons are used to import or export a simple text file
 showing the definitions of all the parameters.  The

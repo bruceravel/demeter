@@ -39,9 +39,11 @@ and text boxes.  Math expressions are entered into these text boxes.
 In the following image, a simple fitting model appropriate for a
 cubic, monoatomic material like our gold foil has been entered for the
 first shell path.  This includes simple expressions for [%s02%] and
-[%e0%] consisting of variables that will be floated in the fit.  A
-model of isotropic expansion is provided for [%delr%].  The [%sigsqr%]
-path parameter is expressed using the correlated Debye model.  The
+[%e0%] consisting of variables that will be floated in the fit.  A [%
+INCLUDE html/link link="../extended/delr.html" text="model of
+isotropic expansion"%] is provided for [%delr%].  The [%sigsqr%] path
+parameter is expressed using [% INCLUDE html/link
+link="../extended/ss.html" text="the correlated Debye model"%].  The
 other path parameter text boxes have been left blank and will not be
 modified in the fit.
 [% END %]
@@ -51,10 +53,9 @@ Math expressions have been set for the first shell path.
 [% END %]
 
 [% FILTER html_para -%]
-That. of course, establishes the parameterization of the path
-parameters only for the first path.  The same editing of path
-parameter math expressions must happen for all the other paths used in
-the fit.
+This, of course, establishes the parameterization only for the first
+path.  The same editing of path parameter math expressions must happen
+for all the other paths used in the fit.
 
 The most straightforward way to do this editing chore is to click on
 each successive path in the path list, then click into each text box,
@@ -71,26 +72,23 @@ right.  The top option is used to erase the contents of the associated
 text both, but only on this path.
 
 The next four options are used to push the math expression for the
-associated path parameter onto other paths.  These four options work
-allow some control over the paths that are targeted to receive the
-pushed path parameter values.
+associated path parameter onto other paths.  These four options allow
+some control over the paths that are targeted to receive the pushed
+path parameter values.
 
-The last two options are used to grab a math expression from one of
+The last two options are used to grab the math expression from one of
 the surrounding paths.
 
 The menu that pops up for the [%sigsqr%] parameter has two additional
 options.  One inserts a math expression for using the correlated Debye
 function for [%sigsqr%], the other inserts the math expression for an
-Einstein model.  Both the Debye and Einstein function depend on the
+Einstein model.  [% INCLUDE html/link link="../extended/ss.html"
+text="Both the Debye and Einstein functions"%] depend on the
 measurement temeprature and a characteristic temperature.  Typically,
 the measurement temperature is a set variable and the characteristic
 temperature is a guess.  When either function is inserted into the
-text box, parameters are created 
-[% INCLUDE html/link link="../gds.html" text="on the GDS page"%].
-
-[% WRAPPER html/todo %]
-Extended discussion on Debye and Einstein models
-[% END %]
+text box, parameters are automatically created [% INCLUDE html/link
+link="../gds.html" text="on the GDS page"%].
 
 The Path menu on the Data page offers a way of pushing all the path
 parameters from the displayed path to other paths.  The same options
