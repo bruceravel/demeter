@@ -81,7 +81,7 @@ description
 
 variable=termparams
 type=string
-default=enhanced
+default=enhanced dashed
 description
   Use this to specify parameters of the terminal type.  Be sure to
   follow gnuplot's syntax -- Demeter does no error checking on the

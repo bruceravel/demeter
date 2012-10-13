@@ -13,22 +13,23 @@ set xtics
 
 ## line styles
 w={$C->default("gnuplot","linewidth")}
-set style line 1  linecolor rgb "{$C->default("gnuplot", "col0")}" linewidth w pointsize 1 pointtype 7
-set style line 2  linecolor rgb "{$C->default("gnuplot", "col1")}" linewidth w pointsize 1
-set style line 3  linecolor rgb "{$C->default("gnuplot", "col2")}" linewidth w pointsize 1
-set style line 4  linecolor rgb "{$C->default("gnuplot", "col3")}" linewidth w pointsize 1
-set style line 5  linecolor rgb "{$C->default("gnuplot", "col4")}" linewidth w pointsize 1
-set style line 6  linecolor rgb "{$C->default("gnuplot", "col5")}" linewidth w pointsize 1
-set style line 7  linecolor rgb "{$C->default("gnuplot", "col6")}" linewidth w pointsize 1
-set style line 8  linecolor rgb "{$C->default("gnuplot", "col7")}" linewidth w pointsize 1
-set style line 9  linecolor rgb "{$C->default("gnuplot", "col8")}" linewidth w pointsize 1
-set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}" linewidth w pointsize 1
+set style line 1  linecolor rgb "{$C->default("gnuplot", "col0")}" linetype 1 linewidth w pointsize 1 pointtype 7
+set style line 2  linecolor rgb "{$C->default("gnuplot", "col1")}" linetype 1 linewidth w pointsize 1
+set style line 3  linecolor rgb "{$C->default("gnuplot", "col2")}" linetype 1 linewidth w pointsize 1
+set style line 4  linecolor rgb "{$C->default("gnuplot", "col3")}" linetype 1 linewidth w pointsize 1
+set style line 5  linecolor rgb "{$C->default("gnuplot", "col4")}" linetype 1 linewidth w pointsize 1
+set style line 6  linecolor rgb "{$C->default("gnuplot", "col5")}" linetype 1 linewidth w pointsize 1
+set style line 7  linecolor rgb "{$C->default("gnuplot", "col6")}" linetype 1 linewidth w pointsize 1
+set style line 8  linecolor rgb "{$C->default("gnuplot", "col7")}" linetype 1 linewidth w pointsize 1
+set style line 9  linecolor rgb "{$C->default("gnuplot", "col8")}" linetype 1 linewidth w pointsize 1
+set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}" linetype 1 linewidth w pointsize 1
 
 ## marker styles
 set style line 12 linecolor rgb "{$C->default("gnuplot", "markercolor")}"
 
 ## indicator styles
-set style line 16 linecolor rgb "{$C->default("gnuplot", "indicatorcolor")}" lw 1.5
+set style line 16 linecolor rgb "{$C->default("gnuplot", "indicatorcolor")}" lt 3 lw 1.5
+set style arrow 1 nohead ls 16
 unset arrow
 
 ## plot formatting

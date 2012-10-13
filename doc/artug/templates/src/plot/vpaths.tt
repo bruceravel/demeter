@@ -1,13 +1,15 @@
 [% META title = 'Creating and plotting VPaths' %]
 
 [% FILTER html_para -%]
-Here is a fairly common problem with visualizing the paths that
-contribute to a fit.  In a well-ordered material like these data on a
-cobalt foil, a distant single scattering path may be of the same
-length as two or more important collinear multiple scattering paths.
-The fit involves a subtle superposition of all the paths in the fit.
-This single scattering path and its related multiple scattering paths
-all contribute spectral weight in the same region of R-space.
+A common problem with visualizing the paths that contribute to a fit
+occurs when several single and multiple scatteriung paths contribute
+spectral wieght in the same region of R spadce.  In a well-ordered
+material like these data on a cobalt foil, a distant single scattering
+path may be of the same length as two or more important collinear
+multiple scattering paths.  The fit involves a subtle superposition of
+all the paths in the fit.  This single scattering path and its related
+multiple scattering paths all contribute spectral weight in the same
+region of R-space.
 
 [% WRAPPER image file="plot.overlapping.png" %]
 A plot of overlapping paths
@@ -31,6 +33,14 @@ A plot with the overlapping paths made into a single VPath
 [% END %]
 [% END %]
 
+[% WRAPPER floatright this="plot.makevpath.png" %]
+The VPath is made by marking the contributing paths and choosing
+[% INCLUDE font/quote a="Make VPath" %] from the Actions menu.  You
+will be prompted for a name for the VPath.  This name will be used to
+identify the VPath in a plot.  The VPath is then inserted into the
+list of the VPaths tab.
+[%END%]
+[%break%]
 [% WRAPPER floatright this="uranyl.png" %]
 Here is another example of how a VPath can help visualize the
 components of a fit.  The data in the follow two figures are of

@@ -415,7 +415,7 @@ sub S_reff_rmax {
       next if not defined($p);
       next if (not $p->include);
       next if ($p->data ne $d);
-      if ($p->reff > ($d->bft_rmax+1)) {
+      if ($p->reff > ($d->bft_rmax+$self->co->default('warnings', 'reff_margin'))) {
 	my $identify = $p->name || $p->Index;
 	++$found;
 	$p->add_trouble('reffrmax');

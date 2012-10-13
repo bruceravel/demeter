@@ -42,25 +42,27 @@ cost of a pause when examining log files.
 Each fit in the list will display a context menu when right clicked.
 Again, there may be a short pause before the menu gets posted.  In
 that menu are a variety of functions related to the fit history.
-[% WRAPPER html/list type="ol" %]
-[% WRAPPER html/li %]
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Restore fitting model" %]
 An prior fitting model can be restored.  This will clear all of
-[%artemis%]'s [%#'%] windows and replace them with content from that
+[%artemis%]'s[%#'%] windows and replace them with content from that
 fit. 
 [% END %]
-[% WRAPPER html/li %]
-The log file displayed can be written to a text file.
+[% WRAPPER html/dt dt="Save log file" %]
+The log file displayed can be written to a text file.  You will be
+prompted for a file name and location.
 [% END %]
-[% WRAPPER html/li %]
+[% WRAPPER html/dt dt="Export fit" %]
 The fit can be exported to an [%artemis%] project file containing only
 that fit in the fit history.
 [% END %]
-[% WRAPPER html/li %]
+[% WRAPPER html/dt dt="Discard fit(s)" %]
 The current or the set of marked fits can be discarded from the project.
 [% END %]
-[% WRAPPER html/li %]
+[% WRAPPER html/dt dt="Show YAML" %]
 The last item is a tool used to help debug problems in [%artemis%].
-It displays [%artemis%]'s [%#'%]  internal representation of the fit.
+It displays [%artemis%]'s[%#'%]  internal representation of the fit in
+a text window.
 [% END %]
 [% END %] [%# end of ordered list%]
 [% END %]
@@ -111,6 +113,7 @@ comparison with data and with the current fit.
 [% END %]
 
 [% WRAPPER html/todo %]
-The history plotting tool is not currently working.
+The history plotting tool is not currently working, making it
+difficult to write this bit of documentation!
 [% END %]
 

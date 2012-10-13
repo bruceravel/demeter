@@ -28,7 +28,7 @@ Once started, [% artemis %] displays two windows, as shown below.
 [% END %]
 
 [% WRAPPER imagefull file="startup.png" %]
-[% artemis %], as it appears immediately after starting.
+Artemis, as it appears immediately after starting.
 [% END %]
 
 [% FILTER html_para -%]

@@ -13,10 +13,10 @@ of thing is usually considered [% INCLUDE font/quote a="user friendly" %],
 while a dizzying array of configrable options if conisdered to be
 hostile to the user.
 
-I don't [%#'%] disagree with that.  However, I am not so lucky as to
+I don't[%#'%] disagree with that.  However, I am not so lucky as to
 have teams dedicated to user interface design and product testing.  I
-don't [%#'%] have the luxury of finding out which design decisions are
-successful and which are not.
+don't[%#'%] have the luxury of testing design decisions to determine if
+they are successful.
 
 Unfortunately, there are a lot of aspects of the software that need
 sensible default values.  In general, I have a good idea what a
@@ -46,16 +46,4 @@ example, some are filenames, strings, real numbers, integers, colors,
 and so on.  Controls appropriate to the value type will be provided
 when the option is clicked on.
 
-Some particularly useful configuration parameters include:
-[% WRAPPER html/list type="ul" %]
-[% WRAPPER html/li %]
-This
-[% END %]
-[% WRAPPER html/li %]
-That
-[% END %]
-[% WRAPPER html/li %]
-The other thing...
-[% END %]
-[% END %]
 [% END %]

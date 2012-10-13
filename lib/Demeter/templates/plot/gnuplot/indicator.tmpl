@@ -2,5 +2,6 @@
   # template for plotting an indicator
   q{};
 }
-set arrow {$S->i} from {$S->xcoord},{$S->y1coord} to {$S->xcoord},{$S->y2coord} nohead ls 16
+#set arrow {$S->i} from {$S->xcoord},{$S->y1coord} to {$S->xcoord},{$S->y2coord} nohead ls 16
+set arrow {$S->i} from {$S->xcoord},graph 0 to {$S->xcoord},graph 1 as 1
 replot

@@ -21,20 +21,20 @@ calculations exist.
 [% END %]
 
 [% WRAPPER html/li %]
-Check that all guess parameters are used in at least one def parameter.
+Check that all guess parameters are used in at least one def parameter
 or path parameter.
 [% END %]
 
 [% WRAPPER html/li %]
-Check that no def parameter or path parameter uses an undefined parameters.
+Check that no def parameter or path parameter uses an undefined parameter.
 [% END %]
 
 [% WRAPPER html/li %]
-Check that none of 
+Check that none of these typos [%ndash%]
 [% INCLUDE font/quote a="++" %],
 [% INCLUDE font/quote a="--" %],
 [% INCLUDE font/quote a="//" %], or
-[% INCLUDE font/quote a="***" %] appear in a math expression.
+[% INCLUDE font/quote a="***" %] [%ndash%] appear in any math expressions.
 [% END %]
 
 [% WRAPPER html/li %]
@@ -47,7 +47,8 @@ Check that all GDS parameters have unique names.
 [% END %]
 
 [% WRAPPER html/li %]
-Check that parentheses match in all math expressions.
+Check that parentheses match in all math expressions, i.e. that every
+open penthesis has a matching close paremthesis.
 [% END %]
 
 [% WRAPPER html/li %]
@@ -60,12 +61,14 @@ Check that the number of guess parameters is less than [%nidp%].
 [% END %]
 
 [% WRAPPER html/li %]
-Verify that [%rmin%] is >= [%rbkg%] for data imported from an
+Verify that [%rmin%][%ge%][%rbkg%] for data imported from an
 [%athena%] project file.
 [% END %]
 
 [% WRAPPER html/li %]
-Verify that [%reff%] for each path is not well beyond [%rmax%].
+Verify that [%reff%] for each path is not well beyond [%rmax%].  The
+margin beyond [%rmax%] that a value of [%reff%] is acceptable is set
+by [% INCLUDE preference group="warnings" option="reff_margin" %].
 [% END %]
 
 [% WRAPPER html/li %]
@@ -102,18 +105,19 @@ Check for obvious cases of a data set used more than once.
 [% END %]
 
 [% WRAPPER html/li %]
-Check that each data set used in the fit has at least one  path
+Check that each data set used in the fit has at least one path
 assigned to it.
 [% END %]
 
 [% END %] [%# end of ordered list%]
 
 [% FILTER html_para -%]
-As a side note, item #15 is particularly interesting.  [%demeter%]
-does a simple lexical analysis on the ensemble of math expressions
-defined on the GDS window then uses a formal graph theory tool
-(links...) to develop a graph depiction of the parameters.  Loops
-(like the first example) and cycles (like the second) a trivially
-evident when the parameters are viewed as a formal graph.  That was a
-really fun part of [%demeter%] to write.
+As a side note, item 15 is particularly interesting.  [%demeter%] does
+a simple lexical analysis on the ensemble of math expressions defined
+on the GDS window, then uses [% INCLUDE html/link text="a formal graph
+theory tool" link="https://metacpan.org/module/Graph" %] to develop a
+graph depiction of the parameters.  Loops (like the first example) and
+cycles (like the second) a trivially evident when the parameters are
+viewed as a formal graph.  That was a really fun part of [%demeter%]
+to write.
 [% END %]

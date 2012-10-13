@@ -3,7 +3,7 @@
 [% FILTER html_para -%]
 [%artemis%] provides a number of tools for keeping track of things
 going on behind the scenes.  These tools are found either in the
-Monitor menu on the Main window or the Debug manu on the Data window.
+Monitor menu on the Main window or the Debug menu on the Data window.
 
 In the normal course of operations, consulting the monitoring tools
 should not be necessary.  But if something is not working quite right,
@@ -23,6 +23,9 @@ plotting backend (usually Gnuplot).
 
 These are very useful both for diagnosing problems and for learning
 the details of how [%ifeffit%] and Gnuplot work.
+
+At the bottom of the window is a simple command line for sending
+instructions directly to [%ifeffit%].
 [% END %]
 
 [% PROCESS subsection label="The Status buffer" %]
@@ -31,7 +34,7 @@ the details of how [%ifeffit%] and Gnuplot work.
 Every message sent to any of the status bars in [%artemis%] is
 time-stamped and logged in the status buffer.  This provides a sort of
 record of the major actions taken during your current [%artemis%]
-session. 
+session.  The contents of this buffer can be saved to a file.
 [% END %]
 
 [%# ################################################################ %]
@@ -57,7 +60,11 @@ bar.
 [%# ################################################################ %]
 [% PROCESS section label="Debugging Demeter" %]
 
-[% WRAPPER html/todo %]
-Explain configuration for turning on debug menus, explain utility of
-debug menus
+[% FILTER html_para -%]
+Several additional menu items are turned on when 
+[% INCLUDE preference group="artemis" option="debug_menus" %]
+is set to a true value.  The items in these menus provide tools for
+debugging [%artemis%] by showing the current satte of [%demeter%] and
+its data structures.  These tools are invaluable for developing the
+software, but are probably of limited value to the general user.
 [% END %]
