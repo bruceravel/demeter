@@ -11,21 +11,21 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../feff/paths.html" class="menu">The Paths tab</a> &nbsp;&nbsp;
-        Next: <a class=navtable href="../feff/console.html" class="menu">The Console tab</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a>      </td>
+        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../feff/console.html" class="menu">The Console tab</a>      </td>
     </tr>
   </table>
   </div>
@@ -63,7 +63,7 @@
 </h1>
 
 <p>
-Among the most powerful new features in  <span class=program>ARTEMIS</span> is the ability to
+One of the powerful new features in  <span class=program>ARTEMIS</span> is the ability to
 define &ldquo;path-like&rdquo; objects.  A path-like
 object is one which can be treated like a normal path from  <span class=program>FEFF</span>.
 It can be used in a fit and it can be plotted.  It is not, however,
@@ -82,7 +82,9 @@ item in that menu is for defining
 </p>
 
 
-<a href="../../images/feff.pathlike.png" target=_blank><img src="../../images/feff.pathlike.png" alt="
+<a href="../../images/feff.pathlike.png" target=_blank><img src="../../images/feff.pathlike.png" title="
+The Pathlike tab.
+" alt="
 The Pathlike tab.
 "></a>
 
@@ -104,7 +106,7 @@ distance not represented in the list of cartesian coordinates.
 
 </td>
 <td width=640>
-<a class=floatleft href="../../images/feff.plotss.png" target=_blank><img border=0 src="../../images/feff.plotss.png" alt="feff.plotss.png"></a>
+<a class=floatleft href="../../images/feff.plotss.png" target=_blank><img border=0 src="../../images/feff.plotss.png"  alt="feff.plotss.png"></a>
 In the example show, a  <span class=program>FEFF</span> calculation has been run on
  LaCoO<sub>3</sub>    , a trigonal perovskite-like material with 6 oxygen
 scatterers at 1.93  &Aring;    , 8 La scatterers at 3.28  &Aring;     or 3.34
@@ -113,30 +115,33 @@ scatterers at 1.93  &Aring;    , 8 La scatterers at 3.28  &Aring;     or 3.34
 
 <p>
 Suppose we had some reason to wonder what a Co scatterer at a distance
-of 3  &Aring;     would look like in a fit.  In that case, the distance on
+of 3  &Aring;     would look like in a fit. (For example, we might suspect
+that some phase segregation happened during synthesis, resulting in
+some CoO.)  In that case, the distance on
 the SSPath page would be set to 3.0 and the Co scatterer would be
-selected from the group of radio buttons.  This groups of radio
-buttons is generated from the list of unique potentials in the input
+selected from the group of radio buttons.  This group of radio
+buttons corresponds to the list of unique potentials in the input
 data for  <span class=program>FEFF</span>.
 </p>
 
 <p>
-The method for associating this notional path with data will be
-explained in the next chapter.  For now, we simply jump ahead and
-compare the normal Co scatterer at 3.83  &Aring;     (blue) with the SSPath
-computed at 3  &Aring;     (red).
+The method for associating this SSPath with data will be
+explained in the 
+<a href="../path/index.html">next chapter</a>.
+For now, we simply jump ahead and compare the normal Co scatterer at
+3.83  &Aring;     (blue) with the SSPath computed at 3  &Aring;     (red).
 </p>
 
 <p>
-In the prior version of  <span class=program>ARTEMIS</span>, a lot of users attempted to do
-this sort of thing using the quick first shell theory functionality
-(which still exists and which is described elsewhere).  This is a much
-superior approach.  The advantage of this approach is that it uses
+Use of SSPath for modeling scatterers at such a long distance is much
+superior to using a <a href="../path/pathlike.html">quick first shell theory</a>.  The advantage of this approach is that it uses
 well constructed scattering potentials  &ndash;  i.e. potentials from a real
 structure  &ndash;  to make the special path.  Using the quick first shell
 technique on a path this long results in poorly constructed
-potentials.
+potentials.  This is explained in detail in
+<a href="../extended/qfs.html">the extended discussions chapter</a>.
 </p>
+
 
 
 <hr class=hide /> 
@@ -152,7 +157,7 @@ collinear multiple scattering paths.
 
 
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
 FSPaths have not yet been implemented.
 </p>
 
@@ -163,7 +168,7 @@ FSPaths have not yet been implemented.
 </a>
 
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
 Document the histogram system.
 </p>
 

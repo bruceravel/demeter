@@ -11,18 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="./index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="./path/index.html" class="menu">The Path page</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
         Next: <a class=navtable href="./fit/index.html" class="menu">Running a fit</a>      </td>
     </tr>
   </table>
@@ -71,7 +73,9 @@ fitting parameters.
 
 <p>
 Some of these math expressions are quite simple.  For example, in the
-gold metal example in the previous chapter, the math expressions for
+gold metal example in 
+<a href="./path/mathexp.html">the previous chapter</a>,
+the math expressions for
  S&sup2;&#8320;  and  E&#8320;  were simple function of a single parameter.  The
 math expression for  &Delta;R , however, was a function of 
 <tt>alpha</tt> and <tt>reff</tt>,
@@ -97,7 +101,9 @@ parameter types can be chosen.
 </p>
 
 
-<a href="../images/gds.png" target=_blank><img src="../images/gds.png" alt="
+<a href="../images/gds.png" target=_blank><img src="../images/gds.png" title="
+The  <span class=program>ARTEMIS</span> GDS window.
+" alt="
 The  <span class=program>ARTEMIS</span> GDS window.
 "></a>
 
@@ -137,9 +143,9 @@ to find the best fit of the model to your data.
 (<span style="color:#008b00; background-color:white">green</span>) This is a
 parameter that is defined as a math expression 
 dependent upon other guess, def, or set parameters.  Its value is
-updated throughout the fit.  As discussed below, sophisticated use of
-def parameters is key to successful model building and effective use
-of  <span class=program>ARTEMIS</span>. 
+updated throughout the fit.  As discussed elsewhere in this manual,
+sophisticated use of def parameters is key to successful model
+building and effective use of  <span class=program>ARTEMIS</span>. 
   <br />
   <br />
 </dd>
@@ -160,7 +166,7 @@ represent a constant value used elsewhere in the fitting model.
 </dt>
 <dd>
 (<span style="color:#3E1C8F; background-color:white">dark purple</span>) An lguess
-parameter is tool used to simplify model 
+parameter is a tool used to simplify model 
 creation for a multiple data set fit.  It can be used in math
 expressions for two or more data sets.  When the fit started, an
 actual guess parameter will be created for each data set in which the
@@ -172,7 +178,8 @@ each fit.  With  <tt>x</tt> an lguess parameter,
 independent mixing parameters will be floated for each data set.  The
 point, then, of an lguess is to facilitate the chore of editing path
 parameter math expressions using  <span class=program>ARTEMIS</span>'  tools for pushing
-path parameter values across paths.
+path parameter values across paths.  This is discussed in more detail
+in <a href="./extended/cv.html#useinlguessparameters">the discussion of the characteristic value</a>.
   <br />
   <br />
 </dd>
@@ -242,8 +249,8 @@ in  <span class=program>ARTEMIS</span>.
 
 <p>
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
-Implement penalty and merge parameters.
+<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
+Penalty and merge parameters have not been implemented.
 </p>
 </p>
 
@@ -255,6 +262,11 @@ Implement penalty and merge parameters.
 <h2>  User interaction</h2>
 </a>
 
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
+Explain drag and drop
+</p>
+
 <hr class=hide /> 
 <a name="buttonbar">
 
@@ -263,25 +275,65 @@ Implement penalty and merge parameters.
 
 <p>
 The stack of buttons on the right side of the GDS window contains many
-of the main functions of the GDS window.  The 
-&ldquo;Use best fit&rdquo; button makes the most recent
-best fit value into the initial guess for every guess parameter in the
-grid.  The &ldquo;Reset all&rdquo; button tells
- <span class=program>IFEFFIT</span> to reset all parameters to their initial values.  The 
-&ldquo;Highlight&rdquo; button prompts you for a
-string.  All parameters with names or math expressions which match the
-string provided will be highlighted with a yellow background.  This
-feature is particularly useful for large fitting models with many
-parameters. 
-</p>
-
-<p>
+of the main functions of the GDS window.  
+<dl>
+  
+<dt>
+  Use best fit
+</dt>
+<dd>
+This button makes the most recent best fit value into the initial
+guess for every guess parameter in the grid.
+  <br />
+  <br />
+</dd>
+<dt>
+  Reset all
+</dt>
+<dd>
+This button tells <span class=program>IFEFFIT</span> to reset all parameters to their initial
+values.
+  <br />
+  <br />
+</dd>
+<dt>
+  Highlight
+</dt>
+<dd>
+This button prompts you for a string.  All parameters with names or
+math expressions matching the string provided will be highlighted with
+a yellow background.  This feature is particularly useful in large
+fitting models with many parameters.
+  <br />
+  <br />
+</dd>
+<dt>
+  Import/export
+</dt>
+<dd>
 The next two buttons are used to import or export a simple text file
-showing the definitions of all the parameters.  The
-&ldquo;Discard all&rdquo; button does just that, after
-prompting to be sure that is what you want to do.  Finally, the 
-&ldquo;Add a site&rdquo; button appends a blank row to
-the end of the grid.
+with the names and definitions of all the parameters.
+  <br />
+  <br />
+</dd>
+<dt>
+  Discard all
+</dt>
+<dd>
+This button does just that, after prompting to be sure that is what
+you want to do.  
+  <br />
+  <br />
+</dd>
+<dt>
+  Add a site
+</dt>
+<dd>
+This button appends a blank row to the end of the grid.
+  <br />
+  <br />
+</dd>
+</dl>
 </p>
 
 
@@ -335,7 +387,7 @@ shortcuts to change the parameter type of that set of parameters.
 
 </td>
 <td width=210>
-<a class=floatright href="../images/gds.menu.png" target=_blank><img border=0 src="../images/gds.menu.png" alt="gds.menu.png"></a>
+<a class=floatright href="../images/gds.menu.png"  target=_blank><img border=0 src="../images/gds.menu.png"  alt="gds.menu.png"></a>
 Clicking on a line in the grid selects the entire line.  Control
 clicking of a line adds that line to the selection.  Shift clicking
 adds all lines between the selected and clicked upon lines.
@@ -343,46 +395,124 @@ adds all lines between the selected and clicked upon lines.
 
 <p>
 Right clicking on any line in the grid, including the label containing
-the line number, will post the menu shown on the right.  The top three
-items in the menu are used to copy, cut, and paste entire lines.  The
-cut function is one way of discarding a parameter.  The other is to
-simply delete the name.
+the line number, will post the menu shown on the right.
 </p>
 
 <p>
+<dl>
+  
+<dt>
+  Copy, cut, paste
+</dt>
+<dd>
+These three options copy, cut, and paste lines from or to the GDS
+grid. The cut function is one way of discarding a parameter.
+Another is to simply delete the name in the second column.
+  <br />
+  <br />
+</dd>
+<dt>
+  Insert blank lines
+</dt>
+<dd>
 The insertion options complement the &ldquo;Add a site&rdquo;
-button by adding blank rows to the middle of the grid.  The 
-&ldquo;Change selected&rdquo; sub-menu is yet another way
-of changing the parameter type of the selected lines of the grid.
-The &ldquo;Grab best fit&rdquo; option makes the most
-recent best fit of the parameters in the selected lines into their
-initial guesses.
+button by adding blank rows to the middle of the grid.
+  <br />
+  <br />
+</dd>
+<dt>
+  Change parameter type of selected lines
+</dt>
+<dd>
+This sub-menu provides yet
+another way of changing the parameter type of the selected lines of
+the grid.  If you have more than one line selected, they will all get
+changed to the option you choose from the submenu.
+  <br />
+  <br />
+</dd>
+<dt>
+  Grab best fit
+</dt>
+<dd>
+This changes theinitial guess of the selected lines to the most 
+recent best fit value(s).
+  <br />
+  <br />
+</dd>
+<dt>
+  Build restraint
+</dt>
+<dd>
+<p>
 </p>
 
 <p>
-The &ldquo;Build restraint&rdquo; option posts a dialog
+</td>
+<td width=251>
+<a class=floatright href="../images/gds.restraint.png"  target=_blank><img border=0 src="../images/gds.restraint.png"  alt="gds.restraint.png"></a></p>
+This posts a dialog
 that helps you name and define a restraint based upon the value of the
-parameter in the line clicked upon.  The &ldquo;Annotate&rdquo;
-option prompts you for a text string describing the parameter in the
-line clicked upon.  This annotation is displayed in the GDS window's 
-status bar when that line is selected.
-</p>
-
-<p>
-The &ldquo;Find&rdquo; option posts a small window with
-a text box reporting all GDS parameters and path parameters which have
-math expressions containing the parameter in the line clicked upon.
-</p>
-
-<p>
-The &ldquo;Change globally&rdquo; options allows you to
-rename a parameter and have its new name inserted every place in the
-fit where that parameter is used.
-</p>
-
-<p>
-Finally, the &ldquo;Explain&rdquo; submenu writes a
-short text to the status bar explaining the various parameter types.
+parameter in the line clicked upon.  This will use  <span class=program>IFEFFIT</span>'s
+<tt>penalty</tt> function with the lower and upper
+bounds as its arguments and multiplied by the scaling factor.  The
+example shown will make this restraint:
+<pre>
+restrain res_enot = 1000 * penalty(enot, -5, 5)
+</pre>
+and add it to the end of the grid.
+The penalty function will evaluate to 0 when enot stays between -5 and
+5.  As the value of enot strays outside that range, the restraint will
+evaluate to a value of 100 times the distance outside the range.
+This, then, is added in quadrature to  &chi;&sup2;  when the fit is minimized.
+You can read more about this,
+including how to choose the value of the scaling parameter, in the 
+<a href="./extended/restraint.html">discussion of restraints</a>.
+  <br />
+  <br />
+</dd>
+<dt>
+  Annotate
+</dt>
+<dd>
+This prompts you for a text string to describe the parameter in the
+line clicked upon.  The intent is to allow you document the role of
+the parameter in your fitting model.  This annotation is displayed in
+the GDS window's status bar when that line is selected.
+  <br />
+  <br />
+</dd>
+<dt>
+  Find parameter
+</dt>
+<dd>
+This posts a small window with a text box reporting all GDS parameters
+and path parameters which have math expressions containing this parameter.
+  <br />
+  <br />
+</dd>
+<dt>
+  Rename parameter globally
+</dt>
+<dd>
+This allows you to rename a parameter and have its new name inserted
+every place in the fit where that parameter is used.  All instances in
+other parameters on the GDS page and in the math expressions for
+parameters of all paths will be changed.  Essentially, this is a
+global search and replace.
+  <br />
+  <br />
+</dd>
+<dt>
+  Explain
+</dt>
+<dd>
+Finally, the items in this submenu  write a short text to the status
+bar explaining the various parameter types.
+  <br />
+  <br />
+</dd>
+</dl>
 </p>
 
 </div>

@@ -11,19 +11,18 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../startup/main.html" class="menu">The main window</a>
-        
         &nbsp;&nbsp;
         Up: <a class=navtable href="../startup/index.html" class="menu">Starting Artemis</a>      </td>
     </tr>
@@ -64,7 +63,7 @@
 
 </td>
 <td width=243>
-<a class=floatright href="../../images/plot.png" target=_blank><img border=0 src="../../images/plot.png" alt="plot.png"></a>
+<a class=floatright href="../../images/plot.png"  target=_blank><img border=0 src="../../images/plot.png"  alt="plot.png"></a>
 The second window that appears when  <span class=program>ARTEMIS</span> starts is the Plot
 window.  An overview of the functionality of this window will be
 presented here, but the full picture of how plots are made in 
@@ -88,7 +87,7 @@ including those made when pressingt he buttons above.  Note that these
 k-weight values are <em>only</em> used for making
 plots.  The k-weight values used to evaluate fits are set in the Data
 window.  The &ldquo;kw&rdquo; option uses the arbitrary
-(possibly non-integre) k-weighting value specified in the Data window.
+(possibly non-integer) k-weighting value specified in the Data window.
 </p>
 
 <p>
@@ -115,35 +114,56 @@ parts of the complex functions in the manner of  <span class=program>ATHENA</spa
 Beneath the  &chi;(R)    and  &chi;(q)    radio buttons are a set of check
 buttons used to display additional functions related to the data.
 These are:
-<ol>
+<dl>
   
-<li><p>
-<em>Fit</em>: When checked, the most recent fit will
-be plotted whenever data is plotted.
-</p></li>
-<li><p>
-<em>Background</em>: When checked, the background
-function will be plotted if it was refined in the most recent fit.
-</p></li>
-<li><p>
-<em>Window</em>: When checked the window function
+<dt>
+  Fit
+</dt>
+<dd> When checked, whenever the data is
+plotted the current, corresponding fit will be plotted.
+  <br />
+  <br />
+</dd>
+<dt>
+  Background
+</dt>
+<dd> When checked, the background
+function will be plotted, but only if it was refined in the most
+recent fit.
+  <br />
+  <br />
+</dd>
+<dt>
+  Window
+</dt>
+<dd> When checked the window function
 will be plotted over the data.  The window will be scaled appropriate
 to the current k-weight value.  When plotting in q, the k-space window
 will be used.
-</p></li>
-<li><p>
-<em>Residual</em>: When checked, the difference
+  <br />
+  <br />
+</dd>
+<dt>
+  Residual
+</dt>
+<dd> When checked, the difference
 between the data and the fit will be plotted.
-</p></li>
-<li><p>
-<em>Running R-factor</em>: When checked, a running
+  <br />
+  <br />
+</dd>
+<dt>
+  Running R-factor
+</dt>
+<dd> When checked, a running
 sum of the residual will be plotted, providing another way of
 visualizing the misfit.
-</p></li>
+  <br />
+  <br />
+</dd>
 </p>
 
 <p>
-</ol> 
+</dl> 
 </p></li>
 </p>
 
@@ -166,11 +186,11 @@ The other tabs will explained in
 <p>
 The last item on the Plot window is a button labeled 
 &ldquo;Save next plot to a file&rdquo;.  When
-depressed, the next plot made will, instead of displaying on screen,
-write a column data file with columns representing the traces as they
-would have been plotted.  The purpose of this file is to reproduce a
-plot from  <span class=program>ARTEMIS</span> as closely as possible using some other
-plotting program.
+depressed, the next plot made will write a column data file with
+columns representing the traces as they would have been plotted.  The
+plot will not be shown on the screen. The purpose of this file is to
+reproduce a plot from  <span class=program>ARTEMIS</span> as closely as possible using some
+other plotting program.
 </p>
 
 </div>

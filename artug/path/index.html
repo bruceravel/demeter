@@ -11,20 +11,21 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a> &nbsp;&nbsp;
-        Next: <a class=navtable href="../gds.html" class="menu">The GDS window</a> &nbsp;&nbsp;
-        Down: <a class=navtable href="../path/mathexp.html" class="menu">Setting math expressions</a>      </td>
+        Down: <a class=navtable href="../path/mathexp.html" class="menu">Setting math expressions</a>
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="../gds.html" class="menu">The GDS window</a>      </td>
     </tr>
   </table>
   </div>
@@ -41,7 +42,8 @@
 <a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
 <span style="font-style: italic;">The Path page</span><br />
 &nbsp;&#8618;&nbsp;<a href="../path/mathexp.html"  class="menu">Setting math expressions</a><br />
-&nbsp;&#8618;&nbsp;<a href="../path/plot.html"  class="menu">Marking and plotting</a><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
+&nbsp;&#8618;&nbsp;<a href="../path/plot.html"  class="menu">Marking and plotting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../path/pathlike.html"  class="menu">Using path-like objects</a><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
 <a href="../fit/index.html"  class="menu">Running a fit</a><br />
 <a href="../plot/index.html"  class="menu">The Plot window</a><br />
 <a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
@@ -66,9 +68,10 @@ model.
 </p>
 
 <p>
-Shown below is the Data window, which we have already seen, with some
-data from a gold foil already imported.  I have passed the cursor over
-the active text which says
+Shown below is the Data window, 
+<a href="../data.html">which we have already seen</a>,
+with some data from a gold foil already imported.  I have passed the
+cursor over the active text which says
 &ldquo;Import crystal data or a Feff calculation&rdquo;.
 Clicking will open the standard file selection dialog, prompting you for
 an <span class=file>atoms.inp</span>, <span class=file>feff.inp</span>
@@ -76,11 +79,13 @@ or CIF file.  The same thing can be done by clicking the
 &ldquo;Add&rdquo; button above the Feff list in the Main
 window, by selecting &ldquo;Open project of data&rdquo;
 from the File menu in  the Main window, or by using the 
-<tt>Control-o</tt> keyboaard shortcut.
+<tt>Control-o</tt> keyboard shortcut.
 </p>
 
 
-<a href="../../images/path.empty.png" target=_blank><img src="../../images/path.empty.png" alt="
+<a href="../../images/path.empty.png" target=_blank><img src="../../images/path.empty.png" title="
+The Data window with no paths associated.
+" alt="
 The Data window with no paths associated.
 "></a>
 
@@ -100,7 +105,9 @@ screen.
 </p>
 
 
-<a href="../../images/path.atoms.png" target=_blank><img src="../../images/path.atoms.png" alt="
+<a href="../../images/path.atoms.png" target=_blank><img src="../../images/path.atoms.png" title="
+The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window containing gold metal crystal data.
+" alt="
 The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window containing gold metal crystal data.
 "></a>
 
@@ -109,7 +116,9 @@ Running  <span class=program>ATOMS</span> then  <span class=program>FEFF</span> 
 </p>
 
 
-<a href="../../images/path.pathlist.png" target=_blank><img src="../../images/path.pathlist.png" alt="
+<a href="../../images/path.pathlist.png" target=_blank><img src="../../images/path.pathlist.png" title="
+The path list for the gold metal calculation.
+" alt="
 The path list for the gold metal calculation.
 "></a>
 
@@ -119,7 +128,9 @@ path #0012, the first 13 paths are selected
 </p>
 
 
-<a href="../../images/path.selected.png" target=_blank><img src="../../images/path.selected.png" alt="
+<a href="../../images/path.selected.png" target=_blank><img src="../../images/path.selected.png" title="
+The first 13 paths have been selected.
+" alt="
 The first 13 paths have been selected.
 "></a>
 
@@ -132,14 +143,16 @@ the data on the gold foil.
 </p>
 
 
-<a href="../../images/path.populated.png" target=_blank><img src="../../images/path.populated.png" alt="
+<a href="../../images/path.populated.png" target=_blank><img src="../../images/path.populated.png" title="
+The Data window has been populated with the 13 paths from the  <span class=program>FEFF</span> calculation.
+" alt="
 The Data window has been populated with the 13 paths from the  <span class=program>FEFF</span> calculation.
 "></a>
 
 <p>
-At this point we can begin examining the paths by plotting them with
-the data.  The path plotting tools are explained in a subsequent
-section.
+At this point we can begin examining the paths by plotting them along
+with the data.  The path plotting tools are explained in <a href="../plot/index.html">the chapter on the Plot
+window</a>.
 </p>
 
 <p>

@@ -11,20 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a class=navtable href="../path/plot.html" class="menu">Marking and plotting</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../path/index.html" class="menu">The Path page</a>      </td>
+        Up: <a class=navtable href="../path/index.html" class="menu">The Path page</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../path/plot.html" class="menu">Marking and plotting</a>      </td>
     </tr>
   </table>
   </div>
@@ -41,7 +41,8 @@
 <a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
 <a href="../path/index.html"  class="menuselect">The Path page</a><br />
 &nbsp;&#8618;&nbsp;<span style="font-style: italic;">Setting math expressions</span><br />
-&nbsp;&#8618;&nbsp;<a href="../path/plot.html"  class="menu">Marking and plotting</a><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
+&nbsp;&#8618;&nbsp;<a href="../path/plot.html"  class="menu">Marking and plotting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../path/pathlike.html"  class="menu">Using path-like objects</a><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
 <a href="../fit/index.html"  class="menu">Running a fit</a><br />
 <a href="../plot/index.html"  class="menu">The Plot window</a><br />
 <a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
@@ -80,16 +81,26 @@ Plot window at the end of a fit.
 
 <p>
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
 Implement and explain the two items in the "other path options" pane.
 </p>
 </p>
 
 <p>
 The text box contains a brief description of the geometry of the
-scattering path.  For a degenerate path, this shows an example
-scattering geometry.  The simple explanation of the shape of the path
-and its heuristic importance are also given in the text box.
+scattering path.  For a path with degeneracy greater than 1, the
+scattering geometry of one of the degenerate paths is shown.  The
+simple explanation of the shape of the path and its heuristic
+importance are also given in the text box.
+</p>
+
+<p>
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Implement a way to display a text box which shows all the paths
+contributing to the degeneracy + report on fuzziness of the
+degeneracy. 
+</p>
 </p>
 
 <p>
@@ -101,29 +112,31 @@ and text boxes.  Math expressions are entered into these text boxes.
 In the following image, a simple fitting model appropriate for a
 cubic, monoatomic material like our gold foil has been entered for the
 first shell path.  This includes simple expressions for  S&sup2;&#8320;  and
- E&#8320;  consisting of variables that will be floated in the fit.  A
-model of isotropic expansion is provided for  &Delta;R .  The  &sigma;&sup2; 
-path parameter is expressed using the correlated Debye model.  The
+ E&#8320;  consisting of variables that will be floated in the fit.  A <a href="../extended/delr.html">model of
+isotropic expansion</a> is provided for  &Delta;R .  The  &sigma;&sup2;  path
+parameter is expressed using <a href="../extended/ss.html">the correlated Debye model</a>.  The
 other path parameter text boxes have been left blank and will not be
 modified in the fit.
 </p>
 
 
-<a href="../../images/path.first.png" target=_blank><img src="../../images/path.first.png" alt="
+<a href="../../images/path.first.png" target=_blank><img src="../../images/path.first.png" title="
+Math expressions have been set for the first shell path.
+" alt="
 Math expressions have been set for the first shell path.
 "></a>
 
 <p>
-That. of course, establishes the parameterization of the path
-parameters only for the first path.  The same editing of path
-parameter math expressions must happen for all the other paths used in
-the fit.
+This, of course, establishes the parameterization only for the first
+path.  The same editing of path parameter math expressions must happen
+for all the other paths used in the fit.
 </p>
 
 <p>
 The most straightforward way to do this editing chore is to click on
 each successive path in the path list, then click into each text box,
-then type in the math expressions.  That, however, is really tedious.
+then type in the math expressions.  That, however, is both tedious and
+error-prone.
 </p>
 
 
@@ -131,7 +144,7 @@ then type in the math expressions.  That, however, is really tedious.
 
 </td>
 <td width=344>
-<a class=floatright href="../../images/path.menu.png" target=_blank><img border=0 src="../../images/path.menu.png" alt="path.menu.png"></a>
+<a class=floatright href="../../images/path.menu.png"  target=_blank><img border=0 src="../../images/path.menu.png"  alt="path.menu.png"></a>
 For math expressions that are the same for every path  &ndash;   E&#8320;  is a
 common example  &ndash;   <span class=program>ARTEMIS</span> provides some automation tools.  Each of
 the path parameter labels on the Path page is sensitive to either left
@@ -142,13 +155,13 @@ text both, but only on this path.
 
 <p>
 The next four options are used to push the math expression for the
-associated path parameter onto other paths.  These four options work
-much the same way as the similar function from the Path menu in  the
-Data window, except only for a single path parameter.
+associated path parameter onto other paths.  These four options allow
+some control over the paths that are targeted to receive the pushed
+path parameter values.
 </p>
 
 <p>
-The last two options are used to grab a math expression from one of
+The last two options are used to grab the math expression from one of
 the surrounding paths.
 </p>
 
@@ -156,12 +169,25 @@ the surrounding paths.
 The menu that pops up for the  &sigma;&sup2;  parameter has two additional
 options.  One inserts a math expression for using the correlated Debye
 function for  &sigma;&sup2; , the other inserts the math expression for an
-Einstein model.  Both the Debye and Einstein function depend on the
+Einstein model.  <a href="../extended/ss.html">Both the Debye and Einstein functions</a> depend on the
 measurement temeprature and a characteristic temperature.  Typically,
 the measurement temperature is a set variable and the characteristic
 temperature is a guess.  When either function is inserted into the
-text box, parameters are created on the GDS page.
+text box, parameters are automatically created <a href="../gds.html">on the GDS page</a>.
 </p>
+
+<p>
+The Path menu on the Data page offers a way of pushing all the path
+parameters from the displayed path to other paths.  The same options
+for targeting other paths are presented.
+</p>
+
+<p>
+<a href="../../images/path.push.png" target=_blank><img src="../../images/path.push.png" title="
+Push all path parameters to other paths.
+" alt="
+Push all path parameters to other paths.
+"></a></p>
 
 </div>
 

@@ -1,0 +1,440 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Geometric parametrization of bond length</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/cv.html" class="menu">Characteristic value</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../extended/ss.html" class="menu">Modeling disorder</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Modeling bond length</span><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Geometric parametrization of bond length
+</h1>
+
+<hr class=hide /> 
+<a name="volumetricexpansioncoefficient">
+
+<h2>  Volumetric expansion coefficient</h2>
+</a>
+
+
+<p>
+ FeS<sub>2</sub>      is a cubic crystal.  Here is the crystal data
+<pre>
+title name:     Iron sulfide (pyrite)
+title formula:  FeS_2
+title refer1:   Elliot (1960) J.Chem. Phys. 33(3), 903.
+space  P a 3
+a    = 5.404
+rmax = 9.00     rpath = 6.00
+core = Fe
+atoms
+  Fe     0.00000   0.00000   0.00000  Fe
+  S      0.38400   0.38400   0.38400  S
+</pre>
+</p>
+
+<p>
+In this case, there are only two parameters that determine the
+locations of all the atoms in the cluster  &ndash;  the lattice constant
+<tt>a</tt> and the position of the S atom in the
+unit cell.  For now, we'll neglect the effect of the position of
+the S atom.
+</p>
+
+<p>
+In the <a href="../examples/fes2.html">FeS2
+worked example</a>, a parameterization was used which related  &Delta;R 
+for all the paths to a volumetric expansion coefficient,
+ &Delta;R = &alpha;     &middot;  R<sub>eff</sub> .  Why does this work?
+</p>
+
+<p>
+The distance  d<sub>eff</sub>  between any two atoms in a cubic crystal is some
+geometrical factor multiplied by the lattice constant. That factor
+depends on the positions of the atoms in the unit cell, but is a pure
+number.
+</p>
+
+<p>
+Thus, from the FEFF calculation,  d<sub>eff</sub> (i, j) =  c<sub>i,j</sub>  &middot;  a<sub>0</sub>     for
+any two atoms i and j.  For any two pairs of atoms,  c<sub>i,j</sub>  is a
+different number, but the distances between all pairs of atoms are
+related by simple geometry and the value of the lattice constant.
+</p>
+
+<p>
+We consider an isotropic expansion (or contraction, if  &alpha;     is
+negative) of the unit, which is reasonable for a cubic lattice that
+does not undergo a phase transition. So a = (1 +  &alpha;    ) &middot;  a<sub>0</sub>     .
+</p>
+
+<p>
+The distance between any two atoms, after accounting for the isotropic
+expansion (or contraction) is 
+<p class=indented>
+ d<sub>i,j</sub>  =  d<sub>eff</sub> (i,j) +  &Delta;    d(i,j) <br /> 
+ d<sub>i,j</sub>  =  c<sub>i,j</sub>   &middot;  a <br /> 
+ d<sub>i,j</sub>  =  c<sub>i,j</sub>   &middot;  (1+ &alpha;    ) &middot;  a<sub>0</sub>     <br /> 
+ d<sub>i,j</sub>  =  c<sub>i,j</sub>  &middot;  a<sub>0</sub>     +  c<sub>i,j</sub>  &middot;  &alpha;     &middot;  a<sub>0</sub>     <br /> 
+ <br /> 
+ &there4;   &Delta;    d(i,j) =  c<sub>i,j</sub>  &middot;  &alpha;     &middot;  a<sub>0</sub>     <br /> 
+ &nbsp;  &nbsp;     &Delta;    d(i,j) =  &alpha;     &middot;  d<sub>eff</sub> (i,j)
+</p>
+</p>
+
+<p>
+The expression  &alpha;     &middot;  d<sub>eff</sub>  works for all legs of any SS
+or MS path in a cubic crystal (assuming that there are no internal
+degrees of freedom, like the parameter for the position of the S atom
+in ).  The length of a path, then, is the sum of the length of
+each leg.   &Delta;R  for a path is the sum of  &Delta;    d for each leg.
+The sum of the  d<sub>eff</sub>  values is  R<sub>eff</sub> , thus
+ &Delta;R = &alpha;     &middot;  R<sub>eff</sub> .
+</p>
+
+<p>
+While this trick is only valid for a cubic crystal, it does ilustrate
+two important points about  <span class=program>ARTEMIS</span>.  First, it is an example of an
+interesting math expression relating a path's  &Delta;R  value to
+a fitting parameter.  The  &Delta;R  of the path is not itself a
+variable of the fit, rather it is written in terms of  &alpha;    , which
+is a variable of the fit.
+</p>
+
+<p>
+Second, it is an example of a constrain which uses the information
+content of the data very well.  We can include any number of paths with
+introducing new parameters for their  &Delta;R  values.   &alpha;     is a
+robust fitting parameter in the sense that every path is involved in
+its determination.
+</p>
+
+
+<hr class=hide /> 
+<a name="propagatingcrystaldistortionparameters">
+
+<h2>  Propagating crystal distortion parameters</h2>
+</a>
+
+<p>
+The room temperature structure of  PbTiO<sub>3</sub>     is a tetragonal
+modification of the perovskite structure.  The  c&#770;  axis is
+considerably longer than the  a&#770;  axis.  The Pb atoms lie at the
+corners of the tetragonal cell, the Ti atom lies near the center of
+the cell, and the O atoms lie near the centers of the faces.
+</p>
+
+<p>
+In a setting which places the Pb atoms at positions of high symmetry,
+i.e. right on the cell corners, the other atoms are displaced from
+sites of symmetry  c&#770;  direction.  Here is the crystal data:
+</p>
+
+<p>
+<pre>
+title PbTiO3 25C
+title Glazer and Mabud, Acta Cryst. B34, 1065-1070 (1978)
+core = ti    Space = P 4 m m    
+a = 3.905    c = 4.156
+rmax=3.6
+atoms
+! At.type  x        y       z      tag
+   Pb     0.0      0.0     0.0     
+   Ti     0.5      0.5     0.539  
+   O      0.5      0.5     0.1138  axial
+   O      0.0      0.5     0.6169  planar
+</pre>
+</p>
+
+<p>
+There are 5 parameters that detrmine the positions of all the atoms in
+the crystal, thus there are 5 parameters that determine the lengths of
+all scattering paths.  They are the two lattice constants, the
+ z&#770;  displacement of the Ti away from z=0, the  z&#770;  displacement
+of the axial oxygen atom away from z=0.5, and the  z&#770;  displacement
+of the planar oxygen atom away from z=0.5.
+</p>
+
+<p>
+We set up a set of guess, def, and set parameters to encode this:
+</p>
+
+<pre>
+set   a0     = 3.905
+guess dela   = 0
+def   a      = a0 + dela
+
+set   c0     = 4.156
+guess delc   = 0
+def   c      = c0 + delc
+
+guess dti    = 0.039
+guess doax   = 0.1138
+guess dopl   = 0.1169
+
+after volume = a*a*c
+</pre>
+
+<p>
+
+</td>
+<td width=328>
+<a class=floatright href="../../images/pto.png"  title=Planar cut through the PbTiO3 crystal target=_blank><img border=0 src="../../images/pto.png"  title="Planar cut through the PbTiO3 crystal"  alt="pto.png"></a>
+I have also defined an after parameter which computes the volume of
+the unit cell.  While this will not serve a purpose in the fitting
+model, it is useful information to report to the log file.
+</p>
+
+<p>
+A 2-dimensional cut through this distorted perovskite is shown to the
+right.  The Pb atoms are above and below this plane, the
+<span style="color:#00a5ff; background-color:white">axial oxygen atoms</span>
+ are in line with the 
+<span style="color:#ff0000; background-color:white">titanium atoms</span>.  The
+<span style="color:#0000ff; background-color:white">planar oxygen atoms</span> are
+in a slightly non-collinear, buckled alignment with the Ti atoms.
+</p>
+
+<p>
+The distortions of the Ti and O atoms split the first coordination
+shell into three distance.  Along the  z&#770;  direction, there is a
+short Ti-O distance and long one.  In the buckled plane, there are
+four equivalent Ti-O distances.
+</p>
+
+<p>
+Computing these distances requires some simple geometry, with the
+planar distance being just a bit more complicated.
+</p>
+
+<pre>
+def    rtio_sh = (0.5 - (doax-dti)) * c
+def    rtio_lo = (0.5 - (doax+dti)) * c
+
+def    rtio_pl = sqrt( (a/2)^2 + ((dopl+dti)*c)^2 )
+</pre>
+
+<p>
+The second shell Pb atoms are similarly computed using trigonometry
+and the appropriate structural parameters.
+</p>
+
+
+<pre>
+def    rtipb_sh = sqrt( (a/2)^2 + c^2*(0.5 - dti)^2 )
+def    rtipb_lo = sqrt( (a/2)^2 + c^2*(0.5 + dti)^2 )
+</pre>
+
+<p>
+Finally, the Ti-Ti distances in the thrid coordination shell are
+comparatively trivial.  This shell is split by the tetragonal
+disortion into two subshells.  The distances are the lattice
+constants, as you can be seen in the schematic above.
+</p>
+
+<p>
+We now have math expressions for the interatomic distances between the
+Ti absorber and each type of scatterer up to the third coordination
+shell.  These math expressions for these 7 paths are expressed in
+terms of the 5 guess parameters above.  The nice thing about these
+expressions is that the interatomic distances are expressed in terms
+of easily intepretable parameters of the crystal structure.
+</p>
+
+<p>
+Now, encoding the  &Delta;R  path parameter for each of these paths is
+simple.  We just subtract  R<sub>eff</sub>  from the corresponding math
+expression.
+</p>
+
+
+<pre>
+shell short axial oxygen:
+   delr = rtio_sh - reff
+
+shell planar oxygen:
+   delr = rtio_pl - reff
+
+shell long axial oxygen:
+   delr = rtio_lo - reff
+
+shell short lead:
+   delr = rtipb_sh - reff
+
+shell long lead:
+   delr = rtipb_lo - reff
+
+shell short titanium:
+   delr = a - reff
+
+shell long titanium:
+   delr = c - reff
+</pre>
+
+<p>
+There are important collinear or nearly-collinear multiple scattering
+paths at the distance of the third shell Ti atom.  These are shown in
+the yellow and green shaded areas of the schematic above.
+</p>
+
+<p>
+The  &Delta;R  parameters for the axial multiple scattering paths are
+simply the same as for the corresponding single scattering path.  This
+is the case because the distortions in  PbTiO<sub>3</sub>     are all in  the
+ z&#770;  direction, so those MS paths must have the same length as the
+corresponding SS paths.
+</p>
+
+<p>
+In the planar direction, you need to add up the lengths of the legs
+and subtract  R<sub>eff</sub>  for their  &Delta;R  parameters:
+</p>
+
+
+<pre>
+shell planar double scattering:
+   delr = (a + 2*rtio_pl)/2  - reff
+
+shell planar triple scattering:
+   delr = 2*rtio_pl - reff
+</pre>
+
+<p>
+This strategy of adding up leg lengths works for any kind of multiple
+scattering path you include in this fit.
+</p>
+
+<p>
+This is lovely!  With 5 guess parameters and some well-considered
+math expressions, we are able to encode  &Delta;R  parameters for all
+the paths in the fit.  As more scattering paths are considered for the
+fit, it is not necessary to include any more guess parameters for
+ &Delta;R . 
+</p>
+
+
+<hr class=hide /> 
+<a name="parametrizationsofdistanceinnon-crystallinematerials">
+
+<h2>  Parametrizations of distance in non-crystalline materials</h2>
+</a>
+
+<p>
+Interesting geometrical constraints on distance are not the sole
+province of crystalline materials.  In the following two papers, I
+show the details of an analysis of Hg bound to the pyrimidine ring of
+a nucleotide in a synthetic DNA structure.  To cope with severe
+information limits in my data, I made some simplifying assumptions
+about the structure of the Hg/DNA complex.  I then employed a bit of
+trigonometry to express all the absorber-scatterer distances as
+functions of a small number of guess parameters.
+</p>
+
+<p>
+<ul>
+  
+<li><p>
+B. Ravel et al., <em>Rad. Phys. Chem.</em>, <strong>78:10</strong>, 
+(2009) p.&nbsp;S75-S79<a href="http://dx.doi.org/10.1016/j.radphyschem.2009.05.024"> (DOI: 10.1016/j.radphyschem.2009.05.024)</a>
+</p></li>
+<li><p>
+B. Ravel, <em>J. Phys. Conf. Series</em>, <strong>190</strong>, 
+(2009) p.&nbsp;012026<a href="http://dx.doi.org/10.1088/1742-6596/190/1/012026"> (DOI: 10.1088/1742-6596/190/1/012026)</a>
+</p></li>
+</ul>
+</p>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Need more examples
+</p>
+
+</div>
+
+<br />
+ <hr class=hide /> 
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -11,20 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a class=navtable href="../startup/plot.html" class="menu">The plot window</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../startup/index.html" class="menu">Starting Artemis</a>      </td>
+        Up: <a class=navtable href="../startup/index.html" class="menu">Starting Artemis</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../startup/plot.html" class="menu">The plot window</a>      </td>
     </tr>
   </table>
   </div>
@@ -67,7 +67,9 @@ well as of your current fitting project.  This window is divided into
 </p>
 
 <p>
-<a href="../../images/main.png" target=_blank><img width=100% src="../../images/main.png" alt="
+<a href="../../images/main.png" target=_blank><img width=100% src="../../images/main.png" title="
+The main Artemis window.
+" alt="
 The main Artemis window.
 "></a>
 </p>
@@ -130,7 +132,7 @@ a single click.
 <li><p>
 On the far right is the &ldquo;Fit&rdquo; button.  As
 you might guess, this button is clicked to initiate a fit.  The color
-of this button will change to provide a heuristic evaluation of the
+of this button will change to provide a <a href="../fit/happiness.html">heuristic evaluation</a> of the
 quality of each fit.  Below the Fit button is a button used to show or
 hide a window containing the log from the most recent fit.
 </p></li>
@@ -154,7 +156,7 @@ hide a window containing the log from the most recent fit.
 
 </td>
 <td width=220>
-<a class=floatright href="../../images/filemenu.png" target=_blank><img border=0 src="../../images/filemenu.png" alt="filemenu.png"></a>
+<a class=floatright href="../../images/filemenu.png"  target=_blank><img border=0 src="../../images/filemenu.png"  alt="filemenu.png"></a>
 Clicking on &ldquo;File&rdquo; displays this menu,
 which is mostly used for various kinds of input and output.  Note that
 some menu items that have keyboard shortcuts attached and that these
@@ -170,6 +172,8 @@ including  <span class=program>ARTEMIS</span> or  <span class=program>ATHENA</sp
 containing  &chi;(k)    data,  <span class=program>FEFF</span> or  <span class=program>ATOMS</span> input files, or
 a few other things.   <span class=program>ARTEMIS</span> is usually good about properly
 identifyin the type of input file and doing the right thing with it.
+You can use the &ldquo;import&rdquo; submenu to be more
+specific. 
 </p></li>
 <li><p>
 The second option provides a submenu of recently imported files broken
@@ -187,20 +191,19 @@ provided for the rare situation when  <span class=program>ARTEMIS</span> fails t
 one of its standard input data types.
 </p></li>
 <li><p>
-The &ldquo;import&rdquo; submenu is used to generate
+The &ldquo;export&rdquo; submenu is used to generate
 files in the format of an  <span class=program>IFEFFIT</span> script or a perl script using
  <span class=program>DEMETER</span>.  These files attempt to capture the current state of
 your fitting project.  It is unlikely that the output of either of
 these export options will be immediately useful without some editing.
 The purpose of these export options is to allow you to use 
  <span class=program>ARTEMIS</span> to develop a fitting model, then use the exported file
-in some other way, for instance as part of an automated batch
-processing system.
+in some other way, for instance as part of a script for automated batch
+processing.
 </p></li>
 <li><p>
-The next menu item diplsays a window used to set program preferences.
-This window will be described in detail in its own chapter of this
-document.
+The next menu item diplsays a window used to set 
+<a href="../prefs.html">program preferences.</a>
 </p></li>
 <li><p>
 Finally, there are menu items for closing the current fitting project
@@ -221,7 +224,7 @@ your fitting option if you have not recently done so.
 
 </td>
 <td width=202>
-<a class=floatright href="../../images/monitormenu.png" target=_blank><img border=0 src="../../images/monitormenu.png" alt="monitormenu.png"></a>
+<a class=floatright href="../../images/monitormenu.png"  target=_blank><img border=0 src="../../images/monitormenu.png"  alt="monitormenu.png"></a>
 This menu provides several options for monitoring the state of 
  <span class=program>ARTEMIS</span>,  <span class=program>IFEFFIT</span>, and the plotting backend (usually
  <span class=program>GNUPLOT</span>).
@@ -253,10 +256,14 @@ items used to display technical information about the current state of
  <span class=program>ARTEMIS</span>.  Again, this is a tool Bruce uses when developing the
 program.  After reporting a bug to the  <span class=program>IFEFFIT</span> mailing list,
 Bruce may ask for information obtained using these menu items.
+This submenu is only displayed if the
+<span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;debug_menus</span>
+configuration parameter is set to a true value.
 </p></li>
 <li><p>
 &ldquo;Show Ifeffit's memory use&rdquo; item displays a
-crude calculation of the resources still available to  <span class=program>IFEFFIT</span>.
+crude, somewhat unreliable calculation of the resources still
+available to  <span class=program>IFEFFIT</span>. 
 </p></li>
 </ul> 
 </p> 
@@ -272,7 +279,7 @@ crude calculation of the resources still available to  <span class=program>IFEFF
 
 </td>
 <td width=148>
-<a class=floatright href="../../images/plotmenu.png" target=_blank><img border=0 src="../../images/plotmenu.png" alt="plotmenu.png"></a>
+<a class=floatright href="../../images/plotmenu.png"  target=_blank><img border=0 src="../../images/plotmenu.png"  alt="plotmenu.png"></a>
 When using  <span class=program>GNUPLOT</span> as the plotting backend, you have an option
 to direct plots to multiple windows, thus allowing you to plot
 something new without removing an existing plot.  This menu controls
@@ -289,11 +296,14 @@ which of four such plot displays is active.
 
 </td>
 <td width=154>
-<a class=floatright href="../../images/helpmenu.png" target=_blank><img border=0 src="../../images/helpmenu.png" alt="helpmenu.png"></a>
+<a class=floatright href="../../images/helpmenu.png"  target=_blank><img border=0 src="../../images/helpmenu.png"  alt="helpmenu.png"></a>
 This menu is used to display this document or to display information
 about  <span class=program>ARTEMIS</span>, including its open source licensing terms.
 </p>
-
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Integrate this manual into Artemis
+</p>
 
 <hr class=hide /> 
 <a name="statusbar">
@@ -356,7 +366,7 @@ selection dialog is used; and so on.
 
 </td>
 <td width=484>
-<a class=floatright href="../../images/datalist.png" target=_blank><img border=0 src="../../images/datalist.png" alt="datalist.png"></a>
+<a class=floatright href="../../images/datalist.png"  target=_blank><img border=0 src="../../images/datalist.png"  alt="datalist.png"></a>
 The standard manner of importing data into  <span class=program>ARTEMIS</span> is to use an
  <span class=program>ATHENA</span> project file.  Thus the file selection dialog will, by
 default, look for files with the <span class=file>.prj</span>
@@ -369,12 +379,23 @@ is made.  These buttons are used to show or hide the windows
 associated with each data group.  In this example, a multiple data set
 fit (i.e. one in which models for more than one data set are
 co-refined) is shown.  One of the associated data windows is displayed
-on screen, as indicated by the depressed state of the button labeld
+on screen, as indicated by the depressed state of the button labeled
 &ldquo;Dimethyltin dichloride&rdquo;.  The other data
 window is hidden.  <a href="../data.html">See the Data window chapter.</a>
 </p>
 
-
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+ <span class=program>ARTEMIS</span> has a very different relationship to your data than
+ <span class=program>ATHENA</span>.  The very purpose of  <span class=program>ATHENA</span> is to process large
+quantities of data, thus a typical  <span class=program>ATHENA</span> project will contain
+many  &ndash;  perhaps dozens  &ndash;  of data groups.   <span class=program>ARTEMIS</span>
+expects that you will import only that data whose EXAFS you intend to
+analyze.  If you doing a single-data-set analysis, the Data list
+will contain only that item.  If you import many data sets without
+actually using them in the fitting model,  <span class=program>ARTEMIS</span>
+<strong>will</strong> get confused.  And so will you.
+</p>
 
 
 <hr class=hide /> 
@@ -387,7 +408,7 @@ window is hidden.  <a href="../data.html">See the Data window chapter.</a>
 
 </td>
 <td width=409>
-<a class=floatright href="../../images/athenaselection.png" target=_blank><img border=0 src="../../images/athenaselection.png" alt="athenaselection.png"></a>
+<a class=floatright href="../../images/athenaselection.png"  target=_blank><img border=0 src="../../images/athenaselection.png"  alt="athenaselection.png"></a>
 When importing data from an  <span class=program>ATHENA</span> project file, the project
 selection dialog is shown.  It presents you with a list of all data
 groups from the project file.  The file listing is configured such
@@ -429,7 +450,7 @@ without importing data.
 
 </td>
 <td width=664>
-<a class=floatright href="../../images/recentdata.png" target=_blank><img border=0 src="../../images/recentdata.png" alt="recentdata.png"></a>
+<a class=floatright href="../../images/recentdata.png"  target=_blank><img border=0 src="../../images/recentdata.png"  alt="recentdata.png"></a>
 You can access a list of recently imported data by 
 <em>right</em> clicking on
 the &ldquo;Add&rdquo; button.  This presents a
@@ -460,7 +481,7 @@ selection dialog is used; and so on.
 
 </td>
 <td width=498>
-<a class=floatright href="../../images/fefflist.png" target=_blank><img border=0 src="../../images/fefflist.png" alt="fefflist.png"></a>
+<a class=floatright href="../../images/fefflist.png"  target=_blank><img border=0 src="../../images/fefflist.png"  alt="fefflist.png"></a>
 The standard manner of importing structural data into  <span class=program>ARTEMIS</span> is
 to import an input file for  <span class=program>ATOMS</span> or  <span class=program>FEFF</span> or to import a
 CIF file containing crystal data.  Thus the file selection dialog
@@ -497,7 +518,7 @@ imported  <span class=program>ATOMS</span>,  <span class=program>FEFF</span>, or
 
 </td>
 <td width=645>
-<a class=floatright href="../../images/fitproperties.png" target=_blank><img border=0 src="../../images/fitproperties.png" alt="fitproperties.png"></a>
+<a class=floatright href="../../images/fitproperties.png"  target=_blank><img border=0 src="../../images/fitproperties.png"  alt="fitproperties.png"></a>
 This section of the main window is used to specify properties of the
 fit.  The name is a short bit of text that will be used as a label for
 each fit.  The number will be auto-incremented unless you explicitly
@@ -536,7 +557,7 @@ for a file.  The default is to use the
 
 </td>
 <td width=188>
-<a class=floatright href="../../images/fitlogbuttons.png" target=_blank><img border=0 src="../../images/fitlogbuttons.png" alt="fitlogbuttons.png"></a>
+<a class=floatright href="../../images/fitlogbuttons.png"  target=_blank><img border=0 src="../../images/fitlogbuttons.png"  alt="fitlogbuttons.png"></a>
 All the way to the right of the main window are the
 &ldquo;Fit&rdquo; and
 &ldquo;log&rdquo; buttons.  Click the Fit button to

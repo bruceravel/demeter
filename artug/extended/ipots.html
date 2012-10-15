@@ -1,0 +1,341 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Unique potential styles</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/ss.html" class="menu">Modeling disorder</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../extended/fuzzy.html" class="menu">Fuzzy degeneracy</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Unique potentials</span><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Unique potential styles
+</h1>
+
+<p>
+Consider this <span class=file>atoms.inp</span> file for sodium
+uranyl triacetate:
+</p>
+
+
+<pre>
+title = Templeton et al.
+title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+title = Acta Cryst 1985 C41 1439-1441
+space = P 21 3
+a =	 10.6890	b =	 10.6890	c =	 10.6890
+alpha =	 90.0	beta =	 90.0	gamma =	 90.0
+core =	U	edge =	L3	rmax =	  7.0
+shift   0.00000   0.00000   0.00000
+atoms
+! elem   x          y          z     tag           occ.
+  U     0.42940    0.42940    0.42940  U             1.00000
+  Na    0.82860    0.82860    0.82860  Na            1.00000
+  O     0.33430    0.33430    0.33430  Oax           1.00000
+  O     0.52420    0.52420    0.52420  Oax           1.00000
+  O     0.38340    0.29450    0.61100  Oeq           1.00000
+  O     0.54640    0.24430    0.50070  Oeq           1.00000
+  C     0.47860    0.22600    0.59500  C             1.00000
+  C     0.50880    0.12400    0.68620  C             1.00000
+</pre>
+
+<p>
+This crystal has 4 elemental species distributed over 8
+crystallographic positions.  Two of the oxygen sites are the two
+oxygenyl sites with U-O double bond distance of about 1.76  &Aring;    .
+The remaining oxygen sites are single bonded at a distance of about
+2.46  &Aring;    .
+</p>
+
+<p>
+In <a href="../feff/index.html">the Atoms and
+Feff chapter</a>, the concept of unique potential styles was
+introduced.  Here we show examples of how these work using sodium
+uranyl triacetate.
+</p>
+
+
+<hr class=hide /> 
+<a name="eachelementgetsauniquepotential">
+
+<h2>  Each element gets a unique potential</h2>
+</a>
+
+<p>
+Choosing the &ldquo;elements&rdquo; style assigns a
+unique potenitial to each atomic species in the crystal.  Using this
+style results in the following <span class=file>feff.inp</span>
+file: 
+</p>
+
+
+<pre>
+ TITLE Templeton et al.
+ TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+ TITLE Acta Cryst 1985 C41 1439-1441
+
+ HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      5.0
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     92     U         
+     1     92     U         
+     2     11     Na        
+     3     8      O         
+     4     6      C         
+
+
+ ATOMS                  * this list contains 81 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  U             0.00000
+    1.01332    1.01332    1.01332  3  Oax.1         1.75512
+   -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+    1.25061   -1.97853    0.76213  3  Oeq.1         2.46160
+   -1.97853    0.76213    1.25061  3  Oeq.1         2.46160
+            ... (more atoms follow)
+</pre>
+
+<p>
+This is reasonable input for  <span class=program>FEFF</span>.  Indeed, for many crystals, the
+elements style is exactly what you want.  With four elements in the
+cyrstal, five unique potentials are made.  The absorber is always
+potential index 0.  The remaining uranium atoms are given potential
+index 1.
+</p>
+
+<p>
+For this material, it is probably a poor idea to give the axial
+(double bonded, distance 1.76  &Aring;    ) and equatorial (single bonded,
+distance 2.46  &Aring;    ) the same potential index.  Doing so forces their
+muffin tin radii to be the same.  Given this substantial difference in
+distance, it is probably a good idea to let the two types of oxygen
+atoms have different muffin tin radii so that their scattering
+amplitudes and phase shifts can be computed differently.  That
+introduces a more chemically reasonable potential model.
+</p>
+
+
+<hr class=hide /> 
+<a name="eachtaggetsauniquepotential">
+
+<h2>  Each tag gets a unique potential</h2>
+</a>
+
+<p>
+The two oxygen types can get differnt unique potentials by choosing
+the &ldquo;tags&rdquo; style.  Note that in the
+<span class=file>atoms.inp</span> pairs of oxygen sites were given
+the tags &ldquo;Oax&rdquo; and &ldquo;Oeq&rdquo;.
+Also note that the two carbon sites were given the same tag.
+With all this, we get the following <span class=file>feff.inp</span>
+file: 
+</p>
+
+
+<pre>
+ TITLE Templeton et al.
+ TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+ TITLE Acta Cryst 1985 C41 1439-1441
+
+ HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      5.0
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     92     U         
+     1     92     U         
+     2     11     Na        
+     3     8      O         
+     4     8      O         
+     5     6      C         
+
+
+ ATOMS                  * this list contains 81 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  U             0.00000
+    1.01332    1.01332    1.01332  3  Oax.1         1.75512
+   -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+    1.25061   -1.97853    0.76213  4  Oeq.1         2.46160
+   -1.97853    0.76213    1.25061  4  Oeq.1         2.46160
+            ... (more atoms follow)
+</pre>
+
+<p>
+Note that potential indeces 3 and 4 are both for oxygen atoms.  3 is
+for the short, axial oxygens and 4 is for the longer, equatorial
+oxygens. 
+</p>
+
+
+<hr class=hide /> 
+<a name="eachtaggetsauniquepotential">
+
+<h2>  Each tag gets a unique potential</h2>
+</a>
+
+<p>
+
+</td>
+<td width=440>
+<a class=floatright href="../../images/feff.siteserror.png"  target=_blank><img border=0 src="../../images/feff.siteserror.png"  alt="feff.siteserror.png"></a>
+The final option for potential assignement is the 
+&ldquo;sites&rdquo; style.  In this style, each
+crystallographic position gets its own potential index.
+</p>
+
+<p>
+This is a somewhat dangerous option because  <span class=program>FEFF</span> only allows up to
+7 potentials beyond the absorber (for a total of 8).  In this crystal,
+we have 8 sites which results in 8 unique potentials.  The software
+dutifully writes out the <span class=file>feff.inp</span>
+file, but it also issues the warning shown on the right.
+</p>
+
+ <hr class=hide /> 
+
+<pre>
+TITLE Templeton et al.
+ TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+ TITLE Acta Cryst 1985 C41 1439-1441
+
+ HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      5.0
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     92     U         
+     1     92     U         
+     2     11     Na        
+     3     8      O         
+     4     8      O         
+     5     8      O         
+     6     8      O         
+     7     6      C         
+     8     6      C         
+
+
+ ATOMS                  * this list contains 81 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  U             0.00000
+    1.01332    1.01332    1.01332  4  Oax.1         1.75512
+   -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+    1.25061   -1.97853    0.76213  6  Oeq.1         2.46160
+   -1.97853    0.76213    1.25061  6  Oeq.1         2.46160
+            ... (more atoms follow)
+</pre>
+
+<p>
+
+</td>
+<td width=535>
+<a class=floatright href="../../images/feff.siteserror2.png"  target=_blank><img border=0 src="../../images/feff.siteserror2.png"  alt="feff.siteserror2.png"></a>
+If you attempt to run  <span class=program>FEFF</span> with this input data,  <span class=program>ARTEMIS</span> will
+complain with the rather repetitious error message shown to the
+right and not run  <span class=program>FEFF</span>.  You have to fix the  <span class=program>FEFF</span> input data
+either by hand-editing or by re-running  <span class=program>ATOMS</span> with a different
+potentials style.
+</p>
+
+</div>
+
+<br />
+ <hr class=hide /> 
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

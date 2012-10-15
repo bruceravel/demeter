@@ -11,19 +11,18 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../plot/indic.html" class="menu">Indicators</a>
-        
         &nbsp;&nbsp;
         Up: <a class=navtable href="../plot/index.html" class="menu">The Plot window</a>      </td>
     </tr>
@@ -62,17 +61,21 @@
 </h1>
 
 <p>
-Here is a fairly common problem with visualizing the paths that
-contribute to a fit.  In a well-ordered material like these data on a
-cobalt foil, a distant single scattering path may be of the same
-length as two or more important collinear multiple scattering paths.
-The fit involves a subtle superposition of all the paths in the fit.
-This single scattering path and its related multiple scattering paths
-all contribute spectral weight in the same region of R-space.
+A common problem with visualizing the paths that contribute to a fit
+occurs when several single and multiple scatteriung paths contribute
+spectral wieght in the same region of R spadce.  In a well-ordered
+material like these data on a cobalt foil, a distant single scattering
+path may be of the same length as two or more important collinear
+multiple scattering paths.  The fit involves a subtle superposition of
+all the paths in the fit.  This single scattering path and its related
+multiple scattering paths all contribute spectral weight in the same
+region of R-space.
 </p>
 
 <p>
-<a href="../../images/plot.overlapping.png" target=_blank><img src="../../images/plot.overlapping.png" alt="
+<a href="../../images/plot.overlapping.png" target=_blank><img src="../../images/plot.overlapping.png" title="
+A plot of overlapping paths
+" alt="
 A plot of overlapping paths
 "></a>
 </p>
@@ -95,7 +98,9 @@ shows how those three affect the fit when added together.
 </p>
 
 <p>
-<a href="../../images/plot.vpath.png" target=_blank><img src="../../images/plot.vpath.png" alt="
+<a href="../../images/plot.vpath.png" target=_blank><img src="../../images/plot.vpath.png" title="
+A plot with the overlapping paths made into a single VPath
+" alt="
 A plot with the overlapping paths made into a single VPath
 "></a>
 </p>
@@ -104,8 +109,20 @@ A plot with the overlapping paths made into a single VPath
 <p>
 
 </td>
-<td width=469>
-<a class=floatright href="../../images/uranyl.png" target=_blank><img border=0 src="../../images/uranyl.png" alt="uranyl.png"></a>
+<td width=334>
+<a class=floatright href="../../images/plot.makevpath.png"  target=_blank><img border=0 src="../../images/plot.makevpath.png"  alt="plot.makevpath.png"></a>
+The VPath is made by marking the contributing paths and choosing
+&ldquo;Make VPath&rdquo; from the Actions menu.  You
+will be prompted for a name for the VPath.  This name will be used to
+identify the VPath in a plot.  The VPath is then inserted into the
+list of the VPaths tab.
+</p>
+ <hr class=hide /> 
+<p>
+
+</td>
+<td width=277>
+<a class=floatright href="../../images/uranyl.png"  target=_blank><img border=0 src="../../images/uranyl.png"  alt="uranyl.png"></a>
 Here is another example of how a VPath can help visualize the
 components of a fit.  The data in the follow two figures are of
 uranium  L<sub>III</sub>       edge EXAFS of uranyl acetate in solution.  Uranyl
@@ -133,7 +150,9 @@ multiple scattering paths contribute to the fit.
 
 <p>
 
-<a href="../../images/plot.uace_oax.png" target=_blank><img src="../../images/plot.uace_oax.png" alt="
+<a href="../../images/plot.uace_oax.png" target=_blank><img src="../../images/plot.uace_oax.png" title="
+A plot of the axial oxygen paths in uranyl acetate
+" alt="
 A plot of the axial oxygen paths in uranyl acetate
 "></a>
 </p>
@@ -145,7 +164,9 @@ oxygen atoms.
 </p>
 
 <p>
-<a href="../../images/plot.uace_vpath.png" target=_blank><img src="../../images/plot.uace_vpath.png" alt="
+<a href="../../images/plot.uace_vpath.png" target=_blank><img src="../../images/plot.uace_vpath.png" title="
+A plot with the axial oxygen paths made into a VPath
+" alt="
 A plot with the axial oxygen paths made into a VPath
 "></a>
 </p>

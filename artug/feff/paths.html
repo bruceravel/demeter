@@ -11,21 +11,21 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../feff/feff.html" class="menu">The Feff tab</a> &nbsp;&nbsp;
-        Next: <a class=navtable href="../feff/pathlike.html" class="menu">The Path-like tab</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a>      </td>
+        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../feff/pathlike.html" class="menu">The Path-like tab</a>      </td>
     </tr>
   </table>
   </div>
@@ -69,7 +69,9 @@ succinct summary of the calculation is displayed on the Paths tab.
 </p>
 
 
-<a href="../../images/feff.paths.png" target=_blank><img src="../../images/feff.paths.png" alt="
+<a href="../../images/feff.paths.png" target=_blank><img src="../../images/feff.paths.png" title="
+The Paths tab.
+" alt="
 The Paths tab.
 "></a>
 
@@ -77,13 +79,15 @@ The Paths tab.
 Some statistics about the  <span class=program>FEFF</span> calculation are shown in the
 Description text box.  Below that is the summary of the paths found in
 the  <span class=program>FEFF</span> calculation.  This summary is presented in the form of a
-table.  Each row describes a unique scattering path.
+table.  Each row describes a scattering path.
 </p>
 
 <p>
 The first column shows the degeneracy of the path.  The second column
 shows its nominal path length,  R<sub>eff</sub> .  That is value that will be
-used in any math expression containing the 
+used in any 
+<a href="../path/mathexp.html">path parameter math expression</a>
+containing the 
 <tt>reff</tt> token.
 </p>
 
@@ -92,27 +96,33 @@ The third column shows a simple view of the scattering path.  The
 <tt>@</tt> token represents the absorber, thus
 appears as  the first and last token in each description.  The tokens
 representing the scattering atoms are taken from the tags on the
- <span class=program>FEFF</span> tab.
+ <span class=program>FEFF</span> tab.  You can change the absorber token by setting the
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;token</span>
+configuration parameter.
 </p>
 
 <p>
-The fourth column contains a heuristic assessment of the importance of
-the path.  Single scattering paths and collinear multiple scattering
-paths are considered high importance paths.  They have a value of 2 in
-this column and are colored with green text.  Certain kinds of
-triangle paths are considered of intermediate importance.  These have
-a value of 1 and are colored with yellow text.  Other paths are
-considered to be of low importance and are colored with grey text.
+The fourth column contains the rank of the path.  This is an attempt
+to predict how important of each path will be to your fitting model.
+Paths with large spectral weight have a large rank and paths with
+little spectral weight have small rank.  Highly ranked paths are
+colored <span style="color:#046a15; background-color:white">green</span>, mid-rank
+paths are colored <span style="color:#78670e; background-color:white">yellow</span>,
+and low-rank paths are <span style="color:#787878; background-color:white">grey</span>.
+</p>
+
+<p>
 Don't  put too much faith in this assessment of importance.  You
 should explicitly check all paths to decide if they should be included
 in a fit.
 </p>
 
 <p>
-<p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
-Explain path ranking
-</p>
+Currently, there is only one scheme for assigning path ranks.  The
+curved-wave importance factors from  <span class=program>FEFF6</span> are used.  These are
+rather unreliable as they are computed using a very crude algorithm.
+Future versions of  <span class=program>ARTEMIS</span> will offer several path ranking schemes
+to improve upon  <span class=program>FEFF</span>'s[$#'%] simple algorithm.
 </p>
 
 <p>
@@ -131,7 +141,8 @@ the one clicked upon and the previously clicked upon row.
 <p>
 Much of the functionality of this page rests upon the set of selected
 paths.  Most importantly, selecting paths is the first step to using
-paths in a fitting model.  This will be explained in the next chapter.
+paths in a fitting model.  This will be explained in the 
+<a href="../path/index.html">next chapter</a>.
 </p>
 
 <p>
@@ -146,17 +157,15 @@ buttons are related to making plots of the selected paths.
 <p>
 
 </td>
-<td width=640>
-<a class=floatleft href="../../images/feff.plot.png" target=_blank><img border=0 src="../../images/feff.plot.png" alt="feff.plot.png"></a>
-A plot of paths from raw  <span class=program>FEFF</span> calculation.  In this example, the
-first four paths from the nickel metal calculation were selected, then
-the &ldquo;Plot selection&rdquo; button was pressed.
-In this plot, we see that the first two single scattering paths are,
-indeed, quite large.  The intermediate importance third path, which
-scatters among first coordination shell Ni atoms, is a modest
-contributor to the EXAFS.  The low importance fourth shell path, which
-also scatters among first coordination shell atoms, cannot even be
-seen on this scale.  It truly is a low importance path.
+<td width=644>
+<a class=floatleft href="../../images/feff.plot.png" target=_blank><img border=0 src="../../images/feff.plot.png"  alt="feff.plot.png"></a>
+A plot of paths from the raw  <span class=program>FEFF</span> calculation.  In this example, the
+first three single scattering paths from the sodium uranyl triacetate
+calculation were selected along with a low-rank multiple scattering
+path.  Then the &ldquo;Plot selection&rdquo; button was
+pressed.  In this plot, we see that the three single scattering
+paths are, indeed, quite large.  The multiple scattering path can
+barely be seen on this scale.  It truly is a low importance path.
 </p>
 
 <p>
@@ -179,11 +188,13 @@ window is used to make the plot of paths.
 <p>
 Right clicking on an entry in the paths list will open a dialog window
 with more details about the geomtery of the scattering path.  In the
-following figure, the selected path (#0012) was right-clicked on,
-opening the dialog depicted.
+following figure, the selected path (#0006) was right-clicked on,
+opening the dialog depicted below.
 </p>
 
-<a href="../../images/feff.pathsinfo.png" target=_blank><img src="../../images/feff.pathsinfo.png" alt="
+<a href="../../images/feff.pathsinfo.png" target=_blank><img src="../../images/feff.pathsinfo.png" title="
+Information about the geometry of a scattering path.
+" alt="
 Information about the geometry of a scattering path.
 "></a>
 

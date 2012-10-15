@@ -1,0 +1,389 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The pathfinder and fuzzy degeneracy</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/ipots.html" class="menu">Unique potentials</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Fuzzy degeneracy</span><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  The pathfinder and fuzzy degeneracy
+</h1>
+
+<hr class=hide /> 
+<a name="howthepathfinderworks">
+
+<h2>  How the path finder works</h2>
+</a>
+
+<p>
+
+</td>
+<td width=179>
+<a class=floatright href="../../images/pathfinder.png"  target=_blank><img border=0 src="../../images/pathfinder.png"  alt="pathfinder.png"></a>
+</p>
+
+<p>
+Given a list of atomic coordinates for a cluster of atoms:
+</p>
+
+<p>
+<ol>
+  
+<li><p>
+Find all paths (<span style="color:#0000aa; background-color:white">0</span><span style="color:#a90000; background-color:white">i</span><span style="color:#0000aa; background-color:white">0</span>),
+<span style="color:#a90000; background-color:white">i</span> &ne; <span style="color:#0000aa; background-color:white">0</span> 
+in the cluster.  These paths are represented by the two-leg diagram to
+the right.  Put each such path in a heap.
+</p></li>
+<li><p>
+For each such path, add a leg with <span style="color:#A9A800; background-color:white">j</span> &ne; <span style="color:#a90000; background-color:white">i</span>, 
+<span style="color:#A9A800; background-color:white">j</span> &ne; <span style="color:#0000aa; background-color:white">0</span>.
+Put all (<span style="color:#0000aa; background-color:white">0</span><span style="color:#a90000; background-color:white">i</span><span style="color:#A9A800; background-color:white">j</span><span style="color:#0000aa; background-color:white">0</span>)
+in the heap.  These paths are represented by the three-leg diagram to
+the right.
+</p></li>
+<li><p>
+Up to some order of scattering, populate the heap with
+(<span style="color:#0000aa; background-color:white">0</span><span style="color:#a90000; background-color:white">i</span>...x<span style="color:#0000aa; background-color:white">0</span>).
+</p></li>
+<li><p>
+Test each path 
+(<span style="color:#0000aa; background-color:white">0</span><span style="color:#a90000; background-color:white">i</span>...x<span style="color:#0000aa; background-color:white">0</span>)
+for magnitude. If small, discard
+and do not consider any 
+(<span style="color:#0000aa; background-color:white">0</span><span style="color:#a90000; background-color:white">i</span>...xy<span style="color:#0000aa; background-color:white">0</span>).
+</p></li>
+<li><p>
+Use up all atoms in the cluster and up to some order of
+scattering ( <span class=program>FEFF</span>'s default is 7 legs).
+</p></li>
+</ol>
+</p>
+
+<p>
+<p>
+</p>
+
+<p>
+</td>
+<td width=339>
+<a class=floatleft href="../../images/heap.png" target=_blank><img border=0 src="../../images/heap.png"  title="diagram of the heap data structure"  alt="heap.png"></a></p>
+</p>
+
+<p>
+A heap is a tree-shaped data structure. Each node is guaranteed to
+represent a shorter path length than all nodes below it. The top node
+is, thus, guaranteed to be the shortest path.  See
+S.I. Zabinsky, et al., <em>Phys. Rev.</em>, <strong>B66:22</strong>, 
+(1995) p.&nbsp;2995-3009<a href="http://dx.doi.org/10.1103/PhysRevB.52.2995"> (DOI: 10.1103/PhysRevB.52.2995)</a> for more details.
+</p>
+
+<p>
+Construct the path list by repeatedly pulling the top path from the
+heap until the heap is empty.  When the top node is removed, the
+remaining nodes rearrange themselves such that heap retains the
+property that each node represents a shorter path than all those below
+it.
+</p>
+
+<p>
+The resulting path list is guaranteed to be sorted by increasing path
+length.  The list is then examined to find &ldquo;degenerate&rdquo; paths.  Degenerate paths are ones that contribute
+identically to the EXAFS.  A simple example owuld be the single
+scattering paths from the various atoms in the first coordination
+shell.  Since each atom is the same distance away from the absorber,
+each contributes identically to the EXAFS.  Thus these paths are
+degenerate.  After being screened for degeneracy, the path list is
+presented to the user.
+</p>
+
+<hr class=hide /> 
+<a name="thepathfinderinfeffandartemis">
+
+<h2>  The pathfinder in Feff and Artemis</h2>
+</a>
+
+<p>
+
+One of the features of  <span class=program>ARTEMIS</span> is a rewrite of  <span class=program>FEFF</span>'s
+pathfinder.  
+</p>
+
+<p>
+The new path finder has two huge advantages over  <span class=program>FEFF</span>'s:
+<ol>
+  
+<li><p>
+User configurable fuzzy degeneracy.  <span class=program>FEFF</span>
+considers paths that differ in length by 0.00001  &Aring;     to be
+non-degenerate.   <span class=program>ARTEMIS</span> can group together these nearly
+degenerate paths.
+</p></li>
+<li><p>
+The scattering geometries of the degenerate paths are stored and are
+available for use and examination.   <span class=program>FEFF</span> discards the details of the
+degenerate paths. 
+</p></li>
+</ol>
+</p>
+
+<p>
+The first point  &ndash;  the use of fuzzy degneracy  &ndash;  is the
+topic of this section.
+</p>
+
+<p>
+ <span class=program>FEFF</span>'s path finder, however, has its advantages over  <span class=program>ARTEMIS</span>':
+<ol>
+  
+<li><p>
+As it is written in a compiled language, it is considerably
+faster. Fortunately, the path finder does not need to be run very
+often. 
+</p></li>
+<li><p>
+ <span class=program>FEFF</span> uses its fast plane wave calculation to approximate the
+importance of path.  Low importance paths can be removed from
+consideration, as can all higher order paths built from that
+path.   <span class=program>ARTEMIS</span> does not have access to the plane wave calculation,
+so it must consider rather more paths than  <span class=program>FEFF</span>'s pathfinder.
+ <span class=program>ARTEMIS</span> relies instead on some simple heuristics to trim the tree of paths. 
+</p></li>
+<li><p>
+ <span class=program>FEFF</span>'s path finder considers up to seven-legged paths.
+ <span class=program>ARTEMIS</span> currently stops at four-legged paths.  This could be fixed
+in  <span class=program>ARTEMIS</span>, but without  <span class=program>FEFF</span>'s plane wave approximation,
+the cost of computing so many paths would be prohibitive.  In any
+case, it is rather unusual to need more than four-legged paths in an
+EXAFS analysis.  (Cubic metals analyzed beyond about 6  &Aring;     and
+cyanide bridged structures like prussian blue are two examples.)
+</p></li>
+</ol>
+</p>
+
+<p>
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+ <span class=program>ARTEMIS</span>' path finder does not currently handle polarization
+and ellipticity.  So that's another advantage at the moment for 
+ <span class=program>FEFF</span>'s path finder. <br />  <br /> As for the speed issue, I
+have some ideas for improving  <span class=program>ARTEMIS</span>' performance.  While
+it will never be as fast as  <span class=program>FEFF</span>, I should be able to close the
+gap somewhat.
+</p></p>
+
+
+
+<hr class=hide /> 
+<a name="anexampleofusingfuzzydegeneracy">
+
+<h2>  An example of using fuzzy degeneracy</h2>
+</a>
+
+<p>
+
+As the path finder organizes all the scattering geometries it finds
+among the atoms in the input atoms list, it will make a fuzzy
+comparison to sort the paths into nearly-degenerate bins.  That is,
+all paths whose lengths are within a small margin will be considered
+degenerate.  The width of this bin is set by the
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;fuzz</span>
+preference.
+</p>
+
+<p>
+Consider this <span class=file>feff.inp</span> file
+(made from
+<a href="https://raw.github.com/bruceravel/XAS-Education/master/Examples/Xtal/PbFe12O19.inp">this crystal data</a>):
+</p>
+
+
+<pre>
+ TITLE magnetoplumbite  PbFe_12O_19
+
+ HOLE      4   1.0   * FYI: (Pb L3 edge @ 13035 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      5.0
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     82     Pb        
+     1     82     Pb        
+     2     26     Fe        
+     3     8      O         
+
+
+ ATOMS                  * this list contains 84 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  Pb1           0.00000
+    1.65468    0.00003    2.30070  3  O.1           2.83394
+   -0.82737   -1.43298    2.30070  3  O.1           2.83394
+    1.65468    0.00003   -2.30070  3  O.1           2.83394
+   -0.82737   -1.43298   -2.30070  3  O.1           2.83394
+   -0.82737    1.43304    2.30070  3  O.1           2.83397
+   -0.82737    1.43304   -2.30070  3  O.1           2.83397
+    2.63123   -1.31552    0.00000  3  O.2           2.94176
+   -0.17634   -2.93647    0.00000  3  O.2           2.94176
+    2.63123    1.31558    0.00000  3  O.2           2.94179
+   -2.45494   -1.62092    0.00000  3  O.2           2.94179
+   -2.45494    1.62098    0.00000  3  O.2           2.94182
+   -0.17634    2.93653    0.00000  3  O.2           2.94182
+    1.69537   -2.93647    0.00000  2  Fe2.1         3.39074
+   -3.39080    0.00003    0.00000  2  Fe2.1         3.39079
+    1.69537    2.93653    0.00000  2  Fe2.1         3.39079
+    0.83581   -1.44767    3.24399  2  Fe5.1         3.64935
+    0.83581   -1.44767   -3.24399  2  Fe5.1         3.64935
+   -1.67167    0.00003    3.24399  2  Fe5.1         3.64937
+    0.83581    1.44772    3.24399  2  Fe5.1         3.64937
+   -1.67167    0.00003   -3.24399  2  Fe5.1         3.64937
+    0.83581    1.44772   -3.24399  2  Fe5.1         3.64937
+    3.39074    0.00006    1.38042  2  Fe4.1         3.66097
+   -1.69542   -2.93644    1.38042  2  Fe4.1         3.66097
+    3.39074    0.00006   -1.38042  2  Fe4.1         3.66097
+   -1.69542   -2.93644   -1.38042  2  Fe4.1         3.66097
+   -1.69542    2.93656    1.38042  2  Fe4.1         3.66107
+   -1.69542    2.93656   -1.38042  2  Fe4.1         3.66107
+            ... (more atoms follow)
+ END
+</pre>
+
+<p>
+
+Using the default <span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;fuzz</span>
+parameter of 0.03  &Aring;    , will give these
+paths.  Note that the <tt>Fe4</tt> and
+<tt>Fe5</tt> scatterers, which differ by about 0.11
+ &Aring;    , get merged into a single scattering path.  This path has a
+value of  R<sub>eff</sub>  that is the average of the constituent paths and a
+degenaracy that is the sum of the constituent paths.
+</p>
+
+
+
+<pre>
+#     degen   Reff       scattering path    I   Rank  legs   type
+ 0001   6    2.834  ----  @ O.1    @        2  100.00  2  single scattering
+ 0002   6    2.942  ----  @ O.2    @        2   89.88  2  single scattering
+ 0003   3    3.391  ----  @ Fe2.1  @        2   34.83  2  single scattering
+ 0004  12    3.655  ----  @ Fe5.1  @        2  100.00  2  single scattering
+</pre>
+
+
+<p>
+
+Resetting the <span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;fuzz</span> 
+to 0.01 separates those two nearly degenerate paths into separate
+scattering paths.
+</p>
+
+
+<pre>
+#     degen   Reff       scattering path    I   Rank  legs   type
+ 0001   6    2.834  ----  @ O.1    @        2  100.00  2  single scattering
+ 0002   6    2.942  ----  @ O.2    @        2   89.88  2  single scattering
+ 0003   3    3.391  ----  @ Fe2.1  @        2   34.83  2  single scattering
+ 0004   6    3.649  ----  @ Fe5.1  @        2   57.63  2  single scattering
+ 0005   6    3.661  ----  @ Fe4.1  @        2   57.15  2  single scattering
+</pre>
+
+
+<p>
+
+To make the pathfinder neglect fuzzy degeneracy, thus behaving like
+ <span class=program>FEFF</span>'s pathfinder, set
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;fuzz</span> to 0.
+</p>
+
+</div>
+
+<br />
+ <hr class=hide /> 
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

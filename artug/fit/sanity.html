@@ -11,20 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a class=navtable href="../fit/happiness.html" class="menu">The happiness parameter</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../fit/index.html" class="menu">Running a fit</a>      </td>
+        Up: <a class=navtable href="../fit/index.html" class="menu">Running a fit</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../fit/happiness.html" class="menu">The happiness parameter</a>      </td>
     </tr>
   </table>
   </div>
@@ -85,20 +85,20 @@ calculations exist.
 </p></li>
 
 <li><p>
-Check that all guess parameters are used in at least one def parameter.
+Check that all guess parameters are used in at least one def parameter
 or path parameter.
 </p></li>
 
 <li><p>
-Check that no def parameter or path parameter uses an undefined parameters.
+Check that no def parameter or path parameter uses an undefined parameter.
 </p></li>
 
 <li><p>
-Check that none of 
+Check that none of these typos  &ndash; 
 &ldquo;++&rdquo;,
 &ldquo;--&rdquo;,
 &ldquo;//&rdquo;, or
-&ldquo;***&rdquo; appear in a math expression.
+&ldquo;***&rdquo;  &ndash;  appear in any math expressions.
 </p></li>
 
 <li><p>
@@ -111,7 +111,8 @@ Check that all GDS parameters have unique names.
 </p></li>
 
 <li><p>
-Check that parentheses match in all math expressions.
+Check that parentheses match in all math expressions, i.e. that every
+open penthesis has a matching close paremthesis.
 </p></li>
 
 <li><p>
@@ -124,12 +125,14 @@ Check that the number of guess parameters is less than  N<sub>idp</sub>   .
 </p></li>
 
 <li><p>
-Verify that  R<sub>min</sub>    is >=  R<sub>bkg</sub>  for data imported from an
+Verify that  R<sub>min</sub>    &ge;  R<sub>bkg</sub>  for data imported from an
  <span class=program>ATHENA</span> project file.
 </p></li>
 
 <li><p>
-Verify that  R<sub>eff</sub>  for each path is not well beyond  R<sub>max</sub>   .
+Verify that  R<sub>eff</sub>  for each path is not well beyond  R<sub>max</sub>   .  The
+margin beyond  R<sub>max</sub>    that a value of  R<sub>eff</sub>  is acceptable is set
+by <span class=pref>&diams;Warnings&nbsp;&rarr;&nbsp;reff_margin</span>.
 </p></li>
 
 <li><p>
@@ -166,20 +169,21 @@ Check for obvious cases of a data set used more than once.
 </p></li>
 
 <li><p>
-Check that each data set used in the fit has at least one  path
+Check that each data set used in the fit has at least one path
 assigned to it.
 </p></li>
 
 </ol> 
 
 <p>
-As a side note, item #15 is particularly interesting.   <span class=program>DEMETER</span>
-does a simple lexical analysis on the ensemble of math expressions
-defined on the GDS window then uses a formal graph theory tool
-(links...) to develop a graph depiction of the parameters.  Loops
-(like the first example) and cycles (like the second) a trivially
-evident when the parameters are viewed as a formal graph.  That was a
-really fun part of  <span class=program>DEMETER</span> to write.
+As a side note, item 15 is particularly interesting.   <span class=program>DEMETER</span> does
+a simple lexical analysis on the ensemble of math expressions defined
+on the GDS window, then uses <a href="https://metacpan.org/module/Graph">a formal graph
+theory tool</a> to develop a
+graph depiction of the parameters.  Loops (like the first example) and
+cycles (like the second) a trivially evident when the parameters are
+viewed as a formal graph.  That was a really fun part of  <span class=program>DEMETER</span>
+to write.
 </p>
 
 </div>

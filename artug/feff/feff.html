@@ -11,20 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a class=navtable href="../feff/paths.html" class="menu">The Paths tab</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a>      </td>
+        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../feff/paths.html" class="menu">The Paths tab</a>      </td>
     </tr>
   </table>
   </div>
@@ -70,22 +70,25 @@ displayed.
 </p>
 
 
-<a href="../../images/feff.feff.png" target=_blank><img src="../../images/feff.feff.png" alt="
+<a href="../../images/feff.feff.png" target=_blank><img src="../../images/feff.feff.png" title="
+The  <span class=program>FEFF</span> tab.
+" alt="
 The  <span class=program>FEFF</span> tab.
 "></a>
 
 <p>
 The box containing the  <span class=program>FEFF</span> input data is a simple text entry
 box.  If you wish to make any modifications to the input data for the
- <span class=program>FEFF</span> calculation, you can edit the text directly.  While the most
-common course is probably to run the  <span class=program>FEFF</span> calculation immediately,
+ <span class=program>FEFF</span> calculation, you can edit the text directly.  Although it is
+most common to run the  <span class=program>FEFF</span> calculation straight away,
 there are a number of situations where directly editing the input data
 prior to running  <span class=program>FEFF</span> is desirable.
 </p>
 
 <p>
 The &ldquo;Open&rdquo; button can be used to import a
-different <span class=file>feff.inp</span> file.  Right clicking
+different <span class=file>feff.inp</span> file.  
+<em>Right clicking</em>
 that button posts the recently used file dialog.  The &ldquo;Save&rdquo; button will post the standard column selection
 dialog for choosing a file name for saving the current  <span class=program>FEFF</span> input
 data.  The &ldquo;Clear&rdquo; button will remove all
@@ -93,7 +96,7 @@ text from the big text box.
 </p>
 
 <p>
-The  <span class=program>FEFF</span> calculation is made by clicking the 
+The  <span class=program>FEFF</span> calculation is started by clicking the 
 &ldquo;Run Feff&rdquo; button.
 </p>
 
@@ -101,12 +104,14 @@ The  <span class=program>FEFF</span> calculation is made by clicking the
 The &ldquo;Template&rdquo; button is used to put
 boilerplate for  <span class=program>FEFF</span> input data into the big text box.  This is
 useful if your list of Cartesian coordinates comes from some other
-source.  in that case, you might cut and paste that text from the
+source.  In that case, you might cut and paste that text from the
 other source and fill in the indicated blanks and the <tt>POTENTIALS</tt> list as appropriate for your calculation.
 </p>
 
 
-<a href="../../images/feff.template.png" target=_blank><img src="../../images/feff.template.png" alt="
+<a href="../../images/feff.template.png" target=_blank><img src="../../images/feff.template.png" title="
+A  <span class=program>FEFF</span> template.
+" alt="
 A  <span class=program>FEFF</span> template.
 "></a>
 

@@ -11,21 +11,21 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a class=navtable href="../path/mathexp.html" class="menu">Setting math expressions</a>
-        
+        Back: <a class=navtable href="../path/mathexp.html" class="menu">Setting math expressions</a> &nbsp;&nbsp;
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../path/index.html" class="menu">The Path page</a>      </td>
+        Up: <a class=navtable href="../path/index.html" class="menu">The Path page</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../path/pathlike.html" class="menu">Using path-like objects</a>      </td>
     </tr>
   </table>
   </div>
@@ -42,7 +42,8 @@
 <a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
 <a href="../path/index.html"  class="menuselect">The Path page</a><br />
 &nbsp;&#8618;&nbsp;<a href="../path/mathexp.html"  class="menu">Setting math expressions</a><br />
-&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Marking and plotting</span><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Marking and plotting</span><br />
+&nbsp;&#8618;&nbsp;<a href="../path/pathlike.html"  class="menu">Using path-like objects</a><br /><a href="../gds.html"  class="menu">The GDS window</a><br />
 <a href="../fit/index.html"  class="menu">Running a fit</a><br />
 <a href="../plot/index.html"  class="menu">The Plot window</a><br />
 <a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
@@ -71,20 +72,28 @@ one shift-clicked upon.
 
 <p>
 Control-clicking on the path list is also a special function used for
-two purposes.  Doing a control-click initiates a drag-and-drop
-function for the path you click on.  If you drop the path on the same
-path list, that is equivalent to cloning the dragged path, with the
-clone being appended to the end of the path list.  This drag
-action can also be used to copy paths between Data windows in a
-multiple data set fit.  See the XXXXX chapter for an example.
+two purposes.  Doing a control-click starts a drag-and-drop with the
+path you click on.  Dropping the path on another data window, copies
+If you drop the path on the same path list, that path to that Data
+set.  Dropping the path on the same path list
+is equivalent to cloning the dragged path, with the clone being
+appended to the end of the path list.
 </p>
 
 <p>
 <p class=caution>
-Mistakenly control-clicking rather than shift-clicking will often
-result in a path being cloned.  This can be surprising.
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+Mistakenly control-clicking rather than shift-clicking will likely
+result in a path being cloned.  This can be surprising and confusing,
+so take care!
 </p>
 </p>
+
+<p>
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Write a page about tools for building MDS fits
+</p></p>
 
 
 <hr class=hide /> 
@@ -94,9 +103,11 @@ result in a path being cloned.  This can be surprising.
 </a>
 
 <p>
- <span class=program>ARTEMIS</span> has no built-in plot types involving individual paths.
+ <span class=program>ARTEMIS</span> has no special plot types involving individual paths like
+<a href="../data.html#specialplots">those for the data sets</a>.
 Any plots with paths are constructed using the Plotting list on the
-Plot window.  There are three ways of moving individual paths to the Plotting
+<a href="../plot/index.html">Plot window</a>.
+There are three ways of moving individual paths to the Plotting
 list.
 <ol>
   
@@ -105,24 +116,28 @@ The blue button with the squiggly line in the upper left corner of the
 Path page transfers that path to the Plotting list.
 </p></li>
 <li><p>
-A paths will be transferred automatically after a fit if its 
+A path will be transferred automatically after a fit if its 
 &ldquo;Plot after fit&rdquo; button is checked.
 </p></li>
 <li><p>
 The set of marked groups will be transferred when 
 &ldquo;Transfer marked&rdquo; is selected from the
-Actions menu.
+Actions menu.  This is probably the most common way of constructing
+plots involving paths.
 </p></li>
 </ol> 
 </p>
 
 <p>
 Another new feature in this version of  <span class=program>ARTEMIS</span> related to plotting
-is called a VPath, which is short for 
-&ldquo;virtual path&rdquo;.  A VPath is an ensemble of
+is called a &ldquo;virtual path&rdquo;, or a 
+&ldquo;VPath&rdquo;.  A VPath is an ensemble of
 normal paths which are summed.  The sum is then plotted in k-, R-, or
 q-space.  A VPath is made by marking a set of paths then selecting
 &ldquo;Make VPath from marked&rdquo; from the Actions menu.
+VPaths are discussed in more detail 
+<a href="../plot/vpaths.html">the chapter on
+the Plot window</a>.
 </p>
 
 
@@ -130,9 +145,9 @@ q-space.  A VPath is made by marking a set of paths then selecting
 <a name=path>&nbsp;</a><br><a href=../../images/path.au4.png><img src="../../images/path.au4.png" width=49%></a>
 &nbsp;&nbsp;<a href=../../images/path.au4vpath.png><img src="../../images/path.au4vpath.png" alt="foo" width=49%></a>
 <br></a>
-<p align=center>
+<p>
 Here is an example of a VPath.  On the left is data on a gold foil
-plotted as  Re[&chi;(R)]   with the fourth shell single scattering path and the two
+plotted as  Re[&chi;(R)]    with the fourth shell single scattering path and the two
 collinear multiple scattering paths involving the fourth neighbor and
 the intervening first shell neighbor.  This is a rather cluttered plot
 due to the phase relationship between these three paths.  
@@ -147,7 +162,7 @@ When the VPath is created, it is placed in the VPath tab in the
 Plot window and in the Plotting list.  The VPath list contains tools
 for renaming and discarding VPaths, displaying its constituants in the
 Main window status bar, and a VPath onto the
-Plotting list.  (Remember that the, unless the 
+Plotting list.  (Remember that, unless the 
 &ldquo;Freeze&rdquo; button is clicked, the Plotting
 list is cleared and repopulated after each fit.)  
 </p>

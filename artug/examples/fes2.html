@@ -11,20 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a class=navtable href="../examples/methyltin.html" class="menu">Example 2: Methyltin</a>
         &nbsp;&nbsp;
-        Up: <a class=navtable href="../examples/index.html" class="menu">Worked examples</a>      </td>
+        Up: <a class=navtable href="../examples/index.html" class="menu">Worked examples</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../examples/methyltin.html" class="menu">Example 2: Methyltin</a>      </td>
     </tr>
   </table>
   </div>
@@ -60,7 +60,391 @@
 </h1>
 
 <p>
- FeS<sub>2</sub>      blah blah
+Introduction, blah blah, known crystal structure, blah blah, learn the
+mechanics of the program, blah blah
+</p>
+
+
+
+<hr class=hide /> 
+<a name="importdata">
+
+<h2>  Import data</h2>
+</a>
+
+<p>
+After starting  <span class=program>ARTEMIS</span>, click on the &ldquo;Add&rdquo; button at the top of the &ldquo;Data sets&rdquo; list in the Main window.  This will open a file
+selection dialog.  Click to find the  <span class=program>ATHENA</span> project file
+containing the data you want to analyze.  Opening that project file
+displays the project selection dialog.
+</p>
+
+<p>
+<a href="../../images/fes2.importdata.png" target=_blank><img width=75% src="../../images/fes2.importdata.png" title="
+Import data into Artemis
+" alt="
+Import data into Artemis
+"></a>
+</p>
+
+<p>
+The project file used here has several iron standards.  Select
+ FeS<sub>2</sub>      from the list.  That data set gets plotted when selected.
+</p>
+
+<p>
+Now click the &ldquo;Import&rdquo; button.  That data
+set gets imported into  <span class=program>ARTEMIS</span>.  An entry for the  FeS<sub>2</sub>      is
+created in the Data list, a window for interacting with the  FeS<sub>2</sub>     
+data is created, and the  FeS<sub>2</sub>      data are plotted as  &chi;(k)   .
+</p>
+
+<p>
+The next step is to prepare for the  <span class=program>FEFF</span> calculation using the
+known  FeS<sub>2</sub>      crystal structure.  Clicking on the line in the Data
+window that says &ldquo;Import crystal data or a
+Feff calculation&rdquo; will post a file selection ddialog.  Click to find
+the <span class=file>atoms.inp</span> file containing the  FeS<sub>2</sub>     
+crystal structure.
+</p>
+
+<p>
+<a href="../../images/fes2.importatoms.png" target=_blank><img width=75% src="../../images/fes2.importatoms.png" title="
+Import crystal data into Artemis
+" alt="
+Import crystal data into Artemis
+"></a>
+</p>
+
+<p>
+With the  FeS<sub>2</sub>      crystal data imported, run  <span class=program>ATOMS</span> by clicking the 
+&ldquo;Run Atoms&rdquo; button on the Atoms tab of the
+ <span class=program>FEFF</span> windows.  That will display the Feff tab containing the
+ <span class=program>FEFF</span> input data.  Click the &ldquo;Run Feff&rdquo;
+button to compute the scattering potentials and to run the pathfinder.
+</p>
+
+<p>
+Once the  <span class=program>FEFF</span> calculation is finished, the path intepretation list
+is shown in the Paths tab.  This is the list of scattering paths,
+sorted by increasing path length.  Select the first 11 paths by
+clicking on the path #0000, then shift-clicking on path #0010.  These
+group of selected paths will be highlighted.  Click on one of the
+highlighted paths and, without letting go of the mouse button, drag
+the paths over to the Data winodw.  Drop the paths on the empty Path
+list.
+</p>
+
+<p>
+<a href="../../images/fes2.pathsdnd.png" target=_blank><img width=75% src="../../images/fes2.pathsdnd.png" title="
+Drag and drop paths onto a data set
+" alt="
+Drag and drop paths onto a data set
+"></a>
+</p>
+
+<p>
+Dropping the paths on the Path list will associate those paths with
+that data set.  That is, that group of paths is now available to be
+used in the fitting model for understanding the  FeS<sub>2</sub>      data.
+</p>
+
+<p>
+Each path will get its own Path page.  The Path page for a path is
+displayed when that path is clicked upon in the Path list.  Shown
+below is the  FeS<sub>2</sub>      data with its 11 paths.  The first path in the
+list, the one representing the contribution to the EXAFS from the S
+single scattering path at 2.257  &Aring;    , is currently displayed.
+</p>
+
+<p>
+<a href="../../images/fes2.pathsimported.png" target=_blank><img width=75% src="../../images/fes2.pathsimported.png" title="
+Paths associated with a data set
+" alt="
+Paths associated with a data set
+"></a>
+</p>
+
+
+
+<hr class=hide /> 
+<a name="examinethescatteringpaths">
+
+<h2>  Examine the scattering paths</h2>
+</a>
+
+
+<p>
+The first chore is to understand how the various paths from the
+ <span class=program>FEFF</span> calculation relate to the data.  To this end, we need to
+populate the Plotting list with data and paths and make some plots.
+</p>
+
+<p>
+First let's examine how the single scattering paths relate to
+the data.  Mark each of the first four single scattring paths
+ &ndash;  the ones labeled 
+&ldquo;S.1&rdquo;,
+&ldquo;S.2&rdquo;,
+&ldquo;S.3&rdquo;, and
+&ldquo;Fe.1&rdquo;  &ndash;  by clicking on their check
+buttons.  Transfer those four paths to the Plotting list by selecting 
+&ldquo;Transfer marked&rdquo; from the Actions menu.
+</p>
+
+<p>
+With the Plotting list poluated as shown below, click on the 
+&ldquo;R&rdquo; plot button in the Plot window to make
+the plot shown.
+</p>
+
+<p>
+<a href="../../images/fes2.sspaths.png" target=_blank><img width=75% src="../../images/fes2.sspaths.png" title="
+FeS2 data plotted with the first four single scattering paths
+" alt="
+FeS2 data plotted with the first four single scattering paths
+"></a>
+</p>
+
+<p>
+The first interesting thing to note is that the first peak in the data
+seems to be entirely explained by the path from the S atom at 2.257
+ &Aring;    .  None of the other single scattering paths contribute
+significantly to the region of R-space.
+</p>
+
+<p>
+The second interesting thing to note is that the next three single
+scattering paths are not so well separated from one another.  While it
+may be tempting to point at the peaks at 2.93  &Aring;     and 3.45  &Aring;    
+and assert that they are due to the second shell S and the fourth
+shell Fe, it is already clear that the situation is more
+complicated.  Those three single scattering paths overlap one
+another.  Each contriobutes at least some spectral weight to both of
+the peaks at 2.93  &Aring;     and 3.45  &Aring;    .
+</p>
+
+<p>
+The first peak shold be reather simple to interpret, but higher shells
+are some kind of superposition of many paths.
+</p>
+
+<p>
+What about the multiple scattering paths?
+</p>
+
+<p>
+To examine those, first clear the Plotting list by clicking the 
+&ldquo;Clear&rdquo; button at the bottom of the Plot
+window.  Transfer the  FeS<sub>2</sub>      data back to the Plotting list by
+clicking its transfer button, <a href="../../images/plot.icon.png" target=_blank><img src="../../images/plot.icon.png" title="transfer
+button" alt="transfer
+button"></a>.  Mark the first three multiple scattering paths by
+clicking their mark buttons.  Select 
+&ldquo;Transfer marked&rdquo; from the Actions menu.
+</p>
+
+<p>
+With the Plotting list newly populated, make a new plot of  |&chi;(R)|   .
+</p>
+
+<p>
+<a href="../../images/fes2.mspaths1.png" target=_blank><img width=75% src="../../images/fes2.mspaths1.png" title="
+FeS2 data plotted with the first three multiple scattering paths
+" alt="
+FeS2 data plotted with the first three multiple scattering paths
+"></a>
+</p>
+
+<p>
+The two paths labeled &ldquo;S.1 S.1&rdquo;, which
+represent two different ways for the photoelectron to scatter from a S
+atom in the first coordination shell then scatter from another S atom
+in the first coordination shell, contribute rather little spectra
+weight.  Given their small size, it seems possible that we may be able
+to ignore those paths when we analyze our  FeS<sub>2</sub>      data.
+</p>
+
+<p>
+The &ldquo;S.1 S.2&rdquo; path, which first scatters
+from a S in the first coordination shell then from a S in the second
+coordination shell, contributes significantly to the peak at 2.93
+ &Aring;    .  It seems unlikely that we will be able to ignore that path.
+</p>
+
+<p>
+To examine the next three multiple scattering paths, clear the
+Plotting l ist, mark those paths, and repopulate the Plotting lilst.
+</p>
+
+<p>
+<a href="../../images/fes2.mspaths2.png" target=_blank><img width=75% src="../../images/fes2.mspaths2.png" title="
+FeS2 data plotted with the next three multiple scattering paths
+" alt="
+FeS2 data plotted with the next three multiple scattering paths
+"></a>
+</p>
+
+<p>
+The &ldquo;S.1 Fe.1&rdquo; path, which scatters from a S
+atom in the first coordination shell then scatters from an Fe atom in
+the fourth coordination shell, is quite substantial.  It will
+certainly need to be considered in our fit.  The other two paths are
+tiny.
+</p>
+
+
+
+
+
+<hr class=hide /> 
+<a name="fittothefirstcoordinationshell">
+
+<h2>  Fit to the first coordination shell</h2>
+</a>
+
+<p>
+We begin by doing an analysis of the first shell.  As we saw above,
+we only need the first path in the path list.  To prepare for the fit,
+we do the following:
+<ol>
+  
+<li><p>
+Exclude all but the first path from the fit.  With the first path
+selected in the path list and displayed, select 
+&ldquo;Mark after current&rdquo; from the Marks menu.
+This will mark all paths except for the first one.  Then select 
+&ldquo;Exclude marked&rdquo; from the Actions menu.
+This will exclude those paths from the fit.  That is indicated by the
+triple parentheses in the path list.  
+</p></li>
+<li><p>
+Set the values of  R<sub>min</sub>    and  R<sub>max</sub>    to cover just the first peak.
+</p></li>
+<li><p>
+For this
+simple first shell fit, we set up a simple, four-parameter model.  The
+parameters <tt>amp</tt>,
+<tt>enot</tt>,
+<tt>delr</tt>, and 
+<tt>ss</tt> are defined in the GDS window and given
+sensible initial guess values.
+</p></li>
+<li><p>
+The path parameters for the first shell path are set.   S&sup2;&#8320;  is set
+to <tt>amp</tt>,  E&#8320;  is set
+to <tt>enot</tt>,  &Delta;R  is set
+to <tt>delr</tt>, and  &sigma;&sup2;  is set
+to <tt>ss</tt>.
+</p></li>
+</ol>
+</p>
+
+<p>
+Note that the current settings for k- and R-range result in a bit more
+than 7 independent points, as computed from the Nyquist criterion.
+With only 4 guess parameters, this should be a reasonable fitting model.
+</p>
+
+<p>
+<a href="../../images/fes2.1stshell.png" target=_blank><img width=75% src="../../images/fes2.1stshell.png" title="
+Setting up for a first shell fit
+" alt="
+Setting up for a first shell fit
+"></a>
+</p>
+
+<p>
+Now hit the &ldquo;Fit&rdquo; button.  Upon completion
+of the fit, the following things happen:
+<ol>
+  
+<li><p>
+An Rmr plot is made of the data and the fit.
+</p></li>
+<li><p>
+The log Window is displayed with the results of the fit
+</p></li>
+<li><p>
+The Fit and plot buttons are recolored according to the evaluation of
+the happiness parameter.
+</p></li>
+<li><p>
+The Plotting list is cleared and repopulated with the data.
+</p></li>
+<li><p>
+The fit is entered into the History window (which is not in the
+screenshot below).
+</p></li>
+</ol>
+</p>
+
+<p>
+<a href="../../images/fes2.firstshellfit.png" target=_blank><img width=75% src="../../images/fes2.firstshellfit.png" title="
+Results of the first shell fit
+" alt="
+Results of the first shell fit
+"></a>
+</p>
+
+<p>
+This is not a bad result.  The value of <tt>enot</tt> is small, indicatng that a reasonable value of  E&#8320;  was
+chosen back in  <span class=program>ATHENA</span>.  <tt>delr</tt> is small
+and consistent with 0, as we should expect for a known crystal.  
+<tt>ss</tt> is a reasonable value with a reasonable
+error bar.  The only confusing parameter is <tt>amp</tt>, which is a bit smaller than we might expect for a  S&sup2;&#8320; 
+value.  
+</p>
+
+<p>
+The correlations between parameters are of a size that we expect.  The
+R-factor evaluates to about 2% misfit.   &chi;&sup2<sub>&nu;</sub>  is really huge, but
+that likely means that  &epsilon;   was not evaluated correctly.  All
+in all, this is a reasonable fit.
+</p>
+
+
+
+
+
+
+
+<hr class=hide /> 
+<a name="extendingthefittohighershells">
+
+<h2>  Extending the fit to higher shells</h2>
+</a>
+
+<p>
+</p>
+
+
+
+
+
+
+
+<hr class=hide /> 
+<a name="thefinalfittingmodel">
+
+<h2>  The final fitting model</h2>
+</a>
+
+<p>
+</p>
+
+
+
+
+
+
+<hr class=hide /> 
+<a name="additionalquestions">
+
+<h2>  Additional questions</h2>
+</a>
+
+<p>
 </p>
 
 </div>

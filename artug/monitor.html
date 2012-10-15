@@ -11,18 +11,20 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="./index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="./history.html" class="menu">The History window</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
         Next: <a class=navtable href="./prefs.html" class="menu">Managing preferences</a>      </td>
     </tr>
   </table>
@@ -60,7 +62,7 @@
 <p>
  <span class=program>ARTEMIS</span> provides a number of tools for keeping track of things
 going on behind the scenes.  These tools are found either in the
-Monitor menu on the Main window or the Debug manu on the Data window.
+Monitor menu on the Main window or the Debug menu on the Data window.
 </p>
 
 <p>
@@ -87,7 +89,7 @@ they can be invaluable for diagnosing the problem.
 
 </td>
 <td width=504>
-<a class=floatright href="../images/command_buffer.png" target=_blank><img border=0 src="../images/command_buffer.png" alt="command_buffer.png"></a>
+<a class=floatright href="../images/command_buffer.png"  target=_blank><img border=0 src="../images/command_buffer.png"  alt="command_buffer.png"></a>
 The command buffer window contains a record of every data processing
 and fitting command sent to  <span class=program>IFEFFIT</span>.  At the bottom of this window
 is the plotting buffer, which contains every command sent to the
@@ -97,6 +99,11 @@ plotting backend (usually Gnuplot).
 <p>
 These are very useful both for diagnosing problems and for learning
 the details of how  <span class=program>IFEFFIT</span> and Gnuplot work.
+</p>
+
+<p>
+At the bottom of the window is a simple command line for sending
+instructions directly to  <span class=program>IFEFFIT</span>.
 </p>
 
 <hr class=hide /> 
@@ -109,11 +116,11 @@ the details of how  <span class=program>IFEFFIT</span> and Gnuplot work.
 
 </td>
 <td width=654>
-<a class=floatright href="../images/status_buffer.png" target=_blank><img border=0 src="../images/status_buffer.png" alt="status_buffer.png"></a>
+<a class=floatright href="../images/status_buffer.png"  target=_blank><img border=0 src="../images/status_buffer.png"  alt="status_buffer.png"></a>
 Every message sent to any of the status bars in  <span class=program>ARTEMIS</span> is
 time-stamped and logged in the status buffer.  This provides a sort of
 record of the major actions taken during your current  <span class=program>ARTEMIS</span>
-session. 
+session.  The contents of this buffer can be saved to a file.
 </p>
 
 
@@ -127,7 +134,7 @@ session.
 
 </td>
 <td width=504>
-<a class=floatright href="../images/show_arrays.png" target=_blank><img border=0 src="../images/show_arrays.png" alt="show_arrays.png"></a>
+<a class=floatright href="../images/show_arrays.png"  target=_blank><img border=0 src="../images/show_arrays.png"  alt="show_arrays.png"></a>
 One of the submenus in the Monitor menu on the Main window allows you
 to examine  <span class=program>IFEFFIT</span> data structures.  The results of these
 examination commands are displayed in the command buffer.  In this
@@ -155,10 +162,13 @@ bar.
 <h2>  Debugging Demeter</h2>
 </a>
 
-<p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
-Explain configuration for turning on debug menus, explain utility of
-debug menus
+<p>
+Several additional menu items are turned on when 
+<span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;debug_menus</span>
+is set to a true value.  The items in these menus provide tools for
+debugging  <span class=program>ARTEMIS</span> by showing the current satte of  <span class=program>DEMETER</span> and
+its data structures.  These tools are invaluable for developing the
+software, but are probably of limited value to the general user.
 </p>
 
 </div>

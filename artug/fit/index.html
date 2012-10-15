@@ -11,20 +11,21 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../gds.html" class="menu">The GDS window</a> &nbsp;&nbsp;
-        Next: <a class=navtable href="../plot/index.html" class="menu">The Plot window</a> &nbsp;&nbsp;
-        Down: <a class=navtable href="../fit/sanity.html" class="menu">Sanity checking your model</a>      </td>
+        Down: <a class=navtable href="../fit/sanity.html" class="menu">Sanity checking your model</a>
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="../plot/index.html" class="menu">The Plot window</a>      </td>
     </tr>
   </table>
   </div>
@@ -149,21 +150,26 @@ That's  a fit!
 </p>
 
 <p>
-There are some details of the fitting process that are configurable
-(see Chapter XXX).  The log file can be displayed in either the Log
+There are some details of the fitting process that are 
+(<a href="../prefs.html">configurable</a>).
+For instance, the log file can be displayed in either the Log
 window or in the History window after the fit finishes.  You can also
-choose not to have it display automatically.
+choose not to have it display automatically.  This is set by
+<span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;show_after_fit</span>.
 </p>
 
 <p>
 The plot that is made upon completion of the fit is also configurable.
-The default is to have an Rmr plot made containing the data and the
+The default is to have 
+<a href="../data.html#thermrplot">an Rmr plot</a> 
+made containing the data and the
 fit.  Any of the five plot types from the Data window can chosen as
 the after-fit plot.  You may also choose to have the contents of the
 plotting list plotted in k-, R-, or q-space.  This adds value to the 
 &ldquo;Plot after fit&rdquo; buttons on the Data window
-and Path pages.  You may also choose not to have a plot displayed
-automatically after the fit.
+and Path pages.  You may also choose to have no plot displayed
+automatically after the fit.  This is set by
+<span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;plot_after_fit</span>.
 </p>
 
 <p>
@@ -174,7 +180,8 @@ in the legends of plots.  Thus you may find it useful to select
 descriptive names for each of your fits.  The fit description is
 written to every log file and can be used to document features of
 your current fitting model and how it relates to the development of
-your fitting project.</p>
+your fitting project.
+</p>
 
 </div>
 

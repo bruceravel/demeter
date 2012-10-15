@@ -11,19 +11,18 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a class=navtable href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        <!-- [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp; -->
-        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         Back: <a class=navtable href="../examples/index.html" class="menu">Worked examples</a>
-        
         Down: <a class=navtable href="../extended/qfs.html" class="menu">Quick first shell theory</a>      </td>
     </tr>
   </table>
@@ -51,6 +50,10 @@
 <span style="font-style: italic;">Extended topics</span><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
 </div>
 
 <div class=contentarea>
@@ -67,13 +70,19 @@ users' guide.
 </p>
 
 
+<hr class=hide /> 
+<a name="topicsrelatedtofittingexafsdata">
+
+<h2>  Topics related to fitting EXAFS data</h2>
+</a>
+
 <dl>
   
 <dt>
   Quick first shell theory
 </dt>
 <dd>
-An in-depth discussion of how the <a href="../extended/qfs.html">quick first shell theory tool</a>
+An in-depth discussion of how the <a href="./qfs.html">quick first shell theory tool</a>
 works, what it is used for, and how it can be misused.
   <br />
   <br />
@@ -82,17 +91,66 @@ works, what it is used for, and how it can be misused.
   Characteristic values
 </dt>
 <dd>
-An explanation of the <a href="../extended/cv.html">characteristic value</a>, or CV, Data attribute.  This is a tool
+An explanation of the <a href="./cv.html">characteristic value</a>, or CV, Data attribute.  This is a tool
 for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
+  <br />
+  <br />
+</dd>
+<dt>
+  Geometric parametrization of bond length
+</dt>
+<dd>
+  <br />
+  <br />
+</dd>
+<dt>
+  Modeling the disorder parameter
+</dt>
+<dd>
+  <br />
+  <br />
+</dd>
+</dl>
+
+<hr class=hide /> 
+<a name="topicsrelatedtofeff">
+
+<h2>  Topics related to Feff</h2>
+</a>
+
+<dl>
+  
+<dt>
+  Unique potentials
+</dt>
+<dd>
+The <a href="../feff/index.html">Atoms page</a>
+offers three ways of styling the potential indeces of the  <span class=program>FEFF</span>
+input data.  They are <a href="./ipots.html">explained</a>
+by example using crystal data.
+  <br />
+  <br />
+</dd>
+<dt>
+  The pathfinder and fuzzy degeneracy
+</dt>
+<dd>
+An <a href="./ipots.html">explanation</a> of
+the pathfinder and of the concept of fuzzy degeneracy. 
   <br />
   <br />
 </dd>
 </dl>
 
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
-Pages for (1) Empirical paths, (2) Histograms
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Pages for 
+ <br />  <br /> * Empirical paths,
+ <br /> * Histograms, 
+ <br /> * background co-refinement
+ <br /> * dealing with dopants 
+ <br /> * constraints and restraints
 </p>
 
 </div>
