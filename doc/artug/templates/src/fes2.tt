@@ -1,8 +1,0 @@
-[% META title = 'Example 1: FeS2'
-	chapter = 1
-	nosubpages = 1 
-%]
-
-[% FILTER html_para -%]
-FeS2....
-[% END %]

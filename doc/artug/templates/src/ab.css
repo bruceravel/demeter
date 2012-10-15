@@ -62,6 +62,7 @@ h1, h2, h3, h4 {
 h1 {
     display: block;
     border-bottom: 3px solid #4F0C80;
+    padding-top: 12px;
     padding-bottom: 5px;
 }
 h2, h3 {
@@ -339,7 +340,7 @@ pre {
 }
 .navhead {
     color: #ffffff;
-    font: 1.3em bold;
+    font: 16pt bold;
     width: 100%
 }
 
@@ -357,7 +358,7 @@ a.navhead:hover {
 }
 .navtable {
     color: #ffffff;
-    font: 1.0em bold;
+    font: 11pt bold;
     width: 100%;
 }
 a.navtable:link {
@@ -387,7 +388,7 @@ a.navtable:hover {
     /* background-color: #2E3434 */
     /* color: #2E3434; */
     float: top;
-    width: 93%;
+    width: 78%;
     position: fixed;
     border: none;
     border-top: 0;
@@ -421,7 +422,7 @@ a.navtable:hover {
     background: #ffffff;
     color: #000;
     float: right;
-    margin-top: 7em;
+    margin-top: 1em;
     margin-bottom: 10;
     margin-left: 80%;
     margin-right: 0;

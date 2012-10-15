@@ -54,6 +54,9 @@
 [% MACRO ge      BLOCK -%] &ge; [%- END -%]
 [% MACRO cdot    BLOCK -%] &middot; [%- END -%]
 [% MACRO therefore BLOCK -%] &there4; [%- END -%]
+[% MACRO ahat BLOCK -%] a&#770; [%- END -%]
+[% MACRO chat BLOCK -%] c&#770; [%- END -%]
+[% MACRO zhat BLOCK -%] z&#770; [%- END -%]
 
 [% MACRO i0      BLOCK -%] I&#8320;   [%- END -%]
 [% MACRO it      BLOCK -%] I<sub>t</sub>   [%- END -%]
