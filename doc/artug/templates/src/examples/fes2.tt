@@ -1,5 +1,278 @@
 [% META title = 'Example 1: FeS2' %]
 
 [% FILTER html_para -%]
-[%fes2%] blah blah
+Introduction, blah blah, known crystal structure, blah blah, learn the
+mechanics of the program, blah blah
+[% END %]
+
+
+[% PROCESS section label="Import data" %]
+
+[% FILTER html_para -%]
+After starting [%artemis%], click on the [% INCLUDE font/quote
+a="Add"%] button at the top of the [% INCLUDE font/quote
+a="Data sets"%] list in the Main window.  This will open a file
+selection dialog.  Click to find the [%athena%] project file
+containing the data you want to analyze.  Opening that project file
+displays the project selection dialog.
+
+[% WRAPPER image75 file="fes2.importdata.png" %]
+Import data into Artemis
+[% END %]
+
+The project file used here has several iron standards.  Select
+[%fes2%] from the list.  That data set gets plotted when selected.
+
+Now click the [% INCLUDE font/quote a="Import"%] button.  That data
+set gets imported into [%artemis%].  An entry for the [%fes2%] is
+created in the Data list, a window for interacting with the [%fes2%]
+data is created, and the [%fes2%] data are plotted as [%chik%].
+
+The next step is to prepare for the [%feff%] calculation using the
+known [%fes2%] crystal structure.  Clicking on the line in the Data
+window that says [% INCLUDE font/quote a="Import crystal data or a
+Feff calculation"%] will post a file selection ddialog.  Click to find
+the [% INCLUDE font/file a="atoms.inp"%] file containing the [%fes2%]
+crystal structure.
+
+[% WRAPPER image75 file="fes2.importatoms.png" %]
+Import crystal data into Artemis
+[% END %]
+
+With the [%fes2%] crystal data imported, run [%atoms%] by clicking the 
+[% INCLUDE font/quote a="Run Atoms"%] button on the Atoms tab of the
+[%feff%] windows.  That will display the Feff tab containing the
+[%feff%] input data.  Click the [% INCLUDE font/quote a="Run Feff"%]
+button to compute the scattering potentials and to run the pathfinder.
+
+Once the [%feff%] calculation is finished, the path intepretation list
+is shown in the Paths tab.  This is the list of scattering paths,
+sorted by increasing path length.  Select the first 11 paths by
+clicking on the path #0000, then shift-clicking on path #0010.  These
+group of selected paths will be highlighted.  Click on one of the
+highlighted paths and, without letting go of the mouse button, drag
+the paths over to the Data winodw.  Drop the paths on the empty Path
+list.
+
+[% WRAPPER image75 file="fes2.pathsdnd.png" %]
+Drag and drop paths onto a data set
+[% END %]
+
+Dropping the paths on the Path list will associate those paths with
+that data set.  That is, that group of paths is now available to be
+used in the fitting model for understanding the [%fes2%] data.
+
+Each path will get its own Path page.  The Path page for a path is
+displayed when that path is clicked upon in the Path list.  Shown
+below is the [%fes2%] data with its 11 paths.  The first path in the
+list, the one representing the contribution to the EXAFS from the S
+single scattering path at 2.257 [%AA%], is currently displayed.
+
+[% WRAPPER image75 file="fes2.pathsimported.png" %]
+Paths associated with a data set
+[% END %]
+[% END %]
+
+
+[% PROCESS section label="Examine the scattering paths" %]
+
+
+[% FILTER html_para -%]
+The first chore is to understand how the various paths from the
+[%feff%] calculation relate to the data.  To this end, we need to
+populate the Plotting list with data and paths and make some plots.
+
+First let's[%#'%] examine how the single scattering paths relate to
+the data.  Mark each of the first four single scattring paths
+[%ndash%] the ones labeled 
+[% INCLUDE font/quote a="S.1"%],
+[% INCLUDE font/quote a="S.2"%],
+[% INCLUDE font/quote a="S.3"%], and
+[% INCLUDE font/quote a="Fe.1"%] [%ndash%] by clicking on their check
+buttons.  Transfer those four paths to the Plotting list by selecting 
+[% INCLUDE font/quote a="Transfer marked"%] from the Actions menu.
+
+With the Plotting list poluated as shown below, click on the 
+[% INCLUDE font/quote a="R"%] plot button in the Plot window to make
+the plot shown.
+
+[% WRAPPER image75 file="fes2.sspaths.png" %]
+FeS2 data plotted with the first four single scattering paths
+[% END %]
+
+The first interesting thing to note is that the first peak in the data
+seems to be entirely explained by the path from the S atom at 2.257
+[%AA%].  None of the other single scattering paths contribute
+significantly to the region of R-space.
+
+The second interesting thing to note is that the next three single
+scattering paths are not so well separated from one another.  While it
+may be tempting to point at the peaks at 2.93 [%AA%] and 3.45 [%AA%]
+and assert that they are due to the second shell S and the fourth
+shell Fe, it is already clear that the situation is more
+complicated.  Those three single scattering paths overlap one
+another.  Each contriobutes at least some spectral weight to both of
+the peaks at 2.93 [%AA%] and 3.45 [%AA%].
+
+The first peak shold be reather simple to interpret, but higher shells
+are some kind of superposition of many paths.
+
+What about the multiple scattering paths?
+
+To examine those, first clear the Plotting list by clicking the 
+[% INCLUDE font/quote a="Clear"%] button at the bottom of the Plot
+window.  Transfer the [%fes2%] data back to the Plotting list by
+clicking its transfer button, [% WRAPPER image file="plot.icon.png" %]transfer
+button[%END%].  Mark the first three multiple scattering paths by
+clicking their mark buttons.  Select 
+[% INCLUDE font/quote a="Transfer marked"%] from the Actions menu.
+
+With the Plotting list newly populated, make a new plot of [%chir_mag%].
+
+[% WRAPPER image75 file="fes2.mspaths1.png" %]
+FeS2 data plotted with the first three multiple scattering paths
+[% END %]
+
+The two paths labeled [% INCLUDE font/quote a="S.1 S.1"%], which
+represent two different ways for the photoelectron to scatter from a S
+atom in the first coordination shell then scatter from another S atom
+in the first coordination shell, contribute rather little spectra
+weight.  Given their small size, it seems possible that we may be able
+to ignore those paths when we analyze our [%fes2%] data.
+
+The [% INCLUDE font/quote a="S.1 S.2"%] path, which first scatters
+from a S in the first coordination shell then from a S in the second
+coordination shell, contributes significantly to the peak at 2.93
+[%AA%].  It seems unlikely that we will be able to ignore that path.
+
+To examine the next three multiple scattering paths, clear the
+Plotting l ist, mark those paths, and repopulate the Plotting lilst.
+
+[% WRAPPER image75 file="fes2.mspaths2.png" %]
+FeS2 data plotted with the next three multiple scattering paths
+[% END %]
+
+The [% INCLUDE font/quote a="S.1 Fe.1"%] path, which scatters from a S
+atom in the first coordination shell then scatters from an Fe atom in
+the fourth coordination shell, is quite substantial.  It will
+certainly need to be considered in our fit.  The other two paths are
+tiny.
+[% END %]
+
+
+
+
+[% PROCESS section label="Fit to the first coordination shell" %]
+
+[% FILTER html_para -%]
+We begin by doing an analysis of the first shell.  As we saw above,
+we only need the first path in the path list.  To prepare for the fit,
+we do the following:
+[% WRAPPER html/list type='ol' %]
+[% WRAPPER html/li %]
+Exclude all but the first path from the fit.  With the first path
+selected in the path list and displayed, select 
+[% INCLUDE font/quote a="Mark after current"%] from the Marks menu.
+This will mark all paths except for the first one.  Then select 
+[% INCLUDE font/quote a="Exclude marked"%] from the Actions menu.
+This will exclude those paths from the fit.  That is indicated by the
+triple parentheses in the path list.  
+[% END %]
+[% WRAPPER html/li %]
+Set the values of [%rmin%] and [%rmax%] to cover just the first peak.
+[% END %]
+[% WRAPPER html/li %]
+For this
+simple first shell fit, we set up a simple, four-parameter model.  The
+parameters [% INCLUDE font/mono a="amp"%],
+[% INCLUDE font/mono a="enot"%],
+[% INCLUDE font/mono a="delr"%], and 
+[% INCLUDE font/mono a="ss"%] are defined in the GDS window and given
+sensible initial guess values.
+[% END %]
+[% WRAPPER html/li %]
+The path parameters for the first shell path are set.  [%s02%] is set
+to [% INCLUDE font/mono a="amp"%], [%e0%] is set
+to [% INCLUDE font/mono a="enot"%], [%delr%] is set
+to [% INCLUDE font/mono a="delr"%], and [%sigsqr%] is set
+to [% INCLUDE font/mono a="ss"%].
+[% END %]
+[% END %]
+
+Note that the current settings for k- and R-range result in a bit more
+than 7 independent points, as computed from the Nyquist criterion.
+With only 4 guess parameters, this should be a reasonable fitting model.
+
+[% WRAPPER image75 file="fes2.1stshell.png" %]
+Setting up for a first shell fit
+[% END %]
+
+Now hit the [% INCLUDE font/quote a="Fit"%] button.  Upon completion
+of the fit, the following things happen:
+[% WRAPPER html/list type='ol' %]
+[% WRAPPER html/li %]
+An Rmr plot is made of the data and the fit.
+[% END %]
+[% WRAPPER html/li %]
+The log Window is displayed with the results of the fit
+[% END %]
+[% WRAPPER html/li %]
+The Fit and plot buttons are recolored according to the evaluation of
+the happiness parameter.
+[% END %]
+[% WRAPPER html/li %]
+The Plotting list is cleared and repopulated with the data.
+[% END %]
+[% WRAPPER html/li %]
+The fit is entered into the History window (which is not in the
+screenshot below).
+[% END %]
+[% END %]
+
+[% WRAPPER image75 file="fes2.firstshellfit.png" %]
+Results of the first shell fit
+[% END %]
+
+This is not a bad result.  The value of [% INCLUDE font/mono
+a="enot"%] is small, indicatng that a reasonable value of [%e0%] was
+chosen back in [%athena%].  [% INCLUDE font/mono a="delr"%] is small
+and consistent with 0, as we should expect for a known crystal.  
+[% INCLUDE font/mono a="ss"%] is a reasonable value with a reasonable
+error bar.  The only confusing parameter is [% INCLUDE font/mono
+a="amp"%], which is a bit smaller than we might expect for a [%s02%]
+value.  
+
+The correlations between parameters are of a size that we expect.  The
+R-factor evaluates to about 2% misfit.  [%chinu%] is really huge, but
+that likely means that [%epsilon%] was not evaluated correctly.  All
+in all, this is a reasonable fit.
+[% END %]
+
+
+
+
+
+
+[% PROCESS section label="Extending the fit to higher shells" %]
+
+[% FILTER html_para -%]
+[% END %]
+
+
+
+
+
+
+[% PROCESS section label="The final fitting model" %]
+
+[% FILTER html_para -%]
+[% END %]
+
+
+
+
+
+[% PROCESS section label="Additional questions" %]
+
+[% FILTER html_para -%]
 [% END %]

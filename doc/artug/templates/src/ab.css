@@ -212,6 +212,11 @@ pre {
     min-height:36px;
 }
 
+.indented {
+    margin-left: 10%;
+};
+
+
 .key {
     font: 0.9em monospace;
     color: #8B3A3A;

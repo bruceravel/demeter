@@ -1,5 +1,27 @@
 [% META title = 'Worked examples'   chapter = 1 %]
 
 [% FILTER html_para -%]
+This section presents some worked examples of EXAFS data analysis
+using [%artemis%].  These should give a sense of the work flow of a
+typical analysis project.
 
+[% WRAPPER html/list type='dl' %]
+[% WRAPPER html/dt dt='Iron pyrite' %]
+This is Bruce's[%#'%] favorite teaching example, [%fes2%].  This is a
+cubic crystal, not too structurall complicated, but with enough
+interesting features to make it a good teaching tool.  The data and
+crystal structure for this example
+[% INCLUDE html/link
+link="https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2"
+text="can be found here"%].
+[% END %]
+[% WRAPPER html/dt dt='Methyltin' %]
+This demonstrates a multiple data set fit using Sn K edge data on
+dimethyl tin dichloride and monomethyl tin trichloride.  The data and
+crystal structure for this example
+[% INCLUDE html/link
+link="https://github.com/bruceravel/XAS-Education/tree/master/Examples/Methyltin"
+text="can be found here"%].
+[% END %]
+[% END %]
 [% END %]

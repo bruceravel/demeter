@@ -1,0 +1,3 @@
+<p class=indented>
+[%- content -%]
+</p>

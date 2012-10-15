@@ -2,7 +2,79 @@
 
 [% PROCESS section label="Volumetric expansion coefficient" %]
 
+
 [% FILTER html_para -%]
+[% fes2%] is a cubic crystal.  Here is the crystal data
+[% WRAPPER html/pre %]
+title name:     Iron sulfide (pyrite)
+title formula:  FeS_2
+title refer1:   Elliot (1960) J.Chem. Phys. 33(3), 903.
+space  P a 3
+a    = 5.404
+rmax = 9.00     rpath = 6.00
+core = Fe
+atoms
+  Fe     0.00000   0.00000   0.00000  Fe
+  S      0.38400   0.38400   0.38400  S
+[% END %]
+
+In this case, there are only two parameters that determine the
+locations of all the atoms in the cluster [%ndash%] the lattice constant
+[%INCLUDE font/mono a="a" %] and the position of the S atom in the
+unit cell.  For now, we'll[%#'%] neglect the effect of the position of
+the S atom.
+
+In the [% INCLUDE html/link link="../examples/fes2.html" text="FeS2
+worked example" %], a parameterization was used which related [%delr%]
+for all the paths to a volumetric expansion coefficient,
+[%delr%]=[%alpha%][%cdot%][%reff%].  Why does this work?
+
+The distance [%deff%] between any two atoms in a cubic crystal is some
+geometrical factor multiplied by the lattice constant. That factor
+depends on the positions of the atoms in the unit cell, but is a pure
+number.
+
+Thus, from the FEFF calculation, [%deff%](i, j) = [%cij%][%cdot%][%a0%] for
+any two atoms i and j.  For any two pairs of atoms, [%cij%] is a
+different number, but the distances between all pairs of atoms are
+related by simple geometry and the value of the lattice constant.
+
+We consider an isotropic expansion (or contraction, if [%alpha%] is
+negative) of the unit, which is reasonable for a cubic lattice that
+does not undergo a phase transition. So a = (1 + [%alpha%])[%cdot%][%a0%] .
+
+The distance between any two atoms, after accounting for the isotropic
+expansion (or contraction) is 
+[% WRAPPER html/indent %]
+[%dij%] = [%deff%](i,j) + [%Delta%]d(i,j)[%br%]
+[%dij%] = [%cij%] [%cdot%] a[%br%]
+[%dij%] = [%cij%] [%cdot%] (1+[%alpha%])[%cdot%][%a0%][%br%]
+[%dij%] = [%cij%][%cdot%][%a0%] + [%cij%][%cdot%][%alpha%][%cdot%][%a0%][%br%]
+[%br%]
+[%therefore%] [%Delta%]d(i,j) = [%cij%][%cdot%][%alpha%][%cdot%][%a0%][%br%]
+[%nbsp%][%nbsp%]   [%Delta%]d(i,j) = [%alpha%][%cdot%][%deff%](i,j)
+[% END %]
+
+The expression [%alpha%][%cdot%][%deff%] works for all legs of any SS
+or MS path in a cubic crystal (assuming that there are no internal
+degrees of freedom, like the parameter for the position of the S atom
+in [%fes%]).  The length of a path, then, is the sum of the length of
+each leg.  [%delr%] for a path is the sum of [%Delta%]d for each leg.
+The sum of the [%deff%] values is [%reff%], thus
+[%delr%]=[%alpha%][%cdot%][%reff%].
+
+While this trick is only valid for a cubic crystal, it does ilustrate
+two important points about [%artemis%].  First, it is an example of an
+interesting math expression relating a path's[%#'%] [%delr%] value to
+a fitting parameter.  The [%delr%] of the path is not itself a
+variable of the fit, rather it is written in terms of [%alpha%], which
+is a variable of the fit.
+
+Second, it is an example of a constrain which uses the information
+content of the data very well.  We can include any number of paths with
+introducing new parameters for their [%delr%] values.  [%alpha%] is a
+robust fitting parameter in the sense that every path is involved in
+its determination.
 [% END %]
 
 [% PROCESS section label="Propagating crystal distortion parameters" %]

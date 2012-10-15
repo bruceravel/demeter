@@ -73,9 +73,9 @@ electron density within one muffin-tin radius is associated with the
 atom at the center of that sphere. All of the electron density that
 falls outside of the muffin-tin spheres is volumetrically averaged and
 treated as interstitial electron density. All the details are
-explained in the [% INCLUDE html/link
-link="http://link.aps.org/doi/10.1103/RevModPhys.72.621" text="Rehr &
-Albers paper" %] from Review of Modern Physics.
+explained in [% INCLUDE citation author="J.J. Rehr and R.A. Albers"
+journal="Rev. Mod. Phys."  volume="72" pages="621-654" year=2000
+doi="10.1103/RevModPhys.72.621" %].
 
 The scattering amplitude and phase shift is then computed from atoms
 that have a specific size [%ndash%] the size of the muffin-tin spheres

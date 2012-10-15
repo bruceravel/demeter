@@ -38,7 +38,7 @@ scattering ([%feff%]'s[%#'%] default is 7 legs).
 [% END %]
 [% END %]
 
-[% WRAPPER floatleft this="heap.png" %][% END %]
+[% WRAPPER floatleft this="heap.png" title='diagram of the heap data structure' %][% END %]
 
 A heap is a tree-shaped data structure. Each node is guaranteed to
 represent a shorter path length than all nodes below it. The top node

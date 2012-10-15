@@ -32,7 +32,7 @@ Here is the Plot window as it initially appears:
 [% END %]
 
 [% WRAPPER image file="datawindow.png" %]
-The [% artemis %] data window.
+The Artemis data window.
 [% END %]
 
 [% WRAPPER html/list type="ol" %]
@@ -121,7 +121,7 @@ After one or more paths have been associated with this data set, the
 Data window looks something like this.  
 
 [% WRAPPER image file="datawindow_withpaths.png" %]
-The [% artemis %] data window.
+The Artemis data window.
 [% END %]
 
 Note that the paths list is
@@ -244,7 +244,7 @@ spectra.
 
 [% PROCESS subsection label="The Data menu" %]
 
-[% WRAPPER floatright this="data.datamenu.png" %]
+[% WRAPPER floatright this="data.datamenu.png" title="Data menu" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Rename" %]
 Change the name of this data set.  This is the name displayed next to
@@ -327,7 +327,7 @@ window status bar.
 
 [% PROCESS subsection label="The Path menu" %]
 
-[% WRAPPER floatright this="data.pathmenu.png" %]
+[% WRAPPER floatright this="data.pathmenu.png" title="Path menu" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Transfer" %]
 Transfer the displayed path to the plotting list in the 
@@ -356,7 +356,7 @@ The degeneracies of the original and cloned path will be half the
 original degeneracy.
 [% END %]
 [% WRAPPER html/dt dt="Add path parameter" %]
-[% WRAPPER floatright this="addparam.png" %][% END %] Post the dialog
+[% WRAPPER floatright this="addparam.png" title="Add parameter dialog" %][% END %] Post the dialog
 on the right, which is used to add a path parameter 
 math expression to multiple paths associated with this or other data
 sets.  This is a convenience allowing you to edit the path parameters
@@ -388,7 +388,7 @@ the path list.
 
 [% PROCESS subsection label="The Marks menu" %]
 
-[% WRAPPER floatright this="data.marksmenu.png" %]
+[% WRAPPER floatright this="data.marksmenu.png" title="Marks menu" %]
 Much of [%artemis%]'[%#'%] functionality revolves around groups of
 marked paths.  This menu contains a number of shortcuts for marking
 paths.  Note that each of these has a keyboard shortcut
@@ -434,7 +434,7 @@ Mark by path ranking
 
 [% PROCESS subsection label="The Actions menu" %]
 
-[% WRAPPER floatright this="data.actionsmenu.png" %]
+[% WRAPPER floatright this="data.actionsmenu.png" title="Actions menu" %]
 Every item in this menu operates on the set of marked paths.  Again,
 keyboard shortcuts are given in the menu.
 
@@ -456,7 +456,7 @@ of things transferred
 
 [% PROCESS subsection label="The Debug menu" %]
 
-[% WRAPPER floatright this="data.debugmenu.png" %]
+[% WRAPPER floatright this="data.debugmenu.png" title="Debug menu" %]
 This menu displays various dialog boxes showing aspects of the current
 state if [%ifeffit%] or [%artemis%].  These are mostly used for
 debugging purposes.  This menu is only displayed if the 

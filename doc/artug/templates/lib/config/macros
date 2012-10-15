@@ -22,6 +22,7 @@
 [% MACRO iAA     BLOCK -%] &Aring;&#8315;&sup1; [%- END -%]
 [% MACRO sigma   BLOCK -%] &sigma;    [%- END -%]
 [% MACRO alpha   BLOCK -%] &alpha;    [%- END -%]
+[% MACRO Delta   BLOCK -%] &Delta;    [%- END -%]
 [% MACRO sigsqr  BLOCK -%] &sigma;&sup2; [%- END -%]
 [% MACRO sigma2  BLOCK -%] &sigma;&sup2; [%- END -%]
 [% MACRO epsilon BLOCK -%] &epsilon;  [%- END -%]
@@ -51,6 +52,8 @@
 [% MACRO nidp    BLOCK -%] N<sub>idp</sub>   [%- END -%]
 [% MACRO ne      BLOCK -%] &ne; [%- END -%]
 [% MACRO ge      BLOCK -%] &ge; [%- END -%]
+[% MACRO cdot    BLOCK -%] &middot; [%- END -%]
+[% MACRO therefore BLOCK -%] &there4; [%- END -%]
 
 [% MACRO i0      BLOCK -%] I&#8320;   [%- END -%]
 [% MACRO it      BLOCK -%] I<sub>t</sub>   [%- END -%]
@@ -58,6 +61,10 @@
 [% MACRO ir      BLOCK -%] I<sub>r</sub>   [%- END -%]
 [% MACRO rbkg    BLOCK -%] R<sub>bkg</sub> [%- END -%]
 [% MACRO reff    BLOCK -%] R<sub>eff</sub> [%- END -%]
+[% MACRO deff    BLOCK -%] d<sub>eff</sub> [%- END -%]
+[% MACRO dij     BLOCK -%] d<sub>i,j</sub> [%- END -%]
+[% MACRO cij     BLOCK -%] c<sub>i,j</sub> [%- END -%]
+[% MACRO a0      BLOCK -%] a<sub>0</sub>    [%- END -%]
 
 [% MACRO la1    BLOCK -%] L&alpha;<sub>1</sub> [%- END -%]
 [% MACRO l3     BLOCK -%] L<sub>III</sub>      [%- END -%]
@@ -89,3 +96,4 @@
 [% MACRO hr  BLOCK -%] <hr class=bottomdivider /> [%- END -%]
 [% MACRO br  BLOCK -%] <br /> [%- END -%]
 [% MACRO break  BLOCK -%] <hr class=hide /> [%- END -%]
+[% MACRO nbsp  BLOCK -%] &nbsp; [%- END -%]
