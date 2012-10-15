@@ -45,6 +45,7 @@ sub ACTION_ghpages {
   my $self = shift;
   $self->dispatch("build_dpg");
   $self->dispatch("build_artug");
+  $self->dispatch("copy_images");
   $self->dispatch("doctree");
   $self->dispatch("org2html");
 };
@@ -166,6 +167,16 @@ sub ACTION_build_artug {
   move('doc/artug/html', File::Spec->catfile($ghpages, 'artug'));
 };
 
+sub ACTION_copy_images {
+  my $self = shift;
+  my $here = cwd;
+  opendir(my $IM, 'doc/artug/images');
+  my @list = grep {$_ =~ m{\.(png|jpg)\z}} readdir $IM;
+  foreach my $image (@list) {
+    copy(File::Spec->catfile('doc', 'artug', 'images', $image), File::Spec->catfile($ghpages, 'images'));
+  };
+};
+
 sub ACTION_org2html {
   if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
     system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
@@ -222,10 +233,26 @@ sub ACTION_bump {
   my $self = shift;
   (my $v = $self->dist_version) =~ s{\Av}{}; # strip letter v from beginning of version number
   my $ret = $self->do_system(qw(perl-reversion -bump), "--current=$v");
+  map {chmod 0775, File::Spec->catfile('bin', $_)} (qw(dartemis datoms denv dfeffit dlsprj
+						       dathena denergy dfeff dhephaestus
+						       intrp rdfit standards));
+  print "
+perl-reversion misses version numbers in
+	bin/bugs.pod
+	bin/contribute.pod
+	bin/help.pod
+	bin/installation.pod
+	Build.PL
+
+Don't forget to push and tag!
+"
+
+
 };
 sub ACTION_bump_dryrun {
   my $self = shift;
   (my $v = $self->dist_version) =~ s{\Av}{}; # strip letter v from beginning of version number
+  #print $v, $/;
   my $ret = $self->do_system(qw(perl-reversion -bump), "--current=$v", '-dryrun');
 };
 
