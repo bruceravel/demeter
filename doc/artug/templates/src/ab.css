@@ -217,6 +217,10 @@ pre {
     margin-left: 10%;
 }
 
+/* make sure an image does not exceed the contentarea width, even in a small browser window */
+.flexy {
+    max-width: 100%;
+}
 
 .key {
     font: 0.9em monospace;

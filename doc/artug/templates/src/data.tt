@@ -32,7 +32,7 @@ Here is the Plot window as it initially appears:
 [% END %]
 
 [% WRAPPER image file="datawindow.png" %]
-The Artemis data window.
+The Artemis data window, immediately after data import.
 [% END %]
 
 [% WRAPPER html/list type="ol" %]
@@ -121,7 +121,7 @@ After one or more paths have been associated with this data set, the
 Data window looks something like this.  
 
 [% WRAPPER image file="datawindow_withpaths.png" %]
-The Artemis data window.
+The Artemis data window, with imported paths.
 [% END %]
 
 Note that the paths list is

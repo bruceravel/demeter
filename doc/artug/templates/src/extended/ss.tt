@@ -1,15 +1,95 @@
 [% META title = 'Modeling disorder' %]
 
 [% FILTER html_para -%]
-Explain equivalence between thermal and structural disorder.  Discuss
-strategies for disentangling them, i.e. temperature and pressure.
+The [%sigsqr%] term in the EXAFS equation accounts for the mean square
+variation in path length.  This variation can be due to thermal or
+structural disorder.  Even in a well-ordered material, like Cu or
+another FCC metal, data are measured at finite temperature.  The
+absorber and scatterer are both in motion due to the finite
+temperature.  Each interaction of the incident X-ray and the absorber
+is like a femtosecond snapshot of the coordination environment.  As
+those snapshots are averaged in the EXAFS measurement, [%sigsqr%] is
+non-zero, even in the well-ordered material.
+
+A structural disordered contributes another term to [%sigsqr%].  Due
+to structural disorder, the scatterers which are nominally contained
+in a scattering shell may be centered around somehwat different
+distances.  When the contributions from those scatterers are
+considered, [%sigsqr%] will be larger than what is expected from
+purely thermal effects.
+
+Consequently, [%sigsqr%] is always non-zero in an EXAFS fit and a
+proper interpretation of the fitted value of [%sigsqr%] will take into
+account both the thermal and structural component.
+
+It is usually a challenge to distinguish the thermal and structural
+contributions to [%sigsqr%].  As with any highly correlated effects,
+the only way to disentangle the two contributions is to do something
+in the experiment which is sensitive to one or both.
+
+One common approach for understanding the thermal part of [%sigsqr%] is
+to measure the sample at two or more temperatures.  Assuming the
+material does not change phase in that temperature range, we expect
+the thermal part of [%sigsqr%] to have a temperature dependence while
+the structural part may reman fixed (or at least change much less).
+Another possible way to disentangle the two contributions is to
+measure EXAFS data as a function of pressure.  In that case the
+thermal contribution can be modeled as a function of pressure and a
+[%gruneisin%] parameter.
 [% END %]
 
 
 [% PROCESS section label="Debye and Einstein models" %]
 
 [% FILTER html_para -%]
+[%ifeffit%] provides two bult-in functions for modeling [%sigsqr%] as
+a function of temperature.
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Einstein model" %]
+The Einstein model assumes that the absorber and scatter are balls
+connected by a quantum spring.  They oscillate with a single frequency
+and the low-temperature motion saturates to a zero-point motion.  The
+function for computing [%sigsqr%] from the Einstein is a function of
+the measurement temperature, an Einstein temperature, and the reduced
+mass of the absorber/scatterer pair.  In [%artemis%] one writes:
+[% WRAPPER html/pre %]
+path:
+	sigma2 = eins(temperature, thetae)
+[% END %]
+Typically, [% INCLUDE font/mono a="temeprature" %] is a set parameter
+whise value is the mesurement tempreature of the data and 
+[% INCLUDE font/mono a="thetae" %] is a guess parameter representing
+the Einstein temprature [%ndash%] i.e. the characteristic frequency of
+vibration expressed in temeprature units [%ndash%] of the
+absorber-scatterer pair.  The reduced mass is computed by [%ifeffit%]
+from the information provided by [%feff%] about the scattering path.
 
+The Einstein function is most useful as part of a multiple data set
+fit.  In that case, a path can have its [%sigsqr%] parametrized using
+the [% INCLUDE font/mono a="eins" %] function and a single [%thetae%]
+guess parameter is used for all temperatures.
+[% END %]
+[% WRAPPER html/dt dt="Correlated Debye model" %]
+The correlated Debye model assumes that the [%sigsqr%] for any pair of
+atoms can be computed from the acoustic phonon spectrum.  That is, a
+single charcteristic energy [%ndash%] the same Debye temperature,
+[%theatd%], that is determined from the heat capacity of the material 
+[%ndash%] can be used to compute [%sigsqr%] for any path in the
+material.  In [%artemis%] one writes:
+[% WRAPPER html/pre %]
+path:
+	sigma2 = debye(temperature, thetae)
+[% END %]
+This is a very powerful concept.  All [%sigsqr%] parameters in the fit
+are determined from a single variable [%thetad%].
+The caveat is that the correlated Debye model is only strictly valid
+for a monoatomic material.  In practice, the Debye model works well
+for metals like Cu, Au, and Pt.  It works poorly for any material that
+has two or more atomic species.
+[% END %]
+[% END %]
+
+Both models are described in 
 [% INCLUDE citation
 author = "S. Sevillano, H. Meuth, and J.J. Rehr"
 journal = "Phys. Rev."
@@ -17,23 +97,53 @@ volume = "B20:12"
 pages = "4908-4911"
 year = 1979
 doi = "10.1103/PhysRevB.20.4908"
-%]
+%].
 
 [% END %]
 
 [% PROCESS section label="Collinear multiple scattering paths" %]
 
-[% FILTER html_para -%]
-
+[% WRAPPER floatright this="collinear.png" -%]
+This valuable paper
 [% INCLUDE citation
-author = "E.A. Hudeson et al."
+author = "E.A. Hudson et al."
 journal = "Phys. Rev."
 volume = "B54:1"
 pages = "156-165"
 year = 1996
 doi = "10.1103/PhysRevB.54.156"
-%]
+%] explains the relationships between [%sigsqr%] parameters for single
+scattering paths and collinear multiple scattering paths.
 
+The diagram to the right demonstrates the various kinds of collinear
+MS paths and how they relate to the corresponding SS path.
+
+To begin, we define guess parameters for the [%sigsqr%] of the SS
+paths to atoms 1 and 2.
+[% WRAPPER html/pre %]
+guess  ss1 = 0.003
+guess  ss2 = 0.003
+[% END %]
+The next two paths are double and triple scattering paths that
+scatter in the forward direction from atom 1, then in the backward
+direction atom 2.  As explained by Hudson, et al., these paths have
+the same [%sigsqr%] as the SS path to atom 2, i.e.
+[%sigsqr%]=[% INCLUDE font/mono a="ss2" %] for both these paths.
+
+The next three paths involve scattering from the absorber.  The
+collinear DS and TS paths simply have 
+[%sigsqr%]=[% INCLUDE font/mono a="2*ss1" %].
+The path in which the photoelectron rattles back
+and forth between the absorber and atom 1 has
+[%sigsqr%]=[% INCLUDE font/mono a="4*ss1" %].
+
+The caveat to these relationships is that the motion of the
+intervening atom in the perpendicular direction is presumed to be a
+negligible contribution to the mean square variation in path length.
+This is, of course, not strictly true.  In very high quality data, you
+may see deviations from the expressions presented by Hudson, et al.,
+but in most cases they are an excellent approximation and a powerful
+constraint that you can apply to the paths in your fit.
 [% END %]
 
 [% PROCESS section label="Sensible approximations for multiple scattering paths" %]

@@ -57,6 +57,8 @@
 [% MACRO ahat BLOCK -%] a&#770; [%- END -%]
 [% MACRO chat BLOCK -%] c&#770; [%- END -%]
 [% MACRO zhat BLOCK -%] z&#770; [%- END -%]
+[% MACRO thetae BLOCK -%] &Theta;<sub>E</sub> [%- END -%]
+[% MACRO thetad BLOCK -%] &Theta;<sub>D</sub> [%- END -%]
 
 [% MACRO i0      BLOCK -%] I&#8320;   [%- END -%]
 [% MACRO it      BLOCK -%] I<sub>t</sub>   [%- END -%]
@@ -100,3 +102,4 @@
 [% MACRO br  BLOCK -%] <br /> [%- END -%]
 [% MACRO break  BLOCK -%] <hr class=hide /> [%- END -%]
 [% MACRO nbsp  BLOCK -%] &nbsp; [%- END -%]
+[% MACRO gruneisin  BLOCK -%] Gr&uuml;neisen [%- END -%]

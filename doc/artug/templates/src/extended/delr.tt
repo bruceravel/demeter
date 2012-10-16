@@ -188,25 +188,25 @@ expression.
 [% END %]
 
 [% WRAPPER html/pre %]
-shell short axial oxygen:
+path short axial oxygen:
    delr = rtio_sh - reff
 
-shell planar oxygen:
+path planar oxygen:
    delr = rtio_pl - reff
 
-shell long axial oxygen:
+path long axial oxygen:
    delr = rtio_lo - reff
 
-shell short lead:
+path short lead:
    delr = rtipb_sh - reff
 
-shell long lead:
+path long lead:
    delr = rtipb_lo - reff
 
-shell short titanium:
+path short titanium:
    delr = a - reff
 
-shell long titanium:
+path long titanium:
    delr = c - reff
 [% END %]
 
@@ -226,10 +226,10 @@ and subtract [%reff%] for their [%delr%] parameters:
 [% END %]
 
 [% WRAPPER html/pre %]
-shell planar double scattering:
+path planar double scattering:
    delr = (a + 2*rtio_pl)/2  - reff
 
-shell planar triple scattering:
+path planar triple scattering:
    delr = 2*rtio_pl - reff
 [% END %]
 
