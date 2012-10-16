@@ -35,7 +35,7 @@ the structural part may reman fixed (or at least change much less).
 Another possible way to disentangle the two contributions is to
 measure EXAFS data as a function of pressure.  In that case the
 thermal contribution can be modeled as a function of pressure and a
-[%gruneisin%] parameter.
+[%gruneisen%] parameter.
 [% END %]
 
 
@@ -104,7 +104,7 @@ doi = "10.1103/PhysRevB.20.4908"
 [% PROCESS section label="Collinear multiple scattering paths" %]
 
 [% WRAPPER floatright this="collinear.png" -%]
-This valuable paper
+This valuable paper by
 [% INCLUDE citation
 author = "E.A. Hudson et al."
 journal = "Phys. Rev."
@@ -113,7 +113,7 @@ pages = "156-165"
 year = 1996
 doi = "10.1103/PhysRevB.54.156"
 %] explains the relationships between [%sigsqr%] parameters for single
-scattering paths and collinear multiple scattering paths.
+scattering paths and certain multiple scattering paths.
 
 The diagram to the right demonstrates the various kinds of collinear
 MS paths and how they relate to the corresponding SS path.
@@ -146,7 +146,90 @@ but in most cases they are an excellent approximation and a powerful
 constraint that you can apply to the paths in your fit.
 [% END %]
 
-[% PROCESS section label="Sensible approximations for multiple scattering paths" %]
+[% PROCESS section label="Sensible approximations for triangular multiple scattering paths" %]
 
 [% FILTER html_para -%]
+In [% INCLUDE html/link link='../examples/fes2.html' text='the FeS2
+example'%], we saw that a couple of non-collinear multiple scattering paths
+contributed significantly to the EXAFS.  For these triangular paths,
+unlike for collinear paths, there is no obvious relationship between
+their [%sigsqr%] parameters and the [%sigsqr%] for the SS paths.
+
+One of the triangular paths in the [%fes2%] fit was of the form 
+Abs[%arrow%]Fe[%arrow%]S[%arrow%]Abs.  The S[%arrow%]Abs leg is like
+half the first neighbor path.  The Fe[%arrow%]S is also like half the
+first neighbor path.  The mean square vairation in path length along
+those two legs of the path [% INCLUDE font/b a="is" %] the [%sigsqr%]
+for the first path.  FinallyThe Abs[%arrow%]Fe leg is like half the
+fourth shell path. 
+
+The math epression for the [%sigsqr%] of this triangle path was set as
+[% WRAPPER html/pre %]
+path Fe-S triangle:
+	sigma2 = ss1 + ss_fe/2
+[% END %]
+This approximation of [%sigsqr%] has the great virtue of not
+introducing a new parameter to the fit.  It neglects any attenutation
+to the path due to thermal variation in sattering angle.  While that
+is an important effect, there is no simple and accurate way to model
+it.
+
+This example demonstrates the decision that must be made every time a
+non-collinear multiple scattering path is considered for a fitting
+model.  In short, you have three choices:
+[% WRAPPER html/list type='ol' %]
+[% WRAPPER html/li %]
+Do nothing, leave the MS path out of the fit.
+[% END %]
+[% WRAPPER html/li %]
+Include the MS path, but allow it to have it's[%#'%] own [%sigsqr%]
+parameter. 
+[% END %]
+[% WRAPPER html/li %]
+Include the MS path, but approximate it's[%#'%] [%sigsqr%] in terms of
+parameters which are already part ofthe fitting model, presumably the
+parameters of the SS [%sigsqr%] values.
+[% END %]
+[% END %]
+
+The Abs[%arrow%]Fe[%arrow%]S[%arrow%]Abs path in [%fes2%] was really
+quite large.  Going for choice #1 and leaving it out of the fit is
+clearly a poor choice.
+
+#2 is, in principle, the best choice.  As an independently floated
+parameter, it's[%#'%] [%sigsqr%] will account for the mean square
+vriation in path length [% INCLUDE font/b a="and" %] the effect of
+variation in t he scattering angle.  Unfortunately, this parameter is
+likely not to be highly robust because it is only used for this one
+path.  There just is not much information available to determine its
+proper value.  And if the fit includes several triangle paths, each of
+which has a [%sigsqr%] parameter of similarly weak robustness, the
+problem becomes amplified.
+
+In almost all cases, option #3 is the best choice.  The approximation
+is not horribly wrong, thus it introduces only a little bit of
+systematic error into the fitting model.  Including the Fourier
+components from the path is better than neglecting the path.  Since a
+reasonable approximation can be made without introducing new variable
+parameters to the fit, the triangle path should be included.
+
+The Abs[%arrow%]Fe[%arrow%]S[%arrow%]Abs path had the virtue that all
+of its legs were represented by SS paths already included in the fit.
+Another triangle path was included:
+Abs[%arrow%]S[%arrow%]S[%arrow%]Abs.
+In this case, the first and last legs are related to the first
+coordination shell.  The middle leg, S[%arrow%]S, has no corresponding
+SS path.  In [% INCLUDE html/link link='../examples/fes2.html' text='the FeS2
+example'%], this triangle path was given a [%sigsqr%] math expression
+of 1.5 times the first shell [%sigsqr%].  
+
+This is obviously not accurate.  Like all such triangle paths, the
+decision outlined above must be worked through.  In this case, the fit
+benefits by including this triangle path, but it does not merit having
+its own floating parameter.  I assert that value of [%sigsqr%] that is 
+[% INCLUDE font/quote a="a bit more than the first shell" %] is reasonable.
+[% END %]
+
+[% WRAPPER html/todo %]
+This will be discussed in more detail in Scott Calvin's[%#'%] upcoming book.
 [% END %]

@@ -63,9 +63,17 @@ sub read_cif {
 
   ## space group: try the HM symbol then the number and canonicalize it
   @item = $datablock->get_item_data(-item=>"_symmetry_space_group_name_H-M");
-  $self->cell->group->group($item[0]);
+  $self->cell->group->group($item[0]) if (defined $item[0]);
   if (not $self->cell->group->group) {
     @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number");
+    $self->cell->group->group($item[0]) if (defined $item[0]);
+  };
+  if (not $self->cell->group->group) {
+    @item = $datablock->get_item_data(-item=>"_space_group_IT_number");
+    $self->cell->group->group($item[0]) if (defined $item[0]);
+  };
+  if (not $self->cell->group->group) {
+    @item = $datablock->get_item_data(-item=>"_space_group_name_H-M_alt");
     $self->cell->group->group($item[0]) if (defined $item[0]);
   };
   $self->space($self->cell->group->group);
