@@ -13,10 +13,18 @@
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
      unused, resulting in crashy behavior when running Atoms
+   - LOTS of work on Users' Guide
 
 *** Atoms
+   - fixed a crashy problem in getting space group symbol from some
+     CIF files
+
+*** Hephaestus
+   - Display wavelengths in several places where energies are displayed
+   - Rewrote document and reimplemented Document tool
 
 *** Demeter
+   - Much nicer looking plot indicators in gnuplot backend
 
 *** Windows
 
