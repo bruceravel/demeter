@@ -23,11 +23,12 @@ use Xray::Absorption;
 Xray::Absorption->load('elam');
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Hephaestus::Common qw(e2l);
-use Demeter::UI::Wx::SpecialCharacters qw($GAMMA);
+use Demeter::UI::Wx::SpecialCharacters qw($GAMMA $ARING);
+use Demeter::Constants qw($PI $HBAR);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_LIST_ITEM_FOCUSED EVT_BUTTON  EVT_KEY_DOWN);
 
 my $hash;
 do {
@@ -112,6 +113,7 @@ sub new {
     $self->{edge}->SetItemData($idx, $i++);
     $self->{edge}->SetItem( $idx, 1, q{} );
   };
+  EVT_LIST_ITEM_SELECTED($self->{edge}, $self->{edge}, sub{select_edge(@_, $self)});
   EVT_LIST_ITEM_ACTIVATED($self->{edge}, $self->{edge}, sub{highlight_lines(@_, $self)});
   $self->{edgeboxsizer} -> Add($self->{edge}, 1, wxGROW|wxALL, 0);
   $hbox -> Add($self->{edgeboxsizer}, 13, wxGROW|wxALL, 5);
@@ -130,6 +132,7 @@ sub new {
     $self->{line}->SetItemData($idx, $i++);
     $self->{line}->SetItem($idx, 1, Xray::Absorption->get_IUPAC($row));
   };
+  EVT_LIST_ITEM_SELECTED($self->{line}, $self->{line}, sub{select_line(@_, $self)});
   EVT_LIST_ITEM_ACTIVATED($self->{line}, $self->{line}, sub{highlight_edge(@_, $self)});
   $self->{lineboxsizer} -> Add($self->{line}, 2, wxGROW|wxALL, 0);
   $hbox -> Add($self->{lineboxsizer}, 18, wxGROW|wxALL, 5);
@@ -239,12 +242,14 @@ sub highlight_lines {
   my $edge = $EDGELIST[$index];
   $parent->deselect_all('line');
   my $ll = -1;
+  EVT_LIST_ITEM_SELECTED($parent->{line}, $parent->{line}, sub{1;});
   foreach my $line (@LINELIST) {
     my $transition = Xray::Absorption->get_IUPAC($line);
     ++$ll;
     next if ($transition !~ m{\A$edge});
     $parent->{line}->SetItemState($ll, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   };
+  EVT_LIST_ITEM_SELECTED($parent->{line}, $parent->{line}, sub{select_line(@_, $parent)});
   $parent->{echo}->SetStatusText("Selected all lines associated with the $edge edge.");
 };
 sub highlight_edge {
@@ -271,6 +276,32 @@ sub highlight_edge {
 sub unselect_data {
   my ($self, $event, $parent) = @_;
   $parent->deselect_all('data');
+};
+sub select_edge {
+  my ($self, $event, $parent) = @_;
+  $parent->deselect_all('line');
+  my $index = $event->GetIndex;
+  my $edge = $EDGELIST[$index];
+  my $el = $parent->{element};
+  my $en = Xray::Absorption->get_energy($el, $edge);
+  $parent->{echo}->SetStatusText(q{}), return if not $en;
+  my $wl = e2l($en);
+  my $ga = Xray::Absorption->get_gamma($el, $edge);
+  my $ti = 1.5192E15*$HBAR / $ga; # see Keski-Rahkonen and Klause, http://dx.doi.org/10.1016/S0092-640X(74)80020-3
+  my $message = sprintf("%s %s edge: %.1f eV = %.5f Angstrom ..... core-hole lifetime: %.2f eV ~ %.2f fs",
+			$el, $edge, $en, $wl, $ga, $ti);
+  $parent->{echo}->SetStatusText($message);
+};
+sub select_line {
+  my ($self, $event, $parent) = @_;
+  my $index = $event->GetIndex;
+  my $line = $LINELIST[$index];
+  my $el = $parent->{element};
+  my $en = Xray::Absorption->get_energy($el, $line);
+  $parent->{echo}->SetStatusText(q{}), return if not $en;
+  my $wl = e2l($en);
+  my $message = sprintf("%s %s line: %.1f eV = %.5f Angstrom", $el, $line, $en, $wl);
+  $parent->{echo}->SetStatusText($message);
 };
 
 sub on_key_down {

@@ -3,12 +3,12 @@ package Demeter::Constants;
 use strict;
 #use Encode;
 use base qw( Exporter );
-our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $R2D
+our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $HBAR $R2D
 		    $NUMBER $INTEGER $SEPARATOR $ELEMENT
 		    $NULLFILE $ENDOFLINE $CTOKEN $STATS
 		    $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 		  );
-our %EXPORT_TAGS = (all     => [qw($PI $ETOK $HBARC $HC $R2D
+our %EXPORT_TAGS = (all     => [qw($PI $ETOK $HBARC $HC $HBAR $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 				   $NUMBER $INTEGER $SEPARATOR $ELEMENT
 				   $NULLFILE $ENDOFLINE $CTOKEN $STATS
@@ -28,6 +28,7 @@ const our $PI        => 4*atan2(1,1);
 const our $ETOK      => 0.262468292;
 const our $HBARC     => 1973.27053324;
 const our $HC        => 12398.61;
+const our $HBAR      => 4.135667516E-15;
 const our $R2D       => 57.29577951;
 
 const our $NUMBER    => $RE{num}{real};
@@ -109,6 +110,10 @@ This is hbar*c in eV*Angstrom units.
 This is h*c in eV*Angstrom units.
 
   $HC = $HBARC * 2 * $PI;
+
+=item C<$HBARC>
+
+This is hbar in eV*seconds units.
 
 =item C<$R2D>
 

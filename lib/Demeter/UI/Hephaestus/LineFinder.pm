@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
+use Demeter::UI::Hephaestus::Common qw(e2l);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN);
@@ -58,10 +59,13 @@ sub new {
   $self->{linesboxsizer} = Wx::StaticBoxSizer->new( $self->{linesbox}, wxVERTICAL );
   $self->{lines} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{lines}->InsertColumn( 0, "Element" );
+  $self->{lines}->SetColumnWidth( 4, 60 );
   $self->{lines}->InsertColumn( 1, "Line" );
   $self->{lines}->InsertColumn( 2, "Transition" );
-  $self->{lines}->InsertColumn( 3, "Energy" );
-  $self->{lines}->InsertColumn( 4, "Strength" );
+  $self->{lines}->InsertColumn( 3, "Energy (eV)" );
+  $self->{lines}->InsertColumn( 4, "Wavelength (A)" );
+  $self->{lines}->SetColumnWidth( 4, 100 );
+  $self->{lines}->InsertColumn( 5, "Strength" );
   my ($i, $start) = (0, 0);
   foreach my $row (@line_list) {
     my $idx = $self->{lines}->InsertImageStringItem($i, ucfirst($row->[0]), 0);
@@ -69,7 +73,8 @@ sub new {
     $self->{lines}->SetItem( $idx, 1, Xray::Absorption->get_Siegbahn_full($row->[1]));
     $self->{lines}->SetItem( $idx, 2, Xray::Absorption->get_IUPAC($row->[1]));
     $self->{lines}->SetItem( $idx, 3, $row->[2]);
-    $self->{lines}->SetItem( $idx, 4, sprintf("%.4f", Xray::Absorption->get_intensity($row->[0], $row->[1])));
+    $self->{lines}->SetItem( $idx, 4, sprintf("%.5f", e2l($row->[2])));
+    $self->{lines}->SetItem( $idx, 5, sprintf("%.4f", Xray::Absorption->get_intensity($row->[0], $row->[1])));
     ($start = $i) if ($row->[2] < $self->{targetenergy});
   };
   $self->{lines}->SetItemState($start, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );

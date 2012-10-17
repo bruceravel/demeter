@@ -20,6 +20,8 @@ use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
+use Demeter::UI::Wx::SpecialCharacters qw($GAMMA $ARING);
+use Demeter::UI::Hephaestus::Common qw(e2l);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN EVT_RADIOBOX);
@@ -56,13 +58,18 @@ sub new {
   $self->{edges} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{edges}->InsertColumn( 0, "Element" );
   $self->{edges}->InsertColumn( 1, "Edge" );
-  $self->{edges}->InsertColumn( 2, "Energy" );
+  $self->{edges}->InsertColumn( 2, "Energy (eV)" );
+  $self->{edges}->InsertColumn( 3, "Wavelength (A)" );
+  $self->{edges}->SetColumnWidth( 3, 120 );
+  $self->{edges}->InsertColumn( 4, "$GAMMA(ch) (eV)" );
   my ($i, $start) = (0, 0);
   foreach my $row (@edge_list) {
     my $idx = $self->{edges}->InsertImageStringItem($i, ucfirst($row->[0]), 0);
     $self->{edges}->SetItemData($idx, $i++);
     $self->{edges}->SetItem( $idx, 1, ucfirst($row->[1]));
     $self->{edges}->SetItem( $idx, 2, $row->[2]);
+    $self->{edges}->SetItem( $idx, 3, sprintf("%.5f", e2l($row->[2])));
+    $self->{edges}->SetItem( $idx, 4, sprintf("%.2f", Xray::Absorption->get_gamma($row->[0], $row->[1])));
     ($start = $i) if ($row->[2] <= $self->{targetenergy});
   };
   $self->{edges}->SetItemState($start, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
