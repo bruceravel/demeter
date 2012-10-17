@@ -21,8 +21,12 @@ for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
 [% END %]
 [% WRAPPER html/dt dt="Geometric parametrization of bond length" %]
+A discussion of [%INCLUDE html/link link="./delr.html"
+text="parametrizations of bond length" %].
 [% END %]
 [% WRAPPER html/dt dt="Modeling the disorder parameter" %]
+A discussion of [%INCLUDE html/link link="./ss.html"
+text="parametrizations of the disorder parameter" %], [%sigsqr%].
 [% END %]
 [% END %]
 
