@@ -9,6 +9,13 @@ This documentation refers to Demeter version 0.9.13.
 
 =head1 OVERVIEW
 
+    In his workshop he has handmaidens he has forged out of gold
+    who can move and who help him in his work. ...  With Athena,
+    [Hephaestus is] important in the life of the city.  The two
+    [are] the patrons of handicrafts, the arts which along with
+    agriculture are the support of civilization.
+                                 Mythology, Edith Hamilton
+
 Hephaestus is a program for making calculations useful to the XAS
 experiemntalist using a periodic table, tables of X-ray absorption
 coefficients, and other elemental data.
@@ -80,34 +87,34 @@ The rules for the selection of the filter elements are:
 For element below Z=38, assume the K edge is being measured and use
 the Z-1 element. 
 
-=item 1
+=item 2
 
 For element between Z=39 and 57, assume the K edge is being measured
 and use the Z-2 element.
 
-=item 1
+=item 3
 
 Use Br for a Rb absorber because Kr is a silly filter material.
 
-=item 1
+=item 4
 
 Use Rh for a Ru absorber because nobody wants a Tc filter!
 
-=item 1
+=item 5
 
 Use I for a Ba absorber because Xe is also a silly filter material.
 
-=item 1
+=item 6
 
 For elements above Z=57, assume the L3 edge is being measured.  Use the
 first element whose K edge is more than 90 eV above the Lalpha1 line
 of the absorber.
 
-=item 1
+=item 7
 
 Use Rb for a U or Np absorber because Kr is still a silly filter material.
 
-=item 1
+=item 8
 
 For elements below Z=24 (chromium), no filter choice is given.
 Filters for lower-Z elements are not used because no element exists
@@ -134,7 +141,7 @@ formula must be stoichiometruic formula using a few simple rules.
 
 Element symbols must be first letter capitalized.
 
-=item 3
+=item 2
 
 Whitespace is unimportant -- it will be removed from the string.  So
 will dollar signs, underscores, and curly braces (in an attempt to
@@ -235,8 +242,16 @@ It, this leaves enough photons passing through to the reference
 chamber to allow for a reasonable measurement on Ir.
 
 If you know the amplifier gain and voltage signal coming from your
-amplifier, specifying these will compute a crude calculation of photon
-flux incident upon the chamber.
+current-to-voltage amplifier (such as a Keithley 527 or 528),
+specifying these will compute a crude calculation of photon flux
+incident upon the chamber.
+
+           e * energy * flux * gain
+      V = --------------------------
+              IonizationEnergy
+
+The ionization energy is about 32 volts for most gasses and the
+electron charge C<e> is about 1.6E-19 Coulombs. 
 
 =head2 Data
 
@@ -248,7 +263,8 @@ table will fill in the table with the data for that element.
 
 This tool displays a non-interactive chart explaining the tranisitions
 for each of the emission lines.  The initial and final states for each
-named K and L transition is shown.
+named K and L transition is shown.  The chart follows Figure 1.1 in
+the Center for X-Ray Optics X-Ray Data Booklet.
 
 =head2 Edge Finder
 
@@ -335,7 +351,125 @@ displayed parameter will be written in the large text box.
 Parameters can be applied for the current session or applied and saved
 to your configuration file. 
 
+=head1 CREDITS
+
+=over 4
+
+=item *
+
+The layout of Hephaestus -- with its button bar on the left side which
+changes the mode of the main part of the program -- was inspired by
+the personal information management program I use on my KDE systems,
+Kontact. I found it effective so I swiped it for this program.
+
+=item *
+
+The pictures used on the buttons were cropped from images I found
+using Google The picture of the ion chamber is from the Advanced
+Designed Consulting web site.  Their ion chambers are quite nice.  The
+edge finder icon was swiped from the F<find.png> icon in the kid's
+icon theme for KDE.  The line finder icon is from a web page by the
+Alberta Synchrotron Institute and depicts a fluorescence map of some
+rock.  The documentation icon was found under a Creative Commons
+license at C<http://battellemedia.com/archives/001952.php>
+
+=item *
+
+The formulas utility owes much to Gerry Roe, who pointed out a bug,
+and Erik Gullikson, whose similar utility on the web set me straight.
+
+=item *
+
+The information used in the chemical data utility is from the
+kalziumrc file, which was swiped from the Kalzium package.  See
+C<http://edu.kde.org/kalzium/> for more details.  The data for
+Mossbauer active isotopes was taken from C<http://www.mossbauer.org>
+
+=item *
+
+The ion chamber and edge finder utilities were inspired by the similar
+utilities in the data acquisition program by Lars Fuerenlid and Johnny
+Kirkland and in wide use at NSLS.  Lars and Johnny seem to have a
+deeper love of pastel than do I.
+
+=item *
+
+The electronic transitions chart was created from scratch but
+slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
+Data Booklet.
+
+=item *
+
+Hephaestus makes use of the and several things from
+C<http://www.cpan.org>
+
+=item *
+
+And, of course, the users of my various software efforts deserve all
+the credit for kind praise and useful feedback over these many years.
+
+=back
+
+The absorption data resources all have literature references.
+
+=over 4
+
+=item The Elam tables
+
+W.T. Elam, B.Ravel, and J.R. Sieber, I<Radiat. Phys. Chem.> B<63>
+(2002) pp. 121-128 This is the source of data for the edge and line
+finders and for the filter plot.
+
+=item The McMaster tables
+
+W.H. McMaster et al., I<Compilation of X-ray Cross Sections. Lawrence
+Radiation Laboratory Report> UCRL-50174, pub: "National Bureau of
+Standards" (1969)
+
+These data were originally compiled in machine readable form by
+Pathikrit Bandyopadhyay.
+
+=item The Henke tables
+
+B. L. Henke, E. M. Gullikson, and J. C. Davis, I<Atomic Data and
+Nuclear Data Tables">. B<54> (1993).  The data is available at
+C<http://www-cxro.lbl.gov/optical_constants/>.
+
+=item The Chantler tables
+
+C. T. Chantler, I<J. Phys. Chem. Ref. Data> B<24>, (1995) p. 71.  The
+data files can be found at
+C<http://physics.nist.gov/PhysRefData/FFast/html/form.html>
+
+=item The Cromer-Liberman tables
+
+S. Brennan and P.L. Cowen, I<Rev. Sci. Instrum.> B<63> (1992) p. 850
+
+=item The Shaltout tables
+
+A. Shaltout, H. Ebel and R. Svagera, I<X-Ray Spectrom.>
+B<35> (2006), pp. 52-56
+
+=back
+
 =head1 BUGS AND LIMITATIONS
+
+Every calculation at high energy is inaccurate in Hephaestus.
+Xray::Absorption does not correctly handle the mass-energy absorption
+coefficients at high energy, although the ion chamber utility does
+attempt a (very) crude correction.
+
+More types of information can be added to the chemical data utility.
+If there is something you would like to see, you should send the data
+in an easily readable format (i.e. plain text is lovely).  Merely
+suggesting new data types is unlikely to have any effect.  Supplying
+the data is highly likely to have an effect.
+
+My wish list includes a utility for calculating mirror critical angles
+and other tools for reflectivity, including auger/fluorescence
+branching ratios in one of the periodic table utilities, and providing
+the Berger/Hubble XCOM tables and Feff's optical calculations as data
+resources.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
