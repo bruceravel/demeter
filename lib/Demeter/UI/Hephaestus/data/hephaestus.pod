@@ -1,7 +1,7 @@
 
 =head1 NAME
 
-Hephasetus -- A souped-up periodic table for the X-ray absorption spectroscopist
+Hephaestus -- A souped-up periodic table for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
@@ -17,7 +17,7 @@ This documentation refers to Demeter version 0.9.13.
                                  Mythology, Edith Hamilton
 
 Hephaestus is a program for making calculations useful to the XAS
-experiemntalist using a periodic table, tables of X-ray absorption
+experimentalist using a periodic table, tables of X-ray absorption
 coefficients, and other elemental data.
 
 On the left of the Hephaestus window is a stack of icons which are
@@ -28,7 +28,7 @@ At the bottom of the Hephaestus window is a status bar which
 Hephaestus uses to convey information during the course of operation.
 Along with information about the most recently completed calculation,
 the status bar shows topical information.  As the mouse passes over an
-element in the periodic table, the elemnt name, symbol, and Z number
+element in the periodic table, the element name, symbol, and Z number
 are displayed.  In the Absorption tool, clicking on an edge or line
 energy will display that energy in wavelength units in the status
 bar.  In the Standards tool, some information about the plotted data
@@ -37,7 +37,7 @@ is displayed in the status bar.
 The "Tools" menu in the menu bar provides another way of navigating
 between the tools.  The mouse can be used, as can the keyboard.
 "Alt-t" posts the "Tools" menu and  the arrow keys can be used to
-mavigate among the entries.  "Alt-e" and "Alt-h" post the "Hephaestus"
+navigate among the entries.  "Alt-e" and "Alt-h" post the "Hephaestus"
 and "Help" menus.
 
 =head1 TOOLS
@@ -51,7 +51,7 @@ A periodic table is displayed atop three lists that will be filled in
 with data associated with an element.  Clicking on an element in the
 periodic table displays data about that element.
 
-The "data" table will be filld with some basic information
+The "data" table will be filled with some basic information
 about the element, including its name and Z number, its atomic weight,
 and bulk density under standard temperature and pressure.
 Beneath this table are two controls for determining the appropriate
@@ -65,17 +65,17 @@ lines, and the filter edge energy.
 The "edges" table shows the value in eV of each edge associated with
 the element selected from the periodic table and the core-hole
 lifetime in eV of each edge.  Clicking on a line in this table will
-display a message in the statusbar giving the edge energy expressed in
+display a message in the status bar giving the edge energy expressed in
 wavelength units and the core-hole lifetime expressed in approximate
 time units.  Double clicking on a line will highlight all fluorescence
-llines associated with that edge in the "lines" table.
+lines associated with that edge in the "lines" table.
 
 The "lines" table shows the transitions and emission energies in eV of
 every line associated with the element selected from the periodic
 table.  Also shown is the approximate strength, or branching ratio, of
 each line.  The strengths for all lines associated with a particular
 edge will sum to 1.  Clicking on a line in this table will display a
-message in the statusbar giving the emission energy expressed in
+message in the status bar giving the emission energy expressed in
 wavelength units.
 
 The rules for the selection of the filter elements are:
@@ -84,12 +84,12 @@ The rules for the selection of the filter elements are:
 
 =item 1
 
-For element below Z=38, assume the K edge is being measured and use
+For elements below Z=38, assume the K edge is being measured and use
 the Z-1 element. 
 
 =item 2
 
-For element between Z=39 and 57, assume the K edge is being measured
+For elements between Z=39 and Z=57, assume the K edge is being measured
 and use the Z-2 element.
 
 =item 3
@@ -133,7 +133,7 @@ density into the "Density" box.
 
 At the top of the right hand part of this tool are controls for
 entering the parameters of the absorption length calculation.  The
-formula must be stoichiometruic formula using a few simple rules.
+formula must be a stoichiometric formula using a few simple rules.
 
 =over 4
 
@@ -143,7 +143,7 @@ Element symbols must be first letter capitalized.
 
 =item 2
 
-Whitespace is unimportant -- it will be removed from the string.  So
+White space is unimportant -- it will be removed from the string.  So
 will dollar signs, underscores, and curly braces (in an attempt to
 handle TeX).  Also a sequence like this: '/sub 3/' will be converted
 to '3' (in an attempt to handle INSPEC).
@@ -151,9 +151,9 @@ to '3' (in an attempt to handle INSPEC).
 =item 3
 
 Numbers can be integers or floating point numbers.  Things like 5,
-0.5, 12.87, and .5 are all acceptible, as is exponential notation like
+0.5, 12.87, and .5 are all acceptable, as is exponential notation like
 1e-2.  Note that exponential notation must use a leading number to
-avoid confusion with element symbols.  That is, 1e-2 is ok, but e-2 is
+avoid confusion with element symbols.  That is, 1e-2 is OK, but e-2 is
 not.
 
 =item 4
@@ -162,8 +162,8 @@ Uncapitalized symbols or unrecognized symbols will flag an error.
 
 =item 5
 
-An error will be flagged if the number of open parens is different
-from the number of close parens.
+An error will be flagged if the number of open parentheses is different
+from the number of close parentheses.
 
 =item 6
 
@@ -178,8 +178,8 @@ selecting that from the choice menu.
 Finally, the calculation requires an energy in eV at which to make t
 the calculation.
 
-Here is an example of the results printed for BN, with a denisty of
-2.29 nad at energy of 9000 eV:
+Here is an example of the results printed for BN, with a density of
+2.29 and at energy of 9000 eV:
 
 
       element   number   barns/atom     cm^2/gm
@@ -192,7 +192,7 @@ Here is an example of the results printed for BN, with a denisty of
     Absorption length = 0.117 cm at 9000 eV.
     
     A sample of 1 absorption length with area of 1 square
-    cm requires 268.486 miligrams of sample at 9000.00 eV.
+    cm requires 268.486 milligrams of sample at 9000.00 eV.
     
     The Elam database and the full cross-sections were
     used in the calculation.
@@ -205,7 +205,7 @@ absorption length of 1, one must weigh out about 270 milligrams of BN.
 =head2 Ion Chambers
 
 This tool is used to determine appropriate contents of ion chambers at
-a given energy.  The calculation requires seevral parameters,
+a given energy.  The calculation requires several parameters,
 including
 
 =over 4
@@ -213,7 +213,7 @@ including
 =item 1
 
 The length in centimeters of the ion chamber.  This can be selected
-from a list of common lengtghs or supplied by the user.
+from a list of common lengths or supplied by the user.
 
 =item 2
 
@@ -223,18 +223,18 @@ Ne, Kr, and Xe.
 
 =item 3
 
-The pressure of the gas inside the ion chamber, in torr.  Atmospheric
-pressure is 760 torr.
+The pressure of the gas inside the ion chamber, in Torr.  Atmospheric
+pressure is 760 Torr.
 
 =back
 
 The percentage absorbed by the ion chamber will usually auto-update as
 you change the parameters.  Clicking the "Compute" button forces an
-update.  Clicking the "Reset" button retuns all the parameters to
+update.  Clicking the "Reset" button returns all the parameters to
 their initial values.
 
 As a rule of thumb, 10% is a good amount of absorption for the I0
-chamber.  This will allow for a good meaurement of incidence flux
+chamber.  This will allow for a good measurement of incidence flux
 while leaving most photons for the rest of the measurement.  66% is a
 good amount for the It, Ir, and If chambers.  This distributes the
 absorption over the entire length of the ion chamber.  In the case of
@@ -261,7 +261,7 @@ table will fill in the table with the data for that element.
 
 =head2 Transitions
 
-This tool displays a non-interactive chart explaining the tranisitions
+This tool displays a non-interactive chart explaining the transitions
 for each of the emission lines.  The initial and final states for each
 named K and L transition is shown.  The chart follows Figure 1.1 in
 the Center for X-Ray Optics X-Ray Data Booklet.
@@ -273,14 +273,14 @@ edge energies on the periodic table.  The table also shows the edge
 energies in wavelength units and the core-hole lifetimes.
 
 The purpose of this tool is to aid in identifying edges observed during
-measurments.  To search the list, enter an energy in the text box on
+measurements.  To search the list, enter an energy in the text box on
 the right and click search (or hit return).  The list will be
 recentered around that energy.  Hopefully this will help you identify
 the mysterious feature in your measured data!
 
 You can also search for edges at the second or third harmonic of the
 energy.  This can be useful in the case of poor harmonic rejection in
-the incident beam and the exicitation of a much higher energy edge.
+the incident beam and the excitation of a much higher energy edge.
 
 =head2 Line Finder
 
@@ -291,7 +291,7 @@ branching ratio) of each line relative to the other lines arising from
 the same absorption edge.
 
 The purpose of this tool is to aid in identifying emission lines
-observed during measurments.  To search the list, enter an energy in
+observed during measurements.  To search the list, enter an energy in
 the text box on the right and click search (or hit return).  The list
 will be recentered around that energy.  Hopefully this will help you
 identify the mysterious line in your fluorescence data!
@@ -328,22 +328,22 @@ energies for the plot are entered, as well as the energy grid
 spacing.  When an element is selected from the periodic table, it's f'
 and f" values are plotted.
 
-Anomalous scattering for elements can be plotted alone or overplotted
-withother elements.  You can also select to plot either f', f", or
+Anomalous scattering for elements can be plotted alone or over-plotted
+with other elements.  You can also select to plot either f', f", or
 both.
 
 The f' and f" data can be save to a file.
 
 =head2 Preferences
 
-The behavior of Hephaestus can be confugured via the preferences
+The behavior of Hephaestus can be configured via the preferences
 tool.  This uses the same preferences tool as Athena and Artemis,
 although only those preference groups relevant to Hephaestus and to
 plotting are presented.
 
 Click on a group in the "Parameters" list to open a group.  Click on a
 parameter to display it in the controls on the right. You will be
-given controls appoproiate to each parameter's data type for setting
+given controls appropriate to each parameter's data type for setting
 the parameter value.  The "Your value" and "Demeter's value" buttons
 can be used to restore a parameter's value.  A description of the
 displayed parameter will be written in the large text box.
@@ -424,10 +424,8 @@ finders and for the filter plot.
 
 W.H. McMaster et al., I<Compilation of X-ray Cross Sections. Lawrence
 Radiation Laboratory Report> UCRL-50174, pub: "National Bureau of
-Standards" (1969)
-
-These data were originally compiled in machine readable form by
-Pathikrit Bandyopadhyay.
+Standards" (1969).  These data were originally compiled in machine
+readable form by Pathikrit Bandyopadhyay.
 
 =item The Henke tables
 
@@ -465,11 +463,9 @@ in an easily readable format (i.e. plain text is lovely).  Merely
 suggesting new data types is unlikely to have any effect.  Supplying
 the data is highly likely to have an effect.
 
-My wish list includes a utility for calculating mirror critical angles
-and other tools for reflectivity, including auger/fluorescence
-branching ratios in one of the periodic table utilities, and providing
-the Berger/Hubble XCOM tables and Feff's optical calculations as data
-resources.
+My wish list includes auger/fluorescence branching ratios in one of
+the periodic table utilities and providing the Berger/Hubble XCOM
+tables and Feff's optical calculations as data resources.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
@@ -481,7 +477,7 @@ Bruce Ravel (bravel AT bnl DOT gov)
 
 C<https://github.com/bruceravel/demeter>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 

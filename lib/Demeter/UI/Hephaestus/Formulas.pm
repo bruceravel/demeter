@@ -230,7 +230,7 @@ sub get_formula_data {
 		    1/$xsec, $parent->{energy}->GetValue, $units);
 	  $answer .= ($type eq 'Molarity') ? " for a ".$parent->{density}->GetValue." molar sample.\n" : ".\n";
 	  $answer .=
-	    sprintf("\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
+	    sprintf("\nA sample of 1 absorption length with area of 1 square cm requires %.3f milligrams of sample at %.2f %s.\n",
 	  	    1000*$density/$xsec, $parent->{energy}->GetValue, $units) if ($type eq 'Density');
 	} else {
 	  $answer .=
@@ -238,7 +238,7 @@ sub get_formula_data {
 		    10000/$xsec, $parent->{energy}->GetValue, $units);
 	  $answer .= ($type eq 'Molarity') ? " for a ".$parent->{density}->GetValue." molar sample.\n" : ".\n";
 	  $answer .=
-	    sprintf("\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
+	    sprintf("\nA sample of 1 absorption length with area of 1 square cm requires %.3f milligrams of sample at %.2f %s.\n",
 		    1000*$density/$xsec, $parent->{energy}->GetValue, $units) if ($type eq 'Density');
 	}
       } else {
@@ -253,7 +253,7 @@ sub get_formula_data {
 	  $density = 0;
 	};
 	$answer .=
-	  sprintf("\n\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
+	  sprintf("\n\nA sample of 1 absorption length with area of 1 square cm requires %.3f milligrams of sample at %.2f %s.\n",
 		  1000/$xx, $parent->{energy}->GetValue, $units);
       };
     };
