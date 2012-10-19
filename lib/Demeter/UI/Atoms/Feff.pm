@@ -237,6 +237,8 @@ Should we continue?',
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{parent}->status("Computing potentials using Feff ...");
+  my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
+  $self->{parent}->{notebook}->ChangeSelection($n);
 
   ## rerunning, so clean upprevious results
   my $phbin = File::Spec->catfile($feff->workspace, 'phase.bin');

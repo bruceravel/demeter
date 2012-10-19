@@ -69,7 +69,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
-		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -194,18 +194,50 @@ sub new {
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
   $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
-  $self->{template}->SetSelection(2);
-  EVT_CHOICE($self, $self->{template}, \&OnWidgetLeave);
+  my $n = 0;
+  my ($fv, $is) = (Demeter->co->default('atoms', 'feff_version'), Demeter->co->default('atoms', 'ipot_style'));
+  if      (($fv == 6) and ($is == 'elements')) {
+    $n = 0;
+  } elsif (($fv == 6) and ($is == 'tags')) {
+    $n = 1;
+  } elsif (($fv == 6) and ($is == 'sites')) {
+    $n = 2;
+  } elsif (($fv == 8) and ($is == 'elements')) {
+    $n = 3;
+  } elsif (($fv == 8) and ($is == 'tags')) {
+    $n = 4;
+  } elsif (($fv == 8) and ($is == 'sites')) {
+    $n = 5;
+  };
+  $self->{template}->SetSelection($n);
+  EVT_CHOICE($self, $self->{template}, \&OnTemplate);
 
   my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $atoms->co->default("atoms", "ipot_style");
   $self->{template}->SetSelection(firstidx {$_ eq $initial } @{ $self->templates });
 
-  $self->{addbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
-  EVT_MENU( $self->{addbar}, -1, sub{my ($toolbar, $event) = @_; AddSite($toolbar, $event, $self)} );
-  $self->{addbar} -> AddTool(-1, "Add a site", $self->icon("add"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add}  );
-  EVT_TOOL_ENTER( $self, $self->{addbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'addbar')} );
-  $self->{addbar} -> Realize;
-  $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 0);
+
+  $hh = Wx::BoxSizer->new( wxHORIZONTAL ); 
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
+  $self->{scf} = Wx::CheckBox->new($self, -1, "Self-consistency");
+  $hh->Add($self->{scf}, 0, wxRIGHT, 5);
+  $self->{scflab} = Wx::StaticText->new($self, -1, "Rscf");
+  $hh->Add($self->{scflab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
+  $self->{rscf} = Wx::TextCtrl->new($self, -1, $atoms->rscf, wxDefaultPosition, [$width*6,-1], wxTE_PROCESS_ENTER);
+  $hh->Add($self->{rscf}, 0, wxLEFT|wxRIGHT, 5);
+  $self->{$_}->Enable(0) foreach qw(scf scflab rscf);
+  EVT_CHECKBOX($self, $self->{scf}, \&OnCheckBox);
+
+  $spacebox->Add(1,1,1);
+
+  $self->{addbutton} = Wx::Button->new($self, -1, "Add a site");
+  $spacebox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxALIGN_BOTTOM, 0);
+
+  # $self->{addbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
+  # EVT_MENU( $self->{addbar}, -1, sub{my ($toolbar, $event) = @_; AddSite($toolbar, $event, $self)} );
+  # $self->{addbar} -> AddTool(-1, "Add a site", $self->icon("add"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add}  );
+  # EVT_TOOL_ENTER( $self, $self->{addbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'addbar')} );
+  # $self->{addbar} -> Realize;
+  # $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 0);
 
   ## -------- end off space group and edge controls
 
@@ -330,9 +362,9 @@ sub icon {
 
 sub templates {
   my ($self) = @_;
-  return ['Feff6 - tags', 'Feff6 - sites', 'Feff6 - elements',
+  return ['Feff6 - elements', 'Feff6 - tags', 'Feff6 - sites',
+	  'Feff8 - elements', 'Feff8 - tags', 'Feff8 - sites',
 	 ];
-  #'Feff8 - tags', 'Feff8 - sites', 'Feff8 - elements',
 };
 
 sub set_hint {
@@ -358,6 +390,34 @@ sub OnWidgetEnter {
 sub OnWidgetLeave {
   my ($self) = @_;
   $self->{statusbar}->SetStatusText(q{});
+};
+
+sub OnTemplate {
+  my ($self, $event) = @_;
+  my $choice = $self->{template}->GetStringSelection;
+  if ($choice =~ m{Feff8}) {
+    $self->{scf}->Enable(1);
+    if ($self->{scf}->GetValue) {
+      $self->{scflab}->Enable(1);
+      $self->{rscf}->Enable(1);
+    };
+  } else {
+    $self->{scf}->Enable(0);
+    $self->{scflab}->Enable(0);
+    $self->{rscf}->Enable(0);
+  };
+  $self->{statusbar}->SetStatusText(q{});
+};
+
+sub OnCheckBox {
+  my ($self, $event) = @_;
+  if ($self->{scf}->GetValue) {
+    $self->{scflab}->Enable(1);
+    $self->{rscf}->Enable(1);
+  } else {
+    $self->{scflab}->Enable(0);
+    $self->{rscf}->Enable(0);
+  };
 };
 
 sub OnToolClick {
@@ -585,12 +645,12 @@ sub get_crystal_data {
 	     ($self->{$param}->GetValue > 0));
     $self->{$param}->SetValue($self->{a}->GetValue);
   };
-  foreach my $param (qw(rmax rpath)) {
+  foreach my $param (qw(rmax rpath rscf)) {
     next if is_PosNum($self->{$param}->GetValue);
     $self->{$param}->SetValue($atoms->co->default("atoms", $param));
   };
 
-  foreach my $param (qw(a b c alpha beta gamma rmax rpath)) {
+  foreach my $param (qw(a b c alpha beta gamma rmax rpath rscf)) {
     my $val = ($param =~ m{alpha|beta|gamma}) ? 90 : 0;
     $this = $self->{$param}->GetValue || $val;;
     if (is_PosNum($this)) {
@@ -599,6 +659,7 @@ sub get_crystal_data {
       $problems .= "\"$this\" is not a valid value for \"$param\" (should be a positive number).\n\n";
     };
   };
+  $atoms->do_scf($self->{scf}->GetValue);
   foreach my $param (qw(alpha beta gamma)) {
     $self->{$param}->SetValue($self->verify_angle($param));
     $atoms->$param($self->{$param}->GetValue);

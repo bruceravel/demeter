@@ -4,6 +4,9 @@
   #   {$A->out("parameter")} returns a formatted Atoms real-valued attribute
   #   {$C->parameter} returns a Cell attribute
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
+  $doscf = ($A->do_scf) ? '' : '* ';
+  $doexafs = ($A->do_scf) ? '* ' : '';
+  q{}
 }
 << >>
 {foreach $t (@{ $A->titles }) { $OUT .= " TITLE $t\n";}}<<->>
@@ -24,27 +27,27 @@
                *** A sphere including 2 shells is a good choice
                *** l_scf = 0 for a solid, 1 for a molecule
  *         r_scf  [ l_scf   n_scf   ca ]
- SCF       4.0
+ {$doscf}SCF       {$A->rscf}
 
                *** Upper limit of XANES calculation.
                *** This *must* be uncommented to make Feff calculate full
                *** multiple scattering rather than a path expansion
  *         kmax   [ delta_k  delta_e ]
- XANES     4.0
+ {$doscf}XANES     4.0
 
                *** Radius of cluster for Full Multiple Scattering calculation
                *** l_fms = 0 for a solid, 1 for a molecule
  *         r_fms     l_fms
- FMS     {$A->rss}  0
+ {$doscf}FMS     {$A->rss}  0
 
                *** Energy grid over which to calculate
                *** DOS functions
  *         emin  emax   eimag
- LDOS      -30   20     0.1
+ {$doscf}LDOS      -30   20     0.1
 
                *** for EXAFS: RPATH {$A->rpath} and uncomment the EXAFS card
- RPATH     0.1
- *EXAFS     20
+ {$doscf}RPATH     0.1
+ EXAFS     20
 
  POTENTIALS
  *   ipot   Z  element        l_scmt  l_fms   stoichiometry

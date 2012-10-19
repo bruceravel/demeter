@@ -129,6 +129,15 @@ description
   is the length of the longest path found by the pathfinder.  See also
   rmax.
 
+variable=rscf
+type=real
+default=5.0
+units=Angstroms
+description
+  This is the default value for the Rscf value written to an output
+  Feff8 or Feff9 file.  It will be the distance argument of the SCF
+  keyword.
+
 variable=abs_edge_check
 type=boolean
 onvalue=1

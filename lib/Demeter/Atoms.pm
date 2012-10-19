@@ -36,6 +36,7 @@ use Demeter::NumTypes qw( Natural
 			  PosNum
 			  NonNeg
 			  OneToFour
+			  FeffVersions
 		       );
 
 
@@ -132,6 +133,9 @@ has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->de
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
 has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rpath") ||  5},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
+has 'rscf'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rscf")  ||  5},);
+has 'do_scf'           => (is => 'rw', isa =>'Bool', default=> 0);
+
 has 'rss'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, coerce => 1, default=> q{},
 			   trigger => sub{ my ($self, $new) = @_; 
@@ -199,6 +203,7 @@ has 'titles' => (
 		);
 has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mo->config->default("atoms","ipot_style") || 'elements'},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_ipots_set(0) if $new});
+has 'feff_version'     => (is => 'rw', isa => FeffVersions, default=>sub{ shift->mo->config->default("atoms","feff_version") || 6});
 
 has 'nitrogen'	       => (is => 'rw', isa => NonNeg, default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });

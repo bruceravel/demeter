@@ -15,6 +15,7 @@ package Demeter::Feff;
 
 =cut
 
+use feature 'switch';
 use autodie qw(open close);
 
 use Moose;
@@ -132,6 +133,15 @@ has 'nlegs'        => (is=>'rw', isa =>  PosInt,    default => 4);   # integer <
 has 'rmultiplier'  => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
 has 'pcrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'ccrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
+
+### feff8 cards
+
+has 'scf'          => (is=>'rw', isa =>  'ArrayRef', default => sub{[]});
+has 'xanes'        => (is=>'rw', isa =>  'ArrayRef', default => sub{[]});
+has 'fms'          => (is=>'rw', isa =>  'ArrayRef', default => sub{[]});
+has 'ldos'         => (is=>'rw', isa =>  'ArrayRef', default => sub{[]});
+has 'exafs'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
+
 has 'othercards' => (
 		     traits    => ['Array'],
 		     is        => 'rw',
@@ -305,19 +315,31 @@ sub rdinp {
 	$thiscard = 'rmax',	    last CARDS if ($thiscard =~ m{\Ar(?:ma|pa)});
 	$thiscard = 'rmultiplier',  last CARDS if ($thiscard =~ m{\Armu});
 	$thiscard = 'nlegs',	    last CARDS if ($thiscard =~ m{\Anle});
+	$thiscard = 'exafs',	    last CARDS if ($thiscard =~ m{\Aexa});
 	$thiscard = 'criteria',     last CARDS if ($thiscard =~ m{\Acri});
+	$thiscard = 'scf',          last CARDS if ($thiscard =~ m{\Ascf});
+	$thiscard = 'fms',          last CARDS if ($thiscard =~ m{\Afms});
+	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
+	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
 	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
 	$self -> push_othercards($thiscard);  ## pass through all other cards
       };
 
       ##print $thiscard, $/;
       ## dispatch the card values
-      $mode = $thiscard                                if ($thiscard =~ m{(?:atoms|potentials)});
-      $self->$thiscard($line[1])                       if ($thiscard =~ m{(?:edge|r(?:max|multiplier)|s02)});
-      $self->set(edge  => $line[1], s02   => $line[2]) if ($thiscard eq 'hole');
-      $self->set(pcrit => $line[1], ccrit => $line[2]) if ($thiscard eq 'criteria');
-      $self->_title($_)                                if ($thiscard eq 'titles');
-      $nmodules = $#line                               if ($thiscard =~ m{(?:control|print)});
+      given ($thiscard) {
+	when (m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) { $self->$thiscard($line[1])               };
+	when (m{(?:atoms|potentials)})	            { $mode = $thiscard                                };
+	when ('hole')			            { $self->set(edge  => $line[1], s02   => $line[2]) };
+	when ('criteria')		            { $self->set(pcrit => $line[1], ccrit => $line[2]) };
+	when ('titles')			            { $self->_title($_)                                };
+	when (m{ (?:control|print)})                { $nmodules = $#line                               };
+
+	when ('scf')                                { $self->feff_version(8); $self->scf  ([@line[1..$#line]]) };
+	when ('fms')                                { $self->feff_version(8); $self->fms  ([@line[1..$#line]]) };
+	when ('xanes')                              { $self->feff_version(8); $self->xanes([@line[1..$#line]]) };
+	when ('ldos')                               { $self->feff_version(8); $self->ldos ([@line[1..$#line]]) };
+      };
 
     } elsif ($mode eq 'atoms') {
       #print "atoms: $_\n";
@@ -1020,7 +1042,7 @@ override serialization => sub {
   my %cards = ();
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      group hidden source feff_version)) {
+		      group hidden source feff_version scf fms ldos xanes)) {
     $cards{$key} = $self->$key;
   };
   $cards{zzz_arrays} = "titles othercards potentials absorber sites";
