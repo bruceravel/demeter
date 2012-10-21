@@ -196,18 +196,24 @@ sub new {
   $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   my $n = 0;
   my ($fv, $is) = (Demeter->co->default('atoms', 'feff_version'), Demeter->co->default('atoms', 'ipot_style'));
-  if      (($fv == 6) and ($is == 'elements')) {
-    $n = 0;
-  } elsif (($fv == 6) and ($is == 'tags')) {
-    $n = 1;
-  } elsif (($fv == 6) and ($is == 'sites')) {
-    $n = 2;
-  } elsif (($fv == 8) and ($is == 'elements')) {
-    $n = 3;
-  } elsif (($fv == 8) and ($is == 'tags')) {
-    $n = 4;
-  } elsif (($fv == 8) and ($is == 'sites')) {
-    $n = 5;
+  if ($fv == 6) {
+    Demeter->mo->template_feff('feff6');
+    if ($is == 'elements') {
+      $n = 0;
+    } elsif ($is == 'tags') {
+      $n = 1;
+    } elsif ($is == 'sites') {
+      $n = 2;
+    };
+  } else {
+    Demeter->mo->template_feff('feff8');
+    if ($is == 'elements') {
+      $n = 3;
+    } elsif ($is == 'tags') {
+      $n = 4;
+    } elsif ($is == 'sites') {
+      $n = 5;
+    };
   };
   $self->{template}->SetSelection($n);
   EVT_CHOICE($self, $self->{template}, \&OnTemplate);
@@ -396,12 +402,14 @@ sub OnTemplate {
   my ($self, $event) = @_;
   my $choice = $self->{template}->GetStringSelection;
   if ($choice =~ m{Feff8}) {
+    Demeter->mo->template_feff('feff8');
     $self->{scf}->Enable(1);
     if ($self->{scf}->GetValue) {
       $self->{scflab}->Enable(1);
       $self->{rscf}->Enable(1);
     };
   } else {
+    Demeter->mo->template_feff('feff6');
     $self->{scf}->Enable(0);
     $self->{scflab}->Enable(0);
     $self->{rscf}->Enable(0);

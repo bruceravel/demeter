@@ -179,9 +179,23 @@ sub insert_boilerplate {
 sub run_feff {
   my ($self) = @_;
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
-  my $busy = Wx::BusyCursor->new();
   my $feff = $self->{feffobject};
   $feff -> clear;
+  my $v = ($feff->mo->template_feff eq 'feff8') ? 8 : 6;
+  $feff -> feff_version($v);
+  if (($feff->feff_version == 8) and ($feff->scf)) {
+    my $md = Wx::MessageDialog->new($rframes->{main},
+				    "You are running Feff8 with self-consistent potentials.  It will be rather time consuming.  All interaction with Artemis will be blocked until the Feff calculation is done.\n\nContinue?",
+				    "Feff8 with self-consistent potentials",
+				    wxOK|wxCANCEL|wxICON_EXCLAMATION);
+    if ($md->ShowModal == wxCANCEL) {
+      $self->{parent}->status("Self-consistent Feff calculation canceled.");
+      return 1;
+    };
+  };
+  my $busy = Wx::BusyCursor->new();
+  $feff -> screen(1);
+  $feff -> save(1);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;

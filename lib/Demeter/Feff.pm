@@ -238,7 +238,7 @@ sub clear {
   $self->clear_pathlist;
   $self->set(abs_index   => 0, edge  => 'K', s02   => 1, rmax    => 0,   nlegs => 4,
 	     rmultiplier => 1, pcrit =>  0,  ccrit => 0, miscdat => q{},
-	     npaths      => 0,
+	     npaths      => 0, scf   => [], xanes   => [], ldos   => [], fms => [],
 	    );
   return $self;
 };
@@ -583,8 +583,9 @@ sub fetch_zcwifs {
   closedir $D;
 
   my @zcwifs;
-  return () if (not -e File::Spec->catfile($self->workspace, 'files.dat'));
-  open(my $FD, '<', File::Spec->catfile($self->workspace, 'files.dat'));
+  my $file = ($self->feff_version == 8) ? 'list.dat' : 'files.dat';
+  return () if (not -e File::Spec->catfile($self->workspace, $file));
+  open(my $FD, '<', File::Spec->catfile($self->workspace, $file));
   my $flag = 0;
   while (<$FD>) {
     $flag = 1, next if ($_ =~ m{amp ratio});

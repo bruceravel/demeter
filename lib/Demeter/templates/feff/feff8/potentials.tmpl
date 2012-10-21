@@ -1,0 +1,37 @@
+{ # -*- ifm -*-
+  # compute potentials with feff8 using a simple, streamlined feff.inp file
+  #   {$T->parameter} returns the value of that theory parameter
+}
+<< >>* 
+ * On-the-fly feff.inp file generated from a Demeter template
+ * with CONTROL values set to run just potph
+ *
+
+{ $lines = q{};
+  map {$lines .= " TITLE $_\n"} (@ {$T->titles});
+  $lines;
+}
+
+ EDGE      {uc($A->edge)}
+ S02       1.0
+
+ CONTROL   1      1     0     0     0     0
+ PRINT     1      0     0     0     0     0
+
+ {$doscf}SCF       {$A->rscf}
+ EXAFS     20
+
+{foreach $l (@ {$T->othercards}) {
+  $OUT .= $l . "\n";}}
+
+ POTENTIALS
+{ map {$OUT .= sprintf("    %d  %2d  %s\n", @$_)} (@ {$T->potentials});
+}
+
+ ATOMS
+{ map {$OUT .= sprintf("    %9.5f   %9.5f   %9.5f   %d\n", @$_)} 
+      (@ {$T->sites});
+}
+
+END
+
