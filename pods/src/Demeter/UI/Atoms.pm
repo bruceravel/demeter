@@ -275,7 +275,7 @@ $demeter = Demeter->new;
 
 use File::Basename;
 
-use Wx qw(wxBITMAP_TYPE_ANY wxID_EXIT wxID_ABOUT);
+use Wx qw(wxACCEL_CTRL wxBITMAP_TYPE_ANY wxID_EXIT wxID_ABOUT);
 use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
 
@@ -290,6 +290,14 @@ sub identify_self {
 use vars qw($atoms_base $demeter $frame);
 $atoms_base = identify_self();
 
+use Const::Fast;
+const my $ATOMS   => Wx::NewId();
+const my $FEFF    => Wx::NewId();
+const my $PATHS   => Wx::NewId();
+const my $CONSOLE => Wx::NewId();
+const my $DOC     => Wx::NewId();
+const my $CONFIG  => Wx::NewId();
+
 sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Atoms');
@@ -301,17 +309,31 @@ sub OnInit {
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frame -> SetIcon($icon);
 
+
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
+  $file->Append( $ATOMS,   "Atoms\tCtrl+1"     );
+  $file->Append( $FEFF,    "Feff\tCtrl+2"      );
+  $file->Append( $PATHS,   "Paths\tCtrl+3"     );
+  $file->Append( $CONSOLE, "Console\tCtrl+4"   );
+  $file->Append( $DOC,     "Document\tCtrl+5"  );
+  $file->Append( $CONFIG,  "Configure\tCtrl+6" );
+  $file->AppendSeparator;
+  $file->Append( wxID_EXIT, "E&xit\tCtrl+q"    );
 
   my $help = Wx::Menu->new;
-  $help->Append( wxID_ABOUT, "&About Atoms" );
+  $help->Append( wxID_ABOUT, "&About Atoms"    );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
+  EVT_MENU( $frame, $ATOMS,   sub{ $frame->make_page('Atoms');     $frame->{notebook}->ChangeSelection(0); });
+  EVT_MENU( $frame, $FEFF,    sub{ $frame->make_page('Feff');      $frame->{notebook}->ChangeSelection(1); });
+  EVT_MENU( $frame, $PATHS,   sub{ $frame->make_page('Paths');     $frame->{notebook}->ChangeSelection(2); });
+  EVT_MENU( $frame, $CONSOLE, sub{ $frame->make_page('Console');   $frame->{notebook}->ChangeSelection(3); });
+  EVT_MENU( $frame, $DOC,     sub{ $frame->make_page('Document');  $frame->{notebook}->ChangeSelection(4); });
+  EVT_MENU( $frame, $CONFIG,  sub{ $frame->make_page('Configure'); $frame->{notebook}->ChangeSelection(5); });
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);

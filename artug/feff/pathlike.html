@@ -63,18 +63,18 @@
 </h1>
 
 <p>
-One of the powerful new features in  <span class=program>ARTEMIS</span> is the ability to
+One of the powerful new features in <span class=program>ARTEMIS</span> is the ability to
 define &ldquo;path-like&rdquo; objects.  A path-like
-object is one which can be treated like a normal path from  <span class=program>FEFF</span>.
+object is one which can be treated like a normal path from <span class=program>FEFF</span>.
 It can be used in a fit and it can be plotted.  It is not, however,
-the result of a normal  <span class=program>FEFF</span> calculation.  Instead,  <span class=program>FEFF</span> has
-been run in some special way to generate a theoretical  &chi;(k)   
+the result of a normal <span class=program>FEFF</span> calculation.  Instead, <span class=program>FEFF</span> has
+been run in some special way to generate a theoretical &chi;(k)
 spectrum for something different from all the items listed on the
 Paths tab.
 </p>
 
 <p>
- <span class=program>ARTEMIS</span> defines a number of kinds of path-like objects.  Controls
+<span class=program>ARTEMIS</span> defines a number of kinds of path-like objects.  Controls
 for generating these things are divided into different pages
 accessible by the menu at the top of the Path-like tab.  The first
 item in that menu is for defining 
@@ -82,13 +82,13 @@ item in that menu is for defining
 </p>
 
 
-<a href="../../images/feff.pathlike.png" target=_blank><img src="../../images/feff.pathlike.png" title="
+<a href="../../images/feff.pathlike.png" target=_blank><img class=flexy src="../../images/feff.pathlike.png" title="
 The Pathlike tab.
 " alt="
 The Pathlike tab.
 "></a>
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="sspaths">
 
 <h2>  SSPaths</h2>
@@ -96,8 +96,8 @@ The Pathlike tab.
 
 <p>
 The concept of an SSPath is that it uses the potentials from a
- <span class=program>FEFF</span> calculation to compute the single scattering contribution
-from an atom that exists in that  <span class=program>FEFF</span> calculation but at a
+<span class=program>FEFF</span> calculation to compute the single scattering contribution
+from an atom that exists in that <span class=program>FEFF</span> calculation but at a
 distance not represented in the list of cartesian coordinates.
 </p>
 
@@ -107,21 +107,21 @@ distance not represented in the list of cartesian coordinates.
 </td>
 <td width=640>
 <a class=floatleft href="../../images/feff.plotss.png" target=_blank><img border=0 src="../../images/feff.plotss.png"  alt="feff.plotss.png"></a>
-In the example show, a  <span class=program>FEFF</span> calculation has been run on
- LaCoO<sub>3</sub>    , a trigonal perovskite-like material with 6 oxygen
-scatterers at 1.93  &Aring;    , 8 La scatterers at 3.28  &Aring;     or 3.34
- &Aring;    , and 6 Co scatterers at 3.83  &Aring;    .  
+In the example show, a <span class=program>FEFF</span> calculation has been run on
+LaCoO<sub>3</sub>, a trigonal perovskite-like material with 6 oxygen
+scatterers at 1.93 &Aring;, 8 La scatterers at 3.28 &Aring; or 3.34
+&Aring;, and 6 Co scatterers at 3.83 &Aring;.  
 </p>
 
 <p>
 Suppose we had some reason to wonder what a Co scatterer at a distance
-of 3  &Aring;     would look like in a fit. (For example, we might suspect
+of 3 &Aring; would look like in a fit. (For example, we might suspect
 that some phase segregation happened during synthesis, resulting in
 some CoO.)  In that case, the distance on
 the SSPath page would be set to 3.0 and the Co scatterer would be
 selected from the group of radio buttons.  This group of radio
 buttons corresponds to the list of unique potentials in the input
-data for  <span class=program>FEFF</span>.
+data for <span class=program>FEFF</span>.
 </p>
 
 <p>
@@ -129,14 +129,14 @@ The method for associating this SSPath with data will be
 explained in the 
 <a href="../path/index.html">next chapter</a>.
 For now, we simply jump ahead and compare the normal Co scatterer at
-3.83  &Aring;     (blue) with the SSPath computed at 3  &Aring;     (red).
+3.83 &Aring; (blue) with the SSPath computed at 3 &Aring; (red).
 </p>
 
 <p>
 Use of SSPath for modeling scatterers at such a long distance is much
 superior to using a <a href="../path/pathlike.html">quick first shell theory</a>.  The advantage of this approach is that it uses
-well constructed scattering potentials  &ndash;  i.e. potentials from a real
-structure  &ndash;  to make the special path.  Using the quick first shell
+well constructed scattering potentials &ndash; i.e. potentials from a real
+structure &ndash; to make the special path.  Using the quick first shell
 technique on a path this long results in poorly constructed
 potentials.  This is explained in detail in
 <a href="../extended/qfs.html">the extended discussions chapter</a>.
@@ -144,7 +144,7 @@ potentials.  This is explained in detail in
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="fspaths">
 
 <h2>  FSPaths</h2>
@@ -161,7 +161,7 @@ collinear multiple scattering paths.
 FSPaths have not yet been implemented.
 </p>
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="histogrampaths">
 
 <h2>  Histogram paths</h2>
@@ -175,7 +175,7 @@ Document the histogram system.
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -183,7 +183,7 @@ Document the histogram system.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -197,7 +197,7 @@ Document the histogram system.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

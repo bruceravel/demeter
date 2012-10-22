@@ -95,9 +95,9 @@ atoms
 <p>
 This crystal has 4 elemental species distributed over 8
 crystallographic positions.  Two of the oxygen sites are the two
-oxygenyl sites with U-O double bond distance of about 1.76  &Aring;    .
+oxygenyl sites with U-O double bond distance of about 1.76 &Aring;.
 The remaining oxygen sites are single bonded at a distance of about
-2.46  &Aring;    .
+2.46 &Aring;.
 </p>
 
 <p>
@@ -108,7 +108,7 @@ uranyl triacetate.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="eachelementgetsauniquepotential">
 
 <h2>  Each element gets a unique potential</h2>
@@ -155,7 +155,7 @@ file:
 </pre>
 
 <p>
-This is reasonable input for  <span class=program>FEFF</span>.  Indeed, for many crystals, the
+This is reasonable input for <span class=program>FEFF</span>.  Indeed, for many crystals, the
 elements style is exactly what you want.  With four elements in the
 cyrstal, five unique potentials are made.  The absorber is always
 potential index 0.  The remaining uranium atoms are given potential
@@ -164,8 +164,8 @@ index 1.
 
 <p>
 For this material, it is probably a poor idea to give the axial
-(double bonded, distance 1.76  &Aring;    ) and equatorial (single bonded,
-distance 2.46  &Aring;    ) the same potential index.  Doing so forces their
+(double bonded, distance 1.76 &Aring;) and equatorial (single bonded,
+distance 2.46 &Aring;) the same potential index.  Doing so forces their
 muffin tin radii to be the same.  Given this substantial difference in
 distance, it is probably a good idea to let the two types of oxygen
 atoms have different muffin tin radii so that their scattering
@@ -174,7 +174,7 @@ introduces a more chemically reasonable potential model.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="eachtaggetsauniquepotential">
 
 <h2>  Each tag gets a unique potential</h2>
@@ -231,7 +231,7 @@ oxygens.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="eachtaggetsauniquepotential">
 
 <h2>  Each tag gets a unique potential</h2>
@@ -248,14 +248,14 @@ crystallographic position gets its own potential index.
 </p>
 
 <p>
-This is a somewhat dangerous option because  <span class=program>FEFF</span> only allows up to
+This is a somewhat dangerous option because <span class=program>FEFF</span> only allows up to
 7 potentials beyond the absorber (for a total of 8).  In this crystal,
 we have 8 sites which results in 8 unique potentials.  The software
 dutifully writes out the <span class=file>feff.inp</span>
 file, but it also issues the warning shown on the right.
 </p>
 
- <hr class=hide /> 
+<hr class=hide />
 
 <pre>
 TITLE Templeton et al.
@@ -298,17 +298,17 @@ TITLE Templeton et al.
 </td>
 <td width=535>
 <a class=floatright href="../../images/feff.siteserror2.png"  target=_blank><img border=0 src="../../images/feff.siteserror2.png"  alt="feff.siteserror2.png"></a>
-If you attempt to run  <span class=program>FEFF</span> with this input data,  <span class=program>ARTEMIS</span> will
+If you attempt to run <span class=program>FEFF</span> with this input data, <span class=program>ARTEMIS</span> will
 complain with the rather repetitious error message shown to the
-right and not run  <span class=program>FEFF</span>.  You have to fix the  <span class=program>FEFF</span> input data
-either by hand-editing or by re-running  <span class=program>ATOMS</span> with a different
+right and not run <span class=program>FEFF</span>.  You have to fix the <span class=program>FEFF</span> input data
+either by hand-editing or by re-running <span class=program>ATOMS</span> with a different
 potentials style.
 </p>
 
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -316,7 +316,7 @@ potentials style.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -330,7 +330,7 @@ potentials style.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

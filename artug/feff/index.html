@@ -70,7 +70,7 @@ When you import crystal data from an <span class=file>atoms.inp</span> or CIF fi
 <ol>
   
 <li><p>
-A new  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window is created for interacting with
+A new <span class=program>ATOMS</span> and <span class=program>FEFF</span> window is created for interacting with
 the structural data and 
 the various controls are set to values taken from the
 <span class=file>atoms.inp</span> or CIF file, 
@@ -79,7 +79,7 @@ the various controls are set to values taken from the
 A message is written to the status bar in the Main window.
 </p></li>
 <li><p>
-An entry is placed in the  <span class=program>FEFF</span> list on the main window.
+An entry is placed in the <span class=program>FEFF</span> list on the main window.
 </p></li>
 </ol> 
 
@@ -96,40 +96,40 @@ file.
 </p>
 
 
-<a href="../../images/feff.atoms.png" target=_blank><img src="../../images/feff.atoms.png" title="
-The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window in  <span class=program>ARTEMIS</span>.
+<a href="../../images/feff.atoms.png" target=_blank><img class=flexy src="../../images/feff.atoms.png" title="
+The <span class=program>ATOMS</span> and <span class=program>FEFF</span> window in <span class=program>ARTEMIS</span>.
 " alt="
-The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window in  <span class=program>ARTEMIS</span>.
+The <span class=program>ATOMS</span> and <span class=program>FEFF</span> window in <span class=program>ARTEMIS</span>.
 "></a>
 
 <p>
 At the top of the window is a tool bar with three buttons.  The
-first of these is used to change the label for this  <span class=program>FEFF</span>
+first of these is used to change the label for this <span class=program>FEFF</span>
 calculation.  Among other things, this is the label used in the
- <span class=program>FEFF</span> list on the Main window.  The second button is used to
-discard the  <span class=program>FEFF</span> calculation and this window.  The final button
-provides some information about how  <span class=program>ARTEMIS</span> is configured to
-interact with  <span class=program>FEFF</span>.
+<span class=program>FEFF</span> list on the Main window.  The second button is used to
+discard the <span class=program>FEFF</span> calculation and this window.  The final button
+provides some information about how <span class=program>ARTEMIS</span> is configured to
+interact with <span class=program>FEFF</span>.
 </p>
 
 <p>
 There are a series of tabs across the top.  These will contain
 different stages of the structural calculation.  Here we will examine
-the  <span class=program>ATOMS</span> tab.  The other tabs will be examined in the following
+the <span class=program>ATOMS</span> tab.  The other tabs will be examined in the following
 sections.
 </p>
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="crystaldata">
 
 <h2>  Crystal data</h2>
 </a>
 
 <p>
-The crystal cell data  &ndash;  including lattice constants and angles, the
-space group symbol, and the elements of the shift vector  &ndash;  are placed in
+The crystal cell data &ndash; including lattice constants and angles, the
+space group symbol, and the elements of the shift vector &ndash; are placed in
 text boxes for easy editing.  The coordinates of the unique sites are
 listed in the grid at the bottom of the window.  The absorber is
 chosen by clicking one of the boxes on the 
@@ -137,7 +137,7 @@ chosen by clicking one of the boxes on the
 </p>
 
 <p>
-Remember that  <span class=program>FEFF</span> considers numbers with 5 digits of precision
+Remember that <span class=program>FEFF</span> considers numbers with 5 digits of precision
 after the decimal point.  <tt>0.333</tt> is not the
 same thing as <tt>0.33333</tt>.  You may, however,
 enter things like <tt>1/3</tt> and avoid the
@@ -145,10 +145,10 @@ precision issue entirely.
 </p>
 
 <p>
-As a new feature compared to earlier versions of  <span class=program>ATOMS</span>, there are
+As a new feature compared to earlier versions of <span class=program>ATOMS</span>, there are
 two radial distances.  The cluster size determines the extent of the
 cluster expanded into the <span class=file>feff.inp</span>.  This
-should usually be set to something rather large, 9  &Aring;     is often a
+should usually be set to something rather large, 9 &Aring; is often a
 good default.  This probably (but not always!) assures that the
 cluster in the <span class=file>feff.inp</span> file is adequately
 large to include all unique potentials and has all atom types
@@ -159,12 +159,12 @@ be be computed reasonably well.
 <p>
 The second distance will set the value of <tt>RMAX</tt> in the <span class=file>feff.inp</span> file.  In
 general, you do not want this to be much larger than the extent of the
-data you intend to analyze.  5  &Aring;     or 6  &Aring;     is usually the
+data you intend to analyze.  5 &Aring; or 6 &Aring; is usually the
 largest sensible value for longest path.  The reason for this is that
-the pathfinder part of  <span class=program>FEFF</span> has been rewritten for this version
-of  <span class=program>ARTEMIS</span>.  While the new pathfinder implementation offers a
+the pathfinder part of <span class=program>FEFF</span> has been rewritten for this version
+of <span class=program>ARTEMIS</span>.  While the new pathfinder implementation offers a
 number of useful new features, it is substantially slower than
- <span class=program>FEFF</span>'s  native pathfinder.  In any case, there is no
+<span class=program>FEFF</span>'s  native pathfinder.  In any case, there is no
 benefit to computing paths that you will never use in your fit.
 </p>
 
@@ -173,7 +173,7 @@ The absorption edge for the calculation is chosen from the menu to the
 left of the lattice constant area.  This is usually determined from
 the input data, but may need to be explicitly selected.  If not
 specified in the <span class=file>atoms.inp</span> file, the edge
-will be set to K for element lighter than Ce (Z=58), and to  L<sub>III</sub>      
+will be set to K for element lighter than Ce (Z=58), and to L<sub>III</sub>
 for heavier elements.
 </p>
 
@@ -213,7 +213,7 @@ Each crystallographic site is assigned a potential number.
 </dl> 
 
 <p>
-Remember that  <span class=program>FEFF</span> only allows for 7 unique potentials other than
+Remember that <span class=program>FEFF</span> only allows for 7 unique potentials other than
 the absorber.  The tags and sites options can often result in more
 than 7 potnatials, which will result in an unrunnable
 <span class=file>feff.inp</span> file.  Specifying unique
@@ -226,7 +226,7 @@ the remaining oxygens by using the tags option.
 <p>
 Here is an example of an <span class=file>atoms.inp</span> file
 for sodium uranyl acetate, which contains two very short axial oxygen
-atoms double bonded to the uranium atoms at about 1.8  &Aring;     and a
+atoms double bonded to the uranium atoms at about 1.8 &Aring; and a
 number of equatorial oxygen atoms at a much longer distance.  The
 axial and equatorial oxygen positions are distinguished by their tags
 and will given separate unique potentials when using the tags style.
@@ -257,21 +257,21 @@ atoms
   C     0.50880    0.12400    0.68620  C             1.00000
 </pre>
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="atomstoolbar">
 
 <h2>  Atoms tool bar</h2>
 </a>
 
 <p>
-The toolbar across the top of the  <span class=program>ATOMS</span> tab offers several functions.
+The toolbar across the top of the <span class=program>ATOMS</span> tab offers several functions.
 </p>
 
 <p>
 Clicking the open button will post the standard file selection dialog
 for importing a new <span class=file>atoms.inp</span> or CIF file.
-This is more useful in the stand-along version of  <span class=program>ATOMS</span> than in
- <span class=program>ARTEMIS</span> where the crystal data file imported in other ways.
+This is more useful in the stand-along version of <span class=program>ATOMS</span> than in
+<span class=program>ARTEMIS</span> where the crystal data file imported in other ways.
 <em>Right clicking</em> this button will post the
 recent files dialog populated with recently imported 
 <span class=file>atoms.inp</span>, 
@@ -292,8 +292,8 @@ tab.
 <p>
 Clicking the export button will post dialog on the right, which offers several
 different kinds of output files based on the crystal data.
-The &ldquo;Feff6&rdquo; and &ldquo;Feff8&rdquo; options will write input files for  <span class=program>FEFF6</span> and
- <span class=program>FEFF8</span>.  The &ldquo;Atoms&rdquo; option write the
+The &ldquo;Feff6&rdquo; and &ldquo;Feff8&rdquo; options will write input files for <span class=program>FEFF6</span> and
+<span class=program>FEFF8</span>.  The &ldquo;Atoms&rdquo; option write the
 same file as the save button.  The &ldquo;P1&rdquo;
 option writes the cyrstal data using the <tt>P 1</tt> space group and with a fully decorated unit cell. The &ldquo;Spacegroup&rdquo; option writes a file that fully describes
 the space group. the &ldquo;Absorption&rdquo; option
@@ -303,19 +303,19 @@ absorption coefficients.
 
 <p>
 The clear button is used to clear all data from all controls on the
- <span class=program>ATOMS</span> tab.
+<span class=program>ATOMS</span> tab.
 </p>
 
 <p>
 Finally the run button is pressed to convert the crystal data
-into input data for  <span class=program>FEFF</span>.  Pressing this displays 
+into input data for <span class=program>FEFF</span>.  Pressing this displays 
 <a href="./feff.html">the next tab</a>.
 </p>
 
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -323,7 +323,7 @@ into input data for  <span class=program>FEFF</span>.  Pressing this displays
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -337,7 +337,7 @@ into input data for  <span class=program>FEFF</span>.  Pressing this displays
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

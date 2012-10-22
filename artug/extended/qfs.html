@@ -66,7 +66,7 @@
 
 <p>
 
- <span class=program>ARTEMIS</span> offers several ways to get information from  <span class=program>FEFF</span> into a
+<span class=program>ARTEMIS</span> offers several ways to get information from <span class=program>FEFF</span> into a
 fitting model. One of these is called a <em>quick
 first shell</em> path. It's  purpose is to provide a model-free
 way of computing the scattering amplitude and phase shift well enough
@@ -75,26 +75,26 @@ to be used for a quick analysis of the first coordination shell.
 
 <p>
 The way it works is quite simple. Given the species of the absorber
-and the scatterer, the absorption edge (usually K or  L<sub>III</sub>      ), and a
-nominal distance between the absorber and the scatterer,  <span class=program>ARTEMIS</span>
-constructs input for  <span class=program>FEFF</span>. This input data assumes that the absorber
+and the scatterer, the absorption edge (usually K or L<sub>III</sub>), and a
+nominal distance between the absorber and the scatterer, <span class=program>ARTEMIS</span>
+constructs input for <span class=program>FEFF</span>. This input data assumes that the absorber
 and scatterer are present in a <a href="http://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure">rock salt structured</a> crystal. The lattice constant of this
 notional cubic crystal is such that the nearest neighbor distance is
-the nominal distance supplied by the user.  <span class=program>FEFF</span> is run and the
+the nominal distance supplied by the user. <span class=program>FEFF</span> is run and the
 scattering path for the nearest neighbor is retained. The rest of the
- <span class=program>FEFF</span> calculation is discarded. The nearest neighbor path is imported
-into  <span class=program>ARTEMIS</span> with the degeneracy set to 1.
+<span class=program>FEFF</span> calculation is discarded. The nearest neighbor path is imported
+into <span class=program>ARTEMIS</span> with the degeneracy set to 1.
 </p>
 
 <p>
 The assumption here is that the notional crystal will produce a
 scattering amplitude and phase shift for the nearest neighbor path
-that is close enough to what would be calculated by  <span class=program>FEFF</span> were the
+that is close enough to what would be calculated by <span class=program>FEFF</span> were the
 local structure actually known. Does this really work?
 </p>
 
 <p>
-<hr class=hide /> 
+<hr class=hide />
 <a name="usingthequickfirstshelltooltomodel
 firstshelldata">
 </p>
@@ -108,17 +108,17 @@ first shell data</h2>
 <p>
 To demonstrate what QFS does and to explain the constraints on the
 situations in which it can be expected to work, let's take a
-look at my favorite teaching example,  FeS<sub>2</sub>     . Anyone who has attended
+look at my favorite teaching example, FeS<sub>2</sub>. Anyone who has attended
 one of my XAS training courses has seen this example.
 </p>
 
 <p>
 These three figures show the S atom in the 1st coordination shell
-computed using the known crystal structure for  FeS<sub>2</sub>     . This
+computed using the known crystal structure for FeS<sub>2</sub>. This
 calculation is the blue trace. The red trace is the contribution from
 a S atom at the same distance as computed using the quick first shell
-tool. These calculations are plotted as  &chi;(k)   ,  |&chi;(R)|   , and
- Re[&chi;(R)]   .
+tool. These calculations are plotted as &chi;(k), |&chi;(R)|, and
+Re[&chi;(R)].
 </p>
 
 <p>
@@ -128,7 +128,7 @@ tool. These calculations are plotted as  &chi;(k)   ,  |&chi;(R)|   , and
 <p>
 As you can see, these two calculations are identical. You cannot even
 see the blue trace underneath the red trace. It is clear that the QFS
-calculation can be substituted for the more proper  <span class=program>FEFF</span> calculation of
+calculation can be substituted for the more proper <span class=program>FEFF</span> calculation of
 the contribution from the nearest neighbor.
 </p>
 
@@ -137,20 +137,20 @@ Why does this work?
 </p>
 
 <p>
- <span class=program>FEFF</span> starts by calculating neutral atoms then placing these
-neutral atoms at the positions indicated by  <span class=program>FEFF</span>'s input
-data. Each neutral atom has an associated radius  &ndash;  the radius
+<span class=program>FEFF</span> starts by calculating neutral atoms then placing these
+neutral atoms at the positions indicated by <span class=program>FEFF</span>'s input
+data. Each neutral atom has an associated radius &ndash; the radius
 within which the &ldquo;cloud&rdquo; of electrons has
 the same charge as the nucleus of the atom. The neutral-atom radii are
-fairly large. When placed at the positions in the  <span class=program>FEFF</span> input data,
+fairly large. When placed at the positions in the <span class=program>FEFF</span> input data,
 these neutral-atom radii overlap significantly. This is a problem for
- <span class=program>FEFF</span>'s calculation of the atomic potentials in the material
+<span class=program>FEFF</span>'s calculation of the atomic potentials in the material
 because it means that electrons in the overlapping regions cannot be
 positively identified as belonging to a particular atom.
 </p>
 
 <p>
-To address this situation,  <span class=program>FEFF</span> uses an algorithm called the
+To address this situation, <span class=program>FEFF</span> uses an algorithm called the
 Mattheis prescription, which inscribes spheres in <a href="http://en.wikipedia.org/wiki/Wigner%E2%80%93Seitz_cell">Wigner-Seitz cells</a>, to reduce the radii of all atoms in the
 material together until the reduced radii are just touching and never
 overlapping. These smaller radii are called the muffin-tin radii. The
@@ -164,24 +164,24 @@ explained in J.J. Rehr and R.A. Albers, <em>Rev. Mod. Phys.</em>, <strong>72</st
 
 <p>
 The scattering amplitude and phase shift is then computed from atoms
-that have a specific size  &ndash;  the size of the muffin-tin spheres
- &ndash;  and with the electron density associated with those spheres.
+that have a specific size &ndash; the size of the muffin-tin spheres
+&ndash; and with the electron density associated with those spheres.
 </p>
 
 <p>
 The reason that the two calculations shown above are so similar is
 because the muffin-tin radii of the Fe and S atoms are almost
 identical. This should not be surprising. Either way of constructing
-the muffin tins  &ndash;  using the proper  FeS<sub>2</sub>      structure or using
-the rock-salt structure  &ndash;  start with Fe and S atoms separated
+the muffin tins &ndash; using the proper FeS<sub>2</sub> structure or using
+the rock-salt structure &ndash; start with Fe and S atoms separated
 by the same amount. The application of the algorithm for producing
 muffin-tin sizes ends up with nearly identical values. As a result the
 scattering amplitudes and phase shifts are nearly the same and the
-resulting  &chi;(k)    functions are nearly the same.
+resulting &chi;(k) functions are nearly the same.
 </p>
 
 <p>
-<hr class=hide /> 
+<hr class=hide />
 <a name="(mis)usingthequickfirstshelltoolbeyond
 thefirstshell">
 </p>
@@ -194,21 +194,21 @@ the first shell</h2>
 
 <p>
 This is awesome! It would seem that we have a model independent way to
-generate fitting standards for use in  <span class=program>ARTEMIS</span>. No more mucking around
+generate fitting standards for use in <span class=program>ARTEMIS</span>. No more mucking around
 with Atoms, no more looking up metalloprotein structures. Just use
 QFS!
 </p>
 
 <p>
-If you think that seems too good to be true  &ndash;  you get a gold star. It
+If you think that seems too good to be true &ndash; you get a gold star. It
 most certainly is.
 </p>
 
 <p>
 Following the example above, I now show the second neighbor from the
-proper  FeS<sub>2</sub>      calculation, which is also a S atom and which is at
-3.445  &Aring;    . The red trace is a QFS path computed with a nominal
-distance of 3.445  &Aring;    . As you can see, there are substantial
+proper FeS<sub>2</sub> calculation, which is also a S atom and which is at
+3.445 &Aring;. The red trace is a QFS path computed with a nominal
+distance of 3.445 &Aring;. As you can see, there are substantial
 differences, particularly at low k, between the two.
 </p>
 
@@ -231,12 +231,12 @@ large Fe-S nearest neighbor distance. Remember, the QFS algorithm
 works by putting the absorber and scatterer in a rock-salt crystal
 with a lattice constant such that the nearest neighbor distance is
 equal to the distance supplied by the user. In this case, that nearest
-neighbor distance is 3.445  &Aring;    !
+neighbor distance is 3.445 &Aring;!
 </p>
 
 <p>
 The algorithm for constructing the muffin tins requires that the
-muffin-tin spheres touch. Supplied with a distance of 3.445  &Aring;    ,
+muffin-tin spheres touch. Supplied with a distance of 3.445 &Aring;,
 the muffin-tin radii are much too large, the electron density within
 the muffin tins is much too small, and the scattering amplitude and
 phase shift are calculated wrongly.
@@ -244,13 +244,13 @@ phase shift are calculated wrongly.
 
 <p>
 The central problem here is not that the red line is different from
-the blue line  &ndash;  although that is certainly the case and it is
+the blue line &ndash; although that is certainly the case and it is
 certainly a problem. The central problem is that, by misusing the QFS
 tool in this way, you introduce a large systematic error into your
 data analysis. This systematic error affects both amplitude and phase
 (as you can clearly see in the figures above). What's worse, you
 have no way of quantifying this systematic error. Your results for
-coordination number,  &Delta;R , and  &sigma;&sup2;  <strong>will</strong> be wrong. And you
+coordination number, &Delta;R, and &sigma;&sup2; <strong>will</strong> be wrong. And you
 have <strong>no way of knowing</strong> by how much.
 </p>
 
@@ -266,7 +266,7 @@ possibly report a defensible analysis of your data.
 To add even more ill cheer to this discussion, the problem gets worse
 and worse as the nominal distance of the QFS calculation gets
 larger. Here I show the same comparison, this time for the fifth
-coordination shell in  FeS<sub>2</sub>     , another S scatterer at 4.438  &Aring;    :
+coordination shell in FeS<sub>2</sub>, another S scatterer at 4.438 &Aring;:
 </p>
 
 <p>
@@ -274,7 +274,7 @@ coordination shell in  FeS<sub>2</sub>     , another S scatterer at 4.438  &Arin
 </p>
 
 <p>
-<hr class=hide /> 
+<hr class=hide />
 <a name="executivesummary">
 </p>
 
@@ -294,7 +294,7 @@ large systematic error into your data analysis. Don't do that!
 </p>
 
 <p>
-<hr class=hide /> 
+<hr class=hide />
 <a name="so,whatshouldyoudo?">
 </p>
 
@@ -315,7 +315,7 @@ structure. That's a <a href="http://en.wikipedia.org/wiki/Catch-22_%28logic%29">
 Not really. As I often say in my lectures during XAS training courses:
 you never know nothing. It is rare that you cannot make an educated
 guess about what your unknown material might resemble. With that
-guess, you can run  <span class=program>FEFF</span>, parameterize your fitting model, and
+guess, you can run <span class=program>FEFF</span>, parameterize your fitting model, and
 determine the extent to which that guess is consistent with your data.
 </p>
 
@@ -327,15 +327,15 @@ determine the extent to which that guess is consistent with your data.
 </dt>
 <dd>
 <a href="http://dx.doi.org/10.1016/S0016-7037(02)00947-X">In this
-paper</a>, Shelly Kelly demonstrates how to use  <span class=program>FEFF</span> calculations on
+paper</a>, Shelly Kelly demonstrates how to use <span class=program>FEFF</span> calculations on
 crystalline materials as the basis for interpreting the EXAFS of
 uranyl ions adsorbed onto biomass. In that paper, she shows the pH
 dependence of the fractionation of the uranyl ions among phosphoryl,
 carboxyl, and hydroxyl binding sites. Obviously, there is no way to
-make  <span class=program>FEFF</span> input data for uranyl ions on organic goo. However, Shelly
+make <span class=program>FEFF</span> input data for uranyl ions on organic goo. However, Shelly
 realized that the basic structure of the uranyl-phosphoryl or
 uranyl-carboxyl ligands are very similar in the organic and inorganic
-cases. Thus she ran  <span class=program>FEFF</span> on the inorganic structure and pulled out
+cases. Thus she ran <span class=program>FEFF</span> on the inorganic structure and pulled out
 those paths that describe the uranyl ion in its similar ligation
 environment in the organic case.
 </p>
@@ -349,13 +349,13 @@ reliably and with good muffin tin radii.
 
 <p>
 There is yet another advantage to this over attempting to use QFS for
-higher shells  &ndash;  consideration of multiple scattering paths. In the
+higher shells &ndash; consideration of multiple scattering paths. In the
 example from Shelly's paper, there are several small but
 non-negligible MS paths to be considered for both carboxyl and
 phosphoryl ligands. Neglecting those in favor of a
 single-scattering-only model introduces further systematic uncertainty
-into the determination of coordination number,  &Delta;R , and
- &sigma;&sup2; .
+into the determination of coordination number, &Delta;R, and
+&sigma;&sup2;.
   <br />
   <br />
 </dd>
@@ -363,17 +363,17 @@ into the determination of coordination number,  &Delta;R , and
   SSPaths
 </dt>
 <dd>
- <span class=program>ARTEMIS</span> offers another tool called <a href="../feff/pathlike.html#sspaths">an SSPath</a>.  An SSPath
+<span class=program>ARTEMIS</span> offers another tool called <a href="../feff/pathlike.html#sspaths">an SSPath</a>.  An SSPath
 is a way of using well-constructed muffin tins to compute a scattering
 path that is not represented in the input structure provided for the
- <span class=program>FEFF</span> calculation.  For example, suppose you run a  <span class=program>FEFF</span> calculation on
- LaCoO<sub>3</sub>    , a trigonal perovskite-like material with 6 oxygen
-scatterers at 1.93  &Aring;    , 8 La scatterers at 3.28  &Aring;     or 3.34
- &Aring;    , and 6 Co scatterers at 3.83  &Aring;    .  Suppose you have some
-reason to consider a Co scatterer at 3  &Aring;    .  You can tell  <span class=program>ARTEMIS</span>
-to compute that using the muffin-tin potentials from the  LaCoO<sub>3</sub>    
+<span class=program>FEFF</span> calculation.  For example, suppose you run a <span class=program>FEFF</span> calculation on
+LaCoO<sub>3</sub>, a trigonal perovskite-like material with 6 oxygen
+scatterers at 1.93 &Aring;, 8 La scatterers at 3.28 &Aring; or 3.34
+&Aring;, and 6 Co scatterers at 3.83 &Aring;.  Suppose you have some
+reason to consider a Co scatterer at 3 &Aring;.  You can tell <span class=program>ARTEMIS</span>
+to compute that using the muffin-tin potentials from the LaCoO<sub>3</sub>
 calculation, but with a Co scatterer at that distance, which is not
-represented in the  LaCoO<sub>3</sub>     structure.  Unlike an attempt to use a
+represented in the LaCoO<sub>3</sub> structure.  Unlike an attempt to use a
 QFS Co path at that distance, the SSPath uses a scattering potential
 with a properly calculated muffin tin.
 </p>
@@ -382,7 +382,7 @@ with a properly calculated muffin tin.
 The advantage of the SSPath is that it it results in
 a much more accurate calculation than QFS.  The disadvantage is that
 it can only be calculated on a scattering element already present in
-the  <span class=program>FEFF</span> calculation.
+the <span class=program>FEFF</span> calculation.
   <br />
   <br />
 </dd>
@@ -390,7 +390,7 @@ the  <span class=program>FEFF</span> calculation.
 </p>
 
 <p>
-<hr class=hide /> 
+<hr class=hide />
 <a name="reproducingtheimagesabove">
 </p>
 
@@ -401,11 +401,11 @@ the  <span class=program>FEFF</span> calculation.
 
 <p>
 To start, I imported the FeS2 data and crystal structure into
- <span class=program>ARTEMIS</span>. 
+<span class=program>ARTEMIS</span>. 
 <a href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2">(You can find them here.)</a>
-I ran  <span class=program>ATOMS</span>, then  <span class=program>FEFF</span>. I then
+I ran <span class=program>ATOMS</span>, then <span class=program>FEFF</span>. I then
 dragged and dropped the nearest neighbor path onto the Data page. At
-this stage,  <span class=program>ARTEMIS</span> looks like this:
+this stage, <span class=program>ARTEMIS</span> looks like this:
 </p>
 
 <p>
@@ -421,7 +421,7 @@ I begin a QFS calculation by selecting that option from the menu on the Data pag
 </p>
 
 <p>
-<a href="../../images/qfs.path.png" target=_blank><img src="../../images/qfs.path.png" title="
+<a href="../../images/qfs.path.png" target=_blank><img class=flexy src="../../images/qfs.path.png" title="
 Go compute the QFS path
 " alt="
 Go compute the QFS path
@@ -429,11 +429,11 @@ Go compute the QFS path
 </p>
 
 <p>
-The nearest neighbor path in  FeS<sub>2</sub>      is a S atom at 2.257  &Aring;    .
+The nearest neighbor path in FeS<sub>2</sub> is a S atom at 2.257 &Aring;.
 </p>
 
 <p>
-<a href="../../images/qfs.make_qfs.png" target=_blank><img src="../../images/qfs.make_qfs.png" title="
+<a href="../../images/qfs.make_qfs.png" target=_blank><img class=flexy src="../../images/qfs.make_qfs.png" title="
 Set the QFS parameters
 " alt="
 Set the QFS parameters
@@ -443,10 +443,10 @@ Set the QFS parameters
 <p>
 Clicking OK, the QFS path is generated.  I set the degeneracy of the
 QFS path to 6 so that I can directly compare the normally calculated
-path (there are 6 nearest neighbor S atoms in  FeS<sub>2</sub>     ) to the QFS
+path (there are 6 nearest neighbor S atoms in FeS<sub>2</sub>) to the QFS
 path.  I mark both paths and transfer them to the plotting list.  I am
 now ready to compare these two calculations.  To examine another
-single scattering path, I drag and drop that path from the  <span class=program>FEFF</span> page
+single scattering path, I drag and drop that path from the <span class=program>FEFF</span> page
 to the Data page and redo the QFS calculation at that distance.
 </p>
 
@@ -460,7 +460,7 @@ Ready to plot the comparison
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -468,7 +468,7 @@ Ready to plot the comparison
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -482,7 +482,7 @@ Ready to plot the comparison
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

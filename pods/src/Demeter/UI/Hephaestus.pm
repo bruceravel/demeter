@@ -38,7 +38,7 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       LineFinder   => 'ordered list of fluorescence line energies',
 	       Standards    => 'periodic table of XAS data standards',
 	       F1F2	    => 'periodic table of anomalous scattering',
-	       Help	    => 'Hephaestus User\'s Guide',
+	       Help	    => 'Hephaestus User Guide',
 	       Config       => 'control details of Hephaestus\' behavior',
 	     );
 my %label_of = (Absorption   => 'Absorption',
@@ -58,7 +58,7 @@ my $icon_dimension = 30;
 use vars qw($periodic_table);
 
 #my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
-my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
+my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
 
 sub new {
   my $ref    = shift;
@@ -123,7 +123,7 @@ sub new {
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
-				int($height*($#utilities+1.5)/$#utilities)
+				int($height*($#utilities+0.75)/$#utilities)
 			       );
   $self -> SetSize($framesize);
 
@@ -195,6 +195,15 @@ use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 use Const::Fast;
 const my $CONFIG   => Wx::NewId();
 const my $DOCUMENT => Wx::NewId();
+const my $ABS  => Wx::NewId();
+const my $FORM => Wx::NewId();
+const my $ION  => Wx::NewId();
+const my $DATA => Wx::NewId();
+const my $TRAN => Wx::NewId();
+const my $EDGE => Wx::NewId();
+const my $LINE => Wx::NewId();
+const my $STAN => Wx::NewId();
+const my $FPPP => Wx::NewId();
 
 sub identify_self {
   my @caller = caller;
@@ -209,7 +218,7 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config)) { # Help
+		    Standards F1F2 Config Help)) {
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
@@ -227,14 +236,41 @@ sub OnInit {
   my $file = Wx::Menu->new;
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
+  my $tool = Wx::Menu->new;
+  $tool->Append( $ABS,      "Absorption" );
+  $tool->Append( $FORM,     "Formulas" );
+  $tool->Append( $ION,      "Ion Chambers" );
+  $tool->Append( $DATA,     "Data" );
+  $tool->Append( $TRAN,     "Transitions" );
+  $tool->Append( $EDGE,     "Edge Finder" );
+  $tool->Append( $LINE,     "Line Finder" );
+  $tool->Append( $STAN,     "Standards" );
+  $tool->Append( $FPPP,     "F' and F\"" );
+  $tool->Append( $CONFIG,   "Configure" );
+  $tool->Append( $DOCUMENT, "&Document" );
+
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure" );
   $help->Append( $DOCUMENT,  "&Document" );
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
-  $bar->Append( $file, "&File" );
+  $bar->Append( $file, "H&ephaestus" );
+  $bar->Append( $tool, "&Tools" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
+
+  #$tool->Enable($DOCUMENT,0);
+  #$help->Enable($DOCUMENT,0);
+
+  EVT_MENU( $frame, $ABS,      sub{shift->{book}->SetSelection(0)});
+  EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
+  EVT_MENU( $frame, $ION,      sub{shift->{book}->SetSelection(2)});
+  EVT_MENU( $frame, $DATA,     sub{shift->{book}->SetSelection(3)});
+  EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(4)});
+  EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(5)});
+  EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(6)});
+  EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(7)});
+  EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(8)});
   EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
   EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
@@ -269,8 +305,9 @@ sub on_about {
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
 			 "See the document for literature references\nfor the data resources.\n\n",
+			 "Core-hole lifetimes are from Keski-Rahkinen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
-			 "Mossbauer data comes from http://mossbauer.org/",
+			 "Mossbauer data comes from http://mossbauer.org/\n",
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'

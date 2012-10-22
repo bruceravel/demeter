@@ -11,6 +11,7 @@ use MooseX::Types -declare => [qw( Natural
 				   PosNum
 				   NegNum
 				   NonNeg
+				   FeffVersions
 				)];
 
 use MooseX::Types::Moose qw(Num Int);
@@ -68,6 +69,11 @@ subtype NegNum,
   as Num,
   where { $_ < 0 },
   message { "Num is not smaller than 0" };
+
+subtype FeffVersions,
+  as Int,
+  where { $_ == 6 or $_ == 8 },
+  message { "Int is not either 6 or 8 for FeffVersion" };
 
 1;
 

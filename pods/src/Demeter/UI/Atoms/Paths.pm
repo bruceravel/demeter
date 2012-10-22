@@ -206,16 +206,32 @@ sub plot {
     my $feff = $self->{parent}->{Feff}->{feffobject};
     my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
     my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
+
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at ", $feff));
+    $self->{parent}->{Console}->{console}->AppendText("(Feff executable: ".
+						      $feff->co->default(qw(feff executable)) .
+						      ")\n\n");
+
     Demeter::Path -> new(parent=>$feff, sp=>$sp, name=>$sp->intrplist) -> plot($space);
     #my $path_object = Demeter::Path -> new(parent=>$feff_object, sp=>$sp);
     #$path_object -> plot("r");
     #undef $path_object;
     $this    = $self->{paths}->GetNextSelected($this);
+
+    $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   };
   $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
 };
 
+sub now {
+  my ($self, $text, $feff) = @_;
+  my $string = $/ x 2;
+  $string   .= '********** ' . $text . $feff->now;
+  $string   .= $/ x 2;
+  return $string;
+};
 
 
 1;

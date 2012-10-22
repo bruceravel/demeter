@@ -62,51 +62,51 @@
 </h1>
 
 <p>
- <span class=program>ARTEMIS</span> evaluates a variety of statistical parameters relevant to
+<span class=program>ARTEMIS</span> evaluates a variety of statistical parameters relevant to
 the evaluation of your fit.  These include the fitting metric
- &chi;&sup2; , the fitting metric normalized by the degrees of freedom in
-the fit  &chi;&sup2<sub>&nu;</sub> , an R-factor, and uncertainties on and correlations
+&chi;&sup2;, the fitting metric normalized by the degrees of freedom in
+the fit &chi;&sup2<sub>&nu;</sub>, an R-factor, and uncertainties on and correlations
 between the variable parameters.
 </p>
 
 <p>
 In a formal sense, the most important of these parameters is
- &chi;&sup2<sub>&nu;</sub> , which is the statistical parameter allowing you to
+&chi;&sup2<sub>&nu;</sub>, which is the statistical parameter allowing you to
 distinguish between different fitting models applied to the same data.
-Unfortunately,  &chi;&sup2<sub>&nu;</sub>  is difficult to interpret directly.  In
-practice, the EXAFS analysis problem using  <span class=program>FEFF</span> is not a
+Unfortunately, &chi;&sup2<sub>&nu;</sub> is difficult to interpret directly.  In
+practice, the EXAFS analysis problem using <span class=program>FEFF</span> is not a
 well-posed problem in the sense required by Gaussian statistics.  This
 is true for a variety of reasons.  In EXAFS, the signal is not ideally
-packed  &ndash;  that is, the signal is not composed of pure sine waves.  In
+packed &ndash; that is, the signal is not composed of pure sine waves.  In
 general, you cannot guarantee that errors in your fitting parameters
 are normally distributed.  In general, we cannot actually identify and
 enumerate all sources of measurement error, many of which are complex
 and systematic, such as sample inhomogeneity, detector non-linearity,
 and so on.  Finally, we do not know the true line shape of our signal
- &ndash;  instead we use  <span class=program>FEFF</span> to approximate the lineshape.
+&ndash; instead we use <span class=program>FEFF</span> to approximate the lineshape.
 </p>
 
 <p>
-For all those reasons,  &chi;&sup2<sub>&nu;</sub>  is rarely  &ndash;  if ever  &ndash;  close to 1 as
-expected for a good fit.  Although  &chi;&sup2<sub>&nu;</sub>  for different fitting
+For all those reasons, &chi;&sup2<sub>&nu;</sub> is rarely &ndash; if ever &ndash; close to 1 as
+expected for a good fit.  Although &chi;&sup2<sub>&nu;</sub> for different fitting
 models can be compared effectively, it is, generally speaking, not a
 sufficient criterion for evaluating the quality of an individual fit.
 </p>
 
 <p>
 Happily, this is not an insolvable problem.  After decades of
-analyzing EXAFS data, using  <span class=program>FEFF</span>, and using  <span class=program>IFEFFIT</span>, we know a
+analyzing EXAFS data, using <span class=program>FEFF</span>, and using <span class=program>IFEFFIT</span>, we know a
 lot about what constitutes a good fit.  For instance, a good fit has a
 small R-factor, which is a measure of the percentage misfit between
 the data and theory.  We know things about individual parameter types,
-e.g. that an  E&#8320;  is rarely more than 10 eV or less than -10 eV,
-that  S&sup2;&#8320;  and  &sigma;&sup2;  should never be negative.  We know that a
+e.g. that an E&#8320; is rarely more than 10 eV or less than -10 eV,
+that S&sup2;&#8320; and &sigma;&sup2; should never be negative.  We know that a
 robust fit does not have excessive correlation between variable
 parameters.
 </p>
 
 <p>
- <span class=program>ARTEMIS</span> offers a heuristic tool called &ldquo;happiness&rdquo; which is an attempt to enumerate the knowledge and
+<span class=program>ARTEMIS</span> offers a heuristic tool called &ldquo;happiness&rdquo; which is an attempt to enumerate the knowledge and
 experience we bring to a fit.  After a fit, this heuristic parameter
 is evaluated and reported in the log file.  It has no meaning other
 that to give you a general sense of how the fit came out.
@@ -125,7 +125,7 @@ statistics.  It is essentially meaningless and should <strong>NEVER</strong> be 
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="evaluationofthehappinessparameter">
 
 <h2>  Evaluation of the happiness parameter</h2>
@@ -159,10 +159,10 @@ R-factor up to a maximum penalty of 40.
 <dd>
 After every path parameter for every path is evaluated, assess a
 penalty of 2 for each path parameter that fails a sanity check.  The
-sanity checks include checking that  E&#8320;  is not too large either
-positively or negatively, checking that neither of  S&sup2;&#8320;  or
- &sigma;&sup2;  is negative, and checking that neither of  &sigma;&sup2;  or
- &Delta;R  is too large.
+sanity checks include checking that E&#8320; is not too large either
+positively or negatively, checking that neither of S&sup2;&#8320; or
+&sigma;&sup2; is negative, and checking that neither of &sigma;&sup2; or
+&Delta;R is too large.
   <br />
   <br />
 </dd>
@@ -211,7 +211,7 @@ Penalty parameters have not yet been implemented.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="configuringthehappinessevaluation">
 
 <h2>  Configuring the happiness evaluation</h2>
@@ -246,9 +246,9 @@ sets the maximum penalty to assess for using up all the independent points.
 <p>
 The path parameter penalties can also be fine tuned.  A couple examples: the
 value above which a penalty is assessed for an excessively large
- E&#8320;  is set with 
+E&#8320; is set with 
 <span class=pref>&diams;Warnings&nbsp;&rarr;&nbsp;e0_max</span> and the
-assessment of a penalty for a negative  &sigma;&sup2;  can be turned off by
+assessment of a penalty for a negative &sigma;&sup2; can be turned off by
 toggling <span class=pref>&diams;Warnings&nbsp;&rarr;&nbsp;ss2_neg</span>.
 </p>
 
@@ -263,7 +263,7 @@ configuration parameter values to Bruce!
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -271,7 +271,7 @@ configuration parameter values to Bruce!
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -285,7 +285,7 @@ configuration parameter values to Bruce!
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

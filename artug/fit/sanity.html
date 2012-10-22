@@ -61,17 +61,17 @@
 </h1>
 
 <p>
- <span class=program>ARTEMIS</span> is complex and it is quite easy to make mistakes.  Many
+<span class=program>ARTEMIS</span> is complex and it is quite easy to make mistakes.  Many
 common mistakes are obvious and discoverable by automated analysis of
-the fitting model.  Before running a fit,  <span class=program>ARTEMIS</span> applies each of
+the fitting model.  Before running a fit, <span class=program>ARTEMIS</span> applies each of
 the following test to your fitting model.  If any of them are
 triggered, the fit is halted and a (hopefully) useful error message is
-posted in the Log window.  Think of this like  <span class=program>ARTEMIS</span>' 
+posted in the Log window.  Think of this like <span class=program>ARTEMIS</span>' 
 spell checker!
 </p>
 
 <p>
-Any problems that are found must be corrected before  <span class=program>ARTEMIS</span> will
+Any problems that are found must be corrected before <span class=program>ARTEMIS</span> will
 allow the fit to proceed.
 </p>
 
@@ -80,7 +80,7 @@ allow the fit to proceed.
   
 
 <li><p>
-Check that any files associated with the  data or the  <span class=program>FEFF</span>
+Check that any files associated with the  data or the <span class=program>FEFF</span>
 calculations exist.
 </p></li>
 
@@ -94,16 +94,16 @@ Check that no def parameter or path parameter uses an undefined parameter.
 </p></li>
 
 <li><p>
-Check that none of these typos  &ndash; 
+Check that none of these typos &ndash;
 &ldquo;++&rdquo;,
 &ldquo;--&rdquo;,
 &ldquo;//&rdquo;, or
-&ldquo;***&rdquo;  &ndash;  appear in any math expressions.
+&ldquo;***&rdquo; &ndash; appear in any math expressions.
 </p></li>
 
 <li><p>
 Check that all function names used in math expression (i.e. a word
-followed by parentheses) are valid functions in  <span class=program>IFEFFIT</span>.
+followed by parentheses) are valid functions in <span class=program>IFEFFIT</span>.
 </p></li>
 
 <li><p>
@@ -117,34 +117,34 @@ open penthesis has a matching close paremthesis.
 
 <li><p>
 Check that Fourier transform and fit parameters are sensible (for
-example  R<sub>min</sub>    <  R<sub>max</sub>   ) for all data sets.
+example R<sub>min</sub> < R<sub>max</sub>) for all data sets.
 </p></li>
 
 <li><p>
-Check that the number of guess parameters is less than  N<sub>idp</sub>   .
+Check that the number of guess parameters is less than N<sub>idp</sub>.
 </p></li>
 
 <li><p>
-Verify that  R<sub>min</sub>    &ge;  R<sub>bkg</sub>  for data imported from an
- <span class=program>ATHENA</span> project file.
+Verify that R<sub>min</sub>&ge;R<sub>bkg</sub> for data imported from an
+<span class=program>ATHENA</span> project file.
 </p></li>
 
 <li><p>
-Verify that  R<sub>eff</sub>  for each path is not well beyond  R<sub>max</sub>   .  The
-margin beyond  R<sub>max</sub>    that a value of  R<sub>eff</sub>  is acceptable is set
+Verify that R<sub>eff</sub> for each path is not well beyond R<sub>max</sub>.  The
+margin beyond R<sub>max</sub> that a value of R<sub>eff</sub> is acceptable is set
 by <span class=pref>&diams;Warnings&nbsp;&rarr;&nbsp;reff_margin</span>.
 </p></li>
 
 <li><p>
 Check that various compiled-in limits (e.g. maximum number of paths or
-maximum number of set parameters) in  <span class=program>IFEFFIT</span> are not exceeded.
+maximum number of set parameters) in <span class=program>IFEFFIT</span> are not exceeded.
 </p></li>
 
 <li><p>
-Check that parameters do not have the same names as  <span class=program>IFEFFIT</span>
+Check that parameters do not have the same names as <span class=program>IFEFFIT</span>
 program variables.  For example, things like
 <tt>pi</tt> or <tt>dr1</tt>
-are not allowed since  <span class=program>IFEFFIT</span> uses those strings for other purposes.
+are not allowed since <span class=program>IFEFFIT</span> uses those strings for other purposes.
 </p></li>
 
 <li><p>
@@ -176,20 +176,20 @@ assigned to it.
 </ol> 
 
 <p>
-As a side note, item 15 is particularly interesting.   <span class=program>DEMETER</span> does
+As a side note, item 15 is particularly interesting.  <span class=program>DEMETER</span> does
 a simple lexical analysis on the ensemble of math expressions defined
 on the GDS window, then uses <a href="https://metacpan.org/module/Graph">a formal graph
 theory tool</a> to develop a
 graph depiction of the parameters.  Loops (like the first example) and
 cycles (like the second) a trivially evident when the parameters are
-viewed as a formal graph.  That was a really fun part of  <span class=program>DEMETER</span>
+viewed as a formal graph.  That was a really fun part of <span class=program>DEMETER</span>
 to write.
 </p>
 
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -197,7 +197,7 @@ to write.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -211,7 +211,7 @@ to write.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

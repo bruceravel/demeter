@@ -10,6 +10,7 @@ use File::Spec;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 
+#use Wx::Perl::ProcessStream qw( :everything );
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Demeter::UI::Wx::MRU;
@@ -179,9 +180,12 @@ sub insert_boilerplate {
 sub run_feff {
   my ($self) = @_;
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
-  my $busy = Wx::BusyCursor->new();
   my $feff = $self->{feffobject};
   $feff -> clear;
+  my $v = ($feff->mo->template_feff eq 'feff8') ? 8 : 6;
+  $feff -> feff_version($v);
+  #$feff -> screen(1);
+  #$feff -> save(1);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
@@ -189,6 +193,21 @@ sub run_feff {
   close $OUT;
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
+
+  ##print join("|", $feff->feff_version, @{$feff->scf}), $/;
+  if (($feff->feff_version == 8) and (@{$feff->scf})) {
+    my $md = Wx::MessageDialog->new($rframes->{main},
+				    "You are running Feff8 with self-consistent potentials.  It WILL be time consuming and all interaction with Artemis will be blocked until the Feff calculation is done.  Currently Artemis does not provide real-time feedback, so you will have to be very patient.\n\nContinue?",
+				    "Feff8 with self-consistent potentials",
+				    wxOK|wxCANCEL|wxICON_EXCLAMATION);
+    if ($md->ShowModal == wxID_CANCEL) {
+      $self->{parent}->status("Self-consistent Feff calculation canceled.");
+      return 1;
+    };
+  };
+
+  #print $feff->serialization;
+  #return 1;
 
   #my $zabs = $feff->potentials->[$feff->abs_index]->[1];
   if (get_Z($feff->abs_species) > 95) {
@@ -227,7 +246,6 @@ Should we continue?',
   my @errors   = @{ $problems{errors}   };
   if (@errors) {
     warn join($/, @errors) . $/;
-    undef $busy;
     return;
   };
   if (@warnings) {
@@ -237,6 +255,12 @@ Should we continue?',
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{parent}->status("Computing potentials using Feff ...");
+  my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
+  $self->{parent}->{notebook}->ChangeSelection($n);
+  $self->{parent}->{Console}->{console}->Update;
+  my $busy = Wx::BusyCursor->new();
+
+  $feff->execution_wrapper(sub{$self->run_and_gather(@_)});
 
   ## rerunning, so clean upprevious results
   my $phbin = File::Spec->catfile($feff->workspace, 'phase.bin');
@@ -253,6 +277,7 @@ Should we continue?',
 						    ")\n\n");
   $Demeter::UI::Artemis::frames{main}->status(q{}) if (exists $Demeter::UI::Artemis::frames{main});
   if (-e $phbin) {
+    $self->{parent}->{Console}->{console}->AppendText("\n\n********** Running pathfinder...\n");
     $self->{parent}->status("Finding scattering paths using Demeter's pathfinder...");
     $feff->pathfinder;
     my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
@@ -276,13 +301,68 @@ Should we continue?',
   };
 
 
-  $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
+  #$self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;
+
+  $feff->execution_wrapper(0);
 
   #unlink $inpfile;
   undef $busy;
 };
+
+
+sub run_and_gather {
+  my ($self, $line) = @_;
+  return if ($line =~ m{\A\s*potph});
+  $self->{parent}->{Console}->{console}->AppendText($line);
+  #$self->{parent}->UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
+  $self->{parent}->{Console}->{console}->Update;
+};
+
+# sub run_and_gather {
+#   my ($self) = @_;
+#   my $cwd = cwd();
+#   chdir $self->{feffobject}->workspace;
+#   my $exe = Demeter->co->default("feff", "executable");
+#   EVT_WXP_PROCESS_STREAM_STDOUT( $self, \&evt_process_stdout );
+#   EVT_WXP_PROCESS_STREAM_EXIT  ( $self, \&evt_process_exit   );
+#   my $proc = Wx::Perl::ProcessStream::Process->new($exe, 'FeffProcess', $self);
+#   $proc->Run;
+#   # my $exitcode = $proc->GetExitCode();
+
+#   my $isalive = $proc->IsAlive();
+#   while ($isalive) {
+#     print "running\n";
+#     $isalive = $proc->IsAlive();
+#   };
+
+#   chdir $cwd;
+# };
+
+# sub evt_process_stdout {
+#   my ($self, $event) = @_;
+#   $event->Skip(1);
+#   my $process = $event->GetProcess;
+#   my $line = $event->GetLine;
+#   $self->{parent}->{Console}->{console}->AppendText($line.$/);
+#   $self->Update;
+#   if ($line =~ m{nice day}) {
+#     $process->TerminateProcess;
+#   };
+# };
+
+# sub evt_process_exit {
+#   my ($self, $event) = @_;
+#   $event->Skip(1);
+#   my $process = $event->GetProcess;
+#   my $line = $event->GetLine;
+#   my @buffers = @{ $process->GetStdOutBuffer };
+#   my @errors = @{ $process->GetStdErrBuffer };
+#   my $exitcode = $process->GetExitCode;
+
+#   $process->Destroy;
+# };
 
 sub fill_intrp_page {
   my ($self, $feff) = @_;
@@ -295,6 +375,7 @@ sub fill_intrp_page {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
   my $i = 0;
+  $self->{parent}->{Console}->{console}->AppendText("\n\n********** Ranking paths...\n");
   $self->{parent}->status("Ranking paths...");
   $feff->rank_paths;
   my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';

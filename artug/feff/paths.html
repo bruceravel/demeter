@@ -64,27 +64,27 @@
 
 <p>
 When you click the &ldquo;Run Feff&rdquo; button on
-the  <span class=program>FEFF</span> tab, the  <span class=program>FEFF</span> calculation is run.  Once finished, a
+the <span class=program>FEFF</span> tab, the <span class=program>FEFF</span> calculation is run.  Once finished, a
 succinct summary of the calculation is displayed on the Paths tab.
 </p>
 
 
-<a href="../../images/feff.paths.png" target=_blank><img src="../../images/feff.paths.png" title="
+<a href="../../images/feff.paths.png" target=_blank><img class=flexy src="../../images/feff.paths.png" title="
 The Paths tab.
 " alt="
 The Paths tab.
 "></a>
 
 <p>
-Some statistics about the  <span class=program>FEFF</span> calculation are shown in the
+Some statistics about the <span class=program>FEFF</span> calculation are shown in the
 Description text box.  Below that is the summary of the paths found in
-the  <span class=program>FEFF</span> calculation.  This summary is presented in the form of a
+the <span class=program>FEFF</span> calculation.  This summary is presented in the form of a
 table.  Each row describes a scattering path.
 </p>
 
 <p>
 The first column shows the degeneracy of the path.  The second column
-shows its nominal path length,  R<sub>eff</sub> .  That is value that will be
+shows its nominal path length, R<sub>eff</sub>.  That is value that will be
 used in any 
 <a href="../path/mathexp.html">path parameter math expression</a>
 containing the 
@@ -96,7 +96,7 @@ The third column shows a simple view of the scattering path.  The
 <tt>@</tt> token represents the absorber, thus
 appears as  the first and last token in each description.  The tokens
 representing the scattering atoms are taken from the tags on the
- <span class=program>FEFF</span> tab.  You can change the absorber token by setting the
+<span class=program>FEFF</span> tab.  You can change the absorber token by setting the
 <span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;token</span>
 configuration parameter.
 </p>
@@ -119,10 +119,10 @@ in a fit.
 
 <p>
 Currently, there is only one scheme for assigning path ranks.  The
-curved-wave importance factors from  <span class=program>FEFF6</span> are used.  These are
+curved-wave importance factors from <span class=program>FEFF6</span> are used.  These are
 rather unreliable as they are computed using a very crude algorithm.
-Future versions of  <span class=program>ARTEMIS</span> will offer several path ranking schemes
-to improve upon  <span class=program>FEFF</span>'s[$#'%] simple algorithm.
+Future versions of <span class=program>ARTEMIS</span> will offer several path ranking schemes
+to improve upon <span class=program>FEFF</span>'s[$#'%] simple algorithm.
 </p>
 
 <p>
@@ -148,8 +148,8 @@ paths in a fitting model.  This will be explained in the
 <p>
 At the top of the Paths tab are a series of buttons.  The 
 &ldquo;Save&rdquo; button will write the entire
- <span class=program>FEFF</span> calculation to a form that can be reimported into  <span class=program>ARTEMIS</span>
-or used in some other context in a  <span class=program>DEMETER</span> script.  The remaining
+<span class=program>FEFF</span> calculation to a form that can be reimported into <span class=program>ARTEMIS</span>
+or used in some other context in a <span class=program>DEMETER</span> script.  The remaining
 buttons are related to making plots of the selected paths.
 </p>
 
@@ -159,7 +159,7 @@ buttons are related to making plots of the selected paths.
 </td>
 <td width=644>
 <a class=floatleft href="../../images/feff.plot.png" target=_blank><img border=0 src="../../images/feff.plot.png"  alt="feff.plot.png"></a>
-A plot of paths from the raw  <span class=program>FEFF</span> calculation.  In this example, the
+A plot of paths from the raw <span class=program>FEFF</span> calculation.  In this example, the
 first three single scattering paths from the sodium uranyl triacetate
 calculation were selected along with a low-rank multiple scattering
 path.  Then the &ldquo;Plot selection&rdquo; button was
@@ -169,19 +169,19 @@ barely be seen on this scale.  It truly is a low importance path.
 </p>
 
 <p>
-The meaning of a &ldquo;raw&rdquo;  <span class=program>FEFF</span> calculation
-is that it is displayed as  &chi;(k)    with  S&sup2;&#8320;  set to 1.0 and each
-of  E&#8320; ,  &Delta;R , and  &sigma;&sup2;  set to 0.  A plot of  &chi;(R)    for
-the &ldquo;raw&rdquo;  <span class=program>FEFF</span> calculation, then,
-displays the Foruier transform of  &chi;(k)    parameterized with those
+The meaning of a &ldquo;raw&rdquo; <span class=program>FEFF</span> calculation
+is that it is displayed as &chi;(k) with S&sup2;&#8320; set to 1.0 and each
+of E&#8320;, &Delta;R, and &sigma;&sup2; set to 0.  A plot of &chi;(R) for
+the &ldquo;raw&rdquo; <span class=program>FEFF</span> calculation, then,
+displays the Foruier transform of &chi;(k) parameterized with those
 values.
 </p>
 
 <p>
 It is, therefore, very quick and easy to examine the results of a
- <span class=program>FEFF</span> calculation.  The other four buttons are used to select how
-the plot of paths is made.  The options are  &chi;(k)   ,  |&chi;(R)|   ,
- Re[&chi;(R)]   , and  Im[&chi;(R)]   .  The k-weight selected in the Plot
+<span class=program>FEFF</span> calculation.  The other four buttons are used to select how
+the plot of paths is made.  The options are &chi;(k), |&chi;(R)|,
+Re[&chi;(R)], and Im[&chi;(R)].  The k-weight selected in the Plot
 window is used to make the plot of paths.
 </p>
 
@@ -192,7 +192,7 @@ following figure, the selected path (#0006) was right-clicked on,
 opening the dialog depicted below.
 </p>
 
-<a href="../../images/feff.pathsinfo.png" target=_blank><img src="../../images/feff.pathsinfo.png" title="
+<a href="../../images/feff.pathsinfo.png" target=_blank><img class=flexy src="../../images/feff.pathsinfo.png" title="
 Information about the geometry of a scattering path.
 " alt="
 Information about the geometry of a scattering path.
@@ -201,7 +201,7 @@ Information about the geometry of a scattering path.
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -209,7 +209,7 @@ Information about the geometry of a scattering path.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -223,7 +223,7 @@ Information about the geometry of a scattering path.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

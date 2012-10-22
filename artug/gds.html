@@ -61,7 +61,7 @@
 
 <p>
 
-This is the big trick in  <span class=program>ARTEMIS</span>: <p class=premise>
+This is the big trick in <span class=program>ARTEMIS</span>: <p class=premise>
     The parameters of the EXAFS equation are not the parameters of the
     fit.  The parameters of the EXAFS equation are written <em>in terms
     of</em> the parameters of the fit.
@@ -76,10 +76,10 @@ Some of these math expressions are quite simple.  For example, in the
 gold metal example in 
 <a href="./path/mathexp.html">the previous chapter</a>,
 the math expressions for
- S&sup2;&#8320;  and  E&#8320;  were simple function of a single parameter.  The
-math expression for  &Delta;R , however, was a function of 
+S&sup2;&#8320; and E&#8320; were simple function of a single parameter.  The
+math expression for &Delta;R, however, was a function of 
 <tt>alpha</tt> and <tt>reff</tt>,
-while the  &sigma;&sup2;  math expression used the 
+while the &sigma;&sup2; math expression used the 
 <tt>debye</tt> function and two parameters.
 </p>
 
@@ -101,14 +101,14 @@ parameter types can be chosen.
 </p>
 
 
-<a href="../images/gds.png" target=_blank><img src="../images/gds.png" title="
-The  <span class=program>ARTEMIS</span> GDS window.
+<a href="../images/gds.png" target=_blank><img class=flexy src="../images/gds.png" title="
+The <span class=program>ARTEMIS</span> GDS window.
 " alt="
-The  <span class=program>ARTEMIS</span> GDS window.
+The <span class=program>ARTEMIS</span> GDS window.
 "></a>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="parametertypes">
 
 <h2>  Parameter types</h2>
@@ -121,7 +121,7 @@ window must be used in a math expression.
 </p>
 
 <p>
-There are 9 types of parameters in  <span class=program>ARTEMIS</span>.  They are color coded
+There are 9 types of parameters in <span class=program>ARTEMIS</span>.  They are color coded
 in the grid to give you a visual indication of each parameter's 
 type. 
 <dl>
@@ -145,7 +145,7 @@ parameter that is defined as a math expression
 dependent upon other guess, def, or set parameters.  Its value is
 updated throughout the fit.  As discussed elsewhere in this manual,
 sophisticated use of def parameters is key to successful model
-building and effective use of  <span class=program>ARTEMIS</span>. 
+building and effective use of <span class=program>ARTEMIS</span>. 
   <br />
   <br />
 </dd>
@@ -173,11 +173,11 @@ actual guess parameter will be created for each data set in which the
 lguess is used.  As an example, suppose your multiple data set fit
 includes data on a series of binary alloys.  If <tt>x</tt> is a mixing parameter between the two alloys and is different
 for each sample, you might then use math expressions containing <tt>x</tt> and <tt>(1-x)</tt> for
- S&sup2;&#8320;  parameters of paths representing the two metallic species in
+S&sup2;&#8320; parameters of paths representing the two metallic species in
 each fit.  With  <tt>x</tt> an lguess parameter,
 independent mixing parameters will be floated for each data set.  The
 point, then, of an lguess is to facilitate the chore of editing path
-parameter math expressions using  <span class=program>ARTEMIS</span>'  tools for pushing
+parameter math expressions using <span class=program>ARTEMIS</span>'  tools for pushing
 path parameter values across paths.  This is discussed in more detail
 in <a href="./extended/cv.html#useinlguessparameters">the discussion of the characteristic value</a>.
   <br />
@@ -199,7 +199,7 @@ fit, but which you do not want to discard from your fitting project.
 <dd>
 (<span style="color:#cd9b1d; background-color:white">dark yellow</span>) A restraint
 is a math expression that is evaluated and 
-added in quadrature to  &chi;&sup2;  to evaluate the fit.  That is, the
+added in quadrature to &chi;&sup2; to evaluate the fit.  That is, the
 fit is optimized in the presence of the restraint.  The point of this
 is to add prior knowledge to a fit.  Restraints will be discussed in
 more detail later in this document.
@@ -227,7 +227,7 @@ record of the fit.
 (<span style="color:#8b5a2b; background-color:white">brown</span>) This takes a math
 expression representing a user defined 
 penalty to the happiness calculation.  This feature has not yet been
-implemented in  <span class=program>ARTEMIS</span>.
+implemented in <span class=program>ARTEMIS</span>.
   <br />
   <br />
 </dd>
@@ -240,7 +240,7 @@ red</span>) A merge parameter is a parameter which has been
 multiply defined under the same name as part of combining fitting
 projects or importing structural units.  A fit cannot proceed with any
 parameters in this state.  This feature has not yet been implemented
-in  <span class=program>ARTEMIS</span>.
+in <span class=program>ARTEMIS</span>.
   <br />
   <br />
 </dd>
@@ -256,7 +256,7 @@ Penalty and merge parameters have not been implemented.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="userinteraction">
 
 <h2>  User interaction</h2>
@@ -267,7 +267,7 @@ Penalty and merge parameters have not been implemented.
 Explain drag and drop
 </p>
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="buttonbar">
 
 <h3>  Button bar</h3>
@@ -291,7 +291,7 @@ guess for every guess parameter in the grid.
   Reset all
 </dt>
 <dd>
-This button tells <span class=program>IFEFFIT</span> to reset all parameters to their initial
+This button tells<span class=program>IFEFFIT</span> to reset all parameters to their initial
 values.
   <br />
   <br />
@@ -337,7 +337,7 @@ This button appends a blank row to the end of the grid.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="keyboardshortcuts">
 
 <h3>  Keyboard shortcuts</h3>
@@ -377,7 +377,7 @@ shortcuts to change the parameter type of that set of parameters.
 </ul> 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="contextmenu">
 
 <h3>  Context menu</h3>
@@ -453,7 +453,7 @@ recent best fit value(s).
 <a class=floatright href="../images/gds.restraint.png"  target=_blank><img border=0 src="../images/gds.restraint.png"  alt="gds.restraint.png"></a></p>
 This posts a dialog
 that helps you name and define a restraint based upon the value of the
-parameter in the line clicked upon.  This will use  <span class=program>IFEFFIT</span>'s
+parameter in the line clicked upon.  This will use <span class=program>IFEFFIT</span>'s
 <tt>penalty</tt> function with the lower and upper
 bounds as its arguments and multiplied by the scaling factor.  The
 example shown will make this restraint:
@@ -464,7 +464,7 @@ and add it to the end of the grid.
 The penalty function will evaluate to 0 when enot stays between -5 and
 5.  As the value of enot strays outside that range, the restraint will
 evaluate to a value of 100 times the distance outside the range.
-This, then, is added in quadrature to  &chi;&sup2;  when the fit is minimized.
+This, then, is added in quadrature to &chi;&sup2; when the fit is minimized.
 You can read more about this,
 including how to choose the value of the scaling parameter, in the 
 <a href="./extended/restraint.html">discussion of restraints</a>.
@@ -518,7 +518,7 @@ bar explaining the various parameter types.
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -526,7 +526,7 @@ bar explaining the various parameter types.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -540,7 +540,7 @@ bar explaining the various parameter types.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

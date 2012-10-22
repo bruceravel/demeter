@@ -61,16 +61,16 @@
 
 <p>
 
- <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> are amazing tools, but they can be
-somewhat hard to use.   <span class=program>FEFF</span> requires the use of clunky text files
+<span class=program>FEFF</span> and <span class=program>IFEFFIT</span> are amazing tools, but they can be
+somewhat hard to use.  <span class=program>FEFF</span> requires the use of clunky text files
 with confusing syntax
-as its input.   <span class=program>IFEFFIT</span> has a wordy, finicky syntax.  Both benefit
+as its input.  <span class=program>IFEFFIT</span> has a wordy, finicky syntax.  Both benefit
 by being wrapped up inside of something easier to use.  Hopefully,
- <span class=program>ARTEMIS</span> is that something. 
+<span class=program>ARTEMIS</span> is that something. 
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="usingthisdocument">
 
 <h2>  Using this document</h2>
@@ -91,13 +91,13 @@ page.
 </p>
 
 <p>
-This is document version 0.2 for  <span class=program>DEMETER</span>
+This is document version 0.2 for <span class=program>DEMETER</span>
 version 0.9.13.
 </p>
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="typesetting">
 
 <h3>  Typesetting</h3>
@@ -112,19 +112,19 @@ information in this manual.
 <ol>
   
 <li><p>
-The names of programs look like this:  <span class=program>ARTEMIS</span>,  <span class=program>FEFF</span>
+The names of programs look like this: <span class=program>ARTEMIS</span>, <span class=program>FEFF</span>
 </p></li>
 <li><p>
 The names of files look like this: <span class=file>atoms.inp</span>
 </p></li>
 <li><p>
-Configuration parameters (i.e. preferences) for  <span class=program>ARTEMIS</span> and
- <span class=program>DEMETER</span> look like this:
+Configuration parameters (i.e. preferences) for <span class=program>ARTEMIS</span> and
+<span class=program>DEMETER</span> look like this:
 <span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;plot_after_fit</span>
 </p></li>
 <li><p>
 Verbatim text, such as represent specific input to or output from
- <span class=program>ARTEMIS</span> or text typed into a computer, looks like
+<span class=program>ARTEMIS</span> or text typed into a computer, looks like
 this:
 <pre>
 This is verbatim text!
@@ -134,13 +134,13 @@ This is verbatim text!
 <p class=caution>
 <img class=tinyfloatleft border=0 src="../images/alert.png" alt="Caution!">
 Words of caution intended to point out some specific pitfall of the
-use or  <span class=program>ARTEMIS</span> are found in boxes that look like this.
+use or <span class=program>ARTEMIS</span> are found in boxes that look like this.
 </p>
 </p></li>
 <li><p>
 <p class=todo>
 <img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Aspects of this document, or possibly of  <span class=program>ARTEMIS</span> itself, which
+Aspects of this document, or possibly of <span class=program>ARTEMIS</span> itself, which
 are incomplete are indicated with boxes like this.  (The icon comes
 from the Gartoon Redux icon set.)
 </p>
@@ -151,13 +151,13 @@ from the Gartoon Redux icon set.)
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="thetechnologybehindartemis">
 
 <h2>  The technology behind Artemis</h2>
 </a>
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="perl">
 
 <h3>  perl</h3>
@@ -165,34 +165,34 @@ from the Gartoon Redux icon set.)
 
 <p>
 
- <span class=program>DEMETER</span> uses <a href="http://perl.org">perl</a>.  This is, I suppose, an unsexy
+<span class=program>DEMETER</span> uses <a href="http://perl.org">perl</a>.  This is, I suppose, an unsexy
 choice these days.  All the cool kids are, after all, using python or
 ruby.  I like perl.  I can think in perl.  And I can code quickly and
 fluently in perl.  What's  more, perl has <a href="http://www.cpan.org/">CPAN</a>, the worlds largest
 repository of language extensions.  CPAN means that I have far fewer
 wheels to recreate (and probably get wrong).  Virtually any language
-extension I need in pursuit of making  <span class=program>DEMETER</span> awesome probably
+extension I need in pursuit of making <span class=program>DEMETER</span> awesome probably
 already exists.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="wxwidgetsandwxperl">
 
 <h3>  wxWidgets and wxPerl</h3>
 </a>
- <span class=program>ARTEMIS</span> uses 
+<span class=program>ARTEMIS</span> uses 
 <a href="http://wxwidgets.org/">wxWidgets</a>
 and its perl wrapper 
 <a href="http://wxperl.sourceforge.net/">wxPerl</a>
 as its graphical toolkit.  This cross-platform tool
-gives  <span class=program>ARTEMIS</span> a truly native look and feel because
+gives <span class=program>ARTEMIS</span> a truly native look and feel because
 it uses the platform's  native API rather than emulating the
-GUI.  Using wx's rich set of graphical tools,  <span class=program>ARTEMIS</span>
+GUI.  Using wx's rich set of graphical tools, <span class=program>ARTEMIS</span>
 strives to provide a powerful yet user-friendly environment in which
 to perform EXAFS data analysis.
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="moose">
 
 <h3>  Moose</h3>
@@ -200,10 +200,10 @@ to perform EXAFS data analysis.
 
 <p>
 
- <span class=program>DEMETER</span> uses <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod">Moose</a>.  This is,
+<span class=program>DEMETER</span> uses <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod">Moose</a>.  This is,
 on the balance, a very good thing, indeed.  Moose brings many powerful
 capabilities to the programming table.  When I was about halfway
-through writing  <span class=program>DEMETER</span>, I paused for a bit less than a month to
+through writing <span class=program>DEMETER</span>, I paused for a bit less than a month to
 rewrite everything I had thus far created to use Moose.  This left me
 with about 2/3 as many lines of code and a code base that was more
 robust and more featureful.  Neat-o!
@@ -225,25 +225,25 @@ attribute system, a type attribute system, method modifiers, an
 ability to mix object and aspect orientation, and a wonderfully deep
 set of automated tests.  I am confident that simply by using Moose, my
 code is better code and, because Moose testing is so deep, I am
-confident that any bugs in  <span class=program>DEMETER</span> are my fault and not the
+confident that any bugs in <span class=program>DEMETER</span> are my fault and not the
 fault of the people whose work I depend on.
 </p>
 
 <p>
 For all the wonderfulness of Moose, it does have one big wart that I
 need to be up-front about.  Moose is slow at start-up.  Since 
- <span class=program>DEMETER</span> is big and Moose starts slowly, any program using 
- <span class=program>DEMETER</span> will take about 2 extra second to start.  For a
+<span class=program>DEMETER</span> is big and Moose starts slowly, any program using 
+<span class=program>DEMETER</span> will take about 2 extra second to start.  For a
 long-running program like a complicated fitting script or a GUI, an
 additional couple of seconds at start-up is no big deal.  For
 quick-n-dirty or one-off application, that may a bit annoying.  The
 Moose folk claim to be working on start-up issues.  I am keeping my
 fingers crossed.  Until then, I live with the slow start-up, confident
-that the rest of  <span class=program>DEMETER</span> is worth the wait.
+that the rest of <span class=program>DEMETER</span> is worth the wait.
 </p>
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="templates,backends,andothertools">
 
 <h3>  Templates, backends, and other tools</h3>
@@ -251,12 +251,12 @@ that the rest of  <span class=program>DEMETER</span> is worth the wait.
 
 <p>
 
-All of  <span class=program>ARTEMIS</span>' interactions with  <span class=program>FEFF</span>,  <span class=program>IFEFFIT</span>, and
+All of <span class=program>ARTEMIS</span>' interactions with <span class=program>FEFF</span>, <span class=program>IFEFFIT</span>, and
 its plotting tools use <a href="https://metacpan.org/module/Text::Template">a templating
 library</a>.  Along with a clean separation between function within the
- <span class=program>DEMETER</span> code base and syntax of the various tools used by
- <span class=program>DEMETER</span>, the use of templated interactions provides a clear
-upgrade path for all parts of  <span class=program>ARTEMIS</span>.  
+<span class=program>DEMETER</span> code base and syntax of the various tools used by
+<span class=program>DEMETER</span>, the use of templated interactions provides a clear
+upgrade path for all parts of <span class=program>ARTEMIS</span>.  
 </p>
 
 
@@ -266,9 +266,9 @@ upgrade path for all parts of  <span class=program>ARTEMIS</span>.
   Feff
 </dt>
 <dd>
-Although  <span class=program>DEMETER</span> ships with a freely redistributable version of
- <span class=program>FEFF6</span>, it is possible to upgrade to use later versions of  <span class=program>FEFF</span>
-by providing an appropriate set of templates.  At this time,  <span class=program>FEFF8</span>
+Although <span class=program>DEMETER</span> ships with a freely redistributable version of
+<span class=program>FEFF6</span>, it is possible to upgrade to use later versions of <span class=program>FEFF</span>
+by providing an appropriate set of templates.  At this time, <span class=program>FEFF8</span>
 is partially supported, with better support coming soon.
   <br />
   <br />
@@ -277,9 +277,9 @@ is partially supported, with better support coming soon.
   Ifeffit and Larch
 </dt>
 <dd>
-Matt Newville, the author of  <span class=program>IFEFFIT</span>, is hard at work on
- <span class=program>IFEFFIT</span>'s successor, called  <span class=program>LARCH</span>.  The path to supporting
- <span class=program>LARCH</span> will be relatively shallow, requiring only authorship of a
+Matt Newville, the author of <span class=program>IFEFFIT</span>, is hard at work on
+<span class=program>IFEFFIT</span>'s successor, called <span class=program>LARCH</span>.  The path to supporting
+<span class=program>LARCH</span> will be relatively shallow, requiring only authorship of a
 new set of templates.
   <br />
   <br />
@@ -288,8 +288,8 @@ new set of templates.
   plotting
 </dt>
 <dd>
- <span class=program>DEMETER</span> currently supports two plotting backends: PGPLOT, which is
-the native plotting tool in  <span class=program>IFEFFIT</span>, and  <span class=program>GNUPLOT</span>.  New
+<span class=program>DEMETER</span> currently supports two plotting backends: PGPLOT, which is
+the native plotting tool in <span class=program>IFEFFIT</span>, and <span class=program>GNUPLOT</span>.  New
 plotting backends can be supported, again simply by creation of new
 set of templates.
   <br />
@@ -299,13 +299,13 @@ set of templates.
 
 <p>
 
-For numerically intensive parts of the code,  <span class=program>ARTEMIS</span> relies on
+For numerically intensive parts of the code, <span class=program>ARTEMIS</span> relies on
 <a href="http://pdl.perl.org/">the Perl Data Language</a>,
 a natively vector-oriented numerical language.
 </p>
 
 <p>
- <span class=program>ARTEMIS</span> makes use a host of other tools from CPAN, the online perl
+<span class=program>ARTEMIS</span> makes use a host of other tools from CPAN, the online perl
 library, including tools for date and time manipulation; heap and tree
 data structures; tools for formal graph theory; tools for manipulating
 zip, INI, and yaml files; and many others.  These tools from CPAN are
@@ -315,7 +315,7 @@ extensively tested and highly reliable.
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -323,7 +323,7 @@ extensively tested and highly reliable.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -337,7 +337,7 @@ extensively tested and highly reliable.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

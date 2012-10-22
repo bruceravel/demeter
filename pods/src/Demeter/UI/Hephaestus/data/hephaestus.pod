@@ -1,0 +1,492 @@
+
+=head1 NAME
+
+Hephaestus -- A souped-up periodic table for the X-ray absorption spectroscopist
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.13.
+
+=head1 OVERVIEW
+
+    In his workshop he has handmaidens he has forged out of gold
+    who can move and who help him in his work. ...  With Athena,
+    [Hephaestus is] important in the life of the city.  The two
+    [are] the patrons of handicrafts, the arts which along with
+    agriculture are the support of civilization.
+                                 Mythology, Edith Hamilton
+
+Hephaestus is a program for making calculations useful to the XAS
+experimentalist using a periodic table, tables of X-ray absorption
+coefficients, and other elemental data.
+
+On the left of the Hephaestus window is a stack of icons which are
+used to select the different tools.  Clicking on one of the icons
+enables that tool.
+
+At the bottom of the Hephaestus window is a status bar which
+Hephaestus uses to convey information during the course of operation.
+Along with information about the most recently completed calculation,
+the status bar shows topical information.  As the mouse passes over an
+element in the periodic table, the element name, symbol, and Z number
+are displayed.  In the Absorption tool, clicking on an edge or line
+energy will display that energy in wavelength units in the status
+bar.  In the Standards tool, some information about the plotted data
+is displayed in the status bar.
+
+The "Tools" menu in the menu bar provides another way of navigating
+between the tools.  The mouse can be used, as can the keyboard.
+"Alt-t" posts the "Tools" menu and  the arrow keys can be used to
+navigate among the entries.  "Alt-e" and "Alt-h" post the "Hephaestus"
+and "Help" menus.
+
+=head1 TOOLS
+
+=head2 Absorption
+
+This is the start page for Hephaestus and is used to display
+information about edge and line energies for the elements.
+
+A periodic table is displayed atop three lists that will be filled in
+with data associated with an element.  Clicking on an element in the
+periodic table displays data about that element.
+
+The "data" table will be filled with some basic information
+about the element, including its name and Z number, its atomic weight,
+and bulk density under standard temperature and pressure.
+Beneath this table are two controls for determining the appropriate
+Z-1 or Z-2 filter to use in a fluorescence experiment.  The "Filter"
+text box will be filled with the likeliest candidate for the element
+selected from the periodic table.  This can be edited by hand.
+Clicking the "Plot filter" button will display a plot showing the
+relative locations of the edge energy, the dominant fluorescence
+lines, and the filter edge energy.
+
+The "edges" table shows the value in eV of each edge associated with
+the element selected from the periodic table and the core-hole
+lifetime in eV of each edge.  Clicking on a line in this table will
+display a message in the status bar giving the edge energy expressed in
+wavelength units and the core-hole lifetime expressed in approximate
+time units.  Double clicking on a line will highlight all fluorescence
+lines associated with that edge in the "lines" table.
+
+The "lines" table shows the transitions and emission energies in eV of
+every line associated with the element selected from the periodic
+table.  Also shown is the approximate strength, or branching ratio, of
+each line.  The strengths for all lines associated with a particular
+edge will sum to 1.  Clicking on a line in this table will display a
+message in the status bar giving the emission energy expressed in
+wavelength units.
+
+The rules for the selection of the filter elements are:
+
+=over 4
+
+=item 1
+
+For elements below Z=38, assume the K edge is being measured and use
+the Z-1 element. 
+
+=item 2
+
+For elements between Z=39 and Z=57, assume the K edge is being measured
+and use the Z-2 element.
+
+=item 3
+
+Use Br for a Rb absorber because Kr is a silly filter material.
+
+=item 4
+
+Use Rh for a Ru absorber because nobody wants a Tc filter!
+
+=item 5
+
+Use I for a Ba absorber because Xe is also a silly filter material.
+
+=item 6
+
+For elements above Z=57, assume the L3 edge is being measured.  Use the
+first element whose K edge is more than 90 eV above the Lalpha1 line
+of the absorber.
+
+=item 7
+
+Use Rb for a U or Np absorber because Kr is still a silly filter material.
+
+=item 8
+
+For elements below Z=24 (chromium), no filter choice is given.
+Filters for lower-Z elements are not used because no element exists
+with a K-edge between the line and absorption energies of the
+absorber.
+
+=back
+
+=head2 Formulas
+
+This tool is used to compute approximate absorption lengths for common
+or user-specified materials.  To the left is a list of materials
+commonly found at synchrotron beamlines.  Clicking one of those items
+inserts its stoichiometric formula into the "Formula" box and the
+density into the "Density" box.
+
+At the top of the right hand part of this tool are controls for
+entering the parameters of the absorption length calculation.  The
+formula must be a stoichiometric formula using a few simple rules.
+
+=over 4
+
+=item 1
+
+Element symbols must be first letter capitalized.
+
+=item 2
+
+White space is unimportant -- it will be removed from the string.  So
+will dollar signs, underscores, and curly braces (in an attempt to
+handle TeX).  Also a sequence like this: '/sub 3/' will be converted
+to '3' (in an attempt to handle INSPEC).
+
+=item 3
+
+Numbers can be integers or floating point numbers.  Things like 5,
+0.5, 12.87, and .5 are all acceptable, as is exponential notation like
+1e-2.  Note that exponential notation must use a leading number to
+avoid confusion with element symbols.  That is, 1e-2 is OK, but e-2 is
+not.
+
+=item 4
+
+Uncapitalized symbols or unrecognized symbols will flag an error.
+
+=item 5
+
+An error will be flagged if the number of open parentheses is different
+from the number of close parentheses.
+
+=item 6
+
+An error will be flagged if any unusual symbols are found in the string.
+
+=back
+
+The density is entered in units of specific gravity or grams per
+cubic centimeter.  Alternately units of molarity can be used by
+selecting that from the choice menu.
+
+Finally, the calculation requires an energy in eV at which to make t
+the calculation.
+
+Here is an example of the results printed for BN, with a density of
+2.29 and at energy of 9000 eV:
+
+
+      element   number   barns/atom     cm^2/gm
+     --------- ----------------------------------
+        B	     1.000	30.084	      1.676
+        N	     1.000     123.417	      5.306
+    
+    This weighs 24.819 amu.
+    
+    Absorption length = 0.117 cm at 9000 eV.
+    
+    A sample of 1 absorption length with area of 1 square
+    cm requires 268.486 milligrams of sample at 9000.00 eV.
+    
+    The Elam database and the full cross-sections were
+    used in the calculation.
+
+This tells us that 9000 eV photons will be e-fold attenuated (about
+67%) in just over 1 millimeter of packed BN.  To make a sample with an
+area of 1 square centimeter facing the beam and which has an
+absorption length of 1, one must weigh out about 270 milligrams of BN.
+
+=head2 Ion Chambers
+
+This tool is used to determine appropriate contents of ion chambers at
+a given energy.  The calculation requires several parameters,
+including
+
+=over 4
+
+=item 1
+
+The length in centimeters of the ion chamber.  This can be selected
+from a list of common lengths or supplied by the user.
+
+=item 2
+
+The relative fractions of two gasses mixed together in the ion
+chambers.  Each can be selected from a list which includes H2, N2, Ar,
+Ne, Kr, and Xe.
+
+=item 3
+
+The pressure of the gas inside the ion chamber, in Torr.  Atmospheric
+pressure is 760 Torr.
+
+=back
+
+The percentage absorbed by the ion chamber will usually auto-update as
+you change the parameters.  Clicking the "Compute" button forces an
+update.  Clicking the "Reset" button returns all the parameters to
+their initial values.
+
+As a rule of thumb, 10% is a good amount of absorption for the I0
+chamber.  This will allow for a good measurement of incidence flux
+while leaving most photons for the rest of the measurement.  66% is a
+good amount for the It, Ir, and If chambers.  This distributes the
+absorption over the entire length of the ion chamber.  In the case of
+It, this leaves enough photons passing through to the reference
+chamber to allow for a reasonable measurement on Ir.
+
+If you know the amplifier gain and voltage signal coming from your
+current-to-voltage amplifier (such as a Keithley 527 or 528),
+specifying these will compute a crude calculation of photon flux
+incident upon the chamber.
+
+           e * energy * flux * gain
+      V = --------------------------
+              IonizationEnergy
+
+The ionization energy is about 32 volts for most gasses and the
+electron charge C<e> is about 1.6E-19 Coulombs. 
+
+=head2 Data
+
+This tool is used to display a number of useful physical and chemical
+properties of the elements.  Selecting an element from the periodic
+table will fill in the table with the data for that element.
+
+=head2 Transitions
+
+This tool displays a non-interactive chart explaining the transitions
+for each of the emission lines.  The initial and final states for each
+named K and L transition is shown.  The chart follows Figure 1.1 in
+the Center for X-Ray Optics X-Ray Data Booklet.
+
+=head2 Edge Finder
+
+This tool displays a table, ordered by increasing edge energy, of all
+edge energies on the periodic table.  The table also shows the edge
+energies in wavelength units and the core-hole lifetimes.
+
+The purpose of this tool is to aid in identifying edges observed during
+measurements.  To search the list, enter an energy in the text box on
+the right and click search (or hit return).  The list will be
+recentered around that energy.  Hopefully this will help you identify
+the mysterious feature in your measured data!
+
+You can also search for edges at the second or third harmonic of the
+energy.  This can be useful in the case of poor harmonic rejection in
+the incident beam and the excitation of a much higher energy edge.
+
+=head2 Line Finder
+
+This tool displays a table, ordered by increasing emission energy, of
+all emission line energies on the periodic table.  The table also
+shows the emission energies in wavelength units and the strength (or
+branching ratio) of each line relative to the other lines arising from
+the same absorption edge.
+
+The purpose of this tool is to aid in identifying emission lines
+observed during measurements.  To search the list, enter an energy in
+the text box on the right and click search (or hit return).  The list
+will be recentered around that energy.  Hopefully this will help you
+identify the mysterious line in your fluorescence data!
+
+=head2 Standards
+
+Demeter is distributed with a small library of data on standard
+materials.  These XANES spectra can be access via this tool.  You will
+find that this library is quite tiny at this time.  The hope is that a
+future effort in an XAS standards library will take off.  When that
+happens, this will be Hephaestus' interface to that effort.
+
+Clicking on an element in the periodic table displays a list of all
+the standards in the library measured for that element.  The disabled
+elements in the periodic table are ones for which the library has no
+entries. 
+
+The XANES data can be plotted as normalized mu(E) or as the derivative
+of mu(E).  The data present have all been annotated so that
+interesting points are marked on the plots.
+
+The "Save" button will prompt for a file name and save the mu(E) data
+to a file.
+
+One point of this tool is to make obsolete the "Reference Spectra"
+printout from EXAFS Materials that is found at many beamlines.
+(C<http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf>)
+
+=head2 F' and F"
+
+This tool plots the complex anomalous scattering data from the
+Cromer-Liberman tables as a function of energy.  The start and end
+energies for the plot are entered, as well as the energy grid
+spacing.  When an element is selected from the periodic table, it's f'
+and f" values are plotted.
+
+Anomalous scattering for elements can be plotted alone or over-plotted
+with other elements.  You can also select to plot either f', f", or
+both.
+
+The f' and f" data can be save to a file.
+
+=head2 Preferences
+
+The behavior of Hephaestus can be configured via the preferences
+tool.  This uses the same preferences tool as Athena and Artemis,
+although only those preference groups relevant to Hephaestus and to
+plotting are presented.
+
+Click on a group in the "Parameters" list to open a group.  Click on a
+parameter to display it in the controls on the right. You will be
+given controls appropriate to each parameter's data type for setting
+the parameter value.  The "Your value" and "Demeter's value" buttons
+can be used to restore a parameter's value.  A description of the
+displayed parameter will be written in the large text box.
+
+Parameters can be applied for the current session or applied and saved
+to your configuration file. 
+
+=head1 CREDITS
+
+=over 4
+
+=item *
+
+The layout of Hephaestus -- with its button bar on the left side which
+changes the mode of the main part of the program -- was inspired by
+the personal information management program I use on my KDE systems,
+Kontact. I found it effective so I swiped it for this program.
+
+=item *
+
+The pictures used on the buttons were cropped from images I found
+using Google The picture of the ion chamber is from the Advanced
+Designed Consulting web site.  Their ion chambers are quite nice.  The
+edge finder icon was swiped from the F<find.png> icon in the kid's
+icon theme for KDE.  The line finder icon is from a web page by the
+Alberta Synchrotron Institute and depicts a fluorescence map of some
+rock.  The documentation icon was found under a Creative Commons
+license at C<http://battellemedia.com/archives/001952.php>
+
+=item *
+
+The formulas utility owes much to Gerry Roe, who pointed out a bug,
+and Erik Gullikson, whose similar utility on the web set me straight.
+
+=item *
+
+The information used in the chemical data utility is from the
+kalziumrc file, which was swiped from the Kalzium package.  See
+C<http://edu.kde.org/kalzium/> for more details.  The data for
+Mossbauer active isotopes was taken from C<http://www.mossbauer.org>
+
+=item *
+
+The ion chamber and edge finder utilities were inspired by the similar
+utilities in the data acquisition program by Lars Fuerenlid and Johnny
+Kirkland and in wide use at NSLS.  Lars and Johnny seem to have a
+deeper love of pastel than do I.
+
+=item *
+
+The electronic transitions chart was created from scratch but
+slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
+Data Booklet.
+
+=item *
+
+Hephaestus makes use of the and several things from
+C<http://www.cpan.org>
+
+=item *
+
+And, of course, the users of my various software efforts deserve all
+the credit for kind praise and useful feedback over these many years.
+
+=back
+
+The absorption data resources all have literature references.
+
+=over 4
+
+=item The Elam tables
+
+W.T. Elam, B.Ravel, and J.R. Sieber, I<Radiat. Phys. Chem.> B<63>
+(2002) pp. 121-128 This is the source of data for the edge and line
+finders and for the filter plot.
+
+=item The McMaster tables
+
+W.H. McMaster et al., I<Compilation of X-ray Cross Sections. Lawrence
+Radiation Laboratory Report> UCRL-50174, pub: "National Bureau of
+Standards" (1969).  These data were originally compiled in machine
+readable form by Pathikrit Bandyopadhyay.
+
+=item The Henke tables
+
+B. L. Henke, E. M. Gullikson, and J. C. Davis, I<Atomic Data and
+Nuclear Data Tables">. B<54> (1993).  The data is available at
+C<http://www-cxro.lbl.gov/optical_constants/>.
+
+=item The Chantler tables
+
+C. T. Chantler, I<J. Phys. Chem. Ref. Data> B<24>, (1995) p. 71.  The
+data files can be found at
+C<http://physics.nist.gov/PhysRefData/FFast/html/form.html>
+
+=item The Cromer-Liberman tables
+
+S. Brennan and P.L. Cowen, I<Rev. Sci. Instrum.> B<63> (1992) p. 850
+
+=item The Shaltout tables
+
+A. Shaltout, H. Ebel and R. Svagera, I<X-Ray Spectrom.>
+B<35> (2006), pp. 52-56
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+Every calculation at high energy is inaccurate in Hephaestus.
+Xray::Absorption does not correctly handle the mass-energy absorption
+coefficients at high energy, although the ion chamber utility does
+attempt a (very) crude correction.
+
+More types of information can be added to the chemical data utility.
+If there is something you would like to see, you should send the data
+in an easily readable format (i.e. plain text is lovely).  Merely
+suggesting new data types is unlikely to have any effect.  Supplying
+the data is highly likely to have an effect.
+
+My wish list includes auger/fluorescence branching ratios in one of
+the periodic table utilities and providing the Berger/Hubble XCOM
+tables and Feff's optical calculations as data resources.
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+C<https://github.com/bruceravel/demeter>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.  See 
+C<http://perldoc.perl.org/perlgpl.html>
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

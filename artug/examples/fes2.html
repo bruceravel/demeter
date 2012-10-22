@@ -66,15 +66,15 @@ mechanics of the program, blah blah
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="importdata">
 
 <h2>  Import data</h2>
 </a>
 
 <p>
-After starting  <span class=program>ARTEMIS</span>, click on the &ldquo;Add&rdquo; button at the top of the &ldquo;Data sets&rdquo; list in the Main window.  This will open a file
-selection dialog.  Click to find the  <span class=program>ATHENA</span> project file
+After starting <span class=program>ARTEMIS</span>, click on the &ldquo;Add&rdquo; button at the top of the &ldquo;Data sets&rdquo; list in the Main window.  This will open a file
+selection dialog.  Click to find the <span class=program>ATHENA</span> project file
 containing the data you want to analyze.  Opening that project file
 displays the project selection dialog.
 </p>
@@ -89,22 +89,22 @@ Import data into Artemis
 
 <p>
 The project file used here has several iron standards.  Select
- FeS<sub>2</sub>      from the list.  That data set gets plotted when selected.
+FeS<sub>2</sub> from the list.  That data set gets plotted when selected.
 </p>
 
 <p>
 Now click the &ldquo;Import&rdquo; button.  That data
-set gets imported into  <span class=program>ARTEMIS</span>.  An entry for the  FeS<sub>2</sub>      is
-created in the Data list, a window for interacting with the  FeS<sub>2</sub>     
-data is created, and the  FeS<sub>2</sub>      data are plotted as  &chi;(k)   .
+set gets imported into <span class=program>ARTEMIS</span>.  An entry for the FeS<sub>2</sub> is
+created in the Data list, a window for interacting with the FeS<sub>2</sub>
+data is created, and the FeS<sub>2</sub> data are plotted as &chi;(k).
 </p>
 
 <p>
-The next step is to prepare for the  <span class=program>FEFF</span> calculation using the
-known  FeS<sub>2</sub>      crystal structure.  Clicking on the line in the Data
+The next step is to prepare for the <span class=program>FEFF</span> calculation using the
+known FeS<sub>2</sub> crystal structure.  Clicking on the line in the Data
 window that says &ldquo;Import crystal data or a
 Feff calculation&rdquo; will post a file selection ddialog.  Click to find
-the <span class=file>atoms.inp</span> file containing the  FeS<sub>2</sub>     
+the <span class=file>atoms.inp</span> file containing the FeS<sub>2</sub>
 crystal structure.
 </p>
 
@@ -117,15 +117,15 @@ Import crystal data into Artemis
 </p>
 
 <p>
-With the  FeS<sub>2</sub>      crystal data imported, run  <span class=program>ATOMS</span> by clicking the 
+With the FeS<sub>2</sub> crystal data imported, run <span class=program>ATOMS</span> by clicking the 
 &ldquo;Run Atoms&rdquo; button on the Atoms tab of the
- <span class=program>FEFF</span> windows.  That will display the Feff tab containing the
- <span class=program>FEFF</span> input data.  Click the &ldquo;Run Feff&rdquo;
+<span class=program>FEFF</span> windows.  That will display the Feff tab containing the
+<span class=program>FEFF</span> input data.  Click the &ldquo;Run Feff&rdquo;
 button to compute the scattering potentials and to run the pathfinder.
 </p>
 
 <p>
-Once the  <span class=program>FEFF</span> calculation is finished, the path intepretation list
+Once the <span class=program>FEFF</span> calculation is finished, the path intepretation list
 is shown in the Paths tab.  This is the list of scattering paths,
 sorted by increasing path length.  Select the first 11 paths by
 clicking on the path #0000, then shift-clicking on path #0010.  These
@@ -146,15 +146,15 @@ Drag and drop paths onto a data set
 <p>
 Dropping the paths on the Path list will associate those paths with
 that data set.  That is, that group of paths is now available to be
-used in the fitting model for understanding the  FeS<sub>2</sub>      data.
+used in the fitting model for understanding the FeS<sub>2</sub> data.
 </p>
 
 <p>
 Each path will get its own Path page.  The Path page for a path is
 displayed when that path is clicked upon in the Path list.  Shown
-below is the  FeS<sub>2</sub>      data with its 11 paths.  The first path in the
+below is the FeS<sub>2</sub> data with its 11 paths.  The first path in the
 list, the one representing the contribution to the EXAFS from the S
-single scattering path at 2.257  &Aring;    , is currently displayed.
+single scattering path at 2.257 &Aring;, is currently displayed.
 </p>
 
 <p>
@@ -167,7 +167,7 @@ Paths associated with a data set
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="examinethescatteringpaths">
 
 <h2>  Examine the scattering paths</h2>
@@ -176,18 +176,18 @@ Paths associated with a data set
 
 <p>
 The first chore is to understand how the various paths from the
- <span class=program>FEFF</span> calculation relate to the data.  To this end, we need to
+<span class=program>FEFF</span> calculation relate to the data.  To this end, we need to
 populate the Plotting list with data and paths and make some plots.
 </p>
 
 <p>
 First let's examine how the single scattering paths relate to
 the data.  Mark each of the first four single scattring paths
- &ndash;  the ones labeled 
+&ndash; the ones labeled 
 &ldquo;S.1&rdquo;,
 &ldquo;S.2&rdquo;,
 &ldquo;S.3&rdquo;, and
-&ldquo;Fe.1&rdquo;  &ndash;  by clicking on their check
+&ldquo;Fe.1&rdquo; &ndash; by clicking on their check
 buttons.  Transfer those four paths to the Plotting list by selecting 
 &ldquo;Transfer marked&rdquo; from the Actions menu.
 </p>
@@ -209,19 +209,19 @@ FeS2 data plotted with the first four single scattering paths
 <p>
 The first interesting thing to note is that the first peak in the data
 seems to be entirely explained by the path from the S atom at 2.257
- &Aring;    .  None of the other single scattering paths contribute
+&Aring;.  None of the other single scattering paths contribute
 significantly to the region of R-space.
 </p>
 
 <p>
 The second interesting thing to note is that the next three single
 scattering paths are not so well separated from one another.  While it
-may be tempting to point at the peaks at 2.93  &Aring;     and 3.45  &Aring;    
+may be tempting to point at the peaks at 2.93 &Aring; and 3.45 &Aring;
 and assert that they are due to the second shell S and the fourth
 shell Fe, it is already clear that the situation is more
 complicated.  Those three single scattering paths overlap one
 another.  Each contriobutes at least some spectral weight to both of
-the peaks at 2.93  &Aring;     and 3.45  &Aring;    .
+the peaks at 2.93 &Aring; and 3.45 &Aring;.
 </p>
 
 <p>
@@ -236,8 +236,8 @@ What about the multiple scattering paths?
 <p>
 To examine those, first clear the Plotting list by clicking the 
 &ldquo;Clear&rdquo; button at the bottom of the Plot
-window.  Transfer the  FeS<sub>2</sub>      data back to the Plotting list by
-clicking its transfer button, <a href="../../images/plot.icon.png" target=_blank><img src="../../images/plot.icon.png" title="transfer
+window.  Transfer the FeS<sub>2</sub> data back to the Plotting list by
+clicking its transfer button, <a href="../../images/plot.icon.png" target=_blank><img class=flexy src="../../images/plot.icon.png" title="transfer
 button" alt="transfer
 button"></a>.  Mark the first three multiple scattering paths by
 clicking their mark buttons.  Select 
@@ -245,7 +245,7 @@ clicking their mark buttons.  Select
 </p>
 
 <p>
-With the Plotting list newly populated, make a new plot of  |&chi;(R)|   .
+With the Plotting list newly populated, make a new plot of |&chi;(R)|.
 </p>
 
 <p>
@@ -262,14 +262,14 @@ represent two different ways for the photoelectron to scatter from a S
 atom in the first coordination shell then scatter from another S atom
 in the first coordination shell, contribute rather little spectra
 weight.  Given their small size, it seems possible that we may be able
-to ignore those paths when we analyze our  FeS<sub>2</sub>      data.
+to ignore those paths when we analyze our FeS<sub>2</sub> data.
 </p>
 
 <p>
 The &ldquo;S.1 S.2&rdquo; path, which first scatters
 from a S in the first coordination shell then from a S in the second
 coordination shell, contributes significantly to the peak at 2.93
- &Aring;    .  It seems unlikely that we will be able to ignore that path.
+&Aring;.  It seems unlikely that we will be able to ignore that path.
 </p>
 
 <p>
@@ -297,7 +297,7 @@ tiny.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="fittothefirstcoordinationshell">
 
 <h2>  Fit to the first coordination shell</h2>
@@ -319,7 +319,7 @@ This will exclude those paths from the fit.  That is indicated by the
 triple parentheses in the path list.  
 </p></li>
 <li><p>
-Set the values of  R<sub>min</sub>    and  R<sub>max</sub>    to cover just the first peak.
+Set the values of R<sub>min</sub> and R<sub>max</sub> to cover just the first peak.
 </p></li>
 <li><p>
 For this
@@ -331,10 +331,10 @@ parameters <tt>amp</tt>,
 sensible initial guess values.
 </p></li>
 <li><p>
-The path parameters for the first shell path are set.   S&sup2;&#8320;  is set
-to <tt>amp</tt>,  E&#8320;  is set
-to <tt>enot</tt>,  &Delta;R  is set
-to <tt>delr</tt>, and  &sigma;&sup2;  is set
+The path parameters for the first shell path are set.  S&sup2;&#8320; is set
+to <tt>amp</tt>, E&#8320; is set
+to <tt>enot</tt>, &Delta;R is set
+to <tt>delr</tt>, and &sigma;&sup2; is set
 to <tt>ss</tt>.
 </p></li>
 </ol>
@@ -388,18 +388,18 @@ Results of the first shell fit
 </p>
 
 <p>
-This is not a bad result.  The value of <tt>enot</tt> is small, indicatng that a reasonable value of  E&#8320;  was
-chosen back in  <span class=program>ATHENA</span>.  <tt>delr</tt> is small
+This is not a bad result.  The value of <tt>enot</tt> is small, indicatng that a reasonable value of E&#8320; was
+chosen back in <span class=program>ATHENA</span>.  <tt>delr</tt> is small
 and consistent with 0, as we should expect for a known crystal.  
 <tt>ss</tt> is a reasonable value with a reasonable
-error bar.  The only confusing parameter is <tt>amp</tt>, which is a bit smaller than we might expect for a  S&sup2;&#8320; 
+error bar.  The only confusing parameter is <tt>amp</tt>, which is a bit smaller than we might expect for a S&sup2;&#8320;
 value.  
 </p>
 
 <p>
 The correlations between parameters are of a size that we expect.  The
-R-factor evaluates to about 2% misfit.   &chi;&sup2<sub>&nu;</sub>  is really huge, but
-that likely means that  &epsilon;   was not evaluated correctly.  All
+R-factor evaluates to about 2% misfit.  &chi;&sup2<sub>&nu;</sub> is really huge, but
+that likely means that  &epsilon; was not evaluated correctly.  All
 in all, this is a reasonable fit.
 </p>
 
@@ -409,7 +409,7 @@ in all, this is a reasonable fit.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="extendingthefittohighershells">
 
 <h2>  Extending the fit to higher shells</h2>
@@ -424,7 +424,7 @@ in all, this is a reasonable fit.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="thefinalfittingmodel">
 
 <h2>  The final fitting model</h2>
@@ -438,7 +438,7 @@ in all, this is a reasonable fit.
 
 
 
-<hr class=hide /> 
+<hr class=hide />
 <a name="additionalquestions">
 
 <h2>  Additional questions</h2>
@@ -450,7 +450,7 @@ in all, this is a reasonable fit.
 </div>
 
 <br />
- <hr class=hide /> 
+<hr class=hide />
 <hr class=bottomdivider />
 
 <div class=bottombar>
@@ -458,7 +458,7 @@ in all, this is a reasonable fit.
   <table>
     <tr>
       <td colspan=2>
-         <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
         &mdash;
         This document is copyright &copy; 2012 Bruce Ravel
         <br />
@@ -472,7 +472,7 @@ in all, this is a reasonable fit.
   	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
   	The Creative Commons Attribution-ShareAlike License</a>.
   	<br />
-  	If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
   	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
       </td>
     </tr>

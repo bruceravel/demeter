@@ -24,6 +24,7 @@ use Wx::Event qw(EVT_BUTTON);
 use Wx::Html;
 use File::Basename;
 use File::Spec;
+use Pod::Html;
 use base 'Wx::Panel';
 
 sub new {
@@ -31,27 +32,35 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize );
   $self->{echo} = $echoarea;
 
-  my $top_s = Wx::BoxSizer->new( wxVERTICAL );
+  my $top_s = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($top_s);
 
-  my $file = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.htm");
+  my $file = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.pod");
+  my $html = File::Spec->catfile(Demeter->stash_folder, 'hephaestus.html');
+  ##my $css  = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "ab.css");
+
+  pod2html("--infile=$file",
+	   "--outfile=$html",);
   $self->{html} = Wx::HtmlWindow->new($self, -1, wxDefaultPosition, wxDefaultSize );
-  my $ok = $self->{html} -> LoadPage( $file );
+  my $ok = $self->{html} -> LoadPage( $html );
 
 
-  my $but_s = Wx::BoxSizer->new( wxHORIZONTAL );
+  my $but_s = Wx::BoxSizer->new( wxVERTICAL );
   my $print = Wx::Button->new( $self, -1, 'Print' );
-  my $forward = Wx::Button->new( $self, -1, 'Forward' );
-  my $back = Wx::Button->new( $self, -1, 'Back' );
+  #my $forward = Wx::Button->new( $self, -1, 'Forward' );
+  #my $back = Wx::Button->new( $self, -1, 'Back' );
   my $preview = Wx::Button->new( $self, -1, 'Preview' );
   my $pages = Wx::Button->new( $self, -1, 'Page Setup' );
   #my $prints = Wx::Button->new( $self, -1, 'Printer Setup' );
 
-  $but_s->Add( $back, 0, wxALL, 2 );
-  $but_s->Add( $forward, 0, wxALL, 2 );
-  $but_s->Add( $preview, 0, wxALL, 2 );
-  $but_s->Add( $print, 0, wxALL, 2 );
+  my ($w, $h) = $print->GetSizeWH;
+
+  #$but_s->Add( $back, 0, wxALL, 2 );
+  #$but_s->Add( $forward, 0, wxALL, 2 );
   $but_s->Add( $pages, 0, wxALL, 2 );
+  $but_s->Add( $preview, 0, wxALL, 2 );
+  $but_s->Add( Wx::StaticLine->new($self, -1, wxDefaultPosition, [$w, -1], wxLI_HORIZONTAL), 0, wxALL, 2 );
+  $but_s->Add( $print, 0, wxALL, 2 );
   #$but_s->Add( $prints, 0, wxALL, 2 );
 
    $top_s->Add( $self->{html}, 1, wxGROW|wxALL, 5 );
@@ -63,12 +72,13 @@ sub new {
   $self->{printer} = Wx::HtmlEasyPrinting->new( 'Hephaestus document' );
   EVT_BUTTON( $self, $print, \&OnPrint );
   EVT_BUTTON( $self, $preview, \&OnPreview );
-  EVT_BUTTON( $self, $forward, \&OnForward );
-  EVT_BUTTON( $self, $back, \&OnBack );
+  #EVT_BUTTON( $self, $forward, \&OnForward );
+  #EVT_BUTTON( $self, $back, \&OnBack );
   EVT_BUTTON( $self, $pages, \&OnPageSetup );
   #EVT_BUTTON( $self, $prints, \&OnPrinterSetup );
 
-
+  unlink('pod2htmd.tmp') if -e 'pod2htmd.tmp';
+  unlink('pod2htmi.tmp') if -e 'pod2htmi.tmp';
   ## need button controls
 
   return $self;
