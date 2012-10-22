@@ -12,13 +12,13 @@
   $lines;
 }
 
- EDGE      {uc($A->edge)}
+ EDGE      {uc($T->edge)}
  S02       1.0
 
  CONTROL   1      1     0     0     0     0
  PRINT     1      0     0     0     0     0
 
- {$doscf}SCF       {$A->rscf}
+ {$doscf}SCF       {join("  ", @{$T->scf})}
  EXAFS     20
 
 {foreach $l (@ {$T->othercards}) {

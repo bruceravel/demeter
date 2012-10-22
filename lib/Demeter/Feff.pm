@@ -34,7 +34,7 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 use Demeter::Return;
 
-use Capture::Tiny qw(capture);
+use Capture::Tiny qw(capture tee);
 use Carp;
 use Chemistry::Elements qw(get_symbol);
 use Compress::Zlib;
@@ -191,6 +191,7 @@ has 'iobuffer' => (
 				 'clear_iobuffer' => 'clear',
 				}
 		  );
+has 'execution_wrapper' => (is=>'rw', isa => 'Any', default => 0);
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
 has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
@@ -236,9 +237,9 @@ sub clear {
   $self->clear_absorber;
   $self->clear_othercards;
   $self->clear_pathlist;
-  $self->set(abs_index   => 0, edge  => 'K', s02   => 1, rmax    => 0,   nlegs => 4,
-	     rmultiplier => 1, pcrit =>  0,  ccrit => 0, miscdat => q{},
-	     npaths      => 0, scf   => [], xanes   => [], ldos   => [], fms => [],
+  $self->set(abs_index   => 0, edge  => 'K', s02   => 1,  rmax    => 0,   nlegs => 4,
+	     rmultiplier => 1, pcrit =>  0,  ccrit => 0,  miscdat => q{},
+	     npaths      => 0, scf   => [],  xanes => [], ldos    => [],  fms => [],
 	    );
   return $self;
 };
@@ -325,7 +326,7 @@ sub rdinp {
 	$self -> push_othercards($thiscard);  ## pass through all other cards
       };
 
-      ##print $thiscard, $/;
+      #print join("|", $thiscard, @line), $/;
       ## dispatch the card values
       given ($thiscard) {
 	when (m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) { $self->$thiscard($line[1])               };
@@ -512,6 +513,13 @@ sub genfmt {
   unlink File::Spec->catfile($self->workspace, "feff.run");
   unlink File::Spec->catfile($self->workspace, "nstar.dat");
   if (not $self->save) {
+    if ($self->feff_version == 8) {
+      unlink File::Spec->catfile($self->workspace, $_)
+	foreach qw(mod1.inp mod2.inp mod3.inp mod4.inp mod5.inp mod6.inp
+		   log1.inp log2.inp log3.inp log4.inp log5.inp log6.inp
+		   chi.dat feff.bin geom.dat fpf0.dat global.dat atoms.dat
+		   s02.inp sigma.dat xsect.bin logso2.dat logdos.dat);
+    };
     unlink File::Spec->catfile($self->workspace, "feff.inp");
     unlink File::Spec->catfile($self->workspace, "files.dat");
   };
@@ -624,6 +632,7 @@ sub rank_paths {
 ##----------------------------------------------------------------------------
 ## pathfinder http://xkcd.com/835/
 
+
 sub pathfinder {
   my ($self) = @_;
   $self->start_spinner("Demeter's pathfinder is running") if ((not $self->screen) and ($self->mo->ui eq 'screen'));
@@ -709,7 +718,7 @@ sub _populate_tree {
   };
   if ($self->get('nlegs') == 2) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
-			  $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
+			      $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
     return $tree;
   };
 
@@ -735,7 +744,7 @@ sub _populate_tree {
   };
   if ($self->get('nlegs') == 3) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
-			  $tree->size, $natoms, $rmax));
+			      $tree->size, $natoms, $rmax));
     return $tree;
   };
 
@@ -768,7 +777,7 @@ sub _populate_tree {
   #$self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
   #			$tree->size, $natoms, $rmax));
   $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
-			$innercount+1, $natoms, $rmax));
+			    $innercount+1, $natoms, $rmax));
   return $tree;
 };
 
@@ -803,7 +812,7 @@ sub _length {
 sub _traverse_tree {
   my ($self, $tree) = @_;
   my $freq = $self->co->default("pathfinder", "heap_freq");
-  $self->report("=== Traversing Tree and populating Heap (each dot represents $freq nodes examined)\n    ");;
+  $self->report("=== Traversing Tree and populating Heap (. = $freq nodes examined)\n    ");;
   my $heap = Heap::Fibonacci->new;
   my ($heap_count, $visit_calls) = (0, 0);
   ## the traversal creates ScatteringPath objects and throws them onto the heap
@@ -870,7 +879,7 @@ sub _collapse_heap {
   my $bigcount = 0;
   my $freq     = $self->co->default("pathfinder", "degen_freq");;
   my $pattern  = "(%12d examined)";
-  $self->report("=== Collapsing Heap to a degenerate list (each dot represents $freq heap elements compared)\n    ");
+  $self->report("=== Collapsing Heap to a degenerate list (. = $freq heap elements compared)\n    ");
 
   my @list_of_paths = ();
   while (my $elem = $heap->extract_top) {
@@ -991,24 +1000,28 @@ sub run_feff {
     my $which = `which "$exe"`;
     chomp $which;
     if (not -x $which) {
-      croak("Could not find the feff6 executable");
+      croak("Could not find the Feff executable (" . $self->co->default('feff', 'executable') . ")");
     };
   };
 
   ## -------- the following commented bit is how I have solved the
   ##          problem of running Feff since the old Tk/Artemis days
-  # local $| = 1;		# unbuffer output of fork
-  # my $pid = open(my $WRITEME, "$exe |");
-  # while (<$WRITEME>) {
-  #   $self->report($_);
-  # };
-  # close $WRITEME;
+  local $| = 1;		# unbuffer output of fork
+  my $pid = open(my $WRITEME, "$exe |");
+  while (<$WRITEME>) {
+    $self->report($_);
+  };
+  close $WRITEME;
 
   ## -------- the following is a more robust, CPAN-reliant way of
   ##          running Feff
-  my ($stdout, $stderr) = capture { system "\"$exe\"" };
-  $self->report($stdout);
-  $self->report($stderr, 1);
+  # if ($self->execution_wrapper) {
+  #   &{$self->execution_wrapper};
+  # } else {
+  #   my ($stdout, $stderr) = tee { system "\"$exe\"" };
+  #   $self->report($stdout);
+  #   $self->report($stderr, 1);
+  # };
 
   chdir $cwd;
   return $self;
@@ -1017,13 +1030,16 @@ sub run_feff {
 
 sub click {
   my ($self, $char) = @_;
+  &{$self->execution_wrapper}($char) if ($self->execution_wrapper);
   print $char if $self->screen;
 }
+
 sub report {
   my ($self, $string, $err) = @_;
   local $| = 1;
   ## dispose of feff's output
   my $which = ($err) ? 'fefferr' : 'feffout';
+  &{$self->execution_wrapper}($string)  if ($self->execution_wrapper);
   print $self->_ansify($string, $which) if $self->screen;
   if ($self->buffer) {
     my @list = split("\n", $string);

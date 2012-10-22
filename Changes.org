@@ -18,6 +18,7 @@
 *** Atoms
    - fixed a crashy problem in getting space group symbol from some
      CIF files
+   - menu and keyboard controls for moving between tabs in stand-alone
 
 *** Hephaestus
    - Display wavelengths in several places where energies are displayed
