@@ -22,7 +22,7 @@ sub new {
   my $class = shift;
   my $this = $class->SUPER::new($_[0], -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
 
-  $this -> CreateGrid(6,6);
+  $this -> CreateGrid(7,6);
   #$this -> EnableScrolling(1,1);
   #$this -> SetScrollbars(20, 20, 50, 50);
 
@@ -351,7 +351,7 @@ sub new {
   $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
   $vbox -> Add($hbox, 2, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
-  $self -> SetSizerAndFit( $vbox );
+  $self -> SetSizer( $vbox );
 
   #foreach (1..10) {
   #  $self->{sitesgrid}->InsertRows($self->{sitesgrid}->GetNumberRows, 1, 1);

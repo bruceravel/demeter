@@ -1056,6 +1056,7 @@ sub make_data_frame {
   $frames{$dnum} -> Show(0);
   $new->SetValue(0);
   modified(1);
+  $::app->{$dnum} = $frames{$dnum};
   $::app->heap_check;
   return ($dnum, $idata);
 };
@@ -1183,6 +1184,7 @@ sub make_feff_frame {
 
 
   $frames{$fnum} -> Show(0);
+  $::app->{$fnum} = $frames{$fnum};
   $new->SetValue(0);
   modified(1) if ($file);
   return ($fnum, $ifeff);

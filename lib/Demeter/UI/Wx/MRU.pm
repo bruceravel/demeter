@@ -40,11 +40,16 @@ sub new {
   my @mrulist = (ref($type) =~ m{ARRAY})
     ? map { sprintf "[ %s ]  %s", $_->[1], $_->[0] } @list
       : map { $_->[0] } @list;
+#  my @toss;
+#  $#toss = $#mrulist;
 
   my $dialog = $class->SUPER::new( $parent,
 				   $text  || "Select a recent $type file",
 				   $title || "Recent $type files",
-				   \@mrulist );
+				   \@mrulist);
+#				   \@toss,
+#				   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCANCEL | wxCENTRE,
+#				   Wx::GetMousePosition);
   _doublewide($dialog);
 
   return $dialog;

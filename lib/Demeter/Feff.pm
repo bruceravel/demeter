@@ -1034,13 +1034,17 @@ sub click {
   print $char if $self->screen;
 }
 
+
+## dispose of Feff's screen output to various channels
 sub report {
   my ($self, $string, $err) = @_;
   local $| = 1;
-  ## dispose of feff's output
-  my $which = ($err) ? 'fefferr' : 'feffout';
+  ## GUI
   &{$self->execution_wrapper}($string)  if ($self->execution_wrapper);
+  ## screen
+  my $which = ($err) ? 'fefferr' : 'feffout';
   print $self->_ansify($string, $which) if $self->screen;
+  ## buffer
   if ($self->buffer) {
     my @list = split("\n", $string);
     $self->push_iobuffer(@list);

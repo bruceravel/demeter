@@ -28,6 +28,9 @@
    - Much nicer looking plot indicators in gnuplot backend
 
 *** Windows
+   - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
+     got compiled.  I did, however, apply t he patch to Feff6 allowing
+     it to compute up to element 96.
 
 
 ** 0.9.13  2 October 2012

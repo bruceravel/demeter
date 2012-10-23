@@ -24,6 +24,7 @@ BEGIN {
 use Demeter qw(:atoms);
 use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
+use vars qw($app);
 
 my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
 my $result = GetOptions (
@@ -62,8 +63,8 @@ sub wx {
  require Wx;
  require Demeter::UI::Atoms;
  Wx::InitAllImageHandlers();
- my $window = Demeter::UI::Atoms->new;
- $window   -> MainLoop;
+ $app = Demeter::UI::Atoms->new;
+ $app -> MainLoop;
 };
 
 
