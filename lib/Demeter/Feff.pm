@@ -296,12 +296,13 @@ sub rdinp {
   open (my $INP, $file);
   while (<$INP>) {
     #chomp;
-    $_ =~ s{[\n\r]+\z}{}; # how do you chomp a eol sequence from an alien OS?
-    last if (/^\s*end/i);
-    next if (/^\s*$/);	# blank line
-    next if (/^\s*\*/);	# commented line
+    $_ =~ s{(?:\n|\r)+\z}{}g; # how do you chomp a eol sequence from an alien OS?
+    last if (m{\A\s*end}i);
+    next if (m{\A\s*\z});	# blank line
+    next if (m{\A\s*\*});	# commented line
     my @line = split(/$SEPARATOR/, $_);
     shift @line if ($line[0] =~ m{^\s*$});
+    #print join('|', @line), $/;
     if (is_FeffCard($line[0])) {
       #print "elsewhere: $1 $_\n";
       $mode = q{};
@@ -333,7 +334,7 @@ sub rdinp {
 	when (m{(?:atoms|potentials)})	            { $mode = $thiscard                                };
 	when ('hole')			            { $self->set(edge  => $line[1], s02   => $line[2]) };
 	when ('criteria')		            { $self->set(pcrit => $line[1], ccrit => $line[2]) };
-	when ('titles')			            { $self->_title($_)                                };
+	when ('titles')			            { $self->_title(join(" ", @line))                  };
 	when (m{ (?:control|print)})                { $nmodules = $#line                               };
 
 	when ('scf')                                { $self->feff_version(8); $self->scf  ([@line[1..$#line]]) };

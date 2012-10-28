@@ -815,7 +815,7 @@ sub seq_select {
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $app->{main}->{project}->GetLabel;
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel;
   $init .= '.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
