@@ -1286,6 +1286,7 @@ override 'serialize' => sub {
   foreach my $d (@data) {
     my $dd = $d->group;
     $d -> _update("bft");
+    $d -> dispense('fit', 'zeros') if not $self->fitted;
     $d -> save("fit", File::Spec->catfile($self->folder, $dd.".fit"));
   };
   $self -> logfile(File::Spec->catfile($self->folder, "log"), $self->header, $self->footer);
@@ -1554,6 +1555,9 @@ override 'deserialize' => sub {
   ## -------- import the fit properties, statistics, correlations
   $yaml = ($args{file}) ? $zip->contents("fit.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
+#  Demeter->trace;
+#  print $args{file}, "  ", $args{folder}, $/;
+#  print $yaml, $/;
   my $rhash = YAML::Tiny::Load($yaml);
   my @array = %$rhash;
   $self -> set(@array);

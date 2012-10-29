@@ -465,7 +465,8 @@ sub restore {
   $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
   $fit->fom($was-1);
   $fit->mo->currentfit($was-1);
-  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit, $old);
+#  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
   my $text = $Demeter::UI::Artemis::frames{main}->{name}->GetValue;
   $text =~ s{\d+\z}($was);
   $Demeter::UI::Artemis::frames{main}->{name}->SetValue($text);

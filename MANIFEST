@@ -1115,7 +1115,7 @@ lib/Demeter/UI/Hephaestus/Common.pm
 lib/Demeter/UI/Hephaestus/Config.pm
 lib/Demeter/UI/Hephaestus/Data.pm
 lib/Demeter/UI/Hephaestus/data/GPL.dem
-lib/Demeter/UI/Hephaestus/data/hephaestus.htm
+lib/Demeter/UI/Hephaestus/data/hephaestus.pod
 lib/Demeter/UI/Hephaestus/data/kalziumrc.dem
 lib/Demeter/UI/Hephaestus/data/trans_table.png
 lib/Demeter/UI/Hephaestus/data/vulcan.png

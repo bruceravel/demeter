@@ -9,11 +9,19 @@
 *** Athena
    - Plot indicators when plotting from deglitch tool
    - Filename for combinatorial output spreadsheet uses group name
+   - Fixed a bug causing a crash in LCF tool related to recent
+     renaming of fit sequence report.
+   - Fixed several problems interacting with the results of a fit
+     sequence
 
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
      unused, resulting in crashy behavior when running Atoms
    - LOTS of work on Users' Guide
+   - Fixed a bug causing a crash when restoring a fit from the fit
+     history
+   - Corrected a problem plotting immediately after importing a
+     project with a fitting model but without a fit having been run
 
 *** Atoms
    - fixed a crashy problem in getting space group symbol from some
@@ -26,6 +34,11 @@
 
 *** Demeter
    - Much nicer looking plot indicators in gnuplot backend
+   - Fixed a bug recording title lines from feff.inp files.  This was
+     not causing a problem running or using feff, but it was causing
+     two test failures
+   - added the fit -> zeros template to correct a problem importing a
+     project with a fitting model but no fit
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
