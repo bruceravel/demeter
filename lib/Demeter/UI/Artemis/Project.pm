@@ -344,11 +344,11 @@ sub read_project {
   my $folder;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
-    $rframes->{main}->status("Importing fit #$count into history", $statustype) if not $count % 5;
+    $rframes->{main}->status("Importing fit #$count into history", $statustype);# if not $count % 3;
     my $regen = ($d eq $current) ? 0 : 1;
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
-    $fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
-    #$fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    #$fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
