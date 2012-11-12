@@ -19,6 +19,7 @@
 		 'monitor',
 		 'prefs',
 		 'examples',
+		 'atoms',
 		 'extended',
 	       ]
 	page = {
@@ -83,6 +84,15 @@
 				    methyltin = { name = 'Example 2: Methyltin'}
 				   }
 			   }
+                atoms = {
+		      	 name = 'Crystallography for EXAFS'
+			 menu = ['space', 'abs', 'example']
+			 page = {
+			      	 space = {name = 'Space groups'}
+				 abs = {name = 'Absorption calculations'}
+				 example = {name = 'A worked example'}
+				}
+		      	}
 		extended = {
 			    name = 'Extended topics'
 			    menu = ['qfs', 'cv', 'delr', 'ss', 'ipots', 'fuzzy']

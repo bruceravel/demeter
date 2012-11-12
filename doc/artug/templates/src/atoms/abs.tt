@@ -1,0 +1,132 @@
+[% META title = 'Absorption calculations and experimental corrections' %]
+
+[% FILTER html_para -%]
+
+Included in [%atoms%] is absorption data for the elements from various
+sources.  Using this and the crystallographic information from
+[%INCLUDE font/file a="atoms.inp"%], [%atoms%] is able to make several
+calculations useful for XAFS analysis. It approximates the absorption
+depth and edge step size of the material at the edge energy of the
+core atom and estimates three corrections needed for the analysis of
+XAFS data. These corrections are the [%INCLUDE font/quote a='McMaster
+correction'%], the energy response of the I0 chamber in a fluorescence
+experiment, and the self-absorption of a thick material in a
+fluorescence experiment.  All of these numbers are written at the top
+of the output file. For more information on these calculations consult
+Chapter 10 of [%INCLUDE font/em a="Handbook of Synchrotron Radiation,
+v.1"%].
+[% END %]
+
+[% PROCESS section label="Absorption Calculation" %]
+
+[% FILTER html_para -%]
+Proper sample preparation for an XAFS experiment requires knowledge of
+the absorption depth and edge step size of the material of interest.
+The statistics of data collection can be optimized by choosing the
+correct sample thickness. It is also necessary to avoid distortions
+to the data due to thickness and large particle size effects.
+
+[%atoms%] calculates the total cross section of the material above the
+edge energy of the central atom and divides by the unit cell
+volume. The number obtained, [%mutot%], has units of
+[%invcm%]. Thus, if [%INCLUDE font/mono a='x'%] is the thickness of
+the sample in cm, the x-ray beam passing through the sample will be
+attenuated by exp([%mutot%] * [%INCLUDE font/mono a='x'%]).
+
+[%atoms%] also calculates the change in cross section of the central
+atom below and above the absorption edge and divides by the unit cell
+volume. This number, [%delmu%], multiplied by the sample thickness in cm
+gives the approximate edge step in a transmission experiment.
+
+The density of the material is also reported. This number assumes that
+the bulk material will have the same density as the unit cell. It is
+included as an aid to sample preparation.
+[% END %]
+
+
+[% PROCESS section label="McMaster Correction" %]
+
+[% FILTER html_para -%]
+Typically, XAFS data is normalized to a single number representing the
+size of the edge step. While there are compelling reasons to use this
+simple normalization, it can introduce an important distortion to the
+amplitude of the [%chik%] extracted from the absorption data. This
+distortion comes from energy response of the bare atom absorption of
+the central atom. This is poorly approximated away from the edge by a
+single number. Because this affects the amplitude of [%chik%] and not
+the phase, it can be corrected by including a Debye-Waller factor and
+a fourth cumulant in the analysis of the data. These two [%INCLUDE
+font/quote a='McMaster corrections'%] are intended to be additive
+corrections to any thermal or structural disorder included in the
+analysis of the XAFS.
+
+[%atoms%] uses data from McMaster to construct the bare atom
+absorption for the central atom. [%atoms%] then regresses a quadratic
+polynomial in energy to the natural logarithm of the constructed
+central atom absorption. Because energy and photo-electron wave number
+are simply related, E is proportional to [%k2%], the coefficients of this
+regression can be related to the XAFS Debye-Waller factor and fourth
+cumulant. The coefficient of the term linear in energy equals
+[%INCLUDE font/mono a='2*sigma_MM^2'%] and the coefficient of the
+quadratic term equals [%INCLUDE font/mono a='4/3 * sigma_MM^4'%]. The
+values of [%INCLUDE font/mono a='sigma_MM^2'%] and [%INCLUDE font/mono
+a='sigma_MM^2'%] are written at the top of the output file.
+[% END %]
+
+
+[% PROCESS section label="I0 Correction" %]
+
+[% FILTER html_para -%]
+The response of the [%i0%] chamber varies with energy during an XAFS
+experiment. In a fluorescence experiment, the absorption signal is
+obtained by normalizing the [%ifl%] signal by the [%i0%] signal. There
+is no energy response in the [%ifl%] signal since all atoms fluoresce
+at set energies. The energy response of [%i0%] is ignored by this
+normalization.  At low energies this can be a significant effect. Like
+the McMaster correction, this effect attenuates the amplitude of
+[%chik%] and is is well approximated by an additional Debye-Waller
+factor and fourth cumulant.
+
+[%atoms%] uses the values of the nitrogen, argon and krypton keywords
+in [%INCLUDE font/file a='atoms.inp'%] to determine the content of the
+[%i0%] chamber by pressure. It assumes that the remainder of the
+chamber is filled with helium. It then uses McMaster's[%#'%] data to
+construct the energy response of the chamber and regresses a
+polynomial to it in the manner described above. [%INCLUDE font/mono
+a='sigma_I0^2'%] and [%INCLUDE font/mono a='sigma_I0^4'%] are also
+written at the top of the output file and intended as additive
+corrections in the analysis.
+[% END %]
+
+
+
+[% PROCESS section label="Self-Absorption Correction" %]
+
+[% FILTER html_para -%]
+If the thickness of a sample is large compared to absorption length of
+the sample and the absorbing atom is sufficiently concentrated in the
+sample, then the amplitude of the [%chik%] extracted from the data taken
+on it in fluorescence will be distorted by self-absorption effects in
+a way that is easily estimated. The absorption depth of the material
+might vary significantly through the absorption edge and the XAFS
+wiggles. The correction for this effect is well approximated as
+
+[% WRAPPER html/pre %]
+   1 + mu_abs / (mu_background+mu_fluor)
+[% END %]
+
+where [%muback%] is the absorption of the
+non-resonant atoms in the material and [%mufluo%] is the total
+absorption of the material at the fluorescent energy of the absorbing
+atom.  [%atoms%] constructs this function using the McMaster tables
+then regresses a polynomial to it in the manner described above.
+[%INCLUDE font/mono a='sigma_self^2'%] and [%INCLUDE font/mono
+a='sigma_self^4'%] are written at the top of the output file and
+intended as additive corrections in the analysis. Because the size of
+the edge step is affected by self-absorption, the amplitude of
+[%chik%] is attenuated when normalized to the edge step. Since the
+amplitude is a measure of [%s02%], this is an important effect. The
+number reported in [%INCLUDE font/file a='feff.inp'%] as the amplitude
+factor is intended to be a multiplicative correction to the data or to
+the measured [%s02%].
+[% END %]
