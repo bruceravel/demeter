@@ -1,3 +1,15 @@
 This folder contains a script and data for testing algorithms for
 determining an error bar for the edge step using the default pre- and
 post-edge normalization.
+
+
+The two test files are:
+
+  1. brdata.dat is a scan of a mixture of an organic bromine compound
+     and inorganic bromide, courtesy Alessandra Leri
+
+  2. cudata.dat is a Cu oxide from a cultural heritage glass, courtesy
+     Wantana Klysubun
+
+Both are from NSLS X23A2 using the 4 element Vortex.  Use the X23A2MED
+plugin.

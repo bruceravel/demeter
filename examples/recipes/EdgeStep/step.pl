@@ -4,7 +4,7 @@ use Demeter qw(:data :ui=screen);
 use Statistics::Descriptive;
 my $stat = Statistics::Descriptive::Full->new();
 
-my $med  = Demeter::Plugins::X23A2MED->new(file=>'cu_kmdg1.020');
+my $med  = Demeter::Plugins::X23A2MED->new(file=>'cudata.dat');
 $med->fix;
 my $data = Demeter::Data->new(file=>$med->fixed,
 			      energy      => '$1',
@@ -17,6 +17,20 @@ my $data = Demeter::Data->new(file=>$med->fixed,
 			      bkg_nor2    => 541.215,
 			      bkg_nnorm   => 3,
 			     );
+# my $med  = Demeter::Plugins::X23A2MED->new(file=>'brdata.dat');
+# $med->fix;
+# my $data = Demeter::Data->new(file=>$med->fixed,
+# 			      energy      => '$1',
+# 			      numerator   => '$3+$4+$5+$6',
+# 			      denominator => '$2',
+# 			      ln          =>  0,
+# 			      bkg_pre1    => -100,
+# 			      bkg_pre2    => -45,
+# 			      bkg_nor1    => 102.751,
+# 			      bkg_nor2    => 202,
+# 			      bkg_nnorm   => 3,
+# 			     );
+
 
 $|=1;
 $data->_update('background');
