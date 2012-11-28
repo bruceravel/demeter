@@ -13,6 +13,9 @@
      renaming of fit sequence report.
    - Fixed several problems interacting with the results of a fit
      sequence
+   - Improvements to copy series tool: busy cursor, plot
+     appropriately, compute avg and stddev of edge steps for norm
+     parameters
 
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
@@ -39,10 +42,12 @@
      two test failures
    - added the fit -> zeros template to correct a problem importing a
      project with a fitting model but no fit
+   - Demeter::UI::Artemis::ShowText now has a save button
+   - added EdgeStep recipe
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
-     got compiled.  I did, however, apply t he patch to Feff6 allowing
+     got compiled.  I did, however, apply the patch to Feff6 allowing
      it to compute up to element 96.
 
 

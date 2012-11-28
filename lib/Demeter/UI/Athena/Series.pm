@@ -2,6 +2,7 @@ package Demeter::UI::Athena::Series;
 
 use strict;
 use warnings;
+use feature 'switch';
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -9,13 +10,15 @@ use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Scalar::Util qw(looks_like_number);
+use List::MoreUtils qw(any);
+use Statistics::Descriptive;
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
 $label = "Copy series";	# used in the Choicebox and in status bar messages to identify this tool
 
-my $tcsize = [120,-1];
+my $tcsize = [150,-1];
 
 my %params = ('bkg_rbkg'  => 'Background removal R_bkg',
 	      'bkg_e0'    => 'Background removal E0',
@@ -75,20 +78,27 @@ sub new {
   $gbs->Add($label, Wx::GBPosition->new(4,0));
   $label = Wx::StaticText->new($this, -1, "Increment");
   $gbs->Add($label, Wx::GBPosition->new(5,0));
+  $label = Wx::StaticText->new($this, -1, "Analysis of edge step");
+  $this->{steplabel} = $label;
+  $gbs->Add($label, Wx::GBPosition->new(6,0));
 
-  $this->{group}   = Wx::StaticText->new($this, -1, q{});
-  $this->{param}   = Wx::Choice->new($this, -1, wxDefaultPosition, [240, -1], [@labels]);
-  $this->{current} = Wx::StaticText->new($this, -1, q{});
-  $this->{begin}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{number}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{increm}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{param}  -> SetSelection(0);
-  $gbs->Add($this->{group},   Wx::GBPosition->new(0,1));
-  $gbs->Add($this->{param},   Wx::GBPosition->new(1,1));
-  $gbs->Add($this->{current}, Wx::GBPosition->new(2,1));
-  $gbs->Add($this->{begin},   Wx::GBPosition->new(3,1));
-  $gbs->Add($this->{number},  Wx::GBPosition->new(4,1));
-  $gbs->Add($this->{increm},  Wx::GBPosition->new(5,1));
+  $this->{group}     = Wx::StaticText->new($this, -1, q{});
+  $this->{param}     = Wx::Choice->new($this, -1, wxDefaultPosition, [240, -1], [@labels]);
+  $this->{current}   = Wx::StaticText->new($this, -1, q{});
+  $this->{begin}     = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{number}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{increm}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{stepvalue} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_READONLY);
+  $this->{param}    -> SetSelection(0);
+  $this->{steplabel}-> Enable(0);
+  $this->{stepvalue}-> Enable(0);
+  $gbs->Add($this->{group},     Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{param},     Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{current},   Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{begin},     Wx::GBPosition->new(3,1));
+  $gbs->Add($this->{number},    Wx::GBPosition->new(4,1));
+  $gbs->Add($this->{increm},    Wx::GBPosition->new(5,1));
+  $gbs->Add($this->{stepvalue}, Wx::GBPosition->new(6,1));
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) ) foreach (qw(begin increm));
   $this->{number} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
   foreach my $x (qw(begin number increm)) {
@@ -172,24 +182,72 @@ sub make {
     return;
   };
 
+  my $busy = Wx::BusyCursor->new();
+  $this->{steplabel}-> Enable(0);
+  $this->{stepvalue}-> SetValue(q{});
+  $this->{stepvalue}-> Enable(0);
   my @sequence = ();
   foreach my $i (0 .. $n-1) {
     push @sequence, $start+$i*$increm;
   };
 
+  $app->mark('none');
   ## check for attribute type
   my $att = $params{$this->{param}->GetStringSelection};
   foreach my $val (reverse @sequence) {
     my $name = sprintf("%s, %s=%s", $app->current_data->name, $att, $val);
     my $new = $app->Copy($name);
     $new->$att($val);
+    $app->mark($new);
   };
+  $this->plot($att);
+  $this->step if (any {$att eq $_} (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)));
+  undef $busy;
   $::app->modified(1);
+};
+
+sub plot {
+  my ($this, $att) = @_;
+  given ($att) {
+    when ([qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)]) {
+      Demeter->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0,
+		       e_mu=>1, e_i0=>0, e_signal=>0);
+      $::app->plot(0, 0, 'E', 'marked');
+    };
+    when ([qw(bkg_rbkg bkg_e0 bkg_kw bkg_spl1 bkg_spl2)]) {
+      Demeter->po->chie(0);
+      $::app->plot(0, 0, 'k', 'marked');
+    };
+    when ([qw(fft_kmin fft_kmax fft_dk)]) {
+      $::app->plot(0, 0, 'R', 'marked');
+    };
+    when ([qw(bft_rmin bft_rmax bft_dr)]) {
+      $::app->plot(0, 0, 'q', 'marked');
+    };
+  };
+};
+
+sub step {
+  my ($this) = @_;
+  $this->{steplabel}-> Enable(1);
+  $this->{stepvalue}-> Enable(1);
+  my $stat = Statistics::Descriptive::Full->new();
+  my $clb = $::app->{main}->{list};
+  foreach my $i (0 .. $clb->GetCount-1) {
+    next if not $clb->IsChecked($i);
+    $stat->add_data($clb->GetIndexedData($i)->bkg_step);
+  };
+  my $text = sprintf("%.5f +/- %.5f", $stat->mean, $stat->standard_deviation);
+  $this->{stepvalue}-> SetValue($text);
+  $::app->{main}->status("Average edge step value: ".$text);
+  undef $stat;
 };
 
 sub clear {
   my ($this, $event) = @_;
-  $this->{$_}->SetValue(q{}) foreach (qw{begin number increm});
+  $this->{$_}->SetValue(q{}) foreach (qw{begin number increm stepvalue});
+  $this->{steplabel}-> Enable(0);
+  $this->{stepvalue}-> Enable(0);
 };
 
 1;

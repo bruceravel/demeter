@@ -1594,8 +1594,8 @@ sub view_changing {
     } else {
 
       $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
-      $app->{main}->status(sprintf("Displaying the %s tool.",
-				   lc($app->{main}->{views}->GetPageText($event->GetSelection))));
+      my $which = lc($app->{main}->{views}->GetPageText($event->GetSelection));
+      $app->{main}->status(sprintf("Displaying the %s tool.", $which)) if ($which !~ m{main});
       #$app->{main}->{showing}=
     };
   };
