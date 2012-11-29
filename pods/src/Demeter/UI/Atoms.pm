@@ -41,7 +41,7 @@ sub new {
 				 -1,              # ID -1 means any
 				 ($component) ? 'Atoms' : 'Stand-alone Atoms',         # title
 				 wxDefaultPosition,
-				 [560,650],
+				 [560,680],
 			       );
   $self -> SetBackgroundColour( wxNullColour );
 
@@ -337,6 +337,8 @@ sub OnInit {
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
+  $frame->{atomsmenu} = $file;
+  $frame->{helpmenu} = $help;
 
   ## -------- final adjustment to frame size
   #my @frameWH = $frame->GetSizeWH;

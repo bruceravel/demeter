@@ -65,11 +65,16 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
+
+## make sure early on that the dotfolder exists
+with 'Demeter::Tools';
+with 'Demeter::Project';
+my $toss = Demeter->dot_folder;
+##print $toss, $/;
+
 with 'MooseX::SetGet';		# this is mine....
 with 'Demeter::Dispose';
-with 'Demeter::Tools';
 with 'Demeter::Files';
-with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
 use Demeter::Constants qw($NUMBER $PI);
@@ -104,6 +109,7 @@ with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
 
 
+## dotfolder needs to exist before this bit
 use Demeter::Config;
 use vars qw($config);
 $config = Demeter::Config -> new;

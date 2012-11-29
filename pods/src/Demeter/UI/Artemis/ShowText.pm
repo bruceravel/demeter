@@ -1,4 +1,4 @@
-package  Demeter::UI::Artemis::ShowText;
+package Demeter::UI::Artemis::ShowText;
 
 =for Copyright
  .
@@ -18,9 +18,12 @@ package  Demeter::UI::Artemis::ShowText;
 use strict;
 use warnings;
 
+use Cwd;
+
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_LEFT_DCLICK);
+use Wx::Event qw(EVT_LEFT_DCLICK EVT_BUTTON);
+use Demeter::UI::Wx::OverwritePrompt;
 
 my $aleft = Wx::TextAttr->new();
 $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
@@ -29,21 +32,25 @@ sub new {
   my ($class, $parent, $content, $title) = @_;
 
   my $this = $class->SUPER::new($parent, -1, $title,
-				Wx::GetMousePosition, [475,350],
+				Wx::GetMousePosition, [475,400],
 				wxMINIMIZE_BOX|wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER
 			       );
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
   my $text = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 			       wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2);
+  $this->{text} = $text;
   $text -> SetDefaultStyle($aleft);
   $text -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $text -> SetValue($content);
   $text -> ShowPosition(1);
   $vbox -> Add($text, 1, wxGROW|wxALL, 5);
+  my $save = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize, 0,);
+  $vbox -> Add($save, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
-  $vbox -> Add($button, 0, wxGROW|wxALL, 5);
+  $vbox -> Add($button, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
+  EVT_BUTTON($this, $save, sub{OnSave(@_)});
   EVT_LEFT_DCLICK($text, sub{OnLeftDclick(@_)}); # if $title =~ m{Overview of this instance};
 
   $this -> SetSizer( $vbox );
@@ -100,6 +107,26 @@ sub OnLeftDclick {
 				      $object->serialization,
 				      $str)
       -> Show;
+};
+
+sub OnSave {
+  my ($this, $event) = @_;
+  my $fd = Wx::FileDialog->new( $this, "Save contents", cwd,
+				q{contents.txt},
+				"Text files (*.txt)|*.txt",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Not saving contents.");
+    return;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $this->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  open (my $C, '>',$fname);
+  print $C $this->{text}->GetValue;
+  close $C;
+  $::app->{main}->status("Wrote contents to '$fname'.");
+
 };
 
 sub ShouldPreventAppExit {

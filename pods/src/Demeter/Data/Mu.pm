@@ -510,6 +510,19 @@ sub _plotE_command {
     push @color_list,  $self->po->$cn;
     push @key_list,    "post-edge";
   };
+  if ($self->po->e_margin) { # show the deglitching margins
+
+    ## make the margins here
+
+    push @suffix_list, 'margin1';
+    my $n = ($incr+6) % 10;
+    my $cn = "col$n";
+    push @color_list,  $self->po->$cn;
+    push @key_list,    "margin";
+    push @suffix_list, 'margin2';
+    push @color_list,  $self->po->$cn;
+    push @key_list,    "";
+  };
   if ($self->po->e_i0) { # show i0
     if ($self->i0_string) {
       push @suffix_list, 'i0';

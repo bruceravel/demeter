@@ -84,7 +84,7 @@ sub new {
 
   $manybox->Enable(0);
   $this->{$_}->Enable(0) foreach (qw(margin margin_label emin emin_label
-				     emax emax_label emax_pluck emax_pluck
+				     emax emax_label emin_pluck emax_pluck
 				     replot_many remove_many));
 
 

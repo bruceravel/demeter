@@ -72,6 +72,8 @@ has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
 has 'grabbed'        => (is => 'rw', isa => 'Bool',   default => 0);
 has 'thawed'         => (is => 'rw', isa => 'Bool',   default => 0);
 
+has 'logcache'       => (is => 'rw', isa => 'Str',    default => q{});
+
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});
 has 'header'         => (is => 'rw', isa => 'Str',    default => q{});
@@ -115,6 +117,7 @@ has 'data' => (
 			     'clear_data'   => 'clear',
 			    }
 	      );
+has 'datagroups' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 has 'paths' => (
 		traits    => ['Array'],
@@ -229,6 +232,7 @@ override all => sub {
   delete $all{data};
   delete $all{paths};
   delete $all{vpaths};
+  delete $all{logcache};
   return %all;
 };
 
@@ -817,6 +821,7 @@ sub logtext {
   $footer ||= q{};
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
+  return $self->logcache if $self->logcache;
   my $text = q{};
   return $text if (not @{ $self->paths });
 
@@ -866,7 +871,7 @@ sub logtext {
   $text .= $self->template("report", "fancyline");
   ($footer .= "\n") if ($footer !~ m{\n\z});
   $text .= $footer;
-
+  $self->logcache($text);
   return $text;
 };
 
@@ -1145,6 +1150,13 @@ sub grab {			# deserialize lite -- grab the yaml
   my @array = %$rhash;
   $self -> set(@array);
   $self -> fit_performed(0);
+  my $structure = ($args{file}) ? $zip->contents('structure.yaml')
+    : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
+  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
+  $self->datagroups($r_data);
+  foreach my $d (@$r_data) {
+    print join("|", $self->name, $d, $self->mo->fetch('Data', $d)), $/;
+  };
 
   $self->grabbed(1);
   $self->thawed(0);
@@ -1286,6 +1298,7 @@ override 'serialize' => sub {
   foreach my $d (@data) {
     my $dd = $d->group;
     $d -> _update("bft");
+    $d -> dispense('fit', 'zeros') if not $self->fitted;
     $d -> save("fit", File::Spec->catfile($self->folder, $dd.".fit"));
   };
   $self -> logfile(File::Spec->catfile($self->folder, "log"), $self->header, $self->footer);
@@ -1554,6 +1567,9 @@ override 'deserialize' => sub {
   ## -------- import the fit properties, statistics, correlations
   $yaml = ($args{file}) ? $zip->contents("fit.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
+#  Demeter->trace;
+#  print $args{file}, "  ", $args{folder}, $/;
+#  print $yaml, $/;
   my $rhash = YAML::Tiny::Load($yaml);
   my @array = %$rhash;
   $self -> set(@array);

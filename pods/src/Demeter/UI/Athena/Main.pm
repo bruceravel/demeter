@@ -14,6 +14,7 @@ use Wx::Perl::TextValidator;
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
 use File::Spec;
+use List::Util qw(max);
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
@@ -1230,11 +1231,17 @@ sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
   my $text = "  group                    $description\n" . "=" x 40 . "\n";
+  my $max = 0;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
+  };
+  my $format = ' "%-'.$max.'s"  %.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    $text .= sprintf(" %-25s  %.5f\n", $d->name, $d->$which);
+    $text .= sprintf($format, $d->name, $d->$which);
   };
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")

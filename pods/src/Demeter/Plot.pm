@@ -117,6 +117,11 @@ has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
 has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 
+has 'e_margin'	 => (is => 'rw', isa =>  'Bool',  default => 0);
+has 'margin'     => (is => 'rw', isa =>  'Num',   default => 0);
+has 'margin_min' => (is => 'rw', isa =>  'Num',   default => 0);
+has 'margin_max' => (is => 'rw', isa =>  'Num',   default => 0);
+
 ## -------- k, R, and q plot parameters
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});

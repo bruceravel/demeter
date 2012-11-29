@@ -1,0 +1,436 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>A worked example (in text!)</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;
+        [&nbsp;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        [&nbsp;<a class=navtable href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../atoms/abs.html" class="menu">Absorption calculations</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../atoms/index.html" class="menu">Crystallography for EXAFS</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menuselect">Crystallography for EXAFS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../atoms/space.html"  class="menu">Space groups</a><br />
+&nbsp;&#8618;&nbsp;<a href="../atoms/abs.html"  class="menu">Absorption calculations</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">A worked example</span><br /><a href="../extended/index.html"  class="menu">Extended topics</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  A worked example (in text!)
+</h1>
+
+<hr class=hide />
+<a name="theatomsinputfile">
+
+<h3>  The Atoms input file</h3>
+</a>
+
+<p>
+Here is an example of <span class=program>ATOMS</span> in action. The material is Lead
+Titanate, PbTiO<sub>3</sub>. The crystallographic literature places this
+material in the tetragonal space group <tt>P 4 M
+M</tt>.  Let's suppose tha the data were taken in fluorescence at
+the titanium K-edge.  Since the edge energy is around 5 KeV and the
+sample was very thick, the I&#8320; and self-absorption corrections are
+expected to be significant. That titanium is the central atom is
+indicated by the keyword <tt>core</tt>. <span class=program>ATOMS</span>
+assumes the K-edge of the titanium was probed because the atomic
+number of titanium is less than 57 and the edge was not otherwise
+chosen with the <tt>edge</tt> keyword. The I&#8320;
+chamber was filled with 50% helium and 50% nitrogen by pressure. This
+is indicated by the <tt>nitrogen</tt> keyword.  The
+size of the cluster to be printed in <span class=file>feff.inp</span> is chosen with the <tt>rmax</tt>
+keyword.  The <tt>rpath</tt> keyword is used to set
+the value of <tt>RMAX</tt> in the <span class=file>feff.inp</span> file, which indicates the length of the longest path to
+be calculated.
+</p>
+
+
+<pre>
+title PbTiO3 10K,a=3.885,c=4.139
+space P 4 m m
+a=3.885         c=4.139         nitrogen = 0.5
+rmax=6.0        rpath=4.2       core=ti
+atom
+* At      x    y    z      tag
+  Pb     0.0  0.0  0.0
+  Ti     0.5  0.5  0.5377
+  O      0.5  0.5  0.1118 axial
+  O      0.0  0.5  0.6174 planar
+</pre>
+
+<p>
+Note that CIF files can also be used as the input to <span class=program>ATOMS</span> and
+will, in many cases, work just fine.  The code that reads the CIF
+files is rather incomplete and a bit buggy, though.  Also, <span class=program>DEMETER</span>
+will refuse to attempt to import data from a CIF file that contains
+multiple occupancy for a crystallographic cite.
+</p>
+
+
+<hr class=hide />
+<a name="thefeffinputfile">
+
+<h3>  The Feff input file</h3>
+</a>
+
+<p>
+<span class=program>ATOMS</span> produces the output reproduced below. The absorption and
+correction calculations are at the top of the file. All the <tt>CONTROL</tt> cards are set to 1 and the <tt>PRINT</tt> cards are set to 0.  This will run all four modules of
+<span class=program>FEFF</span> and produce the default output files. Several other useful
+<span class=program>FEFF</span> cards are printed but commented out by an asterisk (<tt>*</tt>). The unique potential list is constructed in a
+simple fashion -- the core atom is potential 0 and each different
+atomic species has a single potential. The atom list is printed in the
+format required by <span class=program>FEFF</span>. The atom list has two comment
+columns. The indexed atomic symbol and radial distance are written by
+<span class=program>ATOMS</span> for your use when reading <span class=file>feff.inp</span>
+and are ignored by <span class=program>FEFF</span>.
+</p>
+
+<p>
+<span class=program>FEFF</span> will run to completion using the input file generated by
+<span class=program>ATOMS</span>.  It is still likely that the user will want to edit
+<span class=file>feff.inp</span>.  Several assumptions are made by
+<span class=program>ATOMS</span> that might not hold true. The assignment of unique
+potentials is made by a simple algorithm and may not adequately
+reflect the physics of the problem.  The <tt>CONTROL</tt> cards are such that all four modules of <span class=program>FEFF</span> will be
+run.  The <span class=program>FEFF</span> user might want to run the modules
+separately.  Values for other cards have been assumed and might not be
+desired.   Other cards have been left out entirely.  Always check your
+<span class=file>feff.inp</span> file to be sure it is just what you
+want.
+</p>
+
+
+<pre>
+ * This feff6 file was generated by Demeter 0.9.13
+ * Demeter written by and copyright (c) Bruce Ravel, 2006-2012
+
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+ * title = PbTiO3 10K,a=3.885,c=4.139
+ * space = P 4 m m
+ * a     =   3.88500    b    =   3.88500    c     =   4.13900
+ * alpha =  90.00000    beta =  90.00000    gamma =  90.00000
+ * rmax  =   6.50000    core  = ti
+ * shift =   
+ * atoms
+ * # el.     x           y           z        tag
+ *   Pb     0.00000     0.00000     0.00000   Pb        
+ *   Ti     0.50000     0.50000     0.53770   Ti        
+ *   O      0.50000     0.50000     0.11180   axial     
+ *   O      0.00000     0.50000     0.61740   planar    
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+ *  total mu*x=1:  2.032 microns,  unit edge step:  18.003 microns
+ *  specific gravity:  8.057
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+ *  normalization correction:     0.00048 ang^2
+ *  i0 correction:                0.00111 ang^2
+ *  self absorption correction:  -0.00001 ang^2
+ *            amplitude factor:   1.079
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+ *  net correction:              0.00158 ang^2
+ * --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+ 
+ TITLE PbTiO3 10K,a=3.885,c=4.139
+
+ HOLE      1   1.0   * FYI: (Ti K edge @ 4966 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      4.2
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     22     Ti        
+     1     82     Pb        
+     2     22     Ti        
+     3     8      O         
+
+ ATOMS                  * this list contains 94 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  Ti            0.00000
+    0.00000    0.00000   -1.76280  3  axial.1       1.76280
+    1.37355    1.37355    0.32988  3  planar.1      1.97031
+   -1.37355    1.37355    0.32988  3  planar.1      1.97031
+    1.37355   -1.37355    0.32988  3  planar.1      1.97031
+   -1.37355   -1.37355    0.32988  3  planar.1      1.97031
+    0.00000    0.00000    2.37620  3  axial.2       2.37620
+    2.74711    0.00000    1.91346  1  Pb.1          3.34783
+   -2.74711    0.00000    1.91346  1  Pb.1          3.34783
+    0.00000    2.74711    1.91346  1  Pb.1          3.34783
+    0.00000   -2.74711    1.91346  1  Pb.1          3.34783
+    2.74711    0.00000   -2.22554  1  Pb.2          3.53548
+   -2.74711    0.00000   -2.22554  1  Pb.2          3.53548
+    0.00000    2.74711   -2.22554  1  Pb.2          3.53548
+    0.00000   -2.74711   -2.22554  1  Pb.2          3.53548
+    2.74711    2.74711    0.00000  2  Ti.1          3.88500
+   -2.74711    2.74711    0.00000  2  Ti.1          3.88500
+    2.74711   -2.74711    0.00000  2  Ti.1          3.88500
+   -2.74711   -2.74711    0.00000  2  Ti.1          3.88500
+    0.00000    0.00000    4.13900  2  Ti.2          4.13900
+    0.00000    0.00000   -4.13900  2  Ti.2          4.13900
+    2.74711    2.74711   -1.76280  3  axial.3       4.26623
+   -2.74711    2.74711   -1.76280  3  axial.3       4.26623
+    2.74711   -2.74711   -1.76280  3  axial.3       4.26623
+   -2.74711   -2.74711   -1.76280  3  axial.3       4.26623
+    1.37355    1.37355   -3.80912  3  planar.2      4.27583
+   -1.37355    1.37355   -3.80912  3  planar.2      4.27583
+    1.37355   -1.37355   -3.80912  3  planar.2      4.27583
+   -1.37355   -1.37355   -3.80912  3  planar.2      4.27583
+    4.12066    1.37355    0.32988  3  planar.3      4.35607
+   -4.12066    1.37355    0.32988  3  planar.3      4.35607
+    1.37355    4.12066    0.32988  3  planar.3      4.35607
+   -1.37355    4.12066    0.32988  3  planar.3      4.35607
+    4.12066   -1.37355    0.32988  3  planar.3      4.35607
+   -4.12066   -1.37355    0.32988  3  planar.3      4.35607
+    1.37355   -4.12066    0.32988  3  planar.3      4.35607
+   -1.37355   -4.12066    0.32988  3  planar.3      4.35607
+    2.74711    2.74711    2.37620  3  axial.4       4.55407
+   -2.74711    2.74711    2.37620  3  axial.4       4.55407
+    2.74711   -2.74711    2.37620  3  axial.4       4.55407
+   -2.74711   -2.74711    2.37620  3  axial.4       4.55407
+    1.37355    1.37355    4.46888  3  planar.4      4.87280
+   -1.37355    1.37355    4.46888  3  planar.4      4.87280
+    1.37355   -1.37355    4.46888  3  planar.4      4.87280
+   -1.37355   -1.37355    4.46888  3  planar.4      4.87280
+    5.49422    0.00000    0.00000  2  Ti.3          5.49422
+   -5.49422    0.00000    0.00000  2  Ti.3          5.49422
+    0.00000    5.49422    0.00000  2  Ti.3          5.49422
+    0.00000   -5.49422    0.00000  2  Ti.3          5.49422
+    2.74711    2.74711    4.13900  2  Ti.4          5.67667
+   -2.74711    2.74711    4.13900  2  Ti.4          5.67667
+    2.74711   -2.74711    4.13900  2  Ti.4          5.67667
+   -2.74711   -2.74711    4.13900  2  Ti.4          5.67667
+    2.74711    2.74711   -4.13900  2  Ti.4          5.67667
+   -2.74711    2.74711   -4.13900  2  Ti.4          5.67667
+    2.74711   -2.74711   -4.13900  2  Ti.4          5.67667
+   -2.74711   -2.74711   -4.13900  2  Ti.4          5.67667
+    5.49422    0.00000   -1.76280  3  axial.5       5.77009
+   -5.49422    0.00000   -1.76280  3  axial.5       5.77009
+    0.00000    5.49422   -1.76280  3  axial.5       5.77009
+    0.00000   -5.49422   -1.76280  3  axial.5       5.77009
+    4.12066    1.37355   -3.80912  3  planar.5      5.77719
+   -4.12066    1.37355   -3.80912  3  planar.5      5.77719
+    1.37355    4.12066   -3.80912  3  planar.5      5.77719
+   -1.37355    4.12066   -3.80912  3  planar.5      5.77719
+    4.12066   -1.37355   -3.80912  3  planar.5      5.77719
+   -4.12066   -1.37355   -3.80912  3  planar.5      5.77719
+    1.37355   -4.12066   -3.80912  3  planar.5      5.77719
+   -1.37355   -4.12066   -3.80912  3  planar.5      5.77719
+    4.12066    4.12066    0.32988  3  planar.6      5.83683
+   -4.12066    4.12066    0.32988  3  planar.6      5.83683
+    4.12066   -4.12066    0.32988  3  planar.6      5.83683
+   -4.12066   -4.12066    0.32988  3  planar.6      5.83683
+    0.00000    0.00000   -5.90180  3  axial.6       5.90180
+    5.49422    0.00000    2.37620  3  axial.7       5.98605
+   -5.49422    0.00000    2.37620  3  axial.7       5.98605
+    0.00000    5.49422    2.37620  3  axial.7       5.98605
+    0.00000   -5.49422    2.37620  3  axial.7       5.98605
+
+ END
+</pre>
+
+
+<hr class=hide />
+<a name="modifyingthefeffinputfile">
+
+<h3>  Modifying the Feff input file</h3>
+</a>
+<p>
+There are many reasons why you may want to edit the 
+<span class=file>feff.inp</span> before running <span class=program>FEFF</span>.  Here are
+some examples.
+</p>
+
+
+<dl>
+  
+<dt>
+  Change the absorber
+</dt>
+<dd>
+Suppose your absorber is a very dilute dopant such that you do not
+expect, on the average, that another example of the dopant resides
+anywhere near the absorber.  In that case, you would want to leave the
+atoms list untouched but change the atomic species of the absorber.<br /><br />
+
+In the example above, let's consider that the dilute absorber is
+Nb.  To make it the absorber, we must modify the 
+<span class=file>feff.inp</span> file like so:
+<pre> POTENTIALS
+  * ipot   Z      tag
+     0     41     Nb
+     1     82     Pb        
+     2     22     Ti        
+     3     8      O         
+
+ ATOMS                  * this list contains 94 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  Nb            0.00000
+</pre>
+Note that the labels (i.e. the instances of the string
+&ldquo;Nb&rdquo;) are for the benefit of the human reader
+of the file and are also used by <span class=program>DEMETER</span> to provide some
+information for the user.  The essential edit is to change the Z
+number of the absorber in the <tt>POTENTIALS</tt>
+list.
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Change a scatterer
+</dt>
+<dd>
+Again, consider the situation of a Nb dopant in this crystal.  With Ti
+as the absorber, we need to consider the possibility of a Nb atom in
+the third coordination shell.  To do this, we must adit the 
+<tt>POTENTIALS</tt> list to include Nb:
+<pre> POTENTIALS
+  * ipot   Z      tag
+     0     22     Ti
+     1     82     Pb        
+     2     22     Ti        
+     3     8      O         
+     4     41     Nb
+</pre>
+We must then replace one or more of the atoms in the third
+coordination shell with the new unique potential.  Here is one
+example:
+<pre>    2.74711    2.74711    0.00000  4  Nb            3.88500
+</pre>
+Again, the &ldquo;Nb&rdquo; label is not used by <span class=program>FEFF</span>
+in any capacity, but is used by <span class=program>DEMETER</span>.
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Add an unique potential
+</dt>
+<dd>
+You may choose to consider the possibility that the <span class=program>FEFF</span>
+calculation might be improved by allowing the axial and planar oxygen
+atoms to have their own unique potentials.  This probably won't
+make much of a difference in this case, but in the case of an double
+bonded oxygenyl ligand (as in a uranyl or vanadyl species), it almost
+certainly will.<br /><br />
+
+First you must add a unique potential
+<pre> POTENTIALS
+  * ipot   Z      tag
+     0     22     Ti
+     1     82     Pb        
+     2     22     Ti        
+     3     8      axial         
+     4     8      planar
+</pre>
+Then you must modify the potential indeces in the to use the new
+potential index:
+<tt>ATOMS</tt> list:
+<pre>    0.00000    0.00000   -1.76280  4  axial.1       1.76280
+    1.37355    1.37355    0.32988  3  planar.1      1.97031
+   -1.37355    1.37355    0.32988  3  planar.1      1.97031
+    1.37355   -1.37355    0.32988  3  planar.1      1.97031
+   -1.37355   -1.37355    0.32988  3  planar.1      1.97031
+    0.00000    0.00000    2.37620  4  axial.2       2.37620
+</pre>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Modify feff's parameters
+</dt>
+<dd>
+<span class=program>FEFF</span> has lots of options that can be used to control the
+calculation of the muffin tin potentials, to alter the self-energy
+model, or to enable other features of the code.  <span class=program>ATOMS</span>
+directly supports few of these additional features.  Should you wish
+to use them, you must edit the <span class=file>feff.inp</span>
+accordingly. 
+  <br />
+  <br />
+</dd>
+</dl>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

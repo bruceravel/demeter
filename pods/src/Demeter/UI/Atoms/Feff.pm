@@ -241,6 +241,7 @@ Should we continue?',
   };
 
 
+  my %restore  = ();
   my %problems = %{ $feff->problems };
   my @warnings = @{ $problems{warnings} };
   my @errors   = @{ $problems{errors}   };
@@ -267,6 +268,22 @@ Should we continue?',
   unlink $phbin;
   $self->{parent}->{Paths}->{header}->SetValue(q{}) if exists $self->{parent}->{Paths};
   $self->{parent}->{Paths}->{paths}->DeleteAllItems if exists $self->{parent}->{Paths};
+
+  ## need to disable EVERYTHING so that no event stack up in the queue
+  ## during the feff run.  were that happen, they would unqueue when
+  ## text is written to the console using Wx::Yield. (see run_and_gather)
+  if ($self->{parent}->{component}) {
+    $self->{parent}->{toolbar}->Enable(0);
+    foreach my $k (keys %$::app) {
+      if ($::app->{$k}->IsShown) {
+	$restore{$k} = 1;
+	$::app->{$k}->Enable(0);
+      };
+    };
+  } else {
+    $self->{parent}->GetMenuBar->EnableTop($_,0) foreach (0..1);
+    $self->{parent}->{notebook}->Enable(0);
+  };
   $feff->potph;
 
   ## the call to check_exe happened in the previous method call,
@@ -299,6 +316,15 @@ Should we continue?',
     };
     $self->{parent}->{notebook}->ChangeSelection($n);
   };
+  if ($self->{parent}->{component}) {
+    $self->{parent}->{toolbar}->Enable(1);
+    foreach my $k (keys %restore) {
+      $::app->{$k}->Enable(1);
+    };
+  } else {
+    $self->{parent}->GetMenuBar->EnableTop($_,1) foreach (0..1);
+    $self->{parent}->{notebook}->Enable(1);
+  };
 
 
   #$self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
@@ -315,9 +341,10 @@ Should we continue?',
 sub run_and_gather {
   my ($self, $line) = @_;
   return if ($line =~ m{\A\s*potph});
+  return if ($line =~ m{\A\s*titles\s*\z});
   $self->{parent}->{Console}->{console}->AppendText($line);
-  #$self->{parent}->UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
   $self->{parent}->{Console}->{console}->Update;
+  $::app->Yield;		# unqueue this AppendText event
 };
 
 # sub run_and_gather {
@@ -375,6 +402,7 @@ sub fill_intrp_page {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
   my $i = 0;
+  $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText("\n\n********** Ranking paths...\n");
   $self->{parent}->status("Ranking paths...");
   $feff->rank_paths;

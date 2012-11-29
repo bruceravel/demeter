@@ -201,7 +201,8 @@ sub new {
   $this-> mouseover('printreport', "Print report");
 
   ## -------- plotting tool page
-  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "The history plotting tool is currently broken.\nIt currently fails to import old fits from project files.  Drat!"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  ##$plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "The history plotting tool is currently broken.\nIt currently fails to import old fits from project files.  Drat!"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "Click on a button to transfer that fit to the plotting list."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $nb -> AddPage($logpage,      "Log file", 1);
   $nb -> AddPage($reportpage,   "Reports", 0);
@@ -221,13 +222,13 @@ sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetIndexedData($self->{list}->GetSelection);
   return if not defined $fit;
-  if (not $fit->thawed) {
-    my $busy = Wx::BusyCursor->new();
-    $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
-    $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
-    $self->status('Unpacked fit "'.$fit->name.'"');
-    undef $busy;
-  };
+  # if (not $fit->thawed) {
+  #   my $busy = Wx::BusyCursor->new();
+  #   $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
+  #   $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+  #   $self->status('Unpacked fit "'.$fit->name.'"');
+  #   undef $busy;
+  # };
   $self->put_log($fit);
   $self->set_params($fit);
 };
@@ -465,7 +466,8 @@ sub restore {
   $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
   $fit->fom($was-1);
   $fit->mo->currentfit($was-1);
-  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit, $old);
+#  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
   my $text = $Demeter::UI::Artemis::frames{main}->{name}->GetValue;
   $text =~ s{\d+\z}($was);
   $Demeter::UI::Artemis::frames{main}->{name}->SetValue($text);
@@ -628,6 +630,7 @@ sub add_plottool {
   my $box      = Wx::StaticBox->new($self->{plottool}, -1, $fit->name, wxDefaultPosition, wxDefaultSize);
   my $boxsizer = Wx::StaticBoxSizer->new( $box, wxHORIZONTAL );
 
+  my @list = @{$fit->data} || @{$fit->datagroups};
   foreach my $d (@{$fit->data}) {
     my $key = join('.', $fit->group, $d->group);
     $self->{$key} = Wx::Button->new($self->{plottool}, -1, $d->name);

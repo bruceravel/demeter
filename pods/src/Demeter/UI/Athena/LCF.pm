@@ -720,6 +720,11 @@ sub sequence {
   };
 
   my @groups = $::app->marked_groups;
+  my $i = 0;
+  foreach my $g (@groups) {
+    last if ($g->group eq $::app->current_data->group);
+    ++$i;
+  };
   $::app->{main}->status(sprintf("Fitting %d marked groups", $#groups+1), 'wait');
   my $start = DateTime->now( time_zone => 'floating' );
   $this->{LCF} -> sentinal(sub{$this->seq_sentinal($#groups+1)});
@@ -732,6 +737,9 @@ sub sequence {
   $this->{markedresults} -> SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   $this->{plotmarked}    -> Enable(1);
   $this->{markedreport}  -> Enable(1);
+  $this->seq_select($i);
+  $this->{markedresults} -> SetItemState(0, 0, wxLIST_STATE_SELECTED);
+  $this->{markedresults} -> SetItemState($i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -787,7 +795,9 @@ sub seq_results {
 
 sub seq_select {
   my ($this, $event) = @_;
-  my $result = $this->{LCF}->seq_results->[$event->GetIndex];
+  my $busy = Wx::BusyCursor->new();
+  my $index  = (ref($event) =~ m{Event}) ? $event->GetIndex : $event;
+  my $result = $this->{LCF}->seq_results->[$index];
   my $data   = $this->{LCF}->mo->fetch('Data', $result->{Data});
   $this->{LCF}->data($data);
   $this->{LCF}->restore($result);
@@ -795,8 +805,6 @@ sub seq_select {
   $this->{LCF}->dispense("analysis", $which);
   $this->{mreport}->SetValue($this->{LCF}->report);
 
-  $this->{result}->Clear;
-  $this->{result}->SetValue($this->{LCF}->report);
   $this->_remove_all;
   my $i = 0;
   foreach my $st (@{ $this->{LCF}->standards }) {
@@ -810,12 +818,23 @@ sub seq_select {
     ++$i;
   };
 
+  my $j = 0;
+  foreach my $n (0 .. $::app->{main}->{list}->GetCount-1) {
+    last if ($::app->{main}->{list}->GetIndexedData($n)->group eq $data->group);
+    ++$j;
+  };
+  $::app->{main}->{list}->SetSelection($j);
+  $::app->OnGroupSelect(0,0,0);
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+
   $this->{LCF}->plot_fit;
+  undef $busy;
 };
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $app->{main}->{project}->GetLabel;
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel;
   $init .= '.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
