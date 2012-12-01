@@ -1,0 +1,12 @@
+set(mar___min = nofx({$D->group}.energy, {$D->bkg_e0}+{$D->bkg_eshift}+{$P->margin_min}),
+    mar___max = nofx({$D->group}.energy, {$D->bkg_e0}+{$D->bkg_eshift}+{$P->margin_max}))
+
+set({$D->group}.menergy = {$D->group}.energy + {$D->bkg_eshift},
+    {$D->group}.margin1 = {$D->group}.{$suffix} + {$P->margin},
+    {$D->group}.margin2 = {$D->group}.{$suffix} - {$P->margin})
+
+set({$D->group}.menergy = slice({$D->group}.menergy, mar___min, mar___max),
+    {$D->group}.margin1 = slice({$D->group}.margin1, mar___min, mar___max),
+    {$D->group}.margin2 = slice({$D->group}.margin2, mar___min, mar___max))
+
+show mar___min mar___max

@@ -81,11 +81,12 @@ sub new {
   $hbox -> Add($this->{replot_many}, 1, wxALL|wxALIGN_CENTER, 5);
   $hbox -> Add($this->{remove_many}, 1, wxALL|wxALIGN_CENTER, 5);
   $this->{remove_many}->Enable(0);
+  EVT_BUTTON($this, $this->{replot_many}, sub{OnPlotMany(@_, $app)});
 
-  $manybox->Enable(0);
-  $this->{$_}->Enable(0) foreach (qw(margin margin_label emin emin_label
-				     emax emax_label emin_pluck emax_pluck
-				     replot_many remove_many));
+  #$manybox->Enable(0);
+  #$this->{$_}->Enable(0) foreach (qw(margin margin_label emin emin_label
+  #				     emax emax_label emin_pluck emax_pluck
+  #				     replot_many remove_many));
 
 
   my $truncatebox       = Wx::StaticBox->new($this, -1, 'Truncate data', wxDefaultPosition, wxDefaultSize);
@@ -235,6 +236,28 @@ sub OnRemove {
   $::app->modified(1);
 };
 
+sub OnPlotMany {
+  my ($this, $event, $app) = @_;
+  my $data = $app->current_data;
+  my ($emin, $emax) = ($this->{emin}->GetValue, $this->{emax}->GetValue);
+  if (($emin < 0) and ($emax > 0)) {
+    $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
+    return;
+  } elsif (($emin > 0) and ($emax < 0)) {
+    $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
+    return;
+  } elsif ($emin < 0) {
+    $data->po->set(e_pre=>1, e_post=>0);
+  } else {
+    $data->po->set(e_pre=>0, e_post=>1);
+  };
+  $data->po->set(e_mu=>1, e_bkg=>0, e_der=>0, e_sec=>0, e_norm=>0, e_i0=>0, e_signal=>0, e_markers=>1,
+		 e_margin=>1, margin=>$this->{margin}->GetValue,
+		 margin_min=>$emin, margin_max=>$emax,);
+  $data->po->start_plot;
+  $data->plot('E');
+  $data->po->e_margin(0);
+}
 
 sub plot_truncate {
   my ($this, $data) = @_;

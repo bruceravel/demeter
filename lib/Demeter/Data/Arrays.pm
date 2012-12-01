@@ -180,7 +180,8 @@ sub points {
   $args{subtract} ||= q{};
   $args{dphase}   ||= 0;
 
-  my @x = ($args{space} eq 'e')     ? $self->get_array('energy')
+  my @x = ($args{suffix} =~ m{margin}) ? $self->get_array('menergy')
+        : ($args{space} eq 'e')     ? $self->get_array('energy')
         : ($args{space} eq 'k')     ? $self->get_array('k', $args{part})
         : ($args{space} eq 'chie')  ? $self->get_array('k')
         : ($args{space} eq 'r')     ? $self->get_array('r', $args{part})

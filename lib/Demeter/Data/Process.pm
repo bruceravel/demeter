@@ -369,6 +369,27 @@ sub deglitch {
 };
 
 
+sub deglitch_margins {
+  my ($self) = @_;
+  my @energy = $self->get_array('energy');
+  my @xmu    = $self->get_array('xmu');
+  my @me     = $self->get_array('menergy');
+  my @m1     = $self->get_array('margin1');
+  my @m2     = $self->get_array('margin2');
+
+  my $j = 0;
+  my @points = ();
+  foreach my $i (0 .. $#energy) {
+    next if ($energy[$i] < $me[0]);    # before margin range
+    last if ($energy[$i] > $me[$#me]); # after margin range
+    push @points, $energy[$i] if (($xmu[$i] > $m1[$j]) or ($xmu[$i] < $m2[$j]));
+    ++$j;
+  };
+  $self->deglitch(@points);
+  return $self;
+};
+
+
 sub smooth {
   my ($self, $n, $how) = @_;
   ($n = 1) if ($n < 1);

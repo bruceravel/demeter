@@ -511,17 +511,17 @@ sub _plotE_command {
     push @key_list,    "post-edge";
   };
   if ($self->po->e_margin) { # show the deglitching margins
-
-    ## make the margins here
-
-    push @suffix_list, 'margin1';
-    my $n = ($incr+6) % 10;
-    my $cn = "col$n";
-    push @color_list,  $self->po->$cn;
-    push @key_list,    "margin";
-    push @suffix_list, 'margin2';
-    push @color_list,  $self->po->$cn;
-    push @key_list,    "";
+    my $ok = $self->make_margins;
+    if ($ok) {
+      push @suffix_list, 'margin1';
+      my $n = ($incr+6) % 10;
+      my $cn = "col$n";
+      push @color_list,  $self->po->$cn;
+      push @key_list,    "margin";
+      push @suffix_list, 'margin2';
+      push @color_list,  $self->po->$cn;
+      push @key_list,    "";
+    };
   };
   if ($self->po->e_i0) { # show i0
     if ($self->i0_string) {
@@ -616,6 +616,24 @@ sub _plotE_string {
              ? $self->template("plot", "newe")
              : $self->template("plot", "overe");
   return $string;
+};
+
+
+sub make_margins {
+  my ($self) = @_;
+  if (($self->po->margin_min < 0) and ($self->po->margin_max > 0)) {
+    return 0;
+  };
+  if (($self->po->margin_min > 0) and ($self->po->margin_max < 0)) {
+    return 0;
+  };
+
+  if (($self->po->margin_min > 0) and ($self->po->margin_max > 0)) {
+    $self->dispense("process", "margin", {suffix=>"postline"});
+  } else {
+    $self->dispense("process", "margin", {suffix=>"preline"});
+  };
+  return 1;
 };
 
 sub plot_ed {
