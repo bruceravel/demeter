@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.14  ?? October 2012
+** 0.9.14  ?? December 2012
 *** Athena
    - Plot indicators when plotting from deglitch tool
    - Filename for combinatorial output spreadsheet uses group name
@@ -16,6 +16,12 @@
    - Improvements to copy series tool: busy cursor, plot
      appropriately, compute avg and stddev of edge steps for norm
      parameters
+   - Implemented deglitching by margins
+   - Reset smoothing parameter after plot or fit in the align tool 
+   - Constraining parameters no longer pushed value of bkg_eshift
+   - Difference spectra can be made of mu, norm, deriv, second,
+     norm/deriv, and norm/second.  norm is the default
+   - Calculation of approximate uncertainty in edge step
 
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
@@ -36,7 +42,8 @@
    - Rewrote document and reimplemented Document tool
 
 *** Demeter
-   - Much nicer looking plot indicators in gnuplot backend
+   - Nicer looking plot indicators in gnuplot backend (now plot as
+     full y-scale in graph)
    - Fixed a bug recording title lines from feff.inp files.  This was
      not causing a problem running or using feff, but it was causing
      two test failures
@@ -44,6 +51,9 @@
      project with a fitting model but no fit
    - Demeter::UI::Artemis::ShowText now has a save button
    - added EdgeStep recipe
+   - plot margins
+   - Diff object, flags for disabling integration + setting datatype,
+     use indicators rather markers in plots
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

@@ -1,0 +1,106 @@
+## -*- config -*-
+###########################################################################
+## This configuration file is for Demeter version 0.9.13.
+##
+##                     Demeter is copyright (c) 2007-2012 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the edge step uncertainty configuration group for Demeter
+
+
+######################################################################
+section=edgestep
+section_description
+  These parameters determine how background removal and normalization
+  is done by Demeter.
+
+variable=fullreport
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  Tell a GUI to issue a full report on the edge step calculation.
+
+variable=samples
+type=positive integer
+default=20
+maxint=10000
+description
+  The number of samples to use in estimating the edge step
+  uncertainty.
+
+variable=margin
+type=real
+default=1.5
+description
+  The size of the margin for weeding out outliers.  This is an attempt
+  to remove obviously poor normalizations from the sampling of
+  normalization parameter values.  On the first pass, the standard
+  deviation of the edge step values is computed.  All values which lie
+  this many standard deviations away from the initial edge step value
+  will be removed from the sampling and the standard deviation will be
+  recomputed.
+
+variable=pre1
+type=real
+default=20
+description
+  The size of the bubble around the initial bkg_pre1 value from which
+  an evenly distributed random value will be chosen for bkg_pre1 for
+  each sample.
+
+variable=pre2
+type=real
+default=10
+description
+  The size of the bubble around the initial bkg_pre2 value from which
+  an evenly distributed random value will be chosen for bkg_pre2 for
+  each sample.
+
+variable=nor1
+type=real
+default=15
+description
+  The size of the bubble around the initial bkg_nor1 value from which
+  an evenly distributed random value will be chosen for bkg_nor1 for
+  each sample.
+
+variable=nor2
+type=real
+default=30
+description
+  The size of the bubble around the initial bkg_nor2 value from which
+  an evenly distributed random value will be chosen for bkg_nor2 for
+  each sample.

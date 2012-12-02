@@ -2,10 +2,11 @@ package Demeter::UI::Athena::Difference;
 
 use strict;
 use warnings;
+use feature qw(switch);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER EVT_CHOICE EVT_CHECKBOX);
 use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -13,11 +14,12 @@ use File::Basename;
 use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
-$label = "Difference spectra of normalized $MU(E)";	# used in the Choicebox and in status bar messages to identify this tool
+$label = "Difference spectra";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize   = [60,-1];
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
+my @forms = (qw(xmu norm der nder sec nsec)); #  chi
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -32,32 +34,47 @@ sub new {
   $gbs->Add($label, Wx::GBPosition->new(0,0));
   $label = Wx::StaticText->new($this, -1, "Data");
   $gbs->Add($label, Wx::GBPosition->new(1,0));
+  $label = Wx::StaticText->new($this, -1, "Form");
+  $gbs->Add($label, Wx::GBPosition->new(2,0));
 
   $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
   $this->{data}     = Wx::StaticText->new($this, -1, q{Group});
+  $this->{form}     = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
+				      ["$MU(E)", "normalized $MU(E)", "derivative $MU(E)",
+				       "deriv. of normalized $MU(E)", "2nd derivative $MU(E)",
+				       "2nd deriv. of normalized $MU(E)"]); # , "$CHI(k)"
   $gbs->Add($this->{standard}, Wx::GBPosition->new(0,1));
   $gbs->Add($this->{data},     Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{form},     Wx::GBPosition->new(2,1));
+  $this->{form}->SetSelection(1);
+  EVT_CHOICE($this, $this->{form}, \&OnChoice);
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
   $this->{make_nor} = Wx::CheckBox->new($this, -1, 'Allow difference group to be renormalized');
-  $gbs->Add($this->{invert},  Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
+  $this->{do_integrate} = Wx::CheckBox->new($this, -1, 'Do integration');
+  $gbs->Add($this->{invert},  Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(5,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{do_integrate}, Wx::GBPosition->new(6,0), Wx::GBSpan->new(1,2));
   $this->{invert}->SetValue(0);
   $this->{plotspectra}->SetValue(1);
   $this->{make_nor}->SetValue(0);
+  $this->{do_integrate}->SetValue(1);
+  EVT_CHECKBOX($this, $this->{do_integrate}, \&ToggleIntegration);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
-  $hbox->Add(Wx::StaticText->new($this, -1, 'Integration range'), 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
+  $this->{xmin_label} = Wx::StaticText->new($this, -1, 'Integration range');
+  $hbox->Add($this->{xmin_label}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmin, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmin_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox->Add($this->{xmin_pluck}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 1);
-  $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
+  $this->{to} = Wx::StaticText->new($this, -1, 'to');
+  $hbox->Add($this->{to}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmax, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmax_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
@@ -74,7 +91,8 @@ sub new {
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox->Add(Wx::StaticText->new($this, -1, 'Integrated area'), 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
+  $this->{area_label} = Wx::StaticText->new($this, -1, 'Integrated area');
+  $hbox->Add($this->{area_label}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{area} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
   $hbox->Add($this->{area}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -145,18 +163,51 @@ sub mode {
   1;
 };
 
+sub ToggleIntegration {
+  my ($this, $event) = @_;
+  my $onoff = $this->{do_integrate}->GetValue;
+  foreach my $w (qw(xmin_label xmin xmin_pluck to xmax xmax_pluck area area_label)) {
+    $this->{$w}->Enable($onoff);
+  };
+  $this->{Diff}->do_integrate($onoff);
+};
+
 sub plot {
   my ($this) = @_;
   foreach my $att (qw(xmin xmax invert plotspectra)) {
     next if (($att =~ m{\Axm}) and (not looks_like_number($this->{$att}->GetValue)));
     $this->{Diff}->$att($this->{$att}->GetValue);
   };
+  my $form = $forms[$this->{form}->GetSelection];
   $this->{Diff}->data($::app->current_data);
+  $this->{Diff}->space($form);
   $this->{Diff}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
   $this->{Diff}->diff;
   $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
   $this->{Diff}->po->set(emin=>$this->{Diff}->xmin-20, emax=>$this->{Diff}->xmax+30, space=>'E');
-  $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
+  $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
+
+  given ($this->{form}->GetSelection) {
+    when (0) {			# mu(E)
+      $this->{Diff}->po->set(e_norm=>0, e_der=>0, e_sec=>0,);
+    };
+    when (1) {			# norm(E)
+      $this->{Diff}->po->set(e_norm=>1, e_der=>0, e_sec=>0,);
+    };
+    when (2) {			# deriv(E)
+      $this->{Diff}->po->set(e_norm=>0, e_der=>1, e_sec=>0,);
+    };
+    when (3) {			# deriv(norm(E))
+      $this->{Diff}->po->set(e_norm=>1, e_der=>1, e_sec=>0,);
+    };
+    when (4) {			# sec(E)
+      $this->{Diff}->po->set(e_norm=>0, e_der=>0, e_sec=>1,);
+    };
+    when (5) {			# sec(norm(E))
+      $this->{Diff}->po->set(e_norm=>1, e_der=>0, e_sec=>1,);
+    };
+  }
+
   $this->{Diff}->po->start_plot;
   $this->{Diff}->plot;
   $::app->{lastplot} = ['E', 'single'];
@@ -164,9 +215,17 @@ sub plot {
   $::app->heap_check(0);
 };
 
+sub OnChoice {
+  my ($this, $event) = @_;
+  $this->plot;
+  $this->{make_nor}->SetValue($this->{form}->GetSelection == 0);
+};
+
 sub make {
   my ($this) = @_;
   $this->{Diff}->is_nor(not $this->{make_nor}->GetValue);
+  $this->{Diff}->datatype('xanes');
+  $this->{Diff}->datatype('xmu') if ($this->{form}->GetSelection == 0);
   my $data = $this->{Diff}->make_group;
   my $index = $::app->current_index;
   if ($index == $::app->{main}->{list}->GetCount-1) {

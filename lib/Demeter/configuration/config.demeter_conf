@@ -70,6 +70,8 @@ include bkg.demeter_conf           ## background removal parameters
 
 include clamp.demeter_conf         ## background clamp parameters
 
+include edgestep.demeter_conf      ## determination of edge step uncertainty
+
 include fft.demeter_conf           ## forward Fourier transform parameters
 
 include bft.demeter_conf           ## backward Fourier transform parameters

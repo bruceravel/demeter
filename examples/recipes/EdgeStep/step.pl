@@ -26,36 +26,79 @@ my $data = Demeter::Data->new(file=>$med->fixed,
 # 			      ln          =>  0,
 # 			      bkg_pre1    => -100,
 # 			      bkg_pre2    => -45,
+# 			      #bkg_nor1    => 50,
 # 			      bkg_nor1    => 102.751,
 # 			      bkg_nor2    => 202,
 # 			      bkg_nnorm   => 3,
 # 			     );
 
 
+my @bubbles = (Demeter->co->default('edgestep', 'pre1'),
+	       Demeter->co->default('edgestep', 'pre2'),
+	       Demeter->co->default('edgestep', 'nor1'),
+	       Demeter->co->default('edgestep', 'nor2'),
+	      );
+#$bubbles[1] = 40;
+my @save    = $data->get(qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2));
+my @params  = qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2);
+my $size    = 20; #Demeter->co->default('edgestep', 'samples');
+my $margin  = Demeter->co->default('edgestep', 'margin');
+
 $|=1;
 $data->_update('background');
 $stat -> add_data($data->bkg_step);
-printf "%.3f: %.5f\n", $data -> bkg_nor1, $data->bkg_step;
+my $init = $data->bkg_step;
+printf "initial: %.5f   %.5f\n", $data->bkg_step, $data->bkg_nc2;
 
-my $start = $data->bkg_nor1;
-my $emin = 0.5 * $data->bkg_nor1;
-#my $emax = 1.5 * $data->bkg_nor1;
-#my $span = $emax - $emin;
-my $nstep = 5;
-my $step = $emin / $nstep;
-my $init = $data->bkg_nor1;
+$data->po->showlegend(0);
+$data->po->set(e_bkg=>0, e_norm=>1, e_markers=>0, emin=>-100, emax=>250);
+$data->start_counter("Sampling", $size);
+foreach my $i (1 .. $size) {
 
-foreach my $i (1 .. $nstep) {
-  $data -> bkg_nor1( $init - $i*$step );
-  $data -> _update('background');
+  $data->count;
+  foreach my $j (0 ..3) {
+    my $p = $params[$j];
+    $data->$p($save[$j] + rand(2*$bubbles[$j]) - $bubbles[$j]);
+  };
+  $data -> normalize;
+  #printf "%.5f\n", $data->bkg_nc2;
+  $data->plot('E');
   $stat -> add_data($data->bkg_step);
-  printf "%.3f: %.5f\n", $data -> bkg_nor1, $data->bkg_step;
-
-  $data -> bkg_nor1( $init + $i*$step );
-  $data -> _update('background');
-  $stat -> add_data($data->bkg_step);
-  printf "%.3f: %.5f\n", $data -> bkg_nor1, $data->bkg_step;
 };
-$data->bkg_nor1($start);
-$data->_update('background');
-printf "edge step is %.5f +/- %.5f\n", $data->bkg_step, $stat -> standard_deviation;
+$data->stop_counter;
+
+my $sd = $stat -> standard_deviation;
+printf "edge step with outliers is %.5f +/- %.5f  (%d samples)\n", $stat->mean, $sd, $stat->count;
+
+my @full = $stat->get_data;
+
+my $final = 0;
+my $m = 3.0;
+my $unchanged = 0;
+my $prev = 0;
+while (abs($init - $final) > $sd/3) {
+
+  my @list = ();
+  foreach my $es (@full) {
+    next if (abs($es-$init) > $m*$sd);
+    push @list, $es;
+  };
+  $stat->clear;
+  $stat->add_data(@list);
+
+  $final = $stat->mean;
+  $sd = $stat->standard_deviation;
+  if ($prev == $final) {
+    ++$unchanged;
+  } else {
+    $unchanged = 0;
+  };
+  $prev = $final;
+  printf "edge step without outliers is %.5f +/- %.5f  (%d samples, margin = %.1f  %d)\n", $final, $sd, $stat->count, $m, $unchanged;
+  $m -= 0.2;
+  last if ($unchanged == 4);
+  last if $m < 1.5;
+}
+
+printf "final edge step evaluation %.5f +/- %.5f\n", $final, $sd; #$stat->mean, $stat -> standard_deviation;
+$data->pause;

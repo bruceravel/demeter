@@ -250,6 +250,7 @@ sub start_plot {
   $self -> co -> set(plot_part=>q{});
   return $self;
 };
+alias startplot => 'start_plot';
 
 sub finish {
   1;

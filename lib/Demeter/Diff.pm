@@ -37,7 +37,7 @@ has 'standardgroup' => (is => 'rw', isa => 'Str',     default => q{});
 
 has 'space'         => (is => 'rw', isa => 'Str',     default => 'norm',
 			trigger => sub{ my($self, $new) = @_;
-					if (any {lc($new) eq $_} (qw(e xmu norm flat der nder sec nsec))) {
+					if (any {lc($new) eq $_} (qw(xmu norm flat der nder sec nsec))) {
 					  $self->xsuff('energy');
 					} elsif ($new eq 'chi') {
 					  $self->xsuff('k');
@@ -57,7 +57,9 @@ has 'xsuff'         => (is => 'rw', isa => 'Str',     default => 'energy');
 has 'plotspectra'   => (is => 'rw', isa => 'Bool',    default => 0);
 has 'spline'        => (is => 'rw', isa => 'Any',     default => 0);
 
+has 'do_integrate'  => (is => 'rw', isa => 'Bool',    default => 1);
 has 'is_nor'        => (is => 'rw', isa => 'Bool',    default => 1);
+has 'datatype'      => (is => 'rw', isa => 'Str',     default => 'xanes');
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -87,7 +89,7 @@ sub diff {
   @x = map {$_ + $self->data->bkg_eshift} @x;
   my @y = $self->standard->get_array('diff');
   $self->spline(Math::Spline->new(\@x,\@y));
-  $self->_integrate;
+  $self->_integrate if $self->do_integrate;
   return $self;
 };
 
@@ -108,10 +110,16 @@ sub plot {
     $self->chart("plot", $which);
     $self->po->increment;
   };
-  if ($self->po->e_markers) {
-    $self->data->plot_marker('diff', $self->data->bkg_e0+$self->xmin);
-    $self->data->plot_marker('diff', $self->data->bkg_e0+$self->xmax);
-  };
+
+  ## note that data standard is set, so e0 will be added to the x coordinates
+  my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin),
+	       Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax));
+  $_->plot('E') foreach (@indic);
+
+  #if ($self->po->e_markers) {
+  #  $self->data->plot_marker('diff', $self->data->bkg_e0+$self->xmin);
+  #  $self->data->plot_marker('diff', $self->data->bkg_e0+$self->xmax);
+  #};
   $self->standard->unset_standard;
   $self->po->title(q{});
   return $self;
@@ -125,7 +133,8 @@ sub make_group {
   my $name = ($self->invert) ?
     sprintf("diff %s - %s", $self->standard->name, $self->data->name):
       sprintf("diff %s - %s", $self->data->name, $self->standard->name);
-  my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>$self->is_nor, name=>$name);
+  my $data = $self->data->put(\@x, \@y, datatype=>$self->datatype,
+			      is_nor=>$self->is_nor, name=>$name);
   $data->dispense("process", "deriv");
   $data->dispense("analysis", "diff_make");
   foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)) {

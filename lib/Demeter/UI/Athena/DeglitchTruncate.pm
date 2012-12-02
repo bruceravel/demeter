@@ -82,6 +82,10 @@ sub new {
   $hbox -> Add($this->{remove_many}, 1, wxALL|wxALIGN_CENTER, 5);
   $this->{remove_many}->Enable(0);
   EVT_BUTTON($this, $this->{replot_many}, sub{OnPlotMany(@_, $app)});
+  EVT_BUTTON($this, $this->{remove_many}, sub{OnRemoveMany(@_, $app)});
+  EVT_BUTTON($this, $this->{emin_pluck}, sub{OnPluckMany(@_, $app, 'emin')});
+  EVT_BUTTON($this, $this->{emax_pluck}, sub{OnPluckMany(@_, $app, 'emax')});
+
 
   #$manybox->Enable(0);
   #$this->{$_}->Enable(0) foreach (qw(margin margin_label emin emin_label
@@ -111,7 +115,7 @@ sub new {
   $truncateboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
   $this->{replot_truncate}   = Wx::Button->new($this, -1, 'Replot');
   $this->{truncate}          = Wx::Button->new($this, -1, 'Truncate data');
-  $this->{truncate_marked}   = Wx::Button->new($this, -1, 'Truncate all marked groups');
+  $this->{truncate_marked}   = Wx::Button->new($this, -1, 'Truncate marked');
   $hbox -> Add($this->{replot_truncate}, 1, wxALL, 5);
   $hbox -> Add($this->{truncate},        1, wxALL, 5);
   $hbox -> Add($this->{truncate_marked}, 1, wxALL, 5);
@@ -251,13 +255,51 @@ sub OnPlotMany {
   } else {
     $data->po->set(e_pre=>0, e_post=>1);
   };
+  $app->{main}->status(q{});
   $data->po->set(e_mu=>1, e_bkg=>0, e_der=>0, e_sec=>0, e_norm=>0, e_i0=>0, e_signal=>0, e_markers=>1,
 		 e_margin=>1, margin=>$this->{margin}->GetValue,
 		 margin_min=>$emin, margin_max=>$emax,);
   $data->po->start_plot;
   $data->plot('E');
   $data->po->e_margin(0);
+  $this->{remove}->Enable(0);
+  $this->{remove_many}->Enable(1);
 }
+sub OnRemoveMany {
+  my ($this, $event, $app) = @_;
+  my $data = $app->current_data;
+  my ($emin, $emax) = ($this->{emin}->GetValue, $this->{emax}->GetValue);
+  if (($emin < 0) and ($emax > 0)) {
+    $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
+    return;
+  } elsif (($emin > 0) and ($emax < 0)) {
+    $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
+    return;
+  } elsif ($emin < 0) {
+    $data->po->set(e_pre=>1, e_post=>0);
+  } else {
+    $data->po->set(e_pre=>0, e_post=>1);
+  };
+  $data -> deglitch_margins;
+  $data->po->set(e_mu=>1, e_bkg=>0, e_der=>0, e_sec=>0, e_norm=>0, e_i0=>0, e_signal=>0, e_markers=>1,
+		 e_margin=>1, margin=>$this->{margin}->GetValue,
+		 margin_min=>$emin, margin_max=>$emax,);
+  $data->po->start_plot;
+  $data -> plot('E');
+  $data->po->e_margin(0);
+  $app->{main}->status("Removed data points outside of deglitching margins");
+};
+sub OnPluckMany {
+  my ($this, $event, $app, $which) = @_;
+  my $data = $app->current_data;
+  my ($ok, $xx, $yy) = $app->cursor;
+  return if not $ok;
+  my $x = sprintf("%.2f", $xx-$data->bkg_e0);
+  $this->{$which}->SetValue($x);
+  $this->OnPlotMany(q{}, $app);
+  $app->{main}->status(sprintf("Plucked point at %.2f from %s", $x, $data->name));
+
+};
 
 sub plot_truncate {
   my ($this, $data) = @_;

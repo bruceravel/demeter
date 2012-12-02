@@ -1212,7 +1212,7 @@ sub main_window {
 		   PCA		    => "Principle components analysis",
 		   PeakFit	    => "Peak fitting",
 		   LogRatio	    => "Log-ratio/phase-difference analysis",
-		   Difference	    => "Difference spectra of normalized $MU(E)",
+		   Difference	    => "Difference spectra",
 		   XDI		    => "File metadata",
 		   Watcher	    => "Data watcher",
 		   Journal	    => "Project journal",

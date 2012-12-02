@@ -20,6 +20,7 @@ use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
 use Const::Fast;
 use DateTime;
+use Statistics::Descriptive;
 
 use vars qw($label $tag);
 $label = "Main window";
@@ -1036,6 +1037,7 @@ const my $E0_ZERO            => Wx::NewId();
 const my $E0_PEAK            => Wx::NewId();
 const my $STEP_ALL           => Wx::NewId();
 const my $STEP_MARKED        => Wx::NewId();
+const my $STEP_ERROR         => Wx::NewId();
 const my $ESHIFT_ALL         => Wx::NewId();
 const my $ESHIFT_MARKED      => Wx::NewId();
 
@@ -1087,6 +1089,8 @@ sub ContextMenu {
     $menu->AppendSeparator;
     $menu->Append($STEP_ALL,     "Show edge steps of all groups");
     $menu->Append($STEP_MARKED,  "Show edge steps of marked groups");
+    $menu->AppendSeparator;
+    $menu->Append($STEP_ERROR,   "Approximate uncertainty in edge step");
   } elsif (($which eq 'plot_multiplier') and (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions})) {
     $menu->AppendSeparator;
     $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
@@ -1216,6 +1220,10 @@ sub DoContextMenu {
       $main->parameter_table($app, 'bkg_step', 'marked', 'Edge steps');
       last SWITCH;
     };
+    ($id == $STEP_ERROR) and do {
+      $main->edgestep_error($app);
+      last SWITCH;
+    };
     ($id == $ESHIFT_ALL) and do {
       $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
       last SWITCH;
@@ -1249,7 +1257,96 @@ sub parameter_table {
 };
 
 
-const my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+sub edgestep_error {
+  my ($main, $app) = @_;
+  my $data = $app->current_data;
+  my $stat = Statistics::Descriptive::Full->new();
+
+  my @bubbles = (Demeter->co->default('edgestep', 'pre1'),
+		 Demeter->co->default('edgestep', 'pre2'),
+		 Demeter->co->default('edgestep', 'nor1'),
+		 Demeter->co->default('edgestep', 'nor2'),
+		);
+  my @save    = $data->get(qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2));
+  push @save, $data->po->showlegend;
+  my @params  = qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2);
+  my $size    = Demeter->co->default('edgestep', 'samples');
+  my $margin  = Demeter->co->default('edgestep', 'margin');
+
+  my $busy = Wx::BusyCursor->new();
+  $data->_update('background');
+  $stat -> add_data($data->bkg_step);
+  my $init = $data->bkg_step;
+
+  $data->po->start_plot;
+  $data->po->showlegend(0);
+  $data->po->set(e_mu=>1, e_bkg=>0, e_norm=>1, e_markers=>0, e_pre=>0, e_post=>0,
+		 e_i0=>0, e_signal=>0, e_der=>0, e_sec=>0,
+		 emin=>-100, emax=>250);
+
+  foreach my $i (1 .. $size) {
+    $app->{main}->status(sprintf("Sample #%d of %d", $i+1, $size+1), 'wait|nobuffer');
+    foreach my $j (0 ..3) {
+      my $p = $params[$j];
+      $data->$p($save[$j] + rand(2*$bubbles[$j]) - $bubbles[$j]);
+    };
+    $data -> normalize;
+    $data -> plot('E');
+    $stat -> add_data($data->bkg_step);
+  };
+
+  my $sd = $stat -> standard_deviation;
+  my $text = sprintf("\tedge step with outliers is %.5f +/- %.5f  (%d samples)\n",
+		     $stat->mean, $sd, $stat->count);
+
+  my @full = $stat->get_data;
+  my ($final, $m, $unchanged, $prev) = (0, 3.0, 0, 0);
+
+  while (abs($init - $final) > $sd/3) {
+    my @list = ();
+    foreach my $es (@full) {
+      next if (abs($es-$init) > $m*$sd);
+      push @list, $es;
+    };
+    $stat->clear;
+    $stat->add_data(@list);
+
+    $final = $stat->mean;
+    $sd = $stat->standard_deviation;
+    if ($prev == $final) {
+      ++$unchanged;
+    } else {
+      $unchanged = 0;
+    };
+    $prev = $final;
+    $text .= sprintf("\tedge step without outliers is %.5f +/- %.5f  (%d samples, margin = %.1f, unchanged count = %d)\n",
+		     $final, $sd, $stat->count, $m, $unchanged);
+    $m -= 0.2;
+    last if ($unchanged == 4);
+    last if $m < 1.5;
+  };
+
+  my $report = sprintf("Full sample size = %d\n", $size+1);
+  $report   .= sprintf("Sample size with outliers removed = %d\n", $stat->count);
+  $report   .= sprintf("Current edge step value = %.5f\n", $init);
+  $report   .= sprintf("Average edge step value = %.5f\n", $stat->mean);
+  $report   .= sprintf("Approximate uncertainty in edge step = %.5f\n\n", $sd);
+
+  $report   .= "Progress report:\n";
+  $report   .= $text;
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $report, "Edge step error calculation")
+      -> Show if Demeter->co->default('edgestep', 'fullreport');
+
+  $data->set(bkg_pre1=>$save[0], bkg_pre2=>$save[1], bkg_nor1=>$save[2], bkg_nor2=>$save[3]);
+  $data->po->showlegend($save[4]);
+  $data -> normalize;
+  $app->OnGroupSelect(0,0,0);
+  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f", $data->name, $data->bkg_step, $sd));
+  undef $busy;
+};
+
+const my @all_group  => (qw(bkg_z fft_edge importance));
 const my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
 			    bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
 			    bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
