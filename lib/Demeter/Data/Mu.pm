@@ -355,6 +355,102 @@ sub normalize {
   return $self;
 };
 
+sub edgestep_error {
+  my ($self, $plot) = @_;
+
+  my $stat = Statistics::Descriptive::Full->new();
+
+  my @bubbles = (Demeter->co->default('edgestep', 'pre1'),
+		 Demeter->co->default('edgestep', 'pre2'),
+		 Demeter->co->default('edgestep', 'nor1'),
+		 Demeter->co->default('edgestep', 'nor2'),
+		);
+  my @save    = $self->get(qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2));
+  push @save, $self->po->showlegend;
+  my @params  = qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2);
+  my $size    = Demeter->co->default('edgestep', 'samples');
+  my $margin  = Demeter->co->default('edgestep', 'margin');
+
+  $self->_update('background');
+  $stat -> add_data($self->bkg_step);
+  my $init = $self->bkg_step;
+
+  $self->po->start_plot;
+  $self->po->showlegend(0);
+  my @plotsave = $self->po->get(qw(e_mu e_bkg e_norm e_markers e_pre e_post
+				   e_i0 e_signal e_der e_sec emin emax));
+  $self->po->set(e_mu=>1, e_bkg=>0, e_norm=>1, e_markers=>0, e_pre=>0, e_post=>0,
+		 e_i0=>0, e_signal=>0, e_der=>0, e_sec=>0,
+		 emin=>-100, emax=>250);
+
+  ## crerate a sampling of edge step values from randomized normalization parameters
+  foreach my $i (1 .. $size) {
+    $self->call_sentinal($i, $size);
+    foreach my $j (0 ..3) {
+      my $p = $params[$j];
+      $self->$p($save[$j] + rand(2*$bubbles[$j]) - $bubbles[$j]);
+    };
+    $self -> normalize;
+    $self -> plot('E') if $plot;
+    $stat -> add_data($self->bkg_step);
+  };
+
+  my $sd = $stat -> standard_deviation;
+  my $text = sprintf("\tedge step with outliers is %.5f +/- %.5f  (%d samples)\n",
+		     $stat->mean, $sd, $stat->count);
+
+  my @full = $stat->get_data;
+  my ($final, $m, $unchanged, $prev) = (0, 3.0, 0, 0);
+
+  ## weed out outliers until the original edge step value and the
+  ## average are close enough
+  while (abs($init - $final) > $sd/3) {
+    my @list = ();
+    foreach my $es (@full) {
+      next if (abs($es-$init) > $m*$sd);
+      push @list, $es;
+    };
+    $stat->clear;
+    $stat->add_data(@list);
+
+    $final = $stat->mean;
+    $sd = $stat->standard_deviation;
+    if ($prev == $final) {
+      ++$unchanged;
+    } else {
+      $unchanged = 0;
+    };
+    $prev = $final;
+    $text .= sprintf("\tedge step without outliers is %.5f +/- %.5f  (%d samples, margin = %.1f, unchanged count = %d)\n",
+		     $final, $sd, $stat->count, $m, $unchanged);
+    $m -= 0.2;
+    last if ($unchanged == 4);	# bail if mean is unchanged -- probably means sample has no outliers
+    last if $m < 1.5;
+  };
+
+  my $report = sprintf("Full sample size = %d\n", $size+1);
+  $report   .= sprintf("Sample size with outliers removed = %d\n", $stat->count);
+  $report   .= sprintf("Current edge step value = %.5f\n", $init);
+  $report   .= sprintf("Average edge step value = %.5f\n", $final);
+  $report   .= sprintf("Approximate uncertainty in edge step = %.5f\n\n", $sd);
+
+  $report   .= "Progress report:\n";
+  $report   .= $text;
+
+  ## restore states of Data and Plot objects
+  $self->set(bkg_pre1=>$save[0], bkg_pre2=>$save[1], bkg_nor1=>$save[2], bkg_nor2=>$save[3]);
+  $self->po->showlegend($save[4]);
+  $self->po->set(e_mu     =>$plotsave[0], e_bkg   =>$plotsave[1],  e_norm=>$plotsave[2],
+		 e_markers=>$plotsave[3], e_pre   =>$plotsave[4],  e_post=>$plotsave[5],
+		 e_i0     =>$plotsave[6], e_signal=>$plotsave[7],  e_der =>$plotsave[8],
+		 e_sec    =>$plotsave[9], emin    =>$plotsave[10], emax  =>$plotsave[11]);
+  $self -> normalize;
+
+  return ($final, $sd, $report);
+};
+
+
+
 sub autobk {
   my ($self) = @_;
   my $group = $self->group;
