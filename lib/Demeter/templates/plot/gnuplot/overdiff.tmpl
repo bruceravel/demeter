@@ -6,13 +6,12 @@
 }
 {
   $file = $P->tempfile;
-  $DS->points(file    => $file,
-              space   => 'diff', 
- 	      shift   => $DS->bkg_eshift,
- 	      suffix  => 'diff',
-	      yoffset => $D->y_offset,
-	     );
-  $thiskey = "difference";
+  $S->points(file    => $file,
+             space   => 'diff', 
+ 	     suffix  => 'diff',
+	     yoffset => $D->y_offset,
+	    );
+  $thiskey = $S->name || "difference";
   $thiskey =~ s{_}{\\\\_}g;
   q{}
 }

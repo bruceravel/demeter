@@ -14,7 +14,7 @@ has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			    lorentzian	     => 3,
 			    pseudovoight     => 4,
 			    atan	     => 3,
-			    erfc	     => 3,
+			    erf  	     => 3,
 			  }});
 
 sub DEMOLISH {

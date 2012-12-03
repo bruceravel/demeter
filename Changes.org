@@ -21,7 +21,9 @@
    - Constraining parameters no longer pushed value of bkg_eshift
    - Difference spectra can be made of mu, norm, deriv, second,
      norm/deriv, and norm/second.  norm is the default
+   - Implemented functionality for differens of marked groups
    - Calculation of approximate uncertainty in edge step
+   - Set E0 of all/marked groups using an algorithm, see Group menu
 
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
@@ -54,6 +56,11 @@
    - plot margins
    - Diff object, flags for disabling integration + setting datatype,
      use indicators rather markers in plots
+   - fixed an error recognizing a double click in the gnuplot cursor
+     interface
+   - fixed an erf/erfc typo resulting in problems doing peak fitting
+     with error function
+   - more robust Demeter::Diff object
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

@@ -341,6 +341,19 @@ const my $VALUES_MARKED		=> Wx::NewId();
 const my $SHOW_REFERENCE	=> Wx::NewId();
 const my $TIE_REFERENCE		=> Wx::NewId();
 
+const my $E0_IFEFFIT_ALL	=> Wx::NewId();
+const my $E0_TABULATED_ALL	=> Wx::NewId();
+const my $E0_FRACTION_ALL	=> Wx::NewId();
+const my $E0_ZERO_ALL	        => Wx::NewId();
+const my $E0_DMAX_ALL	        => Wx::NewId();
+const my $E0_PEAK_ALL	        => Wx::NewId();
+const my $E0_IFEFFIT_MARKED	=> Wx::NewId();
+const my $E0_TABULATED_MARKED	=> Wx::NewId();
+const my $E0_FRACTION_MARKED	=> Wx::NewId();
+const my $E0_ZERO_MARKED        => Wx::NewId();
+const my $E0_DMAX_MARKED        => Wx::NewId();
+const my $E0_PEAK_MARKED        => Wx::NewId();
+
 const my $FREEZE_TOGGLE		=> Wx::NewId();
 const my $FREEZE_ALL		=> Wx::NewId();
 const my $UNFREEZE_ALL		=> Wx::NewId();
@@ -501,6 +514,20 @@ sub menubar {
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
   #};
 
+  my $e0allmenu   = Wx::Menu->new;
+  $e0allmenu->Append($E0_IFEFFIT_ALL,   "Ifeffit's default", "Set E0 for all groups to Ifeffit's default");
+  $e0allmenu->Append($E0_TABULATED_ALL, "the tabulated value", "Set E0 for all groups to the tabulated value");
+  $e0allmenu->Append($E0_FRACTION_ALL,  "a fraction of the edge step", "Set E0 for all groups to a fraction of the edge step");
+  $e0allmenu->Append($E0_ZERO_ALL,      "the zero of the second derivative", "Set E0 for all groups to the zero of the second derivative");
+  #$e0allmenu->Append($E0_DMAX_ALL,      "the peak of the first derivative", "Set E0 for all groups to the peak of the first derivative");
+  #$e0allmenu->Append($E0_PEAK_ALL,      "the peak of the white line", "Set E0 for all groups to the peak of the white line");
+  my $e0markedmenu   = Wx::Menu->new;
+  $e0markedmenu->Append($E0_IFEFFIT_ALL,      "Ifeffit's default", "Set E0 for marked groups to Ifeffit's default");
+  $e0markedmenu->Append($E0_TABULATED_MARKED, "the tabulated value", "Set E0 for marked groups to the tabulated value");
+  $e0markedmenu->Append($E0_FRACTION_MARKED,  "a fraction of the edge step", "Set E0 for marked groups to a fraction of the edge step");
+  $e0markedmenu->Append($E0_ZERO_MARKED,      "the zero of the second derivative", "Set E0 for marked groups to the zero of the second derivative");
+  #$e0markedmenu->Append($E0_DMAX_MARKED,      "the peak of the first derivative", "Set E0 for marked groups to the peak of the first derivative");
+  #$e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
 
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
@@ -510,6 +537,9 @@ sub menubar {
   $groupmenu->AppendSeparator;
   $groupmenu->Append($VALUES_ALL,    "Set all groups' values to the current",    "Push this groups parameter values onto all other groups.");
   $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
+  $groupmenu->AppendSeparator;
+  $groupmenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
+  $groupmenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
@@ -819,6 +849,57 @@ sub OnMenuClick {
       $app->{main}->{Main}->constrain($app, 'all', 'marked');
       last SWITCH;
     };
+
+    ($id == $E0_IFEFFIT_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'ifeffit', 'all');
+      last SWITCH;
+    };
+    ($id == $E0_TABULATED_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'atomic', 'all');
+      last SWITCH;
+    };
+    ($id == $E0_FRACTION_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'fraction', 'all');
+      last SWITCH;
+    };
+    ($id == $E0_ZERO_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'zero', 'all');
+      last SWITCH;
+    };
+    ($id == $E0_DMAX_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'dmax', 'all');
+      last SWITCH;
+    };
+    ($id == $E0_PEAK_ALL) and do {
+      $app->{main}->{Main}->set_e0($app, 'peak', 'all');
+      last SWITCH;
+    };
+
+    ($id == $E0_IFEFFIT_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'ifeffit', 'marked');
+      last SWITCH;
+    };
+    ($id == $E0_TABULATED_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'atomic', 'marked');
+      last SWITCH;
+    };
+    ($id == $E0_FRACTION_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'fraction', 'marked');
+      last SWITCH;
+    };
+    ($id == $E0_ZERO_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'zero', 'marked');
+      last SWITCH;
+    };
+    ($id == $E0_DMAX_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'dmax', 'marked');
+      last SWITCH;
+    };
+    ($id == $E0_PEAK_MARKED) and do {
+      $app->{main}->{Main}->set_e0($app, 'peak', 'marked');
+      last SWITCH;
+    };
+
 
     ## -------- merge menu
     ($id == $MERGE_MUE) and do {

@@ -11,5 +11,6 @@
 }
 ##| Compute difference  {$DS->name} - {$D->name} as {$S->space}
 set {$D->group}.int = qinterp({$D->group}.{$S->xsuff}+{$esd}, {$D->group}.{$S->dataspace}, {$DS->group}.{$S->xsuff}+{$ess})
-set {$DS->group}.diff = {$prefactor} * ({$D->group}.int - {$DS->group}.{$S->standardspace})
+set {$S->group}.energy = {$DS->group}.{$S->xsuff}+{$ess}
+set {$S->group}.diff = {$prefactor} * ({$D->group}.int - {$DS->group}.{$S->standardspace})
 

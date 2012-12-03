@@ -960,21 +960,24 @@ sub Pluck {
 
   my $on_screen = lc($app->{lastplot}->[0]);
   if ($on_screen eq 'quad') {
-    $app->{main}->status("Cannot pluck from a quad plot.");
+    $app->{main}->status("Cannot pluck from a quad plot.", 'alert');
     return;
   };
   if (($on_screen eq 'r') and ($which !~ m{rmin|rmax|rbkg})) {
-    $app->{main}->status("Cannot pluck for $which from an R plot.");
+    $app->{main}->status("Cannot pluck for $which from an R plot.", 'alert');
     return;
   };
   if (($on_screen ne 'r') and ($which =~ m{bft|rbkg})) {
     my $type = ($on_screen eq 'e') ? 'n energy' : " $on_screen";
-    $app->{main}->status("Cannot pluck for $which from a$type plot.");
+    $app->{main}->status("Cannot pluck for $which from a$type plot.", 'alert');
     return;
   };
 
-  my ($ok, $x, $y) = $app->cursor;
-  return if not $ok;
+  my ($return, $x, $y) = $app->cursor;
+  if (not $return->status) {
+    $app->{main}->status($return->message, 'alert');
+    return;
+  };
   my $plucked = -999;
   my $space = 'E';
 
@@ -1313,6 +1316,30 @@ sub constrain {
   };
   $app->modified(1);
   $app->{main}->status("Set parameters for $how groups");
+};
+
+my %e0_algorithms = (ifeffit  => "Ifeffit's default",
+		     atomic   => "the tabulated values",
+		     fraction => "a fraction of the edge step",
+		     zero     => "the zero crossing of their second derivatives",
+		     dmax     => "the peak of their first derivatives",
+		     peak     => "the peak of their white lines",
+		    );
+sub set_e0 {
+  my ($main, $app, $which, $how) = @_;
+  if ($app->is_empty) {
+    $app->{main}->status("No data!");
+    return;
+  };
+  my $busy = Wx::BusyCursor->new();
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    my $this = $app->{main}->{list}->GetIndexedData($i);
+    $this->e0($which);
+  };
+  $app->OnGroupSelect(0,0,0);
+  $app->{main}->status(sprintf("Set the e0 values for %s groups to %s", $how, $e0_algorithms{$which}));
+  undef $busy;
 };
 
 sub to_default {

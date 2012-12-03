@@ -54,8 +54,9 @@ has 'steps'         => (is => 'rw', isa => 'Int',     default =>  6);
 has 'area'          => (is => 'rw', isa => 'Num',     default =>  0);
 has 'xsuff'         => (is => 'rw', isa => 'Str',     default => 'energy');
 
-has 'plotspectra'   => (is => 'rw', isa => 'Bool',    default => 0);
-has 'spline'        => (is => 'rw', isa => 'Any',     default => 0);
+has 'plotspectra'    => (is => 'rw', isa => 'Bool',    default => 0);
+has 'plotindicators' => (is => 'rw', isa => 'Bool',    default => 1);
+has 'spline'         => (is => 'rw', isa => 'Any',     default => 0);
 
 has 'do_integrate'  => (is => 'rw', isa => 'Bool',    default => 1);
 has 'is_nor'        => (is => 'rw', isa => 'Bool',    default => 1);
@@ -85,9 +86,9 @@ sub diff {
   $self->dispense("analysis", "diff_diff");
   $self->standard->unset_standard;
 
-  my @x = $self->data->get_array('energy');
-  @x = map {$_ + $self->data->bkg_eshift} @x;
-  my @y = $self->standard->get_array('diff');
+  my @x = $self->get_array('energy');
+  #@x = map {$_ + $self->data->bkg_eshift} @x;
+  my @y = $self->get_array('diff');
   $self->spline(Math::Spline->new(\@x,\@y));
   $self->_integrate if $self->do_integrate;
   return $self;
@@ -95,7 +96,7 @@ sub diff {
 
 sub plot {
   my ($self) = @_;
-  $self->po->title(join(' - ', $self->data->name, $self->standard->name));
+  $self->po->title(join(' - ', $self->data->name, $self->standard->name)) if not $self->po->title;
   $self->standard->standard;
   if ($self->plotspectra) {
     my $save = $self->po->e_markers;
@@ -112,9 +113,11 @@ sub plot {
   };
 
   ## note that data standard is set, so e0 will be added to the x coordinates
-  my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin),
-	       Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax));
-  $_->plot('E') foreach (@indic);
+  if ($self->plotindicators) {
+    my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin),
+		 Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax));
+    $_->plot('E') foreach (@indic);
+  };
 
   #if ($self->po->e_markers) {
   #  $self->data->plot_marker('diff', $self->data->bkg_e0+$self->xmin);
@@ -137,7 +140,11 @@ sub make_group {
 			      is_nor=>$self->is_nor, name=>$name);
   $data->dispense("process", "deriv");
   $data->dispense("analysis", "diff_make");
-  foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2)) {
+  foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
+		    bkg_kw bkg_rbkg bkg_flatten bkg_nnorm bkg_clamp1 bkg_clamp2
+		    fft_kmin fft_kmax fft_dk fft_kwindow fit_karb fit_karb_value
+		    bft_rmin bft_rmax bft_dr bft_rwindow
+		  )) {
     $data->$w($self->data->$w);
   };
   return $data;

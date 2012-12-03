@@ -30,9 +30,11 @@ our @EXPORT = qw(cursor);
 
 sub cursor {
   my ($app, $frame) = @_;
-  my ($ok, $x, $y) = (1, -100000, -100000);
+  my ($x, $y) = (-100000, -100000);
   my $parent = $frame || $app->{main};
+  my ($was, $is) = (q{ }, q{});
 
+  my $return = Demeter::Return->new();
   my $busy;
   if (Demeter->mo->template_plot eq 'pgplot') {
     $app->{main}->status("Click on a point to pluck its value...", "wait");
@@ -40,6 +42,15 @@ sub cursor {
     ($x, $y) = (Demeter->fetch_scalar("cursor_x"), Demeter->fetch_scalar("cursor_y"));
 
   } elsif (Demeter->mo->template_plot eq 'gnuplot') {
+
+    my $recent;
+    if (wxTheClipboard->Open) {
+      $recent = Wx::TextDataObject->new;
+      wxTheClipboard->GetData( $recent );
+      wxTheClipboard->Close;
+    };
+    $was = $recent->GetText;
+
     my $yesno = Wx::MessageDialog
       -> new($parent,
 	     "1. Double click in the Gnuplot window to pluck a point.\n2. Then click ok to accept the value.",
@@ -53,7 +64,8 @@ sub cursor {
       wxTheClipboard->GetData( $tdo );
       wxTheClipboard->Close;
     };
-    ($x, $y) = split(/,\s+/, $tdo->GetText);
+    $is = $tdo->GetText;
+    ($x, $y) = split(/,\s+/, $is);
 
       # if (wxTheClipboard->Open) {
       # $app->{main}->status("Double click on a point to pluck its value...", "wait");
@@ -77,15 +89,32 @@ sub cursor {
 
   } else {
     $app->{main}->status("Unknown plotting backend.  Pluck canceled.");
-    $ok = 0;
-
+    $return->status(0);
+    return ($return, $x, -100000);
   };
 
   undef $busy;
-  return (0, -100000, -100000) if ((not looks_like_number($x)) and (not looks_like_number($y)));
-  return (0, $x, -100000) if not looks_like_number($y);
-  return (0, -100000, $y) if not looks_like_number($x);
-  return ($ok, $x, $y);
+  if ((Demeter->mo->template_plot eq 'gnuplot') and ($was eq $is)) {
+    $return->status(0);
+    $return->message("Plucking failed. Did you double click on the plot?");
+    return ($return, -100000, -100000);
+  };
+  if ((not looks_like_number($x)) and (not looks_like_number($y))) {
+    $return->status(0);
+    $return->message("Plucking failed. Neither coordinate appears to be a number.");
+    return ($return, -100000, -100000);
+  };
+  if (not looks_like_number($y)) {
+    $return->status(0);
+    $return->message("Plucking failed. The y coordinate appears not to be a number.");
+    return ($return, $x, -100000);
+  };
+  if (not looks_like_number($x)) {
+    $return->status(0);
+    $return->message("Plucking failed. The x coordinate appears not to be a number.");
+    return ($return, -100000, $y);
+  };
+  return ($return, $x, $y);
 };
 
 1;

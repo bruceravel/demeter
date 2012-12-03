@@ -104,10 +104,11 @@ sub new {
   $this->{markedmake}  = Wx::Button->new($this, -1, 'Make difference groups from all marked groups', wxDefaultPosition, $tcsize);
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make marked markedareas markedmake));
   $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake));
-  EVT_BUTTON($this, $this->{plot},    sub{$this->plot});
-  EVT_BUTTON($this, $this->{make},    sub{$this->make});
+  EVT_BUTTON($this, $this->{plot},        sub{$this->plot});
+  EVT_BUTTON($this, $this->{make},        sub{$this->make});
+  EVT_BUTTON($this, $this->{marked},      sub{$this->marked_spectra});
+  EVT_BUTTON($this, $this->{markedareas}, sub{$this->marked_areas});
 
-  $box->Add(Wx::StaticText->new($this, -1, "(Marked groups functionality has not yet been implemented.)"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
@@ -166,52 +167,57 @@ sub mode {
 sub ToggleIntegration {
   my ($this, $event) = @_;
   my $onoff = $this->{do_integrate}->GetValue;
-  foreach my $w (qw(xmin_label xmin xmin_pluck to xmax xmax_pluck area area_label)) {
+  foreach my $w (qw(xmin_label xmin xmin_pluck to xmax xmax_pluck area area_label markedareas)) {
     $this->{$w}->Enable($onoff);
   };
   $this->{Diff}->do_integrate($onoff);
 };
 
-sub plot {
-  my ($this) = @_;
+sub setup {
+  my ($this, $data, $diff) = @_;
+  $diff ||= $this->{Diff};
   foreach my $att (qw(xmin xmax invert plotspectra)) {
     next if (($att =~ m{\Axm}) and (not looks_like_number($this->{$att}->GetValue)));
-    $this->{Diff}->$att($this->{$att}->GetValue);
+    $diff->$att($this->{$att}->GetValue);
   };
   my $form = $forms[$this->{form}->GetSelection];
-  $this->{Diff}->data($::app->current_data);
-  $this->{Diff}->space($form);
-  $this->{Diff}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
-  $this->{Diff}->diff;
-  $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
-  $this->{Diff}->po->set(emin=>$this->{Diff}->xmin-20, emax=>$this->{Diff}->xmax+30, space=>'E');
-  $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
-
+  $diff->data($data);
+  $diff->space($form);
+  $diff->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $diff->diff;
+  Demeter->po->set(emin=>$diff->xmin-20, emax=>$diff->xmax+30, space=>'E');
+  Demeter->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   given ($this->{form}->GetSelection) {
     when (0) {			# mu(E)
-      $this->{Diff}->po->set(e_norm=>0, e_der=>0, e_sec=>0,);
+      Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>0,);
     };
     when (1) {			# norm(E)
-      $this->{Diff}->po->set(e_norm=>1, e_der=>0, e_sec=>0,);
+      Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>0,);
     };
     when (2) {			# deriv(E)
-      $this->{Diff}->po->set(e_norm=>0, e_der=>1, e_sec=>0,);
+      Demeter->po->set(e_norm=>0, e_der=>1, e_sec=>0,);
     };
     when (3) {			# deriv(norm(E))
-      $this->{Diff}->po->set(e_norm=>1, e_der=>1, e_sec=>0,);
+      Demeter->po->set(e_norm=>1, e_der=>1, e_sec=>0,);
     };
     when (4) {			# sec(E)
-      $this->{Diff}->po->set(e_norm=>0, e_der=>0, e_sec=>1,);
+      Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>1,);
     };
     when (5) {			# sec(norm(E))
-      $this->{Diff}->po->set(e_norm=>1, e_der=>0, e_sec=>1,);
+      Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>1,);
     };
   }
+};
 
-  $this->{Diff}->po->start_plot;
+sub plot {
+  my ($this) = @_;
+  $this->setup($::app->current_data);
+  $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
+
+  Demeter->po->start_plot;
   $this->{Diff}->plot;
   $::app->{lastplot} = ['E', 'single'];
-  $this->{make}->Enable(1);
+  $this->{$_}->Enable(1) foreach (qw(make marked markedareas markedmake));
   $::app->heap_check(0);
 };
 
@@ -252,6 +258,59 @@ sub Pluck {
   $this->{$which}->SetValue($plucked);
   $this->plot;
   $app->{main}->status("Plucked $plucked for $which");
+};
+
+sub marked {
+  my ($this) = @_;
+  my $save = $this->{Diff};
+
+  my @all = ();
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+    next if (not $::app->{main}->{list}->IsChecked($i));
+    my $data = $::app->{main}->{list}->GetIndexedData($i);
+    $::app->{main}->status("Computing difference from ".$data->name);
+    my $new = Demeter::Diff->new;
+    $new->invert($save->invert);
+    #$this->{Diff} = $new;
+    $this->setup($data, $new);
+    push @all, $new;
+  };
+  #$this->{Diff} = $save;
+  return @all;
+};
+
+sub marked_spectra {
+  my ($this) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my @all = $this->marked;
+  Demeter->po->start_plot;
+  Demeter->po->title("Sequence of difference spectra");
+  foreach my $d (@all) {
+    $d->plotspectra(0);
+    $d->plotindicators(0);
+    $d->name($d->data->name);
+    $d->plot;
+  };
+  $::app->{main}->status("Plotted sequence of difference spectra");
+  undef $busy;
+};
+sub marked_areas {
+  my ($this) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my @all = $this->marked;
+  Demeter->po->start_plot;
+  Demeter->po->title("Sequence of difference spectra");
+  my $temp = Demeter->po->tempfile;
+  open(my $O, '>', $temp);
+  foreach my $i (0 .. $#all) {
+    printf $O "%d  %.9f\n", $i+1, $all[$i]->area;
+  };
+  close $O;
+  Demeter->chart('plot', 'plot_file', {file=>$temp, xmin=>1, xmax=>$#all+1, param=>'integrated area',
+				       showy=>0, xlabel=>'data group', linetype=>'linespoints'});
+
+  $::app->{main}->status("Plotted sequence of difference spectra");
+  undef $busy;
 };
 
 1;
