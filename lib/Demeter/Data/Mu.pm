@@ -895,6 +895,23 @@ normalized spectrum.
 
   $data_object -> normalize;
 
+=item C<edgestep_error>
+
+This method attempts to compute the uncertainty in the edge step.
+This is done by generating a sampling of randomly chosen values for
+the pre- and post-edge line parameters, computing the edge step for
+each one, and computing the standard deviation in edge step values.
+Care is taken to remove extreme outliers in edge step -- often caused
+either by C<bkg_pre2> being too close to the edge or by C<bkg_nor1>
+resulting in an overly large quadratic term in the post-edge line.
+
+  ($mean, $sd, $report) = $data->edgestep_error($do_plot);
+
+The return values are the average and standard deviation of the
+sampling of edge step values and a bit of text with some information
+abot how the calculation progressed.  When true, the parameter says to
+plot the normalized spectrum for each sampling of parameter values.
+
 =item C<autobk>
 
 This method computes the background spline using the Autobk algorithm
