@@ -234,28 +234,29 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
-  my $tool = Wx::Menu->new;
-  $tool->Append( $ABS,      "Absorption" );
-  $tool->Append( $FORM,     "Formulas" );
-  $tool->Append( $ION,      "Ion Chambers" );
-  $tool->Append( $DATA,     "Data" );
-  $tool->Append( $TRAN,     "Transitions" );
-  $tool->Append( $EDGE,     "Edge Finder" );
-  $tool->Append( $LINE,     "Line Finder" );
-  $tool->Append( $STAN,     "Standards" );
-  $tool->Append( $FPPP,     "F' and F\"" );
-  $tool->Append( $CONFIG,   "Configure" );
-  $tool->Append( $DOCUMENT, "&Document" );
+  #my $tool = Wx::Menu->new;
+  $file->Append( $ABS,      "&Absorption\tCtrl+1" );
+  $file->Append( $FORM,     "F&ormulas\tCtrl+2" );
+  $file->Append( $ION,      "&Ion Chambers\tCtrl+3" );
+  $file->Append( $DATA,     "&Data\tCtrl+4" );
+  $file->Append( $TRAN,     "&Transitions\tCtrl+5" );
+  $file->Append( $EDGE,     "&Edge Finder\tCtrl+6" );
+  $file->Append( $LINE,     "&Line Finder\tCtrl+7" );
+  $file->Append( $STAN,     "&Standards\tCtrl+8" );
+  $file->Append( $FPPP,     "&F' and F\"\tCtrl+9" );
+  $file->Append( $CONFIG,   "&Configure\tCtrl+c" );
+  $file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
+  $file->AppendSeparator;
+  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure" );
-  $help->Append( $DOCUMENT,  "&Document" );
+  $help->Append( $DOCUMENT,  "Docu&ment" );
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
-  $bar->Append( $tool, "&Tools" );
+  #$bar->Append( $tool, "&Tools" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
 

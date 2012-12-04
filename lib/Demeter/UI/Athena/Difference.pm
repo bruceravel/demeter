@@ -6,7 +6,7 @@ use feature qw(switch);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER EVT_CHOICE EVT_CHECKBOX);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_CHOICE EVT_CHECKBOX);
 use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -28,6 +28,7 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
   $this->{Diff} = Demeter::Diff->new;
+  $this->{updatemarked} = 1;
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   my $label = Wx::StaticText->new($this, -1, "Standard");
@@ -36,6 +37,8 @@ sub new {
   $gbs->Add($label, Wx::GBPosition->new(1,0));
   $label = Wx::StaticText->new($this, -1, "Form");
   $gbs->Add($label, Wx::GBPosition->new(2,0));
+  $label = Wx::StaticText->new($this, -1, "Name template");
+  $gbs->Add($label, Wx::GBPosition->new(3,0));
 
   $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
   $this->{data}     = Wx::StaticText->new($this, -1, q{Group});
@@ -43,24 +46,31 @@ sub new {
 				      ["$MU(E)", "normalized $MU(E)", "derivative $MU(E)",
 				       "deriv. of normalized $MU(E)", "2nd derivative $MU(E)",
 				       "2nd deriv. of normalized $MU(E)"]); # , "$CHI(k)"
+  $this->{template} = Wx::TextCtrl->new($this, -1, 'diff %d - %s', wxDefaultPosition, [150,-1]);
   $gbs->Add($this->{standard}, Wx::GBPosition->new(0,1));
   $gbs->Add($this->{data},     Wx::GBPosition->new(1,1));
   $gbs->Add($this->{form},     Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{template}, Wx::GBPosition->new(3,1));
   $this->{form}->SetSelection(1);
   EVT_CHOICE($this, $this->{form}, \&OnChoice);
+  EVT_TEXT($this, $this->{template}, sub{$this->{updatemarked} = 1});
+  $this->{template}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
+					     wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" )) ;
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
   $this->{make_nor} = Wx::CheckBox->new($this, -1, 'Allow difference group to be renormalized');
   $this->{do_integrate} = Wx::CheckBox->new($this, -1, 'Do integration');
-  $gbs->Add($this->{invert},  Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(5,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{do_integrate}, Wx::GBPosition->new(6,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{invert},  Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(5,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(6,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{do_integrate}, Wx::GBPosition->new(7,0), Wx::GBSpan->new(1,2));
   $this->{invert}->SetValue(0);
   $this->{plotspectra}->SetValue(1);
   $this->{make_nor}->SetValue(0);
   $this->{do_integrate}->SetValue(1);
+  EVT_CHECKBOX($this, $this->{invert},       sub{$this->{updatemarked} = 1});
+  EVT_CHECKBOX($this, $this->{make_nor},     sub{$this->{updatemarked} = 1});
   EVT_CHECKBOX($this, $this->{do_integrate}, \&ToggleIntegration);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
@@ -84,6 +94,8 @@ sub new {
   $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, $app, 'xmin')});
   EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, $app, 'xmax')});
+  EVT_TEXT($this, $this->{xmin},         sub{$this->{updatemarked} = 1});
+  EVT_TEXT($this, $this->{xmax},         sub{$this->{updatemarked} = 1});
   EVT_TEXT_ENTER($this, $this->{xmin},   sub{$this->plot});
   EVT_TEXT_ENTER($this, $this->{xmax},   sub{$this->plot});
 
@@ -102,15 +114,18 @@ sub new {
   $this->{marked}      = Wx::Button->new($this, -1, 'Plot difference spectra for all marked groups', wxDefaultPosition, $tcsize);
   $this->{markedareas} = Wx::Button->new($this, -1, 'Plot integrated areas from all marked groups', wxDefaultPosition, $tcsize);
   $this->{markedmake}  = Wx::Button->new($this, -1, 'Make difference groups from all marked groups', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make marked markedareas markedmake));
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make));
+  $box -> Add(1,15,0);
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(marked markedareas markedmake));
   $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake));
   EVT_BUTTON($this, $this->{plot},        sub{$this->plot});
   EVT_BUTTON($this, $this->{make},        sub{$this->make});
   EVT_BUTTON($this, $this->{marked},      sub{$this->marked_spectra});
   EVT_BUTTON($this, $this->{markedareas}, sub{$this->marked_areas});
+  EVT_BUTTON($this, $this->{markedmake},  sub{$this->marked_make});
 
 
-  $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+  $box->Add(1,1,1);		# spacer
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: difference spectra');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -171,6 +186,7 @@ sub ToggleIntegration {
     $this->{$w}->Enable($onoff);
   };
   $this->{Diff}->do_integrate($onoff);
+  $this->{updatemarked} = 1;
 };
 
 sub setup {
@@ -184,6 +200,7 @@ sub setup {
   $diff->data($data);
   $diff->space($form);
   $diff->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $diff->name_template($this->{template}->GetValue);
   $diff->diff;
   Demeter->po->set(emin=>$diff->xmin-20, emax=>$diff->xmax+30, space=>'E');
   Demeter->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
@@ -228,18 +245,24 @@ sub OnChoice {
 };
 
 sub make {
-  my ($this) = @_;
-  $this->{Diff}->is_nor(not $this->{make_nor}->GetValue);
-  $this->{Diff}->datatype('xanes');
-  $this->{Diff}->datatype('xmu') if ($this->{form}->GetSelection == 0);
-  my $data = $this->{Diff}->make_group;
+  my ($this, $diff, $at_end) = @_;
+  $diff   ||= $this->{Diff};
+  $at_end ||= 0;
+
+  $diff->name_template($this->{template}->GetValue);
+  $diff->is_nor(not $this->{make_nor}->GetValue);
+  $diff->datatype('xanes');
+  $diff->datatype('xmu') if ($this->{form}->GetSelection == 0);
+  my $data = $diff->make_group;
   my $index = $::app->current_index;
-  if ($index == $::app->{main}->{list}->GetCount-1) {
+  if ($at_end) {
+    $::app->{main}->{list}->AddData($data->name, $data);
+  } elsif ($index == $::app->{main}->{list}->GetCount-1) {
     $::app->{main}->{list}->AddData($data->name, $data);
   } else {
     $::app->{main}->{list}->InsertData($data->name, $index+1, $data);
   };
-  $::app->{main}->status("Made a new difference group");
+  $::app->{main}->status("Made new difference group, ".$data->name);
   $::app->modified(1);
   $::app->heap_check(0);
 };
@@ -276,13 +299,15 @@ sub marked {
     push @all, $new;
   };
   #$this->{Diff} = $save;
+  $this->{updatemarked} = 0;
+  $this->{cachemarked} = \@all;
   return @all;
 };
 
 sub marked_spectra {
   my ($this) = @_;
   my $busy = Wx::BusyCursor->new();
-  my @all = $this->marked;
+  my @all = ($this->{updatemarked}) ? $this->marked : @{$this->{cachemarked}};
   Demeter->po->start_plot;
   Demeter->po->title("Sequence of difference spectra");
   foreach my $d (@all) {
@@ -297,7 +322,7 @@ sub marked_spectra {
 sub marked_areas {
   my ($this) = @_;
   my $busy = Wx::BusyCursor->new();
-  my @all = $this->marked;
+  my @all = ($this->{updatemarked}) ? $this->marked : @{$this->{cachemarked}};
   Demeter->po->start_plot;
   Demeter->po->title("Sequence of difference spectra");
   my $temp = Demeter->po->tempfile;
@@ -310,6 +335,17 @@ sub marked_areas {
 				       showy=>0, xlabel=>'data group', linetype=>'linespoints'});
 
   $::app->{main}->status("Plotted sequence of difference spectra");
+  undef $busy;
+};
+
+sub marked_make {
+  my ($this) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my @all = ($this->{updatemarked}) ? $this->marked : @{$this->{cachemarked}};
+  foreach my $d (@all) {
+    $this->make($d, 1);
+  };
+  $::app->{main}->status("Made difference groups from all marked groups");
   undef $busy;
 };
 

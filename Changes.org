@@ -19,8 +19,11 @@
    - Implemented deglitching by margins
    - Reset smoothing parameter after plot or fit in the align tool 
    - Constraining parameters no longer pushed value of bkg_eshift
-   - Difference spectra can be made of mu, norm, deriv, second,
-     norm/deriv, and norm/second.  norm is the default
+   - Difference spectra:
+      + can be made of mu, norm, deriv, second, norm/deriv, and
+        norm/second.  norm is the default
+      + marked groups funtionality
+      + made groups naming template
    - Implemented functionality for differens of marked groups
    - Calculation of approximate uncertainty in edge step
    - Set E0 of all/marked groups using an algorithm, see Group menu
@@ -42,6 +45,7 @@
 *** Hephaestus
    - Display wavelengths in several places where energies are displayed
    - Rewrote document and reimplemented Document tool
+   - Keyboard shortcuts for moving between tools
 
 *** Demeter
    - Nicer looking plot indicators in gnuplot backend (now plot as
@@ -60,7 +64,8 @@
      interface
    - fixed an erf/erfc typo resulting in problems doing peak fitting
      with error function
-   - more robust Demeter::Diff object
+   - more robust Demeter::Diff object, dynamic naming of derived Data
+     objects
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

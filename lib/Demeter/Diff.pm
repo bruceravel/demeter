@@ -62,6 +62,8 @@ has 'do_integrate'  => (is => 'rw', isa => 'Bool',    default => 1);
 has 'is_nor'        => (is => 'rw', isa => 'Bool',    default => 1);
 has 'datatype'      => (is => 'rw', isa => 'Str',     default => 'xanes');
 
+has 'name_template'      => (is => 'rw', isa => 'Str',     default => 'diff %d - %s');
+
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Diff($self);
@@ -117,6 +119,7 @@ sub plot {
     my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin),
 		 Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax));
     $_->plot('E') foreach (@indic);
+    $_->DEMOLISH foreach (@indic);
   };
 
   #if ($self->po->e_markers) {
@@ -130,14 +133,14 @@ sub plot {
 
 sub make_group {
   my ($self) = @_;
-  my @x = $self->standard->get_array('energy');
+  my @x = $self->get_array('energy');
   @x = map {$_ + $self->data->bkg_eshift} @x;
-  my @y = $self->standard->get_array('diff');
-  my $name = ($self->invert) ?
-    sprintf("diff %s - %s", $self->standard->name, $self->data->name):
-      sprintf("diff %s - %s", $self->data->name, $self->standard->name);
-  my $data = $self->data->put(\@x, \@y, datatype=>$self->datatype,
-			      is_nor=>$self->is_nor, name=>$name);
+  my @y = $self->get_array('diff');
+  # my $name = ($self->invert) ?
+  #   sprintf("diff %s - %s", $self->standard->name, $self->data->name):
+  #     sprintf("diff %s - %s", $self->data->name, $self->standard->name);
+  my $name = $self->make_name;
+  my $data = $self->data->put(\@x, \@y, is_nor=>$self->is_nor, name=>$name);
   $data->dispense("process", "deriv");
   $data->dispense("analysis", "diff_make");
   foreach my $w (qw(bkg_e0 bkg_z fft_edge bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
@@ -147,7 +150,30 @@ sub make_group {
 		  )) {
     $data->$w($self->data->$w);
   };
+  $data->source("Computed difference spectrum");
+  $data->datatype($self->datatype);
   return $data;
+};
+
+sub make_name {
+  my ($self) = @_;
+  my $tem = $self->name_template;
+  my %table = (d   => $self->data->name,
+	       s   => $self->standard->name,
+	       f   => $self->dataspace,
+	       n   => $self->xmin,
+	       x   => $self->xmax,
+	       a   => sprintf("%.5f", $self->area),
+	       '%' => '%'
+	      );
+  if ($self->invert) {
+    $table{d} = $self->standard->name;
+    $table{s} = $self->data->name;
+  };
+
+  my $regex = '[' . join('', keys(%table)) . ']';
+  $tem =~ s{\%($regex)}{$table{$1}}g;
+  return $tem;
 };
 
 # adapted from Mastering Algorithms with Perl by Orwant, Hietaniemi,
@@ -281,6 +307,23 @@ Compute the difference spectrum and integrated area.
 Make a plot of the difference spectrum.
 
   $diff_object -> plot;
+
+=item C<make_name>
+
+A method for dynamically generating the C<name> attribute of the Data
+object made from the Diff object.
+
+  d = name of data
+  s = name of standard
+  f = the form of the data from which the difference is made
+  n = the xmin value
+  x = the xmax value
+  a = the integrated are
+  % = a literal % sign
+
+The default value is C<diff %d - %s>, which expands into something like
+
+   diff dataname - standardname
 
 =back
 
