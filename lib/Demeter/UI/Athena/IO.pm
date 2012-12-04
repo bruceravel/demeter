@@ -266,6 +266,7 @@ sub _data {
 		   denominator => $yaml->{denominator} || $suggest{denominator} || '1',
 		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
 		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
+		   multiplier  => $yaml->{multiplier}  || 1,
 		   is_kev      => $yaml->{units},
 		   bkg_nnorm   => $nnorm,
 		  );
@@ -315,6 +316,7 @@ sub _data {
 
     $colsel->{each}->SetValue($yaml->{each});
     $colsel->{units}->SetSelection($yaml->{units});
+    $colsel->{constant}->SetValue($yaml->{multiplier}||1);
 
     $colsel->{datatype}->SetSelection(0);
     $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
@@ -425,6 +427,7 @@ sub _data {
 				denominator => $data->denominator,
 				ln          => $data->ln,
 				inv         => $data->inv,
+				multiplier  => $data->{multiplier},
 				name        => join(" - ", basename($file), $cols[$cc]),
 				datatype    => $dtp,
 			       );
@@ -456,6 +459,7 @@ sub _data {
 		     denominator => $data->denominator,
 		     ln		 => $data->ln,
 		     inv	 => $data->inv,
+		     multiplier  => $data->multiplier,
 		     each        => $yaml->{each},
 		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);

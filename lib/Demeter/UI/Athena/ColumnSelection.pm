@@ -20,14 +20,16 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
+use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE EVT_BUTTON EVT_TEXT_ENTER);
 use Wx::Perl::Carp;
+use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Demeter::UI::Athena::ColumnSelection::Preprocess;
 use Demeter::UI::Athena::ColumnSelection::Rebin;
 use Demeter::UI::Athena::ColumnSelection::Reference;
 
+use Scalar::Util qw{looks_like_number};
 use Encoding::FixLatin qw(fix_latin);
 use List::MoreUtils qw(minmax);
 
@@ -68,10 +70,13 @@ sub new {
   ## the ln checkbox goes below the column selection widget, but if
   ## refered to in the columns method, so I need to define it here.
   ## it will be placed in the other_parameters method.
-  $this->{ln}     = Wx::CheckBox->new($leftpane, -1, 'Natural log');
-  $this->{inv}    = Wx::CheckBox->new($leftpane, -1, 'Invert');
-  $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
-  $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
+  $this->{ln}       = Wx::CheckBox->new($leftpane, -1, 'Natural log');
+  $this->{inv}      = Wx::CheckBox->new($leftpane, -1, 'Invert');
+  $this->{energy}   = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
+  $this->{mue}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
+  $this->{constant} = Wx::TextCtrl->new($leftpane, -1, q{1}, wxDefaultPosition, [-1,-1], wxTE_PROCESS_ENTER);
+  $this->{constant}-> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  EVT_TEXT_ENTER($this, $this->{constant}, sub{OnMultiplierEnter(@_, $this, $data)});
 
   $this->{each} = Wx::CheckBox->new($leftpane, -1, 'Save each channel as its own group');
 
@@ -206,8 +211,20 @@ sub other_parameters {
   $others -> Add($this->{inv},  0, wxGROW|wxALL, 5); # defined in new
   EVT_CHECKBOX($parent, $this->{inv}, sub{OnInvClick(@_, $this, $data)});
   $others -> Add(1,1,1);
+
+  $others -> Add(Wx::StaticText->new($parent, -1, 'Multiplicative constant'), 0, wxGROW|wxTOP, 8);
+  $others -> Add($this->{constant}, 0, wxGROW|wxALL, 5);
+  $this->{constant} -> SetValue(1);
+
+  $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+
+
+
+  $others = Wx::BoxSizer->new( wxHORIZONTAL );
+  $others -> Add(1,1,1);
   $others -> Add($this->{each}, 0, wxGROW|wxALL, 5); # defined in new
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+
 
   $others = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{datatype} = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize,
@@ -248,7 +265,7 @@ sub strings {
 
   $this->{muchi_label} = Wx::StaticText->new($parent, -1, "$MU(E)");
   $gbs -> Add($this->{muchi_label}, Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{mue},                               Wx::GBPosition->new(1,1));
+  $gbs -> Add($this->{mue},         Wx::GBPosition->new(1,1));
   $this->{mue} -> SetValue($data->xmu_string);
 
   $this->{left}->Add($gbs, 0, wxGROW|wxALL, 5);
@@ -269,6 +286,14 @@ sub tabs {
 
 };
 
+sub OnMultiplierEnter {
+  my ($parent, $event, $this, $data) = @_;
+  my $const = $this->{constant}->GetValue;
+  $const ||= 1;
+  $const = 1 if not looks_like_number($const);
+  $data->multiplier($const);
+  $this->display_plot($data);
+};
 sub OnLnClick {
   my ($parent, $event, $this, $data) = @_;
   $data->ln($event->IsChecked);
@@ -450,6 +475,10 @@ sub deselect {
 
 sub display_plot {
   my ($this, $data) = @_;
+  my $const = $this->{constant}->GetValue;
+  $const ||= 1;
+  $const = 1 if not looks_like_number($const);
+  $data->multiplier($const);
   if (($data->columns =~ m{\bxmu\b}) and (not $this->{pauseplot}->GetValue)) {
     $data -> update_data(1);
   };

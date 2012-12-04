@@ -212,6 +212,10 @@ sub put_data {
     $i0_string     = $self->denominator;
     $signal_string = $self->numerator;
   };
+  if ($self->multiplier != 1) {
+    $xmu_string    = $self->multiplier . "*" . $xmu_string;
+    $signal_string = $self->multiplier . "*" . $signal_string;
+  };
   if ($self->inv) {
     $xmu_string    = "-1*" . $xmu_string;
     $signal_string = "-1*" . $signal_string;
