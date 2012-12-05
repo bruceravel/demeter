@@ -37,6 +37,7 @@ my $ghpages = '../demeter-gh-pages';
 sub ACTION_build {
   my $self = shift;
   $self->dispatch("compile_ifeffit_wrapper");
+  $self->dispatch("test_for_gnuplot");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
 }
@@ -48,6 +49,24 @@ sub ACTION_ghpages {
   $self->dispatch("copy_images");
   $self->dispatch("doctree");
   $self->dispatch("org2html");
+};
+
+sub ACTION_test_for_gnuplot {
+  my $self = shift;
+  print STDOUT "Simple test for presence of gnuplot ---> ";
+  system 'gnuplot -e "set xrange [0:1]"';
+  if ($? != 0) {
+    copy(File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf.in'),
+	 File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf'));
+    print STDOUT "*** Gnuplot not found: using pgplot.\n";
+    return;
+  };
+  my $text = _slurp(File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf.in'));
+  $text =~ s{default=pgplot}{default=gnuplot};
+  open(my $FIXED, '>', File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf'));
+  print $FIXED $text;
+  close $FIXED;
+  print STDOUT "found it!  Using gnuplot.\n";
 };
 
 sub ACTION_compile_ifeffit_wrapper {
@@ -258,6 +277,17 @@ sub ACTION_bump_dryrun {
 
 ######################################################################
 ## tools
+
+sub _slurp {
+  my ($file) = @_;
+  local $/;
+  return q{} if (not -e $file);
+  return q{} if (not -r $file);
+  open(my $FH, $file);
+  my $text = <$FH>;
+  close $FH;
+  return $text;
+};
 
 sub is_older {
   my ($file1, $file2) = @_;

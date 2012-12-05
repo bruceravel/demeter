@@ -342,7 +342,11 @@ sub _data {
 	  $colsel->{Reference}->{'n'.$j} -> SetValue(0);
 	};
       };
-      if (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
+      if ($yaml->{ref_denom} == 0) {
+	foreach my $j (1 .. $n) {
+	  $colsel->{Reference}->{'d'.$j} -> SetValue(0);
+	};
+      } elsif (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
 	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
 	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
 	foreach my $j (1 .. $n) {
@@ -600,8 +604,13 @@ sub _group {
     $app->{main}->status("Importing reference for ". $data->name);
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
+    #$ref = ($ref) ? $ref->clone : Demeter::Data->new(file => $data->file);
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
+    };
+    if ($repeated) {
+      my $foo = $ref->clone;
+      $ref = $foo;
     };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
@@ -610,7 +619,7 @@ sub _group {
     $ref -> set(name        => "  Ref " . $data->name,
 		energy      => $yaml->{energy},
 		numerator   => '$'.$yaml->{ref_numer},
-		denominator => '$'.$yaml->{ref_denom},
+		denominator => ($yaml->{ref_denom}) ? '$'.$yaml->{ref_denom} : 1,
 		ln          => $yaml->{ref_ln},
 		is_col      => 1,
 		is_kev      => $data->is_kev,

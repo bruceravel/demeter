@@ -1,68 +1,56 @@
 
-Installing prerequisites
-========================
+This is a bare-bones explanation of how to install Demeter from
+source.
 
-1. Ifeffit:
+Install Ifeffit
+===============
 
-   Download Ifeffit from http://cars9.uchicago.edu/ifeffit/Downloads
-   Unpack the tarball, cd into the new directory, then
+Download Ifeffit from http://cars9.uchicago.edu/ifeffit/Downloads
+Unpack the tarball, cd into the new directory, then
 
-    a. Install PGPLOT:
+  a. Install PGPLOT:
 
-         sudo ./PGPLOT_install
+       sudo ./PGPLOT_install
 
-    b. Install Ifeffit:
+  b. Install Ifeffit:
 
-         ./configure
-         make
-         sudo make install
+       ./configure
+       make
+       sudo make install
 
-2. Libperlxray:
+Install Demeter
+===============
 
-   Next, you need to install several of Bruce's perl projects that are
-   not packaged with Demeter:
+Download Demeter from github:
 
-   Download libperlxray using subversion
-
-     svn co http://cars9.uchicago.edu/svn/libperlxray/ libperlxray
-
-     a. cd into libperlxray/Ifeffit and do
-
-         perl Makefile.PL
-	 make
-	 sudo make install
-	 
-     b. cd into libperlxray/Absorption and do
-
-         perl Build.PL
-	 sudo ./Build installdeps
-	 ./Build
-	 sudo ./Build install
-
-     c. cd into libperlxray/Formula and do
-
-         perl Build.PL
-	 sudo ./Build installdeps
-	 ./Build
-	 sudo ./Build install
-
-Installing Demeter
-==================
-
-Download libperlxray using subversion
-
-   svn co http://cars9.uchicago.edu/svn/demeter/trunk demeter
+   git clone git://github.com/bruceravel/demeter.git
 
 cd into the demeter directory and do
 
    perl Build.PL
    sudo ./Build installdeps
-   sudo cpanp -i Regexp::Optimizer --force
+
+This step is quite time consuming the first time you install Demeter.
+Several dozen Perl dependencies will be downloaded, built, and
+installed.  Answer "yes" to every question you are asked.
+
+Once finished, do
+
+   perl Build.PL
+
+again to verify that all the dependencies are in place.  The do
+
    ./Build
    sudo ./Build install
 
-The "installdeps" step will be *very* time consuming as it installs
-several large packages that are required by Demeter.  the following
-step is necessary because, for some reason, the Regexp::Optimizer
-module always fails to install correctly.  That step will force its
-installation.
+
+More information
+================
+
+Here is a much more complete explanation of the installation process:
+
+   https://gist.github.com/3959252
+
+It is tailored to Ubuntu system, but should provide insight to anyone
+installing from source.
+

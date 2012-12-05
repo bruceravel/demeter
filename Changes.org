@@ -29,6 +29,17 @@
    - Set E0 of all/marked groups using an algorithm, see Group menu
    - Added a specified multiplicative constant in the column selection
      dialog and its persistence file
+   - Fixed a column selection bug: when importing multi-column data
+     with the each column button ticked on along with a reference
+     spectrum, each group (one per column) will get a reference
+     spectrum.  The reference is now cloned for each group.
+     Previously, each reference group pointed at the same Ifeffit data
+     group.  Removing one rerference group from an Athena project
+     would remove the Ifeffit group, leving the remaining copies
+     unplottable.  By cloning, the reference groups are now completely
+     independent.
+   - Fixed a problem in the column selection dialog when specifying no
+     denominator for the reference channel
 
 *** Artemis
    - fixed a problem where crystal data entered by hand got flagged as
@@ -69,6 +80,10 @@
    - more robust Demeter::Diff object, dynamic naming of derived Data
      objects
    - added multiplier attribute to the Data object
+   - At build, do a simple test to determine if gnuplot is present on
+     the system and modify 'plot.demeter_conf' accordingly.  This
+     works for new installations, it will not retrofit an existing
+     installation.  In that case, user should modify "plot->plotwith".
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
