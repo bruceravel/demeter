@@ -14,6 +14,7 @@ bin/dlsprj
 bin/help.pod
 bin/installation.pod
 bin/intrp
+bin/nonroot.pod
 bin/rdfit
 bin/standards
 Build.PL
@@ -214,6 +215,10 @@ doc/artug/templates/lib/subsection
 doc/artug/templates/lib/todo
 doc/artug/templates/lib/triimage
 doc/artug/templates/src/ab.css
+doc/artug/templates/src/atoms/abs.tt
+doc/artug/templates/src/atoms/example.tt
+doc/artug/templates/src/atoms/index.tt
+doc/artug/templates/src/atoms/space.tt
 doc/artug/templates/src/data.tt
 doc/artug/templates/src/diana.tt
 doc/artug/templates/src/examples/fes2.tt
@@ -515,6 +520,9 @@ examples/recipes/ComplexFit/HgDNA_data.prj
 examples/recipes/ComplexFit/intrp.html
 examples/recipes/ComplexFit/thymidine.pdb
 examples/recipes/ComplexFit/withHg.inp
+examples/recipes/Deglitch/margins.pl
+examples/recipes/Deglitch/ORP5.000
+examples/recipes/Deglitch/ZT20.000
 examples/recipes/Difference/diff.pl
 examples/recipes/Difference/diff.prj
 examples/recipes/Dispersive/cus2.pl
@@ -548,6 +556,10 @@ examples/recipes/Dispersive/pf.pl
 examples/recipes/Dispersive/PhotonFactory/Pd_foil.CSV
 examples/recipes/Dispersive/PhotonFactory/Pd_foil_ref.txt
 examples/recipes/Dispersive/PhotonFactory/PdZnO02_mt.CSV.gz
+examples/recipes/EdgeStep/brdata.dat
+examples/recipes/EdgeStep/cudata.dat
+examples/recipes/EdgeStep/README
+examples/recipes/EdgeStep/step.pl
 examples/recipes/EmpiricalStandard/cu.prj
 examples/recipes/EmpiricalStandard/using_empirical_standards.pdf
 examples/recipes/FeS2/FeS2.inp
@@ -666,6 +678,7 @@ lib/Demeter/configuration/bkg.demeter_conf
 lib/Demeter/configuration/clamp.demeter_conf
 lib/Demeter/configuration/config.demeter_conf
 lib/Demeter/configuration/dispersive.demeter_conf
+lib/Demeter/configuration/edgestep.demeter_conf
 lib/Demeter/configuration/feff.demeter_conf
 lib/Demeter/configuration/fft.demeter_conf
 lib/Demeter/configuration/file.demeter_conf
@@ -1136,6 +1149,7 @@ lib/Demeter/templates/process/ifeffit/interpolate.tmpl
 lib/Demeter/templates/process/ifeffit/is_nor.tmpl
 lib/Demeter/templates/process/ifeffit/k123.tmpl
 lib/Demeter/templates/process/ifeffit/kev.tmpl
+lib/Demeter/templates/process/ifeffit/margin.tmpl
 lib/Demeter/templates/process/ifeffit/merge.tmpl
 lib/Demeter/templates/process/ifeffit/merge_end.tmpl
 lib/Demeter/templates/process/ifeffit/merge_interp.tmpl
