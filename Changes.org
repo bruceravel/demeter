@@ -42,11 +42,15 @@
      denominator for the reference channel
 
 *** Artemis
+   - LOTS of work on Users' Guide
    - fixed a problem where crystal data entered by hand got flagged as
      unused, resulting in crashy behavior when running Atoms
-   - LOTS of work on Users' Guide
    - Fixed a bug causing a crash when restoring a fit from the fit
      history
+   - Plot history tool now seems to be working
+      + Notice if a historical item is already in the Plot list 
+      + Import fit history from a project in a way that allows the
+        plot tool to work *and* imports sufficiently quickly
    - Corrected a problem plotting immediately after importing a
      project with a fitting model but without a fit having been run
 
@@ -54,6 +58,9 @@
    - fixed a crashy problem in getting space group symbol from some
      CIF files
    - menu and keyboard controls for moving between tabs in stand-alone
+   - improved CIF parsing by making the tags case insensitive.  this
+     was done by redefining a STAR::DataBlock method in the
+     Demeter::Atoms::CIF file
 
 *** Hephaestus
    - Display wavelengths in several places where energies are displayed

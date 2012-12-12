@@ -109,11 +109,33 @@ text file or to send it to the printer.
 [% PROCESS section label="Plotting fits" %]
 [% FILTER html_para -%]
 The plot tool tab is used to place old fits in the Plotting list for
-comparison with data and with the current fit.
+comparison with data and with the current fit.  As you perform fits
+(or when a project file is imported), an entry on the 
+[% INCLUDE font/quote a="Plot tool" %] page is made for each fit.
+Within the box associated with each fit is one button for each data
+set included in the fit.  The example below is of a single data set
+fit to Co metal, thus each fit has a single button associated with
+it. 
 [% END %]
 
-[% WRAPPER html/todo %]
-The history plotting tool is not currently working, making it
-difficult to write this bit of documentation!
+[% WRAPPER image file="history.plottool.png" %]
+Fit history plotting tool
 [% END %]
 
+[% FILTER html_para -%]
+Clicking one of the buttons on the
+[% INCLUDE font/quote a="Plot tool" %] page makes an entry in the
+plotting list.  These will then be plotted just like any other item in
+[% INCLUDE html/link link="./plot/index.html" text="the plotting list"%].
+Note that it is usually not necessary to put the most recent plot in
+the plotting list in this way.  If the 
+[% INCLUDE font/quote a="Plot fit" %] button is checked on and a data
+group is in the plotting list, the most recent will be plotted by
+default.  Fit items in the plotting list will
+[% INCLUDE html/link link="./plot/stack.html" text="be stacked"%] when
+the stacking option is in play.
+[% END %]
+
+[% WRAPPER image file="history.plotlist.png" %]
+Historical fits placed in the plotting list
+[% END %]

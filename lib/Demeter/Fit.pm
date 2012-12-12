@@ -1154,9 +1154,53 @@ sub grab {			# deserialize lite -- grab the yaml
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
   $self->datagroups($r_data);
+
+
+  my @data = ();
   foreach my $d (@$r_data) {
-    print join("|", $self->name, $d, $self->mo->fetch('Data', $d)), $/;
+    #print join("|", $self->name, $d, $self->mo->fetch('Data', $d)), $/;
+
+    #print ">>>>>>> $d\n";
+    my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
+      : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
+    my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+    delete $r_attributes->{fit_pcpath};	   # correct an early
+    delete $r_attributes->{fit_do_pcpath}; # design mistake...
+    ## correct for earlier XDI design
+    foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+      delete $r_attributes->{$x};
+    };
+    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+    };
+    my %hash = %$r_attributes;
+    next if not exists $hash{group};
+    #Demeter->trace;
+    #print '>>>>', $hash{group}, $/;
+
+    my $savecv = $self->mo->datacount;
+    my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
+    delete $hash{group};
+    $this->set(%hash);
+    $this->cv($r_attributes->{cv}||0);
+    $self->mo->datacount($savecv);
+    #$datae{$d} = $this;
+    #$datae{$this->group} = $this;
+    if ($this->datatype eq 'xmu') {
+      $self->place_array($this->group.".energy", $r_x);
+      $self->place_array($this->group.".xmu",    $r_y);
+    } elsif  ($this->datatype eq 'chi') {
+      $self->place_array($this->group.".k",      $r_x);
+      $self->place_array($this->group.".chi",    $r_y);
+    };
+    $this -> set(update_data=>0, update_columns=>0);
+    push @data, $this;
+
   };
+  $self->data(\@data);
 
   $self->grabbed(1);
   $self->thawed(0);

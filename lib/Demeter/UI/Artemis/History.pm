@@ -222,13 +222,13 @@ sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetIndexedData($self->{list}->GetSelection);
   return if not defined $fit;
-  # if (not $fit->thawed) {
-  #   my $busy = Wx::BusyCursor->new();
-  #   $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
-  #   $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
-  #   $self->status('Unpacked fit "'.$fit->name.'"');
-  #   undef $busy;
-  # };
+  if (not $fit->thawed) {
+    my $busy = Wx::BusyCursor->new();
+    $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
+    $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+    $self->status('Unpacked fit "'.$fit->name.'"');
+    undef $busy;
+  };
   $self->put_log($fit);
   $self->set_params($fit);
 };
@@ -650,12 +650,27 @@ sub transfer {
   my $fitfile = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $fit->group, $data->group.'.fit');
   my $pldata = Demeter::Data->new(datatype => 'chi',
 				  name     => sprintf("Fit to %s from %s", $data->name, $fit->name),);
+
+  my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  my $found     = 0;
+  my $thisname  = $pldata->name;
+  foreach my $i (0 .. $plotlist->GetCount - 1) {
+    if ($thisname eq $plotlist->GetIndexedData($i)->name) {
+      $found = 1;
+      last;
+    };
+  };
+  if ($found) {
+    $self->status("\"$thisname\" is already in the plotting list.");
+    return;
+  };
+
   foreach my $att (qw(fft_kmin fft_kmax fft_kwindow fft_dk fft_pc fft_pctype fft_pcpath fft_pcpathgroup
 		      bft_rmin bft_rmax bft_rwindow bft_dr)) {
     $pldata->$att($data->$att);
   };
   $pldata->just_fit($fitfile);
-  my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+
   $plotlist->AddData($pldata->name, $pldata);
   my $i = $plotlist->GetCount - 1;
   ##$plotlist->SetClientData($i, $data);
