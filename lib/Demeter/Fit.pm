@@ -1394,6 +1394,7 @@ override 'deserialize' => sub {
 
   ## -------- import the data
   my @data = ();
+  $self->call_sentinal("Importing data");
   foreach my $d (@$r_data) {
     #print ">>>>>>> $d\n";
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
@@ -1437,6 +1438,7 @@ override 'deserialize' => sub {
 
   ## -------- import the gds
   my @gds = ();
+  $self->call_sentinal("Importing GDS parameters");
   my $yaml = ($args{file}) ? $zip->contents("gds.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "gds.yaml"));
   my @list = YAML::Tiny::Load($yaml);
@@ -1461,6 +1463,7 @@ override 'deserialize' => sub {
 
   ## -------- import the feff calculations
   my @feff = ();
+  $self->call_sentinal("Importing Feff calculations");
   if ($args{file}) {
     foreach my $f (@$r_feff) {
       my $ws = $f->workspace;
@@ -1483,6 +1486,7 @@ override 'deserialize' => sub {
 
   ## -------- import the paths
   my @paths = ();
+  $self->call_sentinal("Importing paths");
   $yaml = ($args{file}) ? $zip->contents("paths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
   #print File::Spec->catfile($args{folder}, "paths.yaml"),$/;
@@ -1561,6 +1565,7 @@ override 'deserialize' => sub {
   $yaml = ($args{file}) ? $zip->contents("vpaths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "vpaths.yaml"));
   if ($yaml) {
+    $self->call_sentinal("Importing VPaths");
     @list = YAML::Tiny::Load($yaml);
     foreach my $vp (@list) {
       delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
@@ -1602,6 +1607,7 @@ override 'deserialize' => sub {
   };
 
   ## -------- make the fit object
+  $self->call_sentinal("Making Fit object");
   $self -> set(gds    => \@gds,
 	       data   => \@data,
 	       paths  => \@paths,
@@ -1620,6 +1626,7 @@ override 'deserialize' => sub {
   $self -> fit_performed(0);
 
   ## -------- extract files from the feff calculations from the project
+  $self->call_sentinal("Extracting Feff files");
   if ($args{file}) {
     $project_folder = $self->project_folder("fit_".$self->group);
     $self->folder($project_folder);
@@ -1653,6 +1660,7 @@ override 'deserialize' => sub {
   };
 
   ## -------- import the fit files and push arrays into Ifeffit/Larch
+  $self->call_sentinal("Pushing arrays");
   foreach my $d (@data) {
     my $dd = $d->group;
     ## import the fit data
@@ -1673,6 +1681,7 @@ override 'deserialize' => sub {
   };
 
   ## -------- import the Plot object, if requested
+  $self->call_sentinal("Importing Plot object");
   if ($args{plot}) {
     $yaml = ($args{file}) ? $zip->contents("plot.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "plot.yaml"));

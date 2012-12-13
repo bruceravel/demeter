@@ -181,6 +181,11 @@ sub make {
     $app->{main}->status("Cannot copy a series -- increment \"$increm\" is not a number");
     return;
   };
+  if ($n > 10) {
+    my $yesno = Wx::MessageDialog->new($this, "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
+				       "Continue?", wxYES_NO);
+    return if ($yesno->ShowModal == wxID_NO);
+  };
 
   my $busy = Wx::BusyCursor->new();
   $this->{steplabel}-> Enable(0);

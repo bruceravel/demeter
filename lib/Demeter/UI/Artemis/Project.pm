@@ -376,10 +376,12 @@ sub read_project {
       };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
+      $fit->sentinal(sub{$::app->{main}->status($_[0], $statustype)});
       $rframes->{main}->status("Unpacking current fit", $statustype);
       $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
       #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
       #$rframes->{History}->OnSelect;
+      $fit->sentinal(sub{1});
       $rframes->{main}->{currentfit} = $fit;
       $rframes->{Plot}->{limits}->{fit}->SetValue(1);
       my $current = $fit->number || 1;
@@ -387,6 +389,7 @@ sub read_project {
     };
   };
 
+  $rframes->{main}->status("Restoring fit", $statustype);
   $import_problems .= restore_fit($rframes, $currentfit, $lastfit);
 
   ## when each fit is deserialized, new GDS objects are instantiated
@@ -429,6 +432,7 @@ sub restore_fit {
   ## -------- load up the GDS parameters
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
+  $rframes->{main}->status("Restoring GDS parameters", 'wait|nobuffer');
   foreach my $g (@{$fit->gds}) {
     if ($start >= $grid->GetNumberRows) {
       $grid -> AppendRows(1,1);
@@ -466,6 +470,7 @@ sub restore_fit {
 
   ## -------- Data and Paths
   my $count = 0;
+  $rframes->{main}->status("Restoring data", 'wait|nobuffer');
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if (($rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel})
@@ -474,6 +479,7 @@ sub restore_fit {
     #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     my $datapaths = 0;
+    $rframes->{main}->status("Restoring paths for ".$d->name, 'wait|nobuffer');
     foreach my $p (@{$fit->paths}) {
 
       my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->parentgroup);
@@ -600,6 +606,9 @@ sub close_project {
   foreach my $f (@list) {
     $f->DEMOLISH;
   };
+
+  ## -------- clear plotting list
+  $rframes->{Plot}->{plotlist}->ClearAll;
 
   ## -------- clear history
   $rframes->{History}->{list}->ClearAll;

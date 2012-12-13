@@ -56,6 +56,7 @@ sub new {
   EVT_TEXT($this, $this->{template}, sub{$this->{updatemarked} = 1});
   $this->{template}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
 					     wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" )) ;
+  $::app->mouseover($this->{template}, 'TOKENS: %d=data name; %s=standard name; %f=form; %n=xmin; %x=xmax; %a=area');
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');

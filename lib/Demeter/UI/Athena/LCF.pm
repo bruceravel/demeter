@@ -694,7 +694,7 @@ sub combi_select {
 
 sub combi_report {
   my ($this, $event) = @_;
-  my $init = $::app->current_data->name . '.xls';
+  my $init = $::app->current_data->name . '_combinatorial.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
@@ -834,7 +834,7 @@ sub seq_select {
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel;
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel.'_sequence';
   $init .= '.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",

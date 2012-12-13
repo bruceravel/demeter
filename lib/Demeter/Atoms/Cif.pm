@@ -195,7 +195,7 @@ sub get_item_data {
         $c = '-';
     }
 
-    foreach my $k (keys $self->{DATA}{$d}{$s}{$c}) {
+    foreach my $k (keys %{$self->{DATA}{$d}{$s}{$c}}) {
       if ($i =~ m{$k}i) {
 	$i = $k;
 	last;

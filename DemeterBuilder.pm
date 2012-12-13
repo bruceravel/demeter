@@ -53,17 +53,19 @@ sub ACTION_ghpages {
 
 sub ACTION_test_for_gnuplot {
   my $self = shift;
+  my $infile   = File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf.in');
+  my $conffile = File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf');
+  return if not is_older($conffile, $infile);
   print STDOUT "Simple test for presence of gnuplot ---> ";
   system 'gnuplot -e "set xrange [0:1]"';
   if ($? != 0) {
-    copy(File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf.in'),
-	 File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf'));
+    copy($infile, $conffile);
     print STDOUT "*** Gnuplot not found: using pgplot.\n";
     return;
   };
   my $text = _slurp(File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf.in'));
   $text =~ s{default=pgplot}{default=gnuplot};
-  open(my $FIXED, '>', File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf'));
+  open(my $FIXED, '>', $conffile);
   print $FIXED $text;
   close $FIXED;
   print STDOUT "found it!  Using gnuplot.\n";
