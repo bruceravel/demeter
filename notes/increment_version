@@ -7,7 +7,7 @@ with "0.9.12" replaced with current version number
 The perl-reversion script does not preserve execution bit, so
 
   cd bin
-  chmod +x d* intrp redfit standards
+  chmod +x d* intrp rdfit standards
 
 then, perl-reversion misses examples in
 
@@ -16,5 +16,6 @@ then, perl-reversion misses examples in
  - bin/help.pod
  - bin/installation.pod
  - Build.PL
+ - lib/Demeter/UI/Hephaestus/data/hephaestus.pod
 
 Finally, git push and tag.
