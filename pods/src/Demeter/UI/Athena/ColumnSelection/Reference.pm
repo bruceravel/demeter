@@ -12,7 +12,7 @@ sub new {
   my ($class, $parent, $data) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $this->{numerator}   ||= 3;
-  $this->{denominator} ||= 4;
+  $this->{denominator} ||= 0;
   $this->{reference}     = q{};
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
@@ -113,7 +113,7 @@ sub EnableReference {
 					      name => "  Ref " . $data->name);
     $this->{reference} -> set(energy	  => $data->energy,
 			      numerator	  => '$'.$this->{numerator},
-			      denominator => '$'.$this->{denominator},
+			      denominator => ($this->{denominator}) ?'$'.$this->{denominator} : 1,
 			      ln          => $this->{ln}->GetValue,
 			      is_col	  => 1,);
     $this->{reference} -> display(1);
@@ -185,7 +185,7 @@ Demeter::UI::Athena::ColumnSelection::Preprocess - column selection reference sp
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

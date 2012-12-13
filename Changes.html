@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Demeter revision history</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-11-29 17:44:10 EST"/>
+<meta name="generated" content="2012-12-13 09:34:46 EST"/>
 <meta name="author" content="Bruce Ravel"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -80,7 +80,7 @@ lang="en" xml:lang="en">
 <ul>
 <li><a href="#sec-1">1 Initial release </a>
 <ul>
-<li><a href="#sec-1.1">1.1 0.9.14  ?? October 2012 </a></li>
+<li><a href="#sec-1.1">1.1 0.9.14  ?? December 2012 </a></li>
 <li><a href="#sec-1.2">1.2 0.9.13  2 October 2012 </a></li>
 <li><a href="#sec-1.3">1.3 0.9.12 26 September 2012 </a></li>
 <li><a href="#sec-1.4">1.4 0.9.11 18 September 2012 </a></li>
@@ -123,7 +123,7 @@ lang="en" xml:lang="en">
 </div>
 
 <div id="outline-container-1.1" class="outline-3">
-<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 0.9.14  ?? October 2012 </h3>
+<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 0.9.14  ?? December 2012 </h3>
 <div class="outline-text-3" id="text-1.1">
 
 <ul>
@@ -147,6 +147,58 @@ sequence
 Improvements to copy series tool: busy cursor, plot
 appropriately, compute avg and stddev of edge steps for norm
 parameters
+</li>
+<li>
+Implemented deglitching by margins
+</li>
+<li>
+Reset smoothing parameter after plot or fit in the align tool 
+</li>
+<li>
+Constraining parameters no longer pushed value of bkg<sub>eshift</sub>
+</li>
+<li>
+Difference spectra:
+<ul>
+<li>
+can be made of mu, norm, deriv, second, norm/deriv, and
+norm/second.  norm is the default
+</li>
+<li>
+marked groups funtionality
+</li>
+<li>
+made groups naming template
+</li>
+</ul>
+</li>
+<li>
+Implemented functionality for differens of marked groups
+</li>
+<li>
+Calculation of approximate uncertainty in edge step
+</li>
+<li>
+Set E0 of all/marked groups using an algorithm, see Group menu
+</li>
+<li>
+Added a specified multiplicative constant in the column selection
+dialog and its persistence file
+</li>
+<li>
+Fixed a column selection bug: when importing multi-column data
+with the each column button ticked on along with a reference
+spectrum, each group (one per column) will get a reference
+spectrum.  The reference is now cloned for each group.
+Previously, each reference group pointed at the same Ifeffit data
+group.  Removing one rerference group from an Athena project
+would remove the Ifeffit group, leving the remaining copies
+unplottable.  By cloning, the reference groups are now completely
+independent.
+</li>
+<li>
+Fixed a problem in the column selection dialog when specifying no
+denominator for the reference channel
 
 </li>
 </ul>
@@ -154,15 +206,27 @@ parameters
 <li id="sec-1.1.2">Artemis <br/>
 <ul>
 <li>
+LOTS of work on Users' Guide
+</li>
+<li>
 fixed a problem where crystal data entered by hand got flagged as
 unused, resulting in crashy behavior when running Atoms
 </li>
 <li>
-LOTS of work on Users' Guide
-</li>
-<li>
 Fixed a bug causing a crash when restoring a fit from the fit
 history
+</li>
+<li>
+Plot history tool now seems to be working
+<ul>
+<li>
+Notice if a historical item is already in the Plot list 
+</li>
+<li>
+Import fit history from a project in a way that allows the
+plot tool to work <b>and</b> imports sufficiently quickly
+</li>
+</ul>
 </li>
 <li>
 Corrected a problem plotting immediately after importing a
@@ -179,6 +243,11 @@ CIF files
 </li>
 <li>
 menu and keyboard controls for moving between tabs in stand-alone
+</li>
+<li>
+improved CIF parsing by making the tags case insensitive.  this
+was done by redefining a STAR::DataBlock method in the
+Demeter::Atoms::CIF file
 
 </li>
 </ul>
@@ -190,6 +259,9 @@ Display wavelengths in several places where energies are displayed
 </li>
 <li>
 Rewrote document and reimplemented Document tool
+</li>
+<li>
+Keyboard shortcuts for moving between tools
 
 </li>
 </ul>
@@ -197,7 +269,8 @@ Rewrote document and reimplemented Document tool
 <li id="sec-1.1.5">Demeter <br/>
 <ul>
 <li>
-Much nicer looking plot indicators in gnuplot backend
+Nicer looking plot indicators in gnuplot backend (now plot as
+full y-scale in graph)
 </li>
 <li>
 Fixed a bug recording title lines from feff.inp files.  This was
@@ -213,6 +286,34 @@ Demeter::UI::Artemis::ShowText now has a save button
 </li>
 <li>
 added EdgeStep recipe
+</li>
+<li>
+plot margins
+</li>
+<li>
+Diff object, flags for disabling integration + setting datatype,
+use indicators rather markers in plots
+</li>
+<li>
+fixed an error recognizing a double click in the gnuplot cursor
+interface
+</li>
+<li>
+fixed an erf/erfc typo resulting in problems doing peak fitting
+with error function
+</li>
+<li>
+more robust Demeter::Diff object, dynamic naming of derived Data
+objects
+</li>
+<li>
+added multiplier attribute to the Data object
+</li>
+<li>
+At build, do a simple test to determine if gnuplot is present on
+the system and modify 'plot.demeter<sub>conf'</sub> accordingly.  This
+works for new installations, it will not retrofit an existing
+installation.  In that case, user should modify "plot-&gt;plotwith".
 
 </li>
 </ul>
@@ -2475,7 +2576,7 @@ Andreas Voegelin
 <p class="author"> Author: Bruce Ravel
 <a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
 </p>
-<p class="date"> Date: 2012-11-29 17:44:10 EST</p>
+<p class="date"> Date: 2012-12-13 09:34:46 EST</p>
 <p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
 </div>
 </div>

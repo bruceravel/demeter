@@ -75,7 +75,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.13.</p>
+<p>This documentation refers to Demeter version 0.9.14.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -108,7 +108,21 @@ completeness.</p>
 normalized spectrum.</p></dd>
 <dd><pre>  $data_object -&gt; normalize;
 
-</pre></dd>	<dt><code>autobk</code></dt>
+</pre></dd>	<dt><code>edgestep_error</code></dt>
+		<dd><p>This method attempts to compute the uncertainty in the edge step.
+This is done by generating a sampling of randomly chosen values for
+the pre- and post-edge line parameters, computing the edge step for
+each one, and computing the standard deviation in edge step values.
+Care is taken to remove extreme outliers in edge step -- often caused
+either by <code>bkg_pre2</code> being too close to the edge or by <code>bkg_nor1</code>
+resulting in an overly large quadratic term in the post-edge line.</p></dd>
+<dd><pre>  ($mean, $sd, $report) = $data-&gt;edgestep_error($do_plot);
+
+</pre></dd>		<dd><p>The return values are the average and standard deviation of the
+sampling of edge step values and a bit of text with some information
+abot how the calculation progressed.  When true, the parameter says to
+plot the normalized spectrum for each sampling of parameter values.</p></dd>
+	<dt><code>autobk</code></dt>
 		<dd><p>This method computes the background spline using the Autobk algorithm
 and extracts chi(k) from the mu(E) data.</p></dd>
 <dd><pre>  $data_object -&gt; autobk;

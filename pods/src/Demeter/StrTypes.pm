@@ -430,7 +430,7 @@ coerce NotReserved,
 
 ## -------- Ifeffit lineshapes
 use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);
-@ifeffitlineshape_list = qw(linear gaussian lorentzian pseudovoight atan erfc);
+@ifeffitlineshape_list = qw(linear gaussian lorentzian pseudovoight atan erf);
 $ifeffitlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @ifeffitlineshape_list)->re;
 subtype IfeffitLineshape,
   as Str,
@@ -471,7 +471,7 @@ Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 DESCRIPTION
 

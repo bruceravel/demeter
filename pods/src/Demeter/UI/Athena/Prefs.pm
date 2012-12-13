@@ -24,8 +24,9 @@ sub new {
   $this->{parent} = $parent;
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate([qw(athena bft bkg clamp convolution dispersive fft file fit gnuplot indicator
-			interpolation lcf marker merge operations pca peakfit plot rebin xanes)]);
+  $config->populate([qw(athena bft bkg clamp convolution dispersive
+			edgestep fft file fit gnuplot indicator interpolation
+			lcf marker merge operations pca peakfit plot rebin xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
   $config->{params}->Expand($config->{params}->GetRootItem);
 
@@ -90,7 +91,7 @@ Demeter::UI::Athena::Prefs - A preferences tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

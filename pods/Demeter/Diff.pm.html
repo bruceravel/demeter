@@ -70,7 +70,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.13.</p>
+<p>This documentation refers to Demeter version 0.9.14.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -121,6 +121,20 @@ calling the <code>plot</code> method.</p></dd>
 </pre></dd>	<dt><code>plot</code></dt>
 		<dd><p>Make a plot of the difference spectrum.</p></dd>
 <dd><pre>  $diff_object -&gt; plot;
+
+</pre></dd>	<dt><code>make_name</code></dt>
+		<dd><p>A method for dynamically generating the <code>name</code> attribute of the Data
+object made from the Diff object.</p></dd>
+<dd><pre>  d = name of data
+  s = name of standard
+  f = the form of the data from which the difference is made
+  n = the xmin value
+  x = the xmax value
+  a = the integrated are
+  % = a literal % sign
+
+</pre></dd>		<dd><p>The default value is <code>diff %d - %s</code>, which expands into something like</p></dd>
+<dd><pre>   diff dataname - standardname
 
 </pre></dd></dl>
 <h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>

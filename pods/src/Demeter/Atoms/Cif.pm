@@ -159,6 +159,53 @@ sub open_cif {
 };
 
 
+## I would like to avoid touching the STAR code for the time being.
+## However, I need to address a bit of suckiness at the intersection
+## of CIF Street and STAR Avenue.  There is, it seems, no guarentee
+## that CIF tags will be capitalized consistently.  I recently (see
+## mailing list post from Jiahui Qi, 10 December 2012) came across a
+## CIF file with the space group specified as
+## "_symmetry_Int_tables_number".  If you look above, you will find
+## that I am searching for "_symmetry_Int_Tables_number".  That was
+## enough to confuse the get_item_data method in STAR::DataBlock.
+##
+## The following silently redefines get_item_data to make it case
+## insensitive.  Fuckety fuck fuck!
+package STAR::DataBlock;
+no warnings 'redefine';
+sub get_item_data {
+
+    my ($self,@parameters) = @_;
+    my ($d,$s,$c,$i);
+
+    $d = $self->title;               #default data block
+    $s = '-';                        #default save block
+
+    $i = shift @parameters unless $#parameters;
+    while ($_ = shift @parameters) {
+       $d = shift @parameters if /-datablock/;
+       $s = shift @parameters if /-save/;
+       $i = shift @parameters if /-item/;
+    }
+
+    if ( $i =~ /^(\S+?)\./ ) {
+        $c = $1;
+    }
+    else {
+        $c = '-';
+    }
+
+    foreach my $k (keys $self->{DATA}{$d}{$s}{$c}) {
+      if ($i =~ m{$k}i) {
+	$i = $k;
+	last;
+      };
+    };
+    return if (! exists $self->{DATA}{$d}{$s}{$c}{$i});
+    return @{$self->{DATA}{$d}{$s}{$c}{$i}};
+}
+
+
 1;
 
 
@@ -168,7 +215,7 @@ Demeter::Atoms::Cif - Methods for importing data from Crystallographic Informati
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 DESCRIPTION
 

@@ -250,6 +250,7 @@ sub start_plot {
   $self -> co -> set(plot_part=>q{});
   return $self;
 };
+alias startplot => 'start_plot';
 
 sub finish {
   1;
@@ -477,7 +478,7 @@ Demeter::Plot - Controlling plots of XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

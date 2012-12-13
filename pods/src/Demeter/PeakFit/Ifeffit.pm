@@ -14,7 +14,7 @@ has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			    lorentzian	     => 3,
 			    pseudovoight     => 4,
 			    atan	     => 3,
-			    erfc	     => 3,
+			    erf  	     => 3,
 			  }});
 
 sub DEMOLISH {
@@ -138,7 +138,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

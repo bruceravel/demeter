@@ -266,6 +266,7 @@ sub _data {
 		   denominator => $yaml->{denominator} || $suggest{denominator} || '1',
 		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
 		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
+		   multiplier  => $yaml->{multiplier}  || 1,
 		   is_kev      => $yaml->{units},
 		   bkg_nnorm   => $nnorm,
 		  );
@@ -315,6 +316,7 @@ sub _data {
 
     $colsel->{each}->SetValue($yaml->{each});
     $colsel->{units}->SetSelection($yaml->{units});
+    $colsel->{constant}->SetValue($yaml->{multiplier}||1);
 
     $colsel->{datatype}->SetSelection(0);
     $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
@@ -340,7 +342,11 @@ sub _data {
 	  $colsel->{Reference}->{'n'.$j} -> SetValue(0);
 	};
       };
-      if (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
+      if ($yaml->{ref_denom} == 0) {
+	foreach my $j (1 .. $n) {
+	  $colsel->{Reference}->{'d'.$j} -> SetValue(0);
+	};
+      } elsif (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
 	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
 	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
 	foreach my $j (1 .. $n) {
@@ -425,6 +431,7 @@ sub _data {
 				denominator => $data->denominator,
 				ln          => $data->ln,
 				inv         => $data->inv,
+				multiplier  => $data->{multiplier},
 				name        => join(" - ", basename($file), $cols[$cc]),
 				datatype    => $dtp,
 			       );
@@ -456,6 +463,7 @@ sub _data {
 		     denominator => $data->denominator,
 		     ln		 => $data->ln,
 		     inv	 => $data->inv,
+		     multiplier  => $data->multiplier,
 		     each        => $yaml->{each},
 		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);
@@ -596,8 +604,13 @@ sub _group {
     $app->{main}->status("Importing reference for ". $data->name);
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
+    #$ref = ($ref) ? $ref->clone : Demeter::Data->new(file => $data->file);
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
+    };
+    if ($repeated) {
+      my $foo = $ref->clone;
+      $ref = $foo;
     };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
@@ -606,7 +619,7 @@ sub _group {
     $ref -> set(name        => "  Ref " . $data->name,
 		energy      => $yaml->{energy},
 		numerator   => '$'.$yaml->{ref_numer},
-		denominator => '$'.$yaml->{ref_denom},
+		denominator => ($yaml->{ref_denom}) ? '$'.$yaml->{ref_denom} : 1,
 		ln          => $yaml->{ref_ln},
 		is_col      => 1,
 		is_kev      => $data->is_kev,
@@ -944,7 +957,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

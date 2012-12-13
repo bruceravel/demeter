@@ -20,6 +20,7 @@ use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
 use Const::Fast;
 use DateTime;
+use Statistics::Descriptive;
 
 use vars qw($label $tag);
 $label = "Main window";
@@ -959,21 +960,24 @@ sub Pluck {
 
   my $on_screen = lc($app->{lastplot}->[0]);
   if ($on_screen eq 'quad') {
-    $app->{main}->status("Cannot pluck from a quad plot.");
+    $app->{main}->status("Cannot pluck from a quad plot.", 'alert');
     return;
   };
   if (($on_screen eq 'r') and ($which !~ m{rmin|rmax|rbkg})) {
-    $app->{main}->status("Cannot pluck for $which from an R plot.");
+    $app->{main}->status("Cannot pluck for $which from an R plot.", 'alert');
     return;
   };
   if (($on_screen ne 'r') and ($which =~ m{bft|rbkg})) {
     my $type = ($on_screen eq 'e') ? 'n energy' : " $on_screen";
-    $app->{main}->status("Cannot pluck for $which from a$type plot.");
+    $app->{main}->status("Cannot pluck for $which from a$type plot.", 'alert');
     return;
   };
 
-  my ($ok, $x, $y) = $app->cursor;
-  return if not $ok;
+  my ($return, $x, $y) = $app->cursor;
+  if (not $return->status) {
+    $app->{main}->status($return->message, 'alert');
+    return;
+  };
   my $plucked = -999;
   my $space = 'E';
 
@@ -1036,6 +1040,7 @@ const my $E0_ZERO            => Wx::NewId();
 const my $E0_PEAK            => Wx::NewId();
 const my $STEP_ALL           => Wx::NewId();
 const my $STEP_MARKED        => Wx::NewId();
+const my $STEP_ERROR         => Wx::NewId();
 const my $ESHIFT_ALL         => Wx::NewId();
 const my $ESHIFT_MARKED      => Wx::NewId();
 
@@ -1087,6 +1092,8 @@ sub ContextMenu {
     $menu->AppendSeparator;
     $menu->Append($STEP_ALL,     "Show edge steps of all groups");
     $menu->Append($STEP_MARKED,  "Show edge steps of marked groups");
+    $menu->AppendSeparator;
+    $menu->Append($STEP_ERROR,   "Approximate uncertainty in edge step");
   } elsif (($which eq 'plot_multiplier') and (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions})) {
     $menu->AppendSeparator;
     $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
@@ -1216,6 +1223,10 @@ sub DoContextMenu {
       $main->parameter_table($app, 'bkg_step', 'marked', 'Edge steps');
       last SWITCH;
     };
+    ($id == $STEP_ERROR) and do {
+      $main->edgestep_error($app);
+      last SWITCH;
+    };
     ($id == $ESHIFT_ALL) and do {
       $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
       last SWITCH;
@@ -1249,7 +1260,25 @@ sub parameter_table {
 };
 
 
-const my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+sub edgestep_error {
+  my ($main, $app) = @_;
+  my $data = $app->current_data;
+  my $busy = Wx::BusyCursor->new();
+
+  $data->sentinal(sub{$app->{main}->status(sprintf("Sample #%d of %d", $_[0]+1, $_[1]+1), 'wait|nobuffer')});
+  my ($mean, $stddev, $report) = $data->edgestep_error(1);
+
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $report, "Edge step error calculation")
+      -> Show if Demeter->co->default('edgestep', 'fullreport');
+
+  $data->sentinal(sub{1});
+  $app->OnGroupSelect(0,0,0);
+  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f", $data->name, $data->bkg_step, $stddev));
+  undef $busy;
+};
+
+const my @all_group  => (qw(bkg_z fft_edge importance));
 const my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
 			    bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
 			    bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
@@ -1289,6 +1318,30 @@ sub constrain {
   $app->{main}->status("Set parameters for $how groups");
 };
 
+my %e0_algorithms = (ifeffit  => "Ifeffit's default",
+		     atomic   => "the tabulated values",
+		     fraction => "a fraction of the edge step",
+		     zero     => "the zero crossing of their second derivatives",
+		     dmax     => "the peak of their first derivatives",
+		     peak     => "the peak of their white lines",
+		    );
+sub set_e0 {
+  my ($main, $app, $which, $how) = @_;
+  if ($app->is_empty) {
+    $app->{main}->status("No data!");
+    return;
+  };
+  my $busy = Wx::BusyCursor->new();
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    my $this = $app->{main}->{list}->GetIndexedData($i);
+    $this->e0($which);
+  };
+  $app->OnGroupSelect(0,0,0);
+  $app->{main}->status(sprintf("Set the e0 values for %s groups to %s", $how, $e0_algorithms{$which}));
+  undef $busy;
+};
+
 sub to_default {
   my ($main, $app, $which, $how) = @_;
   my $data = $app->current_data;
@@ -1324,7 +1377,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

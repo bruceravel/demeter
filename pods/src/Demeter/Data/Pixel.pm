@@ -149,7 +149,7 @@ Demeter::Data::Pixel - Handle dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

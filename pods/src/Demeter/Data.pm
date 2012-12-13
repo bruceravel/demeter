@@ -149,6 +149,9 @@ has 'ln'  => (is => 'rw', isa => 'Bool', default => 0,
 	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 has 'inv' => (is => 'rw', isa => 'Bool', default => 0,
 	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+has 'multiplier' => (is => 'rw', isa => 'Num', default => 1,
+		     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+
 has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
 
 ## -------- data type flags
@@ -933,7 +936,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 
 =head1 SYNOPSIS

@@ -101,7 +101,7 @@ sub new {
   $hbox -> Add($self->{databoxsizer}, 11, wxGROW|wxALL, 5);
 
   ## -------- Edge energies
-  $self->{edgebox} = Wx::StaticBox->new($self, -1, 'Element edges', wxDefaultPosition, wxDefaultSize);
+  $self->{edgebox} = Wx::StaticBox->new($self, -1, 'Absorption edges', wxDefaultPosition, wxDefaultSize);
   $self->{edgeboxsizer} = Wx::StaticBoxSizer->new( $self->{edgebox}, wxVERTICAL );
   $self->{edge} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 55 );
@@ -119,7 +119,7 @@ sub new {
   $hbox -> Add($self->{edgeboxsizer}, 13, wxGROW|wxALL, 5);
 
   ## -------- Line energies
-  $self->{linebox} = Wx::StaticBox->new($self, -1, 'Element lines', wxDefaultPosition, wxDefaultSize);
+  $self->{linebox} = Wx::StaticBox->new($self, -1, 'Fluorescence lines', wxDefaultPosition, wxDefaultSize);
   $self->{lineboxsizer} = Wx::StaticBoxSizer->new( $self->{linebox}, wxVERTICAL );
   $self->{line} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES);
   $self->{line}->InsertColumn( 0, "Line", wxLIST_FORMAT_LEFT, 50 );
@@ -355,7 +355,7 @@ Demeter::UI::Hephaestus::Absorption - Hephaestus' absorption utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 

@@ -92,7 +92,7 @@ Demeter::Project - Project file management
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 DESCRIPTION
 

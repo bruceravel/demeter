@@ -30,7 +30,8 @@ use Scalar::Util qw(looks_like_number);
 sub new {
   my ($class, $parent, $file, $style) = @_;
 
-  my $this = $class->SUPER::new($parent, -1, "Artemis: Import from Athena project file",
+  my $gui = ($style eq 'single') ? 'Artemis' : 'Athena';
+  my $this = $class->SUPER::new($parent, -1, "$gui: Import from Athena project file",
 				wxDefaultPosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxSTAY_ON_TOP
 			       );
@@ -250,7 +251,7 @@ Demeter::UI::Artemis::Prj - An Athena project selection dialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.13.
+This documentation refers to Demeter version 0.9.14.
 
 =head1 SYNOPSIS
 
