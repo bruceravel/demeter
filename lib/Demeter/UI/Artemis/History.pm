@@ -26,6 +26,7 @@ use File::Copy;
 use File::Copy::Recursive qw(dircopy);
 use File::Path;
 use File::Spec;
+use List::Util qw(max);
 use List::MoreUtils qw(minmax);
 use String::Random qw(random_string);
 
@@ -60,6 +61,7 @@ sub new {
 					[], wxLB_SINGLE);
   $this->{list}->{datalist} = [];
   $this->{count} =  0;
+  $this->{increment} =  0;
   $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
   $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
@@ -105,10 +107,10 @@ sub new {
   my $reportbox  = Wx::BoxSizer->new( wxVERTICAL );
   $reportpage->SetSizer($reportbox);
 
-  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB);
   my $plottoolbox  = Wx::BoxSizer->new( wxVERTICAL );
-  $plottoolpage -> SetScrollbars(20, 20, 50, 50);
-  $plottoolpage -> SetSizerAndFit($plottoolbox);
+  $plottoolpage -> SetScrollbars(10, 8, 30, 66);
+  $plottoolpage -> SetSizer($plottoolbox);
   $this->{plottool} = $plottoolpage;
   $this->{scrollbox} = $plottoolbox;
 
@@ -641,9 +643,20 @@ sub add_plottool {
     $self-> mouseover($key, "Put the fit to \"" . $d->name . "\" from \"" . $fit->name . "\" in the plotting list.");
   };
 
+  ## this rather complicated bit gets the scrolling area filled in and
+  ## redrawn correctly and leaves the display at the end of the
+  ## scrolling area
+  $self->{plottool}  -> Scroll(0,0);
   $self->{scrollbox} -> Add($boxsizer, 0, wxGROW|wxALL, 5);
-  $self->{plottool} -> SetSizerAndFit($self->{scrollbox});
-  $self->{plottool} -> SetScrollbars(0, 100, 0, $self->{count});
+  $self->{plottool}  -> SetSizer($self->{scrollbox});
+  my $n               = ($self->{count}<8) ? 8 : $self->{count};
+  my ($x,$y)          = $box->GetSizeWH;
+  $self->{increment}  = max($y, $self->{increment});
+  $self->{plottool}  -> SetScrollbars(10, $n, 30, $self->{increment}+11);
+  $self->{plottool}  -> Refresh;
+  ($x,$y)             = $box->GetSizeWH;
+  $self->{increment}  = max($y, $self->{increment});
+  $self->{plottool}  -> Scroll(0,1000);
 };
 
 ## need to check if it is already in the plot list...
