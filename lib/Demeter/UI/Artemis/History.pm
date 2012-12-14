@@ -59,6 +59,7 @@ sub new {
   $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,500],
 					[], wxLB_SINGLE);
   $this->{list}->{datalist} = [];
+  $this->{count} =  0;
   $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
   $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
@@ -104,10 +105,10 @@ sub new {
   my $reportbox  = Wx::BoxSizer->new( wxVERTICAL );
   $reportpage->SetSizer($reportbox);
 
-  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1);
+  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   my $plottoolbox  = Wx::BoxSizer->new( wxVERTICAL );
-  $plottoolpage -> SetSizer($plottoolbox);
   $plottoolpage -> SetScrollbars(20, 20, 50, 50);
+  $plottoolpage -> SetSizerAndFit($plottoolbox);
   $this->{plottool} = $plottoolpage;
   $this->{scrollbox} = $plottoolbox;
 
@@ -626,6 +627,7 @@ sub export {
 
 sub add_plottool {
   my ($self, $fit) = @_;
+  ++$self->{count};
 
   my $box      = Wx::StaticBox->new($self->{plottool}, -1, $fit->name, wxDefaultPosition, wxDefaultSize);
   my $boxsizer = Wx::StaticBoxSizer->new( $box, wxHORIZONTAL );
@@ -641,6 +643,7 @@ sub add_plottool {
 
   $self->{scrollbox} -> Add($boxsizer, 0, wxGROW|wxALL, 5);
   $self->{plottool} -> SetSizerAndFit($self->{scrollbox});
+  $self->{plottool} -> SetScrollbars(0, 100, 0, $self->{count});
 };
 
 ## need to check if it is already in the plot list...
