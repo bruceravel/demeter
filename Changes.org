@@ -96,6 +96,12 @@
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
      got compiled.  I did, however, apply the patch to Feff6 allowing
      it to compute up to element 96.
+   - added a work-around in the BEGIN block of each item in bin/
+     folder to deal with the MinGW version skew problem on Windows
+     caused by having some MinGW location in the PATH before the
+     various strawberry entries.
+   - added more information to the log files written by the GUI
+     programs
 
 
 ** 0.9.13  2 October 2012
