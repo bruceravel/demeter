@@ -84,7 +84,7 @@ sub on_save {
     $::app->{main}->status("Not saving status buffer to log file.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_log($fname);
 };

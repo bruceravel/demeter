@@ -55,7 +55,7 @@ sub prjrecord {
       $rframes->{main}->status("Data import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   }
   $file = Demeter->follow_link($file);
   if (not $$rdemeter->is_prj($file)) {
@@ -151,7 +151,7 @@ sub _feff {
       $rframes->{main}->status("Crystal/Feff data import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   if (not -e $file) {
     $rframes->{main}->status("$file does not exist.");
@@ -183,7 +183,7 @@ sub _chi {
       $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   if (not $$rdemeter->is_data($file)) {
     $rframes->{main}->status("$file is not a column data file.", 'error');
@@ -216,7 +216,7 @@ sub _dpj {
       $rframes->{main}->status(".dpj file import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   $file = Demeter->follow_link($file);
   if (not $$rdemeter->is_zipproj($file,0, 'dpj')) {
@@ -335,7 +335,7 @@ sub _external_feff {
       $rframes->{main}->status("$CHI(k) import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
 
   my ($atoms_file, $feff_file) = (q{}, q{});
@@ -436,7 +436,7 @@ sub _old {
       $rframes->{main}->status("old-style Artemis import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   $file = Demeter->follow_link($file);
 
@@ -487,7 +487,7 @@ sub _feffit {
       $rframes->{main}->status("Feffit import canceled.");
       return;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   if (not -e $file) {
     $rframes->{main}->status("$file does not exist.");

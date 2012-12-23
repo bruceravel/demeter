@@ -87,7 +87,11 @@ sub Import {
       $app->{main}->status("Data import canceled.");
       return;
     };
-    @files = map {File::Spec->catfile($fd->GetDirectory, $_)} $fd->GetFilenames;
+    #print $fd->GetDirectory, $/;
+    #print $fd->GetFilenames, $/;
+    #print join($/, $fd->GetPaths), $/;
+    #@files = map {File::Spec->catfile($fd->GetDirectory, $_)} $fd->GetFilenames;
+    @files = $fd->GetPaths;
   };
 
   my $verbose = 0;
@@ -845,7 +849,7 @@ sub save_marked {
     $app->{main}->status("Saving column data for marked groups canceled.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data[0]->save_many($fname, $how, @data);
   $app->{main}->status("Saved $desc data for marked groups to $fname");
@@ -904,7 +908,7 @@ sub FPath {
     $app->{main}->status("Saving empirical standard from current group canceled.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
   my $scatterer = q{};

@@ -532,7 +532,7 @@ sub open_file {
       $self->{parent}->status("Crystal data import canceled.");
       return 0;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   $self->clear_all(1);
 
@@ -926,7 +926,7 @@ sub write_output {
       if ($fd -> ShowModal == wxID_CANCEL) {
 	$self->{parent}->status("Saving output file aborted.")
       } else {
-	my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+	my $file = $fd->GetPath;
 	open my $OUT, ">".$file;
 	print $OUT $atoms -> Write(lc($dialog->GetStringSelection));
 	close $OUT;

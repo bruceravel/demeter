@@ -184,7 +184,7 @@ sub save {
   if ($fd -> ShowModal == wxID_CANCEL) {
     $self->{parent}->status("Saving Feff calculation aborted.")
   } else {
-    my $yaml = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $yaml = $fd->GetPath;
     $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
     #$self->{parent}->{Feff}->{feffobject}->push_mru("feffcalc", $yaml);
     $self->{parent}->status("Saved Feff calculation to $yaml.")

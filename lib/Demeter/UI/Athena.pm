@@ -1834,7 +1834,7 @@ sub preplot {
 		    space    => $space);
     #$data->standard;
     #$data->po->space($space);
-    #$demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+    #$demeter->po->file($fd->GetPath));
   };
   $data->po->plot_pause($app->{main}->{Other}->{pause}->GetValue);
   return 1;

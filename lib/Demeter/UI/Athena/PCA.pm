@@ -378,7 +378,7 @@ sub get_filename {
     $::app->{main}->status("Saving PCA $descr{$suff} to a file has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return 0 if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $::app->{main}->status("Wrote PCA $descr{$suff} to $fname");
   return $fname;

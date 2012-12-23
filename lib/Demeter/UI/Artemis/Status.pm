@@ -78,7 +78,7 @@ sub on_save {
     $::app->{main}->status("Not saving status buffer to log file.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname, $::app->{main});
   $self->save_log($fname);
 };

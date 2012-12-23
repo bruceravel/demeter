@@ -182,7 +182,7 @@ sub read_project {
       $rframes->{main}->status("Project import canceled.");
       return;
     };
-    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $fname = $fd->GetPath;
   } else {
     chdir(dirname($fname));
   };

@@ -185,7 +185,7 @@ sub save {
     $::app->{main}->status("Saving log-ratio results to a file has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LR}->save($fname);
   $::app->{main}->status("Saved log-ratio/phase-difference results to $fname");

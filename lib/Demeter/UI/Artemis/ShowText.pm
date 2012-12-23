@@ -120,7 +120,7 @@ sub OnSave {
     $::app->{main}->status("Not saving contents.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $this->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   open (my $C, '>',$fname);
   print $C $this->{text}->GetValue;

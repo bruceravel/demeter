@@ -436,7 +436,8 @@ sub import {
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->status("Parameter import aborted.")
   } else {
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    #my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $file = $fd->GetPath;
     my $comment = qr([!#%]);
 
     my $start = $parent->find_next_empty_row;

@@ -703,7 +703,7 @@ sub combi_report {
     $::app->{main}->status("Saving combinatorial results has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->combi_report($fname);
   $::app->{main}->status("Wrote combinatorial report as an Excel spreadsheet to $fname");
@@ -844,7 +844,7 @@ sub seq_report {
     $::app->{main}->status("Saving fit sequence results has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->sequence_report($fname);
   $::app->{main}->status("Wrote fit sequence report as an Excel spreadsheet to $fname");
@@ -887,7 +887,7 @@ sub save {
     $::app->{main}->status("Saving LCF results to a file has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->save($fname);
   $::app->{main}->status("Saved LCF results to $fname");
