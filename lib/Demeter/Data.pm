@@ -419,6 +419,9 @@ has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
 has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0, traits => [ qw(Quenchable) ],);
+has 'fit_rfactor1'	  => (is => 'rw', isa => 'Num',      default => 0, );
+has 'fit_rfactor2'	  => (is => 'rw', isa => 'Num',      default => 0, );
+has 'fit_rfactor3'	  => (is => 'rw', isa => 'Num',      default => 0, );
 has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] }, traits => [ qw(Quenchable) ],);
 
 ## -------- plotting parameters
@@ -826,38 +829,66 @@ sub raw_check {
 sub rfactor {
   my ($self) = @_;
   my (@x, @dr, @di, @fr, @fi, $xmin, $xmax);
+  my (@nn) = (0,0,0,0);
+  my (@dd) = (1,0,0,0);
+
   if (lc($self->fit_space) eq 'k') {
     ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
     @x  = $self -> get_array("k");
     @di = $self -> get_array("chi");
     @fr = $self -> get_array("chi", "fit");
+    foreach my $i (0 .. $#x) {
+      next if ($x[$i] < $xmin);
+      last if ($x[$i] > $xmax);
+      foreach my $k (1,2,3) {
+	$nn[$k] += ($dr[$i]*$x[$i]**$k - $fr[$i]*$x[$i]**$k)**2;
+	$dd[$k] += ($dr[$i]*$x[$i]**$k                     )**2;
+      };
+    };
+
   } elsif (lc($self->fit_space) eq 'r') {
     ($xmin,$xmax) = $self->get(qw(bft_rmin bft_rmax));
-    @x  = $self -> get_array("r");
-    @dr = $self -> get_array("chir_re");
-    @di = $self -> get_array("chir_im");
-    @fr = $self -> get_array("chir_re", "fit");
-    @fi = $self -> get_array("chir_im", "fit");
+    foreach my $k (1,2,3) {
+      $self->po->kweight($k);
+      $self->_update('bft');
+      $self->part_fft('fit');
+      @x  = $self -> get_array("r");
+      @dr = $self -> get_array("chir_re");
+      @di = $self -> get_array("chir_im");
+      @fr = $self -> get_array("chir_re", "fit");
+      @fi = $self -> get_array("chir_im", "fit");
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $xmin);
+	last if ($x[$i] > $xmax);
+	$nn[$k] += ($dr[$i] - $fr[$i])**2 + ($di[$i] - $fi[$i])**2;
+	$dd[$k] +=  $dr[$i]           **2 +  $di[$i]           **2;
+      };
+    };
+
   } elsif (lc($self->fit_space) eq 'q') {
     ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
-    @x  = $self -> get_array("q");
-    @dr = $self -> get_array("chiq_re");
-    @di = $self -> get_array("chiq_im");
-    @fr = $self -> get_array("chiq_re", "fit");
-    @fi = $self -> get_array("chiq_im", "fit");
-  };
-  my ($numerator, $denominator) = (0,0);
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $xmin);
-    last if ($x[$i] > $xmax);
-    $numerator   += ($dr[$i] - $fr[$i])**2;
-    $denominator +=  $dr[$i]           **2;
-    if (lc($self->fit_space) ne 'k') {
-      $numerator   += ($di[$i] - $fi[$i])**2;
-      $denominator +=  $di[$i]           **2;
+    foreach my $k (1,2,3) {
+      $self->po->kweight($k);
+      $self->_update('all');
+      $self->part_fft('fit');
+      $self->part_bft('fit');
+      @x  = $self -> get_array("q");
+      @dr = $self -> get_array("chiq_re");
+      @di = $self -> get_array("chiq_im");
+      @fr = $self -> get_array("chiq_re", "fit");
+      @fi = $self -> get_array("chiq_im", "fit");
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $xmin);
+	last if ($x[$i] > $xmax);
+	$nn[$k] += ($dr[$i] - $fr[$i])**2 + ($di[$i] - $fi[$i])**2;
+	$dd[$k] +=  $dr[$i]           **2 +  $di[$i]           **2;
+      };
     };
   };
-  return ($denominator) ? $numerator/$denominator : 0;
+  $self->fit_rfactor1($nn[1]/$dd[1]);
+  $self->fit_rfactor2($nn[2]/$dd[2]);
+  $self->fit_rfactor3($nn[3]/$dd[3]);
+  return $self;
 };
 
 

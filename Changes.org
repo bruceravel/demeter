@@ -53,6 +53,7 @@
         plot tool to work *and* imports sufficiently quickly
    - Corrected a problem plotting immediately after importing a
      project with a fitting model but without a fit having been run
+   - log file shows R-factor by k-weight for MDS fit
 
 *** Atoms
    - fixed a crashy problem in getting space group symbol from some
@@ -93,6 +94,7 @@
      installation.  In that case, user should modify "plot->plotwith".
    - Fixed an issue with Wx::FileDialog on Ubuntu 12.10 --
      GetDirectory returns the wrong thing, use GetPath instead
+   - compute R-factor by k-weight per data set after an MDS fit
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

@@ -12,14 +12,14 @@
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** installation issues [0/1]
-  - [ ] Relocation needs testing on Windows, need to make sure that
-        the executables can all be found, also need to be able to find
-        all of Ifeffit CL and CAPS files.
+** installation issues [1/2]
+  - [X] Relocation needs testing on Windows, need to make sure that
+        the executables can all be found,
+  - [ ] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [2/23] [8%]
+** Demeter bugs, shortcomings, missing features  [4/23] [17%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
-  - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
+  - [X] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
@@ -31,7 +31,7 @@
   - [ ] 3rd derivative
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
-  - [ ] per data set R-factors, computed correctly for mkw fits (what is "correctly?")
+  - [X] per data set R-factors, computed correctly for mkw fits (what is "correctly?")
   - [ ] OpenBabel interface, tied into Feff
   - [X] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [X] better detection of chi ascii data in case of 
@@ -55,7 +55,8 @@
    2. [X] calibrate
    3. [X] align
    4. [X] deglitch
-   5. [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG filter]] 
+   5. [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG
+      filter]]; smooth with boxcar average [[http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333][See this]]
    6. [X] truncate
    7. [X] rebin
    8. [X] convolution and noise
@@ -84,6 +85,7 @@
     1. smoothing by S-G
     2. deconvolution
     3. +PCA+
+    4. boxcar average
 
 *** needs doing [10/22] [45%]
    - [X] deglitching crashes with gnuplot
@@ -100,10 +102,10 @@
    - [ ] implement megamerge
    - [ ] links to documentation on each tool
    - [X] Post a warning if bkg_e0=0 and/or element is <= Be
-   - [-] *Main window* [1/3] [33%]
+   - [-] *Main window* [2/3] [66%]
        + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
        + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
-       + [ ] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
+       + [X] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows
@@ -116,10 +118,10 @@
        + +smoothing does not work+
    - [ ] *Convolve/noise tool*
        + add noise to chi data
-   - [ ] *Difference tool* [0/4]
-       + [ ] plot diff for marked groups
-       + [ ] plot areas from marked groups
-       + [ ] make difference groups from marked groups
+   - [-] *Difference tool* [3/4]
+       + [X] plot diff for marked groups
+       + [X] plot areas from marked groups
+       + [X] make difference groups from marked groups
        + [ ] difference in k
    - [-] *LCF tool* [4/7]
        + [X] make data group from fit (use InsertData method)
@@ -189,7 +191,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [6/14] [42%]
+** Windows issues [7/14] [50%]
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] +spurious message from clipboard+ (worked around)
@@ -212,8 +214,9 @@
   - [X] The Strawberry+Demeter package does not coexist at all with
         ActivePerl.  Best solution is to generate ppd for Demeter
         armed with all dependencies.  Would need to compile wrapper
-        and somehow get gnuplot on the machine. *Solved by explicitly calling Strawberry in the .bat files*
-  - [ ] ScrolledWindow used in History plot tool does not scroll
+        and somehow get gnuplot on the machine. *Solved by explicitly
+        calling Strawberry in the .bat files*
+  - [X] ScrolledWindow used in History plot tool does not scroll
   - [X] A link file linked to a directory does not get followed properly
   - [ ] Need to test that paths with (parens|commas|quotes) get
 	followed correctly in all situations
@@ -223,7 +226,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [9/18]  [50%]
+*** Artemis bugs and missing features [12/18]  [66%]
    - [X] rename Atoms/Feff
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
@@ -237,8 +240,8 @@
    - [X] In GDS, all in type column after #13 added when restoring a
          fit are text rather than combobox
    - [X] force update of fit description when changing chi(k)
-   - [ ] importing dpj files is currently broken
-   - [ ] History plot tool is quite broken.  Need to make it work with
+   - [X] importing dpj files is currently broken
+   - [X] History plot tool is quite broken.  Need to make it work with
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves
          deserialized into distinct objects with distinct group names.
@@ -247,7 +250,7 @@
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
-   - [ ] per-data set R-factor reporting in log file is turned off.
+   - [X] per-data set R-factor reporting in log file is turned off.
 	 see fit_parameter_report in Demeter::Data::I0
    - [ ] implementing derivative of phase plotting would require
          proper handling of this signal in the bkg, residual, and
@@ -267,13 +270,13 @@
         - [ ] DND of FPath also broken
         - [ ] DND of selection (currently only one at a time)
 
-**** Project [2/7]
+**** Project [3/7]
    - [ ] VPaths to/from project file
    - [ ] SSPaths not saved/restored properly
    - [ ] Indicators to/from project file
    - [X] Imported project file does not correctly set path-like tab
    - [X] replacing data in a project does not work
-   - [ ] does autosave file work as intended?
+   - [X] does autosave file work as intended?
    - [ ] GDS objects get created with same groupname over and over as
 	 they are used in fits in the history
 
@@ -286,7 +289,7 @@
    - [-] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [11/14] [78%]
+*** Histograms [12/14] [85%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -300,7 +303,7 @@
    - [X] ipot=1 is hardwired in many places -- generalize.... /fixed for SS, same should work for NCL and Thru/
    - [X] scatter plot of ncl distribution
    - [X] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
-   - [ ] LAMMPS
+   - [X] LAMMPS
    - [ ] triangle histogram
    - [-] *Error checking* in Artemis, e.g. check that there is at least one bin in the supplied range(s)
 	 - [X] SS
@@ -400,9 +403,8 @@ an ENV variable
     Jeremy requested originally)
  7. set e0 by algorithm for all and marked -- also confusing and
     little used
- 8. plot margin lines for deglitching, deglitch many points (this was
-    something that was most useful for a timing problem at 10ID that
-    no longer exists)
+ 8. +plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)+
+    (implemented)
  9. preprocessing truncation and deglitching (truncation might be
     worth implementing)
 

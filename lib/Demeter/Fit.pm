@@ -836,6 +836,7 @@ sub logtext {
 
   foreach my $data (@{ $self->data }) {
     next if (not $data->fitting);
+    $data->rfactor;
     if (lc($data->fit_space) eq "r") {
       $data->_update("bft");
       $data->part_fft("fit") if (lc($data->fitsum) eq 'sum');

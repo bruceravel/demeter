@@ -121,7 +121,14 @@ my $fit = Demeter::Fit -> new(gds   => \@gds,
 print "--- do the fit\n";
 $fit -> fit;
 $data_010k -> plot_with('gnuplot');
-$fit -> interview;
+
+my ($header, $footer) = ("Fit to 10K and 150K copper data\n", q{});
+$fit -> logfile("mdsfit.log", $header, $footer);
+print $data_010k -> fit_rfactor1, $/;
+print $data_010k -> fit_rfactor2, $/;
+print $data_010k -> fit_rfactor3, $/;
+
+#$fit -> interview;
 
 exit;
 

@@ -8,18 +8,17 @@
 }
 <<nl>>===== Data set >> {$D->name} << ====================================
 
-: {$label}      = {$file}
-: name                = {$D->name}
-: k-range             = {$D->fft_kmin} - {$D->fft_kmax}
-: dk                  = {$D->fft_dk}
-: k-window            = {$D->fft_kwindow}
-: k-weight            = {$D->_kw_string}
-: R-range             = {$D->bft_rmin} - {$D->bft_rmax}
-: dR                  = {$D->bft_dr}
-: R-window            = {$D->bft_rwindow}
-: fitting space       = {$D->fit_space}
-: background function = {$D->yesno("fit_do_bkg")}
-: phase correction    = {$D->fft_pc}
-
-r-factor for this data set = {sprintf "%.7f", $F->rfactor}
+: {$label}       = {$file}
+: name                 = {$D->name}
+: k-range              = {$D->fft_kmin} - {$D->fft_kmax}
+: dk                   = {$D->fft_dk}
+: k-window             = {$D->fft_kwindow}
+: k-weight             = {$D->_kw_string}
+: R-range              = {$D->bft_rmin} - {$D->bft_rmax}
+: dR                   = {$D->bft_dr}
+: R-window             = {$D->bft_rwindow}
+: fitting space        = {$D->fit_space}
+: background function  = {$D->yesno("fit_do_bkg")}
+: phase correction     = {$D->fft_pc}
+: R-factor by k-weight = 1 -> {sprintf "%.5f", $D->fit_rfactor1},  2 -> {sprintf "%.5f", $D->fit_rfactor2},  3 -> {sprintf "%.5f", $D->fit_rfactor3}
 <<nl>>
