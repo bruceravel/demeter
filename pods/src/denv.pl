@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -14,6 +14,21 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 =cut
+
+BEGIN {
+  ## munge the PATH env. var. under Windows, also add useful debugging
+  ## info to the log file
+  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+    if ($ENV{PATH} =~ m{mingw}i) {
+      my @list = split(/;/, $ENV{PATH});
+      my (@mingw, @not);
+      foreach my $p (@list) {
+	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
+      };
+      $ENV{PATH} = join(';', @not, @mingw);
+    };
+  };
+};
 
 use Getopt::Long;
 my $wx = 0;
