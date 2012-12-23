@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999, 2011, 2012 Bruce Ravel
+##  This program is copyright (c) 1999, 2011-2013 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##

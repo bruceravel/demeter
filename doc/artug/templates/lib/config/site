@@ -3,7 +3,7 @@
 	   name      = 'Artemis Users Guide'
 	   server    = 'http://cars9.uchicago.edu' 
 	   admin     = 'bravel@bnl.gov'
-	   copyright = '2007-2012 Bruce Ravel'
+	   copyright = '2007-2013 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };
 -%]

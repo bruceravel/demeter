@@ -91,6 +91,8 @@
      the system and modify 'plot.demeter_conf' accordingly.  This
      works for new installations, it will not retrofit an existing
      installation.  In that case, user should modify "plot->plotwith".
+   - Fixed an issue with Wx::FileDialog on Ubuntu 12.10 --
+     GetDirectory returns the wrong thing, use GetPath instead
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

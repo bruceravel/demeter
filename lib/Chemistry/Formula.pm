@@ -1,5 +1,5 @@
 ######################################################################
-##  This module is copyright (c) 2001-2012 Bruce Ravel
+##  This module is copyright (c) 2001-2013 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
 ##  http://cars9.uchicago.edu/~ravel/software
 ##  http://cars9.uchicago.edu/svn/libperlxray
