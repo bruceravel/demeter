@@ -44,7 +44,7 @@ sub Export {
       $app->{main}->status("Saving project canceled.");
       return;
     };
-    $fname = $fd->GetPath; #File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $fname = $fd->GetPath;
     return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
@@ -87,10 +87,6 @@ sub Import {
       $app->{main}->status("Data import canceled.");
       return;
     };
-    #print $fd->GetDirectory, $/;
-    #print $fd->GetFilenames, $/;
-    #print join($/, $fd->GetPaths), $/;
-    #@files = map {File::Spec->catfile($fd->GetDirectory, $_)} $fd->GetFilenames;
     @files = $fd->GetPaths;
   };
 

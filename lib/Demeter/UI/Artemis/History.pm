@@ -449,7 +449,6 @@ sub savereport {
     $self->status("Not saving report.");
     return;
   };
-  #my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   open my $R, '>', $fname;
@@ -555,7 +554,6 @@ sub savelog {
     $self->status("Not saving log file.");
     return;
   };
-  #my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $fit->logfile($fname);
