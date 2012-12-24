@@ -20,9 +20,44 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
+  $this->{data} = q{};
 
-  $box->Add(Wx::StaticText->new($this, -1, "This part of Athena has not yet been implemented."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
 
+  my $thptbox       = Wx::StaticBox->new($this, -1, 'Three-point smoothing', wxDefaultPosition, wxDefaultSize);
+  my $thptboxsizer  = Wx::StaticBoxSizer->new( $thptbox, wxVERTICAL );
+  $hbox -> Add($thptboxsizer, 1, wxGROW|wxALL, 2);
+  my $nbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $thptboxsizer->Add($nbox,1, wxGROW|wxALL, 2);
+  $nbox -> Add(Wx::StaticText->new($this, -1, 'Repetitions'), 0, wxALL, 5);
+  $this->{nsmooth} = Wx::SpinCtrl   -> new($this, -1, 3, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 20);
+  $nbox -> Add($this->{nsmooth}, 1, wxGROW|wxALL, 5);
+  $this->{plotsmooth} = Wx::Button->new($this, -1, 'Plot data and smoothed');
+  $thptboxsizer->Add($this->{plotsmooth},1, wxGROW|wxALL, 2);
+  $this->{savesmooth} = Wx::Button->new($this, -1, 'Make smoothed group');
+  $thptboxsizer->Add($this->{savesmooth},1, wxGROW|wxALL, 2);
+  $this->{savesmooth}->Enable(0);
+  EVT_BUTTON($this, $this->{plotsmooth}, sub{$this->plot_smooth($app->current_data)});
+  EVT_BUTTON($this, $this->{savesmooth}, sub{$this->save_smooth($app)});
+
+
+  my $boxcarbox       = Wx::StaticBox->new($this, -1, 'Boxcar average', wxDefaultPosition, wxDefaultSize);
+  my $boxcarboxsizer  = Wx::StaticBoxSizer->new( $boxcarbox, wxVERTICAL );
+  $hbox -> Add($boxcarboxsizer, 1, wxGROW|wxALL, 2);
+  $nbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $boxcarboxsizer->Add($nbox,1, wxGROW|wxALL, 2);
+  $nbox -> Add(Wx::StaticText->new($this, -1, 'Boxcar width'), 0, wxALL, 5);
+  $this->{nbox} = Wx::SpinCtrl   -> new($this, -1, 11, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 30);
+  $nbox -> Add($this->{nbox}, 1, wxGROW|wxALL, 5);
+  $this->{plotboxcar} = Wx::Button->new($this, -1, 'Plot data and boxcar');
+  $boxcarboxsizer->Add($this->{plotboxcar},1, wxGROW|wxALL, 2);
+  $this->{saveboxcar} = Wx::Button->new($this, -1, 'Make boxcar group');
+  $boxcarboxsizer->Add($this->{saveboxcar},1, wxGROW|wxALL, 2);
+  $this->{saveboxcar}->Enable(0);
+  EVT_BUTTON($this, $this->{plotboxcar}, sub{$this->plot_boxcar($app->current_data)});
+  EVT_BUTTON($this, $this->{saveboxcar}, sub{$this->save_boxcar($app)});
+
+  $box->Add($hbox, 0, wxGROW|wxALL, 0);
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: smoothing');
@@ -51,9 +86,73 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+
+sub plot_smooth {
+  my ($this, $data) = @_;
+  my $reps = $this->{nsmooth}->GetValue;
+  $this->{data} = $data->clone(name=>$data->name." smoothed $reps times");
+  $this->{data}->smooth($reps);
+  $::app->{main}->{PlotE}->pull_single_values;
+  Demeter->po->set(e_norm=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
+  Demeter->po->start_plot;
+  $data->plot('E');
+  $this->{data}->plot('E');
+  $this->{savesmooth}->Enable(1);
+  $this->{saveboxcar}->Enable(0);
+  $::app->{main}->status("Plotted ".$data->name." with its smoothed data, three-point smoothed $reps times");
+  $this->{data}->DEMOLISH;
+};
+
+sub plot_boxcar {
+  my ($this, $data) = @_;
+  my $width = $this->{nbox}->GetValue;
+  $this->{data} = $data->boxcar($width);
+  $::app->{main}->{PlotE}->pull_single_values;
+  Demeter->po->set(e_norm=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
+  Demeter->po->start_plot;
+  $data->plot('E');
+  $this->{data}->plot('E');
+  $this->{savesmooth}->Enable(0);
+  $this->{saveboxcar}->Enable(1);
+  $::app->{main}->status("Plotted ".$data->name." with its boxcar averaged data, kernel width $width");
+  $this->{data}->DEMOLISH;
+};
+
+sub save_smooth {
+  my ($this, $app) = @_;
+  my $reps = $this->{nsmooth}->GetValue;
+  $this->{data} = $app->current_data->clone(name=>$app->current_data->name." smoothed $reps times");
+  $this->{data} -> source("Smoothed ".$app->current_data->name.", $reps times");
+  $this->{data}->smooth($reps);
+
+
+  my $index = $app->current_index;
+  if ($index == $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->AddData($this->{data}->name, $this->{data});
+  } else {
+    $app->{main}->{list}->InsertData($this->{data}->name, $index+1, $this->{data});
+  };
+  $app->{main}->status("Smoothed " . $app->current_data->name." and made a new data group");
+  $app->modified(1);
+  $app->heap_check(0);
+};
+
+sub save_boxcar {
+  my ($this, $app) = @_;
+  my $width = $this->{nbox}->GetValue;
+  $this->{data} = $app->current_data->boxcar($width);
+  $this->{data} -> source("Boxcar average of ".$app->current_data->name.", kernel width $width");
+  $this->{data}->_update('fft');
+  my $index = $app->current_index;
+  if ($index == $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->AddData($this->{data}->name, $this->{data});
+  } else {
+    $app->{main}->{list}->InsertData($this->{data}->name, $index+1, $this->{data});
+  };
+  $app->{main}->status("Boxcar averaged " . $app->current_data->name." and made a new data group");
+  $app->modified(1);
+  $app->heap_check(0);
+};
 
 1;
 

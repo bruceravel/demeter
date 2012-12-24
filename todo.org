@@ -56,7 +56,7 @@
    3. [X] align
    4. [X] deglitch
    5. [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG
-      filter]]; smooth with boxcar average [[http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333][See this]]
+      filter]]; +smooth with boxcar average [[http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333][See this]]+
    6. [X] truncate
    7. [X] rebin
    8. [X] convolution and noise
