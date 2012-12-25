@@ -22,9 +22,9 @@
    - Difference spectra:
       + can be made of mu, norm, deriv, second, norm/deriv, and
         norm/second.  norm is the default
-      + marked groups funtionality
+      + marked groups functionality
       + made groups naming template
-   - Implemented functionality for differens of marked groups
+   - Implemented functionality for difference of marked groups
    - Calculation of approximate uncertainty in edge step
    - Set E0 of all/marked groups using an algorithm, see Group menu
    - Added a specified multiplicative constant in the column selection
@@ -34,13 +34,13 @@
      spectrum, each group (one per column) will get a reference
      spectrum.  The reference is now cloned for each group.
      Previously, each reference group pointed at the same Ifeffit data
-     group.  Removing one rerference group from an Athena project
-     would remove the Ifeffit group, leving the remaining copies
+     group.  Removing one reference group from an Athena project
+     would remove the Ifeffit group, leaving the remaining copies
      unplottable.  By cloning, the reference groups are now completely
      independent.
    - Fixed a problem in the column selection dialog when specifying no
      denominator for the reference channel
-   - Added smoothing tool
+   - Added smoothing tool with various smoothing options
 
 *** Artemis
    - LOTS of work on Users' Guide
@@ -103,10 +103,10 @@
    - Fixed an issue with Wx::FileDialog on Ubuntu 12.10 --
      GetDirectory returns the wrong thing, use GetPath instead
    - compute R-factor by k-weight per data set after an MDS fit
-   - Added smoothing or data by boxcar average
+   - Added smoothing of data by boxcar average, Gaussian filter
 
 *** Windows
-   - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit
+   - downgraded to Ifeffit 1.2.11d to correct a problem in how Ifeffit
      got compiled.  I did, however, apply the patch to Feff6 allowing
      it to compute up to element 96.
    - added a work-around in the BEGIN block of each item in bin/

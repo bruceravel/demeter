@@ -2,10 +2,11 @@ package Demeter::UI::Athena::Smooth;
 
 use strict;
 use warnings;
+use feature qw(switch);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -23,41 +24,36 @@ sub new {
   $this->{data} = q{};
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $hbox -> Add(Wx::StaticText->new($this, -1, 'Algorithm'), 0, wxALL, 5);
+  $this->{choice} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
+				    ['Three-point smoothing', 'Boxcar average', 'Gaussian Filter']);
+  $hbox -> Add($this->{choice}, 1, wxGROW|wxALL, 2);
+  $box  -> Add($hbox, 0, wxGROW|wxALL, 5);
+  $this->{choice}->SetSelection(1);
+  EVT_CHOICE($this, $this->{choice}, \&OnChoice);
 
-  my $thptbox       = Wx::StaticBox->new($this, -1, 'Three-point smoothing', wxDefaultPosition, wxDefaultSize);
-  my $thptboxsizer  = Wx::StaticBoxSizer->new( $thptbox, wxVERTICAL );
-  $hbox -> Add($thptboxsizer, 1, wxGROW|wxALL, 2);
-  my $nbox = Wx::BoxSizer->new( wxHORIZONTAL);
-  $thptboxsizer->Add($nbox,1, wxGROW|wxALL, 2);
-  $nbox -> Add(Wx::StaticText->new($this, -1, 'Repetitions'), 0, wxALL, 5);
-  $this->{nsmooth} = Wx::SpinCtrl   -> new($this, -1, 3, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 20);
-  $nbox -> Add($this->{nsmooth}, 1, wxGROW|wxALL, 5);
-  $this->{plotsmooth} = Wx::Button->new($this, -1, 'Plot data and smoothed');
-  $thptboxsizer->Add($this->{plotsmooth},1, wxGROW|wxALL, 2);
-  $this->{savesmooth} = Wx::Button->new($this, -1, 'Make smoothed group');
-  $thptboxsizer->Add($this->{savesmooth},1, wxGROW|wxALL, 2);
-  $this->{savesmooth}->Enable(0);
-  EVT_BUTTON($this, $this->{plotsmooth}, sub{$this->plot_smooth($app->current_data)});
-  EVT_BUTTON($this, $this->{savesmooth}, sub{$this->save_smooth($app)});
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $this->{widthlabel} = Wx::StaticText->new($this, -1, 'Kernel size  ');
+  $hbox -> Add($this->{widthlabel}, 0, wxALL, 5);
+  $this->{width} = Wx::SpinCtrl -> new($this, -1, 11, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 20);
+  $hbox -> Add($this->{width}, 1, wxGROW|wxALL, 2);
+  $this->{devlabel} = Wx::StaticText->new($this, -1, 'Width');
+  $hbox -> Add($this->{devlabel}, 0, wxALL, 5);
+  $this->{dev} = Wx::SpinCtrl -> new($this, -1, 4, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 10);
+  $hbox -> Add($this->{dev}, 1, wxGROW|wxALL, 2);
+  $box  -> Add($hbox, 0, wxGROW|wxALL, 5);
+  $this->{devlabel}->Enable(0);
+  $this->{dev}->Enable(0);
+  #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
 
+  $this->{plot} = Wx::Button->new($this, -1, 'Plot data and smoothed');
+  $box->Add($this->{plot},0, wxGROW|wxALL, 2);
+  $this->{save} = Wx::Button->new($this, -1, 'Make smoothed group');
+  $box->Add($this->{save},0, wxGROW|wxALL, 2);
+  EVT_BUTTON($this, $this->{plot}, sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{save}, sub{$this->save($app)});
+  $this->{save}->Enable(0);
 
-  my $boxcarbox       = Wx::StaticBox->new($this, -1, 'Boxcar average', wxDefaultPosition, wxDefaultSize);
-  my $boxcarboxsizer  = Wx::StaticBoxSizer->new( $boxcarbox, wxVERTICAL );
-  $hbox -> Add($boxcarboxsizer, 1, wxGROW|wxALL, 2);
-  $nbox = Wx::BoxSizer->new( wxHORIZONTAL);
-  $boxcarboxsizer->Add($nbox,1, wxGROW|wxALL, 2);
-  $nbox -> Add(Wx::StaticText->new($this, -1, 'Boxcar width'), 0, wxALL, 5);
-  $this->{nbox} = Wx::SpinCtrl   -> new($this, -1, 11, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 1, 30);
-  $nbox -> Add($this->{nbox}, 1, wxGROW|wxALL, 5);
-  $this->{plotboxcar} = Wx::Button->new($this, -1, 'Plot data and boxcar');
-  $boxcarboxsizer->Add($this->{plotboxcar},1, wxGROW|wxALL, 2);
-  $this->{saveboxcar} = Wx::Button->new($this, -1, 'Make boxcar group');
-  $boxcarboxsizer->Add($this->{saveboxcar},1, wxGROW|wxALL, 2);
-  $this->{saveboxcar}->Enable(0);
-  EVT_BUTTON($this, $this->{plotboxcar}, sub{$this->plot_boxcar($app->current_data)});
-  EVT_BUTTON($this, $this->{saveboxcar}, sub{$this->save_boxcar($app)});
-
-  $box->Add($hbox, 0, wxGROW|wxALL, 0);
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: smoothing');
@@ -77,7 +73,7 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  1;
+  $this->plot($data);
 };
 
 ## this subroutine sets the enabled/frozen state of the controls
@@ -86,73 +82,96 @@ sub mode {
   1;
 };
 
+sub OnChoice {
+  my ($this, $event) = @_;
+  given ($this->{choice}->GetStringSelection) {
+    when ('Three-point smoothing') {
+      $this->{widthlabel}->SetLabel("Repetitions");
+      $this->{devlabel}->Enable(0);
+      $this->{dev}->Enable(0);
+      #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
+    };
+    when ('Boxcar average') {
+      $this->{widthlabel}->SetLabel("Kernel size");
+      $this->{devlabel}->Enable(0);
+      $this->{dev}->Enable(0);
+      #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
+    };
+    when ('Gaussian Filter') {
+      $this->{widthlabel}->SetLabel("Kernel size");
+      $this->{devlabel}->Enable(1);
+      $this->{dev}->Enable(1);
+      #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
+    };
+  };
+  $this->{save}->Enable(0);
+};
 
-sub plot_smooth {
+sub plot {
   my ($this, $data) = @_;
-  my $reps = $this->{nsmooth}->GetValue;
-  $this->{data} = $data->clone(name=>$data->name." smoothed $reps times");
-  $this->{data}->smooth($reps);
+  my $width = $this->{width}->GetValue;
+  my $text = "Plotted \"".$data->name."\" with its ";
+  given ($this->{choice}->GetStringSelection) {
+    when ('Three-point smoothing') {
+      $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
+      $this->{data} -> smooth($width);
+      $text .= "smoothed data, three-point smoothed $width times";
+    };
+    when ('Boxcar average') {
+      $this->{data} = $data->boxcar($width);
+      $text .= "boxcar averaged data, kernel size $width";
+    };
+    when ('Gaussian Filter') {
+      my $sd        = $this->{dev}->GetValue;
+      $this->{data} = $data->gaussian_filter($width, $sd);
+      $text .= "Gaussian filtered data, size $width width $sd";
+    };
+  };
   $::app->{main}->{PlotE}->pull_single_values;
   Demeter->po->set(e_norm=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
   Demeter->po->start_plot;
   $data->plot('E');
   $this->{data}->plot('E');
-  $this->{savesmooth}->Enable(1);
-  $this->{saveboxcar}->Enable(0);
-  $::app->{main}->status("Plotted ".$data->name." with its smoothed data, three-point smoothed $reps times");
+  $this->{save}->Enable(1);
+  $::app->{main}->status($text);;
   $this->{data}->DEMOLISH;
 };
 
-sub plot_boxcar {
-  my ($this, $data) = @_;
-  my $width = $this->{nbox}->GetValue;
-  $this->{data} = $data->boxcar($width);
-  $::app->{main}->{PlotE}->pull_single_values;
-  Demeter->po->set(e_norm=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
-  Demeter->po->start_plot;
-  $data->plot('E');
-  $this->{data}->plot('E');
-  $this->{savesmooth}->Enable(0);
-  $this->{saveboxcar}->Enable(1);
-  $::app->{main}->status("Plotted ".$data->name." with its boxcar averaged data, kernel width $width");
-  $this->{data}->DEMOLISH;
-};
-
-sub save_smooth {
+sub save {
   my ($this, $app) = @_;
-  my $reps = $this->{nsmooth}->GetValue;
-  $this->{data} = $app->current_data->clone(name=>$app->current_data->name." smoothed $reps times");
-  $this->{data} -> source("Smoothed ".$app->current_data->name.", $reps times");
-  $this->{data}->smooth($reps);
-
-
+  my $width = $this->{width}->GetValue;
+  my $text = " \"" . $app->current_data->name."\" and made a new data group";
+  given ($this->{choice}->GetStringSelection) {
+    when ('Three-point smoothing') {
+      $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
+      $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
+      $this->{data} -> smooth($width);
+      $text = "Smoothed" . $text;
+    };
+    when ('Boxcar average') {
+      $this->{data} = $app->current_data->boxcar($width);
+      $this->{data} -> source("Boxcar average of ".$app->current_data->name.", kernel size $width");
+      $text = "Boxcar averaged" . $text;
+    };
+    when ('Gaussian Filter') {
+      my $sd = $this->{dev}->GetValue;
+      $this->{data} = $app->current_data->gaussian_filter($width, $sd);
+      $this->{data} -> source("Gaussian filter of ".$app->current_data->name.", $width, $sd");
+      $text = "Gaussian filter of" . $text;
+    };
+  };
+  $this->{data} ->_update('fft');
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->AddData($this->{data}->name, $this->{data});
   } else {
     $app->{main}->{list}->InsertData($this->{data}->name, $index+1, $this->{data});
   };
-  $app->{main}->status("Smoothed " . $app->current_data->name." and made a new data group");
+  $app->{main}->status($text);
   $app->modified(1);
   $app->heap_check(0);
 };
 
-sub save_boxcar {
-  my ($this, $app) = @_;
-  my $width = $this->{nbox}->GetValue;
-  $this->{data} = $app->current_data->boxcar($width);
-  $this->{data} -> source("Boxcar average of ".$app->current_data->name.", kernel width $width");
-  $this->{data}->_update('fft');
-  my $index = $app->current_index;
-  if ($index == $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->AddData($this->{data}->name, $this->{data});
-  } else {
-    $app->{main}->{list}->InsertData($this->{data}->name, $index+1, $this->{data});
-  };
-  $app->{main}->status("Boxcar averaged " . $app->current_data->name." and made a new data group");
-  $app->modified(1);
-  $app->heap_check(0);
-};
 
 1;
 
