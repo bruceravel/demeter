@@ -40,6 +40,7 @@
      independent.
    - Fixed a problem in the column selection dialog when specifying no
      denominator for the reference channel
+   - Added smoothing tool
 
 *** Artemis
    - LOTS of work on Users' Guide
@@ -54,6 +55,11 @@
    - Corrected a problem plotting immediately after importing a
      project with a fitting model but without a fit having been run
    - log file shows R-factor by k-weight for MDS fit
+   - corrected a problem importing a project with a Feff calculation
+     having a disabled Atoms tab (i.e. one which started from a
+     feff.inp file)
+   - Data toggle buttons now display Show/Hide correctly as
+     data/project imported
 
 *** Atoms
    - fixed a crashy problem in getting space group symbol from some
@@ -62,6 +68,8 @@
    - improved CIF parsing by making the tags case insensitive.  this
      was done by redefining a STAR::DataBlock method in the
      Demeter::Atoms::CIF file
+   - fixed a display issue with very recent Wx -- needed to
+     SetSizerAndFit in make_feff_frame to fully size the Atoms page
 
 *** Hephaestus
    - Display wavelengths in several places where energies are displayed
@@ -95,6 +103,7 @@
    - Fixed an issue with Wx::FileDialog on Ubuntu 12.10 --
      GetDirectory returns the wrong thing, use GetPath instead
    - compute R-factor by k-weight per data set after an MDS fit
+   - Added smoothing or data by boxcar average
 
 *** Windows
    - downgraded to ifeffit 1.2.11d to correct a problem in how Ifeffit

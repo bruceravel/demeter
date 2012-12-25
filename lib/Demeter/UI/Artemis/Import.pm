@@ -128,6 +128,8 @@ sub _prj {
   $data->plot('k');
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
+  (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};;
+  $rframes->{main}->{$dnum}->SetLabel($lab);
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
   delete $rframes->{prj};

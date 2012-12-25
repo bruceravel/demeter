@@ -634,6 +634,7 @@ sub get_crystal_data {
 
   my $this = $self->{space}->GetValue || q{};
   if ((not $this) and ($self->{used})) {
+    print join("|", caller), $/;
     $self->{problems} = "You have not specified a space group.";
     return 0;
   };
@@ -814,6 +815,7 @@ sub unusable_data {
 
 sub save_file {
   my ($self, $file) = @_;
+  return if $self->{parent}->{atoms_disabled};
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
     if (not $file) {

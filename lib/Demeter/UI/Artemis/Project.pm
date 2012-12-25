@@ -288,7 +288,7 @@ sub read_project {
     if (not $feffobject->hidden) {
       ## import atoms.inp
       my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
-      my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
+      my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name); #, $feffobject);
 
       if (-e $yaml) {
 	## import feff.inp
@@ -311,6 +311,9 @@ sub read_project {
 #	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
 	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
       };
+#      $rframes->{$fnum}->Show(0);
+#      $rframes->{$fnum}->Iconize(1);
+#      $rframes->{main}->{$fnum}->SetValue(0);
       my $label = $rframes->{main}->{$fnum}->GetLabel;
       $label =~ s{Hide}{Show};
       $rframes->{main}->{$fnum}->SetLabel($label)
@@ -502,6 +505,8 @@ sub restore_fit {
     if (not $count) {
       $rframes->{$dnum}->Show(1);
       $rframes->{main}->{$dnum}->SetValue(1);
+      (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};;
+      $rframes->{main}->{$dnum}->SetLabel($lab);
     };
     ++$count;
   };
