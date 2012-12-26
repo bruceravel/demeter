@@ -448,6 +448,7 @@ sub boxcar {
 
   my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", boxcar size $n");
   $smoothed->e0($self);
+  $smoothed->resolve_defaults;
   # flag for reprocessing
   if ($how =~ m{(?:xmu|xanes)}) {
     $smoothed->update_norm(1);
@@ -491,6 +492,7 @@ sub gaussian_filter {
 
   my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd");
   $smoothed->e0($self);
+  $smoothed->resolve_defaults;
   # flag for reprocessing
   if ($how =~ m{(?:xmu|xanes)}) {
     $smoothed->update_norm(1);
