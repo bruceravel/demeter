@@ -303,7 +303,7 @@ sub verify_distance {
     $self->error(sprintf("%f is awfully long for a low Z scatterer (%s)!\n", $d, $self->scatterer))
       if ($d > $self->co->default("fspath", "max_lowz"));
   };
-  if (lc($self->mo->ui) ne 'wx') {
+  if ($self->error and (lc($self->mo->ui) ne 'wx')) {
     carp($self->error);
   };
 };

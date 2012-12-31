@@ -104,6 +104,7 @@
      GetDirectory returns the wrong thing, use GetPath instead
    - compute R-factor by k-weight per data set after an MDS fit
    - Added smoothing of data by boxcar average, Gaussian filter
+   - Corrected spurious warnings in t/005_plot.t and t/016_fspath.t
 
 *** Windows
    - downgraded to Ifeffit 1.2.11d to correct a problem in how Ifeffit

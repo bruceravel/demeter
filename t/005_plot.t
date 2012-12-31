@@ -66,11 +66,14 @@ SKIP: {
   skip "font test -- not using pgplot", 1 if $this->mo->template_plot ne 'pgplot';
   $this->font(size=>7, font=>4);
   ok( ($this->charfont == 4 and $this->charsize == 7),                  "pgplot font method (seems to) work");
-}
-$this->set_mode(ifeffit=>1);
+  $this->set_mode(ifeffit=>1);
+};
 
-ok( $this -> textlabel(0.1, 0.2, "Hi there!"),                        "pgplot textlabel method (seems to) work");
-ok( $this -> outfile("png", "/dev/null"),                             "pgplot outfile method (seems to) work");
+SKIP: {
+  skip "output test -- not using pgplot", 2 if $this->mo->template_plot ne 'pgplot';
+  ok( $this -> textlabel(0.1, 0.2, "Hi there!"),                        "pgplot textlabel method (seems to) work");
+  ok( $this -> outfile("png", "/dev/null"),                             "pgplot outfile method (seems to) work");
+};
 
 $string = $this -> template("test", "test", {x=>5});
 ok( $string =~ $this->group,                                'simple template works');
