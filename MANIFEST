@@ -80,6 +80,8 @@ doc/artug/images/heap.png
 doc/artug/images/helpmenu.png
 doc/artug/images/history.log.png
 doc/artug/images/history.menu.png
+doc/artug/images/history.plotlist.png
+doc/artug/images/history.plottool.png
 doc/artug/images/history.report.png
 doc/artug/images/history.reportplot.png
 doc/artug/images/indicplot.png
@@ -635,6 +637,8 @@ examples/recipes/SelfAbsorption/fe73ga27.010
 examples/recipes/SelfAbsorption/sa.pl
 examples/recipes/SingleFile/cufit.pl
 examples/recipes/SingleFile/feff.inp
+examples/recipes/Smooth/boxcar.pl
+examples/recipes/Smooth/filter.pl
 examples/recipes/StandardDeviation/merge.pl
 examples/recipes/StandardDeviation/README
 examples/recipes/VPath_SSPath/gds.txt

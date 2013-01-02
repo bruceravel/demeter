@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.14  ?? December 2012
+** 0.9.14  2 January 2013
 *** Athena
    - Plot indicators when plotting from deglitch tool
    - Filename for combinatorial output spreadsheet uses group name
