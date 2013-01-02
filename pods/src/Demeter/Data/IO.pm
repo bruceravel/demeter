@@ -2,7 +2,7 @@ package Demeter::Data::IO;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -277,15 +277,16 @@ sub data_parameter_report {
 };
 sub fit_parameter_report {
   my ($self, $include_rfactor, $fit_performed) = @_;
-  #$include_rfactor ||= 0;
-  $include_rfactor = 0;
+  $include_rfactor ||= 0;
+  #$include_rfactor = 0;
   $fit_performed   ||= 0;
   my $string = q{};
-  if ($include_rfactor and $fit_performed) {	# only print this for a multiple data set fit
+  #if ($include_rfactor and $fit_performed) {	# only print this for a multiple data set fit
+  #if ($fit_performed) {	# only print this for a multiple data set fit
     $string = $self->data->template("report", "fit_report_rfact");
-  } else {
-    $string = $self->data->template("report", "fit_report");
-  };
+  #} else {
+  #  $string = $self->data->template("report", "fit_report");
+  #};
   return $string;
 };
 
@@ -519,7 +520,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

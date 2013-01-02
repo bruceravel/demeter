@@ -147,7 +147,7 @@ L<MooseX::SetOnce> carries this copyright notice:
   under the same terms as the Perl 5 programming language system
   itself.
 
-Copyright (c) 2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

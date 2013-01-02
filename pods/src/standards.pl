@@ -13,7 +13,7 @@
 =cut
 
 =begin Copyright
- Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+ Copyright (c) 2008-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
  .
  This example is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See L<perlgpl>.
@@ -25,6 +25,18 @@
 =cut
 
 BEGIN {
+  ## munge the PATH env. var. under Windows, also add useful debugging
+  ## info to the log file
+  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+    if ($ENV{PATH} =~ m{mingw}i) {
+      my @list = split(/;/, $ENV{PATH});
+      my (@mingw, @not);
+      foreach my $p (@list) {
+	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
+      };
+      $ENV{PATH} = join(';', @not, @mingw);
+    };
+  };
   my $target = q{};
   foreach my $a (@ARGV) {
     ($target = $a) if ($a =~ m{athena|latex|screen|web});
@@ -497,7 +509,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

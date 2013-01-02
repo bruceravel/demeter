@@ -35,7 +35,7 @@ system which will allow us to play around with the development version
 of Demeter without affecting the system Perl install:
 
     $ sudo apt-get install build-essential git gfortran \
-      gnuplot ifeffit liblocal-lib-perl libx11-dev \
+      gnuplot gnuplot-x11 ifeffit liblocal-lib-perl libx11-dev \
       libncurses5-dev libpng3 libpng3-dev libgif4 libwxgtk2.8-dev
 
 Next, make sure you're in your home directory and use C<local::lib> to

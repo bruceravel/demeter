@@ -2,7 +2,7 @@ package Demeter::UI::Artemis::Project;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -182,7 +182,7 @@ sub read_project {
       $rframes->{main}->status("Project import canceled.");
       return;
     };
-    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $fname = $fd->GetPath;
   } else {
     chdir(dirname($fname));
   };
@@ -288,7 +288,7 @@ sub read_project {
     if (not $feffobject->hidden) {
       ## import atoms.inp
       my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
-      my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
+      my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name); #, $feffobject);
 
       if (-e $yaml) {
 	## import feff.inp
@@ -311,6 +311,9 @@ sub read_project {
 #	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
 	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
       };
+#      $rframes->{$fnum}->Show(0);
+#      $rframes->{$fnum}->Iconize(1);
+#      $rframes->{main}->{$fnum}->SetValue(0);
       my $label = $rframes->{main}->{$fnum}->GetLabel;
       $label =~ s{Hide}{Show};
       $rframes->{main}->{$fnum}->SetLabel($label)
@@ -376,10 +379,12 @@ sub read_project {
       };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
+      $fit->sentinal(sub{$::app->{main}->status($_[0], $statustype)});
       $rframes->{main}->status("Unpacking current fit", $statustype);
       $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
       #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
       #$rframes->{History}->OnSelect;
+      $fit->sentinal(sub{1});
       $rframes->{main}->{currentfit} = $fit;
       $rframes->{Plot}->{limits}->{fit}->SetValue(1);
       my $current = $fit->number || 1;
@@ -387,6 +392,7 @@ sub read_project {
     };
   };
 
+  $rframes->{main}->status("Restoring fit", $statustype);
   $import_problems .= restore_fit($rframes, $currentfit, $lastfit);
 
   ## when each fit is deserialized, new GDS objects are instantiated
@@ -429,6 +435,7 @@ sub restore_fit {
   ## -------- load up the GDS parameters
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
+  $rframes->{main}->status("Restoring GDS parameters", 'wait|nobuffer');
   foreach my $g (@{$fit->gds}) {
     if ($start >= $grid->GetNumberRows) {
       $grid -> AppendRows(1,1);
@@ -466,6 +473,7 @@ sub restore_fit {
 
   ## -------- Data and Paths
   my $count = 0;
+  $rframes->{main}->status("Restoring data", 'wait|nobuffer');
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if (($rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel})
@@ -474,6 +482,7 @@ sub restore_fit {
     #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     my $datapaths = 0;
+    $rframes->{main}->status("Restoring paths for ".$d->name, 'wait|nobuffer');
     foreach my $p (@{$fit->paths}) {
 
       my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->parentgroup);
@@ -496,6 +505,8 @@ sub restore_fit {
     if (not $count) {
       $rframes->{$dnum}->Show(1);
       $rframes->{main}->{$dnum}->SetValue(1);
+      (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};;
+      $rframes->{main}->{$dnum}->SetLabel($lab);
     };
     ++$count;
   };
@@ -601,6 +612,9 @@ sub close_project {
     $f->DEMOLISH;
   };
 
+  ## -------- clear plotting list
+  $rframes->{Plot}->{plotlist}->ClearAll;
+
   ## -------- clear history
   $rframes->{History}->{list}->ClearAll;
   $rframes->{History}->{log}->Clear;
@@ -680,7 +694,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

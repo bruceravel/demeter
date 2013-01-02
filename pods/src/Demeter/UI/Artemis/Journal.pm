@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Journal;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -85,7 +85,7 @@ sub on_save {
     $::app->{main}->status("Not saving journal.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_journal($fname);
 };
@@ -134,7 +134,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

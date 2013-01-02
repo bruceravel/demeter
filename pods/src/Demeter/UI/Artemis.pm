@@ -1022,7 +1022,7 @@ sub make_data_frame {
   my $databox = $self->{databox};
 
   #print join('|', split(//, emph($data->name))), $/;
-  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
+  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".emph($data->name));
   #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
   mouseover($new, "Display/hide " . $data->name . ".");
@@ -1130,6 +1130,7 @@ sub make_feff_frame {
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
+  $frames{$fnum} -> {atoms_disabled} = 0;
 
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     my $result = $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
@@ -1147,6 +1148,7 @@ sub make_feff_frame {
     if ($file ne $BLANK) {
       # $frames{$fnum}->{notebook}->DeletePage(0);
       # $fefftab = 0;
+      $frames{$fnum}->{atoms_disabled} = 1;
       $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
       $frames{$fnum}->{notebook}->SetPageText(0, '');
       ## The following two event handlers are used to overcome the
@@ -1253,7 +1255,7 @@ sub export {
     $::app->{main}->status("Exporting fitting model canceled.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   unlink $fname;
 
@@ -1461,7 +1463,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

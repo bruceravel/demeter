@@ -210,7 +210,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or modify it

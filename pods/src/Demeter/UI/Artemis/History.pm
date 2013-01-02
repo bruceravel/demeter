@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::History;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ use File::Copy;
 use File::Copy::Recursive qw(dircopy);
 use File::Path;
 use File::Spec;
+use List::Util qw(max);
 use List::MoreUtils qw(minmax);
 use String::Random qw(random_string);
 
@@ -59,6 +60,8 @@ sub new {
   $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,500],
 					[], wxLB_SINGLE);
   $this->{list}->{datalist} = [];
+  $this->{count} =  0;
+  $this->{increment} =  0;
   $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
   $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
@@ -104,10 +107,10 @@ sub new {
   my $reportbox  = Wx::BoxSizer->new( wxVERTICAL );
   $reportpage->SetSizer($reportbox);
 
-  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1);
+  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB);
   my $plottoolbox  = Wx::BoxSizer->new( wxVERTICAL );
+  $plottoolpage -> SetScrollbars(10, 8, 30, 66);
   $plottoolpage -> SetSizer($plottoolbox);
-  $plottoolpage -> SetScrollbars(20, 20, 50, 50);
   $this->{plottool} = $plottoolpage;
   $this->{scrollbox} = $plottoolbox;
 
@@ -446,7 +449,7 @@ sub savereport {
     $self->status("Not saving report.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   open my $R, '>', $fname;
   print $R $self->{report}->GetValue;
@@ -551,7 +554,7 @@ sub savelog {
     $self->status("Not saving log file.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $fit->logfile($fname);
   $self->status("Wrote log file to '$fname'.");
@@ -626,6 +629,7 @@ sub export {
 
 sub add_plottool {
   my ($self, $fit) = @_;
+  ++$self->{count};
 
   my $box      = Wx::StaticBox->new($self->{plottool}, -1, $fit->name, wxDefaultPosition, wxDefaultSize);
   my $boxsizer = Wx::StaticBoxSizer->new( $box, wxHORIZONTAL );
@@ -639,8 +643,20 @@ sub add_plottool {
     $self-> mouseover($key, "Put the fit to \"" . $d->name . "\" from \"" . $fit->name . "\" in the plotting list.");
   };
 
+  ## this rather complicated bit gets the scrolling area filled in and
+  ## redrawn correctly and leaves the display at the end of the
+  ## scrolling area
+  $self->{plottool}  -> Scroll(0,0);
   $self->{scrollbox} -> Add($boxsizer, 0, wxGROW|wxALL, 5);
-  $self->{plottool} -> SetSizerAndFit($self->{scrollbox});
+  $self->{plottool}  -> SetSizer($self->{scrollbox});
+  my $n               = ($self->{count}<8) ? 8 : $self->{count};
+  my ($x,$y)          = $box->GetSizeWH;
+  $self->{increment}  = max($y, $self->{increment});
+  $self->{plottool}  -> SetScrollbars(10, $n, 30, $self->{increment}+11);
+  $self->{plottool}  -> Refresh;
+  ($x,$y)             = $box->GetSizeWH;
+  $self->{increment}  = max($y, $self->{increment});
+  $self->{plottool}  -> Scroll(0,1000);
 };
 
 ## need to check if it is already in the plot list...
@@ -736,7 +752,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

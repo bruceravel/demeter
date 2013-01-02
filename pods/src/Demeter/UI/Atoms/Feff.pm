@@ -123,7 +123,7 @@ sub import {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     $fd -> ShowModal;
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   $self->{feff}->SetValue(q{});
   local $/;
@@ -144,7 +144,7 @@ sub save_file {
   if ($fd -> ShowModal == wxID_CANCEL) {
     $self->{parent}->status("Saving feff input file aborted.")
   } else {
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $file = $fd->GetPath;
     open my $OUT, ">".$file;
     print $OUT $self->{feff}->GetValue;
     close $OUT;
@@ -530,7 +530,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

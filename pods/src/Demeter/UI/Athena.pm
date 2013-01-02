@@ -263,7 +263,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify . "\nusing " . $demeter->backend_id );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville"
+  #			 "Ifeffit is copyright $COPYRIGHT 1992-2013 Matt Newville"
   #			] );
   $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
@@ -1834,7 +1834,7 @@ sub preplot {
 		    space    => $space);
     #$data->standard;
     #$data->po->space($space);
-    #$demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+    #$demeter->po->file($fd->GetPath));
   };
   $data->po->plot_pause($app->{main}->{Other}->{pause}->GetValue);
   return 1;
@@ -2477,7 +2477,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

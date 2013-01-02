@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Demeter To Do List (also Athena and Artemis)</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-10-09 09:34:36 EDT"/>
+<meta name="generated" content="2013-01-02 10:22:13 EST"/>
 <meta name="author" content="Bruce Ravel"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -81,11 +81,11 @@ lang="en" xml:lang="en">
 <ul>
 <li><a href="#sec-1.1">1.1 Moose issues </a></li>
 <li><a href="#sec-1.2">1.2 wx issues </a></li>
-<li><a href="#sec-1.3">1.3 installation issues [0/1] </a></li>
-<li><a href="#sec-1.4">1.4 Demeter bugs, shortcomings, missing features  [2/23] [8%] </a></li>
+<li><a href="#sec-1.3">1.3 installation issues [1/2] </a></li>
+<li><a href="#sec-1.4">1.4 Demeter bugs, shortcomings, missing features  [0/19] [0%] </a></li>
 <li><a href="#sec-1.5">1.5 Athena </a></li>
 <li><a href="#sec-1.6">1.6 raw data and plugins </a></li>
-<li><a href="#sec-1.7">1.7 Windows issues [6/14] [42%] </a></li>
+<li><a href="#sec-1.7">1.7 Windows issues [7/14] [50%] </a></li>
 <li><a href="#sec-1.8">1.8 Artemis </a></li>
 <li><a href="#sec-1.9">1.9 Hephaestus </a></li>
 <li><a href="#sec-1.10">1.10 Other object types [0/3] </a></li>
@@ -139,14 +139,16 @@ Turns out this is a gtk problem &ndash; I can make the same thing happen with Fi
 </div>
 
 <div id="outline-container-1.3" class="outline-3">
-<h3 id="sec-1.3"><span class="section-number-3">1.3</span> installation issues [0/1] </h3>
+<h3 id="sec-1.3"><span class="section-number-3">1.3</span> installation issues [1/2] </h3>
 <div class="outline-text-3" id="text-1.3">
 
 <ul>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Relocation needs testing on Windows, need to make sure that
-the executables can all be found, also need to be able to find
-all of Ifeffit CL and CAPS files.
+<b>[X]</b> Relocation needs testing on Windows, need to make sure that
+the executables can all be found,
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> also need to be able to find all of Ifeffit CL and CAPS files.
 
 </li>
 </ul>
@@ -155,15 +157,12 @@ all of Ifeffit CL and CAPS files.
 </div>
 
 <div id="outline-container-1.4" class="outline-3">
-<h3 id="sec-1.4"><span class="section-number-3">1.4</span> Demeter bugs, shortcomings, missing features  [2/23] [8%] </h3>
+<h3 id="sec-1.4"><span class="section-number-3">1.4</span> Demeter bugs, shortcomings, missing features  [0/19] [0%] </h3>
 <div class="outline-text-3" id="text-1.4">
 
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> in <code>Demeter::Data::IO::save_many</code>, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> <del>serialize VPath</del>, put VPath into <del>dpj and</del> fpj files
@@ -199,17 +198,7 @@ all of Ifeffit CL and CAPS files.
 <b>[<span style="visibility:hidden;">X</span>]</b> error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> per data set R-factors, computed correctly for mkw fits (what is "correctly?")
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> OpenBabel interface, tied into Feff
-</li>
-<li>
-<b>[X]</b> we seem not to have a normalized group (i.e. plot the same as mu or norm)
-</li>
-<li>
-<b>[X]</b> better detection of chi ascii data in case of 
-<code>$data = Demeter::Data-&gt;new(file=&gt;"foo.chi");</code>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
@@ -262,7 +251,7 @@ implemented) are not consistent with multiplot
 <b>[X]</b> deglitch
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a> 
+<b>[<span style="visibility:hidden;">X</span>]</b> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a>; +smooth with boxcar average <a href="http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333">See this</a>+
 </li>
 <li>
 <b>[X]</b> truncate
@@ -340,33 +329,21 @@ deconvolution
 </li>
 <li>
 <del>PCA</del>
+</li>
+<li>
+boxcar average
 
 </li>
 </ol>
 </li>
 </ul>
 </li>
-<li id="sec-1.5.3">needs doing [10/22] [45%] <br/>
+<li id="sec-1.5.3">needs doing [2/14] [14%] <br/>
 <ul>
-<li>
-<b>[X]</b> deglitching crashes with gnuplot
-</li>
-<li>
-<b>[X]</b> test preprocessing (I had a crash with all three preproc options selected for data with a reference):
-<code>Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.</code>
-</li>
-<li>
-<b>[X]</b> Check that data/standard relationship works when importing
-from a project, when importing only one from a project, when
-discarding one or the other
-</li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> beter error handling in plugins &ndash; specifically need to do a
 better job of trapping errors in the <code>fix</code> method.  Perhaps
 <code>fix</code> should always be called within an <code>eval</code>?
-</li>
-<li>
-<b>[X]</b> implement frozen groups
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> report to a text dialog on values of a particular parameter for all/marked groups
@@ -378,10 +355,7 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 <b>[<span style="visibility:hidden;">X</span>]</b> links to documentation on each tool
 </li>
 <li>
-<b>[X]</b> Post a warning if bkg<sub>e0</sub>=0 and/or element is &lt;= Be
-</li>
-<li>
-[-] <b>Main window</b> [1/3] [33%]
+[-] <b>Main window</b> [2/3] [66%]
 <ul>
 <li>
 <b>[X]</b> <del>SpinCtrl for use with Rbkg</del>, event handler triggered twice on first use (found work-around)
@@ -390,41 +364,7 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 <b>[<span style="visibility:hidden;">X</span>]</b> SpinCtrl for use with bkg<sub>spl1</sub>/2 (I find this to be a much worse idea)
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> push bkg<sub>e0</sub> <i>algorithm</i> onto marked/all groups and recalculate
-</li>
-</ul>
-</li>
-<li>
-<b>[X]</b> <b>Pluck buttons</b> [2/2]
-<ul>
-<li>
-<b>[X]</b> implement everywhere needed
-</li>
-<li>
-<b>[X]</b> figure out cause of spurious error on Windows
-<code>failed to get data from the clipboard error -2147221040 openClipboard failed</code>
-</li>
-</ul>
-</li>
-<li>
-<b>[X]</b> <b>Column selection dialog</b> [3/3]
-<ul>
-<li>
-<b>[X]</b> importing each channel of med data does not work
-</li>
-<li>
-<b>[X]</b> negate button
-</li>
-<li>
-<b>[X]</b> import data into Athena as norm(E)
-</li>
-</ul>
-</li>
-<li>
-<b>[X]</b> <b>Calibration tool</b>
-<ul>
-<li>
-<del>smoothing does not work</del>
+<b>[X]</b> push bkg<sub>e0</sub> <i>algorithm</i> onto marked/all groups and recalculate
 </li>
 </ul>
 </li>
@@ -437,39 +377,18 @@ add noise to chi data
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b> [0/4]
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b> [0/1]
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> plot diff for marked groups
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> plot areas from marked groups
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> make difference groups from marked groups
-</li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> difference in k
 </li>
 </ul>
 </li>
 <li>
-[-] <b>LCF tool</b> [4/7]
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>LCF tool</b> [0/3]
 <ul>
 <li>
-<b>[X]</b> make data group from fit (use InsertData method)
-</li>
-<li>
-<b>[X]</b> marked groups automation, display in fourth tab, excel output
-</li>
-<li>
-<b>[X]</b> plot in R for fit in k
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> persistance of LCF results
-</li>
-<li>
-<b>[X]</b> plot sequence results with pgplot
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> satisfying both inclusive and unity can be trouble for
@@ -527,21 +446,6 @@ current list of marked groups
 [-] <b>Peakfit tool</b> [7/18]
 <ul>
 <li>
-<b>[X]</b> plot without fitting
-</li>
-<li>
-<b>[X]</b> save result
-</li>
-<li>
-<b>[X]</b> report has mismatched sig figs for best fit and error
-</li>
-<li>
-<b>[X]</b> plot and save buttons on results tab
-</li>
-<li>
-<b>[X]</b> implement delete button
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> implement pseudovoight
 </li>
 <li>
@@ -560,9 +464,6 @@ current list of marked groups
 <b>[<span style="visibility:hidden;">X</span>]</b> pluck fit ranges
 </li>
 <li>
-<b>[X]</b> control for changing lineshape (atan&lt;-&gt;erf)(gauss&lt;-&gt;loren)
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> ndata is full data range rather than fit range with Fityk backend
 </li>
 <li>
@@ -570,9 +471,6 @@ current list of marked groups
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> explicitly set title of plot
-</li>
-<li>
-<b>[X]</b> configuration
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> sequence over marked groups
@@ -583,26 +481,7 @@ current list of marked groups
 </ul>
 </li>
 <li>
-<b>[X]</b> <b>Data watcher</b> [5/5]
-<ul>
-<li>
-<b>[X]</b> Data import
-</li>
-<li>
-<b>[X]</b> Actively import the first file in order to set column
-selection, save that example of column selection in case
-its yaml gets overwritten before the timer starts
-</li>
-<li>
-<b>[X]</b> Recognize an incomplete scan, eg a scan terminated by a beam dump
-</li>
-<li>
-<b>[X]</b> Import the last scan in a sequence
-</li>
-<li>
-<b>[X]</b> Toggles for pre-processing (mark/set/align)
-</li>
-</ul>
+<b>Data watcher</b>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> <b>Plot menu</b>
@@ -621,13 +500,10 @@ zoom/unzoom/cursor for pgplot
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> document
 </li>
-<li>
-<b>[X]</b> memory usage
-</li>
 </ul>
 </li>
 <li>
-<b>[X]</b> <b>metadata</b>
+<b>metadata</b>
 
 </li>
 </ul>
@@ -657,24 +533,13 @@ solicit help from the facility representatives
 </div>
 
 <div id="outline-container-1.7" class="outline-3">
-<h3 id="sec-1.7"><span class="section-number-3">1.7</span> Windows issues [6/14] [42%] </h3>
+<h3 id="sec-1.7"><span class="section-number-3">1.7</span> Windows issues [7/14] [50%] </h3>
 <div class="outline-text-3" id="text-1.7">
 
 <ul>
 <li>
 <b>[X]</b> parameter group context menus don't get posted (see
 <a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html</a>)
-</li>
-<li>
-<b>[X]</b> <del>spurious message from clipboard</del> (worked around)
-</li>
-<li>
-<b>[X]</b> fpj file on Win seems to not get unpacked correctly <i>is this true?</i>
-</li>
-<li>
-<b>[X]</b> <del>using gnuplot on Win XP Home Edition failed due to the redirection of STDERR to ~$self-&gt;{__error_log}~ in Graphics::GnuplotIF.</del>
-removing this redirection fixed the problem, but I don't
-understand why it was a problem in the first place.
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> the frickin' Gnuplot error logs seem to remain open and locked
@@ -702,13 +567,7 @@ shift and CL tables (use an ENV variable?)
 <b>[X]</b> The Strawberry+Demeter package does not coexist at all with
 ActivePerl.  Best solution is to generate ppd for Demeter
 armed with all dependencies.  Would need to compile wrapper
-and somehow get gnuplot on the machine. <b>Solved by explicitly calling Strawberry in the .bat files</b>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> ScrolledWindow used in History plot tool does not scroll
-</li>
-<li>
-<b>[X]</b> A link file linked to a directory does not get followed properly
+and somehow get gnuplot on the machine. <b>Solved by explicitly         calling Strawberry in the .bat files</b>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Need to test that paths with (parens|commas|quotes) get
@@ -731,46 +590,8 @@ reinstalled such that and old demeter.ini still exists
 <div class="outline-text-3" id="text-1.8">
 
 <ul>
-<li id="sec-1.8.1">Artemis bugs and missing features [9/18]  [50%] <br/>
+<li id="sec-1.8.1">Artemis bugs and missing features [0/6]  [0%] <br/>
 <ul>
-<li>
-<b>[X]</b> rename Atoms/Feff
-</li>
-<li>
-<b>[X]</b> <del>discarding last page and returning to initial page has an undefined value problem</del> (not true)
-</li>
-<li>
-<b>[X]</b> status messages in Atoms/Feff frame do not get posted in
-Artemis status buffer
-</li>
-<li>
-<b>[X]</b> It would be nice not to deserialize every fit in the history
-upon import, instead deserialize the first time it is needed
-</li>
-<li>
-<b>[X]</b> Restoring an historical fit does not sensibly preserve order,
-fom numbering, etc
-</li>
-<li>
-<b>[X]</b> Import project, need to fully import most recent fit so as to
-populate log window correctly
-</li>
-<li>
-<b>[X]</b> In GDS, all in type column after #13 added when restoring a
-fit are text rather than combobox
-</li>
-<li>
-<b>[X]</b> force update of fit description when changing chi(k)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> importing dpj files is currently broken
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> History plot tool is quite broken.  Need to make it work with
-new grab method (i.e. partial deserialization).  The deeper
-problem is that data from each fit are not themselves
-deserialized into distinct objects with distinct group names.
-</li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Reorganize lists, move individual items up and down, move
 blocks up and down, Path list, <del>Plot list</del>
@@ -779,10 +600,6 @@ blocks up and down, Path list, <del>Plot list</del>
 <b>[<span style="visibility:hidden;">X</span>]</b> do SSPaths get serialized and deserialized with the pointers
 to the feff calculation set correctly and no additional
 folders being created in stash (as was the case for FSPath)?
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> per-data set R-factor reporting in log file is turned off.
-see fit<sub>parameter</sub><sub>report</sub> in Demeter::Data::I0
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> implementing derivative of phase plotting would require
@@ -803,9 +620,6 @@ don't really expect name collisions, but it seems to loose
 track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
 </li>
 <li>
-<b>[X]</b> Andreas Voegelin's idea about mixed Feff/empicial standards
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Path drag and drop [0/3]
 <ul>
 <li>
@@ -820,7 +634,7 @@ track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
 </li>
 </ul>
 </li>
-<li id="sec-1.8.1.1">Project [2/7] <br/>
+<li id="sec-1.8.1.1">Project [0/4] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> VPaths to/from project file
@@ -830,15 +644,6 @@ track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Indicators to/from project file
-</li>
-<li>
-<b>[X]</b> Imported project file does not correctly set path-like tab
-</li>
-<li>
-<b>[X]</b> replacing data in a project does not work
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> does autosave file work as intended?
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> GDS objects get created with same groupname over and over as
@@ -875,14 +680,8 @@ they are used in fits in the history
 </li>
 </ul>
 </li>
-<li id="sec-1.8.2">Histograms [11/14] [78%] <br/>
+<li id="sec-1.8.2">Histograms [12/14] [85%] <br/>
 <ul>
-<li>
-<b>[X]</b> sum histogram bins into a single chi(k) file
-</li>
-<li>
-<b>[X]</b> convert chi(k) data to a mock feffNNNN.dat file
-</li>
 <li>
 <b>[X]</b> Triangle object
 <ul>
@@ -898,30 +697,6 @@ by R and theta
 </ul>
 </li>
 <li>
-<b>[X]</b> bin nealy colinear configurations by R and theta and sum into a single chi(k)
-</li>
-<li>
-<b>[X]</b> turn SS histogram into a rattle TS histogram
-</li>
-<li>
-<b>[X]</b> three-body histogram from X &ndash; [+] &ndash; X configurations
-</li>
-<li>
-<b>[X]</b> error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
-</li>
-<li>
-<b>[X]</b> ipot=1 is hardwired in many places &ndash; generalize&hellip;. <i>fixed for SS, same should work for NCL and Thru</i>
-</li>
-<li>
-<b>[X]</b> scatter plot of ncl distribution
-</li>
-<li>
-<b>[X]</b> factor out DLPOLY dependence into a role so that other MD packages can be added more easily
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> LAMMPS
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> triangle histogram
 </li>
 <li>
@@ -935,20 +710,6 @@ by R and theta
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> thru
-</li>
-</ul>
-</li>
-<li>
-<b>[X]</b> Need flags for when to 
-<ul>
-<li>
-<b>[X]</b> re-read the MD output file
-</li>
-<li>
-<b>[X]</b> re-parse the time steps
-</li>
-<li>
-<b>[X]</b> re-do the binning
 
 </li>
 </ul>
@@ -1192,9 +953,8 @@ set e0 by algorithm for all and marked &ndash; also confusing and
 little used
 </li>
 <li>
-plot margin lines for deglitching, deglitch many points (this was
-something that was most useful for a timing problem at 10ID that
-no longer exists)
+<del>plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)</del>
+(implemented)
 </li>
 <li>
 preprocessing truncation and deglitching (truncation might be
@@ -1208,7 +968,7 @@ worth implementing)
 <p class="author"> Author: Bruce Ravel
 <a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
 </p>
-<p class="date"> Date: 2012-10-09 09:34:36 EDT</p>
+<p class="date"> Date: 2013-01-02 10:22:13 EST</p>
 <p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
 </div>
 </div>

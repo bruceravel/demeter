@@ -181,6 +181,11 @@ sub make {
     $app->{main}->status("Cannot copy a series -- increment \"$increm\" is not a number");
     return;
   };
+  if ($n > 10) {
+    my $yesno = Wx::MessageDialog->new($this, "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
+				       "Continue?", wxYES_NO);
+    return if ($yesno->ShowModal == wxID_NO);
+  };
 
   my $busy = Wx::BusyCursor->new();
   $this->{steplabel}-> Enable(0);
@@ -298,7 +303,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

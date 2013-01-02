@@ -184,7 +184,7 @@ sub save {
   if ($fd -> ShowModal == wxID_CANCEL) {
     $self->{parent}->status("Saving Feff calculation aborted.")
   } else {
-    my $yaml = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $yaml = $fd->GetPath;
     $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
     #$self->{parent}->{Feff}->{feffobject}->push_mru("feffcalc", $yaml);
     $self->{parent}->status("Saved Feff calculation to $yaml.")
@@ -256,7 +256,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

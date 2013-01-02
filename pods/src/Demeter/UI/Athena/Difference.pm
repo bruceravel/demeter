@@ -56,6 +56,7 @@ sub new {
   EVT_TEXT($this, $this->{template}, sub{$this->{updatemarked} = 1});
   $this->{template}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
 					     wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" )) ;
+  $::app->mouseover($this->{template}, 'TOKENS: %d=data name; %s=standard name; %f=form; %n=xmin; %x=xmax; %a=area');
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
@@ -399,7 +400,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

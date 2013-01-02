@@ -2,7 +2,7 @@ package Demeter::Data::Process;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -23,6 +23,9 @@ use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
 use Demeter::Constants qw($EPSILON5 $NULLFILE);
+#eval 'use PDL::Lite' if $Demeter::PDL_exists;
+use PDL::Lite;
+use PDL::Filter::Linear;
 
 sub rebin {
   my ($self, $rhash) = @_;
@@ -412,6 +415,93 @@ sub smooth {
   };
 };
 
+sub boxcar {
+  my ($self, $n, $how) = @_;
+  # if (not $Demeter::PDL_exists) {
+  #   print "hi\n";
+  #   $self->smooth($n, $how);
+  #   return;
+  # };
+  ($n = 11) if ($n < 1);
+  $n = $n+1 if (not $n%2);
+  $how ||= $self->datatype;
+
+  my (@x, $pdl);
+  if ($how =~ m{(?:xmu|xanes)}) {
+    $self -> _update("normalize");
+    @x = $self->get_array('energy');
+    $pdl = PDL->new($self->ref_array('xmu'));
+  } elsif ($how eq "chi") {
+    $self -> _update("fft");
+    @x = $self->get_array('k');
+    $pdl = PDL->new($self->ref_array('chi'));
+  };
+
+  my $kernel = PDL::Core::ones($n) / $n;
+  my $sm = $pdl->conv1d($kernel);
+  my @z = $sm->list;
+
+  splice(@x, 0, ($n-1)/2);
+  @x = splice(@x, 0, $#x-($n-1)/2);
+  splice(@z, 0, ($n-1)/2);
+  @z = splice(@z, 0, $#z-($n-1)/2);
+
+  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", boxcar size $n");
+  $smoothed->e0($self);
+  $smoothed->resolve_defaults;
+  # flag for reprocessing
+  if ($how =~ m{(?:xmu|xanes)}) {
+    $smoothed->update_norm(1);
+  } elsif ($how eq "chi") {
+    $smoothed->update_fft(1);
+  };
+  return $smoothed;
+};
+
+sub gaussian_filter {
+  my ($self, $n, $sd, $how) = @_;
+  # if (not $Demeter::PDL_exists) {
+  #   print "hi\n";
+  #   $self->smooth($n, $how);
+  #   return;
+  # };
+  ($n = 11) if ($n < 1);
+  $n = $n+1 if (not $n%2);
+  ($sd = 4) if ($sd < 1);
+  $how ||= $self->datatype;
+
+  my (@x, $pdl);
+  if ($how =~ m{(?:xmu|xanes)}) {
+    $self -> _update("normalize");
+    @x = $self->get_array('energy');
+    $pdl = PDL->new($self->ref_array('xmu'));
+  } elsif ($how eq "chi") {
+    $self -> _update("fft");
+    @x = $self->get_array('k');
+    $pdl = PDL->new($self->ref_array('chi'));
+  };
+
+  my $filter = PDL::Filter::Gaussian->new($n,$sd);
+  my ($sm, $corr) = $filter->predict($pdl);
+  my @z = $sm->list;
+
+  splice(@x, 0, ($n-1)/2);
+  @x = splice(@x, 0, $#x-($n-1)/2);
+  #splice(@z, 0, ($n-1)/2);
+  #@z = splice(@z, 0, $#z-($n-1)/2);
+
+  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd");
+  $smoothed->e0($self);
+  $smoothed->resolve_defaults;
+  # flag for reprocessing
+  if ($how =~ m{(?:xmu|xanes)}) {
+    $smoothed->update_norm(1);
+  } elsif ($how eq "chi") {
+    $smoothed->update_fft(1);
+  };
+  return $smoothed;
+};
+
 sub convolve {
   my ($self, @args) = @_;
   my $config = $self->mo->config;;
@@ -691,7 +781,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

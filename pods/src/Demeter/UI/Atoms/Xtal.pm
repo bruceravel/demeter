@@ -2,7 +2,7 @@ package  Demeter::UI::Atoms::Xtal::SiteList;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -532,7 +532,7 @@ sub open_file {
       $self->{parent}->status("Crystal data import canceled.");
       return 0;
     };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = $fd->GetPath;
   };
   $self->clear_all(1);
 
@@ -634,6 +634,7 @@ sub get_crystal_data {
 
   my $this = $self->{space}->GetValue || q{};
   if ((not $this) and ($self->{used})) {
+    print join("|", caller), $/;
     $self->{problems} = "You have not specified a space group.";
     return 0;
   };
@@ -814,6 +815,7 @@ sub unusable_data {
 
 sub save_file {
   my ($self, $file) = @_;
+  return if $self->{parent}->{atoms_disabled};
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
     if (not $file) {
@@ -926,7 +928,7 @@ sub write_output {
       if ($fd -> ShowModal == wxID_CANCEL) {
 	$self->{parent}->status("Saving output file aborted.")
       } else {
-	my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+	my $file = $fd->GetPath;
 	open my $OUT, ">".$file;
 	print $OUT $atoms -> Write(lc($dialog->GetStringSelection));
 	close $OUT;
@@ -960,7 +962,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

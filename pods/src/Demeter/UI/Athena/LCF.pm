@@ -694,7 +694,7 @@ sub combi_select {
 
 sub combi_report {
   my ($this, $event) = @_;
-  my $init = $::app->current_data->name . '.xls';
+  my $init = $::app->current_data->name . '_combinatorial.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
@@ -703,7 +703,7 @@ sub combi_report {
     $::app->{main}->status("Saving combinatorial results has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->combi_report($fname);
   $::app->{main}->status("Wrote combinatorial report as an Excel spreadsheet to $fname");
@@ -834,7 +834,7 @@ sub seq_select {
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel;
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel.'_sequence';
   $init .= '.xls';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
@@ -844,7 +844,7 @@ sub seq_report {
     $::app->{main}->status("Saving fit sequence results has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->sequence_report($fname);
   $::app->{main}->status("Wrote fit sequence report as an Excel spreadsheet to $fname");
@@ -887,7 +887,7 @@ sub save {
     $::app->{main}->status("Saving LCF results to a file has been canceled.");
     return 0;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->save($fname);
   $::app->{main}->status("Saved LCF results to $fname");
@@ -982,7 +982,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

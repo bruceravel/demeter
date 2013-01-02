@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -2229,7 +2229,7 @@ sub empirical {
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   $datapage->status("Empirical standard import canceled."), return if $fd->ShowModal == wxID_CANCEL;
-  my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $file  = $fd->GetPath;
   my $fpath = Demeter::FPath->new();
   my $is_ok = $fpath -> deserialize($file);
   $datapage->status("\"$file\" isn't an empirical standard file.", 'error'), return if not $is_ok;
@@ -2687,7 +2687,7 @@ Bruce Ravel (bravel AT bnl DOT gov)
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
