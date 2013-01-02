@@ -1289,6 +1289,7 @@ sub main_window {
 		   SelfAbsorption   => "Self-absorption correction",
 		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
+		   Summer	    => "Data summer",
 		   LCF		    => "Linear combination fitting",
 		   PCA		    => "Principle components analysis",
 		   PeakFit	    => "Peak fitting",
@@ -1319,18 +1320,19 @@ sub main_window {
 		     'SelfAbsorption',	  # 8
 		     'Dispersive',	  # 9
 		     'Series',            # 10
+		     'Summer',            # 11
 		     # -----------------------
-		     'LCF',		  # 12
-		     'PCA',		  # 13
-		     'PeakFit',		  # 14
-		     'LogRatio',	  # 15
-		     'Difference',	  # 16
+		     'LCF',		  # 13
+		     'PCA',		  # 14
+		     'PeakFit',		  # 15
+		     'LogRatio',	  # 16
+		     'Difference',	  # 17
 		     # -----------------------
-		     'XDI',               # 18
-		     'Watcher',           # 19
-		     'Journal',		  # 20
-		     'PluginRegistry',    # 21
-		     'Prefs',		  # 22
+		     'XDI',               # 19
+		     'Watcher',           # 20
+		     'Journal',		  # 21
+		     'PluginRegistry',    # 22
+		     'Prefs',		  # 23
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
@@ -1368,8 +1370,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(11, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(17, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(12, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(18, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1607,21 +1609,22 @@ sub get_view {
 	       'SelfAbsorption',	   # 8
 	       'Dispersive',	           # 9
 	       'Series',		   # 10
+	       'Summer',		   # 11
 	       q{}, # -----------------------
-	       'LCF',			   # 12
-	       'PCA',			   # 13
-	       'PeakFit',		   # 14
-	       'LogRatio',		   # 15
-	       'Difference',		   # 16
+	       'LCF',			   # 13
+	       'PCA',			   # 14
+	       'PeakFit',		   # 15
+	       'LogRatio',		   # 16
+	       'Difference',		   # 17
 	       q{}, # -----------------------
-	       'XDI',			   # 18
-	       'Watcher',		   # 19
-	       'Journal',		   # 20
-	       'PluginRegistry',	   # 21
-	       'Prefs',		           # 22
+	       'XDI',			   # 19
+	       'Watcher',		   # 20
+	       'Journal',		   # 21
+	       'PluginRegistry',	   # 22
+	       'Prefs',		           # 23
 	      );
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 19, 1);
+    splice(@views, 20, 1);
   };
   return $views[$i];
 };
