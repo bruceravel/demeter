@@ -1289,7 +1289,7 @@ sub main_window {
 		   SelfAbsorption   => "Self-absorption correction",
 		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
-		   Summer	    => "Data summer",
+		   Summer	    => "Data summation",
 		   LCF		    => "Linear combination fitting",
 		   PCA		    => "Principle components analysis",
 		   PeakFit	    => "Peak fitting",

@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+## use the LCF framework to make an arbitrary summation of data groups
+
 use Demeter qw(:ui=screen plotwith:gnuplot :analysis);
 
 my $prj = Demeter::Data::Prj->new(file=>'../../cyanobacteria.prj');
@@ -8,7 +10,9 @@ my @data = $prj->records(9, 11, 15);
 my $lcf = Demeter::LCF->new(space=>'xmu', unity=>0, inclusive=>0, one_e0=>0,
 			    plot_difference=>0, plot_components=>0, noise=>0);
 
-$lcf->data($stan);
+$lcf->data($data[0]);		# the data must be set to provide an
+                                # interpolation standard, but no fit
+                                # will actually be done
 $lcf->add($data[$_], weight=>0.33) foreach (0..2);
 $lcf->weight($data[0], 3);
 #$lcf->set_mode(screen=>1);
