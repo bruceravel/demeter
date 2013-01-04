@@ -11,12 +11,14 @@ use Demeter::UI::Athena::Cursor;
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Browser::Open qw( open_browser );
+use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(any zip);
 use Scalar::Util qw(blessed);
 
 use String::Random qw(random_string);
@@ -59,6 +61,9 @@ const my $MODE_STATUS     => Wx::NewId();
 const my $PERL_MODULES    => Wx::NewId();
 const my $STATUS          => Wx::NewId();
 const my $DOCUMENT        => Wx::NewId();
+const my $DOCUMENT_PLOT   => Wx::NewId();
+const my $DOCUMENT_FEFF   => Wx::NewId();
+const my $DOCUMENT_FIT    => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
@@ -211,9 +216,12 @@ sub OnInit {
 
 
   my $helpmenu = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "Read user manual" );
+  $helpmenu->Append($DOCUMENT,      "Users' Guide" );
+  $helpmenu->Append($DOCUMENT_PLOT, "Documentation: Plot window" );
+  $helpmenu->Append($DOCUMENT_FEFF, "Documentation: Atoms and Feff" );
+  $helpmenu->Append($DOCUMENT_FIT,  "Documentation: Running a fit" );
+  $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
-  $helpmenu->Enable($DOCUMENT,0);
 
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $feedbackmenu,  "&Monitor" );
@@ -826,6 +834,24 @@ sub OnMenuClick {
       &on_about;
       return;
     };
+
+    ($id == $DOCUMENT) and do {
+      $::app->document('index');
+      return;
+    };
+    ($id == $DOCUMENT_PLOT) and do {
+      $::app->document('plot');
+      return;
+    };
+    ($id == $DOCUMENT_FEFF) and do {
+      $::app->document('feff');
+      return;
+    };
+    ($id == $DOCUMENT_FIT) and do {
+      $::app->document('fit');
+      return;
+    };
+
     ($id == wxID_CLOSE) and do {
       close_project(\%frames);
       return;
@@ -1280,6 +1306,23 @@ sub export {
 
   undef $fit;
 };
+
+sub document {
+  my ($app, $doc, $target) = @_;
+  my $file;
+  my @path = ('Demeter', 'UI', 'Artemis', 'share', 'artug', 'html');
+  if (any {$doc eq $_} (qw(plot fit path feff))) {
+    push @path, $doc;
+    $file = 'index';
+  } else {
+    $file = $doc;
+  };
+  my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  $fname .= '#'.$target if $target;
+  Wx::LaunchDefaultBrowser($fname);
+};
+
+
 
 =for Explain
 

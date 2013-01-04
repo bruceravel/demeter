@@ -88,8 +88,11 @@ sub new {
   EVT_BUTTON($this, $this->{regexp}, sub{mark(@_, 'regexp')});
   $this-> mouseover('regexp', "Mark by regular expression.");
 
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $left -> Add($this->{doc}, 0, wxGROW|wxLEFT, 1);
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $left -> Add($this->{close}, 0, wxGROW|wxLEFT, 1);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('history')});
   EVT_BUTTON($this, $this->{close}, \&on_close);
   $this-> mouseover('close', "Hide the history window.");
 

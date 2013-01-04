@@ -57,6 +57,10 @@ sub new {
   $hbox -> Add($this->{print}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'journal')});
 
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{doc}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('logjournal', 'thejournalwindow')});
+
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{close}, \&on_close);

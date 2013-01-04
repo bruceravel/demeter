@@ -33,6 +33,7 @@ const my $IMPORT      => 4;
 const my $EXPORT      => 5;
 const my $DISCARD     => 6;
 const my $ADD	      => 8;
+const my $DOC	      => 10;
 const my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 
 const my $GUESS	      => Wx::NewId();
@@ -91,6 +92,7 @@ my %hints = (
 	     import    => "Import parameters from a text file",
 	     export    => "Export parameters to a text file",
 	     addgds    => "Add space for one more parameter",
+	     doc       => "Show documentation for the GDS window in a browser",
 	    );
 
 
@@ -169,6 +171,8 @@ sub new {
   $this->{toolbar} -> AddTool(-1, "Discard all",   Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, "Add GDS",       Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
+  $this->{toolbar} -> AddSeparator;
+  $this->{toolbar} -> AddTool(-1, "About: GDS", Demeter::UI::Artemis::icon("doc"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $this->{toolbar} -> Realize;
   $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
 
@@ -239,6 +243,9 @@ sub OnToolClick {
       $parent->initialize_row( $grid->GetNumberRows - 1 );
       $parent->{grid}->ClearSelection;
       last SWITCH;
+    };
+    ($which == $DOC) and do {	     # add a line
+      $::app->document('gds');
     };
   };
 };

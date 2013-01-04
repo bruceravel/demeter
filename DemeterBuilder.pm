@@ -10,6 +10,7 @@ use strict;
 use Carp;
 use Cwd;
 use File::Copy;
+use File::Copy::Recursive qw(dircopy);
 use File::Path qw(mkpath rmtree);
 use File::Spec;
 #use File::Touch;
@@ -28,6 +29,7 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 	       ifeffit    => 'C:\strawberry\lib',
 	       #gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
 	       gnuplot    => 'C:\strawberry\c\bin',
+	       artug      => 'C:\strawberry\c\perl\site\lib\Demeter\share',
 	      );
 my $ghpages = '../demeter-gh-pages';
 
@@ -39,6 +41,7 @@ sub ACTION_build {
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
   $self->SUPER::ACTION_build;
+  $self->dispatch("copy_artug");
   $self->dispatch("post_build");
 }
 
@@ -181,12 +184,43 @@ sub ACTION_build_artug {
   chdir 'doc/artug/';
   #do 'build_dpg.PL';
   mkdir 'html' if not -d 'html';
-  system(q(./configure));
-  system(q(./bin/build));
+  system "./configure";
+  system(q(./bin/build -v));
   chdir $here;
   rmtree(File::Spec->catfile($ghpages, 'artug'), 1, 1);
   move('doc/artug/html', File::Spec->catfile($ghpages, 'artug'));
 };
+
+sub ACTION_local_artug {
+  my $self = shift;
+  my $here = cwd;
+  chdir 'doc/artug/';
+  #do 'build_dpg.PL';
+  mkdir 'html' if not -d 'html';
+  system(q(./configure));
+  system(q(./bin/build -v));
+  chdir $here;
+  mkdir 'lib/Demeter/UI/Artemis/share/artug';
+  chdir 'lib/Demeter/UI/Artemis/share/artug';
+  symlink('../../../../../../doc/artug/html', 'html');# or die "symlink failed: $!";
+  symlink('../../../../../../doc/artug/images', 'images');# or die "symlink failed: $!";
+  chdir $here;
+};
+
+sub ACTION_copy_artug {
+  my $self = shift;
+  my $here = cwd;
+  chdir 'doc/artug/';
+  #do 'build_dpg.PL';
+  mkdir 'html' if not -d 'html';
+  system(q(./configure 1));
+  system(q(./bin/build));
+  chdir $here;
+  mkdir 'blib/lib/Demeter/UI/Artemis/share/artug';
+  dircopy('doc/artug/html', 'blib/lib/Demeter/UI/Artemis/share/artug/html') or die "symlink failed: $!";
+  dircopy('doc/artug/images', 'blib/lib/Demeter/UI/Artemis/share/artug/images') or die "symlink failed: $!";
+};
+
 
 sub ACTION_copy_images {
   my $self = shift;

@@ -65,3 +65,6 @@ examples/recipes/Megamerge/*.prj
 examples/recipes/RankPath/rank.dat
 examples/recipes/RankPath/feff/*
 examples/recipes/VPath_SSPath/UAce/
+
+lib/Demeter/UI/Artemis/share/artug/html
+lib/Demeter/UI/Artemis/share/artug/images

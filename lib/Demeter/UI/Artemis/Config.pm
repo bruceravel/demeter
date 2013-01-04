@@ -40,8 +40,14 @@ sub new {
   $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
-  my $close = Wx::Button->new($this, -1, "&Close");
-  $box->Add($close, 0, wxGROW|wxALL, 5);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box->Add($hbox, 0, wxGROW|wxALL, 0);
+
+  my $doc = Wx::Button->new($this, wxID_ABOUT, q{});
+  $hbox->Add($doc, 1, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $doc, sub{$::app->document('prefs')});
+  my $close = Wx::Button->new($this, wxID_CLOSE, q{});
+  $hbox->Add($close, 1, wxGROW|wxALL, 5);
   EVT_BUTTON($this, $close, \&on_close);
 
   $this->SetSizer($box);

@@ -164,6 +164,9 @@ const my $WINDOW_WELCH        => Wx::NewId();
 const my $WINDOW_PARZEN       => Wx::NewId();
 const my $WINDOW_SINE         => Wx::NewId();
 
+const my $DOCUMENT_DATA       => Wx::NewId();
+const my $DOCUMENT_PATH       => Wx::NewId();
+
 const my $CLOSE               => Wx::NewId();
 
 sub new {
@@ -806,11 +809,16 @@ sub make_menubar {
   $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tAlt+Shift+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
 
+  $self->{helpmenu} = Wx::Menu->new;
+  $self->{helpmenu}->Append($DOCUMENT_DATA, "Documentation: Data window", );
+  $self->{helpmenu}->Append($DOCUMENT_PATH, "Documentation: Path page", );
+
   $self->{menubar}->Append( $self->{datamenu},    "&Data" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "&Marks" );
   $self->{menubar}->Append( $self->{actionsmenu}, "&Actions" );
   $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
+  $self->{menubar}->Append( $self->{helpmenu},    "&Help" );
 
   map { $self->{datamenu}  ->Enable($_,0) } ($DATA_BALANCE, $DATA_EXPORT);
   map { $self->{importmenu}->Enable($_,0) } ($PATH_SU);
@@ -1279,6 +1287,15 @@ sub OnMenuClick {
     ($id == $WINDOW_SINE) and do {
       Demeter->co->set_default('artemis', 'window_function', 'sine');
       $datapage->status("Using a Sine window for all Fourier transforms.");
+      last SWITCH;
+    };
+
+    ($id == $DOCUMENT_DATA) and do {
+      $::app->document('data');
+      last SWITCH;
+    };
+    ($id == $DOCUMENT_PATH) and do {
+      $::app->document('path');
       last SWITCH;
     };
 

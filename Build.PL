@@ -82,15 +82,16 @@ my $build = DemeterBuilder
 			       },
 	 build_requires     => {
 				## these are used to build the demeter programming guide
-				'Template'            => '2.22',
-				'PPI'                 => '0',
-				'PPI::HTML'           => '0',
-				'Image::Size'         => '0',
+				'Template'              => '2.22',
+				'PPI'                   => '0',
+				'PPI::HTML'             => '0',
+				'Image::Size'           => '0',
 				## project docs
-				'Pod::ProjectDocs'    => '0',
+				'Pod::ProjectDocs'      => '0',
 				## these are used to build the Ifeffit wrapper
-                                'ExtUtils::CBuilder'  => '0',
-				'File::Touch'	      => '0',
+                                'ExtUtils::CBuilder'    => '0',
+				'File::Touch'	        => '0',
+				'File::Copy::Recursive' => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',

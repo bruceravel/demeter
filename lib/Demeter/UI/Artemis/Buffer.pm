@@ -90,8 +90,13 @@ sub new {
   $hbox->Add( $this->{commandline}, 1, wxALL|wxGROW, 0);
   EVT_CHAR($this->{commandline}, sub{ OnChar($this, @_) });
 
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox->Add($hbox, 0, wxGROW|wxALL, 0);
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{doc}, 1, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('monitor', 'thecommandbuffer')});
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
-  $vbox -> Add($this->{close}, 0, wxGROW|wxALL, 5);
+  $hbox -> Add($this->{close}, 1, wxGROW|wxALL, 5);
   EVT_BUTTON($this, $this->{close}, \&on_close);
 
   $this->SetSizer($vbox);

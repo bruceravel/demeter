@@ -56,6 +56,9 @@ sub new {
   $this->{save} = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{save}, \&on_save);
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{doc}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('monitor', 'thestatusbuffer')});
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT, 2);
   EVT_BUTTON($this, $this->{close}, \&on_close);
