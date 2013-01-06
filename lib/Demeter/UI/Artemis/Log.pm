@@ -67,7 +67,7 @@ sub new {
   EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
   $this->{print}->Enable(0);
 
-  $this->{doc} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{doc}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{doc}, sub{$::app->document('logjournal')});
 

@@ -11,7 +11,6 @@ use Demeter::UI::Athena::Cursor;
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
-use Browser::Open qw( open_browser );
 use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;

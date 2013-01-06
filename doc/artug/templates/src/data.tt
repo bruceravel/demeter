@@ -286,6 +286,11 @@ These will be explained later in the document.
 Links to those document sections
 [% END %]
 [% END %]
+[% WRAPPER html/dt dt="Balance interstitial energies" %]
+[% WRAPPER html/todo %]
+Not yet implemented in [%artemis%]
+[% END %]
+[% END %]
 [% WRAPPER html/dt dt="Set all degeneracies" %]
 These two options allow you to control the degeneracy values of all
 the paths in the fit.  The choices are to set them all to 1 or to have
@@ -464,3 +469,9 @@ debugging purposes.  This menu is only displayed if the
 configuration parameter is set to a true value.
 [% END %]
 
+[% PROCESS subsection label="The Help menu" %]
+
+[% WRAPPER floatright this="data.helpmenu.png" %]
+This menu is used to display the sections on the Data window or the
+Path page from the document.
+[% END %]

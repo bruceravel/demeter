@@ -64,23 +64,22 @@ and the various colored buttons are set according to the fit happiness.
 That's [%#'%] a fit!
 
 There are some details of the fitting process that are 
-([% INCLUDE html/link link="../prefs.html" text="configurable"%]).
+[% INCLUDE html/link link="../prefs.html" text="configurable"%].
 For instance, the log file can be displayed in either the Log
 window or in the History window after the fit finishes.  You can also
 choose not to have it display automatically.  This is set by
 [% INCLUDE preference group="artemis" option="show_after_fit" %].
 
 The plot that is made upon completion of the fit is also configurable.
-The default is to have 
-[% INCLUDE html/link link="../data.html#thermrplot" text="an Rmr plot"%] 
-made containing the data and the
-fit.  Any of the five plot types from the Data window can chosen as
-the after-fit plot.  You may also choose to have the contents of the
-plotting list plotted in k-, R-, or q-space.  This adds value to the 
-[% INCLUDE font/quote a="Plot after fit" %] buttons on the Data window
-and Path pages.  You may also choose to have no plot displayed
-automatically after the fit.  This is set by
-[% INCLUDE preference group="artemis" option="plot_after_fit" %].
+The default is to have [% INCLUDE html/link
+link="../data.html#thermrplot" text="an Rmr plot"%] made containing
+the data and the fit.  Any of the five plot types from the Data window
+can be chosen as the after-fit plot.  You may also choose to have the
+contents of the plotting list plotted in k-, R-, or q-space.  This
+adds value to the [% INCLUDE font/quote a="Plot after fit" %] buttons
+on the Data window and Path pages.  You may also choose to have no
+plot displayed automatically after the fit.  This is set by [% INCLUDE
+preference group="artemis" option="plot_after_fit" %].
 
 The fit name and fit description text boxes from the Main window are
 also useful for customizing your fit as well as the course of a

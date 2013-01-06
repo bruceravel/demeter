@@ -148,7 +148,7 @@ for the short, axial oxygens and 4 is for the longer, equatorial
 oxygens. 
 [% END %]
 
-[% PROCESS section label="Each tag gets a unique potential" %]
+[% PROCESS section label="Each site gets a unique potential" %]
 
 [% WRAPPER floatright this="feff.siteserror.png" %]
 The final option for potential assignement is the 

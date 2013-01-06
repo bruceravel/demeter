@@ -64,7 +64,7 @@ bar.
 Several additional menu items are turned on when 
 [% INCLUDE preference group="artemis" option="debug_menus" %]
 is set to a true value.  The items in these menus provide tools for
-debugging [%artemis%] by showing the current satte of [%demeter%] and
+debugging [%artemis%] by showing the current state of [%demeter%] and
 its data structures.  These tools are invaluable for developing the
 software, but are probably of limited value to the general user.
 [% END %]

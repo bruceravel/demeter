@@ -195,9 +195,6 @@ which of four such plot displays is active.
 This menu is used to display this document or to display information
 about [% artemis %], including its open source licensing terms.
 [% END %]
-[% WRAPPER html/todo %]
-Integrate this manual into Artemis
-[% END %]
 
 [% PROCESS section label="Status bar" %]
 

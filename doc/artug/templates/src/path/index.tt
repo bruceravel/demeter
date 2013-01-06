@@ -70,7 +70,7 @@ the data on the gold foil.
 [% END %]
 
 [% WRAPPER image file="path.populated.png" %]
-The Data window has been populated with the 13 paths from the [%feff%] calculation.
+The Data window has been populated with the 13 paths from the Feff calculation.
 [% END %]
 
 [% FILTER html_para -%]
