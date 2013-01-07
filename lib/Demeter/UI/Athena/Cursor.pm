@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Scalar::Util qw(looks_like_number);
+use Time::HiRes qw(usleep);
 
 use Wx qw( :everything );
 use Wx::DND;
@@ -43,49 +44,63 @@ sub cursor {
 
   } elsif (Demeter->mo->template_plot eq 'gnuplot') {
 
-    my $recent;
-    if (wxTheClipboard->Open) {
-      $recent = Wx::TextDataObject->new;
-      wxTheClipboard->GetData( $recent );
-      wxTheClipboard->Close;
-    };
-    $was = $recent->GetText;
+    # my $recent;
+    # if (wxTheClipboard->Open) {
+    #   $recent = Wx::TextDataObject->new;
+    #   wxTheClipboard->GetData( $recent );
+    #   wxTheClipboard->Close;
+    # };
+    # $was = $recent->GetText;
 
-    my $yesno = Wx::MessageDialog
-      -> new($parent,
-	     "1. Double click in the Gnuplot window to pluck a point.\n2. Then click ok to accept the value.",
-	     "Pluck a point",
-	     wxOK|wxICON_EXCLAMATION|wxSTAY_ON_TOP)
-	-> ShowModal;
+    # my $yesno = Wx::MessageDialog
+    #   -> new($parent,
+    # 	     "1. Double click in the Gnuplot window to pluck a point.\n2. Then click ok to accept the value.",
+    # 	     "Pluck a point",
+    # 	     wxOK|wxICON_EXCLAMATION|wxSTAY_ON_TOP)
+    # 	-> ShowModal;
 
-    my $tdo;
+    # my $tdo;
+    # if (wxTheClipboard->Open) {
+    #   $tdo = Wx::TextDataObject->new;
+    #   wxTheClipboard->GetData( $tdo );
+    #   wxTheClipboard->Close;
+    # };
+    # $is = $tdo->GetText;
+    # ($x, $y) = split(/,\s+/, $is);
+
+    my $sleep = 200000;
+    my $wait  = Demeter->co->default('gnuplot', 'pluck_timeout') * 1e6 / 200000;
     if (wxTheClipboard->Open) {
-      $tdo = Wx::TextDataObject->new;
+      $app->{main}->status("Double click on a point to pluck its value (there WILL be a short pause after clicking) ...", "wait");
+      $busy = Wx::BusyCursor->new();
+      my $tdo = Wx::TextDataObject->new;
+      $tdo->SetText(q{});
       wxTheClipboard->GetData( $tdo );
       wxTheClipboard->Close;
+      my $top_of_clipboard = $tdo->GetText;
+      my $new = $top_of_clipboard;
+      my $count = 0;
+      while ($new eq $top_of_clipboard) {
+	usleep($sleep);       # 1/5 second
+	++$count;
+	if ($count > 50) {    # 10 seconds have passed
+	  $return->status(0);
+	  $return->message("Pluck timed out!");
+	  return ($return, -100000, -100000);
+	};
+	wxTheClipboard->Open;
+	if (not wxTheClipboard->IsOpened) {
+	  next;
+	};
+	next if not wxTheClipboard->IsSupported(wxDF_TEXT);
+	wxTheClipboard->GetData( $tdo );
+	wxTheClipboard->Close;
+	$new = $tdo->GetText;
+	$::app->{main}->Update;
+      };
+      ($x, $y) = split(/,\s+/, $new);
     };
-    $is = $tdo->GetText;
-    ($x, $y) = split(/,\s+/, $is);
 
-      # if (wxTheClipboard->Open) {
-      # $app->{main}->status("Double click on a point to pluck its value...", "wait");
-      # $busy = Wx::BusyCursor->new();
-      # my $tdo = Wx::TextDataObject->new;
-      # $tdo->SetText(q{});
-      # wxTheClipboard->GetData( $tdo );
-      # wxTheClipboard->Close;
-      # my $top_of_clipboard = $tdo->GetText;
-      # my $new = $top_of_clipboard;
-      # while ($new eq $top_of_clipboard) {
-      # 	wxTheClipboard->Open if not wxTheClipboard->IsOpened;
-      # 	next if not wxTheClipboard->IsSupport(wxDF_TEXT);
-      # 	wxTheClipboard->GetData( $tdo );
-      # 	wxTheClipboard->Close;
-      # 	$new = $tdo->GetText;
-      # 	sleep 0.5;
-      # };
-      # ($x, $y) = split(/,\s+/, $new);
-      # };
 
   } else {
     $app->{main}->status("Unknown plotting backend.  Pluck canceled.");

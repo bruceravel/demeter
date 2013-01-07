@@ -265,3 +265,14 @@ description
   The line style used to plot paths used in a fit.  Demeter does not
   provide complete control over gnuplot lines styles via its
   configuration system.
+
+variable=pluck_timeout
+type=positive integer
+default=10
+minint=3
+maxint=60
+units=seconds
+description
+  This indicates how long, in seconds, a GUI should wait for the user
+  to double click a plucked point in the Gnuplot window before giving
+  up and returning control to the GUI.
