@@ -87,6 +87,16 @@ description
   follow gnuplot's syntax -- Demeter does no error checking on the
   value of this parameter.
 
+variable=pdfparams
+type=string
+default=linewidth 3 size 8,4.5
+description
+  Use this to specify additional parameters of the PDF terminal type.
+  This is appended to the termparams when saving a recent plot to a
+  PDF file.  Be sure to follow gnuplot's syntax -- Demeter does no
+  error checking on the value of this parameter.
+
+
 variable=font
 type=font
 default=Arial

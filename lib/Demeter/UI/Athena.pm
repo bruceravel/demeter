@@ -379,6 +379,10 @@ const my $TERM_1		=> Wx::NewId();
 const my $TERM_2		=> Wx::NewId();
 const my $TERM_3		=> Wx::NewId();
 const my $TERM_4		=> Wx::NewId();
+const my $PLOT_PNG		=> Wx::NewId();
+const my $PLOT_GIF		=> Wx::NewId();
+const my $PLOT_JPG		=> Wx::NewId();
+const my $PLOT_PDF		=> Wx::NewId();
 
 const my $SHOW_BUFFER		=> Wx::NewId();
 const my $PLOT_YAML		=> Wx::NewId();
@@ -593,6 +597,12 @@ sub menubar {
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
   if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+    my $imagemenu = Wx::Menu->new;
+    $imagemenu->Append($PLOT_PNG, "PNG", "Send the last plot to a PNG file");
+    $imagemenu->Append($PLOT_PDF, "PDF", "Send the last plot to a PDF file");
+
+    $plotmenu->AppendSeparator;
+    $plotmenu->AppendSubMenu($imagemenu, "Save last plot as...", "Save the last plot as an image file");
     $plotmenu->AppendSeparator;
     $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
     $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
@@ -1126,6 +1136,23 @@ sub OnMenuClick {
     };
     ($id == $PLOT_I0MARKED) and do {
       $app->plot_i0_marked;
+      last SWITCH;
+    };
+
+    ($id == $PLOT_PNG) and do {
+      $app->image('png');
+      last SWITCH;
+    };
+    ($id == $PLOT_GIF) and do {
+      $app->image('gif');
+      last SWITCH;
+    };
+    ($id == $PLOT_JPG) and do {
+      $app->image('jpeg');
+      last SWITCH;
+    };
+    ($id == $PLOT_PDF) and do {
+      $app->image('pdf');
       last SWITCH;
     };
 
@@ -1799,6 +1826,34 @@ sub plot {
   undef $busy;
 };
 
+sub image {
+  my ($self, $terminal) = @_;
+
+  my $on_screen = lc($::app->{lastplot}->[0]);
+  if ($on_screen eq 'quad') {
+    $::app->{main}->status("Cannot save a quad plot to an image file.", 'alert');
+    return;
+  };
+
+  my $name = ($::app->{lastplot}->[0] eq 'single') ? $::app->current_data->name : $::app->{main}->{project}->GetLabel;
+  $name =~ s{\s+}{_}g;
+
+  my $suffix = $terminal;
+  $terminal = 'pngcairo' if $terminal eq 'png';
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
+				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving image canceled.");
+    return;
+  };
+  my $file = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  Demeter->po->image($file, $terminal);
+  $::app->{main}->status("Saved $suffix image to \"$file\".");
+};
+
 sub spacetab {
   my ($app) = @_;
   my $n = $app->{main}->{plottabs}->GetSelection;
@@ -2235,8 +2290,8 @@ sub show_epsilon {
 };
 
 sub document {
-  my ($app, $which) = @_;
-  print "show document for $which\n";
+  my ($app, $which, $target) = @_;
+  $app->{main}->status("show document for $which -- Document interface not yet implemented");
 };
 
 =for Explain

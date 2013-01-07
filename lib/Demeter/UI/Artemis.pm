@@ -63,6 +63,10 @@ const my $DOCUMENT        => Wx::NewId();
 const my $DOCUMENT_PLOT   => Wx::NewId();
 const my $DOCUMENT_FEFF   => Wx::NewId();
 const my $DOCUMENT_FIT    => Wx::NewId();
+const my $PLOT_PNG        => Wx::NewId();
+const my $PLOT_GIF	  => Wx::NewId();
+const my $PLOT_JPG	  => Wx::NewId();
+const my $PLOT_PDF	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
@@ -208,6 +212,9 @@ sub OnInit {
   #my $settingsmenu = Wx::Menu->new;
 
   my $plotmenu = Wx::Menu->new;
+  $plotmenu->Append($PLOT_PNG, "Last plot to png file", "Send the last plot to a png file");
+  $plotmenu->Append($PLOT_PDF, "Last plot to pdf file", "Send the last plot to a pdf file");
+  $plotmenu->AppendSeparator;
   $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
   $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
@@ -941,11 +948,6 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;
     };
-    ($id == $PLOT_YAML) and do {
-      my $yaml   = $demeter->mo->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Mode object') -> Show;
-      last SWITCH;
-    };
     ($id == $PERL_MODULES) and do {
       my $text   = $demeter->module_environment . $demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
@@ -961,6 +963,15 @@ sub OnMenuClick {
     #};
     ($id == $IFEFFIT_MEMORY) and do {
       $::app->heap_check(1);
+      last SWITCH;
+    };
+
+    ($id == $PLOT_PNG) and do {
+      $frames{Plot}->image('png');
+      last SWITCH;
+    };
+    ($id == $PLOT_PDF) and do {
+      $frames{Plot}->image('pdf');
       last SWITCH;
     };
 

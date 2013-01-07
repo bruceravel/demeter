@@ -403,6 +403,36 @@ sub plot_fit {
   $::app->heap_check;
 };
 
+
+sub image {
+  my ($self, $format) = @_;
+
+  my $on_screen = lc($self->{last});
+  if ($on_screen eq 'rk') {
+    $::app->{main}->status("Cannot save an Rk plot to an image file.", 'alert');
+    return;
+  };
+
+  my $name =   $::app->{main}->{projectname};
+  $name =~ s{\s+}{_}g;
+
+  my $suffix = $format;
+  $format = 'pngcairo' if $format eq 'png';
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
+				"$suffix (*.$suffix)|*.$format|All files (*)|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving image canceled.");
+    return;
+  };
+  my $file = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  Demeter->po->image($file, $format);
+  $::app->{main}->status("Saved $suffix image to \"$file\".");
+};
+
+
 use Const::Fast;
 const my $PLOT_REMOVE => Wx::NewId();
 const my $PLOT_ON     => Wx::NewId();

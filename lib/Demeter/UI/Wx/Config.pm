@@ -329,7 +329,7 @@ sub set_stub {
 sub set_string_widget {
   my ($self, $parent, $param, $type) = @_;
   my $this = Demeter->co->default($parent, $param);
-  $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [-1, -1], wxTE_PROCESS_ENTER );
+  $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [200, -1], wxTE_PROCESS_ENTER );
   EVT_TEXT_ENTER($self, $self->{Set}, sub{1});
   ## use $type to set validation
 

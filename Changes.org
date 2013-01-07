@@ -5,6 +5,24 @@
 
 * Initial release
 
+** 0.9.15  XX January 2013
+*** Athena
+   - Improved plucking from gnuplot window, the interaction is much
+     more natural -- no intermediate dialog window
+   - Implemented Data Summation tool
+   - menu items for sending last plot to png or pdf file
+
+*** Artemis
+   - Interface to Artemis Users' Guide from within Artemis via browser
+   - menu items for sending last plot to png or pdf file
+
+*** Demeter
+   - send gnuplot plot to file terminal type with special
+     configuration for PDF terminal and no real support for many of
+     the terminal types.  Gif and jpg, for instance, look like crap.
+   - Install Artemis Users' Guide into Demeter/UI/Artemis/share
+   - added data summation recipe
+
 ** 0.9.14  2 January 2013
 *** Athena
    - Plot indicators when plotting from deglitch tool

@@ -103,7 +103,7 @@ sub cursor {
 
 
   } else {
-    $app->{main}->status("Unknown plotting backend.  Pluck canceled.");
+    $app->{main}->status("Unknown or unpluckable plotting backend.  Pluck canceled.");
     $return->status(0);
     return ($return, $x, -100000);
   };
