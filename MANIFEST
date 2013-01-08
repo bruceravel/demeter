@@ -25,7 +25,6 @@ DemeterBuilder.pm
 doc/artug/bin/build.tt
 doc/artug/configure
 doc/artug/etc/map
-doc/artug/etc/ttree.cfg
 doc/artug/etc/ttree.tt
 doc/artug/etc/ttree_mobile.tt
 doc/artug/etc/ttree_pod.tt

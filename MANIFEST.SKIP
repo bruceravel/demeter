@@ -46,3 +46,6 @@
 \b\.directory
 ^MYMETA.yml$
 ^MYMETA\.json$
+
+# Avoid tpage generated files
+doc/artug/etc/ttree.cfg
