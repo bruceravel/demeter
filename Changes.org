@@ -21,6 +21,8 @@
      configuration for PDF terminal and no real support for many of
      the terminal types.  Gif and jpg, for instance, look like crap.
    - Install Artemis Users' Guide into Demeter/UI/Artemis/share
+   - added code to DemeterBuilder.pm to build artug reliably even on
+     Windows
    - added data summation recipe
 
 ** 0.9.14  2 January 2013

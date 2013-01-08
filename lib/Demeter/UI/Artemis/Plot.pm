@@ -60,6 +60,7 @@ sub new {
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   $this->{last} = q{};
+  $this->{lastplot} = q{};
 
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -383,6 +384,7 @@ sub plot {
     $self->{fileout}->SetValue(0);
   };
   $self->{last} = $space;
+  $self->{lastplot} = $space;
   $::app->heap_check;
   undef $busy;
 };
@@ -413,13 +415,14 @@ sub image {
     return;
   };
 
+  my $busy = Wx::BusyCursor->new();
   my $name =   $::app->{main}->{projectname};
   $name =~ s{\s+}{_}g;
 
   my $suffix = $format;
   $format = 'pngcairo' if $format eq 'png';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
-				"$suffix (*.$suffix)|*.$format|All files (*)|*",
+				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
@@ -429,7 +432,16 @@ sub image {
   my $file = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $format);
+
+  if ($self->{lastplot} =~ m{\A[krq]\z}i) {
+    $self->plot(q{}, $self->{last});
+  } else {
+    my ($how, $which) = split(/\|/,$self->{lastplot});
+    $::app->{$which}->plot(q{}, $how);
+  };
+
   $::app->{main}->status("Saved $suffix image to \"$file\".");
+  undef $busy;
 };
 
 

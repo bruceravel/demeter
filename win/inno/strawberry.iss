@@ -1,7 +1,7 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter Installer for Windows"
-#define MyAppVersion "0.9.12"
+#define MyAppVersion "0.9.14"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.com/demeter"
 #define Demeter "Demeter with Strawberry Perl"
@@ -27,8 +27,8 @@ DefaultGroupName={#Demeter}
 Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
-OutputDir=c:\output
-OutputBaseFilename={#MyInstName} {#MyAppVersion}
+OutputDir=c:\output\{#MyAppVersion}
+OutputBaseFilename={#MyInstName}
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
@@ -51,6 +51,8 @@ InfoAfterFile=Demeter.readme.txt
 [Run]
 Filename: "{app}\relocation.pl.bat";
 Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
+Filename: "{app}\munge_pathenv.pl.bat"; Parameters: """{app}"""
+
 
 [Dirs]
 Name: "{userappdata}\demeter"

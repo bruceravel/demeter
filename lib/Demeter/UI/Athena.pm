@@ -1835,7 +1835,7 @@ sub image {
     return;
   };
 
-  my $name = ($::app->{lastplot}->[0] eq 'single') ? $::app->current_data->name : $::app->{main}->{project}->GetLabel;
+  my $name = ($::app->{lastplot}->[1] eq 'single') ? $::app->current_data->name : $::app->{main}->{project}->GetLabel;
   $name =~ s{\s+}{_}g;
 
   my $suffix = $terminal;
@@ -1851,6 +1851,7 @@ sub image {
   my $file = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $terminal);
+  $::app->plot(q{}, q{}, @{$::app->{lastplot}});
   $::app->{main}->status("Saved $suffix image to \"$file\".");
 };
 

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyInstName "Demeter Updater for Windows"
-#define MyAppVersion "0.9.13"
+#define MyAppVersion "0.9.15"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.com/demeter"
 #define Demeter "Demeter with Strawberry Perl"
@@ -24,8 +24,8 @@ AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyrigh
 AppComments=XAS Data Processing and Analysis
 
 SourceDir=c:\strawberry
-OutputDir=c:\output
-OutputBaseFilename={#MyInstName} {#MyAppVersion}
+OutputDir=c:\output\{#MyAppVersion}
+OutputBaseFilename={#MyInstName}
 DefaultDirName=\strawberry
 SetupIconFile=Demeter.ico
 WizardImageFile=Demeter_installer.bmp
@@ -51,6 +51,36 @@ Name: english; MessagesFile: compiler:Default.isl
 [Files]
 Source: perl\site\lib\Demeter.pm; DestDir: {app}\perl\site\lib; Flags: overwritereadonly ignoreversion replacesameversion;
 Source: perl\site\lib\Demeter\*; DestDir: {app}\perl\site\lib\Demeter; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: *.prj,*.stan,*~; 
+
 Source: perl\site\lib\MooseX\SetGet.pm; DestDir: {app}\perl\site\lib\MooseX; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; 
 Source: perl\site\lib\MooseX\Quenchable.pm; DestDir: {app}\perl\site\lib\MooseX; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; 
 
+Source: perl\site\bin\dathena; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dathena.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\datoms; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\datoms.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dartemis; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dartemis.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dhephaestus; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dhephaestus.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\denv; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\denv.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\denergy; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\denergy.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dfeff; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dfeff.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dfeffit; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dfeffit.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dlsprj; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\dlsprj.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\intrp; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\intrp.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\rdfit; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\rdfit.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\standards; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\bin\standards.bat; DestDir: {app}\perl\site\bin; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion;
+
+[Run]
+Filename: "{app}\relocation.pl.bat";
+Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
+Filename: "{app}\munge_pathenv.pl.bat"; Parameters: """{app}"""

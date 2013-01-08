@@ -984,6 +984,7 @@ sub plot {
                                               : ($how eq 'k123')  ? 'k'
                                               : ($how eq 'kqfit') ? 'k'
 					      :                     'multiplot';
+  $Demeter::UI::Artemis::frames{Plot}->{lastplot} = $how."|".$self->{dnum};
   $::app->heap_check;
 };
 

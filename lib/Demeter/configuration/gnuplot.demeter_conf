@@ -90,6 +90,7 @@ description
 variable=pdfparams
 type=string
 default=linewidth 3 size 8,4.5
+windows=linewidth 1 size 8,4.5
 description
   Use this to specify additional parameters of the PDF terminal type.
   This is appended to the termparams when saving a recent plot to a
