@@ -42,6 +42,7 @@ doc/artug/images/command_buffer.png
 doc/artug/images/data.actionsmenu.png
 doc/artug/images/data.datamenu.png
 doc/artug/images/data.debugmenu.png
+doc/artug/images/data.helpmenu.png
 doc/artug/images/data.marksmenu.png
 doc/artug/images/data.pathmenu.png
 doc/artug/images/datalist.png
@@ -640,6 +641,7 @@ examples/recipes/Smooth/boxcar.pl
 examples/recipes/Smooth/filter.pl
 examples/recipes/StandardDeviation/merge.pl
 examples/recipes/StandardDeviation/README
+examples/recipes/Sum/sum.pl
 examples/recipes/VPath_SSPath/gds.txt
 examples/recipes/VPath_SSPath/plot.pl
 examples/recipes/VPath_SSPath/U.prj
@@ -992,6 +994,7 @@ lib/Demeter/templates/plot/gnuplot/file.tmpl
 lib/Demeter/templates/plot/gnuplot/filter.tmpl
 lib/Demeter/templates/plot/gnuplot/histo.tmpl
 lib/Demeter/templates/plot/gnuplot/histo2d.tmpl
+lib/Demeter/templates/plot/gnuplot/image.tmpl
 lib/Demeter/templates/plot/gnuplot/indicator.tmpl
 lib/Demeter/templates/plot/gnuplot/label.tmpl
 lib/Demeter/templates/plot/gnuplot/lreven.tmpl
@@ -1270,6 +1273,7 @@ lib/Demeter/UI/Artemis/icons/artemis.png
 lib/Demeter/UI/Artemis/icons/bestfit.png
 lib/Demeter/UI/Artemis/icons/convert.png
 lib/Demeter/UI/Artemis/icons/discard.png
+lib/Demeter/UI/Artemis/icons/doc.png
 lib/Demeter/UI/Artemis/icons/export.png
 lib/Demeter/UI/Artemis/icons/fit.png
 lib/Demeter/UI/Artemis/icons/gds.png
@@ -1352,6 +1356,7 @@ lib/Demeter/UI/Athena/share/logo.jpg
 lib/Demeter/UI/Athena/share/logo.readme
 lib/Demeter/UI/Athena/Smooth.pm
 lib/Demeter/UI/Athena/Status.pm
+lib/Demeter/UI/Athena/Summer.pm
 lib/Demeter/UI/Athena/TextBuffer.pm
 lib/Demeter/UI/Athena/Timer.pm
 lib/Demeter/UI/Athena/ToolTemplate.pm
