@@ -1,0 +1,69 @@
+[% META title = 'Using different k-weights'
+	about = 'k-weighting plots and Fourier transforms'
+%]
+
+[% FILTER html_para %]
+
+It is common practice in EXAFS to multiply [% chik %] by different
+[% INCLUDE font/em a="k-weights" %].  That is, the [% chik %] array is
+multiplied point-by-point by k-array.  For [% k1 %] weighted data, [%
+chik %] at k=5 is multiplied by 5 and [% chi %] at k=10 is multiplied
+by 10.  Similarly, for [% k2 %] weighted data, [% chik %] at k=5 is
+multiplied by 25 and [% chi %] at k=10 is multiplied by 100.  This has
+the effect of amplifying the spectrum at the high-k end.  Since the
+oscillations attenuate quickly after the edge, k-weighting is a way of
+making the high-k oscillations visible in a plot.
+
+A common approach to choosing a k-weight is to make the size of the
+oscillation roughly constant over the range of the data.  Weighting
+data in that manner makes all parts of the data rage contribute
+equivalently.  When Fourier transformed, the [% chir %] spectrum is
+then dominated by the oscillatory structure of [% chik %].  The
+Fourier transform of an [% INCLUDE font/quote a="under-weighted" %]
+spectrum may be dominated by a low-R peak representing the attenuation
+of the [% chik %] spectrum.
+
+k-weighting is also used to change the emphasis of different
+contributions to the measured [% chik %] spectrum.  Low Z elements
+such as O and C have scattering amplitudes that peak and low-k and
+become quite small at high-k.  Heavier elements, such as the
+transition metals, have small scattering amplitudes at low-k but
+continue to have large scattering amplitude at very high values of k.
+Very heavy elements, such as Pb or Sn, have minima in their scattering
+amplitudes around 5 to 7 [% iAA %].
+(See page 21 of
+[% INCLUDE html/link link="http://xafs.org/Tutorials?action=AttachFile&do=get&target=Newville_Intro.pdf"
+text="Matt Newville's Fundamentals of X-ray Absorption Fine Structure" %].)
+
+By weighting [% chik %] with different k-weightings, the low and high
+portions of the [% chik %] spectrum can be differently emphasized in a
+Fourier transform.  Hopefully, doing so can help you better understand
+your data.
+
+The k-weighting is controlled by the bank of buttons labeled
+[% INCLUDE font/quote a="0" %],
+[% INCLUDE font/quote a="1" %],
+[% INCLUDE font/quote a="2" %],
+[% INCLUDE font/quote a="3" %], and
+[% INCLUDE font/quote a="kw" %],
+and located just beneath the purple plot buttons.  This is highlighted
+in [% INCLUDE imageref text="the figure below" label="ui_kweights" %]
+The buttons selected determines the k-weighting used in a plot of
+[% chik %] data or in a Fourier transform.
+[% END %]
+
+[% WRAPPER figure file="ui_kweights.png" %]
+[% athena %]'s controls for setting the amount of k-weighting in a
+plot or Fourier transform.
+[% END %]
+
+[% FILTER html_para %]
+The k-weight button labeled [% INCLUDE font/quote a="kw" %] is used in conjunction with the
+[% INCLUDE font/param a="arbitrary k-weight" %] parameter.  When the
+[% INCLUDE font/quote a="kw" %] button is selected, the [% chik %] data are weighted by the
+value of the [% INCLUDE font/param a="arbitrary k-weight" %].  This
+can be used in a number of ways.  The simplest is if you simply want a
+non-integer weight.  If you want to overplot two different data groups
+each with a different k-weight, that can be done by setting
+the [% INCLUDE font/param a="arbitrary k-weight" %] appropriately.
+[% END %]

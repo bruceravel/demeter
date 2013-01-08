@@ -1,0 +1,30 @@
+[% META title = 'Worked examples'
+        about = ''
+	chapter = 1
+%]
+
+[% FILTER html_para -%]
+This chapter presents several fleshed-out examples of performing
+specific chores with [% athena %].  At this time there are three
+examples.  More may be added in future versions of this document.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Basic data processing" %]
+This example walks through the import and processing of several data
+files measured on an iron foil.  Data calibration and alignment,
+parameter constraint, and merging are demonstrated in this example.
+[% END %]
+[% WRAPPER html/dt dt="A difficult background removal problem" %]
+[% moo3 | trim %] presents a particularly challenging background removal
+problem.  This example demonstrates an iterative approach to
+background removal.  After an initial removal, the [% moo3 %] are
+analyzed in [% artemis %] using a simple model and that information is
+used to improve upon the background removal in [% athena %].
+[% END %]
+[% WRAPPER html/dt dt="Linear combination analysis" %]
+Using data measured on a variety of gold standards and a sequence of
+data measured on a system of cyanobacteria chemically reducing gold
+chloride to metallic gold.
+[% END %]
+[% END %]

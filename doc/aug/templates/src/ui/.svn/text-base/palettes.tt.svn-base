@@ -1,0 +1,75 @@
+[% META title = 'Palettes'
+	about = 'Interacting with Ifeffit, writing in a journal, and other tools'
+%]
+
+[% FILTER html_para %]
+[% athena %]'s palettes are a space where a variety of kinds of
+textual information are stored or displayed.  They are mostly things
+that do not need to be displayed front and center, they are displayed
+when summoned from the Edit menu or by a keyboard shortcut.
+[% END %]
+
+[% WRAPPER figure file="palettes.png" %]
+The palettes window with the journal palette showing.  This particular
+journal entry is taken from the alignment and merging demo file.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Ifeffit" %]
+This is the space where you can interact directly with [% ifeffit%].
+This palette contains a buffer which displays every  command sent
+to [% ifeffit%] as well as its response.  At the bottom of the
+palette is a command line where any [% ifeffit%] command can be typed
+and entered.  When focus is on the command line, the up and down
+arrow keys scroll through the history of commands typed at this
+command line.  The [% ifeffit %] buffer is very helpful for those
+wanting to learn how to use [% ifeffit %] directly.
+Typing [% INCLUDE modkey key="control" letter='1' %] displays this palette.
+[% END %]
+[% WRAPPER html/dt dt="Titles" %]
+This palette is used to display the title lines associated with the
+current data group.  Any title lines interpreted as such in the
+original data file will be displayed here.  You can also add your
+own comments.  The contents of this palette will be written to the
+header of any output column data file.  The titles are also stored
+with the data group in a project file.
+Typing [% INCLUDE modkey key="control" letter='2' %] displays this palette.
+[% END %]
+[% WRAPPER html/dt dt="Data" %]
+This palette is used to display the actual data file from which a
+data group was read.  This can only be done during the session in
+which the data was initially imported into [% athena %].  A project
+file does not retain enough information to make use of this
+palette.  This palette is the one and only way that [% athena %] can
+be used to modify a data file.  You can edit your data file in this
+palette and save it back to disk.  Use this capability with caution
+or, preferably, not at all.
+Typing [% INCLUDE modkey key="control" letter='3' %] displays this palette.
+[% END %]
+[% WRAPPER html/dt dt="Echo" %]
+This palette contains a buffer which displays a history of messages
+displayed in the echo area.
+Typing [% INCLUDE modkey key="control" letter='4' %] displays this palette.
+[% END %]
+[% WRAPPER html/dt dt="Macro" %]
+This palette contains a tool for capturing [% ifeffit %] command and
+writing them to an output file.  The concept is that you can capture
+commands for a particular operation and use the output file to
+create an [% ifeffit %] macro for use outside of [% athena %].
+Typing [% INCLUDE modkey key="control" letter='5' %] displays this palette.
+[% END %]
+[% WRAPPER html/dt dt="Journal" %]
+[% UNLESS document_style == 'pod' %][% INCLUDE image file="LightningBolt.png" %][% END %]
+This palette is one of [% athena %]'s most important tools.  It is
+a blank space in which you can write anything you want.  The
+contents of this space are included when a project file is saved and imported
+into this space when a project file is imported.  Thus, this serves
+as a journal for your data analysis.  You can use this space to
+comment on your data and on the choices you make while working with
+your data.  This enhances the value of the project file as a
+collaborative tool.  Just as the project file is an excellent way to
+share data with a colleague, you can use the journal to exchange
+information or have a conversation with your colleague.
+Typing [% INCLUDE modkey key="control" letter='6' %] displays this palette.
+[% END %]
+[% END %]

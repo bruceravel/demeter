@@ -1,0 +1,31 @@
+[% META main = 1 %]
+\documentclass{book}
+\usepackage{[%- IF document_style == 'latex' -%]athena[%- ELSE -%]athenabw[%- END -%]}
+
+[% IF document_style == 'latex' %]
+\input{rgb.sty} %% X11 color names
+[% END %]
+[% INCLUDE headerfooter %]
+
+\begin{document}
+%\initfloatingfigs
+
+\MakeTitlePage
+
+%\thispagestyle{empty}
+%\pagenumbering{roman}
+
+[% INCLUDE homerquote %]
+[% INCLUDE copyright %]
+
+\tableofcontents
+\newpage
+%%\twocolumn
+
+%% include all pages
+%%
+[% PROCESS menu/splay %]
+%%
+%% end of pages
+
+\end{document}

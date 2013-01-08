@@ -1,0 +1,76 @@
+[% META title = 'Merging data groups'
+        about = 'Averaging scans and computing their standard deviation' %]
+
+[% FILTER html_para %]
+Sadly, most data that we measure is, frankly, kind of crappy.  A
+single scan typically ranges from noisy to so dominated by noise that
+it's hard to recognize it as oscillatory.  Fortunately, the central
+limit theorem works every single time.  If you add up enough noisy
+scans, it eventually turns into real data!
+
+All entries in the group list which are marked will be included in the
+merge.  Make sure that the marked groups really are the ones you want
+to include in the merge!
+
+Data can be merged as [% mu %], normalized [% mu %], or [% chik %].
+In most cases, it makes little difference which one you choose.
+[% chir %] will be the same regardless.  (This can be tested, in fact,
+I encourage you to do so.)  The standard deviation in the merged data
+is also computed and stays with the data in project and certain output
+files, although [% athena %] does nothing else with the standard
+deviation other than plotting it, which is shown
+[% INCLUDE imageref text="below" label="merge_stddev" in=1 %].
+
+By default, each data set is weighted the same in the merge.  You can
+specify the weight to use for each data set using the
+[% PROCESS font/param a="importance" %] parameter, which is 1 by
+default for ever group.  Alternately, you can let [% ifeffit %]
+determine the amount of noise in the data by looking at the signal
+between 15 and 25 in R-space and then use the noise to weight the
+data.  In that way, cleaner data contributes more to the merge.  The
+choice between using the noise or the [% PROCESS font/param a="importance" %]
+is made using the check buttons in the menu.
+[% END %]
+
+[% WRAPPER figure file="mergemenu.png" %]
+The contents of the Merge menu, showing the various ways that data can
+merged.
+[% END %]
+
+[% WRAPPER figure file="merge_stddev.png" %]
+Data merged as [% mu %] plotted with its standard deviation.
+[% END %]
+
+[% FILTER html_para %]
+The data merging feature is one of [% athena %]'s most important.  My
+typical work pattern is to carefully align scans on a sample, merge
+them, then analyze the merged data in [% artemis %].
+[% END %]
+
+[% WRAPPER html/caution %]
+It is essential that your data be well-aligned before merging.
+Merging poorly aligned data has the effect of significant attenuating
+the fine structure.
+[% END %]
+
+[% FILTER html_para %]
+When merging as [% mu %] or normalized [% mu %], if every data group
+included in the merge has a reference channel, the reference channels
+will also be merged and these two merged spectra will be tied together
+as
+[% INCLUDE html/link text="a reference channels"
+                     link="../import/ref.html" %].  
+Thus the merge of the reference channels can serve as the alignment
+standard for the merge of the data.
+
+There is one situation where merging as [% mu %] will be substantively
+different from the other two options.  If something happens to change
+the values of the signals on the detectors in such a way that [% mu %]
+for subsequent scans is of very different sizes but the normalized
+[% mu %] data is consistent for all the data, then the merge in [% mu %]
+will be dominated by the scans with larger absolute values while the
+merge in normalized [% mu %] will treat all the data with similar
+weights.  One way of having this happen is to change amplifier gains
+between scans.  In that situation, you probably should choose to merge
+normalized or [% chik %] data.
+[% END %]

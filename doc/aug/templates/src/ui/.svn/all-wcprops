@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/aug/!svn/ver/64/templates/src/ui
+END
+mark.tt
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/aug/!svn/ver/30/templates/src/ui/mark.tt
+END
+pluck.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/15/templates/src/ui/pluck.tt
+END
+prefs.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/30/templates/src/ui/prefs.tt
+END
+palettes.tt
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/aug/!svn/ver/30/templates/src/ui/palettes.tt
+END
+glist.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/64/templates/src/ui/glist.tt
+END
+kweight.tt
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/aug/!svn/ver/26/templates/src/ui/kweight.tt
+END
+frozen.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/9/templates/src/ui/frozen.tt
+END
+styles.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/4/templates/src/ui/styles.tt
+END
+index.tt
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/aug/!svn/ver/9/templates/src/ui/index.tt
+END

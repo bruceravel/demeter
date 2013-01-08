@@ -1,0 +1,57 @@
+[% META title = 'Setting user preferences'
+	about = 'Configuring Athena to work for you'
+        difficult = 1
+%]
+
+[% FILTER html_para %]
+[% athena %] allows you to set an enormous number of preferences.
+Many dozens of things that could conceivably be configured can, in
+fact, be configured using this dialog.  In any situation where is was
+not obvious to me that there was a best, most proper value for a
+parameter, I chose a default and made an entry for it in the
+preference dialog.  The preference dialog is shown
+[% INCLUDE imageref text="here" label="prefs" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="prefs.png" %]
+[% athena %]'s preferences dialog.
+[% END %]
+
+[% FILTER html_para %]
+I am not going to explain this dialog in great detail.  I am trusting
+that if you are sufficiently motivated to configure the behavior of
+[% athena %] to be something other than what comes out of the box, you will
+also be sufficiently motivated to follow your nose through the use of
+this dialog.
+
+The preference parameters are divided into related groups.  For
+example, there are groups for background removal parameters, alignment
+parameters, colors, and so on.
+
+To view a group of preferences, click on the little cross sign next to
+the group's name in the list on the left side of the dialog.  This
+will open a branch containing all the parameters in tat group.  Click
+on one of them and it will be displayed in the controls on the left.
+
+Click on the default button to restore [% athena %]'s default value
+or use the control below the default button to set a new value.  That
+control will vary depending on the type of parameter.  A text or
+numeric parameter will offer an entry box.  A color parameter will
+offer a button which pops up a color selection dialog.  A list
+parameter will offer a menu with the choices.  And so on.
+
+The text area below these controls displays an explanation of the
+function served by that preference.  Underneath that are buttons for
+setting or saving the parameters.
+
+The data about the preferences is contained in the
+[% INCLUDE font/file a="athena.config" %] which can be found in the
+disk space where [% athena %] is installed on your computer.  This
+files is used to construct the preferences dialog.  It is also the
+master file used when building [% athena %] from source to create the
+system-wide initialization file as well as a the part of
+[% athena%]'s source code which sets the internal defaults for the
+parameters.  It should never be necessary to work with the
+[% INCLUDE font/file a="athena.config" %] file.  I just mention this
+for the benefit of the interested reader.
+[% END %]

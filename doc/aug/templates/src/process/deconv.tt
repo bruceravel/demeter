@@ -1,0 +1,3 @@
+[% META title = 'Deconvoluting data groups'
+        about = 'Removing experimental and lifetime broadening from your data' %]
+[% INCLUDE todo what="Spectral deconvolution" %]

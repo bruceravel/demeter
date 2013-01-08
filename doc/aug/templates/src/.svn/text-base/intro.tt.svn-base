@@ -1,0 +1,192 @@
+[% META title = 'Introduction to Athena'
+	chapter = 1
+	nosubpages = 1
+%]
+
+[% FILTER html_para %]
+[% athena %] is an interactive graphical utility for processing EXAFS
+data. It handles most of the common data handling chores of interest
+at the beamline or for preparing your data to begin analysis.
+[% athena %] is a graphical front end to Matt Newville's [% ifeffit %]
+library written entirely in the Perl programming language and using
+the PGPLOT graphical library for data display. It is being developed
+on Linux and tested on Windows XP, but should work on any unix-like,
+Windows, or Mac operating system.
+
+[% athena %] is designed to provide high quality analysis with a
+highly usable interface.  It allows very fine grained control over the
+processing and plotting of individual data sets while still enabling
+the processing and plotting of large quantities of data.
+
+Among [% athena %]'s many, many features, you will find:
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+Convert raw data to [% mu %]
+[% END %]
+[% WRAPPER html/li %]
+File import plugins for reading arbitrary data files
+[% END %]
+[% WRAPPER html/li %]
+Process and plot multiple data files simultaneously
+[% END %]
+[% WRAPPER html/li %]
+Merge data in energy, k-, R-, or back-transform k-space
+[% END %]
+[% WRAPPER html/li %]
+Energy calibration
+[% END %]
+[% WRAPPER html/li %]
+Align data scans with or without a reference channel
+[% END %]
+[% WRAPPER html/li %]
+Deglitch [% mu %] data
+[% END %]
+[% WRAPPER html/li %]
+Self-absorption corrections for fluorescence spectra
+[% END %]
+[% WRAPPER html/li %]
+Compute difference spectra
+[% END %]
+[% WRAPPER html/li %]
+Fit linear combinations of standards to XANES or EXAFS data
+[% END %]
+[% WRAPPER html/li %]
+Fit peak functions to XANES data
+[% END %]
+[% WRAPPER html/li %]
+Log-ratio/phase-difference analysis
+[% END %]
+[% WRAPPER html/li %]
+Background removal using the AUTOBK algorithm
+[% END %]
+[% WRAPPER html/li %]
+Normalization of XANES data to the Cromer-Liberman calculations
+[% END %]
+[% WRAPPER html/li %]
+Forward and backward Fourier transforms
+[% END %]
+[% WRAPPER html/li %]
+Save data as [% mu %], normalized [% mu %], [% chik %],
+[% chir %], or back-transformed [% chik %]
+[% END %]
+[% WRAPPER html/li %]
+Save project files, allowing you to return to your analysis later
+[% END %]
+[% WRAPPER html/li %]
+... and much, much more!
+[% END %]
+[% END %]
+
+
+
+[% PROCESS section label="First Look at ATHENA" %]
+
+[% FILTER html_para %]
+When [% athena %] first starts, something like [% INCLUDE imageref
+text="the picture below" label="athena_main" %]
+appears on your computer screen.  The [% athena %] window is divided
+into several parts.  We will discuss each of these parts and give
+each a name.
+[% END %]
+
+[% WRAPPER figure file="athena_main.png" %]
+The parts of the [% athena %].
+[% END %]
+
+[% FILTER html_para %]
+At the top of the window is a menu bar.  This works much like the menu
+bar in any program.  Much of the functionality in [% athena %] is
+accessed through those menus.
+
+The largest part is the main window, highlighted in the picture above
+with a red border.  The red border does not happen in the real
+program -- it's there simply to clarify this discussion.  The main
+window is divided into six parts.  The top box identifies the file
+name of the current
+[% INCLUDE html/link link="output/project.html" text="project file" %].
+Below that, are various parameters identifying the current data group.
+
+The next three boxes are used to define the parameters associated with
+normalization and background removal, forward Fourier transforms, and
+reverse Fourier transforms.  At the bottom of the main window are
+a couple of parameters associated with plotting.
+
+At the bottom of the screen is the echo area.  This very important
+space is used by [% athena %] to communicate with you, the user.  This
+space is used to display informational messages while [% athena %] is
+working on your data, error messages when it runs into trouble, and
+other kinds of messages.  When [% athena %] starts, it displays a hint
+from it's built-in list of hints.  A new hint can be seen at any time
+by pressing [% INCLUDE modkey key="control" letter='h' %].
+
+The large blank area on the right is
+[% INCLUDE html/link link="ui/glist.html" text="the group list area" %].
+As data are imported into [% athena %], they will be listed in this
+space.  Access to the data already imported is made by clicking in
+this space.
+
+Above the group list area are
+[% INCLUDE html/link link="ui/mark.html" text="the mark buttons" %]
+The blank space next to the mark buttons is the modified project
+indicator.  This indicator shows when your project has been modified
+and needs to be saved.
+
+Below the group list area are the plot buttons.  Below that are the
+buttons used to set the k-weighting for use when plotting in k-space
+or when making a forward Fourier transform.  Below that are various
+other
+[% INCLUDE html/link link="ui/mark.html" text="plotting controls" %]
+in the plotting options section.
+[% END %]
+
+[% WRAPPER figure file="athena_withdata.png" %]
+[% athena %], after importing some data.
+[% END %]
+
+[% FILTER html_para %]
+After importing several data files, each is made into a
+[% INCLUDE font/em a="data group"%] and listed in the group list.  The
+label and the check button next to it are the main controls for
+interacting with data in [% athena %].
+[% END %]
+
+[% PROCESS section label="Getting help" %]
+
+[% FILTER html_para %]
+There is quite a bit of help built right into [% athena %].  Typing
+[% INCLUDE modkey key="control" letter='m' %] or selecting
+[% INCLUDE font/quote a="Document" %] from the Help menu will display
+[% athena %]'s document in a web browser or in the built-in document
+viewer. The [% INCLUDE font/quote a="Document sections" %] submenu
+allows you to jump directly to a particular topic.  Also, many parts
+of the program have a button which will take you directly to the part
+of the document that describes that part of the program.
+
+You can select the format in which the documentation is displayed by
+setting the [% INCLUDE preference group="Doc" option="prefer" %]
+preference.  Because it has all the images, the html document is
+probably the better choice.  Users on Windows and the Mac will have
+the html document displayed in whatever browser is the system default.
+For Linux, BSD, and other unix users, [% athena %] attempts to find a
+suitable browser.  You can explicitly set the browser from a list of
+common (and not so common) options by setting the 
+[% INCLUDE preference group="Doc" option="browser" %] preference.
+This list includes every GUI browser option that Bruce was aware at the
+time this paragraph was written, including several options from the
+Mozilla ecosystem.
+
+Another feature that you can use to explore different parts of the
+program are the [% INCLUDE font/em a="demo files" %].  Demo files are
+normal [% INCLUDE html/link text="project files" link="output/project.html" %]
+that get installed when you install this software on your computer.
+Each demo file demonstrates a particular feature of the program.  When
+you select [% INCLUDE font/quote a="Import a demo project" %] from the
+Help menu, a file selection dialog opens to the location of the demo
+projects.  When you select one, its
+[% INCLUDE html/link text="project journal" link="ui/palettes.html" %]
+is opened after its data is displayed.  The journal explains how to
+use the data to learn about the topic covered by
+that demo.
+[% END %]

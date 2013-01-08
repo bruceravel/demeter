@@ -1,0 +1,113 @@
+[% META title = 'Project files'
+	about = 'Preserving the state of your analysis project'
+%]
+
+[% FILTER html_para %]
+The most important type of output file is the project file.  A project
+file contains all of the data you have imported, all of the parameters
+associated with each data file, the content of the journal, and
+several other collections of important data.  All of this gets saved
+in a single, easily transportable file.
+
+The primary purpose of the project file is to save you work.  When you
+open a saved project file, all of the data and all of their parameters
+are imported into [% athena %], returning [% athena %] to the state it
+was in when saved the project file.  [% artemis %] ([% athena %]'s
+sister program intended for analysis of EXAFS data) can read these
+project files.  Thus the project file is the best way of moving your
+data between the two programs.
+
+Even better, the project file is a form of collaboration.  The format
+of the file is platform independent.  A project file written on one
+computer can read on another computer, even if those computers use
+different operating systems.  A project file can be burned to a CD,
+placed on a web site, or sent to a collaborator by email.
+
+To save a project file, simply select one of the File menu options
+highlighted in [% INCLUDE imageref text="this figure" label="export_project" %].
+[% END %]
+
+[% WRAPPER figure file="export_project.png" %]
+Saving a project file.
+[% END %]
+
+[% FILTER html_para %]
+The first two options saves the entire current state of [% athena %].
+If the project has already been saved, the
+[% INCLUDE font/quote a="Save project" %] option
+overwrites the previous file with the new state of your project.
+Hitting [% INCLUDE modkey key="control" letter='s' %] does the same thing.
+Clicking on the modified indicator -- the other highlighted region in
+the screenshot -- also saves the project.  Alternately, you can select
+[% INCLUDE font/quote a="Save project as..." %] and you will be
+prompted for a new file name for the project.
+
+The final option will write only the marked groups to a project file.
+You can think of this as a sort of
+[% INCLUDE font/quote a="sub-project" %] file.  This is
+another of the many ways that the group markings are used by
+[% athena %].
+[% END %]
+
+[% WRAPPER html/caution %]
+As with any software, you should save your work early and often.
+[% athena %] and [% ifeffit %] have their flaws.  It would be a shame
+to discover one of them after having done a lot of unsaved work.
+[% END %]
+
+[% PROCESS section label="The project file format and compatibility with older versions" %]
+
+[% FILTER html_para %]
+The [% athena %] project file is designed to be quick and easy for
+[% athena %] to read.  Unfortunately, the file format is not
+particularly human-friendly.  Most of the lines of the project file
+are in the form written out by perl's
+[% INCLUDE html/link text="Data::Dumper"
+link="http://cpan.uwinnipeg.ca/dist/Data-Dumper" %] module.
+This freezes [% athena %]'s internal data structures into perl code.
+When the project file is imported, these lines of perl code are
+evaluated.  (This evaluation is performed in a
+[% INCLUDE html/link text="Safe" link="http://cpan.uwinnipeg.ca/dist/Safe" %]
+compartment, i.e. a memory space with restricted access to perl's
+system functionality.  This provides a certain level of protection against
+project files constructed with malicious intent.)
+
+Starting with version 0.8.050, [% athena %] writes out its project files
+using compression. The files written are identical to the format used
+by the popular
+[% INCLUDE html/link text="gzip" link="http://www.gnu.org/software/gzip/" %]
+program, using the highest level of
+compression.  [% athena %] and [% artemis %] will import these files or
+uncompressed project files from earlier versions of [% athena %] in a
+transparent manner. It is quite possible that the user will never even
+realize that this change in the project file format occurred.
+
+One possible problem is if someone using the latest version of [% athena %]
+wants to share a project file with someone who is not using the latest
+version. In that case, the project file will be written using
+compression, but the person with the older version will not be able to
+import it into his version of [% athena %].  The best solution to this
+problem is to encourage your colleague to upgrade to the latest
+version of [% athena %].  Barring that, there are two other possibilities.
+
+The better solution is to rename the file from
+[% PROCESS font/file a="whatever.prj" %]
+to
+[% PROCESS font/file a="whatever.prj.gz" %]
+then use a decompression program to decompress the
+project. On unix, gzip is a good choice. On the Mac, there are a
+number of options, including gzip. On Windows, many popular
+compression and archiving programs can deal with gzip
+compressed files. Simply run the renamed file through the
+decompression program and use the resulting file. There are no changes
+to the textual content of the project file -- the only change is that
+[% athena %] uses compression by default.
+
+The less good solution is for the person writing the project file to
+set the
+[% PROCESS preference group="General" option="compress_prj" %]
+preference parameter to false. This will
+get you over the hurdle of communicating with your colleague, but it
+is an inferior solution. Compression reduces the size of the project
+file by up to a factor of 4, which is a very nice feature indeed.
+[% END %]

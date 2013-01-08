@@ -1,0 +1,113 @@
+[% META title = 'Step function removal'
+        about = 'Handling multi-electron excitations and small contamination by another edge'
+        difficult = 1
+%]
+
+[% FILTER html_para %]
+XAS is normally thought of in terms of a single electron phenomenon.
+A photon goes in and a photoelectron goes out.  In fact multi-body
+phenomena are possible and, on occasion, must be considered in the
+interpretation of XAS data.  One such is the so-called
+[% INCLUDE font/quote a="shake-off" %] effect in which the
+photoelectron has sufficient kinetic energy to excite a high-lying
+electron.  For example, at around 415 eV above the uranium [% l3 %]
+edge, the photoelectron can excite an [% N6 %] or [% n7 %]
+transition.
+
+The cross-section of this secondary edge can be quite small.  In the
+example of the [% l3n67 %] transition, the secondary cross section is
+about 3 orders of magnitude smaller than the primary [% l3 %] edge.
+If, in this example, you have very good data with measurable EXAFS
+beyond about 10.5 [% iAA %], the multi-electron excitation will not be
+small compared to the [% l3 %] EXAFS.  Other multi-electron
+excitations have even larger cross-sections compared to their primary
+excitations.  For a much more complete discussion of multi-electron
+excitations see
+[% INCLUDE html/link text="Iztok Arcon's Mulielectron Photoexcitations
+page" link="http://www.p-ng.si/~arcon/xas/mpe/mpe.htm" %].
+
+Another similar phenomenon is the presence of a small impurity of the
+Z+1 element, leading to a small edge step well above the measured
+edge.  In some cases this small edge step might be hard to see in your
+[% mu %] data, but are clearly visible as a step in the [% chik %]
+which Fourier transforms into a low-R contribution in the [% chir %]
+spectrum. 
+
+[% athena %] offers two relatively simple algorithms to attempt to
+remove the effect of a step due to multi-electron excitations or small
+impurities from your data.  One models the multi-electron excitation
+as a reflection of the data translated to the position in energy of
+the excitation.  The other places an arctangent function at the
+specified energy.  Be warned that the algorithm described here
+requires considerable user input and sufficient knowledge to properly
+evaluate the results.
+[% END %]
+
+[% WRAPPER html/caution %]
+This algorithm can do serious damage to your data.  Without a sober,
+knowledgeable assessment of the results of applying this algorithm
+made by [% INCLUDE font/b a="you, the user" %], this part of
+[% athena %] should be considered fragile and dangerous.
+[% END %]
+
+[% FILTER html_para %]
+That said, let's carry on.
+
+The dialog shown
+[% INCLUDE imageref text="below" label="mee" in=1 %]
+provides an interface to a simple, three-parameter algorithm for
+approximately removing a step from your data.  
+[% END %]
+
+[% WRAPPER figure file="mee.png" %]
+The multi-electron excitation removal correction dialog.
+[% END %]
+
+[% FILTER html_para %]
+
+The basic idea is that a small, step-like function will be subtracted
+from the normalized data.  If all works well, the resulting [% chik %]
+function will not be affected by the secondary step.  With either
+algorithm a step function is created out of 3 parameters.  An energy
+offset given in eV units relative to the [% e0 %] position is used as
+the center of the step.  For a reflected edge position, the measured
+edge is convolved by a Lorentzian of the given width.  Alternately, an
+arctangent of that width is placed at the specified position.
+Finally, an amplitude parameter is multiplied by the step function
+before subtraction from the normalized [% mu %] data.
+
+It is usually quite unclear how large the amplitude parameter should
+be.  The best way to figure this out is by trial and error.  Start
+with an obviously large value.  The reuslting step-subtracted spectrum
+will have a pronounced downward shift at the energy of the step.
+Reduce the amplitude parameter until the resulting data are smooth
+through the energy of the step.  You may also need to adjust the other
+two parameters to obtain the smoothest data.
+
+Of course, the only real criterion for knowing if you have done an
+adequate job subtracting the step function is actually analyze the
+resulting [% chik %] function.  If the resulting analysis is an
+improvement in statistical terms and the parameters are better
+understood, then you might have confidence in having performed the
+step removal correctly.
+
+Like other [% athena %] utilities, there is a button for making a data
+group once you have found a set of parameters that you like.  You can
+also save the current value of energy shift into a small database of
+offset values for the elements that is saved on disk as an ini file,
+thus allowing you return this same offset value for other data.
+[% END %]
+
+[% WRAPPER figure file="mee_k.png" %]
+Removing the effect of the multi-electron excitation.  The secondary
+excitation can be seen as the shoulder marked by the purple arrow.
+The red line shows [% chik %] after removal.
+[% END %]
+
+
+[% FILTER html_para %] This is a good reference on the effect of small
+multi-electron excitations on otherwise excellent [% chik %] data:
+[% INCLUDE citation author = "C. Hennig" journal = "Phys. Rev. B" volume
+= "75" pages = "035120" year = 2007 %].
+
+[% END %]

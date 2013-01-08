@@ -1,0 +1,140 @@
+[% META main = 1 %]
+\usepackage{amsmath,amsfonts} % mathematics
+
+\usepackage{fancybox}         % shadow and oval boxes
+\usepackage{fancyhdr}         % page headings
+\usepackage{ifthen,calc}      % used to determine page headings
+\usepackage{array}            % needed for predictions page
+\usepackage{dcolumn}
+\usepackage{alltt}
+%\usepackage{colortbl}
+\usepackage{varioref}
+\usepackage{floatflt}
+%\usepackage[vflt]{floatflt}
+\usepackage{keystroke}
+\usepackage[usenames]{color}
+
+\pdfoutput=1\relax
+%\usepackage[pdftex]
+\usepackage[pdftex,colorlinks,breaklinks,backref]{hyperref}
+%\usepackage[pdftex,breaklinks,backref]{hyperref}
+\definecolor{MyGrey}{rgb}{0.4,0.4,0.4}
+\hypersetup{bookmarks=true,
+            pdftitle=Athena User's Guide,
+            pdfauthor=Bruce Ravel,
+            urlcolor=MyGrey,
+            linkcolor=MyGrey
+           }
+\usepackage{graphicx}
+\pdfcompresslevel=9
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% page dimensions
+
+\setlength{\hoffset}{0truecm} \setlength{\voffset}{0truecm}
+\setlength{\topmargin}{0truecm} \setlength{\marginparsep}{0.25truecm}
+\setlength{\marginparwidth}{2.0truecm}
+\setlength{\textheight}{22truecm} \setlength{\textwidth}{16.5truecm}
+%\setlength{\topmargin}{-1truecm}
+\setlength{\oddsidemargin}{0truecm}
+\setlength{\evensidemargin}{0truecm}
+\setlength{\headsep}{0.5truecm}
+\setlength{\parindent}{21pt}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% character decorations
+
+\newcommand{\file}[1]{{`\texttt{#1}'}}
+\newcommand{\program}[1]{{\textsc{#1}}}
+\newcommand{\param}[1]{{``\texttt{\textsl{#1}}''}}
+\newcommand{\preference}[2]{{\;\S\;\textsl{#1} $\rightarrow$ \textsl{#2}}}
+
+% \newcommand{\CONTROL}[1]{\texttt{\textsl{Control-#1}}}
+% \newcommand{\ALT}[1]{\texttt{\textsl{Alt-#1}}}
+% \newcommand{\SHIFT}[1]{\texttt{\textsl{Shift-#1}}}
+% \newcommand{\RETURN}{\texttt{\textsl{Return}}}
+
+\newcommand{\CONTROL}[1]{\Ctrl-\keystroke{#1}}
+\newcommand{\Control}{\Ctrl}
+\newcommand{\ALT}[1]{\Alt-\keystroke{#1}}
+\newcommand{\SHIFT}[1]{\Shift-\keystroke{#1}}
+\newcommand{\RETURN}[1]{\Return}
+
+\def\angleleft{$\langle$}
+\def\angleright{$\rangle$}
+\font\keyrm=cmr8
+\font\keysy=cmsy9
+\def\key#1{{\keyrm\textfont2=\keysy \leavevmode\hbox{%
+  \raise0.4pt\hbox{\angleleft}\kern-.08em\vtop{%
+    \vbox{\hrule\kern-0.4pt
+     \hbox{\raise0.4pt\hbox{\vphantom{\angleleft}}#1}}%
+    \kern-0.4pt\hrule}%
+  \kern-.06em\raise0.4pt\hbox{\angleright}}}}
+
+\newcommand{\red}[1]{{\key{#1}}}
+\newcommand{\purple}[1]{{\key{#1}}}
+
+% \newcommand{\red}[1]{{\color{red4}\textsf{\textbf{#1}}}}
+% \newcommand{\purple}[1]{{\color{darkviolet}\textsf{\textbf{#1}}}}
+
+% \newcommand{\red}[1]{{\color{red4}\keystroke{#1}}}
+% \newcommand{\purple}[1]{{\color{darkviolet}\keystroke{#1}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% special environments
+
+%%% a tighter linespacing for the enumerate and itemize environments
+\newcounter{tightenum}
+\newenvironment{tightenum}
+{\begin{list}{\arabic{tightenum}. }{\usecounter{tightenum}
+      \setlength{\itemsep}{-0.5ex}}}
+{\end{list}}
+
+\newenvironment{tightitem}
+{\begin{list}{$\bullet$~}{\setlength{\itemsep}{-0.5ex}}}
+{\end{list}}
+
+\newenvironment{Boxedminipage}%
+{\begin{Sbox}\begin{minipage}}%
+    {\end{minipage}\end{Sbox}\shadowbox{\TheSbox}}
+
+\newenvironment{about}%
+{\begin{flushleft}{\Huge``}\small\sf\sl}%
+  {{\Huge''}\end{flushleft}\hfill\break\break}
+
+\newenvironment{caution}%
+{\bigskip\begin{Boxedminipage}[h]{0.9\linewidth}\begin{center}~\\ \large}%
+  {\end{center}\end{Boxedminipage}\hfill\break\break}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% title page
+
+\newcommand{\MakeTitlePage}{%
+  \thispagestyle{empty}
+  \noindent\rule{\linewidth}{1ex}
+  \begin{flushleft}
+    \textsf{%
+      {\Huge A}{\huge THENA } {\Huge U}{\huge ser's} {\Huge G}{\huge uide }}%
+  \end{flushleft}
+  \vspace{2ex}
+  \begin{flushright}
+    {\Large Bruce Ravel} \\
+    {\large \texttt{bravel\char64bnl.gov} \\
+    \texttt{http://cars9.uchicago.edu/\char126ravel/software/exafs/} }
+  \end{flushright}
+  \noindent\rule{\linewidth}{1ex}
+  \vspace*{\stretch{1}}
+  \begin{center}
+    \includegraphics*[width=\linewidth]{[% site.url.images %]/greek_delphi.jpg}
+  \end{center}
+  \vspace*{\stretch{2}}
+  \begin{flushright}
+    {\Large \textsf{Document version [% document_version %]\\[1ex]
+        for [% athena %] version [% athena_version %]\\[1ex]
+        \today}}
+  \end{flushright}
+  \newpage
+  \thispagestyle{empty}
+  }

@@ -1,0 +1,82 @@
+[% META title = 'Reference channel'
+	about = 'Importing a reference spectrum for use as a data
+		 alignment standard'
+%]
+
+[% FILTER html_para %]
+
+The column selection dialog offers several other features related to
+data import.  In this section we will see how to import a reference
+channel.  It is common to place a third ionization chamber in line
+after the transmission chamber and to place good transmission standard
+between the two.  The point of measuring the standard is that it is
+measured in parallel with your real sample.  This standard can then be
+used to align the actual data using the
+[% INCLUDE html/link link="../process/align.html" text="data alignment
+dialog" %].
+
+The standard often is a zero-valent foil, but the most important thing
+is that it is an excellent standard which will yield consistently
+high-quality data.  The other most important thing is that you always
+use the same sample as your reference standard for ever experiment you
+make at a particular edge.  To this end, it is wise to make a library
+of standards and carry them with you to the synchrotron.  By using the
+same standard for every experiment at an edge, you can align any data,
+even data measured years apart at different synchrotrons.
+
+[% END %]
+
+[% WRAPPER figure file="import_ref.png" %]
+Importing a reference channel with the column selection dialog.
+[% END %]
+
+[% FILTER html_para %]
+The reference channel selection works almost the same as column
+selection for the data except that you don't need to specify the
+energy column again -- the same column is used.  When a reference
+channel after the transmission channel is used, you should use the
+transmission channel as the numerator and the reference channel as the
+denominator.  Another common solution to measuring a reference channel
+is measure elastically scattered radiation through the standard with a
+PIN diode.  In that case, I0 is the numerator and the diode is the
+denominator.
+
+You can plot the reference channel to make sure that you have selected
+the correct channels with the
+[% INCLUDE font/quote a="Plot reference" %] button.  If your
+reference standard is of an element with a nearby edge energy, uncheck
+the button labeled
+[% INCLUDE font/quote a="Same element" %].  If you use some other kind of
+reference measurement that is not a transmission measurement, you can
+uncheck the [% INCLUDE font/quote a="Natural log" %] button.
+
+When you click the OK button, the data are imported and inserted into
+the group list.  The reference channel is placed in the group list
+below its data.  The reference channel is just like any other group,
+with one distinction.  The data and its reference channel are
+[% INCLUDE font/em a="tied" %]
+together in the sense that the values for their
+[% PROCESS font/param a="eshift" %] parameters will always be the
+same.
+
+This relationship is shown visually by the change in color of the text
+in the box for [% PROCESS font/param a="eshift" %], as seen in
+[% INCLUDE imageref text="this screenshot" label="import_refimported" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="import_refimported.png" %]
+Data imported with a reference channel in [% athena %].
+[% END %]
+
+[% FILTER html_para %]
+When you change the value of [% PROCESS font/param a="eshift" %] for
+the reference, the value of [% PROCESS font/param a="eshift" %] for
+the data changes as well.  (And vice versa!)  This feature of
+reference channels is put to good use
+[% INCLUDE html/link link="../process/align.html" text="in data alignment" %].
+
+Occasionally, it is useful to tie two data groups together in this
+way.  This can be done by marking the two groups you want to tie
+together as data and reference, then selecting
+[% INCLUDE font/quote a="Tie reference channel" %] from the Values menu.
+[% END %]

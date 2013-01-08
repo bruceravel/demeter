@@ -1,0 +1,534 @@
+[% META title = 'Forward'
+        about = 'Conventions and acknowledgements'
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+The best way to learn how to use [% athena %] is to [% INCLUDE font/b
+a="use" %] [% athena %].  Poke at the buttons, poke at the menus, try
+things just to see what happens.  And above all, remember the
+physical and mathematical meanings of your data and of the data
+analysis techniques and think about how actions in [% athena %] relate
+to those meanings.
+
+[% athena %] is a powerful and versatile program capable of supporting
+almost all of your common (and not-so-common) XAS data processing
+chores.  It is not, however, a particularly intuitive program.  I
+doubt that any XAS program could be intuitive.  On top of that,
+[% athena %] has accumulated lots of features over the years.  Many of
+these features are necessary for high-quality data processing, others
+are bells and whistles intended to make data processing more
+convenient or more fun.
+
+This document attempts to be a comprehensive overview of all of
+[% athena %]'s features.  There are lots of words, but also lots of
+pictures.  Feel free to jump around and to focus on the parts most
+directly relevant to your immediate needs.  I hope you find this
+document and the program helpful.
+[% END %]
+
+[% INCLUDE section label="Layout and typesetting conventions" %]
+
+[% FILTER html_para %]
+Here is a summary of fonts, colors, and symbols used to denote
+different kinds of text.  Note that some of these may appear the same
+in certain presentation media.
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+Filenames look [% INCLUDE font/file a='C:like\\this' %].
+[% END %]
+[% WRAPPER html/li %]
+The names of parameters for data processing look [% INCLUDE font/param a="like_this" %].
+[% END %]
+[% WRAPPER html/li %]
+Emphasized text looks [% INCLUDE font/em a="like this" %].
+[% END %]
+[% WRAPPER html/li %]
+Bold text looks [% INCLUDE font/b a="like this" %].
+[% END %]
+[% WRAPPER html/li %]
+Links to web sites look [% INCLUDE html/link text="like this" link="http://www.google.com" %].
+[% END %]
+[% WRAPPER html/li %]
+Internal links look [% INCLUDE html/link text="like this" link="forward.html#layoutandtypesettingconventions" %].
+[% END %]
+[% WRAPPER html/li %]
+Keyboard shortcuts look like this:
+[% INCLUDE modkey key="control" letter="q" %].  This example
+means to hit the q key while holding the Control (or Ctrl) key.
+[% END %]
+[% WRAPPER html/li %]
+Program names from the [% ifeffit %] family look like this: [% athena %].
+[% END %]
+[% WRAPPER html/li %]
+References to [% athena %]'s preferences are written like this:
+[% INCLUDE preference group="Bkg" option="fraction" %].  To modify
+this preferences,
+open the [% INCLUDE font/quote a="bkg" %] section of the
+[% INCLUDE html/link text="preferences dialog" link="ui/prefs.html" %]
+and then click on [% INCLUDE font/quote a="fraction" %].
+[% END %]
+[% END %]
+
+[% WRAPPER html/caution %]
+Points that require special attention are written inside of
+attention-grabbing boxes.
+[% END %]
+
+[% FILTER html_para %]
+
+[% SWITCH document_style %]
+[% CASE 'pod' %]
+A section describing one of [% athena %]'s features that I consider
+especially powerful and central to the effective use of the program is
+marked with this text:
+[% WRAPPER html/pre %]
+    !!! EXPERT CONTENT !!!
+[% END %]
+[% CASE %]
+[% INCLUDE image file="LightningBolt.png" %] This symbol indicates a
+section describing one of [% athena %]'s features that I consider
+especially powerful and central to the effective use of the program.
+[% END %]
+
+[% SWITCH document_style %]
+[% CASE 'pod' %]
+A section with difficult information that newcomers to [% athena %] might pass
+over on their first reading of this document is marked with this text:
+[% WRAPPER html/pre %]
+    !!! DIFFICULT CONTENT !!!
+[% END %]
+[% CASE %]
+[% INCLUDE image file="bend.png" %] This symbol indicates a section
+with difficult information that newcomers to [% athena %] might pass
+over on their first reading of this document.
+[% END %]
+
+
+The html version of this document makes use of HTML 4.1 character
+entities (mostly Greek symbols) and will not display correctly in very
+old browsers.
+
+POD -- the native documentation for Perl and the format used
+internally in [% athena %] -- is not able to display graphics.  Everywhere
+that a graphics file is displayed in the other document formats, a bit
+of text showing the name of the image file and the caption of the
+figure is displayed in the POD.  Here is what it looks like when one of
+the pod documents is displayed by a pod viewer:
+[% WRAPPER html/pre %]
+  (Image file: athena_main.png)
+    The parts of the ATHENA.
+[% END %]
+In most cases, this will convey sufficient information given that you
+will have [% athena %] open in front of you.  If you need to see the
+picture, you can seek out the image file by name or look at the
+corresponding part of the html or PDF versions of the document.
+[% END %]
+
+[% INCLUDE section label="Acknowledgements" %]
+
+
+[% FILTER html_para %]
+I have to thank Matt Newville, of course.  Without [% ifeffit %] there
+wouldn't be an [% athena %].  One afternoon over coffee, Julie Cross
+and Shelly Kelly lit the spark that eventually lead to this document.
+Some content of this document was inspired by an upcoming XAS review
+article by Shelly Kelly and Dean Hesterberg, which I have had the
+pleasure of editing (and, apparently, swiping from). I have a huge
+debt of gratitude to all the folks on the [% ifeffit %] mailing list.
+Without the incredible support and wonderful feedback that I've
+received in the last six years [% athena %] would be a shadow of what
+it is today.
+
+The following great software tools were used to create this document:
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+[% INCLUDE html/link text="The Template Toolkit"
+link="http://www.template-toolkit.org" %],
+a really fun, really powerful templating system that was used to
+create this entire document
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE html/link text="The Perl programming language"
+link="http://www.perl.org" %]
+and
+[% INCLUDE html/link text="Syntax::Highlight::Perl"
+link="http://search.cpan.org/~johnsca/Syntax-Highlight-Perl-1.0/" %]
+from
+[% INCLUDE html/link text="the CPAN repository"
+link="http://www.cpan.org" %]
+[% END %]
+[% WRAPPER html/li %]
+The
+[% INCLUDE html/link text="Emacs" link="http://www.gnu.org/software/emacs/" %]
+and
+[% INCLUDE html/link text="XEmacs" link="http://www.xemacs.org" %]
+text editors along with 
+[% INCLUDE html/link text="tt-mode" link="http://dave.org.uk/emacs/tt-mode.el" %]
+and the simply wonderful
+[% INCLUDE html/link text="Emacs Code Browser" link="http://ecb.sourceforge.net/" %]
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE html/link text="The GIMP"
+link="http://www.gimp.org" %]
+image editor with frequent use of the Xach effect shadowing plugin
+[% END %]
+[% WRAPPER html/li %]
+Various tools from the
+[% INCLUDE html/link text="KDE desktop"
+link="http://www.kde.org" %],
+including KColorChooser and
+[% INCLUDE html/link text="KSnapshot"
+link="http://docs.kde.org/stable/en/kdegraphics/ksnapshot/index.html" %]
+
+[% END %]
+[% END %]
+
+[% FILTER html_para %]
+All screenshots were made of [% athena %] or the
+[% INCLUDE html/link text="PGPLOT" link="http://www.astro.caltech.edu/~tjp/pgplot/" %]
+window  on
+my [% INCLUDE html/link text="KDE desktop" link="http://www.kde.org" %],
+mostly using some version of the
+[% INCLUDE html/link text="Orangio theme" link="http://www.kde-look.org/content/show.php?content=32824" %]
+for
+[% INCLUDE html/link text="deKorator" link="http://www.kde-look.org/content/show.php?content=31447" %].
+The screenshots of spreadsheets made from
+[% INCLUDE html/link text="a report file" link="output/report.html#export_excelreport" %]
+and
+[% INCLUDE html/link text="an LCF fit report" link="examples/aucl.html#ex_aucl_excel" %]
+are displayed in
+[% INCLUDE html/link text="OpenOffice" link="http://www.openoffice.org" %].
+
+The images of the Tholos temple on the front page and the Klimt
+painting [% INCLUDE font/em a="Pallas Athena" %] in the navigation box
+of the html document are from
+[% INCLUDE html/link link="http://www.artchive.com" %].
+
+The image used as the [% athena %] program icon is from
+[% INCLUDE font/quote a="Heracles and Athena. Tondo of an Attic red-figure kylix, 480-470 BC, from Vulci" %]
+from the Staatliche Antikensammlungen in Munich, Germany.  The image
+is in the public domain and was found on 
+[% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/Image:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg" %].
+The image used as the [% hephaestus %] program icon is from Reubens' 
+[% INCLUDE font/quote a="Vulcan forging Jupiter's thunderbolts" %] 
+from the Museo Del Prado, Madrid Spain.  This image is also in the public
+domain and also from 
+[% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/Image:Rubens_-_Vulcano_forjando_los_rayos_de_J%C3%BApiter.jpg" %].
+[% END %]
+
+[% INCLUDE section label="Data citations" %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+  The copper foil data shown here and there are the
+  data that Matt Newville, Yanjun Zhang, and I measured one day back
+  in 1992 that has, inscrutably, become [% INCLUDE font/em a="the" %]
+  copper foil data shown and referenced in a large fraction of the XAS
+  theory literature.
+[% END %]
+[% WRAPPER html/li %]
+  The platinum catalyst data shown in [% INCLUDE html/link
+  text="the difference spectrum section" link="analysis/diff.html" %]
+  and [% moo3 %] data shown in [% INCLUDE html/link
+  text="the worked examples section" link="examples/moo3.html" %]
+  were donated by Simon Bare.
+[% END %]
+[% WRAPPER html/li %]
+  The [% moo3 %] [% INCLUDE html/link text="worked example"
+  link="examples/moo3.html" %] was based on a tutorial written by
+  Shelly Kelly.
+[% END %]
+[% WRAPPER html/li %]
+  The gold edge data shown in many places throughout this document are
+  taken from measurements published as
+  [% INCLUDE citation
+      author = "M. Lengke, et al."
+      journal = "Environ. Sci. Tech."
+      volume = "40:20"
+      pages = "6304-6309"
+      year = 2006
+   %].
+[% END %]
+[% WRAPPER html/li %]
+  The gold oxide data shown in [% INCLUDE html/link text="the smoothing section"
+  link="process/smooth.html" %] were donated by Norbert Weiher.
+[% END %]
+[% WRAPPER html/li %]
+  The iron foil data shown in [% INCLUDE html/link text="the convolution section"
+  link="process/conv.html" %] and elsewhere were measured by me while
+  I was commissioning NSLS beamline X11B in 2004.
+[% END %]
+[% WRAPPER html/li %]
+  The sulphate data shown in [% INCLUDE html/link text="the self-absorption section"
+  link="process/sa.html" %] were donated by Zhang Ghong and come with Daniel Haskel's
+  [% INCLUDE html/link text="Fluo program"
+  link="http://www.aps.anl.gov/xfd/people/haskel/fluo.html" %].  The copper data shown
+  in [% INCLUDE html/link text="the same section" link="process/sa.html" %] come with
+  Corwin Booth's [% INCLUDE html/link text="RSXAP program" link="http://lise.lbl.gov/RSXAP/" %].
+[% END %]
+[% WRAPPER html/li %]
+  The data in [% INCLUDE html/link text="the dispersive XAS section"
+  link="process/pixel.html" %] were provided by Giuliana
+  Aquilanti, beamline scientist at ESRF's ID-24.
+[% END %]
+[% WRAPPER html/li %]
+  Data on a hydrated uranyl phosphate that appear in several places are the U
+  [% l3 %] standard used by [% INCLUDE html/link text="my former research group"
+  link="http://www.mesg.anl.gov/" %].  Spectra from this standard have appeared
+  in many publications from that group.  The [% u3o8 %] sample shown in the
+  [% INCLUDE html/link text="the deglitching section"
+  link="process/deg.html" %] are from the group's standards library.
+[% END %]
+[% WRAPPER html/li %]
+  Tin edge data which appear in several places are from
+  [% INCLUDE citation
+      author = "C. Impellitteri, O. Evans, B. Ravel"
+      journal = "J. Environ. Monit."
+      volume = 4
+      pages = "358-365"
+      year = 2007
+   %].
+[% END %]
+[% WRAPPER html/li %]
+  Data on [% pbtio3 %], [% batio3 %], and [% eutio3 %] are taken from
+  [% INCLUDE html/link text="my own PhD thesis"
+  link="http://cars9.uchicago.edu/~ravel/thesis.html" %].
+[% END %]
+[% END %]
+
+[% INCLUDE section label="Installing Athena on your computer" %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Linux, BSD, and other unixes" %]
+It is not especially hard to build [% athena %] from source code.  The procedure
+is explained in detail on this web page: 
+[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware" %].
+[% END %]
+[% WRAPPER html/dt dt="Debian and debian-based Linux" %]
+Add the repositories listed on this page:
+[% INCLUDE html/link link="http://wiki.mr.aps.anl.gov/ObtainingSoftware" %].
+This can be done either by editing 
+[% INCLUDE font/file a='/etc/apt/sources.list' %] directly or by adding
+repositories using the system package manager (e.g. Adept on ubuntu).
+Once these are included as repositories, the [% INCLUDE font/quote a="horae" %]
+package, which contains [% athena %], can be installed.
+[% END %]
+[% WRAPPER html/dt dt="Windows" %]
+[% FILTER html_para %]
+An MSI installer package is available at
+[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/Downloads" %].
+Installation is very simple.  Just double click on the installer and
+follow the instructions.  If you are installing onto a machine for
+which you do not have administrator privileges, you should choose a
+part of the disk that belongs to you when asked about the installation
+location.
+
+For those with 
+[% INCLUDE html/link link="http://www.activestate.com/Products/activeperl/index.mhtml" text="ActiveState Perl" %]
+installed on their windows machines,
+the [% INCLUDE font/quote a="horae" %] source code can be installed
+using the Perl Package Manager.  In the Perl Package Manager, select
+[% INCLUDE font/quote a="Preferences" %] from the Edit menu, then
+click on the repositories tab.  Add
+[% INCLUDE html/link link="http://cars9.uchicago.edu/~ravel/ppm/" %]
+as a new repository.  The [% INCLUDE font/quote a="horae" %]
+package should now show up as an installable package.
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="Macintosh" %]
+An installer package is available at
+[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/Downloads" %].
+Installation is very simple.  Just double click on the installer and follow the instructions.
+[% END %]
+
+[% END %]
+
+
+[% INCLUDE section label="Building this document from source" %]
+
+[% INCLUDE subsection label="Obtaining the document source" %]
+
+
+[% FILTER html_para %]
+The source files and all images files for this document can be
+downloaded by SVN.  To grab the source, you will need an
+[% INCLUDE html/link text="SVN client"
+link="http://subversion.tigris.org/" %] on your computer.  This
+command checks a copy of the source out and downloads it onto your
+computer:
+[% END %]
+[% WRAPPER html/pre %]
+    svn co http://cars9.uchicago.edu/svn/aug/
+[% END %]
+
+[% FILTER html_para %]
+This document is written using
+[% INCLUDE html/link text="The Template Toolkit" link="http://www.template-toolkit.org" %].
+It requires [% INCLUDE html/link link="http://www.perl.org" text="the perl interpreter" %]
+and a fairly complete installation of version 2 of The Template
+Toolkit to build.  If TT2 is not available as a package for your system
+(it is available as a pre-compiled package for many versions of Linux;
+[% INCLUDE html/link
+text="a ppm file for ActivePerl on Windows exists"
+link="http://www.template-toolkit.org/download.html#win32" %];
+[% INCLUDE html/link
+link="http://www.template-toolkit.org/download.html#macosx"
+text="a Fink package for OSX exists" %])
+it can be downloaded from its website and installed by hand or
+downloaded using perl's [% INCLUDE html/link
+link="http://cpan.uwinnipeg.ca/htdocs/CPAN/CPAN.html" text="CPAN
+utility" %].  You will also need to install the
+[% INCLUDE html/link link="http://cpan.uwinnipeg.ca/dist/Image-Size"
+text="Image::Size" %], and
+[% INCLUDE html/link link="http://cpan.uwinnipeg.ca/dist/Syntax-Highlight-Perl"
+text="Syntax::Highlight::Perl" %] modules.  Compiling the [% latex %]
+version of the document will require a fairly complete [% latex %]
+installation as I make use of many styles, including
+amsmath, amsfonts, floatflt, fancybox, fancyhdr, keystroke, varioref, and
+hyperref.  (teTeX compiles the document without any problem. The
+texlive package may complain about not being able to generate two
+postscript font sets.  Those two warning can be safely ignored by
+simply hitting [%- INCLUDE modkey key="return" %] when pdflatex pauses
+to complain.  As far as I can tell, ignoring this problem has no
+impact on the document.  I have no experience building the PDF
+document on any system other than linux.)
+
+Once TT2 and the other modules are installed, building the document
+should be quite simple.  TT2's [% INCLUDE font/mono a="ttree" %]
+program is used to recurse the through the directory structure
+containing the templates.  The [% INCLUDE font/file a="bin/build" %],
+[% INCLUDE font/file a="bin/tex" %], and [% INCLUDE font/file a="bin/pod" %]
+scripts are wrappers around [% INCLUDE font/mono a="ttree" %].  They
+invokes a number of important command line options and pass any
+further command line options to [% INCLUDE font/mono a="ttree" %].
+
+TT2 was chosen for this project because it is an excellent templating
+tool.  A templating tool was chosen because the strong separation of
+format and content was attractive to me.  The template source is used
+to generate html and PDF versions of the document as well as the pod
+format used by [% athena %]'s internal document viewer.
+
+Contributions to the document are extremely welcome.  The very best
+sort of contribution would be to directly edit the source templates
+and commit your changes to the SVN repository.  The second best sort
+would be a patch file against the templates in the repository.  If TT2
+is more than you want to deal with, but you have corrections to
+suggest, I'd cheerfully accept almost any other format for the
+contribution. (Although I have to discourage using an html editing
+tool like FrontPage to edit the html directly.  Tools like that tend
+to insert lots of additional html tags into the text, making it more
+difficult for me to incorporate your changes into the source.)
+[% END %]
+
+[% INCLUDE subsection label="Building the html document" %]
+
+[% FILTER html_para %]
+After downloading and unpacking the source for this document, you must
+configure it to build correctly on your computer.  This is simple:
+[% END %]
+[% WRAPPER html/pre %]
+./configure
+[% END %]
+
+[% FILTER html_para %]
+To build the entire document as html
+[% END %]
+[% WRAPPER html/pre %]
+./bin/build -a
+[% END %]
+[% FILTER html_para %]
+Individual pages can be built by specifying them on the command line:
+[% END %]
+[% WRAPPER html/pre %]
+./bin/build bkg/norm.tt forward.tt
+[% END %]
+
+[% INCLUDE subsection label="Building the LaTeX document" %]
+
+[% FILTER html_para %]
+The [% latex %] document is built by
+[% END %]
+[% WRAPPER html/pre %]
+./bin/tex -a
+cd tex/
+pdflatex athena.ltx
+pdflatex athena.ltx
+[% END %]
+[% FILTER html_para %]
+You need to run [% INCLUDE font/mono a="pdflatex" %] two or three
+times to get all of the section numbering and cross referencing
+correct.  The varioref package, used to handle cross-referencing, is
+sometimes a little fragile.  If you see the following error message:
+simply hit return.  The message should disappear when you recompile
+the document.
+[% END %]
+[% WRAPPER html/pre %]
+! Package varioref Error: vref at page boundary 142-143 (may loop).
+[% END %]
+
+[% FILTER html_para %]
+A version of the PDF document suitable for printing on a grayscale
+(i.e. without color) printer can be made using this sequence of commands:
+[% END %]
+
+[% WRAPPER html/pre %]
+cd images/
+./images/convert_to_gray
+cd ../
+./bin/texbw -a
+cd texbw/
+pdflatex athena.ltx
+pdflatex athena.ltx
+[% END %]
+[% FILTER html_para %]
+
+This first bit converts all of the images used in the document to
+grayscale using [% INCLUDE html/link link="http://www.imagemagick.org"
+text="ImageMagick" %].  
+The [% INCLUDE font/quote a="texbw" %] version of the
+document is nearly identical to the normal [% latex %] document,
+except that the style file and several templates are changed to remove
+all color from the document.  Compiling the version in the [% INCLUDE
+font/mono a="texbw/" %] directory results in a PDF file that is
+suitable for a non-color printer.
+
+This output target was created for the 2008 APS summer school.  The
+cost saving of printing the [% athena %] document in black-and-white rather
+than color for each of the students was quite significant.
+[% END %]
+
+[% INCLUDE subsection label="Building the pod document" %]
+
+[% FILTER html_para %]
+The pod document, [% athena %]'s internal document format, is built by
+[% END %]
+[% WRAPPER html/pre %]
+./bin/pod -a
+[% END %]
+[% FILTER html_para %]
+Individual pages can be built by specifying them on the command line:
+[% END %]
+[% WRAPPER html/pre %]
+./bin/pod bkg/norm.tt forward.tt
+[% END %]
+
+[% INCLUDE subsection label="Using the document with Athena" %]
+
+[% FILTER html_para %]
+The pod and html document files can be used by [% athena %], but they
+must be installed in the correct location.  To do this, run the
+[% INCLUDE font/mono a="install" %] script that comes with the
+document package.  This will use an [% athena %] module to determine
+the correct location, then copy over all relevant files.  Once installed 
+[% athena %] will display the html document in either a web browser or
+a pod viewer depending on the values of the
+[% INCLUDE preference group="Doc" option="prefer" %] and
+[% INCLUDE preference group="Doc" option="browser" %] preferences.
+[% END %]

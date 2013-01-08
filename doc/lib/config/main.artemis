@@ -1,0 +1,18 @@
+[% PROCESS config/page
+	 + config/site
+	 + config/url
+	 + config/version.artemis
+         + config/map.artemis
+         + config/macros
+%]
+
+[%
+   athena_link	    = '<span class=programlink>ATHENA</span>'
+   demeter_link	    = '<span class=programlink>DEMETER</span>'
+   ifeffit_link	    = '<span class=programlink>IFEFFIT</span>'
+   feff_link	    = '<span class=programlink>FEFF</span>'
+   bruce_mail	    = '(bravel |A|T| bnl |D|O|T| gov)'
+   recode           = '&ldquo;<tt>(?{ code })</tt>&rdquo;'
+   hash             = '#'
+   link		    = ' <font color=red>(&lt;-- link here)</font> '
+-%]

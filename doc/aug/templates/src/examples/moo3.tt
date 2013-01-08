@@ -1,0 +1,281 @@
+[% META title = 'A hard background removal problem'
+        about = "Shelly Kelly's method for handling difficult
+        background removal problems",
+	difficult = 1
+%]
+
+[% FILTER html_para -%]
+This section was based closely on idea presented in [% INCLUDE
+html/link text="a tutorial written by Shelly Kelly"
+link="http://cars9.uchicago.edu/iffwiki/HoraeSoftware?action=AttachFile&do=get&target=background.pdf"
+%].
+That document was expanded somewhat and edited to match the format of
+this document.  The data shown here were kindly donated by Simon Bare
+of UOP LLC.
+
+This tutorial shows a step by step process for removing a [% INCLUDE
+font/em a="tough" %] background. This tutorial uses [% moo3 %] which
+has a split close oxygen first shell and a lot of structure in the
+XANES region of the EXAFS data.  A method for using a theoretical [%
+chik %] spectra to determine the shape of the background function
+through the XANES region of the absorption edge is demonstrated.
+
+This example involves [% artemis %].  Since using [% artemis %] is
+outside the scope of this document, the details of discussion below of
+the fit to the first coordination shell in [% moo3 %] will be glossed
+over.
+[% END %]
+
+[% SWITCH document_style %]
+
+[% CASE 'html' %]
+[% FILTER html_para %]
+Here are the data:
+[% END %]
+[% WRAPPER html/list type='ul' %]
+[% WRAPPER html/li %]
+  [% INCLUDE html/link text="Athena project file with the data" link="../../data/moo3-tutorial.prj" %]
+[% END %]
+[% WRAPPER html/li %]
+  [% INCLUDE html/link text="Intermediate Artemis project file" link="../../data/moo3-kmin.apj" %]
+[% END %]
+[% END %]
+
+[% CASE 'latex' %]
+  The data files can be found on the web with the html version of this document.
+
+[% CASE 'pod' %]
+The data files can be found on the web with the html version of this document.
+
+[% END %]
+
+
+[% INCLUDE section label="Getting started" %]
+
+
+[% FILTER html_para -%]
+To start, open the [% INCLUDE font/file a="moo3-tutorial.prj" %] file
+in Athena. The first data set contains the [% moo3 %] data, with all
+parameters set to their default values for background removal,
+including an [% INCLUDE font/param a="e0" %] value of about 20006.8 eV.
+[% mu %], [% chik %], and [% chir %] for these data are shown in
+[% INCLUDE imageref text="this figure" label="ex_moo3_mudef" %] using
+these values.
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_mudef.png",
+                           "ex_moo3_chikdef.png",
+                           "ex_moo3_chirdef.png"] %]
+[% moo3 %] data using [% athena %]'s default background removal
+parameter values and a k-weighting of 2.  (Upper left) [% mu %].  
+(Upper right) [% chik %].  (Bottom) Magnitude of [% chir %] data.  The
+indicators show the positions of 2 and 4 [% iAA %] in the [% mu %] and
+[% chik %] data.
+[% END %]
+
+
+[% FILTER html_para -%]
+If the background through the XANES region is good there should be
+little change in the Fourier transform by including or excluding the
+low k-region of the [% chik %] data.  Make a copy of the original data
+set by selecting [% INCLUDE font/quote a="Copy group" %] from the
+Group menu of typing [% INCLUDE modkey key="control" letter='y' %]
+with the first group selected in the group list.
+Change its label to [% INCLUDE font/quote a="moo3-kmin" %] by
+selecting [% INCLUDE font/quote a="Change group label" %] from the
+Group menu or typing [% INCLUDE modkey key="control" letter='l' %].
+To test the low k-region [% chik %] data
+move [% INCLUDE font/param a="kmin" %] in the Fourier transform range
+from the default 2 [% iAA %] to 4 [% iAA %].  Look at the [% mu %] and
+[% chik %] data
+[% INCLUDE imageref text="above" label="ex_moo3_mudef" in=1 %]
+to see where 4 [% iAA %] is in these data.  4
+[% iAA %] is beyond the most difficult region for determining the
+background function.
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_chir_2_4.png",
+                           "ex_moo3_chir_2_4_re.png",] %]
+The magnitude (Left) and real part (Right) of the [% chir %] data
+using [% INCLUDE font/param a="kmin" %] values of 2 and 4 [% iAA %]
+for the Fourier transform.
+[% END %]
+
+[% FILTER html_para -%]
+See the change in the Fourier transform of the data through the first
+peak region, so only use the data from 4 [% iAA %].  Import this data
+set into [% artemis %].
+
+[% INCLUDE section label="Examine the theory" %]
+
+Open the [% artemis %] project file [% INCLUDE font/file a="Moo3-kmin.apj" %].
+This project file contains the data with
+[% INCLUDE font/param a="kmin" %] = 4 [% iAA %] and a simple
+theoretical calculation using published crystallographic data for
+[% moo3 %].
+With
+[% INCLUDE font/param a="kmin" %] = 4 [% iAA %] for the Fourier
+transform in [% artemis %].  The theory consists of three paths:
+[% WRAPPER html/list type='ul' %]
+[% WRAPPER html/li %]
+2 oxygen atoms at 1.70 [% AA %]
+[% END %]
+[% WRAPPER html/li %]
+2 oxygen atoms at 1.94 [% AA %]
+[% END %]
+[% WRAPPER html/li %]
+2 oxygen atoms at 2.30 [% AA %]
+[% END %]
+[% END %]
+Set [% e0 %]=0, [% sigsqr %]=0.003, [% delr %]=0 for all paths and
+use [% artemis %] plot the data and with this simple calculation.
+The data are shown
+[% INCLUDE imageref text="here" label="ex_moo3_nofit_chik" in=1 %].
+The purpose of comparing the data to the
+raw theory is to verify that the theory provides a reasonable starting
+place to begin fitting the data.
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_nofit_chik.png",
+                           "ex_moo3_nofit_chir.png",
+                           "ex_moo3_nofit_chiq.png",
+                           "ex_moo3_nofit_chir_re.png"] %]
+A comparison of the [% moo3 %] data and the sum of paths before
+performing a fit.  (Upper left) [% chik %].
+(Upper right) the magnitude of [% chir %].
+(Lower left) [% chiq %].
+(Lower right) the real part of [% chir %].
+[% END %]
+
+[% FILTER html_para -%]
+This theory looks like it will work for this data set.  The q-space
+data shows that the data and the theory are not aligned very well.
+The k-space data and theory shows that the theory has the same overall
+shape.  The Fourier transform of the data shows that the background
+needs to be fixed by the misfit at low R.  The other fitting
+parameters should accommodate that misfit.
+[% END %]
+
+[% INCLUDE section label="A simple fit to the first coordination shell" %]
+
+[% FILTER html_para -%]
+Fit the theory to the data. With [% e0 %] fixed to 0, [% sigsqr %] and
+[% delr %] are fit for the three paths.  [% e0 %] is not floated in
+this fit because we are attempting to find a theory that will work
+well as a theoretical background removal standard for the selected
+value of [% INCLUDE font/param a="e0" %].
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_fit_chik.png",
+                           "ex_moo3_fit_chir.png",
+                           "ex_moo3_fit_chiq.png",
+                           "ex_moo3_fit_chir_re.png"] %]
+A comparison of the [% moo3 %] data and the sum of paths after
+performing a simple fit.  (Upper left) [% chik %]. 
+(Upper right) the magnitude of [% chir %].
+(Lower left) [% chiq %].
+(Lower right) the real part of [% chir %].
+[% END %]
+
+[% FILTER html_para -%]
+Note that the fit is quite good between about 1.3 and 2 [% AA %]
+in [% INCLUDE imageref text="the figure above" label="ex_moo3_fit_chik" %].
+Since the data is well described in that region by the simple
+first-shell fitting model, we can conclude that the peak at lower R
+represents a shortcoming of the background removal.
+
+Save the [% chik %] for the fit to a file so it can be reimported into
+[% athena %].  In the [% athena %] project file for this section, the
+group [% INCLUDE font/quote a="moo3_kmin_fit" %] contains this
+theoretical [% chik %].
+[% END %]
+
+[% INCLUDE section label="Using the fit as a background removal standard" %]
+
+[% FILTER html_para -%]
+After importing the theoretical [% chik %] into [% athena %], we use
+it as the background removal standard for a copy of the original data.
+A background removal standard is set using a control among the
+[% INCLUDE html/link text="additional background parameters"
+link="../ui/index.html" %].  Just select the group containing the
+theoretical [% chik %] from the drop-down menu shown in
+[% INCLUDE imageref text="this figure" label="ex_moo3_standard"%].
+[% END %]
+
+[% WRAPPER figure file="ex_moo3_standard.png" %]
+Using another group as the background removal standard.
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_theory.png",
+                           "ex_moo3_theory_re.png",] %]
+Comparing the [% chir %] function for background removals with and
+without the theoretical background removal standard.
+The magnitude (Left) and real part (Right) of the [% chir %] spectra
+using [% INCLUDE font/param a="kmin" %] values 4 [% iAA %]
+for the Fourier transform.
+[% END %]
+
+[% FILTER html_para -%]
+The new [% chir %] data shown
+[% INCLUDE imageref text="here" label="ex_moo3_theory" %]
+have a much less pronounced peak in the low R
+region.  Examining the data, you will find that
+background has a nice shape through the edge region with
+[% INCLUDE font/param a="e0" %] at a reasonable location on the edge.
+Note that the value of the lower
+[% INCLUDE html/link text="spline clamp" link="../bkg/kweight.html" %].
+Examining the [% chik %] and [% chiq %] spectra will show that these
+data are nicely aligned with the theory.
+
+You can now read these data into [% artemis %] and begin your data
+analysis in earnest.
+[% END %]
+
+
+[% INCLUDE section label="Understanding" %]
+
+[% FILTER html_para -%]
+The [% INCLUDE html/link text="background removal algorithm"
+link="bkg/rbkg.html" %] finds the background function which optimizes
+the Fourier components of the spectrum below
+[% INCLUDE font/param a="rbkg" %].  In the absence of a background
+removal standard, [% INCLUDE font/quote a="optimizing" %] those
+Fourier components means to minimize them.  That is, the spline is
+found which results in the smallest possible values for the components
+below [% INCLUDE font/param a="rbkg" %].  That is not necessarily
+correct.  Although there certainly are no atoms at very short
+distances, that does not mean that there should be no finite-valued
+Fourier components at low R.  The peak corresponding to the first
+coordination shell is broadened for a variety of physical and
+mathematical reasons, including [% sigsqr %] and the finite range of
+the Fourier transform.
+
+When a standard is used for the background removal, the optimization
+works to make the low R components of the data as much like the low R
+components of the theory.  In short, using a background removal
+standard acknowledges that the first shell peak leaks into the low R
+region and may not go to zero even at R=0.  The standard, then, puts
+an additional constraint on the background function.
+
+It is possible to find a substantively similar background function
+just by tweaking the various background removal parameters in the
+absence of a standard.  An example is shown
+[% INCLUDE imageref text="here" label="ex_moo3_tweak" in=1 %].  The
+problem with the tweaking approach is that it is fairly ad hoc.  By
+performing the fit as part of an iterative approach to the background
+removal, you are making better use of the information content of the
+data and a more complete use of the meaning of [% INCLUDE font/param
+a="rbkg" %], i.e. the value above which the Fourier components
+correspond to data and below which those components correspond to
+data.
+[% END %]
+
+[% WRAPPER quadplot files=["ex_moo3_tweak.png",
+                           "ex_moo3_tweak_re.png",] %]
+Comparing the [% chir %] function for a background removal using the
+theoretical background removal standard and another with various
+parameters tweaked to obtain a similar result.
+The magnitude (Left) and real part (Right) of the [% chir %] spectra
+using [% INCLUDE font/param a="kmin" %] values 4 [% iAA %]
+for the Fourier transform.
+[% END %]

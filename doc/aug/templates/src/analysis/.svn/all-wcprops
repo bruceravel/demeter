@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/aug/!svn/ver/57/templates/src/analysis
+END
+lr.tt
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/aug/!svn/ver/9/templates/src/analysis/lr.tt
+END
+peak.tt
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/aug/!svn/ver/30/templates/src/analysis/peak.tt
+END
+pca.tt
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/aug/!svn/ver/2/templates/src/analysis/pca.tt
+END
+lcf.tt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/aug/!svn/ver/57/templates/src/analysis/lcf.tt
+END
+index.tt
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/aug/!svn/ver/9/templates/src/analysis/index.tt
+END
+diff.tt
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/aug/!svn/ver/15/templates/src/analysis/diff.tt
+END

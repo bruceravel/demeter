@@ -1,0 +1,31 @@
+[% META title = 'Data export'
+	about = 'Exporting data from Athena for use with other programs'
+	chapter = 1
+%]
+
+[% FILTER html_para %]
+Although [% athena %] handles all of your XAS data processing chores,
+there are many other things you may want to do with you data, such as
+preparing beautiful plots for publication or importing data into
+[% artemis %].  This chapter explains the various kinds of output
+files available in [% athena %].
+
+There are three main types of export files, each of which is explained
+on the following pages:
+[% END %]
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+   Column data files useful for importing into other plotting programs
+[% END %]
+[% WRAPPER html/li %]
+   Project files which capture the entire state of your current work
+   in [% athena %].  These can be re-imported into [% athena %],
+   imported into [% artemis %], or emailed to your collaborator in
+   another time zone.
+[% END %]
+[% WRAPPER html/li %]
+   Report files summarizing parameter values for all the data groups in
+   your project.  These report files can be imported into spreadsheet
+   or a database program.
+[% END %]
+[% END %]

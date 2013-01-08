@@ -1,0 +1,290 @@
+[% META title = 'Normalization'
+        about = ''
+%]
+
+[% FILTER html_para %]
+Normalization is the process of regularizing your data with respect to
+variations in sample preparation, sample thickness, absorber
+concentration, detector and amplifier settings, and any other aspects
+of the measurement.  Normalized data can be directly compared,
+regardless of the details of the experiment.  Normalization of your
+data is essential for comparison to theory.  The scale of the [% mu %]
+and [% chik %] spectra computed by [% feff %] is chosen for comparison
+to normalized data.
+
+The relationship between [% mu %] and [% chi %] is:
+[% END %]
+
+[% WRAPPER math label="mu" %]
+[% mu %] = [% mu0 %] * (1 + [% chie %])
+[% END %]
+
+[% FILTER html_para%]
+which means that
+[% END %]
+
+[% WRAPPER math label="chie" %]
+[% chie %] = ([% mu %] - [% mu0 %]) / [% mu0 %]
+[% END %]
+
+[% FILTER html_para %]
+The approximation of [% mu0 %] in an experimental spectrum is a
+topic [% INCLUDE html/link text="that will be discussed shortly"
+link="rbkg.html" %].
+
+This equation is not, in fact, the equation that is commonly used to
+extract [% chi %] from the measured spectrum.  The reason that
+equation is problematic is the factor of [% mu0 %] in the
+denominator.  In practice, one cannot trust the [% mu0 %] to be
+sufficiently well behaved that it can be used as a multiplicative
+factor.  An example is shown in
+[% INCLUDE imageref text="the figure below" label="bkg_normzerocross" %].
+[% END %]
+
+[% WRAPPER figure file="bkg_normzerocross.png" %]
+Au foil data which crosses the zero axis.
+[% END %]
+
+[% FILTER html_para %]
+In the case of the gold spectrum, the detector setting were such that
+the spectrum crosses the zero-axis.  Dividing these spectra by
+[% mu0 %] would be a disaster as the division would invert the phase
+of the extracted [% chik %] data at the point of the zero-crossing.
+
+To address this problem, we typically avoid functional normalization
+and instead perform an [% INCLUDE font/em a="edge step normalization" %].
+The formula is
+[% END %]
+
+[% WRAPPER math label="chie0" %]
+[% chie %] = ([% mu %] - [% mu0 %]) / [% mu0e0 %]
+[% END %]
+
+[% FILTER html_para %]
+
+The difference is the term in the denominator. [% mu0e0 %] is the
+value of the background function evaluated at the edge energy.  This
+addresses the problem of a poorly behaved [% mu0 %] function, but
+introduces another issue.  Because the true [% mu0 %] function should
+have some energy dependence, normalizing by [% mu0e0 %] introduces an
+attenuation into [% chik %] that is roughly linear in energy.  An
+attenuation that is linear in energy is quadratic in wavenumber.
+Consequently, the edge step normalization introduces an artificial
+[% sigsqr %] term to the [% chik %] data that adds to whatever thermal
+and static [% sigsqr %] may exist in the data.
+
+This artificial [% sigsqr %] term is typically quite small and
+represents a much less severe problem than a misbehaving functional
+normalization.
+[% END %]
+
+
+[% PROCESS section label="The normalization algorithm" %]
+
+[% FILTER html_para %]
+The normalization of a spectrum is controlled by the value of
+the [% INCLUDE font/param a="e0" %],
+[% INCLUDE font/param a="pre-edge range" %], and
+[% INCLUDE font/param a="normalization range" %] parameters.  These
+parameters are highlighted in
+[% INCLUDE imageref text="this screenshot" label="bkg_normparams" %].
+[% END %]
+
+[% WRAPPER figure file="bkg_normparams.png" %]
+Selecting the normalization parameters in [% athena %].
+[% END %]
+
+[% FILTER html_para %]
+The [% INCLUDE font/param a="pre-edge range" %] and
+[% INCLUDE font/param a="normalization range" %] parameters define two
+regions of the data -- one before the edge and one after the edge.  A
+line is regressed to the data in the
+[% INCLUDE font/param a="pre-edge range" %] and a polynomial is
+regressed to the data in the [% INCLUDE font/param a="normalization range" %].
+By default, a three-term (quadratic) polynomial is used as
+the post-edge line, but its order can be controlled using the
+[% INCLUDE font/param a="normalization order" %] parameter.  Note that
+[% INCLUDE font/em a="all" %] of the data in the
+[% INCLUDE font/param a="pre-edge range" %] and in the
+[% INCLUDE font/param a="normalization range" %] are used in the
+regressions, thus the regressions are relatively insensitive to the
+exact value of boundaries of those data ranges.
+
+The criteria for good pre- and post-edge lines are a bit subjective.
+It is very easy to see that the parameters are well chosen for these
+copper foil data.  Both lines on the left side of
+[% INCLUDE imageref text="this figure" label="bkg_prepost" %]
+obviously pass through the middle of the data in their respective ranges.
+[% END %]
+
+[% WRAPPER quadplot files=["bkg_prepost.png",
+                           "bkg_norm.png"]
+%]
+(Left) Cu foil [% mu %] with pre and post lines.  (Right) Normalized
+[% mu %] data for a copper foil.
+[% END %]
+
+[% FILTER html_para %]
+Data can be plotted with the pre-edge and normalization lines using
+controls in the [% INCLUDE html/link text="energy plot tabs"
+link="../plot/tabs.html#plottinginenergy" %].  It is a very good idea
+to visually inspect the pre-edge and normalization lines for at least
+some of your data to verify that your choice of normalization
+parameters is reasonable.
+
+When plotting the pre- and post-edge lines, the positions of the
+[% INCLUDE font/param a="pre-edge range" %], and
+[% INCLUDE font/param a="normalization range" %] parameters are shown
+by the little orange markers.  (The upper bound of the
+[% INCLUDE font/param a="normalization range" %] is off screen in the
+plot above of the copper foil.)
+
+The normalization constant, [% mu0e0 %] is evaluated by extrapolating
+the pre- and post-edge lines to [% INCLUDE font/param a="e0" %] and
+subtracting the e0-crossing of the pre-edge line from the e0-crossing
+of the post-edge line.  This difference is the value of the
+[% INCLUDE font/param a="edge step" %] parameter.
+
+The pre-edge line is extrapolated to all energies in the measurement
+range of the data and subtracted from [% mu %].  This has the effect
+of putting the pre-edge portion of the data on the y=0 axis.  The
+pre-edge subtracted data are then divided by [% mu0e0 %].  The result
+is shown on the right side of
+[% INCLUDE imageref text="the figure above" label="bkg_prepost"%].
+[% END %]
+
+[% PROCESS section label="The flattening algorithm" %]
+
+[% FILTER html_para %]
+For display of XANES data and certain kinds of analysis of [% mu %]
+spectra, [% athena %] provides an additional bit of sugar.  By
+default, the [% INCLUDE font/em a="flattened" %] spectrum is plotted
+in energy rather than the normalized spectrum.  In
+[% INCLUDE imageref text="the following plot" label="bkg_normvflat" %],
+flattened data are shown along with a copy of the data that has the
+flattening turned off.
+[% END %]
+
+[% WRAPPER figure file="bkg_normvflat.png" %]
+Comparing normalized (red) and flattened (blue) data using a Cu foil.
+[% END %]
+
+[% FILTER html_para %]
+To display the flattened data, the difference in slope and
+quadrature between the pre- and post-edge lines is subtracted from the
+data, but only after [% INCLUDE font/param a="e0" %].  This has the
+effect of pushing the oscillatory part of the data up to the y=1
+line.  The flattened [% mu %] data thus go from 0 to 1.  Note that
+this is for display and has no impact whatsoever on the extraction of
+[% chik %] from the [% mu %] spectrum.
+
+This is a nice way of displaying XANES data as it removes many
+differences in the shape of the post-edge region from the data.
+Computing
+[% INCLUDE html/link text="difference spectra" link="../analysis/diff.html" %]
+or
+[% INCLUDE html/link text="self absorption corrections" link="../process/sa.html" %],
+performing
+[% INCLUDE html/link text="linear combination fitting" link="../analysis/lcf.html" %]
+or
+[% INCLUDE html/link text="peak fitting" link="../analysis/peak.html" %],
+and many other chores often benefit from using flattened data rather than
+simply normalized data.
+
+This idea was swiped from [% INCLUDE html/link text="SixPACK"
+link="http://www-ssrl.slac.stanford.edu/~swebb/sixpack.htm" %].
+[% END %]
+
+[% PROCESS section label="Getting the post-edge right" %]
+
+[% FILTER html_para %]
+It is important to always take care selecting the post-edge range.
+Mistakes made in selecting the [% INCLUDE font/param a="normalization range" %]
+parameters can have a profound impact on the extracted [% chik %]
+data.  [% INCLUDE imageref text="Shown below" label="bkg_postbad" in=1 %]
+is an extreme case of a poor choice of
+[% INCLUDE font/param a="normalization range" %] parameters.  In this
+case, the upper bound was chosen to be on the high energy side of a
+subsequent edge in the spectrum.  The resulting
+[% INCLUDE font/param a="edge step" %]
+is very wrong and the flattened data are highly distorted.
+[% END %]
+
+[% WRAPPER quadplot files=["bkg_postbad.png", "bkg_normbad.png"] %]
+(Left) The post-edge line is chosen very poorly for this [% batio3 %]
+spectrum.  The upper end of the normalization range is on the other
+side of the Ba [% l3 %] edge.  (Right) The poor choice of
+normalization range for [% batio3 %] results in very poorly normalized
+data.
+[% END %]
+
+
+[% FILTER html_para %]
+The previous example is obviously an extreme case, but it illustrates
+the need to examine the normalization parameters as you process your
+data.  In many cases, subtle mistakes in the choice of normalization
+parameters can have an impact on how the XANES data are interpreted
+and in how the [% chik %] data are normalized.
+[% END %]
+
+[% WRAPPER quadplot files=["bkg_subtlepost.png", "bkg_subtlepost_compare.png"] %]
+(Left) Example of a subtle effect in how the post-edge line is chosen
+in a hydrated uranyl species.  (Right) Comparing the flattened XANES
+data for different choices of post-edge line in a hydrated uranyl
+species.
+[% END %]
+
+[% FILTER html_para %]
+In [% INCLUDE imageref text="this example" label="bkg_subtlepost" %],
+the different choice for the lower bound of the
+normalization range (42 eV in one case, 75 eV in the other) has an
+impact on the flattening of these uranium edge data data,
+which in turn can have in impact in the evaluation of
+average valence in the system.  The small difference in the
+[% INCLUDE font/param a="edge step" %] will also slightly attenuate
+[% chik %].
+[% END %]
+
+[% PROCESS section label="Getting the pre-edge right" %]
+
+[% FILTER html_para %]
+The choice of the [% INCLUDE font/param a="pre-edge range" %]
+parameters is similarly important and also requires visual
+inspection.  A poor choice can result in an incorrect value of
+the [% INCLUDE font/param a="edge step" %] and in distortions to the
+flattened data.  In
+[% INCLUDE imageref text="the following spectrum" label="bkg_uy" %],
+we see the presence of a
+small yttrium K-edge at 17038 eV which distorts the pre-edge for a
+uranium [% l3 %]-edge spectrum at 17166 eV as shown in
+[% INCLUDE imageref text="the figure below" label="bkg_uy" in=1 %].
+In this case the
+[% INCLUDE font/param a="pre-edge range" %] should be chosen to be
+entirely above the yttrium K-edge energy.
+[% END %]
+
+[% WRAPPER figure file="bkg_uy.png" %]
+A sediment sample with both uranium and yttrium.
+[% END %]
+
+
+[% PROCESS section label="Measuring and normalizing XANES data" %]
+
+[% FILTER html_para %]
+If time and the demands of the experiment permit, it is always a good
+idea to measure significant amounts of the pre- and post-edge
+regions.  About 150 volts in the pre-edge and at least 300 volts in
+the post-edge is a good rule of thumb.  With shorter regions, it may
+be difficult to find normalization boundaries that provide good
+normalization lines.  Without a good normalization, it can be
+difficult to compare a XANES measurement quantitatively with other
+measurements.
+
+Reducing the [% INCLUDE font/param a="normalization order" %] (found
+among the [% INCLUDE html/link text="additional background parameters"
+link="../ui/index.html#bkg_additional" %]) might help in the case of
+limited post-edge range.  When measuring XANES spectra in a step scan,
+it is often a good idea to add several widely spaced steps to the end
+of a scan to extend the [% INCLUDE font/param a="normalization range"
+%] without adding excessive time to scan.
+[% END %]

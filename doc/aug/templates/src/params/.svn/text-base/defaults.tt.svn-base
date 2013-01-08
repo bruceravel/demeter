@@ -1,0 +1,67 @@
+[% META title = 'Default parameter values'
+        about = 'How Athena determines its default values' %]
+
+[% FILTER html_para %]
+When data is imported in [% athena %], all parameters are set to their
+default values.  For most data, these defaults are reasonable in the
+sense that using them will result in a decent first stab at background
+removal and Fourier transform.  The sequence of choices [% athena %]
+makes in setting those defaults is somewhat complicated and highly
+configurable.  By understanding how the defaults are chosen, you can
+tune [% athena %] to do a good job processing your more of your data
+without your intervention.
+
+The choices of default values for each parameter is made by walking
+through a hierarchy of decisions, each subsequent level overriding the
+previous level.  The first decision is made by consulting
+[% INCLUDE html/link text="the program preferences" link="../ui/prefs.html" %].
+The program preferences are read from two initialization files when
+[% athena %] starts.  The first initialization file is a system-wide
+file that always contains [% athena %]'s fresh-out-of-the-box
+parameter defaults.  The second initialization file is your own
+personal collection of preferences.  These personal preferences are
+typically set using the preferences dialog, which is found in Settings
+menu.  The values found among the personal preferences will always
+override the system-wide set.
+
+Many of the parameter defaults which can be set in the preferences
+dialog have the option of being set to relative values rather than
+absolute values.  For example, the
+[% INCLUDE preference group="Fft" option="kmax" %] parameter can be
+set to a value such as [% INCLUDE font/quote a="12" %].  It can also
+be set to a value like [% INCLUDE font/quote a="-1" %], which tells
+[% athena %] to select the value 1 wavenumber from the end of the data
+as the value for [%- PROCESS preference group="Fft" option="kmax" %].
+All of the range parameters can be set to values which are relative to
+the extent of the actual measured data.  These options are explained
+in the parameter description on the preferences dialog.
+
+The preferences can be overridden by setting [% INCLUDE font/em
+a="session defaults" %].  The session defaults can be set for
+individual parameters in the right-click context menu for each
+parameter
+[% INCLUDE html/link link="constrain.html#constrainingindividualparameters" text="" %],
+for each group of parameters
+[% INCLUDE html/link link="constrain.html#constraininggroupsofparameters" text="" %],
+or for all parameters in the Values menu.  The
+session default is taken from the value for the current group and is
+then used as the default parameter value for each subsequent data
+group as it is imported.  These values do not persist between
+[% athena %] session.  Once you close [% athena %], the set of session
+defaults is lost.
+
+The concept behind session defaults is to provide a mechanism for
+handling data that is not well handled by the preferences.  For
+example, on the beamline computer I typically have [% athena %]'s
+preferences tuned to work well for the uranium [% l3 %] data my group
+usually collects.  When working on other edges, I will often set
+session defaults once I get a feeling for what parameter values work
+well for those data.
+
+Overriding the session defaults is the
+[% INCLUDE html/link text="data preprocessing mechanism" link="../import/preproc.html" %].
+When data preprocessing is performed and the option to set parameter
+values to the preprocessing standard is selected, those values will
+override all session defaults and preferences.
+
+[% END %]

@@ -1328,7 +1328,12 @@ sub document {
     $file = $doc;
   };
   my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  if (not -e $fname) {
+    $::app->{main}->status("Document target not found: $fname");
+    return;
+  };
   $fname .= '#'.$target if $target;
+  $::app->{main}->status("Displaying document page: $fname");
   Wx::LaunchDefaultBrowser($fname);
 };
 

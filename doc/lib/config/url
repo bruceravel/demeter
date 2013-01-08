@@ -1,0 +1,17 @@
+[%  site.url = {
+         root    = "$rooturl/html"
+         home    = "$rooturl/html/index.html"
+         images  = "$rooturl/images"
+         biglogo = "$rooturl/images/Demeter.png"
+         logo    = "$rooturl/images/Demeter.png"
+         css     = "$rooturl/html/artug.css"
+         perlcss = "$rooturl/html/ppi.css"
+	 athena  = "http://cars9.uchicago.edu/~ravel/software"
+	 demeter = "http://bruceravel.github.com/demeter/"
+	 feff    = "http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"
+	 ifeffit = "http://cars9.uchicago.edu/iffwiki/Ifeffit"
+	 xafsorg = "http://xafs.org"
+	 cc      = "http://creativecommons.org/licenses/by-sa/3.0/"
+	 ccsupport = "http://creativecommons.org/support/"
+}
+ -%]

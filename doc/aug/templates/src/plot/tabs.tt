@@ -1,0 +1,128 @@
+[% META title = 'Plotting space tabs'
+        about = 'Controlling how plots are displayed.' %]
+
+[% INCLUDE section label="Plotting in energy" %]
+
+[% FILTER html_para %]
+The appearance of the plots made in E-, k-, R-, or q-space are
+controlled by the contents of the plot options tabs in the lower right
+hand corner of [% athena %].  This is highlighted in
+[% INCLUDE imageref text="the following figure" label="plot_etab" %].
+
+In energy, you have the option of plotting [% mu %] normalized or not
+and derivative or not.  The red buttons on the left control how the
+current group is plotted.  The purple buttons on the right control how
+marked groups are plotted.  For the current group, you also have the
+option of plotting the background function, the pre-edge line, or the
+post-edge polynomial.  As discussed in
+[% INCLUDE html/link text="the normalization section" link="../bkg/norm.html" %],
+it is very helpful to examine the pre- and post-edge lines to verify
+that data normalization is done correctly.
+[% END %]
+
+[% WRAPPER figure file="plot_etab.png" %]
+The plot options section with the energy tab showing.
+[% END %]
+
+
+[% FILTER html_para %]
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis.  Both
+those these numbers are relative to [% INCLUDE font/param a="e0"  %].
+The [% INCLUDE preference group="plot" option="emin" %]
+and [% INCLUDE preference group="plot" option="emax" %] preferences can
+be used to set the default plot range.  See also the
+[% INCLUDE html/link text="plot styles section" link="../ui/styles.html" %].
+[% END %]
+
+[% INCLUDE section label="Plotting in k-space" %]
+
+[% WRAPPER figure file="plot_ktab.png" %]
+The k tab.
+[% END %]
+
+[% FILTER html_para %]
+The plot of [% chik %] is mostly determined by the value of the
+[% INCLUDE html/link text="plotting k-weight buttons" link="../ui/kweight.html" %].
+The only option on the k-space tab is to make the plot as k-weighted
+[% chie %] rather than [% chik %].  For the [% chie %] plot, the
+k-axis is translated to absolute energy using the value of
+[% INCLUDE font/param a="e0" %].
+
+If the window button is checked, the windowing function used to make
+the forward Fourier transform will be plotted along with the plot for
+the current group.
+
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis.
+Although either number can be a negative value, there is no data below
+k=0.  The [% INCLUDE preference group="plot" option="kmin" %]
+and [% INCLUDE preference group="plot" option="kmax" %] preferences can
+be used to set the default plot range.  See also the
+[% INCLUDE html/link text="plot styles section" link="../ui/styles.html" %].
+[% END %]
+
+
+[% INCLUDE section label="Plotting in R-space" %]
+
+[% WRAPPER figure file="plot_rtab.png" %]
+The R tab.
+[% END %]
+
+[% FILTER html_para %]
+The plot of [% chir %] is determined in part by the value of the
+[% INCLUDE html/link text="plotting k-weight buttons" link="../ui/kweight.html" %].
+The options in the tab tell [% athena %] which part of the complex
+[% chir %] to plot.  For the current group, the parts are inclusive.
+Each selected part is plot.
+[%# This allows you to plot, for example, %]
+[%# the magnitude along with the oscillatory real or imaginary parts. %]
+For the current group, you also have the option of plotting the envelope,
+which is the magnitude plotted in the same color as the negative
+magnitude.  Selecting the envelope deselects the magnitude and vice versa.
+For marked groups, the parts are plotted exclusively and the envelope
+is not available.
+
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis,
+behave much like the same boxes on the k tab, and have similar preferences.
+[% END %]
+
+
+[% INCLUDE section label="Plotting in q-space" %]
+
+
+[% FILTER html_para %]
+The letter [% INCLUDE font/em a="q" %] is used to denote wavenumber of the
+filtered [% chik %] function and to avoid confusion with unfiltered
+k-space.  The units of [% INCLUDE font/mono a="q" %] are
+inverse Angstroms, just as for [% INCLUDE font/mono a="k" %].
+[% END %]
+
+[% WRAPPER figure file="plot_qtab.png" %]
+The q tab.
+[% END %]
+
+[% FILTER html_para %]
+The plot of [% chiq %] is determined in part by the value of the
+[% INCLUDE html/link text="plotting k-weight buttons" link="../ui/kweight.html" %].
+The options in the tab tell [% athena %] which part of the complex
+[% chiq %] to plot.  For the current group, the parts are inclusive.
+Each selected part is plot.
+[%# This allows you to plot, for example, %]
+[%# the magnitude along with the oscillatory real or imaginary parts. %]
+For the current group, you also have the option of plotting the envelope,
+which is the magnitude plotted in the same color as the negative
+magnitude.  Selecting the envelope deselects the magnitude and vice versa.
+For marked groups, the parts are plotted exclusively and the envelope
+is not available.
+
+If the window button is checked, the windowing function used to make
+the forward Fourier transform will be plotted along with the plot for
+the current group.
+
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis,
+behave much like the same boxes on the k tab, and have similar preferences.
+[% END %]
+

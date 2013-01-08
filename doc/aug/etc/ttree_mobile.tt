@@ -1,10 +1,10 @@
-## This file is copyright (c) 2009-2013 Bruce Ravel and
+## This file is copyright (c) 2007 Bruce Ravel and
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
 src  = [% installdir %]/templates/src
-lib  = [% installdir %]/../lib
-dest = [% installdir %]/html
+lib  = [% installdir %]/templates/mobile
+dest = [% installdir %]/mobile
 
 ### copy images and other binary files
 copy = \.(png|gif|jpg|pdf)$
@@ -24,11 +24,12 @@ ignore = \.pod$
 ignore = ^auto
 
 ### options
+verbose
 recurse
 recursion
 
 ### TT options
-pre_process = config/main.artemis
+pre_process = config/main
 wrapper     = site/wrapper
 
 ### local variables

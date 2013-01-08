@@ -1,0 +1,122 @@
+[% META title = 'Deglitching data'
+        about = 'Removing spurious points from your data' %]
+
+[% FILTER html_para %]
+Occasionally your data has spurious points that are obviously
+different from the surrounding points.  These so-called glitches can
+be caused by a variety of issues involving the monochromator, the
+electronics, or the sample itself.  In principle, it should not be
+necessary to do anything at all about glitches.  A feature in the data
+that is only one or two points wide necessarily contributes a high
+frequency signal to the data.  Since the data are treated using
+Fourier techniques, these high frequency additions to the data should
+have scant impact on the data.
+
+In practice, there are a variety of ways that glitches like those shown
+on the right in
+[% INCLUDE imageref text="the figure below" label="deglitch_plot" %]
+can impact the processing of the data.  Certainly, large glitches are
+unsightly and have an aesthetic impact on the presentation of your
+data.
+
+The process by which glitchy points are removed from the data is called
+deglitching.  Yes, I also think that's a funny sounding word.
+[% END %]
+
+[% WRAPPER figure file="deglitch.png" %]
+The deglitching dialog.
+[% END %]
+
+[% FILTER html_para %]
+[% athena %]'s approach to deglitching involves simply removing the
+points from the data.  No effort is made to interpolate from the
+surrounding points in an effort to replace that point with a
+presumably more appropriate value.  The reason that no interpolation
+is done is that EXAFS data are typically measured on a grid that is
+oversampled.  When the data are converted from [% mu %] to [% chik %]
+as part of the background removal, the data are rebinned onto the
+standard k-grid.  Since a rebinning is performed later in the data
+processing, there is no reason to interpolate at the time of
+deglitching.
+
+Deglitching only removes points from the data in [% athena %]'s
+memory.  The data on disk are never altered.
+
+There are two methods of deglitching offered by [% athena %]'s
+deglitching dialog, shown
+[% INCLUDE imageref text="above" label="deglitch" in=1 %].  The
+first involves selecting and removing the glitches one by one.
+The points are selected by
+clicking the [% INCLUDE font/quote a="Choose a point" %] button then
+clicking on the glitch in the plot.  After clicking on the plot
+window, the selected point is indicated with an orange circle, as on
+the left of
+[% INCLUDE imageref text="the next figure" label="deglitch_plot" %].
+Clicking the [% INCLUDE font/quote a="Remove point" %] button removes
+that point from the data, shown in the bottom panel.
+
+[% END %]
+
+[% WRAPPER quadplot files=["deglitch_plot.png",
+                           "deglitch_point.png",
+                           "deglitch_pointremoved.png"]
+%]
+(Left) This is an example of data the needs deglitching.  In this
+case, there was a problem with data channels not arriving at the
+measurement computer in the proper sequence.  This timing problem
+resulted in occasionally spikes in the data.  (Right) A point has been
+selected for removal.  The point flagged for removal is indicated with
+a little orange circle.  (Bottom) The selected point has been removed
+from the data.  The deglitching margins are displayed along with the
+data.
+[% END %]
+
+[% FILTER html_para %]
+The second method for removing glitches is more automated.  In the
+figure above, the deglitching margins are shown by the orange lines.
+Those margins are drawn between the specified minimum and maximum
+energy values.  The lines are drawn a set amount above and below the
+post-edge line used to normalize the data.  The separation between the
+post-edge line and the margins is given by the value in the tolerance
+box.
+
+When you click the [% INCLUDE font/quote a="Remove glitches" %] button,
+and points that within the energy range of the margins but which lie
+above the upper margin or below the lower margin are removed from the
+data.  These margins can also be drawn in the pre-edge region using
+the pre-edge line.  There is no way to use margins in an energy region
+that includes the edge.
+
+This technique is handy in that it quickly removes many glitches in a
+situation like the one shown.  It is very dangerous, however, if not
+used with care.  If the margins extend into the white line region or
+are so tight around the post-edge line that the oscillatory structure
+crosses the margins, this technique will happily remove good points
+from the data.  So set your margins well.
+
+A useful variation of the point-by-point technique involves plotting
+the [% chie %] data.  This can only be done for glitches above the
+edge, but it can be a very useful technique for removing small
+glitches from the data.  In
+[% INCLUDE imageref text="this figure" label="deglitch_chie_mu" %]
+we see [% mu %] data for [% u3o8 %] that appear fine.
+[% END %]
+
+[% WRAPPER quadplot files=["deglitch_chie_mu.png", "deglitch_chie.png"] %]
+(Left) [% mu %] data for [% u3o8 %] that have a tiny glitch hidden in
+the high energy region.  (Right) Plotted as [% chik %], the glitch at
+about 12 [% iAA %] in these [% chik %] data is clearly seen.
+[% END %]
+
+[% FILTER html_para %]
+When the [% chie %] is displayed, the
+k-weight value specified by the k-weight controls is used.  From
+there, the point-by-point technique is identical to how it used with
+[% mu %] data.  The advantage is that small glitches might be easier
+to see and to pluck from the data when the data is plotted as
+[% chie%].
+The point-by-point deglitching algorithm works on the [% chie %] data
+in the same manner as for [% mu %] data.  Points are selected by
+clicking on the plot, then removed by clicking the
+[% INCLUDE font/quote a="Remove point" %] button.
+[% END %]

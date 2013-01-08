@@ -1,0 +1,30 @@
+[% META title = 'Spectral resolution and k-range' %]
+
+[% FILTER html_para %]
+
+The first and second coordination shells in iron metal are at 2.49 and
+2.87 [% AA %].  These closely spaced shells overlap considerably when
+the Fourier transform of the [% chik %] data are plotted.
+Consequently, the iron foil data can be used to demonstrate the
+relationship between the Fourier transform k-range and spectral
+resolution.
+
+We see the iron foil data plotted in [% INCLUDE imageref text="the
+figure below" label="plot_fe_krange" %] using three different values
+for [% PROCESS font/param a="kmax" %].  The data are three identical
+copies of the 60K iron foil data and have had the background function
+removed in the same way.  
+
+For the smallest value of [% PROCESS font/param a="kmax" %], 10 [% iAA %], 
+the second shell appears only as a shoulder at about 2.5 [% AA %].
+The shoulder becomes more pronounced when 
+[% PROCESS font/param a="kmax" %] is increased to 16 [% iAA %].  Only
+when [% PROCESS font/param a="kmax" %] is set to  22 [% iAA %],
+the entire measured data range, is the second coordination visible as a
+resolved peak.
+
+[% END %]
+
+[% WRAPPER figure file="plot_fe_krange.png" %]
+Iron foil data, plotted with three different k-ranges.
+[% END %]

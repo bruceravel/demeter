@@ -1,0 +1,4 @@
+[% META title = 'Principle component analysis'
+        about = 'Abstract decomposition of a data sequence' %]
+
+[% INCLUDE todo what="PCA" %]

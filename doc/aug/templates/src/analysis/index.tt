@@ -1,0 +1,21 @@
+[% META title = 'Data analysis in Athena'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+[% athena %] provides various kinds of data analysis.  None of the
+data analysis capabilities in [% athena %] require the use of [% feff %].
+Analysis of data using [% feff %] is a huge topic and involves a
+different program, [% artemis %].  The data analysis techniques
+included in [% athena %] are all purely empirical.  While there is no
+substitute for careful, sophisticated analysis of EXAFS data using
+theory from [% feff %], often the empirical techniques described in
+this chapter are adequate to answer the questions you have about your
+data.
+
+[% athena %]'s analysis tools are accessed from the Analysis menu, as
+shown [% INCLUDE imageref text="below" label="analysis" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="analysis.png" %]
+The contents of the Analysis menu.
+[% END %]

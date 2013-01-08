@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/aug/!svn/ver/64/templates/src/bkg
+END
+ft.tt
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/aug/!svn/ver/64/templates/src/bkg/ft.tt
+END
+norm.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/57/templates/src/bkg/norm.tt
+END
+range.tt
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/aug/!svn/ver/47/templates/src/bkg/range.tt
+END
+kweight.tt
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/aug/!svn/ver/15/templates/src/bkg/kweight.tt
+END
+rbkg.tt
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/aug/!svn/ver/29/templates/src/bkg/rbkg.tt
+END
+index.tt
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/aug/!svn/ver/29/templates/src/bkg/index.tt
+END

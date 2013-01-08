@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/aug/!svn/ver/69/templates/src/import
+END
+preproc.tt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/aug/!svn/ver/29/templates/src/import/preproc.tt
+END
+multiple.tt
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/aug/!svn/ver/49/templates/src/import/multiple.tt
+END
+ref.tt
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/aug/!svn/ver/21/templates/src/import/ref.tt
+END
+plugin.tt
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/aug/!svn/ver/64/templates/src/import/plugin.tt
+END
+projsel.tt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/aug/!svn/ver/25/templates/src/import/projsel.tt
+END
+columns.tt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/aug/!svn/ver/29/templates/src/import/columns.tt
+END
+plugin.example
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/aug/!svn/ver/7/templates/src/import/plugin.example
+END
+index.tt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/aug/!svn/ver/69/templates/src/import/index.tt
+END

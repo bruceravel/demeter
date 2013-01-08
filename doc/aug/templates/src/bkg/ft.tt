@@ -1,0 +1,120 @@
+[% META title = 'Understanding Fourier transforms'
+	about = 'Information theory and background removal'
+%]
+
+[% FILTER html_para %]
+[% athena %] and [% ifeffit %] determine the background function using
+a definition based in Fourier theory.  In short, the background is
+that part of the [% mu %] data containing low frequency Fourier
+components, while the data consists of the remaining, higher-frequency
+Fourier components.  The [% autobk %] algorithm, then, is a Fourier-based
+technique.  It varies the parameters of a piece-wise spline such that,
+when that spline is subtracted from the [% mu %] data, what is left has
+its low frequency Fourier components optimized.  As we will see
+shortly, the default behavior of [% athena %] is to simply minimize
+the low frequency components.
+
+Before discussing how [% athena %] defines
+[% INCLUDE font/em a="low" %] and
+[% INCLUDE font/em a="high" %] frequency
+in the context of background removal, we can look at a simple
+illustration of why background removal is necessary and why it can be
+difficult.  To understand the background removal algorithm, we need to
+understand a couple of things about the Fourier transform
+
+[% athena %] has a teaching tool which uses simple sine waves to
+demonstrate some of the most important features of the Fourier
+transform operation.  In the Help menu, you will find an entry labeled
+"Explain Fourier transforms".  When you select that, the main window
+will be replaced with the teaching tool
+[% INCLUDE imageref text="shown here" label="tft" in=1 %]
+[% END %]
+
+[% WRAPPER figure file="tft.png" %]
+The Fourier transform teaching tool.
+[% END %]
+
+[% FILTER html_para %]
+The point of a Fourier transform is to distinguish the frequency
+components of a signal.  The left side of
+[% INCLUDE imageref text="The next figure" label="tft_waves" %]
+shows a simple example of a mixed frequency signal along with its
+components.
+The right side
+shows that the two frequency signal Fourier transforms to a spectrum
+with two peaks, one for each component frequency.
+[% END %]
+
+[% WRAPPER quadplot files=["tft_waves.png", "tft_wavesft.png"] %]
+(Left) When you click the button labeled [% INCLUDE font/quote a="Plot
+waves in k" %], this is what gets plotted.  This shows two waves of
+phase 2 and 3 (i.e. the sine waves repeat after 2 or 3 on the scale of
+the x-axis).  The third trace shows the sum of those two sine waves.
+In the summed data, the two signals are intermixed in a way that
+confuses the fact that there are two sine ways involved.  (Right) When
+you Fourier transform the sum of the two sine waves, this gets
+plotted. That there are two peaks in the Fourier transform indicates
+that there were two sine waves involved in the sum.  That the peaks
+are at 2 and 3 on the x-axis, indicate the frequencies of the sine
+waves in the sum.  Try changing the values of the sine waves or adding
+a third sine wave of a different frequency and replotting the sum and
+its Fourier transform.  The Fourier transform, then, is a tool that
+isolate different frequencies in a signal.
+[% END %]
+
+[% FILTER html_para %]
+So, can we use a Fourier transform to distinguish the sine
+wave from the step-like function?  The left side of
+[% INCLUDE imageref text="The next figure" label="tft_step"%]
+shows an artificial XAS signal, consisting of a step-like function
+(actually an error function) multiplied by 1 plus a sine function,
+much like
+[% INCLUDE html/eqref text="the equation for mu(E)" link="../bkg/norm.html#mu" %].
+The right side
+shows the Fourier transform of this XAS-like function.
+[% END %]
+
+
+[% WRAPPER quadplot files=["tft_step.png", "tft_stepft.png"] %]
+(Left) This figure is of (poorly) simulated [% mu %] spectrum.  It was
+made by clicking on the button that says [% INCLUDE font/quote a="Plot
+edge step" %].  In fact, this is a slightly broadened error function
+multiplied by one plus a sine wave of frequency 2.  As such, it is an
+idealization of real XAS data.  (Right) Clicking on the button labeled
+[% INCLUDE font/quote a="Plot FT of edge step" %] results in this
+plot.
+[% END %]
+
+[% FILTER html_para %]
+As you can see, the Fourier transform of the entire spectrum is
+dominated by the signal near 0 on the x-axis.  The signal from the
+sine wave is a little bump barely recognizable above the ripple from
+the step-like function.  Apparently we need to do something a bit more
+clever than simply Fourier transforming the [% mu %] data if we want to
+examine the oscillatory chi function without excessive interference
+from the step-like part of the [% mu %] spectrum.
+
+The solution is to somehow determine the shape of the step-like part
+of the [% mu %] spectrum and subtract it from the data.  Ideally, this
+will remove all the stuff near 0 on the x-axis, leaving peaks
+associated with the oscillatory part of the signal.
+
+The AUTOBK algorithm is based on the principles discussed in this
+section.  Using a cutoff frequency, it varies a piece-wise spline and
+subtracts that spline from the data.  When the Fourier components
+below that cutoff frequency are minimized, the spline is subtracted
+one last time from the data.  The difference between the data and the
+spline are normalized, converted from energy to photoelectron
+wavenumber and called [% chik %].
+
+In the next section, we will discuss how to choose that cutoff
+frequency in [% athena %] and how to choose it sensibly.
+
+The Fourier transform teaching tool, has some other features not
+discussed above.  It lets you explore the effect of the extent of the
+data range on the Fourier transform, play with different windowing
+function, see how close together in frequency sine waves can be and
+still be distinguished in a Fourier transform, and explore the
+different parts of the complex Fourier transform.  These are all
+important topics that will be touched upon in later sections.
+[% END %]

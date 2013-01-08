@@ -1,0 +1,29 @@
+[% META title = "Athena: A User's Guide"
+        about = "XAS data processing and manipulation"
+        chapter = 1
+	nosubpages = 1
+%]
+
+
+[% WRAPPER html/homer %]
+   Just as Phaeacian men excel the world at sailing, driving
+   their swift ships on the open seas, so the women excel at
+   all the arts of weaving. That is Athena's gift to them
+   beyond all others -- a genius for lovely work, and a fine
+   mind too.
+                                (Homer, The Odyssey, Book 7)
+[% END %]
+
+[% FILTER html_para %]
+[% INCLUDE image file="greek_delphi.jpg" %]
+
+The Tholos temple of Athena Pronoia, or Athena of Forethought and
+Providence, at Delphi.
+
+Document version [% document_version %] for [% athena %] version [% athena_version %].
+
+[% IF document_style == 'pod' %]
+[% PROCESS menu/splay %]
+[% END %]
+
+[% END %]

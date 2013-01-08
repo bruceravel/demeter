@@ -1,0 +1,36 @@
+[% META title = 'Parameter report files'
+	about = 'Linking Athena with spreadsheet programs'
+%]
+
+[% FILTER html_para %]
+The final kind of output file is a parameter report.  In the Edit
+menu, you will find a submenu labeled
+[% INCLUDE font/quote a="Write a report" %], shown
+[% INCLUDE imageref text="below" label="export_report" in=1 %].  The various
+options in that submenu write out files containing the parameters from
+the main window.
+[% END %]
+
+[% WRAPPER figure file="export_report.png" %]
+Writing a report on data groups in [% athena %].
+[% END %]
+
+[% FILTER html_para %]
+The first two options write all the parameters to an Excel file, the
+second two options write the same information to a simple comma
+separated value file, the next two options write the information to a
+plain text file.  In each case, you have a choice of saving parameters
+from all groups or only the marked groups.
+[% END %]
+
+[% WRAPPER figure file="export_excelreport.png" %]
+An example of the Excel spreadsheet output displayed in OpenOffice.
+[% END %]
+
+[% FILTER html_para %]
+The last option in the list is a way of moving data from
+[% athena %] to the Xfit analysis program.  If you know what that
+is, you probably already know how to use this output file.  If you
+have no idea what I am talking about, it is unlikely to matter to
+you.  Really.
+[% END %]

@@ -1,0 +1,206 @@
+[% META title = 'Using the group list'
+	about = ''
+%]
+
+[% FILTER html_para %]
+
+The group list is the primary mechanism for accessing and interacting
+with your data.  As data files are imported in [% athena %], each gets
+an entry in the group list.  Data generated during the course of using
+[% athena %], such as copied or merged groups, also get placed in the
+group list.
+
+Each group list entry consists of two parts, the label and the check
+button.  The label contains text identifying the group.  The default
+is for the label to be the same as the file name.  Clicking with the
+left mouse button on a label makes that group the
+[% INCLUDE font/em a="current" %] group.
+The current group's label is highlighted with a light red color and
+its parameters are displayed in the main window.  The current group is
+the one that gets plotted when the red plotting buttons are pressed.
+
+The check button is used to mark the group.  Marking, explained in
+detail [% INCLUDE html/link text="in the next section"
+                            link="../ui/mark.html" %],
+is one of the fundamental user interface features in [% athena %].
+Any feature of [% athena %] that involves more than one group uses the
+mark buttons.
+[% END %]
+
+[% PROCESS section label="Copying groups" %]
+
+[% FILTER html_para %]
+You can copy a group by hitting
+[% INCLUDE modkey key="Control" letter='y' %]
+or by selecting [% INCLUDE font/quote a="Copy group" %] from the Group
+menu.  This makes an identical copy of the current group and places it
+at the end of the groups list.  All parameters are identical and the
+data arrays in [% ifeffit %] are all copied -- only the [% ifeffit %]
+group name in different.
+
+Copying is very useful for examining how changes in parameter values
+propagate through the data processing.  You can make one or more
+copies, change particular data values, and overplot the results.
+
+The process of comparing parameter values can be automated.
+In the Group menu, you'll find an option for
+[% INCLUDE font/quote a="Copy series" %].  This opens the dialog shown
+[% INCLUDE imageref text="below" label="ui_series" in=1 %].  You can
+select the parameter to increment from the drop-down menu.  The next
+three entry boxes are for setting the grid of parameter values.  When
+you click [% INCLUDE font/quote a="Make copies" %], the copies are
+made, the parameter values are incremented, the new groups are
+inserted into the group list, and they are renamed with useful labels.
+Finally a plot is made showing the differences between the copies with
+different parameter values.
+[% END %]
+
+[% WRAPPER figure file="ui_series.png" %]
+The series copying dialog.  In this example, a series of four copies
+with [% INCLUDE font/param a="e0" %] values incremented by 5 eV.
+[% END %]
+
+[% PROCESS section label="Reorganizing the group list" %]
+[% FILTER html_para %]
+
+When a file is imported into [% athena %], the name of the file is
+used as the label in the group list.  That's fine, but you can change
+the label by selecting [% INCLUDE font/quote a="Rename group" %]
+from the Group menu, typing
+[% INCLUDE modkey key="Control" letter='l' %], or double clicking on
+an item in the group list.  This replaces the echo area with a dialog
+for entering the new label for the group, shown
+[% INCLUDE imageref text="here" label="ui_renaming" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="ui_renaming.png" %]
+Renaming a group list entry.
+[% END %]
+
+[% FILTER html_para %]
+Hitting [%- INCLUDE modkey key="return" %] or clicking the OK button
+renames the group, shown
+[% INCLUDE imageref text="here" label="ui_renamed" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="ui_renamed.png" %]
+After renaming a group list entry.
+[% END %]
+
+[% FILTER html_para %]
+We have [% INCLUDE html/link text="already seen"
+                             link="../bkg/rbkg.html" %]
+how groups can be copied.  Making one or more copies is an excellent
+tool for exploring the effects of the various parameters in the main
+window.
+
+There are several other useful tools for modifying the contents of the
+group list.  You can reorder the items in the groups list using
+[% INCLUDE modkey key="alt" letter='k' %] or
+[% INCLUDE modkey key="alt" letter='j' %]
+to move the current group up or down in the list.
+
+Hitting
+[% INCLUDE modkey key="control" letter='k' %] or
+[% INCLUDE modkey key="control" letter='j' %] changes the current
+group to the one above or below.
+
+Items can be removed from the list.  The current group or the marked
+groups can be removed from the project by selecting
+[% INCLUDE font/quote a="Remove group" %] or
+[% INCLUDE font/quote a="Remove marked groups" %]
+from the Group menu.  You can remove all the
+groups from the list by selecting
+[% INCLUDE font/quote a="Close project" %] from the File or
+Group menu or by hitting [% INCLUDE modkey key="control" letter='w' %].
+[% END %]
+
+[% INCLUDE section label="Information about items in the group list" %]
+[% FILTER html_para %]
+Hitting [% INCLUDE modkey key="control" letter='b' %] displays
+several pieces of information about the current group.  The dialog
+that pops up to display that information is shown
+[% INCLUDE imageref text="here" label="ui_about" in=1 %].
+[% END %]
+
+[% WRAPPER figure file="ui_about.png" %]
+The dialog containing information about the data group.
+[% END %]
+
+[% FILTER html_para %]
+Hitting [% INCLUDE modkey key="control" letter='B' %] displays that
+information for all the marked groups.
+
+If you mistakenly import a data group as the wrong record type, you
+can change it by selecting
+[% INCLUDE font/quote a="Change record type" %] from the Group menu.
+You can only change between the various record types in energy,
+though.  If you import a [% chik %] file as [% mu %], you will have to
+remove the group and re-import it.
+[% END %]
+
+[% WRAPPER figure file="ui_changetype.png" %]
+The dialog for changing the record type of a group.
+[% END %]
+
+[% INCLUDE section label="Using the mouse in the group list" %]
+
+[% FILTER html_para %]
+You can turn on automated replotting when you select a new group by
+clicking on it in the group list, by selecting one of the items from
+the [% INCLUDE font/quote a="Group replot" %] submenu at the bottom
+of the Plot menu, shown
+[% INCLUDE imageref text="below" label="ui_groupreplot" in=1 %].
+With one of the options from that submenu selected,
+groups will be replotted when you click on them.
+[% END %]
+
+[% WRAPPER figure file="ui_groupreplot.png" %]
+Setting up group replotting from a submenu under the Plot menu.
+[% END %]
+
+[% FILTER html_para %]
+If you right click on any item in the group list, a context menu is
+posted, as shown
+[% INCLUDE imageref text="below" label="ui_groupcontext" in=1 %].
+The top two items in that context menu are for plotting.  They work
+just like the red and purple plot buttons.  The second two items are
+the same as the Group and Values menu.
+[% END %]
+
+[% WRAPPER figure file="ui_groupcontext.png" %]
+Clicking the right mouse button on a group list entry pops up this
+context menu.
+[% END %]
+
+[% FILTER html_para %]
+As mentioned above, double clicking on a group list item will rename it.
+[% END %]
+
+[% INCLUDE section label="Detector groups and background groups" %]
+
+[% FILTER html_para %]
+Detector groups are group list entries that can only be plotted in
+energy.  They are made from the numerator and denominator arrays that
+were used to make the data in the data group.  When you choose
+[% INCLUDE font/quote a="Make detector groups" %]
+from the Group menu, those
+two groups are added to the group list.  Their
+[% INCLUDE font/param a="plot multiplier" %] parameters are set such
+they plot nicely with [% mu %] from their original data group.
+Detector groups can only be made in the session during which the
+original data was imported.  Insufficient information is saved to
+project files to be able to properly reconstruct the detector groups.
+You can [% INCLUDE html/link text="plot the I0 array"
+link="../plot/etc.html#plottingi0" %] without making a detector group
+at any time from the Plot menu.
+
+Background groups are group list entries that can be plotted in any
+space.  A background group is created from the background function for
+a group when you choose
+[% INCLUDE font/quote a="Make background group" %] from the
+Group menu.  Creating a background group
+using a small [% INCLUDE font/param a="rbkg" %] parameter is one way
+to examine the atomic fine structure, or AXAFS, if you believe in such
+things.
+[% END %]

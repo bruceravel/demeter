@@ -1,0 +1,61 @@
+[% META title = 'Truncating Data'
+        about = 'Removing data from the beginning or end of a scan' %]
+
+[% FILTER html_para %]
+If your data does something odd at one end of the scan, the easiest
+solution might be to simply trim it away.  The truncation dialog
+[% INCLUDE imageref text="below" label="truncate" in=1 %]
+allows you to chop data before or after a selected value.
+[% END %]
+
+[% WRAPPER figure file="truncate.png" %]
+The truncation dialog.
+[% END %]
+
+[% FILTER html_para %]
+The menu is used to tell [% athena %] whether points should be trimmed
+from before or after the selected point.  The point can be chosen by
+typing in the box or by clicking the pluck button then clicking on the
+plot.
+[% END %]
+
+[% WRAPPER figure file="truncate_plot.png" %]
+Tin oxide data with some spurious points near the end of the scan.
+[% END %]
+
+[% FILTER html_para %]
+When you select a point, it is indicated with a vertical line, as
+shown in
+[% INCLUDE imageref text="the plot above" label="truncate_plot" %].  To
+remove the data before or after that line, click the
+[% INCLUDE font/quote a="Truncate data" %] button.
+
+Sometimes the issue is not simply that the data are
+[% INCLUDE font/quote a="icky" %] after a
+certain point.  Sometimes your sample has elements with nearby edges,
+thus limiting the range over which you can actually measure the data.
+An example is shown in
+[% INCLUDE imageref text="the next plot" label="truncate_batio3" %],
+the Ti K edge is at 4966 eV and the Ba [% l3 %] edge is
+at 5247 eV.  A careless choice of spline and normalization range will
+lead to a data processing disaster.
+[% END %]
+
+[% WRAPPER figure file="truncate_batio3.png" %]
+The Ti K and Ba [% l3 %] edges of [% batio3 %].
+[% END %]
+
+[% FILTER html_para %]
+Of course, truncation is not the only way of dealing with this issue.
+A careful choice of the spline, pre-edge, and normalization ranges is
+usually sufficient to treat any strange features at the beginning or
+end of the data set.  So which is better?  I think it's a matter of
+preference.  As long as you understand what you are doing and process
+all your data in a consistent, defensible manner, you can use either
+approach.
+
+This truncating algorithm is the same as the one used by
+[% INCLUDE html/link text="the truncating feature"
+                     link="../import/preproc.html#otherpre-processingchores" %]
+of the column selection dialog.
+[% END %]

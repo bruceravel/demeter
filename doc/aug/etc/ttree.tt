@@ -1,4 +1,4 @@
-## This file is copyright (c) 2009-2013 Bruce Ravel and
+## This file is copyright (c) 2007 Bruce Ravel and
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
@@ -24,6 +24,7 @@ ignore = \.pod$
 ignore = ^auto
 
 ### options
+verbose
 recurse
 recursion
 

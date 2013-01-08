@@ -1,0 +1,28 @@
+[% META title = 'Data processing'
+        about = 'Doing interesting things with your data'
+	chapter = 1 %]
+
+[% FILTER html_para %]
+[% athena %] offers a variety of data processing chores -- chores
+which modify the data in some way to prepare it for more extensive
+analysis.  With the exception of merging data groups, all data
+processing features are accesses through the Data menu, shown
+[% INCLUDE imageref text="below" label="process" in=1 %].  All the
+entries in the Data menu, replace the main window with a dialog
+specially designed for the data processing chore.
+
+You can work on more than one data group in any dialog without having
+to return to the main menu.  Clicking on a group label in the group
+list will make that group current, display parameters appropriate to
+the data processing dialog, and plot the data in some appropriate
+manner.
+
+When you are finished using the data processing dialog, you can press
+the button labeled [% INCLUDE font/quote a="Return to the main window" %].
+Doing so will close the special dialog and redisplay the main
+window.
+[% END %]
+
+[% WRAPPER figure file="process.png" %]
+The Data menu is used to access almost all data processing dialogs.
+[% END %]
