@@ -29,7 +29,7 @@ recursion
 
 ### TT options
 pre_process = config/main.artemis
-wrapper     = site/wrapper
+wrapper     = site/wrapper.artemis
 
 ### local variables
 define rootdir = [% installdir %]

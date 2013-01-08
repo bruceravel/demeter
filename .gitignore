@@ -40,10 +40,16 @@ doc/dpg/templates/lib/config/version
 doc/artug/bin/build
 doc/artug/etc/ttree.cfg
 doc/artug/html/
-doc/artug/templates/lib/config/map
-doc/artug/templates/lib/config/version
 doc/artug/Template
 doc/artug/images/pto.svg
+
+doc/aug/bin/build
+doc/aug/etc/ttree.cfg
+doc/aug/html/
+doc/aug/Template
+
+doc/lib/config/map.*
+doc/lib/config/version.*
 
 nytprof/
 nytprof.out

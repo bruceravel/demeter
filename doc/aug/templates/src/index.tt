@@ -20,7 +20,7 @@
 The Tholos temple of Athena Pronoia, or Athena of Forethought and
 Providence, at Delphi.
 
-Document version [% document_version %] for [% athena %] version [% athena_version %].
+Document version [% document_version %] for [% demeter %] version [% demeter_version %].
 
 [% IF document_style == 'pod' %]
 [% PROCESS menu/splay %]
