@@ -1,7 +1,8 @@
 
 [% site = {
-	   name      = 'Artemis Users Guide'
-	   server    = 'http://cars9.uchicago.edu' 
+	   artemis_name = 'Artemis Users Guide'
+	   athena_name  = 'Athena Users Guide'
+	   server    = 'https://github.com/bruceravel/demeter' 
 	   admin     = 'bravel@bnl.gov'
 	   copyright = '2007-2013 Bruce Ravel'
 	   floatdir  = "smfigureright"

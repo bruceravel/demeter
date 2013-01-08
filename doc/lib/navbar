@@ -1,6 +1,6 @@
 [% dots  = template.nosubpages ? "." : ".." %]
   <div class=navbar>
-  <a class=navhead href="[% dots %]/index.html">The Artemis Users' Guide</a>
+  <a class=navhead href="[% dots %]/index.html">[%title%]</a>
   <table class=navtable>
     <tr>
       <td align=left>

@@ -9,7 +9,7 @@ dialog opens.  On my Linux computer, it looks like
 [% INCLUDE imageref text="this:" label="import_filedialog" %]
 [% END %]
 
-[% WRAPPER figure file="import_filedialog.png" %]
+[% WRAPPER image file="import_filedialog.png" %]
 The file selection dialog on a Linux computer.
 [% END %]
 
@@ -41,7 +41,7 @@ The controls in the tabs at the bottom left are the discussed in later
 sections.
 [% END %]
 
-[% WRAPPER figure file="import_colsel.png" %]
+[% WRAPPER image file="import_colsel.png" %]
 The column selection dialog.
 [% END %]
 
@@ -53,13 +53,13 @@ numerator.  The transmission channel is called
 [% INCLUDE font/quote a="mcs4" %] and its button is checked for the
 denominator.
 
-As you check the buttons, a couple of helpful things happen.  The
+As you check the buttons, some helpful things happen.  The
 first is that equation for how the columns combine to form [% mu %] is
 displayed in the box below the column selection buttons.  Also as you
 check buttons, the data are plotted.  If you have selected the correct
 columns and chosen the numerator and denominator correctly, the plot
 will look like XAS data.  If the plot is upside-down, then you need to
-switch the numerator and denominator.  If the plot doesn't look like
+switch the numerator and denominator.  If the plot doesn't[%#'%] look like
 XAS at all, you need to try some of the other channels.
 
 I chose this example because the columns are labeled somewhat
@@ -80,7 +80,7 @@ interpret your data correctly.  The data types menu is shown in
 The default is for data to be imported as [% mu %].
 [% END %]
 
-[% WRAPPER figure file="import_types.png" %]
+[% WRAPPER image file="import_types.png" %]
 Data types in the column selection dialog.
 [% END %]
 
@@ -90,27 +90,19 @@ The other choices are:
 
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
-norm(E) : [% mu %] data that have already been normalized in some
-other way.  These data will not be normalized by [% athena %]
-[% END %]
-[% WRAPPER html/li %]
 xanes(E) : [% mu %] data measured over a limited data range and
 for which you do not need to look at the [% chik %]
+[% END %]
+[% WRAPPER html/li %]
+norm(E) : [% mu %] data that have already been normalized in some
+other way.  These data will not be normalized by [% athena %]
 [% END %]
 [% WRAPPER html/li %]
 chi(k) : [% chik %] data, that is data that have already been
 background subtracted from [% mu %]
 [% END %]
 [% WRAPPER html/li %]
-detector : data that are not [% mu %] but which you may want to
-plot in energy
-[% END %]
-[% WRAPPER html/li %]
 xmu.dat : the [% PROCESS font/file a='xmu.dat' %] file from
-[% feff %]
-[% END %]
-[% WRAPPER html/li %]
-chi.dat : the [% PROCESS font/file a='chi.dat' %] file from
 [% feff %]
 [% END %]
 [% END %]
@@ -119,7 +111,7 @@ chi.dat : the [% PROCESS font/file a='chi.dat' %] file from
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued ([% mu %], normalized
 [% mu %], XANES, or detector) record types at any time by selecting
-[% INCLUDE font/quote a="Change record type" %] from the Group menu
+[% INCLUDE font/quote a="Change data type" %] from the Group menu
 and selecting the correct choice from the popup dialog,
 [% INCLUDE imageref text="shown here" label="import_changetype" %].
 This dialog cannot, however, be used to change [% chik %] data to an
@@ -127,7 +119,7 @@ energy-value type or vice-versa, nor to change one of the [% feff %]
 types to a non-[% feff %] type.
 [% END %]
 
-[% WRAPPER figure file="import_changetype.png" %]
+[% WRAPPER image file="import_changetype.png" %]
 Changing the data type after the data are imported.
 [% END %]
 
@@ -145,33 +137,27 @@ data which is a function of pixel index, requires special treatment.
 
 [% FILTER html_para %]
 
-[% athena %]'s column selection dialog has some special features for
+[% athena %]'s[%#'%] column selection dialog has some special features for
 dealing with multi-element detectors.  You can select all the channels
 of the MED as elements of the numerator, as shown in
 [% INCLUDE imageref text="this example of the column selection dialog"
 label="import_med" %].
 [% END %]
 
-[% WRAPPER figure file="import_med.png" %]
+[% WRAPPER image file="import_med.png" %]
 Importing multi-element data in the column selection dialog.
 [% END %]
 
 [% FILTER html_para %]
 Importing the data will then add up the channels on the fly and put a
 group containing the summation of the channels in the group list.
-[% END %]
 
-[% WRAPPER figure file="import_medimported.png" %]
-After adding columns of multi-element data on the fly in [% athena %].
-[% END %]
-
-[% FILTER html_para %]
 You have the option of clicking the button that says
 [% INCLUDE font/quote a="Save each channel as a group" %], as
 [% INCLUDE imageref text="shown here" label="import_medch" in=1 %].
 [% END %]
 
-[% WRAPPER figure file="import_medch.png" %]
+[% WRAPPER image file="import_medch.png" %]
 Importing multi-element data in the column selection dialog and saving
 each channel as a group.
 [% END %]
@@ -184,6 +170,6 @@ group list.  This is handy for examining the channels and discarding
 any that are not of usable quality.
 [% END %]
 
-[% WRAPPER figure file="import_medchimported.png" %]
+[% WRAPPER image file="import_medchimported.png" %]
 After importing the channels of multi-element data as individual groups.
 [% END %]

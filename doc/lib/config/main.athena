@@ -1,13 +1,16 @@
+[% title = 'The Athena Users\' Guide' %]
+[% program = 'Athena' %]
 [% PROCESS config/page
 	 + config/site
 	 + config/url
-	 + config/version
-         + config/map
+	 + config/version.athena
+         + config/map.athena
          + config/macros
 %]
 
 [%
    athena_link	    = '<span class=programlink>ATHENA</span>'
+   demeter_link     = '<span class=programlink>DEMETER</span>'
    ifeffit_link	    = '<span class=programlink>IFEFFIT</span>'
    bruce_mail	    = '(bravel |A|T| bnl |D|O|T| gov)'
    recode           = '&ldquo;<tt>(?{ code })</tt>&rdquo;'

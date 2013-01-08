@@ -13,7 +13,7 @@ computer, it looks like
 [% INCLUDE imageref text="this" label="import_multiple" %].
 [% END %]
 
-[% WRAPPER figure file="import_multiple.png" %]
+[% WRAPPER image file="import_multiple.png" %]
 Importing multiple data sets with the file selection dialog.
 [% END %]
 
@@ -42,7 +42,7 @@ Each file imported in this way will be listed in the group list, shown
 [% INCLUDE imageref text="here" label="import_multipleimported" in=1 %]
 [% END %]
 
-[% WRAPPER figure file="import_multipleimported.png" %]
+[% WRAPPER image file="import_multipleimported.png" %]
 [% athena %] after importing multiple data sets.
 [% END %]
 

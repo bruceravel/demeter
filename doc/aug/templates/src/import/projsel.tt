@@ -4,14 +4,14 @@
 
 [% FILTER html_para %]
 [% INCLUDE html/link link="../output/project.html" text="Project files" %]
-are [% athena %]'s mechanism for saving the state of an analysis
+are [% athena %]'s[%#'%] mechanism for saving the state of an analysis
 project.  The project selection dialog, shown
 [% INCLUDE imageref text="below" label="import_projsel" in=1 %],
 provides a way of selectively importing part or all of the contents of
 the project file.
 [% END %]
 
-[% WRAPPER figure file="import_projsel.png" %]
+[% WRAPPER image file="import_projsel.png" %]
 The project selection dialog.
 [% END %]
 
@@ -57,6 +57,10 @@ Additionally the buttons labeled [% INCLUDE font/quote a="All" %],
 and [% INCLUDE font/quote a="None" %] can be used to select all groups
 or to clear the selection.  The [% INCLUDE font/quote a="Invert" %]
 button will invert the selection of each group.
+
+[% WRAPPER html/todo %]
+Explain new selection controls
+[% END %]
 
 Once you have selected the groups you want to import, click the
 [% INCLUDE font/quote a="Import" %] button.  If no groups are selected

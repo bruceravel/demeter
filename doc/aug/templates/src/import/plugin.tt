@@ -3,6 +3,12 @@
 	difficult = 1
 %]
 
+
+[% WRAPPER html/todo %]
+Move this page to the appropriate chapter
+[% END %]
+
+
 [% FILTER html_para %]
 [% athena %] uses [% ifeffit %]'s
 [% INCLUDE html/link

@@ -42,7 +42,7 @@ factor.  An example is shown in
 [% END %]
 
 [% WRAPPER figure file="bkg_normzerocross.png" %]
-Au foil data which crosses the zero axis.
+[%mue%] data for gold cyanide, which crosses the zero axis.
 [% END %]
 
 [% FILTER html_para %]
@@ -101,7 +101,7 @@ regions of the data -- one before the edge and one after the edge.  A
 line is regressed to the data in the
 [% INCLUDE font/param a="pre-edge range" %] and a polynomial is
 regressed to the data in the [% INCLUDE font/param a="normalization range" %].
-By default, a three-term (quadratic) polynomial is used as
+By default, a three-term (quadratic) polynomial is used as 
 the post-edge line, but its order can be controlled using the
 [% INCLUDE font/param a="normalization order" %] parameter.  Note that
 [% INCLUDE font/em a="all" %] of the data in the
@@ -215,7 +215,7 @@ is very wrong and the flattened data are highly distorted.
 spectrum.  The upper end of the normalization range is on the other
 side of the Ba [% l3 %] edge.  (Right) The poor choice of
 normalization range for [% batio3 %] results in very poorly normalized
-data.
+Ti K edge data.
 [% END %]
 
 
@@ -227,7 +227,7 @@ parameters can have an impact on how the XANES data are interpreted
 and in how the [% chik %] data are normalized.
 [% END %]
 
-[% WRAPPER quadplot files=["bkg_subtlepost.png", "bkg_subtlepost_compare.png"] %]
+[% WRAPPER quadplot files=["bkg_subtlepost.png", "bkg_subtlepost2.png", "bkg_subtlepost_compare.png"] %]
 (Left) Example of a subtle effect in how the post-edge line is chosen
 in a hydrated uranyl species.  (Right) Comparing the flattened XANES
 data for different choices of post-edge line in a hydrated uranyl
@@ -237,9 +237,9 @@ species.
 [% FILTER html_para %]
 In [% INCLUDE imageref text="this example" label="bkg_subtlepost" %],
 the different choice for the lower bound of the
-normalization range (42 eV in one case, 75 eV in the other) has an
+normalization range (42 eV in one case, 125 eV in the other) has an
 impact on the flattening of these uranium edge data data,
-which in turn can have in impact in the evaluation of
+which in turn may have in impact in the evaluation of
 average valence in the system.  The small difference in the
 [% INCLUDE font/param a="edge step" %] will also slightly attenuate
 [% chik %].

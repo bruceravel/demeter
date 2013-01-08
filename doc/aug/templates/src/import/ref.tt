@@ -32,7 +32,7 @@ Importing a reference channel with the column selection dialog.
 
 [% FILTER html_para %]
 The reference channel selection works almost the same as column
-selection for the data except that you don't need to specify the
+selection for the data except that you don't[%#'%] need to specify the
 energy column again -- the same column is used.  When a reference
 channel after the transmission channel is used, you should use the
 transmission channel as the numerator and the reference channel as the
@@ -56,11 +56,11 @@ below its data.  The reference channel is just like any other group,
 with one distinction.  The data and its reference channel are
 [% INCLUDE font/em a="tied" %]
 together in the sense that the values for their
-[% PROCESS font/param a="eshift" %] parameters will always be the
+[% PROCESS font/param a="Energy shift" %] parameters will always be the
 same.
 
 This relationship is shown visually by the change in color of the text
-in the box for [% PROCESS font/param a="eshift" %], as seen in
+in the box for [% PROCESS font/param a="Energy shift" %], as seen in
 [% INCLUDE imageref text="this screenshot" label="import_refimported" in=1 %].
 [% END %]
 
@@ -69,8 +69,8 @@ Data imported with a reference channel in [% athena %].
 [% END %]
 
 [% FILTER html_para %]
-When you change the value of [% PROCESS font/param a="eshift" %] for
-the reference, the value of [% PROCESS font/param a="eshift" %] for
+When you change the value of [% PROCESS font/param a="Energy shift" %] for
+the reference, the value of [% PROCESS font/param a="Energy shift" %] for
 the data changes as well.  (And vice versa!)  This feature of
 reference channels is put to good use
 [% INCLUDE html/link link="../process/align.html" text="in data alignment" %].

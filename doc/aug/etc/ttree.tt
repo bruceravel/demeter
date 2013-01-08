@@ -29,7 +29,7 @@ recurse
 recursion
 
 ### TT options
-pre_process = config/main.artemis
+pre_process = config/main.athena
 wrapper     = site/wrapper.athena
 
 ### local variables

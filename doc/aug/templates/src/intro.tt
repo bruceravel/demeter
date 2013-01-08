@@ -91,8 +91,8 @@ into several parts.  We will discuss each of these parts and give
 each a name.
 [% END %]
 
-[% WRAPPER figure file="athena_main.png" %]
-The parts of the [% athena %].
+[% WRAPPER image file="athena_main.png" %]
+The parts of the Athena.
 [% END %]
 
 [% FILTER html_para %]
@@ -102,7 +102,7 @@ accessed through those menus.
 
 The largest part is the main window, highlighted in the picture above
 with a red border.  The red border does not happen in the real
-program -- it's there simply to clarify this discussion.  The main
+program -- it's[%#'%] there simply to clarify this discussion.  The main
 window is divided into six parts.  The top box identifies the file
 name of the current
 [% INCLUDE html/link link="output/project.html" text="project file" %].
@@ -118,7 +118,7 @@ space is used by [% athena %] to communicate with you, the user.  This
 space is used to display informational messages while [% athena %] is
 working on your data, error messages when it runs into trouble, and
 other kinds of messages.  When [% athena %] starts, it displays a hint
-from it's built-in list of hints.  A new hint can be seen at any time
+from it's[%#'%] built-in list of hints.  A new hint can be seen at any time
 by pressing [% INCLUDE modkey key="control" letter='h' %].
 
 The large blank area on the right is
@@ -141,8 +141,8 @@ other
 in the plotting options section.
 [% END %]
 
-[% WRAPPER figure file="athena_withdata.png" %]
-[% athena %], after importing some data.
+[% WRAPPER image file="athena_withdata.png" %]
+Athena, after importing some data.
 [% END %]
 
 [% FILTER html_para %]
@@ -158,7 +158,7 @@ interacting with data in [% athena %].
 There is quite a bit of help built right into [% athena %].  Typing
 [% INCLUDE modkey key="control" letter='m' %] or selecting
 [% INCLUDE font/quote a="Document" %] from the Help menu will display
-[% athena %]'s document in a web browser or in the built-in document
+[% athena %]'s[%#'%] document in a web browser or in the built-in document
 viewer. The [% INCLUDE font/quote a="Document sections" %] submenu
 allows you to jump directly to a particular topic.  Also, many parts
 of the program have a button which will take you directly to the part

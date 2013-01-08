@@ -65,13 +65,13 @@ data set import.
 
 [% PROCESS section label="Other pre-processing chores" expert=1 %]
 
-[% FILTER html_para %]
+[% FILTER html_para %] 
 This tab provides controls for a number of other things that can be
-done with your data as it is imported.  The first three -- marking,
-truncating, and deglitching -- can be performed even on the first data
-set imported.  The other two require that a standard be specified.
-The menu at the top of the tab contains every item form the group
-list.  The one specified in that menu is the standard.
+done with your data as it is imported.  The first one -- marking --
+can be performed even on the first data set imported.  The other two
+require that a standard be specified.  The menu at the top of the tab
+contains every item from the group list.  The one specified in that
+menu is the standard.
 [% END %]
 
 [% WRAPPER figure file="import_preproc.png" %]
@@ -93,19 +93,6 @@ imported.  Note that the reference spectrum is not marked.  Also
 note that, unlike the other four pre-processing options, this one
 is always deselected when new data is imported.
 [% END %]
-[% WRAPPER html/dt dt="Truncate each data set" %]
-If this is selected, the data before or after the specified value
-will be
-[% INCLUDE html/link text="removed from the data" link="../process/trun.html" %].
-Note that only the data in
-[% athena %]'s memory is truncated, the data file is not altered.
-[% END %]
-[% WRAPPER html/dt dt="Deglitch each data set" %]
-If this is selected, the data are deglitched using [% INCLUDE
-html/link text="the batch
-deglitching algorithm" link="../process/deg.html" %].  Note that only the data in
-[% athena %]'s memory is truncated, the data file is not altered.
-[% END %]
 [% WRAPPER html/dt dt="Align to the standard" %]
 If this is selected, the data are aligned to the specified
 standard using [% INCLUDE html/link text="the auto-alignment algorithm"
@@ -122,7 +109,7 @@ link="../params/constrain.html" %].
 [% END %]
 
 [% FILTER html_para %]
-The pre-processing tab is one of [% athena %]'s genuine power
+The pre-processing tab is one of [% athena %]'s[%#'%] genuine power
 features.  With a bit of forethought, most of your data processing can
 be performed automatically.  I typically import one data file and
 carefully calibrate it and set its various parameters.  Having done

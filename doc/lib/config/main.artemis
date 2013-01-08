@@ -1,3 +1,5 @@
+[% title = 'The Artemis Users\' Guide' %]
+[% program = 'Artemis' %]
 [% PROCESS config/page
 	 + config/site
 	 + config/url
