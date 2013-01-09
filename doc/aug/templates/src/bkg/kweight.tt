@@ -39,11 +39,12 @@ the strength of the clamp in the evaluation of [% chisqr %].
 [% WRAPPER quadplot files=["clamp_mu.png", "clamp_chi.png"] %]
 (Left)
 [% eutio3 %] Ti K-edge data with the background subtracted using a
+[% INCLUDE font/param a="k-weight" %] of 1 and a
 high-end spline clamp of [% INCLUDE font/quote a="none" %].  Note that
 the end of the spline deviates significantly from the end of the data.
 (Right)
 Comparing the effects of different values of the high-end spline clamp
-on the [% eutio3 %] data.  The data using the
+on the [% eutio3 %] data with all other parameters equal.  The data using the
 [% INCLUDE font/quote a="rigid" %] clamp show the most physically
 reasonable behavior at the end of the data range.
 [% END %]
@@ -67,7 +68,7 @@ the calculation of the effect of the clamp.  The
 the strengths of the two clamps.  The strengths of the clamps can be
 fine tuned by changing the numeric values.  The parameter
 [% INCLUDE preference group="clamp" option="weak" %] sets the the weak
-clamp, and so on.
+clamp value, and so on.
 
 [% END %]
 
@@ -101,9 +102,10 @@ wildly, as shown in
 
 [% END %]
 
+[%# /home/bruce/Data/ANL/10ID/2006.03.1/U/Area3/uarea3c.102 %]
 [% WRAPPER figure file="bkg_badkw.png" %]
-Noisy data with [% mu0 %] computed using
-[% INCLUDE font/param a="k-weight" %] of 3.  With a
+Noisy data with [% mu0 %] computed using the default
+[% INCLUDE font/param a="k-weight" %] of 2.  With a
 [% INCLUDE font/param a="k-weight" %] of 1, the data are still noisy
 (of course!) but the background function properly follows the data.
 [% END %]
@@ -120,7 +122,7 @@ strength of the spline clamp can sometimes help.
 
 [% WRAPPER figure file="bkg_badkw_clamp0.png" %]
 The same noisy data as in the last figure, also with a background
-[% INCLUDE font/param a="k-weight" %] of 3.  However, this time the
+[% INCLUDE font/param a="k-weight" %] of 2.  However, this time the
 high-end spline clamp was set to [% INCLUDE font/quote a="none" %].
 [% END %]
 
@@ -132,5 +134,5 @@ weak clamp work better.  Still other times, a strong
 [% INCLUDE font/em a="and" %]
 a strong clamp work best.  How do you know what to do?  There are no
 hard and fast rules, although you will develop an intuition for how
-different data will respond to different parameter values.  Don't be
-shy about trying different combinations.
+different data will respond to different parameter values.
+Don't[%#'%] be shy about trying different combinations.

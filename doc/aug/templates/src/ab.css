@@ -268,20 +268,20 @@ pre {
 
 .red {
     font: bold 1.1em monospace;
-    color: #ddd;
-    background: #8b0000;
+    color: #000;
+    background: #FCEDAF;
     border-width: 2px 4px 4px 2px;
     border-style: solid solid solid solid;
-    border-color: #bb0000 #5b0000 #5b0000 #bb0000;
+    border-color: #FCFDBF #FCDD9F #FCDD9F #FCFDBF;
     padding:  0px 4px 0px 4px;
 }
 .purple {
     font: bold 1.1em monospace;
-    color: #ddd;
-    background: #9400d3;
+    color: #000;
+    background: #EFC6FF;
     border-width: 2px 4px 4px 2px;
     border-style: solid solid solid solid;
-    border-color: #a400e3 #8400c3 #8400c3 #a400e3;
+    border-color: #FFC6FF #DFC6FF #DFC6FF #FFC6FF;
     padding:  0px 4px 0px 4px;
 }
 

@@ -9,11 +9,9 @@ viewing XANES data and another set for viewing the full EXAFS
 spectrum.  You can save any number of sets of parameters.  When you
 save a set of parameters, you are prompted for a name.  After that you
 can select a parameter set by name.  These parameter sets are saved to
-disk, thus persist between sessions.  All of the plot styles
-functionality is available by right clicking on the label that says
-[% INCLUDE font/em a="Plotting options" %], which posts the context menu
-shown in
-[% INCLUDE imageref text="this screenshot" label="ui_plotstyles" %].
+disk, thus persist between sessions.  
+
+Double click to discard ...
 [% END %]
 
 [% WRAPPER figure file="ui_plotstyles.png" %]

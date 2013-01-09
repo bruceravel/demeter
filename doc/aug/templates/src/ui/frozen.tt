@@ -33,27 +33,19 @@ highlighting the group list and the use of italic text in the main menu.
 [% END %]
 
 [% FILTER html_para %]
-
-The [% INCLUDE font/quote a="Freeze groups" %] submenu offers a
-number of ways of selecting which
-groups to freeze.  The frozen state of the current group can be
-toggled by typing [% INCLUDE modkey key="control" letter='f' %] and
-all groups can be frozen or unfrozen by typing
-[% INCLUDE modkey key="control" letter='F' %] or
-[% INCLUDE modkey key="control" letter='U' %].  You can also freeze or
-unfreeze all marked groups.  Finally, you can mark or unmark all
-groups using regular expressions.  This works in the same manner
+The frozen state of the current group can be
+toggled using the [% INCLUDE font/quote a="Freeze" %] button or
+by typing [% INCLUDE modkey key="Shift-Control" letter='f' %].  
+You can set the frozen state of multiple groups using the items in the 
+[% INCLUDE font/quote a="Freeze" %] menu.  There you will find
+options for freezing or unfreezing all groups, all marked groups, or
+groups which match 
 [% INCLUDE html/link link="mark.html#usingregularexpressionstomarkgroups"
-text="using regular expressions to mark groups" %].
+text="regular expressions" %].
 
 There are various visual changes when a group is frozen.  The
-highlight color in the group list changes from light red to light
-green.  The text in the group list becomes italic.  The labels for
-each section of parameters in the main window becomes italic.
-Finally, the label in the main window that normally says
-[% INCLUDE font/quote a="Current group" %] is changed to
-[% INCLUDE font/quote a="Frozen group" %].
-
+highlight color in the group list changes to light
+green and all the widgets on the main window become disabled.
 
 When a group is frozen, direct edits of parameter values are
 disallowed.  Frozen groups are skipped for algorithmic edits, such as

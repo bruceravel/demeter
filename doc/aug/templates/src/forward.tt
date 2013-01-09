@@ -23,7 +23,7 @@ are bells and whistles intended to make data processing more
 convenient or more fun.
 
 This document attempts to be a comprehensive overview of all of
-[% athena %]'s features.  There are lots of words, but also lots of
+[% athena %]'s[%#'%] features.  There are lots of words, but also lots of
 pictures.  Feel free to jump around and to focus on the parts most
 directly relevant to your immediate needs.  I hope you find this
 document and the program helpful.
@@ -65,7 +65,7 @@ means to hit the q key while holding the Control (or Ctrl) key.
 Program names from the [% ifeffit %] family look like this: [% athena %].
 [% END %]
 [% WRAPPER html/li %]
-References to [% athena %]'s preferences are written like this:
+References to [% athena %]'s[%#'%] preferences are written like this:
 [% INCLUDE preference group="Bkg" option="fraction" %].  To modify
 this preferences,
 open the [% INCLUDE font/quote a="bkg" %] section of the
@@ -83,7 +83,7 @@ attention-grabbing boxes.
 
 [% SWITCH document_style %]
 [% CASE 'pod' %]
-A section describing one of [% athena %]'s features that I consider
+A section describing one of [% athena %]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program is
 marked with this text:
 [% WRAPPER html/pre %]
@@ -91,7 +91,7 @@ marked with this text:
 [% END %]
 [% CASE %]
 [% INCLUDE image file="LightningBolt.png" %] This symbol indicates a
-section describing one of [% athena %]'s features that I consider
+section describing one of [% athena %]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program.
 [% END %]
 
@@ -134,13 +134,13 @@ corresponding part of the html or PDF versions of the document.
 
 [% FILTER html_para %]
 I have to thank Matt Newville, of course.  Without [% ifeffit %] there
-wouldn't be an [% athena %].  One afternoon over coffee, Julie Cross
+wouldn't[%#'%] be an [% athena %].  One afternoon over coffee, Julie Cross
 and Shelly Kelly lit the spark that eventually lead to this document.
 Some content of this document was inspired by an upcoming XAS review
 article by Shelly Kelly and Dean Hesterberg, which I have had the
 pleasure of editing (and, apparently, swiping from). I have a huge
 debt of gratitude to all the folks on the [% ifeffit %] mailing list.
-Without the incredible support and wonderful feedback that I've
+Without the incredible support and wonderful feedback that I've[%#'%]
 received in the last six years [% athena %] would be a shadow of what
 it is today.
 
@@ -216,7 +216,7 @@ The image used as the [% athena %] program icon is from
 from the Staatliche Antikensammlungen in Munich, Germany.  The image
 is in the public domain and was found on 
 [% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/Image:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg" %].
-The image used as the [% hephaestus %] program icon is from Reubens' 
+The image used as the [% hephaestus %] program icon is from Reubens'[%#'%] 
 [% INCLUDE font/quote a="Vulcan forging Jupiter's thunderbolts" %] 
 from the Museo Del Prado, Madrid Spain.  This image is also in the public
 domain and also from 
@@ -271,7 +271,7 @@ domain and also from
   [% INCLUDE html/link text="Fluo program"
   link="http://www.aps.anl.gov/xfd/people/haskel/fluo.html" %].  The copper data shown
   in [% INCLUDE html/link text="the same section" link="process/sa.html" %] come with
-  Corwin Booth's [% INCLUDE html/link text="RSXAP program" link="http://lise.lbl.gov/RSXAP/" %].
+  Corwin Booth's[%#'%] [% INCLUDE html/link text="RSXAP program" link="http://lise.lbl.gov/RSXAP/" %].
 [% END %]
 [% WRAPPER html/li %]
   The data in [% INCLUDE html/link text="the dispersive XAS section"
@@ -284,7 +284,7 @@ domain and also from
   link="http://www.mesg.anl.gov/" %].  Spectra from this standard have appeared
   in many publications from that group.  The [% u3o8 %] sample shown in the
   [% INCLUDE html/link text="the deglitching section"
-  link="process/deg.html" %] are from the group's standards library.
+  link="process/deg.html" %] are from the group's[%#'%] standards library.
 [% END %]
 [% WRAPPER html/li %]
   Tin edge data which appear in several places are from
@@ -382,7 +382,7 @@ link="http://www.template-toolkit.org/download.html#win32" %];
 link="http://www.template-toolkit.org/download.html#macosx"
 text="a Fink package for OSX exists" %])
 it can be downloaded from its website and installed by hand or
-downloaded using perl's [% INCLUDE html/link
+downloaded using perl's[%#'%] [% INCLUDE html/link
 link="http://cpan.uwinnipeg.ca/htdocs/CPAN/CPAN.html" text="CPAN
 utility" %].  You will also need to install the
 [% INCLUDE html/link link="http://cpan.uwinnipeg.ca/dist/Image-Size"
@@ -401,7 +401,7 @@ impact on the document.  I have no experience building the PDF
 document on any system other than linux.)
 
 Once TT2 and the other modules are installed, building the document
-should be quite simple.  TT2's [% INCLUDE font/mono a="ttree" %]
+should be quite simple.  TT2's[%#'%] [% INCLUDE font/mono a="ttree" %]
 program is used to recurse the through the directory structure
 containing the templates.  The [% INCLUDE font/file a="bin/build" %],
 [% INCLUDE font/file a="bin/tex" %], and [% INCLUDE font/file a="bin/pod" %]
@@ -413,14 +413,14 @@ TT2 was chosen for this project because it is an excellent templating
 tool.  A templating tool was chosen because the strong separation of
 format and content was attractive to me.  The template source is used
 to generate html and PDF versions of the document as well as the pod
-format used by [% athena %]'s internal document viewer.
+format used by [% athena %]'s[%#'%] internal document viewer.
 
 Contributions to the document are extremely welcome.  The very best
 sort of contribution would be to directly edit the source templates
 and commit your changes to the SVN repository.  The second best sort
 would be a patch file against the templates in the repository.  If TT2
 is more than you want to deal with, but you have corrections to
-suggest, I'd cheerfully accept almost any other format for the
+suggest, I'd[%#'%] cheerfully accept almost any other format for the
 contribution. (Although I have to discourage using an html editing
 tool like FrontPage to edit the html directly.  Tools like that tend
 to insert lots of additional html tags into the text, making it more
@@ -507,7 +507,7 @@ than color for each of the students was quite significant.
 [% INCLUDE subsection label="Building the pod document" %]
 
 [% FILTER html_para %]
-The pod document, [% athena %]'s internal document format, is built by
+The pod document, [% athena %]'s[%#'%] internal document format, is built by
 [% END %]
 [% WRAPPER html/pre %]
 ./bin/pod -a

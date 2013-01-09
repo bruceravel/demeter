@@ -16,8 +16,7 @@
 		'output',
                 'process',
 		'analysis',
-		'examples',
-		'hephaestus'
+		'examples'
 	      ]
        page = {
 	    index   = { name = 'Home' }
@@ -133,7 +132,6 @@
 				 aucl = { name = 'Linear combination analysis' }
 				 }
 			 }
-	    hephaestus   = { name = 'Hephaestus'}
 	      }
           };
 

@@ -24,6 +24,11 @@ transform will be updated, but [% athena %] will recognize that the
 background removal is still up-to-date.
 [% END %]
 
+[% WRAPPER html/todo %]
+Write document page for title, legends, single file tab
+[% END %]
+
+
 [% INCLUDE section label="Plotting the current group" star=1 %]
 
 [% FILTER html_para %]
@@ -93,3 +98,4 @@ The controls used to determine how the plots are displayed are described in
   date for all marked groups and plots their [% chiq %] data.
 [% END %]
 [% END %]
+

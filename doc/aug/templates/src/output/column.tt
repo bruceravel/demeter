@@ -44,10 +44,12 @@ The columns in the norm(E) output file are:
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %] energy                [% END %]
+[% WRAPPER html/li %] flattened [% mu %]    [% END %]
+[% WRAPPER html/li %] flattened background  [% END %]
 [% WRAPPER html/li %] normalized [% mu %]   [% END %]
 [% WRAPPER html/li %] normalized background [% END %]
 [% WRAPPER html/li %] derivative of normalized [% mu %] [% END %]
-[% WRAPPER html/li %] I0                    [% END %]
+[% WRAPPER html/li %] second derivative of normalized [% mu %] [% END %]
 [% END %]
 
 [% FILTER html_para %]
@@ -57,13 +59,15 @@ The columns in any of the [% chik %] output files are:
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %] k                        [% END %]
 [% WRAPPER html/li %] k-weighted [% chik %]    [% END %]
+[% WRAPPER html/li %] k-squared-weighted [% chik %]    [% END %]
+[% WRAPPER html/li %] k-cubed-weighted [% chik %]    [% END %]
 [% WRAPPER html/li %] Fourier transform window [% END %]
 [% END %]
 
 [% FILTER html_para %]
 The [% chir %] output file contains both parts of the complex Fourier
 transform, as well as the magnitude and phase.  That is, of course,
-redundant, but it's also convenient.  The columns are:
+redundant, but it's[%#'%] also convenient.  The columns are:
 [% END %]
 
 [% WRAPPER html/list type="ol" %]
@@ -91,11 +95,6 @@ magnitude and phase.
 [% END %]
 
 [% FILTER html_para %]
-The derivative output file has been discontinued as of version
-0.8.056.  The [% mu %] and normalized [% mu %] files now have columns
-containing the derivative and derivative of the normalized spectrum,
-respectively.
-
 In certain situations, it is much more convenient to write column data
 files containing data from many groups.  This is done with the help of
 the mark buttons.  The data from each of the marked groups can be
@@ -127,10 +126,15 @@ a file in that directory with a file name formed from the group label.
 Exporting column data files for each of the marked groups.
 [% END %]
 
-[% WRAPPER figure file="export_eachdirsel.png" %]
-Folder selection dialog for exporting each marked group.  Note
-that, at this time, there is no way to create a new folder from
-within this widget.  Your target folder needs to already exist.
+
+[% FILTER html_para %] 
+The standard folder selection dialog is used
+for exporting each marked group.  Select a folder and each file will
+be recorded there.
+[% END %]
+
+[% WRAPPER html/todo %]
+Show correct header
 [% END %]
 
 

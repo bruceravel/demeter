@@ -17,7 +17,7 @@ previous level.  The first decision is made by consulting
 [% INCLUDE html/link text="the program preferences" link="../ui/prefs.html" %].
 The program preferences are read from two initialization files when
 [% athena %] starts.  The first initialization file is a system-wide
-file that always contains [% athena %]'s fresh-out-of-the-box
+file that always contains [% athena %]'s[%#'%] fresh-out-of-the-box
 parameter defaults.  The second initialization file is your own
 personal collection of preferences.  These personal preferences are
 typically set using the preferences dialog, which is found in Settings
@@ -35,33 +35,4 @@ as the value for [%- PROCESS preference group="Fft" option="kmax" %].
 All of the range parameters can be set to values which are relative to
 the extent of the actual measured data.  These options are explained
 in the parameter description on the preferences dialog.
-
-The preferences can be overridden by setting [% INCLUDE font/em
-a="session defaults" %].  The session defaults can be set for
-individual parameters in the right-click context menu for each
-parameter
-[% INCLUDE html/link link="constrain.html#constrainingindividualparameters" text="" %],
-for each group of parameters
-[% INCLUDE html/link link="constrain.html#constraininggroupsofparameters" text="" %],
-or for all parameters in the Values menu.  The
-session default is taken from the value for the current group and is
-then used as the default parameter value for each subsequent data
-group as it is imported.  These values do not persist between
-[% athena %] session.  Once you close [% athena %], the set of session
-defaults is lost.
-
-The concept behind session defaults is to provide a mechanism for
-handling data that is not well handled by the preferences.  For
-example, on the beamline computer I typically have [% athena %]'s
-preferences tuned to work well for the uranium [% l3 %] data my group
-usually collects.  When working on other edges, I will often set
-session defaults once I get a feeling for what parameter values work
-well for those data.
-
-Overriding the session defaults is the
-[% INCLUDE html/link text="data preprocessing mechanism" link="../import/preproc.html" %].
-When data preprocessing is performed and the option to set parameter
-values to the preprocessing standard is selected, those values will
-override all session defaults and preferences.
-
 [% END %]

@@ -16,21 +16,11 @@ Writing a report on data groups in [% athena %].
 [% END %]
 
 [% FILTER html_para %]
-The first two options write all the parameters to an Excel file, the
-second two options write the same information to a simple comma
-separated value file, the next two options write the information to a
-plain text file.  In each case, you have a choice of saving parameters
-from all groups or only the marked groups.
+The first two options in that submenu write all the parameters to an
+Excel file.  You can choose to save parameters from all groups or only
+the marked groups.
 [% END %]
 
 [% WRAPPER figure file="export_excelreport.png" %]
-An example of the Excel spreadsheet output displayed in OpenOffice.
-[% END %]
-
-[% FILTER html_para %]
-The last option in the list is a way of moving data from
-[% athena %] to the Xfit analysis program.  If you know what that
-is, you probably already know how to use this output file.  If you
-have no idea what I am talking about, it is unlikely to matter to
-you.  Really.
+An example of the Excel spreadsheet output displayed in Libre Office.
 [% END %]

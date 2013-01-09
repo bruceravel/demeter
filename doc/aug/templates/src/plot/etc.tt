@@ -1,6 +1,14 @@
 [% META title = 'Other plotting features' %]
 
+[% WRAPPER html/todo %]
+Document all the special plots, plotting terminals, and save to image file.
+[% END %]
+
 [% INCLUDE section label="Zooming" %]
+
+[% WRAPPER html/todo %]
+Document zooming correctly.
+[% END %]
 
 [% FILTER html_para %]
 You can zoom in on any part of plot by selecting
@@ -17,6 +25,10 @@ original plot.  Incremental unzooming is not implemented.
 
 [% INCLUDE section label="Cursor" %]
 
+[% WRAPPER html/todo %]
+Implement cursor functionality.
+[% END %]
+
 You can grab coordinate values from any point in a plot by selecting
 [% INCLUDE font/quote a="Cursor" %] from the Plot menu or by typing
 [% INCLUDE modkey key="control" letter='.' %].  Text will appear
@@ -26,11 +38,11 @@ you do so, the coordinate values will be displayed in the echo area.
 [% INCLUDE section label="Plotting I0" %]
 
 [% FILTER html_para %]
-The Plot menu has several options for plotting I0.  I0 can be plotted
-along with [% mu %] as shown below.  Alternately, I0 can be plotted
-alone for the current group or for each marked group.
+The Plot menu has two options for plotting [%i0%].  [%i0%] can be plotted
+along with [% mu %] and the signal as shown below.  Alternately, [%i0%]
+for each marked group.
 
-The I0 channel is among the data saved in
+The [%i0%] and signal channel is among the data saved in
 [% INCLUDE html/link text="a project file" link="../output/project.html" %].
 [% END %]
 
@@ -40,6 +52,7 @@ A plot of [% mu %] metallic tin along with the signal from the I0 channel.
 
 [% INCLUDE section label="Merged groups and the standard deviation" %]
 
+[% FILTER html_para %]
 When data are merged, the standard deviation spectrum is also computed
 and saved in
 [% INCLUDE html/link text="project files" link="../output/project.html" %].
@@ -48,29 +61,5 @@ The merged data can be plotted along with its standard deviation
 link="../process/merge.html#merge_stddev" %]
 by selecting the [% INCLUDE font/quote a="Plot merge+std.dev." %] option
 from the Plot menu.
-
-[% INCLUDE section label="The collapse button" %]
-
-[% FILTER html_para %]
-The group list is only tall enough to display about 11 groups without
-needing the vertical scroll bar.  Any more, and some will be hidden
-from view by the scrollbar, as in
-[% INCLUDE imageref text="the first figure below" label="plot_notcollapsed" %].
-Clicking the collapse button, which
-is the button with the downward pointing arrow next to the plot option
-label, the plot options tab is hidden, giving more vertical space to
-the group list, as in
-[% INCLUDE imageref text="the second figure below" label="plot_collapsed" %].
-
-When the plot options are hidden, the collapse button is replaced by
-an upward pointing arrow.  Clicking it will restore the plot options
-tabs and shorten the group list.
 [% END %]
 
-[% WRAPPER figure file="plot_notcollapsed.png" %]
-[% athena %] with a large number of data groups.
-[% END %]
-[% WRAPPER figure file="plot_collapsed.png" %]
-The group list occupies more space at the expense of the plot options
-tabs.
-[% END %]

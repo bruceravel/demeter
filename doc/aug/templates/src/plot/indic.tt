@@ -1,7 +1,8 @@
 [% META title = 'Indicators' %]
 
 [% FILTER html_para %]
-Indicators are vertical lines used to draw attention to specific
+Indicators are vertical lines drawn from the top to the bottom of the
+plot frame.  They are used to draw attention to specific
 points in plots of your data.  This can be useful for comparing
 specific features in different data sets or for seeing how a
 particular feature propagates from energy to k to q.

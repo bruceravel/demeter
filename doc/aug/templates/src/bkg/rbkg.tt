@@ -13,18 +13,18 @@ When data are imported into [% athena %], [% PROCESS font/param a="rbkg"%]
 is set to its
 [% INCLUDE html/link link="../params/defaults.html" text="default value" %], normally 1.
 
-[% athena %] comes with a number of example data files.  On a windows,
-these example files can be found in the folder.
-[% PROCESS font/file a='C:\\Program Files\Ifeffit\examples\athena'%].
-On other systems, you can find the examples in the source code package
-that you downloaded to install [% athena %] on your system.
+This example, like many of the examples in this Users'[%#'%] Guide,
+can be found at 
+[% INCLUDE html/link
+link="http://bruceravel.github.com/XAS-Education/"
+text="among the examples at my XAS-Education site" %].
 
 Among these example files is one called [% PROCESS font/file
-a="fe.300" %], which contains a spectrum from an iron foil measured at
-300 K.  Import this by selecting Open file from the File menu or by
+a="fe.060" %], which contains a spectrum from an iron foil measured at
+60 K.  Import this by selecting Open file from the File menu or by
 pressing [% INCLUDE modkey key="control" letter='o' %].  Navigate to
 the location  of your example files and select
-[% PROCESS font/file a="fe.300" %].  The
+[% PROCESS font/file a="fe.060" %].  The
 [% INCLUDE html/link link="../import/columns.html" text="column
 selection dialog" %] then appears.  For now, just click OK.
 
@@ -40,10 +40,10 @@ using the default parameter values can be found by pressing
                            "rbkg_initial_r.png"]
 %]
 (Right)
-The [% PROCESS font/file a="fe.300" %] data and its default background
-function.  (Left) The [% PROCESS font/file a="fe.300" %] [% chik %]
+The [% PROCESS font/file a="fe.060" %] data and its default background
+function.  (Left) The [% PROCESS font/file a="fe.060" %] [% chik %]
 data with its default background function.
-(Bottom) The [% PROCESS font/file a="fe.300" %] [% chir %] data with
+(Bottom) The [% PROCESS font/file a="fe.060" %] [% chir %] data with
 its default background function.
 [% END %]
 
@@ -63,29 +63,30 @@ AUTOBK algorithm removes Fourier components.  As you can see, below 1
 the [% chir %] function is essentially 0, but above 1 the spectrum is
 non-zero.
 
-Now let's examine the effect of choosing
+Now let's[%#'%] examine the effect of choosing
 different values for [% PROCESS font/param a="rbkg"%].  First, make a
 copy of the data so we can directly compare different values.  Do that
-by selecting Copy group from the Group menu or by pressing
-[% INCLUDE modkey key="control" letter='y' %].  [% athena %]
+by selecting [% INCLUDE font/quote a="Copy current group" %] 
+from the Group menu or by pressing
+[% INCLUDE modkey key="Shift-control" letter='y' %].  [% athena %]
 now looks like [% INCLUDE imageref text="this" label="rbkg" %].
 [% END %]
 
 [% WRAPPER figure file="rbkg.png" %]
-[% athena %] with the original [% PROCESS font/file a="fe.300" %] data
+[% athena %] with the original [% PROCESS font/file a="fe.060" %] data
 and a copy of that data.
 [% END %]
 
 [% FILTER html_para %]
-Click on the group [% INCLUDE font/em a="Copy of fe.300" %]
+Click on the group [% INCLUDE font/em a="Copy of fe.060" %]
 to display its parameters in
 the main window.  Change [% PROCESS font/param a="rbkg" %] to 0.2.
 Now we want to directly compare these two ways of removing the
 background.  The way of plotting multiple items in the groups list
 involves the row of purple plotting buttons and the little check
 buttons next to the items in the group list.  Click on the little
-check buttons next to [% INCLUDE font/em a="fe.300" %]
-and [% INCLUDE font/em a="Copy of fe.300" %], as shown in the
+check buttons next to [% INCLUDE font/em a="fe.060" %]
+and [% INCLUDE font/em a="Copy 1 of fe.060" %], as shown in the
 screenshot above.  Now plot these two items by clicking
 [% PROCESS plotbutton class="purple" letter='R' %].  It should look
 something like

@@ -32,8 +32,8 @@ continue to have large scattering amplitude at very high values of k.
 Very heavy elements, such as Pb or Sn, have minima in their scattering
 amplitudes around 5 to 7 [% iAA %].
 (See page 21 of
-[% INCLUDE html/link link="http://xafs.org/Tutorials?action=AttachFile&do=get&target=Newville_Intro.pdf"
-text="Matt Newville's Fundamentals of X-ray Absorption Fine Structure" %].)
+[% INCLUDE html/link link="https://speakerdeck.com/bruceravel/the-ramsauer-townsend-effect-in-x-ray-absorption-spectroscopy"
+text="my presentation on the Ramsauer-Townsend effect" %].)
 
 By weighting [% chik %] with different k-weightings, the low and high
 portions of the [% chik %] spectrum can be differently emphasized in a
@@ -53,7 +53,7 @@ The buttons selected determines the k-weighting used in a plot of
 [% END %]
 
 [% WRAPPER figure file="ui_kweights.png" %]
-[% athena %]'s controls for setting the amount of k-weighting in a
+[% athena %]'s[%#'%] controls for setting the amount of k-weighting in a
 plot or Fourier transform.
 [% END %]
 
@@ -65,5 +65,5 @@ value of the [% INCLUDE font/param a="arbitrary k-weight" %].  This
 can be used in a number of ways.  The simplest is if you simply want a
 non-integer weight.  If you want to overplot two different data groups
 each with a different k-weight, that can be done by setting
-the [% INCLUDE font/param a="arbitrary k-weight" %] appropriately.
+the [% INCLUDE font/param a="arbitrary k-weight" %] of each group appropriately.
 [% END %]

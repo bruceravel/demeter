@@ -2,6 +2,10 @@
 	about = 'Preserving the state of your analysis project'
 %]
 
+[% WRAPPER html/todo %]
+Save button, change indicator, update discussion of file format.
+[% END %]
+
 [% FILTER html_para %]
 The most important type of output file is the project file.  A project
 file contains all of the data you have imported, all of the parameters
@@ -12,7 +16,7 @@ in a single, easily transportable file.
 The primary purpose of the project file is to save you work.  When you
 open a saved project file, all of the data and all of their parameters
 are imported into [% athena %], returning [% athena %] to the state it
-was in when saved the project file.  [% artemis %] ([% athena %]'s
+was in when saved the project file.  [% artemis %] ([% athena %]'s[%#'%]
 sister program intended for analysis of EXAFS data) can read these
 project files.  Thus the project file is the best way of moving your
 data between the two programs.
@@ -61,21 +65,21 @@ to discover one of them after having done a lot of unsaved work.
 The [% athena %] project file is designed to be quick and easy for
 [% athena %] to read.  Unfortunately, the file format is not
 particularly human-friendly.  Most of the lines of the project file
-are in the form written out by perl's
+are in the form written out by perl's[%#'%]
 [% INCLUDE html/link text="Data::Dumper"
 link="http://cpan.uwinnipeg.ca/dist/Data-Dumper" %] module.
-This freezes [% athena %]'s internal data structures into perl code.
+This freezes [% athena %]'s[%#'%] internal data structures into perl code.
 When the project file is imported, these lines of perl code are
 evaluated.  (This evaluation is performed in a
-[% INCLUDE html/link text="Safe" link="http://cpan.uwinnipeg.ca/dist/Safe" %]
-compartment, i.e. a memory space with restricted access to perl's
+[% INCLUDE html/link text="Safe" link="https://metacpan.org/module/Safe" %]
+compartment, i.e. a memory space with restricted access to perl's[%#'%]
 system functionality.  This provides a certain level of protection against
 project files constructed with malicious intent.)
 
 Starting with version 0.8.050, [% athena %] writes out its project files
 using compression. The files written are identical to the format used
 by the popular
-[% INCLUDE html/link text="gzip" link="http://www.gnu.org/software/gzip/" %]
+[% INCLUDE html/link text="gzip" link="http://www.gzip.org/" %]
 program, using the highest level of
 compression.  [% athena %] and [% artemis %] will import these files or
 uncompressed project files from earlier versions of [% athena %] in a
