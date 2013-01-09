@@ -4,9 +4,6 @@
 [% USE image "${rootdir}/images/${this}" %]
 [% ww    = image.width;
 %]
-[% FILTER html_para %]
-</td>
-<td width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]60%[%- END -%]>
-<a class=floatleft href="[% file %]" target=_blank><img border=0 src="[% file %]" [% " title=\"$title\" " IF title %] alt="[% this %]"></a>
+[% FILTER html_para %]<a class=floatleft href="[% file %]" target=_blank><img border=0 src="[% file %]" [% " " IF title %] alt="[% this %]"></a>
 [%- content -%]
 [% END %]

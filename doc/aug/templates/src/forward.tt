@@ -5,6 +5,12 @@
 %]
 
 
+[% WRAPPER html/todo %]
+Review data citations, rewrite installation section, review
+acknowledgements, rewrite building from source, rewrite using
+section. 
+[% END %]
+
 [% FILTER html_para %]
 The best way to learn how to use [% athena %] is to [% INCLUDE font/b
 a="use" %] [% athena %].  Poke at the buttons, poke at the menus, try
@@ -76,23 +82,24 @@ and then click on [% INCLUDE font/quote a="fraction" %].
 
 [% WRAPPER html/caution %]
 Points that require special attention are written inside of
-attention-grabbing boxes.
+attention-grabbing boxes.[%br%][%br%]
 [% END %]
-
-[% FILTER html_para %]
 
 [% SWITCH document_style %]
 [% CASE 'pod' %]
+[% FILTER html_para %]
 A section describing one of [% athena %]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program is
 marked with this text:
+[% END %]
 [% WRAPPER html/pre %]
     !!! EXPERT CONTENT !!!
 [% END %]
 [% CASE %]
-[% INCLUDE image file="LightningBolt.png" %] This symbol indicates a
+[% WRAPPER floatleft this="LightningBolt.png" %] This symbol indicates a
 section describing one of [% athena %]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program.
+[% END %]
 [% END %]
 
 [% SWITCH document_style %]
@@ -103,30 +110,18 @@ over on their first reading of this document is marked with this text:
     !!! DIFFICULT CONTENT !!!
 [% END %]
 [% CASE %]
-[% INCLUDE image file="bend.png" %] This symbol indicates a section
+[% WRAPPER floatleft this="bend.png" %] This symbol indicates a section
 with difficult information that newcomers to [% athena %] might pass
 over on their first reading of this document.
 [% END %]
+[% END %]
 
+[%br%]
 
+[% FILTER html_para %]
 The html version of this document makes use of HTML 4.1 character
 entities (mostly Greek symbols) and will not display correctly in very
 old browsers.
-
-POD -- the native documentation for Perl and the format used
-internally in [% athena %] -- is not able to display graphics.  Everywhere
-that a graphics file is displayed in the other document formats, a bit
-of text showing the name of the image file and the caption of the
-figure is displayed in the POD.  Here is what it looks like when one of
-the pod documents is displayed by a pod viewer:
-[% WRAPPER html/pre %]
-  (Image file: athena_main.png)
-    The parts of the ATHENA.
-[% END %]
-In most cases, this will convey sufficient information given that you
-will have [% athena %] open in front of you.  If you need to see the
-picture, you can seek out the image file by name or look at the
-corresponding part of the html or PDF versions of the document.
 [% END %]
 
 [% INCLUDE section label="Acknowledgements" %]

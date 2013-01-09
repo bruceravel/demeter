@@ -9,7 +9,7 @@ dialog opens.  On my Linux computer, it looks like
 [% INCLUDE imageref text="this:" label="import_filedialog" %]
 [% END %]
 
-[% WRAPPER image file="import_filedialog.png" %]
+[% WRAPPER figure file="import_filedialog.png" %]
 The file selection dialog on a Linux computer.
 [% END %]
 
@@ -41,7 +41,7 @@ The controls in the tabs at the bottom left are the discussed in later
 sections.
 [% END %]
 
-[% WRAPPER image file="import_colsel.png" %]
+[% WRAPPER figure file="import_colsel.png" %]
 The column selection dialog.
 [% END %]
 
@@ -80,7 +80,7 @@ interpret your data correctly.  The data types menu is shown in
 The default is for data to be imported as [% mu %].
 [% END %]
 
-[% WRAPPER image file="import_types.png" %]
+[% WRAPPER figure file="import_types.png" %]
 Data types in the column selection dialog.
 [% END %]
 
@@ -107,7 +107,7 @@ xmu.dat : the [% PROCESS font/file a='xmu.dat' %] file from
 [% END %]
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER floatright this="import_changetype.png" %]
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued ([% mu %], normalized
 [% mu %], XANES, or detector) record types at any time by selecting
@@ -117,10 +117,6 @@ and selecting the correct choice from the popup dialog,
 This dialog cannot, however, be used to change [% chik %] data to an
 energy-value type or vice-versa, nor to change one of the [% feff %]
 types to a non-[% feff %] type.
-[% END %]
-
-[% WRAPPER image file="import_changetype.png" %]
-Changing the data type after the data are imported.
 [% END %]
 
 [% FILTER html_para %]
@@ -144,7 +140,7 @@ of the MED as elements of the numerator, as shown in
 label="import_med" %].
 [% END %]
 
-[% WRAPPER image file="import_med.png" %]
+[% WRAPPER figure file="import_med.png" %]
 Importing multi-element data in the column selection dialog.
 [% END %]
 
@@ -157,7 +153,7 @@ You have the option of clicking the button that says
 [% INCLUDE imageref text="shown here" label="import_medch" in=1 %].
 [% END %]
 
-[% WRAPPER image file="import_medch.png" %]
+[% WRAPPER figure file="import_medch.png" %]
 Importing multi-element data in the column selection dialog and saving
 each channel as a group.
 [% END %]
@@ -170,6 +166,6 @@ group list.  This is handy for examining the channels and discarding
 any that are not of usable quality.
 [% END %]
 
-[% WRAPPER image file="import_medchimported.png" %]
+[% WRAPPER figure file="import_medchimported.png" %]
 After importing the channels of multi-element data as individual groups.
 [% END %]

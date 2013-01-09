@@ -6,13 +6,13 @@
 [% FILTER html_para %]
 [% athena %] is very versatile in how she reads in data files. Pretty
 much any data in the form of columns of numbers can be successfully
-read. With a few exceptions, [% athena %] relies upon [% ifeffit %]'s
+read. With a few exceptions, [% athena %] relies upon [% ifeffit %]'s[%#'%]
 [% INCLUDE font/mono a="read_data()" %] command to handle the details
 of data import. [% ifeffit %] is clever about recognizing which part
 of a file is columns of numbers and which part is not. In the
-following, I'll explain how the
+following, I'll[%#'%] explain how the
 [% INCLUDE font/mono a="read_data()" %]
-command interprets files, explain the limits on its and [% athena %]'s
+command interprets files, explain the limits on its and [% athena %]'s[%#'%]
 abilities to interpret a data file, and discuss the kinds of
 manipulations of data that can and cannot be performed by [% athena %]
 as data are imported.
@@ -20,7 +20,7 @@ as data are imported.
 [% athena %] expects data of one of a few types. Column data in which
 the columns represent such things as the energy grid and the scalars
 measured during the experiment are the most common sort of data that
-most people use import into [% athena %]. [% athena %]'s column
+most people use import into [% athena %]. [% athena %]'s[%#'%] column
 selection dialog is used to convert the raw scalars into [% mu %]
 data. Other common kinds of data files that might be read into
 [% athena %] are files that contain [% mu %] or chi(k) data in columns or
@@ -104,10 +104,6 @@ Here are some operations that can be performed as data is imported.
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
-Data can be imported as a function of pixel position on an
-area or linear detector.
-[% END %]
-[% WRAPPER html/li %]
 Data from a multi-element detector can be summed on the fly.
 [% END %]
 [% WRAPPER html/li %]
@@ -115,7 +111,8 @@ Data from a multi-element detector can be imported such that
 each detector channel is imported into its own data group.
 [% END %]
 [% WRAPPER html/li %]
-Data can be negated, i.e. multiplied by -1.
+Data can be negated, i.e. multiplied by -1, or multiplied by an
+arbitrary constant
 [% END %]
 [% WRAPPER html/li %]
 A reference channel can be read from the the same file.
@@ -134,6 +131,10 @@ Here are some operations that can be handled using
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
+Data can be imported as a function of pixel position on an
+area or linear detector.
+[% END %]
+[% WRAPPER html/li %]
 Conversion from wavelength to energy.
 [% END %]
 [% WRAPPER html/li %]
@@ -148,8 +149,8 @@ Dead-time corrections using columns from the data file.
 [% WRAPPER html/li %]
 Any math expression more complicated than sums of columns in the
 numerator and denominator, e.g. plugins allow you to multiply the
-If column by 7 and divide by the sine of the I0 column, if that's
-what you want.
+If column by 7 and divide by the sine of the I0 column, if that's[%#'%]
+what you really want.
 [% END %]
 [% END %]
 
@@ -162,7 +163,7 @@ process you data before trying to import into [% athena %].
 There are examples of data files that [% athena %] will process before
 sending off to [% ifeffit %] for import. An example is the data file format
 from beamline X10C at NSLS. Files from that beamline cannot be
-imported as written by [% ifeffit %]'s
+imported as written by [% ifeffit %]'s[%#'%]
 [% INCLUDE font/mono a="read_data()" %] command. [% athena %] will
 recognize such a file and process it as needed before importing
 it. This can be done with other beamlines. You should contact Bruce if
@@ -176,9 +177,9 @@ designing data file formats. While I certainly will not say that
 beamlines should be required to accommodate [% athena %] or even that
 beamline staff have any obligation to recommend [% athena %] to their
 users, the truth is that [% athena %] is becoming an increasingly
-common tool in the EXAFS community. The format that best serves
+common tool in the EXAFS community.  The format that best serves
 [% athena %] is actually a fine format that can be imported by a very
 wide variety of EXAFS software, plotting software, spreadsheets, and
-other programs. It's a good format and your users would be well served
+other programs. It's[%#'%] a good format and your users would be well served
 by your adopting it.
 [% END %]

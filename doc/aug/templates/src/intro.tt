@@ -7,18 +7,18 @@
 [% athena %] is an interactive graphical utility for processing EXAFS
 data. It handles most of the common data handling chores of interest
 at the beamline or for preparing your data to begin analysis.
-[% athena %] is a graphical front end to Matt Newville's [% ifeffit %]
+[% athena %] is a graphical front end to Matt Newville's[%#'%] [% ifeffit %]
 library written entirely in the Perl programming language and using
-the PGPLOT graphical library for data display. It is being developed
-on Linux and tested on Windows XP, but should work on any unix-like,
-Windows, or Mac operating system.
+the Gnuplot program for data display. It is being developed
+on Linux and tested on various flavors of Windows, but should work on
+any unix-like, Windows, or Mac operating system.
 
-[% athena %] is designed to provide high quality analysis with a
+[% athena %] is intended to provide high quality analysis with a
 highly usable interface.  It allows very fine grained control over the
 processing and plotting of individual data sets while still enabling
-the processing and plotting of large quantities of data.
+the processing and visualization of large quantities of data.
 
-Among [% athena %]'s many, many features, you will find:
+Among [% athena %]'s[%#'%] many, many features, you will find:
 [% END %]
 
 [% WRAPPER html/list type="ul" %]
@@ -29,10 +29,10 @@ Convert raw data to [% mu %]
 File import plugins for reading arbitrary data files
 [% END %]
 [% WRAPPER html/li %]
-Process and plot multiple data files simultaneously
+Process and plot multiple data scans simultaneously
 [% END %]
 [% WRAPPER html/li %]
-Merge data in energy, k-, R-, or back-transform k-space
+Merge data as [%mue%], normalized [%mue%], or [%chik%]
 [% END %]
 [% WRAPPER html/li %]
 Energy calibration
@@ -41,7 +41,7 @@ Energy calibration
 Align data scans with or without a reference channel
 [% END %]
 [% WRAPPER html/li %]
-Deglitch [% mu %] data
+Deglitch, truncate, convolve, or smooth [% mu %] data
 [% END %]
 [% WRAPPER html/li %]
 Self-absorption corrections for fluorescence spectra
@@ -50,7 +50,7 @@ Self-absorption corrections for fluorescence spectra
 Compute difference spectra
 [% END %]
 [% WRAPPER html/li %]
-Fit linear combinations of standards to XANES or EXAFS data
+Fit linear combinations of standards to [%mue%], derivative of [%mue%], or [%chi%] data
 [% END %]
 [% WRAPPER html/li %]
 Fit peak functions to XANES data
@@ -60,9 +60,6 @@ Log-ratio/phase-difference analysis
 [% END %]
 [% WRAPPER html/li %]
 Background removal using the AUTOBK algorithm
-[% END %]
-[% WRAPPER html/li %]
-Normalization of XANES data to the Cromer-Liberman calculations
 [% END %]
 [% WRAPPER html/li %]
 Forward and backward Fourier transforms
@@ -75,7 +72,7 @@ Save data as [% mu %], normalized [% mu %], [% chik %],
 Save project files, allowing you to return to your analysis later
 [% END %]
 [% WRAPPER html/li %]
-... and much, much more!
+... and much, MUCH more!
 [% END %]
 [% END %]
 
@@ -91,7 +88,7 @@ into several parts.  We will discuss each of these parts and give
 each a name.
 [% END %]
 
-[% WRAPPER image file="athena_main.png" %]
+[% WRAPPER figure file="athena_main.png" %]
 The parts of the Athena.
 [% END %]
 
@@ -117,9 +114,7 @@ At the bottom of the screen is the echo area.  This very important
 space is used by [% athena %] to communicate with you, the user.  This
 space is used to display informational messages while [% athena %] is
 working on your data, error messages when it runs into trouble, and
-other kinds of messages.  When [% athena %] starts, it displays a hint
-from it's[%#'%] built-in list of hints.  A new hint can be seen at any time
-by pressing [% INCLUDE modkey key="control" letter='h' %].
+other kinds of messages.  
 
 The large blank area on the right is
 [% INCLUDE html/link link="ui/glist.html" text="the group list area" %].
@@ -141,7 +136,7 @@ other
 in the plotting options section.
 [% END %]
 
-[% WRAPPER image file="athena_withdata.png" %]
+[% WRAPPER figure file="athena_withdata.png" %]
 Athena, after importing some data.
 [% END %]
 
@@ -153,6 +148,10 @@ interacting with data in [% athena %].
 [% END %]
 
 [% PROCESS section label="Getting help" %]
+
+[% WRAPPER html/todo %]
+This section needs attention.  Demo projects not implemented.
+[% END %]
 
 [% FILTER html_para %]
 There is quite a bit of help built right into [% athena %].  Typing

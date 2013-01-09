@@ -11,7 +11,7 @@ provides a way of selectively importing part or all of the contents of
 the project file.
 [% END %]
 
-[% WRAPPER image file="import_projsel.png" %]
+[% WRAPPER figure file="import_projsel.png" %]
 The project selection dialog.
 [% END %]
 
