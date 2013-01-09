@@ -1,6 +1,10 @@
 [% META title = 'Rebinning data groups'
         about = 'Handling quick scan data' %]
 
+[% WRAPPER html/todo %]
+Explain all the buttons.
+[% END %]
+
 [% FILTER html_para %]
 Some beamlines offer the option of slewing the monochromator
 continuously from the beginning of the scan to the end.  A typical

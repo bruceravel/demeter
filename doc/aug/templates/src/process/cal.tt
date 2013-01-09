@@ -9,7 +9,7 @@ value is usually the tabulated edge energy.
 [% END %]
 
 [% WRAPPER figure file="calibrate.png" %]
-This is the calibration dialog.
+This is the calibration tool.
 [% END %]
 
 [% FILTER html_para %]
@@ -19,7 +19,7 @@ starts, the current group is plotted as the
 derivative of [% mu %].  The menu allows you plot the data as
 [% mu %], normalized [% mu %], derivative of [% mu %], or second
 derivative of [% mu %].  If your data is noisy, you may find it helpful
-to apply smoothing.  [% ifeffit %]'s simple three-point smoothing
+to apply smoothing.  [% ifeffit %]'s[%#'%] simple three-point smoothing
 algorithm is applied the number of times indicated, then the data are
 replotted.
 

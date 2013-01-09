@@ -51,61 +51,11 @@ made by [% INCLUDE font/b a="you, the user" %], this part of
 [% END %]
 
 [% FILTER html_para %]
-That said, let's carry on.
+That said, let's[%#'%] carry on.
 
-The dialog shown
-[% INCLUDE imageref text="below" label="mee" in=1 %]
-provides an interface to a simple, three-parameter algorithm for
-approximately removing a step from your data.  
-[% END %]
+[% INCLUDE todo what="Multi-electron excitation removal" %]
 
-[% WRAPPER figure file="mee.png" %]
-The multi-electron excitation removal correction dialog.
-[% END %]
-
-[% FILTER html_para %]
-
-The basic idea is that a small, step-like function will be subtracted
-from the normalized data.  If all works well, the resulting [% chik %]
-function will not be affected by the secondary step.  With either
-algorithm a step function is created out of 3 parameters.  An energy
-offset given in eV units relative to the [% e0 %] position is used as
-the center of the step.  For a reflected edge position, the measured
-edge is convolved by a Lorentzian of the given width.  Alternately, an
-arctangent of that width is placed at the specified position.
-Finally, an amplitude parameter is multiplied by the step function
-before subtraction from the normalized [% mu %] data.
-
-It is usually quite unclear how large the amplitude parameter should
-be.  The best way to figure this out is by trial and error.  Start
-with an obviously large value.  The reuslting step-subtracted spectrum
-will have a pronounced downward shift at the energy of the step.
-Reduce the amplitude parameter until the resulting data are smooth
-through the energy of the step.  You may also need to adjust the other
-two parameters to obtain the smoothest data.
-
-Of course, the only real criterion for knowing if you have done an
-adequate job subtracting the step function is actually analyze the
-resulting [% chik %] function.  If the resulting analysis is an
-improvement in statistical terms and the parameters are better
-understood, then you might have confidence in having performed the
-step removal correctly.
-
-Like other [% athena %] utilities, there is a button for making a data
-group once you have found a set of parameters that you like.  You can
-also save the current value of energy shift into a small database of
-offset values for the elements that is saved on disk as an ini file,
-thus allowing you return this same offset value for other data.
-[% END %]
-
-[% WRAPPER figure file="mee_k.png" %]
-Removing the effect of the multi-electron excitation.  The secondary
-excitation can be seen as the shoulder marked by the purple arrow.
-The red line shows [% chik %] after removal.
-[% END %]
-
-
-[% FILTER html_para %] This is a good reference on the effect of small
+This is a good reference on the effect of small
 multi-electron excitations on otherwise excellent [% chik %] data:
 [% INCLUDE citation author = "C. Hennig" journal = "Phys. Rev. B" volume
 = "75" pages = "035120" year = 2007 %].

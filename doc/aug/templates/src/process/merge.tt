@@ -4,7 +4,7 @@
 [% FILTER html_para %]
 Sadly, most data that we measure is, frankly, kind of crappy.  A
 single scan typically ranges from noisy to so dominated by noise that
-it's hard to recognize it as oscillatory.  Fortunately, the central
+it's[%#'%] hard to recognize it as oscillatory.  Fortunately, the central
 limit theorem works every single time.  If you add up enough noisy
 scans, it eventually turns into real data!
 
@@ -42,7 +42,7 @@ Data merged as [% mu %] plotted with its standard deviation.
 [% END %]
 
 [% FILTER html_para %]
-The data merging feature is one of [% athena %]'s most important.  My
+The data merging feature is one of [% athena %]'s[%#'%] most important.  My
 typical work pattern is to carefully align scans on a sample, merge
 them, then analyze the merged data in [% artemis %].
 [% END %]
@@ -73,4 +73,8 @@ merge in normalized [% mu %] will treat all the data with similar
 weights.  One way of having this happen is to change amplifier gains
 between scans.  In that situation, you probably should choose to merge
 normalized or [% chik %] data.
+[% END %]
+
+[% WRAPPER html/todo %]
+Show and explain varience plot, also explain plot merged submenu
 [% END %]

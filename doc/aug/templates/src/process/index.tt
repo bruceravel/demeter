@@ -24,5 +24,5 @@ window.
 [% END %]
 
 [% WRAPPER figure file="process.png" %]
-The Data menu is used to access almost all data processing dialogs.
+The main menu is used to access almost all data processing functionality.
 [% END %]

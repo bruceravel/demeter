@@ -71,7 +71,7 @@
 	    ui       = {
 		       name = 'User Interface'
 		       menu = [ 'glist', 'mark', 'pluck', 'styles',
-				'kweight', 'frozen', 'palettes', 'prefs' ]
+				'kweight', 'frozen', 'prefs' ]
 		       page = {
 			      glist    = { name = 'Using the group list' }
 			      mark     = { name = 'Marking groups' }
@@ -79,7 +79,6 @@
 			      styles   = { name = 'Plot styles' }
 			      kweight  = { name = 'Using k-weights' }
 			      frozen   = { name = 'Frozen groups' }
-			      palettes = { name = 'Palettes' }
 			      prefs    = { name = 'Setting preferences' }
 			      }
 		       }
@@ -94,14 +93,15 @@
 		       }
 	    process  = {
 		       name = 'Data processing'
-		       menu = [ 'cal', 'align', 'pixel', 'deg',
-				'trun', 'rebin', 'smooth', 'conv',
-				'deconv', 'sa', 'mee', 'merge' ]
+		       menu = [ 'cal', 'align', 'merge', 'rebin' , 'deg',
+				'smooth', 'conv',
+				'deconv', 'sa', 'pixel', 'mee',
+				'series', 'sum' ]
 		       page = {
 			      cal    = { name = 'Calibration' }
 			      align  = { name = 'Alignment' }
 			      pixel  = { name = 'Dispersive XAS' }
-			      deg    = { name = 'Deglitching' }
+			      deg    = { name = 'Deglitching and truncation' }
 			      trun   = { name = 'Truncation' }
 			      rebin  = { name = 'Rebinning' }
 			      smooth = { name = 'Smoothing' }
@@ -110,6 +110,8 @@
 			      sa     = { name = 'Self-Absorption correction' }
 			      mee    = { name = 'Step function removal' }
 			      merge  = { name = 'Merging' }
+			      series = { name = 'Copy series' }
+			      sum    = { name = 'Data summation' }
 			      }
 		       }
 	    analysis = {

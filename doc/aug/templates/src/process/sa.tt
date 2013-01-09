@@ -3,8 +3,11 @@
         difficult = 1
 %]
 
-[% FILTER html_para %]
+[% WRAPPER html/todo %]
+Need to find Cu data from Booth to remake the other two figures
+[% END %]
 
+[% FILTER html_para %]
 The statement that [% mu %] measured in fluorescence is the ratio of
 the signals on the fluorescence and incident ion chambers is only true
 in the limit of very thin samples or very dilute samples.  For thick,
@@ -35,13 +38,21 @@ correction.  In both cases, we have a way to evaluate the success of
 the correction.  In general, it can be difficult to guarantee the
 success of the correction, particularly if the entire composition of
 the sample is not well known.  That means that, in practice, this sort
-of correction is not always useful.  But when it is, it's very useful
+of correction is not always useful.  But when it is, it's[%#'%] very useful
 indeed.
 
 It is also important to understand that the self-absorption effect
 only effects the amplitude of your EXAFS data, not the phase.  Thus
 even if you are unable to properly correct, you can still analyze your
 EXAFS data for bond lengths.
+
+[% INCLUDE html/link
+link="https://speakerdeck.com/bruceravel/understanding-self-absorption-in-
+fluorescence-xas"
+text = "Here is my presentation of self-absorption corrections." %]
+There I discuss the applicability of this tool in more detail.  You
+will find that, in general, the self-absorption tool is very hard to
+apply to real data.
 
 [% END %]
 

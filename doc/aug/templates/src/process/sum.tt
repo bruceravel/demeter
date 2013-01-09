@@ -1,0 +1,7 @@
+[% META title = 'Data summation'
+        about = 'Making arbitrary sumations of data'
+%]
+
+[% FILTER html_para %]
+Blah blah blah
+[% END %]

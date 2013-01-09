@@ -1,0 +1,7 @@
+[% META title = 'Copy series'
+        about = 'Examining systematic trends in a data set'
+%]
+
+[% FILTER html_para %]
+Blah blah blah
+[% END %]

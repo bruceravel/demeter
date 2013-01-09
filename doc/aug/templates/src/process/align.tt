@@ -1,5 +1,10 @@
 [% META title = 'Aligning data groups' %]
 
+[% WRAPPER html/todo %]
+Explain some of the pitfalls, explain how e0 is used for intial guess
+of shift
+[% END %]
+
 [% FILTER html_para %]
 Aligning data is the process of moving a data group in energy onto an
 absolute energy grid defined by some standard.  In [% athena %] that
@@ -42,7 +47,7 @@ group list, excluding those groups that cannot be plotted in energy.
 
 You can perform the alignment by hand by clicking any of the buttons
 labeled with numbers.  Those buttons will move the current group up or
-down in energy by the amount on the button's label.  Alternately, you
+down in energy by the amount on the button's[%#'%] label.  Alternately, you
 can type an energy shift value in the box that displays the current
 value of [% INCLUDE font/param a="eshift" %].  You can click these
 buttons until the data line up nicely.
