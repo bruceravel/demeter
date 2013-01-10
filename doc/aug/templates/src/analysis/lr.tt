@@ -102,24 +102,13 @@ phase-difference data along with the fits to a file by clicking the
 [% END %]
 
 
-[% WRAPPER figure file="lr_fit.png" %]
-The log-ratio/phase-difference dialog.
+[% WRAPPER quadplot files=["lr_fit.png", "lr_pd_fit.png"] %]
+The results of the log-ratio/phase-difference fit to the Cu metal.
 [% END %]
 
 [% FILTER html_para -%]
 The three plot buttons behave just like the purple plot buttons would
 behave were only the standard and unknown marked.
-
-Note that the
-[% INCLUDE font/mono a="kmin" %],
-[% INCLUDE font/mono a="kmax" %],
-[% INCLUDE font/mono a="kw" %],
-[% INCLUDE font/mono a="dk" %],
-[% INCLUDE font/mono a="rmin" %],
-[% INCLUDE font/mono a="rmax" %], and
-[% INCLUDE font/mono a="dr" %] parameters for the standard and the
-unknown will be reset to the values used in this analysis, but not for
-[% INCLUDE html/link text="frozen groups" link="../ui/frozen.html" %].
 
 My favorite explanation of this analysis method is
 [% INCLUDE font/quote a="Application of the Ratio Method of EXAFS Analysis to Disordered

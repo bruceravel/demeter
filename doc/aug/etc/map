@@ -24,7 +24,7 @@
 	    intro   = { name = 'Introduction'}
 	    bkg     = {
 		    name = 'Background Removal'
-		    menu = [ 'norm', 'ft', 'rbkg', 'kweight', 'range' ]
+		    menu = [ 'norm', 'rbkg', 'kweight', 'range' ]
 		    page = {
 			   norm    = { name = 'Normalization' }
 			   ft      = { name = 'Introduction to Fourier transforms' }
@@ -35,7 +35,7 @@
 		    }
 	    plot    = {
 		      name = 'Plotting'
-		      menu = [ 'tabs', 'krange', 'stack', 'indic', 'pf', 'params', 'etc' ]
+		      menu = [ 'tabs', 'krange', 'stack', 'indic', 'params', 'etc' ]
 		      page = {
 			     tabs   = { name = 'Plot space tabs' }
 			     krange = { name = 'Spectral resolution and k-range' }
@@ -116,7 +116,7 @@
 		       }
 	    analysis = {
 		       name = 'Data analysis'
-		       menu = [ 'lcf', 'peak', 'lr', 'pca', 'diff' ]
+		       menu = [ 'lcf', 'pca', 'peak', 'lr', 'diff' ]
 		       page = {
 			      lcf  = { name = 'Linear combination fitting' }
 			      peak = { name = 'Peak fitting' }
@@ -127,7 +127,7 @@
 		       }
 	    examples   = {
                           name = 'Worked examples'
-			  menu = ['data' 'moo3' 'aucl']
+			  menu = ['data' 'aucl']
 			  page = {
 				 data = { name = 'Basic data processing' }
 				 moo3 = { name = 'A hard background removal' }

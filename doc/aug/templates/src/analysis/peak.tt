@@ -2,15 +2,21 @@
         about = 'Interpreting data as a sum of line shapes'
 %]
 
+[% WRAPPER html/todo %]
+Explain all the new buttons and features.  Give some disclaimers,
+particularly about varying energy.  Discuss saving results on results
+tab. 
+[% END %]
+
 [% FILTER html_para -%]
 Peak fitting involves fitting a number of analytical line shapes to
 XANES data.  The typical approach is to simulate the XANES data using
 one or two step-like function and several Gaussians or Lorentzians for
 the peaks in the data.  The centroids, amplitudes, and widths of the
 various line shapes are either fixed or varied to best fit the data.
-In [% athena %]'s implementation of peak fitting, a
+In [% athena %]'s[%#'%] implementation of peak fitting, a
 Levenberg-Marquardt non-linear least-squares minimization is used.
-(To be specific, [% ifeffit %]'s [% INCLUDE font/mono a="minimize" %]
+(To be specific, [% ifeffit %]'s[%#'%] [% INCLUDE font/mono a="minimize" %]
 command is used after constructing an array with a sum of line shapes.)
 
 Peak fitting is an inherently empirical analysis technique.  By
@@ -90,6 +96,10 @@ containing the fit results in the header and columns of
 [% WRAPPER figure file="peak_fit.png" %]
 Fit to [% pbtio3 %] data measured at room temperature using an
 arc-tangent, a Lorentzian, and a Gaussian.
+[% END %]
+
+[% WRAPPER figure file="peak_results.png" %]
+The peak fitting results tab.
 [% END %]
 
 [% FILTER html_para -%]

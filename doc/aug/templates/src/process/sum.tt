@@ -3,5 +3,21 @@
 %]
 
 [% FILTER html_para %]
-Blah blah blah
+This is a little bit like the 
+[% INCLUDE html/link text="linear combination fitting"
+link="../analysis/lcf.html" %]
+tool and a little bit like the
+[% INCLUDE html/link text="difference spectrum"
+link="../analysis/diff.html" %]
+tool, but different.
+[% END %]
+
+[% WRAPPER figure file="sum.png" %]
+The data summation tool.
+[% END %]
+
+[% WRAPPER figure file="sum_plot.png" %]
+A plot containing an arbitrary sum of three standards.  Included in
+the plot is the marked group from t he group list and the three
+standards scaled by the specified weight.
 [% END %]

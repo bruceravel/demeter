@@ -1,4 +1,4 @@
-[% META title = 'Deglitching data'
+[% META title = 'Deglitching and truncating data'
         about = 'Removing spurious points from your data' %]
 
 [% FILTER html_para %]
@@ -20,7 +20,7 @@ unsightly and have an aesthetic impact on the presentation of your
 data.
 
 The process by which glitchy points are removed from the data is called
-deglitching.  Yes, I also think that's a funny sounding word.
+deglitching.  Yes, I also think that's[%#'%] a funny sounding word.
 [% END %]
 
 [% WRAPPER figure file="deglitch.png" %]
@@ -28,7 +28,7 @@ The deglitching dialog.
 [% END %]
 
 [% FILTER html_para %]
-[% athena %]'s approach to deglitching involves simply removing the
+[% athena %]'s[%#'%] approach to deglitching involves simply removing the
 points from the data.  No effort is made to interpolate from the
 surrounding points in an effort to replace that point with a
 presumably more appropriate value.  The reason that no interpolation
@@ -39,10 +39,10 @@ standard k-grid.  Since a rebinning is performed later in the data
 processing, there is no reason to interpolate at the time of
 deglitching.
 
-Deglitching only removes points from the data in [% athena %]'s
+Deglitching only removes points from the data in [% athena %]'s[%#'%]
 memory.  The data on disk are never altered.
 
-There are two methods of deglitching offered by [% athena %]'s
+There are two methods of deglitching offered by [% athena %]'s[%#'%]
 deglitching dialog, shown
 [% INCLUDE imageref text="above" label="deglitch" in=1 %].  The
 first involves selecting and removing the glitches one by one.
@@ -102,10 +102,12 @@ glitches from the data.  In
 we see [% mu %] data for [% u3o8 %] that appear fine.
 [% END %]
 
-[% WRAPPER quadplot files=["deglitch_chie_mu.png", "deglitch_chie.png"] %]
+[% WRAPPER quadplot files=["deglitch_chie_mu.png", "deglitch_chie_k.png", "deglitch_chie.png"] %]
 (Left) [% mu %] data for [% u3o8 %] that have a tiny glitch hidden in
 the high energy region.  (Right) Plotted as [% chik %], the glitch at
-about 12 [% iAA %] in these [% chik %] data is clearly seen.
+about 12 [% iAA %] in these [% chik %] data is clearly seen. (Bottom)
+With potting as [%chie%] selected.  The spurious point at about 12
+[%iAA%] has been chosen.
 [% END %]
 
 [% FILTER html_para %]
@@ -119,4 +121,51 @@ The point-by-point deglitching algorithm works on the [% chie %] data
 in the same manner as for [% mu %] data.  Points are selected by
 clicking on the plot, then removed by clicking the
 [% INCLUDE font/quote a="Remove point" %] button.
+
+
+If your data does something odd at one end of the scan, the easiest
+solution might be to simply trim it away.  The truncation dialog
+[% INCLUDE imageref text="below" label="truncate" in=1 %]
+allows you to chop data before or after a selected value.
+
+The radiobox is used to tell [%athena%] whether points should be trimmed
+from before or after the selected point.  The point can be chosen by
+typing in the box or by clicking the pluck button then clicking on the
+plot.
+[% END %]
+
+[% WRAPPER figure file="truncate_plot.png" %]
+Tin oxide data with some spurious points near the end of the scan.
+[% END %]
+
+[% FILTER html_para %]
+When you select a point, it is indicated with a vertical line, as
+shown in
+[% INCLUDE imageref text="the plot above" label="truncate_plot" %].  To
+remove the data before or after that line, click the
+[% INCLUDE font/quote a="Truncate data" %] button.
+
+Sometimes the issue is not simply that the data are
+[% INCLUDE font/quote a="icky" %] after a
+certain point.  Sometimes your sample has elements with nearby edges,
+thus limiting the range over which you can actually measure the data.
+An example is shown in
+[% INCLUDE imageref text="the next plot" label="truncate_batio3" %],
+the Ti K edge is at 4966 eV and the Ba [% l3 %] edge is
+at 5247 eV.  A careless choice of spline and normalization range will
+lead to a data processing disaster.
+[% END %]
+
+[% WRAPPER figure file="truncate_batio3.png" %]
+The Ti K and Ba [% l3 %] edges of [% batio3 %].
+[% END %]
+
+[% FILTER html_para %]
+Of course, truncation is not the only way of dealing with this issue.
+A careful choice of the spline, pre-edge, and normalization ranges is
+usually sufficient to treat any strange features at the beginning or
+end of the data set.  So which is better?  I think it's[%#'%] a matter of
+preference.  As long as you understand what you are doing and process
+all your data in a consistent, defensible manner, you can use either
+approach.
 [% END %]

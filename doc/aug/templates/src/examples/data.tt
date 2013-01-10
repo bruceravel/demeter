@@ -13,39 +13,15 @@ example uses data collected on an iron foil at three temperatures.
 
 [% CASE 'html' %]
 [% FILTER html_para %]
-Here are the data:
+The data used in this example can be found
+[% INCLUDE html/link text="at my Github site" 
+link="https://github.com/bruceravel/XAS-Education/tree/master/Examples/Fe%20foil" %].
+They include three scans on an iron foil measured at 60K, and two each
+at 150K and 300K.
 [% END %]
-[% WRAPPER html/list type='ul' %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 60K, scan 1" link="../../data/fe.060" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 60K, scan 2" link="../../data/fe.061" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 60K, scan 3" link="../../data/fe.062" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 150K, scan 1" link="../../data/fe.150" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 150K, scan 2" link="../../data/fe.151" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 300K, scan 1" link="../../data/fe.300" %]
-[% END %]
-[% WRAPPER html/li %]
-  [% INCLUDE html/link text="Fe foil, 300K, scan 2" link="../../data/fe.301" %]
-[% END %]
-[% END %]
-
-[% CASE 'latex' %]
-  The data files can be found on the web with the html version of this document.
-
 [% CASE 'pod' %]
-The data files can be found among the example files that come with
-[% athena %].
-
+The data files can be found at
+https://github.com/bruceravel/XAS-Education/tree/master/Examples/Fe%20foil
 [% END %]
 
 [% FILTER html_para %]
@@ -64,7 +40,7 @@ foil data.
 [% FILTER html_para %]
 When I collected these data, I purposefully miscalibrated the
 monochromator so that I would have a data set for explaining the use
-of [% athena %]'s calibration dialog.  The first thing to do, then, is
+of [% athena %]'s[%#'%] calibration dialog.  The first thing to do, then, is
 to correctly calibrate these data.
 
 Open the [% INCLUDE html/link text="calibration dialog"
@@ -112,7 +88,7 @@ and select that as the new edge position.  The value should be about
 and return to the main window.
 
 You will notice two things once the main window is displayed again:
-the value of [% INCLUDE font/param a="e0" %] is now 7112 and
+the value of [% INCLUDE font/param a="E0" %] is now 7112 and
 the value of the [% INCLUDE font/param a="eshift" %] parameter is now
 about 6.7.  In [% athena %], calibration works by simultaneously
 setting those two parameters such that the selected point has the
@@ -132,9 +108,9 @@ clicking on [% INCLUDE plotbutton class="purple" letter='E' %].
 (Upper left) Misaligned iron foil [% mu %] data.
 (Upper right) The derivatives of the misaligned data, as plotted in
 the alignment dialog.  (Lower left) Aligned data plotted in k, but
-with [% INCLUDE font/param a="e0" %] unconstrained. (Lower right)
-Aligned data plotted in k after constraining [% INCLUDE font/param a="e0" %].
-One aligned and constrained in [% INCLUDE font/param a="e0" %], these
+with [% INCLUDE font/param a="E0" %] unconstrained. (Lower right)
+Aligned data plotted in k after constraining [% INCLUDE font/param a="E0" %].
+Once aligned and constrained in [% INCLUDE font/param a="E0" %], these
 successive scans are quite consistent.
 [% END %]
 
@@ -171,23 +147,23 @@ problem, as we see in the lower left of
 [% INCLUDE imageref text="the figure above" label="ex_data_misaligned" %].
 
 The [% INCLUDE font/file a="fe.061" %] data have been aligned, but not
-calibrated.  That is, its [% INCLUDE font/param a="e0" %] parameter
+calibrated.  That is, its [% INCLUDE font/param a="E0" %] parameter
 has not been set to the same value as for the
 [% INCLUDE font/file a="fe.060" %] data.  Consequently, the position
 in the data where k=0 is different for the two spectra and the [% chik %]
 data from the background removal are different.
 
 To correct this, you can either enter the value for
-[% INCLUDE font/param a="e0" %] from
+[% INCLUDE font/param a="E0" %] from
 [% INCLUDE font/file a="fe.060" %] -- 7112 eV -- into the
-[% INCLUDE font/param a="e0" %] text entry box after clicking on
+[% INCLUDE font/param a="E0" %] text entry box after clicking on
 [% INCLUDE font/file a="fe.061" %] in the group list.  Alternately,
 you can select [% INCLUDE font/file a="fe.060" %] in the group list,
-then right click on the [% INCLUDE font/param a="e0" %] parameter to
+then right click on the [% INCLUDE font/param a="E0" %] parameter to
 raise its [% INCLUDE html/link text="context menu"
 link="../params/constrain.html#constrainingindividualparameters" %] and
 select [% INCLUDE font/quote a="Set all groups to this value of E0" %].
-Once the [% INCLUDE font/param a="e0" %] parameters are set the same
+Once the [% INCLUDE font/param a="E0" %] parameters are set the same
 for these data sets, we see
 [% INCLUDE imageref text="above" label="ex_data_misaligned" in=1 %] in
 the lower right that
@@ -225,7 +201,7 @@ All of the iron foil data have been imported and marked.
 [% FILTER html_para %]
 At this point, only [% INCLUDE font/file a="fe.061" %] has been
 aligned to [% INCLUDE font/file a="fe.060" %] and had its value of
-[% INCLUDE font/param a="e0" %] properly constrained.  We need to do
+[% INCLUDE font/param a="E0" %] properly constrained.  We need to do
 so for the remaining data groups.
 
 Processing all 5 of the remaining data groups would be quite tedious
@@ -263,12 +239,12 @@ button to continue with the data processing.
 
 Each of the data groups has now been aligned, but only
 [% INCLUDE font/file a="fe.061" %] has the same value of
-[% INCLUDE font/param a="e0" %] as
+[% INCLUDE font/param a="E0" %] as
 [% INCLUDE font/file a="fe.060" %].  Again, clicking through the
-groups list and editing the [% INCLUDE font/param a="e0" %] values
+groups list and editing the [% INCLUDE font/param a="E0" %] values
 seems horribly tedious.  Here we see the true value of the
 [% INCLUDE font/quote a="Set all groups to this value of E0" %]
-in the [% INCLUDE font/param a="e0" %] [% INCLUDE html/link text="context menu"
+in the [% INCLUDE font/param a="E0" %] [% INCLUDE html/link text="context menu"
 link="../params/constrain.html#constrainingindividualparameters" %].
 
 The [% chik %] data for the aligned and constrained data are shown
@@ -298,7 +274,7 @@ align and constrain data on the fly as it is imported.
 [% FILTER html_para %]
 Now click the [% INCLUDE font/quote a="Open" %] button.  As the
 remaining data are imported, the alignment and
-[% INCLUDE font/param a="e0" %] constraint will happen on the fly and
+[% INCLUDE font/param a="E0" %] constraint will happen on the fly and
 the new group will be marked.  Once the file selection dialog using
 these preprocessing features is finished, [% athena %] should look
 just like it did in

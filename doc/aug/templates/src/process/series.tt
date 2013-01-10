@@ -5,3 +5,12 @@
 [% FILTER html_para %]
 Blah blah blah
 [% END %]
+
+[% WRAPPER figure file="series.png" %]
+The copy series tool.
+[% END %]
+
+[% WRAPPER figure file="series_plot.png" %]
+A plot of the results of applying the series of [% INCLUDE font/param
+a="Rbkg" %] values to the Fe foil data.
+[% END %]

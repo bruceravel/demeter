@@ -96,7 +96,7 @@ variation of [% e0 %] for the data or standards will be  unnecessary.
 [% PROCESS section label="Constraints and modifications to the fit" %]
 
 [% FILTER html_para -%]
-[% athena %]'s linear combination dialog offers several constraints to the
+[% athena %]'s[%#'%] linear combination dialog offers several constraints to the
 fitting parameters. The constraints are set and unset using the
 checkbuttons near the bottom of the dialog.
 [% END %]
@@ -152,7 +152,7 @@ It is sometimes useful to check the robustness of the fit against
 noisy data. This is particularly true for a data set wherein some data
 are much noisier than others. To this end, [% athena %] allows you to add
 pseudo-random noise to the data before performing the fit. This is
-done using [% ifeffit %]'s [% INCLUDE font/mono a="random()" %]
+done using [% ifeffit %]'s[%#'%] [% INCLUDE font/mono a="random()" %]
 function with a user-supplied value for
 sigma. No care is taken to normalize sigma relative to the data, so a
 bit of trial and error might be necessary to find a suitable level of
@@ -250,10 +250,10 @@ configurable using the preferences dialog.
 [% FILTER html_para -%]
 The various operational parameters described above can be constrained
 between data groups in the same manner as background removal and
-Fourier transform parameters on [% athena %]'s main page. Two items in the
+Fourier transform parameters on [% athena %]'s[%#'%] main page. Two items in the
 operations list are [% INCLUDE font/quote a="Set params, all groups" %]
 and [% INCLUDE font/quote a="Set params, marked groups" %]. These will
-export the current group's values for
+export the current group's[%#'%] values for
 fitting range, noise, weights between 0 and 1, force weights to sum to
 1, and use of linear term to other groups. This should probably be
 done before using the marked group fitting feature described in the
@@ -291,7 +291,7 @@ reports as described above.
 
 [% FILTER html_para -%]
 One of the uses of this sort of XANES fitting is to try to figure out
-what's actually in a sample. One approach to figuring this out is to
+what's[%#'%] actually in a sample. One approach to figuring this out is to
 measure all plausible standard compounds and try fitting a large
 number of different combinations of the standards to the data.
 [% Athena %] provides a tool for automating this. Here is how it works:
@@ -313,11 +313,12 @@ By default this number is 4, which says that the fits will
 consider all possible binary, ternary, and quaternary combinations of
 standards. Increase this number to consider higher orders of
 combinations of standards. Decrease it to limit the number of fits to
-perform. You can also mark one standard as
+perform. You can also indicate which standards are
 [% INCLUDE font/quote a="required" %] by clicking
-the radio button in the right-most column of the table of
+the check button in the right-most column of the table of
 standards. This will limit the combinations of standards tested
-against to data to those that contain the required standard.
+against to data to those that contain the required standards, thus
+greatly reducing the scope of the combinatorial problem.
 [% END %]
 [% WRAPPER html/li %]
 Click [% INCLUDE font/quote a="Fit all possible combinations" %]
@@ -353,7 +354,7 @@ The second table contains each of the standards and its weight and
 
 You can select a fit from the upper table by clicking on its
 line. When you do so, that fit becomes highlighted in pale red, its
-fitting results are inserted in the bottom table, it's best fit
+fitting results are inserted in the bottom table, its best fit
 function is plotted along with the data, and its results are inserted
 into the other two tabs. In this way, you can examine any fit from the
 series, as seen in

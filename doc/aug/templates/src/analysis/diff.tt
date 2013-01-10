@@ -1,5 +1,10 @@
 [% META title = 'Difference spectra' %]
 
+[% WRAPPER html/todo %]
+Discuss spaces, discuss group naming, discuss and show integration,
+discuss and show additional uses of diff spectra. 
+[% END %]
+
 [% FILTER html_para %]
 In many situations, the trends in a sequence measured data can be
 indicative of the of the physical process being measured.  Shown in

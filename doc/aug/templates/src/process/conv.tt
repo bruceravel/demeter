@@ -2,7 +2,7 @@
         about = 'Adding artificial broadening and artificial noise to your data' %]
 
 [% FILTER html_para %]
-This is one of [% athena %]'s odder utilities.  It takes perfectly
+This is one of [% athena %]'s[%#'%] odder tools.  It takes perfectly
 fine normalized [% mu %] data and makes it worse by adding artificial
 broadening, artificial noise, or both.  The broadening can be a
 Gaussian or a Lorentzian convolution by the selected width in energy.

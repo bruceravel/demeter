@@ -2,6 +2,10 @@
         about = 'Using XANES data and LCF to study system kinetics'
 %]
 
+[% WRAPPER html/todo %]
+Update excel figure and sequence figure once fit seq. bug is fixed in Athena.
+[% END %]
+
 [% FILTER html_para -%]
 This section outlines the linear combination fitting analysis of an
 experiment to study the kinetics of the reduction of aqueous [% au3 %]
@@ -43,9 +47,8 @@ could not distinguish colloidal and bulk gold in our XAS measurements.)
 
 [% CASE 'html' %]
 [% FILTER html_para %]
-Here are the data:
-[% INCLUDE html/link text="a project file" link="../../data/cyanobacteria.prj" %]
-containing gold standards and gold/cyanobacteria data.
+A project file conatining all the data shown here can be found at
+[% INCLUDE html/link text="my Github site" link="https://github.com/bruceravel/XAS-Education/tree/master/Examples/Au%2BCyanobacteria" %].
 [% END %]
 
 [% CASE 'latex' %]
@@ -111,8 +114,8 @@ drop-down menus, select [% INCLUDE font/quote a="Au foil" %] and
 [% INCLUDE imageref text="below" label="ex_aucl_lcf" in=1 %].
 [% END %]
 
-[% WRAPPER figure file="ex_aucl_lcf.png" %]
-[% athena %]'s linear combination fitting dialog with the end member
+[% WRAPPER figure file="lcf.png" %]
+[% athena %]'s[%#'%] linear combination fitting dialog with the end member
 standard compounds selected for the initial fit.
 [% END %]
 
@@ -136,7 +139,7 @@ members as the fitting standards.
 [% INCLUDE section label="Improving the fit" %]
 
 [% FILTER html_para %]
-As nice as this quick and easy result is, it's not perfect.  A close
+As nice as this quick and easy result is, it's[%#'%] not perfect.  A close
 examination of the plot
 [% INCLUDE imageref text="above" label="ex_aucl_init" in=1 %] shows
 quite a bit of misfit throughout the entire fitting range.  (Note that
@@ -194,7 +197,7 @@ non-linear, least-squares minimization (such as that used by
 [% ifeffit %] and [% athena %]) should give 1 for a fit in which the
 model is a good representation of the data.  That is certainly true,
 but supposes that you have a good determination of the measurement
-uncertainty.  We don't.  In principle, the standard deviation spectrum
+uncertainty.  We don't[%#'%].  In principle, the standard deviation spectrum
 from the [% INCLUDE html/link text="merge of measured data"
 link="../process/merge.html" %] could be used as an approximation of
 the measurement uncertainty, but that is not possible in this case.
@@ -266,11 +269,11 @@ combinatorial sequence to only consider combinations which include the
 metallic gold standard.  This reduces the number of binary and ternary
 combinations to 36.  Now click
 [% INCLUDE font/quote a="Fit all combinations" %] in the operations
-list.  This will take a while.  It's a good time to get a cup of coffee.
+list.  This will take a while.  It's[%#'%] a good time to get a cup of coffee.
 [% END %]
 
 
-[% WRAPPER figure file="ex_aucl_combo.png" %]
+[% WRAPPER figure file="lcf_combo.png" %]
 The results of the combinatorial fitting sequence, as displayed on the
 in the [% INCLUDE font/quote a="combinatorics" %] tab.
 [% END %]
@@ -324,14 +327,23 @@ standards in the group list.  Now click on
 [% INCLUDE font/quote a="Fit marked groups" %] in the operations list.
 This will step through the marked groups, applying the three-standard
 fitting model to each one.  Again, you may want to relax as you wait.
+[% END %]
 
+[% WRAPPER figure file="ex_aucl_sequence.png" %]
+A report on the results of fitting the marked groups.  The report is
+written to a file that can be imported into a spreadsheet, like
+OpenOffice Calc shown here.
+[% END %]
+
+
+[% FILTER html_para %]
 Once the sequence of fits finishes, you may want to click through the
 data groups and examine the fits at the various time steps.  Note that
 the [% INCLUDE font/quote a="Marked fits report" %] option in the
 operations list becomes active.  Clicking on this prompts you for a
 name for an output file.  This output file is a comma separated value
 text file which can be easily imported into a spreadsheet, much like
-one of [% athena %]'s [% INCLUDE html/link text="report files"
+one of [% athena %]'s[%#'%] [% INCLUDE html/link text="report files"
 link="../output/report.html" %].  In
 [% INCLUDE imageref text="this figure" label="ex_aucl_excel" %] we see
 that the metal content increases monotonically while the chloride

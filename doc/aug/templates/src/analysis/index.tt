@@ -12,10 +12,10 @@ theory from [% feff %], often the empirical techniques described in
 this chapter are adequate to answer the questions you have about your
 data.
 
-[% athena %]'s analysis tools are accessed from the Analysis menu, as
+[% athena %]'s[%#'%] analysis tools are accessed from the Analysis menu, as
 shown [% INCLUDE imageref text="below" label="analysis" in=1 %].
 [% END %]
 
 [% WRAPPER figure file="analysis.png" %]
-The contents of the Analysis menu.
+The data analysis tools in the main menu.
 [% END %]

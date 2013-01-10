@@ -1,4 +1,89 @@
 [% META title = 'Principle component analysis'
         about = 'Abstract decomposition of a data sequence' %]
 
-[% INCLUDE todo what="PCA" %]
+
+[% WRAPPER html/todo %]
+Document all the buttons and whatnot.  Explain what useful features
+are still missing.  Explain what PCA means, what it does, and what it
+does not do.
+[% END %]
+
+[% FILTER html_para -%]
+Here, I have imported a project file containing well-processed data on
+a time series of samples in which gold chloride is being reduced to
+gold metal. The project file includes 8 time steps and 9 standards. I
+cannot stress strongly enough the importance of doing a good job of
+aligning and normalizing your data before embarking on PCA. This is
+truly a case of garbage-in/garbage-out.
+
+I then select the PCA tool from the main menu. 
+[% END %]
+
+[% WRAPPER figure file="pca.png" %]
+The PCA tool.
+[% END %]
+
+
+[% FILTER html_para -%]
+The operational concept for the PCA tool makes use of the standard
+Athena group selection tools. The ensemble of marked groups are used
+as the data on which the PCA will be performed. The selected group
+(i.e. the one highlighted in the group list) can be either
+reconstructed or target transformed. The relevant controls will be
+enabled or disabled depending on whether the selected group is marked
+(and therefore one of the data sets in the PCA) or not (and therefore
+a subject for target transformation).
+
+Clicking the [% INCLUDE font/quote a="Perform PCA" %] button will
+perform normalization on all the data as needed, then perform the
+components analysis. Upon completion, some results are printed to the
+text box and several buttons become enabled.
+[% END %]
+
+[% FILTER html_para -%]
+After the PCA completes, a plot is made of the extracted
+components. This plot can be recovered by clicking the [% INCLUDE
+font/quote a="Components" %] button under the [% INCLUDE font/quote
+a="Plots" %] heading. The number spinner is used to restrict which
+components are plotted. Because the first component is often so much
+bigger than the rest, it is often useful to set that number to 2, in
+which case the first (and largest) component is left off the plot.
+
+Other plotting options include a plot of the data stack, as
+interpolated into the analysis range, a scree plot (i.e. the
+eigenvalues of the PCA) or its log, and the cumulative variance
+(i.e. the running sum of the eigenvalues, divided by the size of the
+eigenvector space). The cluster analysis plot is not yet implemented.
+
+Once the PCA has been performed, you can reconstruct your data using 1
+or more of the principle components. Here, for example, is the
+reconstruction of an intermeidate time point using the top 3 components.
+[% END %]
+
+[% WRAPPER quadplot files=["pca_components.png", "pca_recon.png"] %]
+(Left) The principle components of this data ensemble.
+(Right) PCA reconstruction
+[% END %]
+
+[% FILTER html_para -%]
+Selecting one of the standards in the group list enables the target
+transform button. Clicking it shows the result of the transform and
+displays the coefficients of the transform in the smaller text box.
+[% END %]
+
+[% WRAPPER figure file="pca_tt.png" %]
+Performing a target transform against a data standard
+[% END %]
+
+[% WRAPPER quadplot files=["pca_tt_good.png", "pca_tt_bad.png"] %]
+(Left) A successful target transform on Au foil.  Au foil is certainly a
+constituent of the data ensemble used in the PCA.
+(Right) A unsuccessful target transform on Au cyanide.  Au cyanide is
+certainly not a constituent of the data ensemble used in the PCA.
+[% END %]
+
+[% FILTER html_para -%]
+The list of chores still undone for the PCA tool can be found at
+[% INCLUDE html/link text="my Github site" 
+link="https://github.com/bruceravel/demeter/blob/master/todo.org" %].
+[% END %]
