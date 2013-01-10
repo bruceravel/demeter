@@ -58,6 +58,6 @@ That said, let's[%#'%] carry on.
 This is a good reference on the effect of small
 multi-electron excitations on otherwise excellent [% chik %] data:
 [% INCLUDE citation author = "C. Hennig" journal = "Phys. Rev. B" volume
-= "75" pages = "035120" year = 2007 %].
+= "75" pages = "035120" year = 2007 doi = "10.1103/PhysRevB.75.035120" %].
 
 [% END %]

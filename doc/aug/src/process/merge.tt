@@ -1,6 +1,10 @@
 [% META title = 'Merging data groups'
         about = 'Averaging scans and computing their standard deviation' %]
 
+[% WRAPPER html/todo %]
+Explain weighting options
+[% END %]
+
 [% FILTER html_para %]
 Sadly, most data that we measure is, frankly, kind of crappy.  A
 single scan typically ranges from noisy to so dominated by noise that

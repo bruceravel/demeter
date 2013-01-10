@@ -46,7 +46,7 @@ These are fit using the cumulant expansion:
 
 [% FILTER html_para -%]
 The standard is selected from the menu at the top of this dialog.  The
-unknown is the current group, i.e. the one highlighted in pale red.
+unknown is the current group, i.e. the one highlighted in the group list.
 
 There are some other caveats along with the fact that this
 technique requires a spectrally isolated first shell.
@@ -79,7 +79,7 @@ to this analysis.
 
 [% FILTER html_para -%]
 When you select [% INCLUDE font/quote a="Log-Ratio" %] from the
-Analysis menu, the main window is replaced with the
+main menu, the main window is replaced with the
 log-ratio/phase-difference dialog, shown
 [% INCLUDE imageref text="below" label="lr" in=1 %].
 [% END %]
@@ -119,6 +119,7 @@ Systems" %],
    volume = 207
    pages = "437-444"
    year = "1983"
+   doi = "10.1016/0167-5087(83)90655-5"
 %].
 
 [% END %]

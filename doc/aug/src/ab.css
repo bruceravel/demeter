@@ -12,11 +12,11 @@
 
 a:link {
     text-decoration: none;
-    color: #4F0C80;
+    color: #00587b;
 }
 a:visited {
     text-decoration: none;
-    color: #4F0C80;
+    color: #00587b;
 }
 a:hover {
     text-decoration: none;
@@ -61,7 +61,7 @@ h1, h2, h3, h4 {
 
 h1 {
     display: block;
-    border-bottom: 3px solid #00688B;
+    border-bottom: 3px solid #00587B;
     padding-top: 12px;
     padding-bottom: 5px;
 }
@@ -235,11 +235,11 @@ pre {
 }
 .premise {
     font: bold 1.2em serif;
-    color: #4F0C80;
-    border-top: solid 3px #4F0C80;
-    border-left: solid 20px #4F0C80;
-    border-bottom: solid 3px #4F0C80;
-    border-right: solid 3px #4F0C80;
+    color: #00587b;
+    border-top: solid 3px #00587b;
+    border-left: solid 20px #00587b;
+    border-bottom: solid 3px #00587b;
+    border-right: solid 3px #00587b;
     border-radius:8px;
     padding: 8px;
     margin-left: 4%;
@@ -267,7 +267,7 @@ pre {
 }
 
 .red {
-    font: bold 1.1em monospace;
+    font: 1.1em monospace;
     color: #000;
     background: #FCEDAF;
     border-width: 2px 4px 4px 2px;
@@ -276,7 +276,7 @@ pre {
     padding:  0px 4px 0px 4px;
 }
 .purple {
-    font: bold 1.1em monospace;
+    font: 1.1em monospace;
     color: #000;
     background: #EFC6FF;
     border-width: 2px 4px 4px 2px;
@@ -321,15 +321,15 @@ pre {
 }
 
 .navbar {
-    background-color: #00688b;
+    background-color: #00587b;
     float: top;
     width: 100%;
     /* text-align: center; */
     /* font: 0.9em sans-serif; */
-    border-top: 0px solid #00688b;
-    border-left: 0px solid #00688b;
-    border-right: 0px solid #00688b;
-    border-bottom: 0px solid #00688b;
+    border-top: 0px solid #00587b;
+    border-left: 0px solid #00587b;
+    border-right: 0px solid #00587b;
+    border-bottom: 0px solid #00587b;
     border-top-left-radius:0;
     border-top-right-radius:0;
     border-bottom-right-radius:8px;
@@ -351,14 +351,19 @@ pre {
 a.navhead:link {
     text-decoration: none;
     color: yellow;
+    padding:0px;
 }
 a.navhead:visited {
     text-decoration: none;
     color: yellow;
+    padding:0px;
 }
 a.navhead:hover {
     text-decoration: none;
-    color: cyan;
+    color:#00587b;
+    background-color:#fffee6;
+    border-radius:4px;
+    padding:0px;
 }
 .navtable {
     color: #ffffff;
@@ -368,14 +373,19 @@ a.navhead:hover {
 a.navtable:link {
     text-decoration: none;
     color: yellow;
+    padding:0px;
 }
 a.navtable:visited {
     text-decoration: none;
     color: yellow;
+    padding:0px;
 }
 a.navtable:hover {
     text-decoration: none;
-    color: cyan;
+    color:#00587b;
+    background-color:#fffee6;
+    border-radius:4px;
+    padding:0px;
 }
 
 .copyright {
@@ -389,8 +399,8 @@ a.navtable:hover {
 .topbar {
     /* background: #ffffff; */
     /* color: #000; */
-    /* background-color: #00688b */
-    /* color: #00688b; */
+    /* background-color: #00587b */
+    /* color: #00587b; */
     float: top;
     width: 78%;
     position: fixed;

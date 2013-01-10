@@ -226,19 +226,14 @@ domain and also from
   data that Matt Newville, Yanjun Zhang, and I measured one day back
   in 1992 that has, inscrutably, become [% INCLUDE font/em a="the" %]
   copper foil data shown and referenced in a large fraction of the XAS
-  theory literature.
+  theory literature.  The copper film in  [% INCLUDE html/link
+  text="the self-absorption section" link="process/sa.html" %] comes
+  from Corwin Booth.
 [% END %]
 [% WRAPPER html/li %]
   The platinum catalyst data shown in [% INCLUDE html/link
   text="the difference spectrum section" link="analysis/diff.html" %]
-  and [% moo3 %] data shown in [% INCLUDE html/link
-  text="the worked examples section" link="examples/moo3.html" %]
   were donated by Simon Bare.
-[% END %]
-[% WRAPPER html/li %]
-  The [% moo3 %] [% INCLUDE html/link text="worked example"
-  link="examples/moo3.html" %] was based on a tutorial written by
-  Shelly Kelly.
 [% END %]
 [% WRAPPER html/li %]
   The gold edge data shown in many places throughout this document are
@@ -249,6 +244,7 @@ domain and also from
       volume = "40:20"
       pages = "6304-6309"
       year = 2006
+      doi = "10.1021/es061040r"
    %].
 [% END %]
 [% WRAPPER html/li %]
@@ -262,17 +258,17 @@ domain and also from
 [% END %]
 [% WRAPPER html/li %]
   The sulphate data shown in [% INCLUDE html/link text="the self-absorption section"
-  link="process/sa.html" %] were donated by Zhang Ghong and come with Daniel Haskel's
+  link="process/sa.html" %] were donated by Zhang Ghong and come with Daniel Haskel's[%#'%]
   [% INCLUDE html/link text="Fluo program"
   link="http://www.aps.anl.gov/xfd/people/haskel/fluo.html" %].  The copper data shown
   in [% INCLUDE html/link text="the same section" link="process/sa.html" %] come with
   Corwin Booth's[%#'%] [% INCLUDE html/link text="RSXAP program" link="http://lise.lbl.gov/RSXAP/" %].
 [% END %]
-[% WRAPPER html/li %]
-  The data in [% INCLUDE html/link text="the dispersive XAS section"
-  link="process/pixel.html" %] were provided by Giuliana
-  Aquilanti, beamline scientist at ESRF's ID-24.
-[% END %]
+[%# WRAPPER html/li %]
+[%#   The data in [% INCLUDE html/link text="the dispersive XAS section" %]
+[%#   link="process/pixel.html"  were provided by Giuliana %]
+[%#   Aquilanti, beamline scientist at ESRF ID-24. %]
+[%# END %]
 [% WRAPPER html/li %]
   Data on a hydrated uranyl phosphate that appear in several places are the U
   [% l3 %] standard used by [% INCLUDE html/link text="my former research group"
@@ -289,6 +285,7 @@ domain and also from
       volume = 4
       pages = "358-365"
       year = 2007
+      doi = "10.1039/b617711e"
    %].
 [% END %]
 [% WRAPPER html/li %]
