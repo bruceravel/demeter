@@ -1,0 +1,13 @@
+[% META title = 'Other main window chores'
+        about = ''
+	chapter = 1
+%]
+
+[% FILTER html_para -%]
+Blah blah
+[% END %]
+
+[% WRAPPER figure file="other.png" %]
+The main menu is used to access various features of Athena not
+directly related to data processing or analysis.
+[% END %]

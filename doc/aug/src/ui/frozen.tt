@@ -22,12 +22,12 @@ frozen group.
 The idea behind frozen groups is that, after working for a while to
 find parameter values that you like, you can freeze the group to avoid
 inadvertently altering its parameters.  The various group freezing
-functions can be found in the Values menu, as shown in
+functions can be found in the Freeze menu, as shown in
 [% INCLUDE imageref text="the screenshot below" label="ui_freeze" %].
 [% END %]
 
 [% WRAPPER figure file="ui_freeze.png" %]
-The frozen groups submenu is found under the Values menu.  Several
+Several
 visual cues indicate that a group is frozen, including the green
 highlighting the group list and the use of italic text in the main menu.
 [% END %]

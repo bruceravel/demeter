@@ -14,7 +14,7 @@ without your intervention.
 The choices of default values for each parameter is made by walking
 through a hierarchy of decisions, each subsequent level overriding the
 previous level.  The first decision is made by consulting
-[% INCLUDE html/link text="the program preferences" link="../ui/prefs.html" %].
+[% INCLUDE html/link text="the program preferences" link="../other/prefs.html" %].
 The program preferences are read from two initialization files when
 [% athena %] starts.  The first initialization file is a system-wide
 file that always contains [% athena %]'s[%#'%] fresh-out-of-the-box

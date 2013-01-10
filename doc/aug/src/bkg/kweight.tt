@@ -59,7 +59,7 @@ quality of the [% chik %] data.  A strong clamp at the high energy
 frequently improves the behavior of the spline near the end of the data.
 
 The behavior of the clamping mechanism can be configured using the
-[% INCLUDE html/link text="preference dialog" link="../ui/prefs.html" %].
+[% INCLUDE html/link text="preference dialog" link="../other/prefs.html" %].
 The [% INCLUDE preference group="bkg" option="nclamp" %] preference
 changes the number of points at the end of the data range included in
 the calculation of the effect of the clamp.  The

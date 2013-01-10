@@ -132,12 +132,12 @@ level of granularity, allowing individual parameters to be
 constrained.  We have also seen how sets of parameters can be
 constrained.  It is also possible to perform the same constraining
 operations on all parameters at once.  These all-parameter operations
-are found in the Values menu, as shown in
+are found in the Group menu, as shown in
 [% INCLUDE imageref text="this picture" label="param_param" %].
 [% END %]
 
 [% WRAPPER figure file="param_all.png" %]
-The Values menu, which contains the options for constraining all
+The Group menu, which contains the options for constraining all
 parameters at once.
 [% END %]
 

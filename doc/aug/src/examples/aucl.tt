@@ -251,7 +251,7 @@ This will insert all of the standards into the table.
 
 By default, the table is only four rows long.  You will need to exit
 the linear combination fitting dialog and open the
-[% INCLUDE html/link text="preference dialog" link="../ui/prefs.html" %].
+[% INCLUDE html/link text="preference dialog" link="../other/prefs.html" %].
 Set the [% PROCESS preference group="Linearcombo" option="maxspectra" %]
 preference to at least 9.  Return to the linear combination dialog and
 load the 9 standards into the table.

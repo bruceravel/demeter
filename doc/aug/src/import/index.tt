@@ -126,7 +126,7 @@ constrained to a standard
 
 [% FILTER html_para %]
 Here are some operations that can be handled using
-[% INCLUDE html/link text="the Plugin architecture" link="../import/plugin.html" %].
+[% INCLUDE html/link text="the Plugin architecture" link="../other/plugin.html" %].
 [% END %]
 
 [% WRAPPER html/list type="ol" %]

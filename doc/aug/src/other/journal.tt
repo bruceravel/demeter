@@ -1,0 +1,24 @@
+[% META title = 'Project journal'
+        about = 'Recording notes and comments in project files' %]
+
+[% FILTER html_para -%]
+[%athena%] provides a simple yet powerful way of documentaing your
+work.  The project journal tool provides a blank text box in which you
+can write whatever you want.  The text from this box is saved to 
+[% INCLUDE html/link text="the project file" link="../output/project.html" %].
+When a project file is imported into [%athena%], any journal text will
+be restored to this text box.
+[% END %]
+
+
+[% WRAPPER figure file="journal.png" %]
+[%athena%]'s[%#'%] journal tool.
+[% END %]
+
+[% FILTER html_para -%]
+This is a good way to document your progress through a data processing
+or analysis chore.  It is also useful for documenting the nature of
+your samples in a way that stays with the data.  Finally, it is a way
+to communicate with a collaborator or boss when exchanging data via a
+project file.
+[% END %]

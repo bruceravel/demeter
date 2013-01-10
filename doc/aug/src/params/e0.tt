@@ -8,7 +8,7 @@ a="e0" %] is used and how it is set is essential to understanding how
 
 By default, [% athena %] has [% ifeffit %] determine [% INCLUDE
 font/param a="e0" %] and uses the value that [% ifeffit %] finds.
-[% ifeffit %]'s algorithm is to find the first peak of the first
+[% ifeffit %]'s[%#'%] algorithm is to find the first peak of the first
 derivative of [% mu %].  To avoid settling on a spot in a noisy
 pre-edge, [% ifeffit %] makes a series of checks to verify that its
 guess for [% INCLUDE font/param a="e0" %] comes after several
@@ -31,7 +31,7 @@ and [% INCLUDE html/link text="alignment" link="../process/align.html" %]
 dialogs can be used to refine the values for
 [% INCLUDE font/param a="e0" %].  You can also edit its value directly
 by typing in its entry box.  The right-click context menu for
-[% INCLUDE font/param a="e0" %] and the Values menu have several
+[% INCLUDE font/param a="e0" %] and the Group menu have several
 options for other ways of setting [% INCLUDE font/param a="e0" %].
 
 There are a few situations where the default algorithm will fail.
@@ -84,7 +84,7 @@ is used as [% INCLUDE font/param a="e0" %].
 [% END %]
 
 [% FILTER html_para %]
-Since all of these additional algorithms rely on [% ifeffit %]'s
+Since all of these additional algorithms rely on [% ifeffit %]'s[%#'%]
 initial guess of [% INCLUDE font/param a="e0" %], each is subject to
 the same caveats given for the default algorithm.
 
@@ -100,7 +100,7 @@ that element.   Setting this preference to 0 tells [% athena %] to use
 the algorithm set by [%- PROCESS preference group="Bkg" option="e0" %]
 to determine [% INCLUDE font/param a="e0" %] as data re imported.
 
-[% INCLUDE html/link text="Submenus under the Values menu"
+[% INCLUDE html/link text="Submenus under the Group menu"
 link="../params/constrain.html#param_all" %]
 can be used to set E0 using one of
 these algorithms for the current group, all groups, or the set of

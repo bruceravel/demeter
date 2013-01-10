@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Fatal qw(opendir rewinddir closedir);
+
+
+opendir my $IN, '.';
+my @pngs = grep { m{\.png\z} } readdir $IN;
+rewinddir $IN;
+my @jpgs = grep { m{\.jpg\z} } readdir $IN;
+closedir $IN;
+
+#print join(" ", @pngs), $/;
+
+mkdir "bw" if not -d "bw";
+
+foreach my $f (@jpgs) {
+  print "converting $f to grayscale\n";
+  system "convert $f -colorspace Gray bw/$f";
+};
+foreach my $f (@pngs) {
+  print "converting $f to grayscale\n";
+  system "convert $f -colorspace Gray bw/$f";
+};

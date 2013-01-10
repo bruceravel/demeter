@@ -156,7 +156,8 @@ in [% INCLUDE imageref text="the plot below" label="selfabs_boothplot" %].
 
 [% WRAPPER figure file="selfabs_boothplot.png" %]
 It works pretty well.  The green trace is the corrected fluorescence
-spectrum, which compares well to the transmission data.
+spectrum, which compares well to the transmission data, albeit a
+little too big.
 [% END %]
 
 [% FILTER html_para %]
@@ -170,7 +171,6 @@ they effect the correction.
 [% PROCESS section label="Information depth" %]
 
 [% FILTER html_para %]
-
 For any sample, you can plot the information depth as a function of
 wavenumber.  This quantity was defined by Troger et al. and represents
 the depth into the sample probed by the incident beam for a given
@@ -179,8 +179,14 @@ the incident photons are absorbed and 68 percent of the fluorescence
 photons are generated.  The information depth provides a useful metric
 for whether a film sample can be considered [% INCLUDE font/quote
 a="thick" %] in a particular experiment.
-
 [% END %]
+
+[% WRAPPER quadplot files=["sa_info_e.png", "sa_info_k.png"]
+%]
+(Left) The information depth for an iron/gallium alloy, plotted in energy.
+(Right) The same plot, but in wavenumber.
+[% END %]
+
 
 [% PROCESS section label="Algorithm references" %]
 

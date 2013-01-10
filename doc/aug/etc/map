@@ -16,6 +16,7 @@
 		'output',
                 'process',
 		'analysis',
+                'other',
 		'examples'
 	      ]
        page = {
@@ -49,14 +50,13 @@
 	    import   = {
 		       name = 'Importing Data'
 		       menu = [ 'columns', 'projsel', 'multiple',
-                                'ref', 'preproc', 'plugin' ]
+                                'ref', 'preproc' ]
 		       page = {
 			      columns  = { name = 'The column selection dialog' }
 			      projsel  = { name = 'The project selection dialog' }
 			      multiple = { name = 'Importing multiple data sets' }
 			      ref      = { name = 'Reference channel' }
 			      preproc  = { name = 'Data preprocessing' }
-			      plugin   = { name = 'Filetype plugins' }
 			      }
 		       }
 	    output   = {
@@ -71,7 +71,7 @@
 	    ui       = {
 		       name = 'User Interface'
 		       menu = [ 'glist', 'mark', 'pluck', 'styles',
-				'kweight', 'frozen', 'prefs' ]
+				'kweight', 'frozen' ]
 		       page = {
 			      glist    = { name = 'Using the group list' }
 			      mark     = { name = 'Marking groups' }
@@ -79,7 +79,6 @@
 			      styles   = { name = 'Plot styles' }
 			      kweight  = { name = 'Using k-weights' }
 			      frozen   = { name = 'Frozen groups' }
-			      prefs    = { name = 'Setting preferences' }
 			      }
 		       }
 	    params   = {
@@ -125,6 +124,16 @@
 			      diff = { name = 'Difference spectra' }
 			      }
 		       }
+            other = {
+	    	    name = 'Other main window chores'
+                    menu = [ 'meta', 'journal', 'plugin', 'prefs' ]
+		    page = {
+		    	   meta    = { name = 'File metadata' }
+		    	   journal = { name = 'Project journal' }
+			   plugin  = { name = 'Filetype plugins' }
+                           prefs   = { name = 'Setting preferences' }
+		    	   }
+	            }
 	    examples   = {
                           name = 'Worked examples'
 			  menu = ['data' 'aucl']
