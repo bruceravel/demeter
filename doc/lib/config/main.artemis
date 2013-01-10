@@ -1,5 +1,7 @@
 [% title = 'The Artemis Users\' Guide' %]
 [% program = 'Artemis' %]
+[% about_page = 'diana' %]
+[% logo_image = 'Artemis_logo.jpg' %]
 [% PROCESS config/page
 	 + config/site
 	 + config/url

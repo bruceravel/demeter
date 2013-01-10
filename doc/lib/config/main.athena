@@ -1,5 +1,7 @@
 [% title = 'The Athena Users\' Guide' %]
 [% program = 'Athena' %]
+[% about_page = 'pallas' %]
+[% logo_image = 'pallas_athene_thumb.jpg' %]
 [% PROCESS config/page
 	 + config/site
 	 + config/url
