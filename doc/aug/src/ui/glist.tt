@@ -36,7 +36,7 @@ mark buttons.
 
 [% FILTER html_para %]
 You can copy a group by hitting
-[% INCLUDE modkey key="Control" letter='y' %]
+[% INCLUDE modkey key="Shift-Control" letter='y' %]
 or by selecting [% INCLUDE font/quote a="Copy group" %] from the Group
 menu.  This makes an identical copy of the current group and places it
 at the end of the groups list.  All parameters are identical and the
@@ -60,8 +60,8 @@ When a file is imported into [% athena %], the name of the file is
 used as the label in the group list.  That's[%#'%] fine, but you can change
 the label by selecting [% INCLUDE font/quote a="Rename group" %]
 from the Group menu, typing
-[% INCLUDE modkey key="Shift-Control" letter='l' %], or double clicking on
-an item in the group list.  This replaces the echo area with a dialog
+[% INCLUDE modkey key="Shift-Shift-Control" letter='l' %], or double clicking on
+an item in the group list.  This posts a dialog
 for entering the new label for the group, shown
 [% INCLUDE imageref text="here" label="ui_renaming" in=1 %].
 [% END %]
@@ -98,6 +98,13 @@ Hitting
 [% INCLUDE modkey key="control" letter='j' %] changes the current
 group to the one above or below.
 
+[% INCLUDE modkey key="control"%]-drag-and-drop (i.e. holding the 
+[% INCLUDE modkey key="control"%] key while clicking and dragging) can
+be used to move groups around in the group list.  The dragged group
+will be placed above the group on which it is dropped.  Dropping a
+group in the white space below the last group will place it at the end
+of the list.
+
 Items can be removed from the list.  The current group or the marked
 groups can be removed from the project by selecting
 [% INCLUDE font/quote a="Remove group" %] or
@@ -105,7 +112,7 @@ groups can be removed from the project by selecting
 from the Group menu.  You can remove all the
 groups from the list by selecting
 [% INCLUDE font/quote a="Close project" %] from the File or
-Group menu or by hitting [% INCLUDE modkey key="control" letter='w' %].
+Group menu or by hitting [% INCLUDE modkey key="Control" letter='w' %].
 [% END %]
 
 [% INCLUDE section label="Information about items in the group list" %]
@@ -132,7 +139,7 @@ If you mistakenly import a data group as the wrong record type, you
 can change it by selecting
 [% INCLUDE font/quote a="Change record type" %] from the Group menu.
 You can only change between the various record types in energy,
-though.  If you import a [% chik %] file as [% mu %], you will have to
+though.  If you import a [% chik %] file as [% mu %] by accident, you will have to
 remove the group and re-import it.
 [% END %]
 
@@ -147,8 +154,8 @@ with the
 
 If you right click on any item in the group list, a context menu is
 posted, as shown
-[% INCLUDE imageref text="below" label="ui_groupcontext" in=1 %].
-This displays the Group menu.
+[% INCLUDE imageref text="below" label="ui_groupcontext" in=1 %],
+displaying the Group menu.
 [% END %]
 
 [% WRAPPER figure file="ui_groupcontext.png" %]
@@ -157,5 +164,6 @@ context menu.
 [% END %]
 
 [% FILTER html_para %]
-As mentioned above, double clicking on a group list item will rename it.
+As mentioned above, double clicking on a group list item will post the
+dialog for renaming that group.
 [% END %]

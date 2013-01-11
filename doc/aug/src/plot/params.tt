@@ -10,16 +10,10 @@ group when it is plotted so that it is offset in the vertical
 direction.  Both of these are parameters that are set for each group
 individually.
 
-
-[% INCLUDE html/link text="Detector groups"
-link="../ui/glist.html#detectorgroupsandbackgroundgroups" %]
-use their
-[% INCLUDE font/param a="plot multiplier" %] parameters to plot them
-on the same vertical scale as their corresponding [% mu %] data.
-
-The [% INCLUDE html/link text="stacked plots tab" link="../plot/stack.html" %]
-is used to set the [% INCLUDE font/param a="y-axis offset" %]
-parameter for many groups.
+[% INCLUDE html/link text="Stacked plots" link="../plot/stack.html" %]
+are made by setting the
+[% INCLUDE font/param a="y-axis offset" %]
+parameters for many groups.
 
 Like most other parameters in the main window,
 [% INCLUDE html/link text="context menus" link="../params/constrain.html" %]

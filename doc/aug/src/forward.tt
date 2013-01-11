@@ -75,7 +75,7 @@ References to [% athena %]'s[%#'%] preferences are written like this:
 [% INCLUDE preference group="Bkg" option="fraction" %].  To modify
 this preferences,
 open the [% INCLUDE font/quote a="bkg" %] section of the
-[% INCLUDE html/link text="preferences dialog" link="other/prefs.html" %]
+[% INCLUDE html/link text="preferences tool" link="other/prefs.html" %]
 and then click on [% INCLUDE font/quote a="fraction" %].
 [% END %]
 [% END %]

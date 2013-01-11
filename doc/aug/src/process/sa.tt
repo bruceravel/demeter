@@ -3,16 +3,12 @@
         difficult = 1
 %]
 
-[% WRAPPER html/todo %]
-Need to find Cu data from Booth to remake the other two figures
-[% END %]
-
 [% FILTER html_para %]
-The statement that [% mu %] measured in fluorescence is the ratio of
+The statement that [%mue%] measured in fluorescence is the ratio of
 the signals on the fluorescence and incident ion chambers is only true
 in the limit of very thin samples or very dilute samples.  For thick,
 concentrated samples, the depth into which the incident beam can
-penetrate changes as fine structure of [% mu %] changes.  As the
+penetrate changes as fine structure of [%mue%] changes.  As the
 oscillatory part wiggles up, the penetration depth diminishes.  As it
 wiggles down, the depth increases.  This serves to attenuate the
 oscillatory structure.
@@ -25,7 +21,7 @@ that case, you need to figure out what to do at the level of the data
 analysis to find the correct answer in the face of this problem.  One
 solution is presented here.
 
-The self-absorption correction dialog offers four different algorithms
+The self-absorption correction tool offers four different algorithms
 to approximate the effect of self-absorption using tables of x-ray
 absorption coefficients.  One of them works on XANES data, while all
 four can be used to correct EXAFS data.  One of the algorithms works
@@ -33,40 +29,39 @@ well for samples that are not in the infinitely thick limit.  These
 various algorithms are taken from the available literature and are
 offered to allow you to compare.
 
-The example I show here are particularly well suited to this sort of
+The examples I show here are particularly well suited to this sort of
 correction.  In both cases, we have a way to evaluate the success of
 the correction.  In general, it can be difficult to guarantee the
 success of the correction, particularly if the entire composition of
 the sample is not well known.  That means that, in practice, this sort
-of correction is not always useful.  But when it is, it's[%#'%] very useful
-indeed.
+of correction may not be useful or reliable.
 
 It is also important to understand that the self-absorption effect
 only effects the amplitude of your EXAFS data, not the phase.  Thus
 even if you are unable to properly correct, you can still analyze your
 EXAFS data for bond lengths.
 
-[% INCLUDE html/link
+[%INCLUDE html/link
 link="https://speakerdeck.com/bruceravel/understanding-self-absorption-in-
-fluorescence-xas"
-text = "Here is my presentation of self-absorption corrections." %]
-There I discuss the applicability of this tool in more detail.  You
-will find that, in general, the self-absorption tool is very hard to
-apply to real data.
-
+fluorescence-xas" text = "Here is my presentation on self-absorption
+corrections."%] There I discuss the applicability of this tool in more
+detail.  You will find that, in general, the self-absorption tool is
+very hard to apply to real data.  There is quite a bit of useful
+information on this topic at [%INCLUDE html/link
+link="http://xafs.org/Experiment/OverAbsorption" text="XAFS.org"%].
 [% END %]
 
 [% PROCESS section label="Correcting XANES data" %]
 
 [% FILTER html_para %]
-The self-absorption dialog
+The self-absorption tool
 [% INCLUDE imageref text="below" label="selfabs" in=1 %]
 allows you to choose between the four
 algorithms and to provide the parameters of the correction.
 [% END %]
 
 [% WRAPPER figure file="selfabs.png" %]
-The self-absorption dialog.
+The self-absorption tool.
 [% END %]
 
 [% FILTER html_para %]
@@ -127,7 +122,7 @@ assume that samples are infinitely thick.
 [% END %]
 
 [% WRAPPER figure file="selfabs_booth.png" %]
-The self-absorption dialog with copper data for correction using the
+The self-absorption tool with copper data for correction using the
 Booth algorithm.
 [% END %]
 
@@ -140,7 +135,7 @@ formula of the sample with stoichiometries in atomic percent.
 These two data groups were measured from the same thin copper foil,
 one in transmission and the other in fluorescence.  These data were
 provided by Corwin Booth and are the data from the paper where he and
-Bud Bridges presented their algorithm.
+Bud Bridges presented their algorithm (citation below).
 
 Since this is a thin film, only the Booth algorithm is appropriate.
 (Although you might want to compare it to the other algorithms, if
@@ -172,17 +167,16 @@ they effect the correction.
 
 [% FILTER html_para %]
 For any sample, you can plot the information depth as a function of
-wavenumber.  This quantity was defined by Troger et al. and represents
-the depth into the sample probed by the incident beam for a given
-sample geometry as a function of energy.  In that depth, 68 percent of
-the incident photons are absorbed and 68 percent of the fluorescence
-photons are generated.  The information depth provides a useful metric
-for whether a film sample can be considered [% INCLUDE font/quote
-a="thick" %] in a particular experiment.
+wavenumber.  This quantity was defined by Troger et al. (citation
+below) and represents the depth into the sample probed by the incident
+beam for a given sample geometry as a function of energy.  In that
+depth, 68 percent of the incident photons are absorbed and 68 percent
+of the fluorescence photons are generated.  The information depth
+provides a useful metric for whether a film sample can be considered
+[%INCLUDE font/quote a="thick" %] in a particular experiment.
 [% END %]
 
-[% WRAPPER quadplot files=["sa_info_e.png", "sa_info_k.png"]
-%]
+[% WRAPPER quadplot files=["sa_info_e.png", "sa_info_k.png"]%]
 (Left) The information depth for an iron/gallium alloy, plotted in energy.
 (Right) The same plot, but in wavenumber.
 [% END %]
@@ -227,7 +221,7 @@ volume = "B60:13"
 pages = 9335-9339
 year = 1999
 doi = "10.1103/PhysRevB.60.9335"
-%].  This is not implemented in [% athena %] because
+%].  This is not implemented in [%athena%] because
 the main result requires an integral over the solid angle
 subtended by the detector.  This could be implemented, but the
 amount of solid angle subtended it is not something one typically
@@ -244,7 +238,7 @@ year = 2001
 doi = "doi:10.1107/S090904950001493X"
 %].  See also
 the documentation for Atoms at Bruce's[%#'%] website for more
-details about it's fluorescence correction calculations.
+details about it's[%#'%] fluorescence correction calculations.
 [% END %]
 [% WRAPPER html/dt dt="Elam tables of absorption coefficients" %]
 [% INCLUDE citation

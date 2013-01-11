@@ -5,7 +5,7 @@
 
 [% FILTER html_para %]
 The primary function of [% athena %] is to import and process XAS
-data.  In the broadest sense, this can be broken up into three parts:
+data.  In the broadest sense, this task takes three steps:
 [% END %]
 
 [% WRAPPER html/list type="ul" %]
@@ -26,7 +26,7 @@ data to make [% chik %].
 Of course, there are many other details, such as calibration,
 alignment, and deglitching.  Those will be discussed in detail in
 later sections of the document.  In this section, we will cover the details
-of the normalization algorithm and the AUTOBK background removal
+of the normalization algorithm and the [%autobk%] background removal
 algorithm.  Special attention will be payed to the most important
 background removal parameters.
 

@@ -30,14 +30,13 @@ become quite small at high-k.  Heavier elements, such as the
 transition metals, have small scattering amplitudes at low-k but
 continue to have large scattering amplitude at very high values of k.
 Very heavy elements, such as Pb or Sn, have minima in their scattering
-amplitudes around 5 to 7 [% iAA %].
-(See page 21 of
-[% INCLUDE html/link link="https://speakerdeck.com/bruceravel/the-ramsauer-townsend-effect-in-x-ray-absorption-spectroscopy"
+amplitudes around 5 to 7 [% iAA %].  (See [% INCLUDE html/link
+link="https://speakerdeck.com/bruceravel/the-ramsauer-townsend-effect-in-x-ray-absorption-spectroscopy"
 text="my presentation on the Ramsauer-Townsend effect" %].)
 
 By weighting [% chik %] with different k-weightings, the low and high
 portions of the [% chik %] spectrum can be differently emphasized in a
-Fourier transform.  Hopefully, doing so can help you better understand
+Fourier transform.  Doing so may help you better understand
 your data.
 
 The k-weighting is controlled by the bank of buttons labeled

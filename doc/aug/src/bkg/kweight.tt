@@ -23,9 +23,8 @@ data range.  In other words, we use the prior knowledge that [% mu0 %]
 is a smooth function through the oscillatory structure of [% mu %] to
 put a restraint on the fit used to determine [% mu0 %].
 
-The [% INCLUDE html/link text="user-selected multiplicative coefficient"
-link="../ui/index.html#bkg_additional" %]
-takes one of six predefined values:
+The user-selected multiplicative coefficient takes one of six
+predefined values: 
 [% INCLUDE font/quote a="none" %],
 [% INCLUDE font/quote a="slight" %],
 [% INCLUDE font/quote a="weak" %],
@@ -59,7 +58,7 @@ quality of the [% chik %] data.  A strong clamp at the high energy
 frequently improves the behavior of the spline near the end of the data.
 
 The behavior of the clamping mechanism can be configured using the
-[% INCLUDE html/link text="preference dialog" link="../other/prefs.html" %].
+[% INCLUDE html/link text="preference tool" link="../other/prefs.html" %].
 The [% INCLUDE preference group="bkg" option="nclamp" %] preference
 changes the number of points at the end of the data range included in
 the calculation of the effect of the clamp.  The
@@ -96,7 +95,7 @@ However, in data which are quite noisy, amplifying the noise by a
 large value of [% INCLUDE font/param a="k-weight" %] can have a
 dramatic effect leading to a very poor evaluation of [% mu0 %].
 Indeed, the [% mu0 %] evaluated from noisy data with a large value of
-[% INCLUDE font/param a="k-weight" %] will sometimes oscillated
+[% INCLUDE font/param a="k-weight" %] will sometimes oscillate
 wildly, as shown in
 [% INCLUDE imageref text="the example below" label="bkg_badkw" %].
 

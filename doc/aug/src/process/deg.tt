@@ -1,6 +1,9 @@
 [% META title = 'Deglitching and truncating data'
         about = 'Removing spurious points from your data' %]
 
+[% PROCESS subsection label="Deglitching" %]
+
+
 [% FILTER html_para %]
 Occasionally your data has spurious points that are obviously
 different from the surrounding points.  These so-called glitches can
@@ -24,7 +27,7 @@ deglitching.  Yes, I also think that's[%#'%] a funny sounding word.
 [% END %]
 
 [% WRAPPER figure file="deglitch.png" %]
-The deglitching dialog.
+The deglitching tool.
 [% END %]
 
 [% FILTER html_para %]
@@ -43,7 +46,7 @@ Deglitching only removes points from the data in [% athena %]'s[%#'%]
 memory.  The data on disk are never altered.
 
 There are two methods of deglitching offered by [% athena %]'s[%#'%]
-deglitching dialog, shown
+deglitching tool, shown
 [% INCLUDE imageref text="above" label="deglitch" in=1 %].  The
 first involves selecting and removing the glitches one by one.
 The points are selected by
@@ -73,7 +76,7 @@ data.
 
 [% FILTER html_para %]
 The second method for removing glitches is more automated.  In the
-figure above, the deglitching margins are shown by the orange lines.
+figure above, the deglitching margins are shown by the pink lines.
 Those margins are drawn between the specified minimum and maximum
 energy values.  The lines are drawn a set amount above and below the
 post-edge line used to normalize the data.  The separation between the
@@ -92,46 +95,49 @@ situation like the one shown.  It is very dangerous, however, if not
 used with care.  If the margins extend into the white line region or
 are so tight around the post-edge line that the oscillatory structure
 crosses the margins, this technique will happily remove good points
-from the data.  So set your margins well.
+from the data.  Set your margins well!
 
 A useful variation of the point-by-point technique involves plotting
-the [% chie %] data.  This can only be done for glitches above the
+the [%chie%] data.  This can only be done for glitches above the
 edge, but it can be a very useful technique for removing small
 glitches from the data.  In
 [% INCLUDE imageref text="this figure" label="deglitch_chie_mu" %]
-we see [% mu %] data for [% u3o8 %] that appear fine.
+we see [%mue%] data for [%u3o8%] that appear fine.
 [% END %]
 
 [% WRAPPER quadplot files=["deglitch_chie_mu.png", "deglitch_chie_k.png", "deglitch_chie.png"] %]
-(Left) [% mu %] data for [% u3o8 %] that have a tiny glitch hidden in
-the high energy region.  (Right) Plotted as [% chik %], the glitch at
-about 12 [% iAA %] in these [% chik %] data is clearly seen. (Bottom)
+(Left) [%mue%] data for [%u3o8%] that have a tiny glitch hidden in
+the high energy region.  (Right) Plotted as [%chik%], the glitch at
+about 12 [%iAA%] in these [%chik%] data is clearly seen. (Bottom)
 With potting as [%chie%] selected.  The spurious point at about 12
 [%iAA%] has been chosen.
 [% END %]
 
 [% FILTER html_para %]
-When the [% chie %] is displayed, the
+When the [%chie%] is displayed, the
 k-weight value specified by the k-weight controls is used.  From
 there, the point-by-point technique is identical to how it used with
-[% mu %] data.  The advantage is that small glitches might be easier
+[%mue%] data.  The advantage is that small glitches might be easier
 to see and to pluck from the data when the data is plotted as
-[% chie%].
-The point-by-point deglitching algorithm works on the [% chie %] data
-in the same manner as for [% mu %] data.  Points are selected by
+[%chie%].
+The point-by-point deglitching algorithm works on the [%chie%] data
+in the same manner as for [%mue%] data.  Points are selected by
 clicking on the plot, then removed by clicking the
 [% INCLUDE font/quote a="Remove point" %] button.
 
 
+[% PROCESS subsection label="Truncation" %]
+
 If your data does something odd at one end of the scan, the easiest
-solution might be to simply trim it away.  The truncation dialog
+solution might be to simply trim it away.  The truncation tool
 [% INCLUDE imageref text="below" label="truncate" in=1 %]
 allows you to chop data before or after a selected value.
 
 The radiobox is used to tell [%athena%] whether points should be trimmed
 from before or after the selected point.  The point can be chosen by
-typing in the box or by clicking the pluck button then clicking on the
-plot.
+typing in the box or by using
+[% INCLUDE html/link text="the pluck button"
+                     link="../ui/pluck.html"%].
 [% END %]
 
 [% WRAPPER figure file="truncate_plot.png" %]
@@ -151,13 +157,13 @@ certain point.  Sometimes your sample has elements with nearby edges,
 thus limiting the range over which you can actually measure the data.
 An example is shown in
 [% INCLUDE imageref text="the next plot" label="truncate_batio3" %],
-the Ti K edge is at 4966 eV and the Ba [% l3 %] edge is
+the Ti K edge is at 4966 eV and the Ba [%l3%] edge is
 at 5247 eV.  A careless choice of spline and normalization range will
 lead to a data processing disaster.
 [% END %]
 
 [% WRAPPER figure file="truncate_batio3.png" %]
-The Ti K and Ba [% l3 %] edges of [% batio3 %].
+The Ti K and Ba [%l3%] edges of [%batio3%].
 [% END %]
 
 [% FILTER html_para %]

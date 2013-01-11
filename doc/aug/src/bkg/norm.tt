@@ -42,7 +42,8 @@ factor.  An example is shown in
 [% END %]
 
 [% WRAPPER figure file="bkg_normzerocross.png" %]
-[%mue%] data for gold cyanide, which crosses the zero axis.
+[%mue%] data for gold hydroxide, which crosses the zero axis in the
+EXAFS region.
 [% END %]
 
 [% FILTER html_para %]
@@ -280,11 +281,9 @@ normalization lines.  Without a good normalization, it can be
 difficult to compare a XANES measurement quantitatively with other
 measurements.
 
-Reducing the [% INCLUDE font/param a="normalization order" %] (found
-among the [% INCLUDE html/link text="additional background parameters"
-link="../ui/index.html#bkg_additional" %]) might help in the case of
-limited post-edge range.  When measuring XANES spectra in a step scan,
-it is often a good idea to add several widely spaced steps to the end
-of a scan to extend the [% INCLUDE font/param a="normalization range"
-%] without adding excessive time to scan.
+Reducing the [% INCLUDE font/param a="normalization order" %] might
+help in the case of limited post-edge range.  When measuring XANES
+spectra in a step scan, it is often a good idea to add several widely
+spaced steps to the end of a scan to extend the [% INCLUDE font/param
+a="normalization range" %] without adding excessive time to scan.
 [% END %]

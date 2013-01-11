@@ -9,7 +9,7 @@ Gaussian or a Lorentzian convolution by the selected width in energy.
 The noise is randomly generated using an epsilon that is chosen as a
 fraction of the size of the edge step.
 
-Like other dialogs, there is a button for plotting the data along with
+Like other tools, there is a button for plotting the data along with
 its modification and another for turning the modified data into a data
 group listed in the group list.  These are shown in
 [% INCLUDE imageref text="this screenshot" label="convolution" %].
@@ -19,7 +19,7 @@ and an example of data with artificial noise is shown on the right.
 [% END %]
 
 [% WRAPPER figure file="convolution.png" %]
-The convolution dialog.
+The convolution tool.
 [% END %]
 
 [% WRAPPER quadplot files=["convolution_conv.png", "convolution_noise.png"] %]

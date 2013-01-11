@@ -1,35 +1,29 @@
 [% META title = 'Aligning data groups' %]
 
-[% WRAPPER html/todo %]
-Explain some of the pitfalls, explain how e0 is used for intial guess
-of shift
-[% END %]
-
 [% FILTER html_para %]
 Aligning data is the process of moving a data group in energy onto an
-absolute energy grid defined by some standard.  In [% athena %] that
+absolute energy grid defined by some standard.  In [%athena%] that
 standard is chosen fairly arbitrarily -- it is simply one of the other
 groups in the group list.  The alignment is done by adjusting the
-[% INCLUDE font/param a="eshift" %] parameter.
+[% INCLUDE font/param a="Energy shift" %] parameter.
 
-This adjustment can be done simply by manually editing the
-[% INCLUDE font/param a="eshift" %] parameter, but tools exist on the
-alignment dialog, shown
-[% INCLUDE imageref text="below" label="align" in=1 %],
-to make this somewhat easier.
+This adjustment can be done simply by manually editing the [%INCLUDE
+font/param a="Energy shift"%] parameter, but tools exist on the
+alignment tool, shown [%INCLUDE imageref text="below" label="align"
+in=1%], to make this somewhat easier.
 [% END %]
 
 [% WRAPPER figure file="align.png" %]
-The data alignment dialog.
+The data alignment tool.
 [% END %]
 
 [% FILTER html_para %]
 There are several variations on how the alignment is performed and
-visualized.  As the alignment proceeds, it can be plotted as [% mu %],
-normalized [% mu %], the derivative of [% mu %] (as shown in
+visualized.  As the alignment proceeds, it can be plotted as [%mue%],
+normalized [%mue%], the derivative of [%mue%] (as shown in
 [% INCLUDE imageref text="the next plot" label="align_plot" %]), or the smoothed
-derivative of [% mu %].  A three-point smoothing function is applied
-three times to the derivative of the [% mu %] if that plotting option
+derivative of [%mue%].  A three-point smoothing function is applied
+three times to the derivative of the [%mue%] if that plotting option
 is selected.
 [% END %]
 
@@ -42,14 +36,14 @@ your data are aligned.
 [% FILTER html_para %]
 The alignment is always done by moving the current data group and
 keeping the standard fixed.  The standard is selected from the menu at
-the top of the dialog.  This menu contains the entire contents of the
+the top of the tool.  This menu contains the entire contents of the
 group list, excluding those groups that cannot be plotted in energy.
 
 You can perform the alignment by hand by clicking any of the buttons
 labeled with numbers.  Those buttons will move the current group up or
 down in energy by the amount on the button's[%#'%] label.  Alternately, you
 can type an energy shift value in the box that displays the current
-value of [% INCLUDE font/param a="eshift" %].  You can click these
+value of [% INCLUDE font/param a="Energy shift" %].  You can click these
 buttons until the data line up nicely.
 
 Clicking the [% INCLUDE font/quote a="Auto align" %] button performs a
@@ -66,7 +60,7 @@ misaligned by less than 5 or 10 volts.  For noisy data, the fit may be
 more successful if you choose to fit smoother data by selecting that
 option from the menu labeled [% INCLUDE font/quote a="Fit as:" %].  For
 very misaligned data, you may need to manually set an approximate
-value for [% INCLUDE font/param a="eshift" %] before clicking the
+value for [% INCLUDE font/param a="Energy shift" %] before clicking the
 [% INCLUDE font/quote a="Auto align" %] button.
 
 You can apply the automated alignment algorithm to many groups in
@@ -84,7 +78,7 @@ of the column selection dialog.
 If you have imported
 [% INCLUDE html/link text="a reference channel"
                      link="../import/ref.html" %]
-with your data, you can use this dialog to align the reference
+with your data, you can use this tool to align the reference
 channels.  This puts your real data on a proper absolute energy grid,
 which is very important for comparing edge energies in XANES studies.
 [% END %]

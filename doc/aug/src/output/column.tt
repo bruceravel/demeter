@@ -32,10 +32,11 @@ The columns in the [% mu %] output file are:
 [% WRAPPER html/li %] energy         [% END %]
 [% WRAPPER html/li %] [% mu %]       [% END %]
 [% WRAPPER html/li %] background     [% END %]
-[% WRAPPER html/li %] derivative of [% mu %] [% END %]
-[% WRAPPER html/li %] I0             [% END %]
 [% WRAPPER html/li %] pre-edge line  [% END %]
 [% WRAPPER html/li %] post-edge line [% END %]
+[% WRAPPER html/li %] derivative of [% mu %] [% END %]
+[% WRAPPER html/li %] second derivative of [% mu %] [% END %]
+[% WRAPPER html/li %] I0             [% END %]
 [% END %]
 
 [% FILTER html_para %]
@@ -58,6 +59,7 @@ The columns in any of the [% chik %] output files are:
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %] k                        [% END %]
+[% WRAPPER html/li %] unweighted [% chik %]    [% END %]
 [% WRAPPER html/li %] k-weighted [% chik %]    [% END %]
 [% WRAPPER html/li %] k-squared-weighted [% chik %]    [% END %]
 [% WRAPPER html/li %] k-cubed-weighted [% chik %]    [% END %]
@@ -92,6 +94,8 @@ magnitude and phase.
 [% WRAPPER html/li %] imaginary part of [% chiq %] [% END %]
 [% WRAPPER html/li %] magnitude of [% chiq %]      [% END %]
 [% WRAPPER html/li %] phase of [% chiq %]          [% END %]
+[% WRAPPER html/li %] Fourier transform window [% END %]
+[% WRAPPER html/li %] [% chik %] with the k-weighting used in the FT   [% END %]
 [% END %]
 
 [% FILTER html_para %]
@@ -134,7 +138,7 @@ be recorded there.
 [% END %]
 
 [% WRAPPER html/todo %]
-Show correct header
+Show correct header -- what is shown below is out-of-date
 [% END %]
 
 

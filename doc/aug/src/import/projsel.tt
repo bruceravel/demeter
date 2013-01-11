@@ -23,7 +23,7 @@ project file and present the project selection dialog.
 
 The contents of the project file are listed on the left side of the
 dialog.  The contents of the
-[% INCLUDE html/link link="../ui/palettes.html" text="journal" %]
+[% INCLUDE html/link link="../other/journal.html" text="journal" %]
 are listed in the box at the top right.  When you click on one of the
 data groups in the list on the left, it gets plotted and its title
 lines are inserted into the box at the lower right.  Using these parts
@@ -40,35 +40,31 @@ selection:
 Click on an item in the list to select one group
 [% END %]
 [% WRAPPER html/li %]
-Control-click (i.e. hold down the control key while clicking) on an
-item in the list to add it to the selection
+[% INCLUDE modkey key="Control" %]-click (i.e. hold down the [% INCLUDE modkey key="Control" %]
+key while clicking) on an item in the list to add it to the selection
 [% END %]
 [% WRAPPER html/li %]
-Shift-click to on a group to select all groups between it and the
+[% INCLUDE modkey key="Shift" %]-click to on a group to select all groups between it and the
 previously selected group.
-[% END %]
-[% WRAPPER html/li %]
-Click and drag to select all groups that you drag over.
 [% END %]
 [% END %]
 
 [% FILTER html_para %]
-Additionally the buttons labeled [% INCLUDE font/quote a="All" %],
+The buttons labeled [% INCLUDE font/quote a="All" %],
 and [% INCLUDE font/quote a="None" %] can be used to select all groups
 or to clear the selection.  The [% INCLUDE font/quote a="Invert" %]
 button will invert the selection of each group.
 
-[% WRAPPER html/todo %]
-Explain new selection controls
-[% END %]
+Below those three buttons are a series of controls allowing somewhat
+finer grained control over how items from the group list are
+selected.  The [% INCLUDE font/quote a="Select every" %] line allows
+selection by a regular pattern.  [% INCLUDE font/quote a="Select
+matching" %] allows you to select groups that match a specified
+pattern using the full strength of perl's[%#'%] 
+[% INCLUDE html/link link="../ui/mark.html#usingregularexpressionstomarkgroups"
+text="regular expression" %].
 
 Once you have selected the groups you want to import, click the
 [% INCLUDE font/quote a="Import" %] button.  If no groups are selected
 then all the groups will be imported.
-
-[% athena %] checks for project files that have become damaged.  When
-it recognizes a damaged file, it will extract what information is
-salvageable and insert those groups in the group list.  It will then
-issue an error message with a brief hint about the problem.  That
-error message is inserted into the titles box in scary red text.
 [% END %]

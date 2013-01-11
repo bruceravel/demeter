@@ -107,8 +107,8 @@ rather than binary mixture of standard materials.
 To begin, select one of the time points in the group list.  Most
 figures in this section show the data measured at 7.03 hours.  Next,
 select [% INCLUDE font/quote a="Linear combination fit" %] from the
-Analysis menu.  This replaces the main window with the linear
-combination fitting dialog and plots the data along with vertical
+main menu.  This replaces the main window with the linear
+combination fitting tool and plots the data along with vertical
 lines indicating the extent of the fitting range.  From the first two
 drop-down menus, select [% INCLUDE font/quote a="Au foil" %] and
 [% INCLUDE font/quote a="Au3 Cl aq" %], as shown
@@ -116,7 +116,7 @@ drop-down menus, select [% INCLUDE font/quote a="Au foil" %] and
 [% END %]
 
 [% WRAPPER figure file="lcf.png" %]
-[% athena %]'s[%#'%] linear combination fitting dialog with the end member
+[%athena%]'s[%#'%] linear combination fitting tool with the end member
 standard compounds selected for the initial fit.
 [% END %]
 
@@ -251,10 +251,10 @@ Then click the [% INCLUDE font/quote a="Use marked groups" %] button.
 This will insert all of the standards into the table.
 
 By default, the table is only four rows long.  You will need to exit
-the linear combination fitting dialog and open the
-[% INCLUDE html/link text="preference dialog" link="../other/prefs.html" %].
+the linear combination fitting tool and open the
+[% INCLUDE html/link text="preference tool" link="../other/prefs.html" %].
 Set the [% PROCESS preference group="Linearcombo" option="maxspectra" %]
-preference to at least 9.  Return to the linear combination dialog and
+preference to at least 9.  Return to the linear combination tool and
 load the 9 standards into the table.
 
 Click the [% INCLUDE font/quote a="Use at most" %] control down to

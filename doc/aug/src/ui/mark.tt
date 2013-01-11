@@ -4,19 +4,19 @@
 
 [% FILTER html_para %]
 
-As data are imported in [% athena %], they are listed in the Data
-groups list. Each entry in list includes the name of the data set, the
+As data are imported in [%athena%], they are listed in the Data
+groups list. Each entry in the list includes the name of the data set, the
 text of which acts something like a hyperlink in that clicking on that
 text will insert the analysis parameters for that group into the main
-window. Each entry also has a little check button which is used
-for [% INCLUDE font/em a="marking" %] the group. Much of
-[% athena %]'s[%#'%] functionality revolves
-around marked groups. For example, the marked groups are the ones
+window.  Each entry also has a little check button which is used
+for [% INCLUDE font/em a="marking" %] the group.  Much of
+[%athena%]'s[%#'%] functionality revolves
+around marked groups.  For example, the marked groups are the ones
 plotted when a purple plotting button is pressed, merging is done on
 the set of marked groups and, many of the data processing and data
 analysis chores use the marked groups.
 
-[% athena %] offers a number of simple tools for marking or unmarking
+[%athena%] offers a number of simple tools for marking or unmarking
 groups. These are found in the Mark menu, as shown below, and also
 have keyboard bindings. [% INCLUDE modkey key="Shift-Control" letter='a' %] marks all
 groups, [% INCLUDE modkey key="Shift-Control" letter='u' %] unmarks all groups, and
@@ -57,7 +57,10 @@ Data groups list includes
 [% END %]
 
 [% WRAPPER figure file="ui_vstan.png" %]
-A project with several vanadium standards imported.
+A project with several vanadium standards imported.  The regular
+expression shown matches all strings with the number 
+[%INCLUDE font/quote a="1"%] at the end.  Thus all groups with the
+[%INCLUDE font/quote a=".1"%] extension will be marked.
 [% END %]
 
 
@@ -130,6 +133,10 @@ for projects containing very many data sets.
 [% END %]
 
 [% WRAPPER html/caution %]
+The regular expression is sent exactly as entered to perl's[%#'%] regular
+expression engine.  You thus have the
+[% INCLUDE font/b a="full" %]
+power of  perl's[%#'%] regular expression engine.[%br%][%br%]
 If you know what [% recode %] means and do something ill-advised with
 it, you'll[%#'%] get no sympathy from me!.
 [% END %]

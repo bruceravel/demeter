@@ -23,13 +23,9 @@ the problem of constraining parameter values.
 [% INCLUDE section label="Constraining individual parameters" %]
 
 [% FILTER html_para %]
-The first such tool is used to constrain individual parameters.  As
-the cursor of your mouse passes over any of the labels for the menus
-or text entry boxes in the main window, you will see that the text of
-the label flashes a color change.  This color change indicates that
-mouse clicks will have an effect.  If you click the left mouse button,
-a hint about the purpose of that parameter is written to the echo
-area.  A right mouse click posts a context menu, as shown in
+The first such tool is used to constrain individual parameters.  A
+[% INCLUDE font/em a="right mouse click"%] on any of the parameter
+labels on the main window will post a context menu, as shown in 
 [% INCLUDE imageref text="this figure" label="param_param" %].
 [% END %]
 
@@ -48,23 +44,10 @@ the set of marked groups.  The set of marked groups are the ones with
 their little purple buttons in the group list checked.  So here we
 see again one of the many uses of the mark buttons.
 
-The third option is to set the value of this parameter to the
-[% INCLUDE font/em a="standard" %].  This requires some explanation.
-In this context, the standard is set by marking one and only one group
-in the group list.  Choosing to set a parameter value to the standard,
-then, applies the parameter value from the single marked group to the
-current group.  Any group can be the standard -- setting a standard is
-as simple as clicking a mark button.  If more than one group is
-marked, an explanatory error message is written to the echo area.
-
-The last two options involve default parameter values.  The parameter
-can be reset to its default value.  This is handy if you have changed
-a parameter and found yourself in a place where the data processing is
-obviously wrong.  By resetting the parameter to its default, you can
-return to a sensible place.  The final option is to establish the
-current parameter value as the session default.  The use of session
-defaults is explained in a
-[% INCLUDE html/link text="later section" link="../params/defaults.html"%].
+The last options involves resetting a parameter to its default value.
+This is handy if you have changed a parameter and found yourself in a
+place where the data processing is obviously wrong.  By resetting the
+parameter to its default, you can return to a sensible place
 
 Several of the parameter context menus have a few more entries in
 their context menus:
@@ -72,20 +55,33 @@ their context menus:
 
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
-The [% INCLUDE font/param a="importance" %] context menu has entries
+The [% INCLUDE font/param a="Energy shift" %] context menu has entries
+related to reference groups and options for displaying energy shift
+values for all or marked groups.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/param a="Importance" %] context menu has entries
 for resetting the [% INCLUDE font/param a="importance" %] of all
 groups or marked groups to 1.
 [% END %]
 [% WRAPPER html/li %]
-The [% INCLUDE font/param a="e0" %] context menu has several
-options for changing the value of [% INCLUDE font/param a="e0" %] and
-a button for toggling the tying of energy and k parameters to the
-[% INCLUDE font/param a="e0" %] value.  All of the options will be
-explained in [% INCLUDE html/link link="../params/e0.html" text="the next section" %].
+The [% INCLUDE font/param a="E0" %] context menu has several
+options for changing the value of [% INCLUDE font/param a="e0" %].
+All of the options will be explained in
+[% INCLUDE html/link link="../params/e0.html" text="the next section" %].
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/param a="Edge step" %] context menu as options for
+displaying edge step values for all or marked groups.  There is  also
+an option for approximating the uncertainty in the edge step value.
+When selected, the pre- and post-edge line parameters will be varied
+randomly a number of times.  Each normalization will be plotted.  The
+standard devaition of the edge steps will be computed and displayed in
+the echo area.
 [% END %]
 [% WRAPPER html/li %]
 The Fourier transform [% INCLUDE font/param a="k-range" %] context
-menu has an option for setting the upper bound to [% ifeffit %]
+menu has an option for setting the upper bound to [%ifeffit%]'s[%#'%]
 suggestion, which is based on the level of noise in the data.
 [% END %]
 [% END %]
@@ -113,14 +109,7 @@ parameter context menus, except that all of the parameters in the box
 are effected.  This, then, gives you a way of constraining all
 background removal parameters or all Fourier transform parameters
 between groups.  It also provides a way of restoring default values
-for a set of parameters or assigning a set as
-[% INCLUDE html/link text="session defaults" link="../params/defaults.html"%].
-
-The [% INCLUDE font/quote a="Project" %] and
-[% INCLUDE font/quote a="Current group" %] boxes do not have
-context menus as constraining most of those parameters between groups
-would not be sensible.
-
+for a set of parameters.
 [% END %]
 
 [% INCLUDE section label="Constraining all parameters" %]
@@ -144,6 +133,6 @@ parameters at once.
 [% FILTER html_para %]
 Again, these operations work identically to the explanation above,
 except that every parameter is effected, with the exceptions of
-[% INCLUDE font/param a="file" %] and [% INCLUDE font/param a="eshift" %],
+[% INCLUDE font/param a="file" %] and [% INCLUDE font/param a="Energy shift" %],
 which would not be sensible to constrain.
 [% END %]

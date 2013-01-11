@@ -51,6 +51,11 @@ You can think of this as a sort of
 [% INCLUDE font/quote a="sub-project" %] file.  This is
 another of the many ways that the group markings are used by
 [% athena %].
+
+The [% INCLUDE font/quote a="Save" %] button at the top of the screen
+will save the current project, prompting for a file name if needed.
+As you work with [%athena%]. this button turns increasingly red,
+reminding you of the need to save your work early and often.
 [% END %]
 
 [% WRAPPER html/caution %]
@@ -76,42 +81,9 @@ compartment, i.e. a memory space with restricted access to perl's[%#'%]
 system functionality.  This provides a certain level of protection against
 project files constructed with malicious intent.)
 
-Starting with version 0.8.050, [% athena %] writes out its project files
-using compression. The files written are identical to the format used
-by the popular
-[% INCLUDE html/link text="gzip" link="http://www.gzip.org/" %]
-program, using the highest level of
-compression.  [% athena %] and [% artemis %] will import these files or
-uncompressed project files from earlier versions of [% athena %] in a
-transparent manner. It is quite possible that the user will never even
-realize that this change in the project file format occurred.
-
-One possible problem is if someone using the latest version of [% athena %]
-wants to share a project file with someone who is not using the latest
-version. In that case, the project file will be written using
-compression, but the person with the older version will not be able to
-import it into his version of [% athena %].  The best solution to this
-problem is to encourage your colleague to upgrade to the latest
-version of [% athena %].  Barring that, there are two other possibilities.
-
-The better solution is to rename the file from
-[% PROCESS font/file a="whatever.prj" %]
-to
-[% PROCESS font/file a="whatever.prj.gz" %]
-then use a decompression program to decompress the
-project. On unix, gzip is a good choice. On the Mac, there are a
-number of options, including gzip. On Windows, many popular
-compression and archiving programs can deal with gzip
-compressed files. Simply run the renamed file through the
-decompression program and use the resulting file. There are no changes
-to the textual content of the project file -- the only change is that
-[% athena %] uses compression by default.
-
-The less good solution is for the person writing the project file to
-set the
-[% PROCESS preference group="General" option="compress_prj" %]
-preference parameter to false. This will
-get you over the hurdle of communicating with your colleague, but it
-is an inferior solution. Compression reduces the size of the project
-file by up to a factor of 4, which is a very nice feature indeed.
+The project file is written using compression in the format of the
+popular [% INCLUDE html/link text="gzip" link="http://www.gzip.org/"%]
+program using the highest level of compression, albeit without the
+common [% INCLUDE font/file a=".gz" %] file extension.  Both
+[%athena%] and [%artemis%] use these files.
 [% END %]

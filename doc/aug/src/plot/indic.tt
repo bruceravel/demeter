@@ -27,7 +27,8 @@ or q will plot indicators selected in any of those three spaces.
 [% END %]
 
 [% FILTER html_para %]
-The following preferences can be set to customize the appearance of
+The following [% INCLUDE html/link text="preferences"
+link="../other/prefs.html"%] can be set to customize the appearance of 
 the indicators.
 [% END %]
 

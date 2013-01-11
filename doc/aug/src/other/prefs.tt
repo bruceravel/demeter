@@ -6,30 +6,30 @@
 [% FILTER html_para %]
 [% athena %] allows you to set an enormous number of preferences.
 Many dozens of things that could conceivably be configured can, in
-fact, be configured using this dialog.  In any situation where is was
+fact, be configured using this tool.  In any situation where is was
 not obvious to me that there was a best, most proper value for a
 parameter, I chose a default and made an entry for it in the
-preference dialog.  The preference dialog is shown
+preference tool.  The preference tool is shown
 [% INCLUDE imageref text="here" label="prefs" in=1 %].
 [% END %]
 
 [% WRAPPER figure file="prefs.png" %]
-[% athena %]'s[%#'%] preferences dialog.
+[% athena %]'s[%#'%] preferences tool.
 [% END %]
 
 [% FILTER html_para %]
-I am not going to explain this dialog in great detail.  I am trusting
+I am not going to explain this tool in great detail.  I am trusting
 that if you are sufficiently motivated to configure the behavior of
 [% athena %] to be something other than what comes out of the box, you will
 also be sufficiently motivated to follow your nose through the use of
-this dialog.
+this tool.
 
 The preference parameters are divided into related groups.  For
 example, there are groups for background removal parameters, alignment
 parameters, colors, and so on.
 
 To view a group of preferences, click on the little cross sign next to
-the group's[%#'%] name in the list on the left side of the dialog.  This
+the group's[%#'%] name in the list on the left side of the tool.  This
 will open a branch containing all the parameters in tat group.  Click
 on one of them and it will be displayed in the controls on the left.
 

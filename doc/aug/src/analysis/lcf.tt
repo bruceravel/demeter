@@ -3,39 +3,40 @@
 %]
 
 [% FILTER html_para -%]
-[% athena %] has a capability of fitting a linear combination of standard
+[%athena%] has a capability of fitting a linear combination of standard
 spectra to an unknown spectra. These fits can be done using normalized
-[% mu %] spectra or [% chik %] spectra. One use of this sort of analysis
+[%mu%], derivative of [%mue%], or [%chik%] spectra. One use of this sort of analysis
 might be to interpret the kinetics of series of spectra measured
 during a reduction reaction. By fitting each intermediate spectrum as
 a linear combination of the end members, one can deduce the rate of
 the reaction. Another possible use would be to determine the species
 and quantities of standards in a heterogeneous sample.
 
+A worked example of linear combination fitting is shown [%INCLUDE
+html/link text="later in this manual" link="../examples/aucl.html"%].
+
 To access this feature, choose [% INCLUDE font/quote a="Linear
-combination fit" %] from the
-Analysis menu. The normal parameter view will be replaced by the
-dialog in
-[% INCLUDE imageref text="the following figure" label="lcf" %]
-for performing the linear combination fit.
+combination fit" %] from the main menu. The normal parameter view will
+be replaced by the tool in [% INCLUDE imageref text="the following
+figure" label="lcf" %] for performing the linear combination fit.
 [% END %]
 
 
 [% WRAPPER figure file="lcf.png" %]
-The linear combination fitting dialog.
+The linear combination fitting tool.
 [% END %]
 
 
 [% PROCESS section label="Fitting a single data group" %]
 
 [% FILTER html_para -%]
-The linear combination dialog presents a table of menus. Each of these
+The linear combination tool presents a table of menus. Each of these
 menus can be used to select a spectrum from among the data groups
-currently in the Data groups list. The basic idea of this dialog is
+currently in the Data groups list. The basic idea of this tool is
 that you will choose two or more standard spectra and fit a linear
 combination of them to the current (i.e. the one highlighted in pale
 red in the Data groups list) group. The fitting is done using the
-normalized [% mu %] spectra. If the standards or the unknown are to be
+normalized [%mue%] spectra. If the standards or the unknown are to be
 flattened, then the flattened spectrum will be used. (See
 [% INCLUDE html/link text="the section on background removal"
 link="../bkg/norm.html" %] for details about flattened spectra.)
@@ -43,42 +44,43 @@ link="../bkg/norm.html" %] for details about flattened spectra.)
 You should have already done some data processing on the standards and
 on the unknowns. Specifically, you should align your data and set
 appropriate normalization parameters for each spectrum before starting
-to use the linear combination fitting dialog. Failing to adequately
-prepare your data for these fits may result in questionable fits.
+to use the linear combination fitting tool. Failing to adequately
+prepare your data for these fits will certainly result in questionable
+fits.
 
 To do the fit, weighting parameters are defined for each standards
 spectrum except for the last one in the list. The weight for the last
 spectrum is one minus the sum of the other weights, thus constraining
-the standards to be 100 percent of the unknown. Thus, if you used three
-standards, the first two would have weights [% INCLUDE font/mono a="x" %]
-and [% INCLUDE font/mono a="y" %] and the third
-would have weight [% INCLUDE font/mono a="1-x-y" %].
-[% INCLUDE font/mono a="x" %] and [% INCLUDE font/mono a="y" %]
-would then be varied to best fit the
-data. Each standard spectrum is interpolated onto the energy grid of
-the unknown when the fit is performed as normalized [% mu %]. The fit is
-performed over the data range indicated by the text boxes near the top
-of the window. There are pluck buttons which can be used to set the
-fitting range by clicking on a plot of the data.
+the standards to be 100 percent of the unknown. Thus, if you used
+three standards, the first two would have weights [% INCLUDE font/mono
+a="x"%] and [% INCLUDE font/mono a="y" %] and the third would have
+weight [% INCLUDE font/mono a="1-x-y" %].  [% INCLUDE font/mono
+a="x"%] and [% INCLUDE font/mono a="y" %] would then be varied to best
+fit the data. Each standard spectrum is interpolated onto the energy
+grid of the unknown when the fit is performed as normalized or
+derivative [%mue%].  The fit is performed over the data range
+indicated by the text boxes near the top of the window. There are
+pluck buttons which can be used to set the fitting range by clicking
+on a plot of the data.
 
-Fitting normalized [% mu %], derivative [% mu %], or [% chik %] is chosen using
-the radio buttons just above the table of standards. When fitting
-[% chik %] spectra, you have the option of fitting a single spectrum to
-the data.
+Fitting normalized [%mue%], derivative [%mue%], or [%chik%] is chosen
+using the radio buttons just above the table of standards. When
+fitting [%chik%] spectra, you have the option of fitting a single
+spectrum to the data.
 
-When fitting normalized or derivative [% mu %] spectra, you have the
-option of floating an [% e0 %] for each standard independently. This is
+When fitting normalized or derivative [%mue%] spectra, you have the
+option of floating an [%e0%] for each standard independently. This is
 intended to fix up any inconsistencies in the energy alignment of the
 various spectra (although it is much better to do a good job of
 aligning your data [% INCLUDE font/em a="before" %] doing your linear
-combination fitting). These [% e0 %] variables can be introduced by clicking on
+combination fitting). These [%e0%] variables can be introduced by clicking on
 the checkbuttons in the table of standard spectra.
 
-You can introduce a linear offset to the fit to normalized [% mu %]
+You can introduce a linear offset to the fit to normalized [%mue%]
 spectra. This is simple a line added to the sum of spectra in the
 fit. It introduces two parameters to the fit, a slope and an
 intercept. The line is multiplied by a step function centered at the
-[% e0 %] of the unknown. Thus the linear offset is introduced only after the
+[%e0%] of the unknown. Thus the linear offset is introduced only after the
 edge of the unknown. The purpose of this offset is to accommodate any
 variations in how the normalization is performed on the various
 spectra. To turn on the linear offset in the fit just click on the
@@ -90,15 +92,15 @@ For best results, you should do a good job of aligning and normalizing
 your spectra [% INCLUDE font/b a="before" %] starting linear
 combination analysis.  When normalization and alignment are done
 correctly, you can expect your fitted weights to sum to 1 and
-variation of [% e0 %] for the data or standards will be  unnecessary.
+variation of [%e0%] for the data or standards will be  unnecessary.
 [% END %]
 
 [% PROCESS section label="Constraints and modifications to the fit" %]
 
 [% FILTER html_para -%]
-[% athena %]'s[%#'%] linear combination dialog offers several constraints to the
+[%athena%]'s[%#'%] linear combination tool offers several constraints to the
 fitting parameters. The constraints are set and unset using the
-checkbuttons near the bottom of the dialog.
+checkbuttons near the bottom of the tool.
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
@@ -143,22 +145,22 @@ standards was not correct or that the choice of standards is not
 appropriate to the data.
 [% END %]
 [% WRAPPER html/dt dt="Constrain all standards to use a single E0 shift" %]
-You can force all standards to use a single [% e0 %] parameter in the
+You can force all standards to use a single [%e0%] parameter in the
 fit. This is equivalent (albeit with a sign change) to fixing all the
-standards and using an [% e0 %] shift on the unknown data.
+standards and using an [%e0%] shift on the unknown data.
 [% END %]
 [% WRAPPER html/dt dt="Adding noise to the data" %]
 It is sometimes useful to check the robustness of the fit against
 noisy data. This is particularly true for a data set wherein some data
-are much noisier than others. To this end, [% athena %] allows you to add
+are much noisier than others. To this end, [%athena%] allows you to add
 pseudo-random noise to the data before performing the fit. This is
-done using [% ifeffit %]'s[%#'%] [% INCLUDE font/mono a="random()" %]
+done using [%ifeffit%]'s[%#'%] [% INCLUDE font/mono a="random()" %]
 function with a user-supplied value for
 sigma. No care is taken to normalize sigma relative to the data, so a
 bit of trial and error might be necessary to find a suitable level of
-noise for your test. For normalized [% mu %], sigma has a simple
+noise for your test. For normalized [%mue%], sigma has a simple
 interpretation -- it is a fraction of the edge step. For derivative
-[% mu %] and [% chik %] data, you will need to compare your sigma value to
+[%mue%] and [%chik%] data, you will need to compare your sigma value to
 the actual values of the data. You can examine the level of noise
 relative to your data before fitting by using the
 [% INCLUDE font/quote a="Plot data and sum" %] from the operations list.
@@ -186,9 +188,9 @@ certainly less than the number of data points measured.  Nonetheless,
 when the chi-square is evaluated, the number of data points is used as
 the number of measurements.
 
-Second, [% athena %] has no way of evaluating a measurement
-uncertainty [% epsilon %] for the XANES measurement.  A value of 1 is
-used for [% epsilon %] in the equation for chi-square.  
+Second, [%athena%] has no way of evaluating a measurement
+uncertainty [%epsilon%] for the XANES measurement.  A value of 1 is
+used for [%epsilon%] in the equation for chi-square.  
 
 These two issues, taken together, mean that chi-square and reduced
 chi-square tend to be very small numbers -- much smaller than 1.  As a
@@ -207,7 +209,7 @@ The R-factor reported in the text box is
 [% END %]
 [% FILTER html_para -%]
 where the sums are over the data points in the fitting region. The
-chi-square and reduced chi-square are those reported by [% ifeffit %].
+chi-square and reduced chi-square are those reported by [%ifeffit%].
 
 Interpretation of the statistical parameters requires you to be
 mindful of what you know about the system you are measuring.  The
@@ -232,17 +234,18 @@ of the residual by clicking
 [% INCLUDE font/quote a="Make difference group" %] in the operations
 list. This will allow you to plot and
 manipulate the fit or difference after leaving the linear combination
-dialog. The data group containing the fit result will be treated as
+tool. The data group containing the fit result will be treated as
 normal data that can have a background removed or be Fourier
 transformed. When you save a fit using the derivative spectra, the fit
-group will be saved as a normal [% mu %] spectrum.
+group will be saved as a normal [%mue%] spectrum.
 
 [% INCLUDE font/quote a="Reset" %] in the operations list returns
-almost everything in the dialog back to its original state.
+almost everything in the tool back to its original state.
 
 If you need more than four standards, the number of standards as well
 as several other aspect of the linear combination fitting is
-configurable using the preferences dialog.
+configurable using the [% INCLUDE html/link text="preferences tool"
+link="../other/prefs.html" %].
 [% END %]
 
 [% PROCESS section label="Constraining linear combination fit parameters between groups" %]
@@ -250,7 +253,7 @@ configurable using the preferences dialog.
 [% FILTER html_para -%]
 The various operational parameters described above can be constrained
 between data groups in the same manner as background removal and
-Fourier transform parameters on [% athena %]'s[%#'%] main page. Two items in the
+Fourier transform parameters on [%athena%]'s[%#'%] main page. Two items in the
 operations list are [% INCLUDE font/quote a="Set params, all groups" %]
 and [% INCLUDE font/quote a="Set params, marked groups" %]. These will
 export the current group's[%#'%] values for
@@ -294,15 +297,16 @@ One of the uses of this sort of XANES fitting is to try to figure out
 what's[%#'%] actually in a sample. One approach to figuring this out is to
 measure all plausible standard compounds and try fitting a large
 number of different combinations of the standards to the data.
-[% Athena %] provides a tool for automating this. Here is how it works:
+[%athena%] provides a tool for automating this. Here is how it works:
 [% END %]
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
 Load all of the standards that you want to consider into the table of
-standards in the linear combination dialog. You may need to increase
-the maximum number of standards using the preferences dialog to
-provide enough space in the table for all of the standards that you
+standards in the linear combination tool. You may need to increase
+the maximum number of standards using the 
+[% INCLUDE html/link text="preferences tool" link="../other/prefs.html"%] 
+to provide enough space in the table for all of the standards that you
 wish to consider.
 [% END %]
 [% WRAPPER html/li %]
@@ -325,11 +329,11 @@ Click [% INCLUDE font/quote a="Fit all possible combinations" %]
 in the operations list and go
 get a cup of coffee. If the number of possible standards is large,
 this series of fits could take a while. For example, with 11 standards
-and considering up to the quaternary combinations, [% athena %] will
+and considering up to the quaternary combinations, [%athena%] will
 perform 550 fits. (Really!
 [% INCLUDE choose n=11 k=2 %] +
 [% INCLUDE choose n=11 k=3 %] +
-[% INCLUDE choose n=11 k=4 %] = 550).
+[% INCLUDE choose n=11 k=4 %] = 550!)
 [% END %]
 [% END %]
 
@@ -350,7 +354,7 @@ The combinatorial fitting results tab.
 
 [% FILTER html_para -%]
 The second table contains each of the standards and its weight and
-[% e0 %] from the fit selected in the upper table.
+[%e0%] from the fit selected in the upper table.
 
 You can select a fit from the upper table by clicking on its
 line. When you do so, that fit becomes highlighted in pale red, its
@@ -386,4 +390,7 @@ Beneath the tables is a button labeled
 [% INCLUDE font/quote a="Write CSV report for all fits." %] Clicking
 this will prompt you for a file name and location,
 then write a comma-separated-value report of all fits.
+
+A worked example of linear combination fitting is shown [%INCLUDE
+html/link text="later in this manual" link="../examples/aucl.html"%].
 [% END %]

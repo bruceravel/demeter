@@ -45,7 +45,7 @@ These are fit using the cumulant expansion:
 [% END %]
 
 [% FILTER html_para -%]
-The standard is selected from the menu at the top of this dialog.  The
+The standard is selected from the menu at the top of this tool.  The
 unknown is the current group, i.e. the one highlighted in the group list.
 
 There are some other caveats along with the fact that this
@@ -80,12 +80,12 @@ to this analysis.
 [% FILTER html_para -%]
 When you select [% INCLUDE font/quote a="Log-Ratio" %] from the
 main menu, the main window is replaced with the
-log-ratio/phase-difference dialog, shown
+log-ratio/phase-difference tool, shown
 [% INCLUDE imageref text="below" label="lr" in=1 %].
 [% END %]
 
 [% WRAPPER figure file="lr.png" %]
-The log-ratio/phase-difference dialog.
+The log-ratio/phase-difference tool.
 [% END %]
 
 [% FILTER html_para -%]

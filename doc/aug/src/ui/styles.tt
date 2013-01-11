@@ -11,7 +11,7 @@ save a set of parameters, you are prompted for a name.  After that you
 can select a parameter set by name.  These parameter sets are saved to
 disk, thus persist between sessions.  
 
-Double click to discard ...
+You can discard a plot style by double clicking on it.
 [% END %]
 
 [% WRAPPER figure file="ui_plotstyles.png" %]

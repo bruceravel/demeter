@@ -16,7 +16,7 @@ A frozen group is one for which you cannot change its parameter
 values.  When a group is frozen, the entry boxes associated with
 parameters become deactivated, which means that it is impossible to
 type in them.  Furthermore, any global action such as constraining
-parameters or using the alignment dialog, will have no effect on the
+parameters or using the alignment tool, will have no effect on the
 frozen group.
 
 The idea behind frozen groups is that, after working for a while to
@@ -27,9 +27,8 @@ functions can be found in the Freeze menu, as shown in
 [% END %]
 
 [% WRAPPER figure file="ui_freeze.png" %]
-Several
-visual cues indicate that a group is frozen, including the green
-highlighting the group list and the use of italic text in the main menu.
+Several visual cues indicate that a group is frozen, including the
+green highlighting the group list and the disabling of most controls.
 [% END %]
 
 [% FILTER html_para %]
@@ -51,6 +50,5 @@ When a group is frozen, direct edits of parameter values are
 disallowed.  Frozen groups are skipped for algorithmic edits, such as
 parameter constraints or alignment.  You can, however, still remove a
 frozen group from the project.  Unfreezing a group is a simple as
-hitting [% INCLUDE modkey key="control" letter='f' %] again.
-
+hitting [% INCLUDE modkey key="Shift-Control" letter='f' %] again.
 [% END %]

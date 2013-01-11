@@ -16,11 +16,9 @@ When you click on the plot, the x-axis value of
 the point you clicked on gets inserted in the associated entry box.
 
 Along with the pluck buttons in the main window, several data
-processing and data analysis dialogs use pluck buttons, as do the
+processing and data analysis tools use pluck buttons, as does the
 [% INCLUDE html/link text="indicator" link="../plot/indic.html" %]
-and
-[% INCLUDE html/link text="point finder" link="../plot/pf.html" %]
-plot options tabs.
+plot options tab.
 [% END %]
 
 [% WRAPPER figure file="ui_pluck.png" %]
@@ -33,7 +31,7 @@ click on the plot, which shows [% mu %] for [% batio3 %].  Only the
 x-axis value of the click on the plot is used by the pluck button.
 (Right) After clicking on the point shown in
 [% INCLUDE imageref text="the previous figure" label="ui_pluckpoint" %],
-the value of 243.684 is inserted as the value of the upper edge of the
-normalization range.  This is clearly a better value for that
+the value of about 243 is inserted as the value of the upper edge of the
+normalization range [%ndash%] clearly a better value for that
 parameter.
 [% END %]

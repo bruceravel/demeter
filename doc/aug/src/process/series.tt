@@ -3,7 +3,22 @@
 %]
 
 [% FILTER html_para %]
-Blah blah blah
+This tool allows you to examine systemic trends in a measurement by
+varying a single processing parameter over a specified range.  The
+[%INCLUDE font/quote a="Parameter" %] menu contains many of the
+parameters on the main window.  You give an initial value, an
+increment, and a number of copies, thus specifying the range over
+which the parameter is examine.
+
+Clicking the [%INCLUDE font/quote a="Make series" %] button creates
+copies of the current data group with the examined parameter set
+incrementally.  The set of copied groups are marked and plotted in the
+space most appropriate for the examined parameter.
+
+For parameters, line the pre- and post-edge line parameter, which
+affect the edge step, the average edge step value and its standard
+devaition are calculated and displayed in the text control that is
+nortmally disabled.
 [% END %]
 
 [% WRAPPER figure file="series.png" %]
@@ -11,6 +26,6 @@ The copy series tool.
 [% END %]
 
 [% WRAPPER figure file="series_plot.png" %]
-A plot of the results of applying the series of [% INCLUDE font/param
-a="Rbkg" %] values to the Fe foil data.
+The plot made from the series of [% INCLUDE font/param a="Rbkg"%]
+values with the Fe foil data.
 [% END %]

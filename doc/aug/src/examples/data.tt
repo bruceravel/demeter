@@ -40,10 +40,10 @@ foil data.
 [% FILTER html_para %]
 When I collected these data, I purposefully miscalibrated the
 monochromator so that I would have a data set for explaining the use
-of [% athena %]'s[%#'%] calibration dialog.  The first thing to do, then, is
+of [% athena %]'s[%#'%] calibration tool.  The first thing to do, then, is
 to correctly calibrate these data.
 
-Open the [% INCLUDE html/link text="calibration dialog"
+Open the [% INCLUDE html/link text="calibration tool"
 link="../process/cal.html" %] by selecting [% INCLUDE font/quote
 a="Calibrate energies" %] from the Data menu.  The derivative of
 [% mu %] for these data will be plotted, shown
@@ -56,7 +56,7 @@ tabulated value for the iron K edge is 7112 eV.
 [% END %]
 
 [% WRAPPER quadplot files=["ex_data_calib.png", "ex_data_second.png"] %]
-The iron foil data, as plotted in the calibration dialog.  (Left)
+The iron foil data, as plotted in the calibration tool.  (Left)
 Derivative of [% mu %].  (Right) Second derivative of [% mu %].
 [% END %]
 
@@ -107,7 +107,7 @@ clicking on [% INCLUDE plotbutton class="purple" letter='E' %].
                           ] %]
 (Upper left) Misaligned iron foil [% mu %] data.
 (Upper right) The derivatives of the misaligned data, as plotted in
-the alignment dialog.  (Lower left) Aligned data plotted in k, but
+the alignment tool.  (Lower left) Aligned data plotted in k, but
 with [% INCLUDE font/param a="E0" %] unconstrained. (Lower right)
 Aligned data plotted in k after constraining [% INCLUDE font/param a="E0" %].
 Once aligned and constrained in [% INCLUDE font/param a="E0" %], these
@@ -124,7 +124,7 @@ noise.  The reason that they are different is that the second scan has
 not yet been calibrated.
 
 Fixing this requires two steps.  First, open the [% INCLUDE html/link
-text="alignment dialog" link="../process/align.html" %] by selecting
+text="alignment tool" link="../process/align.html" %] by selecting
 [% INCLUDE font/quote a="Align scans" %] from the Data menu.  The two
 scans are plotted as the derivative of [% mu %].  The first scan in
 the list, [% INCLUDE font/file a="fe.060" %], is automatically

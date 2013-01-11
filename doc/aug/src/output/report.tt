@@ -1,5 +1,5 @@
 [% META title = 'Parameter report files'
-	about = 'Linking Athena with spreadsheet programs'
+	about = 'Athena output for spreadsheet programs'
 %]
 
 [% FILTER html_para %]

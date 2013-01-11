@@ -20,8 +20,8 @@ The dehydrogenation sequence of a Pt-bearing catalyst.
 
 [% FILTER html_para %]
 Selecting one of the difference spectra options from the
-Analysis menu replaces the main window with
-the difference dialog, as shown
+main menu replaces the main window with
+the difference tool, as shown
 [% INCLUDE imageref text="below" label="diff" in=1 %].
 Difference spectra can be
 computed as [% mu %], normalized [% mu %], [% chik %], [% chir %], or
@@ -37,7 +37,7 @@ and all other processing chores.
 [% END %]
 
 [% WRAPPER figure file="diff.png" %]
-The difference spectrum dialog with data taken from the
+The difference spectrum tool with data taken from the
 [% INCLUDE font/file a="diff.prj" %] demo file.
 [% END %]
 
@@ -56,7 +56,7 @@ difference spectra can be Fourier transformed.
 
 [% WRAPPER quadplot files=["diff_diff.png", "diff_diffsequence.png"] %]
 (Left) The difference spectra between the first group in the list and the
-current group in the screenshot of the difference dialog.
+current group in the screenshot of the difference tool.
 (Right) The difference spectra plotted after making data groups from each one.
 [% END %]
 

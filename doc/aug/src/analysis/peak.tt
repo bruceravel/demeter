@@ -35,12 +35,12 @@ relationship between a spectral feature and an extrinsic parameter.
 [% END %]
 
 [% WRAPPER figure file="peak.png" %]
-The peak fitting dialog.
+The peak fitting tool.
 [% END %]
 
 [% FILTER html_para -%]
 [% INCLUDE imageref text="The screenshot above" label="peak_fit" %]
-shows the peak fitting dialog.  The available line shapes include
+shows the peak fitting tool.  The available line shapes include
 [% END %]
 
 [% WRAPPER html/list type='ul' %]
@@ -102,8 +102,8 @@ arc-tangent, a Lorentzian, and a Gaussian.
 The peak fitting results tab.
 [% END %]
 
-[% FILTER html_para -%]
-Humble confession: the peak fitting dialog is one of the weaker parts
+[% WRAPPER html/caution -%]
+Humble confession: the peak fitting tool is one of the weaker parts
 of [% athena %].  It is serviceable, but somewhat buggy and missing
 some important features.  One of these days it will get some more of
 my attention.

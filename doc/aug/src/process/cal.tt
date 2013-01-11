@@ -13,7 +13,7 @@ This is the calibration tool.
 [% END %]
 
 [% FILTER html_para %]
-When this dialog
+When this tool
 [% INCLUDE imageref text="above" label="calibrate" in=1 %]
 starts, the current group is plotted as the
 derivative of [% mu %].  The menu allows you plot the data as
@@ -47,7 +47,7 @@ of the reference point.  When plotting the second derivative,
 smoothing helps, even for fairly clean data.
 
 When you click the [% INCLUDE font/quote a="Calibrate" %] button, the values of
-[% INCLUDE font/param a="e0" %] and [% INCLUDE font/param a="eshift" %]
+[% INCLUDE font/param a="E0" %] and [% INCLUDE font/param a="Energy shift" %]
 are set for the current group such that the selected point in the data
 takes the calibration value.
 [% END %]
