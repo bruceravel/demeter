@@ -118,3 +118,38 @@
 [% MACRO delmu BLOCK -%]&Delta;&mu;[%- END -%]
 [% MACRO mufluo BLOCK -%]&mu;<sub>fluo</sub>[%- END -%]
 [% MACRO muback BLOCK -%]&mu;<sub>background</sub>[%- END -%]
+
+[% MACRO caret BLOCK -%]^[%- END -%]
+[% MACRO d48 BLOCK -%][%PROCESS font/mono a="d_4^8" | trim%][%- END -%]
+[% MACRO oh5 BLOCK -%][%PROCESS font/mono a="O_H^5" | trim%][%- END -%]
+[% MACRO c2v9 BLOCK -%][%PROCESS font/mono a="C_2V^9" | trim%][%- END -%]
+[% MACRO cv92 BLOCK -%][%PROCESS font/mono a="C_9^2V" | trim%][%- END -%]
+
+[% MACRO sigmm2 BLOCK -%][%PROCESS font/mono a='sigma_MM^2' | trim%][%- END -%]
+[% MACRO sigmm4 BLOCK -%][%PROCESS font/mono a='sigma_MM^4' | trim%][%- END -%]
+
+[% MACRO sigi02 BLOCK -%][%PROCESS font/mono a='sigma_I0^2' | trim%][%- END -%]
+[% MACRO sigi04 BLOCK -%][%PROCESS font/mono a='sigma_I0^4' | trim%][%- END -%]
+
+[% MACRO sigself2 BLOCK -%][%PROCESS font/mono a='sigma_self^2' | trim%][%- END -%]
+[% MACRO sigself4 BLOCK -%][%PROCESS font/mono a='sigma_self^4' | trim%][%- END -%]
+
+[% MACRO guess BLOCK -%][%PROCESS font/color color="a300a3" text="guess"%][%- END -%]
+[% MACRO def BLOCK -%][%PROCESS font/color color="008b00" text="def"%][%- END -%]
+[% MACRO setparam BLOCK -%][%PROCESS font/color color="000000" text="set"%][%- END -%]
+[% MACRO lguess BLOCK -%][%PROCESS font/color color="3e1c8f" text="lguess"%][%- END -%]
+[% MACRO skip BLOCK -%][%PROCESS font/color color="b2b2b2" text="skip"%][%- END -%]
+[% MACRO restrain BLOCK -%][%PROCESS font/color color="cd9b1d" text="restrain"%][%- END -%]
+[% MACRO after BLOCK -%][%PROCESS font/color color="4a708b" text="after"%][%- END -%]
+[% MACRO penalty BLOCK -%][%PROCESS font/color color="8b5a2b" text="penalty"%][%- END -%]
+[% MACRO merge BLOCK -%][%PROCESS font/color color="ffffff" bg'ee0000' text="merge"%][%- END -%]
+
+[% MACRO purple BLOCK -%][%PROCESS font/color color="a300a3" text="purple"%][%- END -%]
+[% MACRO green BLOCK -%][%PROCESS font/color color="008b00" text="green"%][%- END -%]
+[% MACRO black BLOCK -%][%PROCESS font/color color="000000" text="black"%][%- END -%]
+[% MACRO darkpurple BLOCK -%][%PROCESS font/color color="3e1c8f" text="dark purple"%][%- END -%]
+[% MACRO gray BLOCK -%][%PROCESS font/color color="b2b2b2" text="gray"%][%- END -%]
+[% MACRO darkyellow BLOCK -%][%PROCESS font/color color="cd9b1d" text="dark yellow"%][%- END -%]
+[% MACRO blue BLOCK -%][%PROCESS font/color color="4a708b" text="blue"%][%- END -%]
+[% MACRO brown BLOCK -%][%PROCESS font/color color="8b5a2b" text="brown"%][%- END -%]
+[% MACRO whiteonred BLOCK -%][%PROCESS font/color color="ffffff" bg'ee0000' text="white on red"%][%- END -%]

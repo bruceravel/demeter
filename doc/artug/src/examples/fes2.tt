@@ -16,7 +16,7 @@ selection dialog.  Click to find the [%athena%] project file
 containing the data you want to analyze.  Opening that project file
 displays the project selection dialog.
 
-[% WRAPPER image75 file="fes2.importdata.png" %]
+[% WRAPPER image75 file="fes2-importdata.png" %]
 Import data into Artemis
 [% END %]
 
@@ -35,7 +35,7 @@ Feff calculation"%] will post a file selection ddialog.  Click to find
 the [% INCLUDE font/file a="atoms.inp"%] file containing the [%fes2%]
 crystal structure.
 
-[% WRAPPER image75 file="fes2.importatoms.png" %]
+[% WRAPPER image75 file="fes2-importatoms.png" %]
 Import crystal data into Artemis
 [% END %]
 
@@ -48,13 +48,13 @@ button to compute the scattering potentials and to run the pathfinder.
 Once the [%feff%] calculation is finished, the path intepretation list
 is shown in the Paths tab.  This is the list of scattering paths,
 sorted by increasing path length.  Select the first 11 paths by
-clicking on the path #0000, then shift-clicking on path #0010.  These
+clicking on the path 0000, then shift-clicking on path 0010.  These
 group of selected paths will be highlighted.  Click on one of the
 highlighted paths and, without letting go of the mouse button, drag
 the paths over to the Data winodw.  Drop the paths on the empty Path
 list.
 
-[% WRAPPER image75 file="fes2.pathsdnd.png" %]
+[% WRAPPER image75 file="fes2-pathsdnd.png" %]
 Drag and drop paths onto a data set
 [% END %]
 
@@ -68,7 +68,7 @@ below is the [%fes2%] data with its 11 paths.  The first path in the
 list, the one representing the contribution to the EXAFS from the S
 single scattering path at 2.257 [%AA%], is currently displayed.
 
-[% WRAPPER image75 file="fes2.pathsimported.png" %]
+[% WRAPPER image75 file="fes2-pathsimported.png" %]
 Paths associated with a data set
 [% END %]
 [% END %]
@@ -96,7 +96,7 @@ With the Plotting list poluated as shown below, click on the
 [% INCLUDE font/quote a="R"%] plot button in the Plot window to make
 the plot shown.
 
-[% WRAPPER image75 file="fes2.sspaths.png" %]
+[% WRAPPER image75 file="fes2-sspaths.png" %]
 FeS2 data plotted with the first four single scattering paths
 [% END %]
 
@@ -122,14 +122,14 @@ What about the multiple scattering paths?
 To examine those, first clear the Plotting list by clicking the 
 [% INCLUDE font/quote a="Clear"%] button at the bottom of the Plot
 window.  Transfer the [%fes2%] data back to the Plotting list by
-clicking its transfer button, [% WRAPPER image file="plot.icon.png" %]transfer
+clicking its transfer button, [% WRAPPER image file="plot-icon.png" %]transfer
 button[%END%].  Mark the first three multiple scattering paths by
 clicking their mark buttons.  Select 
 [% INCLUDE font/quote a="Transfer marked"%] from the Actions menu.
 
 With the Plotting list newly populated, make a new plot of [%chir_mag%].
 
-[% WRAPPER image75 file="fes2.mspaths1.png" %]
+[% WRAPPER image75 file="fes2-mspaths1.png" %]
 FeS2 data plotted with the first three multiple scattering paths
 [% END %]
 
@@ -148,7 +148,7 @@ coordination shell, contributes significantly to the peak at 2.93
 To examine the next three multiple scattering paths, clear the
 Plotting l ist, mark those paths, and repopulate the Plotting lilst.
 
-[% WRAPPER image75 file="fes2.mspaths2.png" %]
+[% WRAPPER image75 file="fes2-mspaths2.png" %]
 FeS2 data plotted with the next three multiple scattering paths
 [% END %]
 
@@ -203,7 +203,7 @@ Note that the current settings for k- and R-range result in a bit more
 than 7 independent points, as computed from the Nyquist criterion.
 With only 4 guess parameters, this should be a reasonable fitting model.
 
-[% WRAPPER image75 file="fes2.1stshell.png" %]
+[% WRAPPER image75 file="fes2-1stshell.png" %]
 Setting up for a first shell fit
 [% END %]
 
@@ -229,7 +229,7 @@ screenshot below).
 [% END %]
 [% END %]
 
-[% WRAPPER image75 file="fes2.firstshellfit.png" %]
+[% WRAPPER image75 file="fes2-firstshellfit.png" %]
 Results of the first shell fit
 [% END %]
 

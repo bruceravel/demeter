@@ -32,7 +32,7 @@ metal have been imported from an [% INCLUDE font/file a="atoms.inp" %]
 file.
 [% END %]
 
-[% WRAPPER image file="feff.atoms.png" %]
+[% WRAPPER figure file="feff-atoms.png" %]
 The [%atoms%] and [%feff%] window in [% artemis %].
 [% END %]
 
@@ -169,7 +169,7 @@ recent files dialog populated with recently imported
 [% INCLUDE font/file a="feff.inp" %], and CIF files.
 [% END %]
 
-[% WRAPPER floatleft this="feff.export.png" %]
+[% WRAPPER floatleft this="feff-export.png" %]
 The save button will prompt you for a filename for an output 
 [% INCLUDE font/file a="atoms.inp" %] saving the current state of the
 tab.

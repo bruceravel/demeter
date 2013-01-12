@@ -15,7 +15,7 @@ turns the indicator on or off in subsequent plots.  The buttons at the
 bottom toggle the check buttons for each indicator. 
 [% END %]
 
-[% WRAPPER image file="indicplot.png" %]
+[% WRAPPER figure file="indicplot.png" %]
 Plot with indicator
 [% END %]
 

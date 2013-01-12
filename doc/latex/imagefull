@@ -4,14 +4,15 @@
   # ARGS:
   #     file  : path to image file, including extension
 -%]
-[% USE image "${site.url.images}/${this}" %]
-[% ww = image.width / 80 %]
-\begin{wrapfigure}{R}{[%ww%]cm}
+[% parts = file.split('\.');
+   label = parts.first;
+%]
+[% USE image "${site.url.images}/${file}" %]
+\begin{figure}[htbp]
   \begin{center}
-    \includegraphics*[width=[% ww %]cm]{[% image.name %]}
-    \caption{~}
+    \includegraphics*[width=\linewidth]{[% image.name %]}
+    \caption{[%content%]}
     \label{[% label %]}
   \end{center}
-\end{wrapfigure}
+\end{figure}
 
-[% content %]

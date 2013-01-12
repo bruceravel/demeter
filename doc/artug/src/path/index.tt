@@ -21,7 +21,7 @@ from the File menu in  the Main window, or by using the
 [% INCLUDE font/mono a="Control-o"%] keyboard shortcut.
 [% END %]
 
-[% WRAPPER image file="path.empty.png" %]
+[% WRAPPER figure file="path-empty.png" %]
 The Data window with no paths associated.
 [% END %]
 
@@ -40,7 +40,7 @@ This crystal data is entered in a [%feff%] window and posted to the
 screen.
 [% END %]
 
-[% WRAPPER image file="path.atoms.png" %]
+[% WRAPPER figure file="path-atoms.png" %]
 The [%atoms%] and [%feff%] window containing gold metal crystal data.
 [% END %]
 
@@ -48,16 +48,16 @@ The [%atoms%] and [%feff%] window containing gold metal crystal data.
 Running [%atoms%] then [%feff%] results in this path list:
 [% END %]
 
-[% WRAPPER image file="path.pathlist.png" %]
+[% WRAPPER figure file="path-pathlist.png" %]
 The path list for the gold metal calculation.
 [% END %]
 
 [% FILTER html_para -%]
-By clicking on path #0000 in the list then shift-clicking on
-path #0012, the first 13 paths are selected
+By clicking on path 0000 in the list then shift-clicking on
+path 0012, the first 13 paths are selected
 [% END %]
 
-[% WRAPPER image file="path.selected.png" %]
+[% WRAPPER figure file="path-selected.png" %]
 The first 13 paths have been selected.
 [% END %]
 
@@ -69,7 +69,7 @@ all 13 of those paths in the path list on the Data window containing
 the data on the gold foil.
 [% END %]
 
-[% WRAPPER image file="path.populated.png" %]
+[% WRAPPER figure file="path-populated.png" %]
 The Data window has been populated with the 13 paths from the Feff calculation.
 [% END %]
 

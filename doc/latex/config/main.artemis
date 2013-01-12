@@ -1,0 +1,16 @@
+[% PROCESS config/page
+	 + config/site
+	 + config/url
+	 + config/version.artemis
+         + config/map.artemis
+         + config/macros
+%]
+
+[%
+   athena_link      = '\textsc{artemis}'
+   ifeffit_link	    = '\textsc{ifeffit}'
+   bruce_mail	    = '(bravel |A|T| bnl |D|O|T| gov)'
+   recode           = '``\\texttt{(?\\{ code \\})}\'\''
+   hash             = '\texttt{\char35}'
+   link		    = ' {\color{red}($\longleftarrow$ link here)} '
+-%]

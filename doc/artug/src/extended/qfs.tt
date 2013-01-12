@@ -27,8 +27,7 @@ that is close enough to what would be calculated by [%feff%] were the
 local structure actually known. Does this really work?
 
 
-[% PROCESS section label="Using the quick first shell tool to model
-first shell data" %]
+[% PROCESS section label="Using the quick first shell tool to model first shell data" %]
 
 To demonstrate what QFS does and to explain the constraints on the
 situations in which it can be expected to work, let's[%#'%] take a
@@ -42,8 +41,8 @@ a S atom at the same distance as computed using the quick first shell
 tool. These calculations are plotted as [%chik%], [%chir_mag%], and
 [%chir_re%].
 
-[% INCLUDE triimage files=["qfs.1st_k.png", "qfs.1st_rmag.png",
-"qfs.1st_rre.png"] %]
+[% INCLUDE triimage files=["qfs-1st_k.png", "qfs-1st_rmag.png",
+"qfs-1st_rre.png"] %]
 
 As you can see, these two calculations are identical. You cannot even
 see the blue trace underneath the red trace. It is clear that the QFS
@@ -92,8 +91,7 @@ scattering amplitudes and phase shifts are nearly the same and the
 resulting [%chik%] functions are nearly the same.
 
 
-[% PROCESS section label="(Mis)Using the quick first shell tool beyond
-the first shell" %]
+[% PROCESS section label="(Mis)Using the quick first shell tool beyond the first shell" %]
 
 This is awesome! It would seem that we have a model independent way to
 generate fitting standards for use in [%artemis%]. No more mucking around
@@ -109,8 +107,8 @@ proper [%fes2%] calculation, which is also a S atom and which is at
 distance of 3.445 [%AA%]. As you can see, there are substantial
 differences, particularly at low k, between the two.
 
-[% INCLUDE triimage files=["qfs.2nd_k.png", "qfs.2nd_rmag.png",
-"qfs.2nd_rre.png"] %]
+[% INCLUDE triimage files=["qfs-2nd_k.png", "qfs-2nd_rmag.png",
+"qfs-2nd_rre.png"] %]
 
 So, why does this not work so well? In the proper calculation, the
 size of the S muffin-tin has been determined in large part by the Fe-S
@@ -152,8 +150,8 @@ and worse as the nominal distance of the QFS calculation gets
 larger. Here I show the same comparison, this time for the fifth
 coordination shell in [%fes2%], another S scatterer at 4.438 [%AA%]:
 
-[% INCLUDE triimage files=["qfs.4th_k.png", "qfs.4th_rmag.png",
-"qfs.4th_rre.png"] %]
+[% INCLUDE triimage files=["qfs-4th_k.png", "qfs-4th_rmag.png",
+"qfs-4th_rre.png"] %]
 
 [% PROCESS section label="Executive summary" %]
 
@@ -244,19 +242,19 @@ I ran [%atoms%], then [%feff%]. I then
 dragged and dropped the nearest neighbor path onto the Data page. At
 this stage, [%artemis%] looks like this:
 
-[% WRAPPER image75 file="qfs.start_qfs.png" %]
+[% WRAPPER image75 file="qfs-start_qfs.png" %]
 Getting started with the comparison
 [% END %]
 
 I begin a QFS calculation by selecting that option from the menu on the Data page:
 
-[% WRAPPER image file="qfs.path.png" %]
+[% WRAPPER figure file="qfs-path.png" %]
 Go compute the QFS path
 [% END %]
 
 The nearest neighbor path in [%fes2%] is a S atom at 2.257 [%AA%].
 
-[% WRAPPER image file="qfs.make_qfs.png" %]
+[% WRAPPER figure file="qfs-make_qfs.png" %]
 Set the QFS parameters
 [% END %]
 
@@ -268,7 +266,7 @@ now ready to compare these two calculations.  To examine another
 single scattering path, I drag and drop that path from the [%feff%] page
 to the Data page and redo the QFS calculation at that distance.
 
-[% WRAPPER image75 file="qfs.compare.png" %]
+[% WRAPPER image75 file="qfs-compare.png" %]
 Ready to plot the comparison
 [% END %]
 

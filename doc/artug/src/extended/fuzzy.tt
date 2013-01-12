@@ -2,9 +2,22 @@
 
 [% PROCESS section label="How the path finder works" %]
 
-[% WRAPPER floatright this="pathfinder.png" %]
-
+[% FILTER html_para %]
 Given a list of atomic coordinates for a cluster of atoms:
+[% END %]
+
+[% WRAPPER floatright this="pathfinder.png" %]
+A heap is a tree-shaped data structure. Each node is guaranteed to
+represent a shorter path length than all nodes below it. The top node
+is, thus, guaranteed to be the shortest path.  See
+[% INCLUDE citation
+author = "S.I. Zabinsky, et al."
+journal = "Phys. Rev."
+volume = "B66:22"
+pages = "2995-3009"
+year = 1995
+doi = "10.1103/PhysRevB.52.2995"
+%] for more details.
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
@@ -37,22 +50,9 @@ Use up all atoms in the cluster and up to some order of
 scattering ([%feff%]'s[%#'%] default is 7 legs).
 [% END %]
 [% END %]
+[% END %]
 
-[% WRAPPER floatleft this="heap.png" title='diagram of the heap data structure' %][% END %]
-
-A heap is a tree-shaped data structure. Each node is guaranteed to
-represent a shorter path length than all nodes below it. The top node
-is, thus, guaranteed to be the shortest path.  See
-[% INCLUDE citation
-author = "S.I. Zabinsky, et al."
-journal = "Phys. Rev."
-volume = "B66:22"
-pages = "2995-3009"
-year = 1995
-doi = "10.1103/PhysRevB.52.2995"
-%] for more details.
-
-
+[% WRAPPER floatleft this="heap.png" title='diagram of the heap data structure' %]
 Construct the path list by repeatedly pulling the top path from the
 heap until the heap is empty.  When the top node is removed, the
 remaining nodes rearrange themselves such that heap retains the
@@ -123,7 +123,7 @@ cyanide bridged structures like prussian blue are two examples.)
 [% WRAPPER html/todo %]
 [%artemis%]'[%#'%] path finder does not currently handle polarization
 and ellipticity.  So that's[%#'%] another advantage at the moment for 
-[%feff%]'s[%#'%] path finder.[%br%][%br%]As for the speed issue, I
+[%feff%]'s[%#'%] path finder.[%br%][%br%] As for the speed issue, I
 have some ideas for improving [%artemis%]'[%#'%] performance.  While
 it will never be as fast as [%feff%], I should be able to close the
 gap somewhat.

@@ -1,0 +1,8 @@
+%%\hypertarget{[% label %]}{~}
+\begin{figure}[htbp]
+  \includegraphics*[width=0.32\linewidth]{../images/[% files.shift %]} 
+  \includegraphics*[width=0.32\linewidth]{../images/[% files.shift %]} 
+  \includegraphics*[width=0.32\linewidth]{../images/[% files.shift %]} 
+  \caption{[%- label | indent(14) | trim -%]}
+  %%\label{[% label %]}
+\end{figure}

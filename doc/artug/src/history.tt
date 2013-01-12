@@ -10,7 +10,7 @@ part of the fitting project.  When a project file is written, this
 history is stored in the project file.  This allows you to compare
 fits or even to revert [%artemis%] to an earlier fit.
 
-[% WRAPPER image file="history.log.png" %]
+[% WRAPPER figure file="history-log.png" %]
 Fit history window
 [% END %]
 
@@ -38,7 +38,7 @@ For a large project file, this greatly speeds up import at the small
 cost of a pause when examining log files.
 [% END %]
 
-[% WRAPPER floatright this="history.menu.png" %]
+[% WRAPPER floatright this="history-menu.png" %]
 Each fit in the list will display a context menu when right clicked.
 Again, there may be a short pause before the menu gets posted.  In
 that menu are a variety of functions related to the fit history.
@@ -77,7 +77,7 @@ and as a plot.  Similar plots can be made for individual parameter
 values.
 [% END %]
 
-[% WRAPPER quadplot files=["history.report.png", "history.reportplot.png"] %]
+[% WRAPPER quadplot files=["history-report.png", "history-reportplot.png"] %]
 [% END %]
 
 [% FILTER html_para -%]
@@ -118,7 +118,7 @@ fit to Co metal, thus each fit has a single button associated with
 it. 
 [% END %]
 
-[% WRAPPER image file="history.plottool.png" %]
+[% WRAPPER figure file="history-plottool.png" %]
 Fit history plotting tool
 [% END %]
 
@@ -136,6 +136,6 @@ default.  Fit items in the plotting list will
 the stacking option is in play.
 [% END %]
 
-[% WRAPPER image file="history.plotlist.png" %]
+[% WRAPPER figure file="history-plotlist.png" %]
 Historical fits placed in the plotting list
 [% END %]

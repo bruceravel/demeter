@@ -31,7 +31,7 @@ In a multiple data set fit, you may choose to model the [%sigsqr%] of
 the first shell Zn-O bond using an Einstein model.  This allows you to
 parameterize the [%sigsqr%] at each temperature as a function of a
 single variable parameter, the Einstein temperature. To do this, you
-must define a [%INCLUDE font/color color="a300a3" text="guess"%]
+must define a [%guess%]
 parameter to represent the Einstein temperature like so:
 [% END %]
 [% WRAPPER html/pre %]
@@ -109,12 +109,12 @@ sort of editing is often error-prone.
 Here is a third way of solving this problem.  
 [% END %]
 [% WRAPPER html/list type="ol" %]
-[% WRAPPER html/list type="li" %]
+[% WRAPPER html/li %]
 Set the CV for the three data sets to the temperature at which the
 data were measured.  In our example, the three data sets would get CV
 values of 10, 300, and 500.
 [% END %]
-[% WRAPPER html/list type="li" %]
+[% WRAPPER html/li %]
 Next, edit the [%sigsqr%] path parameter for one of the data sets to
 read
 [% WRAPPER html/pre %]
@@ -123,7 +123,7 @@ path for data set 1 {
 }
 [% END %]
 [% END %]
-[% WRAPPER html/list type="li" %]
+[% WRAPPER html/li %]
 Finally, push this [%sigsqr%] value on the other data sets without
 editing those to which it is pushed.
 [% END %]
@@ -148,8 +148,7 @@ CV in those math expressions saves even more error-prone, manual editing!
 [% PROCESS section label="Use in lguess parameters" %]
 
 [% FILTER html_para -%]
-The second use of the CV is along with [%INCLUDE font/color
-color="3E1C8F" text="lguess"%] parameters.  These parameters are an
+The second use of the CV is along with [%lguess%] parameters.  These parameters are an
 eficient way of generating per-data-set guess parameters in a multiple
 data set fit while still making good use of the automation in
 [%artemis%] for pushing path parameter math expressions between data

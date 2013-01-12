@@ -8,7 +8,7 @@ cluster, is written to the [%feff%] tab.  The [%feff%] tab is then
 displayed. 
 [% END %]
 
-[% WRAPPER image file="feff.feff.png" %]
+[% WRAPPER figure file="feff-feff.png" %]
 The [%feff%] tab.
 [% END %]
 
@@ -40,6 +40,6 @@ other source and fill in the indicated blanks and the [% INCLUDE
 font/mono a="POTENTIALS" %] list as appropriate for your calculation.
 [% END %]
 
-[% WRAPPER image file="feff.template.png" %]
+[% WRAPPER figure file="feff-template.png" %]
 A [%feff%] template.
 [% END %]

@@ -31,7 +31,7 @@ An entry is placed in the Data list on the main window.
 Here is the Plot window as it initially appears:
 [% END %]
 
-[% WRAPPER image file="datawindow.png" %]
+[% WRAPPER figure file="datawindow.png" %]
 The Artemis data window, immediately after data import.
 [% END %]
 
@@ -120,7 +120,7 @@ import options will be explained elsewhere in this document.
 After one or more paths have been associated with this data set, the
 Data window looks something like this.  
 
-[% WRAPPER image file="datawindow_withpaths.png" %]
+[% WRAPPER figure file="datawindow_withpaths.png" %]
 The Artemis data window, with imported paths.
 [% END %]
 
@@ -158,7 +158,7 @@ metal out to the fourth coordination shell.
 [% END %]
 
 [% PROCESS paragraph label="The k123 plot" %]
-[% WRAPPER image file="plot_k123.png" %]
+[% WRAPPER figure file="plot_k123.png" %]
 k123 plot
 [% END %]
 [% FILTER html_para -%]
@@ -172,7 +172,7 @@ transform window function is drawn over the k-weight of 1 spectrum.
 
 
 [% PROCESS paragraph label="The R123 plot" %]
-[% WRAPPER image file="plot_r123.png" %]
+[% WRAPPER figure file="plot_r123.png" %]
 R123 plot
 [% END %]
 [% FILTER html_para -%]
@@ -192,7 +192,7 @@ this plot is made.
 
 
 [% PROCESS paragraph label="The Rmr plot" %]
-[% WRAPPER image file="plot_rmr.png" %]
+[% WRAPPER figure file="plot_rmr.png" %]
 Rmr plot
 [% END %]
 [% FILTER html_para -%]
@@ -206,7 +206,7 @@ spectrum to indicate the range over which the fit was evaluated
 
 
 [% PROCESS paragraph label="The Rk plot" %]
-[% WRAPPER image file="plot_rk.png" %]
+[% WRAPPER figure file="plot_rk.png" %]
 Rk plot
 [% END %]
 [% FILTER html_para -%]
@@ -226,7 +226,7 @@ on equal footing.
 
 
 [% PROCESS paragraph label="The kq plot" %]
-[% WRAPPER image file="plot_kq.png" %]
+[% WRAPPER figure file="plot_kq.png" %]
 kq plot
 [% END %]
 [% FILTER html_para -%]
@@ -244,7 +244,7 @@ spectra.
 
 [% PROCESS subsection label="The Data menu" %]
 
-[% WRAPPER floatright this="data.datamenu.png" title="Data menu" %]
+[% WRAPPER floatright this="data-datamenu.png" title="Data menu" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Rename" %]
 Change the name of this data set.  This is the name displayed next to
@@ -332,7 +332,7 @@ window status bar.
 
 [% PROCESS subsection label="The Path menu" %]
 
-[% WRAPPER floatright this="data.pathmenu.png" title="Path menu" %]
+[% WRAPPER floatright this="data-pathmenu.png" title="Path menu" %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Transfer" %]
 Transfer the displayed path to the plotting list in the 
@@ -393,7 +393,7 @@ the path list.
 
 [% PROCESS subsection label="The Marks menu" %]
 
-[% WRAPPER floatright this="data.marksmenu.png" title="Marks menu" %]
+[% WRAPPER floatright this="data-marksmenu.png" title="Marks menu" %]
 Much of [%artemis%]'[%#'%] functionality revolves around groups of
 marked paths.  This menu contains a number of shortcuts for marking
 paths.  Note that each of these has a keyboard shortcut
@@ -439,7 +439,7 @@ Mark by path ranking
 
 [% PROCESS subsection label="The Actions menu" %]
 
-[% WRAPPER floatright this="data.actionsmenu.png" title="Actions menu" %]
+[% WRAPPER floatright this="data-actionsmenu.png" title="Actions menu" %]
 Every item in this menu operates on the set of marked paths.  Again,
 keyboard shortcuts are given in the menu.
 
@@ -461,7 +461,7 @@ of things transferred
 
 [% PROCESS subsection label="The Debug menu" %]
 
-[% WRAPPER floatright this="data.debugmenu.png" title="Debug menu" %]
+[% WRAPPER floatright this="data-debugmenu.png" title="Debug menu" %]
 This menu displays various dialog boxes showing aspects of the current
 state if [%ifeffit%] or [%artemis%].  These are mostly used for
 debugging purposes.  This menu is only displayed if the 
@@ -471,7 +471,7 @@ configuration parameter is set to a true value.
 
 [% PROCESS subsection label="The Help menu" %]
 
-[% WRAPPER floatright this="data.helpmenu.png" %]
+[% WRAPPER floatright this="data-helpmenu.png" %]
 This menu is used to display the sections on the Data window or the
 Path page from the document.
 [% END %]

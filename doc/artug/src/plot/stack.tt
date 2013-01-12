@@ -31,7 +31,7 @@ careful consideration for an attractive plot.
 [% PROCESS section label="Stacked plot" %]
 
 [% FILTER html_para -%]
-[% WRAPPER image file="plot.stack.png" %]
+[% WRAPPER figure file="plot-stack.png" %]
 A stacked plot
 [% END %]
 
@@ -46,7 +46,7 @@ compute a sensible value  [%ndash%] that is up to you.
 [% PROCESS section label="Inverted plot" %]
 
 [% FILTER html_para -%]
-[% WRAPPER image file="plot.invert.png" %]
+[% WRAPPER figure file="plot-invert.png" %]
 Plotting with inversion
 [% END %]
 
@@ -58,7 +58,7 @@ evaluated in the fit are pointing downward.
 [% PROCESS section label="Data stacke plot" %]
 
 [% FILTER html_para -%]
-[% WRAPPER image file="plot.datastack.png" %]
+[% WRAPPER figure file="plot-datastack.png" %]
 A data stack plot
 [% END %]
 

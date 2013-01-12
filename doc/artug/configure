@@ -13,7 +13,7 @@ id=`pwd`
 if [ ! $1 ]; then echo "Configuring the Artemis User's Guide build system for your machine"; fi
 
 if [ ! $1 ]; then echo "  configuring bin directory"; fi
-files="build" # tex texbw pod mobile"
+files="build tex" # texbw pod mobile"
 for b in $files; do
     rm -f bin/$b
     tpage --define installdir=$id bin/$b.tt > bin/$b
@@ -21,7 +21,7 @@ for b in $files; do
 done
 
 if [ ! $1 ]; then echo "  configuring etc directory"; fi
-files="ttree" # ttree_tex ttree_texbw ttree_pod ttree_mobile"
+files="ttree ttree_tex" # ttree_texbw ttree_pod ttree_mobile"
 for b in $files; do
     rm -f etc/$b
     tpage --define installdir=$id etc/$b.tt > etc/$b.cfg
@@ -30,6 +30,8 @@ done
 if [ ! $1 ]; then echo "  copying map and version templates"; fi
 cp etc/map     ../lib/config/map.artemis
 cp etc/version ../lib/config/version.artemis
+cp etc/map     ../latex/config/map.artemis
+cp etc/version ../latex/config/version.artemis
 #cp etc/map etc/version templates/latex/config/
 #cp etc/map etc/version templates/pod/config/
 #cp etc/map etc/version templates/mobile/config/

@@ -8,6 +8,6 @@ problem is one that is recognized by [%artemis%], you will a helpful
 diagnostic suggestion.
 [% END %]
 
-[% WRAPPER image file="feff.console.png" %]
+[% WRAPPER figure file="feff-console.png" %]
 The Console tab.
 [% END %]

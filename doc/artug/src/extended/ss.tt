@@ -193,10 +193,10 @@ parameters of the SS [%sigsqr%] values.
 [% END %]
 
 The Abs[%arrow%]Fe[%arrow%]S[%arrow%]Abs path in [%fes2%] was really
-quite large.  Going for choice #1 and leaving it out of the fit is
+quite large.  Going for choice number 1 and leaving it out of the fit is
 clearly a poor choice.
 
-#2 is, in principle, the best choice.  As an independently floated
+Number 2 is, in principle, the best choice.  As an independently floated
 parameter, it's[%#'%] [%sigsqr%] will account for the mean square
 vriation in path length [% INCLUDE font/b a="and" %] the effect of
 variation in t he scattering angle.  Unfortunately, this parameter is
@@ -206,7 +206,7 @@ proper value.  And if the fit includes several triangle paths, each of
 which has a [%sigsqr%] parameter of similarly weak robustness, the
 problem becomes amplified.
 
-In almost all cases, option #3 is the best choice.  The approximation
+In almost all cases, option number 3 is the best choice.  The approximation
 is not horribly wrong, thus it introduces only a little bit of
 systematic error into the fitting model.  Including the Fourier
 components from the path is better than neglecting the path.  Since a

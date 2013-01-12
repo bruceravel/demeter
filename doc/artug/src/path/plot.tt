@@ -66,7 +66,7 @@ VPaths are discussed in more detail
 the Plot window"%].
 [% END %]
 
-[% WRAPPER quadplot files=["path.au4.png", "path.au4vpath.png"] %]
+[% WRAPPER quadplot files=["path-au4.png", "path-au4vpath.png"] %]
 Here is an example of a VPath.  On the left is data on a gold foil
 plotted as [%chir_re%] with the fourth shell single scattering path and the two
 collinear multiple scattering paths involving the fourth neighbor and

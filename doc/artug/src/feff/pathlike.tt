@@ -18,7 +18,7 @@ item in that menu is for defining
 [% INCLUDE font/quote a="SSPaths" %].
 [% END %]
 
-[% WRAPPER image file="feff.pathlike.png" %]
+[% WRAPPER figure file="feff-pathlike.png" %]
 The Pathlike tab.
 [% END %]
 
@@ -31,7 +31,7 @@ from an atom that exists in that [%feff%] calculation but at a
 distance not represented in the list of cartesian coordinates.
 [% END %]
 
-[% WRAPPER floatleft this="feff.plotss.png" %]
+[% WRAPPER floatleft this="feff-plotss.png" %]
 In the example show, a [%feff%] calculation has been run on
 [%lacoo3%], a trigonal perovskite-like material with 6 oxygen
 scatterers at 1.93 [%AA%], 8 La scatterers at 3.28 [%AA%] or 3.34

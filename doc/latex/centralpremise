@@ -1,0 +1,10 @@
+
+\bigskip
+
+{\color{purple4}
+  \begin{Boxedminipage}[h]{0.9\linewidth}
+     \color{black}\large
+     [%- Content -%]
+   \end{Boxedminipage}
+}
+\hfill\break\break

@@ -11,7 +11,7 @@ all the paths in the fit.  This single scattering path and its related
 multiple scattering paths all contribute spectral weight in the same
 region of R-space.
 
-[% WRAPPER image file="plot.overlapping.png" %]
+[% WRAPPER figure file="plot-overlapping.png" %]
 A plot of overlapping paths
 [% END %]
 
@@ -28,12 +28,12 @@ VPath constructed from the three paths in the previous figure.  While
 this plot hides the individual contributions of the three path, it
 shows how those three affect the fit when added together.
 
-[% WRAPPER image file="plot.vpath.png" %]
+[% WRAPPER figure file="plot-vpath.png" %]
 A plot with the overlapping paths made into a single VPath
 [% END %]
 [% END %]
 
-[% WRAPPER floatright this="plot.makevpath.png" %]
+[% WRAPPER floatright this="plot-makevpath.png" %]
 The VPath is made by marking the contributing paths and choosing
 [% INCLUDE font/quote a="Make VPath" %] from the Actions menu.  You
 will be prompted for a name for the VPath.  This name will be used to
@@ -65,7 +65,7 @@ multiple scattering paths contribute to the fit.
 
 [% FILTER html_para -%]
 
-[% WRAPPER image file="plot.uace_oax.png" %]
+[% WRAPPER figure file="plot-uace_oax.png" %]
 A plot of the axial oxygen paths in uranyl acetate
 [% END %]
 
@@ -73,7 +73,7 @@ In this case, it is nice to combine all these paths into a VPath
 which represents the entire contribution to the EXAFS from the axial
 oxygen atoms.
 
-[% WRAPPER image file="plot.uace_vpath.png" %]
+[% WRAPPER figure file="plot-uace_vpath.png" %]
 A plot with the axial oxygen paths made into a VPath
 [% END %]
 [% END %]

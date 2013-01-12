@@ -16,16 +16,19 @@ can control which paths are used in a fit without having to remove
 them from the path list.  The other check box is used to indicate if
 the current path should be transfered to the plotting list in the
 Plot window at the end of a fit.
+[% END %]
 
 [% WRAPPER html/todo %]
 Implement and explain the two items in the "other path options" pane.
 [% END %]
 
+[% FILTER html_para -%]
 The text box contains a brief description of the geometry of the
 scattering path.  For a path with degeneracy greater than 1, the
 scattering geometry of one of the degenerate paths is shown.  The
 simple explanation of the shape of the path and its heuristic
 importance are also given in the text box.
+[% END %]
 
 [% WRAPPER html/todo %]
 Implement a way to display a text box which shows all the paths
@@ -33,10 +36,17 @@ contributing to the degeneracy + report on fuzziness of the
 degeneracy. 
 [% END %]
 
+[% FILTER html_para -%]
 Beneath the scattering geometry is a table of path parameters labels
 and text boxes.  Math expressions are entered into these text boxes.
+[% END %]
 
-In the following image, a simple fitting model appropriate for a
+[% WRAPPER figure file="path-first.png" %]
+Math expressions have been set for the first shell path.
+[% END %]
+
+[% FILTER html_para -%]
+In the preceding image, a simple fitting model appropriate for a
 cubic, monoatomic material like our gold foil has been entered for the
 first shell path.  This includes simple expressions for [%s02%] and
 [%e0%] consisting of variables that will be floated in the fit.  A [%
@@ -46,13 +56,7 @@ parameter is expressed using [% INCLUDE html/link
 link="../extended/ss.html" text="the correlated Debye model"%].  The
 other path parameter text boxes have been left blank and will not be
 modified in the fit.
-[% END %]
 
-[% WRAPPER image file="path.first.png" %]
-Math expressions have been set for the first shell path.
-[% END %]
-
-[% FILTER html_para -%]
 This, of course, establishes the parameterization only for the first
 path.  The same editing of path parameter math expressions must happen
 for all the other paths used in the fit.
@@ -63,14 +67,16 @@ then type in the math expressions.  That, however, is both tedious and
 error-prone.
 [% END %]
 
-[% WRAPPER floatright this="path.menu.png" %]
+[% WRAPPER floatright this="path-menu.png" %]
 For math expressions that are the same for every path [%ndash%] [%e0%] is a
 common example [%ndash%] [%artemis%] provides some automation tools.  Each of
 the path parameter labels on the Path page is sensitive to either left
 or right click.  Either kind of click posts a menu like the one of the
 right.  The top option is used to erase the contents of the associated
 text both, but only on this path.
+[% END %]
 
+[% FILTER html_para -%]
 The next four options are used to push the math expression for the
 associated path parameter onto other paths.  These four options allow
 some control over the paths that are targeted to receive the pushed
@@ -93,9 +99,8 @@ link="../gds.html" text="on the GDS page"%].
 The Path menu on the Data page offers a way of pushing all the path
 parameters from the displayed path to other paths.  The same options
 for targeting other paths are presented.
-
-[% WRAPPER image file="path.push.png" %]
-Push all path parameters to other paths.
 [% END %]
 
+[% WRAPPER figure file="path-push.png" %]
+Push all path parameters to other paths.
 [% END %]

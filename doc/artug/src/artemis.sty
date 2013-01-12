@@ -1,0 +1,168 @@
+[% META main = 1 %]
+\usepackage{amsmath,amsfonts,amssymb} % mathematics
+
+\usepackage{fancybox}         % shadow and oval boxes
+\usepackage{fancyhdr}         % page headings
+\usepackage{ifthen,calc}      % used to determine page headings
+\usepackage{array}            % needed for predictions page
+\usepackage{dcolumn}
+\usepackage{alltt}
+%\usepackage{colortbl}
+\usepackage{varioref}
+\usepackage{floatflt}
+%\usepackage[vflt]{floatflt}
+\usepackage{keystroke}
+\usepackage{parskip}
+\usepackage{wrapfig}
+
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\pdfoutput=1\relax
+\usepackage[pdftex,colorlinks,breaklinks,backref]{hyperref}
+\hypersetup{backref,
+            bookmarks=true,
+            pdftitle=Artemis User's Guide,
+            pdfauthor=Bruce Ravel,
+            urlcolor=midnightblue,
+            linkcolor=darkorchid
+           }
+\usepackage{graphicx}
+\pdfcompresslevel=9
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% page dimensions
+
+\setlength{\hoffset}{0truecm} \setlength{\voffset}{0truecm}
+\setlength{\topmargin}{0truecm} \setlength{\marginparsep}{0.25truecm}
+\setlength{\marginparwidth}{2.0truecm}
+\setlength{\textheight}{22truecm} \setlength{\textwidth}{16.5truecm}
+%\setlength{\topmargin}{-1truecm}
+\setlength{\oddsidemargin}{0truecm}
+\setlength{\evensidemargin}{0truecm}
+\setlength{\headsep}{0.5truecm}
+%%\setlength{\parindent}{21pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% character decorations
+
+\newcommand{\file}[1]{{\color{darkgreen}`\texttt{#1}'}}
+\newcommand{\program}[1]{{\color{indianred4}\textsc{#1}}}
+\newcommand{\param}[1]{{\color{slategray4}``\texttt{\textsl{#1}}''}}
+\newcommand{\preference}[2]{{\color{darkorange4}\;\S\;\textsl{#1} $\rightarrow$ \textsl{#2}}}
+
+% \newcommand{\CONTROL}[1]{\texttt{\textsl{Control-#1}}}
+% \newcommand{\ALT}[1]{\texttt{\textsl{Alt-#1}}}
+% \newcommand{\SHIFT}[1]{\texttt{\textsl{Shift-#1}}}
+% \newcommand{\RETURN}{\texttt{\textsl{Return}}}
+
+\newcommand{\CONTROL}[1]{\Ctrl-\keystroke{#1}}
+\newcommand{\Control}{\Ctrl}
+\newcommand{\ALT}[1]{\Alt-\keystroke{#1}}
+\newcommand{\SHIFT}[1]{\Shift-\keystroke{#1}}
+\newcommand{\RETURN}[1]{\Return}
+
+\def\angleleft{$\langle$}
+\def\angleright{$\rangle$}
+\font\keyrm=cmr8
+\font\keysy=cmsy9
+\def\key#1{{\keyrm\textfont2=\keysy \leavevmode\hbox{%
+  \raise0.4pt\hbox{\angleleft}\kern-.08em\vtop{%
+    \vbox{\hrule\kern-0.4pt
+     \hbox{\raise0.4pt\hbox{\vphantom{\angleleft}}#1}}%
+    \kern-0.4pt\hrule}%
+  \kern-.06em\raise0.4pt\hbox{\angleright}}}}
+
+\newcommand{\red}[1]{{\color{red4}\key{#1}}}
+\newcommand{\purple}[1]{{\color{darkviolet}\key{#1}}}
+
+% \newcommand{\red}[1]{{\color{red4}\textsf{\textbf{#1}}}}
+% \newcommand{\purple}[1]{{\color{darkviolet}\textsf{\textbf{#1}}}}
+
+% \newcommand{\red}[1]{{\color{red4}\keystroke{#1}}}
+% \newcommand{\purple}[1]{{\color{darkviolet}\keystroke{#1}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% special environments
+
+%%% a tighter linespacing for the enumerate and itemize environments
+\newcounter{tightenum}
+\newenvironment{tightenum}
+{\begin{list}{\arabic{tightenum}. }{\usecounter{tightenum}
+      \setlength{\itemsep}{-0.5ex}}}
+{\end{list}}
+
+\newenvironment{tightitem}
+{\begin{list}{$\bullet$~}{\setlength{\itemsep}{-0.5ex}}}
+{\end{list}}
+
+\newenvironment{Boxedminipage}%
+{\begin{Sbox}\begin{minipage}}%
+    {\end{minipage}\end{Sbox}\shadowbox{\TheSbox}}
+
+\newenvironment{about}%
+{\begin{flushleft}{\Huge``}\small\sf\sl}%
+  {{\Huge''}\end{flushleft}\hfill\break\break}
+
+\newenvironment{caution}%
+{\noindent\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+    \large}%
+  {\end{Boxedminipage}\hfill\break\break}
+% \newenvironment{caution}%
+% {\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\begin{center}\color{black}~\\\large\bf}%
+%   {\end{center}\end{Boxedminipage}\hfill\break\break}
+
+\newenvironment{todo}%
+{\noindent\bigskip\color{green4}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+    \large}%
+  {\end{Boxedminipage}\hfill\break\break}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% defined colors
+
+\definecolor{ARTguess}{HTML}{A300A3}
+\definecolor{ARTdef}{HTML}{008B00}
+\definecolor{ARTset}{HTML}{000000}
+\definecolor{ARTlguess}{HTML}{3E1C8F}
+\definecolor{ARTskip}{HTML}{B2B2B2}
+\definecolor{ARTrestrain}{HTML}{CD9B1D}
+\definecolor{ARTafter}{HTML}{4A708B}
+\definecolor{ARTpenalty}{HTML}{8b5a2b}
+\definecolor{ARTmerge}{HTML}{AA0000}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% title page
+
+\newcommand{\MakeTitlePage}{%
+  \thispagestyle{empty}
+  \noindent\rule{\linewidth}{1ex}
+  \begin{flushleft}
+    \textsf{%
+      {\Huge A}{\huge RTEMIS } {\Huge U}{\huge ser's} {\Huge G}{\huge uide }}%
+  \end{flushleft}
+  \vspace{2ex}
+  \begin{flushright}
+    {\Large Bruce Ravel} \\
+    {\large \texttt{bravel\char64bnl.gov} \\
+      \href{http://bruceravel.github.com/demeter/}{\texttt{http://bruceravel.github.com/demeter/}} }
+  \end{flushright}
+  \noindent\rule{\linewidth}{1ex}
+  \vspace*{\stretch{1}}
+  \begin{center}
+    \includegraphics*[width=\linewidth]{[% site.url.images %]/Artemis.jpg}
+  \end{center}
+  \vspace*{\stretch{2}}
+  \begin{flushright}
+    {\Large \textsf{Document version [% document_version %]\\[1ex]
+        for [% artemis %] version [% demeter_version %]\\[1ex]
+        \today}}
+  \end{flushright}
+  \newpage
+  \thispagestyle{empty}
+  }

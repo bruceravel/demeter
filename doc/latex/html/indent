@@ -1,0 +1,5 @@
+\begin{flushright}
+  \begin{minipage}[H]{0.8\linewidth}
+    [%- content -%]
+  \end{minipage}
+\end{flushright}

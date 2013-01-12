@@ -1,0 +1,4 @@
+[%
+  background = bg ? bg : 'white';
+-%]
+\textcolor[HTML]{[%color | upper%]}{[%text%]}

@@ -150,7 +150,7 @@ oxygens.
 
 [% PROCESS section label="Each site gets a unique potential" %]
 
-[% WRAPPER floatright this="feff.siteserror.png" %]
+[% WRAPPER floatright this="feff-siteserror.png" %]
 The final option for potential assignement is the 
 [% INCLUDE font/quote a="sites" %] style.  In this style, each
 crystallographic position gets its own potential index.
@@ -200,7 +200,7 @@ TITLE Templeton et al.
             ... (more atoms follow)
 [% END %]
 
-[% WRAPPER floatright this="feff.siteserror2.png" %]
+[% WRAPPER floatright this="feff-siteserror2.png" %]
 If you attempt to run [%feff%] with this input data, [%artemis%] will
 complain with the rather repetitious error message shown to the
 right and not run [%feff%].  You have to fix the [%feff%] input data

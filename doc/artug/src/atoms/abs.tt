@@ -64,13 +64,12 @@ analysis of the XAFS.
 absorption for the central atom. [%atoms%] then regresses a quadratic
 polynomial in energy to the natural logarithm of the constructed
 central atom absorption. Because energy and photo-electron wave number
-are simply related, E is proportional to [%k2%], the coefficients of this
-regression can be related to the XAFS Debye-Waller factor and fourth
-cumulant. The coefficient of the term linear in energy equals
-[%INCLUDE font/mono a='2*sigma_MM^2'%] and the coefficient of the
-quadratic term equals [%INCLUDE font/mono a='4/3 * sigma_MM^4'%]. The
-values of [%INCLUDE font/mono a='sigma_MM^2'%] and [%INCLUDE font/mono
-a='sigma_MM^2'%] are written at the top of the output file.
+are simply related, E is proportional to [%k2%], the coefficients of
+this regression can be related to the XAFS Debye-Waller factor and
+fourth cumulant. The coefficient of the term linear in energy equals
+[%sigmm2%] and the coefficient of the quadratic term equals [%INCLUDE
+font/mono a='4/3 * '%][%sigmm4%]. The values of [%sigmm2%] and
+[%sigmm4%] are written at the top of the output file.
 [% END %]
 
 
@@ -92,8 +91,8 @@ in [%INCLUDE font/file a='atoms.inp'%] to determine the content of the
 [%i0%] chamber by pressure. It assumes that the remainder of the
 chamber is filled with helium. It then uses McMaster's[%#'%] data to
 construct the energy response of the chamber and regresses a
-polynomial to it in the manner described above. [%INCLUDE font/mono
-a='sigma_I0^2'%] and [%INCLUDE font/mono a='sigma_I0^4'%] are also
+polynomial to it in the manner described above. [%sigi02%] and 
+[%sigio4%] are also
 written at the top of the output file and intended as additive
 corrections in the analysis.
 [% END %]
@@ -120,8 +119,7 @@ non-resonant atoms in the material and [%mufluo%] is the total
 absorption of the material at the fluorescent energy of the absorbing
 atom.  [%atoms%] constructs this function using the McMaster tables
 then regresses a polynomial to it in the manner described above.
-[%INCLUDE font/mono a='sigma_self^2'%] and [%INCLUDE font/mono
-a='sigma_self^4'%] are written at the top of the output file and
+[%sigself2%] and [%sigself4%] are written at the top of the output file and
 intended as additive corrections in the analysis. Because the size of
 the edge step is affected by self-absorption, the amplitude of
 [%chik%] is attenuated when normalized to the edge step. Since the

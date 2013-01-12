@@ -46,16 +46,14 @@ than the Hermann-Maguin in that the complete symmetry characteristics
 of the crystal are not encoded in the space group
 designation. Adaptations to the keyboard have been made here as well.
 Subscripts are denoted with an underscore ([% INCLUDE font/mono
-a="_"%]) and superscripts are denoted with a caret ([% INCLUDE
-font/mono a="^" %]).  Spaces are not allowed in the keyboard
-designation. A couple of examples: [% INCLUDE font/mono a="d_4^8"%],
-and [% INCLUDE font/mono a="O_5"%]. The underscore does not need to
-precede to superscript.  [% INCLUDE font/mono a="C_2^V9"%] can also be
-written [% INCLUDE font/mono a="C^V9_2"%].  Each of the 230 space
-groups as designated by the Schoenflies notation is listed below in
-the same order as the listing of the Hermann-Maguin notation.  The two
-conventions are equally supported in the code.
-[% END %]
+a="_"%]) and superscripts are denoted with a caret ([%caret%].  Spaces
+are not allowed in the keyboard designation. A couple of examples:
+[%d48%], and [% INCLUDE font/mono a="O_5"%]. The underscore does not
+need to precede to superscript.  [%c2v9%] can also be written
+[%cv92%].  Each of the 230 space groups as designated by the
+Schoenflies notation is listed below in the same order as the listing
+of the Hermann-Maguin notation.  The two conventions are equally
+supported in the code.  [% END %]
 
 [% PROCESS section label="Unique Crystallographic Positions" %]
 
@@ -91,7 +89,7 @@ well. The McMaster correction is unaffected.
 For some common crystal types it is convenient to have a shorthand way
 of designating the space group. For instance, one might remember that
 copper is an fcc crystal, but not that it is in space group [% INCLUDE
-font/mono a="F M 3 M"%] (or [% INCLUDE font/mono a="O_H^5"%]). In this
+font/mono a="F M 3 M"%] (or [%oh5%]). In this
 spirit, [%atoms%] will recognize the following words for common
 crystal types. These words may be used as the value of the keyword
 space and [%atoms%] will supply the correct space group. Note that

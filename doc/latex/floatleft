@@ -6,12 +6,14 @@
 -%]
 [% USE image "${site.url.images}/${this}" %]
 [% ww = image.width / 80 %]
-[% content %]
-\begin{floatingfigure}{3.5cm}
+\begin{wrapfigure}{L}{[%ww%]cm}
   \begin{center}
     \includegraphics*[width=[% ww %]cm]{[% image.name %]}
+    \caption{~}
     \label{[% label %]}
   \end{center}
-\end{floatingfigure}
+\end{wrapfigure}
+
+[% content %]
 
 

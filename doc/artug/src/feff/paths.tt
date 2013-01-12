@@ -6,7 +6,7 @@ the [%feff%] tab, the [%feff%] calculation is run.  Once finished, a
 succinct summary of the calculation is displayed on the Paths tab.
 [% END %]
 
-[% WRAPPER image file="feff.paths.png" %]
+[% WRAPPER figure file="feff-paths.png" %]
 The Paths tab.
 [% END %]
 
@@ -49,7 +49,7 @@ Currently, there is only one scheme for assigning path ranks.  The
 curved-wave importance factors from [%feff6%] are used.  These are
 rather unreliable as they are computed using a very crude algorithm.
 Future versions of [%artemis%] will offer several path ranking schemes
-to improve upon [%feff%]'s[$#'%] simple algorithm.
+to improve upon [%feff%]'s[%#'%] simple algorithm.
 
 The fifth column gives the number of legs in each path.  The final
 column is a simple explanation of the shape of the scattering
@@ -72,7 +72,7 @@ or used in some other context in a [%demeter%] script.  The remaining
 buttons are related to making plots of the selected paths.
 [% END %]
 
-[% WRAPPER floatleft this="feff.plot.png" %]
+[% WRAPPER floatleft this="feff-plot.png" %]
 A plot of paths from the raw [%feff%] calculation.  In this example, the
 first three single scattering paths from the sodium uranyl triacetate
 calculation were selected along with a low-rank multiple scattering
@@ -96,10 +96,10 @@ window is used to make the plot of paths.
 
 Right clicking on an entry in the paths list will open a dialog window
 with more details about the geomtery of the scattering path.  In the
-following figure, the selected path (#0006) was right-clicked on,
+following figure, the selected path (0006) was right-clicked on,
 opening the dialog depicted below.
 [% END %]
 
-[% WRAPPER image file="feff.pathsinfo.png" %]
+[% WRAPPER figure file="feff-pathsinfo.png" %]
 Information about the geometry of a scattering path.
 [% END %]
