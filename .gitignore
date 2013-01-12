@@ -74,3 +74,6 @@ examples/recipes/VPath_SSPath/UAce/
 
 lib/Demeter/UI/Artemis/share/artug/html
 lib/Demeter/UI/Artemis/share/artug/images
+
+lib/Demeter/UI/Athena/share/aug/html
+lib/Demeter/UI/Athena/share/aug/images

@@ -60,6 +60,7 @@ sub new {
   EVT_TEXT_ENTER($this, $this->{xmin}, sub{plot(@_)});
   EVT_TEXT_ENTER($this, $this->{xmax}, sub{plot(@_)});
 
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: LCF');
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
   my $main   = $this->main_page($this->{notebook});
@@ -72,9 +73,8 @@ sub new {
   $this->{notebook} ->AddPage($marked, 'Sequence',      0);
 
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
-  $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("lcf")});
+  #$box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("analysis.lcf")});
   EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, 'xmin')});
   EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, 'xmax')});
   $this->{xmin_pluck}->Enable(0);
@@ -190,6 +190,10 @@ sub main_page {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
+  $actionsboxsizer->Add(1,1,1);
+  $this->{document} -> Reparent($panel);
+  $actionsboxsizer->Add($this->{document}, 0, wxGROW|wxALL, 0);
+
   EVT_BUTTON($this, $this->{fit},       sub{fit(@_, 0)});
   EVT_BUTTON($this, $this->{plot},      sub{plot(@_)});
   EVT_BUTTON($this, $this->{report},    sub{save(@_)});

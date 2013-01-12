@@ -209,3 +209,9 @@ offvalue=0
 default=true
 description
   Replot the current data in after plucking a value from a plot.
+
+variable=doc_url
+type=string
+default=http://bruceravel.github.com/demeter/aug/
+description
+  The URL of the Athena document.

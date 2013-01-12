@@ -13,3 +13,7 @@ E, k, R, or q.  There is, however, a lot more to [% athena %] at the
 level of its user interface.  Part of making the leap from beginner to
 expert is learning about the various user interface features.
 [% END %]
+
+[% WRAPPER html/todo %]
+Need chapter on contents of Monitor menu
+[% END %]

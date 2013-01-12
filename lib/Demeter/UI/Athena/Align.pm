@@ -115,7 +115,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: alignment');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("align")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.align")});
 
   $this->SetSizerAndFit($box);
   return $this;

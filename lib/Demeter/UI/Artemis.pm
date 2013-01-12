@@ -1320,21 +1320,27 @@ sub export {
 sub document {
   my ($app, $doc, $target) = @_;
   my $file;
+  my $url = Demeter->co->default('artemis', 'doc_url');
   my @path = ('Demeter', 'UI', 'Artemis', 'share', 'artug', 'html');
   if (any {$doc eq $_} (qw(plot fit path feff))) {
     push @path, $doc;
     $file = 'index';
+    $url .= $doc . '/index.html';
   } else {
     $file = $doc;
+    $url .= $doc . '.html';
   };
   my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
-  if (not -e $fname) {
-    $::app->{main}->status("Document target not found: $fname");
-    return;
+  if (-e $fname) {
+    $fname .= '#'.$target if $target;
+    $::app->{main}->status("Displaying document page: $fname");
+    Wx::LaunchDefaultBrowser($fname);
+  } else {
+    $url .= '#'.$target if $target;
+    #$::app->{main}->status("Document target not found: $fname");
+    $::app->{main}->status("Displaying document page: $url");
+    Wx::LaunchDefaultBrowser($url);
   };
-  $fname .= '#'.$target if $target;
-  $::app->{main}->status("Displaying document page: $fname");
-  Wx::LaunchDefaultBrowser($fname);
 };
 
 

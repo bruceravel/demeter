@@ -185,7 +185,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: principle components analysis');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("pca")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("analysis.pca")});
 
   $this->SetSizerAndFit($box);
   return $this;

@@ -62,7 +62,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: convolution and noise');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("convolute")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.conv")});
 
   $this->{processed} = q{};
 

@@ -93,7 +93,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: self absorption');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("selfabs")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.sa")});
 
   $this->SetSizerAndFit($box);
   return $this;

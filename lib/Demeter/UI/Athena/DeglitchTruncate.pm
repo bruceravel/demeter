@@ -131,7 +131,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: deglitching and truncating');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("deglitch")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.deg")});
 
   $this->SetSizerAndFit($box);
   return $this;

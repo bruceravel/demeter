@@ -195,7 +195,7 @@ alternative importance calculation.  This gives the user much more
 information about the list of paths from a Feff calculation and
 hopefully provides much better guidance for creating fitting models.
 
-=head TESTS
+=head1 TESTS
 
 =over 4
 
@@ -218,7 +218,7 @@ Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.
 The value of C<areaW> normalized over a list by the C<normalize>
 method.  The largest ranking in the list will be 100.
 
-=time C<heightW>
+=item C<heightW>
 
 Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
 perform a Fourier transform on the path using k-weight of W=(1,2,3).
@@ -229,7 +229,7 @@ Return the maximum value of the magnitude of chi(R).
 The value of C<heightW> normalized over a list by the C<normalize>
 method.  The largest ranking in the list will be 100.
 
-=time C<peakposW>
+=item C<peakposW>
 
 Return the position of the maximum value from the C<heightW> test.
 

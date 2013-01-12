@@ -130,7 +130,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: difference spectra');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("diff")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("analysis.diff")});
 
   $this->SetSizerAndFit($box);
   return $this;

@@ -142,3 +142,9 @@ description
   The default window type to use in Artemis.  The "user" value tells
   artemis to show controls allowing the user to set the window
   function seperately in k- and R-space.
+
+variable=doc_url
+type=string
+default=http://bruceravel.github.com/demeter/artug/
+description
+  The URL of the Artemis document.

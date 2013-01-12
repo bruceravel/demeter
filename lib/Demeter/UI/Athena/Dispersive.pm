@@ -99,7 +99,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: Dispersive XAS');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("dispersive")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.pixel")});
 
   $this->SetSizerAndFit($box);
   return $this;

@@ -54,7 +54,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: plugin registry');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("registry")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.plugin")});
 
   $this->SetSizerAndFit($box);
   return $this;

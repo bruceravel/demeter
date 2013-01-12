@@ -73,7 +73,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: Summer');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("summer")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.sum")});
 
   $this->SetSizerAndFit($box);
   return $this;

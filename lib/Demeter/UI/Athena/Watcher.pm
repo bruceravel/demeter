@@ -165,7 +165,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: Data watcher');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("watcher")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.watcher")});
 
   $this->SetSizerAndFit($box);
   return $this;

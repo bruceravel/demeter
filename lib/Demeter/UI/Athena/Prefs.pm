@@ -32,7 +32,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: preferences');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("preferences")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.prefs")});
 
   $this->SetSizerAndFit($box);
   return $this;

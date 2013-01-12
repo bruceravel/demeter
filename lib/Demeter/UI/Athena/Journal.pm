@@ -25,7 +25,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("journal")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.journal")});
 
   $this->SetSizerAndFit($box);
   return $this;

@@ -362,6 +362,7 @@ const my $UNFREEZE_MARKED	=> Wx::NewId();
 const my $FREEZE_REGEX		=> Wx::NewId();
 const my $UNFREEZE_REGEX	=> Wx::NewId();
 const my $FREEZE_TOGGLE_ALL	=> Wx::NewId();
+const my $FREEZE_DOC	        => Wx::NewId();
 
 const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
@@ -383,6 +384,7 @@ const my $PLOT_PNG		=> Wx::NewId();
 const my $PLOT_GIF		=> Wx::NewId();
 const my $PLOT_JPG		=> Wx::NewId();
 const my $PLOT_PDF		=> Wx::NewId();
+const my $PLOT_DOC		=> Wx::NewId();
 
 const my $SHOW_BUFFER		=> Wx::NewId();
 const my $PLOT_YAML		=> Wx::NewId();
@@ -407,6 +409,7 @@ const my $MARK_INVERT		=> Wx::NewId();
 const my $MARK_TOGGLE		=> Wx::NewId();
 const my $MARK_REGEXP		=> Wx::NewId();
 const my $UNMARK_REGEXP		=> Wx::NewId();
+const my $MARK_DOC		=> Wx::NewId();
 
 const my $MERGE_MUE		=> Wx::NewId();
 const my $MERGE_NORM		=> Wx::NewId();
@@ -414,6 +417,7 @@ const my $MERGE_CHI		=> Wx::NewId();
 const my $MERGE_IMP		=> Wx::NewId();
 const my $MERGE_NOISE		=> Wx::NewId();
 const my $MERGE_STEP		=> Wx::NewId();
+const my $MERGE_DOC		=> Wx::NewId();
 
 const my $DOCUMENT		=> Wx::NewId();
 const my $DEMO			=> Wx::NewId();
@@ -567,6 +571,8 @@ sub menubar {
   $freezemenu->Append($UNFREEZE_MARKED,   "Unfreeze marked groups", "Unfreeze marked groups");
   $freezemenu->Append($FREEZE_REGEX,      "Freeze by regexp", "Freeze by regular expression");
   $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regexp", "Unfreeze by regular expression");
+  $freezemenu->AppendSeparator;
+  $freezemenu->Append($FREEZE_DOC,      "Document section: freezing groups", "Open the document page on freezing groups" );
   $app->{main}->{freezemenu} = $freezemenu;
 
 
@@ -609,6 +615,8 @@ sub menubar {
     $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
     $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
   };
+  $plotmenu->AppendSeparator;
+  $plotmenu->Append($PLOT_DOC,      "Document section: plotting data", "Open the document page on plotting data" );
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
@@ -618,6 +626,8 @@ sub menubar {
   $markmenu->Append($MARK_INVERT,   "Invert marks\tShift+Ctrl+i",        "Invert all mark" );
   $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tShift+Ctrl+r",      "Mark all groups matching a regular expression" );
   $markmenu->Append($UNMARK_REGEXP, "Unmark by regexp\tShift+Ctrl+x",     "Unmark all groups matching a regular expression" );
+  $markmenu->AppendSeparator;
+  $markmenu->Append($MARK_DOC,      "Document section: marking groups", "Open the document page on marking groups" );
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
@@ -631,6 +641,8 @@ sub menubar {
   $mergemenu->Check($MERGE_IMP,   1) if ($demeter->co->default('merge', 'weightby') eq 'importance');
   $mergemenu->Check($MERGE_NOISE, 1) if ($demeter->co->default('merge', 'weightby') eq 'noise');
   $mergemenu->Check($MERGE_STEP,  1) if ($demeter->co->default('merge', 'weightby') eq 'step');
+  $mergemenu->AppendSeparator;
+  $mergemenu->Append($MERGE_DOC,  "Document section: merging data", "Open the document page on merging data" );
 
 
   my $helpmenu   = Wx::Menu->new;
@@ -652,7 +664,7 @@ sub menubar {
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
+  $helpmenu       -> Enable($_,0) foreach ($DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -939,6 +951,10 @@ sub OnMenuClick {
       $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
       last SWITCH;
     };
+    ($id == $MERGE_DOC) and do {
+      $app->document('process.merge');
+      last SWITCH;
+    };
 
     ## -------- monitor menu
     ($id == $SHOW_BUFFER) and do {
@@ -1156,6 +1172,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PLOT_DOC) and do {
+      $app->document('plot');
+      last SWITCH;
+    };
+
     ($id == $TERM_1) and do {
       $demeter->po->terminal_number(1);
       last SWITCH;
@@ -1195,6 +1216,10 @@ sub OnMenuClick {
     };
     ($id == $UNMARK_REGEXP) and do {
       $app->mark('unmark_regexp');
+      last SWITCH;
+    };
+    ($id == $MARK_DOC) and do {
+      $app->document('ui.mark');
       last SWITCH;
     };
 
@@ -1247,11 +1272,21 @@ sub OnMenuClick {
       $app->quench('invert');
       last SWITCH;
     };
+    ($id == $FREEZE_DOC) and do {
+      $app->document('ui.frozen');
+      last SWITCH;
+    };
 
     ($id == wxID_ABOUT) and do {
       $app->on_about;
       return;
     };
+
+    ($id == $DOCUMENT) and do {
+      $app->document('index');
+      return;
+    };
+
 
   };
 };
@@ -1670,7 +1705,7 @@ sub make_page {
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
 
   #next if (not exists $app->{main}->{$which}->{document});
-  $app->{main}->{$view}->{document} -> Enable(0);
+  #$app->{main}->{$view}->{document} -> Enable(0);
 
   #$hh -> Fit($app->{main}->{$view});
   $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
@@ -2290,10 +2325,39 @@ sub show_epsilon {
       -> Show;
 };
 
+
 sub document {
-  my ($app, $which, $target) = @_;
-  $app->{main}->status("show document for $which -- Document interface not yet implemented");
+  my ($app, $doc, $target) = @_;
+  my $file;
+  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my $url = Demeter->co->default('athena', 'doc_url');
+  if (any {$doc eq $_} (qw(analysis bkg examples import other output params plot process ui))) {
+    push @path, $doc;
+    $file = 'index';
+    $url .= $doc . '/index.html';
+  } elsif ($doc =~ m{\.}) {
+    my @parts = split(/\./, $doc);
+    push @path, $parts[0];
+    $file = $parts[1];
+    $url .= $parts[0] . '/' . $parts[1] . ".html";
+  } else {
+    $file = $doc;
+    $url .= $doc . '.html';
+  };
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  if (-e $fname) {
+    $fname  = 'file://'.$fname;
+    $fname .= '#'.$target if $target;
+    $::app->{main}->status("Displaying document page: $fname");
+    Wx::LaunchDefaultBrowser($fname);
+  } else {
+    $url .= '#'.$target if $target;
+    $::app->{main}->status("Displaying document page: $url");
+    Wx::LaunchDefaultBrowser($url);
+    ##$::app->{main}->status("Document target not found: $fname");
+  };
 };
+
 
 =for Explain
 
