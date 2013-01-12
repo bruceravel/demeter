@@ -3,7 +3,7 @@
 
 ### directories
 src  = [% installdir %]/templates/src
-lib  = [% installdir %]/templates/lib
+lib  = [% installdir %]/../lib
 dest = [% installdir %]/html
 
 ### copy images and other binary files
@@ -29,8 +29,8 @@ recurse
 recursion
 
 ### TT options
-pre_process = config/main
-wrapper     = site/wrapper
+pre_process = config/main.dpg
+wrapper     = site/wrapper.dpg
 
 ### local variables
 define rootdir = [% installdir %]

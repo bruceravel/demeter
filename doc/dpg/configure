@@ -28,7 +28,8 @@ for b in $files; do
 done
 
 echo "  copying map and version templates"
-cp etc/map etc/version templates/lib/config/
+cp etc/map     ../lib/config/map.dpg
+cp etc/version ../lib/config/version.dpg
 #cp etc/map etc/version templates/latex/config/
 #cp etc/map etc/version templates/pod/config/
 #cp etc/map etc/version templates/mobile/config/
