@@ -1,2 +1,0 @@
-[% dots  = template.nosubpages ? "../images" : "../../images" %]
-<img src=[%- dots -%]/[%- file -%]>
