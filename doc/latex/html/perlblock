@@ -1,0 +1,13 @@
+[%# Format a block of perl code.  The calls to replace escape opening
+  # and closing curly braces.  Both rely on my own code formatting
+  # habits. -%]
+{\scriptsize
+\begin{alltt}
+[% content
+   | replace("\{(?=\n)", '\{')
+   | replace(' };', ' \};')
+   | replace("\\\{1,2\\\}", '\{1,2\}')
+   | replace("\\\\(?=[dsn])", '\char92')
+%]
+\end{alltt}
+}

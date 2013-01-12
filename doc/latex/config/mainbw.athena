@@ -1,0 +1,16 @@
+[% PROCESS config/page
+	 + config/site
+	 + config/urlbw
+	 + config/version
+         + config/map
+         + config/macros
+%]
+
+[%
+   athena_link      = '\textsc{athena}'
+   ifeffit_link	    = '\textsc{ifeffit}'
+   bruce_mail	    = '(bravel |A|T| bnl |D|O|T| gov)'
+   recode           = '``\\texttt{(?\\{ code \\})}\'\''
+   hash             = '\texttt{\char35}'
+   link		    = ' {\color{red}($\longleftarrow$ link here)} '
+-%]

@@ -1,0 +1,2 @@
+\item[\textbf{[% dt | replace('\$', '\$') | replace('_', '\_') %]}]\hfill\break%
+[%- content | indent(3) -%]

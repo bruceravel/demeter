@@ -1,0 +1,6 @@
+[%# preference: typeset an Athena user preference
+  # ARGS:
+  #     group  : preference group
+  #     option : parameter name
+-%]
+\preference{[% group | ucfirst %]}{[% option | lower | replace('_', '\_') %]}

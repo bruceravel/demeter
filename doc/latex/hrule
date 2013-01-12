@@ -1,0 +1,3 @@
+[%# hrule: insert a horizontal rule
+-%]
+\hrulefill

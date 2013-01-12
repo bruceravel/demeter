@@ -1,0 +1,6 @@
+[%# plotbutton: typeset an Athena plot button
+  # ARGS:
+  #     class  : red or purple
+  #     letter : E k R q or kq
+-%]
+the \[%- class -%]{[%- letter -%]} button

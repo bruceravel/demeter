@@ -169,7 +169,7 @@ PDF are supported.  Saving to a file does not currently work for quad
 plots.
 
 Finally, you have the option of directing the on-screen plot to one of
-four terminals.  The selected terminal, #1 by default, is updated as
+four terminals.  The selected terminal, number 1 by default, is updated as
 new plots are made.  When you switch to a new terminal, other active
 terminals will become unchanging.  This means you can save a
 particular plot on screen while continuing to make new plots.

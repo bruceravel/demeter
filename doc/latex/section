@@ -1,0 +1,19 @@
+[%# section: include a section header
+  #          use template variables to customize heading type and appearence
+  # ARGS:
+  #     label : section label for cross referencing
+-%]
+[%- IF star; kind = 'section*'; ELSE; kind = "section"; END -%]
+[% IF template.nosubpages %]
+\[%- kind -%]{[% label %]}
+\label{[% label | remove(" ") | lower %]}
+\hypertarget{[% label | remove(" ") | lower %]}{~}
+[% ELSE %]
+\sub[%- kind -%]{[% label %]}
+\label{[% label | remove(" ") | lower %]}
+\hypertarget{[% label | remove(" ") | lower %]}{~}
+[% END %]
+[%- IF expert -%]
+\marginpar{\quad\includegraphics*[width=0.8cm]{[% "${site.url.images}/LightningBolt.png" %]}}
+[% END -%]
+

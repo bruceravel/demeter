@@ -1,0 +1,63 @@
+[%# copyright: frontmatter of latex document with copyright statement
+  #            and referecne to creative commons
+-%]
+\newpage
+\thispagestyle{empty}
+{
+  \noindent [% athena %] is copyright \copyright\ 2001--[% crdate %] Bruce Ravel
+
+  \bigskip
+
+  \noindent This document is copyright \copyright\ 2007--[% crdate %] Bruce Ravel.
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics*[width=2cm]{[% site.url.images %]/somerights20.png}
+  \end{center}
+
+  \noindent  This work is licensed under the Creative Commons
+  Attribution-ShareAlike License. To view a copy of this license,
+  visit
+  \begin{center}
+    \href{http://creativecommons.org/licenses/by-sa/3.0/}{http://creativecommons.org/licenses/by-sa/3.0/}
+  \end{center}
+  or send a letter to Creative Commons, 559 Nathan Abbott Way,
+  Stanford, California 94305, USA.
+
+  \bigskip
+
+  \noindent  You are free:
+  \begin{itemize}
+  \item \textbf{to Share} -- to copy, distribute, and transmit the work
+  \item \textbf{to Remix} -- to adapt the work
+  \end{itemize}
+  Under the following conditions:
+  \begin{itemize}
+  \item Attribution. You must attribute the work in the manner
+    specified by the author or licensor (but not in any way that
+    suggests that they endorse you or your use of the work).
+  \item Share Alike. If you alter, transform, or build upon this work,
+    you may distribute the resulting work only under the same,
+    similar or a compatible license.
+  \item Any of these conditions can be waived if you get permission
+    from the author.
+  \end{itemize}
+
+  \bigskip
+
+  \begin{itemize}
+  \item For any reuse or distribution, you must make clear to others
+    the license terms of this work.
+  \item Any of the above conditions can be waived if you get
+    permission from the copyright holder.
+  \item Nothing in this license impairs or restricts the author's
+    moral rights.
+  \end{itemize}
+
+  \bigskip
+
+  Your fair dealing and other rights are in no way affected by the above.
+
+  This is a human-readable summary of the Legal Code (the full license).
+}

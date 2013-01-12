@@ -1,0 +1,16 @@
+[%
+    FOREACH item IN site.map.menu;
+
+	 NEXT IF item == 'index';
+         INCLUDE menu/text file = site.map.page.$item.page 
+                                ? "$item/index"
+                                : item;
+         "\n";
+
+         FOREACH this IN site.map.page.$item.menu;
+             INCLUDE menu/text file = "$item/$this";
+             "\n";
+	 END;
+
+     END
+ -%]

@@ -2,8 +2,8 @@
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
-src  = [% installdir %]/templates/src
-lib  = [% installdir %]/templates/latex
+src  = [% installdir %]/src
+lib  = [% installdir %]/../latex
 dest = [% installdir %]/tex
 
 ### copy images and other binary files
@@ -28,8 +28,8 @@ recurse
 recursion
 
 ### TT options
-pre_process = config/main
-wrapper     = site/wrapper
+pre_process = config/main.athena
+wrapper     = site/wrapper.athena
 
 ### local variables
 define rootdir = [% installdir %]

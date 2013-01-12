@@ -90,11 +90,8 @@ in detail.
 [% SWITCH document_style %]
 
 [% CASE 'latex' %]
-[% USE PerlSyntaxLatex %]
-[% WRAPPER html/perlblock %]
-[% FILTER highlighter %]
+[% WRAPPER codeexample -%]
 [% INSERT "./src/other/plugin.example" %]
-[% END %]
 [% END %]
 
 [% CASE 'latexbw' %]

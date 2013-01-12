@@ -12,11 +12,13 @@
 \usepackage{floatflt}
 %\usepackage[vflt]{floatflt}
 \usepackage{keystroke}
+\usepackage{parskip}
 
 \pdfoutput=1\relax
 \usepackage[pdftex]{color}
 \usepackage[pdftex,colorlinks,breaklinks,backref]{hyperref}
-\hypersetup{bookmarks=true,
+\hypersetup{backref,
+            bookmarks=true,
             pdftitle=Athena User's Guide,
             pdfauthor=Bruce Ravel,
             urlcolor=midnightblue,
@@ -36,7 +38,9 @@
 \setlength{\oddsidemargin}{0truecm}
 \setlength{\evensidemargin}{0truecm}
 \setlength{\headsep}{0.5truecm}
-\setlength{\parindent}{21pt}
+%%\setlength{\parindent}{21pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,11 +106,17 @@
   {{\Huge''}\end{flushleft}\hfill\break\break}
 
 \newenvironment{caution}%
-{\bigskip\color{red2}\begin{Boxedminipage}[h]{0.9\linewidth}\begin{center}\color{black}~\\ \large}%
-  {\end{center}\end{Boxedminipage}\hfill\break\break}
+{\noindent\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+    \large}%
+  {\end{Boxedminipage}\hfill\break\break}
 % \newenvironment{caution}%
 % {\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\begin{center}\color{black}~\\\large\bf}%
 %   {\end{center}\end{Boxedminipage}\hfill\break\break}
+
+\newenvironment{todo}%
+{\noindent\bigskip\color{green4}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+    \large}%
+  {\end{Boxedminipage}\hfill\break\break}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% title page
@@ -122,7 +132,7 @@
   \begin{flushright}
     {\Large Bruce Ravel} \\
     {\large \texttt{bravel\char64bnl.gov} \\
-    \texttt{http://cars9.uchicago.edu/\char126ravel/software/exafs/} }
+      \href{http://bruceravel.github.com/demeter/}{\texttt{http://bruceravel.github.com/demeter/}} }
   \end{flushright}
   \noindent\rule{\linewidth}{1ex}
   \vspace*{\stretch{1}}
@@ -132,7 +142,7 @@
   \vspace*{\stretch{2}}
   \begin{flushright}
     {\Large \textsf{Document version [% document_version %]\\[1ex]
-        for [% athena %] version [% athena_version %]\\[1ex]
+        for [% athena %] version [% demeter_version %]\\[1ex]
         \today}}
   \end{flushright}
   \newpage

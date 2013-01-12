@@ -1,0 +1,37 @@
+[%# figure: place a figure in a float, place a narrow figure in a
+  #         floatingfigure with text that wraps around
+  # ARGS:
+  #     file    : path to image file, including extension 
+  #     nofloat : flag to force placement in a normal figure environment
+-%]
+[% ww    = image.width;
+   parts = file.split('\.');
+   label = parts.first;
+%]
+[% USE image "${site.url.images}/${file}" %]
+\hypertarget{[% label %]}{~}
+[% IF (nofloat == 1) %]
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics*[width=3.4cm]{[% image.name %]}
+    \caption{[%- content | indent(14) | trim -%]}
+    \label{[% label %]}
+  \end{center}
+\end{figure}
+[% ELSIF image.width > 400 %]
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics*[width=0.5\linewidth]{[% image.name %]}
+    \caption{[%- content | indent(14) | trim -%]}
+    \label{[% label %]}
+  \end{center}
+\end{figure}
+[% ELSE %]
+\begin{floatingfigure}{3.5cm}
+  \begin{center}
+    \includegraphics*[width=3.4cm]{[% image.name %]}
+    \caption{[%- content | indent(14) | trim -%]}
+    \label{[% label %]}
+  \end{center}
+\end{floatingfigure}
+[% END %]

@@ -1,0 +1,34 @@
+[%# quadplot: place two to four figures in a float
+  # ARGS:
+  #     files : list of image files, including extension 
+-%]
+[% fst = files.first %]
+[% USE image "${rootdir}/images/${fst}" %]
+[% ww    = image.width;
+   parts = fst.split('\.');
+   label = parts.first;
+   dots  = template.nosubpages ? "../images" : "../../images";
+%]
+\hypertarget{[% label %]}{~}
+\begin{figure}[htbp]
+  \begin{center}
+[%- this = files.shift -%]
+[%- USE image "${site.url.images}/${this}" %]
+    \includegraphics*[width=[%- IF ww < 250 -%]0.25\linewidth[%- ELSE -%]0.48\linewidth[%- END -%]]{[% image.name %]}\quad
+[%- this = files.shift -%]
+[%- USE image "${site.url.images}/${this}" %]
+    \includegraphics*[width=0.48\linewidth]{[% image.name %]}\\
+[%- this = files.shift -%]
+[%- IF this -%]
+[%- USE image "${site.url.images}/${this}" %]
+    \includegraphics*[width=0.48\linewidth]{[% image.name %]}
+[%- END -%]
+[%- this = files.shift -%]
+[%- IF this -%]
+[%- USE image "${site.url.images}/${this}" %]
+    \quad\includegraphics*[width=0.48\linewidth]{[% image.name %]}
+[%- END %]
+    \caption{[%- content | indent(14) | trim -%]}
+    \label{[% label %]}
+  \end{center}
+\end{figure}

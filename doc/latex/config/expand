@@ -1,0 +1,49 @@
+[%  # page.trail tracks path to the current page
+     DEFAULT page.trail = [ ];
+  
+     # list of menu items we're constructing
+     site.map.items = [ ];
+  
+     # walk through item names in map.menu
+     FOREACH id IN site.map.menu;
+         # fetch page from map.page
+         THROW map "Invalid menu item in ${site.map}.name: $id"
+             UNLESS (item = map.page.$id);
+  
+         # add location data
+         item.id   = id;
+         item.path = path ? "$path/$id" : id;
+         item.file = item.page 
+                   ? "${item.path}/index.tex" 
+                   : "${item.path}.tex";
+  
+         # is this item on the path to the current page?
+         item.hot  = page.file.match("^$item.path");
+         item.subs = item.hot and item.menu;
+         item.here = (item.file == page.file);
+
+         # add item to map items list
+         site.map.items.push(item);
+         # also to the trail if the page is hot
+         page.trail.push(item) IF item.hot;
+
+	 FOREACH sub IN id.menu;
+
+            # fetch page from map.page
+            THROW map "Invalid menu item in $map.name: $sub"
+                UNLESS (this = map.page.id.$sub);
+
+            # add location data
+	    this.id   = sub;
+	    # this.path = path ? "$path/$sub" : sub;
+	    this.path = "${item.path}/$sub";
+	    this.file = "${this.path}.tex";
+
+	    # add this to map items list
+	    site.map.items.push(this);
+
+	 END;
+
+     END;
+  
+ -%]

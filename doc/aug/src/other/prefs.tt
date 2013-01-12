@@ -46,6 +46,6 @@ setting or saving the parameters.
 
 The data about the preferences is contained in 
 [% WRAPPER html/todo %]
-Explain where to find demeter_conf files
+Explain where to find demeter configuration files
 [% END %]
 [% END %]

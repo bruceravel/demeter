@@ -1,0 +1,8 @@
+[%# modkey: typeset a modifier/key sequence
+  # ARGS:
+  #     key    : modifier key (control alt shift return)
+  #     letter : letter from the keyboard
+-%]
+[%- IF letter -%]\[%- key | upper -%]{[% letter or '' %]}[%- ELSE -%]\[%- key | ucfirst -%][%- END -%]
+
+

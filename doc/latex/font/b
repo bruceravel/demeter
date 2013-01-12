@@ -1,0 +1,1 @@
+\textbf{[%- a | replace("\\\\", '$\backslash$') | replace('_', '\_') -%]}

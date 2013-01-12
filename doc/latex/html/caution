@@ -1,0 +1,9 @@
+[% dots  = template.nosubpages ? "../images" : "../images";
+   file  = "images/alert.png";
+%]
+[% USE image "${file}" %]
+[% ww = image.width / 80 %]
+\begin{caution}
+   \includegraphics*[width=[% ww %]cm]{[%dots%]/alert.png}  \textbf{Caution:}
+[%- content | indent(3) -%]
+\end{caution}

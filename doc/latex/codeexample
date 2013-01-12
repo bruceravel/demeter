@@ -1,0 +1,6 @@
+[% USE PerlSyntaxLatex %]
+[% WRAPPER html/perlblock -%]
+[% FILTER highlighter %]
+[%- content -%]
+[%- END -%]
+[%- END -%]

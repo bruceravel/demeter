@@ -1,0 +1,17 @@
+[%# image: insert an in-line image, the width in cm is computed from
+  #        the image width in pixels with a conversion factor tuned
+  #        for the Athena document
+  # ARGS:
+  #     file  : path to image file, including extension
+-%]
+[% USE image "${site.url.images}/${this}" %]
+[% ww = image.width / 80 %]
+[% content %]
+\begin{floatingfigure}{3.5cm}
+  \begin{center}
+    \includegraphics*[width=[% ww %]cm]{[% image.name %]}
+    \label{[% label %]}
+  \end{center}
+\end{floatingfigure}
+
+

@@ -1,0 +1,29 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% headers and footers
+
+\renewcommand{\sectionmark}[1]{\markright{\subsection\ #1}}
+\renewcommand{\subsectionmark}[1]{\markright{\thesubsection\ #1}}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\rhead[]                                   {\fancyplain{}{\sffamily\leftmark}}
+\chead[]                                   {}
+\lhead[\fancyplain{}{\sffamily\rightmark}] {}
+
+\rfoot[\setlength{\unitlength}{1mm}
+       \begin{picture}(0,0)
+         \put(-10,0){\includegraphics[height=3mm]{[% site.url.images %]/somerights20.png}}
+       \end{picture}
+       {\tiny This work is licensed under the Creative Commons Attribution-ShareAlike License.}]
+                                           {\textsf{\thepage}}
+\cfoot[]                                   {}
+\lfoot[\textsf{\thepage}]
+      {{\tiny This work is licensed under the Creative Commons Attribution-ShareAlike License.}
+       \setlength{\unitlength}{1mm}
+       \begin{picture}(0,0)
+         \put(0,0){\includegraphics[height=3mm]{[% site.url.images %]/somerights20.png}}
+       \end{picture}
+      }

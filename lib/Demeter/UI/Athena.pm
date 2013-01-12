@@ -647,7 +647,7 @@ sub menubar {
 
   my $helpmenu   = Wx::Menu->new;
   $helpmenu->Append($DOCUMENT,  "Document",     "Open the Athena document" );
-  $helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
@@ -664,7 +664,7 @@ sub menubar {
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $helpmenu       -> Enable($_,0) foreach ($DEMO);
+  #$helpmenu       -> Enable($_,0) foreach ($DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;

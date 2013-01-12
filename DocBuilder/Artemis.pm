@@ -40,11 +40,8 @@ sub ACTION_copy_artug {
   my $self = shift;
   my $here = cwd;
   chdir 'doc/artug/';
-  #do 'build_dpg.PL';
   mkdir 'html' if not -d 'html';
-  #system(q(./configure 1));
   $self->dispatch("configure_artug");
-  #system(q(./bin/build));
   $self->dispatch("ttree_artug");
   chdir $here;
   mkdir 'blib/lib/Demeter/UI/Artemis/share/artug';

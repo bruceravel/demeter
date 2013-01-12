@@ -1,0 +1,15 @@
+[%  site.url = {
+         root    = "$rooturl/html"
+         home    = "$rooturl/html/index.html"
+         images  = "$rooturl/images"
+         biglogo = "$rooturl/images/pallas_athene.jpg"
+         logo    = "$rooturl/images/pallas_athene_thumb.jpg"
+         css     = "$rooturl/html/ab.css"
+         perlcss = "$rooturl/html/perl.css"
+	 athena  = "http://cars9.uchicago.edu/~ravel/software"
+	 ifeffit = "http://cars9.uchicago.edu/iffwiki/ifeffit"
+	 xafsorg = "http://xafs.org"
+	 cc      = "http://creativecommons.org/licenses/by-sa/3.0/"
+	 ccsupport = "http://creativecommons.org/support/"
+}
+ -%]

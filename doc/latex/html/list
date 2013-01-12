@@ -1,0 +1,3 @@
+[%- IF type == "ol" -%] \begin{tightenum} [%- ELSE -%] \begin{tightitem} [%- END %]
+[% content -%]
+[%- IF type == "ol" -%] \end{tightenum} [%- ELSE -%] \end{tightitem} [%- END %]

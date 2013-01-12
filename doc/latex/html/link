@@ -1,0 +1,9 @@
+[% IF link.match('^http') %]
+\href{[%- link -%]}{[%- text or link | trim  | replace('_', '\_') -%]}
+[% ELSIF  link.match('\#') %]
+{[%- text | trim | replace('_', '\_') -%]} (Sec.~\vref{[%- link | replace("^.*\#", "") -%]})
+[% ELSIF  link.match('^\.\.') %]
+{[%- text | trim | replace('_', '\_') -%]} (Sec.~\vref{[%- link | remove(".html") | remove("/") | remove('\.\.') -%]})
+[% ELSE %]
+{[%- text | trim | replace('_', '\_') -%]} (Sec.~\vref{[%- link | remove(".html") | remove("/") -%]})
+[% END %]

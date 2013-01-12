@@ -1,0 +1,8 @@
+\file{[%- a
+	| replace("\\\\", 'ZZZ\backslashZZZ')
+	| replace('_',    '\_')
+	| replace('\$',   '\$')
+	| replace('ZZZ',   '$')
+	| replace('~',    '$\sim$')
+        | replace(" ",     "~")
+-%]}

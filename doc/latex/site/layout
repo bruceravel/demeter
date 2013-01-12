@@ -1,0 +1,9 @@
+[% DEFAULT hash = '\#' %]
+[% hash = '#' IF template.main %]
+[% INCLUDE site/logo %]
+[% content
+  | remove("<p>")
+  | remove("</p>")
+  | remove("<br />")
+  | replace('&', 'and')
+%]

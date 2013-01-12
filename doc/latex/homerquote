@@ -1,0 +1,17 @@
+[%# homerquote: frontmatter of latex document
+-%]
+\newpage
+\vspace*{\stretch{1}}
+\begin{center}
+\begin{minipage}{0.6\linewidth}
+   Just as Phaeacian men excel the world at sailing, driving
+   their swift ships on the open seas, so the women excel at
+   all the arts of weaving. That is Athena's gift to them
+   beyond all others -- a genius for lovely work, and a fine
+   mind too.
+\begin{flushright}
+   Homer, The Odyssey, Book 7
+\end{flushright}
+\end{minipage}
+\end{center}
+\vspace*{\stretch{1}}

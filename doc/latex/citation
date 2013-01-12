@@ -1,0 +1,14 @@
+[%# citation: formatting of a literature reference, tuned to work well
+  #           with the Athena document
+  # ARGS:
+  #     author
+  #     journal
+  #     volume
+  #     year
+  #     pages (optional)
+  #     publisher (optional)
+-%]
+[% author %], [% INCLUDE font/em a=journal | replace('\. ' '.\ ') %],
+[% INCLUDE font/b a=volume %][% ", " IF volume %]([% year %])
+[% " p.\\ $pages" IF pages %][% " $publisher, pub." IF publisher %]
+[% INCLUDE html/link link="http://dx.doi.org/$doi" text=" (DOI: $doi)" IF doi%]

@@ -1,0 +1,5 @@
+\begin{center}
+[% USE image "${site.url.images}/comingsoon.jpg" %]
+\includegraphics*[width=1.5cm]{[% image.name %]}
+[% what %] is on [% athena %]'s to do list.
+\end{center}

@@ -1,0 +1,5 @@
+\paragraph{[% label %]}
+\label{[% label | remove(" ") | lower %]}
+\hypertarget{[% label | remove(" ") | lower %]}{~}
+%% USE image "${site.url.images}/LightningBolt.png" %
+%%- image.tag(align="bottom") IF expert

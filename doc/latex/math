@@ -1,0 +1,9 @@
+[%# math: wrapper for placing content in a math environment
+  # ARGS:
+  #     label : equation label for cross referencing
+-%]
+\begin{equation}
+[% content | remove('\$') | replace('exp', '\exp') | trim %]
+\label{Eq:[% label %]}
+\hypertarget{Eq:[% label %]}{~}
+\end{equation}

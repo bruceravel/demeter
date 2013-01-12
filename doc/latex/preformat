@@ -1,0 +1,6 @@
+[%# preformat: wrap the content as verbatim text
+-%]
+\begin{verbatim}
+[% text %]
+\end{verbatim}
+

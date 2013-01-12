@@ -1,0 +1,17 @@
+[% IF NOT template.main -%]
+[% IF template.chapter -%] \chapter{[% page.title %]} [% ELSE %] \section{[% page.title %]} [% END %]
+\label{[% template.name | remove("\\\.tt") | remove('/') | lower %]}
+\hypertarget{[% template.name | remove("\\\.tt") | remove('/') | lower %]}{~}
+[%# IF page.about %]
+[%# \begin{about} %]
+[%# page.about | indent(3) %]
+[%# \end{about} %]
+[%# END %]
+
+[% IF template.difficult -%]
+\marginpar{\quad\includegraphics*[width=1cm]{[% "${site.url.images}/bend.png" %]}}
+[% END -%]
+[% IF template.expert -%]
+\marginpar{\quad\includegraphics*[width=1cm]{[% "${site.url.images}/LightningBolt.png" %]}}
+[% END -%]
+[% END -%]

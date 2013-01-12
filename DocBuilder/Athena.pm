@@ -40,11 +40,8 @@ sub ACTION_copy_aug {
   my $self = shift;
   my $here = cwd;
   chdir 'doc/aug/';
-  #do 'build_dpg.PL';
   mkdir 'html' if not -d 'html';
-  #system(q(./configure 1));
   $self->dispatch("configure_aug");
-  #system(q(./bin/build));
   $self->dispatch("ttree_aug");
   chdir $here;
   mkdir 'blib/lib/Demeter/UI/Athena/share/aug';
