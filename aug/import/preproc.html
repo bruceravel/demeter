@@ -1,0 +1,260 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Preprocessing data</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../import/ref.html" class="menu">Reference channel</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../import/index.html" class="menu">Importing Data</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menuselect">Importing Data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/columns.html"  class="menu">The column selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/projsel.html"  class="menu">The project selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/multiple.html"  class="menu">Importing multiple data sets</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/ref.html"  class="menu">Reference channel</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Data preprocessing</span><br /><a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Preprocessing data
+</h1>
+<h2>
+  Manipulating data as it is imported 
+</h2>
+
+<p>
+
+There are a number of other operations that <span class=program>ATHENA</span> can perform
+on your data as it is imported.  These are found in the other tabs on
+the bottom left of the column selection dialog.  Note that all of
+the pre-processing chores discussed here can also be performed on
+data after it has been imported.  See the
+<a href="../process/index.html">data processing chapter</a>.
+for more details.
+</p>
+
+
+<hr class=hide />
+<a name="rebinningquickscandata">
+
+<h2>  Rebinning quick scan data</h2>
+</a>
+
+<p>
+
+Some beamlines offer the option of collecting data as a quick scan.
+In that scanning mode, the monochromator is slewed continuous from the
+beginning of the scan to the end.  The detectors are read continuously
+and integrations of the detector signals are stored in intervals.  The
+length of these intervals and the slewing speed of the monochromator
+determine the energy width of each measurement bin.  Typically these
+measurement parameters are chosen to provide adequate resolution
+through the edge -- typically a third or a half of an electron volt.
+This results in data that are vastly over-sampled in the EXAFS
+region.  To improve the statistics in the EXAFS region and to make the
+data arrays smaller, it is useful to rebin the data.  This process
+uses a boxcar averaging to place the evenly spaced quick scan data
+onto a typical EXAFS grid.  That grid is usually something like 10 eV
+in the pre-edge, 0.5 eV through the edge, and 0.05 &Aring;&#8315;&sup1;
+in the EXAFS region.
+</p>
+
+<p>
+In
+this screenshot,
+I have imported some data on a uranyl compound measured in quick scan
+mode:
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_rebin>
+<img src=../../images/import_rebin.png width=100%>
+</a>
+<p align=center>
+Rebinning data on the fly as it is imported using the column selection
+dialog.
+</p>
+</div>
+
+<p>
+
+At this stage, <span class=program>ATHENA</span> has not examined the data closely enough
+to have guessed what edge you are measuring, so you must specify the
+element symbol of the absorbing atom.  The remaining numeric
+parameters define the grid onto which these data will be rebinned.
+The first two numbers define the boundaries of the edge region in
+energy, the third defines the size of the grid in the pre-edge, the
+fourth defines the size of the grid through the edge, and the last
+defines the grid in wavenumber in the EXAFS region.
+</p>
+
+<p>
+<span class=program>ATHENA</span> will remember the values of these parameters between data
+sets.  However, the default is to turn off rebinning for each new data
+set.  Therefor you must click to the rebinning tab for every data set
+you import, and click on the
+&ldquo;Perform rebinning&rdquo; button.  When you
+import multiple data sets, though, rebinning will be performed on each
+one without intervention according to the normal rules of multiple
+data set import.
+</p>
+
+
+<hr class=hide />
+<a name="otherpre-processingchores">
+
+<h2> <img src="../../images/LightningBolt.png" width="40" height="40" alt="" align="bottom" /> Other pre-processing chores</h2>
+</a>
+
+<p>
+ 
+This tab provides controls for a number of other things that can be
+done with your data as it is imported.  The first one -- marking --
+can be performed even on the first data set imported.  The other two
+require that a standard be specified.  The menu at the top of the tab
+contains every item from the group list.  The one specified in that
+menu is the standard.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_preproc>
+<img src=../../images/import_preproc.png width=100%>
+</a>
+<p align=center>
+Pre-processing data as it is imported using the file selection dialog.
+</p>
+</div>
+
+<p>
+
+Here are descriptions of each of the pre-processing chores, seen in
+the image above:
+</p>
+
+
+
+<dl>
+  
+<dt>
+  Mark each data set
+</dt>
+<dd>
+If this is selected, each data set will be
+<a href="../ui/mark.html">marked</a>
+as it is
+imported.  Note that the reference spectrum is not marked.  Also
+note that, unlike the other four pre-processing options, this one
+is always deselected when new data is imported.
+  <br />
+  <br />
+</dd>
+<dt>
+  Align to the standard
+</dt>
+<dd>
+If this is selected, the data are aligned to the specified
+standard using <a href="../process/align.html">the auto-alignment algorithm</a>.   If both
+the data and standard have reference channels, those are used in
+the auto-alignment.
+  <br />
+  <br />
+</dd>
+<dt>
+  Set parameters to the standard
+</dt>
+<dd>
+If this is selected, all parameters (except for
+<span class=param>&laquo;eshift&raquo;</span>) will be
+<a href="../params/constrain.html">set to the values of the standard</a>.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<p>
+
+The pre-processing tab is one of <span class=program>ATHENA</span>'s genuine power
+features.  With a bit of forethought, most of your data processing can
+be performed automatically.  I typically import one data file and
+carefully calibrate it and set its various parameters.  Having done
+that, the remaining data gets well processed simply by reading it in.
+This kind of time saver is of particular value at the beam line.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

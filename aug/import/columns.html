@@ -1,0 +1,342 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Column selection dialog</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../import/index.html" class="menu">Importing Data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../import/projsel.html" class="menu">The project selection dialog</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menuselect">Importing Data</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">The column selection dialog</span><br />
+&nbsp;&#8618;&nbsp;<a href="../import/projsel.html"  class="menu">The project selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/multiple.html"  class="menu">Importing multiple data sets</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/ref.html"  class="menu">Reference channel</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/preproc.html"  class="menu">Data preprocessing</a><br /><a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Column selection dialog
+</h1>
+<h2>
+  Converting raw data to mu(E) 
+</h2>
+
+<p>
+
+To import a data file, select Open file from the File menu or type
+<span class=key>Control</span>-<span class=key>o</span>.  A file selection
+dialog opens.  On my Linux computer, it looks like
+this:
+</p>
+
+
+<div class=figure style="max-width: 736px; min-width: 7em;">
+<a name=import_filedialog>
+<img src=../../images/import_filedialog.png width=100%>
+</a>
+<p align=center>
+The file selection dialog on a Linux computer.
+</p>
+</div>
+
+<p>
+
+It looks somewhat different on Windows, but behaves the same.  It
+allows you to navigate your disk to find the file you want to import.
+Once you find that file, click on it then click on the Open button.
+</p>
+
+<p>
+Once you have selected a file to import the column selection dialog,
+shown below,
+appears.
+</p>
+
+<p>
+On the right side of this dialog, the contents of the data file are
+displayed.  This allows you to examine the file to help you figure out
+which columns should be imported to turn into the &mu;(E) data.
+</p>
+
+<p>
+On the left are various control for specifying which columns contain
+the energy values and which contain the signals from the various
+detectors.  Typically, the signals from the detectors are saved to
+disk as columns of numbers.  These columns need to be combined
+depending on the nature of the experiment.  For a transmission
+experiment, the incident channel is divided by transmission channel and
+the natural log is taken at each point.  For fluorescence data, the
+fluorescence channel is divided by the incidence channel.  Electron
+yield data is like fluorescence data -- the yield channel is divided
+by the incident channel.
+</p>
+
+<p>
+The controls in the tabs at the bottom left are the discussed in later
+sections.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_colsel>
+<img src=../../images/import_colsel.png width=100%>
+</a>
+<p align=center>
+The column selection dialog.
+</p>
+</div>
+
+<p>
+
+In the example shown, the incident channel is, for some reason, called
+&ldquo;mcs3&rdquo;.  Since this is transmission data,
+I have checked the &ldquo;mcs3&rdquo; button for the
+numerator.  The transmission channel is called
+&ldquo;mcs4&rdquo; and its button is checked for the
+denominator.
+</p>
+
+<p>
+As you check the buttons, some helpful things happen.  The
+first is that equation for how the columns combine to form &mu;(E) is
+displayed in the box below the column selection buttons.  Also as you
+check buttons, the data are plotted.  If you have selected the correct
+columns and chosen the numerator and denominator correctly, the plot
+will look like XAS data.  If the plot is upside-down, then you need to
+switch the numerator and denominator.  If the plot doesn't look like
+XAS at all, you need to try some of the other channels.
+</p>
+
+<p>
+I chose this example because the columns are labeled somewhat
+confusingly.  Often the columns will be labeled in the file more
+obviously with names like &ldquo;I0&rdquo; or
+&ldquo;It&rdquo;.  In this case, we either
+need to know what the columns mean or patiently click through the
+buttons to figure it out.  As a last resort, you may need to ask the
+beamline scientist!
+</p>
+
+
+<hr class=hide />
+<a name="datatypesandenergyunits">
+
+<h2>  Data types and energy units</h2>
+</a>
+
+<p>
+
+Occasionally, <span class=program>ATHENA</span> needs a bit more information to correctly
+interpret your data correctly.  The data types menu is shown in
+the figure below.
+The default is for data to be imported as &mu;(E).
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_types>
+<img src=../../images/import_types.png width=100%>
+</a>
+<p align=center>
+Data types in the column selection dialog.
+</p>
+</div>
+
+<p>
+
+The other choices are:
+</p>
+
+
+<ul>
+  
+<li><p>
+xanes(E) : &mu;(E) data measured over a limited data range and
+for which you do not need to look at the &chi;(k)
+</p></li>
+<li><p>
+norm(E) : &mu;(E) data that have already been normalized in some
+other way.  These data will not be normalized by <span class=program>ATHENA</span>
+</p></li>
+<li><p>
+chi(k) : &chi;(k) data, that is data that have already been
+background subtracted from &mu;(E)
+</p></li>
+<li><p>
+xmu.dat : the <span class=file>xmu.dat</span> file from
+<span class=program>FEFF</span>
+</p></li>
+</ul>
+
+<p>
+
+</td>
+<td width=346>
+<a class=floatright href="../../images/import_changetype.png"  title=The Athena Users' Guide target=_blank><img border=0 src="../../images/import_changetype.png"  title="The Athena Users' Guide"  alt="import_changetype.png"></a>
+If you make a mistake and import your data as the wrong data type, you
+can change between any of the energy-valued (&mu;(E), normalized
+&mu;(E), XANES, or detector) record types at any time by selecting
+&ldquo;Change data type&rdquo; from the Group menu
+and selecting the correct choice from the popup dialog,
+shown here.
+This dialog cannot, however, be used to change &chi;(k) data to an
+energy-value type or vice-versa, nor to change one of the <span class=program>FEFF</span>
+types to a non-<span class=program>FEFF</span> type.
+</p>
+
+<p>
+
+<span class=program>ATHENA</span> uses electron volts as its energy unit.  It uses a
+simple heuristic to figure out if an input file is in eV or keV.  In
+case <span class=program>ATHENA</span> gets it wrong, you can specify the energy unit with
+the &ldquo;Energy units&rdquo; menu.  <a href="../process/pixel.html">Dispersive XAS</a>, i.e.
+data which is a function of pixel index, requires special treatment.</p>
+
+
+<hr class=hide />
+<a name="multi-elementdetectordata">
+
+<h2>  Multi-element detector data</h2>
+</a>
+
+<p>
+
+</p>
+
+<p>
+<span class=program>ATHENA</span>'s column selection dialog has some special features for
+dealing with multi-element detectors.  You can select all the channels
+of the MED as elements of the numerator, as shown in
+this example of the column selection dialog.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_med>
+<img src=../../images/import_med.png width=100%>
+</a>
+<p align=center>
+Importing multi-element data in the column selection dialog.
+</p>
+</div>
+
+<p>
+
+Importing the data will then add up the channels on the fly and put a
+group containing the summation of the channels in the group list.
+</p>
+
+<p>
+You have the option of clicking the button that says
+&ldquo;Save each channel as a group&rdquo;, as
+shown here.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_medch>
+<img src=../../images/import_medch.png width=100%>
+</a>
+<p align=center>
+Importing multi-element data in the column selection dialog and saving
+each channel as a group.
+</p>
+</div>
+
+<p>
+
+</p>
+
+<p>
+Then, instead of adding the channels to make one group, each channel
+will be imported as an individual group and given its own entry in the
+group list.  This is handy for examining the channels and discarding
+any that are not of usable quality.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=import_medchimported>
+<img src=../../images/import_medchimported.png width=100%>
+</a>
+<p align=center>
+After importing the channels of multi-element data as individual groups.
+</p>
+</div>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

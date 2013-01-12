@@ -1,0 +1,327 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The Autobk Algorithm and the Rbkg Parameter</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../bkg/norm.html" class="menu">Normalization</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../bkg/index.html" class="menu">Background Removal</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../bkg/kweight.html" class="menu">Spline clamps and k-weight</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menuselect">Background Removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/norm.html"  class="menu">Normalization</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">The Rbkg parameter</span><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/kweight.html"  class="menu">Spline clamps and k-weight</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/range.html"  class="menu">Spline range</a><br /><a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  The Autobk Algorithm and the Rbkg Parameter
+</h1>
+<h2>
+  Understanding the most important background removal parameter 
+</h2>
+
+<p>
+
+The frequency cutoff between the background and the data discussed in
+the previous section is determined by the
+<span class=param>&laquo;rbkg&raquo;</span> parameter.  This is
+the second parameter displayed in the background removal section of the
+main window.
+</p>
+
+<p>
+When data are imported into <span class=program>ATHENA</span>, <span class=param>&laquo;rbkg&raquo;</span>
+is set to its
+<a href="../params/defaults.html">default value</a>, normally 1.
+</p>
+
+<p>
+This example, like many of the examples in this Users' Guide,
+can be found at 
+<a href="http://bruceravel.github.com/XAS-Education/">among the examples at my XAS-Education site</a>.
+</p>
+
+<p>
+Among these example files is one called <span class=file>fe.060</span>, which contains a spectrum from an iron foil measured at
+60 K.  Import this by selecting Open file from the File menu or by
+pressing <span class=key>Control</span>-<span class=key>o</span>.  Navigate to
+the location  of your example files and select
+<span class=file>fe.060</span>.  The
+<a href="../import/columns.html">column
+selection dialog</a> then appears.  For now, just click OK.
+</p>
+
+<p>
+The data is imported and <span class=param>&laquo;rbkg&raquo;</span> is set to
+its default value of 1.  The data and the background function found
+using the default parameter values can be found by pressing
+the <span class=red>E</span> button.  This is shown
+here on the left.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=rbkg_initial>&nbsp;</a><br><a href=../../images/rbkg_initial.png><img src="../../images/rbkg_initial.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/rbkg_initial_k.png><img src="../../images/rbkg_initial_k.png" alt="foo" width=49%></a>
+<br><a href=../../images/rbkg_initial_r.png><img src="../../images/rbkg_initial_r.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Right)
+The <span class=file>fe.060</span> data and its default background
+function.  (Left) The <span class=file>fe.060</span> &chi;(k)
+data with its default background function.
+(Bottom) The <span class=file>fe.060</span> &chi;(R) data with
+its default background function.
+</p>
+</div>
+
+<p>
+
+The background function is subtracted from the data and normalized,
+resulting in a &chi;(k) function.  Press
+the <span class=red>k</span> button to see &chi;(k),
+shown in the right panel
+above.
+</p>
+
+<p>
+When you press the <span class=red>R</span> button,
+the Fourier transform is plotted, as in the bottom panel
+above.
+</p>
+
+<p>
+So <span class=param>&laquo;rbkg&raquo;</span> is the value below which the
+AUTOBK algorithm removes Fourier components.  As you can see, below 1
+the &chi;(R) function is essentially 0, but above 1 the spectrum is
+non-zero.
+</p>
+
+<p>
+Now let's examine the effect of choosing
+different values for <span class=param>&laquo;rbkg&raquo;</span>.  First, make a
+copy of the data so we can directly compare different values.  Do that
+by selecting &ldquo;Copy current group&rdquo; 
+from the Group menu or by pressing
+<span class=key>Shift-control</span>-<span class=key>y</span>.  <span class=program>ATHENA</span>
+now looks like this.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=rbkg>
+<img src=../../images/rbkg.png width=100%>
+</a>
+<p align=center>
+<span class=program>ATHENA</span> with the original <span class=file>fe.060</span> data
+and a copy of that data.
+</p>
+</div>
+
+<p>
+
+Click on the group <em>Copy of fe.060</em>
+to display its parameters in
+the main window.  Change <span class=param>&laquo;rbkg&raquo;</span> to 0.2.
+Now we want to directly compare these two ways of removing the
+background.  The way of plotting multiple items in the groups list
+involves the row of purple plotting buttons and the little check
+buttons next to the items in the group list.  Click on the little
+check buttons next to <em>fe.060</em>
+and <em>Copy 1 of fe.060</em>, as shown in the
+screenshot above.  Now plot these two items by clicking
+the <span class=purple>R</span> button.  It should look
+something like
+this.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=rbkg_1_0_2>&nbsp;</a><br><a href=../../images/rbkg_1_0_2.png><img src="../../images/rbkg_1_0_2.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/rbkg_1_0_2k.png><img src="../../images/rbkg_1_0_2k.png" alt="foo" width=49%></a>
+<br><a href=../../images/rbkg_0_2e.png><img src="../../images/rbkg_0_2e.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Left) Comparing &chi;(R) for the data and its copy with
+<span class=param>&laquo;rbkg&raquo;</span> values  of 1 and 0.2.
+(Right) Comparing &chi;(k) for the data and its copy with
+<span class=param>&laquo;rbkg&raquo;</span> values  of 1 and 0.2.
+(Bottom) &mu;(E) and the background for the copy with an
+<span class=param>&laquo;rbkg&raquo;</span> value 0.2.
+</p>
+</div>
+
+<p>
+
+I suspect the blue spectrum is something like what you expect EXAFS
+data to look like, while the red one seems somehow worse.  In fact, it
+is easy to understand why the red one looks the way it does.  The
+<span class=param>&laquo;rbkg&raquo;</span> parameter specifies the R value
+below which the data is removed from the &mu;(E) spectrum.  That is
+exactly what has happened in the red spectrum -- below 0.2 the signal
+is very small and the first big peak is, in fact, above 0.2.
+</p>
+
+<p>
+Those two, plotted as &chi;(k), are shown
+above on the right.
+</p>
+
+<p>
+The blue spectrum oscillates around the zero axis, as one would
+expect.  The red one has an obvious, long-wavelength oscillation.  It
+is that oscillation that gives rise to the low-R peak in the &chi;(R)
+spectrum.
+</p>
+
+<p>
+The background function, computed using 0.2 as the value of
+<span class=param>&laquo;rbkg&raquo;</span> and plotted in energy, is shown
+above in the
+bottom panel.
+</p>
+
+<p>
+Using an <span class=param>&laquo;rbkg&raquo;</span> value of 0.2 yields a
+background function that is not able to follow the actual shape of the
+data.
+</p>
+
+<p>
+What happens if the value of <span class=param>&laquo;rbkg&raquo;</span> is set
+to a very large value?  The &chi;(R) data for the values 1 and
+2.5 are shown here.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=rbkg_1_2_5>&nbsp;</a><br><a href=../../images/rbkg_1_2_5.png><img src="../../images/rbkg_1_2_5.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/rbkg_2_5e.png><img src="../../images/rbkg_2_5e.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Right) Comparing &chi;(R) for the data and its copy with
+<span class=param>&laquo;rbkg&raquo;</span> values  of 1 and 2.5.
+(Left) &mu;(E) and the background for the copy with an
+<span class=param>&laquo;rbkg&raquo;</span> value 2.5.
+</p>
+</div>
+
+<p>
+
+Using a very large value of <span class=param>&laquo;rbkg&raquo;</span> results
+in significant change to the first peak in &chi;(R).  We can see why by
+looking at the background function in energy
+.
+With such a large value of <span class=param>&laquo;rbkg&raquo;</span>, the
+background function has enough freedom to oscillate with frequencies
+that resemble the data.  This results in a reduction of intensity
+under the first peak.
+</p>
+
+<p>
+The spline used to compute the background function has a limited
+amount of freedom to oscillate.  The number of spline knots is
+determined by the Nyquist criterion.  This number is proportional to
+the extent of the data in k-space multiplied by
+<span class=param>&laquo;rbkg&raquo;</span>.  These knots are spaced evenly in
+wavenumber.  Thus the spline function can only have frequency
+components below <span class=param>&laquo;rbkg&raquo;</span>.
+</p>
+
+<p>
+So where does that leave us?  We want to make
+<span class=param>&laquo;rbkg&raquo;</span> as big as possible so that the low-R
+peaks are as well suppressed as possible.  On the other hand, too
+large of a value will result in damage to the data.  The trick is to
+find a balance.
+</p>
+
+<p>
+A good rule of thumb is that <span class=param>&laquo;rbkg&raquo;</span> should
+be about half the distance to the nearest neighbor.  But that is only
+a rule of thumb.  Real data can be really difficult.  Noisy data, data
+with strong white lines, data truncated by the appearance of another
+edge -- all of these require careful consideration.  While
+<span class=param>&laquo;rbkg&raquo;</span> is the primary background removal
+parameter, several others should be investigated to yield a good
+background removal.  Several of these are the subjects of the
+following sections.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Marking groups</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../ui/glist.html" class="menu">Using the group list</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../ui/index.html" class="menu">User Interface</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../ui/pluck.html" class="menu">Pluck buttons</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menuselect">User Interface</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/glist.html"  class="menu">Using the group list</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Marking groups</span><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/pluck.html"  class="menu">Pluck buttons</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/styles.html"  class="menu">Plot styles</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/kweight.html"  class="menu">Using k-weights</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/frozen.html"  class="menu">Frozen groups</a><br /><a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Marking groups
+</h1>
+
+<p>
+
+</p>
+
+<p>
+As data are imported in <span class=program>ATHENA</span>, they are listed in the Data
+groups list. Each entry in the list includes the name of the data set, the
+text of which acts something like a hyperlink in that clicking on that
+text will insert the analysis parameters for that group into the main
+window.  Each entry also has a little check button which is used
+for <em>marking</em> the group.  Much of
+<span class=program>ATHENA</span>'s functionality revolves
+around marked groups.  For example, the marked groups are the ones
+plotted when a purple plotting button is pressed, merging is done on
+the set of marked groups and, many of the data processing and data
+analysis chores use the marked groups.
+</p>
+
+<p>
+<span class=program>ATHENA</span> offers a number of simple tools for marking or unmarking
+groups. These are found in the Mark menu, as shown below, and also
+have keyboard bindings. <span class=key>Shift-Control</span>-<span class=key>a</span> marks all
+groups, <span class=key>Shift-Control</span>-<span class=key>u</span> unmarks all groups, and
+<span class=key>Shift-Control</span>-<span class=key>i</span> inverts the markings such that the
+marked groups become unmarked and the unmarked ones become marked.
+The three buttons above the group list also serve to make all, mark
+none, and invert the marks.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_mark>
+<img src=../../images/ui_mark.png width=100%>
+</a>
+<p align=center>
+The group marking options are found in the Mark menu.  Making all
+groups, removing all marks, or inverting all marks can be done using
+the mark buttons at the top of the group list.
+</p>
+</div>
+
+<hr class=hide />
+<a name="usingregularexpressionstomarkgroups">
+
+<h2> <img src="../../images/LightningBolt.png" width="40" height="40" alt="" align="bottom" /> Using regular expressions to mark groups</h2>
+</a>
+
+<p>
+
+There is one more tool which is considerably more powerful and
+flexible. In the Mark menu, this last marking tool it is called
+<em>Mark regex</em> and it is bound to
+<span class=key>Shift-Control</span>-<span class=key>r</span>.
+</p>
+
+<p>
+So, what does <em>regex</em> mean?
+</p>
+
+<p>
+Regex is short for <em>regular expression</em>,
+which is a somewhat formal way
+of saying &ldquo;pattern matching&rdquo;. When you &ldquo;mark regex&rdquo;, you will be
+prompted for a string in the echo area at the bottom of the <span class=program>ATHENA</span>
+window.  This prompt is exactly like the one used
+<a href="glist.html#reorganizingthegrouplist">to rename groups</a>. This string is compared to the names of all the groups in
+the Data groups list. Those which match the string become marked and
+those which fail to match become unmarked. Let me give you some
+examples. In a project file containing various vanadium standards, the
+Data groups list includes
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_vstan>
+<img src=../../images/ui_vstan.png width=100%>
+</a>
+<p align=center>
+A project with several vanadium standards imported.  The regular
+expression shown matches all strings with the number 
+&ldquo;1&rdquo; at the end.  Thus all groups with the
+&ldquo;.1&rdquo; extension will be marked.
+</p>
+</div>
+
+
+<p>
+
+These represent the various oxidation states of vanadium. The last
+item is an unknown sample which can be interpreted as a linear
+combination of the other five samples. There are two scans of each
+sample, as indicated by the <tt>.1</tt> and
+<tt>.2</tt>.
+</p>
+
+<p>
+To make plots of arbitrary combinations of spectra, you can
+click the appropriate mark buttons on and off.  Using regular
+expression marking is quicker and easier.  I'll start with a couple
+simple examples. If you want to mark only the vanadium foil spectra,
+hit <span class=key>Shift-Control</span>-<span class=key>r</span> and then enter
+foil. To mark the V2O3 and V2O5, but none of the others,
+hit <span class=key>Shift-Control</span>-<span class=key>r</span> and enter V2.
+</p>
+
+<p>
+In fact, you get to use the entire power of perl's regular expression
+language (see
+<a href="http://search.cpan.org/dist/perl/pod/perlre.pod">the regular expression documentation at CPAN</a>
+for all the details). This means you can use
+<em>metacharacters</em> -- symbols which
+represent conceptual aspects of strings. Here are a few examples:
+</p>
+
+
+<ul>
+  
+<li><p>
+To mark only the V2O3 and VO2 data:
+<tt>O[23]</tt>. That tells
+<span class=program>ATHENA</span> to mark the groups whose names have the
+letter O followed by either 2 or 3.
+</p></li>
+<li><p>
+To mark only the first scans of each sample:
+<tt>1$</tt>. The
+<tt>$</tt> metacharacter represents the end of
+a word, thus this regular expression matches all groups whose
+name ends in the number 1.
+</p></li>
+<li><p>
+To mark only the foil and unknown data:
+<tt>foil|unknown</tt>. The
+<tt>|</tt>
+metacharacter means &ldquo;or&rdquo;, so this regular expression matches the
+groups with foil or unknown in the name. Actually this regular
+expression could have been much shorter, both
+<tt>[fu]</tt> and
+<tt>f|u</tt> would have worked in this case, given
+this set of group names.
+</p></li>
+</ul>
+
+<p>
+
+Regular expressions are a large and fascinating topic of study, but
+beyond the scope of this document. Check out the link above read Wikipedia's
+<a href="http://en.wikipedia.org/wiki/Regular_expression">excellent article on regular expressions</a>
+for more information.
+<a href="http://www.oreilly.com/catalog/regex3/">Mastering Regular Expressions</a>
+by Jeffrey Freidl is a superb book on the subject.
+</p>
+
+<p>
+Any regular expression that works in perl will work for marking groups
+in <span class=program>ATHENA</span>.  If you enter an
+invalid regular expression, <span class=program>ATHENA</span> will
+tell you. Regular expression marking is a wonderful tool, especially
+for projects containing very many data sets.
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+The regular expression is sent exactly as entered to perl's regular
+expression engine.  You thus have the
+<strong>full</strong>
+power of  perl's regular expression engine.<br /><br />
+If you know what &ldquo;<tt>(?{ code })</tt>&rdquo; means and do something ill-advised with
+it, you'll get no sympathy from me!.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -70,7 +70,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: peak fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("peak")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("analysis.peak")});
 
   $this->SetSizerAndFit($box);
   return $this;

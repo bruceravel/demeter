@@ -1,0 +1,276 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Constraining parameters between data groups</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../params/index.html" class="menu">Setting parameter values</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../params/e0.html" class="menu">Edge energy</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menuselect">Setting parameter values</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Constraining parameters</span><br />
+&nbsp;&#8618;&nbsp;<a href="../params/e0.html"  class="menu">Edge energy</a><br />
+&nbsp;&#8618;&nbsp;<a href="../params/defaults.html"  class="menu">Default values</a><br /><a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  <img src="../../images/LightningBolt.png" width="40" height="40" alt="" align="center" />  Constraining parameters between data groups
+</h1>
+
+<p>
+
+In <span class=program>ATHENA</span>, a <em>constraint</em>
+is the setting of a parameter to be the
+same for two or more data groups.  (That word is used in a different
+context in <span class=program>ARTEMIS</span>.)  <span class=program>ATHENA</span> gives you a high level of
+control over the values of the parameters used to process your data.
+This control is very fine-grained in the sense that every group can
+have its own values for any parameters, thus allowing you to customize
+the data processing for each individual data group.
+</p>
+
+<p>
+Often, however, your data groups are sufficiently similar that it is
+expedient to use identical values for some or all parameters.  Were
+you forced to click through the data groups setting each parameter
+value for each group individually, then <span class=program>ATHENA</span> would be very
+tedious to use.  Fortunately, there are a number of tools dedicated to
+the problem of constraining parameter values.
+</p>
+
+
+<hr class=hide />
+<a name="constrainingindividualparameters">
+
+<h2>  Constraining individual parameters</h2>
+</a>
+
+<p>
+
+The first such tool is used to constrain individual parameters.  A
+<em>right mouse click</em> on any of the parameter
+labels on the main window will post a context menu, as shown in 
+this figure.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=param_param>
+<img src=../../images/param_param.png width=100%>
+</a>
+<p align=center>
+Posting a context menu for an individual parameter.
+</p>
+</div>
+
+
+<p>
+
+The first two items in this context menu are used to set the values of
+this parameter for other groups to its value for the current group.
+The current group is, of course, the one whose values are currently
+displayed in the main window and the one which is highlighted in the
+group list.  This parameter value can be applied to all groups or to
+the set of marked groups.  The set of marked groups are the ones with
+their little purple buttons in the group list checked.  So here we
+see again one of the many uses of the mark buttons.
+</p>
+
+<p>
+The last options involves resetting a parameter to its default value.
+This is handy if you have changed a parameter and found yourself in a
+place where the data processing is obviously wrong.  By resetting the
+parameter to its default, you can return to a sensible place
+</p>
+
+<p>
+Several of the parameter context menus have a few more entries in
+their context menus:
+</p>
+
+
+<ul>
+  
+<li><p>
+The <span class=param>&laquo;Energy shift&raquo;</span> context menu has entries
+related to reference groups and options for displaying energy shift
+values for all or marked groups.
+</p></li>
+<li><p>
+The <span class=param>&laquo;Importance&raquo;</span> context menu has entries
+for resetting the <span class=param>&laquo;importance&raquo;</span> of all
+groups or marked groups to 1.
+</p></li>
+<li><p>
+The <span class=param>&laquo;E0&raquo;</span> context menu has several
+options for changing the value of <span class=param>&laquo;e0&raquo;</span>.
+All of the options will be explained in
+<a href="../params/e0.html">the next section</a>.
+</p></li>
+<li><p>
+The <span class=param>&laquo;Edge step&raquo;</span> context menu as options for
+displaying edge step values for all or marked groups.  There is  also
+an option for approximating the uncertainty in the edge step value.
+When selected, the pre- and post-edge line parameters will be varied
+randomly a number of times.  Each normalization will be plotted.  The
+standard devaition of the edge steps will be computed and displayed in
+the echo area.
+</p></li>
+<li><p>
+The Fourier transform <span class=param>&laquo;k-range&raquo;</span> context
+menu has an option for setting the upper bound to <span class=program>IFEFFIT</span>'s
+suggestion, which is based on the level of noise in the data.
+</p></li>
+</ul>
+
+<hr class=hide />
+<a name="constraininggroupsofparameters">
+
+<h2>  Constraining groups of parameters</h2>
+</a>
+
+<p>
+
+In the main window, the parameters are grouped into sets of related
+parameters.  All of the parameters associated with background removal
+are in one box, all the Fourier transform parameters are in another
+box, and so on.  The labels at the top of each box are sensitive to
+mouse clicks much like the entry box labels.  A left click posts a
+helpful message in the echo area, while a right click posts a context
+menu, as shown in
+the picture below.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=param_group>
+<img src=../../images/param_group.png width=100%>
+</a>
+<p align=center>
+Posting a context menu for a group of  parameters.
+</p>
+</div>
+
+<p>
+
+The various options behave much the same as in the individual
+parameter context menus, except that all of the parameters in the box
+are effected.  This, then, gives you a way of constraining all
+background removal parameters or all Fourier transform parameters
+between groups.  It also provides a way of restoring default values
+for a set of parameters.
+</p>
+
+
+<hr class=hide />
+<a name="constrainingallparameters">
+
+<h2>  Constraining all parameters</h2>
+</a>
+
+<p>
+
+The functionality which allows you to constrain parameter values
+between groups operates at three levels.  We have seen the finest
+level of granularity, allowing individual parameters to be
+constrained.  We have also seen how sets of parameters can be
+constrained.  It is also possible to perform the same constraining
+operations on all parameters at once.  These all-parameter operations
+are found in the Group menu, as shown in
+this picture.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=param_all>
+<img src=../../images/param_all.png width=100%>
+</a>
+<p align=center>
+The Group menu, which contains the options for constraining all
+parameters at once.
+</p>
+</div>
+
+<p>
+
+Again, these operations work identically to the explanation above,
+except that every parameter is effected, with the exceptions of
+<span class=param>&laquo;file&raquo;</span> and <span class=param>&laquo;Energy shift&raquo;</span>,
+which would not be sensible to constrain.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

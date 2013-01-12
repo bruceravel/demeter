@@ -1,0 +1,141 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Normalization and the AUTOBK Algorithm</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../import/index.html" class="menu">Importing Data</a> &nbsp;&nbsp;
+        Down: <a class=navtable href="../bkg/norm.html" class="menu">Normalization</a>
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="../plot/index.html" class="menu">Plotting</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<span style="font-style: italic;">Background Removal</span><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/norm.html"  class="menu">Normalization</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/rbkg.html"  class="menu">The Rbkg parameter</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/kweight.html"  class="menu">Spline clamps and k-weight</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/range.html"  class="menu">Spline range</a><br /><a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Normalization and the AUTOBK Algorithm
+</h1>
+<h2>
+  Learning about background removal 
+</h2>
+
+<p>
+
+The primary function of <span class=program>ATHENA</span> is to import and process XAS
+data.  In the broadest sense, this task takes three steps:
+</p>
+
+
+<ul>
+  
+<li><p>
+Import raw data and convert it to &mu;(E).
+</p></li>
+<li><p>
+Normalize the data so that the measurement is independent
+of the details of the sample or the detector setup.
+</p></li>
+<li><p>
+Determine the background function and subtract it from the
+data to make &chi;(k).
+</p></li>
+</ul>
+
+<p>
+
+Of course, there are many other details, such as calibration,
+alignment, and deglitching.  Those will be discussed in detail in
+later sections of the document.  In this section, we will cover the details
+of the normalization algorithm and the <span class=program>AUTOBK</span> background removal
+algorithm.  Special attention will be payed to the most important
+background removal parameters.
+</p>
+
+<p>
+For many measured &mu;(E) spectra, <span class=program>ATHENA</span> will do a good job of
+normalizing data and removing the background using its default
+parameters.  In other situations -- noisy data, data with large white
+lines, data which terminate in the appearance of another edge -- user
+intervention is required.  for those situations it is important that
+you understand well how the various parameters in the background
+removal section of the main window affect the data.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

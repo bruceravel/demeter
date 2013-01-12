@@ -1,0 +1,211 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Project files</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../output/column.html" class="menu">Column output files</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../output/index.html" class="menu">Output files</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../output/report.html" class="menu">Report files</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menuselect">Output files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../output/column.html"  class="menu">Column output files</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Project files</span><br />
+&nbsp;&#8618;&nbsp;<a href="../output/report.html"  class="menu">Report files</a><br /><a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Project files
+</h1>
+<h2>
+  Preserving the state of your analysis project 
+</h2>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Save button, change indicator, update discussion of file format.
+</p>
+
+<p>
+
+The most important type of output file is the project file.  A project
+file contains all of the data you have imported, all of the parameters
+associated with each data file, the content of the journal, and
+several other collections of important data.  All of this gets saved
+in a single, easily transportable file.
+</p>
+
+<p>
+The primary purpose of the project file is to save you work.  When you
+open a saved project file, all of the data and all of their parameters
+are imported into <span class=program>ATHENA</span>, returning <span class=program>ATHENA</span> to the state it
+was in when saved the project file.  <span class=program>ARTEMIS</span> (<span class=program>ATHENA</span>'s
+sister program intended for analysis of EXAFS data) can read these
+project files.  Thus the project file is the best way of moving your
+data between the two programs.
+</p>
+
+<p>
+Even better, the project file is a form of collaboration.  The format
+of the file is platform independent.  A project file written on one
+computer can read on another computer, even if those computers use
+different operating systems.  A project file can be burned to a CD,
+placed on a web site, or sent to a collaborator by email.
+</p>
+
+<p>
+To save a project file, simply select one of the File menu options
+highlighted in this figure.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=export_project>
+<img src=../../images/export_project.png width=100%>
+</a>
+<p align=center>
+Saving a project file.
+</p>
+</div>
+
+<p>
+
+The first two options saves the entire current state of <span class=program>ATHENA</span>.
+If the project has already been saved, the
+&ldquo;Save project&rdquo; option
+overwrites the previous file with the new state of your project.
+Hitting <span class=key>Control</span>-<span class=key>s</span> does the same thing.
+Clicking on the modified indicator -- the other highlighted region in
+the screenshot -- also saves the project.  Alternately, you can select
+&ldquo;Save project as...&rdquo; and you will be
+prompted for a new file name for the project.
+</p>
+
+<p>
+The final option will write only the marked groups to a project file.
+You can think of this as a sort of
+&ldquo;sub-project&rdquo; file.  This is
+another of the many ways that the group markings are used by
+<span class=program>ATHENA</span>.
+</p>
+
+<p>
+The &ldquo;Save&rdquo; button at the top of the screen
+will save the current project, prompting for a file name if needed.
+As you work with <span class=program>ATHENA</span>. this button turns increasingly red,
+reminding you of the need to save your work early and often.
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+As with any software, you should save your work early and often.
+<span class=program>ATHENA</span> and <span class=program>IFEFFIT</span> have their flaws.  It would be a shame
+to discover one of them after having done a lot of unsaved work.
+</p>
+
+<hr class=hide />
+<a name="theprojectfileformatandcompatibilitywitholderversions">
+
+<h2>  The project file format and compatibility with older versions</h2>
+</a>
+
+<p>
+
+The <span class=program>ATHENA</span> project file is designed to be quick and easy for
+<span class=program>ATHENA</span> to read.  Unfortunately, the file format is not
+particularly human-friendly.  Most of the lines of the project file
+are in the form written out by perl's
+<a href="http://cpan.uwinnipeg.ca/dist/Data-Dumper">Data::Dumper</a> module.
+This freezes <span class=program>ATHENA</span>'s internal data structures into perl code.
+When the project file is imported, these lines of perl code are
+evaluated.  (This evaluation is performed in a
+<a href="https://metacpan.org/module/Safe">Safe</a>
+compartment, i.e. a memory space with restricted access to perl's
+system functionality.  This provides a certain level of protection against
+project files constructed with malicious intent.)
+</p>
+
+<p>
+The project file is written using compression in the format of the
+popular <a href="http://www.gzip.org/">gzip</a>
+program using the highest level of compression, albeit without the
+common <span class=file>.gz</span> file extension.  Both
+<span class=program>ATHENA</span> and <span class=program>ARTEMIS</span> use these files.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

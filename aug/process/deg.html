@@ -1,0 +1,346 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Deglitching and truncating data</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/rebin.html" class="menu">Rebinning</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/smooth.html" class="menu">Smoothing</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Deglitching and truncation</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Deglitching and truncating data
+</h1>
+<h2>
+  Removing spurious points from your data 
+</h2>
+
+<hr class=hide />
+<a name="deglitching">
+
+<h3>  Deglitching</h3>
+</a>
+
+
+<p>
+
+Occasionally your data has spurious points that are obviously
+different from the surrounding points.  These so-called glitches can
+be caused by a variety of issues involving the monochromator, the
+electronics, or the sample itself.  In principle, it should not be
+necessary to do anything at all about glitches.  A feature in the data
+that is only one or two points wide necessarily contributes a high
+frequency signal to the data.  Since the data are treated using
+Fourier techniques, these high frequency additions to the data should
+have scant impact on the data.
+</p>
+
+<p>
+In practice, there are a variety of ways that glitches like those shown
+on the right in
+the figure below
+can impact the processing of the data.  Certainly, large glitches are
+unsightly and have an aesthetic impact on the presentation of your
+data.
+</p>
+
+<p>
+The process by which glitchy points are removed from the data is called
+deglitching.  Yes, I also think that's a funny sounding word.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=deglitch>
+<img src=../../images/deglitch.png width=100%>
+</a>
+<p align=center>
+The deglitching tool.
+</p>
+</div>
+
+<p>
+
+<span class=program>ATHENA</span>'s approach to deglitching involves simply removing the
+points from the data.  No effort is made to interpolate from the
+surrounding points in an effort to replace that point with a
+presumably more appropriate value.  The reason that no interpolation
+is done is that EXAFS data are typically measured on a grid that is
+oversampled.  When the data are converted from &mu;(E) to &chi;(k)
+as part of the background removal, the data are rebinned onto the
+standard k-grid.  Since a rebinning is performed later in the data
+processing, there is no reason to interpolate at the time of
+deglitching.
+</p>
+
+<p>
+Deglitching only removes points from the data in <span class=program>ATHENA</span>'s
+memory.  The data on disk are never altered.
+</p>
+
+<p>
+There are two methods of deglitching offered by <span class=program>ATHENA</span>'s
+deglitching tool, shown
+above.  The
+first involves selecting and removing the glitches one by one.
+The points are selected by
+clicking the &ldquo;Choose a point&rdquo; button then
+clicking on the glitch in the plot.  After clicking on the plot
+window, the selected point is indicated with an orange circle, as on
+the left of
+the next figure.
+Clicking the &ldquo;Remove point&rdquo; button removes
+that point from the data, shown in the bottom panel.</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=deglitch_plot>&nbsp;</a><br><a href=../../images/deglitch_plot.png><img src="../../images/deglitch_plot.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/deglitch_point.png><img src="../../images/deglitch_point.png" alt="foo" width=49%></a>
+<br><a href=../../images/deglitch_pointremoved.png><img src="../../images/deglitch_pointremoved.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Left) This is an example of data the needs deglitching.  In this
+case, there was a problem with data channels not arriving at the
+measurement computer in the proper sequence.  This timing problem
+resulted in occasionally spikes in the data.  (Right) A point has been
+selected for removal.  The point flagged for removal is indicated with
+a little orange circle.  (Bottom) The selected point has been removed
+from the data.  The deglitching margins are displayed along with the
+data.
+</p>
+</div>
+
+<p>
+
+The second method for removing glitches is more automated.  In the
+figure above, the deglitching margins are shown by the pink lines.
+Those margins are drawn between the specified minimum and maximum
+energy values.  The lines are drawn a set amount above and below the
+post-edge line used to normalize the data.  The separation between the
+post-edge line and the margins is given by the value in the tolerance
+box.
+</p>
+
+<p>
+When you click the &ldquo;Remove glitches&rdquo; button,
+and points that within the energy range of the margins but which lie
+above the upper margin or below the lower margin are removed from the
+data.  These margins can also be drawn in the pre-edge region using
+the pre-edge line.  There is no way to use margins in an energy region
+that includes the edge.
+</p>
+
+<p>
+This technique is handy in that it quickly removes many glitches in a
+situation like the one shown.  It is very dangerous, however, if not
+used with care.  If the margins extend into the white line region or
+are so tight around the post-edge line that the oscillatory structure
+crosses the margins, this technique will happily remove good points
+from the data.  Set your margins well!
+</p>
+
+<p>
+A useful variation of the point-by-point technique involves plotting
+the &chi;(E) data.  This can only be done for glitches above the
+edge, but it can be a very useful technique for removing small
+glitches from the data.  In
+this figure
+we see &mu;(E) data for U<sub>3</sub>O<sub>8</sub> that appear fine.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=deglitch_chie_mu>&nbsp;</a><br><a href=../../images/deglitch_chie_mu.png><img src="../../images/deglitch_chie_mu.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/deglitch_chie_k.png><img src="../../images/deglitch_chie_k.png" alt="foo" width=49%></a>
+<br><a href=../../images/deglitch_chie.png><img src="../../images/deglitch_chie.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Left) &mu;(E) data for U<sub>3</sub>O<sub>8</sub> that have a tiny glitch hidden in
+the high energy region.  (Right) Plotted as &chi;(k), the glitch at
+about 12 &Aring;&#8315;&sup1; in these &chi;(k) data is clearly seen. (Bottom)
+With potting as &chi;(E) selected.  The spurious point at about 12
+&Aring;&#8315;&sup1; has been chosen.
+</p>
+</div>
+
+<p>
+
+When the &chi;(E) is displayed, the
+k-weight value specified by the k-weight controls is used.  From
+there, the point-by-point technique is identical to how it used with
+&mu;(E) data.  The advantage is that small glitches might be easier
+to see and to pluck from the data when the data is plotted as
+&chi;(E).
+The point-by-point deglitching algorithm works on the &chi;(E) data
+in the same manner as for &mu;(E) data.  Points are selected by
+clicking on the plot, then removed by clicking the
+&ldquo;Remove point&rdquo; button.
+</p>
+
+<p>
+<hr class=hide />
+<a name="truncation">
+</p>
+
+<p>
+<h3>  Truncation</h3>
+</a>
+</p>
+
+<p>
+If your data does something odd at one end of the scan, the easiest
+solution might be to simply trim it away.  The truncation tool
+below
+allows you to chop data before or after a selected value.
+</p>
+
+<p>
+The radiobox is used to tell <span class=program>ATHENA</span> whether points should be trimmed
+from before or after the selected point.  The point can be chosen by
+typing in the box or by using
+<a href="../ui/pluck.html">the pluck button</a>.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=truncate_plot>
+<img src=../../images/truncate_plot.png width=100%>
+</a>
+<p align=center>
+Tin oxide data with some spurious points near the end of the scan.
+</p>
+</div>
+
+<p>
+
+When you select a point, it is indicated with a vertical line, as
+shown in
+the plot above.  To
+remove the data before or after that line, click the
+&ldquo;Truncate data&rdquo; button.
+</p>
+
+<p>
+Sometimes the issue is not simply that the data are
+&ldquo;icky&rdquo; after a
+certain point.  Sometimes your sample has elements with nearby edges,
+thus limiting the range over which you can actually measure the data.
+An example is shown in
+the next plot,
+the Ti K edge is at 4966 eV and the Ba L<sub>III</sub> edge is
+at 5247 eV.  A careless choice of spline and normalization range will
+lead to a data processing disaster.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=truncate_batio3>
+<img src=../../images/truncate_batio3.png width=100%>
+</a>
+<p align=center>
+The Ti K and Ba L<sub>III</sub> edges of BaTiO<sub>3</sub>.
+</p>
+</div>
+
+<p>
+
+Of course, truncation is not the only way of dealing with this issue.
+A careful choice of the spline, pre-edge, and normalization ranges is
+usually sufficient to treat any strange features at the beginning or
+end of the data set.  So which is better?  I think it's a matter of
+preference.  As long as you understand what you are doing and process
+all your data in a consistent, defensible manner, you can use either
+approach.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

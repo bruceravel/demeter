@@ -1,0 +1,190 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Difference spectra</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../analysis/lr.html" class="menu">Log-ratio/phase-difference</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../analysis/index.html" class="menu">Data analysis</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menuselect">Data analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lcf.html"  class="menu">Linear combination fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/pca.html"  class="menu">Principle component analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/peak.html"  class="menu">Peak fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lr.html"  class="menu">Log-ratio/phase-difference</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Difference spectra</span><br /><a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Difference spectra
+</h1>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Discuss spaces, discuss group naming, discuss and show integration,
+discuss and show additional uses of diff spectra. 
+</p>
+
+<p>
+
+In many situations, the trends in a sequence measured data can be
+indicative of the of the physical process being measured.  Shown in
+the figure below
+is a sequence of Pt L<sub>III</sub> spectra measured on a
+hydrogenated Pt catalyst.  In this sequence, the hydrogen is being
+desorbed, resulting in measurable changes in the spectra.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=diff_mu>
+<img src=../../images/diff_mu.png width=100%>
+</a>
+<p align=center>
+The dehydrogenation sequence of a Pt-bearing catalyst.
+</p>
+</div>
+
+<p>
+
+Selecting one of the difference spectra options from the
+main menu replaces the main window with
+the difference tool, as shown
+below.
+Difference spectra can be
+computed as &mu;(E), normalized &mu;(E), &chi;(k), &chi;(R), or
+&chi;(q).
+</p>
+
+<p>
+For difference spectra to be meaningful, it is essential that data
+processing be performed correctly for each data group.  It is
+essential that you take great care with
+<a href="../params/constrain.html">selecting parameters</a>,
+<a href="../process/cal.html">calibrating</a>,
+<a href="../process/align.html">aligning</a>,
+and all other processing chores.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=diff>
+<img src=../../images/diff.png width=100%>
+</a>
+<p align=center>
+The difference spectrum tool with data taken from the
+<span class=file>diff.prj</span> demo file.
+</p>
+</div>
+
+<p>
+
+As you click on each group in the group list, the difference spectrum
+is calculated and plotted.  You can select two points, shown in
+the plot below
+by the orange markers, and integrate the area under that part of
+the spectrum.
+</p>
+
+<p>
+The difference spectra in energy or k can be saved to data groups.
+Those data groups are treated like any other energy or k group.
+Difference groups in energy can have a background removed and
+difference spectra can be Fourier transformed.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=diff_diff>&nbsp;</a><br><a href=../../images/diff_diff.png><img src="../../images/diff_diff.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/diff_diffsequence.png><img src="../../images/diff_diffsequence.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) The difference spectra between the first group in the list and the
+current group in the screenshot of the difference tool.
+(Right) The difference spectra plotted after making data groups from each one.
+</p>
+</div>
+
+<p>
+
+This part of <span class=program>ATHENA</span> is directly applicable to dichroism
+studies.  The difference spectra in normalized &mu;(E) and the
+integration can be used to measure magnetic moments in magnetic
+materials.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

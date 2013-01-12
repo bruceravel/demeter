@@ -1,0 +1,167 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Smoothing data</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/deg.html" class="menu">Deglitching and truncation</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/conv.html" class="menu">Convolution and noise</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Smoothing</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Smoothing data
+</h1>
+
+<p>
+
+Smoothing data is usually a bad idea.  The best way to improve noisy
+data is to rethink your samle preparation or measurement procedure
+whenever possible. The second best way
+is to measure more of it and rely upon the
+<a href="https://speakerdeck.com/bruceravel/the-central-limit-theorem-in-exafs">central limit theorem</a> to work
+its magic.  Smoothing is usually little more than an aesthetic fix and
+it introduces distortions to your data that become serious sources of
+systematic uncertainty in any later attempts to interpet the smoothed
+data.
+</p>
+
+<p>
+The default smoothing algorithm is a boxcar average, implemented as a
+generic linear filter using a flat, symetric kernel.  The width in
+data points of this kernel is the specified parameter.  An odd kernel
+size is enforced.  If you set the size parameter to, say, 12, a value
+of 13 will be used.
+</p>
+
+<p>
+There is an option for a Gaussian filter, which is also implemented as
+a generic linear filter.  In this case, you must specify both the
+kernel size and the &sigma; of the Gaussian.
+</p>
+
+<p>
+The final smoothing option is <span class=program>IFEFFIT</span>'s three-point
+smoothing algorithm repeatedly to your data.  The number of
+repetitions is set using the number selection control used to set the
+kernel size of the other two options..
+</p>
+
+<p>
+One of these days, I intend to implement a <a href="http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_smoothing_filter">Savitsky-Golay filter</a>.
+</p>
+
+<p>
+You can overplot the data and the smoothed data using the button on
+the left, as shown below.  The other button makes a group out of the smoothed data and
+places it in the group list.  </p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=smooth>
+<img src=../../images/smooth.png width=100%>
+</a>
+<p align=center>
+The smoothing tool.
+</p>
+</div>
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=smooth_plot>
+<img src=../../images/smooth_plot.png width=100%>
+</a>
+<p align=center>
+Some noisy gold oxide data that has been smoothed using the boxcar average.
+</p>
+</div>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

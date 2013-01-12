@@ -1,0 +1,496 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Normalization</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../bkg/index.html" class="menu">Background Removal</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../bkg/rbkg.html" class="menu">The Rbkg parameter</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menuselect">Background Removal</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Normalization</span><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/rbkg.html"  class="menu">The Rbkg parameter</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/kweight.html"  class="menu">Spline clamps and k-weight</a><br />
+&nbsp;&#8618;&nbsp;<a href="../bkg/range.html"  class="menu">Spline range</a><br /><a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Normalization
+</h1>
+
+<p>
+
+Normalization is the process of regularizing your data with respect to
+variations in sample preparation, sample thickness, absorber
+concentration, detector and amplifier settings, and any other aspects
+of the measurement.  Normalized data can be directly compared,
+regardless of the details of the experiment.  Normalization of your
+data is essential for comparison to theory.  The scale of the &mu;(E)
+and &chi;(k) spectra computed by <span class=program>FEFF</span> is chosen for comparison
+to normalized data.
+</p>
+
+<p>
+The relationship between &mu;(E) and &chi;(k) is:
+</p>
+
+
+<a name=mu
+<p align=center>
+
+&mu;(E) = &mu;&#8320;(E) * (1 + &chi;(E))
+
+</p>
+</a>
+
+<p>
+
+which means that
+</p>
+
+
+<a name=chie
+<p align=center>
+
+&chi;(E) = (&mu;(E) - &mu;&#8320;(E)) / &mu;&#8320;(E)
+
+</p>
+</a>
+
+<p>
+
+The approximation of &mu;&#8320;(E) in an experimental spectrum is a
+topic <a href="rbkg.html">that will be discussed shortly</a>.
+</p>
+
+<p>
+This equation is not, in fact, the equation that is commonly used to
+extract &chi;(k) from the measured spectrum.  The reason that
+equation is problematic is the factor of &mu;&#8320;(E) in the
+denominator.  In practice, one cannot trust the &mu;&#8320;(E) to be
+sufficiently well behaved that it can be used as a multiplicative
+factor.  An example is shown in
+the figure below.
+</p>
+
+
+<div class=figure style="max-width: 648px; min-width: 7em;">
+<a name=bkg_normzerocross>
+<img src=../../images/bkg_normzerocross.png width=100%>
+</a>
+<p align=center>
+&mu;(E) data for gold hydroxide, which crosses the zero axis in the
+EXAFS region.
+</p>
+</div>
+
+<p>
+
+In the case of the gold spectrum, the detector setting were such that
+the spectrum crosses the zero-axis.  Dividing these spectra by
+&mu;&#8320;(E) would be a disaster as the division would invert the phase
+of the extracted &chi;(k) data at the point of the zero-crossing.
+</p>
+
+<p>
+To address this problem, we typically avoid functional normalization
+and instead perform an <em>edge step normalization</em>.
+The formula is
+</p>
+
+
+<a name=chie0
+<p align=center>
+
+&chi;(E) = (&mu;(E) - &mu;&#8320;(E)) / &mu;&#8320;(E&#8320;)
+
+</p>
+</a>
+
+<p>
+
+</p>
+
+<p>
+The difference is the term in the denominator. &mu;&#8320;(E&#8320;) is the
+value of the background function evaluated at the edge energy.  This
+addresses the problem of a poorly behaved &mu;&#8320;(E) function, but
+introduces another issue.  Because the true &mu;&#8320;(E) function should
+have some energy dependence, normalizing by &mu;&#8320;(E&#8320;) introduces an
+attenuation into &chi;(k) that is roughly linear in energy.  An
+attenuation that is linear in energy is quadratic in wavenumber.
+Consequently, the edge step normalization introduces an artificial
+&sigma;&sup2; term to the &chi;(k) data that adds to whatever thermal
+and static &sigma;&sup2; may exist in the data.
+</p>
+
+<p>
+This artificial &sigma;&sup2; term is typically quite small and
+represents a much less severe problem than a misbehaving functional
+normalization.
+</p>
+
+
+
+<hr class=hide />
+<a name="thenormalizationalgorithm">
+
+<h2>  The normalization algorithm</h2>
+</a>
+
+<p>
+
+The normalization of a spectrum is controlled by the value of
+the <span class=param>&laquo;e0&raquo;</span>,
+<span class=param>&laquo;pre-edge range&raquo;</span>, and
+<span class=param>&laquo;normalization range&raquo;</span> parameters.  These
+parameters are highlighted in
+this screenshot.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=bkg_normparams>
+<img src=../../images/bkg_normparams.png width=100%>
+</a>
+<p align=center>
+Selecting the normalization parameters in <span class=program>ATHENA</span>.
+</p>
+</div>
+
+<p>
+
+The <span class=param>&laquo;pre-edge range&raquo;</span> and
+<span class=param>&laquo;normalization range&raquo;</span> parameters define two
+regions of the data -- one before the edge and one after the edge.  A
+line is regressed to the data in the
+<span class=param>&laquo;pre-edge range&raquo;</span> and a polynomial is
+regressed to the data in the <span class=param>&laquo;normalization range&raquo;</span>.
+By default, a three-term (quadratic) polynomial is used as 
+the post-edge line, but its order can be controlled using the
+<span class=param>&laquo;normalization order&raquo;</span> parameter.  Note that
+<em>all</em> of the data in the
+<span class=param>&laquo;pre-edge range&raquo;</span> and in the
+<span class=param>&laquo;normalization range&raquo;</span> are used in the
+regressions, thus the regressions are relatively insensitive to the
+exact value of boundaries of those data ranges.
+</p>
+
+<p>
+The criteria for good pre- and post-edge lines are a bit subjective.
+It is very easy to see that the parameters are well chosen for these
+copper foil data.  Both lines on the left side of
+this figure
+obviously pass through the middle of the data in their respective ranges.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=bkg_prepost>&nbsp;</a><br><a href=../../images/bkg_prepost.png><img src="../../images/bkg_prepost.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/bkg_norm.png><img src="../../images/bkg_norm.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) Cu foil &mu;(E) with pre and post lines.  (Right) Normalized
+&mu;(E) data for a copper foil.
+</p>
+</div>
+
+<p>
+
+Data can be plotted with the pre-edge and normalization lines using
+controls in the <a href="../plot/tabs.html#plottinginenergy">energy plot tabs</a>.  It is a very good idea
+to visually inspect the pre-edge and normalization lines for at least
+some of your data to verify that your choice of normalization
+parameters is reasonable.
+</p>
+
+<p>
+When plotting the pre- and post-edge lines, the positions of the
+<span class=param>&laquo;pre-edge range&raquo;</span>, and
+<span class=param>&laquo;normalization range&raquo;</span> parameters are shown
+by the little orange markers.  (The upper bound of the
+<span class=param>&laquo;normalization range&raquo;</span> is off screen in the
+plot above of the copper foil.)
+</p>
+
+<p>
+The normalization constant, &mu;&#8320;(E&#8320;) is evaluated by extrapolating
+the pre- and post-edge lines to <span class=param>&laquo;e0&raquo;</span> and
+subtracting the e0-crossing of the pre-edge line from the e0-crossing
+of the post-edge line.  This difference is the value of the
+<span class=param>&laquo;edge step&raquo;</span> parameter.
+</p>
+
+<p>
+The pre-edge line is extrapolated to all energies in the measurement
+range of the data and subtracted from &mu;(E).  This has the effect
+of putting the pre-edge portion of the data on the y=0 axis.  The
+pre-edge subtracted data are then divided by &mu;&#8320;(E&#8320;).  The result
+is shown on the right side of
+the figure above.
+</p>
+
+
+<hr class=hide />
+<a name="theflatteningalgorithm">
+
+<h2>  The flattening algorithm</h2>
+</a>
+
+<p>
+
+For display of XANES data and certain kinds of analysis of &mu;(E)
+spectra, <span class=program>ATHENA</span> provides an additional bit of sugar.  By
+default, the <em>flattened</em> spectrum is plotted
+in energy rather than the normalized spectrum.  In
+the following plot,
+flattened data are shown along with a copy of the data that has the
+flattening turned off.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=bkg_normvflat>
+<img src=../../images/bkg_normvflat.png width=100%>
+</a>
+<p align=center>
+Comparing normalized (red) and flattened (blue) data using a Cu foil.
+</p>
+</div>
+
+<p>
+
+To display the flattened data, the difference in slope and
+quadrature between the pre- and post-edge lines is subtracted from the
+data, but only after <span class=param>&laquo;e0&raquo;</span>.  This has the
+effect of pushing the oscillatory part of the data up to the y=1
+line.  The flattened &mu;(E) data thus go from 0 to 1.  Note that
+this is for display and has no impact whatsoever on the extraction of
+&chi;(k) from the &mu;(E) spectrum.
+</p>
+
+<p>
+This is a nice way of displaying XANES data as it removes many
+differences in the shape of the post-edge region from the data.
+Computing
+<a href="../analysis/diff.html">difference spectra</a>
+or
+<a href="../process/sa.html">self absorption corrections</a>,
+performing
+<a href="../analysis/lcf.html">linear combination fitting</a>
+or
+<a href="../analysis/peak.html">peak fitting</a>,
+and many other chores often benefit from using flattened data rather than
+simply normalized data.
+</p>
+
+<p>
+This idea was swiped from <a href="http://www-ssrl.slac.stanford.edu/~swebb/sixpack.htm">SixPACK</a>.
+</p>
+
+
+<hr class=hide />
+<a name="gettingthepost-edgeright">
+
+<h2>  Getting the post-edge right</h2>
+</a>
+
+<p>
+
+It is important to always take care selecting the post-edge range.
+Mistakes made in selecting the <span class=param>&laquo;normalization range&raquo;</span>
+parameters can have a profound impact on the extracted &chi;(k)
+data.  Shown below
+is an extreme case of a poor choice of
+<span class=param>&laquo;normalization range&raquo;</span> parameters.  In this
+case, the upper bound was chosen to be on the high energy side of a
+subsequent edge in the spectrum.  The resulting
+<span class=param>&laquo;edge step&raquo;</span>
+is very wrong and the flattened data are highly distorted.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=bkg_postbad>&nbsp;</a><br><a href=../../images/bkg_postbad.png><img src="../../images/bkg_postbad.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/bkg_normbad.png><img src="../../images/bkg_normbad.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) The post-edge line is chosen very poorly for this BaTiO<sub>3</sub>
+spectrum.  The upper end of the normalization range is on the other
+side of the Ba L<sub>III</sub> edge.  (Right) The poor choice of
+normalization range for BaTiO<sub>3</sub> results in very poorly normalized
+Ti K edge data.
+</p>
+</div>
+
+
+<p>
+
+The previous example is obviously an extreme case, but it illustrates
+the need to examine the normalization parameters as you process your
+data.  In many cases, subtle mistakes in the choice of normalization
+parameters can have an impact on how the XANES data are interpreted
+and in how the &chi;(k) data are normalized.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=bkg_subtlepost>&nbsp;</a><br><a href=../../images/bkg_subtlepost.png><img src="../../images/bkg_subtlepost.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/bkg_subtlepost2.png><img src="../../images/bkg_subtlepost2.png" alt="foo" width=49%></a>
+<br><a href=../../images/bkg_subtlepost_compare.png><img src="../../images/bkg_subtlepost_compare.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Left) Example of a subtle effect in how the post-edge line is chosen
+in a hydrated uranyl species.  (Right) Comparing the flattened XANES
+data for different choices of post-edge line in a hydrated uranyl
+species.
+</p>
+</div>
+
+<p>
+
+In this example,
+the different choice for the lower bound of the
+normalization range (42 eV in one case, 125 eV in the other) has an
+impact on the flattening of these uranium edge data data,
+which in turn may have in impact in the evaluation of
+average valence in the system.  The small difference in the
+<span class=param>&laquo;edge step&raquo;</span> will also slightly attenuate
+&chi;(k).
+</p>
+
+
+<hr class=hide />
+<a name="gettingthepre-edgeright">
+
+<h2>  Getting the pre-edge right</h2>
+</a>
+
+<p>
+
+The choice of the <span class=param>&laquo;pre-edge range&raquo;</span>
+parameters is similarly important and also requires visual
+inspection.  A poor choice can result in an incorrect value of
+the <span class=param>&laquo;edge step&raquo;</span> and in distortions to the
+flattened data.  In
+the following spectrum,
+we see the presence of a
+small yttrium K-edge at 17038 eV which distorts the pre-edge for a
+uranium L<sub>III</sub>-edge spectrum at 17166 eV as shown in
+the figure below.
+In this case the
+<span class=param>&laquo;pre-edge range&raquo;</span> should be chosen to be
+entirely above the yttrium K-edge energy.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=bkg_uy>
+<img src=../../images/bkg_uy.png width=100%>
+</a>
+<p align=center>
+A sediment sample with both uranium and yttrium.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="measuringandnormalizingxanesdata">
+
+<h2>  Measuring and normalizing XANES data</h2>
+</a>
+
+<p>
+
+If time and the demands of the experiment permit, it is always a good
+idea to measure significant amounts of the pre- and post-edge
+regions.  About 150 volts in the pre-edge and at least 300 volts in
+the post-edge is a good rule of thumb.  With shorter regions, it may
+be difficult to find normalization boundaries that provide good
+normalization lines.  Without a good normalization, it can be
+difficult to compare a XANES measurement quantitatively with other
+measurements.
+</p>
+
+<p>
+Reducing the <span class=param>&laquo;normalization order&raquo;</span> might
+help in the case of limited post-edge range.  When measuring XANES
+spectra in a step scan, it is often a good idea to add several widely
+spaced steps to the end of a scan to extend the <span class=param>&laquo;normalization range&raquo;</span> without adding excessive time to scan.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

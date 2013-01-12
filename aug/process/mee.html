@@ -1,0 +1,186 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Step function removal</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/pixel.html" class="menu">Dispersive XAS</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/series.html" class="menu">Copy series</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Step function removal</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  <img src="../../images/bend.png" width="51" height="48" alt="" align="center" />  Step function removal
+</h1>
+<h2>
+  Handling multi-electron excitations and small contamination by another edge 
+</h2>
+
+<p>
+
+XAS is normally thought of in terms of a single electron phenomenon.
+A photon goes in and a photoelectron goes out.  In fact multi-body
+phenomena are possible and, on occasion, must be considered in the
+interpretation of XAS data.  One such is the so-called
+&ldquo;shake-off&rdquo; effect in which the
+photoelectron has sufficient kinetic energy to excite a high-lying
+electron.  For example, at around 415 eV above the uranium L<sub>III</sub>
+edge, the photoelectron can excite an  or N<sub>7</sub>
+transition.
+</p>
+
+<p>
+The cross-section of this secondary edge can be quite small.  In the
+example of the L<sub>III</sub>N<sub>6,7</sub> transition, the secondary cross section is
+about 3 orders of magnitude smaller than the primary L<sub>III</sub> edge.
+If, in this example, you have very good data with measurable EXAFS
+beyond about 10.5 &Aring;&#8315;&sup1;, the multi-electron excitation will not be
+small compared to the L<sub>III</sub> EXAFS.  Other multi-electron
+excitations have even larger cross-sections compared to their primary
+excitations.  For a much more complete discussion of multi-electron
+excitations see
+<a href="http://www.p-ng.si/~arcon/xas/mpe/mpe.htm">Iztok Arcon's Mulielectron Photoexcitations
+page</a>.
+</p>
+
+<p>
+Another similar phenomenon is the presence of a small impurity of the
+Z+1 element, leading to a small edge step well above the measured
+edge.  In some cases this small edge step might be hard to see in your
+&mu;(E) data, but are clearly visible as a step in the &chi;(k)
+which Fourier transforms into a low-R contribution in the &chi;(R)
+spectrum. 
+</p>
+
+<p>
+<span class=program>ATHENA</span> offers two relatively simple algorithms to attempt to
+remove the effect of a step due to multi-electron excitations or small
+impurities from your data.  One models the multi-electron excitation
+as a reflection of the data translated to the position in energy of
+the excitation.  The other places an arctangent function at the
+specified energy.  Be warned that the algorithm described here
+requires considerable user input and sufficient knowledge to properly
+evaluate the results.
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+This algorithm can do serious damage to your data.  Without a sober,
+knowledgeable assessment of the results of applying this algorithm
+made by <strong>you, the user</strong>, this part of
+<span class=program>ATHENA</span> should be considered fragile and dangerous.
+</p>
+
+<p>
+
+That said, let's carry on.
+</p>
+
+<p>
+<p>
+<p align=center>
+<a href="../../images/comingsoon.jpg" target=_blank><img class=flexy src="../../images/comingsoon.jpg" title="" alt=""></a>
+</p>
+<p align=center>
+Multi-electron excitation removal is on <span class=program>ATHENA</span>'s to do list.
+</p>
+</p>
+</p>
+
+<p>
+This is a good reference on the effect of small
+multi-electron excitations on otherwise excellent &chi;(k) data:
+C. Hennig, <em>Phys. Rev. B</em>, <strong>75</strong>, 
+(2007) p.&nbsp;035120<a href="http://dx.doi.org/10.1103/PhysRevB.75.035120"> (DOI: 10.1103/PhysRevB.75.035120)</a>.</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

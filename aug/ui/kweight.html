@@ -1,0 +1,181 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Using different k-weights</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../ui/styles.html" class="menu">Plot styles</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../ui/index.html" class="menu">User Interface</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../ui/frozen.html" class="menu">Frozen groups</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menuselect">User Interface</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/glist.html"  class="menu">Using the group list</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/mark.html"  class="menu">Marking groups</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/pluck.html"  class="menu">Pluck buttons</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/styles.html"  class="menu">Plot styles</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Using k-weights</span><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/frozen.html"  class="menu">Frozen groups</a><br /><a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Using different k-weights
+</h1>
+<h2>
+  k-weighting plots and Fourier transforms 
+</h2>
+
+<p>
+
+</p>
+
+<p>
+It is common practice in EXAFS to multiply &chi;(k) by different
+<em>k-weights</em>.  That is, the &chi;(k) array is
+multiplied point-by-point by k-array.  For k&sup1; weighted data, &chi;(k) at k=5 is multiplied by 5 and &chi;(k) at k=10 is multiplied
+by 10.  Similarly, for k&sup2; weighted data, &chi;(k) at k=5 is
+multiplied by 25 and &chi;(k) at k=10 is multiplied by 100.  This has
+the effect of amplifying the spectrum at the high-k end.  Since the
+oscillations attenuate quickly after the edge, k-weighting is a way of
+making the high-k oscillations visible in a plot.
+</p>
+
+<p>
+A common approach to choosing a k-weight is to make the size of the
+oscillation roughly constant over the range of the data.  Weighting
+data in that manner makes all parts of the data rage contribute
+equivalently.  When Fourier transformed, the &chi;(R) spectrum is
+then dominated by the oscillatory structure of &chi;(k).  The
+Fourier transform of an &ldquo;under-weighted&rdquo;
+spectrum may be dominated by a low-R peak representing the attenuation
+of the &chi;(k) spectrum.
+</p>
+
+<p>
+k-weighting is also used to change the emphasis of different
+contributions to the measured &chi;(k) spectrum.  Low Z elements
+such as O and C have scattering amplitudes that peak and low-k and
+become quite small at high-k.  Heavier elements, such as the
+transition metals, have small scattering amplitudes at low-k but
+continue to have large scattering amplitude at very high values of k.
+Very heavy elements, such as Pb or Sn, have minima in their scattering
+amplitudes around 5 to 7 &Aring;&#8315;&sup1;.  (See <a href="https://speakerdeck.com/bruceravel/the-ramsauer-townsend-effect-in-x-ray-absorption-spectroscopy">my presentation on the Ramsauer-Townsend effect</a>.)
+</p>
+
+<p>
+By weighting &chi;(k) with different k-weightings, the low and high
+portions of the &chi;(k) spectrum can be differently emphasized in a
+Fourier transform.  Doing so may help you better understand
+your data.
+</p>
+
+<p>
+The k-weighting is controlled by the bank of buttons labeled
+&ldquo;0&rdquo;,
+&ldquo;1&rdquo;,
+&ldquo;2&rdquo;,
+&ldquo;3&rdquo;, and
+&ldquo;kw&rdquo;,
+and located just beneath the purple plot buttons.  This is highlighted
+in the figure below
+The buttons selected determines the k-weighting used in a plot of
+&chi;(k) data or in a Fourier transform.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_kweights>
+<img src=../../images/ui_kweights.png width=100%>
+</a>
+<p align=center>
+<span class=program>ATHENA</span>'s controls for setting the amount of k-weighting in a
+plot or Fourier transform.
+</p>
+</div>
+
+<p>
+
+The k-weight button labeled &ldquo;kw&rdquo; is used in conjunction with the
+<span class=param>&laquo;arbitrary k-weight&raquo;</span> parameter.  When the
+&ldquo;kw&rdquo; button is selected, the &chi;(k) data are weighted by the
+value of the <span class=param>&laquo;arbitrary k-weight&raquo;</span>.  This
+can be used in a number of ways.  The simplest is if you simply want a
+non-integer weight.  If you want to overplot two different data groups
+each with a different k-weight, that can be done by setting
+the <span class=param>&laquo;arbitrary k-weight&raquo;</span> of each group appropriately.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

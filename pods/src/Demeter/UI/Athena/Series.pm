@@ -120,7 +120,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: copy series');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("series")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.series")});
 
   $this->SetSizerAndFit($box);
   return $this;

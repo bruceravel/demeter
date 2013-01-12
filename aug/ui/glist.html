@@ -1,0 +1,339 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Using the group list</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../ui/index.html" class="menu">User Interface</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../ui/mark.html" class="menu">Marking groups</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menuselect">User Interface</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Using the group list</span><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/mark.html"  class="menu">Marking groups</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/pluck.html"  class="menu">Pluck buttons</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/styles.html"  class="menu">Plot styles</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/kweight.html"  class="menu">Using k-weights</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/frozen.html"  class="menu">Frozen groups</a><br /><a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Using the group list
+</h1>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+background groups
+</p>
+
+
+<p>
+
+The group list is the primary mechanism for accessing and interacting
+with your data.  As data files are imported in <span class=program>ATHENA</span>, each gets
+an entry in the group list.  Data generated during the course of using
+<span class=program>ATHENA</span>, such as copied or merged groups, also get placed in the
+group list.
+</p>
+
+<p>
+Each group list entry consists of two parts, the label and the check
+button.  The label contains text identifying the group.  The default
+is for the label to be the same as the file name.  Clicking with the
+left mouse button on a label makes that group the
+<em>current</em> group.
+The current group's label is highlighted with a light red color and
+its parameters are displayed in the main window.  The current group is
+the one that gets plotted when the red plotting buttons are pressed.
+</p>
+
+<p>
+The check button is used to mark the group.  Marking, explained in
+detail <a href="../ui/mark.html">in the next section</a>,
+is one of the fundamental user interface features in <span class=program>ATHENA</span>.
+Any feature of <span class=program>ATHENA</span> that involves more than one group uses the
+mark buttons.
+</p>
+
+
+<hr class=hide />
+<a name="copyinggroups">
+
+<h2>  Copying groups</h2>
+</a>
+
+<p>
+
+You can copy a group by hitting
+<span class=key>Shift-Control</span>-<span class=key>y</span>
+or by selecting &ldquo;Copy group&rdquo; from the Group
+menu.  This makes an identical copy of the current group and places it
+at the end of the groups list.  All parameters are identical and the
+data arrays in <span class=program>IFEFFIT</span> are all copied -- only the <span class=program>IFEFFIT</span>
+group name in different.
+</p>
+
+<p>
+Copying is very useful for examining how changes in parameter values
+propagate through the data processing.  You can make one or more
+copies, change particular data values, and overplot the results.
+</p>
+
+<p>
+The process of comparing parameter values can be automated.
+</p>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Point to the page about the copy series tools
+</p>
+
+<hr class=hide />
+<a name="reorganizingthegrouplist">
+
+<h2>  Reorganizing the group list</h2>
+</a>
+<p>
+
+</p>
+
+<p>
+When a file is imported into <span class=program>ATHENA</span>, the name of the file is
+used as the label in the group list.  That's fine, but you can change
+the label by selecting &ldquo;Rename group&rdquo;
+from the Group menu, typing
+<span class=key>Shift-Shift-Control</span>-<span class=key>l</span>, or double clicking on
+an item in the group list.  This posts a dialog
+for entering the new label for the group, shown
+here.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_renaming>
+<img src=../../images/ui_renaming.png width=100%>
+</a>
+<p align=center>
+Renaming a group list entry.
+</p>
+</div>
+
+<p>
+
+Hitting <span class=key>Return</span> or clicking the OK button
+renames the group, shown
+here.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_renamed>
+<img src=../../images/ui_renamed.png width=100%>
+</a>
+<p align=center>
+After renaming a group list entry.
+</p>
+</div>
+
+<p>
+
+We have <a href="../bkg/rbkg.html">already seen</a>
+how groups can be copied.  Making one or more copies is an excellent
+tool for exploring the effects of the various parameters in the main
+window.
+</p>
+
+<p>
+There are several other useful tools for modifying the contents of the
+group list.  You can reorder the items in the groups list using
+<span class=key>Alt</span>-<span class=key>k</span> or
+<span class=key>Alt</span>-<span class=key>j</span>
+to move the current group up or down in the list.
+</p>
+
+<p>
+Hitting
+<span class=key>Control</span>-<span class=key>k</span> or
+<span class=key>Control</span>-<span class=key>j</span> changes the current
+group to the one above or below.
+</p>
+
+<p>
+<span class=key>Control</span>-drag-and-drop (i.e. holding the 
+<span class=key>Control</span> key while clicking and dragging) can
+be used to move groups around in the group list.  The dragged group
+will be placed above the group on which it is dropped.  Dropping a
+group in the white space below the last group will place it at the end
+of the list.
+</p>
+
+<p>
+Items can be removed from the list.  The current group or the marked
+groups can be removed from the project by selecting
+&ldquo;Remove group&rdquo; or
+&ldquo;Remove marked groups&rdquo;
+from the Group menu.  You can remove all the
+groups from the list by selecting
+&ldquo;Close project&rdquo; from the File or
+Group menu or by hitting <span class=key>Control</span>-<span class=key>w</span>.
+</p>
+
+
+<hr class=hide />
+<a name="informationaboutitemsinthegrouplist">
+
+<h2>  Information about items in the group list</h2>
+</a>
+<p>
+
+In the Group menu, the option for &ldquo;Show
+structure of current group&rdquo; displays
+the dialog shown
+here.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_about>
+<img src=../../images/ui_about.png width=100%>
+</a>
+<p align=center>
+The dialog containing information about the data group.
+</p>
+</div>
+
+<p>
+
+This presents all of the parameter values of the current group as well
+as the contents of the data arrays associated with the group.  This
+way of presenting the information is, admittedly, rather cryptic.  But
+it is very useful for developing and debugging the software.
+</p>
+
+
+<p>
+
+</td>
+<td width=346>
+<a class=floatright href="../../images/import_changetype.png"  title=The Athena Users' Guide target=_blank><img border=0 src="../../images/import_changetype.png"  title="The Athena Users' Guide"  alt="import_changetype.png"></a>
+If you mistakenly import a data group as the wrong record type, you
+can change it by selecting
+&ldquo;Change record type&rdquo; from the Group menu.
+You can only change between the various record types in energy,
+though.  If you import a &chi;(k) file as &mu;(E) by accident, you will have to
+remove the group and re-import it.
+</p>
+
+<hr class=hide />
+<a name="usingthemouseinthegrouplist">
+
+<h2>  Using the mouse in the group list</h2>
+</a>
+
+<p>
+
+You can turn on automated replotting when you select a new group by
+clicking on it in the group list.  This is done by 
+setting <span class=pref>&diams;Athena&nbsp;&rarr;&nbsp;select_replot</span>
+with the 
+<a href="../other/prefs.html">preferences tool</a>.
+</p>
+
+<p>
+If you right click on any item in the group list, a context menu is
+posted, as shown
+below,
+displaying the Group menu.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_groupcontext>
+<img src=../../images/ui_groupcontext.png width=100%>
+</a>
+<p align=center>
+Clicking the right mouse button on a group list entry pops up this
+context menu.
+</p>
+</div>
+
+<p>
+
+As mentioned above, double clicking on a group list item will post the
+dialog for renaming that group.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

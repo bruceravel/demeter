@@ -1,0 +1,383 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Other plotting features</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../plot/params.html" class="menu">Group-specific parameters</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../plot/index.html" class="menu">Plotting</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menuselect">Plotting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/tabs.html"  class="menu">Plot space tabs</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/krange.html"  class="menu">Spectral resolution and k-range</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/stack.html"  class="menu">Stacking plots</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/indic.html"  class="menu">Plot indicators</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/params.html"  class="menu">Group-specific parameters</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Other plotting features</span><br /><a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Other plotting features
+</h1>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Document all the special plots, plotting terminals, and save to image file.
+</p>
+
+<hr class=hide />
+<a name="zoomingandcursorposition">
+
+<h2>  Zooming and cursor position</h2>
+</a>
+
+<p>
+
+Zooming on a region of a plot is done using Gnuplot's own
+capabilities.  In the plot window, a zoom is initiated by a right
+click.  The mouse is then dragged to cover a rectangular area on the
+plot.  Right-clicking a second time will cause the plot to be
+redisplayed on the zoomed region.
+</p>
+
+<p>
+Gnuplot displays the position of the cursor in the bottom part of the
+plot window.  This is continuously updated as the mouse moves over the
+plot window.
+</p>
+
+
+<hr class=hide />
+<a name="specialplotsforthecurrentgroup">
+
+<h2>  Special plots for the current group</h2>
+</a>
+
+<div class=figure style="max-width: 806px; min-width: 7em;">
+<a name=plot_special>
+<img src=../../images/plot_special.png width=100%>
+</a>
+<p align=center>
+A number of special plots and other plotting features are provided by
+<span class=program>ATHENA</span> for visualizing particular aspects of your data.  The plot
+types described below are all available from the Plot menu.
+</p>
+</div>
+
+<dl>
+  
+<dt>
+  Quad plot
+</dt>
+<dd>
+The quad plot is the default plot that gets made when data are first
+imported.  Using the current set of processing parameters, the data
+are displayed in energy, k, R, and back-transform k all in the same
+plot window.<br />
+<a href="../../images/plot_quad.png" target=_blank><img class=flexy src="../../images/plot_quad.png" title="
+Quad plot of Fe foil.
+" alt="
+Quad plot of Fe foil.
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Normalized data and derivative
+</dt>
+<dd>
+This plot type shows the normalized &mu;(E) spectrum along with its
+derivative.  The derivative spectrum is scaled by an amount that makes
+it display nicely along with the normalized data.<br />
+<a href="../../images/plot_nd.png" target=_blank><img class=flexy src="../../images/plot_nd.png" title="
+Norm and deriv of Fe foil
+" alt="
+Norm and deriv of Fe foil
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Data + I0 * signal
+</dt>
+<dd>
+I&#8320; can be plotted
+along with &mu;(E) and the signal as shown below.
+The I&#8320; and signal channel is among the data saved in
+<a href="../output/project.html">a project file</a>.
+This example shows &mu;(E) of Au chloride along with the signal and
+I&#8320; channels.<br />
+<a href="../../images/plot_mui0.png" target=_blank><img class=flexy src="../../images/plot_mui0.png" title="
+mu(E) of Au chloride along with the signal and I0 channels.
+" alt="
+mu(E) of Au chloride along with the signal and I0 channels.
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  k123 plot
+</dt>
+<dd>
+A k123 plot is a way of visualizing the effect of k-weighting on the
+&chi;(k) spectrum.  The k&sup1;-weighted spectrum is scaled up to be
+about the same size as the k&sup2;-weighted spectrum.  Similarly, the
+k&sup3;-weighted spectrum is scaled down.
+<br />
+<a href="../../images/plot_k123.png" target=_blank><img class=flexy src="../../images/plot_k123.png" title="
+k123 plot of Fe foil
+" alt="
+k123 plot of Fe foil
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  R123 plot
+</dt>
+<dd>
+A R123 plot is a way of visualizing the effect of k-weighting on the
+&chi;(R) spectrum.  The Fourier transform is made with k-weightings of
+1, 2, and, 3.  The FT of the k&sup1;-weighted spectrum is scaled up to be
+about the same size as the FT or the k&sup2;-weighted spectrum.  Similarly, the
+FT of the k&sup3;-weighted spectrum is scaled down.  The current
+setting in the 
+<a href="tabs.html#plottinginr-space">R tab</a>.
+is used to make this plot.  For this figure, the magnitude setting was selected.
+<br />
+<a href="../../images/plot_r123.png" target=_blank><img class=flexy src="../../images/plot_r123.png" title="
+R123 plot of Fe foil
+" alt="
+R123 plot of Fe foil
+"></a>
+  <br />
+  <br />
+</dd>
+
+</dl>
+
+<hr class=hide />
+<a name="specialplotsforthemarkedgroups">
+
+<h2>  Special plots for the marked groups</h2>
+</a>
+
+<p>
+
+The &ldquo;Marked groups&rdquo; submenu offers two
+special kinds of plots relating to the set of groups in the group list
+that have been <a href="../ui/mark.html">marked</a>.
+</p>
+
+
+<dl>
+  
+<dt>
+  Plot with E0 at 0
+</dt>
+<dd>
+This special plot is used to visualize &mu;(E) spectra measured at
+different edges.  Each spectrum is shifted so that its point of E&#8320;
+is displayed at 0 on the energy axis.
+<br />
+<a href="../../images/plot_e0_0.png" target=_blank><img class=flexy src="../../images/plot_e0_0.png" title="
+Plot of Fe and Cu foils with E0 at 0.
+" alt="
+Plot of Fe and Cu foils with E0 at 0.
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Plot I0 of marked groups
+</dt>
+<dd>
+This plot allows eamination of the I&#8320; signals of a set of marked groups. 
+<br />
+<a href="../../images/plot_marked_i0.png" target=_blank><img class=flexy src="../../images/plot_marked_i0.png" title="
+The I0 signals of three marked groups
+" alt="
+The I0 signals of three marked groups
+"></a>
+  <br />
+  <br />
+</dd>
+
+</dl>
+
+
+<hr class=hide />
+<a name="specialplotsformergedgroups">
+
+<h2>  Special plots for merged groups</h2>
+</a>
+
+<p>
+
+When data are merged, the standard deviation spectrum is also computed
+and saved in
+<a href="../output/project.html">project files</a>.
+The merged data can be plotted along with its standard deviation
+<a href="../process/merge.html#merge_stddev">as shown in the merge section</a>
+in a couple of interesting ways.
+</p>
+
+
+<dl>
+  
+<dt>
+  Merge + standard deviation
+</dt>
+<dd>
+In this plot, the merged data are displayed along with the standard
+deviation.  The standard deviation has been added to and subtracted
+from the merged data.  This is the plot that is displayed by default
+when a merge is made.  This behavior is controled by the 
+<span class=pref>&diams;Athena&nbsp;&rarr;&nbsp;merge_plot</span>
+<a href="../other/prefs.html">configuration parameter</a>.
+<br />
+<a href="../../images/merge_stddev.png" target=_blank><img class=flexy src="../../images/merge_stddev.png" title="
+A plot of merged data +/- the standard deviation for Au hydroxide data
+" alt="
+A plot of merged data +/- the standard deviation for Au hydroxide data
+"></a>
+  <br />
+  <br />
+</dd>
+
+<dt>
+  Merge + variance
+</dt>
+<dd>
+In this plot, the standard deviation spectrum is plotted directly.  It
+is scaled to plot nicely with the merged data.  The point of this plot
+is to see how the variability in the data included in the merge
+is distributed in energy.
+<br />
+<a href="../../images/merge_variance.png" target=_blank><img class=flexy src="../../images/merge_variance.png" title="
+A plot of merged data and the variance for Fe foil data
+" alt="
+A plot of merged data and the variance for Fe foil data
+"></a>
+  <br />
+  <br />
+</dd>
+
+</dl>
+
+
+<hr class=hide />
+<a name="specialplottingtargets">
+
+<h2>  Special plotting targets</h2>
+</a>
+
+<p>
+
+The Plot menu provides a few more ways to control how your data are
+displayed.  The &ldquo;Save last plot as&rdquo; submenu
+allows you to send the most recent plot to a PNG or PDF file.  You
+will be prompted for a filename, then the most recent plot will be
+written to that file in the format specified.  Currently, only PNG and
+PDF are supported.  Saving to a file does not currently work for quad
+plots.
+</p>
+
+<p>
+Finally, you have the option of directing the on-screen plot to one of
+four terminals.  The selected terminal, #1 by default, is updated as
+new plots are made.  When you switch to a new terminal, other active
+terminals will become unchanging.  This means you can save a
+particular plot on screen while continuing to make new plots.
+</p>
+
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Condsider other file types.  SVG and EPS should work.
+Gnuplot's GIF and JPG terminals are not sufficiently featureful
+to replicate all the details of <span class=program>ATHENA</span>'s plots.
+<br /><br />
+Also consider making the number of terminals a configuration parameter.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

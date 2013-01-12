@@ -1,0 +1,184 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Project selection dialog</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../import/columns.html" class="menu">The column selection dialog</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../import/index.html" class="menu">Importing Data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../import/multiple.html" class="menu">Importing multiple data sets</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menuselect">Importing Data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/columns.html"  class="menu">The column selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">The project selection dialog</span><br />
+&nbsp;&#8618;&nbsp;<a href="../import/multiple.html"  class="menu">Importing multiple data sets</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/ref.html"  class="menu">Reference channel</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/preproc.html"  class="menu">Data preprocessing</a><br /><a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Project selection dialog
+</h1>
+<h2>
+  Importing data from Athena project files 
+</h2>
+
+<p>
+
+<a href="../output/project.html">Project files</a>
+are <span class=program>ATHENA</span>'s mechanism for saving the state of an analysis
+project.  The project selection dialog, shown
+below,
+provides a way of selectively importing part or all of the contents of
+the project file.
+</p>
+
+
+<div class=figure style="max-width: 448px; min-width: 7em;">
+<a name=import_projsel>
+<img src=../../images/import_projsel.png width=100%>
+</a>
+<p align=center>
+The project selection dialog.
+</p>
+</div>
+
+<p>
+
+Project files, like any other files are imported using the
+<a href="../import/columns.html#import_filedialog">file selection dialog</a>.  <span class=program>ATHENA</span> will recognize a
+project file and present the project selection dialog.
+</p>
+
+<p>
+The contents of the project file are listed on the left side of the
+dialog.  The contents of the
+<a href="../other/journal.html">journal</a>
+are listed in the box at the top right.  When you click on one of the
+data groups in the list on the left, it gets plotted and its title
+lines are inserted into the box at the lower right.  Using these parts
+of the dialog, you can examine the contents of your project file
+before importing them into <span class=program>ATHENA</span>.
+</p>
+
+<p>
+By selecting some of the projects from the list, you can import a
+subset of the project file.  The group listing uses extended
+selection:
+</p>
+
+
+<ul>
+  
+<li><p>
+Click on an item in the list to select one group
+</p></li>
+<li><p>
+<span class=key>Control</span>-click (i.e. hold down the <span class=key>Control</span>
+key while clicking) on an item in the list to add it to the selection
+</p></li>
+<li><p>
+<span class=key>Shift</span>-click to on a group to select all groups between it and the
+previously selected group.
+</p></li>
+</ul>
+
+<p>
+
+The buttons labeled &ldquo;All&rdquo;,
+and &ldquo;None&rdquo; can be used to select all groups
+or to clear the selection.  The &ldquo;Invert&rdquo;
+button will invert the selection of each group.
+</p>
+
+<p>
+Below those three buttons are a series of controls allowing somewhat
+finer grained control over how items from the group list are
+selected.  The &ldquo;Select every&rdquo; line allows
+selection by a regular pattern.  &ldquo;Select
+matching&rdquo; allows you to select groups that match a specified
+pattern using the full strength of perl's 
+<a href="../ui/mark.html#usingregularexpressionstomarkgroups">regular expression</a>.
+</p>
+
+<p>
+Once you have selected the groups you want to import, click the
+&ldquo;Import&rdquo; button.  If no groups are selected
+then all the groups will be imported.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

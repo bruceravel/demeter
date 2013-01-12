@@ -1,0 +1,148 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Convoluting data groups</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/smooth.html" class="menu">Smoothing</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/deconv.html" class="menu">Deconvolution</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Convolution and noise</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Convoluting data groups
+</h1>
+<h2>
+  Adding artificial broadening and artificial noise to your data 
+</h2>
+
+<p>
+
+This is one of <span class=program>ATHENA</span>'s odder tools.  It takes perfectly
+fine normalized &mu;(E) data and makes it worse by adding artificial
+broadening, artificial noise, or both.  The broadening can be a
+Gaussian or a Lorentzian convolution by the selected width in energy.
+The noise is randomly generated using an epsilon that is chosen as a
+fraction of the size of the edge step.
+</p>
+
+<p>
+Like other tools, there is a button for plotting the data along with
+its modification and another for turning the modified data into a data
+group listed in the group list.  These are shown in
+this screenshot.
+An example of broadened data is shown in on the left in
+the next figure
+and an example of data with artificial noise is shown on the right.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=convolution>
+<img src=../../images/convolution.png width=100%>
+</a>
+<p align=center>
+The convolution tool.
+</p>
+</div>
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=convolution_conv>&nbsp;</a><br><a href=../../images/convolution_conv.png><img src="../../images/convolution_conv.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/convolution_noise.png><img src="../../images/convolution_noise.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) Iron foil data broadened by 1 eV.
+(Right) Iron foil data with a bit of artificial noise added.
+</p>
+</div>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

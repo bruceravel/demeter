@@ -1,0 +1,149 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Pluck buttons</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../ui/mark.html" class="menu">Marking groups</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../ui/index.html" class="menu">User Interface</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../ui/styles.html" class="menu">Plot styles</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menuselect">User Interface</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/glist.html"  class="menu">Using the group list</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/mark.html"  class="menu">Marking groups</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Pluck buttons</span><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/styles.html"  class="menu">Plot styles</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/kweight.html"  class="menu">Using k-weights</a><br />
+&nbsp;&#8618;&nbsp;<a href="../ui/frozen.html"  class="menu">Frozen groups</a><br /><a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Pluck buttons
+</h1>
+<h2>
+  Interaction between Athena and the plot window 
+</h2>
+
+<p>
+
+Almost every text entry box that takes an energy or wavenumber value
+as its parameter has a little button next to it which is decorated
+with a small blue X, one of which is highlighted in
+the figure below.
+These are the <em>pluck</em> buttons and their
+purpose is to grab a value directly from the plot.  When you click one
+of these buttons, a message in the echo area prompts you to select a
+point from the plot, demonstrated in
+the next figure.
+When you click on the plot, the x-axis value of
+the point you clicked on gets inserted in the associated entry box.
+</p>
+
+<p>
+Along with the pluck buttons in the main window, several data
+processing and data analysis tools use pluck buttons, as does the
+<a href="../plot/indic.html">indicator</a>
+plot options tab.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ui_pluck>
+<img src=../../images/ui_pluck.png width=100%>
+</a>
+<p align=center>
+Using the pluck button for the upper edge of the normalization range.
+</p>
+</div>
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=ui_pluckpoint>&nbsp;</a><br><a href=../../images/ui_pluckpoint.png><img src="../../images/ui_pluckpoint.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/ui_plucked.png><img src="../../images/ui_plucked.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) After clicking on the pluck button, <span class=program>ATHENA</span> waits for you to
+click on the plot, which shows &mu;(E) for BaTiO<sub>3</sub>.  Only the
+x-axis value of the click on the plot is used by the pluck button.
+(Right) After clicking on the point shown in
+the previous figure,
+the value of about 243 is inserted as the value of the upper edge of the
+normalization range &ndash; clearly a better value for that
+parameter.
+</p>
+</div>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

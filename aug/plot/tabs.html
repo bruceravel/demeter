@@ -1,0 +1,286 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Plotting space tabs</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../plot/index.html" class="menu">Plotting</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../plot/krange.html" class="menu">Spectral resolution and k-range</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menuselect">Plotting</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Plot space tabs</span><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/krange.html"  class="menu">Spectral resolution and k-range</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/stack.html"  class="menu">Stacking plots</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/indic.html"  class="menu">Plot indicators</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/params.html"  class="menu">Group-specific parameters</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/etc.html"  class="menu">Other plotting features</a><br /><a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Plotting space tabs
+</h1>
+<h2>
+  Controlling how plots are displayed. 
+</h2>
+
+<hr class=hide />
+<a name="plottinginenergy">
+
+<h2>  Plotting in energy</h2>
+</a>
+
+<p>
+
+The appearance of the plots made in E-, k-, R-, or q-space are
+controlled by the contents of the plot options tabs in the lower right
+hand corner of <span class=program>ATHENA</span>.  This is highlighted in
+the following figure.
+</p>
+
+<p>
+In energy, you have the option of plotting &mu;(E) normalized or not
+and derivative or not.  The red buttons on the left control how the
+current group is plotted.  The purple buttons on the right control how
+marked groups are plotted.  For the current group, you also have the
+option of plotting the background function, the pre-edge line, or the
+post-edge polynomial.  As discussed in
+<a href="../bkg/norm.html">the normalization section</a>,
+it is very helpful to examine the pre- and post-edge lines to verify
+that data normalization is done correctly.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=plot_etab>
+<img src=../../images/plot_etab.png width=100%>
+</a>
+<p align=center>
+The plot options section with the energy tab showing.
+</p>
+</div>
+
+
+<p>
+
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis.  Both
+those these numbers are relative to <span class=param>&laquo;e0&raquo;</span>.
+The <span class=pref>&diams;Plot&nbsp;&rarr;&nbsp;emin</span>
+and <span class=pref>&diams;Plot&nbsp;&rarr;&nbsp;emax</span> preferences can
+be used to set the default plot range.  See also the
+<a href="../ui/styles.html">plot styles section</a>.
+</p>
+
+
+<hr class=hide />
+<a name="plottingink-space">
+
+<h2>  Plotting in k-space</h2>
+</a>
+
+<div class=smfigureright style="max-width: 227px; min-width: 7em;">
+<a name=plot_ktab>
+<img src=../../images/plot_ktab.png width=100%>
+</a>
+<p align=center>
+The k tab.
+</p>
+</div>
+
+<p>
+
+The plot of &chi;(k) is mostly determined by the value of the
+<a href="../ui/kweight.html">plotting k-weight buttons</a>.
+The only option on the k-space tab is to make the plot as k-weighted
+&chi;(E) rather than &chi;(k).  For the &chi;(E) plot, the
+k-axis is translated to absolute energy using the value of
+<span class=param>&laquo;e0&raquo;</span>.
+</p>
+
+<p>
+If the window button is checked, the windowing function used to make
+the forward Fourier transform will be plotted along with the plot for
+the current group.
+</p>
+
+<p>
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis.
+Although either number can be a negative value, there is no data below
+k=0.  The <span class=pref>&diams;Plot&nbsp;&rarr;&nbsp;kmin</span>
+and <span class=pref>&diams;Plot&nbsp;&rarr;&nbsp;kmax</span> preferences can
+be used to set the default plot range.  See also the
+<a href="../ui/styles.html">plot styles section</a>.
+</p>
+
+
+
+<hr class=hide />
+<a name="plottinginr-space">
+
+<h2>  Plotting in R-space</h2>
+</a>
+
+<div class=smfigureleft style="max-width: 224px; min-width: 7em;">
+<a name=plot_rtab>
+<img src=../../images/plot_rtab.png width=100%>
+</a>
+<p align=center>
+The R tab.
+</p>
+</div>
+
+<p>
+
+The plot of &chi;(R) is determined in part by the value of the
+<a href="../ui/kweight.html">plotting k-weight buttons</a>.
+The options in the tab tell <span class=program>ATHENA</span> which part of the complex
+&chi;(R) to plot.  For the current group, the parts are inclusive.
+Each selected part is plot.
+</p>
+
+<p>
+For the current group, you also have the option of plotting the envelope,
+which is the magnitude plotted in the same color as the negative
+magnitude.  Selecting the envelope deselects the magnitude and vice versa.
+For marked groups, the parts are plotted exclusively and the envelope
+is not available.
+</p>
+
+<p>
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis,
+behave much like the same boxes on the k tab, and have similar preferences.
+</p>
+
+
+
+<hr class=hide />
+<a name="plottinginq-space">
+
+<h2>  Plotting in q-space</h2>
+</a>
+
+
+<p>
+
+The letter <em>q</em> is used to denote wavenumber of the
+filtered &chi;(k) function and to avoid confusion with unfiltered
+k-space.  The units of <tt>q</tt> are
+inverse Angstroms, just as for <tt>k</tt>.
+</p>
+
+
+<div class=smfigureright style="max-width: 224px; min-width: 7em;">
+<a name=plot_qtab>
+<img src=../../images/plot_qtab.png width=100%>
+</a>
+<p align=center>
+The q tab.
+</p>
+</div>
+
+<p>
+
+The plot of &chi;(q) is determined in part by the value of the
+<a href="../ui/kweight.html">plotting k-weight buttons</a>.
+The options in the tab tell <span class=program>ATHENA</span> which part of the complex
+&chi;(q) to plot.  For the current group, the parts are inclusive.
+Each selected part is plot.
+</p>
+
+<p>
+For the current group, you also have the option of plotting the envelope,
+which is the magnitude plotted in the same color as the negative
+magnitude.  Selecting the envelope deselects the magnitude and vice versa.
+For marked groups, the parts are plotted exclusively and the envelope
+is not available.
+</p>
+
+<p>
+If the window button is checked, the windowing function used to make
+the forward Fourier transform will be plotted along with the plot for
+the current group.
+</p>
+
+<p>
+The two text entry boxes at the bottom of the tab are used to
+determine the extent of the data range plotted on the x-axis,
+behave much like the same boxes on the k tab, and have similar preferences.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

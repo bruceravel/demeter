@@ -131,6 +131,17 @@ sub replot {
   return $self;
 };
 
+sub image {
+  my ($self, $file, $terminal) = @_;
+  my $save = Demeter->co->default("gnuplot","termparams");
+  if ($terminal eq 'pdf') {
+    Demeter->co->set_default("gnuplot","termparams", $save." ".Demeter->co->default("gnuplot","pdfparams"));
+  };
+  $self->chart("plot", "image", {file=>$file, terminal=>$terminal});
+  Demeter->co->set_default("gnuplot","termparams", $save);
+  return $self;
+};
+
 override 'plot_kylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;

@@ -362,6 +362,7 @@ const my $UNFREEZE_MARKED	=> Wx::NewId();
 const my $FREEZE_REGEX		=> Wx::NewId();
 const my $UNFREEZE_REGEX	=> Wx::NewId();
 const my $FREEZE_TOGGLE_ALL	=> Wx::NewId();
+const my $FREEZE_DOC	        => Wx::NewId();
 
 const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
@@ -379,6 +380,11 @@ const my $TERM_1		=> Wx::NewId();
 const my $TERM_2		=> Wx::NewId();
 const my $TERM_3		=> Wx::NewId();
 const my $TERM_4		=> Wx::NewId();
+const my $PLOT_PNG		=> Wx::NewId();
+const my $PLOT_GIF		=> Wx::NewId();
+const my $PLOT_JPG		=> Wx::NewId();
+const my $PLOT_PDF		=> Wx::NewId();
+const my $PLOT_DOC		=> Wx::NewId();
 
 const my $SHOW_BUFFER		=> Wx::NewId();
 const my $PLOT_YAML		=> Wx::NewId();
@@ -403,6 +409,7 @@ const my $MARK_INVERT		=> Wx::NewId();
 const my $MARK_TOGGLE		=> Wx::NewId();
 const my $MARK_REGEXP		=> Wx::NewId();
 const my $UNMARK_REGEXP		=> Wx::NewId();
+const my $MARK_DOC		=> Wx::NewId();
 
 const my $MERGE_MUE		=> Wx::NewId();
 const my $MERGE_NORM		=> Wx::NewId();
@@ -410,6 +417,7 @@ const my $MERGE_CHI		=> Wx::NewId();
 const my $MERGE_IMP		=> Wx::NewId();
 const my $MERGE_NOISE		=> Wx::NewId();
 const my $MERGE_STEP		=> Wx::NewId();
+const my $MERGE_DOC		=> Wx::NewId();
 
 const my $DOCUMENT		=> Wx::NewId();
 const my $DEMO			=> Wx::NewId();
@@ -563,6 +571,8 @@ sub menubar {
   $freezemenu->Append($UNFREEZE_MARKED,   "Unfreeze marked groups", "Unfreeze marked groups");
   $freezemenu->Append($FREEZE_REGEX,      "Freeze by regexp", "Freeze by regular expression");
   $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regexp", "Unfreeze by regular expression");
+  $freezemenu->AppendSeparator;
+  $freezemenu->Append($FREEZE_DOC,      "Document section: freezing groups", "Open the document page on freezing groups" );
   $app->{main}->{freezemenu} = $freezemenu;
 
 
@@ -593,12 +603,20 @@ sub menubar {
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
   if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+    my $imagemenu = Wx::Menu->new;
+    $imagemenu->Append($PLOT_PNG, "PNG", "Send the last plot to a PNG file");
+    $imagemenu->Append($PLOT_PDF, "PDF", "Send the last plot to a PDF file");
+
+    $plotmenu->AppendSeparator;
+    $plotmenu->AppendSubMenu($imagemenu, "Save last plot as...", "Save the last plot as an image file");
     $plotmenu->AppendSeparator;
     $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
     $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
     $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
     $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
   };
+  $plotmenu->AppendSeparator;
+  $plotmenu->Append($PLOT_DOC,      "Document section: plotting data", "Open the document page on plotting data" );
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
@@ -608,6 +626,8 @@ sub menubar {
   $markmenu->Append($MARK_INVERT,   "Invert marks\tShift+Ctrl+i",        "Invert all mark" );
   $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tShift+Ctrl+r",      "Mark all groups matching a regular expression" );
   $markmenu->Append($UNMARK_REGEXP, "Unmark by regexp\tShift+Ctrl+x",     "Unmark all groups matching a regular expression" );
+  $markmenu->AppendSeparator;
+  $markmenu->Append($MARK_DOC,      "Document section: marking groups", "Open the document page on marking groups" );
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
@@ -621,6 +641,8 @@ sub menubar {
   $mergemenu->Check($MERGE_IMP,   1) if ($demeter->co->default('merge', 'weightby') eq 'importance');
   $mergemenu->Check($MERGE_NOISE, 1) if ($demeter->co->default('merge', 'weightby') eq 'noise');
   $mergemenu->Check($MERGE_STEP,  1) if ($demeter->co->default('merge', 'weightby') eq 'step');
+  $mergemenu->AppendSeparator;
+  $mergemenu->Append($MERGE_DOC,  "Document section: merging data", "Open the document page on merging data" );
 
 
   my $helpmenu   = Wx::Menu->new;
@@ -642,7 +664,7 @@ sub menubar {
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
+  $helpmenu       -> Enable($_,0) foreach ($DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -929,6 +951,10 @@ sub OnMenuClick {
       $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
       last SWITCH;
     };
+    ($id == $MERGE_DOC) and do {
+      $app->document('process.merge');
+      last SWITCH;
+    };
 
     ## -------- monitor menu
     ($id == $SHOW_BUFFER) and do {
@@ -1129,6 +1155,28 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PLOT_PNG) and do {
+      $app->image('png');
+      last SWITCH;
+    };
+    ($id == $PLOT_GIF) and do {
+      $app->image('gif');
+      last SWITCH;
+    };
+    ($id == $PLOT_JPG) and do {
+      $app->image('jpeg');
+      last SWITCH;
+    };
+    ($id == $PLOT_PDF) and do {
+      $app->image('pdf');
+      last SWITCH;
+    };
+
+    ($id == $PLOT_DOC) and do {
+      $app->document('plot');
+      last SWITCH;
+    };
+
     ($id == $TERM_1) and do {
       $demeter->po->terminal_number(1);
       last SWITCH;
@@ -1168,6 +1216,10 @@ sub OnMenuClick {
     };
     ($id == $UNMARK_REGEXP) and do {
       $app->mark('unmark_regexp');
+      last SWITCH;
+    };
+    ($id == $MARK_DOC) and do {
+      $app->document('ui.mark');
       last SWITCH;
     };
 
@@ -1220,11 +1272,21 @@ sub OnMenuClick {
       $app->quench('invert');
       last SWITCH;
     };
+    ($id == $FREEZE_DOC) and do {
+      $app->document('ui.frozen');
+      last SWITCH;
+    };
 
     ($id == wxID_ABOUT) and do {
       $app->on_about;
       return;
     };
+
+    ($id == $DOCUMENT) and do {
+      $app->document('index');
+      return;
+    };
+
 
   };
 };
@@ -1289,6 +1351,7 @@ sub main_window {
 		   SelfAbsorption   => "Self-absorption correction",
 		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
+		   Summer	    => "Data summation",
 		   LCF		    => "Linear combination fitting",
 		   PCA		    => "Principle components analysis",
 		   PeakFit	    => "Peak fitting",
@@ -1319,18 +1382,19 @@ sub main_window {
 		     'SelfAbsorption',	  # 8
 		     'Dispersive',	  # 9
 		     'Series',            # 10
+		     'Summer',            # 11
 		     # -----------------------
-		     'LCF',		  # 12
-		     'PCA',		  # 13
-		     'PeakFit',		  # 14
-		     'LogRatio',	  # 15
-		     'Difference',	  # 16
+		     'LCF',		  # 13
+		     'PCA',		  # 14
+		     'PeakFit',		  # 15
+		     'LogRatio',	  # 16
+		     'Difference',	  # 17
 		     # -----------------------
-		     'XDI',               # 18
-		     'Watcher',           # 19
-		     'Journal',		  # 20
-		     'PluginRegistry',    # 21
-		     'Prefs',		  # 22
+		     'XDI',               # 19
+		     'Watcher',           # 20
+		     'Journal',		  # 21
+		     'PluginRegistry',    # 22
+		     'Prefs',		  # 23
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
@@ -1368,8 +1432,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(11, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(17, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(12, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(18, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1607,21 +1671,22 @@ sub get_view {
 	       'SelfAbsorption',	   # 8
 	       'Dispersive',	           # 9
 	       'Series',		   # 10
+	       'Summer',		   # 11
 	       q{}, # -----------------------
-	       'LCF',			   # 12
-	       'PCA',			   # 13
-	       'PeakFit',		   # 14
-	       'LogRatio',		   # 15
-	       'Difference',		   # 16
+	       'LCF',			   # 13
+	       'PCA',			   # 14
+	       'PeakFit',		   # 15
+	       'LogRatio',		   # 16
+	       'Difference',		   # 17
 	       q{}, # -----------------------
-	       'XDI',			   # 18
-	       'Watcher',		   # 19
-	       'Journal',		   # 20
-	       'PluginRegistry',	   # 21
-	       'Prefs',		           # 22
+	       'XDI',			   # 19
+	       'Watcher',		   # 20
+	       'Journal',		   # 21
+	       'PluginRegistry',	   # 22
+	       'Prefs',		           # 23
 	      );
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 19, 1);
+    splice(@views, 20, 1);
   };
   return $views[$i];
 };
@@ -1640,7 +1705,7 @@ sub make_page {
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
 
   #next if (not exists $app->{main}->{$which}->{document});
-  $app->{main}->{$view}->{document} -> Enable(0);
+  #$app->{main}->{$view}->{document} -> Enable(0);
 
   #$hh -> Fit($app->{main}->{$view});
   $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
@@ -1794,6 +1859,35 @@ sub plot {
   $app->heap_check(0);
   $app->OnGroupSelect(0,0,0);
   undef $busy;
+};
+
+sub image {
+  my ($self, $terminal) = @_;
+
+  my $on_screen = lc($::app->{lastplot}->[0]);
+  if ($on_screen eq 'quad') {
+    $::app->{main}->status("Cannot save a quad plot to an image file.", 'alert');
+    return;
+  };
+
+  my $name = ($::app->{lastplot}->[1] eq 'single') ? $::app->current_data->name : $::app->{main}->{project}->GetLabel;
+  $name =~ s{\s+}{_}g;
+
+  my $suffix = $terminal;
+  $terminal = 'pngcairo' if $terminal eq 'png';
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
+				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving image canceled.");
+    return;
+  };
+  my $file = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  Demeter->po->image($file, $terminal);
+  $::app->plot(q{}, q{}, @{$::app->{lastplot}});
+  $::app->{main}->status("Saved $suffix image to \"$file\".");
 };
 
 sub spacetab {
@@ -2231,10 +2325,38 @@ sub show_epsilon {
       -> Show;
 };
 
+
 sub document {
-  my ($app, $which) = @_;
-  print "show document for $which\n";
+  my ($app, $doc, $target) = @_;
+  my $file;
+  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my $url = Demeter->co->default('athena', 'doc_url');
+  if (any {$doc eq $_} (qw(analysis bkg examples import other output params plot process ui))) {
+    push @path, $doc;
+    $file = 'index';
+    $url .= $doc . '/index.html';
+  } elsif ($doc =~ m{\.}) {
+    my @parts = split(/\./, $doc);
+    push @path, $parts[0];
+    $file = $parts[1];
+    $url .= $parts[0] . '/' . $parts[1] . ".html";
+  } else {
+    $file = $doc;
+    $url .= $doc . '.html';
+  };
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  if (-e $fname) {
+    $fname  = 'file://'.$fname;
+    $fname .= '#'.$target if $target;
+    $::app->{main}->status("Displaying document page: $fname");
+    Wx::LaunchDefaultBrowser($fname);
+  } else {
+    $url .= '#'.$target if $target;
+    Wx::LaunchDefaultBrowser($url);
+    ##$::app->{main}->status("Document target not found: $fname");
+  };
 };
+
 
 =for Explain
 

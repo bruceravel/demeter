@@ -1,0 +1,478 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Basic data processing</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../examples/index.html" class="menu">Worked examples</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../examples/aucl.html" class="menu">Linear combination analysis</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menuselect">Worked examples</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Basic data processing</span><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/aucl.html"  class="menu">Linear combination analysis</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Basic data processing
+</h1>
+
+<p>
+
+This worked example will walk you through data import, demonstrate
+calibration, alignment, and merging of data, and consider well chosen
+parameter values for background removal and Fourier transform.  This
+example uses data collected on an iron foil at three temperatures.
+</p>
+
+
+
+<p>
+
+The data used in this example can be found
+<a href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/Fe%20foil">at my Github site</a>.
+They include three scans on an iron foil measured at 60K, and two each
+at 150K and 300K.
+</p>
+
+
+
+<p>
+
+To begin, <a href="../import/columns.html">import</a>
+the first scan at 60K, <span class=file>fe.060</span>.  This is a
+relatively simple data file containing columns for energy and the
+signals on the I0 and It detectors.  Select columns to form &mu;(E)
+data as shown in the image below.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=ex_data_col>
+<img src=../../images/ex_data_col.png width=100%>
+</a>
+<p align=center>
+The column selection dialog with columns chosen correctly for the iron
+foil data.
+</p>
+</div>
+
+<p>
+
+When I collected these data, I purposefully miscalibrated the
+monochromator so that I would have a data set for explaining the use
+of <span class=program>ATHENA</span>'s calibration tool.  The first thing to do, then, is
+to correctly calibrate these data.
+</p>
+
+<p>
+Open the <a href="../process/cal.html">calibration tool</a> by selecting &ldquo;Calibrate energies&rdquo; from the Data menu.  The derivative of
+&mu;(E) for these data will be plotted, shown
+below on the left.
+The choice of edge position, denoted by the little orange circle, is
+reasonable in that it is close to the first peak of the first
+derivative, as one expects.  The monochromator calibration is
+obviously wrong as the orange circle is at 7105.5 eV, while the
+tabulated value for the iron K edge is 7112 eV.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=ex_data_calib>&nbsp;</a><br><a href=../../images/ex_data_calib.png><img src="../../images/ex_data_calib.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/ex_data_second.png><img src="../../images/ex_data_second.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The iron foil data, as plotted in the calibration tool.  (Left)
+Derivative of &mu;(E).  (Right) Second derivative of &mu;(E).
+</p>
+</div>
+
+<p>
+
+We want to select the peak of the first derivative and set that point
+to 7112 eV.  We can simply use the currently selected point -- it is
+quite close to the peak.  Alternately, we can click the
+&ldquo;Select a point&rdquo; button and try to click on
+the plot, selecting  point even closer to the peak.  To do that, it
+would be helpful to change the value of emin and emax in the
+<a href="../plot/tabs.html">energy plot tab</a>
+the replot the data such that a tighter region around the peak is
+displayed.
+</p>
+
+<p>
+A third, highly accurate way of finding the exact peak of the first
+derivative is to plot the second derivative of the data by selecting
+&ldquo;second deriv&rdquo; from the &ldquo;display&rdquo; menu.  The second derivative of the data
+along with the currently selected value of edge position are shown
+on the right of
+the figure above.
+</p>
+
+<p>
+With the second derivative selected for display, the
+&ldquo;Find zero-crossing&rdquo; button becomes
+activated.  clicking that button will cause <span class=program>ATHENA</span> to search in
+both directions for the nearest energy value that hits the y=0 axis
+and select that as the new edge position.  The value should be about
+7105.3 eV.  Click the &ldquo;Calibrate&rdquo; button
+and return to the main window.
+</p>
+
+<p>
+You will notice two things once the main window is displayed again:
+the value of <span class=param>&laquo;E0&raquo;</span> is now 7112 and
+the value of the <span class=param>&laquo;eshift&raquo;</span> parameter is now
+about 6.7.  In <span class=program>ATHENA</span>, calibration works by simultaneously
+setting those two parameters such that the selected point has the
+chosen energy value.
+</p>
+
+<p>
+Now, import the second scan at 60K, <span class=file>fe.061</span>.
+<a href="../ui/mark.html">Mark</a> both groups
+by clicking on their little purple buttons and plot them in energy by
+clicking on the <span class=purple>E</span> button.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=ex_data_misaligned>&nbsp;</a><br><a href=../../images/ex_data_misaligned.png><img src="../../images/ex_data_misaligned.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/ex_data_align.png><img src="../../images/ex_data_align.png" alt="foo" width=49%></a>
+<br><a href=../../images/ex_data_chik.png><img src="../../images/ex_data_chik.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/ex_data_aligned.png><img src="../../images/ex_data_aligned.png" width=49%></a></a>
+<p>
+(Upper left) Misaligned iron foil &mu;(E) data.
+(Upper right) The derivatives of the misaligned data, as plotted in
+the alignment tool.  (Lower left) Aligned data plotted in k, but
+with <span class=param>&laquo;E0&raquo;</span> unconstrained. (Lower right)
+Aligned data plotted in k after constraining <span class=param>&laquo;E0&raquo;</span>.
+Once aligned and constrained in <span class=param>&laquo;E0&raquo;</span>, these
+successive scans are quite consistent.
+</p>
+</div>
+
+<p>
+
+The upper left of
+the image above
+shows that these data are not aligned.  Since they are
+successive scans on the same iron foil under the same experimental
+conditions, we expect these data to be identical within statistical
+noise.  The reason that they are different is that the second scan has
+not yet been calibrated.
+</p>
+
+<p>
+Fixing this requires two steps.  First, open the <a href="../process/align.html">alignment tool</a> by selecting
+&ldquo;Align scans&rdquo; from the Data menu.  The two
+scans are plotted as the derivative of &mu;(E).  The first scan in
+the list, <span class=file>fe.060</span>, is automatically
+selected in the &ldquo;Standard&rdquo; menu.  The
+second scan is highlighted in orange in the groups list and is
+displayed as the &ldquo;Other&rdquo;.
+</p>
+
+<p>
+These are very clean data, so the automatic alignment algorithm should
+work well.  Click the &ldquo;Auto align&rdquo; button.
+If you data is noisy, the automated alignment might not work well, in
+which case you can use the other buttons to adjust the energy shift
+until you are satisfied that the data are well aligned.
+</p>
+
+<p>
+Returning to the main menu, we find that the <span class=param>&laquo;eshift&raquo;</span>
+parameter for <span class=file>fe.061</span> is now about 6.7 eV.
+When plotted together in energy, the data are well aligned.  However
+when plotted together in k by pressing
+the <span class=purple>k</span> button, there remains a
+problem, as we see in the lower left of
+the figure above.
+</p>
+
+<p>
+The <span class=file>fe.061</span> data have been aligned, but not
+calibrated.  That is, its <span class=param>&laquo;E0&raquo;</span> parameter
+has not been set to the same value as for the
+<span class=file>fe.060</span> data.  Consequently, the position
+in the data where k=0 is different for the two spectra and the &chi;(k)
+data from the background removal are different.
+</p>
+
+<p>
+To correct this, you can either enter the value for
+<span class=param>&laquo;E0&raquo;</span> from
+<span class=file>fe.060</span> -- 7112 eV -- into the
+<span class=param>&laquo;E0&raquo;</span> text entry box after clicking on
+<span class=file>fe.061</span> in the group list.  Alternately,
+you can select <span class=file>fe.060</span> in the group list,
+then right click on the <span class=param>&laquo;E0&raquo;</span> parameter to
+raise its <a href="../params/constrain.html#constrainingindividualparameters">context menu</a> and
+select &ldquo;Set all groups to this value of E0&rdquo;.
+Once the <span class=param>&laquo;E0&raquo;</span> parameters are set the same
+for these data sets, we see
+above in
+the lower right that
+the data are quite consistent between these two scans.
+</p>
+
+<p>
+Now we need to import the remaining data measured on the iron foil.
+Using the file selection dialog, select the remaining data files as
+described in
+<a href="../import/multiple.html">the section on multiple file import</a> and shown
+below.
+</p>
+
+
+<div class=figure style="max-width: 736px; min-width: 7em;">
+<a name=ex_data_many>
+<img src=../../images/ex_data_many.png width=100%>
+</a>
+<p align=center>
+Importing the remaining iron foil data.
+</p>
+</div>
+
+<p>
+
+Clicking the &ldquo;Open button&rdquo; will import all
+those data files and list them in the group list.  Once they are
+imported, <a href="../ui/mark.html">mark</a>
+all of the groups either by typing
+<span class=key>Control</span>-<span class=key>a</span> or by clicking the
+&ldquo;A&rdquo; mark button above the group list.
+Finally select the <span class=file>fe.060</span> group by
+clicking on it in the group list.  Once you have done all of that,
+<span class=program>ATHENA</span> will look like
+this.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ex_data_marked>
+<img src=../../images/ex_data_marked.png width=100%>
+</a>
+<p align=center>
+All of the iron foil data have been imported and marked.
+</p>
+</div>
+
+<p>
+
+At this point, only <span class=file>fe.061</span> has been
+aligned to <span class=file>fe.060</span> and had its value of
+<span class=param>&laquo;E0&raquo;</span> properly constrained.  We need to do
+so for the remaining data groups.
+</p>
+
+<p>
+Processing all 5 of the remaining data groups would be quite tedious
+if we had to handle each one individually.  Fortunately <span class=program>ATHENA</span>
+has lots of tools to help process large quantities of data.  To
+<a href="../process/align.html#align">align</a>
+the remaining data to <span class=file>fe.060</span>, choose
+"Align data" from the Data menu.  <span class=program>ATHENA</span> chooses the first item
+in the group list as the data alignment standard and selects the
+second group as the one to align.  These selections are shown at the
+top of
+this.
+</p>
+
+<p>
+Of course, <span class=file>fe.061</span> has already be aligned.
+If you select any other group by clicking on it in the group list, you
+will see that it it is not yet aligned.  You can align the remaining
+groups by selecting each on in turn and clicking the
+&ldquo;Auto align&rdquo; button --- but that seems
+tedious.  Much better to click the
+&ldquo;Align marked groups&rdquo;
+button.  Since all the groups are aligned, the automated alignment algorithm
+will be applied to each one in turn.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ex_data_alignmarked>
+<img src=../../images/ex_data_alignmarked.png width=100%>
+</a>
+<p align=center>
+All of the iron foil data are marked and waiting to be aligned.
+</p>
+</div>
+
+<p>
+
+Once finished, you can click on groups to check on the quality of the
+alignment.  Since these are very good data, the automated alignment
+should have worked well.  Click on the
+&ldquo;Return to the main window&rdquo;
+button to continue with the data processing.
+</p>
+
+<p>
+Each of the data groups has now been aligned, but only
+<span class=file>fe.061</span> has the same value of
+<span class=param>&laquo;E0&raquo;</span> as
+<span class=file>fe.060</span>.  Again, clicking through the
+groups list and editing the <span class=param>&laquo;E0&raquo;</span> values
+seems horribly tedious.  Here we see the true value of the
+&ldquo;Set all groups to this value of E0&rdquo;
+in the <span class=param>&laquo;E0&raquo;</span> <a href="../params/constrain.html#constrainingindividualparameters">context menu</a>.
+</p>
+
+<p>
+The &chi;(k) data for the aligned and constrained data are shown
+below.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=ex_data_allchik>
+<img src=../../images/ex_data_allchik.png width=100%>
+</a>
+<p align=center>
+The &chi;(k) spectra for all the iron foil data.
+</p>
+</div>
+
+<p>
+
+There is another, perhaps quicker, way of doing everything that is
+described above.  To start, import the <span class=file>fe.060</span>
+data and calibrate it as explained at the start of this section.  Then
+use the file selection dialog to select all of the remaining data.
+Click to the &ldquo;Preprocess&rdquo; tab, select the
+<span class=file>fe.060</span> data as the standard, then click
+the &ldquo;Mark&rdquo;, &ldquo;Align&rdquo;,
+and &ldquo;Set parameters&rdquo; buttons.
+</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=ex_data_preproc>
+<img src=../../images/ex_data_preproc.png width=100%>
+</a>
+<p align=center>
+Using the preprocessing features of the column selection dialog to
+align and constrain data on the fly as it is imported.
+</p>
+</div>
+
+<p>
+
+Now click the &ldquo;Open&rdquo; button.  As the
+remaining data are imported, the alignment and
+<span class=param>&laquo;E0&raquo;</span> constraint will happen on the fly and
+the new group will be marked.  Once the file selection dialog using
+these preprocessing features is finished, <span class=program>ATHENA</span> should look
+just like it did in
+the screenshot above.
+</p>
+
+<p>
+As a final chore in this section, we will
+<a href="../process/merge.html">merge</a>
+the data measured at each temperature.  Since the data are properly
+aligned and calibrated, this is a fine time to perform the merge.
+First mark each data group that should be merged together.  As we see in
+the screenshot below,
+the two groups measured at 300K are marked.  Select
+&ldquo;Merge marked data in mu(E)&rdquo; from the Merge
+menu.  This will perform the merge then insert a new group in the
+group list.  Then select &ldquo;Change group label&rdquo;
+from the Group menu or type <span class=key>Control</span>-<span class=key>l</span>
+to give the merged group a more suggestive name.  Repeat this process
+for the data at each temperature.
+</p>
+
+<p>
+Now you are ready to begin analysis on the iron foil data!
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=ex_data_merge>
+<img src=../../images/ex_data_merge.png width=100%>
+</a>
+<p align=center>
+Merging the data at each temperature and renaming the merged groups.
+</p>
+</div>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

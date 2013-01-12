@@ -52,6 +52,7 @@
 	<li><a href="#VERSION">VERSION</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#TESTS">TESTS</a></li>
 	<li><a href="#METHODS">METHODS</a></li>
 	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
 	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
@@ -94,6 +95,8 @@ alternative importance calculation.  This gives the user much more
 information about the list of paths from a Feff calculation and
 hopefully provides much better guidance for creating fitting models.</p>
 
+<h1 id="TESTS">TESTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
 <dl>
 	<dt><code>chimagW</code></dt>
 		<dd><p>The sum of the magnitude of chi(k) is computed after k-weighting by
@@ -108,12 +111,14 @@ Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.</p></dd>
 	<dt><code>areaW_n</code></dt>
 		<dd><p>The value of <code>areaW</code> normalized over a list by the <code>normalize</code>
 method.  The largest ranking in the list will be 100.</p></dd>
+	<dt><code>heightW</code></dt>
 		<dd><p>Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
 perform a Fourier transform on the path using k-weight of W=(1,2,3).
 Return the maximum value of the magnitude of chi(R).</p></dd>
 	<dt><code>heightW_n</code></dt>
 		<dd><p>The value of <code>heightW</code> normalized over a list by the <code>normalize</code>
 method.  The largest ranking in the list will be 100.</p></dd>
+	<dt><code>peakposW</code></dt>
 		<dd><p>Return the position of the maximum value from the <code>heightW</code> test.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>

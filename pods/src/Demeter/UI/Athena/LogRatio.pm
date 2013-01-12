@@ -99,7 +99,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: log-ratio/phase-difference');
   $box -> Add($this->{document}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("lograt")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("analysis.lr")});
 
   $this->SetSizerAndFit($box);
   return $this;

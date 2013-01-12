@@ -1,0 +1,230 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Setting E0</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../params/constrain.html" class="menu">Constraining parameters</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../params/index.html" class="menu">Setting parameter values</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../params/defaults.html" class="menu">Default values</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menuselect">Setting parameter values</a><br />
+&nbsp;&#8618;&nbsp;<a href="../params/constrain.html"  class="menu">Constraining parameters</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Edge energy</span><br />
+&nbsp;&#8618;&nbsp;<a href="../params/defaults.html"  class="menu">Default values</a><br /><a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Setting E0
+</h1>
+
+<p>
+
+The <span class=param>&laquo;e0&raquo;</span> is central to many of the chores
+that <span class=program>ATHENA</span> performs.  Understanding how <span class=param>&laquo;e0&raquo;</span> is used and how it is set is essential to understanding how
+<span class=program>ATHENA</span> operates and essential to using <span class=program>ATHENA</span> well.
+</p>
+
+<p>
+By default, <span class=program>ATHENA</span> has <span class=program>IFEFFIT</span> determine <span class=param>&laquo;e0&raquo;</span> and uses the value that <span class=program>IFEFFIT</span> finds.
+<span class=program>IFEFFIT</span>'s algorithm is to find the first peak of the first
+derivative of &mu;(E).  To avoid settling on a spot in a noisy
+pre-edge, <span class=program>IFEFFIT</span> makes a series of checks to verify that its
+guess for <span class=param>&laquo;e0&raquo;</span> comes after several
+points in the derivative of &mu;(E) that are increasing in energy
+and is followed by several points that are decreasing.  The details of
+this implementation are such that <span class=program>IFEFFIT</span> often chooses a point
+that is slightly to the high energy side of peak that a person would
+choose, but it typically is a very good guess.
+</p>
+
+<p>
+The actual value of <span class=param>&laquo;e0&raquo;</span> is used for many
+things.  It is compared to a table of edge energies to determine the
+value of the <span class=param>&laquo;Z&raquo;</span> and
+<span class=param>&laquo;edge&raquo;</span> parameters.  It is the energy
+reference for the values of the normalization, pre-edge, and spline
+range parameters.  And it is the edge energy in the <span class=program>AUTOBK</span>
+algorithm.
+</p>
+
+<p>
+The <a href="../process/cal.html">calibration</a>
+and <a href="../process/align.html">alignment</a>
+tools can be used to refine the values for
+<span class=param>&laquo;e0&raquo;</span>.  You can also edit its value directly
+by typing in its entry box.  The right-click context menu for
+<span class=param>&laquo;e0&raquo;</span> and the Group menu have several
+options for other ways of setting <span class=param>&laquo;e0&raquo;</span>.
+</p>
+
+<p>
+There are a few situations where the default algorithm will fail.
+Very noisy data can result in a spurious identification of
+<span class=param>&laquo;e0&raquo;</span>.  Materials which have two
+inflections in the edge, such as zero-valent zirconium, might have the
+wrong inflection chosen.  Materials with huge edge peaks, such as
+K<sub>2</sub>CrO<sub>4</sub>, will have a point in the leading edge of the peak chosen
+rather than a point in the main edge.
+</p>
+
+
+<hr class=hide />
+<a name="otherwaysofsettinge0">
+
+<h2>  Other ways of setting e0</h2>
+</a>
+
+<p>
+
+Aside from the default method described above, <span class=program>ATHENA</span> offers a
+few other algorithms for setting <span class=param>&laquo;E0&raquo;</span>.
+</p>
+
+
+<dl>
+  
+<dt>
+  Tabulated atomic value
+</dt>
+<dd>
+The tabulated value of the edge energy of the zero-valent element
+will be used.  To determine the element, a transitory value for e0
+will be found using <span class=program>IFEFFIT</span>.  Once <span class=param>&laquo;Z&raquo;</span> and
+<span class=param>&laquo;Edge&raquo;</span> are found, <span class=param>&laquo;E0&raquo;</span> is set to the tabulated value.
+  <br />
+  <br />
+</dd>
+<dt>
+  Fraction of edge step
+</dt>
+<dd>
+In this algorithm, a transitory value for E&#8320;
+will be found using <span class=program>IFEFFIT</span>.  The data are normalized and the
+point on the edge which has a height equal to a specified fraction
+of the edge step is chosen as <span class=param>&laquo;E0&raquo;</span>.
+This normalization is iterated up to 5 times to settle on a stable
+value.  The value of the fraction is set by the<span class=pref>&diams;Bkg&nbsp;&rarr;&nbsp;fraction</span> preference,
+which is 0.5 by default.
+  <br />
+  <br />
+</dd>
+<dt>
+  Zero crossing
+</dt>
+<dd>
+Again, a transitory value for E&#8320; will be found using <span class=program>IFEFFIT</span>.
+The second derivative of &mu;(E) is computed and <span class=program>ATHENA</span>
+searches in both directions in energy for the nearest zero-crossing
+of the second derivative, which is then used for
+<span class=param>&laquo;e0&raquo;</span>.
+  <br />
+  <br />
+</dd>
+<dt>
+  Peak of L edge white line
+</dt>
+<dd>
+A transitory value for E&#8320; will be found using <span class=program>IFEFFIT</span>.  The
+peak of the white line is then found as the zero crossing of the
+first derivative of &mu;(E) after the initial value of E&#8320; and
+is used as <span class=param>&laquo;e0&raquo;</span>.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<p>
+
+Since all of these additional algorithms rely on <span class=program>IFEFFIT</span>'s
+initial guess of <span class=param>&laquo;E0&raquo;</span>, each is subject to
+the same caveats given for the default algorithm.
+</p>
+
+<p>
+The <span class=pref>&diams;Bkg&nbsp;&rarr;&nbsp;e0</span> 
+<a href="../other/prefs.html">configuration parameter</a>
+can be set to one of these four options, setting the default
+algorithm for determining <span class=param>&laquo;E0&raquo;</span>.
+</p>
+
+<p>
+Submenus under the Group menu can be used to set E0 using one of these
+algorithms for all groups, or the set of marked groups.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

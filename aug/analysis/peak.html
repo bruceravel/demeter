@@ -1,0 +1,237 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Peak fitting</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../analysis/pca.html" class="menu">Principle component analysis</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../analysis/index.html" class="menu">Data analysis</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../analysis/lr.html" class="menu">Log-ratio/phase-difference</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menuselect">Data analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lcf.html"  class="menu">Linear combination fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/pca.html"  class="menu">Principle component analysis</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Peak fitting</span><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lr.html"  class="menu">Log-ratio/phase-difference</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/diff.html"  class="menu">Difference spectra</a><br /><a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Peak fitting
+</h1>
+<h2>
+  Interpreting data as a sum of line shapes 
+</h2>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Explain all the new buttons and features.  Give some disclaimers,
+particularly about varying energy.  Discuss saving results on results
+tab. 
+</p>
+
+<p>
+Peak fitting involves fitting a number of analytical line shapes to
+XANES data.  The typical approach is to simulate the XANES data using
+one or two step-like function and several Gaussians or Lorentzians for
+the peaks in the data.  The centroids, amplitudes, and widths of the
+various line shapes are either fixed or varied to best fit the data.
+In <span class=program>ATHENA</span>'s implementation of peak fitting, a
+Levenberg-Marquardt non-linear least-squares minimization is used.
+(To be specific, <span class=program>IFEFFIT</span>'s <tt>minimize</tt>
+command is used after constructing an array with a sum of line shapes.)
+</p>
+
+<p>
+Peak fitting is an inherently empirical analysis technique.  By
+themselves, the line shapes used have little physical meaning.  The
+utility of peak fitting is in quantifying the variation of certain
+spectral features in a sequence of data.  As an example, consider the
+small peak that appears just before the main rising part of the edge
+in a titanate perovskite.  In
+the plot below, this is
+the peak around 4968 eV.  This peak varies as a function of
+temperature as you approach then exceed the crystallographic phase
+transition.  The size of the peak can be related to the amount of
+distortion in this tetragonal structure.  Peak fitting is a useful
+tool in this temperature-dependent study as it can quantify the
+relationship between a spectral feature and an extrinsic parameter.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=peak>
+<img src=../../images/peak.png width=100%>
+</a>
+<p align=center>
+The peak fitting tool.
+</p>
+</div>
+
+<p>
+The screenshot above
+shows the peak fitting tool.  The available line shapes include
+</p>
+
+
+<ul>
+  
+<li><p>
+arc tangent 
+</p></li>
+<li><p>
+error function 
+</p></li>
+<li><p>
+Gaussian 
+</p></li>
+<li><p>
+Lorentzian 
+</p></li>
+</ul>
+
+<p>
+Two other obviously useful functions are not available in the current
+version of <span class=program>ATHENA</span>, the pseudo-Voight (typically implemented as a
+weighted sum of a Gaussian and a Lorentzian) and the Cromer-Lieberman
+calculation of the bare atomic edge step (which might better
+approximate the shape of the XANES data).
+</p>
+
+<p>
+Each line shape has an independent centroid, amplitude, and width.  By
+default, the centroids are fixed and the amplitude and width are
+varied in the fit.  Which parameters are fixed and which are varied
+are controlled by the check buttons in the columns labeled
+&ldquo;Fit&rdquo;.  The
+<a href="../ui/pluck.html">pluck button</a>
+next to the centroid can be used to grab a value from the plot.
+</p>
+
+<p>
+In my experience, the fits are fairly unstable when the centroids are
+varied, particularly with peak functions placed close together.  I
+typically leave the centroid values fixed, adjusting them by hand and
+rerunning the fits if necessary.
+</p>
+
+<p>
+The peak shapes are unit normalized.  This means that the amplitude
+<strong>is</strong> the area under the peak.
+</p>
+
+<p>
+The result of a fit can be saved as a group in the group list for
+later comparison to your data.  The log file is a column data file
+containing the fit results in the header and columns of
+</p>
+
+<ol>
+  <li><p> energy </p></li>
+<li><p> the data </p></li>
+<li><p> the fit </p></li>
+<li><p> the residual </p></li>
+<li><p> each component </p></li>
+</ol>
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=peak_fit>
+<img src=../../images/peak_fit.png width=100%>
+</a>
+<p align=center>
+Fit to PbTiO<sub>3</sub> data measured at room temperature using an
+arc-tangent, a Lorentzian, and a Gaussian.
+</p>
+</div>
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=peak_results>
+<img src=../../images/peak_results.png width=100%>
+</a>
+<p align=center>
+The peak fitting results tab.
+</p>
+</div>
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">Humble confession: the peak fitting tool is one of the weaker parts
+of <span class=program>ATHENA</span>.  It is serviceable, but somewhat buggy and missing
+some important features.  One of these days it will get some more of
+my attention.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

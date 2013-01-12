@@ -1,0 +1,238 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Log-ratio/phase-difference analysis</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../analysis/peak.html" class="menu">Peak fitting</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../analysis/index.html" class="menu">Data analysis</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../analysis/diff.html" class="menu">Difference spectra</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menuselect">Data analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lcf.html"  class="menu">Linear combination fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/pca.html"  class="menu">Principle component analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/peak.html"  class="menu">Peak fitting</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Log-ratio/phase-difference</span><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/diff.html"  class="menu">Difference spectra</a><br /><a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Log-ratio/phase-difference analysis
+</h1>
+<h2>
+  Purely empirical analysis of EXAFS data 
+</h2>
+
+<p>
+Log-ratio/phase-difference analysis is a purely empirical technique
+that can be used to determine changes in the distribution parameters
+of the first coordination shell for certain kinds of data.  This
+technique is most useful for data with a well-separated first
+coordination shell, i.e. one for which data from higher coordination
+shells is spectrally isolated from the first shell.  An excellent
+example of a situation where this analysis would be useful would be a
+temperature series.  In that case, log-ratio analysis can be used to
+measure the variation in &sigma;&sup2; as a function of temperature and
+phase difference analysis can be used to measure variation in bond
+length.
+</p>
+
+<p>
+The approach of log-ratio/phase-difference analysis is to compare
+unknown data to a well known standard.  The standard might be a room
+temperature measurement in the case of a temperature series.  Or it
+might be a well ordered oxide for comparison with more disordered
+oxide forms.  In any case, the analysis returns the differences
+between the standard and the unknown of the various cumulants of the
+distribution of atoms in the first shell.
+</p>
+
+<p>
+The analysis is performed by first by Fourier filtering both the data
+and unknown to spectrally isolate the signal from the first
+coordination shell.  Then polynomials are fitted to the log of the
+ratio of the amplitudes of the &chi;(q) functions and to the
+difference of the phases of the &chi;(q) function.
+</p>
+
+
+<pre>
+  Log-Ratio(q)  = ln( Amp_unknown(q) / Amp_standard(q) )
+  Phase-Diff(q) = Phase_unknown(q) - Phase_standard(q)
+</pre>
+
+<p>
+These are fit using the cumulant expansion:
+</p>
+
+
+<pre>
+  Log-Ratio(q)  = c_0 + 2*c_2 * q^2 + (2/3)*c_4 * q^4
+  Phase-diff(q) = 2 * c_1 * q - (4/3) * c_3 * q^3
+</pre>
+
+<p>
+The standard is selected from the menu at the top of this tool.  The
+unknown is the current group, i.e. the one highlighted in the group list.
+</p>
+
+<p>
+There are some other caveats along with the fact that this
+technique requires a spectrally isolated first shell.
+</p>
+
+<ol>
+  
+<li><p>
+A perfectly ordered coordination shell is not necessary, but the
+distribution of atoms in the first shell must be well described by an
+expansion in a small number of cumulants.  Thus, this technique may be
+inappropriate for highly disordered materials.
+</p></li>
+<li><p>
+Although this analysis is often referred to in the literature as
+&ldquo;model independent analysis&rdquo;, that is as
+much a shortcoming as an advantage.  The technique can be used to
+measure changes in structural cumulants, but cannot be used to measure
+absolute values of those cumulants.
+</p></li>
+<li><p>
+This analysis cannot be performed on higher coordination shells except
+in the vary rare case of a second shell which is spectrally isolated
+both from the first shell and from all higher shells.
+</p></li>
+<li><p>
+The presence of spectral weight from any higher shell or from any
+multiple scattering paths will add considerable systematic uncertainty
+to this analysis.
+</p></li>
+</ol>
+
+<p>
+When you select &ldquo;Log-Ratio&rdquo; from the
+main menu, the main window is replaced with the
+log-ratio/phase-difference tool, shown
+below.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=lr>
+<img src=../../images/lr.png width=100%>
+</a>
+<p align=center>
+The log-ratio/phase-difference tool.
+</p>
+</div>
+
+<p>
+Once you select Fourier transform parameters and ranges for use in the
+analysis, you can click the &ldquo;Fit&rdquo; button to
+perform the fit.  The fit to the log-ratio of the amplitudes is
+plotted when the fit is over.  The buttons can be used to plot either
+the fit to the log-ratio of amplitudes or the fit to the phase
+difference.  The fits use all cumulants up to the fourth.  Depending
+on your data quality, choice of Fourier transform ranges can be
+important and quite sensitive.  You can save the log-ratio and
+phase-difference data along with the fits to a file by clicking the
+&ldquo;Save ratio data and fit&rdquo; button.
+</p>
+
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=lr_fit>&nbsp;</a><br><a href=../../images/lr_fit.png><img src="../../images/lr_fit.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/lr_pd_fit.png><img src="../../images/lr_pd_fit.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The results of the log-ratio/phase-difference fit to the Cu metal.
+</p>
+</div>
+
+<p>
+The three plot buttons behave just like the purple plot buttons would
+behave were only the standard and unknown marked.
+</p>
+
+<p>
+My favorite explanation of this analysis method is
+&ldquo;Application of the Ratio Method of EXAFS Analysis to Disordered
+Systems&rdquo;,
+G. Bunker, <em>Nucl. Inst. Meth.</em>, <strong>207</strong>, 
+(1983) p.&nbsp;437-444<a href="http://dx.doi.org/10.1016/0167-5087(83)90655-5"> (DOI: 10.1016/0167-5087(83)90655-5)</a>.</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

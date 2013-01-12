@@ -1,0 +1,433 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Self-absorption approximations</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/deconv.html" class="menu">Deconvolution</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/pixel.html" class="menu">Dispersive XAS</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Self-Absorption correction</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  <img src="../../images/bend.png" width="51" height="48" alt="" align="center" />  Self-absorption approximations
+</h1>
+<h2>
+  Correcting data measured in fluorescence for self-absorption 
+</h2>
+
+<p>
+
+The statement that &mu;(E) measured in fluorescence is the ratio of
+the signals on the fluorescence and incident ion chambers is only true
+in the limit of very thin samples or very dilute samples.  For thick,
+concentrated samples, the depth into which the incident beam can
+penetrate changes as fine structure of &mu;(E) changes.  As the
+oscillatory part wiggles up, the penetration depth diminishes.  As it
+wiggles down, the depth increases.  This serves to attenuate the
+oscillatory structure.
+</p>
+
+<p>
+Ideally, all your samples that must be measured in fluorescence should
+be either sufficiently thin or sufficiently dilute that your data is
+unaffected by this self-absorption effect.  Sometimes, the constraints
+of the sample are such that self-absorption cannot be avoided.  In
+that case, you need to figure out what to do at the level of the data
+analysis to find the correct answer in the face of this problem.  One
+solution is presented here.
+</p>
+
+<p>
+The self-absorption correction tool offers four different algorithms
+to approximate the effect of self-absorption using tables of x-ray
+absorption coefficients.  One of them works on XANES data, while all
+four can be used to correct EXAFS data.  One of the algorithms works
+well for samples that are not in the infinitely thick limit.  These
+various algorithms are taken from the available literature and are
+offered to allow you to compare.
+</p>
+
+<p>
+The examples I show here are particularly well suited to this sort of
+correction.  In both cases, we have a way to evaluate the success of
+the correction.  In general, it can be difficult to guarantee the
+success of the correction, particularly if the entire composition of
+the sample is not well known.  That means that, in practice, this sort
+of correction may not be useful or reliable.
+</p>
+
+<p>
+It is also important to understand that the self-absorption effect
+only effects the amplitude of your EXAFS data, not the phase.  Thus
+even if you are unable to properly correct, you can still analyze your
+EXAFS data for bond lengths.
+</p>
+
+<p>
+<a href="https://speakerdeck.com/bruceravel/understanding-self-absorption-in-
+fluorescence-xas">Here is my presentation on self-absorption
+corrections.</a> There I discuss the applicability of this tool in more
+detail.  You will find that, in general, the self-absorption tool is
+very hard to apply to real data.  There is quite a bit of useful
+information on this topic at <a href="http://xafs.org/Experiment/OverAbsorption">XAFS.org</a>.
+</p>
+
+
+<hr class=hide />
+<a name="correctingxanesdata">
+
+<h2>  Correcting XANES data</h2>
+</a>
+
+<p>
+
+The self-absorption tool
+below
+allows you to choose between the four
+algorithms and to provide the parameters of the correction.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=selfabs>
+<img src=../../images/selfabs.png width=100%>
+</a>
+<p align=center>
+The self-absorption tool.
+</p>
+</div>
+
+<p>
+
+In this example of correcting XANES data, ammonium sulfate was
+dissolved in water at three different molarities: 0.1, 0.47, and
+0.94.  The correction algorithm requires a complete description of the
+sample, so we need to determine the ratio of water to ammonium sulfate.
+</p>
+
+
+<pre>
+1 amu = 1.6605 x 10^-27 kg
+
+1 mole = 6.0221 x 10^23 particles
+
+1 water molecule is 18 amu = 2.988 x 10^-26 kg
+
+1 mole of water is .01800 kg
+
+1 liter of water = 1 kg water, so 1 liter is 55.5555 moles
+</pre>
+
+<p>
+
+Adjusted for the density change upon adding the solute, there are
+about 54.8 moles of water in the solution
+</p>
+
+<p>
+So the formulas for these three molar solution are
+<tt>((NH4)2SO4)0.10(H2O)54.8</tt>,
+<tt>((NH4)2SO4)0.47(H2O)54.8</tt>, and
+<tt>((NH4)2SO4)0.94(H2O)54.8</tt>.
+</p>
+
+<p>
+The uncorrected and corrected data for the 0.94M sample are shown
+here on the right.  The
+three uncorrected spectra are shown on the left
+and the corrected spectra are shown on the bottom.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=selfabs_plot>&nbsp;</a><br><a href=../../images/selfabs_plot.png><img src="../../images/selfabs_plot.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/selfabs_before.png><img src="../../images/selfabs_before.png" alt="foo" width=49%></a>
+<br><a href=../../images/selfabs_after.png><img src="../../images/selfabs_after.png" width=49%></a>
+&nbsp;&nbsp;</a>
+<p>
+(Left) This is the 0.94M data corrected by this algorithm.
+(Right) Here is the raw data for the three samples.  You can see the effect of
+self-absorption growing for the more concentrated samples.
+(Bottom) The corrected data.  Not bad, eh?
+</p>
+</div>
+
+<p>
+
+Thanks to Dani Haskel and Zhang Ghong for these data.
+</p>
+
+
+<hr class=hide />
+<a name="correctingexafsdata">
+
+<h2>  Correcting EXAFS data</h2>
+</a>
+
+<p>
+
+Of the four algorithms, only the Booth algorithm as shown in
+this figure
+is suitable for samples of finite thickness.  The other three all
+assume that samples are infinitely thick.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=selfabs_booth>
+<img src=../../images/selfabs_booth.png width=100%>
+</a>
+<p align=center>
+The self-absorption tool with copper data for correction using the
+Booth algorithm.
+</p>
+</div>
+
+<p>
+
+After selecting an algorithm, you can use the other controls to enter
+the incident and outgoing angles in degree and the thickness of the
+sample in microns.  All algorithms require that you specify the
+formula of the sample with stoichiometries in atomic percent.
+</p>
+
+<p>
+These two data groups were measured from the same thin copper foil,
+one in transmission and the other in fluorescence.  These data were
+provided by Corwin Booth and are the data from the paper where he and
+Bud Bridges presented their algorithm (citation below).
+</p>
+
+<p>
+Since this is a thin film, only the Booth algorithm is appropriate.
+(Although you might want to compare it to the other algorithms, if
+only to see how the others overestimate the size of the correction due
+to the fact that they do not consider film thickness.)
+</p>
+
+<p>
+The formula for copper is Cu and Corwin reports that the thickness of
+the sample is 4.6, the incident was 49 degrees and the outgoing angle
+was 41 degrees.  Enter these values and plot the correction.  Save the
+corrected data group and compare it to the transmission data, as shown
+in the plot below.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=selfabs_boothplot>
+<img src=../../images/selfabs_boothplot.png width=100%>
+</a>
+<p align=center>
+It works pretty well.  The green trace is the corrected fluorescence
+spectrum, which compares well to the transmission data, albeit a
+little too big.
+</p>
+</div>
+
+<p>
+
+There are several things that can effect the comparison of the
+corrected fluorescence data and the transmission data.  These include
+how the two data sets were normalized, the incident and outgoing
+angles, and the thickness.  Try changing all those things to see how
+they effect the correction.
+</p>
+
+
+<hr class=hide />
+<a name="informationdepth">
+
+<h2>  Information depth</h2>
+</a>
+
+<p>
+
+For any sample, you can plot the information depth as a function of
+wavenumber.  This quantity was defined by Troger et al. (citation
+below) and represents the depth into the sample probed by the incident
+beam for a given sample geometry as a function of energy.  In that
+depth, 68 percent of the incident photons are absorbed and 68 percent
+of the fluorescence photons are generated.  The information depth
+provides a useful metric for whether a film sample can be considered
+&ldquo;thick&rdquo; in a particular experiment.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=sa_info_e>&nbsp;</a><br><a href=../../images/sa_info_e.png><img src="../../images/sa_info_e.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/sa_info_k.png><img src="../../images/sa_info_k.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) The information depth for an iron/gallium alloy, plotted in energy.
+(Right) The same plot, but in wavenumber.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="algorithmreferences">
+
+<h2>  Algorithm references</h2>
+</a>
+
+<dl>
+  
+<dt>
+  Fluo algorithm
+</dt>
+<dd>
+The program documentation for Fluo can be found at Dani's web
+site and includes the mathematical derivation:
+<a href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">http://www.aps.anl.gov/xfd/people/haskel/fluo.html</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  Booth Algorithm
+</dt>
+<dd>
+C. H. Booth and F. Bridges, <em>Physica Scripta</em>, <strong>T115</strong>, 
+(2005) p.&nbsp;202<a href="http://dx.doi.org/10.1238/Physica.Topical.115a00202"> (DOI: 10.1238/Physica.Topical.115a00202)</a>.  See also Corwin's web site:
+<a href="http://lise.lbl.gov/RSXAP/">http://lise.lbl.gov/RSXAP/</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  Troger Algorithm
+</dt>
+<dd>
+L. Troger, et al., <em>Phys. Rev.</em>, <strong>B46:6</strong>, 
+(1992) p.&nbsp;3283<a href="http://dx.doi.org/10.1103/PhysRevB.46.3283"> (DOI: 10.1103/PhysRevB.46.3283)</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  Pfalzer Algorithm
+</dt>
+<dd>
+Another interesting approach to correcting self-absorption is
+presented in
+P. Pfalzer et al., <em>Phys. Rev.</em>, <strong>B60:13</strong>, 
+(1999) p.&nbsp;9335<a href="http://dx.doi.org/10.1103/PhysRevB.60.9335"> (DOI: 10.1103/PhysRevB.60.9335)</a>.  This is not implemented in <span class=program>ATHENA</span> because
+the main result requires an integral over the solid angle
+subtended by the detector.  This could be implemented, but the
+amount of solid angle subtended it is not something one typically
+writes in the lab notebook.  If anyone is really interested in
+having this algorithm implemented, contact Bruce.
+  <br />
+  <br />
+</dd>
+<dt>
+  Atoms Algorithm
+</dt>
+<dd>
+B. Ravel, <em>J. Synchrotron Radiat.</em>, <strong>8:2</strong>, 
+(2001) p.&nbsp;314<a href="http://dx.doi.org/doi:10.1107/S090904950001493X"> (DOI: doi:10.1107/S090904950001493X)</a>.  See also
+the documentation for Atoms at Bruce's website for more
+details about it's fluorescence correction calculations.
+  <br />
+  <br />
+</dd>
+<dt>
+  Elam tables of absorption coefficients
+</dt>
+<dd>
+W.T. Elam, B.Ravel, and J.R. Sieber, <em>Radiat. Phys. Chem.</em>, <strong>63</strong>, 
+(2002) p.&nbsp;121-128<a href="http://dx.doi.org/10.1016/S0969-806X(01)00227-4"> (DOI: 10.1016/S0969-806X(01)00227-4)</a>
+  <br />
+  <br />
+</dd>
+</dl>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

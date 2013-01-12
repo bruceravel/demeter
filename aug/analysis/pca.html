@@ -1,0 +1,216 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Principle component analysis</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../analysis/lcf.html" class="menu">Linear combination fitting</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../analysis/index.html" class="menu">Data analysis</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../analysis/peak.html" class="menu">Peak fitting</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menuselect">Data analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lcf.html"  class="menu">Linear combination fitting</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Principle component analysis</span><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/peak.html"  class="menu">Peak fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lr.html"  class="menu">Log-ratio/phase-difference</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/diff.html"  class="menu">Difference spectra</a><br /><a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Principle component analysis
+</h1>
+<h2>
+  Abstract decomposition of a data sequence 
+</h2>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Document all the buttons and whatnot.  Explain what useful features
+are still missing.  Explain what PCA means, what it does, and what it
+does not do.
+</p>
+
+<p>
+Here, I have imported a project file containing well-processed data on
+a time series of samples in which gold chloride is being reduced to
+gold metal. The project file includes 8 time steps and 9 standards. I
+cannot stress strongly enough the importance of doing a good job of
+aligning and normalizing your data before embarking on PCA. This is
+truly a case of garbage-in/garbage-out.
+</p>
+
+<p>
+I then select the PCA tool from the main menu. 
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=pca>
+<img src=../../images/pca.png width=100%>
+</a>
+<p align=center>
+The PCA tool.
+</p>
+</div>
+
+
+<p>
+The operational concept for the PCA tool makes use of the standard
+Athena group selection tools. The ensemble of marked groups are used
+as the data on which the PCA will be performed. The selected group
+(i.e. the one highlighted in the group list) can be either
+reconstructed or target transformed. The relevant controls will be
+enabled or disabled depending on whether the selected group is marked
+(and therefore one of the data sets in the PCA) or not (and therefore
+a subject for target transformation).
+</p>
+
+<p>
+Clicking the &ldquo;Perform PCA&rdquo; button will
+perform normalization on all the data as needed, then perform the
+components analysis. Upon completion, some results are printed to the
+text box and several buttons become enabled.
+</p>
+
+
+<p>
+After the PCA completes, a plot is made of the extracted
+components. This plot can be recovered by clicking the &ldquo;Components&rdquo; button under the &ldquo;Plots&rdquo; heading. The number spinner is used to restrict which
+components are plotted. Because the first component is often so much
+bigger than the rest, it is often useful to set that number to 2, in
+which case the first (and largest) component is left off the plot.
+</p>
+
+<p>
+Other plotting options include a plot of the data stack, as
+interpolated into the analysis range, a scree plot (i.e. the
+eigenvalues of the PCA) or its log, and the cumulative variance
+(i.e. the running sum of the eigenvalues, divided by the size of the
+eigenvector space). The cluster analysis plot is not yet implemented.
+</p>
+
+<p>
+Once the PCA has been performed, you can reconstruct your data using 1
+or more of the principle components. Here, for example, is the
+reconstruction of an intermeidate time point using the top 3 components.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=pca_components>&nbsp;</a><br><a href=../../images/pca_components.png><img src="../../images/pca_components.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/pca_recon.png><img src="../../images/pca_recon.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) The principle components of this data ensemble.
+(Right) PCA reconstruction
+</p>
+</div>
+
+<p>
+Selecting one of the standards in the group list enables the target
+transform button. Clicking it shows the result of the transform and
+displays the coefficients of the transform in the smaller text box.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=pca_tt>
+<img src=../../images/pca_tt.png width=100%>
+</a>
+<p align=center>
+Performing a target transform against a data standard
+</p>
+</div>
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=pca_tt_good>&nbsp;</a><br><a href=../../images/pca_tt_good.png><img src="../../images/pca_tt_good.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/pca_tt_bad.png><img src="../../images/pca_tt_bad.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+(Left) A successful target transform on Au foil.  Au foil is certainly a
+constituent of the data ensemble used in the PCA.
+(Right) A unsuccessful target transform on Au cyanide.  Au cyanide is
+certainly not a constituent of the data ensemble used in the PCA.
+</p>
+</div>
+
+<p>
+The list of chores still undone for the PCA tool can be found at
+<a href="https://github.com/bruceravel/demeter/blob/master/todo.org">my Github site</a>.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

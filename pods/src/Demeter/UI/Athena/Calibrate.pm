@@ -73,7 +73,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: calibrate');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("calibrate")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.cal")});
 
   $this->{display}->SetSelection(2);
   $this->{zero}->Enable(0);

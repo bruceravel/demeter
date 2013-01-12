@@ -1,0 +1,606 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Linear combination fitting</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../analysis/index.html" class="menu">Data analysis</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../analysis/pca.html" class="menu">Principle component analysis</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menuselect">Data analysis</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Linear combination fitting</span><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/pca.html"  class="menu">Principle component analysis</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/peak.html"  class="menu">Peak fitting</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/lr.html"  class="menu">Log-ratio/phase-difference</a><br />
+&nbsp;&#8618;&nbsp;<a href="../analysis/diff.html"  class="menu">Difference spectra</a><br /><a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Linear combination fitting
+</h1>
+<h2>
+  Interpreting data as a mixture of standards 
+</h2>
+
+<p>
+<span class=program>ATHENA</span> has a capability of fitting a linear combination of standard
+spectra to an unknown spectra. These fits can be done using normalized
+&mu;(E), derivative of &mu;(E), or &chi;(k) spectra. One use of this sort of analysis
+might be to interpret the kinetics of series of spectra measured
+during a reduction reaction. By fitting each intermediate spectrum as
+a linear combination of the end members, one can deduce the rate of
+the reaction. Another possible use would be to determine the species
+and quantities of standards in a heterogeneous sample.
+</p>
+
+<p>
+A worked example of linear combination fitting is shown <a href="../examples/aucl.html">later in this manual</a>.
+</p>
+
+<p>
+To access this feature, choose &ldquo;Linear
+combination fit&rdquo; from the main menu. The normal parameter view will
+be replaced by the tool in the following
+figure for performing the linear combination fit.
+</p>
+
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=lcf>
+<img src=../../images/lcf.png width=100%>
+</a>
+<p align=center>
+The linear combination fitting tool.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="fittingasingledatagroup">
+
+<h2>  Fitting a single data group</h2>
+</a>
+
+<p>
+The linear combination tool presents a table of menus. Each of these
+menus can be used to select a spectrum from among the data groups
+currently in the Data groups list. The basic idea of this tool is
+that you will choose two or more standard spectra and fit a linear
+combination of them to the current (i.e. the one highlighted in pale
+red in the Data groups list) group. The fitting is done using the
+normalized &mu;(E) spectra. If the standards or the unknown are to be
+flattened, then the flattened spectrum will be used. (See
+<a href="../bkg/norm.html">the section on background removal</a> for details about flattened spectra.)
+</p>
+
+<p>
+You should have already done some data processing on the standards and
+on the unknowns. Specifically, you should align your data and set
+appropriate normalization parameters for each spectrum before starting
+to use the linear combination fitting tool. Failing to adequately
+prepare your data for these fits will certainly result in questionable
+fits.
+</p>
+
+<p>
+To do the fit, weighting parameters are defined for each standards
+spectrum except for the last one in the list. The weight for the last
+spectrum is one minus the sum of the other weights, thus constraining
+the standards to be 100 percent of the unknown. Thus, if you used
+three standards, the first two would have weights <tt>x</tt> and <tt>y</tt> and the third would have
+weight <tt>1-x-y</tt>.  <tt>x</tt> and <tt>y</tt> would then be varied to best
+fit the data. Each standard spectrum is interpolated onto the energy
+grid of the unknown when the fit is performed as normalized or
+derivative &mu;(E).  The fit is performed over the data range
+indicated by the text boxes near the top of the window. There are
+pluck buttons which can be used to set the fitting range by clicking
+on a plot of the data.
+</p>
+
+<p>
+Fitting normalized &mu;(E), derivative &mu;(E), or &chi;(k) is chosen
+using the radio buttons just above the table of standards. When
+fitting &chi;(k) spectra, you have the option of fitting a single
+spectrum to the data.
+</p>
+
+<p>
+When fitting normalized or derivative &mu;(E) spectra, you have the
+option of floating an E&#8320; for each standard independently. This is
+intended to fix up any inconsistencies in the energy alignment of the
+various spectra (although it is much better to do a good job of
+aligning your data <em>before</em> doing your linear
+combination fitting). These E&#8320; variables can be introduced by clicking on
+the checkbuttons in the table of standard spectra.
+</p>
+
+<p>
+You can introduce a linear offset to the fit to normalized &mu;(E)
+spectra. This is simple a line added to the sum of spectra in the
+fit. It introduces two parameters to the fit, a slope and an
+intercept. The line is multiplied by a step function centered at the
+E&#8320; of the unknown. Thus the linear offset is introduced only after the
+edge of the unknown. The purpose of this offset is to accommodate any
+variations in how the normalization is performed on the various
+spectra. To turn on the linear offset in the fit just click on the
+button labeled &ldquo;Add a linear term after e0?&rdquo;
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+For best results, you should do a good job of aligning and normalizing
+your spectra <strong>before</strong> starting linear
+combination analysis.  When normalization and alignment are done
+correctly, you can expect your fitted weights to sum to 1 and
+variation of E&#8320; for the data or standards will be  unnecessary.
+</p>
+
+<hr class=hide />
+<a name="constraintsandmodificationstothefit">
+
+<h2>  Constraints and modifications to the fit</h2>
+</a>
+
+<p>
+<span class=program>ATHENA</span>'s linear combination tool offers several constraints to the
+fitting parameters. The constraints are set and unset using the
+checkbuttons near the bottom of the tool.
+</p>
+
+
+<dl>
+  
+<dt>
+  Weights between 0 and 1
+</dt>
+<dd>
+You can constrain the variable weights to be between 0 and 1 by
+clicking on the button labeled
+&ldquo;Weights between 0 & 1.&rdquo; In this
+case, each weight used is computed from the variable using this formula:
+<pre>
+     guess  weight_varied = 0.5
+     def    weight        = max(0, min(1, weight_varied))
+</pre>
+The weight reported at the end of the fit, then, is the result of that
+formula. Note that the use of the min/max idiom means that
+uncertainties cannot be calculated for situations where the guess
+variable gets pinned to 0 or 1. That can happen in situations where
+one or more of the standards used in the fit is not appropriate to the
+data and is an indication that you should rethink the set of standards
+used in the fit.
+
+When this option is not selected, the guessed variable itself is used
+as the weight in the fit and is not prevented from being negative or
+larger than 1.
+  <br />
+  <br />
+</dd>
+<dt>
+  Force weights to sum to 1
+</dt>
+<dd>
+You can loosen the constraint that the weights sum to 1 by deselecting
+the final checkbutton. This allows the final weight to float freely
+along with the rest rather than constrain it to equal 1 minus the sum
+of the rest, as described above. Loosening this constraint might yield
+fit results that are hard to interpret.
+
+If the constraint that weights must be between 0 and 1 is in place,
+then the weight of the last standard in the fit is computed by this
+formula:
+<pre>
+   def  weight_final = max(0, 1 - (w1 + w2 + ... wn))
+</pre>
+This forces the final weight to be positive, but may result in a fit
+that does have weights that, in fact, do not sum to one. Should that happen,
+it might be interpreted to mean that the normalization of the data or
+standards was not correct or that the choice of standards is not
+appropriate to the data.
+  <br />
+  <br />
+</dd>
+<dt>
+  Constrain all standards to use a single E0 shift
+</dt>
+<dd>
+You can force all standards to use a single E&#8320; parameter in the
+fit. This is equivalent (albeit with a sign change) to fixing all the
+standards and using an E&#8320; shift on the unknown data.
+  <br />
+  <br />
+</dd>
+<dt>
+  Adding noise to the data
+</dt>
+<dd>
+It is sometimes useful to check the robustness of the fit against
+noisy data. This is particularly true for a data set wherein some data
+are much noisier than others. To this end, <span class=program>ATHENA</span> allows you to add
+pseudo-random noise to the data before performing the fit. This is
+done using <span class=program>IFEFFIT</span>'s <tt>random()</tt>
+function with a user-supplied value for
+sigma. No care is taken to normalize sigma relative to the data, so a
+bit of trial and error might be necessary to find a suitable level of
+noise for your test. For normalized &mu;(E), sigma has a simple
+interpretation -- it is a fraction of the edge step. For derivative
+&mu;(E) and &chi;(k) data, you will need to compare your sigma value to
+the actual values of the data. You can examine the level of noise
+relative to your data before fitting by using the
+&ldquo;Plot data and sum&rdquo; from the operations list.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<hr class=hide />
+<a name="fitting,statistics,reports">
+
+<h2>  Fitting, statistics, reports</h2>
+</a>
+
+<p>
+To perform the fit, click &ldquo;Fit&rdquo; from the
+operations list. After the
+fit finishes, the data and the linear combination will be plotted
+along with vertical bars indicating the range over which the fit was
+evaluated. The values of all the fitting parameters are written to the
+&ldquo;Fit results&rdquo; tab. 
+</p>
+
+<p>
+Interpretation of the statistical parameters in the linear combination
+fit is somewhat challenging.  There are two reasons for this, both of
+which have to do with the fact that a non-linear, least-squares
+minimization is used in the analysis.  
+</p>
+
+<p>
+First, it is difficult (perhaps impossible) to quantify the number of
+independent measurements in the XANES spectrum.  That number is
+certainly less than the number of data points measured.  Nonetheless,
+when the chi-square is evaluated, the number of data points is used as
+the number of measurements.
+</p>
+
+<p>
+Second, <span class=program>ATHENA</span> has no way of evaluating a measurement
+uncertainty  &epsilon; for the XANES measurement.  A value of 1 is
+used for  &epsilon; in the equation for chi-square.  
+</p>
+
+<p>
+These two issues, taken together, mean that chi-square and reduced
+chi-square tend to be very small numbers -- much smaller than 1.  As a
+result, it is impossible to use reduced chi-square to evaluate the
+quality of a single fit.  Relative changes in chi-square between fits
+are probably meaningful.  However, given the two problems described
+above, chi-square does not have a very different meaning from the
+R-factor. 
+</p>
+
+<p>
+The R-factor reported in the text box is
+</p>
+
+<pre>
+    sum ( (data - fit)^2 )
+   ------------------------
+    sum (     data^2     )
+</pre>
+<p>
+where the sums are over the data points in the fitting region. The
+chi-square and reduced chi-square are those reported by <span class=program>IFEFFIT</span>.
+</p>
+
+<p>
+Interpretation of the statistical parameters requires you to be
+mindful of what you know about the system you are measuring.  The
+statistical parameters alone are not sufficient to evaluate the fit
+results.  The results of sample fractions must be meaningful in the
+context of any external knowledge you have about the system.
+</p>
+
+<p>
+You can replot the data and the fit using the most recent values for
+the fitted parameters by clicking &ldquo;Plot&rdquo;
+in the operations list.
+</p>
+
+<p>
+You can save the text from the fit results box to a file by clicking
+&ldquo;Write a report&rdquo; in the operations list.
+This writes a column data file with the fit results as the header
+information. The columns in the file are x-axis (either energy or k),
+the data, the best fit, the residual, and each of the weighted
+components.
+</p>
+
+<p>
+You can make a data group out of the linear combination by clicking
+&ldquo;Make fit group&rdquo; in the operations list or out
+of the residual by clicking
+&ldquo;Make difference group&rdquo; in the operations
+list. This will allow you to plot and
+manipulate the fit or difference after leaving the linear combination
+tool. The data group containing the fit result will be treated as
+normal data that can have a background removed or be Fourier
+transformed. When you save a fit using the derivative spectra, the fit
+group will be saved as a normal &mu;(E) spectrum.
+</p>
+
+<p>
+&ldquo;Reset&rdquo; in the operations list returns
+almost everything in the tool back to its original state.
+</p>
+
+<p>
+If you need more than four standards, the number of standards as well
+as several other aspect of the linear combination fitting is
+configurable using the <a href="../other/prefs.html">preferences tool</a>.
+</p>
+
+
+<hr class=hide />
+<a name="constraininglinearcombinationfitparametersbetweengroups">
+
+<h2>  Constraining linear combination fit parameters between groups</h2>
+</a>
+
+<p>
+The various operational parameters described above can be constrained
+between data groups in the same manner as background removal and
+Fourier transform parameters on <span class=program>ATHENA</span>'s main page. Two items in the
+operations list are &ldquo;Set params, all groups&rdquo;
+and &ldquo;Set params, marked groups&rdquo;. These will
+export the current group's values for
+fitting range, noise, weights between 0 and 1, force weights to sum to
+1, and use of linear term to other groups. This should probably be
+done before using the marked group fitting feature described in the
+next section.
+</p>
+
+
+<hr class=hide />
+<a name="batchprocessing">
+
+<h2>  Batch processing</h2>
+</a>
+
+<p>
+One of the choices in the operations list is to
+&ldquo;Fit marked groups&rdquo;. All groups marked
+by having their purple buttons checked
+will be fit in the manner described above using the current selection
+of fitting standards and other fitting options. When the sequence of
+fits is finished, the &ldquo;Write marked report&rdquo;
+option will become
+enabled in the operation list. This will allow you to write a report
+in the form of a comma separated value file which summarizes the
+results of the sequence of fits. This report file can be read into any
+spreadsheet program.
+</p>
+
+<p>
+Note that the report file will only reflect the fits done during the
+batch job. Any changes made to the fitting model will not be included
+in that report until a new batch job is performed.
+</p>
+
+<p>
+Also note that the only way that the batch job is different from
+running the same sequence of fits by hand is that the report file can
+be generated. There is currently no way to generate a similar report
+from a sequence of fits not run using the batch processing
+option. However, you always have the option of saving individual fit
+reports as described above.
+</p>
+
+
+<hr class=hide />
+<a name="combinatorialfittingusingmanystandards">
+
+<h2>  Combinatorial fitting using many standards</h2>
+</a>
+
+<p>
+One of the uses of this sort of XANES fitting is to try to figure out
+what's actually in a sample. One approach to figuring this out is to
+measure all plausible standard compounds and try fitting a large
+number of different combinations of the standards to the data.
+<span class=program>ATHENA</span> provides a tool for automating this. Here is how it works:
+</p>
+
+
+<ol>
+  
+<li><p>
+Load all of the standards that you want to consider into the table of
+standards in the linear combination tool. You may need to increase
+the maximum number of standards using the 
+<a href="../other/prefs.html">preferences tool</a> 
+to provide enough space in the table for all of the standards that you
+wish to consider.
+</p></li>
+<li><p>
+You can limit the number of standards used in each fit with the
+incrementer widget just below the button marked
+&ldquo;Use marked groups&rdquo;.
+By default this number is 4, which says that the fits will
+consider all possible binary, ternary, and quaternary combinations of
+standards. Increase this number to consider higher orders of
+combinations of standards. Decrease it to limit the number of fits to
+perform. You can also indicate which standards are
+&ldquo;required&rdquo; by clicking
+the check button in the right-most column of the table of
+standards. This will limit the combinations of standards tested
+against to data to those that contain the required standards, thus
+greatly reducing the scope of the combinatorial problem.
+</p></li>
+<li><p>
+Click &ldquo;Fit all possible combinations&rdquo;
+in the operations list and go
+get a cup of coffee. If the number of possible standards is large,
+this series of fits could take a while. For example, with 11 standards
+and considering up to the quaternary combinations, <span class=program>ATHENA</span> will
+perform 550 fits. (Really!
+C(11, 2) +
+C(11, 3) +
+C(11, 4) = 550!)
+</p></li>
+</ol>
+
+<p>
+Once this series of fits finishes, the tab labeled
+&ldquo;Combinatorics&rdquo;
+will become active and raise to the top. In
+this tab,
+you will see two tables. The top table concisely summarizes all the
+fits that were performed, in order of increasing R-factor. Initially,
+the first item in the list -- which has the lowest R-factor -- is
+selected (i.e. highlighted in pale red).
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=lcf_combo>
+<img src=../../images/lcf_combo.png width=100%>
+</a>
+<p align=center>
+The combinatorial fitting results tab.
+</p>
+</div>
+
+<p>
+The second table contains each of the standards and its weight and
+E&#8320; from the fit selected in the upper table.
+</p>
+
+<p>
+You can select a fit from the upper table by clicking on its
+line. When you do so, that fit becomes highlighted in pale red, its
+fitting results are inserted in the bottom table, its best fit
+function is plotted along with the data, and its results are inserted
+into the other two tabs. In this way, you can examine any fit from the
+series, as seen in
+the plot below.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=lcf_combofit>
+<img src=../../images/lcf_combofit.png width=100%>
+</a>
+<p align=center>
+The best fit from a combinatorial sequence.
+</p>
+</div>
+
+<p>
+Depending on the selection of standards, it is reasonable that two or
+more fits might have similar R-factors.  You might interpret that to
+mean that those fits are statistically indistinguishable or you might
+be able to invoke some a priori knowledge to help choose between the
+similar fits.  Other fits farther down in the list will be obviously
+worse both by statistical metric and by examination of their results.
+</p>
+
+<p>
+Clicking the right mouse button on a fit in the upper table will post
+a context menu with options relevant to the selected fit. These
+options include saving the fit as a data group; writing a data file
+with columns for the data, fit, residual, and each weighted standard;
+saving the report from the
+&ldquo;Fit results&rdquo; tab to a file; and writing a
+comma-separated-value report for the entire combinatorial sequence
+which can be imported into a spreadsheet program.
+</p>
+
+<p>
+Beneath the tables is a button labeled
+&ldquo;Write CSV report for all fits.&rdquo; Clicking
+this will prompt you for a file name and location,
+then write a comma-separated-value report of all fits.
+</p>
+
+<p>
+A worked example of linear combination fitting is shown <a href="../examples/aucl.html">later in this manual</a>.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

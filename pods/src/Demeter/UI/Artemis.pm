@@ -11,12 +11,13 @@ use Demeter::UI::Athena::Cursor;
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(any zip);
 use Scalar::Util qw(blessed);
 
 use String::Random qw(random_string);
@@ -59,6 +60,13 @@ const my $MODE_STATUS     => Wx::NewId();
 const my $PERL_MODULES    => Wx::NewId();
 const my $STATUS          => Wx::NewId();
 const my $DOCUMENT        => Wx::NewId();
+const my $DOCUMENT_PLOT   => Wx::NewId();
+const my $DOCUMENT_FEFF   => Wx::NewId();
+const my $DOCUMENT_FIT    => Wx::NewId();
+const my $PLOT_PNG        => Wx::NewId();
+const my $PLOT_GIF	  => Wx::NewId();
+const my $PLOT_JPG	  => Wx::NewId();
+const my $PLOT_PDF	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
@@ -204,6 +212,9 @@ sub OnInit {
   #my $settingsmenu = Wx::Menu->new;
 
   my $plotmenu = Wx::Menu->new;
+  $plotmenu->Append($PLOT_PNG, "Last plot to png file", "Send the last plot to a png file");
+  $plotmenu->Append($PLOT_PDF, "Last plot to pdf file", "Send the last plot to a pdf file");
+  $plotmenu->AppendSeparator;
   $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
   $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
@@ -211,9 +222,12 @@ sub OnInit {
 
 
   my $helpmenu = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "Read user manual" );
+  $helpmenu->Append($DOCUMENT,      "Users' Guide" );
+  $helpmenu->Append($DOCUMENT_PLOT, "Documentation: Plot window" );
+  $helpmenu->Append($DOCUMENT_FEFF, "Documentation: Atoms and Feff" );
+  $helpmenu->Append($DOCUMENT_FIT,  "Documentation: Running a fit" );
+  $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
-  $helpmenu->Enable($DOCUMENT,0);
 
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $feedbackmenu,  "&Monitor" );
@@ -826,6 +840,24 @@ sub OnMenuClick {
       &on_about;
       return;
     };
+
+    ($id == $DOCUMENT) and do {
+      $::app->document('index');
+      return;
+    };
+    ($id == $DOCUMENT_PLOT) and do {
+      $::app->document('plot');
+      return;
+    };
+    ($id == $DOCUMENT_FEFF) and do {
+      $::app->document('feff');
+      return;
+    };
+    ($id == $DOCUMENT_FIT) and do {
+      $::app->document('fit');
+      return;
+    };
+
     ($id == wxID_CLOSE) and do {
       close_project(\%frames);
       return;
@@ -916,11 +948,6 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;
     };
-    ($id == $PLOT_YAML) and do {
-      my $yaml   = $demeter->mo->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Mode object') -> Show;
-      last SWITCH;
-    };
     ($id == $PERL_MODULES) and do {
       my $text   = $demeter->module_environment . $demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
@@ -936,6 +963,15 @@ sub OnMenuClick {
     #};
     ($id == $IFEFFIT_MEMORY) and do {
       $::app->heap_check(1);
+      last SWITCH;
+    };
+
+    ($id == $PLOT_PNG) and do {
+      $frames{Plot}->image('png');
+      last SWITCH;
+    };
+    ($id == $PLOT_PDF) and do {
+      $frames{Plot}->image('pdf');
       last SWITCH;
     };
 
@@ -1280,6 +1316,33 @@ sub export {
 
   undef $fit;
 };
+
+sub document {
+  my ($app, $doc, $target) = @_;
+  my $file;
+  my $url = Demeter->co->default('artemis', 'doc_url');
+  my @path = ('Demeter', 'UI', 'Artemis', 'share', 'artug', 'html');
+  if (any {$doc eq $_} (qw(plot fit path feff))) {
+    push @path, $doc;
+    $file = 'index';
+    $url .= $doc . '/index.html';
+  } else {
+    $file = $doc;
+    $url .= $doc . '.html';
+  };
+  my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  if (-e $fname) {
+    $fname .= '#'.$target if $target;
+    $::app->{main}->status("Displaying document page: $fname");
+    Wx::LaunchDefaultBrowser($fname);
+  } else {
+    $url .= '#'.$target if $target;
+    #$::app->{main}->status("Document target not found: $fname");
+    Wx::LaunchDefaultBrowser($url);
+  };
+};
+
+
 
 =for Explain
 

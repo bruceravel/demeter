@@ -1,0 +1,224 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Merging data groups</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/align.html" class="menu">Alignment</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/rebin.html" class="menu">Rebinning</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/align.html"  class="menu">Alignment</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Merging</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Merging data groups
+</h1>
+<h2>
+  Averaging scans and computing their standard deviation 
+</h2>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Explain weighting options
+</p>
+
+<p>
+
+Sadly, most data that we measure is, frankly, kind of crappy.  A
+single scan typically ranges from noisy to so dominated by noise that
+it's hard to recognize it as oscillatory.  Fortunately, 
+<a href="https://speakerdeck.com/bruceravel/the-central-limit-theorem-in-exafs">the central limit theorem</a>
+works every single time.  If you add up enough noisy
+scans, it eventually turns into real data!
+</p>
+
+<p>
+All entries in the group list which are marked will be included in the
+merge.  Make sure that the marked groups really are the ones you want
+to include in the merge!
+</p>
+
+<p>
+Data can be merged as &mu;(E), normalized &mu;(E), or &chi;(k).
+In most cases, it makes little difference which one you choose.
+&chi;(R) will be the same regardless.  (This can be tested, in fact,
+I encourage you to do so.)  The standard deviation in the merged data
+is also computed and stays with the data in project and certain output
+files, although <span class=program>ATHENA</span> does nothing else with the standard
+deviation other than plotting it, which is shown
+below.
+</p>
+
+<p>
+By default, each data set is weighted the same in the merge.  You can
+specify the weight to use for each data set using the <span class=param>&laquo;Importance&raquo;</span> parameter, which is 1 by default for ever
+group.  Alternately, you can let <span class=program>IFEFFIT</span> determine the amount of
+noise in the data by looking at the signal between 15 and 25 in
+R-space and then use the noise to weight the data.  In that way,
+cleaner data contributes more to the merge.  The final weighting
+option is to weight by the value of the <span class=param>&laquo;Edge
+step&raquo;</span>.  In that way, fluorescence data with a larger edge step (more
+concentrated and, preseumably, of better quality is weighted more than
+fluorescence with a smaller edge step.  The choice between using the
+three weighting options is made using the radio buttons in the menu.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=mergemenu>
+<img src=../../images/mergemenu.png width=100%>
+</a>
+<p align=center>
+The contents of the Merge menu, showing the various ways that data can
+merged.
+</p>
+</div>
+
+<p>
+
+After a merge is made, a plot is displayed showing the merge in some manner.
+The type of merge plot is controled by the 
+<span class=pref>&diams;Athena&nbsp;&rarr;&nbsp;merge_plot</span>
+<a href="../other/prefs.html">configuration parameter</a>.
+</p>
+
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=merge_stddev>
+<img src=../../images/merge_stddev.png width=100%>
+</a>
+<p align=center>
+Data merged as &mu;(E) plotted with its standard deviation.
+</p>
+</div>
+
+<p>
+
+The data merging feature is one of <span class=program>ATHENA</span>'s most important.
+My typical work pattern is to carefully align the scans measured on a
+sample, merge them, then further work with the merged data in
+<span class=program>ATHENA</span> and <span class=program>ARTEMIS</span>.
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+It is <strong>essential</strong> that your data be well-aligned before merging.
+Merging poorly aligned data has the effect of significant attenuating
+the fine structure.
+</p>
+
+<p>
+
+When merging as &mu;(E) or normalized &mu;(E), if every data group
+included in the merge has a reference channel, the reference channels
+will also be merged and these two merged spectra will be tied together
+as
+<a href="../import/ref.html">a reference channels</a>.  
+Thus the merge of the reference channels can serve as the alignment
+standard for the merge of the data.
+</p>
+
+<p>
+There is one situation where merging as &mu;(E) will be substantively
+different from the other two options.  If something happens to change
+the values of the signals on the detectors in such a way that &mu;(E)
+for subsequent scans is of very different sizes but the normalized
+&mu;(E) data is consistent for all the data, then the merge in &mu;(E)
+will be dominated by the scans with larger absolute values while the
+merge in normalized &mu;(E) will treat all the data with similar
+weights.  One way of having this happen is to change amplifier gains
+between scans.  In that situation, you probably should choose to merge
+normalized or &chi;(k) data.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

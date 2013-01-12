@@ -1,0 +1,329 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Column output files</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../output/index.html" class="menu">Output files</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../output/project.html" class="menu">Project files</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menuselect">Output files</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Column output files</span><br />
+&nbsp;&#8618;&nbsp;<a href="../output/project.html"  class="menu">Project files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../output/report.html"  class="menu">Report files</a><br /><a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Column output files
+</h1>
+<h2>
+  Writing output for your favorite plotting program 
+</h2>
+
+<p>
+
+After doing a lot of analysis, you will eventually need to make
+beautiful pictures for publication.  As a glance at any of the
+screenshots in this document will attest, the graphical output of
+<span class=program>ATHENA</span> is adequate but far from beautiful.  Fortunately,
+<span class=program>ATHENA</span> can export your data in a variety of ways and in a format
+that can be imported easily into almost any other program, such as a
+spreadsheet or a graphics package such as Origin or Kaleidegraph.
+</p>
+
+<p>
+The current data set -- the one marked in red in the group list and
+the one whose parameters are displayed in the main window -- can be
+saved in a number of ways.  The various choices are listed under the
+File menu, as seen in
+the figure below.
+Note that &chi;(k) data can be saved with various
+k-weightings using the entries in the submenu.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=export_single>
+<img src=../../images/export_single.png width=100%>
+</a>
+<p align=center>
+Exporting a column data file for a group.
+</p>
+</div>
+
+<p>
+
+The columns in the &mu;(E) output file are:
+</p>
+
+
+<ol>
+  
+<li><p> energy         </p></li>
+<li><p> &mu;(E)       </p></li>
+<li><p> background     </p></li>
+<li><p> pre-edge line  </p></li>
+<li><p> post-edge line </p></li>
+<li><p> derivative of &mu;(E) </p></li>
+<li><p> second derivative of &mu;(E) </p></li>
+<li><p> I0             </p></li>
+</ol>
+
+<p>
+
+The columns in the norm(E) output file are:
+</p>
+
+
+<ol>
+  
+<li><p> energy                </p></li>
+<li><p> flattened &mu;(E)    </p></li>
+<li><p> flattened background  </p></li>
+<li><p> normalized &mu;(E)   </p></li>
+<li><p> normalized background </p></li>
+<li><p> derivative of normalized &mu;(E) </p></li>
+<li><p> second derivative of normalized &mu;(E) </p></li>
+</ol>
+
+<p>
+
+The columns in any of the &chi;(k) output files are:
+</p>
+
+
+<ol>
+  
+<li><p> k                        </p></li>
+<li><p> unweighted &chi;(k)    </p></li>
+<li><p> k-weighted &chi;(k)    </p></li>
+<li><p> k-squared-weighted &chi;(k)    </p></li>
+<li><p> k-cubed-weighted &chi;(k)    </p></li>
+<li><p> Fourier transform window </p></li>
+</ol>
+
+<p>
+
+The &chi;(R) output file contains both parts of the complex Fourier
+transform, as well as the magnitude and phase.  That is, of course,
+redundant, but it's also convenient.  The columns are:
+</p>
+
+
+<ol>
+  
+<li><p> R                            </p></li>
+<li><p> real part of &chi;(R)      </p></li>
+<li><p> imaginary part of &chi;(R) </p></li>
+<li><p> magnitude of &chi;(R)      </p></li>
+<li><p> phase of &chi;(R)          </p></li>
+<li><p> back transform window        </p></li>
+</ol>
+
+<p>
+
+For the sake of clarity, we use the letter &ldquo;q&rdquo;
+to represent Fourier filtered wavenumber.  The &chi;(q) output file
+also contains both parts of the complex back transform, as well as the
+magnitude and phase.
+</p>
+
+
+<ol>
+  
+<li><p> q                            </p></li>
+<li><p> real part of &chi;(q)      </p></li>
+<li><p> imaginary part of &chi;(q) </p></li>
+<li><p> magnitude of &chi;(q)      </p></li>
+<li><p> phase of &chi;(q)          </p></li>
+<li><p> Fourier transform window </p></li>
+<li><p> &chi;(k) with the k-weighting used in the FT   </p></li>
+</ol>
+
+<p>
+
+In certain situations, it is much more convenient to write column data
+files containing data from many groups.  This is done with the help of
+the mark buttons.  The data from each of the marked groups can be
+saved in a variety of forms using the
+&ldquo;saved marked groups&rdquo; submenu, as shown
+below.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=export_marked>
+<img src=../../images/export_marked.png width=100%>
+</a>
+<p align=center>
+Exporting column data files for the set of marked groups.
+</p>
+</div>
+
+<p>
+
+The output file will contain the x-axis value (i.e. energy, k, R, or
+q) in the first column.  The remaining columns will contain each of
+the marked data groups, in the order they appear in the group list.
+</p>
+
+<p>
+The final column output option is to export each of the marked groups
+as a single data column file of the sort described above.  When you
+select one of the output file types shown
+below you are
+prompted to select a directory, as in
+the following figure.
+Each marked group will be exported to
+a file in that directory with a file name formed from the group label.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=export_each>
+<img src=../../images/export_each.png width=100%>
+</a>
+<p align=center>
+Exporting column data files for each of the marked groups.
+</p>
+</div>
+
+
+<p>
+ 
+The standard folder selection dialog is used
+for exporting each marked group.  Select a folder and each file will
+be recorded there.
+</p>
+
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Show correct header -- what is shown below is out-of-date
+</p>
+
+
+<p>
+
+All of the output files discussed on this page have a header of the
+form shown below.  The first line identifies the version of <span class=program>ATHENA</span>
+used to write the file.  The second line identifies the type of file.
+The next several lines summarize all the parameters from the main
+window.  The remaining lines are any header files recognized by
+<span class=program>ATHENA</span> from the original data file.
+</p>
+
+
+<pre>
+# Athena data file -- Athena version 0.8.052
+# Saving fe.300 as mu(E)
+# .  Element=Fe   Edge=K
+# Background parameters
+# .  E0=7106.497  Eshift=0.000  Rbkg=1.000
+# .  Standard=0: None
+# .  Kweight=1.0  Edge step=2.825
+# .  Fixed step=no    Flatten=yes
+# .  Pre-edge range: [ -150.000 : -30.000 ]
+# .  Pre-edge line: 3.2697 -0.00046675 * E
+# .  Normalization range: [ 50.000 : 1836.447 ]
+# .  Post-edge polynomial: 32.673 -0.006723 * E + 3.5408e-07 * E^2
+# .  Spline range: [ 0.000 : 1856.458 ]   Clamps: None/Strong
+# Foreward FT parameters
+# .  Kweight=0.5   Window=kaiser-bessel   Phase correction=no
+# .  k-range: [ 2.000 : 21.900 ]   dk=1.00
+# Backward FT parameters
+# .  R-range: [ 1.000 : 3.000 ]
+# .  dR=0.00   Window=kaiser-bessel
+# Plotting parameters
+# .  Multiplier=1   Y-offset=0.000
+# .
+# XDAC V1.2 Datafile V1
+# "fe.300" created on 10/4/02 at 9:37:52 AM on X-11A
+# ring energy= 2.58 GeV
+# E0= 7112.00
+# NUM_REGIONS= 3
+# RB= -200 -20 20 22k
+# RSS= 5 0.5 0.05k
+# PP= 2 2 2
+# settling time= 0.50
+# offsets= 9925.80 9914.40
+# gains= 7.00 7.00
+# iron foil, I0: 50N2, It:N2, 300K
+#------------------------
+</pre>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Introduction to Athena</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="./index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="./forward.html" class="menu">Forward</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="./import/index.html" class="menu">Importing Data</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="./pallas.html"><img src=./../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<a href="./forward.html"  class="menu">Forward</a><br />
+<span style="font-style: italic;">Introduction</span><br />
+<a href="./import/index.html"  class="menu">Importing Data</a><br />
+<a href="./bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="./plot/index.html"  class="menu">Plotting</a><br />
+<a href="./ui/index.html"  class="menu">User Interface</a><br />
+<a href="./params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="./output/index.html"  class="menu">Output files</a><br />
+<a href="./process/index.html"  class="menu">Data processing</a><br />
+<a href="./analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="./other/index.html"  class="menu">Other main window chores</a><br />
+<a href="./examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Introduction to Athena
+</h1>
+
+<p>
+
+<span class=program>ATHENA</span> is an interactive graphical utility for processing EXAFS
+data. It handles most of the common data handling chores of interest
+at the beamline or for preparing your data to begin analysis.
+<span class=program>ATHENA</span> is a graphical front end to Matt Newville's <span class=program>IFEFFIT</span>
+library written entirely in the Perl programming language and using
+the Gnuplot program for data display. It is being developed
+on Linux and tested on various flavors of Windows, but should work on
+any unix-like, Windows, or Mac operating system.
+</p>
+
+<p>
+<span class=program>ATHENA</span> is intended to provide high quality analysis with a
+highly usable interface.  It allows very fine grained control over the
+processing and plotting of individual data sets while still enabling
+the processing and visualization of large quantities of data.
+</p>
+
+<p>
+Among <span class=program>ATHENA</span>'s many, many features, you will find:
+</p>
+
+
+<ul>
+  
+<li><p>
+Convert raw data to &mu;(E)
+</p></li>
+<li><p>
+File import plugins for reading arbitrary data files
+</p></li>
+<li><p>
+Process and plot multiple data scans simultaneously
+</p></li>
+<li><p>
+Merge data as &mu;(E), normalized &mu;(E), or &chi;(k)
+</p></li>
+<li><p>
+Energy calibration
+</p></li>
+<li><p>
+Align data scans with or without a reference channel
+</p></li>
+<li><p>
+Deglitch, truncate, convolve, or smooth &mu;(E) data
+</p></li>
+<li><p>
+Self-absorption corrections for fluorescence spectra
+</p></li>
+<li><p>
+Compute difference spectra
+</p></li>
+<li><p>
+Fit linear combinations of standards to &mu;(E), derivative of &mu;(E), or &chi;(k) data
+</p></li>
+<li><p>
+Fit peak functions to XANES data
+</p></li>
+<li><p>
+Log-ratio/phase-difference analysis
+</p></li>
+<li><p>
+Background removal using the AUTOBK algorithm
+</p></li>
+<li><p>
+Forward and backward Fourier transforms
+</p></li>
+<li><p>
+Save data as &mu;(E), normalized &mu;(E), &chi;(k),
+&chi;(R), or back-transformed &chi;(k)
+</p></li>
+<li><p>
+Save project files, allowing you to return to your analysis later
+</p></li>
+<li><p>
+... and much, MUCH more!
+</p></li>
+</ul>
+
+
+
+<hr class=hide />
+<a name="firstlookatathena">
+
+<h2>  First Look at ATHENA</h2>
+</a>
+
+<p>
+
+When <span class=program>ATHENA</span> first starts, something like the picture below
+appears on your computer screen.  The <span class=program>ATHENA</span> window is divided
+into several parts.  We will discuss each of these parts and give
+each a name.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=athena_main>
+<img src=../images/athena_main.png width=100%>
+</a>
+<p align=center>
+The parts of the Athena.
+</p>
+</div>
+
+<p>
+
+At the top of the window is a menu bar.  This works much like the menu
+bar in any program.  Much of the functionality in <span class=program>ATHENA</span> is
+accessed through those menus.
+</p>
+
+<p>
+The largest part is the main window, highlighted in the picture above
+with a red border.  The red border does not happen in the real
+program -- it's there simply to clarify this discussion.  The main
+window is divided into six parts.  The top box identifies the file
+name of the current
+<a href="output/project.html">project file</a>.
+Below that, are various parameters identifying the current data group.
+</p>
+
+<p>
+The next three boxes are used to define the parameters associated with
+normalization and background removal, forward Fourier transforms, and
+reverse Fourier transforms.  At the bottom of the main window are
+a couple of parameters associated with plotting.
+</p>
+
+<p>
+At the bottom of the screen is the echo area.  This very important
+space is used by <span class=program>ATHENA</span> to communicate with you, the user.  This
+space is used to display informational messages while <span class=program>ATHENA</span> is
+working on your data, error messages when it runs into trouble, and
+other kinds of messages.  
+</p>
+
+<p>
+The large blank area on the right is
+<a href="ui/glist.html">the group list area</a>.
+As data are imported into <span class=program>ATHENA</span>, they will be listed in this
+space.  Access to the data already imported is made by clicking in
+this space.
+</p>
+
+<p>
+Above the group list area are
+<a href="ui/mark.html">the mark buttons</a>
+The blank space next to the mark buttons is the modified project
+indicator.  This indicator shows when your project has been modified
+and needs to be saved.
+</p>
+
+<p>
+Below the group list area are the plot buttons.  Below that are the
+buttons used to set the k-weighting for use when plotting in k-space
+or when making a forward Fourier transform.  Below that are various
+other
+<a href="ui/mark.html">plotting controls</a>
+in the plotting options section.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=athena_withdata>
+<img src=../images/athena_withdata.png width=100%>
+</a>
+<p align=center>
+Athena, after importing some data.
+</p>
+</div>
+
+<p>
+
+After importing several data files, each is made into a
+<em>data group</em> and listed in the group list.  The
+label and the check button next to it are the main controls for
+interacting with data in <span class=program>ATHENA</span>.
+</p>
+
+
+<hr class=hide />
+<a name="gettinghelp">
+
+<h2>  Getting help</h2>
+</a>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
+This section needs attention.  Demo projects not implemented.
+</p>
+
+<p>
+
+There is quite a bit of help built right into <span class=program>ATHENA</span>.  Typing
+<span class=key>Control</span>-<span class=key>m</span> or selecting
+&ldquo;Document&rdquo; from the Help menu will display
+<span class=program>ATHENA</span>'s document in a web browser or in the built-in document
+viewer. The &ldquo;Document sections&rdquo; submenu
+allows you to jump directly to a particular topic.  Also, many parts
+of the program have a button which will take you directly to the part
+of the document that describes that part of the program.
+</p>
+
+<p>
+You can select the format in which the documentation is displayed by
+setting the <span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;prefer</span>
+preference.  Because it has all the images, the html document is
+probably the better choice.  Users on Windows and the Mac will have
+the html document displayed in whatever browser is the system default.
+For Linux, BSD, and other unix users, <span class=program>ATHENA</span> attempts to find a
+suitable browser.  You can explicitly set the browser from a list of
+common (and not so common) options by setting the 
+<span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;browser</span> preference.
+This list includes every GUI browser option that Bruce was aware at the
+time this paragraph was written, including several options from the
+Mozilla ecosystem.
+</p>
+
+<p>
+Another feature that you can use to explore different parts of the
+program are the <em>demo files</em>.  Demo files are
+normal <a href="output/project.html">project files</a>
+that get installed when you install this software on your computer.
+Each demo file demonstrates a particular feature of the program.  When
+you select &ldquo;Import a demo project&rdquo; from the
+Help menu, a file selection dialog opens to the location of the demo
+projects.  When you select one, its
+<a href="ui/palettes.html">project journal</a>
+is opened after its data is displayed.  The journal explains how to
+use the data to learn about the topic covered by
+that demo.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

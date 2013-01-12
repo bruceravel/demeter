@@ -1,0 +1,685 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Forward</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="./index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="./index.html" class="menu">Home</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="./intro.html" class="menu">Introduction</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="./pallas.html"><img src=./../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<span style="font-style: italic;">Forward</span><br />
+<a href="./intro.html"  class="menu">Introduction</a><br />
+<a href="./import/index.html"  class="menu">Importing Data</a><br />
+<a href="./bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="./plot/index.html"  class="menu">Plotting</a><br />
+<a href="./ui/index.html"  class="menu">User Interface</a><br />
+<a href="./params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="./output/index.html"  class="menu">Output files</a><br />
+<a href="./process/index.html"  class="menu">Data processing</a><br />
+<a href="./analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="./other/index.html"  class="menu">Other main window chores</a><br />
+<a href="./examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Forward
+</h1>
+<h2>
+  Conventions and acknowledgements 
+</h2>
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
+Review data citations, rewrite installation section, review
+acknowledgements, rewrite building from source, rewrite using
+section. 
+</p>
+
+<p>
+
+The best way to learn how to use <span class=program>ATHENA</span> is to <strong>use</strong> <span class=program>ATHENA</span>.  Poke at the buttons, poke at the menus, try
+things just to see what happens.  And above all, remember the
+physical and mathematical meanings of your data and of the data
+analysis techniques and think about how actions in <span class=program>ATHENA</span> relate
+to those meanings.
+</p>
+
+<p>
+<span class=program>ATHENA</span> is a powerful and versatile program capable of supporting
+almost all of your common (and not-so-common) XAS data processing
+chores.  It is not, however, a particularly intuitive program.  I
+doubt that any XAS program could be intuitive.  On top of that,
+<span class=program>ATHENA</span> has accumulated lots of features over the years.  Many of
+these features are necessary for high-quality data processing, others
+are bells and whistles intended to make data processing more
+convenient or more fun.
+</p>
+
+<p>
+This document attempts to be a comprehensive overview of all of
+<span class=program>ATHENA</span>'s features.  There are lots of words, but also lots of
+pictures.  Feel free to jump around and to focus on the parts most
+directly relevant to your immediate needs.  I hope you find this
+document and the program helpful.
+</p>
+
+
+<hr class=hide />
+<a name="layoutandtypesettingconventions">
+
+<h2>  Layout and typesetting conventions</h2>
+</a>
+
+<p>
+
+Here is a summary of fonts, colors, and symbols used to denote
+different kinds of text.  Note that some of these may appear the same
+in certain presentation media.
+</p>
+
+
+<ul>
+  
+<li><p>
+Filenames look <span class=file>C:like\this</span>.
+</p></li>
+<li><p>
+The names of parameters for data processing look <span class=param>&laquo;like_this&raquo;</span>.
+</p></li>
+<li><p>
+Emphasized text looks <em>like this</em>.
+</p></li>
+<li><p>
+Bold text looks <strong>like this</strong>.
+</p></li>
+<li><p>
+Links to web sites look <a href="http://www.google.com">like this</a>.
+</p></li>
+<li><p>
+Internal links look <a href="forward.html#layoutandtypesettingconventions">like this</a>.
+</p></li>
+<li><p>
+Keyboard shortcuts look like this:
+<span class=key>Control</span>-<span class=key>q</span>.  This example
+means to hit the q key while holding the Control (or Ctrl) key.
+</p></li>
+<li><p>
+Program names from the <span class=program>IFEFFIT</span> family look like this: <span class=program>ATHENA</span>.
+</p></li>
+<li><p>
+References to <span class=program>ATHENA</span>'s preferences are written like this:
+<span class=pref>&diams;Bkg&nbsp;&rarr;&nbsp;fraction</span>.  To modify
+this preferences,
+open the &ldquo;bkg&rdquo; section of the
+<a href="other/prefs.html">preferences tool</a>
+and then click on &ldquo;fraction&rdquo;.
+</p></li>
+</ul>
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../images/alert.png" alt="Caution!">
+Points that require special attention are written inside of
+attention-grabbing boxes.<br /><br />
+</p>
+
+
+<p>
+<a class=floatleft href="../images/LightningBolt.png" target=_blank><img border=0 src="../images/LightningBolt.png"   alt="LightningBolt.png"></a> This symbol indicates a
+section describing one of <span class=program>ATHENA</span>'s features that I consider
+especially powerful and central to the effective use of the program.
+</p>
+
+
+
+<p>
+<a class=floatleft href="../images/bend.png" target=_blank><img border=0 src="../images/bend.png"   alt="bend.png"></a> This symbol indicates a section
+with difficult information that newcomers to <span class=program>ATHENA</span> might pass
+over on their first reading of this document.
+</p>
+
+
+<br />
+
+<p>
+
+The html version of this document makes use of HTML 4.1 character
+entities (mostly Greek symbols) and will not display correctly in very
+old browsers.
+</p>
+
+
+<hr class=hide />
+<a name="acknowledgements">
+
+<h2>  Acknowledgements</h2>
+</a>
+
+
+<p>
+
+I have to thank Matt Newville, of course.  Without <span class=program>IFEFFIT</span> there
+wouldn't be an <span class=program>ATHENA</span>.  One afternoon over coffee, Julie Cross
+and Shelly Kelly lit the spark that eventually lead to this document.
+Some content of this document was inspired by an upcoming XAS review
+article by Shelly Kelly and Dean Hesterberg, which I have had the
+pleasure of editing (and, apparently, swiping from). I have a huge
+debt of gratitude to all the folks on the <span class=program>IFEFFIT</span> mailing list.
+Without the incredible support and wonderful feedback that I've
+received in the last six years <span class=program>ATHENA</span> would be a shadow of what
+it is today.
+</p>
+
+<p>
+The following great software tools were used to create this document:
+</p>
+
+
+<ul>
+  
+<li><p>
+<a href="http://www.template-toolkit.org">The Template Toolkit</a>,
+a really fun, really powerful templating system that was used to
+create this entire document
+</p></li>
+<li><p>
+<a href="http://www.perl.org">The Perl programming language</a>
+and
+<a href="http://search.cpan.org/~johnsca/Syntax-Highlight-Perl-1.0/">Syntax::Highlight::Perl</a>
+from
+<a href="http://www.cpan.org">the CPAN repository</a>
+</p></li>
+<li><p>
+The
+<a href="http://www.gnu.org/software/emacs/">Emacs</a>
+and
+<a href="http://www.xemacs.org">XEmacs</a>
+text editors along with 
+<a href="http://dave.org.uk/emacs/tt-mode.el">tt-mode</a>
+and the simply wonderful
+<a href="http://ecb.sourceforge.net/">Emacs Code Browser</a>
+</p></li>
+<li><p>
+<a href="http://www.gimp.org">The GIMP</a>
+image editor with frequent use of the Xach effect shadowing plugin
+</p></li>
+<li><p>
+Various tools from the
+<a href="http://www.kde.org">KDE desktop</a>,
+including KColorChooser and
+<a href="http://docs.kde.org/stable/en/kdegraphics/ksnapshot/index.html">KSnapshot</a>
+
+</p></li>
+</ul>
+
+<p>
+
+All screenshots were made of <span class=program>ATHENA</span> or the
+<a href="http://www.astro.caltech.edu/~tjp/pgplot/">PGPLOT</a>
+window  on
+my <a href="http://www.kde.org">KDE desktop</a>,
+mostly using some version of the
+<a href="http://www.kde-look.org/content/show.php?content=32824">Orangio theme</a>
+for
+<a href="http://www.kde-look.org/content/show.php?content=31447">deKorator</a>.
+The screenshots of spreadsheets made from
+<a href="output/report.html#export_excelreport">a report file</a>
+and
+<a href="examples/aucl.html#ex_aucl_excel">an LCF fit report</a>
+are displayed in
+<a href="http://www.openoffice.org">OpenOffice</a>.
+</p>
+
+<p>
+The images of the Tholos temple on the front page and the Klimt
+painting <em>Pallas Athena</em> in the navigation box
+of the html document are from
+<a href="http://www.artchive.com">http://www.artchive.com</a>.
+</p>
+
+<p>
+The image used as the <span class=program>ATHENA</span> program icon is from
+&ldquo;Heracles and Athena. Tondo of an Attic red-figure kylix, 480-470 BC, from Vulci&rdquo;
+from the Staatliche Antikensammlungen in Munich, Germany.  The image
+is in the public domain and was found on 
+<a href="http://commons.wikimedia.org/wiki/Image:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg">Wikimedia Commons</a>.
+The image used as the <span class=program>HEPHAESTUS</span> program icon is from Reubens' 
+&ldquo;Vulcan forging Jupiter's thunderbolts&rdquo; 
+from the Museo Del Prado, Madrid Spain.  This image is also in the public
+domain and also from 
+<a href="http://commons.wikimedia.org/wiki/Image:Rubens_-_Vulcano_forjando_los_rayos_de_J%C3%BApiter.jpg">Wikimedia Commons</a>.
+</p>
+
+
+<hr class=hide />
+<a name="datacitations">
+
+<h2>  Data citations</h2>
+</a>
+
+<ul>
+  
+<li><p>
+  The copper foil data shown here and there are the
+  data that Matt Newville, Yanjun Zhang, and I measured one day back
+  in 1992 that has, inscrutably, become <em>the</em>
+  copper foil data shown and referenced in a large fraction of the XAS
+  theory literature.  The copper film in  <a href="process/sa.html">the self-absorption section</a> comes
+  from Corwin Booth.
+</p></li>
+<li><p>
+  The platinum catalyst data shown in <a href="analysis/diff.html">the difference spectrum section</a>
+  were donated by Simon Bare.
+</p></li>
+<li><p>
+  The gold edge data shown in many places throughout this document are
+  taken from measurements published as
+  M. Lengke, et al., <em>Environ. Sci. Tech.</em>, <strong>40:20</strong>, 
+(2006) p.&nbsp;6304-6309<a href="http://dx.doi.org/10.1021/es061040r"> (DOI: 10.1021/es061040r)</a>.
+</p></li>
+<li><p>
+  The gold oxide data shown in <a href="process/smooth.html">the smoothing section</a> were donated by Norbert Weiher.
+</p></li>
+<li><p>
+  The iron foil data shown in <a href="process/conv.html">the convolution section</a> and elsewhere were measured by me while
+  I was commissioning NSLS beamline X11B in 2004.
+</p></li>
+<li><p>
+  The sulphate data shown in <a href="process/sa.html">the self-absorption section</a> were donated by Zhang Ghong and come with Daniel Haskel's
+  <a href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">Fluo program</a>.  The copper data shown
+  in <a href="process/sa.html">the same section</a> come with
+  Corwin Booth's <a href="http://lise.lbl.gov/RSXAP/">RSXAP program</a>.
+</p></li>
+
+
+
+
+
+<li><p>
+  Data on a hydrated uranyl phosphate that appear in several places are the U
+  L<sub>III</sub> standard used by <a href="http://www.mesg.anl.gov/">my former research group</a>.  Spectra from this standard have appeared
+  in many publications from that group.  The U<sub>3</sub>O<sub>8</sub> sample shown in the
+  <a href="process/deg.html">the deglitching section</a> are from the group's standards library.
+</p></li>
+<li><p>
+  Tin edge data which appear in several places are from
+  C. Impellitteri, O. Evans, B. Ravel, <em>J. Environ. Monit.</em>, <strong>4</strong>, 
+(2007) p.&nbsp;358-365<a href="http://dx.doi.org/10.1039/b617711e"> (DOI: 10.1039/b617711e)</a>.
+</p></li>
+<li><p>
+  Data on PbTiO<sub>3</sub>, BaTiO<sub>3</sub>, and EuTiO<sub>3</sub> are taken from
+  <a href="http://cars9.uchicago.edu/~ravel/thesis.html">my own PhD thesis</a>.
+</p></li>
+</ul>
+
+<hr class=hide />
+<a name="installingathenaonyourcomputer">
+
+<h2>  Installing Athena on your computer</h2>
+</a>
+
+<dl>
+  
+<dt>
+  Linux, BSD, and other unixes
+</dt>
+<dd>
+It is not especially hard to build <span class=program>ATHENA</span> from source code.  The procedure
+is explained in detail on this web page: 
+<a href="http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware">http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware</a>.
+  <br />
+  <br />
+</dd>
+<dt>
+  Debian and debian-based Linux
+</dt>
+<dd>
+Add the repositories listed on this page:
+<a href="http://wiki.mr.aps.anl.gov/ObtainingSoftware">http://wiki.mr.aps.anl.gov/ObtainingSoftware</a>.
+This can be done either by editing 
+<span class=file>/etc/apt/sources.list</span> directly or by adding
+repositories using the system package manager (e.g. Adept on ubuntu).
+Once these are included as repositories, the &ldquo;horae&rdquo;
+package, which contains <span class=program>ATHENA</span>, can be installed.
+  <br />
+  <br />
+</dd>
+<dt>
+  Windows
+</dt>
+<dd>
+<p>
+
+An MSI installer package is available at
+<a href="http://cars9.uchicago.edu/iffwiki/Downloads">http://cars9.uchicago.edu/iffwiki/Downloads</a>.
+Installation is very simple.  Just double click on the installer and
+follow the instructions.  If you are installing onto a machine for
+which you do not have administrator privileges, you should choose a
+part of the disk that belongs to you when asked about the installation
+location.
+</p>
+
+<p>
+For those with 
+<a href="http://www.activestate.com/Products/activeperl/index.mhtml">ActiveState Perl</a>
+installed on their windows machines,
+the &ldquo;horae&rdquo; source code can be installed
+using the Perl Package Manager.  In the Perl Package Manager, select
+&ldquo;Preferences&rdquo; from the Edit menu, then
+click on the repositories tab.  Add
+<a href="http://cars9.uchicago.edu/~ravel/ppm/">http://cars9.uchicago.edu/~ravel/ppm/</a>
+as a new repository.  The &ldquo;horae&rdquo;
+package should now show up as an installable package.
+</p>
+
+  <br />
+  <br />
+</dd>
+<dt>
+  Macintosh
+</dt>
+<dd>
+An installer package is available at
+<a href="http://cars9.uchicago.edu/iffwiki/Downloads">http://cars9.uchicago.edu/iffwiki/Downloads</a>.
+Installation is very simple.  Just double click on the installer and follow the instructions.
+  <br />
+  <br />
+</dd>
+
+</dl>
+
+
+<hr class=hide />
+<a name="buildingthisdocumentfromsource">
+
+<h2>  Building this document from source</h2>
+</a>
+
+<hr class=hide />
+<a name="obtainingthedocumentsource">
+
+<h3>  Obtaining the document source</h3>
+</a>
+
+
+<p>
+
+The source files and all images files for this document can be
+downloaded by SVN.  To grab the source, you will need an
+<a href="http://subversion.tigris.org/">SVN client</a> on your computer.  This
+command checks a copy of the source out and downloads it onto your
+computer:
+</p>
+
+<pre>
+    svn co http://cars9.uchicago.edu/svn/aug/
+</pre>
+
+<p>
+
+This document is written using
+<a href="http://www.template-toolkit.org">The Template Toolkit</a>.
+It requires <a href="http://www.perl.org">the perl interpreter</a>
+and a fairly complete installation of version 2 of The Template
+Toolkit to build.  If TT2 is not available as a package for your system
+(it is available as a pre-compiled package for many versions of Linux;
+<a href="http://www.template-toolkit.org/download.html#win32">a ppm file for ActivePerl on Windows exists</a>;
+<a href="http://www.template-toolkit.org/download.html#macosx">a Fink package for OSX exists</a>)
+it can be downloaded from its website and installed by hand or
+downloaded using perl's <a href="http://cpan.uwinnipeg.ca/htdocs/CPAN/CPAN.html">CPAN
+utility</a>.  You will also need to install the
+<a href="http://cpan.uwinnipeg.ca/dist/Image-Size">Image::Size</a>, and
+<a href="http://cpan.uwinnipeg.ca/dist/Syntax-Highlight-Perl">Syntax::Highlight::Perl</a> modules.  Compiling the L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X
+version of the document will require a fairly complete L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X
+installation as I make use of many styles, including
+amsmath, amsfonts, floatflt, fancybox, fancyhdr, keystroke, varioref, and
+hyperref.  (teTeX compiles the document without any problem. The
+texlive package may complain about not being able to generate two
+postscript font sets.  Those two warning can be safely ignored by
+simply hitting <span class=key>Return</span> when pdflatex pauses
+to complain.  As far as I can tell, ignoring this problem has no
+impact on the document.  I have no experience building the PDF
+document on any system other than linux.)
+</p>
+
+<p>
+Once TT2 and the other modules are installed, building the document
+should be quite simple.  TT2's <tt>ttree</tt>
+program is used to recurse the through the directory structure
+containing the templates.  The <span class=file>bin/build</span>,
+<span class=file>bin/tex</span>, and <span class=file>bin/pod</span>
+scripts are wrappers around <tt>ttree</tt>.  They
+invokes a number of important command line options and pass any
+further command line options to <tt>ttree</tt>.
+</p>
+
+<p>
+TT2 was chosen for this project because it is an excellent templating
+tool.  A templating tool was chosen because the strong separation of
+format and content was attractive to me.  The template source is used
+to generate html and PDF versions of the document as well as the pod
+format used by <span class=program>ATHENA</span>'s internal document viewer.
+</p>
+
+<p>
+Contributions to the document are extremely welcome.  The very best
+sort of contribution would be to directly edit the source templates
+and commit your changes to the SVN repository.  The second best sort
+would be a patch file against the templates in the repository.  If TT2
+is more than you want to deal with, but you have corrections to
+suggest, I'd cheerfully accept almost any other format for the
+contribution. (Although I have to discourage using an html editing
+tool like FrontPage to edit the html directly.  Tools like that tend
+to insert lots of additional html tags into the text, making it more
+difficult for me to incorporate your changes into the source.)
+</p>
+
+
+<hr class=hide />
+<a name="buildingthehtmldocument">
+
+<h3>  Building the html document</h3>
+</a>
+
+<p>
+
+After downloading and unpacking the source for this document, you must
+configure it to build correctly on your computer.  This is simple:
+</p>
+
+<pre>
+./configure
+</pre>
+
+<p>
+
+To build the entire document as html
+</p>
+
+<pre>
+./bin/build -a
+</pre>
+<p>
+
+Individual pages can be built by specifying them on the command line:
+</p>
+
+<pre>
+./bin/build bkg/norm.tt forward.tt
+</pre>
+
+<hr class=hide />
+<a name="buildingthelatexdocument">
+
+<h3>  Building the LaTeX document</h3>
+</a>
+
+<p>
+
+The L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X document is built by
+</p>
+
+<pre>
+./bin/tex -a
+cd tex/
+pdflatex athena.ltx
+pdflatex athena.ltx
+</pre>
+<p>
+
+You need to run <tt>pdflatex</tt> two or three
+times to get all of the section numbering and cross referencing
+correct.  The varioref package, used to handle cross-referencing, is
+sometimes a little fragile.  If you see the following error message:
+simply hit return.  The message should disappear when you recompile
+the document.
+</p>
+
+<pre>
+! Package varioref Error: vref at page boundary 142-143 (may loop).
+</pre>
+
+<p>
+
+A version of the PDF document suitable for printing on a grayscale
+(i.e. without color) printer can be made using this sequence of commands:
+</p>
+
+
+<pre>
+cd images/
+./images/convert_to_gray
+cd ../
+./bin/texbw -a
+cd texbw/
+pdflatex athena.ltx
+pdflatex athena.ltx
+</pre>
+<p>
+
+</p>
+
+<p>
+This first bit converts all of the images used in the document to
+grayscale using <a href="http://www.imagemagick.org">ImageMagick</a>.  
+The &ldquo;texbw&rdquo; version of the
+document is nearly identical to the normal L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X document,
+except that the style file and several templates are changed to remove
+all color from the document.  Compiling the version in the <tt>texbw/</tt> directory results in a PDF file that is
+suitable for a non-color printer.
+</p>
+
+<p>
+This output target was created for the 2008 APS summer school.  The
+cost saving of printing the <span class=program>ATHENA</span> document in black-and-white rather
+than color for each of the students was quite significant.
+</p>
+
+
+<hr class=hide />
+<a name="buildingthepoddocument">
+
+<h3>  Building the pod document</h3>
+</a>
+
+<p>
+
+The pod document, <span class=program>ATHENA</span>'s internal document format, is built by
+</p>
+
+<pre>
+./bin/pod -a
+</pre>
+<p>
+
+Individual pages can be built by specifying them on the command line:
+</p>
+
+<pre>
+./bin/pod bkg/norm.tt forward.tt
+</pre>
+
+<hr class=hide />
+<a name="usingthedocumentwithathena">
+
+<h3>  Using the document with Athena</h3>
+</a>
+
+<p>
+
+The pod and html document files can be used by <span class=program>ATHENA</span>, but they
+must be installed in the correct location.  To do this, run the
+<tt>install</tt> script that comes with the
+document package.  This will use an <span class=program>ATHENA</span> module to determine
+the correct location, then copy over all relevant files.  Once installed 
+<span class=program>ATHENA</span> will display the html document in either a web browser or
+a pod viewer depending on the values of the
+<span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;prefer</span> and
+<span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;browser</span> preferences.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Reference channel</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../import/multiple.html" class="menu">Importing multiple data sets</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../import/index.html" class="menu">Importing Data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../import/preproc.html" class="menu">Data preprocessing</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menuselect">Importing Data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/columns.html"  class="menu">The column selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/projsel.html"  class="menu">The project selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/multiple.html"  class="menu">Importing multiple data sets</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Reference channel</span><br />
+&nbsp;&#8618;&nbsp;<a href="../import/preproc.html"  class="menu">Data preprocessing</a><br /><a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Reference channel
+</h1>
+<h2>
+  Importing a reference spectrum for use as a data
+		 alignment standard 
+</h2>
+
+<p>
+
+</p>
+
+<p>
+The column selection dialog offers several other features related to
+data import.  In this section we will see how to import a reference
+channel.  It is common to place a third ionization chamber in line
+after the transmission chamber and to place good transmission standard
+between the two.  The point of measuring the standard is that it is
+measured in parallel with your real sample.  This standard can then be
+used to align the actual data using the
+<a href="../process/align.html">data alignment
+tool</a>.
+</p>
+
+<p>
+The standard often is a zero-valent foil, but the most important thing
+is that it is an excellent standard which will yield consistently
+high-quality data.  The other most important thing is that you always
+use the same sample as your reference standard for ever experiment you
+make at a particular edge.  To this end, it is wise to make a library
+of standards and carry them with you to the synchrotron.  By using the
+same standard for every experiment at an edge, you can align any data,
+even data measured years apart at different synchrotrons.</p>
+
+
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_ref>
+<img src=../../images/import_ref.png width=100%>
+</a>
+<p align=center>
+Importing a reference channel with the column selection dialog.
+</p>
+</div>
+
+<p>
+
+The reference channel selection works almost the same as column
+selection for the data except that you don't need to specify the
+energy column again -- the same column is used.  When a reference
+channel after the transmission channel is used, you should use the
+transmission channel as the numerator and the reference channel as the
+denominator.  Another common solution to measuring a reference channel
+is measure elastically scattered radiation through the standard with a
+PIN diode.  In that case, I0 is the numerator and the diode is the
+denominator.
+</p>
+
+<p>
+You can plot the reference channel to make sure that you have selected
+the correct channels with the
+&ldquo;Plot reference&rdquo; button.  If your
+reference standard is of an element with a nearby edge energy, uncheck
+the button labeled
+&ldquo;Same element&rdquo;.  If you use some other kind of
+reference measurement that is not a transmission measurement, you can
+uncheck the &ldquo;Natural log&rdquo; button.
+</p>
+
+<p>
+When you click the OK button, the data are imported and inserted into
+the group list.  The reference channel is placed in the group list
+below its data.  The reference channel is just like any other group,
+with one distinction.  The data and its reference channel are
+<em>tied</em>
+together in the sense that the values for their
+<span class=param>&laquo;Energy shift&raquo;</span> parameters will always be the
+same.
+</p>
+
+<p>
+This relationship is shown visually by the change in color of the text
+in the box for <span class=param>&laquo;Energy shift&raquo;</span>, as seen in
+this screenshot.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=import_refimported>
+<img src=../../images/import_refimported.png width=100%>
+</a>
+<p align=center>
+Data imported with a reference channel in <span class=program>ATHENA</span>.
+</p>
+</div>
+
+<p>
+
+When you change the value of <span class=param>&laquo;Energy shift&raquo;</span> for
+the reference, the value of <span class=param>&laquo;Energy shift&raquo;</span> for
+the data changes as well.  (And vice versa!)  This feature of
+reference channels is put to good use
+<a href="../process/align.html">in data alignment</a>.
+</p>
+
+<p>
+Occasionally, it is useful to tie two data groups together in this
+way.  This can be done by marking the two groups you want to tie
+together as data and reference, then selecting
+&ldquo;Tie reference channel&rdquo; from the Group menu.
+</p>
+
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+It should be possible to tie together two or more data groups in a
+reference relationship -- that would be useful for multi-element
+detector data and some other situations.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

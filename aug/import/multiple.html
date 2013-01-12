@@ -1,0 +1,171 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Multiple data set import</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../import/projsel.html" class="menu">The project selection dialog</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../import/index.html" class="menu">Importing Data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../import/ref.html" class="menu">Reference channel</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menuselect">Importing Data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/columns.html"  class="menu">The column selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/projsel.html"  class="menu">The project selection dialog</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Importing multiple data sets</span><br />
+&nbsp;&#8618;&nbsp;<a href="../import/ref.html"  class="menu">Reference channel</a><br />
+&nbsp;&#8618;&nbsp;<a href="../import/preproc.html"  class="menu">Data preprocessing</a><br /><a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Multiple data set import
+</h1>
+<h2>
+  How Athena handles large volumes of data 
+</h2>
+
+<p>
+
+</p>
+
+<p>
+You can import multiple data sets in the same manner that was
+explained in the last section.  Select Open file from the File menu or
+type <span class=key>Control</span>-<span class=key>o</span>.  When the file selection dialog
+opens, you can select more than one data file by clicking on file
+names while holding down the <span class=key>Control</span> key.  On my Linux
+computer, it looks like
+this.
+</p>
+
+
+<a href="../../images/import_multiple.png" target=_blank><img class=flexy src="../../images/import_multiple.png" title="
+Importing multiple data sets with the file selection dialog.
+" alt="
+Importing multiple data sets with the file selection dialog.
+"></a>
+
+<p>
+
+Note that three files are highlighted in the file listing and that
+those three files are listed below in the
+&ldquo;File name&rdquo; box.  Another
+way of selecting multiple files is to click on a file in the listing
+then click on another file while holding down the
+<span class=key>Shift</span> key.  When you do this, all files
+between the two you clicked on will be selected.
+</p>
+
+<p>
+When you click the OK button, all of the selected files will be
+imported.  If all of the files are of the same type, <span class=program>ATHENA</span> will
+import them all with only one interaction of the column selection
+dialog.  Thus, if you select several files that were measured one
+after the other, they will all be imported using the same column
+selections as well as the same parameters for the reference channel,
+rebinning, and preprocessing (all of which will be described in the
+following sections).  If, however, a file is found that appears to be
+of a different format, the column selection dialog will reappear as
+needed. <span class=program>ATHENA</span> considers two files to be the same if they have the
+same number of columns and those columns have the same labels.
+</p>
+
+<p>
+Each file imported in this way will be listed in the group list, shown
+here
+</p>
+
+
+<a href="../../images/import_multipleimported.png" target=_blank><img class=flexy src="../../images/import_multipleimported.png" title="
+<span class=program>ATHENA</span> after importing multiple data sets.
+" alt="
+<span class=program>ATHENA</span> after importing multiple data sets.
+"></a>
+
+<p>
+
+When you import multiple project files, the
+<a href="../import/projsel.html">project selection dialog</a>
+will appear for the first one in the list.  If you import the entire
+contents of the project file, then the entire contents of all
+remaining project files will also be imported.  If, however, you
+import only a subset, the project selection dialog will appear for the
+next project file.  As soon as you import an entire project, all
+subsequent projects will be imported without having to interact with
+the dialog.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

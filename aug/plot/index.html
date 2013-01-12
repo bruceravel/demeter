@@ -1,0 +1,215 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Plotting Your Data in ATHENA</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../bkg/index.html" class="menu">Background Removal</a> &nbsp;&nbsp;
+        Down: <a class=navtable href="../plot/tabs.html" class="menu">Plot space tabs</a>
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="../ui/index.html" class="menu">User Interface</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<span style="font-style: italic;">Plotting</span><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/tabs.html"  class="menu">Plot space tabs</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/krange.html"  class="menu">Spectral resolution and k-range</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/stack.html"  class="menu">Stacking plots</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/indic.html"  class="menu">Plot indicators</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/params.html"  class="menu">Group-specific parameters</a><br />
+&nbsp;&#8618;&nbsp;<a href="../plot/etc.html"  class="menu">Other plotting features</a><br /><a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menu">Data processing</a><br />
+<a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Plotting Your Data in ATHENA
+</h1>
+
+<p>
+
+Two of the main design goals of <span class=program>ATHENA</span> are to make basic data
+processing, i.e. background removal and Fourier transforms, as
+transparent as possible and to make processing of large amounts of
+data as seamless as processing a single data group.  To this end,
+there are no buttons or other kinds of controls that explicitly tell
+<span class=program>ATHENA</span> to perform the basic processing chores.  Instead, there
+are the plot buttons.  When you click one of the plot buttons, the
+data processing which is required will be performed before the plot is
+made.  For example, if you press the <span class=red>R</span> button,
+the background will be removed from the current group and the
+&chi;(k) will be Fourier transformed to &chi;(R).  Once all that
+is finished, the plot in R-space will be made.
+</p>
+
+<p>
+As you change the values of the parameters in the main window,
+<span class=program>ATHENA</span> keeps track of what has been changed and which data
+processing steps need to be redone.  If you change the
+<span class=param>&laquo;krange&raquo;</span> parameters, then press
+the <span class=red>R</span> button again, the Fourier
+transform will be updated, but <span class=program>ATHENA</span> will recognize that the
+background removal is still up-to-date.
+</p>
+
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Write document page for title, legends, single file tab
+</p>
+
+
+<hr class=hide />
+<a name="plottingthecurrentgroup">
+
+<h2>  Plotting the current group</h2>
+</a>
+
+<p>
+
+The row of red buttons are used to plot the current group.  The
+current group is the one highlighted in the group list and the one
+whose parameter values are displayed in the main window.  The controls
+used to determine how the plots are displayed are described in
+<a href="../plot/tabs.html">the next section</a>.
+</p>
+
+
+<ol>
+  
+<li><p>
+  Clicking the <span class=red>E</span> button brings the
+  background removal up to date and plots the &mu;(E) data.
+</p></li>
+<li><p>
+  Clicking the <span class=red>k</span> button brings the
+  background removal up to date and plots the &chi;(k) data.
+</p></li>
+<li><p>
+  Clicking the <span class=red>R</span> button brings the
+  background removal and Fourier transform up to date and plots the
+  &chi;(R) data.
+</p></li>
+<li><p>
+  Clicking the <span class=red>q</span> button brings the
+  background removal, Fourier transform, and backwards transform up to
+  date and plots the &chi;(q) data.
+</p></li>
+<li><p>
+  Clicking the <span class=red>kq</span> button brings the
+  background removal, Fourier transform, and backwards transform up to
+  date and plots the &chi;(k) data along with the real part of the
+  &chi;(q) data.
+</p></li>
+</ol>
+
+<hr class=hide />
+<a name="plottingmanygroups">
+
+<h2>  Plotting many groups</h2>
+</a>
+
+<p>
+
+The row of purple buttons are used to plot the set of marked groups.  The
+marked groups are the ones with their purple button checked in the
+group list.  More details about the marking groups are found
+<a href="../ui/mark.html">elsewhere in this document</a>.
+The controls used to determine how the plots are displayed are described in
+<a href="../plot/tabs.html">the next section</a>.
+</p>
+
+
+<ol>
+  
+<li><p>
+  Clicking the <span class=purple>E</span> button brings the
+  background removal up to date for all marked groups and plots their &mu;(E) data.
+</p></li>
+<li><p>
+  Clicking the <span class=purple>k</span> button brings the
+  background removal up to date for all marked groups and plots
+  their &chi;(k) data.
+</p></li>
+<li><p>
+  Clicking the <span class=purple>R</span> button brings the
+  background removal and Fourier transform up to date for all marked
+  groups and plots their &chi;(R) data.
+</p></li>
+<li><p>
+  Clicking the <span class=purple>q</span> button brings the
+  background removal, Fourier transform, and backwards transform up to
+  date for all marked groups and plots their &chi;(q) data.
+</p></li>
+</ol>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

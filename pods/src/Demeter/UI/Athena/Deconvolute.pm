@@ -27,7 +27,7 @@ sub new {
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: deconvolution');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("deconv")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.deconv")});
 
   $this->SetSizerAndFit($box);
   return $this;

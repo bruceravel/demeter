@@ -1,0 +1,241 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Aligning data groups</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../process/cal.html" class="menu">Calibration</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../process/index.html" class="menu">Data processing</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../process/merge.html" class="menu">Merging</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../pallas.html"><img src=../../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../forward.html"  class="menu">Forward</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../import/index.html"  class="menu">Importing Data</a><br />
+<a href="../bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="../plot/index.html"  class="menu">Plotting</a><br />
+<a href="../ui/index.html"  class="menu">User Interface</a><br />
+<a href="../params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="../output/index.html"  class="menu">Output files</a><br />
+<a href="../process/index.html"  class="menuselect">Data processing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/cal.html"  class="menu">Calibration</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Alignment</span><br />
+&nbsp;&#8618;&nbsp;<a href="../process/merge.html"  class="menu">Merging</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/rebin.html"  class="menu">Rebinning</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deg.html"  class="menu">Deglitching and truncation</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/smooth.html"  class="menu">Smoothing</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/conv.html"  class="menu">Convolution and noise</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/mee.html"  class="menu">Step function removal</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
+&nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="../other/index.html"  class="menu">Other main window chores</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Aligning data groups
+</h1>
+
+<p>
+
+Aligning data is the process of moving a data group in energy onto an
+absolute energy grid defined by some standard.  In <span class=program>ATHENA</span> that
+standard is chosen fairly arbitrarily -- it is simply one of the other
+groups in the group list.  The alignment is done by adjusting the
+<span class=param>&laquo;Energy shift&raquo;</span> parameter.
+</p>
+
+<p>
+This adjustment can be done simply by manually editing the <span class=param>&laquo;Energy shift&raquo;</span> parameter, but tools exist on the
+alignment tool, shown below, to make this somewhat easier.
+</p>
+
+
+<div class=figure style="max-width: 764px; min-width: 7em;">
+<a name=align>
+<img src=../../images/align.png width=100%>
+</a>
+<p align=center>
+The data alignment tool.
+</p>
+</div>
+
+<p>
+
+There are several variations on how the alignment is performed and
+visualized.  As the alignment proceeds, it can be plotted as &mu;(E),
+normalized &mu;(E), the derivative of &mu;(E) (as shown in
+the next plot), or the smoothed
+derivative of &mu;(E).  A three-point smoothing function is applied
+three times to the derivative of the &mu;(E) if that plotting option
+is selected.
+</p>
+
+
+<div class=figure style="max-width: 644px; min-width: 7em;">
+<a name=align_plot>
+<img src=../../images/align_plot.png width=100%>
+</a>
+<p align=center>
+As you work on aligning your data, the current data group is plotted
+along with the standard.  This gives you visual feedback on how well
+your data are aligned.
+</p>
+</div>
+
+<p>
+
+The alignment is always done by moving the current data group and
+keeping the standard fixed.  The standard is selected from the menu at
+the top of the tool.  This menu contains the entire contents of the
+group list, excluding those groups that cannot be plotted in energy.
+</p>
+
+<p>
+You can perform the alignment by hand by clicking any of the buttons
+labeled with numbers.  Those buttons will move the current group up or
+down in energy by the amount on the button's label.  Alternately, you
+can type an energy shift value in the box that displays the current
+value of <span class=param>&laquo;Energy shift&raquo;</span>.  You can click these
+buttons until the data line up nicely.
+</p>
+
+<p>
+Clicking the &ldquo;Auto align&rdquo; button performs a
+simple fit in an attempt to align your data to the standard.  The fit
+is evaluated over an energy range from 50 volts below the edge to 100
+volts above.  The parameters in the fit are an energy shift and an
+overall scaling term.  The function minimized is the difference
+between the derivative of the standard and the derivative of the
+current group modified by the fitting parameters.  The energy shifted
+data is interpolated onto the energy grid of the standard for the fit.
+</p>
+
+<p>
+This algorithm works quite well for data that are fairly clean and are
+misaligned by less than 5 or 10 volts.  For noisy data, the fit may be
+more successful if you choose to fit smoother data by selecting that
+option from the menu labeled &ldquo;Fit as:&rdquo;.  For
+very misaligned data, you may need to manually set an approximate
+value for <span class=param>&laquo;Energy shift&raquo;</span> before clicking the
+&ldquo;Auto align&rdquo; button.
+</p>
+
+<p>
+You can apply the automated alignment algorithm to many groups in
+sequence.  First mark all the groups that need to be aligned, then
+click the button that says &ldquo;Align marked groups&rdquo;.
+This may take a few minutes, depending on how many groups you
+have marked, but at the end hopefully all of your data will be nicely
+aligned.
+</p>
+
+<p>
+This alignment algorithm is the same as the one used by
+<a href="../import/preproc.html#otherpre-processingchores">the preprocessing feature</a>
+of the column selection dialog.
+</p>
+
+<p>
+If you have imported
+<a href="../import/ref.html">a reference channel</a>
+with your data, you can use this tool to align the reference
+channels.  This puts your real data on a proper absolute energy grid,
+which is very important for comparing edge energies in XANES studies.
+</p>
+
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+It is very important to align your data well.  Many other parts of
+<span class=program>ATHENA</span> assume that you have already done a good job of aligning
+the data.
+<a href="../process/merge.html">Merging</a>
+and
+<a href="../analysis/lcf.html">linear combination fitting</a>
+are examples of this.
+</p>
+
+<p>
+
+A common approach to processing data that I use is to import a first
+scan and to decree that one as the standard.  I will calibrate the
+reference channel of that first scan.  That puts the reference of the
+first scan at its proper place on an absolute energy scale.  Once that
+is calibrated, I will import the rest of my data from that series of
+measurements and also import a reference channel for each one.  I will
+then align each of the reference channels to the reference channel of
+my designated standard.  If the data is of high quality, I will
+typically use the pre-processing feature while importing all of my
+data.  In many cases, following this procedure and trusting the
+automated alignment is sufficient to prepare my data for merging and
+further analysis.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>
