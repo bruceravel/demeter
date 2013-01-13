@@ -55,7 +55,7 @@ stacked plot above, except that the first two coordination shells as
 evaluated in the fit are pointing downward.
 [% END %]
 
-[% PROCESS section label="Data stacke plot" %]
+[% PROCESS section label="Data stack plot" %]
 
 [% FILTER html_para -%]
 [% WRAPPER figure file="plot-datastack.png" %]

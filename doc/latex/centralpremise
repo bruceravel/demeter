@@ -1,10 +1,12 @@
 
 \bigskip
 
-{\color{purple4}
-  \begin{Boxedminipage}[h]{0.9\linewidth}
-     \color{black}\large
-     [%- Content -%]
+\qquad\qquad{\color{purple4}
+  \begin{Boxedminipage}[h]{0.8\linewidth}
+     \color{purple4}\large
+     The parameters of the EXAFS equation are not the parameters of the
+     fit.  The parameters of the EXAFS equation are written \emph{in terms
+     of} the parameters of the fit.
    \end{Boxedminipage}
 }
 \hfill\break\break

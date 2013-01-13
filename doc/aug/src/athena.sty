@@ -1,5 +1,5 @@
 [% META main = 1 %]
-\usepackage{amsmath,amsfonts} % mathematics
+\usepackage{amsmath,amsfonts,amssymb} % mathematics
 
 \usepackage{fancybox}         % shadow and oval boxes
 \usepackage{fancyhdr}         % page headings
@@ -9,10 +9,14 @@
 \usepackage{alltt}
 %\usepackage{colortbl}
 \usepackage{varioref}
+
+## see http://intertwingly.net/blog/3141.html
+## for the deal with floatflt, ubuntu, and texlive
 \usepackage{floatflt}
 %\usepackage[vflt]{floatflt}
-\usepackage{keystroke}
+
 \usepackage{parskip}
+\usepackage{wrapfig}
 
 \pdfoutput=1\relax
 \usepackage[pdftex]{color}
@@ -51,16 +55,6 @@
 \newcommand{\param}[1]{{\color{slategray4}``\texttt{\textsl{#1}}''}}
 \newcommand{\preference}[2]{{\color{darkorange4}\;\S\;\textsl{#1} $\rightarrow$ \textsl{#2}}}
 
-% \newcommand{\CONTROL}[1]{\texttt{\textsl{Control-#1}}}
-% \newcommand{\ALT}[1]{\texttt{\textsl{Alt-#1}}}
-% \newcommand{\SHIFT}[1]{\texttt{\textsl{Shift-#1}}}
-% \newcommand{\RETURN}{\texttt{\textsl{Return}}}
-
-\newcommand{\CONTROL}[1]{\Ctrl-\keystroke{#1}}
-\newcommand{\Control}{\Ctrl}
-\newcommand{\ALT}[1]{\Alt-\keystroke{#1}}
-\newcommand{\SHIFT}[1]{\Shift-\keystroke{#1}}
-\newcommand{\RETURN}[1]{\Return}
 
 \def\angleleft{$\langle$}
 \def\angleright{$\rangle$}
@@ -81,6 +75,27 @@
 
 % \newcommand{\red}[1]{{\color{red4}\keystroke{#1}}}
 % \newcommand{\purple}[1]{{\color{darkviolet}\keystroke{#1}}}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{shadows}
+\newcommand*\keystroke[1]{
+  \tikz[baseline=(key.base)]
+    \node[
+      draw,
+      fill=white,
+      drop shadow={shadow xshift=0.25ex,shadow yshift=-0.25ex,fill=black,opacity=0.75},
+      rectangle,
+      rounded corners=2pt,
+      inner sep=1pt,
+      line width=0.5pt,
+      font=\scriptsize\sffamily
+    ](key) {#1\strut}
+  ;
+}
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,15 +121,12 @@
   {{\Huge''}\end{flushleft}\hfill\break\break}
 
 \newenvironment{caution}%
-{\noindent\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+{\qquad\bigskip\color{red3}\begin{Boxedminipage}[h]{0.92\linewidth}\color{black}~\\
     \large}%
   {\end{Boxedminipage}\hfill\break\break}
-% \newenvironment{caution}%
-% {\bigskip\color{red3}\begin{Boxedminipage}[h]{0.9\linewidth}\begin{center}\color{black}~\\\large\bf}%
-%   {\end{center}\end{Boxedminipage}\hfill\break\break}
 
 \newenvironment{todo}%
-{\noindent\bigskip\color{green4}\begin{Boxedminipage}[h]{0.9\linewidth}\color{black}~\\
+{\noindent\bigskip\color{green4}\begin{Boxedminipage}[h]{\linewidth}\color{black}~\\
     \large}%
   {\end{Boxedminipage}\hfill\break\break}
 

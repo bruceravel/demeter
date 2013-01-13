@@ -34,7 +34,7 @@ green highlighting the group list and the disabling of most controls.
 [% FILTER html_para %]
 The frozen state of the current group can be
 toggled using the [% INCLUDE font/quote a="Freeze" %] button or
-by typing [% INCLUDE modkey key="Shift-Control" letter='f' %].  
+by typing [% INCLUDE modkey key="Shift" key2="Control" letter='f' %].  
 You can set the frozen state of multiple groups using the items in the 
 [% INCLUDE font/quote a="Freeze" %] menu.  There you will find
 options for freezing or unfreezing all groups, all marked groups, or
@@ -50,5 +50,5 @@ When a group is frozen, direct edits of parameter values are
 disallowed.  Frozen groups are skipped for algorithmic edits, such as
 parameter constraints or alignment.  You can, however, still remove a
 frozen group from the project.  Unfreezing a group is a simple as
-hitting [% INCLUDE modkey key="Shift-Control" letter='f' %] again.
+hitting [% INCLUDE modkey key="Shif" key2="Control" letter='f' %] again.
 [% END %]

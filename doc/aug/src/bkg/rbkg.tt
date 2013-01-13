@@ -68,7 +68,7 @@ different values for [% PROCESS font/param a="rbkg"%].  First, make a
 copy of the data so we can directly compare different values.  Do that
 by selecting [% INCLUDE font/quote a="Copy current group" %] 
 from the Group menu or by pressing
-[% INCLUDE modkey key="Shift-control" letter='y' %].  [% athena %]
+[% INCLUDE modkey key="Shift" key2="control" letter='y' %].  [% athena %]
 now looks like [% INCLUDE imageref text="this" label="rbkg" %].
 [% END %]
 

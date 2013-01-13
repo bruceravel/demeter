@@ -74,14 +74,10 @@ beamline scientist!
 [% PROCESS section label="Data types and energy units" %]
 
 [% FILTER html_para %]
-Occasionally, [% athena %] needs a bit more information to correctly
+Occasionally, [% athena %] needs a bit more information to
 interpret your data correctly.  The data types menu is shown in
 [% INCLUDE imageref text="the figure below" label="import_types" %].
 The default is for data to be imported as [% mu %].
-[% END %]
-
-[% WRAPPER figure file="import_types.png" %]
-Data types in the column selection dialog.
 [% END %]
 
 [% FILTER html_para %]
@@ -107,7 +103,15 @@ xmu.dat : the [% PROCESS font/file a='xmu.dat' %] file from
 [% END %]
 [% END %]
 
-[% WRAPPER floatright this="import_changetype.png" %]
+[% WRAPPER figure file="import_types.png" %]
+Data types in the column selection dialog.
+[% END %]
+
+[% WRAPPER figure file="import_changetype.png" %]
+The dialog for changing data type of a group.
+[% END %]
+
+[% FILTER html_para %]
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued ([% mu %], normalized
 [% mu %], XANES, or detector) record types at any time by selecting
@@ -117,9 +121,7 @@ and selecting the correct choice from the popup dialog,
 This dialog cannot, however, be used to change [% chik %] data to an
 energy-value type or vice-versa, nor to change one of the [% feff %]
 types to a non-[% feff %] type.
-[% END %]
 
-[% FILTER html_para %]
 [% athena %] uses electron volts as its energy unit.  It uses a
 simple heuristic to figure out if an input file is in eV or keV.  In
 case [% athena %] gets it wrong, you can specify the energy unit with

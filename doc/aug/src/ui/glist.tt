@@ -36,7 +36,7 @@ mark buttons.
 
 [% FILTER html_para %]
 You can copy a group by hitting
-[% INCLUDE modkey key="Shift-Control" letter='y' %]
+[% INCLUDE modkey key="Shift" key2="Control" letter='y' %]
 or by selecting [% INCLUDE font/quote a="Copy group" %] from the Group
 menu.  This makes an identical copy of the current group and places it
 at the end of the groups list.  All parameters are identical and the
@@ -60,7 +60,7 @@ When a file is imported into [% athena %], the name of the file is
 used as the label in the group list.  That's[%#'%] fine, but you can change
 the label by selecting [% INCLUDE font/quote a="Rename group" %]
 from the Group menu, typing
-[% INCLUDE modkey key="Shift-Shift-Control" letter='l' %], or double clicking on
+[% INCLUDE modkey key="Shift" key2="Control" letter='l' %], or double clicking on
 an item in the group list.  This posts a dialog
 for entering the new label for the group, shown
 [% INCLUDE imageref text="here" label="ui_renaming" in=1 %].

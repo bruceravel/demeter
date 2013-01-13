@@ -44,8 +44,9 @@ The text area below these controls displays an explanation of the
 function served by that preference.  Underneath that are buttons for
 setting or saving the parameters.
 
-The data about the preferences is contained in 
+The data about the preferences is contained in ...
+[% END %]
+
 [% WRAPPER html/todo %]
 Explain where to find demeter configuration files
-[% END %]
 [% END %]

@@ -20,7 +20,7 @@ the [% autobk %] algorithm might have a hard time following that
 swiftly changing part of [% mu %].  The background removal might be
 improved by starting the spline range at a higher value.  A good way
 to test the effect of spline range is to
-make a copy ([% INCLUDE modkey key="Control" letter='y'%])
+make a copy ([% INCLUDE modkey key="shift" key2="Control" letter='y'%])
 of the data group, change the lower spline boundary to a large value
 for the copy, and plot both groups as [% chik %] or [% chir %] using
 [% INCLUDE plotbutton class="purple" letter='k' %] or

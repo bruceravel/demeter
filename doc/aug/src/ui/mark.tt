@@ -18,9 +18,9 @@ analysis chores use the marked groups.
 
 [%athena%] offers a number of simple tools for marking or unmarking
 groups. These are found in the Mark menu, as shown below, and also
-have keyboard bindings. [% INCLUDE modkey key="Shift-Control" letter='a' %] marks all
-groups, [% INCLUDE modkey key="Shift-Control" letter='u' %] unmarks all groups, and
-[% INCLUDE modkey key="Shift-Control" letter='i' %] inverts the markings such that the
+have keyboard bindings. [% INCLUDE modkey key="Shift" key2="Control" letter='a' %] marks all
+groups, [% INCLUDE modkey key="Shift" key2="Control" letter='u' %] unmarks all groups, and
+[% INCLUDE modkey key="Shift" key2="Control" letter='i' %] inverts the markings such that the
 marked groups become unmarked and the unmarked ones become marked.
 The three buttons above the group list also serve to make all, mark
 none, and invert the marks.
@@ -38,7 +38,7 @@ the mark buttons at the top of the group list.
 There is one more tool which is considerably more powerful and
 flexible. In the Mark menu, this last marking tool it is called
 [% INCLUDE font/em a="Mark regex" %] and it is bound to
-[% INCLUDE modkey key="Shift-Control" letter='r' %].
+[% INCLUDE modkey key="Shift" key2="Control" letter='r' %].
 
 So, what does [% INCLUDE font/em a="regex" %] mean?
 
@@ -75,9 +75,9 @@ To make plots of arbitrary combinations of spectra, you can
 click the appropriate mark buttons on and off.  Using regular
 expression marking is quicker and easier.  I'll[%#'%] start with a couple
 simple examples. If you want to mark only the vanadium foil spectra,
-hit [% INCLUDE modkey key="Shift-Control" letter='r' %] and then enter
+hit [% INCLUDE modkey key="Shift" key2="Control" letter='r' %] and then enter
 foil. To mark the V2O3 and V2O5, but none of the others,
-hit [% INCLUDE modkey key="Shift-Control" letter='r' %] and enter V2.
+hit [% INCLUDE modkey key="Shift" key2="Control" letter='r' %] and enter V2.
 
 In fact, you get to use the entire power of perl's[%#'%] regular expression
 language (see

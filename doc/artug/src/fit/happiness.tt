@@ -93,7 +93,7 @@ criterion.  Above the 2/3 threshold, the penalty scales linearly.
 Assess a penalty for each correlation that exceeds a cutoff value.
 [% END %]
 [% WRAPPER html/dt dt="Penalty parameters" %]
-Assess a penalty equal to the evaluation of a penalty parameter.
+Assess a penalty equal to the evaluation of a penalty parameter.[%br%]
 [% WRAPPER html/todo %]
 Penalty parameters have not yet been implemented.
 [% END %]

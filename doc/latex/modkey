@@ -1,8 +1,8 @@
 [%# modkey: typeset a modifier/key sequence
   # ARGS:
   #     key    : modifier key (control alt shift return)
+  #     key2   : 2nd modifier key (control alt shift return)
   #     letter : letter from the keyboard
 -%]
-[%- IF letter -%]\[%- key | upper -%]{[% letter or '' %]}[%- ELSE -%]\[%- key | ucfirst -%][%- END -%]
-
+\keystroke{[%- key | ucfirst -%]}[%- IF key2 -%]-\keystroke{[%- key2 | ucfirst -%]}[%- END -%][%- IF letter -%]-\keystroke{[%letter%]}[%- END -%]
 

@@ -186,7 +186,7 @@ Clicking the [% INCLUDE font/quote a="Open button" %] will import all
 those data files and list them in the group list.  Once they are
 imported, [% INCLUDE html/link text="mark" link="../ui/mark.html" %]
 all of the groups either by typing
-[% INCLUDE modkey key="control" letter='a' %] or by clicking the
+[% INCLUDE modkey key="shift" key2="control" letter='a' %] or by clicking the
 [% INCLUDE font/quote a="A" %] mark button above the group list.
 Finally select the [% INCLUDE font/file a="fe.060" %] group by
 clicking on it in the group list.  Once you have done all of that,
@@ -290,7 +290,7 @@ the two groups measured at 300K are marked.  Select
 [% INCLUDE font/quote a="Merge marked data in mu(E)" %] from the Merge
 menu.  This will perform the merge then insert a new group in the
 group list.  Then select [% INCLUDE font/quote a="Change group label" %]
-from the Group menu or type [% INCLUDE modkey key="control" letter='l' %]
+from the Group menu or type [% INCLUDE modkey key="shift" key2="control" letter='l' %]
 to give the merged group a more suggestive name.  Repeat this process
 for the data at each temperature.
 

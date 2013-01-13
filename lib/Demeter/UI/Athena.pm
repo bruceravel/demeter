@@ -646,7 +646,7 @@ sub menubar {
 
 
   my $helpmenu   = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "Document",     "Open the Athena document" );
+  $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
   #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
