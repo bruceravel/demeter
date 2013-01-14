@@ -17,6 +17,7 @@
    - menu items for sending last plot to png or pdf file
 
 *** Demeter
+   - mirroring repository at Bitbucket
    - send gnuplot plot to file terminal type with special
      configuration for PDF terminal and no real support for many of
      the terminal types.  Gif and jpg, for instance, look like crap.
