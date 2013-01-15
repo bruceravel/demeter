@@ -11,6 +11,11 @@
      more natural -- no intermediate dialog window
    - Implemented Data Summation tool
    - menu items for sending last plot to png or pdf file
+   - compute ave/stddev when presenting a parameter table
+   - LCF sequence report button no longer mistakenly disabled after
+     sequence
+   - corrected a bug in which many Peak Fitting buttons could become
+     irreparably disabled
 
 *** Artemis
    - Interface to Artemis Users' Guide from within Artemis via browser
@@ -25,6 +30,7 @@
    - added code to DemeterBuilder.pm to build artug reliably even on
      Windows
    - added data summation recipe
+   - correct legend keys for R123 plots
 
 ** 0.9.14  2 January 2013
 *** Athena

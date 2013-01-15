@@ -1079,8 +1079,8 @@ sub ContextMenu {
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
     $menu->AppendSeparator;
-    $menu->Append($ESHIFT_ALL,     "Show e0 shifts of all groups");
-    $menu->Append($ESHIFT_MARKED,  "Show e0 shifts of marked groups");
+    $menu->Append($ESHIFT_ALL,     "Show energy shifts of all groups");
+    $menu->Append($ESHIFT_MARKED,  "Show energy shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
     $menu->Append($E0_IFEFFIT,   "Set E0 to ".Demeter->backend_name."'s default");
@@ -1241,6 +1241,8 @@ sub DoContextMenu {
 sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
+  my $stat = Statistics::Descriptive::Full->new();
+
   my $text = "  group                    $description\n" . "=" x 40 . "\n";
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -1252,8 +1254,12 @@ sub parameter_table {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    $text .= sprintf($format, $d->name, $d->$which);
+    my $val = $d->$which;
+    $text .= sprintf($format, $d->name, $val);
+    $stat -> add_data($val) if looks_like_number($val);
   };
+  $text .= sprintf("\n\nAverage = %.5f  Standard deviation = %.5f\n", $stat->mean, $stat->standard_deviation)
+    if $stat->count > 1;
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;

@@ -201,7 +201,7 @@ sub _plotR_command {
     $title{p} = sprintf("Derivative of phase * %.4f", $self->fetch_scalar('___dphase_scale'));
     $self->dispense('process', 'erase', {items=>'___dphase_scale'});
   };
-  $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
+  $self->plotkey($title{lc($pf->r_pl)}) if ($self->po->single and (not $self->forcekey));
   $string = ($pf->New)
           ? $self->template("plot", "newr")
           : $self->template("plot", "overr");
@@ -349,6 +349,7 @@ sub plotR123 {
   @chir = $self->fetch_array($self->group.".chir_mag");
   push @max, max(@chir);
 
+  $self->forcekey(1);
   $self->po->kweight(1);
   $self->po->title($self->name . " at kweight = 1, 2, and 3");
   my $scale = sprintf("%.3f", $max[1]/$max[0]);
@@ -369,6 +370,7 @@ sub plotR123 {
   $self->_update('bft');
   $self->set(plot_multiplier => 1,   'y_offset'=>$max[1]);
   $self->plot_window('r') if $self->po->plot_win;
+  $self->forcekey(0);
 
   $self->po->plot_win($winsave);
   $self->po->title(q{});

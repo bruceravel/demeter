@@ -739,8 +739,6 @@ sub sequence {
 
   $this->seq_results(@groups);
   $this->{markedresults} -> SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
-  $this->{plotmarked}    -> Enable(1);
-  $this->{markedreport}  -> Enable(1);
   $this->seq_select($i);
   $this->{markedresults} -> SetItemState(0, 0, wxLIST_STATE_SELECTED);
   $this->{markedresults} -> SetItemState($i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
@@ -748,6 +746,8 @@ sub sequence {
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf "Fit %d groups %d minutes, %d seconds.", $#groups+1, $dur->minutes, $dur->seconds;
+  $this->{plotmarked}    -> Enable(1);
+  $this->{markedreport}  -> Enable(1);
   $::app->{main}->status($finishtext);
 
   undef $busy;

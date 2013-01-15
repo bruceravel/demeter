@@ -31,10 +31,11 @@ sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  $this->{PEAK}  = Demeter::PeakFit->new(backend=>'ifeffit');
-  $this->{emin}  = -15; #$demeter->co->default('peakfit', 'emin');
-  $this->{emax}  =  15; #$demeter->co->default('peakfit', 'emax');
-  $this->{count} =  0;
+  $this->{PEAK}   = Demeter::PeakFit->new(backend=>'ifeffit');
+  $this->{emin}   = -15; #$demeter->co->default('peakfit', 'emin');
+  $this->{emax}   =  15; #$demeter->co->default('peakfit', 'emax');
+  $this->{count}  =  0;
+  $this->{fitted} =  0;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
@@ -193,8 +194,10 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   $this->{PEAK}->data($::app->current_data);
-  foreach my $ac (qw(fit plot reset save resultreport resultplot)) { # make 
-    $this->{$ac}->Enable(0);
+  if (not $this->{fitted}) {
+    foreach my $ac (qw(fit plot reset save resultreport resultplot)) { # make 
+      $this->{$ac}->Enable(0);
+    };
   };
   $this->{PEAK} -> po -> set(e_norm   => 1,
 			     e_markers=> 1,
@@ -384,6 +387,7 @@ sub fit {
 	$this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
       };
     };
+    $this->{fitted} = 1;
   };
   $peak -> plot('e');
   $::app->{lastplot} = ['E', 'single'];

@@ -95,6 +95,7 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
+has 'forcekey'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
@@ -1062,6 +1063,14 @@ C<title> attibute.
 This is a text string used as a temporary override to the name of Data
 object for use in a plot.  It should be reset to an empty string as
 soon as the plot requiring the name override is finished.
+
+=item C<forcekey> (string)
+
+When this is true, it forces the plotting system to use the name of
+the Data group as the legend key regardless of the type of plot.  This
+was needed to force an R123 plot to use the scaling information as the
+key rather than having the key be the part plotted, which is what
+normally happens for a single group R or q space plot.
 
 =item C<cv> (number)
 
