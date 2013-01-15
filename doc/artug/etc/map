@@ -95,12 +95,13 @@
 		      	}
 		extended = {
 			    name = 'Extended topics'
-			    menu = ['qfs', 'cv', 'delr', 'ss', 'ipots', 'fuzzy']
+			    menu = ['qfs', 'cv', 'delr', 'ss', 'empirical', 'ipots', 'fuzzy']
 			    page = {
 				    qfs = {name = 'Quick first shell theory'}
 				    cv  = {name = 'Characteristic value'}
 				    delr  = {name = 'Modeling bond length'}
 				    ss  = {name = 'Modeling disorder'}
+				    empirical = {name = 'Using empirical standards'}
 				    ipots = {name = 'Unique potentials'}
 				    fuzzy = {name = 'Fuzzy degeneracy'}
 				   }

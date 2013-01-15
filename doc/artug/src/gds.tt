@@ -181,28 +181,28 @@ shortcuts to change the parameter type of that set of parameters.
 [% END %]
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-g" %]: turn to guess
+[% INCLUDE modkey key="Alt" letter="g" %]: convert to guess
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-d" %]: turn to def
+[% INCLUDE modkey key="Alt" letter="d" %]: convert to def
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-s" %]: turn to set
+[% INCLUDE modkey key="Alt" letter="s" %]: convert to set
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-l" %]: turn to lguess
+[% INCLUDE modkey key="Alt" letter="l" %]: convert to lguess
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-k" %]: turn to skip
+[% INCLUDE modkey key="Alt" letter="k" %]: convert to skip
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-r" %]: turn to restrain
+[% INCLUDE modkey key="Alt" letter="r" %]: convert to restrain
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-a" %]: turn to after
+[% INCLUDE modkey key="Alt" letter="a" %]: convert to after
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE font/mono a="Alt-p" %]: turn to penalty
+[% INCLUDE modkey key="Alt" letter="p" %]: convert to penalty
 [% END %]
 [% END %] [%# end of ordered list%]
 

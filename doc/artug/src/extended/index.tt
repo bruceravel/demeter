@@ -28,6 +28,10 @@ text="parametrizations of bond length" %].
 A discussion of [%INCLUDE html/link link="./ss.html"
 text="parametrizations of the disorder parameter" %], [%sigsqr%].
 [% END %]
+[% WRAPPER html/dt dt="Using empirical standards" %]
+A discussion of [%INCLUDE html/link link="./empirical.html"
+text="the use of empirical standards" %] is implemented in [%artemis%].
+[% END %]
 [% END %]
 
 [% PROCESS section label="Topics related to Feff" %]

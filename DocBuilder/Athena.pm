@@ -82,8 +82,8 @@ sub ACTION_configure_aug {
   };
 
   print "  copying map and version templates\n" if ($self->verbose);
-  copy(File::Spec->catfile('etc', 'map'),  File::Spec->catfile('templates', 'lib', 'config'));
-  copy(File::Spec->catfile('etc', 'version'),  File::Spec->catfile('templates', 'lib', 'config'));
+  copy(File::Spec->catfile('etc', 'map'),  File::Spec->catfile('..', 'lib', 'config', 'map.athena'));
+  copy(File::Spec->catfile('etc', 'version'),  File::Spec->catfile('..', 'lib', 'config', 'version.athena'));
 
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
     print "  copying perl modules from DPG\n" if ($self->verbose);
