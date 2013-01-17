@@ -1,5 +1,7 @@
 package Demeter::UI::Artemis;
 
+use feature qw(switch);
+
 use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
@@ -1050,8 +1052,30 @@ sub OnDataRightClick {
 };
 
 
+sub OnDataButtonRightClick {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename ".$data->name);
+  $menu->Append(1, "Discard ".$data->name);
+  $self->PopupMenu($menu, $event->GetPosition);
+};
 
+sub OnDataMenu {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$dnum}->Rename;
+    };
 
+    when (1) {
+      $frames{$dnum}->discard_data;
+    };
+  };
+};
 
 sub make_data_frame {
   my ($self, $data) = @_;
@@ -1066,6 +1090,7 @@ sub make_data_frame {
   do_the_size_dance($self);
   my $idata = $new->GetId;
   my $dnum = sprintf("data%s", $idata);
+  $new->{dnum} = $dnum;
   $self->{$dnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$dnum}->Show($_[0]->GetValue);
@@ -1078,6 +1103,8 @@ sub make_data_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnDataMenu);
+  EVT_RIGHT_UP($new, \&OnDataButtonRightClick);
 
   ++$frames{main}->{cvcount};
   $data->cv($frames{main}->{cvcount});

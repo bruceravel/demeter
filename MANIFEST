@@ -501,7 +501,7 @@ doc/dpg/Template/Plugin/PerlSyntaxHtml.pm
 doc/dpg/Template/Plugin/PerlSyntaxLatex.pm
 doc/dpg/Template/Plugin/PerlSyntaxLatexBw.pm
 doc/dpg/Template/Plugin/PerlSyntaxPod.pm
-doc/dpg/src/ab.css
+doc/dpg/src/dpg.css
 doc/dpg/src/atoms/index.tt
 doc/dpg/src/atoms/input.tt
 doc/dpg/src/atoms/methods.tt
@@ -653,7 +653,6 @@ doc/lib/site/wrapper.athena
 doc/lib/subsection
 doc/lib/todo
 doc/lib/triimage
-doc/using_empirical_standards.odp
 DocBuilder/Artemis.pm
 DocBuilder/Athena.pm
 examples/Au.inp
