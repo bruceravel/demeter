@@ -252,7 +252,7 @@ to create your own plugins.
 [% FILTER html_para %]
 Lines 48-59 show the [% PROCESS font/mono a="suggest" %]
 method.  This provides feedback for use by the 
-[% INCLUDE html/link text="column selection dialog" link="columns.html" %]
+[% INCLUDE html/link text="column selection dialog" link="../import/columns.html" %]
 is selecting initial guesses for the columns containing the numerator
 and denominator of the data.  In this case, the method suggests
 columns for transmission data butmakes no suggestions of fluorescence

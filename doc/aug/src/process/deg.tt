@@ -130,7 +130,6 @@ clicking on the plot, then removed by clicking the
 
 If your data does something odd at one end of the scan, the easiest
 solution might be to simply trim it away.  The truncation tool
-[% INCLUDE imageref text="below" label="truncate" in=1 %]
 allows you to chop data before or after a selected value.
 
 The radiobox is used to tell [%athena%] whether points should be trimmed

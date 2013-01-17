@@ -126,13 +126,13 @@ Fit history plotting tool
 Clicking one of the buttons on the
 [% INCLUDE font/quote a="Plot tool" %] page makes an entry in the
 plotting list.  These will then be plotted just like any other item in
-[% INCLUDE html/link link="./plot/index.html" text="the plotting list"%].
+[% INCLUDE html/link link="plot/index.html" text="the plotting list"%].
 Note that it is usually not necessary to put the most recent plot in
 the plotting list in this way.  If the 
 [% INCLUDE font/quote a="Plot fit" %] button is checked on and a data
 group is in the plotting list, the most recent will be plotted by
 default.  Fit items in the plotting list will
-[% INCLUDE html/link link="./plot/stack.html" text="be stacked"%] when
+[% INCLUDE html/link link="plot/stack.html" text="be stacked"%] when
 the stacking option is in play.
 [% END %]
 

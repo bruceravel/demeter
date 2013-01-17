@@ -22,7 +22,7 @@ the top in blue text are the main fitting statistics, including
 [%chisqr%], [%chinu%], the R-factor, [%epsilon%](k), [%epsilon%](R),
 and counts of the number of independent points and the number of guess
 parameters.  Those are followed by the details of 
-[% INCLUDE html/link link="./fit/happiness.html" text="the happiness
+[% INCLUDE html/link link="fit/happiness.html" text="the happiness
 evaluation"%].  Two lines of the fitting
 statistics are colored with the same color determined from the
 happiness and used for the Fit button and the various plotting
@@ -39,7 +39,7 @@ the path parameters.  In the current version of [%artemis%], that
 chore is left for the user.
 
 The text in the log file is identical to the log text from the most
-recent fit in [% INCLUDE html/link link="./history.html" text="the
+recent fit in [% INCLUDE html/link link="history.html" text="the
 History window"%].
 
 The buttons at the bottom of the Log window can be used to save the

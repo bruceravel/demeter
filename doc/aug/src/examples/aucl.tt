@@ -112,7 +112,7 @@ combination fitting tool and plots the data along with vertical
 lines indicating the extent of the fitting range.  From the first two
 drop-down menus, select [% INCLUDE font/quote a="Au foil" %] and
 [% INCLUDE font/quote a="Au3 Cl aq" %], as shown
-[% INCLUDE imageref text="below" label="ex_aucl_lcf" in=1 %].
+[% INCLUDE imageref text="below" label="lcf" in=1 %].
 [% END %]
 
 [% WRAPPER figure file="lcf.png" %]

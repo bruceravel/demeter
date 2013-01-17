@@ -12,7 +12,7 @@ fitting parameters.
 
 Some of these math expressions are quite simple.  For example, in the
 gold metal example in 
-[% INCLUDE html/link link="./path/mathexp.html" text="the previous chapter"%],
+[% INCLUDE html/link link="path/mathexp.html" text="the previous chapter"%],
 the math expressions for
 [%s02%] and [%e0%] were simple function of a single parameter.  The
 math expression for [%delr%], however, was a function of 
@@ -87,7 +87,7 @@ independent mixing parameters will be floated for each data set.  The
 point, then, of an lguess is to facilitate the chore of editing path
 parameter math expressions using [%artemis%]' [%#'%] tools for pushing
 path parameter values across paths.  This is discussed in more detail
-in [% INCLUDE html/link link="./extended/cv.html#useinlguessparameters" 
+in [% INCLUDE html/link link="extended/cv.html#useinlguessparameters" 
 text="the discussion of the characteristic value"%].
 [% END %]
 [% WRAPPER html/dt dt="skip" %]
@@ -255,7 +255,7 @@ evaluate to a value of 100 times the distance outside the range.
 This, then, is added in quadrature to [%chisqr%] when the fit is minimized.
 You can read more about this,
 including how to choose the value of the scaling parameter, in the 
-[% INCLUDE html/link link="./extended/restraint.html" text="discussion of restraints"%].
+[% INCLUDE html/link link="extended/restraint.html" text="discussion of restraints"%].
 [% END %]
 [% WRAPPER html/dt dt="Annotate" %]
 This prompts you for a text string to describe the parameter in the

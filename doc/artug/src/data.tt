@@ -38,10 +38,10 @@ The Artemis data window, immediately after data import.
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
 This button is used to transfer this data set into the plotting list
-in the [% INCLUDE html/link link="./plot/index.html" text="Plot window"%].
+in the [% INCLUDE html/link link="plot/index.html" text="Plot window"%].
 [% END %]
 [% WRAPPER html/li %]
-This is the [% INCLUDE html/link link="./extended/cv.html"
+This is the [% INCLUDE html/link link="extended/cv.html"
 text="characteristic value"%] of this data set.  Typically, this is
 just incremented for each data set as it is imported.  The CV can be
 used as a special parameter in math expressions. 
@@ -56,7 +56,7 @@ These five buttons generate special plots using this data set.  Each
 of the special plots types is explained below.  Like the Fit button
 from the main window, these buttons are recolored after a fit
 according to the value of the fit's[%#'%] 
-[% INCLUDE html/link link="./fit/happiness.html" text="happiness parameter"%].
+[% INCLUDE html/link link="fit/happiness.html" text="happiness parameter"%].
 [% END %]
 [% WRAPPER html/li %]
 This text box contains any title lines associated with the data.
@@ -87,7 +87,7 @@ the fitting model.  Unchecking it is a way of removing a data set from
 a multiple data set fit without actually disposing of the data.  The
 second check button instructs [% artemis %] to automatically transfer
 this data set to the 
-[% INCLUDE html/link link="./plot/index.html" text="plotting list"%]
+[% INCLUDE html/link link="plot/index.html" text="plotting list"%]
 at the end of a fit.  The third
 check button turns on background co-refinement.  The [% epsilon %]
 text box allows you to specify a measurement error fit this data set.
@@ -106,7 +106,7 @@ text="the status buffer"%].
 [% WRAPPER html/li %]
 The paths list will become populated as paths are associated with
 this data set.  How that works will be explained in 
-[% INCLUDE html/link link="./path/index.html" text="the next chapter"%].
+[% INCLUDE html/link link="path/index.html" text="the next chapter"%].
 [% END %]
 [% WRAPPER html/li %]
 When no paths have yet been associated with a data set, this default
@@ -185,7 +185,7 @@ size in the plot.  The back-Fourier transform window function is drawn
 over the k-weight of 1 spectrum to indicate the range over which the
 fit was evaluated (assuming the fit space is R, as is the default).
 The radio button in the 
-[% INCLUDE html/link link="./plot/index.html" text="Plot window"%]
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%]
 for selecting the part of [% chir %] is respected when
 this plot is made.
 [% END %]
@@ -213,7 +213,7 @@ Rk plot
 The [% INCLUDE font/quote a="Rk" %] plot is a stacked plot with the
 [% INCLUDE font/quote a="Rmr" %] on the bottom and [% chik %] on the
 top.  The value of k-weighting selected in the 
-[% INCLUDE html/link link="./plot/index.html" text="Plot window"%]
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%]
 is used. Fourier transform windows are drawn over the [% chik %] and 
 [% chir_mag %] spectra.
 
@@ -232,7 +232,7 @@ kq plot
 [% FILTER html_para -%]
 The [% INCLUDE font/quote a="kq" %] plot shows the data and fit as 
 [% chik %] and [% chiq %].  The value of k-weighting selected in the
-[% INCLUDE html/link link="./plot/index.html" text="Plot window"%]
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%]
 is used.  The Fourier transform windows are drawn over the [% chik %]
 spectra.
 [% END %]
@@ -336,7 +336,7 @@ window status bar.
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Transfer" %]
 Transfer the displayed path to the plotting list in the 
-[% INCLUDE html/link link="./plot/index.html" text="Plot window"%].
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%].
 [% END %]
 [% WRAPPER html/dt dt="Rename" %]
 Change the name of the displayed path.  This is the name displayed next to
@@ -444,10 +444,10 @@ Every item in this menu operates on the set of marked paths.  Again,
 keyboard shortcuts are given in the menu.
 
 The first option is used to make
-[% INCLUDE html/link link="./plot/vpaths.html" text="a VPath"%]
+[% INCLUDE html/link link="plot/vpaths.html" text="a VPath"%]
 from  the marked paths.  The second option will transfer all marked
 paths to the plotting list in the 
-[% INCLUDE html/link link="./plot/index.html" text="Plot window"%].
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%].
 
 The next two options will cause the set of marked paths to be included
 in or excluded from the fit.  The next item causes all marked paths to

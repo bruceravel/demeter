@@ -14,25 +14,25 @@ users'[%#'%] guide.
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Quick first shell theory" %]
 An in-depth discussion of how the [%INCLUDE html/link
-link="./qfs.html" text="quick first shell theory tool" %]
+link="../extended/qfs.html" text="quick first shell theory tool" %]
 works, what it is used for, and how it can be misused.
 [% END %]
 [% WRAPPER html/dt dt="Characteristic values" %]
-An explanation of the [%INCLUDE html/link link="./cv.html"
+An explanation of the [%INCLUDE html/link link="../extended/cv.html"
 text="characteristic value" %], or CV, Data attribute.  This is a tool
 for building expressive, flexible, and powerful models for multiple
 data set fitting problems.
 [% END %]
 [% WRAPPER html/dt dt="Geometric parametrization of bond length" %]
-A discussion of [%INCLUDE html/link link="./delr.html"
+A discussion of [%INCLUDE html/link link="../extended/delr.html"
 text="parametrizations of bond length" %].
 [% END %]
 [% WRAPPER html/dt dt="Modeling the disorder parameter" %]
-A discussion of [%INCLUDE html/link link="./ss.html"
+A discussion of [%INCLUDE html/link link="../extended/ss.html"
 text="parametrizations of the disorder parameter" %], [%sigsqr%].
 [% END %]
 [% WRAPPER html/dt dt="Using empirical standards" %]
-A discussion of [%INCLUDE html/link link="./empirical.html"
+A discussion of [%INCLUDE html/link link="../extended/empirical.html"
 text="the use of empirical standards" %] is implemented in [%artemis%].
 [% END %]
 [% END %]
@@ -45,11 +45,11 @@ text="the use of empirical standards" %] is implemented in [%artemis%].
 [% WRAPPER html/dt dt="Unique potentials" %]
 The [%INCLUDE html/link link="../feff/index.html" text="Atoms page" %]
 offers three ways of styling the potential indeces of the [%feff%]
-input data.  They are [%INCLUDE html/link link="./ipots.html" text="explained" %]
+input data.  They are [%INCLUDE html/link link="../extended/ipots.html" text="explained" %]
 by example using crystal data.
 [% END %]
 [% WRAPPER html/dt dt="The pathfinder and fuzzy degeneracy" %]
-An [%INCLUDE html/link link="./ipots.html" text="explanation" %] of
+An [%INCLUDE html/link link="../extended/ipots.html" text="explanation" %] of
 the pathfinder and of the concept of fuzzy degeneracy. 
 [% END %]
 [% END %]

@@ -120,8 +120,7 @@ The final column output option is to export each of the marked groups
 as a single data column file of the sort described above.  When you
 select one of the output file types shown
 [% INCLUDE imageref text="below" label="export_each" in=1 %] you are
-prompted to select a directory, as in
-[% INCLUDE imageref text="the following figure" label="export_eachdirsel" %].
+prompted to select a directory.
 Each marked group will be exported to
 a file in that directory with a file name formed from the group label.
 [% END %]

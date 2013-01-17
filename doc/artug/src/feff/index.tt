@@ -25,7 +25,7 @@ An entry is placed in the [%feff%] list on the main window.
 [% FILTER html_para -%]
 You can also import a [% INCLUDE font/file a="feff.inp" %] file
 directly.  This is discussed in the
-[% INCLUDE html/link link="./feff.html" text="next section"%]
+[% INCLUDE html/link link="../feff/feff.html" text="next section"%]
 
 This new window looks like this.  In this example, crystal data for Ni
 metal have been imported from an [% INCLUDE font/file a="atoms.inp" %]
@@ -192,5 +192,5 @@ The clear button is used to clear all data from all controls on the
 
 Finally the run button is pressed to convert the crystal data
 into input data for [%feff%].  Pressing this displays 
-[% INCLUDE html/link link="./feff.html" text="the next tab"%].
+[% INCLUDE html/link link="../feff/feff.html" text="the next tab"%].
 [% END %]
