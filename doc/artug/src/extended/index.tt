@@ -6,8 +6,11 @@ operation of [%artemis%] that simply did not fit in other parts of this
 users'[%#'%] guide.
 [% END %]
 
-[% PROCESS section label="Topics related to fitting EXAFS data" %]
 
+[%hr%]
+[% FILTER html_para -%]
+[% INCLUDE font/em a="Topics related to fitting EXAFS data" %]
+[% END %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Quick first shell theory" %]
 An in-depth discussion of how the [%INCLUDE html/link
@@ -34,8 +37,10 @@ text="the use of empirical standards" %] is implemented in [%artemis%].
 [% END %]
 [% END %]
 
-[% PROCESS section label="Topics related to Feff" %]
-
+[%hr%]
+[% FILTER html_para -%]
+[% INCLUDE font/em a="Topics related to fitting EXAFS data" %]
+[% END %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Unique potentials" %]
 The [%INCLUDE html/link link="../feff/index.html" text="Atoms page" %]
@@ -51,8 +56,7 @@ the pathfinder and of the concept of fuzzy degeneracy.
 
 [% WRAPPER html/todo %]
 Pages for 
-[%br%][%br%]* Empirical paths,
-[%br%]* Histograms, 
+[%br%][%br%]* Histograms, 
 [%br%]* background co-refinement
 [%br%]* dealing with dopants 
 [%br%]* constraints and restraints

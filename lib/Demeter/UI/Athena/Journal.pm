@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT);
 
 use vars qw($label $tag);
 $label = "Journal";
@@ -26,7 +26,7 @@ sub new {
   $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.journal")});
-
+  EVT_TEXT($this, $this->{journal}, \&OnEdit);
   $this->SetSizerAndFit($box);
   return $this;
 };
@@ -42,6 +42,12 @@ sub push_values {
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
+};
+
+sub OnEdit {
+  $::app->{modified} ||= 1;
+  $::app->{main}->{save}->Enable(1);
+  $::app->{main}->{token}->SetLabel(q{*});
 };
 
 1;

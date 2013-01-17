@@ -1065,14 +1065,15 @@ sub OnDataButtonRightClick {
 sub OnDataMenu {
   my ($self, $event) = @_;
   my $dnum = $self->{dnum};
-  my $data = $frames{$dnum}->{data};
   given ($event->GetId) {
     when (0) {
       $frames{$dnum}->Rename;
+      modified(1);
     };
 
     when (1) {
       $frames{$dnum}->discard_data;
+      modified(1);
     };
   };
 };
@@ -1160,6 +1161,30 @@ sub OnFeffRightClick {
   };
 };
 
+sub OnFeffButtonRightClick {
+  my ($self, $event) = @_;
+  #my $fnum = $self->{fnum};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename this Feff object");
+  $menu->Append(1, "Discard this Feff object");
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnFeffMenu {
+  my ($self, $event) = @_;
+  my $fnum = $self->{fnum};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$fnum}->on_rename;
+      modified(1);
+    };
+
+    when (1) {
+      $frames{$fnum}->on_discard;
+      modified(1);
+    };
+  };
+};
 
 ## name for empty feff frame...
 sub make_feff_frame {
@@ -1176,6 +1201,7 @@ sub make_feff_frame {
 
   do_the_size_dance($self);
   my $fnum = sprintf("feff%s", $ifeff);
+  $new->{fnum} = $fnum;
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$fnum}->Show($_[0]->GetValue);
@@ -1188,6 +1214,8 @@ sub make_feff_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnFeffMenu);
+  EVT_RIGHT_UP($new, \&OnFeffButtonRightClick);
 
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);

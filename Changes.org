@@ -16,10 +16,13 @@
      sequence
    - corrected a bug in which many Peak Fitting buttons could become
      irreparably disabled
+   - editing journal sets save indicator on
 
 *** Artemis
    - Interface to Artemis Users' Guide from within Artemis via browser
    - menu items for sending last plot to png or pdf file
+   - added right click context menu to the items in the Data and Feff
+     lists
 
 *** Demeter
    - mirroring repository at Bitbucket
