@@ -1,9 +1,5 @@
 [% META title = 'Other plotting features' %]
 
-[% WRAPPER html/todo %]
-Document all the special plots, plotting terminals, and save to image file.
-[% END %]
-
 [% INCLUDE section label="Zooming and cursor position" %]
 
 [% FILTER html_para %]
@@ -46,7 +42,7 @@ Norm and deriv of Fe foil
 [% END %]
 [% END %]
 
-[% WRAPPER html/dt dt="Data + I0 * signal" %]
+[% WRAPPER html/dt dt="Data + I0 + signal" %]
 [%i0%] can be plotted
 along with [% mu %] and the signal as shown below.
 The [%i0%] and signal channel is among the data saved in
@@ -176,9 +172,14 @@ particular plot on screen while continuing to make new plots.
 [% END %]
 
 [% WRAPPER html/todo %]
-Condsider other file types.  SVG and EPS should work.
+Consider other file types.  SVG and EPS should work.
 Gnuplot's[%#'%] GIF and JPG terminals are not sufficiently featureful
 to replicate all the details of [%athena%]'s[%#'%] plots.
 [%br%][%br%]
 Also consider making the number of terminals a configuration parameter.
 [% END %]
+
+[% WRAPPER html/todo %]
+Document save to image file.
+[% END %]
+

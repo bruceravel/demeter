@@ -245,6 +245,9 @@ spectra.
 [% PROCESS subsection label="The Data menu" %]
 
 [% WRAPPER floatright this="data-datamenu.png" title="Data menu" %]
+Blah blah
+[% END %] [%# end of caption %]
+
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Rename" %]
 Change the name of this data set.  This is the name displayed next to
@@ -281,7 +284,7 @@ file.  The columns will be the same as for the data+fit output.
 [% END %]
 [% WRAPPER html/dt dt="Other fitting standards" %]
 This submenu allows you to import a variety of special path types.
-These will be explained later in the document.
+These will be explained later in the document.[%br%]
 [% WRAPPER html/todo %]
 Links to those document sections
 [% END %]
@@ -310,7 +313,7 @@ to [% INCLUDE font/quote a="user"%].
 [% END %]
 [% WRAPPER html/dt dt="Export parameters" %]
 In a multiple data set fit, this allows you to constrain the data sets
-to have the same choice of Fourier transform parameters.
+to have the same choice of Fourier transform parameters.[%br%]
 [% WRAPPER html/todo %]
 Not yet implemented in [%artemis%]
 [% END %]
@@ -328,11 +331,13 @@ transform and fitting range.  The will be displayed in the Data
 window status bar. 
 [% END %]
 [% END %] [%# end of description list %]
-[% END %] [%# end of caption %]
 
 [% PROCESS subsection label="The Path menu" %]
 
 [% WRAPPER floatright this="data-pathmenu.png" title="Path menu" %]
+Blah blah
+[% END %] [%# end of caption %]
+
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Transfer" %]
 Transfer the displayed path to the plotting list in the 
@@ -389,7 +394,6 @@ Discard the displayed path, removing its window, and removing it from
 the path list.
 [% END %]
 [% END %] [%# end of description list %]
-[% END %] [%# end of caption %]
 
 [% PROCESS subsection label="The Marks menu" %]
 

@@ -138,5 +138,5 @@ expression engine.  You thus have the
 [% INCLUDE font/b a="full" %]
 power of  perl's[%#'%] regular expression engine.[%br%][%br%]
 If you know what [% recode %] means and do something ill-advised with
-it, you'll[%#'%] get no sympathy from me!.
+it, you'll[%#'%] get no sympathy from me!
 [% END %]

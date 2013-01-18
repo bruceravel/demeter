@@ -19,7 +19,7 @@ Plot window at the end of a fit.
 [% END %]
 
 [% WRAPPER html/todo %]
-Implement and explain the two items in the "other path options" pane.
+Implement and explain the two items in the [% INCLUDE font/quote a="other path options" %] pane.
 [% END %]
 
 [% FILTER html_para -%]

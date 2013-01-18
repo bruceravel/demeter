@@ -3,11 +3,6 @@
 %]
 
 
-[% WRAPPER html/todo %]
-background groups
-[% END %]
-
-
 [% FILTER html_para %]
 The group list is the primary mechanism for accessing and interacting
 with your data.  As data files are imported in [% athena %], each gets
@@ -47,10 +42,8 @@ Copying is very useful for examining how changes in parameter values
 propagate through the data processing.  You can make one or more
 copies, change particular data values, and overplot the results.
 
-The process of comparing parameter values can be automated.
-[% END %]
-[% WRAPPER html/todo %]
-Point to the page about the copy series tools
+The process of comparing parameter values can be automated using the
+[% INCLUDE html/link text="copy series tool" link="../process/series.html" %].
 [% END %]
 
 [% PROCESS section label="Reorganizing the group list" %]

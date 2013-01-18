@@ -5,31 +5,25 @@
 %]
 
 
-[% WRAPPER html/todo %]
-Review data citations, rewrite installation section, review
-acknowledgements, rewrite building from source, rewrite using
-section. 
-[% END %]
-
 [% FILTER html_para %]
-The best way to learn how to use [% athena %] is to [% INCLUDE font/b
-a="use" %] [% athena %].  Poke at the buttons, poke at the menus, try
+The best way to learn how to use [%athena%] is to [% INCLUDE font/b
+a="use" %] [%athena%].  Poke at the buttons, poke at the menus, try
 things just to see what happens.  And above all, remember the
 physical and mathematical meanings of your data and of the data
-analysis techniques and think about how actions in [% athena %] relate
+analysis techniques and think about how actions in [%athena%] relate
 to those meanings.
 
-[% athena %] is a powerful and versatile program capable of supporting
+[%athena%] is a powerful and versatile program capable of supporting
 almost all of your common (and not-so-common) XAS data processing
 chores.  It is not, however, a particularly intuitive program.  I
 doubt that any XAS program could be intuitive.  On top of that,
-[% athena %] has accumulated lots of features over the years.  Many of
+[%athena%] has accumulated lots of features over the years.  Many of
 these features are necessary for high-quality data processing, others
 are bells and whistles intended to make data processing more
 convenient or more fun.
 
 This document attempts to be a comprehensive overview of all of
-[% athena %]'s[%#'%] features.  There are lots of words, but also lots of
+[%athena%]'s[%#'%] features.  There are lots of words, but also lots of
 pictures.  Feel free to jump around and to focus on the parts most
 directly relevant to your immediate needs.  I hope you find this
 document and the program helpful.
@@ -68,10 +62,10 @@ Keyboard shortcuts look like this:
 means to hit the q key while holding the Control (or Ctrl) key.
 [% END %]
 [% WRAPPER html/li %]
-Program names from the [% ifeffit %] family look like this: [% athena %].
+Program names from the [% ifeffit %] family look like this: [%athena%].
 [% END %]
 [% WRAPPER html/li %]
-References to [% athena %]'s[%#'%] preferences are written like this:
+References to [%athena%]'s[%#'%] preferences are written like this:
 [% INCLUDE preference group="Bkg" option="fraction" %].  To modify
 this preferences,
 open the [% INCLUDE font/quote a="bkg" %] section of the
@@ -88,7 +82,7 @@ attention-grabbing boxes.[%br%][%br%]
 [% SWITCH document_style %]
 [% CASE 'pod' %]
 [% FILTER html_para %]
-A section describing one of [% athena %]'s[%#'%] features that I consider
+A section describing one of [%athena%]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program is
 marked with this text:
 [% END %]
@@ -101,14 +95,14 @@ marked with this text:
 Lightning symbol
 [% END %]
 This symbol indicates a
-section describing one of [% athena %]'s[%#'%] features that I consider
+section describing one of [%athena%]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program.
 [% END %]
 [% END %]
 
 [% SWITCH document_style %]
 [% CASE 'pod' %]
-A section with difficult information that newcomers to [% athena %] might pass
+A section with difficult information that newcomers to [%athena%] might pass
 over on their first reading of this document is marked with this text:
 [% WRAPPER html/pre %]
     !!! DIFFICULT CONTENT !!!
@@ -119,7 +113,7 @@ over on their first reading of this document is marked with this text:
 Bend symbol
 [% END %]
 This symbol indicates a section
-with difficult information that newcomers to [% athena %] might pass
+with difficult information that newcomers to [%athena%] might pass
 over on their first reading of this document.
 [% END %]
 [% END %]
@@ -137,14 +131,21 @@ old browsers.
 
 [% FILTER html_para %]
 I have to thank Matt Newville, of course.  Without [% ifeffit %] there
-wouldn't[%#'%] be an [% athena %].  One afternoon over coffee, Julie Cross
+wouldn't[%#'%] be an [%athena%].  One afternoon over coffee, Julie Cross
 and Shelly Kelly lit the spark that eventually lead to this document.
-Some content of this document was inspired by an upcoming XAS review
-article by Shelly Kelly and Dean Hesterberg, which I have had the
+Some content of this document was inspired by the XAS review
+article by Shelly Kelly and Dean Hesterberg
+([% INCLUDE citation
+      author = "S.D. Kelly, D. Hesterberg, B. Ravel"
+      journal = "Methods of soil analysis"
+      volume = Part 5
+      pages = "387-483"
+      year = 2008
+   %]) which I had the
 pleasure of editing (and, apparently, swiping from). I have a huge
-debt of gratitude to all the folks on the [% ifeffit %] mailing list.
+debt of gratitude to all the folks on the [%ifeffit%] mailing list.
 Without the incredible support and wonderful feedback that I've[%#'%]
-received in the last six years [% athena %] would be a shadow of what
+received in the last six years [%athena%] would be a shadow of what
 it is today.
 
 The following great software tools were used to create this document:
@@ -159,71 +160,51 @@ create this entire document
 [% END %]
 [% WRAPPER html/li %]
 [% INCLUDE html/link text="The Perl programming language"
-link="http://www.perl.org" %]
-and
+link="http://www.perl.org" %],
+[% INCLUDE html/link link="http://metacpan.org/module/PPI::HTML"
+text="PPI::HTML" %], and
 [% INCLUDE html/link text="Syntax::Highlight::Perl"
-link="http://search.cpan.org/~johnsca/Syntax-Highlight-Perl-1.0/" %]
+link="http://metacpan.org/module/Syntax::Highlight::Perl/" %]
 from
 [% INCLUDE html/link text="the CPAN repository"
-link="http://www.cpan.org" %]
+link="http://metacpan.org" %].
 [% END %]
 [% WRAPPER html/li %]
 The
 [% INCLUDE html/link text="Emacs" link="http://www.gnu.org/software/emacs/" %]
-and
-[% INCLUDE html/link text="XEmacs" link="http://www.xemacs.org" %]
-text editors along with 
+text editor along with 
 [% INCLUDE html/link text="tt-mode" link="http://dave.org.uk/emacs/tt-mode.el" %]
 and the simply wonderful
 [% INCLUDE html/link text="Emacs Code Browser" link="http://ecb.sourceforge.net/" %]
 [% END %]
 [% WRAPPER html/li %]
-[% INCLUDE html/link text="The GIMP"
-link="http://www.gimp.org" %]
-image editor with frequent use of the Xach effect shadowing plugin
-[% END %]
-[% WRAPPER html/li %]
-Various tools from the
-[% INCLUDE html/link text="KDE desktop"
-link="http://www.kde.org" %],
-including KColorChooser and
-[% INCLUDE html/link text="KSnapshot"
-link="http://docs.kde.org/stable/en/kdegraphics/ksnapshot/index.html" %]
-
+The [%INCLUDE html/link text="Shutter" link="http://shutter-project.org/"%] 
+screen capture tool.
 [% END %]
 [% END %]
 
 [% FILTER html_para %]
-All screenshots were made of [% athena %] or the
-[% INCLUDE html/link text="PGPLOT" link="http://www.astro.caltech.edu/~tjp/pgplot/" %]
-window  on
-my [% INCLUDE html/link text="KDE desktop" link="http://www.kde.org" %],
-mostly using some version of the
-[% INCLUDE html/link text="Orangio theme" link="http://www.kde-look.org/content/show.php?content=32824" %]
-for
-[% INCLUDE html/link text="deKorator" link="http://www.kde-look.org/content/show.php?content=31447" %].
+Almost all screenshots were made of either [%athena%] or the
+[% INCLUDE html/link text="Gnuplot" link="http://gnuplot.info/" %]
+window on
+my [% INCLUDE html/link text="KDE desktop" link="http://www.kde.org" %].
 The screenshots of spreadsheets made from
 [% INCLUDE html/link text="a report file" link="output/report.html#export_excelreport" %]
 and
 [% INCLUDE html/link text="an LCF fit report" link="examples/aucl.html#ex_aucl_excel" %]
 are displayed in
-[% INCLUDE html/link text="OpenOffice" link="http://www.openoffice.org" %].
+[% INCLUDE html/link text="LibreOffice" link="http://www.libreoffice.org" %].
 
 The images of the Tholos temple on the front page and the Klimt
 painting [% INCLUDE font/em a="Pallas Athena" %] in the navigation box
 of the html document are from
 [% INCLUDE html/link link="http://www.artchive.com" %].
 
-The image used as the [% athena %] program icon is from
-[% INCLUDE font/quote a="Heracles and Athena. Tondo of an Attic red-figure kylix, 480-470 BC, from Vulci" %]
-from the Staatliche Antikensammlungen in Munich, Germany.  The image
-is in the public domain and was found on 
-[% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/Image:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg" %].
-The image used as the [% hephaestus %] program icon is from Reubens'[%#'%] 
-[% INCLUDE font/quote a="Vulcan forging Jupiter's thunderbolts" %] 
-from the Museo Del Prado, Madrid Spain.  This image is also in the public
-domain and also from 
-[% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/Image:Rubens_-_Vulcano_forjando_los_rayos_de_J%C3%BApiter.jpg" %].
+The image used as the [%athena%] program icon is from a
+[% INCLUDE font/quote a="Terracotta lekythos depicting Athena holding a spear and aphlaston." %].
+The image is licensed as Creative Commons Attribution-Share Alike 3.0
+and can be found at
+[% INCLUDE html/link text="Wikimedia Commons" link="http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg" %].
 [% END %]
 
 [% INCLUDE section label="Data citations" %]
@@ -298,8 +279,7 @@ domain and also from
 [% END %]
 [% WRAPPER html/li %]
   Data on [% pbtio3 %], [% batio3 %], and [% eutio3 %] are taken from
-  [% INCLUDE html/link text="my own PhD thesis"
-  link="http://cars9.uchicago.edu/~ravel/thesis.html" %].
+  my own PhD thesis.
 [% END %]
 [% END %]
 
@@ -307,45 +287,26 @@ domain and also from
 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Linux, BSD, and other unixes" %]
-It is not especially hard to build [% athena %] from source code.  The procedure
+It is not especially hard to build [%athena%] from source code.  The procedure
 is explained in detail on this web page: 
-[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware" %].
+[% INCLUDE html/link link="http://bruceravel.github.com/demeter/pods/installation.pod.html" %].
+An excellent addendum to those instructions is at
+[% INCLUDE html/link link="https://gist.github.com/3959252" %].
+
 [% END %]
 [% WRAPPER html/dt dt="Debian and debian-based Linux" %]
-Add the repositories listed on this page:
-[% INCLUDE html/link link="http://wiki.mr.aps.anl.gov/ObtainingSoftware" %].
-This can be done either by editing 
-[% INCLUDE font/file a='/etc/apt/sources.list' %] directly or by adding
-repositories using the system package manager (e.g. Adept on ubuntu).
-Once these are included as repositories, the [% INCLUDE font/quote a="horae" %]
-package, which contains [% athena %], can be installed.
+Coming soon....
 [% END %]
 [% WRAPPER html/dt dt="Windows" %]
 [% FILTER html_para %]
-An MSI installer package is available at
-[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/Downloads" %].
-Installation is very simple.  Just double click on the installer and
-follow the instructions.  If you are installing onto a machine for
-which you do not have administrator privileges, you should choose a
-part of the disk that belongs to you when asked about the installation
-location.
-
-For those with 
-[% INCLUDE html/link link="http://www.activestate.com/Products/activeperl/index.mhtml" text="ActiveState Perl" %]
-installed on their windows machines,
-the [% INCLUDE font/quote a="horae" %] source code can be installed
-using the Perl Package Manager.  In the Perl Package Manager, select
-[% INCLUDE font/quote a="Preferences" %] from the Edit menu, then
-click on the repositories tab.  Add
-[% INCLUDE html/link link="http://cars9.uchicago.edu/~ravel/ppm/" %]
-as a new repository.  The [% INCLUDE font/quote a="horae" %]
-package should now show up as an installable package.
+Follow the links on
+[% INCLUDE html/link link="http://bruceravel.github.com/demeter/"
+text="the Demeter homepage" %] to download the installer and updater
+packages.  Just download, double-click, and answer the questions.
 [% END %]
 [% END %]
 [% WRAPPER html/dt dt="Macintosh" %]
-An installer package is available at
-[% INCLUDE html/link link="http://cars9.uchicago.edu/iffwiki/Downloads" %].
-Installation is very simple.  Just double click on the installer and follow the instructions.
+Coming soon....
 [% END %]
 
 [% END %]
@@ -358,14 +319,14 @@ Installation is very simple.  Just double click on the installer and follow the 
 
 [% FILTER html_para %]
 The source files and all images files for this document can be
-downloaded by SVN.  To grab the source, you will need an
-[% INCLUDE html/link text="SVN client"
-link="http://subversion.tigris.org/" %] on your computer.  This
+downloaded using Git.  To grab the source, you will need an
+[% INCLUDE html/link text="Git client"
+link="http://git-scm.com/" %] on your computer.  This
 command checks a copy of the source out and downloads it onto your
 computer:
 [% END %]
 [% WRAPPER html/pre %]
-    svn co http://cars9.uchicago.edu/svn/aug/
+    git clone git://github.com/bruceravel/demeter.git
 [% END %]
 
 [% FILTER html_para %]
@@ -385,26 +346,22 @@ it can be downloaded from its website and installed by hand or
 downloaded using perl's[%#'%] [% INCLUDE html/link
 link="http://cpan.uwinnipeg.ca/htdocs/CPAN/CPAN.html" text="CPAN
 utility" %].  You will also need to install the
-[% INCLUDE html/link link="http://cpan.uwinnipeg.ca/dist/Image-Size"
-text="Image::Size" %], and
-[% INCLUDE html/link link="http://cpan.uwinnipeg.ca/dist/Syntax-Highlight-Perl"
+[% INCLUDE html/link link="http://metacpan.org/module/Image::Size"
+text="Image::Size" %], [% INCLUDE html/link link="http://metacpan.org/module/PPI::HTML"
+text="PPI::HTML" %], and
+[% INCLUDE html/link link="http://metacpan.org/module/Syntax::Highlight::Perl"
 text="Syntax::Highlight::Perl" %] modules.  Compiling the [% latex %]
 version of the document will require a fairly complete [% latex %]
 installation as I make use of many styles, including
-amsmath, amsfonts, floatflt, fancybox, fancyhdr, keystroke, varioref, and
-hyperref.  (teTeX compiles the document without any problem. The
-texlive package may complain about not being able to generate two
-postscript font sets.  Those two warning can be safely ignored by
-simply hitting [%- INCLUDE modkey key="return" %] when pdflatex pauses
-to complain.  As far as I can tell, ignoring this problem has no
-impact on the document.  I have no experience building the PDF
+amsmath, amsfonts, amssymb, floatflt, wrapfig, fancybox, fancyhdr, keystroke, varioref,
+hyperref, and more.  (I have no experience building the PDF
 document on any system other than linux.)
 
 Once TT2 and the other modules are installed, building the document
 should be quite simple.  TT2's[%#'%] [% INCLUDE font/mono a="ttree" %]
 program is used to recurse the through the directory structure
-containing the templates.  The [% INCLUDE font/file a="bin/build" %],
-[% INCLUDE font/file a="bin/tex" %], and [% INCLUDE font/file a="bin/pod" %]
+containing the templates.  The [% INCLUDE font/file a="bin/build" %], and
+[% INCLUDE font/file a="bin/tex" %]
 scripts are wrappers around [% INCLUDE font/mono a="ttree" %].  They
 invokes a number of important command line options and pass any
 further command line options to [% INCLUDE font/mono a="ttree" %].
@@ -413,7 +370,7 @@ TT2 was chosen for this project because it is an excellent templating
 tool.  A templating tool was chosen because the strong separation of
 format and content was attractive to me.  The template source is used
 to generate html and PDF versions of the document as well as the pod
-format used by [% athena %]'s[%#'%] internal document viewer.
+format used by [%athena%]'s[%#'%] internal document viewer.
 
 Contributions to the document are extremely welcome.  The very best
 sort of contribution would be to directly edit the source templates
@@ -430,10 +387,11 @@ difficult for me to incorporate your changes into the source.)
 [% INCLUDE subsection label="Building the html document" %]
 
 [% FILTER html_para %]
-After downloading and unpacking the source for this document, you must
+After downloading and unpacking the source for [%demeter%], you must
 configure it to build correctly on your computer.  This is simple:
 [% END %]
 [% WRAPPER html/pre %]
+cd doc/aug
 ./configure
 [% END %]
 
@@ -453,7 +411,7 @@ Individual pages can be built by specifying them on the command line:
 [% INCLUDE subsection label="Building the LaTeX document" %]
 
 [% FILTER html_para %]
-The [% latex %] document is built by
+The [%latex%] document is built by
 [% END %]
 [% WRAPPER html/pre %]
 ./bin/tex -a
@@ -473,62 +431,15 @@ the document.
 ! Package varioref Error: vref at page boundary 142-143 (may loop).
 [% END %]
 
-[% FILTER html_para %]
-A version of the PDF document suitable for printing on a grayscale
-(i.e. without color) printer can be made using this sequence of commands:
-[% END %]
-
-[% WRAPPER html/pre %]
-cd images/
-./images/convert_to_gray
-cd ../
-./bin/texbw -a
-cd texbw/
-pdflatex athena.ltx
-pdflatex athena.ltx
-[% END %]
-[% FILTER html_para %]
-
-This first bit converts all of the images used in the document to
-grayscale using [% INCLUDE html/link link="http://www.imagemagick.org"
-text="ImageMagick" %].  
-The [% INCLUDE font/quote a="texbw" %] version of the
-document is nearly identical to the normal [% latex %] document,
-except that the style file and several templates are changed to remove
-all color from the document.  Compiling the version in the [% INCLUDE
-font/mono a="texbw/" %] directory results in a PDF file that is
-suitable for a non-color printer.
-
-This output target was created for the 2008 APS summer school.  The
-cost saving of printing the [% athena %] document in black-and-white rather
-than color for each of the students was quite significant.
-[% END %]
-
-[% INCLUDE subsection label="Building the pod document" %]
-
-[% FILTER html_para %]
-The pod document, [% athena %]'s[%#'%] internal document format, is built by
-[% END %]
-[% WRAPPER html/pre %]
-./bin/pod -a
-[% END %]
-[% FILTER html_para %]
-Individual pages can be built by specifying them on the command line:
-[% END %]
-[% WRAPPER html/pre %]
-./bin/pod bkg/norm.tt forward.tt
-[% END %]
 
 [% INCLUDE subsection label="Using the document with Athena" %]
 
 [% FILTER html_para %]
-The pod and html document files can be used by [% athena %], but they
-must be installed in the correct location.  To do this, run the
-[% INCLUDE font/mono a="install" %] script that comes with the
-document package.  This will use an [% athena %] module to determine
-the correct location, then copy over all relevant files.  Once installed 
-[% athena %] will display the html document in either a web browser or
-a pod viewer depending on the values of the
-[% INCLUDE preference group="Doc" option="prefer" %] and
-[% INCLUDE preference group="Doc" option="browser" %] preferences.
+The html document files can be used by [%athena%].  They are
+installed at the time that [%demeter%] is installed (and they can be
+installed on a Windows machine by downloading and installing the
+documentation package).  If the html pages cannot be found,
+[%athena%] will try to use your internet connection to fetch them from 
+[% INCLUDE html/link link="http://bruceravel.github.com/demeter/"
+text="the Demeter homepage" %].
 [% END %]

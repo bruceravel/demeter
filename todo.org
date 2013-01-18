@@ -17,7 +17,7 @@
         the executables can all be found,
   - [ ] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [1/19] [5%]
+** Demeter bugs, shortcomings, missing features  [1/20] [5%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together (e.g. MED data with reference)
@@ -38,6 +38,7 @@
   - [ ] Use PDL in pathfinder
   - [ ] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
   - [X] Plucking from gnuplot really sucks
+  - [ ] background groups for AXAFS
 
 
 
