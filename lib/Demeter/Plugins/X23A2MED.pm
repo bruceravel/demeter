@@ -119,9 +119,10 @@ sub fix {
     $dts .= " $deadtime";
   };
 
-  push @labs, 'it'   if any {lc($_) eq 'it'}        @labels;
-  push @labs, 'ir'   if any {lc($_) =~ m{\Air\z}}   @labels;
-  push @labs, 'iref' if any {lc($_) =~ m{\Airef\z}} @labels;
+  push @labs, 'diamond' if any {lc($_) eq 'diamond'}   @labels;
+  push @labs, 'it'      if any {lc($_) eq 'it'}        @labels;
+  push @labs, 'ir'      if any {lc($_) =~ m{\Air\z}}   @labels;
+  push @labs, 'iref'    if any {lc($_) =~ m{\Airef\z}} @labels;
 
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
 
