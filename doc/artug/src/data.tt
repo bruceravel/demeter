@@ -240,7 +240,7 @@ spectra.
 
 [%# ################################################################ %]
 
-[% PROCESS section label="Menu bar" %]
+[% PROCESS section label="Data menu bar" %]
 
 [% PROCESS subsection label="The Data menu" %]
 
@@ -469,7 +469,7 @@ debugging purposes.  This menu is only displayed if the
 configuration parameter is set to a true value.
 [% END %]
 
-[% PROCESS subsection label="The Help menu" %]
+[% PROCESS subsection label="The Data help menu" %]
 
 [% WRAPPER floatright this="data-helpmenu.png" %]
 This menu is used to display the sections on the Data window or the

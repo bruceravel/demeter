@@ -27,7 +27,7 @@ of [%demeter%] that can be configured, ranging from default parameter
 values to the colors of things that get plotted.
 [% END %]
 
-[% WRAPPER floatright this="prefs.png" %]
+[% WRAPPER floatright this="prefs.png" forcelabel="prefsfigure" %]
 [%artemis%] presents all of [%demeter%]'s [%#'%] configuration options
 in the Preferences window, which can be displayed from the File Menu.
 Shown here, the [% INCLUDE font/quote a="artemis" %] group has been

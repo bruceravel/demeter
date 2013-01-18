@@ -5,7 +5,10 @@
   #     file  : path to image file, including extension
 -%]
 [% USE image "${site.url.images}/${this}" %]
-[% ww = image.width / 80 %]
+[% ww = image.width / 80;
+   parts = this.split('\.');
+   label = forcelabel || parts.first;
+%]
 \begin{wrapfigure}{R}{[%ww%]cm}
   \begin{center}
     \includegraphics*[width=[% ww %]cm]{[% image.name %]}

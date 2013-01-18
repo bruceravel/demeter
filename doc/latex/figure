@@ -6,7 +6,7 @@
 -%]
 [% ww    = image.width;
    parts = file.split('\.');
-   label = parts.first;
+   label = forcelabel || parts.first;
 %]
 [% USE image "${site.url.images}/${file}" %]
 \hypertarget{[% label %]}{~}

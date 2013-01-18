@@ -31,6 +31,10 @@ text="parametrizations of bond length" %].
 A discussion of [%INCLUDE html/link link="../extended/ss.html"
 text="parametrizations of the disorder parameter" %], [%sigsqr%].
 [% END %]
+[% WRAPPER html/dt dt="Using constraints and restraints" %]
+A discussion of [%INCLUDE html/link link="../extended/constraints.html"
+text="model building" %] in [%ifeffit%] and [%artemis%].
+[% END %]
 [% WRAPPER html/dt dt="Using empirical standards" %]
 A discussion of [%INCLUDE html/link link="../extended/empirical.html"
 text="the use of empirical standards" %] is implemented in [%artemis%].
@@ -39,7 +43,7 @@ text="the use of empirical standards" %] is implemented in [%artemis%].
 
 [%hr%]
 [% FILTER html_para -%]
-[% INCLUDE font/em a="Topics related to fitting EXAFS data" %]
+[% INCLUDE font/em a="Topics related to Feff" %]
 [% END %]
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Unique potentials" %]

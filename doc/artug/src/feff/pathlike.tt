@@ -22,10 +22,11 @@ item in that menu is for defining
 The Pathlike tab.
 [% END %]
 
-[% PROCESS section label="SSPaths" %]
+[% PROCESS section label="Single Scattering Paths" %]
 
 [% FILTER html_para -%]
-The concept of an SSPath is that it uses the potentials from a
+The concept of a Single Scattering Path (or SSPath) is that it uses
+the potentials from a 
 [%feff%] calculation to compute the single scattering contribution
 from an atom that exists in that [%feff%] calculation but at a
 distance not represented in the list of cartesian coordinates.

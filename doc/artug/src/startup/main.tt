@@ -75,7 +75,7 @@ hide a window containing the log from the most recent fit.
 [% END %]
 
 
-[% PROCESS section label="Menu bar" %]
+[% PROCESS section label="Main menu bar" %]
 
 [% PROCESS subsection label="The File menu" %]
 
@@ -189,7 +189,7 @@ something new without removing an existing plot.  This menu controls
 which of four such plot displays is active.
 [% END %]
 
-[% PROCESS subsection label="The Help menu" %]
+[% PROCESS subsection label="The Main help menu" %]
 
 [% WRAPPER floatright this="helpmenu.png" %]
 This menu is used to display this document or to display information
@@ -224,7 +224,7 @@ recorded in the buffer.
 [% END %]
 
 
-[% PROCESS section label="Data list" %]
+[% PROCESS section label="The Data list" %]
 
 [% FILTER html_para %]
 The data list starts off with a single control, which is used to
@@ -305,7 +305,7 @@ your choice in the list of recent files.
 [% END %]
 
 
-[% PROCESS section label="Feff list" %]
+[% PROCESS section label="The Feff list" %]
 
 [% FILTER html_para %]
 The [% feff %] list starts off with a single control, which is used to

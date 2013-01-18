@@ -96,7 +96,11 @@ marked with this text:
     !!! EXPERT CONTENT !!!
 [% END %]
 [% CASE %]
-[% WRAPPER floatleft this="LightningBolt.png" %] This symbol indicates a
+[% FILTER html_para %]
+[% WRAPPER image file="LightningBolt.png" %] 
+Lightning symbol
+[% END %]
+This symbol indicates a
 section describing one of [% athena %]'s[%#'%] features that I consider
 especially powerful and central to the effective use of the program.
 [% END %]
@@ -110,7 +114,11 @@ over on their first reading of this document is marked with this text:
     !!! DIFFICULT CONTENT !!!
 [% END %]
 [% CASE %]
-[% WRAPPER floatleft this="bend.png" %] This symbol indicates a section
+[% FILTER html_para %]
+[% WRAPPER image file="bend.png" %] 
+Bend symbol
+[% END %]
+This symbol indicates a section
 with difficult information that newcomers to [% athena %] might pass
 over on their first reading of this document.
 [% END %]

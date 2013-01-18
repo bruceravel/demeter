@@ -21,10 +21,13 @@ k-weight values are [% INCLUDE font/em a="only" %] used for making
 plots.  The k-weight values used to evaluate fits are set in the Data
 window.  The [% INCLUDE font/quote a="kw" %] option uses the arbitrary
 (possibly non-integer) k-weighting value specified in the Data window.
+[% END %]
 
+[% FILTER html_para %]
 Beneath the k-weight buttons is a set of tabs used to control differnt
 aspects of plots.  The [% INCLUDE font/quote a="limits" %] tab provides
 controls for the most commonly used plotting options.
+[% END %]
 
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
@@ -37,6 +40,7 @@ parts of the complex functions in the manner of [% athena %].
 [% END %]
 
 [% WRAPPER html/li %]
+ 
 Beneath the [% chir %] and [% chiq %] radio buttons are a set of check
 buttons used to display additional functions related to the data.
 These are:
@@ -60,17 +64,16 @@ between the data and the fit will be plotted.
 sum of the residual will be plotted, providing another way of
 visualizing the misfit.
 [% END %]
-
-[% END %] [%# end of ordered list%]
+[% END %] [%# end of description list%]
 [% END %]
 
 [% WRAPPER html/li %]
 The last thing on the limits tab is a series of text entry boxes for
 setting the plotting range in each of the three spaces.
 [% END %]
-
 [% END %] [%# end of unordered list%]
 
+[% FILTER html_para %]
 The other tabs will explained in 
 [% INCLUDE html/link link="../plot/index.html" text="the plotting chapter" %].
 

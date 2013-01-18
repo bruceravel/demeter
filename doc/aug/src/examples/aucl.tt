@@ -115,7 +115,7 @@ drop-down menus, select [% INCLUDE font/quote a="Au foil" %] and
 [% INCLUDE imageref text="below" label="lcf" in=1 %].
 [% END %]
 
-[% WRAPPER figure file="lcf.png" %]
+[% WRAPPER figure file="lcf.png" forcelabel="examplelcf" %]
 [%athena%]'s[%#'%] linear combination fitting tool with the end member
 standard compounds selected for the initial fit.
 [% END %]
@@ -274,7 +274,7 @@ list.  This will take a while.  It's[%#'%] a good time to get a cup of coffee.
 [% END %]
 
 
-[% WRAPPER figure file="lcf_combo.png" %]
+[% WRAPPER figure file="lcf_combo.png" forcelabel="exampleslcf_combo" %]
 The results of the combinatorial fitting sequence, as displayed on the
 in the [% INCLUDE font/quote a="combinatorics" %] tab.
 [% END %]

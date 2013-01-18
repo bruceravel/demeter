@@ -34,7 +34,7 @@ text boxes.  The first column contains a drop down menu from which the
 parameter types can be chosen.
 [% END %]
 
-[% WRAPPER figure file="gds.png" %]
+[% WRAPPER figure file="gds.png" forcelabel="gdsfigure" %]
 The [% artemis %] GDS window.
 [% END %]
 
@@ -255,7 +255,7 @@ evaluate to a value of 100 times the distance outside the range.
 This, then, is added in quadrature to [%chisqr%] when the fit is minimized.
 You can read more about this,
 including how to choose the value of the scaling parameter, in the 
-[% INCLUDE html/link link="extended/restraint.html" text="discussion of restraints"%].
+[% INCLUDE html/link link="extended/constraints.html" text="discussion of restraints"%].
 [% END %]
 [% WRAPPER html/dt dt="Annotate" %]
 This prompts you for a text string to describe the parameter in the
