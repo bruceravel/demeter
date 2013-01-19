@@ -560,10 +560,10 @@ sub combi {
   };
   my $size = $this->{LCF}->combi_size;
   if ($size > 70) {
-    my $yesno = Wx::MessageDialog->new($::app->{main},
-				       "Really perform $size fits?",
-				       "Perform $size fits?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+						 "You have asked to do $size fits!  Really perform this many fits?",
+						 "Perform $size fits?",
+						 "Perform fits");
     my $result = $yesno->ShowModal;
     if ($result == wxID_NO) {
       $::app->{main}->status("Not doing combinatorial sequence of $size fits.");

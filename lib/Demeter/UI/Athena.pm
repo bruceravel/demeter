@@ -6,6 +6,7 @@ use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::VerbDialog;
 use Demeter::UI::Athena::IO;
 use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::TextBuffer;
@@ -158,10 +159,10 @@ sub OnInit {
 sub process_argv {
   my ($app, @args) = @_;
   if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
-    my $yesno = Wx::MessageDialog->new($app->{main},
-  				       "Athena found an autosave file.  Would you like to import it?",
-  				       "Import autosave?",
-  				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Athena found an autosave file.  Would you like to import it?",
+						 "Import autosave?",
+						 "Import");
     my $result = $yesno->ShowModal;
     if ($result == wxID_YES) {
       $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
@@ -232,10 +233,10 @@ sub on_close {
   my ($app, $event) = @_;
   if ($app->{modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($app->{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Save this project before exiting?",
+						 "Save project?",
+						 "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Not exiting Athena after all.");

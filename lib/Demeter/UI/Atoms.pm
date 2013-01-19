@@ -213,10 +213,14 @@ sub on_discard {
   my $feffobject  = $self->{Feff}->{feffobject};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
-    $self->status("Not discarding Feff calculation \"$this\".");
-    return if ($yesno->ShowModal == wxID_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
+    if ($yesno->ShowModal == wxID_NO) {
+      $self->status("Not discarding Feff calculation \"$this\".");
+      return;
+    };
   };
 
   ## remove paths & VPaths from the plot list

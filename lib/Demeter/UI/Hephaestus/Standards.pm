@@ -134,11 +134,11 @@ sub save_standard {
   return if ($fd->ShowModal == wxID_CANCEL);
   my $file = $fd->GetPath;
   if (-e $file) {
-    my $yesno = Wx::MessageDialog->new($self,
-				       "Overwrite existing file \"$file\"?",
-				       "Overwrite file?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
-				      );
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Overwrite existing file \"$file\"?",
+						 "Overwrite file?",
+						 "Overwrite"
+						);
                                       ##Wx::GetMousePosition  how is this done?
     my $ok = $yesno->ShowModal;
     return if $ok == wxID_NO;

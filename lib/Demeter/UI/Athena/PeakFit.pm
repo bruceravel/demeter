@@ -434,10 +434,10 @@ sub make {
 sub discard {
   my ($this, $n) = @_;
   my $name = $this->{'name'.$n}->GetValue;
-  my $yesno = Wx::MessageDialog->new($::app->{main},
-				     "Really delete $name (lineshape #$n)?",
-				     "Delete lineshape?",
-				     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+					       "Really delete $name (lineshape #$n)?",
+					       "Delete lineshape?",
+					       "Delete lineshape");
   my $result = $yesno->ShowModal;
   if ($result == wxID_NO) {
     $::app->{main}->status("Not deleting lineshape.");

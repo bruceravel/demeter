@@ -7,6 +7,7 @@
 
 ** 0.9.15  XX January 2013
 *** Athena
+   - Interface to Athena Users' Guide from within Athena via browser
    - Improved plucking from gnuplot window, the interaction is much
      more natural -- no intermediate dialog window
    - Implemented Data Summation tool
@@ -34,6 +35,8 @@
      Windows
    - added data summation recipe
    - correct legend keys for R123 plots
+   - made Demeter::UI::Wx::VerbDialog -- a generic yes/no dialog using
+     a specified verb on the yes button
 
 ** 0.9.14  2 January 2013
 *** Athena

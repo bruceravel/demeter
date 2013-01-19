@@ -157,8 +157,10 @@ sub clear_all {
   my ($self) = @_;
   $self->{feff}->SetValue(q{}), return 1 if (not $self->{feffobject}->co->default("atoms", "do_confirm"));
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
-  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this feff.inp file and replace it with a new one?",
-				     "Discard?", wxYES_NO);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Do you really wish to discard this feff.inp file and replace it with a new one?",
+					       "Discard?",
+					       "Discard");
   if ($yesno->ShowModal == wxID_NO) {
     return 0;
   } else {
@@ -196,11 +198,11 @@ sub run_feff {
 
   ##print join("|", $feff->feff_version, @{$feff->scf}), $/;
   if (($feff->feff_version == 8) and (@{$feff->scf})) {
-    my $md = Wx::MessageDialog->new($rframes->{main},
-				    "You are running Feff8 with self-consistent potentials.  It WILL be time consuming and all interaction with Artemis will be blocked until the Feff calculation is done.  Currently Artemis does not provide real-time feedback, so you will have to be very patient.\n\nContinue?",
-				    "Feff8 with self-consistent potentials",
-				    wxOK|wxCANCEL|wxICON_EXCLAMATION);
-    if ($md->ShowModal == wxID_CANCEL) {
+    my $md = Demeter::UI::Wx::VerbDialog->new($rframes->{main}, -1,
+					      "You are running Feff8 with self-consistent potentials.  It WILL be time consuming and all interaction with Artemis will be blocked until the Feff calculation is done.  Currently Artemis does not provide real-time feedback, so you will have to be very patient.\n\nContinue?",
+					      "Feff8 with self-consistent potentials",
+					      "Continue");
+    if ($md->ShowModal == wxID_NO) {
       $self->{parent}->status("Self-consistent Feff calculation canceled.");
       return 1;
     };
@@ -221,17 +223,17 @@ sub run_feff {
   };
 
   if ($feff->rmax > 6.51) {
-    my $yesno = Wx::MessageDialog->new($self,
-				       'You have set RMAX to larger than 6.5 Angstroms.
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 'You have set RMAX to larger than 6.5 Angstroms.
 
 The pathfinder will likely be quite time consuming,
 as will reading and writing a project file
 containing this Feff calculation.
 
 Should we continue?',
-				       "Continue calculating?",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION,
-				      );
+						 "Continue calculating?",
+						 "Continue",
+						);
     my $ok = $yesno->ShowModal;
     if ($ok == wxID_NO) {
       $self->{parent}->status("Canceling Feff calculation");

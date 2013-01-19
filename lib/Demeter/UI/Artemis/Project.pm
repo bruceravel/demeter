@@ -190,10 +190,10 @@ sub read_project {
 
   if (not Demeter->is_zipproj($fname,0, 'any')) {
     if (project_started($rframes)) {
-      my $yesno = Wx::MessageDialog->new($rframes->{main},
-					 "Save current project before opening a new one?",
-					 "Save project?",
-					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+      my $yesno = Demeter::UI::Wx::VerbDialog->new($rframes->{main},, -1,
+						   "Save current project before opening a new one?",
+						   "Save project?",
+						   "Save");
       my $result = $yesno->ShowModal;
       save_project($rframes) if $result == wxID_YES;
       close_project($rframes, 1);
@@ -562,10 +562,10 @@ sub modified {
 sub close_project {
   my ($rframes, $force) = @_;
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($rframes->{main},
-				       "Save this project before closing?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($rframes->{main}, -1,
+						 "Save this project before closing?",
+						 "Save project?",
+						 'Save', 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $rframes->{main}->status("Not closing project.");

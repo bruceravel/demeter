@@ -28,11 +28,11 @@ sub overwrite_prompt {
   my ($self, $file, $frame) = @_;
   $frame ||= $self;
   return 0 if (not -e $file);
-  my $yesno = Wx::MessageDialog->new($self,
-				     "Overwrite existing file \"$file\"?",
-				     "Overwrite file?",
-				     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
-				    ); ##Wx::GetMousePosition --  how is this done?
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Overwrite existing file \"$file\"?",
+					       "Overwrite file?",
+					       "Overwrite"
+					      ); ##Wx::GetMousePosition --  how is this done?
   my $ok = $yesno->ShowModal;
   if ($ok == wxID_NO) {
     $frame->status("Not overwriting \"$file\"");

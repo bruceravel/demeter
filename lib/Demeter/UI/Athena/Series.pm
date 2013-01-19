@@ -182,8 +182,10 @@ sub make {
     return;
   };
   if ($n > 10) {
-    my $yesno = Wx::MessageDialog->new($this, "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
-				       "Continue?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
+						 "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
+						 "Continue?",
+						 "Continue");
     return if ($yesno->ShowModal == wxID_NO);
   };
 

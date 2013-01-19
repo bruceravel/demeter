@@ -11,6 +11,8 @@ use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
 
+use Demeter::UI::Wx::VerbDialog;
+
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Capture::Tiny ':all';
@@ -451,10 +453,10 @@ sub on_close {
 
   if ($frames{main} -> {modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($frames{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+				    "Save this project before exiting?",
+				    "Save project?",
+				    "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $frames{main}->status("Not exiting Artemis.");
@@ -1003,8 +1005,10 @@ sub OnMenuClick {
     ## -------- fit menu
     ($id == $IGNORE_NIDP) and do {
       if ($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP)) {
-	my $yesno = Wx::MessageDialog->new($frames{main}, "Are you SURE you want to skip the Nidp test?",
-					   "Skip Nidp test?", wxYES_NO|wxSTAY_ON_TOP|wxNO_DEFAULT);
+	my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						     "Are you SURE you want to skip the Nidp test?",
+						     "Skip Nidp test?",
+						     'Skip test');
 	if ($yesno->ShowModal == wxID_NO) {
 	  $frames{main}->{fitmenu}->Check($IGNORE_NIDP, 0);
 	  return;
@@ -1065,6 +1069,7 @@ sub OnDataButtonRightClick {
 sub OnDataMenu {
   my ($self, $event) = @_;
   my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
   given ($event->GetId) {
     when (0) {
       $frames{$dnum}->Rename;
@@ -1086,7 +1091,7 @@ sub make_data_frame {
   my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".emph($data->name));
   #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
-  mouseover($new, "Display/hide " . $data->name . ".");
+  mouseover($self, "Display/hide this data group.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $idata = $new->GetId;
@@ -1197,7 +1202,7 @@ sub make_feff_frame {
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   my $ifeff = $new->GetId;
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
-  mouseover($new, "Display/hide $name.");
+  mouseover($new, "Display/hide this Feff calculation.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $fnum = sprintf("feff%s", $ifeff);
@@ -1301,8 +1306,10 @@ sub discard_feff {
   ##my $atomsobject = $frames{$which}->{Atoms}
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($frames{main}, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 

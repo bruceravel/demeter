@@ -1897,8 +1897,10 @@ sub discard_data {
   my $dataobject = $self->{data};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this data set?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -2206,11 +2208,11 @@ sub quickfs {
 		     data      => $datapage->{data},
 		    );
   if ($firstshell->error) {
-    my $okcancel = Wx::MessageDialog->new($datapage,
-					  $firstshell->error . "\n\nDo you want to carry on?",
-					  "Warning!",
-					  wxOK|wxCANCEL|wxICON_ERROR);
-    if ($okcancel->ShowModal == wxID_CANCEL) {
+    my $okcancel = Demeter::UI::Wx::VerbDialog->new($datapage, -1,
+						    $firstshell->error . "\n\nDo you want to continue?",
+						    "warning!",
+						    "Continue");
+    if ($okcancel->ShowModal != wxID_YES) {
       $datapage->status("Making quick first shell path canceled.");
       $firstshell -> DEMOLISH;
       return;

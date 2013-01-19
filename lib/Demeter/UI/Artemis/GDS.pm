@@ -518,10 +518,10 @@ sub discard_all {
   my ($parent, $force) = @_;
   my $grid = $parent->{grid};
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       "Really throw away all parameters?",
-				       "Verify action",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 "Really throw away all parameters?",
+						 "Verify action",
+						 "Throw them away");
     if ($yesno->ShowModal == wxID_NO) {
       $parent->status("Not discarding parameters.");
       return 0;
@@ -1065,10 +1065,10 @@ sub OnDropText {
 
   ## row already has a parameter in it
   } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
-				       "Replace parameter?",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
+						 "Replace parameter?",
+						 "Replace");
     if ($yesno->ShowModal == wxID_NO) {
       return 0;
     } else {

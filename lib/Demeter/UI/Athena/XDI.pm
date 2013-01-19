@@ -177,10 +177,10 @@ sub DoContextMenu {
 
   } elsif ($event->GetId == $DELETE) {
     my $which = ucfirst($namespace).".$parameter";
-    my $yesno = Wx::MessageDialog->new($::app->{main},
-                                       "Really delete $which?",
-                                       "Really delete $which?",
-                                       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION|wxSTAY_ON_TOP);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+						 "Really delete $which?",
+						 "Really delete $which?",
+						 "Delete");
     my $result = $yesno->ShowModal;
     if ($result == wxID_NO) {
       $::app->{main}->status("Not deleting $which");

@@ -126,7 +126,10 @@ sub discard_style {
   my ($this, $event, $app) = @_;
   my $i = $this->{list}->GetSelection;
   my $style = $this->{list}->GetClientData($i);
-  my $yesno = Wx::MessageDialog->new($this, "Really discard ".$style->name."?", "Really discard?", wxYES_NO);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
+					       "Really discard the \"".$style->name."\" plotting style?",
+					       "Really discard?",
+					       "Discard");
   if ($yesno->ShowModal == wxID_NO) {
     $app->{main}->status("Not discarding ".$style->name);
     return;
