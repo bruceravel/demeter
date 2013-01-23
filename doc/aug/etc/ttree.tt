@@ -24,7 +24,6 @@ ignore = \.pod$
 ignore = ^auto
 
 ### options
-verbose
 recurse
 recursion
 

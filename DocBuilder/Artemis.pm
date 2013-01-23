@@ -66,6 +66,7 @@ sub ACTION_configure_artug {
   chdir 'doc/artug' if (cwd !~ m{artug});
   my $id = cwd;
 
+  print "Building Artemis User's Guide\n" if (not $self->verbose);
   print "Configuring the Artemis User's Guide build system for your machine\n" if ($self->verbose);
 
   print "  configuring bin directory\n" if ($self->verbose);

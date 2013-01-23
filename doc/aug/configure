@@ -10,9 +10,9 @@
 
 id=`pwd`
 
-echo "Configuring the Athena User's Guide build system for your machine"
+if [ ! $1 ]; then echo "Configuring the Athena User's Guide build system for your machine"; fi
 
-echo "  configuring bin directory"
+if [ ! $1 ]; then echo "  configuring bin directory"; fi
 files="build tex" # texbw pod mobile"
 for b in $files; do
     rm -f bin/$b
@@ -20,14 +20,14 @@ for b in $files; do
     chmod +x bin/$b
 done
 
-echo "  configuring etc directory"
+if [ ! $1 ]; then echo "  configuring etc directory"; fi
 files="ttree ttree_tex" # ttree_texbw ttree_pod ttree_mobile"
 for b in $files; do
     rm -f etc/$b
     tpage --define installdir=$id etc/$b.tt > etc/$b.cfg
 done
 
-echo "  copying map and version templates"
+if [ ! $1 ]; then echo "  copying map and version templates"; fi
 cp etc/map     ../lib/config/map.athena
 cp etc/version ../lib/config/version.athena
 cp etc/map     ../latex/config/map.athena

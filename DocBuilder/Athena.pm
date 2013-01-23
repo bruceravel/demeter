@@ -66,6 +66,7 @@ sub ACTION_configure_aug {
   chdir 'doc/aug' if (cwd !~ m{aug});
   my $id = cwd;
 
+  print "Building Athena User's Guide\n" if (not $self->verbose);
   print "Configuring the Athena User's Guide build system for your machine\n" if ($self->verbose);
 
   print "  configuring bin directory\n" if ($self->verbose);

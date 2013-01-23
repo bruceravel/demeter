@@ -23,7 +23,6 @@ ignore = \.pod$
 ignore = athenabw.sty
 
 ### options
-verbose
 recurse
 recursion
 
