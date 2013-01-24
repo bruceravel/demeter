@@ -549,10 +549,12 @@ sub trouble_report {
     foreach my $t (split(/\|/, $obj->trouble)) {
       my $pathfile = q{};
       if ($which =~ m{Path}) {
-	$pathfile = ($obj->sp) ? $obj->sp->intrpline : File::Spec->catfile($obj->folder, $obj->file);
-	$pathfile = '(' . $pathfile . ')';
+	#$pathfile = ($obj->sp) ? $obj->sp->intrpline : File::Spec->catfile($obj->folder, $obj->file);
+	#$pathfile = '(' . $pathfile . ')';
+	$pathfile = "in data set '".$obj->data->name."'";
       };
-      $text .= sprintf("%s: %s %s\n%s\n\n", uc($which), $obj->name, $pathfile, wrap("     ", "     ", $obj->translate_trouble($t)));
+      $text .= sprintf("%s: '%s' %s\n%s\n\n", uc($which), $obj->name, $pathfile,
+		       wrap("     ", "     ", $obj->translate_trouble($t)));
       ##$text .= sprintf("%s: %s\t(%s)\n%s\n\n", $which, $obj->name, $t, wrap("     ", "     ", $obj->translate_trouble($t)));
     };
   };

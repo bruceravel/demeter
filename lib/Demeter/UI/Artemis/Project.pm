@@ -274,6 +274,10 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
+    if (not -e $yaml) {
+      rmdir File::Spec->catfile($projfolder, 'feff', $d);
+      next;
+    };
     my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {

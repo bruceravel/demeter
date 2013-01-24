@@ -24,6 +24,11 @@
    - menu items for sending last plot to png or pdf file
    - added right click context menu to the items in the Data and Feff
      lists
+   - fixed the fit sanity checker to notice if a data set has been
+     excluded from the fit and not run sanity checks on it or its
+     paths.
+   - improved identification of paths in fit sanity checking and in
+     GDS find function
 
 *** Demeter
    - mirroring repository at Bitbucket

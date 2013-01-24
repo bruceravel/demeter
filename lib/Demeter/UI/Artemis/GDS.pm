@@ -875,8 +875,9 @@ sub find {
 	my $pp = $page->{"pp_$k"}->GetValue;
 	if ($pp =~ m{\b$this\b}) {
 	  ++$count;
-	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s'\n", 
-			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel);
+	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s' in data set '%s'\n",
+			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel,
+			   $Demeter::UI::Artemis::frames{$f}->{name}->GetLabel);
 	};
       };
     };
