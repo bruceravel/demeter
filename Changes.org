@@ -29,6 +29,10 @@
      paths.
    - improved identification of paths in fit sanity checking and in
      GDS find function
+   - added menu item for saving current fit to a project (i.e. current
+     fit without history)
+   - added Plot menu items for turning on and off plot_after for all
+     data sets
 
 *** Demeter
    - mirroring repository at Bitbucket

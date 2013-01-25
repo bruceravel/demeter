@@ -39,6 +39,7 @@ use base 'Wx::App';
 
 use Const::Fast;
 const my $BLANK           => q{___.BLANK.___};
+const my $SAVETHIS        => Wx::NewId();
 const my $MRU	          => Wx::NewId();
 const my $SHOW_BUFFER     => Wx::NewId();
 const my $CONFIG          => Wx::NewId();
@@ -71,6 +72,8 @@ const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
 const my $PLOT_PDF	  => Wx::NewId();
+const my $PLOT_ALL_DATA	  => Wx::NewId();
+const my $PLOT_NO_DATA	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
@@ -160,6 +163,7 @@ sub OnInit {
   $filemenu->AppendSubMenu($mrumenu, "Recent files",    "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
+  $filemenu->Append($SAVETHIS,       "Save current fit", "Save current fit without history to a project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
   $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
@@ -223,6 +227,9 @@ sub OnInit {
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
   $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
   $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
+  $plotmenu->AppendSeparator;
+  $plotmenu->Append($PLOT_ALL_DATA, "Plot all data sets after fit", "Set all data sets to be plotted after a fit finishes");
+  $plotmenu->Append($PLOT_NO_DATA,  "Plot no data sets after fit", "Set all data sets NOT to be plotted after a fit finishes");
 
 
   my $helpmenu = Wx::Menu->new;
@@ -883,6 +890,14 @@ sub OnMenuClick {
       save_project(\%frames);
       last SWITCH;
     };
+    ($id == $SAVETHIS) and do {
+      if ($frames{History}->{list}->GetCount) {
+	$frames{History}->export($frames{History}->{list}->GetCount-1);
+      } else {
+	$frames{main}->status("You haven't made a fit yet!")
+      };
+      last SWITCH;
+    };
     ($id == $SHOW_BUFFER) and do {
       $frames{Buffer}->Show(1);
       last SWITCH;
@@ -993,6 +1008,21 @@ sub OnMenuClick {
     };
     ($id == $TERM_4) and do {
       $demeter->po->terminal_number(4);
+      last SWITCH;
+    };
+
+    ($id == $PLOT_ALL_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(1);
+      };
+      last SWITCH;
+    };
+    ($id == $PLOT_NO_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(0);
+      };
       last SWITCH;
     };
 
