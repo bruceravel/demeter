@@ -33,6 +33,7 @@
      fit without history)
    - added Plot menu items for turning on and off plot_after for all
      data sets
+   - more sensible default for Data plot_after_fit parameter
 
 *** Demeter
    - mirroring repository at Bitbucket

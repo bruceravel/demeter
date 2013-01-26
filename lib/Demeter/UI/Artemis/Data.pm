@@ -426,7 +426,7 @@ sub new {
   $togglebox -> Add($this->{plot_after}, 0, wxLEFT|wxRIGHT, 5);
   $togglebox -> Add($this->{fit_bkg},    0, wxLEFT|wxRIGHT, 5);
   $this->{include}    -> SetValue(1);
-  $this->{plot_after} -> SetValue(1);
+  $this->{plot_after} -> SetValue(not $nset);
 
   $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
   $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");

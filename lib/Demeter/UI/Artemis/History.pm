@@ -94,6 +94,7 @@ sub new {
   $left -> Add($this->{close}, 0, wxGROW|wxLEFT, 1);
   EVT_BUTTON($this, $this->{doc}, sub{$::app->document('history')});
   EVT_BUTTON($this, $this->{close}, \&on_close);
+  $this-> mouseover('doc', "Show document page for history window.");
   $this-> mouseover('close', "Hide the history window.");
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );

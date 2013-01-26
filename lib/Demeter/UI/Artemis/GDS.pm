@@ -93,6 +93,7 @@ my %hints = (
 	     export    => "Export parameters to a text file",
 	     addgds    => "Add space for one more parameter",
 	     doc       => "Show documentation for the GDS window in a browser",
+	     close     => "Close GDS window",
 	    );
 
 
@@ -875,8 +876,11 @@ sub find {
 	my $pp = $page->{"pp_$k"}->GetValue;
 	if ($pp =~ m{\b$this\b}) {
 	  ++$count;
+	  my $lab = $page->{idlabel}->GetLabel;
+	  $lab =~ s{\A\(\(\(\s}{};
+	  $lab =~ s{\s+(\)\)\))?\z}{};
 	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s' in data set '%s'\n",
-			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel,
+			   $count, $k, $page->{fefflabel}->GetLabel, $lab,
 			   $Demeter::UI::Artemis::frames{$f}->{name}->GetLabel);
 	};
       };
@@ -896,12 +900,16 @@ sub rename_global {
   my $count = 0;
 
   ## -------- get new name
-  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this to", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     $parent->status("Parameter renaming canceled.");
     return;
   };
   my $newname = $ted->GetValue;
+  if ($newname =~ m{\A\s*\z}) {
+    $parent->status("Parameter renaming canceled.");
+    return
+  };
 
   ## -------- change this parameter's name
   $parent->{grid}->SetCellValue($thisrow,1,$newname);
