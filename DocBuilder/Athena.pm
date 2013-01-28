@@ -104,7 +104,7 @@ sub ACTION_ttree_aug {
   my $id = cwd;
   my $verbose = q{};
   $verbose = "--verbose", if ($self->verbose);
-  system("ttree -f $id/etc/ttree.cfg --relative --trim $verbose -a");
+  system("ttree -f $id/etc/ttree.cfg --relative --trim $verbose");
   chdir $here;
 };
 
