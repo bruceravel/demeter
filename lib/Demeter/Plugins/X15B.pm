@@ -1,5 +1,6 @@
 package Demeter::Plugins::X15B;  # -*- cperl -*-
 
+use File::Basename;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
@@ -9,11 +10,17 @@ has '+version'      => (default => 0.1);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'x15b.ini'));
 
 use Const::Fast;
-const my $ENERGY => 0;	# columns containing the
-const my $I0     => 4;	# relevant scalars
-const my $NARROW => 8;
-const my $WIDE   => 9;
-const my $TRANS  => 10;
+const my $INIFILE => 'x15b.demeter_conf';
+has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
+Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
+
+
+
+#const my $ENERGY => 0;	# columns containing the
+#const my $I0     => 6;	# relevant scalars
+#const my $NARROW => 8;
+#const my $WIDE   => 9;
+#const my $TRANS  => 10;
 
 sub is {
   my ($self) = @_;
@@ -32,6 +39,12 @@ sub fix {
 
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
+
+  my @columns = (Demeter->co->default("x15b", "energy") - 1,
+		 Demeter->co->default("x15b", "i0")     - 1,
+		 Demeter->co->default("x15b", "narrow") - 1,
+		 Demeter->co->default("x15b", "wide")   - 1,
+		 Demeter->co->default("x15b", "trans")  - 1);
 
   my @blob = ();
   my $file = $self->file;
@@ -79,7 +92,8 @@ EOH
     };
     ## just write out the relevant lines
     printf N " %12.4f  %12.4f  %12.4f  %12.4f  %12.4f\n",
-      @line[$ENERGY, $I0, $NARROW, $WIDE, $TRANS];
+      @line[@columns];
+      #@line[$ENERGY, $I0, $NARROW, $WIDE, $TRANS];
   }; # loop over rows of data
 
   close N;

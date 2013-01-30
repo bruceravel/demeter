@@ -1,0 +1,47 @@
+## This configuration file is for Demeter version 0.9.15.
+######################################################################
+section=x15b
+section_description
+  These variables determine the column selection for the X15B plugin.
+
+variable=energy
+type=positive integer
+default=1
+minint=1
+maxint=14
+description
+  The column containing the energy.
+
+variable=i0
+type=positive integer
+default=7
+minint=1
+maxint=14
+description
+  The column containing the I0 signal.
+
+variable=narrow
+type=positive integer
+default=9
+minint=1
+maxint=14
+description
+  The column containing the signal from the narrow ROI.
+
+variable=wide
+type=positive integer
+default=8
+minint=1
+maxint=14
+description
+  The column containing the signal from the wide ROI.
+
+variable=trans
+type=positive integer
+default=11
+minint=1
+maxint=14
+description
+  The column containing the transmission signal.
+
+
