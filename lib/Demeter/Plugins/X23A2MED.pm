@@ -58,7 +58,7 @@ sub fix {
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
   ## read the raw data file
-  $demeter->dispense('process', 'read_group', {file=>$file, group=>'v___ortex', type=>'data'});
+  $demeter->dispense('process', 'read_group', {file=>$file, group=>Demeter->mo->throwaway_group, type=>'data'});
   #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
   #$demeter->dispose($command);
 
@@ -95,7 +95,7 @@ sub fix {
 
   my @options = ();
   foreach my $l (@labels) {
-    my $val = "v___ortex.$l";
+    my $val = Demeter->mo->throwaway_group.".$l";
     push @options, [$l, $val];
   };
 
@@ -105,15 +105,15 @@ sub fix {
   my $dts     = q{};
   my $time    = Demeter->co->default("x23a2med", "time");
   my $inttime = Demeter->co->default("x23a2med", "inttime");
-  my @intcol  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
+  my @intcol  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "intcol")));
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
-    my @roi  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
-    my @slow = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
-    my @fast = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
+    my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
+    my @slow = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "slow$ch")));
+    my @fast = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
-    $self->place_array("v___ortex.corr$ch", \@corr);
+    $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
     push @labs, "corr$ch";
     $maxints .= " $max";
     $dts .= " $deadtime";
@@ -125,13 +125,17 @@ sub fix {
   push @labs, 'iref'    if any {lc($_) =~ m{\Airef\z}} @labels;
 
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
+  my $columns = join(", ".Demeter->mo->throwaway_group.".", @labs);
 
-  my $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
-  $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
-  $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
-  $command .= "write_data(file=\"$new\", \$title*, \$v___ortex_title_*, v___ortex." . join(", v___ortex.", @labs) . ")\n";
-  $command .= "erase \@group v___ortex\n";
-  $command .= "erase \$title1 \$v___ortex_title_*\n";
+  my $command = $demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
+							  dts=>$dts, maxints=>$maxints});
+
+  # my $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
+  # $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
+  # $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
+  # $command .= "write_data(file=\"$new\", \$title*, \$".Demeter->mo->throwaway_group."_title_*, ".Demeter->mo->throwaway_group."." . join(", ".Demeter->mo->throwaway_group.".", @labs) . ")\n";
+  # $command .= "erase \@group ".Demeter->mo->throwaway_group."\n";
+  # $command .= "erase \$title1 \$".Demeter->mo->throwaway_group."_title_*\n";
   #print $command;
 
   unlink $new if (-e $new);

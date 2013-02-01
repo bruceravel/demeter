@@ -1,0 +1,18 @@
+{ # -*- ifm -*-
+  # template for creating a subarray for merging data
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of the Data parameter
+  #   {$C->get("parameter")} returns the value of a Parameter attribute
+  # this uses the merge_ attributes of the Plot object
+}
+##| make merge grid from supplied data
+{
+  $shift = ($C->get("merge_space") eq 'energy') ? $D->bkg_eshift : 0;
+  q{}
+}
+m___erge = group()
+m___erge.xxx = {$D->group}.{$C->get("merge_space")} + {$shift}
+m___erge.i1 = index_of(m___erge.xxx, {$C->get("merge_min")})
+m___erge.i2 = index_of(m___erge.xxx, {$C->get("merge_max")})
+m___erge.{$C->get("merge_space")} = m___erge.xxx[m___erge.i1:m___erge.i2]
+

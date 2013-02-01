@@ -110,7 +110,7 @@ sub fetch_string {
     when ('larch') {
       given ($param) {
 	when ('column_label') {
-	  my $gp = $self->group || Demeter->mo->throwaway_group;
+	  my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
 	  $param = $gp.'.column_labels';
 	  my $list = eval(Larch::get_larch_scalar($param));
 	  return q{} if not $list;

@@ -143,12 +143,13 @@ sub merge {
   $merged -> generated(1);
   $merged -> prjrecord(q{});
 
-  my $suff = ($how eq 'e') ? 'energy' : 'k';
+  my $suff = ($how eq 'k') ? 'k' : 'energy';
   my $ndat = $self->get_array($suff); # in scalar context, returns # of data points
   my @used = ($self);
   my @excluded = ();
   foreach my $d (uniq($self, @data)) {
     next if $d eq $self;
+    $d->_update('background') if ($how eq 'n');
     if ((($ndat - $d->get_array($suff)) > $d->co->default("merge", "short_data_margin")) and
 	$d->co->default("merge", "exclude_short_data")) {
       push @excluded, $d;

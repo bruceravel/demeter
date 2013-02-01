@@ -1,22 +1,31 @@
+
+## import the data
 a = read_ascii('/home/bruce/play/fe/fe.060')
 b = read_ascii('/home/bruce/play/fe/fe.061')
 a.xmu = ln(a.i0/a.it)
 b.xmu = ln(b.i0/b.it)
 
+## define a fitting range for the alignment (around the edge)
 i1,i2 = index_of(a.energy+3,7086), index_of(a.energy+3,7136)
 
+## the two parameters of the fit are an energy shift and scaling factor for the shifted data set
 p = group(esh   = param(0, vary=True),
           scale = param(1, vary=True))
 
+## make groups from slices of the two data sets
 data = group(x=b.energy[i1:i2], y=b.xmu[i1:i2])
 stan = group(x = a.energy[i1:i2]+3, y = a.xmu[i1:i2])
 
+## this is our objective function.  Interpolate the shifted data onto
+## the grid of the standard.  Subtract the derivative of the scaled,
+## shifted data from the derivative of the standard.
 def alignment(par, da, st):
     xmui  = interp(st.x, da.x+par.esh, da.y)
     resid = deriv(st.y)/deriv(st.x) - par.scale*(deriv(xmui)/deriv(da.x))
     return resid
 #enddef
 
+## Minimize that.
 minimize(alignment, p, args=(data, stan,))
 
 print fit_report(p)

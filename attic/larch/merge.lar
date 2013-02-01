@@ -1,0 +1,73 @@
+
+## This is probably not the best example of how to do a merge in
+## Larch.  A better example would make a list of data groups and use
+## control structures to compute the sum and standard deviation.  The
+## reason this example is done "one after the other" is because that
+## is how Athena works.  A merge in Athena is on a set of marked
+## groups.  When merging, Athena steps through the marked groups,
+## accumulating one after the other on the .sum array, then on the
+## .stddev array.  Athena also offers several ways of weighting the
+## spectra added to the merge, which is conveinently handled on a
+## one-by-one basis.
+
+## import the data
+a = read_ascii('/home/bruce/play/fe/fe.060')
+b = read_ascii('/home/bruce/play/fe/fe.061')
+c = read_ascii('/home/bruce/play/fe/fe.062')
+a.xmu = ln(a.i0/a.it)
+b.xmu = ln(b.i0/b.it)
+c.xmu = ln(c.i0/c.it)
+
+## the lowest and highest energy point common to all the data included in the merge
+emin = 6911.98862
+emax = 8962.94414
+
+## define a fitting range for the alignment (around the edge)
+i1,i2 = index_of(a.energy, emin), index_of(a.energy, emax)
+
+## set up the group holding the array associated with the merge
+m___erge = group(eee = a.energy[i1:i2])
+m___erge.sum    = zeros( size( m___erge.eee ) )
+m___erge.stddev = zeros( size( m___erge.eee ) )
+
+## interpolate 1st group onto grid and add it to the merge
+m___erge.a = interp(m___erge.eee, a.energy, a.xmu)
+m___erge.sum = m___erge.sum + m___erge.a
+
+## interpolate 2nd group onto grid and add it to the merge
+m___erge.b = interp(m___erge.eee, b.energy, b.xmu)
+m___erge.sum = m___erge.sum + m___erge.b
+
+## interpolate 3rd group onto grid and add it to the merge
+m___erge.c = interp(m___erge.eee, c.energy, c.xmu)
+m___erge.sum = m___erge.sum + m___erge.c
+
+## normalize by number of scans
+m___erge.sum = m___erge.sum / 3
+
+## compute the standard devaition
+m___erge.stddev = m___erge.stddev + (m___erge.sum - m___erge.a)**2 / 3
+m___erge.stddev = m___erge.stddev + (m___erge.sum - m___erge.b)**2 / 3
+m___erge.stddev = m___erge.stddev + (m___erge.sum - m___erge.c)**2 / 3
+m___erge.stddev = sqrt( (m___erge.stddev*3) / 2 )
+
+
+## data + merge plot
+newplot(a.energy, a.xmu, draw_legend=True)
+plot(b.energy, b.xmu)
+plot(c.energy, c.xmu)
+plot(m___erge.eee, m___erge.sum)
+
+pause()
+
+## merge + stadard deviation plot
+newplot(m___erge.eee, m___erge.sum, label='merge', draw_legend=True)
+plot(m___erge.eee, m___erge.sum+m___erge.stddev, label='+ stddev')
+plot(m___erge.eee, m___erge.sum-m___erge.stddev, label='- stddev')
+
+pause()
+
+## Athena's "variance" plot
+scale = 0.7 * max(m___erge.sum) / max(m___erge.stddev)
+newplot(m___erge.eee, m___erge.sum, label='merge', draw_legend=True)
+plot(m___erge.eee, scale * m___erge.stddev, label='stddev * %.1f' % scale)

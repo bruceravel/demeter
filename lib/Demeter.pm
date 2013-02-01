@@ -508,6 +508,14 @@ sub set_mode {
   foreach my $k (keys %which) {
     next if not $mode->meta->has_method($k);
     #print ">>>>>>> $k   $which{$k}\n";
+
+    if ((any {$k eq $_} qw(template_process template_analysis template_fit))
+	and ($which{$k} eq 'larch')
+	and (not $Larch::larch_is_go)) {
+      die "\nDemeter says:\n\tUh oh!\n\tYou have requested using Larch, but there is no Larch server running!\n\n";
+    };
+
+
     $mode -> $k($which{$k});
   };
   1;
@@ -761,8 +769,9 @@ sub template {
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
   if ($self->devflag) {
-    printf("%s(%s) %s (%s) %s (%s)%s\n", GREEN, join("|", caller), $category,
-	   $self->get_mode("template_$category"), $file, Demeter->yesno($isthere), RESET);
+    printf("%s(%s) %s (%s) %s (%s%s%s)%s\n", GREEN, join("|", caller), $category,
+	   $self->get_mode("template_$category"), $file, ($isthere) ? GREEN : RED,
+	   Demeter->yesno($isthere), GREEN, RESET);
   }
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
@@ -820,6 +829,8 @@ sub conditional_features {
   $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
+
+
 
 __PACKAGE__->meta->make_immutable;
 1;

@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # template for interpolating onto an energy grid for merging
+  #   {$D->group}  returns the ifeffit group name
+  #   {$DS->group} returns the data standard group name, which must be set
+  #         before using this template
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  $shift = ($C->get("merge_space") eq 'energy') ? $D->bkg_eshift : 0;
+  q{}
+}
+<<nl>>
+##| interpolate {$D->group} onto merge grid
+m___erge.{$D->group} = interp(m___erge.{$C->get("merge_space")}, {$D->group}.{$C->get("merge_space")}+{$shift}, {$D->group}.{$C->get("merge_data")})

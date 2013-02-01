@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # template for converting columns to xmu during a quick merge
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+##| making mu(E) from columns for group {$D->group}
+{$D->group}.energy = {$D->energy_string}
+{$D->group}.xmu    = {$D->xmu_string}

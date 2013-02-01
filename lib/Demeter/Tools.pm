@@ -24,6 +24,7 @@ use Carp;
 use Regexp::Assemble;
 use Fcntl qw(:flock);
 use List::Util qw(sum);
+use List::MoreUtils qw(any);
 use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
@@ -55,6 +56,11 @@ sub now {
   my ($self) = @_;
   return sprintf("%s", DateTime->now(time_zone => $tz));
 };
+
+sub attribute_exists {
+  my ($self, $att) = @_;
+  return any {$_ eq $att} (map {$_->name} $self->meta->get_all_attributes);
+}
 
 sub is_larch {
   return (Demeter->mo->template_process eq 'larch');

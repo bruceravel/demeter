@@ -8,9 +8,15 @@ use Cwd;
 #my $json  = JSON::Tiny->new;
 
 use XMLRPC::Lite;
-our $client = XMLRPC::Lite -> proxy("http://localhost:4966");
+our $client;
+$client = XMLRPC::Lite -> proxy("http://localhost:4966");
 our $rpcdata;
-$client->larch(q{cd('} . cwd . q{')});
+
+use vars qw($larch_is_go);
+$larch_is_go = 1;
+
+eval {$client->larch(q{cd('} . cwd . q{')})};
+$larch_is_go = 0 if $@;
 
 sub dispose {
   my ($text) = @_;

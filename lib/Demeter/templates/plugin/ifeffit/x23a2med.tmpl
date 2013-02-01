@@ -1,0 +1,12 @@
+{
+  $gp = Demeter->mo->throwaway_group;
+  q{}
+}
+
+$title1 = "<MED> Deadtime corrected MED data, {$text}"
+$title2 = "<MED> Deadtimes (nsec):{$dts}"
+$title3 = "<MED> Maximum iterations:{$maxints}"
+write_data(file="{$file}", \$title*, \${$gp}_title_*, {$gp}.{$columns})
+
+erase @group {$gp}
+erase $title1 ${$gp}_title_*

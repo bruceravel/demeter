@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # normalize the merged spectrum
+  #   {$D->group}  returns the ifeffit group name
+  # $ndata is a passed parameter and is the normalization constant for
+  # the merge (number of data sets or sum of importances)
+}
+{
+  $suff = ($C->get("merge_space") eq 'energy') ? 'xmu' : 'chi';
+  $n = $C->get("ndata");
+  $sum = $C->get("ndata");
+  q{};
+}
+{$D->group}.stddev = sqrt( (m___erge.stddev*{$n}) / ({$C->get("weight")}*{$n-1}) )
+<<nl>>

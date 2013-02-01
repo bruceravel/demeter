@@ -12,6 +12,7 @@
   $nc0   = sprintf("%.6f", $D->bkg_nc0);
   $nc1   = sprintf("%.6g", $D->bkg_nc1);
   $nc2   = sprintf("%.6g", $D->bkg_nc2);
+  $nc3   = ($D->is_larch) ? sprintf("%.6g", $D->bkg_nc3) : 0;
   $int   = sprintf("%.6f", $D->bkg_int);
   $slope = sprintf("%.6g", $D->bkg_slope);
   q{}
@@ -29,7 +30,7 @@ Athena.flatten:              {$D->yesno(bkg_flatten)}
 Athena.pre_edge_range:       {$D->bkg_pre1} {$D->bkg_pre2}
 Athena.pre_edge_line:        {$int} + {$slope} * energy
 Athena.normalization_range:  {$D->bkg_nor1} {$D->bkg_nor2}
-Athena.post_edge_polynomial: {$nc0} + {$nc1} * en + {$nc2} * en^2
+Athena.post_edge_polynomial: {$nc0} + {$nc1} * en + {$nc2} * en^2 + {$nc3} * en^3
 Athena.spline_range_energy:  {$spl1e} {$spl2e}
 Athena.clamps:               {$D->clamp($D->bkg_clamp1)}/{$D->clamp($D->bkg_clamp2)}
 Athena.spline_range_k:       {$spl1} {$spl2}

@@ -303,7 +303,7 @@ has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->d
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
+has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
 
 has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
 
@@ -1274,6 +1274,11 @@ the C<normalize> method.
 
 The cubic parameter in the post-edge regression.  This is set as part of
 the C<normalize> method.
+
+=item C<bkg_nc3> (number)
+
+The quartic parameter in the post-edge regression.  This is set as part of
+the C<normalize> method.  (Larch only)
 
 =item C<bkg_flatten> (boolean) I<[1]>
 

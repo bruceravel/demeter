@@ -1,0 +1,41 @@
+
+## import data, normalize, remove background
+a = read_ascii('/home/bruce/play/fe/fe.060')
+a.xmu = ln(a.i0/a.it)
+
+pre_edge(a.energy, a.xmu, group=a, pre1=-150, pre2=-30, norm1=150, norm2=1800.0, nnorm=2)
+autobk(a.energy, a.xmu, group=a)
+
+## define a step function centered at e0
+n___step      = index_of(a.energy, 7105) - 1
+n___points    = size(a.energy) - n___step
+t___oss       = group()
+t___oss.zeros = zeros(n___step)
+t___oss.ones  = ones(n___points)
+a.theta = array(list(t___oss.zeros) + list(t___oss.ones))
+
+## define a post-edge line
+flat_c0 = a.norm_c0 - a.pre_offset
+flat_c1 = a.norm_c1 - a.pre_slope
+if a.nnorm >= 2:
+   flat_c2 = a.norm_c2
+else:
+   flat_c2 = 0
+endif
+if a.nnorm == 3:
+   flat_c3 = a.norm_c3
+else:
+   flat_c3 = 0
+endif
+a.line = (flat_c0 + flat_c1*a.energy + flat_c2*a.energy**2 + flat_c3*a.energy**3)
+
+## subtract off the pre-edge line
+a.prex = a.xmu-a.pre_edge
+
+## flattened data and background
+a.flat = ((a.edge_step - a.line)*a.theta + a.prex) / a.edge_step
+a.fbkg = (a.bkg-a.pre_edge+(a.edge_step-a.line)*a.theta)/ a.edge_step
+
+## make a plot
+newplot(a.energy, a.flat)
+plot(a.energy, a.fbkg)

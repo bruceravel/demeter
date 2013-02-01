@@ -44,6 +44,7 @@ has 'template_analysis' => (is => 'rw', isa => 'Str', default => 'ifeffit');
 has 'template_plot'     => (is => 'rw', isa => 'Str', default => 'pgplot');
 has 'template_feff'     => (is => 'rw', isa => 'Str', default => 'feff6');
 has 'template_report'   => (is => 'rw', isa => 'Str', default => 'standard');
+has 'template_plugin'   => (is => 'rw', isa => 'Str', default => 'ifeffit');
 # has 'template_process'  => (is => 'rw', isa => 'TemplateProcess',  default => 'ifeffit');
 # has 'template_fit'      => (is => 'rw', isa => 'TemplateFit',      default => 'ifeffit');
 # has 'template_analysis' => (is => 'rw', isa => 'TemplateAnalysis', default => 'ifeffit');

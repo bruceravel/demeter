@@ -2,12 +2,6 @@
   # template for converting columns to xmu
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
-  if ($D->i0_string eq '1') {
-     $str = '_n = size(' . $D->energy_string . ")\n";
-     $D->i0_string($D->group . '.ones');
-     $str .= $D->group . '.ones = ones(_n)';
-     $str;
-  };
 }
 ##| making mu(E) from columns for group {$D->group}
 {$D->group}.energy = {$D->energy_string}
