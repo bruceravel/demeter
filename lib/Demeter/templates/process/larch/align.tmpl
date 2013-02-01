@@ -1,0 +1,41 @@
+{ # -*- ifm -*-
+  # data alignment template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$DS} returns the ifeffit group name for the data standard
+  #   {$DS->get("parameter")} returns the value of that parameter for the
+  #         data standard
+  #   {$P->get("interp")} gives the type of interpolation to do
+  #
+  # need to allow for fitting smoothed data to standard
+  # --->  larch access to stats on esh parameter: aa__.esh.stderr  aa__.esh.correl
+}
+{
+  $emin = $DS->bkg_e0 - 20;
+  $emax = $DS->bkg_e0 + 50;
+  #$start = 'smooth(' x $P->e_smooth;
+  #$end = ')' x $P->e_smooth;
+  q()
+}
+##| auto-aligning {$D->group} to {$DS->group}
+i1, i2 = index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emin}), index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emax})
+
+aa__ = group(esh   = param({$DS->bkg_e0 - $D->bkg_e0}, vary = True),
+             scale = param(1, vary = True))
+
+aa__data = group(x={$D->group}.energy[i1:i2], y={$D->group}.xmu[i1:i2])
+aa__stan = group(x={$DS->group}.energy[i1:i2]+{$DS->bkg_eshift}, y={$DS->group}.xmu[i1:i2])
+
+def alignment(par, da, st):
+    xmui  = interp(st.x, da.x+par.esh, da.y)
+    resid = deriv(st.y)/deriv(st.x) - par.scale*(deriv(xmui)/deriv(da.x))
+    return resid
+#enddef
+
+minimize(alignment, aa__, args=(aa__data, aa__stan))
+
+print fit_report(params)
+
+del i1, i2
+# del aa__, aa__data, aa__stan
+<<nl>>

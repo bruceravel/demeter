@@ -487,6 +487,8 @@ sub display_plot {
     $this->{energy} -> SetValue($data->energy_string);
     $this->{mue}    -> SetValue($data->xmu_string);
     return if $this->{pauseplot}->GetValue;
+    return if ($this->{energy}->GetValue !~ $data->group);
+    return if ($this->{mue}->GetValue    !~ $data->group);
     my @energy = $data->get_array('energy');
     my ($emin, $emax) = minmax(@energy);
     $data -> po -> set(emin=>$emin, emax=>$emax);

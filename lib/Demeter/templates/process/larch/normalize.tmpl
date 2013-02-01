@@ -1,0 +1,24 @@
+{ # -*- ifm -*-
+  # pre-edge template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  if ($D->bkg_e0 < -10000) {
+    $e0 = q{};
+  } else {
+    $e0 = "e0=".$D->bkg_e0.", "; 
+  };
+  q{}
+}
+(edge_step, e0) = pre_edge({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group},
+                           {$e0}pre1={$D->bkg_pre1}, pre2={$D->bkg_pre2},
+	                   nnorm={$D->bkg_nnorm}, norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2})
+{if ($D->datatype eq 'xanes') {
+      $OUT .= sprintf("%s.prex     = (%s.xmu-%s.pre_edge)\n",    $D->group, $D->group, $D->group);
+ } elsif ($D->datatype eq 'xmudat') {
+      $OUT .= sprintf("%s.prex     = %s.xmu\n", $D->group, $D->group);
+ } elsif ($D->is_nor) {
+      $OUT .= sprintf("%s.prex     = %s.xmu\n", $D->group, $D->group);
+ } else {
+      $OUT .= sprintf("%s.prex     = (%s.xmu-%s.pre_edge)\n",    $D->group, $D->group, $D->group);
+ }
+}

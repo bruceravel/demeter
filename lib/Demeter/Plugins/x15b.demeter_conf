@@ -14,7 +14,7 @@ description
 
 variable=i0
 type=positive integer
-default=7
+default=6
 minint=1
 maxint=14
 description
@@ -22,7 +22,7 @@ description
 
 variable=narrow
 type=positive integer
-default=9
+default=7
 minint=1
 maxint=14
 description
@@ -30,7 +30,7 @@ description
 
 variable=wide
 type=positive integer
-default=8
+default=9
 minint=1
 maxint=14
 description
@@ -38,7 +38,7 @@ description
 
 variable=trans
 type=positive integer
-default=11
+default=8
 minint=1
 maxint=14
 description

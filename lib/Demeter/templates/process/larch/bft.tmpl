@@ -1,0 +1,9 @@
+{ # -*- ifm -*-
+  # Backward transform template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+
+xftr({$D->group}.r, {$D->group}.chir, group={$D->group},
+     rmin={$D->bft_rmin}, rmax={$D->bft_rmax}, window='{$D->bft_rwindow}',
+     dr={$D->bft_dr}, dr2={$D->bft_dr} )

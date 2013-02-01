@@ -1,0 +1,10 @@
+{ # -*- ifm -*-
+  # post-spline template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  # this is a relatively complicated template as it requires some perl-level
+  # flow control
+  # see the Text::Template document for an explanation of $OUT
+}
+##| post autobk
+{$D->group}.nbkg = ({$D->group}.bkg - {$D->group}.pre_edge) / {$D->bkg_step} + {$D->y_offset}

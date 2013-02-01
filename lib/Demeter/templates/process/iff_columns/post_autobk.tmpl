@@ -7,12 +7,12 @@
   # see the Text::Template document for an explanation of $OUT
 }
 
-set {$D->group}.preline  = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy + {$D->bkg_eshift})
-set {$D->group}.nbkg     = ({$D->group}.bkg - {$D->group}.preline) / {$D->bkg_step} + {$D->y_offset}
+set {$D->group}.pre_edge = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy + {$D->bkg_eshift})
+set {$D->group}.nbkg     = ({$D->group}.bkg - {$D->group}.pre_edge) / {$D->bkg_step} + {$D->y_offset}
 {if ($D->datatype eq 'xanes') {
-      $OUT .= sprintf("set %s.prex     = (%s.xmu-%s.preline)\n",    $D->group, $D->group, $D->group);
-      $OUT .= sprintf("set %s.norm     = (%s.xmu-%s.preline)/%g\n", $D->group, $D->group, $D->group, $D->bkg_step);
-      $OUT .= sprintf("set %s.postline = %g+%g*(%s.energy+%f)+%g*(%s.energy+%f)**2\n",
+      $OUT .= sprintf("set %s.prex      = (%s.xmu-%s.pre_edge)\n",    $D->group, $D->group, $D->group);
+      $OUT .= sprintf("set %s.norm      = (%s.xmu-%s.pre_edge)/%g\n", $D->group, $D->group, $D->group, $D->bkg_step);
+      $OUT .= sprintf("set %s.post_edge = %g+%g*(%s.energy+%f)+%g*(%s.energy+%f)**2\n",
                                                                     $D->group, $D->bkg_nc0, $D-> bkg_nc1,
                                                                     $D->group, $D->bkg_eshift, $D->bkg_nc2,
                                                                     $D->group, $D->bkg_eshift);

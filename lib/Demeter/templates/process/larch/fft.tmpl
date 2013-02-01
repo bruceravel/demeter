@@ -1,0 +1,21 @@
+{ # -*- ifm -*-
+  # Forward transform template
+  #   {$P} returns the current Plot object
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #
+  #  central atom correction: , pc_edge="fe k", pc_caps=1
+  #  path phase correction: , pc_feff_path=1
+  $phacorr = q{};
+  if ($D->fft_pc) {
+    if (($D->fft_pctype eq 'path') and (ref($D->fft_pcpath) =~ m{Path})) {
+      $phacorr = ", pc_feff_path=" . $D->fft_pcpath->Index;
+    } else {
+      $phacorr = ", pc_edge=\"" . $D->bkg_z . " " . $D->fft_edge . "\", pc_caps=1"
+    };
+  };
+  q{};
+}
+xftf({$D->group}.k, {$D->group}.chi, group={$D->group},
+     kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, dk={$D->fft_dk}, dk2={$D->fft_dk},
+     window='{$D->fft_kwindow}', kweight={$D->get_kweight}, rmax_out={$D->rmax_out})

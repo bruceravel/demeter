@@ -598,7 +598,7 @@ sub determine_data_type {
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
     $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine', type=>'raw'});
-    my $f = (split(" ", $self->fetch_string('$column_label')))[0];
+    my $f = (split(" ", $self->fetch_string('column_label')))[0];
     my @x = $self->fetch_array("deter___mine.$f");
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($x[0] > 100) {		# seems to be energy data

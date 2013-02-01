@@ -1,0 +1,6 @@
+{ # -*- ifm -*-
+  # window preparation template in k space
+  #   {$D->group} returns the ifeffit group name
+}
+## prepping R-space window
+win___dow = max({$D->group}.chir_mag)*{$P->window_multiplier}*{$D->plot_multiplier}

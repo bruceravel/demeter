@@ -2,6 +2,11 @@
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
 
+* larch chores
+
++ store uncertainty in alignment e0 shift (aa__.esh.stderr)
++ kaiser vs. kaiser-bessel
+
 * things that need doing
   
 ** Moose issues

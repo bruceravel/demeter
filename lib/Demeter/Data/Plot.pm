@@ -508,7 +508,7 @@ sub _prep_window_command {
   my ($self, $sp) = @_;
   my $space   = lc($sp);
   #my %dsuff   = (k=>'chik', r=>'chir_mag', 'q'=>'chiq_mag');
-  my $suffix  = ($space =~ m{\Ar}) ? 'rwin' : 'win';
+  #my $suffix  = ($space =~ m{\Ar}) ? 'rwin' : 'win';
   my $string  = "\n" . $self->hashes . " plot window ___\n";
   if ($space =~ m{\Ar}) {
     $string .= $self->template("process", "prep_rwindow");

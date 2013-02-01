@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # xmu derivatives template
+  #   {$D->group} returns the ifeffit group name
+}
+
+##| Set first and second derivative of xmu data
+{$D->group}.der = deriv({$D->group}.xmu)/deriv({$D->group}.energy)
+{$D->group}.sec = deriv({$D->group}.der)/deriv({$D->group}.energy)

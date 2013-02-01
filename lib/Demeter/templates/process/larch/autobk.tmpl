@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # spline template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+
+autobk({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group},
+       e0={$D->bkg_e0}, rbkg={$D->bkg_rbkg},
+       {($D->bkg_stan !~ /None/) ? sprintf("k_std=%s.k, chi_std=%s.chi, ", $D->bkg_stan, $D->bkg_stan) : q{}}
+       {($D->bkg_fixstep) ? sprintf("edge_step=%.7g, ", $D->bkg_step) : q{} }
+       kmin={$D->bkg_spl1}, kmax={$D->bkg_spl2}, kweight={$D->bkg_kw}, dk={$D->bkg_dk},
+       win='{$D->bkg_kwindow}', pre1={$D->bkg_pre1}, pre2={$D->bkg_pre2},
+       norm_order={$D->bkg_nnorm}, norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2}, 
+       nclamp=5, clamp_lo={$D->bkg_clamp1}, clamp_hi={$D->bkg_clamp2})

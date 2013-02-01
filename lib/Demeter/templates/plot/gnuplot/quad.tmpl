@@ -9,7 +9,7 @@
   $emin = $D->bkg_e0 + $P->emin;
   $emax = $D->bkg_e0 + $P->emax;
 
-  ## energy quadrant: mu, bkg, preline, postline
+  ## energy quadrant: mu, bkg, pre_edge, post_edge
   $emu = $P->tempfile;
   $D->points(file    => $emu,
              space   => 'E', 
@@ -25,13 +25,13 @@
   $epre = $P->tempfile;
   $D->points(file    => $epre,
              space   => 'E', 
-             suffix  => 'preline',
+             suffix  => 'pre_edge',
 	     shift   => $D->bkg_eshift,
 	    );
   $epost = $P->tempfile;
   $D->points(file    => $epost,
              space   => 'E', 
-             suffix  => 'postline',
+             suffix  => 'post_edge',
 	     shift   => $D->bkg_eshift,
 	    );
 

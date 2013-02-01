@@ -56,6 +56,13 @@ sub now {
   return sprintf("%s", DateTime->now(time_zone => $tz));
 };
 
+sub is_larch {
+  return (Demeter->mo->template_process eq 'larch');
+};
+sub is_ifeffit {
+  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+};
+
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
@@ -355,7 +362,8 @@ sub ifeffit_heap {
 my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
-  @titles_text = ();
+  return $self if $self->is_larch; # this functionality is simply not necessary with Larch
+  @titles_text = ();		   # in Larch, _main will not be littered with these strings
   $group ||= $self->group;
   my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),

@@ -1,0 +1,26 @@
+{ # -*- ifm -*-
+  # flatten template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+##|
+##| make the flattened, normalized spectrum
+##|   flat_cN are the difference in slope and curvature between
+##|   the pre- and post-edge polynomials
+##|
+##|  compute a step function
+##|
+n___step     = {$D->iofx('energy', $D->bkg_e0 - $D->bkg_eshift) - 1}
+n___points    = size({$D->group}.energy) - n___step
+t___oss       = group()
+t___oss.zeros = zeros(n___step)
+t___oss.ones  = ones(n___points)
+{$D->group}.theta = array(list(t___oss.zeros) + list(t___oss.ones))
+##|
+flat_c0 = {$D->bkg_nc0} - {$D->bkg_int}
+flat_c1 = {$D->bkg_nc1} - {$D->bkg_slope}
+flat_c2 = {($D->bkg_nnorm==2) ? 0 : $D->bkg_nc2}
+{$D->group}.line = (flat_c0 + flat_c1*({$D->group}.energy+{$D->bkg_eshift}) + flat_c2*({$D->group}.energy+{$D->bkg_eshift})**2)
+{$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}
+{$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.pre_edge+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step}
+## delete t___oss

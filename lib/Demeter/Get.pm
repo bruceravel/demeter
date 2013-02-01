@@ -75,7 +75,24 @@ sub fetch_scalar {
     };
 
     when ('larch') {
-      return 1;
+      given ($param) {
+	my $gp = $self->group || Demeter->mo->throwaway_group;
+	when (/norm_c\d/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/pre_(?:offset|slope)/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/(aa__)_(esh|scale)/) {
+	  $param = $1.'.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	default {
+	  return Larch::get_larch_scalar($param);
+	};
+      }
     };
 
   };
@@ -83,6 +100,7 @@ sub fetch_scalar {
 
 sub fetch_string {
   my ($self, $param) = @_;
+  $param =~ s{\A\$}{};
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
@@ -90,7 +108,18 @@ sub fetch_string {
     };
 
     when ('larch') {
-      return 1;
+      given ($param) {
+	when ('column_label') {
+	  my $gp = $self->group || Demeter->mo->throwaway_group;
+	  $param = $gp.'.column_labels';
+	  my $list = eval(Larch::get_larch_scalar($param));
+	  return q{} if not $list;
+	  return join(" ", @$list);
+	}
+	default {
+	  return Larch::get_larch_scalar($param);
+	};
+      };
     };
 
   };
@@ -105,7 +134,7 @@ sub fetch_array {
     };
 
     when ('larch') {
-      return 1;
+      return Larch::get_larch_array($param);
     };
 
   };
@@ -167,7 +196,7 @@ sub place_scalar {
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_scalar($param, $value);
     };
 
   };
@@ -183,7 +212,7 @@ sub place_string {
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_scalar($param, $value);
     };
 
   };
@@ -199,7 +228,7 @@ sub place_array {
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_array($param, $arrayref);
     };
 
   };

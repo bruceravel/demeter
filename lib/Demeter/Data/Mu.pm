@@ -337,14 +337,14 @@ sub normalize {
     $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
 
-    my $command = q{};
-    $command .= $self->template("process", "post_autobk");
-    if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
-      $command .= $self->template("process", "flatten_fit");
-    } else {
-      $command .= $self->template("process", "flatten_set");
-    };
-    $self->dispose($command);
+    #my $command = q{};
+    #$command .= $self->template("process", "post_autobk");
+    #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+    #  $command .= $self->template("process", "flatten_fit");
+    #} else {
+    #  $command .= $self->template("process", "flatten_set");
+    #};
+    #$self->dispose($command);
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
@@ -500,7 +500,7 @@ sub autobk {
   ## begin setting up all the generated arrays from the background removal
   $self->update_fft(1);
   $self->bkg_cl(0);
-  $command .= $self->template("process", "post_autobk");
+  $command = $self->template("process", "post_autobk");
   if ($self->is_nor) {
     $command .= $self->template("process", "deriv");
     $command .= $self->template("process", "nderiv");
@@ -596,15 +596,15 @@ sub _plotE_command {
     push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
-  if ($self->po->e_pre)  { # show the preline
-    push @suffix_list, 'preline';
+  if ($self->po->e_pre)  { # show the pre_edge
+    push @suffix_list, 'pre_edge';
     my $n = ($incr+2) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
-  if ($self->po->e_post) { # show the postline
-    push @suffix_list, 'postline';
+  if ($self->po->e_post) { # show the post_edge
+    push @suffix_list, 'post_edge';
     my $n = ($incr+3) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
@@ -729,9 +729,9 @@ sub make_margins {
   };
 
   if (($self->po->margin_min > 0) and ($self->po->margin_max > 0)) {
-    $self->dispense("process", "margin", {suffix=>"postline"});
+    $self->dispense("process", "margin", {suffix=>"post_edge"});
   } else {
-    $self->dispense("process", "margin", {suffix=>"preline"});
+    $self->dispense("process", "margin", {suffix=>"pre_edge"});
   };
   return 1;
 };

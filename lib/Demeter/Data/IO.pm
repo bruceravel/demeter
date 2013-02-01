@@ -399,8 +399,8 @@ the data and the text of the C<fit_parameter_report> method.
 
 =item C<xmu>
 
-This is a seven column file of energy, mu(E), bkg(E), preline(E),
-postline(E), first derivative of mu(E), and second derivative of
+This is a seven column file of energy, mu(E), bkg(E), pre_edge(E),
+post_edge(E), first derivative of mu(E), and second derivative of
 mu(E).
 
 =item C<norm>

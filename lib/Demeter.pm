@@ -35,6 +35,7 @@ use File::Basename qw(dirname);
 use File::Spec;
 use Ifeffit qw(ifeffit);
 ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+use Larch;
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -96,6 +97,7 @@ has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
 		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
+has 'devflag'   => (is => 'ro', isa => 'Bool',    default => 1);
 
 use Demeter::Mode;
 use vars qw($mode);
@@ -594,7 +596,7 @@ sub what_isa {
 ## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal|progress|rate|thingy)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal|progress|rate|thingy|devflag)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -719,6 +721,7 @@ alias thaw   => 'deserialize';
 
 
 ## common supplied hash elements: filename, kweight, titles, plot_object
+use Term::ANSIColor qw(:constants);
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
@@ -731,6 +734,7 @@ sub template {
   my $theory   = $mo->theory;
   my $path     = $mo->path;
 
+  my $isthere = 1;
   # try personal templates first
   my $tmpl = File::Spec->catfile($self->dot_folder,
 				 "templates",
@@ -753,8 +757,13 @@ sub template {
                                         "ifeffit";
     $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
+    $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
+  if ($self->devflag) {
+    printf("%s(%s) %s (%s) %s (%s)%s\n", GREEN, join("|", caller), $category,
+	   $self->get_mode("template_$category"), $file, Demeter->yesno($isthere), RESET);
+  }
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
     or die "Couldn't construct template: $Text::Template::ERROR";

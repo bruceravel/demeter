@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # import column data template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+##| Reading raw data "{$file}" as temporary group {$group}
+{$group} = read_ascii('{$file}')

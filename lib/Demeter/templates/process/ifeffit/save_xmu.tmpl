@@ -14,6 +14,6 @@
 ##| saving "{$D->name}" as mu(E)
 set {$D->group}.e = {$D->group}.energy+{$D->bkg_eshift}
 write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
-           {$D->group}.e, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.preline,
-           {$D->group}.postline, {$D->group}.der, {$D->group}.sec, {$D->group}.i0)
+           {$D->group}.e, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.pre_edge,
+           {$D->group}.post_edge, {$D->group}.der, {$D->group}.sec, {$D->group}.i0)
 erase {$D->group}.e

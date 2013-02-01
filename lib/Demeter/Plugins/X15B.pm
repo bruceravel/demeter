@@ -155,6 +155,13 @@ analysis or plotting program.  The columns are: energy, the I0 ion
 chamber, the narrow and wide windows on the germanium detector, and
 the transmission ion chamber.
 
+=head1 CONFIGURATION
+
+Only the relevant columns from the original data file are passed along
+to the output ascii file.  These column numbers can be configured in
+the F<x15b.demeter_conf> file or via Athena's project registry
+configuration interface.
+
 =head1 AUTHOR
 
   Bruce Ravel <bravel@anl.gov>

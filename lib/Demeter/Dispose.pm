@@ -104,7 +104,7 @@ sub chart {
 
 
 ##-----------------------------------------------------------------
-## dispose commands to ifeffit and elsewhere
+## dispose commands to ifeffit, larch, and elsewhere
 sub dispose {
   my ($self, $command, $plotting) = @_;
   return if not $command;
@@ -145,10 +145,10 @@ sub dispose {
 
   ## -------- dump plot commands to a file
   if (($self->get_mode("plotfile")) and $plotting) {
-    if ($self->mo->template_plot eq 'gnuplot') {
-      my $crstring = $self->po->copyright_text;	## insert the copyright statement in a plot made with gnuplot
-      $command =~ s{(unset label)}{$1\n$crstring}g;
-    };
+    #if ($self->mo->template_plot eq 'gnuplot') {
+    #  my $crstring = $self->po->copyright_text;	## insert the copyright statement in a plot made with gnuplot
+    #  $command =~ s{(unset label)}{$1\n$crstring}g;
+    #};
     local $| = 1;
     open my $FH, ">".$self->get_mode("plotfile");
     print $FH $command;
@@ -194,8 +194,8 @@ sub dispose {
   };
 
   if ($plotting and ($self->mo->template_plot eq 'gnuplot')) {
-    my $crstring = $self->po->copyright_text; ## insert the copyright statement in a plot made with gnuplot
-    $command =~ s{(unset label)}{$1\n$crstring}g;
+    #my $crstring = $self->po->copyright_text; ## insert the copyright statement in a plot made with gnuplot
+    #$command =~ s{(unset label)}{$1\n$crstring}g;
 
     $self->mo->external_plot_object->gnuplot_cmd($command);
     # $self->mo->external_plot_object->gnuplot_pause(-1);
@@ -242,10 +242,15 @@ sub dispose {
 
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
-    if ($self->is_windows) {
-      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
+    #if ($self->mo->template_process eq 'larch') {
+    if ($self->is_larch) {
+      Larch::dispose($command);
     } else {
-      ifeffit($reprocessed);
+      if ($self->is_windows) {
+	ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
+      } else {
+	ifeffit($reprocessed);
+      };
     };
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 

@@ -432,6 +432,7 @@ has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
+has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
 has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
 has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
