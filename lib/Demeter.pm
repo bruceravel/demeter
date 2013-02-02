@@ -769,9 +769,15 @@ sub template {
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
   if ($self->devflag) {
-    printf("%s(%s) %s (%s) %s (%s%s%s)%s\n", GREEN, join("|", caller), $category,
-	   $self->get_mode("template_$category"), $file, ($isthere) ? GREEN : RED,
-	   Demeter->yesno($isthere), GREEN, RESET);
+    my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
+    (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    printf("(%s) %s (%s) %s (%s%s)\n", 
+	   YELLOW.$caller.RESET,
+	   $category,
+	   CYAN.$self->get_mode("template_$category").RESET,
+	   $file,
+	   ($isthere) ? GREEN : BOLD.RED, Demeter->yesno($isthere).RESET
+	  );
   }
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)

@@ -623,6 +623,7 @@ sub determine_data_type {
 
 sub _update {
   my ($self, $which) = @_;
+  #print join("|", $which, caller, $self->update_norm, $self->update_bkg, $self->update_fft), $/;
   $which = lc($which);
  WHICH: {
     ($which eq 'data') and do {

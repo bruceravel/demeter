@@ -493,7 +493,7 @@ sub autobk {
     $self->resolve_defaults;
   };
   $self->dispose($command);
-  $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
+  ##$self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
 
 
 ## is it necessary to do post_autobk and flatten templates here?  they

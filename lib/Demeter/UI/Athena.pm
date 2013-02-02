@@ -126,6 +126,7 @@ sub OnInit {
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
   $app->{selecting_data_group}=0;
+  $app->{update_kweights}=1;
 
   ## -------- text buffers for various TextEntryDialogs
   $app->{rename_buffer}  = [];
@@ -1497,6 +1498,7 @@ sub side_bar {
   $app->{main}->{kweights}->SetSelection($demeter->co->default("plot", "kweight"));
   EVT_RADIOBOX($app->{main}, $app->{main}->{kweights},
 	       sub {
+		 $::app->{update_kweights} = 1;
 		 $::app->replot(@{$::app->{lastplot}}) if (lc($::app->{lastplot}->[0]) ne 'e');
 	       });
   $app->mouseover($app->{main}->{kweights}, "Select the value of k-weighting to be used in plots in k, R, and q-space.");
@@ -1855,9 +1857,13 @@ sub plot {
 
   ## I am not clear why this is necessary...
   foreach my $i (0 .. $#data) {
+    my @save = $data[0]->get(qw(update_columns update_norm update_bkg update_fft update_bft));
     $data[$i]->bkg_fixstep($is_fixed[$i]);
+    $data[$i]->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+		   update_fft     => $save[3], update_bft  => $save[4],);
   };
   $app->postplot($data[0], $is_fixed[0]);
+
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
   $app->OnGroupSelect(0,0,0);
@@ -1939,6 +1945,7 @@ sub preplot {
 sub postplot {
   my ($app, $data) = @_;
   ##if ($demeter->mo->template_plot eq 'singlefile') {
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     $demeter->po->finish;
     $app->{main}->status("Wrote plot data to ".$demeter->po->file);
@@ -1956,6 +1963,7 @@ sub postplot {
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);
+  $data->set(update_fft => $save[3], update_bft => $save[4],);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -2020,22 +2028,33 @@ sub plot_i0_marked {
   $app->postplot($app->current_data);
 };
 
+## take care to update kweights only when they have changed to avoid
+## having the Plot object update everyone's update_fft attribute
 sub pull_kweight {
   my ($app, $data, $how) = @_;
   my $kw = $app->{main}->{kweights}->GetStringSelection;
   if ($kw eq 'kw') {
     #$data->po->kweight($data->fit_karb_value);
     if ($how eq 'single') {
-      $data->po->kweight($data->fit_karb_value);
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$app->{update_kweights}=0;
+      };
     } else {
       ## check to see if marked groups all have the same arbitrary k-weight
       my @kweights = map {$_->fit_karb_value} $app->marked_groups;
       my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
-      $data->po->kweight($data->fit_karb_value);
-      $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+	$app->{update_kweights}=0;
+      };
     };
   } else {
-    $data->po->kweight($kw);
+    if ($app->{update_kweights}) {
+      $data->po->kweight($kw);
+	$app->{update_kweights}=0;
+      };
   };
   return $data->po->kweight;
 };

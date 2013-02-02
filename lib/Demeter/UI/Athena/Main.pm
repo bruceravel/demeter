@@ -659,6 +659,7 @@ sub set_widget_state {
 
 sub push_values {
   my ($this, $data) = @_;
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   my $is_fixed = $data->bkg_fixstep;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck|file)\z});
@@ -725,6 +726,8 @@ sub push_values {
   };
   $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
 
+  $data->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+	     update_fft     => $save[3], update_bft  => $save[4],);
   $this->{freeze}->SetValue($data->quenched);
   return $data;
 };

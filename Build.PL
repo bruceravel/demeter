@@ -72,6 +72,8 @@ my $build = DemeterBuilder
 				#'PDL::Slatec'               => '0',
 				'PDL::Stats'                => '0.5.5',
 
+				'XMLRPC::Lite'              => '0',
+
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ?
 				('Win32::Shortcut' => '0',) : (),
 				## deprecated....
