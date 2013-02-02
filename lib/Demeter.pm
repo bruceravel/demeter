@@ -729,7 +729,7 @@ alias thaw   => 'deserialize';
 
 
 ## common supplied hash elements: filename, kweight, titles, plot_object
-use Term::ANSIColor qw(:constants);
+eval {use Term::ANSIColor qw(:constants)} if (Demeter->co->devflag);
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
@@ -771,7 +771,7 @@ sub template {
   if ($self->devflag) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
-    printf("(%s) %s (%s) %s (%s%s)\n", 
+    printf("(%s) %s (%s) %s (%s%s)\n",
 	   YELLOW.$caller.RESET,
 	   $category,
 	   CYAN.$self->get_mode("template_$category").RESET,

@@ -238,6 +238,7 @@ sub _record {
 				from_athena => 1,
 				collided    => $collided,
 			       );
+  $data->dispense('process','make_group');
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   $self->place_array(join('.', $groupname, $xsuff), \@x);
   $self->place_array(join('.', $groupname, $ysuff), \@y);

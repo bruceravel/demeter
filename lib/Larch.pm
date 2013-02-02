@@ -29,6 +29,8 @@ sub dispose {
 
 sub get_larch_array {
   my ($param) = @_;
+  #Demeter->trace;
+  #print '--------------', $param, $/;
   $rpcdata = $client -> get_data($param);
   my $ret = $rpcdata->result->{value};
   return @{eval $ret};
@@ -37,7 +39,7 @@ sub get_larch_array {
 sub put_larch_array {
   my ($param, $aref) = @_;
   my $value = '[' . join(',', @$aref) . ']';
-  return dispose("$param = array($value)");
+  return dispose("$param = array($value, dtype=float64)");
 };
 
 
