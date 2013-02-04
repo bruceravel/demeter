@@ -1,0 +1,12 @@
+{ # -*- ifm -*-
+  # truncate a i0 and signal from an energy data group
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$C->get("parameter")} returns the generic parameter
+}
+trun___n = index_of({$D->group}.{$C->get("trun_x")}, {$C->get("trun_value")})
+if hasattr({$D->group}, 'i0'): {$D->group}.i0 = {$D->group}.i0[trun___n:]
+if hasattr({$D->group}, 'signal'): {$D->group}.signal = {$D->group}.signal[trun___n:]
+if hasattr({$D->group}, 'stddev'): {$D->group}.stddev = {$D->group}.stddev[trun___n:]
+del trun___n
+##|

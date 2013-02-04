@@ -127,7 +127,7 @@ way of presenting the information is, admittedly, rather cryptic.  But
 it is very useful for developing and debugging the software.
 [% END %]
 
-[% WRAPPER floatright this="import_changetype.png" %]
+[% WRAPPER floatright this="import_changetype.png" forcelabel="glist_changetype" %]
 If you mistakenly import a data group as the wrong record type, you
 can change it by selecting
 [% INCLUDE font/quote a="Change record type" %] from the Group menu.

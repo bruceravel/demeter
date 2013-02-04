@@ -46,15 +46,15 @@ $plot->set(e_mu      => 1,    e_bkg     => 0,
 	   e_pre     => 0,    e_post    => 0,
 	   e_i0      => 0,    e_signal  => 0,
 	   e_markers => 1,
-	   emin      => -100, emax      => 700,
+	   emin      => -200, emax      => 700,
 	   space     => 'E',
 	  );
 
 print "plotting original data\n";
 $d0 -> plot('E');
 
-print "plotting data truncated before 7100\n";
-$d0 -> Truncate('before', 7100);
+print "plotting data truncated before 7000\n";
+$d0 -> Truncate('before', 7000);
 $d0 -> plot('E');
 
 print "sleeping for 3 seconds\n";

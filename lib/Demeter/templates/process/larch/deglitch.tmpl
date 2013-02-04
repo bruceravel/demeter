@@ -1,0 +1,17 @@
+{ # -*- ifm -*-
+  # deglich a single data point
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$C->get("parameter")} returns the generic parameter
+}
+##|
+##| deglitch {$C->get("degl_point")} from {$D->group}
+
+degl___n = index_of({$D->group}.energy, {$C->get("degl_point")})
+{$D->group}.energy = concatenate(({$D->group}.energy[:degl___n], {$D->group}.energy[degl___n+1:]))
+{$D->group}.xmu    = concatenate(({$D->group}.xmu[:degl___n],    {$D->group}.xmu[degl___n+1:]))
+if hasattr({$D->group}, 'i0'): {$D->group}.i0 = concatenate(({$D->group}.i0[:degl___n], {$D->group}.i0[degl___n+1:]))
+if hasattr({$D->group}, 'signal'): {$D->group}.signal = concatenate(({$D->group}.signal[:degl___n], {$D->group}.i0[degl___n+1:]))
+if hasattr({$D->group}, 'stddev'): {$D->group}.stddev = concatenate(({$D->group}.stddev[:degl___n], {$D->group}.i0[degl___n+1:]))
+del degl___n
+##|

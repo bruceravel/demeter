@@ -32,5 +32,6 @@ endif
 {$D->group}.line = (flat_c0 + flat_c1*({$D->group}.energy+{$D->bkg_eshift}) + flat_c2*({$D->group}.energy+{$D->bkg_eshift})**2)
 {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}
 {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.pre_edge+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step}
-## del t___oss
-del flat_c0, flat_c1, flat_c2, flat_c3
+
+##| clean up after computing flattened spectrum
+del t___oss, flat_c0, flat_c1, flat_c2, flat_c3

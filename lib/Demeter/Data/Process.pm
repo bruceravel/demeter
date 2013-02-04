@@ -359,9 +359,9 @@ sub deglitch {
   foreach my $v (@values) {
     carp("$v is not within the data range of $self\n\n"), next if (($v < $x[0]) or ($v > $x[-1]));
     my $nearest = reduce { abs($a-$v) < abs($b-$v) ? $a : $b } @x;
-    if ($nearest <= $x[2]) {
+    if (($nearest <= $x[2]) and (not $self->is_larch)) {
       $self -> Truncate("before", $x[3]);
-    } elsif ($nearest >= $x[-2]) {
+    } elsif (($nearest >= $x[-2]) and (not $self->is_larch)) {
       $self -> Truncate("after", $x[-3]);
     } else {
       $self -> mo -> config -> set(degl_point => $nearest);

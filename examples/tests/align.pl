@@ -34,12 +34,14 @@ my @common_attributes = (bkg_pre1   => -31,    bkg_pre2   => -150,
 
 my $d0 = Demeter::Data -> new();
 $d0 -> set(@common_attributes);
-$d0 -> set(file => "$where/data/fe.060.xmu", name => '60K',);
+$d0 -> set(file => "$where/data/fe.060.xmu", name => '60K',
+	   energy=>'$1', numerator=>'$2', denominator=>1, ln=>0,);
 $d0 -> po -> e_zero(1);
 
 my $d1 = Demeter::Data -> new();
 $d1 -> set(@common_attributes);
-$d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',);
+$d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',
+	   energy=>'$1', numerator=>'$2', denominator=>1, ln=>0,);
 
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);

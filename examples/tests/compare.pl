@@ -33,8 +33,10 @@ my @data = (Demeter::Data -> new(group => 'data0'),
 	    Demeter::Data -> new(group => 'data1'),
 	   );
 foreach (@data) { $_ -> set(@common_to_all_data_sets) };
-$data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', 'y_offset' => 1, );
-$data[1] -> set(file => "$where/data/fe.300.xmu", name => 'Fe 300K', );
+$data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', 'y_offset' => 1,
+		energy=>'$1', numerator=>'$2', denominator=>1, ln=>0, );
+$data[1] -> set(file => "$where/data/fe.300.xmu", name => 'Fe 300K',
+		energy=>'$1', numerator=>'$2', denominator=>1, ln=>0, );
 
 my $plot = $data[0]->po;
 $plot->set_mode(screen=>0, repscreen=>0);

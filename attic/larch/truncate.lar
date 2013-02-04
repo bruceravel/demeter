@@ -1,0 +1,43 @@
+## import the data
+a = read_ascii('../../examples/fe.060')
+a.xmu = ln(a.i0/a.it)
+
+newplot(a.energy, a.xmu)
+
+## the index of the data point near the truncation energy
+i = index_of(a.energy, 7000)
+
+## this is how you truncate the data BEFORE the energy
+a.energy = a.energy[:i]
+a.xmu = a.xmu[:i]
+a.i0 = a.i0[:i]
+a.it = a.it[:i]
+
+plot(a.energy, a.xmu)
+
+pause()
+
+## reimport the data
+a = read_ascii('../../examples/fe.060')
+a.xmu = ln(a.i0/a.it)
+
+newplot(a.energy, a.xmu)
+
+## the index of the data point near the truncation energy
+i = index_of(a.energy, 7500)
+
+## this is how you truncate the data AFTER the energy
+a.energy = a.energy[:i]
+a.xmu = a.xmu[:i]
+a.i0 = a.i0[:i]
+a.it = a.it[:i]
+
+## here is a more idomatic way of doing the 4 lines above
+#for suff in ('energy', 'xmu', 'i0', 'it'):
+#     array = getattr(a, suff)
+#     setattr(a, suff, array[:i])
+#endfor
+
+plot(a.energy, a.xmu)
+
+pause()

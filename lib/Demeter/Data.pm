@@ -445,7 +445,7 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  ##$self->dispense('process', 'erase', {items=>"\@group ".$self->group});
+  $self->dispense('process', 'erase', {items=>$self->group}) if $self->is_larch;
   $self->alldone;
 };
 
@@ -781,7 +781,7 @@ sub sort_data {
     ## now feed columns back to ifeffit
     my $group = $self->group;
     $self->dispense('process', 'comment', {comment=>"replacing arrays for $group with sorted versions"});
-    $self->dispense('process', 'erase', {items=>"\@group $group"});
+    $self->dispense('process', 'erase', {items=>"\@group $group"}) if (not $self->is_larch);
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
@@ -935,6 +935,7 @@ override 'deserialize' => sub {
   $self -> update_data(0);
   $self -> update_columns(0);
   $self -> update_norm(1);
+  $self -> dispense('process','make_group');
 
   my $path = $self -> mo -> fetch('Path', $self->fft_pcpathgroup);
   $self -> fft_pcpath($path);

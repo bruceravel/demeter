@@ -4,7 +4,8 @@
   use Text::Wrap;
   local $Text::Wrap::columns = 200;
   $all = q{};
-  if ($items !~ m{\@group}) {
+  $items =~ s{\@group}{}g;
+  if ($items) {
     $all = wrap('del ', 'del ', $items);
   };
   q{}
