@@ -30,7 +30,8 @@ my $where = $ENV{DEMETER_TEST_DIR} || "..";
 ## set up two data objects
 print "Reading and plotting 60K Fe foil data\n";
 my $d0 = Demeter::Data -> new();
-$d0 -> set(file=>"$where/data/fe.060.xmu", name=>'Fe 60K');
+$d0 -> set(file=>"$where/data/fe.060.xmu", name=>'Fe 60K',
+	   energy=>'$1', numerator=>'$2', denominator=>1, ln=>0,);
 
 
 my $plot = $d0->po;

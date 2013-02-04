@@ -6,17 +6,21 @@
 ##| making mu(E) from columns for group {$D->group}
 {$D->group}.energy = {$D->energy_string}
 {$D->group}.xmu    = {$D->xmu_string}
-{$D->group}.i0     = {$D->i0_string}
-{$D->group}.signal = {$D->signal_string}
 __xmu_max      = abs(max({$D->group}.xmu))
-if 'i0' in dir({$D->group}):
+
+if '{$D->i0_string}' == '1': 
+   {$D->group}.i0 = ones(size({$D->group}.energy));
+    __i0_scale     = __xmu_max
+else:
+   {$D->group}.i0 = {$D->i0_string}
     __i0_max       = max({$D->group}.i0)
     __i0_scale     = __xmu_max / __i0_max
-del __i0_max
+    del __i0_max
 endif
-if 'signal' in dir({$D->group}):
-    __signal_max   = max({$D->group}.signal)
-    __signal_scale = __xmu_max / __signal_max
-    del __signal_max
-endif
+
+{$D->group}.signal = {$D->signal_string}
+__signal_max   = max({$D->group}.signal)
+__signal_scale = __xmu_max / __signal_max
+del __signal_max
+
 del __xmu_max

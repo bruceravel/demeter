@@ -22,7 +22,6 @@
 =cut
 
 use Demeter;
-Demeter->set_mode(template_process=>"larch");
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up two data objects
