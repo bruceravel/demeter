@@ -59,9 +59,10 @@ sub e0 {
 
 sub e0_ifeffit {
   my ($self) = @_;
-  $self->bkg_e0(-9999999);	# force ifeffit to find e0
-  $self->normalize;		# fft_edge and bkg_z get set therein
-  my $e0 = $self->bkg_e0;
+  $self->dispense('process', 'find_e0');
+  my $e0 = $self->fetch_scalar('e0');
+  print '-------------', $e0, $/;
+  $self->bkg_e0(sprintf("%.5f", $e0));
   return $e0;
 };
 
@@ -148,8 +149,10 @@ sub e0_dmax {
 
 sub calibrate {
   my ($self, $ref, $e0) = @_;
-  $self -> _update("background");
+  $self -> _update("normalize");
+  print "1: $ref  ".$self->bkg_eshift."\n";
   $ref ||= $self->bkg_e0;
+  print "2: $ref\n";
   if (not $e0) {
     my ($z, $edge) = ($self->bkg_z, $self->fft_edge);
     croak("You must specify the absorber element to calibrate to the tabulated edge energy.")
@@ -158,8 +161,11 @@ sub calibrate {
       if (not to_Edge($edge));
     $e0 = Xray::Absorption->get_energy($z, $edge);
   };
+  print "3: $ref  $e0\n";
   my $delta = $e0 - $ref;
+  print "4: $ref  $e0  $delta\n";
   my $shift = $self->bkg_eshift + $delta;
+  print "5: $ref  $e0  $delta $shift\n";
   $self->bkg_e0($e0);
   $self->bkg_eshift($shift);
   $self->update_bkg(1);

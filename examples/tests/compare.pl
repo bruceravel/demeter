@@ -25,18 +25,17 @@ my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
 			       bkg_spl1    => 0,    bkg_spl2    => 18,
-			       bkg_nor2    => 1800,
+			       bkg_nor2    => -100, #1800,
 			       bkg_flatten => 1,
 			       fft_kmax    => 3,    fft_kmin    => 17,
+			       energy=>'$1', numerator=>'$2', denominator=>1, ln=>0,
 			      );
 my @data = (Demeter::Data -> new(group => 'data0'),
 	    Demeter::Data -> new(group => 'data1'),
 	   );
 foreach (@data) { $_ -> set(@common_to_all_data_sets) };
-$data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', 'y_offset' => 1,
-		energy=>'$1', numerator=>'$2', denominator=>1, ln=>0, );
-$data[1] -> set(file => "$where/data/fe.300.xmu", name => 'Fe 300K',
-		energy=>'$1', numerator=>'$2', denominator=>1, ln=>0, );
+$data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', 'y_offset' => 1,);
+$data[1] -> set(file => "$where/data/fe.300.xmu", name => 'Fe 300K',);
 
 my $plot = $data[0]->po;
 $plot->set_mode(screen=>0, repscreen=>0);

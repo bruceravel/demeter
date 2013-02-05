@@ -350,12 +350,12 @@ sub normalize {
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
     $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
     $self->dispense("process", "is_nor");
   };
-  $self->dispense("process", "nderiv") if not $self->is_nor;
 
   $self->update_norm(0);
   return $self;

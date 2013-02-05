@@ -81,6 +81,10 @@ sub fetch_scalar {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
 	}
+	when (/\Ae0\z\d/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	};
 	when (/pre_(?:offset|slope)/) {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
