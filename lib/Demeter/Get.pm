@@ -81,7 +81,11 @@ sub fetch_scalar {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
 	}
-	when (/\Ae0\z\d/) {
+	when (/epsilon_([kr])/) {
+	  $param = $gp.'.epsilon_'.$1;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(?:e0|edge_step|kmax_suggest)\z/) {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
 	};

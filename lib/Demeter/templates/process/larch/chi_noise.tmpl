@@ -3,6 +3,7 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
 }
-epsilon_k=0.01
-epsilon_r=0.01
-kmax_suggest=12
+#estimate_noise({$D->group})
+{$D->group}.epsilon_k = 0
+{$D->group}.epsilon_r = 0
+{$D->group}.kmax_suggest=12

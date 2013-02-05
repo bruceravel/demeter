@@ -81,6 +81,7 @@ $plot->start_plot;
 foreach my $d ($d0, $d1) {
   $d->plot('E');
 };
+$plot->set(e_der=>0);
 
 $_->DEMOLISH foreach ($d0, $d1);
 

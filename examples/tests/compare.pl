@@ -62,6 +62,7 @@ print "Plotting in R-space ...\n";
 $plot -> start_plot;
 $space = 'r';
 foreach my $d (@data) { $d -> plot($space) };
+print $/, $/, $data[0]->about, $/;
 print "All done!\n";
 
 1;
