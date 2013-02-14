@@ -97,7 +97,7 @@ has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
 		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
-has 'devflag'   => (is => 'ro', isa => 'Bool',    default => 1);
+has 'devflag'   => (is => 'rw', isa => 'Bool',    default => 0);
 
 use Demeter::Mode;
 use vars qw($mode);
