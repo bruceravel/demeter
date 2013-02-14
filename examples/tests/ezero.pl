@@ -55,6 +55,7 @@ $plot -> set(e_mu    => 1,
 
 print "Plotting Fe and Cu with E0 subtracted ...\n";
 foreach (@data) { $_ -> plot('E') };
+$plot->e_zero(0);
 print "All done!\n";
 
 1;

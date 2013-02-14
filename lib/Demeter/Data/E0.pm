@@ -148,7 +148,7 @@ sub e0_dmax {
 
 sub calibrate {
   my ($self, $ref, $e0) = @_;
-  $self -> _update("normalize");
+  $self -> _update("background");
   $ref ||= $self->bkg_e0;
   if (not $e0) {
     my ($z, $edge) = ($self->bkg_z, $self->fft_edge);

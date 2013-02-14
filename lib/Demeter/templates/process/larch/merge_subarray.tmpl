@@ -11,8 +11,8 @@
   q{}
 }
 m___erge = group()
-m___erge.xxx = {$D->group}.{$C->get("merge_space")} + {$shift}
-m___erge.i1 = index_of(m___erge.xxx, {$C->get("merge_min")})
-m___erge.i2 = index_of(m___erge.xxx, {$C->get("merge_max")})
+m___erge.xxx    = {$D->group}.{$C->get("merge_space")} + {$shift}
+m___erge.i1     = index_of(m___erge.xxx, {$C->get("merge_min")})
+m___erge.i2     = index_of(m___erge.xxx, {$C->get("merge_max")})
 m___erge.{$C->get("merge_space")} = m___erge.xxx[m___erge.i1:m___erge.i2]
 

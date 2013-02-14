@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # add noise to mu(E) data
+  #   {$D->group}  returns the larch group name
+  #   {$D->parameter} returns the value of that group's parameter
+  q{}
+}
+{$D->group}.random = random.normal(size=len({$D->group}.{$C->get("noise_which")}), scale={$C->get("noise_level")})
+{$D->group}.{$C->get("noise_which")} = {$D->group}.{$C->get("noise_which")} + {$D->group}.random

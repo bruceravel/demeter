@@ -16,7 +16,7 @@ $data->bkg_e0(11919);
 # 			      denominator => '$3',
 # 			);
 
-Demeter->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, emin=>-150, emax=>800);
+Demeter->po->set(e_bkg=>1, e_pre=>0, e_post=>0, e_norm=>0, emin=>-150, emax=>800);
 
 
 # my $dat2 = Demeter::Data->new(file	  => 'examples/data/fe.061',
@@ -42,4 +42,7 @@ $data->plot('e');
 $data->pause;
 $data->po->start_plot;
 $data->plot('k');
+$data->pause;
+$data->po->start_plot;
+$data->plot('r');
 $data->pause;
