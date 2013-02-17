@@ -768,7 +768,8 @@ sub template {
     $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
-  if ($self->devflag) {
+  my $bool = ($self eq 'Demeter') ? Demeter->co->devflag : $self->devflag;
+  if ($bool) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
     printf("(%s) %s (%s) %s (%s%s)\n",
