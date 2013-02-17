@@ -181,8 +181,9 @@ sub new {
 
   $this -> SetSizerAndFit( $hbox );
   my ($xx, $yy) = $this->GetSizeWH;
-  $this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
-  $this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
+  $this -> SetSizeHints($xx, 1.1*$yy, $xx, -1);
+  #$this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
+  #$this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
   return $this;
 };
 

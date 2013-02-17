@@ -178,6 +178,13 @@ sub new {
   $this->{pp_n}->{was} = q{};
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  my $last = q{label}; # fourth
+  #$last = 'dphase' if ($this->{datapage}->{data}->co->default('artemis', 'offer_dphase'));
+  foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
+    next if (($k eq 'dphase') and (not $this->{datapage}->{data}->co->default('artemis', 'offer_dphase')));
+    $this->{"pp_$k"}->MoveAfterInTabOrder($this->{"pp_$last"});
+    $last = $k;
+  };
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
