@@ -468,6 +468,13 @@ sub autobk {
   ## make sure that a fitted edge step actually exists...
   $self->bkg_fitted_step($self->bkg_step) if not $self->bkg_fitted_step;
 
+  $self->bkg_kwindow('kaiser')        if ($self->is_larch   and ($self->bkg_kwindow eq 'kaiser-bessel'));
+  $self->bkg_kwindow('kaiser-bessel') if ($self->is_ifeffit and ($self->bkg_kwindow eq 'kaiser'       ));
+  my $save = $self->bkg_dk;
+  if ($self->is_larch and ($self->bkg_kwindow eq 'kaiser')) {
+    $self->bkg_dk(0.1) if ($self->bkg_dk < 0.1); # fix numerical error in larch implementation of kaiser window
+  }
+
   my $command = q{};
   if (lc($self->bkg_stan) ne 'none') {
     my $stan = $self->mo->fetch("Data", $self->bkg_stan);
@@ -490,7 +497,7 @@ sub autobk {
   };
   $self->dispose($command);
   ##$self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
-
+  $self->bkg_dk($save);
 
 ## is it necessary to do post_autobk and flatten templates here?  they
 ## *were* done in the normalize method...

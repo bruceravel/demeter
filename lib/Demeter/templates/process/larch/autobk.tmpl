@@ -7,7 +7,6 @@
   $D->bkg_dk(0.1) if (($win eq 'kaiser') and ($D->bkg_dk == 0));
   q{};
 }
-
 autobk({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group},
        e0={$D->bkg_e0}, rbkg={$D->bkg_rbkg},
        {($D->bkg_stan !~ /None/) ? sprintf("k_std=%s.k, chi_std=%s.chi, ", $D->bkg_stan, $D->bkg_stan) : q{}}

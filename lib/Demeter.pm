@@ -97,7 +97,7 @@ has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
 		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
-has 'devflag'   => (is => 'ro', isa => 'Bool',    default => 1);
+has 'devflag'   => (is => 'rw', isa => 'Bool',    default => 0);
 
 use Demeter::Mode;
 use vars qw($mode);
@@ -768,7 +768,8 @@ sub template {
     $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
-  if ($self->devflag) {
+  my $bool = ($self eq 'Demeter') ? Demeter->co->devflag : $self->devflag;
+  if ($bool) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
     printf("(%s) %s (%s) %s (%s%s)\n",

@@ -583,6 +583,8 @@ sub unset_standard {
 sub set_windows {
   my ($self, $window) = @_;
   $window = lc($window);
+  $window='kaiser' if ($self->is_larch and ($window eq 'kaiser-bessel'));
+  $window='kaiser-bessel' if ($self->is_ifeffit and ($window eq 'kaiser'));
   return 0 if not is_Window($window);
   $self->bkg_kwindow($window);
   $self->fft_kwindow($window);

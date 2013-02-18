@@ -73,7 +73,7 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
-  $demeter->set_mode(template_process=>"larch");
+  #$demeter->set_mode(template_process=>"larch");
 
 
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));

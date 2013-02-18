@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # template for organizing a k123 plot
+  #   {$D->group} returns the ifeffit group name
+}
+__123_max1 = max({$D->group}.chi * {$D->group}.k)
+__123_max2 = max({$D->group}.chi * {$D->group}.k**2)
+__123_max3 = max({$D->group}.chi * {$D->group}.k**3)
