@@ -2,6 +2,8 @@
   # spline template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $win = lc($D->bkg_kwindow);
+  $win = 'kaiser-bessel' if (lc($D->bkg_kwindow) eq 'kaiser')
 }
 
 spline("{$D->group}.energy+{$D->bkg_eshift}",
@@ -16,7 +18,7 @@ spline("{$D->group}.energy+{$D->bkg_eshift}",
        kmax       = {$D->bkg_spl2},
        kweight    = {$D->bkg_kw},
        dk         = {$D->bkg_dk},
-       kwindow    = {$D->bkg_kwindow},
+       kwindow    = {$win},
        pre1       = {$D->bkg_pre1},
        pre2       = {$D->bkg_pre2},
        norm_order = {$D->bkg_nnorm},

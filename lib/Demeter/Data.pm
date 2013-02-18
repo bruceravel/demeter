@@ -299,9 +299,10 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 					},
 			  default => 0);
 
-has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
+has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'hanning'},
 		      traits => [ qw(Quenchable) ],
-		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+		      coerce => 1,
+		      trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) });
 
 has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
 

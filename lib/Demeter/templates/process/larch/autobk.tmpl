@@ -2,6 +2,10 @@
   # spline template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $win = lc($D->bkg_kwindow);
+  $win = 'kaiser' if (lc($D->bkg_kwindow) eq 'kaiser-bessel');
+  $D->bkg_dk(0.1) if (($win eq 'kaiser') and ($D->bkg_dk == 0));
+  q{};
 }
 
 autobk({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group},
@@ -9,4 +13,4 @@ autobk({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group},
        {($D->bkg_stan !~ /None/) ? sprintf("k_std=%s.k, chi_std=%s.chi, ", $D->bkg_stan, $D->bkg_stan) : q{}}
        {($D->bkg_fixstep) ? sprintf("edge_step=%.7g, ", $D->bkg_step) : q{} }
        kmin={$D->bkg_spl1}, kmax={$D->bkg_spl2}, kweight={$D->bkg_kw}, dk={$D->bkg_dk},
-       win='{$D->bkg_kwindow}', nclamp=5, clamp_lo={$D->bkg_clamp1}, clamp_hi={$D->bkg_clamp2})
+       win='{$win}', nclamp=5, clamp_lo={$D->bkg_clamp1}, clamp_hi={$D->bkg_clamp2})

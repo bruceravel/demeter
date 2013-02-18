@@ -29,6 +29,7 @@ my $where = $ENV{DEMETER_TEST_DIR} || "..";
 print "Reading and plotting 60K Fe foil data\n";
 my $d0 = Demeter::Data -> new(file => "$where/data/fe.060.xmu",
 			      name => 'Fe 60K',
+			       energy=>'$1', numerator=>'$2', denominator=>1, ln=>0,
 			      'y_offset' => 2);
 
 
@@ -47,5 +48,7 @@ print "10% noise and replotting data\n";
 my $d2 = $d0 -> clone(name => "10% noise", y_offset => 0);
 $d2 -> noise(noise=>0.1, which=>'xmu');
 $d2 -> plot('e');
+
+$_->DEMOLISH foreach ($d0, $d1, $d2);
 
 1;

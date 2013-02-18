@@ -65,4 +65,6 @@ foreach my $d (@data) { $d -> plot($space) };
 print $/, $/, $data[0]->about, $/;
 print "All done!\n";
 
+$_->DEMOLISH foreach (@data);
+
 1;
