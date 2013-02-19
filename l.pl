@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Demeter qw(:plotwith=gnuplot :ui=screen);
+use Demeter qw(:p=gnuplot :ui=screen :d=1);
 
 Demeter->set_mode(template_process => 'larch', screen=>0);
 

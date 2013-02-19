@@ -97,7 +97,9 @@ has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
 		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
-has 'devflag'   => (is => 'rw', isa => 'Bool',    default => 0);
+#has 'devflag'   => (is => 'rw', isa => 'Bool',    default => 0);
+use vars qw($devflag);
+$devflag = 0;
 
 use Demeter::Mode;
 use vars qw($mode);
@@ -229,20 +231,23 @@ sub import {
 
  PRAG: foreach my $p (@pragmata) {
     given ($p) {
-      when (m{:plotwith=(\w+)}) { # choose between pgplot and gnuplot
+      when (m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
 	$plot -> plot_with($1);
       }
-      when (m{:ui=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
+      when (m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
 	$mode -> ui($1);
 	#import Demeter::Carp if ($1 eq 'screen');
       }
-      when (m{:template=(\w+)}) { # change template sets
+      when (m{:t(?:emplate)?=(\w+)}) { # change template sets
 	my $which = $1;
 	$mode -> template_process($which);
 	$mode -> template_fit($which);
 	#$mode -> template_analysis($which);
       }
-
+      when (m{:d(?:evflag)?=(\w+)}) {
+	$devflag = $1;
+	eval {use Term::ANSIColor qw(:constants)} if $devflag;
+      };
       ## all the rest of the "pragmata" control what parts of Demeter get imported
 
       when (':data') {
@@ -729,7 +734,7 @@ alias thaw   => 'deserialize';
 
 
 ## common supplied hash elements: filename, kweight, titles, plot_object
-eval {use Term::ANSIColor qw(:constants)} if (Demeter->co->devflag);
+#eval {use Term::ANSIColor qw(:constants)} if ($devflag);
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
@@ -768,8 +773,8 @@ sub template {
     $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
-  my $bool = ($self eq 'Demeter') ? Demeter->co->devflag : $self->devflag;
-  if ($bool) {
+  #my $bool = ($self eq 'Demeter') ? Demeter->co->devflag : $self->devflag;
+  if ($devflag) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
     printf("(%s) %s (%s) %s (%s%s)\n",
@@ -946,7 +951,7 @@ Demeter program by specfying that behavior at compile-time.
 
 =over 4
 
-=item C<:plotwith=XX>
+=item C<:p=XX> or C<:plotwith=XX>
 
 Specify the plotting backend.  The default is C<pgplot>.  The other
 option is C<gnuplot>.  A C<demeter> option will be available soon for
@@ -996,7 +1001,7 @@ this dependeny to be relaxed from a requirement to a suggestion.
 
 Future UI options might include C<tk>, C<wx>, or C<rpc>.
 
-=item C<:template=XX>
+=item C<:t=XX> or C<:template=XX>
 
 Specify the template set to use for data processing and fitting
 chores.  See L<Demeter::templates>.

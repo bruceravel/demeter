@@ -73,7 +73,6 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
-  #$demeter->set_mode(template_process=>"larch");
 
 
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
@@ -185,6 +184,13 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
+    } elsif (($a eq '-ld') or ($a eq '-dl')) {
+      $demeter->set_mode(template_process=>"larch");
+      $Demeter::devflag = 1;
+    } elsif ($a eq '-l') {
+      $demeter->set_mode(template_process=>"larch");
+    } elsif ($a eq '-d') {
+      $Demeter::devflag = 1;
     } elsif (-r $a) {
       $app -> Import($a);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
