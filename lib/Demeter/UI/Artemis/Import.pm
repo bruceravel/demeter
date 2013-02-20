@@ -94,6 +94,7 @@ sub _prj {
   };
 
   my $data = $prj->record($record);
+  $data->frozen(0);
   my $ref;
   my $toss = $data->bkg_stan;
   if ($data->bkg_stan ne 'None') {

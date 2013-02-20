@@ -828,6 +828,7 @@ sub make_menubar {
 
 sub populate {
   my ($self, $data) = @_;
+  $data->frozen(0);
   $self->{data} = $data;
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);

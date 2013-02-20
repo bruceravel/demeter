@@ -868,7 +868,7 @@ The Ifeffit group name for this path is not unique.
 
 =item C<pathdataname>
 
-This path has an Ifeffit group name which is used by a Data object.
+This path has an Ifeffit/Larch group name which is used by a Data object.
 
 =item C<parens> + C<$pp>
 
@@ -876,8 +876,8 @@ The math expression for the C<$pp> path parameter has unmatched parentheses.
 
 =item C<reffrmax>
 
-The R effective for this path is well beyond the C<rmax> value of its
-Data object.
+The R effective for this path is much larger than the C<rmax> value
+chosen for the fit to the data.
 
 =item C<nocalc>
 
