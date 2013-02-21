@@ -5,8 +5,11 @@
 
 * Initial release
 
-** 0.9.15  XX January 2013
+** 0.9.15  21 February 2013
 *** Athena
+   - manage update flags in a much better way, making Athena much
+     snappier by reducing the number of calls to pre_edge() and
+     autobk()
    - Interface to Athena Users' Guide from within Athena via browser
    - Improved plucking from gnuplot window, the interaction is much
      more natural -- no intermediate dialog window
@@ -18,6 +21,9 @@
    - corrected a bug in which many Peak Fitting buttons could become
      irreparably disabled
    - editing journal sets save indicator on
+   - fixed a bug related to importing reference channels for multiple
+     files
+   - command line switches to aid in larch integration
 
 *** Artemis
    - Interface to Artemis Users' Guide from within Artemis via browser
@@ -34,8 +40,18 @@
    - added Plot menu items for turning on and off plot_after for all
      data sets
    - more sensible default for Data plot_after_fit parameter
+   - unfreeze data as imported from an Athena project file
+   - better error message for paths outside of fintting Rmax
+   - can enlarge GDS window vertically
+   - tab order set sensibly between path parameter text boxes on Path
+     page
+   - data plot_after flags managed more sensibly in a MDS fit
+   - fit history enhancements
+   - can save current fit to a project without history (good for bug
+     reports!)
 
 *** Demeter
+   - Begin work on Larch integration, normally disabled
    - mirroring repository at Bitbucket
    - send gnuplot plot to file terminal type with special
      configuration for PDF terminal and no real support for many of
@@ -47,6 +63,7 @@
    - correct legend keys for R123 plots
    - made Demeter::UI::Wx::VerbDialog -- a generic yes/no dialog using
      a specified verb on the yes button
+   - configurable column numbers in X15B plugin
 
 ** 0.9.14  2 January 2013
 *** Athena
