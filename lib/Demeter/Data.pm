@@ -323,7 +323,7 @@ has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1},
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten")},
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
@@ -718,6 +718,27 @@ sub read_data {
   $self->identify_beamline($self->file);
   return $self;
 };
+
+## remove all arrays of this group that are not needed for further
+## data processing
+sub extraneous {
+  my ($self) = @_;
+  my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
+			post_edge nbkg prex theta line flat nder
+			nsec bkg flat nbkg norm fbkg));
+  my $items = join(" " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
+  #print $items, $/;
+  my $command = q{};
+  $command .= $self->template('process', 'erase', {items=>$items});
+  #$command .= $self->template("process", "post_autobk");
+  #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+  #  $command .= $self->template("process", "flatten_fit");
+  #} else {
+  #  $command .= $self->template("process", "flatten_set");
+  #};
+  $self->dispose($command);
+  $self->update_norm(1);
+}
 
 sub explain_recordtype {
   my ($self) = @_;

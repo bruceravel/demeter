@@ -334,14 +334,15 @@ sub normalize {
     $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
 
-    #my $command = q{};
-    #$command .= $self->template("process", "post_autobk");
-    #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
-    #  $command .= $self->template("process", "flatten_fit");
-    #} else {
-    #  $command .= $self->template("process", "flatten_set");
-    #};
-    #$self->dispose($command);
+    ## group.pre_edge *must* be set here.  does all of this need to be called at this point?
+    my $command = q{};
+    $command .= $self->template("process", "post_autobk");
+    if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+      $command .= $self->template("process", "flatten_fit");
+    } else {
+      $command .= $self->template("process", "flatten_set");
+    };
+    $self->dispose($command);
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));

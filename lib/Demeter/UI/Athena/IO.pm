@@ -453,6 +453,8 @@ sub _data {
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 
+  $data->extraneous;
+
   $app->{main}->status("Imported $message from $displayfile");
 
   ## -------- save persistance file
@@ -564,6 +566,7 @@ sub _group {
 
   $app->{main}->{list}->AddData($data->name, $data);
 
+
   if (not $repeated) {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
     #$app->{selected} = $app->{main}->{list}->GetSelection;
@@ -608,30 +611,34 @@ sub _group {
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
     };
-    if ($repeated) {
-      my $foo = $ref->clone;
-      $ref = $foo;
-    };
+
+## what was this for?
+#    if ($repeated) {
+#      my $foo = $ref->clone;
+#      $ref = $foo;
+#    };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
     $yaml -> {ref_ln}    = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue : $yaml->{ref_ln};
 
+    $ref -> is_col(1);
     $ref -> set(name        => "  Ref " . $data->name,
 		energy      => $yaml->{energy},
 		numerator   => '$'.$yaml->{ref_numer},
 		denominator => ($yaml->{ref_denom}) ? '$'.$yaml->{ref_denom} : 1,
 		ln          => $yaml->{ref_ln},
-		is_col      => 1,
 		is_kev      => $data->is_kev,
-		display     => 1,
-		datatype    => $data->datatype);
-    $ref->display(0);
+		display     => 0,
+		datatype    => $data->datatype,
+		update_data => 1,
+	       );
     my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
     if ($same_edge) {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
     $ref -> _update('normalize');
+
     ## need to fix the e0 of the reference in two situations
     if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
       if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
@@ -659,6 +666,7 @@ sub _group {
     $app->{main}->{list}->AddData($ref->name, $ref);
     $app->{most_recent} = $save;
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
+    $ref -> extraneous;
     $ref->reference($data);
   };
 
