@@ -267,7 +267,9 @@ perl-reversion misses version numbers in
 	bin/contribute.pod
 	bin/help.pod
 	bin/installation.pod
+	bin/nonroot.pod
 	Build.PL
+        lib/Demeter/UI/Hephaestus/data/hephaestus.pod
 
 Don't forget to push and tag!
 "

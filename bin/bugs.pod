@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.14.
+## This pod document is for Demeter version 0.9.15.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Reporting bugs in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.15.
 
 =head1 OVERVIEW
 

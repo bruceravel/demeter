@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.14');
+our $VERSION = version->new('0.9.15');
 use feature "switch";
 
 ############################
@@ -35,7 +35,7 @@ use File::Basename qw(dirname);
 use File::Spec;
 use Ifeffit qw(ifeffit);
 ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-use Larch;
+#use Larch;
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -854,7 +854,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14
+This documentation refers to Demeter version 0.9.15
 
 =head1 SYNOPSIS
 

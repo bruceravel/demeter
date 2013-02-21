@@ -166,7 +166,7 @@ Demeter::SSPath - Arbitrary single scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.15.
 
 =head1 SYNOPSIS
 
