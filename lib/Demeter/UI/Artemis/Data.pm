@@ -443,17 +443,30 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
-  $this->{pcplot}->Enable(0);
+  #$this->{pcplot}->Enable(0);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
-		 if ($self->{data}->fft_pcpath) {
-		   $self->{data}->update_fft(1);
+		 if ($self->{pcplot}->GetValue) {
+		   $self->{data}->fft_pcpath(q{});
 		   foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
-		     $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     if ($self->{pathlist}->GetPage($n)->{useforpc}->GetValue) {
+		       $self->{data}->fft_pcpath($self->{pathlist}->GetPage($n)->{path});
+		       last;
+		     };
 		   };
-		   $self->{data}->fft_pcpath->_update('fft');
-		 }
+
+		   if ($self->{data}->fft_pcpath) {
+		     $self->{data}->update_fft(1);
+		     foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
+		       $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     };
+		     $self->{data}->fft_pcpath->_update('fft');
+		   } else {
+		     $self->status("You have not selected a path to use for phase corrected Fourier transforms", "alert");
+		     $self->{pcplot}->SetValue(0);
+		   };
+		 };
 	       });
 
   EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
@@ -1086,7 +1099,9 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->serialization, 'YAML of '.$pathobject->label)
+      my $text = "# Path index = " . $pathobject->Index . $/;
+      $text .= $pathobject->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $text, 'YAML of '.$pathobject->label)
 	-> Show;
       last SWITCH;
     };
