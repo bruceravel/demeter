@@ -15,7 +15,7 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-require 5.008;
+require v5.10;
 
 use version;
 our $VERSION = version->new('0.9.15');
@@ -29,13 +29,18 @@ use feature "switch";
 use Carp;
 ############################
 
+############################
+## backend
+##
+use Ifeffit qw(ifeffit);
+ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+#use Larch;
+############################
+
 use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
-use Ifeffit qw(ifeffit);
-ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-#use Larch;
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;

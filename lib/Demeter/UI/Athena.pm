@@ -2376,11 +2376,11 @@ sub document {
   if (-e $fname) {
     $fname  = 'file://'.$fname;
     $fname .= '#'.$target if $target;
-    $::app->{main}->status("Displaying document page: $fname");
+    $::app->{main}->status("Displaying local document page: $fname");
     Wx::LaunchDefaultBrowser($fname);
   } else {
     $url .= '#'.$target if $target;
-    $::app->{main}->status("Displaying document page: $url");
+    $::app->{main}->status("Displaying online document page: $url");
     Wx::LaunchDefaultBrowser($url);
     ##$::app->{main}->status("Document target not found: $fname");
   };

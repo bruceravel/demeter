@@ -32,7 +32,7 @@ const my $PLOT    => 0;
 my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      SSRLB	=> [20003.5,   'transmission'],
 	      X10C	=> [8345.3,    'transmission'],
-	      X15B	=> [2433.5,    'fluorescence'],
+	      X15B	=> [2431.7,    'fluorescence'],
 	      HXMA	=> [11866.5,   'transmission'],
 	      PFBL12C	=> [12279.743, 'transmission'],
 	      CMC	=> [2473.6,    'fluorescence'],
