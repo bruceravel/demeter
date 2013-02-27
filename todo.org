@@ -17,10 +17,10 @@
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** installation issues [1/2]
+** installation issues [2/2]
   - [X] Relocation needs testing on Windows, need to make sure that
         the executables can all be found,
-  - [ ] also need to be able to find all of Ifeffit CL and CAPS files.
+  - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
 ** Demeter bugs, shortcomings, missing features  [1/20] [5%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
@@ -152,7 +152,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [7/14] [50%]
+** Windows issues [3/9] [33%]
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain open and locked
@@ -165,7 +165,7 @@
   - [ ] clampbox does not get enabled/disabled explicitly, is this
 	another aspect of StaticBox that is different on Windows? (see
 	link above)
-  - [ ] relocation of Strawberry leaves Ifeffit unable to find phase
+  - [X] relocation of Strawberry leaves Ifeffit unable to find phase
 	shift and CL tables (use an ENV variable?)
   - [X] The Strawberry+Demeter package does not coexist at all with
         ActivePerl.  Best solution is to generate ppd for Demeter
@@ -305,8 +305,7 @@ to
 
 :     character*(*) s, t , messg*1024
 
-Also need to specify locations of CL data and phase shift tables via
-an ENV variable
++Also need to specify locations of CL data and phase shift tables via an ENV variable+
 
 * Weird stuff I'd prefer not to implement unless demanded
  1. xfit output (only used by women who glow and men who plunder)
@@ -317,8 +316,7 @@ an ENV variable
     little used
  6. tie relative energy value to changes in E0 (this was something
     Jeremy requested originally)
- 7. set e0 by algorithm for all and marked -- also confusing and
-    little used
+ 7. +set e0 by algorithm for all and marked -- also confusing and little used+ (implemented)
  8. +plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)+
     (implemented)
  9. preprocessing truncation and deglitching (truncation might be

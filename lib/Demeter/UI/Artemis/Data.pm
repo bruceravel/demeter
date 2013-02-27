@@ -992,7 +992,7 @@ sub plot {
   };
   $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
-  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
+  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data}) if ($how ne 'rk');
   $Demeter::UI::Artemis::frames{Plot}->{last} = ($how eq 'rmr')   ? 'r'
                                               : ($how eq 'r123')  ? 'r'
                                               : ($how eq 'k123')  ? 'k'

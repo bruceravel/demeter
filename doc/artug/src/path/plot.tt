@@ -109,5 +109,14 @@ used for the phase corrected plots.
 If you turn on phase corrected plotting without having selected a path
 to use, [%artemis%] will issue a warning in te status bar and turn
 phase corrected plotting back off.  You [% INCLUDE font/b a="must" %]
-select a path to use as the source of te phase information.
+select a path to use as the source of the phase information.
+
+Note that, when making a phase corrected plot, the window function in R
+is not corrected in any way.
+
+Also note that the phase correction propagates through to [%chiq%].
+While the window function will display sensibly with the central atom
+phase corrected [%chiq%], a [% INCLUDE font/quote a="kq" %] plot will
+be somewhat less insightful because phase correction is not performed
+on the original [%chik%] data.
 [% END %]

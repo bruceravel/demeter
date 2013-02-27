@@ -180,3 +180,23 @@ to replicate all the details of [%athena%]'s[%#'%] plots.
 Consider making the number of terminals a configuration parameter.
 [% END %]
 
+
+[% INCLUDE section label="Phase corrected plots" %]
+
+[% FILTER html_para %]
+When the [% INCLUDE font/quote a="phase correction" %] button is
+clicked on, the Foruier transform for that data group will be made by
+subtracting the central atom phase shift.  This is an incomplete phase
+correction [%ndash%] in [%athena%] we know the central atom but do not
+necessarily have any knowledge about the scattering atom.
+
+Note that, when making a phase corrected plot, the window function in R
+is not corrected in any way, thus the window will not line up with the
+central atom phase corrected [%chir%].
+
+Also note that the phase correction propagates through to [%chiq%].
+While the window function will display sensibly with the central atom
+phase corrected [%chiq%], a [% INCLUDE font/quote a="kq" %] plot will
+be somewhat less insightful because phase correction is not performed
+on the original [%chik%] data.
+[% END %]
