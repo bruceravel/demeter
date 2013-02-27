@@ -92,10 +92,9 @@ at the end of a fit.  The third
 check button turns on background co-refinement.  The [% epsilon %]
 text box allows you to specify a measurement error fit this data set.
 Finally, the last check button turns phase corrected plotting on and
-off.  
-[% WRAPPER html/todo %]
-Phase corrected plotting is not yet implemented in [%artemis%]. 
-[% END %]
+off.  See [% INCLUDE html/link
+link="path/plot.html#phasecorrectedplots" text="the discussion of
+phase corrected plots"%].
 [% END %]
 [% WRAPPER html/li %]
 This status bar is used to display messages specifically related to

@@ -86,3 +86,28 @@ Plotting list.  (Remember that, unless the
 [% INCLUDE font/quote a="Freeze" %] button is clicked, the Plotting
 list is cleared and repopulated after each fit.)  
 [% END %]
+
+[% PROCESS section label="Phase corrected plots" %]
+
+[% FILTER html_para -%]
+When the Data page button labeled 
+[% INCLUDE font/quote a="Plot with phase correction" %], plots using
+that data set and/or any of its paths will be plotted with phase
+correction.  This means that the contributions of the central and scattering
+atom phase shifts will be removed before the Fourier transform.  This
+has the effect of shifting the peaks in [%chir%] by about +0.5[%AA%],
+such that the first shell peaks at an R value close to the physical
+interatomic distance between the absorber and first shell scatterer.
+
+The phase information is taken from one of the paths.  Each path has a
+button labeled
+[% INCLUDE font/quote a="Use this path for phase corrected plotting"%].
+These buttons are exclusive [%ndash%] only one path per data set can
+have its button ticked on.  The phase information from that path is
+used for the phase corrected plots.
+
+If you turn on phase corrected plotting without having selected a path
+to use, [%artemis%] will issue a warning in te status bar and turn
+phase corrected plotting back off.  You [% INCLUDE font/b a="must" %]
+select a path to use as the source of te phase information.
+[% END %]

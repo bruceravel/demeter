@@ -149,5 +149,5 @@ onvalue=1
 offvalue=0
 default=true
 description
-  When true, a data set in a merge group that are too short compared
+  When true, a data set in a merge group that is too short compared
   to the first item in the group will be excluded from a merge.

@@ -1,10 +1,6 @@
 [% META title = 'Merging data groups'
         about = 'Averaging scans and computing their standard deviation' %]
 
-[% WRAPPER html/todo %]
-Explain weighting options
-[% END %]
-
 [% FILTER html_para %]
 Sadly, most data that we measure is, frankly, kind of crappy.  A
 single scan typically ranges from noisy to so dominated by noise that
@@ -27,19 +23,7 @@ is also computed and stays with the data in project and certain output
 files, although [%athena%] does nothing else with the standard
 deviation other than plotting it, which is shown
 [% INCLUDE imageref text="below" label="merge_stddev" in=1 %].
-
-By default, each data set is weighted the same in the merge.  You can
-specify the weight to use for each data set using the [%PROCESS
-font/param a="Importance" %] parameter, which is 1 by default for ever
-group.  Alternately, you can let [%ifeffit%] determine the amount of
-noise in the data by looking at the signal between 15 and 25 in
-R-space and then use the noise to weight the data.  In that way,
-cleaner data contributes more to the merge.  The final weighting
-option is to weight by the value of the [% PROCESS font/param a="Edge
-step"%].  In that way, fluorescence data with a larger edge step (more
-concentrated and, preseumably, of better quality is weighted more than
-fluorescence with a smaller edge step.  The choice between using the
-three weighting options is made using the radio buttons in the menu.
+By default, each data set is weighted the same in the merge.
 [% END %]
 
 [% WRAPPER figure file="mergemenu.png" %]
@@ -52,6 +36,10 @@ After a merge is made, a plot is displayed showing the merge in some manner.
 The type of merge plot is controled by the 
 [% INCLUDE preference group="Athena" option="merge_plot" %]
 [% INCLUDE html/link text="configuration parameter" link="../other/prefs.html" %].
+The default is to show the data along with the data [%pm%] the
+standard devaition, as shown below.  The other options are the
+[% INCLUDE html/link text="the variance plot" link="../plot/etc.html#specialplotsformergedgroups"%]
+or a plot with the merge and all the data that entered the merge.
 [% END %]
 
 
@@ -93,3 +81,39 @@ weights.  One way of having this happen is to change amplifier gains
 between scans.  In that situation, you probably should choose to merge
 normalized or [%chik%] data.
 [% END %]
+
+[% PROCESS section label="Merging options" %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Weighting options" %]
+There are three ways to weight the spectra which go into the merge.
+The default is to merge by the value of the [% INCLUDE font/param a="importance" %] parameter.
+Since the [% INCLUDE font/param a="importance" %] is by default 1, this choice usually means to
+weight the spectra equally in the merge.  Because [% INCLUDE font/param a="importance" %] is a
+user-definable parameter, the weighting can be made in any way by
+setting those values appropriately.  The other two options are
+attempts to weight according to quality of data.  The 
+[% INCLUDE font/quote a="noise" %] option uses [%ifeffit%]'s[%#'%]
+measure of noise in [%chik%], thus giving more weight to data with
+less shot noise.  The [% INCLUDE font/quote a="edge step" %] uses the
+value of [% INCLUDE font/param a="edge step" %] determined form the
+normalization, thus giving more weight to data with larger edge steps.
+The idea for the edge step option is that, for data measured in
+fluorescence, a more concentrated sample has a larger edge step and is
+likely to give higher quality data.  The choice between the
+three weighting options is made using the radio buttons in the Merge menu.
+[% END %]
+[% WRAPPER html/dt dt="Preferences" %]
+There are [% INCLUDE html/link text="preferences" link="../other/prefs.html" %]
+which have some influence on how the merge happens.  
+[% INCLUDE preference group="merge" option="exclude_short_data" %]
+allows you to choose whether to exclude data sets with far fewer data
+points into the merge.  The default to exclude short data sets.
+[% INCLUDE preference group="merge" option="short_data_margin" %]
+defines how many fewer data points triggers that exclusion for a data set.
+[% INCLUDE preference group="merge" option="weightby" %] sets the
+default choice of weighting option between the three options explained
+above.
+[% END %]
+[% END %]
+
