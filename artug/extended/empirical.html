@@ -1,0 +1,348 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Fitting with empirical standards</title>
+    <link rel="stylesheet" href=../artug.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/constraints.html" class="menu">Constraints and restraints</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../extended/ipots.html" class="menu">Unique potentials</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Artemis logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menu">Crystallography for EXAFS</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Using empirical standards</span><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Fitting with empirical standards
+</h1>
+
+<p>
+Let me just say up front that <span class=program>ARTEMIS</span> is intended as a front-end
+to <span class=program>FEFF</span> for the problem of EXAFS analysis.  In almost all cases,
+<span class=program>FEFF</span> is the right tool for that job and there are extremely few
+cases where the use of empirical standards is preferable to using
+<span class=program>FEFF</span>.  As discussed elsewhere in this manual, there are a
+situations where the application of <span class=program>FEFF</span> to a particular problem
+may not be obvious.  Any situation for which the choice of a starting
+configuration of atomic coordinates, as needed for <span class=program>FEFF</span>'s
+input data, is not obvious might fall into that category.  In one of
+those situations, you might be tempted to puruse empirical standards.
+You would, however, usually be better served by adopting one of the
+strategies that have been developed for applying <span class=program>FEFF</span> calculations
+to unknown structures.
+</p>
+
+<p>
+That said, there are a small handful of situations where the use of
+empirical standards is justified.  In fact, I can think of two.  The
+situation where an absorber and a scatterer are bound by a hydrogen
+atom &ndash; i.e. there is a hydrogen atom in the space between the
+absorber and scatterer from which the photoelectron might scatter
+&ndash; is poorly handled by <span class=program>FEFF</span>.  In that case, finding a
+suitable empirical standard will likely be an improvement over the
+systematic error introduced by <span class=program>FEFF</span>'s poor handlng of the
+hydrogen.  The second example would be a heterogeneous sample
+&ndash; like a soil &ndash; which contains a component which
+varies little from sample to sample.  In that case, using an emirical
+standard to represent the unchanging component and using <span class=program>FEFF</span> to
+model the behavior of the component(s) which do change across the
+ensemble of measurements might be a fruitful strategy.
+</p>
+
+<p>
+To this end, <span class=program>DEMETER</span> offers a mechanism for generating an
+empirical standard from measured data.  This is saved in a form that
+can be used by <span class=program>ARTEMIS</span> as if it were a normal path imported into
+the fit in the normal way.
+</p>
+
+<p>
+My example will use the copper foil data at 10 K and 150 K, which can
+be found at <a href="https://github.com/bruceravel/XAS-Education/tree/master/Examples">at my Github site</a>.  In order to demonstrate the gneration and use of an empirical
+standard, I will use the uncomplicated example of using the low
+temperature data as the standard for the analysis of the higher
+temperature data.  Of course, a real-world scenario will be much more
+complicated that this example, but it should demonstrate the mechanics
+of making and using the empirical standard.
+</p>
+
+
+<hr class=hide />
+<a name="preparingtheempiricalstandard">
+
+<h2>  Preparing the empirical standard</h2>
+</a>
+
+
+<p>
+It starts by processing the data properly.  First, import the two data
+sets into <span class=program>ATHENA</span>.  Take care that the data are aligned and have
+the same values for E&#8320;.  Choose a k-range over which both data
+sets are of good quality.  I have chosen a range of 3&Aring;&#8315;&sup1; to 12
+&Aring;&#8315;&sup1;.  Then choose an R-range to enclose and isolate the first
+peak, which corresponds to the first coordination shell.  Here, I
+chose 1.8 &Aring; to 2.8 &Aring;.
+</p>
+
+
+<div class=figure style="max-width: 772px; min-width: 7em;">
+<a name=emp_athena>
+<img src=../../images/emp_athena.png width=100%>
+</a>
+<p align=center>
+The Cu foil data at two temperatures have been imported into
+<span class=program>ATHENA</span>, aligned, and processed.
+</p>
+</div>
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=emp_rplot>&nbsp;</a><br><a href=../../images/emp_rplot.png><img src="../../images/emp_rplot.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/emp_qplot.png><img src="../../images/emp_qplot.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+Here are the Cu foil data at the two temperatures plotted in R-space
+(left) and back-transform k-space (right).
+</p>
+</div>
+
+<p>
+Select the data set from which you wish to make an empirical standard,
+in this case the data measured at 10 K.  In the File menu is a
+&ldquo;Export&rdquo;.  One of the options is to export
+an empirical standard.
+</p>
+
+
+<div class=figure style="max-width: 772px; min-width: 7em;">
+<a name=emp_export>
+<img src=../../images/emp_export.png width=100%>
+</a>
+<p align=center>
+Exporting the processed data as an empirical standard.
+</p>
+</div>
+
+<p>
+This will prompt you for a file name using the standard file selection
+dialog.  The default file is the name of the data group with
+<span class=file>.es</span> as the extension.
+It will then prompt you for the species of the scattering
+element using a periodic table dialog.  <span class=program>ATHENA</span> has no way of
+knowing the scatterer species, so 
+you have to provide this information.  In this case, you would click
+on Cu since this is a copper foil. 
+</p>
+
+
+<div class=figure style="max-width: 672px; min-width: 7em;">
+<a name=emp_ptable>
+<img src=../../images/emp_ptable.png width=100%>
+</a>
+<p align=center>
+Select the species of the scatterer from the periodic table interface.
+</p>
+</div>
+
+
+
+<hr class=hide />
+<a name="usingtheempiricalstandard">
+
+<h2>  Using the empirical standard</h2>
+</a>
+
+
+<p>
+Now fire up <span class=program>ARTEMIS</span> and import the 150 K data from the <span class=program>ATHENA</span>
+project file you saved before closing <span class=program>ATHENA</span>.  (You 
+<strong>did</strong> save your work, didn't you?!)
+The k- and R-ranges will be imported as they were set in <span class=program>ATHENA</span>.
+To begin the analysis using the empirical standard, click on the hot
+text indicated in the figrue below.
+</p>
+
+
+<div class=figure style="max-width: 843px; min-width: 7em;">
+<a name=emp_importdata>
+<img src=../../images/emp_importdata.png width=100%>
+</a>
+<p align=center>
+The 150 K data have been imported into <span class=program>ARTEMIS</span> and we are ready to
+import the prepared empirical standard.
+</p>
+</div>
+
+<p>
+Once the empirical standard is imported, it will be displayed just
+like a normal path.  You can tell it is an empirical standard because its
+label contains the token &ldquo;[Emp.]&rdquo;.
+</p>
+
+<p>
+Here I have set up a 4-parameter fit typical for a first shell analysis,
+except that I have set the E&#8320; parameter to 0.  The amplitude, &sigma;&sup2;, and
+&Delta;R are guess parameters.
+</p>
+
+
+<div class=figure style="max-width: 843px; min-width: 7em;">
+<a name=emp_importes>
+<img src=../../images/emp_importes.png width=100%>
+</a>
+<p align=center>
+The 150 K data and the empirical standard have been imported into <span class=program>ARTEMIS</span>.
+</p>
+</div>
+
+<p>
+We are now ready to hit the Fit button.  Shown below are the results
+of the fit with the fitting space chosen first as R, then as q.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=emp_fitr>&nbsp;</a><br><a href=../../images/emp_fitr.png><img src="../../images/emp_fitr.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/emp_gdsr.png><img src="../../images/emp_gdsr.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The results of the fit with the fitting space selected as R and the
+plot displayed in R.
+</p>
+</div>
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=emp_fitq>&nbsp;</a><br><a href=../../images/emp_fitq.png><img src="../../images/emp_fitq.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/emp_gdsq.png><img src="../../images/emp_gdsq.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The results of the fit with the fitting space selected as q and the
+plot displayed in q.
+</p>
+</div>
+
+<p>
+The results fitting in R or q are pretty similar, which is reassuring.
+</p>
+
+<p>
+The value for the amplitude is consistent with and close to 1, which
+is should be since the copper metal is 12-fold coordinate at both
+temperatures.
+</p>
+
+<p>
+The value for the change in &sigma;&sup2; is 0.0017&plusmn;3, which seems
+reasonable for this change in temperature.
+</p>
+
+<p>
+The value for &Delta;R fitted in q space is 0.001&plusmn;1.  Fitted in R
+space, the uncertainty is 0.002.  That's kind of interesting.
+In either case, the uncertainty in R is smaller than for a Feff-based
+fit for a number of reasons.  Probably the most significant is that
+both standard and data are of excellent quality.  Were the data the
+sort of marginal data that comes from most research problems on
+difficult materials, the effects of statistical and systematic noise
+would be much more dramatic.  Also relevant to the small uncertainty
+is that this fitting problem has been contrived (by virtue of careful
+alignment and choice of E&#8320; back in Athena) to remove the fitted
+change in E&#8320; from the problem.  By removing the parameter most
+correlated with &Delta;R, we significantly reduces the uncertainty in
+&Delta;R.
+</p>
+
+<p>
+I would not interpret all of this to mean that use of empirical
+standards is superior to the use of Feff.  In the specific case where
+the first coordination shell is of known contents and can be well
+isolated from higher shells and where you are confident that your
+unknown is identical to your standard except for small changes in N,
+R, or &sigma;&sup2;, then empirical standards are a useful tool for your
+EXAFS toolbox.</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

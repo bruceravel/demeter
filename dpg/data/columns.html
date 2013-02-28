@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Importing column data files</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,69 +11,68 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../data/chi.html" class="menu" >chi(k) data files</a> &nbsp;&nbsp;
-        Next: <a href="../data/athena.html" class="menu" >Athena project files</a>
+        Back: <a class=navtable href="../data/chi.html" class="menu">chi(k) data files</a> &nbsp;&nbsp;
         &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+        Up: <a class=navtable href="../data/index.html" class="menu">Importing data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../data/athena.html" class="menu">Athena project files</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Importing column data files
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<br />
-<a href="../data/index.html" class="menuselect" >Importing data</a><br />
-&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/columns.html" class="menuselect" >Column data files</a><br />
-&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
-&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
-&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
-&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
-&nbsp;-&nbsp;<a href="../data/plot.html" class="menu" >Basic plotting and data processing</a><br /><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menuselect">Importing data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mue.html"  class="menu">mu(E) data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/chi.html"  class="menu">chi(k) data files</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Column data files</span><br />
+&nbsp;&#8618;&nbsp;<a href="../data/athena.html"  class="menu">Athena project files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mc.html"  class="menu">Multichannel data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/special.html"  class="menu">Special data types</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/other.html"  class="menu">Handling arbitrary data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/plot.html"  class="menu">Basic plotting and data processing</a><br /><a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Importing column data files
+</h1>
 
 <p>
 
 The most common situation for data import involves raw data from a
-beamline.  In this case,  <span class=program>DEMETER</span> assumes that your data are in
+beamline.  In this case, <span class=program>DEMETER</span> assumes that your data are in
 columns, that one of the columns represents energy, and that two or
 more of the remaining columns represent signals on the various
 detectors.  You must explicitly specify which column is which when you
@@ -81,9 +80,10 @@ define the Data object.
 </p>
 
 
+<hr class=hide />
 <a name="transmissiondata">
 
-<h3>  Transmission data</h3>
+<h2>  Transmission data</h2>
 </a>
 
 <p>
@@ -111,7 +111,7 @@ This first example is for a file containing transmission XAS data:
 
 <p>
 
-The details of how to turn the columns into  &mu;(E)     data are given at
+The details of how to turn the columns into &mu;(E) data are given at
 lines 7 to 10.  The energy column is identified as the first column
 in the data file.  The manner in which the columns are identified,
 i.e. the use of the dollar sign (<tt>$</tt>) is
@@ -158,20 +158,21 @@ later sections of the document.
 That these are transmission data is indicated by the value of the
 <tt>ln</tt> attribute.  Set to 1, the columns will
 be processed as transmission data, i.e. 
- &mu;(E)    =ln( I&#8320;   / I<sub>t</sub>   ) .  Set to 0 (or unspecified as
+&mu;(E)=ln(I&#8320;/I<sub>t</sub>) .  Set to 0 (or unspecified as
 zero is the default), the columns will be processed as fluorescence
-data, i.e.  &mu;(E)    = I<sub>f</sub>   / I&#8320;   .
+data, i.e. &mu;(E)=/I&#8320;.
 </p>
 
 <p>
-In this example, the  I&#8320;    detector is in column 2 of the data file
-and the  I<sub>t</sub>    detector is in column 3.
+In this example, the I&#8320; detector is in column 2 of the data file
+and the I<sub>t</sub> detector is in column 3.
 </p>
 
 
+<hr class=hide />
 <a name="fluorescencedata">
 
-<h3>  Fluorescence data</h3>
+<h2>  Fluorescence data</h2>
 </a>
 
 <p>
@@ -203,21 +204,22 @@ indicate that these are fluorescence data.  The
 <tt>numerator</tt> attribute is set to the column
 containing the fluorescence detector and the 
 <tt>denominator</tt> attribute is set to the
- I&#8320;    column.  Again, once the file is imported and the columns are
+I&#8320; column.  Again, once the file is imported and the columns are
 set, the Data object is ready for use.
 </p>
 
 
+<hr class=hide />
 <a name="multi-elementdetectorfluorescencedata">
 
-<h3>  Multi-element detector fluorescence data</h3>
+<h2>  Multi-element detector fluorescence data</h2>
 </a>
 
 <p>
 
 When fluorescence data is measured using a multi-element detector
 (MED), you will want to sum up the detector channels
-before dividing by  I&#8320;   .  This is accomplished by adding
+before dividing by I&#8320;.  This is accomplished by adding
 multiple channels in the <tt>numerator</tt>
 attribute: 
 </p>
@@ -253,9 +255,10 @@ individually.  An efficient way of doing so is explained in
 </p>
 
 
+<hr class=hide />
 <a name="preprocessingcolumndataonthefly">
 
-<h3>  Preprocessing column data on the fly</h3>
+<h2>  Preprocessing column data on the fly</h2>
 </a>
 
 <p>
@@ -267,7 +270,7 @@ explains how to import data from the Ferrel Lytle database which were
 recorded as a function of motor position for the monochromator angle.
 For data like thse, it is necessary to convert motor position to
 energy using some knowledge of the monochromator crystal and motor and
-a few fundamental constants.  This can be implemented in  <span class=program>DEMETER</span>
+a few fundamental constants.  This can be implemented in <span class=program>DEMETER</span>
 like so:
 </p>
 
@@ -337,44 +340,36 @@ efficient technique explained in
 <a href="mc.html">the section on multichannel data</a>.
 </p>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../data/chi.html" class="menu" >chi(k) data files</a> &nbsp;&nbsp;
-        Next: <a href="../data/athena.html" class="menu" >Athena project files</a>
-        &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

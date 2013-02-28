@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Uranyl ion in solution</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,63 +11,63 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a> &nbsp;&nbsp;
-        Next: <a href="../examples/histo.html" class="menu" >Histogram</a>
+        Back: <a class=navtable href="../examples/agau.html" class="menu">Silver/gold alloy</a> &nbsp;&nbsp;
         &nbsp;&nbsp;
-        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+        Up: <a class=navtable href="../examples/index.html" class="menu">Full examples</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../examples/histo.html" class="menu">Histogram</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
+</div>
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menu">Importing data</a><br />
+<a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menuselect">Full examples</a><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/methyltin.html"  class="menu">Methyltin chloride</a><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/agau.html"  class="menu">Silver/gold alloy</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Uranyl complex in solution</span><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/histo.html"  class="menu">Histogram</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
   Uranyl ion in solution
 </h1>
 <h2>
   Using fuzzy degeneracy, virtual paths, and arbitrary single scattering paths 
 </h2>
-</div>
-
-<hr class=hide />
-
-
-<div class=sidebar>
-  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
-  <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<a href="../data/index.html" class="menu" >Importing data</a><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<br />
-<a href="../examples/index.html" class="menuselect" >Full examples</a><br />
-&nbsp;-&nbsp;<a href="../examples/methyltin.html" class="menu" >Methyltin chloride</a><br />
-&nbsp;-&nbsp;<a href="../examples/agau.html" class="menu" >Silver/gold alloy</a><br />
-&nbsp;-&nbsp;<a href="../examples/uranyl.html" class="menuselect" >Uranyl complex in solution</a><br />
-&nbsp;-&nbsp;<a href="../examples/histo.html" class="menu" >Histogram</a><br /><br />
-</div>
 
 <p>
  
@@ -75,7 +75,7 @@ In this experiment, the control
 sample was a buffered solution with a dissolved uranyl
 acetate.  Following the example of 
 S. Kelly, et al., <em>Geochem. Cosmo. Acta</em>, <strong>66:22</strong>, 
-(2002) p. 3875,
+(2002) p.&nbsp;3875,
 I will use a crystalline analogue of the solvated moiety as my
 starting point for the Feff calculation. Here is the input data for
 Atoms for crystalline sodium uranyl triacetate: 
@@ -148,7 +148,7 @@ on!
 </p>
 
 <p>
-In this first code example,  <span class=program>FEFF</span> is run using a 
+In this first code example, <span class=program>FEFF</span> is run using a 
 <span class=file>feff.inp</span> that is already on disk.  The
 potential and path finder calculations are made, at lines 67.  Then
 the first few paths are plotted at lines 8-13.  
@@ -186,16 +186,16 @@ will do nothing.
 </pre>
 
 <p>
-The state of the  <span class=program>FEFF</span> calculation is frozen to disk at line 15
+The state of the <span class=program>FEFF</span> calculation is frozen to disk at line 15
 and will be used in the following example to import the paths.  This
 is a handy trick that was not used in the previous examples.  By
-freezing the  <span class=program>FEFF</span> calculation, you do not have to run  <span class=program>FEFF</span>
+freezing the <span class=program>FEFF</span> calculation, you do not have to run <span class=program>FEFF</span>
 on the fly before your fit.  This will save a bit of time and,
 perhaps, make development of a fitting model a bit less tedious.
 </p>
 
 <p>
-Looking at the interpretation of the  <span class=program>FEFF</span> calculation is
+Looking at the interpretation of the <span class=program>FEFF</span> calculation is
 useful before launching into the fit.  This can be done with the
 <tt>intrp</tt> command line tool (which has some
 nice output options, including html, TeX, and ASCII-colored screen
@@ -206,14 +206,14 @@ in your script.
 
 <p>
 Note that, in sodium uranyl triacetate, the two dioxo scattering
-paths differ in path length by about 0.006  &Aring;     and the equatorial
+paths differ in path length by about 0.006 &Aring; and the equatorial
 oxygens are split into two groups of three that differ in distance
-also by about 0.006  &Aring;    .  In this case, the 
+also by about 0.006 &Aring;.  In this case, the 
 <a href="../feff/pathfinder.html">fuzzy degeneracy</a>
 is quite helpful.  The fit is probably not so sensitive to such a
 small difference in scattering length, which may not even exist in the
 solution sample.  Because the degeneracy fuzz is set by default to
-0.01  &Aring;    , the two dioxo scatterers are made into a single
+0.01 &Aring;, the two dioxo scatterers are made into a single
 scattering path of degeneracy 2 and the 6 equatorial oxygens are made
 into a single scattering path of degeneracy 6.  This simplifies the
 bookkeeping aspects of creating the fitting model.
@@ -366,41 +366,41 @@ There are a lot of interesting things going on in this fit:
 
 <ol>
   
-<li>
+<li><p>
 At line 4, I turn on the gnuplot plotting backend and enable
 the screen UI features that make Demeter more pleasant to use at the 
 <a href="../ui.html">command line</a>.
-</li>
-<li>
+</p></li>
+<li><p>
 At lines 8-18, I import the uranyl data from an Athena project file
 and set various data and plotting parameters. 
-</li>
-<li>
+</p></li>
+<li><p>
 In lines 20-31, I define the guess parameters using a bit of syntactic
 sugar. I could just as well have written have use the
 <a href="../gds/index.html">normal interface</a>.
-</li>
-<li>
+</p></li>
+<li><p>
 At lines 33-35, I import the results of a Feff calculation that I had
-previously made using the first  <span class=program>DEMETER</span> script on this page.
-</li>
-<li>
+previously made using the first <span class=program>DEMETER</span> script on this page.
+</p></li>
+<li><p>
 At line 37 and 38, I create two <a href="../pathlike/vpath.html">VPaths</a>, or virtual
 paths. These get filled up at lines 65, 74, 83, 92, and 101. 
-</li>
-<li>
+</p></li>
+<li><p>
 At line 40, I define some Path attributes that will be used in common
 for all Path objects defined.
-</li>
-<li>
+</p></li>
+<li><p>
 At lines 105-113, I create an arbitrary single scatering path from the
 oxygen using the 
 <a href="../pathlike/sspath.html">SSPath object</a>
 at a distance where I consider it reasonable to see scattering from
 the hydration sphere. This SSPath then gets included in the fit like a
 normal Path.
-</li>
-<li>
+</p></li>
+<li><p>
 At lines 122-127, I do a bit of trickery to make the spiffy stacked
 plot shown below.  Note that the VPath and SSPath objects get plotted
 in the same way as the Data and Paths.  Indeed, the plot is
@@ -413,12 +413,12 @@ A Data object is its own <tt>data</tt> attribute.
 This little idiom is the way of always setting something like
 <tt>y_offset</tt> to what it needs to be to plot
 the current object in a loop.
-</li>
-<li>
+</p></li>
+<li><p>
 The last line pauses the script before terminating so
 that you have time to examine the plot.  The Gnuplot process ends when
 the script ends, making the plot window go away.
-</li>
+</p></li>
 </ol>
 
 <table>
@@ -426,7 +426,7 @@ the script ends, making the plot window go away.
 <td>
 <p>
 
-The fit as  &chi;(k)   .  This was made by substituting lines 122-127 with:
+The fit as &chi;(k).  This was made by substituting lines 122-127 with:
 <ol class=perlsample>
 <br />
 &nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span><span class="operator">=&gt;</span><span class="number">2</span><span class="operator">,</span> <span class="word">plot_fit</span><span class="operator">=&gt;</span><span class="number">1</span><span class="structure">);</span><br />
@@ -452,7 +452,7 @@ The fit as  &chi;(k)   .  This was made by substituting lines 122-127 with:
 <td>
 <p>
 
-The fit as the magnitude of  &chi;(R)   .  This was made by substituting lines 122-127 with:
+The fit as the magnitude of &chi;(R).  This was made by substituting lines 122-127 with:
 <ol class=perlsample>
 <br />
 &nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span><span class="operator">=&gt;</span><span class="number">2</span><span class="operator">,</span> <span class="word">plot_fit</span><span class="operator">=&gt;</span><span class="number">1</span><span class="structure">);</span><br />
@@ -479,7 +479,7 @@ The fit as the magnitude of  &chi;(R)   .  This was made by substituting lines 1
 <td>
 <p>
 
-The fit as the real part of  &chi;(R)   .  This is the plot that is made
+The fit as the real part of &chi;(R).  This is the plot that is made
 by lines 122-127.
 </p>
 
@@ -490,44 +490,36 @@ by lines 122-127.
 </tr>
 </table>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a> &nbsp;&nbsp;
-        Next: <a href="../examples/histo.html" class="menu" >Histogram</a>
-        &nbsp;&nbsp;
-        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

@@ -168,21 +168,12 @@ beamline scientist!
 
 <p>
 
-Occasionally, <span class=program>ATHENA</span> needs a bit more information to correctly
+Occasionally, <span class=program>ATHENA</span> needs a bit more information to
 interpret your data correctly.  The data types menu is shown in
 the figure below.
 The default is for data to be imported as &mu;(E).
 </p>
 
-
-<div class=figure style="max-width: 812px; min-width: 7em;">
-<a name=import_types>
-<img src=../../images/import_types.png width=100%>
-</a>
-<p align=center>
-Data types in the column selection dialog.
-</p>
-</div>
 
 <p>
 
@@ -210,11 +201,26 @@ xmu.dat : the <span class=file>xmu.dat</span> file from
 </p></li>
 </ul>
 
+<div class=figure style="max-width: 812px; min-width: 7em;">
+<a name=import_types>
+<img src=../../images/import_types.png width=100%>
+</a>
+<p align=center>
+Data types in the column selection dialog.
+</p>
+</div>
+
+<div class=smfigureright style="max-width: 346px; min-width: 7em;">
+<a name=import_changetype>
+<img src=../../images/import_changetype.png width=100%>
+</a>
+<p align=center>
+The dialog for changing data type of a group.
+</p>
+</div>
+
 <p>
 
-</td>
-<td width=346>
-<a class=floatright href="../../images/import_changetype.png"  title=The Athena Users' Guide target=_blank><img border=0 src="../../images/import_changetype.png"  title="The Athena Users' Guide"  alt="import_changetype.png"></a>
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued (&mu;(E), normalized
 &mu;(E), XANES, or detector) record types at any time by selecting
@@ -227,7 +233,6 @@ types to a non-<span class=program>FEFF</span> type.
 </p>
 
 <p>
-
 <span class=program>ATHENA</span> uses electron volts as its energy unit.  It uses a
 simple heuristic to figure out if an input file is in eV or keV.  In
 case <span class=program>ATHENA</span> gets it wrong, you can specify the energy unit with

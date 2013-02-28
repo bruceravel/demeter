@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Plot object</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,81 +11,80 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../highlevel/mode.html" class="menu" >The Mode object</a> &nbsp;&nbsp;
-        Next: <a href="../highlevel/config.html" class="menu" >The Config object</a>
+        Back: <a class=navtable href="../highlevel/mode.html" class="menu">The Mode object</a> &nbsp;&nbsp;
         &nbsp;&nbsp;
-        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+        Up: <a class=navtable href="../highlevel/index.html" class="menu">High level actions for Demeter objects</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../highlevel/config.html" class="menu">The Config object</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Plot object
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<a href="../data/index.html" class="menu" >Importing data</a><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<br />
-<a href="../highlevel/index.html" class="menuselect" >High level actions for Demeter objects</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/mode.html" class="menu" >The Mode object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/plot.html" class="menuselect" >The Plot object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/config.html" class="menu" >The Config object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/methods.html" class="menu" >Other high level methods</a><br /><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menu">Importing data</a><br />
+<a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menuselect">High level actions for Demeter objects</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/dispose.html"  class="menu">Command disposal and command templates</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/mode.html"  class="menu">The Mode object</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">The Plot object</span><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/config.html"  class="menu">The Config object</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/methods.html"  class="menu">Other high level methods</a><br /><a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Plot object
+</h1>
 
 <p>
 
 The Plot object is used to control the details of how plots are made
-and displayed by  <span class=program>DEMETER</span> programs.  It is useful to consider how
- <span class=program>ATHENA</span> works in order to understand the relationship of the Plot
-object to the rest of  <span class=program>DEMETER</span>.  In  <span class=program>ATHENA</span>, the plot
+and displayed by <span class=program>DEMETER</span> programs.  It is useful to consider how
+<span class=program>ATHENA</span> works in order to understand the relationship of the Plot
+object to the rest of <span class=program>DEMETER</span>.  In <span class=program>ATHENA</span>, the plot
 controls are separate from the controls for the parameters of any
 individual data set.  For example, the range over which data are
 plotted in energy or R-space is, in some, sense, a global parameter
 not associated with a particular data set.  The Plot object serves
-this role.  The details of the plot in  <span class=program>DEMETER</span> are global.  To
+this role.  The details of the plot in <span class=program>DEMETER</span> are global.  To
 plot a plottable object (Data, Path, or any of the Path-like objects),
- <span class=program>DEMETER</span> consults the Plot object for those details.
+<span class=program>DEMETER</span> consults the Plot object for those details.
 </p>
 
 <p>
 To make the Plot object readily accessible at all times in your
 program, the <tt>po</tt> method is a method of the
-base class and is inherited by all  <span class=program>DEMETER</span> objects.  Thus, given
+base class and is inherited by all <span class=program>DEMETER</span> objects.  Thus, given
 any object, you can &ldquo;find&rdquo; the Plot object
 like so:
 </p>
@@ -117,9 +116,10 @@ display, this restarts the trace colors and resets the plot title.
 </p>
 
 
+<hr class=hide />
 <a name="plottinginenergy">
 
-<h3>  Plotting in energy</h3>
+<h2>  Plotting in energy</h2>
 </a>
 
 
@@ -158,7 +158,7 @@ the values of the <tt>emin</tt> and
 Also note that, as was discussed in
 <a href="../data/index.html">the chapter on the Data object</a>,
 there is no need to explicitly perform the data normalization or
-background removal.   <span class=program>DEMETER</span> knows what needs to be done to
+background removal.  <span class=program>DEMETER</span> knows what needs to be done to
 bring the data up to date for plotting and will perform all necessary
 chores before actually generating the plot.  This allows you to focus
 on what you need to accomplish.
@@ -283,7 +283,7 @@ flattened.
 
 This example shows two interesting features we haven't yet seen.  This
 shows how things get overplotted, in this case the derivative of 
- &mu;(E)     and the derivative of normalized  &mu;(E)    .  The overplotting
+&mu;(E) and the derivative of normalized &mu;(E).  The overplotting
 happens simply by calling the <tt>plot</tt> mthod a
 second time without calling <tt>start_plot</tt>.
 In this way, any number of things can be overplotted.
@@ -327,9 +327,9 @@ The cahined calls are a bit more concise.
 <td>
 <p>
 
- <span class=program>DEMETER</span> saves arrays containing  I&#8320;    and the signal
+<span class=program>DEMETER</span> saves arrays containing I&#8320; and the signal
 channel, which can then be plotted along with the data.  
- <span class=program>DEMETER</span> takes care to scale these arrays so that they plot
+<span class=program>DEMETER</span> takes care to scale these arrays so that they plot
 nicely with the data.
 </p>
 
@@ -376,8 +376,8 @@ nicely with the data.
 <td>
 <p>
 
- <span class=program>DEMETER</span> offers an easy way to plot  &mu;(E)     data with the 
- E&#8320;  value subtracted.  This places the edge at 0 on the x-axis,
+<span class=program>DEMETER</span> offers an easy way to plot &mu;(E) data with the 
+E&#8320; value subtracted.  This places the edge at 0 on the x-axis,
 allowing you to overplot data from different edges.  When the
 <tt>e_zero</tt> attribute of the Plot object is set
 to 1, each Data object's <tt>bkg_eshift</tt>
@@ -392,9 +392,10 @@ plot.
 </tr>
 </table>
 
+<hr class=hide />
 <a name="plottingink">
 
-<h3>  Plotting in k</h3>
+<h2>  Plotting in k</h2>
 </a>
 
 <br>
@@ -412,7 +413,7 @@ plot.
 <td>
 <p>
 
-Again,  <span class=program>DEMETER</span> will take care of the background removal when you
+Again, <span class=program>DEMETER</span> will take care of the background removal when you
 request a plot in k-space.  Note that the k-weight to use for plotting
 is an attribute of the Plot object.
 </p>
@@ -439,7 +440,7 @@ is an attribute of the Plot object.
 <td>
 <p>
 
-Here the x-axis of the  &chi;(k)    plot has been converted to absolute
+Here the x-axis of the &chi;(k) plot has been converted to absolute
 energy. 
 </p>
 
@@ -464,7 +465,7 @@ energy.
 <td>
 <p>
 
- <span class=program>DEMETER</span> has several types of interesting, pre-defined plots.
+<span class=program>DEMETER</span> has several types of interesting, pre-defined plots.
 One of these, the &ldquo;k123 plot&rdquo;, will overplot
 the data three times, once each with k-weight values of 1, 2, and 3.
 The copy of the data with k-weight of two is plotted normally.  The
@@ -480,9 +481,10 @@ offset constents are chosen to be apprporiate to the data.
 </tr>
 </table>
 
+<hr class=hide />
 <a name="plottinginr">
 
-<h3>  Plotting in R</h3>
+<h2>  Plotting in R</h2>
 </a>
 
 <br>
@@ -500,12 +502,12 @@ offset constents are chosen to be apprporiate to the data.
 <td>
 <p>
 
-This example shows a common kind of plot,  &chi;(R)    data with the
+This example shows a common kind of plot, &chi;(R) data with the
 back-Transform windowsing function, which is also used by 
- <span class=program>DEMETER</span> as the fitting range when a fit is evaluated in R-space.
+<span class=program>DEMETER</span> as the fitting range when a fit is evaluated in R-space.
 The <tt>r_pl</tt> attribute of the Plot object is
 set to <tt>m</tt>, indicating that the magnitude of
- &chi;(R)    should be plotted.
+&chi;(R) should be plotted.
 </p>
 
 <p>
@@ -553,7 +555,7 @@ be plotted.
 <td>
 <p>
 
-Multiple parts of the complex  &chi;(k)    are overplotted by
+Multiple parts of the complex &chi;(k) are overplotted by
 repeatedly plotting data in R-space without calling the
 <tt>start_plot</tt> method.  The value of 
 <tt>r_pl</tt> is set between each part of the
@@ -588,7 +590,7 @@ The &ldquo;R123 plot&rdquo; is the second of the
 pre-packaged specialty plot types.  This one, is just like the k123
 plot in that three copies of the data are overplotted using each of
 the three k-weights with scaling and offset computed automatically.
-This R123 plot was plotted as the magnitude of  &chi;(R)   .  The R123
+This R123 plot was plotted as the magnitude of &chi;(R).  The R123
 plot respects the value of the <tt>r_pl</tt>
 attribute of the Plot object.
 </p>
@@ -618,7 +620,7 @@ part in R space</span>
 
 The &ldquo;Rmr plot&rdquo; is the third of the
 pre-packaged specialty plot types.  This one plots the magnitude and
-real part of  &chi;(R)    with an appropriate offset between them.  This
+real part of &chi;(R) with an appropriate offset between them.  This
 is the default plot type made after a fit finishes.  In that case, the
 data and fit are overplotted as magnitude and real.
 </p>
@@ -630,9 +632,10 @@ data and fit are overplotted as magnitude and real.
 </tr>
 </table>
 
+<hr class=hide />
 <a name="plottinginq">
 
-<h3>  Plotting in q</h3>
+<h2>  Plotting in q</h2>
 </a>
 
 <br>
@@ -650,8 +653,8 @@ data and fit are overplotted as magnitude and real.
 <td>
 <p>
 
-Plotting the back-transformed  &chi;(q)    is specified by plotting in
-&ldquo;q&rdquo;.  The part of the complex  &chi;(q)    is
+Plotting the back-transformed &chi;(q) is specified by plotting in
+&ldquo;q&rdquo;.  The part of the complex &chi;(q) is
 specified using the <tt>q_pl</tt> attribute of the
 Plot object.
 </p>
@@ -678,9 +681,9 @@ Plot object.
 <td>
 <p>
 
-The final specialty plot type in  <span class=program>DEMETER</span> is the 
-&ldquo;kq plot&rdquo;.  This overplots  &chi;(k)    with
-the real part of  &chi;(q)   .
+The final specialty plot type in <span class=program>DEMETER</span> is the 
+&ldquo;kq plot&rdquo;.  This overplots &chi;(k) with
+the real part of &chi;(q).
 </p>
 
 </td>
@@ -690,44 +693,36 @@ the real part of  &chi;(q)   .
 </tr>
 </table>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../highlevel/mode.html" class="menu" >The Mode object</a> &nbsp;&nbsp;
-        Next: <a href="../highlevel/config.html" class="menu" >The Config object</a>
-        &nbsp;&nbsp;
-        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

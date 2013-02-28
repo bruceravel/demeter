@@ -75,7 +75,7 @@ fitting parameters.
 <p>
 Some of these math expressions are quite simple.  For example, in the
 gold metal example in 
-<a href="./path/mathexp.html">the previous chapter</a>,
+<a href="path/mathexp.html">the previous chapter</a>,
 the math expressions for
 S&sup2;&#8320; and E&#8320; were simple function of a single parameter.  The
 math expression for &Delta;R, however, was a function of 
@@ -102,11 +102,14 @@ parameter types can be chosen.
 </p>
 
 
-<a href="../images/gds.png" target=_blank><img class=flexy src="../images/gds.png" title="
+<div class=figure style="max-width: 845px; min-width: 7em;">
+<a name=gds>
+<img src=../images/gds.png width=100%>
+</a>
+<p align=center>
 The <span class=program>ARTEMIS</span> GDS window.
-" alt="
-The <span class=program>ARTEMIS</span> GDS window.
-"></a>
+</p>
+</div>
 
 
 <hr class=hide />
@@ -166,7 +169,7 @@ represent a constant value used elsewhere in the fitting model.
   lguess
 </dt>
 <dd>
-(<span style="color:#3E1C8F; background-color:white">dark purple</span>) An lguess
+(<span style="color:#3e1c8f; background-color:white">dark purple</span>) An lguess
 parameter is a tool used to simplify model 
 creation for a multiple data set fit.  It can be used in math
 expressions for two or more data sets.  When the fit started, an
@@ -180,7 +183,7 @@ independent mixing parameters will be floated for each data set.  The
 point, then, of an lguess is to facilitate the chore of editing path
 parameter math expressions using <span class=program>ARTEMIS</span>'  tools for pushing
 path parameter values across paths.  This is discussed in more detail
-in <a href="./extended/cv.html#useinlguessparameters">the discussion of the characteristic value</a>.
+in <a href="extended/cv.html#useinlguessparameters">the discussion of the characteristic value</a>.
   <br />
   <br />
 </dd>
@@ -236,8 +239,7 @@ implemented in <span class=program>ARTEMIS</span>.
   merge
 </dt>
 <dd>
-(<span style="color:#ffffff; background-color:ee0000">white on
-red</span>) A merge parameter is a parameter which has been 
+(<span style="color:#ffffff; background-color:white">white on red</span>) A merge parameter is a parameter which has been 
 multiply defined under the same name as part of combining fitting
 projects or importing structural units.  A fit cannot proceed with any
 parameters in this state.  This feature has not yet been implemented
@@ -352,28 +354,28 @@ shortcuts to change the parameter type of that set of parameters.
 <ul>
   
 <li><p>
-<tt>Alt-g</tt>: turn to guess
+<span class=key>Alt</span>-<span class=key>g</span>: convert to guess
 </p></li>
 <li><p>
-<tt>Alt-d</tt>: turn to def
+<span class=key>Alt</span>-<span class=key>d</span>: convert to def
 </p></li>
 <li><p>
-<tt>Alt-s</tt>: turn to set
+<span class=key>Alt</span>-<span class=key>s</span>: convert to set
 </p></li>
 <li><p>
-<tt>Alt-l</tt>: turn to lguess
+<span class=key>Alt</span>-<span class=key>l</span>: convert to lguess
 </p></li>
 <li><p>
-<tt>Alt-k</tt>: turn to skip
+<span class=key>Alt</span>-<span class=key>k</span>: convert to skip
 </p></li>
 <li><p>
-<tt>Alt-r</tt>: turn to restrain
+<span class=key>Alt</span>-<span class=key>r</span>: convert to restrain
 </p></li>
 <li><p>
-<tt>Alt-a</tt>: turn to after
+<span class=key>Alt</span>-<span class=key>a</span>: convert to after
 </p></li>
 <li><p>
-<tt>Alt-p</tt>: turn to penalty
+<span class=key>Alt</span>-<span class=key>p</span>: convert to penalty
 </p></li>
 </ul> 
 
@@ -388,7 +390,7 @@ shortcuts to change the parameter type of that set of parameters.
 
 </td>
 <td width=210>
-<a class=floatright href="../images/gds.menu.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/gds.menu.png"  title="The Artemis Users' Guide"  alt="gds.menu.png"></a>
+<a class=floatright href="../images/gds-menu.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/gds-menu.png"  title="The Artemis Users' Guide"  alt="gds-menu.png"></a>
 Clicking on a line in the grid selects the entire line.  Control
 clicking of a line adds that line to the selection.  Shift clicking
 adds all lines between the selected and clicked upon lines.
@@ -451,7 +453,7 @@ recent best fit value(s).
 <p>
 </td>
 <td width=251>
-<a class=floatright href="../images/gds.restraint.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/gds.restraint.png"  title="The Artemis Users' Guide"  alt="gds.restraint.png"></a></p>
+<a class=floatright href="../images/gds-restraint.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/gds-restraint.png"  title="The Artemis Users' Guide"  alt="gds-restraint.png"></a></p>
 This posts a dialog
 that helps you name and define a restraint based upon the value of the
 parameter in the line clicked upon.  This will use <span class=program>IFEFFIT</span>'s
@@ -468,7 +470,7 @@ evaluate to a value of 100 times the distance outside the range.
 This, then, is added in quadrature to &chi;&sup2; when the fit is minimized.
 You can read more about this,
 including how to choose the value of the scaling parameter, in the 
-<a href="./extended/restraint.html">discussion of restraints</a>.
+<a href="extended/constraints.html">discussion of restraints</a>.
   <br />
   <br />
 </dd>

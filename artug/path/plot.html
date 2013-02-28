@@ -143,8 +143,8 @@ the Plot window</a>.
 
 
 <div class=figure style="max-width: 100%; min-width: 7em;">
-<a name=path>&nbsp;</a><br><a href=../../images/path.au4.png><img src="../../images/path.au4.png" width=49%></a>
-&nbsp;&nbsp;<a href=../../images/path.au4vpath.png><img src="../../images/path.au4vpath.png" alt="foo" width=49%></a>
+<a name=path-au4>&nbsp;</a><br><a href=../../images/path-au4.png><img src="../../images/path-au4.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/path-au4vpath.png><img src="../../images/path-au4vpath.png" alt="foo" width=49%></a>
 <br></a>
 <p>
 Here is an example of a VPath.  On the left is data on a gold foil
@@ -166,6 +166,53 @@ Main window status bar, and a VPath onto the
 Plotting list.  (Remember that, unless the 
 &ldquo;Freeze&rdquo; button is clicked, the Plotting
 list is cleared and repopulated after each fit.)  
+</p>
+
+
+<hr class=hide />
+<a name="phasecorrectedplots">
+
+<h2>  Phase corrected plots</h2>
+</a>
+
+<p>
+When the Data page button labeled 
+&ldquo;Plot with phase correction&rdquo;, plots using
+that data set and/or any of its paths will be plotted with phase
+correction.  This means that the contributions of the central and scattering
+atom phase shifts will be removed before the Fourier transform.  This
+has the effect of shifting the peaks in &chi;(R) by about +0.5&Aring;,
+such that the first shell peaks at an R value close to the physical
+interatomic distance between the absorber and first shell scatterer.
+</p>
+
+<p>
+The phase information is taken from one of the paths.  Each path has a
+button labeled
+&ldquo;Use this path for phase corrected plotting&rdquo;.
+These buttons are exclusive &ndash; only one path per data set can
+have its button ticked on.  The phase information from that path is
+used for the phase corrected plots.
+</p>
+
+<p>
+If you turn on phase corrected plotting without having selected a path
+to use, <span class=program>ARTEMIS</span> will issue a warning in te status bar and turn
+phase corrected plotting back off.  You <strong>must</strong>
+select a path to use as the source of the phase information.
+</p>
+
+<p>
+Note that, when making a phase corrected plot, the window function in R
+is not corrected in any way.
+</p>
+
+<p>
+Also note that the phase correction propagates through to &chi;(q).
+While the window function will display sensibly with the central atom
+phase corrected &chi;(q), a &ldquo;kq&rdquo; plot will
+be somewhat less insightful because phase correction is not performed
+on the original &chi;(k) data.
 </p>
 
 </div>

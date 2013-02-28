@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Importing special data types</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,88 +11,88 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../data/mc.html" class="menu" >Multichannel data files</a> &nbsp;&nbsp;
-        Next: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
+        Back: <a class=navtable href="../data/mc.html" class="menu">Multichannel data files</a> &nbsp;&nbsp;
         &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+        Up: <a class=navtable href="../data/index.html" class="menu">Importing data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../data/other.html" class="menu">Handling arbitrary data</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Importing special data types
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<br />
-<a href="../data/index.html" class="menuselect" >Importing data</a><br />
-&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/columns.html" class="menu" >Column data files</a><br />
-&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
-&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
-&nbsp;-&nbsp;<a href="../data/special.html" class="menuselect" >Special data types</a><br />
-&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
-&nbsp;-&nbsp;<a href="../data/plot.html" class="menu" >Basic plotting and data processing</a><br /><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menuselect">Importing data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mue.html"  class="menu">mu(E) data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/chi.html"  class="menu">chi(k) data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/columns.html"  class="menu">Column data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/athena.html"  class="menu">Athena project files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mc.html"  class="menu">Multichannel data files</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Special data types</span><br />
+&nbsp;&#8618;&nbsp;<a href="../data/other.html"  class="menu">Handling arbitrary data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/plot.html"  class="menu">Basic plotting and data processing</a><br /><a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Importing special data types
+</h1>
 
 <p>
 
-Some beamlines write out data in a form that  <span class=program>IFEFFIT</span> is not
+Some beamlines write out data in a form that <span class=program>IFEFFIT</span> is not
 capable of reading without help.  To address this problem,
- <span class=program>DEMETER</span> offers a simple plugin architecture.   A plugin is a
+<span class=program>DEMETER</span> offers a simple plugin architecture.   A plugin is a
 bit of perl code which transformed the problematic file into a form
-that  <span class=program>IFEFFIT</span> can handle.  Plugins are small and hopefully quick
+that <span class=program>IFEFFIT</span> can handle.  Plugins are small and hopefully quick
 and easy to write.
 </p>
 
 
+<hr class=hide />
 <a name="filetypeplugins">
 
-<h3>  Filetype plugins</h3>
+<h2>  Filetype plugins</h2>
 </a>
 
 <p>
 
 NSLS beamline X15B uses an antiquated data acquisition system which
 saves data in a quirky binary format.  One of the plugins for file
-type conversion that ships with  <span class=program>DEMETER</span> knows how to interpret
+type conversion that ships with <span class=program>DEMETER</span> knows how to interpret
 this quirky format.  Here is how data from that beamline are imported
-into a  <span class=program>DEMETER</span> program:
+into a <span class=program>DEMETER</span> program:
 </p>
 
 
@@ -116,7 +116,7 @@ into a  <span class=program>DEMETER</span> program:
 At line 4, a new Plugin object is made and pointed at the problematic
 file.  At line 4, a check is made to verify that the file actually is
 of the X15B type.  When recognized as such, the problematic file is
-converted into an  <span class=program>IFEFFIT</span> friendly form at line 6.  A normal
+converted into an <span class=program>IFEFFIT</span> friendly form at line 6.  A normal
 Data object is then created at line 7 and 8 using the converted file
 and the Plugin's suggestion for how to form fluorescence data from the
 columns in the converted file.
@@ -146,13 +146,13 @@ to the user.
 </dt>
 <dd>
 This method transforms the file into a form easily imported by
- <span class=program>IFEFFIT</span> and
+<span class=program>IFEFFIT</span> and
 writes the transformed data to a transitional file.  This
 transitional file is usually placed in the stash directory (link to section
 explaining the stash directory), but that is not a strict requirement.
 The fully resolved name of the transitional file is returned.  This
 method can use any tools available, ranging from straight perl to
- <span class=program>IFEFFIT</span> to serious math packages such as 
+<span class=program>IFEFFIT</span> to serious math packages such as 
 <a href="http://search.cpan.org/~chm/PDL/">the perl data language</a>
 or
 <a href="http://search.cpan.org/~rkobes/Math-Cephes/">the Cephes library</a>.
@@ -175,9 +175,10 @@ attributes.  See <a href="columns.html">the section on column data</a>.
 </dl>
 
 
+<hr class=hide />
 <a name="pluginsthatshipwithdemeter">
 
-<h3>  Plugins that ship with Demeter</h3>
+<h2>  Plugins that ship with Demeter</h2>
 </a>
 
 <dl>
@@ -187,7 +188,7 @@ attributes.  See <a href="columns.html">the section on column data</a>.
 </dt>
 <dd>
 Convert files from NSLS beamline X10C. These files have headers which
-confuse  <span class=program>IFEFFIT</span> and sometimes fail to have white space separating
+confuse <span class=program>IFEFFIT</span> and sometimes fail to have white space separating
 numbers among the data columns. The plugin comments out the headers
 and corrects the problem with white space between columns. 
   <br />
@@ -210,7 +211,7 @@ channels.
 </dt>
 <dd>
 Convert files from Photon Factory XAS beamlines. These files have
-headers which will confuse  <span class=program>IFEFFIT</span>'s file import and store data as a
+headers which will confuse <span class=program>IFEFFIT</span>'s file import and store data as a
 function of monochromator angle. This plugin comments the header and
 converts mono angle to energy using information about the crystal type
 contained in the header.  The plugin name makes specific reference to
@@ -225,7 +226,7 @@ data from any Photon Factory beamline.
 <dd>
 Convert SSRL binary data file. Yes, SSRL does provide a program for
 converting these binary files to column ASCII data. This plugin does
-the same chore, yielding a file easily read by  <span class=program>IFEFFIT</span>. 
+the same chore, yielding a file easily read by <span class=program>IFEFFIT</span>. 
   <br />
   <br />
 </dd>
@@ -235,7 +236,7 @@ the same chore, yielding a file easily read by  <span class=program>IFEFFIT</spa
 <dd>
 Convert SSRL ASCII data file. Presumably, these ASCII files are the
 result of the SSRL conversion program. These ASCII files are
-unreadable by  <span class=program>IFEFFIT</span>. This plugin, comments out the header lines,
+unreadable by <span class=program>IFEFFIT</span>. This plugin, comments out the header lines,
 constructs a column label line out of the Data: section, moves the
 first column (real time clock) to the third column, and swaps the
 requested and acheived energy columns. 
@@ -248,8 +249,8 @@ requested and acheived energy columns.
 <dd>
 Sam Webb's microprobe data acquisition program writes files with lots
 of columns and with a header structure that cannot be easily used by
- <span class=program>IFEFFIT</span>. This plugin massages that file format into a form more easily
-ready by  <span class=program>IFEFFIT</span>, keeping only the ROI columns. (Note that this plugin
+<span class=program>IFEFFIT</span>. This plugin massages that file format into a form more easily
+ready by <span class=program>IFEFFIT</span>, keeping only the ROI columns. (Note that this plugin
 could be modified quite easily to perform a simple ICR/OCR deadtime
 correction.) 
   <br />
@@ -260,8 +261,8 @@ correction.)
 </dt>
 <dd>
 Files from the HXMA beamline at the Canadian Light Source are readable
-by  <span class=program>IFEFFIT</span>, but the columns are labeled in a way that  <span class=program>IFEFFIT</span> is
-unable to use. This plugin restructures the header for  <span class=program>IFEFFIT</span>'s
+by <span class=program>IFEFFIT</span>, but the columns are labeled in a way that <span class=program>IFEFFIT</span> is
+unable to use. This plugin restructures the header for <span class=program>IFEFFIT</span>'s
 convenience and keeps only the columns containing the ion chambers and
 the corrected (presumably by a simple ICR/OCR deadtime correction) ROI
 signals from the multi-element detector. 
@@ -292,11 +293,11 @@ are imported and deadtime corrected using the point-by-point iterative
 algorithm developed and implemented by Joe Woicik and Bruce Ravel and
 described in 
 J. Woicik, et al., <em>J. Synchrotron Rad.</em>, <strong>17</strong>, 
-(2010) p. 409. 
+(2010) p.&nbsp;409. 
 The
 output data file contains columns for each corrected detector channel
 as well as columns for the various ion chambers.  This is an example of
-a file type plugin which uses  <span class=program>IFEFFIT</span> dirrectly. 
+a file type plugin which uses <span class=program>IFEFFIT</span> dirrectly. 
   <br />
   <br />
 </dd>
@@ -327,44 +328,36 @@ parameters) that is not handled by this plugin. See question 3 at
 </dd>
 </dl>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../data/mc.html" class="menu" >Multichannel data files</a> &nbsp;&nbsp;
-        Next: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
-        &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

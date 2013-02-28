@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Command disposal and command templates</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,65 +11,64 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a href="../highlevel/mode.html" class="menu" >The Mode object</a>
         &nbsp;&nbsp;
-        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+        Up: <a class=navtable href="../highlevel/index.html" class="menu">High level actions for Demeter objects</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../highlevel/mode.html" class="menu">The Mode object</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Command disposal and command templates
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<a href="../data/index.html" class="menu" >Importing data</a><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<br />
-<a href="../highlevel/index.html" class="menuselect" >High level actions for Demeter objects</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/dispose.html" class="menuselect" >Command disposal and command templates</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/mode.html" class="menu" >The Mode object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/plot.html" class="menu" >The Plot object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/config.html" class="menu" >The Config object</a><br />
-&nbsp;-&nbsp;<a href="../highlevel/methods.html" class="menu" >Other high level methods</a><br /><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menu">Importing data</a><br />
+<a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menuselect">High level actions for Demeter objects</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Command disposal and command templates</span><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/mode.html"  class="menu">The Mode object</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/plot.html"  class="menu">The Plot object</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/config.html"  class="menu">The Config object</a><br />
+&nbsp;&#8618;&nbsp;<a href="../highlevel/methods.html"  class="menu">Other high level methods</a><br /><a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Command disposal and command templates
+</h1>
 
 <p>
 
- <span class=program>DEMETER</span> uses a highly abstract system for communicating with 
- <span class=program>FEFF</span>,  <span class=program>IFEFFIT</span>, and the plotting .  The 
+<span class=program>DEMETER</span> uses a highly abstract system for communicating with 
+<span class=program>FEFF</span>, <span class=program>IFEFFIT</span>, and the plotting .  The 
 <a href="http://search.cpan.org/~mjd/Text-Template/">Text::Template</a>
 module is used along with a large number of small, external template
 files.  The idea behind 
@@ -77,9 +76,9 @@ files.  The idea behind
 is quite simple.  Perl code is interspersed with normal text.  A pass
 over the text is made and the perl code is evaluated.  In this way, a
 bit of text is made that is specifically relevant to a particular
-situation.  As an example, here is the template that  <span class=program>DEMETER</span>
-uses to construct the  <span class=program>IFEFFIT</span> command used to normalize the 
- &mu;(E)     data associated with a Data object.
+situation.  As an example, here is the template that <span class=program>DEMETER</span>
+uses to construct the <span class=program>IFEFFIT</span> command used to normalize the 
+&mu;(E) data associated with a Data object.
 </p>
 
 
@@ -103,7 +102,7 @@ pre_edge("{$D->group}.energy+{$D->bkg_eshift}",
 <p>
 
 In this example, <tt>$D</tt> represents the Data
-object.  Thus  <span class=program>IFEFFIT</span>'s <tt>pre-edge</tt>
+object.  Thus <span class=program>IFEFFIT</span>'s <tt>pre-edge</tt>
 command is filled in ith attribute values apprporiate to the current
 Data object.
 </p>
@@ -111,33 +110,34 @@ Data object.
 <p>
 The text generated from the processing of the template is then
 disposed of via one or more avenues, one of which may include sending
-the text to  <span class=program>IFEFFIT</span> for processing.
+the text to <span class=program>IFEFFIT</span> for processing.
 </p>
 
 <p>
 This section explains all of the disposal and templating options
-available to a  <span class=program>DEMETER</span> program.
+available to a <span class=program>DEMETER</span> program.
 </p>
 
 
+<hr class=hide />
 <a name="commanddisposal">
 
-<h3>  Command disposal</h3>
+<h2>  Command disposal</h2>
 </a>
 
 <p>
 
 Once commands have been processed using the templating system, there
 are seevral avenues for disposing of those commands.  The most obvious
-avenue is to send the commands to  <span class=program>IFEFFIT</span> so that the actual
+avenue is to send the commands to <span class=program>IFEFFIT</span> so that the actual
 data can be processed.  However, several other options are possible.
 </p>
 
 <p>
 The <tt>dispose</tt> method is a method of the base
 class and inherited by all objects.  It is used all throughout 
- <span class=program>DEMETER</span> to get things done and is available for explicit use in
- <span class=program>DEMETER</span> programs.  The syntax is quite simple:
+<span class=program>DEMETER</span> to get things done and is available for explicit use in
+<span class=program>DEMETER</span> programs.  The syntax is quite simple:
 </p>
 
 
@@ -154,7 +154,7 @@ form, with the second argument to the method, is used to identify
 command text which is explicitly used to make plots.  When using the
 PGPLOT plotting back end, there is not actually a significant
 difference between plotting and non-plotting commands since 
- <span class=program>IFEFFIT</span> is used to send command to PGPLOT.  However, when using
+<span class=program>IFEFFIT</span> is used to send command to PGPLOT.  However, when using
 other plotting backends, it is essential that plotting commands be
 apprpriately flagged.  Plotting backends are discussed in more detail
 in <a href="../ui.html">the user interface chapter</a>.
@@ -165,7 +165,7 @@ The <tt>$text</tt> given as an argument to the
 <tt>dispose</tt> method typically comes from the
 evaluation of a template, but can be any text generated in any
 fashion.  Thus, it is a completely generic way for a program to
-communicate with  <span class=program>DEMETER</span>'s backends.
+communicate with <span class=program>DEMETER</span>'s backends.
 </p>
 
 <p>
@@ -173,7 +173,7 @@ The targets of the <tt>dispose</tt> method are set
 using the <tt>set_mode</tt> method, another method
 of the base class which is inherited by all objects.  The syntax of
 <tt>set_mode</tt> is consistent with other 
-methods in  <span class=program>DEMETER</span>:
+methods in <span class=program>DEMETER</span>:
 </p>
 
 
@@ -195,8 +195,8 @@ The disposal targets which can be set using <tt>set_mode</tt> are:
   ifeffit
 </dt>
 <dd>
-When true, commands will be sent to  <span class=program>IFEFFIT</span>.  It is often useful
-to turn this disposal target off when debugging  <span class=program>DEMETER</span> programs.
+When true, commands will be sent to <span class=program>IFEFFIT</span>.  It is often useful
+to turn this disposal target off when debugging <span class=program>DEMETER</span> programs.
   <br />
   <br />
 </dd>
@@ -205,7 +205,7 @@ to turn this disposal target off when debugging  <span class=program>DEMETER</sp
 </dt>
 <dd> When true, commands will be sent
 to standard output (usually the screen).  Turning this disposal target
-on is often useful  when debugging  <span class=program>DEMETER</span> programs.
+on is often useful  when debugging <span class=program>DEMETER</span> programs.
   <br />
   <br />
 </dd>
@@ -215,7 +215,7 @@ on is often useful  when debugging  <span class=program>DEMETER</span> programs.
 <dd> When true, plotting commands
 will be sent to standard output (usually the screen).  Turning this
 disposal target 
-on is ofetn useful  when debugging  <span class=program>DEMETER</span> programs.
+on is ofetn useful  when debugging <span class=program>DEMETER</span> programs.
   <br />
   <br />
 </dd>
@@ -289,7 +289,7 @@ held by the scalar.
 the text of the command will be sent to that code reference as the
 sole argument.  This is useful for user interfaces that want to
 post-process the commands.  For example, this disposal mode is used by
- <span class=program>ARTEMIS</span> to display colorized text in its command buffer.
+<span class=program>ARTEMIS</span> to display colorized text in its command buffer.
   <br />
   <br />
 </dd>
@@ -300,7 +300,7 @@ post-process the commands.  For example, this disposal mode is used by
 the text of the plotting command will be sent to that code reference as the
 sole argument.  This is useful for user interfaces that want to
 post-process the commands.  For example, this disposal mode is used by
- <span class=program>ARTEMIS</span> to display colorized text in its plotting buffer.
+<span class=program>ARTEMIS</span> to display colorized text in its plotting buffer.
   <br />
   <br />
 </dd>
@@ -308,43 +308,44 @@ post-process the commands.  For example, this disposal mode is used by
   feedback
 </dt>
 <dd> When set to a code reference,
-the text of  <span class=program>IFEFFIT</span>'s response to commands will be sent to that
+the text of <span class=program>IFEFFIT</span>'s response to commands will be sent to that
 code reference as the 
 sole argument.  This is useful for user interfaces that want to
 post-process the commands.  For example, this disposal mode is used by
- <span class=program>ARTEMIS</span> to display colorized text in its command buffer.
+<span class=program>ARTEMIS</span> to display colorized text in its command buffer.
   <br />
   <br />
 </dd>
 </dl>
 
+<hr class=hide />
 <a name="reprocessedcommands">
 
-<h3>  Reprocessed commands</h3>
+<h2>  Reprocessed commands</h2>
 </a>
 
 <p>
 
- <span class=program>DEMETER</span> tries to use  <span class=program>IFEFFIT</span> as efficiently as possibly.
-On one hand,  <span class=program>IFEFFIT</span> the one of the things that makes 
- <span class=program>DEMETER</span> go and so is indispensible.  On the other hand, the
-business of communicating between perl code and the  <span class=program>IFEFFIT</span>
+<span class=program>DEMETER</span> tries to use <span class=program>IFEFFIT</span> as efficiently as possibly.
+On one hand, <span class=program>IFEFFIT</span> the one of the things that makes 
+<span class=program>DEMETER</span> go and so is indispensible.  On the other hand, the
+business of communicating between perl code and the <span class=program>IFEFFIT</span>
 library is 
 (<a href="../feff/pathfinder.html">with one exception</a>)
-always the slowest thing that  <span class=program>DEMETER</span> does.  One of the
-optimizations implemented by  <span class=program>DEMETER</span> is the reprocessing of
-commands targeted for disposal to  <span class=program>IFEFFIT</span>.
+always the slowest thing that <span class=program>DEMETER</span> does.  One of the
+optimizations implemented by <span class=program>DEMETER</span> is the reprocessing of
+commands targeted for disposal to <span class=program>IFEFFIT</span>.
 </p>
 
 <p>
-Command strings in  <span class=program>IFEFFIT</span> can be quite long -- up to 2048
+Command strings in <span class=program>IFEFFIT</span> can be quite long -- up to 2048
 characters as it is normally compiled.  A command that is split over
 multiple lines, as the example at the beginning of this section is,
-will be processed much faster if  <span class=program>DEMETER</span> pre-processes the
+will be processed much faster if <span class=program>DEMETER</span> pre-processes the
 command to remove unnecessary line breaks.  Basically this means that
-everything between parentheses will be sent to  <span class=program>IFEFFIT</span> as a
+everything between parentheses will be sent to <span class=program>IFEFFIT</span> as a
 single string.  This is accomplished within the <tt>dispose</tt> method via the application of a few regular
-expressions.  The reprocessed string is then sent to  <span class=program>IFEFFIT</span>.
+expressions.  The reprocessed string is then sent to <span class=program>IFEFFIT</span>.
 </p>
 
 <p>
@@ -367,7 +368,7 @@ pre_edge("data0.energy+0",
 <p>
 
 will be reprocessed into this one-line command before being shuffled
-off to  <span class=program>IFEFFIT</span>.
+off to <span class=program>IFEFFIT</span>.
 </p>
 
 
@@ -377,7 +378,7 @@ pre_edge("data0.energy+0", data0.xmu, e0=-9999999, pre1=-150, pre2=-30, norm_ord
 
 <p>
 
-which, when summed over dozens or hundreds of  <span class=program>IFEFFIT</span> commands,
+which, when summed over dozens or hundreds of <span class=program>IFEFFIT</span> commands,
 results in a substantial performance improvement.
 </p>
 
@@ -386,22 +387,23 @@ The <tt>repscreen</tt> and
 <tt>repfile</tt> disposal targets are provided to
 debug the behavior of this optimization.  Reprocessing is quite well
 tested.  However, if you suspect that reprocessing is damaging the
-commands sent to  <span class=program>IFEFFIT</span>, use one of those disposal channels to
+commands sent to <span class=program>IFEFFIT</span>, use one of those disposal channels to
 see the text that is actually being sent.
 </p>
 
 
 
+<hr class=hide />
 <a name="commandtemplates">
 
-<h3>  Command templates</h3>
+<h2>  Command templates</h2>
 </a>
 
 <p>
 
- <span class=program>DEMETER</span> ships with <strong>a lot</strong> of templates.
+<span class=program>DEMETER</span> ships with <strong>a lot</strong> of templates.
 Each template encapsulates a small bit of functionality and 
- <span class=program>DEMETER</span> does many things.  The
+<span class=program>DEMETER</span> does many things.  The
 templates are organized into
 &ldquo;template sets&rdquo;, which are written for
 specific backend targets, and 
@@ -413,13 +415,13 @@ functional.
 
 <p>
 The templates are found in <span class=file>lib/templates/</span>
-directory underneath the installation location of the  <span class=program>DEMETER</span>
+directory underneath the installation location of the <span class=program>DEMETER</span>
 package.  One of the reasons for explaining the templating system in
 this level of detail is to underscore that it is quite possible to add
 new template sets.  By following the model of the existing template
-sets, new output types can be created for  <span class=program>DEMETER</span>.  Indeed, when
- <span class=program>IFEFFIT2</span> finally makes its appearence, it should be relatively
-simple to extend  <span class=program>DEMETER</span> to use it simply by creating an
+sets, new output types can be created for <span class=program>DEMETER</span>.  Indeed, when
+ finally makes its appearence, it should be relatively
+simple to extend <span class=program>DEMETER</span> to use it simply by creating an
 apprporiate template set.
 </p>
 
@@ -429,9 +431,10 @@ Choosing between template sets is one of the topics of
 </p>
 
 
+<hr class=hide />
 <a name="templatesets">
 
-<h4>  Template sets</h4>
+<h3>  Template sets</h3>
 </a>
 
 <p>
@@ -443,53 +446,53 @@ are four different categories of template sets:
 
 <ol>
   
-<li>
+<li><p>
 Data processing commands
-</li>
-<li>
+</p></li>
+<li><p>
 Plotting commands
-</li>
-<li>
- <span class=program>FEFF</span> input templates
-</li>
-<li>
- <span class=program>ATOMS</span> input templates
-</li>
+</p></li>
+<li><p>
+<span class=program>FEFF</span> input templates
+</p></li>
+<li><p>
+<span class=program>ATOMS</span> input templates
+</p></li>
 </ol>
 
 <p>
 
- <span class=program>DEMETER</span> currently ships with four different sets in the data
+<span class=program>DEMETER</span> currently ships with four different sets in the data
 processing category.  
 </p>
 
 
 <ol>
   
-<li>
+<li><p>
 <tt><u>ifeffit</u></tt>, templates which write the syntax
-of  <span class=program>IFEFFIT</span> is a compact form.
-</li>
-<li>
+of <span class=program>IFEFFIT</span> is a compact form.
+</p></li>
+<li><p>
 <tt><u>iff_columns</u></tt>, templates which write the syntax
-of  <span class=program>IFEFFIT</span> is a more human-readable form.
-</li>
-<li>
+of <span class=program>IFEFFIT</span> is a more human-readable form.
+</p></li>
+<li><p>
 <tt><u>feffit</u></tt>, templates which write the syntax
-of input files for the old  <span class=program>FEFFIT</span> program.
-</li>
-<li>
+of input files for the old <span class=program>FEFFIT</span> program.
+</p></li>
+<li><p>
 <tt><u>demeter</u></tt>, templates which write out perl
-syntax using  <span class=program>DEMETER</span>.
-</li>
+syntax using <span class=program>DEMETER</span>.
+</p></li>
 </ol>
 
 <p>
 
 The <tt>demeter</tt> category might seem a bit
-strange.  Its purpose is, indeed, to allow  <span class=program>DEMETER</span> programs to
-write  <span class=program>DEMETER</span> programs.  The intent is to allow a GUI to export
-a file containing a  <span class=program>DEMETER</span> program that can be used to make a
+strange.  Its purpose is, indeed, to allow <span class=program>DEMETER</span> programs to
+write <span class=program>DEMETER</span> programs.  The intent is to allow a GUI to export
+a file containing a <span class=program>DEMETER</span> program that can be used to make a
 fit using the same fitting model that was created using the GUI.
 </p>
 
@@ -498,12 +501,12 @@ The possibility of having these different output targets is the main
 reason for using a templating system.  Having command creation
 containined in these small template files separate from the code may
 seem like an unnecessary layer of abstraction and misdirection, but it
-offers  <span class=program>DEMETER</span> a lot of flexibility and power.  This is even
+offers <span class=program>DEMETER</span> a lot of flexibility and power.  This is even
 more evident for the plotting backends.
 </p>
 
 <p>
- <span class=program>DEMETER</span> currently ships with three different sets in the plotting
+<span class=program>DEMETER</span> currently ships with three different sets in the plotting
 category.  More information about plotting backends can be found in
 <a href="../ui.html">the user interface chapter</a>.
 </p>
@@ -511,30 +514,30 @@ category.  More information about plotting backends can be found in
 
 <ol>
   
-<li>
+<li><p>
 <tt><u>pgplot</u></tt>, templates which write the syntax
-of  <span class=program>IFEFFIT</span> plotting commands, which talk directly to PGPLOT.
-</li>
-<li>
+of <span class=program>IFEFFIT</span> plotting commands, which talk directly to PGPLOT.
+</p></li>
+<li><p>
 <tt><u>gnuplot</u></tt>, templates which write Gnuplot
 plotting scripts.  Using Gnuplot involves writing lots of temporary
 files which contain the data to be plotted.  It also requires that
 Gnuplot be installed on your computer, which is something that you
-have to do separate from the installation of  <span class=program>DEMETER</span>.
-</li>
-<li>
+have to do separate from the installation of <span class=program>DEMETER</span>.
+</p></li>
+<li><p>
 <tt><u>singlefile</u></tt>, this set of templates is used
 to export the data to be plotted to a single column file.  The main
 use of this is in a GUI to exprt a file that can be used to replicate
 an interesting plot -- with offsets, energy shifts, and scaling
 factors -- in an external plotting program.
-</li>
+</p></li>
 </ol>
 
 <p>
 
 In the future, I would like to add more plotting backends to
- <span class=program>DEMETER</span>.  Certainly, any of the plot creation tools from CPAN
+<span class=program>DEMETER</span>.  Certainly, any of the plot creation tools from CPAN
 (such as 
 <a href="http://search.cpan.org/~lds/GD/">GD</a>
 or
@@ -545,22 +548,23 @@ which uses a text file as its input.
 </p>
 
 <p>
- <span class=program>DEMETER</span> currently ships with two different sets in the  <span class=program>FEFF</span>
-input template category, one for  <span class=program>FEFF6</span> and one for  <span class=program>FEFF8</span>.
-(Actually the  <span class=program>FEFF8</span> set has not yet been written at the time
-this document is being written.  In fact,  <span class=program>DEMETER</span>'s  <span class=program>FEFF8</span>
+<span class=program>DEMETER</span> currently ships with two different sets in the <span class=program>FEFF</span>
+input template category, one for <span class=program>FEFF6</span> and one for <span class=program>FEFF8</span>.
+(Actually the <span class=program>FEFF8</span> set has not yet been written at the time
+this document is being written.  In fact, <span class=program>DEMETER</span>'s <span class=program>FEFF8</span>
 interface has not yet been started.
 </p>
 
 <p>
-There is only one set in the  <span class=program>ATOMS</span> input template category.  It
+There is only one set in the <span class=program>ATOMS</span> input template category.  It
 seems unlikely that other sets will actually be required.
 </p>
 
 
+<hr class=hide />
 <a name="templategroups">
 
-<h4>  Template groups</h4>
+<h3>  Template groups</h3>
 </a>
 
 <p>
@@ -571,38 +575,39 @@ Template groups define related chores.  These chores are
 
 <ol>
   
-<li>
+<li><p>
 <tt><u>process</u></tt>: all data processing chores that
-do not involve fitting  &chi;(k)    data or doing any other sort of data
+do not involve fitting &chi;(k) data or doing any other sort of data
 analysis. 
-</li>
-<li>
+</p></li>
+<li><p>
 <tt><u>fit</u></tt>: all chores associated with fitting
- &chi;(k)    data.
-</li>
-<li>
+&chi;(k) data.
+</p></li>
+<li><p>
 <tt><u>analysis</u></tt>: all analysis chores other than
-those associated with fitting  &chi;(k)    data.  This might include
+those associated with fitting &chi;(k) data.  This might include
 things like linear combination fitting. principle component analysis,
 or log-ration/phase-difference analysis.
-</li>
-<li>
+</p></li>
+<li><p>
 <tt><u>plot</u></tt>: all chore associated with plotting data
-</li>
+</p></li>
 </ol>
 
 <p>
 
 The first four groups must be provided completely by any template set.
-Although if a template is missing from a template set,  <span class=program>DEMETER</span>
+Although if a template is missing from a template set, <span class=program>DEMETER</span>
 will fall back to using the template for that chore found in the 
 <tt>ifeffit</tt> set.
 </p>
 
 
+<hr class=hide />
 <a name="thetemplatemethod">
 
-<h4>  The template method</h4>
+<h3>  The template method</h3>
 </a>
 
 <p>
@@ -793,43 +798,36 @@ the Plot object.
 plot_marker({$x}, {$y}, marker={$P->markertype}, color={$P->markercolor})
 </pre>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Next: <a href="../highlevel/mode.html" class="menu" >The Mode object</a>
-        &nbsp;&nbsp;
-        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

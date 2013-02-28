@@ -61,11 +61,6 @@
   Other plotting features
 </h1>
 
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
-Document all the special plots, plotting terminals, and save to image file.
-</p>
-
 <hr class=hide />
 <a name="zoomingandcursorposition">
 
@@ -141,7 +136,7 @@ Norm and deriv of Fe foil
 </dd>
 
 <dt>
-  Data + I0 * signal
+  Data + I0 + signal
 </dt>
 <dd>
 I&#8320; can be plotted
@@ -187,7 +182,7 @@ A R123 plot is a way of visualizing the effect of k-weighting on the
 about the same size as the FT or the k&sup2;-weighted spectrum.  Similarly, the
 FT of the k&sup3;-weighted spectrum is scaled down.  The current
 setting in the 
-<a href="tabs.html#plottinginr-space">R tab</a>.
+<a href="tabs.html#plottinginr-space">R tab</a>
 is used to make this plot.  For this figure, the magnitude setting was selected.
 <br />
 <a href="../../images/plot_r123.png" target=_blank><img class=flexy src="../../images/plot_r123.png" title="
@@ -222,8 +217,8 @@ that have been <a href="../ui/mark.html">marked</a>.
 </dt>
 <dd>
 This special plot is used to visualize &mu;(E) spectra measured at
-different edges.  Each spectrum is shifted so that its point of E&#8320;
-is displayed at 0 on the energy axis.
+different edges.  Each spectrum, Cu and Fe in this example, is shifted
+so that its point of E&#8320; is displayed at 0 on the energy axis.
 <br />
 <a href="../../images/plot_e0_0.png" target=_blank><img class=flexy src="../../images/plot_e0_0.png" title="
 Plot of Fe and Cu foils with E0 at 0.
@@ -326,12 +321,13 @@ allows you to send the most recent plot to a PNG or PDF file.  You
 will be prompted for a filename, then the most recent plot will be
 written to that file in the format specified.  Currently, only PNG and
 PDF are supported.  Saving to a file does not currently work for quad
-plots.
+plots &ndash; you'll have to rely on a screen-capture tool
+for that.
 </p>
 
 <p>
 Finally, you have the option of directing the on-screen plot to one of
-four terminals.  The selected terminal, #1 by default, is updated as
+four terminals.  The selected terminal, number 1 by default, is updated as
 new plots are made.  When you switch to a new terminal, other active
 terminals will become unchanging.  This means you can save a
 particular plot on screen while continuing to make new plots.
@@ -340,11 +336,41 @@ particular plot on screen while continuing to make new plots.
 
 <p class=todo>
 <img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
-Condsider other file types.  SVG and EPS should work.
+Consider other file types.  SVG and EPS should work.
 Gnuplot's GIF and JPG terminals are not sufficiently featureful
 to replicate all the details of <span class=program>ATHENA</span>'s plots.
 <br /><br />
-Also consider making the number of terminals a configuration parameter.
+Consider making the number of terminals a configuration parameter.
+</p>
+
+
+<hr class=hide />
+<a name="phasecorrectedplots">
+
+<h2>  Phase corrected plots</h2>
+</a>
+
+<p>
+
+When the &ldquo;phase correction&rdquo; button is
+clicked on, the Foruier transform for that data group will be made by
+subtracting the central atom phase shift.  This is an incomplete phase
+correction &ndash; in <span class=program>ATHENA</span> we know the central atom but do not
+necessarily have any knowledge about the scattering atom.
+</p>
+
+<p>
+Note that, when making a phase corrected plot, the window function in R
+is not corrected in any way, thus the window will not line up with the
+central atom phase corrected &chi;(R).
+</p>
+
+<p>
+Also note that the phase correction propagates through to &chi;(q).
+While the window function will display sensibly with the central atom
+phase corrected &chi;(q), a &ldquo;kq&rdquo; plot will
+be somewhat less insightful because phase correction is not performed
+on the original &chi;(k) data.
 </p>
 
 </div>

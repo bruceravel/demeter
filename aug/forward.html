@@ -60,13 +60,6 @@
   Conventions and acknowledgements 
 </h2>
 
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Review data citations, rewrite installation section, review
-acknowledgements, rewrite building from source, rewrite using
-section. 
-</p>
-
 <p>
 
 The best way to learn how to use <span class=program>ATHENA</span> is to <strong>use</strong> <span class=program>ATHENA</span>.  Poke at the buttons, poke at the menus, try
@@ -156,18 +149,32 @@ attention-grabbing boxes.<br /><br />
 
 
 <p>
-<a class=floatleft href="../images/LightningBolt.png" target=_blank><img border=0 src="../images/LightningBolt.png"   alt="LightningBolt.png"></a> This symbol indicates a
+
+<a href="../images/LightningBolt.png" target=_blank><img class=flexy src="../images/LightningBolt.png" title=" 
+Lightning symbol
+" alt=" 
+Lightning symbol
+"></a>
+This symbol indicates a
 section describing one of <span class=program>ATHENA</span>'s features that I consider
 especially powerful and central to the effective use of the program.
 </p>
 
 
 
+
 <p>
-<a class=floatleft href="../images/bend.png" target=_blank><img border=0 src="../images/bend.png"   alt="bend.png"></a> This symbol indicates a section
+
+<a href="../images/bend.png" target=_blank><img class=flexy src="../images/bend.png" title=" 
+Bend symbol
+" alt=" 
+Bend symbol
+"></a>
+This symbol indicates a section
 with difficult information that newcomers to <span class=program>ATHENA</span> might pass
 over on their first reading of this document.
 </p>
+
 
 
 <br />
@@ -192,8 +199,10 @@ old browsers.
 I have to thank Matt Newville, of course.  Without <span class=program>IFEFFIT</span> there
 wouldn't be an <span class=program>ATHENA</span>.  One afternoon over coffee, Julie Cross
 and Shelly Kelly lit the spark that eventually lead to this document.
-Some content of this document was inspired by an upcoming XAS review
-article by Shelly Kelly and Dean Hesterberg, which I have had the
+Some content of this document was inspired by the XAS review
+article by Shelly Kelly and Dean Hesterberg
+(S.D. Kelly, D. Hesterberg, B. Ravel, <em>Methods of soil analysis</em>, <strong></strong>
+(2008) p.&nbsp;387-483) which I had the
 pleasure of editing (and, apparently, swiping from). I have a huge
 debt of gratitude to all the folks on the <span class=program>IFEFFIT</span> mailing list.
 Without the incredible support and wonderful feedback that I've
@@ -214,51 +223,38 @@ a really fun, really powerful templating system that was used to
 create this entire document
 </p></li>
 <li><p>
-<a href="http://www.perl.org">The Perl programming language</a>
-and
-<a href="http://search.cpan.org/~johnsca/Syntax-Highlight-Perl-1.0/">Syntax::Highlight::Perl</a>
+<a href="http://www.perl.org">The Perl programming language</a>,
+<a href="http://metacpan.org/module/PPI::HTML">PPI::HTML</a>, and
+<a href="http://metacpan.org/module/Syntax::Highlight::Perl/">Syntax::Highlight::Perl</a>
 from
-<a href="http://www.cpan.org">the CPAN repository</a>
+<a href="http://metacpan.org">the CPAN repository</a>.
 </p></li>
 <li><p>
 The
 <a href="http://www.gnu.org/software/emacs/">Emacs</a>
-and
-<a href="http://www.xemacs.org">XEmacs</a>
-text editors along with 
+text editor along with 
 <a href="http://dave.org.uk/emacs/tt-mode.el">tt-mode</a>
 and the simply wonderful
 <a href="http://ecb.sourceforge.net/">Emacs Code Browser</a>
 </p></li>
 <li><p>
-<a href="http://www.gimp.org">The GIMP</a>
-image editor with frequent use of the Xach effect shadowing plugin
-</p></li>
-<li><p>
-Various tools from the
-<a href="http://www.kde.org">KDE desktop</a>,
-including KColorChooser and
-<a href="http://docs.kde.org/stable/en/kdegraphics/ksnapshot/index.html">KSnapshot</a>
-
+The <a href="http://shutter-project.org/">Shutter</a> 
+screen capture tool.
 </p></li>
 </ul>
 
 <p>
 
-All screenshots were made of <span class=program>ATHENA</span> or the
-<a href="http://www.astro.caltech.edu/~tjp/pgplot/">PGPLOT</a>
-window  on
-my <a href="http://www.kde.org">KDE desktop</a>,
-mostly using some version of the
-<a href="http://www.kde-look.org/content/show.php?content=32824">Orangio theme</a>
-for
-<a href="http://www.kde-look.org/content/show.php?content=31447">deKorator</a>.
+Almost all screenshots were made of either <span class=program>ATHENA</span> or the
+<a href="http://gnuplot.info/">Gnuplot</a>
+window on
+my <a href="http://www.kde.org">KDE desktop</a>.
 The screenshots of spreadsheets made from
 <a href="output/report.html#export_excelreport">a report file</a>
 and
 <a href="examples/aucl.html#ex_aucl_excel">an LCF fit report</a>
 are displayed in
-<a href="http://www.openoffice.org">OpenOffice</a>.
+<a href="http://www.libreoffice.org">LibreOffice</a>.
 </p>
 
 <p>
@@ -269,16 +265,11 @@ of the html document are from
 </p>
 
 <p>
-The image used as the <span class=program>ATHENA</span> program icon is from
-&ldquo;Heracles and Athena. Tondo of an Attic red-figure kylix, 480-470 BC, from Vulci&rdquo;
-from the Staatliche Antikensammlungen in Munich, Germany.  The image
-is in the public domain and was found on 
-<a href="http://commons.wikimedia.org/wiki/Image:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg">Wikimedia Commons</a>.
-The image used as the <span class=program>HEPHAESTUS</span> program icon is from Reubens' 
-&ldquo;Vulcan forging Jupiter's thunderbolts&rdquo; 
-from the Museo Del Prado, Madrid Spain.  This image is also in the public
-domain and also from 
-<a href="http://commons.wikimedia.org/wiki/Image:Rubens_-_Vulcano_forjando_los_rayos_de_J%C3%BApiter.jpg">Wikimedia Commons</a>.
+The image used as the <span class=program>ATHENA</span> program icon is from a
+&ldquo;Terracotta lekythos depicting Athena holding a spear and aphlaston.&rdquo;.
+The image is licensed as Creative Commons Attribution-Share Alike 3.0
+and can be found at
+<a href="http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg">Wikimedia Commons</a>.
 </p>
 
 
@@ -339,7 +330,7 @@ domain and also from
 </p></li>
 <li><p>
   Data on PbTiO<sub>3</sub>, BaTiO<sub>3</sub>, and EuTiO<sub>3</sub> are taken from
-  <a href="http://cars9.uchicago.edu/~ravel/thesis.html">my own PhD thesis</a>.
+  my own PhD thesis.
 </p></li>
 </ul>
 
@@ -357,7 +348,10 @@ domain and also from
 <dd>
 It is not especially hard to build <span class=program>ATHENA</span> from source code.  The procedure
 is explained in detail on this web page: 
-<a href="http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware">http://cars9.uchicago.edu/iffwiki/BruceRavel/EvolvingSoftware</a>.
+<a href="http://bruceravel.github.com/demeter/pods/installation.pod.html">http://bruceravel.github.com/demeter/pods/installation.pod.html</a>.
+An excellent addendum to those instructions is at
+<a href="https://gist.github.com/3959252">https://gist.github.com/3959252</a>.
+
   <br />
   <br />
 </dd>
@@ -365,13 +359,7 @@ is explained in detail on this web page:
   Debian and debian-based Linux
 </dt>
 <dd>
-Add the repositories listed on this page:
-<a href="http://wiki.mr.aps.anl.gov/ObtainingSoftware">http://wiki.mr.aps.anl.gov/ObtainingSoftware</a>.
-This can be done either by editing 
-<span class=file>/etc/apt/sources.list</span> directly or by adding
-repositories using the system package manager (e.g. Adept on ubuntu).
-Once these are included as repositories, the &ldquo;horae&rdquo;
-package, which contains <span class=program>ATHENA</span>, can be installed.
+Coming soon....
   <br />
   <br />
 </dd>
@@ -381,26 +369,9 @@ package, which contains <span class=program>ATHENA</span>, can be installed.
 <dd>
 <p>
 
-An MSI installer package is available at
-<a href="http://cars9.uchicago.edu/iffwiki/Downloads">http://cars9.uchicago.edu/iffwiki/Downloads</a>.
-Installation is very simple.  Just double click on the installer and
-follow the instructions.  If you are installing onto a machine for
-which you do not have administrator privileges, you should choose a
-part of the disk that belongs to you when asked about the installation
-location.
-</p>
-
-<p>
-For those with 
-<a href="http://www.activestate.com/Products/activeperl/index.mhtml">ActiveState Perl</a>
-installed on their windows machines,
-the &ldquo;horae&rdquo; source code can be installed
-using the Perl Package Manager.  In the Perl Package Manager, select
-&ldquo;Preferences&rdquo; from the Edit menu, then
-click on the repositories tab.  Add
-<a href="http://cars9.uchicago.edu/~ravel/ppm/">http://cars9.uchicago.edu/~ravel/ppm/</a>
-as a new repository.  The &ldquo;horae&rdquo;
-package should now show up as an installable package.
+Follow the links on
+<a href="http://bruceravel.github.com/demeter/">the Demeter homepage</a> to download the installer and updater
+packages.  Just download, double-click, and answer the questions.
 </p>
 
   <br />
@@ -410,9 +381,7 @@ package should now show up as an installable package.
   Macintosh
 </dt>
 <dd>
-An installer package is available at
-<a href="http://cars9.uchicago.edu/iffwiki/Downloads">http://cars9.uchicago.edu/iffwiki/Downloads</a>.
-Installation is very simple.  Just double click on the installer and follow the instructions.
+Coming soon....
   <br />
   <br />
 </dd>
@@ -436,14 +405,14 @@ Installation is very simple.  Just double click on the installer and follow the 
 <p>
 
 The source files and all images files for this document can be
-downloaded by SVN.  To grab the source, you will need an
-<a href="http://subversion.tigris.org/">SVN client</a> on your computer.  This
+downloaded using Git.  To grab the source, you will need an
+<a href="http://git-scm.com/">Git client</a> on your computer.  This
 command checks a copy of the source out and downloads it onto your
 computer:
 </p>
 
 <pre>
-    svn co http://cars9.uchicago.edu/svn/aug/
+    git clone git://github.com/bruceravel/demeter.git
 </pre>
 
 <p>
@@ -459,17 +428,12 @@ Toolkit to build.  If TT2 is not available as a package for your system
 it can be downloaded from its website and installed by hand or
 downloaded using perl's <a href="http://cpan.uwinnipeg.ca/htdocs/CPAN/CPAN.html">CPAN
 utility</a>.  You will also need to install the
-<a href="http://cpan.uwinnipeg.ca/dist/Image-Size">Image::Size</a>, and
-<a href="http://cpan.uwinnipeg.ca/dist/Syntax-Highlight-Perl">Syntax::Highlight::Perl</a> modules.  Compiling the L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X
+<a href="http://metacpan.org/module/Image::Size">Image::Size</a>, <a href="http://metacpan.org/module/PPI::HTML">PPI::HTML</a>, and
+<a href="http://metacpan.org/module/Syntax::Highlight::Perl">Syntax::Highlight::Perl</a> modules.  Compiling the L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X
 version of the document will require a fairly complete L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X
 installation as I make use of many styles, including
-amsmath, amsfonts, floatflt, fancybox, fancyhdr, keystroke, varioref, and
-hyperref.  (teTeX compiles the document without any problem. The
-texlive package may complain about not being able to generate two
-postscript font sets.  Those two warning can be safely ignored by
-simply hitting <span class=key>Return</span> when pdflatex pauses
-to complain.  As far as I can tell, ignoring this problem has no
-impact on the document.  I have no experience building the PDF
+amsmath, amsfonts, amssymb, floatflt, wrapfig, fancybox, fancyhdr, keystroke, varioref,
+hyperref, and more.  (I have no experience building the PDF
 document on any system other than linux.)
 </p>
 
@@ -477,8 +441,8 @@ document on any system other than linux.)
 Once TT2 and the other modules are installed, building the document
 should be quite simple.  TT2's <tt>ttree</tt>
 program is used to recurse the through the directory structure
-containing the templates.  The <span class=file>bin/build</span>,
-<span class=file>bin/tex</span>, and <span class=file>bin/pod</span>
+containing the templates.  The <span class=file>bin/build</span>, and
+<span class=file>bin/tex</span>
 scripts are wrappers around <tt>ttree</tt>.  They
 invokes a number of important command line options and pass any
 further command line options to <tt>ttree</tt>.
@@ -514,11 +478,12 @@ difficult for me to incorporate your changes into the source.)
 
 <p>
 
-After downloading and unpacking the source for this document, you must
+After downloading and unpacking the source for <span class=program>DEMETER</span>, you must
 configure it to build correctly on your computer.  This is simple:
 </p>
 
 <pre>
+cd doc/aug
 ./configure
 </pre>
 
@@ -570,65 +535,6 @@ the document.
 ! Package varioref Error: vref at page boundary 142-143 (may loop).
 </pre>
 
-<p>
-
-A version of the PDF document suitable for printing on a grayscale
-(i.e. without color) printer can be made using this sequence of commands:
-</p>
-
-
-<pre>
-cd images/
-./images/convert_to_gray
-cd ../
-./bin/texbw -a
-cd texbw/
-pdflatex athena.ltx
-pdflatex athena.ltx
-</pre>
-<p>
-
-</p>
-
-<p>
-This first bit converts all of the images used in the document to
-grayscale using <a href="http://www.imagemagick.org">ImageMagick</a>.  
-The &ldquo;texbw&rdquo; version of the
-document is nearly identical to the normal L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X document,
-except that the style file and several templates are changed to remove
-all color from the document.  Compiling the version in the <tt>texbw/</tt> directory results in a PDF file that is
-suitable for a non-color printer.
-</p>
-
-<p>
-This output target was created for the 2008 APS summer school.  The
-cost saving of printing the <span class=program>ATHENA</span> document in black-and-white rather
-than color for each of the students was quite significant.
-</p>
-
-
-<hr class=hide />
-<a name="buildingthepoddocument">
-
-<h3>  Building the pod document</h3>
-</a>
-
-<p>
-
-The pod document, <span class=program>ATHENA</span>'s internal document format, is built by
-</p>
-
-<pre>
-./bin/pod -a
-</pre>
-<p>
-
-Individual pages can be built by specifying them on the command line:
-</p>
-
-<pre>
-./bin/pod bkg/norm.tt forward.tt
-</pre>
 
 <hr class=hide />
 <a name="usingthedocumentwithathena">
@@ -638,15 +544,12 @@ Individual pages can be built by specifying them on the command line:
 
 <p>
 
-The pod and html document files can be used by <span class=program>ATHENA</span>, but they
-must be installed in the correct location.  To do this, run the
-<tt>install</tt> script that comes with the
-document package.  This will use an <span class=program>ATHENA</span> module to determine
-the correct location, then copy over all relevant files.  Once installed 
-<span class=program>ATHENA</span> will display the html document in either a web browser or
-a pod viewer depending on the values of the
-<span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;prefer</span> and
-<span class=pref>&diams;Doc&nbsp;&rarr;&nbsp;browser</span> preferences.
+The html document files can be used by <span class=program>ATHENA</span>.  They are
+installed at the time that <span class=program>DEMETER</span> is installed (and they can be
+installed on a Windows machine by downloading and installing the
+documentation package).  If the html pages cannot be found,
+<span class=program>ATHENA</span> will try to use your internet connection to fetch them from 
+<a href="http://bruceravel.github.com/demeter/">the Demeter homepage</a>.
 </p>
 
 </div>

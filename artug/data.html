@@ -91,20 +91,23 @@ Here is the Plot window as it initially appears:
 </p>
 
 
-<a href="../images/datawindow.png" target=_blank><img class=flexy src="../images/datawindow.png" title="
+<div class=figure style="max-width: 843px; min-width: 7em;">
+<a name=datawindow>
+<img src=../images/datawindow.png width=100%>
+</a>
+<p align=center>
 The Artemis data window, immediately after data import.
-" alt="
-The Artemis data window, immediately after data import.
-"></a>
+</p>
+</div>
 
 <ol>
   
 <li><p>
 This button is used to transfer this data set into the plotting list
-in the <a href="./plot/index.html">Plot window</a>.
+in the <a href="plot/index.html">Plot window</a>.
 </p></li>
 <li><p>
-This is the <a href="./extended/cv.html">characteristic value</a> of this data set.  Typically, this is
+This is the <a href="extended/cv.html">characteristic value</a> of this data set.  Typically, this is
 just incremented for each data set as it is imported.  The CV can be
 used as a special parameter in math expressions. 
 </p></li>
@@ -118,7 +121,7 @@ These five buttons generate special plots using this data set.  Each
 of the special plots types is explained below.  Like the Fit button
 from the main window, these buttons are recolored after a fit
 according to the value of the fit's 
-<a href="./fit/happiness.html">happiness parameter</a>.
+<a href="fit/happiness.html">happiness parameter</a>.
 </p></li>
 <li><p>
 This text box contains any title lines associated with the data.
@@ -149,16 +152,13 @@ the fitting model.  Unchecking it is a way of removing a data set from
 a multiple data set fit without actually disposing of the data.  The
 second check button instructs <span class=program>ARTEMIS</span> to automatically transfer
 this data set to the 
-<a href="./plot/index.html">plotting list</a>
+<a href="plot/index.html">plotting list</a>
 at the end of a fit.  The third
 check button turns on background co-refinement.  The  &epsilon;
 text box allows you to specify a measurement error fit this data set.
 Finally, the last check button turns phase corrected plotting on and
-off.  
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Phase corrected plotting is not yet implemented in <span class=program>ARTEMIS</span>. 
-</p>
+off.  See <a href="path/plot.html#phasecorrectedplots">the discussion of
+phase corrected plots</a>.
 </p></li>
 <li><p>
 This status bar is used to display messages specifically related to
@@ -168,7 +168,7 @@ this data set.  These messages are logged in
 <li><p>
 The paths list will become populated as paths are associated with
 this data set.  How that works will be explained in 
-<a href="./path/index.html">the next chapter</a>.
+<a href="path/index.html">the next chapter</a>.
 </p></li>
 <li><p>
 When no paths have yet been associated with a data set, this default
@@ -184,11 +184,14 @@ Data window looks something like this.
 </p>
 
 <p>
-<a href="../images/datawindow_withpaths.png" target=_blank><img class=flexy src="../images/datawindow_withpaths.png" title="
+<div class=figure style="max-width: 851px; min-width: 7em;">
+<a name=datawindow_withpaths>
+<img src=../images/datawindow_withpaths.png width=100%>
+</a>
+<p align=center>
 The Artemis data window, with imported paths.
-" alt="
-The Artemis data window, with imported paths.
-"></a>
+</p>
+</div>
 </p>
 
 <p>
@@ -240,11 +243,14 @@ metal out to the fourth coordination shell.
 
 <h4>  The k123 plot</h4>
 </a>
-<a href="../images/plot_k123.png" target=_blank><img class=flexy src="../images/plot_k123.png" title="
+<div class=figure style="max-width: 640px; min-width: 7em;">
+<a name=plot_k123>
+<img src=../images/plot_k123.png width=100%>
+</a>
+<p align=center>
 k123 plot
-" alt="
-k123 plot
-"></a>
+</p>
+</div>
 <p>
 This is the &ldquo;k123&rdquo; plot.  It shows the data
 and fit as &chi;(k).  Each k-weighting from 1 to 3 is shown.  The
@@ -261,11 +267,14 @@ transform window function is drawn over the k-weight of 1 spectrum.
 
 <h4>  The R123 plot</h4>
 </a>
-<a href="../images/plot_r123.png" target=_blank><img class=flexy src="../images/plot_r123.png" title="
+<div class=figure style="max-width: 640px; min-width: 7em;">
+<a name=plot_r123>
+<img src=../images/plot_r123.png width=100%>
+</a>
+<p align=center>
 R123 plot
-" alt="
-R123 plot
-"></a>
+</p>
+</div>
 <p>
 This is the &ldquo;R123&rdquo; plot.  It shows the data
 and fit as &chi;(R).  The Fourier transform has been done with each
@@ -276,7 +285,7 @@ size in the plot.  The back-Fourier transform window function is drawn
 over the k-weight of 1 spectrum to indicate the range over which the
 fit was evaluated (assuming the fit space is R, as is the default).
 The radio button in the 
-<a href="./plot/index.html">Plot window</a>
+<a href="plot/index.html">Plot window</a>
 for selecting the part of &chi;(R) is respected when
 this plot is made.
 </p>
@@ -288,11 +297,14 @@ this plot is made.
 
 <h4>  The Rmr plot</h4>
 </a>
-<a href="../images/plot_rmr.png" target=_blank><img class=flexy src="../images/plot_rmr.png" title="
+<div class=figure style="max-width: 640px; min-width: 7em;">
+<a name=plot_rmr>
+<img src=../images/plot_rmr.png width=100%>
+</a>
+<p align=center>
 Rmr plot
-" alt="
-Rmr plot
-"></a>
+</p>
+</div>
 <p>
 The &ldquo;Rmr&rdquo; plot is the plot
 displayed by default after a fit.  It shows the magnitude and real part of 
@@ -309,16 +321,19 @@ spectrum to indicate the range over which the fit was evaluated
 
 <h4>  The Rk plot</h4>
 </a>
-<a href="../images/plot_rk.png" target=_blank><img class=flexy src="../images/plot_rk.png" title="
+<div class=figure style="max-width: 642px; min-width: 7em;">
+<a name=plot_rk>
+<img src=../images/plot_rk.png width=100%>
+</a>
+<p align=center>
 Rk plot
-" alt="
-Rk plot
-"></a>
+</p>
+</div>
 <p>
 The &ldquo;Rk&rdquo; plot is a stacked plot with the
 &ldquo;Rmr&rdquo; on the bottom and &chi;(k) on the
 top.  The value of k-weighting selected in the 
-<a href="./plot/index.html">Plot window</a>
+<a href="plot/index.html">Plot window</a>
 is used. Fourier transform windows are drawn over the &chi;(k) and 
 |&chi;(R)| spectra.
 </p>
@@ -338,15 +353,18 @@ on equal footing.
 
 <h4>  The kq plot</h4>
 </a>
-<a href="../images/plot_kq.png" target=_blank><img class=flexy src="../images/plot_kq.png" title="
+<div class=figure style="max-width: 640px; min-width: 7em;">
+<a name=plot_kq>
+<img src=../images/plot_kq.png width=100%>
+</a>
+<p align=center>
 kq plot
-" alt="
-kq plot
-"></a>
+</p>
+</div>
 <p>
 The &ldquo;kq&rdquo; plot shows the data and fit as 
 &chi;(k) and &chi;(q).  The value of k-weighting selected in the
-<a href="./plot/index.html">Plot window</a>
+<a href="plot/index.html">Plot window</a>
 is used.  The Fourier transform windows are drawn over the &chi;(k)
 spectra.
 </p>
@@ -356,9 +374,9 @@ spectra.
 
 
 <hr class=hide />
-<a name="menubar">
+<a name="datamenubar">
 
-<h2>  Menu bar</h2>
+<h2>  Data menu bar</h2>
 </a>
 
 <hr class=hide />
@@ -371,7 +389,10 @@ spectra.
 
 </td>
 <td width=322>
-<a class=floatright href="../images/data.datamenu.png"  title=Data menu target=_blank><img border=0 src="../images/data.datamenu.png"  title="Data menu"  alt="data.datamenu.png"></a>
+<a class=floatright href="../images/data-datamenu.png"  title=Data menu target=_blank><img border=0 src="../images/data-datamenu.png"  title="Data menu"  alt="data-datamenu.png"></a>
+Blah blah
+</p> 
+
 <dl>
   
 <dt>
@@ -442,7 +463,7 @@ file.  The columns will be the same as for the data+fit output.
 </dt>
 <dd>
 This submenu allows you to import a variety of special path types.
-These will be explained later in the document.
+These will be explained later in the document.<br />
 <p class=todo>
 <img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
 Links to those document sections
@@ -493,7 +514,7 @@ to &ldquo;user&rdquo;.
 </dt>
 <dd>
 In a multiple data set fit, this allows you to constrain the data sets
-to have the same choice of Fourier transform parameters.
+to have the same choice of Fourier transform parameters.<br />
 <p class=todo>
 <img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
 Not yet implemented in <span class=program>ARTEMIS</span>
@@ -529,7 +550,6 @@ window status bar.
   <br />
 </dd>
 </dl> 
-</p> 
 
 <hr class=hide />
 <a name="thepathmenu">
@@ -541,7 +561,10 @@ window status bar.
 
 </td>
 <td width=259>
-<a class=floatright href="../images/data.pathmenu.png"  title=Path menu target=_blank><img border=0 src="../images/data.pathmenu.png"  title="Path menu"  alt="data.pathmenu.png"></a>
+<a class=floatright href="../images/data-pathmenu.png"  title=Path menu target=_blank><img border=0 src="../images/data-pathmenu.png"  title="Path menu"  alt="data-pathmenu.png"></a>
+Blah blah
+</p> 
+
 <dl>
   
 <dt>
@@ -549,7 +572,7 @@ window status bar.
 </dt>
 <dd>
 Transfer the displayed path to the plotting list in the 
-<a href="./plot/index.html">Plot window</a>.
+<a href="plot/index.html">Plot window</a>.
   <br />
   <br />
 </dd>
@@ -600,9 +623,7 @@ original degeneracy.
 </dt>
 <dd>
 <p>
-</p>
 
-<p>
 </td>
 <td width=226>
 <a class=floatright href="../images/addparam.png"  title=Add parameter dialog target=_blank><img border=0 src="../images/addparam.png"  title="Add parameter dialog"  alt="addparam.png"></a></p> Post the dialog
@@ -650,7 +671,6 @@ the path list.
   <br />
 </dd>
 </dl> 
-</p> 
 
 <hr class=hide />
 <a name="themarksmenu">
@@ -662,7 +682,7 @@ the path list.
 
 </td>
 <td width=261>
-<a class=floatright href="../images/data.marksmenu.png"  title=Marks menu target=_blank><img border=0 src="../images/data.marksmenu.png"  title="Marks menu"  alt="data.marksmenu.png"></a>
+<a class=floatright href="../images/data-marksmenu.png"  title=Marks menu target=_blank><img border=0 src="../images/data-marksmenu.png"  title="Marks menu"  alt="data-marksmenu.png"></a>
 Much of <span class=program>ARTEMIS</span>' functionality revolves around groups of
 marked paths.  This menu contains a number of shortcuts for marking
 paths.  Note that each of these has a keyboard shortcut
@@ -726,17 +746,17 @@ Mark by path ranking
 
 </td>
 <td width=271>
-<a class=floatright href="../images/data.actionsmenu.png"  title=Actions menu target=_blank><img border=0 src="../images/data.actionsmenu.png"  title="Actions menu"  alt="data.actionsmenu.png"></a>
+<a class=floatright href="../images/data-actionsmenu.png"  title=Actions menu target=_blank><img border=0 src="../images/data-actionsmenu.png"  title="Actions menu"  alt="data-actionsmenu.png"></a>
 Every item in this menu operates on the set of marked paths.  Again,
 keyboard shortcuts are given in the menu.
 </p>
 
 <p>
 The first option is used to make
-<a href="./plot/vpaths.html">a VPath</a>
+<a href="plot/vpaths.html">a VPath</a>
 from  the marked paths.  The second option will transfer all marked
 paths to the plotting list in the 
-<a href="./plot/index.html">Plot window</a>.
+<a href="plot/index.html">Plot window</a>.
 </p>
 
 <p>
@@ -762,7 +782,7 @@ of things transferred
 
 </td>
 <td width=230>
-<a class=floatright href="../images/data.debugmenu.png"  title=Debug menu target=_blank><img border=0 src="../images/data.debugmenu.png"  title="Debug menu"  alt="data.debugmenu.png"></a>
+<a class=floatright href="../images/data-debugmenu.png"  title=Debug menu target=_blank><img border=0 src="../images/data-debugmenu.png"  title="Debug menu"  alt="data-debugmenu.png"></a>
 This menu displays various dialog boxes showing aspects of the current
 state if <span class=program>IFEFFIT</span> or <span class=program>ARTEMIS</span>.  These are mostly used for
 debugging purposes.  This menu is only displayed if the 
@@ -771,16 +791,16 @@ configuration parameter is set to a true value.
 </p>
 
 <hr class=hide />
-<a name="thehelpmenu">
+<a name="thedatahelpmenu">
 
-<h3>  The Help menu</h3>
+<h3>  The Data help menu</h3>
 </a>
 
 <p>
 
 </td>
 <td width=234>
-<a class=floatright href="../images/data.helpmenu.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/data.helpmenu.png"  title="The Artemis Users' Guide"  alt="data.helpmenu.png"></a>
+<a class=floatright href="../images/data-helpmenu.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../images/data-helpmenu.png"  title="The Artemis Users' Guide"  alt="data-helpmenu.png"></a>
 This menu is used to display the sections on the Data window or the
 Path page from the document.
 </p>

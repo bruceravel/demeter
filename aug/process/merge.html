@@ -72,11 +72,6 @@
   Averaging scans and computing their standard deviation 
 </h2>
 
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
-Explain weighting options
-</p>
-
 <p>
 
 Sadly, most data that we measure is, frankly, kind of crappy.  A
@@ -102,20 +97,7 @@ is also computed and stays with the data in project and certain output
 files, although <span class=program>ATHENA</span> does nothing else with the standard
 deviation other than plotting it, which is shown
 below.
-</p>
-
-<p>
-By default, each data set is weighted the same in the merge.  You can
-specify the weight to use for each data set using the <span class=param>&laquo;Importance&raquo;</span> parameter, which is 1 by default for ever
-group.  Alternately, you can let <span class=program>IFEFFIT</span> determine the amount of
-noise in the data by looking at the signal between 15 and 25 in
-R-space and then use the noise to weight the data.  In that way,
-cleaner data contributes more to the merge.  The final weighting
-option is to weight by the value of the <span class=param>&laquo;Edge
-step&raquo;</span>.  In that way, fluorescence data with a larger edge step (more
-concentrated and, preseumably, of better quality is weighted more than
-fluorescence with a smaller edge step.  The choice between using the
-three weighting options is made using the radio buttons in the menu.
+By default, each data set is weighted the same in the merge.
 </p>
 
 
@@ -135,6 +117,10 @@ After a merge is made, a plot is displayed showing the merge in some manner.
 The type of merge plot is controled by the 
 <span class=pref>&diams;Athena&nbsp;&rarr;&nbsp;merge_plot</span>
 <a href="../other/prefs.html">configuration parameter</a>.
+The default is to show the data along with the data &plusmn; the
+standard devaition, as shown below.  The other options are the
+<a href="../plot/etc.html#specialplotsformergedgroups">the variance plot</a>
+or a plot with the merge and all the data that entered the merge.
 </p>
 
 
@@ -187,6 +173,57 @@ weights.  One way of having this happen is to change amplifier gains
 between scans.  In that situation, you probably should choose to merge
 normalized or &chi;(k) data.
 </p>
+
+
+<hr class=hide />
+<a name="mergingoptions">
+
+<h2>  Merging options</h2>
+</a>
+
+<dl>
+  
+<dt>
+  Weighting options
+</dt>
+<dd>
+There are three ways to weight the spectra which go into the merge.
+The default is to merge by the value of the <span class=param>&laquo;importance&raquo;</span> parameter.
+Since the <span class=param>&laquo;importance&raquo;</span> is by default 1, this choice usually means to
+weight the spectra equally in the merge.  Because <span class=param>&laquo;importance&raquo;</span> is a
+user-definable parameter, the weighting can be made in any way by
+setting those values appropriately.  The other two options are
+attempts to weight according to quality of data.  The 
+&ldquo;noise&rdquo; option uses <span class=program>IFEFFIT</span>'s
+measure of noise in &chi;(k), thus giving more weight to data with
+less shot noise.  The &ldquo;edge step&rdquo; uses the
+value of <span class=param>&laquo;edge step&raquo;</span> determined form the
+normalization, thus giving more weight to data with larger edge steps.
+The idea for the edge step option is that, for data measured in
+fluorescence, a more concentrated sample has a larger edge step and is
+likely to give higher quality data.  The choice between the
+three weighting options is made using the radio buttons in the Merge menu.
+  <br />
+  <br />
+</dd>
+<dt>
+  Preferences
+</dt>
+<dd>
+There are <a href="../other/prefs.html">preferences</a>
+which have some influence on how the merge happens.  
+<span class=pref>&diams;Merge&nbsp;&rarr;&nbsp;exclude_short_data</span>
+allows you to choose whether to exclude data sets with far fewer data
+points into the merge.  The default to exclude short data sets.
+<span class=pref>&diams;Merge&nbsp;&rarr;&nbsp;short_data_margin</span>
+defines how many fewer data points triggers that exclusion for a data set.
+<span class=pref>&diams;Merge&nbsp;&rarr;&nbsp;weightby</span> sets the
+default choice of weighting option between the three options explained
+above.
+  <br />
+  <br />
+</dd>
+</dl>
 
 </div>
 

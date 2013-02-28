@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Plotting and basic data processing</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,68 +11,67 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
-        
+        Back: <a class=navtable href="../data/other.html" class="menu">Handling arbitrary data</a>
         &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+        Up: <a class=navtable href="../data/index.html" class="menu">Importing data</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Plotting and basic data processing
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<br />
-<a href="../data/index.html" class="menuselect" >Importing data</a><br />
-&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
-&nbsp;-&nbsp;<a href="../data/columns.html" class="menu" >Column data files</a><br />
-&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
-&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
-&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
-&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
-&nbsp;-&nbsp;<a href="../data/plot.html" class="menuselect" >Basic plotting and data processing</a><br /><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menuselect">Importing data</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mue.html"  class="menu">mu(E) data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/chi.html"  class="menu">chi(k) data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/columns.html"  class="menu">Column data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/athena.html"  class="menu">Athena project files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/mc.html"  class="menu">Multichannel data files</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/special.html"  class="menu">Special data types</a><br />
+&nbsp;&#8618;&nbsp;<a href="../data/other.html"  class="menu">Handling arbitrary data</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Basic plotting and data processing</span><br /><a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
 
+<div class=contentarea>
+
+
+<h1>
+  Plotting and basic data processing
+</h1>
+
+<hr class=hide />
 <a name="typesofplots">
 
-<h3>  Types of plots</h3>
+<h2>  Types of plots</h2>
 </a>
 
 <p>
@@ -85,7 +84,7 @@ interesting thing to discuss is plotting.
 
 <p>
 One might think that topics such as background removal, normalization,
-and Fourier transforms are discussion-worthy.  In fact,  <span class=program>DEMETER</span>
+and Fourier transforms are discussion-worthy.  In fact, <span class=program>DEMETER</span>
 goes to great lengths to assure that you do not need to ever worry
 about having to explicitly do any of those data processing chores.
 Certainly methods exist for doing those data processing chores, but it
@@ -95,18 +94,18 @@ it to Bruce.)
 </p>
 
 <p>
- <span class=program>DEMETER</span> keeps track of the state of the Data object and will
+<span class=program>DEMETER</span> keeps track of the state of the Data object and will
 re-perform data processing steps as necessary.  For example, if you
 change the value of one of the back-Fourier transform range
-attributes,  <span class=program>DEMETER</span> will know that the back-transform must be
-recomputed the next time the  &chi;(q)    data is in some way used.
+attributes, <span class=program>DEMETER</span> will know that the back-transform must be
+recomputed the next time the &chi;(q) data is in some way used.
 Similarly, if a background removal attribute is changed, then 
- <span class=program>DEMETER</span> will know that all steps of data processing must be
+<span class=program>DEMETER</span> will know that all steps of data processing must be
 re-done.
 </p>
 
 <p>
- <span class=program>DEMETER</span> is also aware of what data processing steps must be
+<span class=program>DEMETER</span> is also aware of what data processing steps must be
 up-to-date in order to properly perform any method, including
 plotting.  Thus if you do this:
 </p>
@@ -119,7 +118,7 @@ plotting.  Thus if you do this:
 
 <p>
 
- <span class=program>DEMETER</span> knows to check wether the background removal,
+<span class=program>DEMETER</span> knows to check wether the background removal,
 normalization, and forward transform are up to date and to perform
 them if they are not.
 </p>
@@ -282,7 +281,7 @@ See <a href="../mue/merge.html">the section on merged data</a> for details of th
 </p>
 
 <p>
-Finally, it is plossible to plot  &chi;(k)    data in energy.  This is
+Finally, it is plossible to plot &chi;(k) data in energy.  This is
 done by setting the <tt>chie</tt> attribute of the
 Plot object to a true value.  When that attribute is true and the data
 are plotted in k, the x-axis values will instead be absolute energy.
@@ -306,11 +305,12 @@ error.
 </p>
 
 <p>
+<hr class=hide />
 <a name="plottingandoverplotting">
 </p>
 
 <p>
-<h3>  Plotting and overplotting</h3>
+<h2>  Plotting and overplotting</h2>
 </a>
 </p>
 
@@ -351,16 +351,17 @@ The details of the funny syntax using the
 
 
 
+<hr class=hide />
 <a name="thesinglefileplottingbackend">
 
-<h3>  The singlefile plotting backend</h3>
+<h2>  The singlefile plotting backend</h2>
 </a>
 
 <p>
 
 Although the PGPLOT and Gnuplot plotting backends work just fine,
 sometimes you would like to be able to replicate a particular plot in
-another plotting program.  To that end,  <span class=program>DEMETER</span> provides a
+another plotting program.  To that end, <span class=program>DEMETER</span> provides a
 special plotting backend called the 
 &ldquo;SingleFile&rdquo; backend.  This will replicate
 a plot form of a column data file.  The data in those columns include
@@ -493,9 +494,10 @@ convenience method which does the following:
 &nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">start_plot</span><span class="structure">;</span>
 </ol>
 
+<hr class=hide />
 <a name="otheroddsandends">
 
-<h3>  Other odds and ends</h3>
+<h2>  Other odds and ends</h2>
 </a>
 
 
@@ -508,44 +510,36 @@ purpose, but it is sometimes useful to not rename an object but still
 provide a specific bit of text to use as a plotting label.
 </p>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
-        
-        &nbsp;&nbsp;
-        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

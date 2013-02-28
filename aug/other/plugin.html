@@ -57,7 +57,7 @@
 
 
 <h1>
-  <img src="../../images/bend.png" width="51" height="48" alt="" align="center" />  File type plugins
+  <img src="../../images/bend.png" width="300" height="295" alt="" align="center" />  File type plugins
 </h1>
 <h2>
   Extending Athena to read new file types 
@@ -181,7 +181,7 @@ in detail.
 <li><span class="word">has</span> <span class="single">'+is_binary'</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">(</span><span class="word">default</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="structure">);</span>
 <li><span class="word">has</span> <span class="single">'+description'</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">(</span><span class="word">default</span> <span class="operator">=&gt;</span> <span class="double">&quot;NSLS beamline X10C&quot;</span><span class="structure">);</span>
 <li><span class="word">has</span> <span class="single">'+version'</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">(</span><span class="word">default</span> <span class="operator">=&gt;</span> <span class="float">0.1</span><span class="structure">);</span>
-<li><span class="word">has</span> <span class="single">'+metadata_ini'</span> <span class="operator">=&gt;</span> <span class="structure">(</span><span class="word">default</span> <span class="operator">=&gt;</span> <span class="word">File::Spec</span><span class="operator">-&gt;</span><span class="word">catfile</span><span class="structure">(</span><span class="word">File::Basename::dirname</span><span class="structure">(</span><span class="symbol">$INC</span><span class="structure">{</span><span class="single">'Demeter.pm'</span><span class="structure">})</span><span class="operator">,</span>
+<li><span class="word">has</span> <span class="single">'+metadata_ini'</span> <span class="operator">=&gt;</span> <span class="structure">(</span><span class="word">default</span> <span class="operator">=&gt;</span> <span class="word">File::Spec</span><span class="operator">-&gt;</span><span class="word">catfile</span><span class="structure">(</span><span class="word">File::Basename::dirname</span><span class="structure">(</span><span class="symbol">$INC</span><span class="cast">\</span><span class="structure">{</span><span class="single">'Demeter.pm'</span><span class="cast">\</span><span class="structure">})</span><span class="operator">,</span>
 <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="single">'Demeter'</span><span class="operator">,</span> <span class="single">'share'</span><span class="operator">,</span> <span class="single">'xdi'</span><span class="operator">,</span> <span class="single">'x10c.ini'</span><span class="structure">));</span>
 <li>
 <li><span class="keyword">sub</span> <span class="word">is</span> <span class="structure">{</span>
@@ -451,7 +451,7 @@ to create your own plugins.
 
 Lines 48-59 show the <tt>suggest</tt>
 method.  This provides feedback for use by the 
-<a href="columns.html">column selection dialog</a>
+<a href="../import/columns.html">column selection dialog</a>
 is selecting initial guesses for the columns containing the numerator
 and denominator of the data.  In this case, the method suggests
 columns for transmission data butmakes no suggestions of fluorescence

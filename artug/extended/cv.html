@@ -55,6 +55,8 @@
 &nbsp;&#8618;&nbsp;<span style="font-style: italic;">Characteristic value</span><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
 </div>
@@ -196,14 +198,12 @@ Here is a third way of solving this problem.
 
 <ol>
   
-<li>
-  
+<li><p>
 Set the CV for the three data sets to the temperature at which the
 data were measured.  In our example, the three data sets would get CV
 values of 10, 300, and 500.
-</li>
-<li>
-  
+</p></li>
+<li><p>
 Next, edit the &sigma;&sup2; path parameter for one of the data sets to
 read
 <pre>
@@ -211,12 +211,11 @@ path for data set 1 {
        sigma2 = eins([CV],  thetae)
 }
 </pre>
-</li>
-<li>
-  
+</p></li>
+<li><p>
 Finally, push this &sigma;&sup2; value on the other data sets without
 editing those to which it is pushed.
-</li>
+</p></li>
 </ol>
 
 <p>
@@ -245,7 +244,7 @@ CV in those math expressions saves even more error-prone, manual editing!
 </a>
 
 <p>
-The second use of the CV is along with <span style="color:#3E1C8F; background-color:white">lguess</span> parameters.  These parameters are an
+The second use of the CV is along with <span style="color:#3e1c8f; background-color:white">lguess</span> parameters.  These parameters are an
 eficient way of generating per-data-set guess parameters in a multiple
 data set fit while still making good use of the automation in
 <span class=program>ARTEMIS</span> for pushing path parameter math expressions between data

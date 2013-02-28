@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Methyltin chloride</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,71 +11,71 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a>
         &nbsp;&nbsp;
-        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+        Up: <a class=navtable href="../examples/index.html" class="menu">Full examples</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../examples/agau.html" class="menu">Silver/gold alloy</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
+</div>
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=90% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menu">Importing data</a><br />
+<a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menuselect">Full examples</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Methyltin chloride</span><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/agau.html"  class="menu">Silver/gold alloy</a><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/uranyl.html"  class="menu">Uranyl complex in solution</a><br />
+&nbsp;&#8618;&nbsp;<a href="../examples/histo.html"  class="menu">Histogram</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
   Methyltin chloride
 </h1>
 <h2>
   Using object cloning, multiple data sets, and multiple k-weights 
 </h2>
-</div>
-
-<hr class=hide />
-
-
-<div class=sidebar>
-  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
-  <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<a href="../data/index.html" class="menu" >Importing data</a><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<br />
-<a href="../examples/index.html" class="menuselect" >Full examples</a><br />
-&nbsp;-&nbsp;<a href="../examples/methyltin.html" class="menuselect" >Methyltin chloride</a><br />
-&nbsp;-&nbsp;<a href="../examples/agau.html" class="menu" >Silver/gold alloy</a><br />
-&nbsp;-&nbsp;<a href="../examples/uranyl.html" class="menu" >Uranyl complex in solution</a><br />
-&nbsp;-&nbsp;<a href="../examples/histo.html" class="menu" >Histogram</a><br /><br />
-</div>
 
 <p>
 
-This example will deomnstrate several features of  <span class=program>DEMETER</span>,
+This example will deomnstrate several features of <span class=program>DEMETER</span>,
 including object cloning, multiple data set fitting, and multiple
 k-weights in a fit.  The data are dimethyl tin dichloride and
 monomethyl tin trichloride, both in solution.  These organic tin
 compounds consist of a tin atom surrounded tetrahedrally by chlorine
-atoms and methyl ( CH<sub>3</sub>       ) groups.
+atoms and methyl (CH<sub>3</sub>) groups.
 </p>
 
 <p>
@@ -121,7 +121,7 @@ groups is replaced by another chlorine atoms.
 
 This is simply converted to a <span class=file>feff.inp</span>
 file by cutting and pasting the atomic coordinates and lfleshing out
-the input file with a potentials list and  <span class=program>FEFF</span> boilerplate.
+the input file with a potentials list and <span class=program>FEFF</span> boilerplate.
 Note that the central atom need not be at (0,0,0) nor does it need to
 be the first item in the atoms list.  To constrain the muffin tin
 potentials abd assure physically reasonable muffin tin radii, it might
@@ -239,8 +239,8 @@ to proceed with the fit.
 
 <p>
 
-The data on the two methyltin molecules is imported from an  <span class=program>ATHENA</span>
-project file at lines 5-12.  The  <span class=program>FEFF</span> calculation is made at
+The data on the two methyltin molecules is imported from an <span class=program>ATHENA</span>
+project file at lines 5-12.  The <span class=program>FEFF</span> calculation is made at
 lines 15-18 and the list of ScatteringPath objects is imported at line
 19 using the <tt>list_of_path</tt> method, which is
 a convenience method which returns a list rather than a reference to a
@@ -311,10 +311,10 @@ must have an associated Data object.
 
 As a final note, I want to comment on lines 32 and 41 where the 
 <tt>sp</tt> attribute of the Path objects is set to
-the proper ScatteringPath objects from the  <span class=program>FEFF</span> calculation.
+the proper ScatteringPath objects from the <span class=program>FEFF</span> calculation.
 Choosing the correct ScatteringPaths from <tt>@list</tt>
 requires having specific knowledge of the order of the paths from the
- <span class=program>FEFF</span>'s pathfinder.  That is not difficult to obtain using the 
+<span class=program>FEFF</span>'s pathfinder.  That is not difficult to obtain using the 
 <a href="../feff/intrp.html">intrp method</a>
 of the Feff object, however it is something that is difficult to put
 in-line in a script like this.  Of course, in this case, it is fairly
@@ -344,43 +344,36 @@ find the correct path regardless of the order of things after the
 pathfinder has done its work.
 </p>
 
+</div>
+
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Next: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a>
-        &nbsp;&nbsp;
-        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

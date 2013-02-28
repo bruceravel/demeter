@@ -54,6 +54,8 @@
 &nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
 &nbsp;&#8618;&nbsp;<span style="font-style: italic;">Fuzzy degeneracy</span><br />
 </div>
@@ -73,13 +75,20 @@
 
 <p>
 
+Given a list of atomic coordinates for a cluster of atoms:
+</p>
+
+
+<p>
+
 </td>
 <td width=179>
 <a class=floatright href="../../images/pathfinder.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../../images/pathfinder.png"  title="The Artemis Users' Guide"  alt="pathfinder.png"></a>
-</p>
-
-<p>
-Given a list of atomic coordinates for a cluster of atoms:
+A heap is a tree-shaped data structure. Each node is guaranteed to
+represent a shorter path length than all nodes below it. The top node
+is, thus, guaranteed to be the shortest path.  See
+S.I. Zabinsky, et al., <em>Phys. Rev.</em>, <strong>B66:22</strong>, 
+(1995) p.&nbsp;2995-3009<a href="http://dx.doi.org/10.1103/PhysRevB.52.2995"> (DOI: 10.1103/PhysRevB.52.2995)</a> for more details.
 </p>
 
 <p>
@@ -117,19 +126,7 @@ scattering (<span class=program>FEFF</span>'s default is 7 legs).
 </p>
 
 <p>
-<p>
-<a class=floatleft href="../../images/heap.png" target=_blank><img border=0 src="../../images/heap.png"   alt="heap.png"></a></p>
-</p>
-
-<p>
-A heap is a tree-shaped data structure. Each node is guaranteed to
-represent a shorter path length than all nodes below it. The top node
-is, thus, guaranteed to be the shortest path.  See
-S.I. Zabinsky, et al., <em>Phys. Rev.</em>, <strong>B66:22</strong>, 
-(1995) p.&nbsp;2995-3009<a href="http://dx.doi.org/10.1103/PhysRevB.52.2995"> (DOI: 10.1103/PhysRevB.52.2995)</a> for more details.
-</p>
-
-<p>
+<a class=floatleft href="../../images/heap.png" target=_blank><img border=0 src="../../images/heap.png"   alt="heap.png"></a>
 Construct the path list by repeatedly pulling the top path from the
 heap until the heap is empty.  When the top node is removed, the
 remaining nodes rearrange themselves such that heap retains the
@@ -217,7 +214,7 @@ cyanide bridged structures like prussian blue are two examples.)
 <img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
 <span class=program>ARTEMIS</span>' path finder does not currently handle polarization
 and ellipticity.  So that's another advantage at the moment for 
-<span class=program>FEFF</span>'s path finder.<br /><br />As for the speed issue, I
+<span class=program>FEFF</span>'s path finder.<br /><br /> As for the speed issue, I
 have some ideas for improving <span class=program>ARTEMIS</span>' performance.  While
 it will never be as fast as <span class=program>FEFF</span>, I should be able to close the
 gap somewhat.

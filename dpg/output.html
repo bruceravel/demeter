@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Output formats</title>
-    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./dpg.css />
     <link rel="stylesheet" href=./ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,64 +11,68 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="./index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="./ui.html" class="menu" >User interfaces</a> &nbsp;&nbsp;
-        Next: <a href="./examples/index.html" class="menu" >Full examples</a>      </td>
+        Back: <a class=navtable href="./ui.html" class="menu">User interfaces</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="./examples/index.html" class="menu">Full examples</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Output formats
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="./ceres.html"><img src=./../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="./index.html" class="menu" >Home</a><br />
-<a href="./intro.html" class="menu" >Introduction</a><br />
-<a href="./data/index.html" class="menu" >Importing data</a><br />
-<a href="./mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="./xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="./highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="./atoms/index.html" class="menu" >Atoms</a><br />
-<a href="./feff/index.html" class="menu" >Feff</a><br />
-<a href="./paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="./gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="./fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="./perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="./lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="./pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="./su.html" class="menu" >Structural Units</a><br />
-<a href="./ui.html" class="menu" >User interfaces</a><br />
-<a href="./output.html" class="menuselect" >Output formats</a><br />
-<a href="./examples/index.html" class="menu" >Full examples</a><br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<a href="./intro.html"  class="menu">Introduction</a><br />
+<a href="./data/index.html"  class="menu">Importing data</a><br />
+<a href="./mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="./xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="./highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="./atoms/index.html"  class="menu">Atoms</a><br />
+<a href="./feff/index.html"  class="menu">Feff</a><br />
+<a href="./paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="./gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="./fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="./perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="./lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="./pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="./su.html"  class="menu">Structural Units</a><br />
+<a href="./ui.html"  class="menu">User interfaces</a><br />
+<span style="font-style: italic;">Output formats</span><br />
+<a href="./examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Output formats
+</h1>
 
 <p>
 
- <span class=program>DEMETER</span> offers a large number of output formats for the various
+<span class=program>DEMETER</span> offers a large number of output formats for the various
 kinds of data handled by the various kinds of objects. 
 </p>
 
 
+<hr class=hide />
 <a name="singleobjectcolumndatafiles">
 
-<h3>  Single object column data files</h3>
+<h2>  Single object column data files</h2>
 </a>
 <p>
 
@@ -88,7 +92,7 @@ The available single object output types are:
   xmu
 </dt>
 <dd>
-This file has 7 columns : energy, data as  &mu;(E)    , background,
+This file has 7 columns : energy, data as &mu;(E), background,
 pre-edge, post-edge line, derivative, and second derivative for a
 Data object. 
   <br />
@@ -98,10 +102,10 @@ Data object.
   norm
 </dt>
 <dd>
-This file has 7 columns: energy, data as normalized  &mu;(E)    ,
-normalized background, flattened  &mu;(E)    , flattened background,
-derivative of the normalized  &mu;(E)    , and second derivative of the
-normalized  &mu;(E)     for a Data object.
+This file has 7 columns: energy, data as normalized &mu;(E),
+normalized background, flattened &mu;(E), flattened background,
+derivative of the normalized &mu;(E), and second derivative of the
+normalized &mu;(E) for a Data object.
   <br />
   <br />
 </dd>
@@ -109,8 +113,8 @@ normalized  &mu;(E)     for a Data object.
   chi
 </dt>
 <dd>
-This file has 6 columns: wavenumber,  &chi;(k)   ,  k&sdot;&chi;(k) , 
- k&sup2;&sdot;&chi;(k) ,  k&sup3;&sdot;&chi;(k) , and the  window function in k
+This file has 6 columns: wavenumber, &chi;(k), k&sdot;&chi;(k), 
+k&sup2;&sdot;&chi;(k), k&sup3;&sdot;&chi;(k), and the  window function in k
 for a Data, Path, or pathlike object.
   <br />
   <br />
@@ -119,7 +123,7 @@ for a Data, Path, or pathlike object.
   r
 </dt>
 <dd>
-This file has 6 columns: R, real part of  &chi;(R)   , imaginary part,
+This file has 6 columns: R, real part of &chi;(R), imaginary part,
 magnitude, phase, and the window function in R for a Data, Path, or
 pathlike object.  The current value of k-weighting in the Plot object
 is used to generate the data for this file. 
@@ -130,7 +134,7 @@ is used to generate the data for this file.
   q
 </dt>
 <dd>
-This file has 6 columns: q, real part of  &chi;(q)   , imaginary part,
+This file has 6 columns: q, real part of &chi;(q), imaginary part,
 magnitude, phase, and the window function in k for a Data, Path, or
 pathlike object.  The current value of k-weighting in the Plot object
 is used to generate the data for this file. 
@@ -144,9 +148,10 @@ is used to generate the data for this file.
 &nbsp;&nbsp;<span class="symbol">$path_object</span> <span class="operator">-&gt;</span> <span class="word">save</span><span class="structure">(</span><span class="single">'chir'</span><span class="operator">,</span> <span class="single">'mypath.dat'</span><span class="structure">)</span>
 </ol>
 
+<hr class=hide />
 <a name="columndatafileheaders">
 
-<h4>  Column data file headers</h4>
+<h3>  Column data file headers</h3>
 </a>
 <p>
 
@@ -196,9 +201,10 @@ Plotting parameters
 
 
 
+<hr class=hide />
 <a name="fitresultcolumndatafiles">
 
-<h3>  Fit result column data files</h3>
+<h2>  Fit result column data files</h2>
 </a>
 <p>
 
@@ -223,7 +229,7 @@ object that has been used in a fit.
   bkgsub
 </dt>
 <dd>
-This file has 3 columns: k,  &chi;(k)    with the background function
+This file has 3 columns: k, &chi;(k) with the background function
 subtracted, and the k-space window.  This is only for a Data object
 that has been used in a fit.
   <br />
@@ -248,7 +254,7 @@ data and the other parts to write to the file.  It can take a value of
 <tt>qim</tt> to indicate the space, the k-weighting
 for k-space output, or the part of the complex function for R- or
 q-space output.  The default (no argument) is <tt>k</tt>,
-i.e. un-k-weighted  &chi;(k)   .
+i.e. un-k-weighted &chi;(k).
 </p>
 
 <ol class=perlsample>
@@ -259,9 +265,10 @@ i.e. un-k-weighted  &chi;(k)   .
 &nbsp;&nbsp;<span class="symbol">$dobject</span><span class="operator">-&gt;</span><span class="word">save</span><span class="structure">(</span><span class="double">&quot;fit&quot;</span><span class="operator">,</span> <span class="double">&quot;rim.fit&quot;</span><span class="operator">,</span> <span class="single">'rim'</span><span class="structure">);</span>
 </ol>
 
+<hr class=hide />
 <a name="columndatafileheaders">
 
-<h4>  Column data file headers</h4>
+<h3>  Column data file headers</h3>
 </a>
 <p>
 
@@ -302,13 +309,14 @@ Demeter fit file -- Demeter 0.4.1
 : phase correction    = 0
 </pre>
 
+<hr class=hide />
 <a name="multipleobjectcolumndatafiles">
 
-<h3>  Multiple object column data files</h3>
+<h2>  Multiple object column data files</h2>
 </a>
 <p>
 
- <span class=program>DEMETER</span> offers the <tt>save_many</tt> method
+<span class=program>DEMETER</span> offers the <tt>save_many</tt> method
 as a way to export many Data, Path, and pathlike objects to a single
 column data file which can be easily imported into a plotting or
 spreadsheet program.  The x-axis of the export space will be in the
@@ -348,78 +356,79 @@ an error):
 
 <ul>
   
-<li>
-<tt>xmu</tt>: save  &mu;(E)     for all objects in the
+<li><p>
+<tt>xmu</tt>: save &mu;(E) for all objects in the
 argument list. 
-</li>
-<li>
-<tt>norm</tt>: save normalized  &mu;(E)     for all
+</p></li>
+<li><p>
+<tt>norm</tt>: save normalized &mu;(E) for all
 objects in the argument list. 
-</li>
-<li>
-<tt>der</tt>: save the derivative of  &mu;(E)     for
+</p></li>
+<li><p>
+<tt>der</tt>: save the derivative of &mu;(E) for
 all objects in the argument list. 
-</li>
-<li>
+</p></li>
+<li><p>
 <tt>nder</tt>: save the derivative of normalized 
- &mu;(E)     for all objects in the argument list. 
-</li>
-<li>
-<tt>sec</tt>: save the second derivative of  &mu;(E)     for all objects in the argument list. 
-</li>
-<li>
+&mu;(E) for all objects in the argument list. 
+</p></li>
+<li><p>
+<tt>sec</tt>: save the second derivative of &mu;(E) for all objects in the argument list. 
+</p></li>
+<li><p>
 <tt>nsec</tt>: save the second derivative of
-normalized  &mu;(E)     for all objects in the argument list. 
-</li>
-<li>
-<tt>chi</tt>: save unweighted  &chi;(k)    for all
+normalized &mu;(E) for all objects in the argument list. 
+</p></li>
+<li><p>
+<tt>chi</tt>: save unweighted &chi;(k) for all
 objects in the argument list. 
-</li>
-<li>
-<tt>chik</tt>: save  k&sup1;     -weighted  &chi;(k)   
+</p></li>
+<li><p>
+<tt>chik</tt>: save k&sup1;-weighted &chi;(k)
 for all objects in the argument list. 
-</li>
-<li>
-<tt>chik2</tt>: save  k&sup2;     -weighted  &chi;(k)   
+</p></li>
+<li><p>
+<tt>chik2</tt>: save k&sup2;-weighted &chi;(k)
 for all objects in the argument list. 
-</li>
-<li>
-<tt>chik3</tt>: save  k&sup3;     -weighted  &chi;(k)   
+</p></li>
+<li><p>
+<tt>chik3</tt>: save k&sup3;-weighted &chi;(k)
 for all objects in the argument list. 
-</li>
-<li>
-<tt>chir_mag</tt>: save the magnitude of  &chi;(R)   
+</p></li>
+<li><p>
+<tt>chir_mag</tt>: save the magnitude of &chi;(R)
 for all objects in the argument list. 
-</li>
-<li>
-<tt>chir_re</tt>: save  the real part of  &chi;(R)   
+</p></li>
+<li><p>
+<tt>chir_re</tt>: save  the real part of &chi;(R)
 for all objects in the argument list. 
-</li>
-<li>
+</p></li>
+<li><p>
 <tt>chir_im</tt>: save the imaginary part of 
- &chi;(R)    for all objects in the argument list. 
-</li>
-<li>
-<tt>chiq_mag</tt>: save the magnitude of  &chi;(q)   
+&chi;(R) for all objects in the argument list. 
+</p></li>
+<li><p>
+<tt>chiq_mag</tt>: save the magnitude of &chi;(q)
 for all objects in the argument list. 
-</li>
-<li>
-<tt>chiq_re</tt>: save the real part of  &chi;(q)   
+</p></li>
+<li><p>
+<tt>chiq_re</tt>: save the real part of &chi;(q)
 for all objects in the argument list. 
-</li>
-<li>
+</p></li>
+<li><p>
 <tt>chiq_im</tt>: save the imaginary part of 
- &chi;(q)    for all objects in the argument list. 
-</li>
+&chi;(q) for all objects in the argument list. 
+</p></li>
 </ul>
 
+<hr class=hide />
 <a name="athenaprojectfiles">
 
-<h3>  Athena  project files</h3>
+<h2>  Athena  project files</h2>
 </a>
 <p>
 
-You can export an  <span class=program>ATHENA</span> project files from a group of data
+You can export an <span class=program>ATHENA</span> project files from a group of data
 objects like so:
 </p>
 
@@ -439,19 +448,20 @@ be written twice to the project file.
 </p>
 
 <p>
-This is, in every way, a normal  <span class=program>ATHENA</span> project file that can be
-imported by  <span class=program>ATHENA</span> or  <span class=program>ARTEMIS</span> (either the old version or
+This is, in every way, a normal <span class=program>ATHENA</span> project file that can be
+imported by <span class=program>ATHENA</span> or <span class=program>ARTEMIS</span> (either the old version or
 the new version).
 </p>
 
 
+<hr class=hide />
 <a name="serializationfiles">
 
-<h3>  Serialization files</h3>
+<h2>  Serialization files</h2>
 </a>
 <p>
 
-Every  <span class=program>DEMETER</span> object type has a serialization format.  The
+Every <span class=program>DEMETER</span> object type has a serialization format.  The
 purpose of this is to freeze the state of an object to disk in a form
 that can be easily reimported to recover the state of the object.
 </p>
@@ -462,7 +472,7 @@ These files use the
 format.  YAML is a fairly simple, text-only way of recording state of
 an object.  Although you should never need to do so, you can examine
 or even edit a YAML file with any text editor.  To save a little
-space,  <span class=program>DEMETER</span> compresses the files using the same algorithm as the
+space, <span class=program>DEMETER</span> compresses the files using the same algorithm as the
 <a href="http://www.gzip.org/">gzip program</a>.
 This kind of compressed file can be read by most compression or
 archiving programs on all platforms.
@@ -494,9 +504,10 @@ of the file to import.  It returns the object.
 </ol>
 
 
+<hr class=hide />
 <a name="logfiles">
 
-<h3>  Log files</h3>
+<h2>  Log files</h2>
 </a>
 <p>
 
@@ -510,9 +521,10 @@ The Fit object has a <tt>logfile</tt> method.
 </ol>
 
 
+<hr class=hide />
 <a name="projectfiles">
 
-<h3>  Project files</h3>
+<h2>  Project files</h2>
 </a>
 <p>
 
@@ -520,61 +532,57 @@ Project files are zip files filled with YAML files and other things.
 </p>
 
 
+<hr class=hide />
 <a name="atomsandfeffi/o">
 
-<h3>  Atoms and feff I/O</h3>
+<h2>  Atoms and feff I/O</h2>
 </a>
 <p>
 
- <span class=program>ATOMS</span> and  <span class=program>FEFF</span> I/O
+<span class=program>ATOMS</span> and <span class=program>FEFF</span> I/O
 </p>
 
 
+<hr class=hide />
 <a name="scripts">
 
-<h3>  Scripts</h3>
+<h2>  Scripts</h2>
 </a>
 <p>
 
- <span class=program>DEMETER</span> and  <span class=program>IFEFFIT</span> scripts
+<span class=program>DEMETER</span> and <span class=program>IFEFFIT</span> scripts
 </p>
+
+</div>
 
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="./ui.html" class="menu" >User interfaces</a> &nbsp;&nbsp;
-        Next: <a href="./examples/index.html" class="menu" >Full examples</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

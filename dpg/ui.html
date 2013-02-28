@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>User interfaces</title>
-    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./dpg.css />
     <link rel="stylesheet" href=./ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,57 +11,60 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="./index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Back: <a href="./su.html" class="menu" >Structural Units</a> &nbsp;&nbsp;
-        Next: <a href="./output.html" class="menu" >Output formats</a>      </td>
+        Back: <a class=navtable href="./su.html" class="menu">Structural Units</a> &nbsp;&nbsp;
+        
+        &nbsp;&nbsp;
+        Next: <a class=navtable href="./output.html" class="menu">Output formats</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  User interfaces
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="./ceres.html"><img src=./../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="./index.html" class="menu" >Home</a><br />
-<a href="./intro.html" class="menu" >Introduction</a><br />
-<a href="./data/index.html" class="menu" >Importing data</a><br />
-<a href="./mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="./xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="./highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="./atoms/index.html" class="menu" >Atoms</a><br />
-<a href="./feff/index.html" class="menu" >Feff</a><br />
-<a href="./paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="./gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<a href="./fit/index.html" class="menu" >Fitting EXAFS data</a><br />
-<a href="./perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="./lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="./pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="./su.html" class="menu" >Structural Units</a><br />
-<a href="./ui.html" class="menuselect" >User interfaces</a><br />
-<a href="./output.html" class="menu" >Output formats</a><br />
-<a href="./examples/index.html" class="menu" >Full examples</a><br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<a href="./intro.html"  class="menu">Introduction</a><br />
+<a href="./data/index.html"  class="menu">Importing data</a><br />
+<a href="./mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="./xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="./highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="./atoms/index.html"  class="menu">Atoms</a><br />
+<a href="./feff/index.html"  class="menu">Feff</a><br />
+<a href="./paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="./gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="./fit/index.html"  class="menu">Fitting EXAFS data</a><br />
+<a href="./perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="./lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="./pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="./su.html"  class="menu">Structural Units</a><br />
+<span style="font-style: italic;">User interfaces</span><br />
+<a href="./output.html"  class="menu">Output formats</a><br />
+<a href="./examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  User interfaces
+</h1>
 
 <p>
 
-Most of  <span class=program>DEMETER</span> makes no particular assumptions about how you
+Most of <span class=program>DEMETER</span> makes no particular assumptions about how you
 will be interacting with it.  There is no special exception handling
 beyond what comes normally with perl.  In the case of, for instance,
 failed sanity checks on a fitting model, error messages are sent to 
@@ -69,26 +72,27 @@ perl's normal <tt>warn</tt> and
 <tt>die</tt> channels on STDERR.  The only 
 sense in which there is an 
 &ldquo;application interface&rdquo; is due to the fact
-that  <span class=program>DEMETER</span> uses Moose, so one interacts with  <span class=program>DEMETER</span> in
+that <span class=program>DEMETER</span> uses Moose, so one interacts with <span class=program>DEMETER</span> in
 essentially the way one would interact with a class system written in
 Moose.  Any special functionality for a particular style of user
 interface is something that needs to be explicitly enabled in your 
- <span class=program>DEMETER</span>-using program.
+<span class=program>DEMETER</span>-using program.
 </p>
 
 
+<hr class=hide />
 <a name="commandlineinterface">
 
-<h3>  Command line interface</h3>
+<h2>  Command line interface</h2>
 </a>
 
 <p>
 
- <span class=program>DEMETER</span> has a lot of neat features that get enabled when you
+<span class=program>DEMETER</span> has a lot of neat features that get enabled when you
 explicitly set the <tt>ui</tt> attibute of the Mode
 object to be <tt>screen</tt>.  The best way to do
 this is at the very beginning of your program, when you import 
- <span class=program>DEMETER</span>.
+<span class=program>DEMETER</span>.
 </p>
 
 
@@ -102,7 +106,7 @@ this is at the very beginning of your program, when you import
 <p>
 
 Setting the <tt>ui</tt>
-&ldquo;pragma&rdquo; in this way makes  <span class=program>DEMETER</span>
+&ldquo;pragma&rdquo; in this way makes <span class=program>DEMETER</span>
 assume at compile time that you program will be using a command line
 UI.  Doing so at this stage will enable the full compliment of rich
 CLI features.
@@ -150,7 +154,7 @@ is used to make the spinner.
   Colored feedack
 </dt>
 <dd>
-Feedback from the executions of  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> will be
+Feedback from the executions of <span class=program>FEFF</span> and <span class=program>IFEFFIT</span> will be
 highlighted using Term::ANSIColor.  This is mostly used to draw
 attention to warning and error messages as well as certain kinds of
 status messages.
@@ -175,7 +179,7 @@ stack traces to help debugging efforts.
 <dd>
 You have access to the fit interview, which provides a bit of keyboard
 driven interaction for plotting, examining parameter values, reading
-and log files.  You can think of this as a poor man's  <span class=program>ARTEMIS</span>.
+and log files.  You can think of this as a poor man's <span class=program>ARTEMIS</span>.
 Just do
 <ol class=perlsample>
 <br />
@@ -211,88 +215,85 @@ the pause allows you time to examine a plot before ending your program.
 </dl>
 
 
+<hr class=hide />
 <a name="graphicalinterface">
 
-<h3>  Graphical interface</h3>
+<h2>  Graphical interface</h2>
 </a>
 
 <p>
 
 Describing GUIs is well beyond the scope of this document.  
- <span class=program>DEMETER</span> can be used with just about any interface toolkit.
-GUIs for  <span class=program>ARTEMIS</span>,  <span class=program>ATOMS</span>, and  <span class=program>HEPHAESTUS</span> 
-using wxWindows come with the  <span class=program>DEMETER</span> package and there is
+<span class=program>DEMETER</span> can be used with just about any interface toolkit.
+GUIs for <span class=program>ARTEMIS</span>, <span class=program>ATOMS</span>, and <span class=program>HEPHAESTUS</span> 
+using wxWindows come with the <span class=program>DEMETER</span> package and there is
 substantial functionality for Wx that has been baked into those parts
-of  <span class=program>DEMETER</span>.  But there is nothing that explicitly ties anything
+of <span class=program>DEMETER</span>.  But there is nothing that explicitly ties anything
 described in this document to Wx.
 </p>
 
 
+<hr class=hide />
 <a name="webinterface">
 
-<h3>  Web interface</h3>
+<h2>  Web interface</h2>
 </a>
 
 <p class=todo>
-<strong>On the to do list:</strong>&nbsp;&nbsp;
-Expose some fraction (possibly all...) of  <span class=program>DEMETER</span> via XML-RPC.
+<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
+Expose some fraction (possibly all...) of <span class=program>DEMETER</span> via XML-RPC.
 </p>
 
+<hr class=hide />
 <a name="plottingbackends">
 
-<h3>  Plotting backends</h3>
+<h2>  Plotting backends</h2>
 </a>
 
 <ul>
   
-<li>
+<li><p>
 pgplot
-</li>
-<li>
+</p></li>
+<li><p>
 gnuplot
-</li>
-<li>
+</p></li>
+<li><p>
 singlefile, not really a display backend, more of an export tool for
 using some other program to make beautiful, publication-quality plots
-</li>
+</p></li>
 </ul>
+
+</div>
 
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Back: <a href="./su.html" class="menu" >Structural Units</a> &nbsp;&nbsp;
-        Next: <a href="./output.html" class="menu" >Output formats</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

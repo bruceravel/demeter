@@ -18,6 +18,8 @@ BEGIN {
   ## info to the log file
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
     require Win32;
+    my @now = localtime(time);
+    printf STDOUT "Started at %d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d$/", $now[5]+1900, $now[4]+1, reverse(@now[0..3]);
     print STDOUT Win32::GetOSName(), "\t", Win32::GetOSVersion, $/, $/;
     print STDOUT "PATH:$/\t$ENV{PATH}$/$/";
     if ($ENV{PATH} =~ m{mingw}i) {
@@ -47,11 +49,29 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.15.
 
 =head1 DESCRIPTION
 
 Athena is a graphical interface to Ifeffit for XAS data processing.
+
+=head1 COMMAND LINE SWITCHES
+
+=over 4
+
+=item C<-#>
+
+Immediately import the #-th item from the MRU list
+
+=item C<-l>
+
+Turn on Larch support (requires a running larch server)
+
+=item C<-d>
+
+Set Demeter's devflag to a true value (used for development)
+
+=back
 
 =head1 AUTHOR
 

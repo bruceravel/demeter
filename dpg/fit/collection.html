@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Setting up an EXAFS fit</title>
-    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../dpg.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
     <meta name="robots" contents="all" />
@@ -11,59 +11,58 @@
   <body>
     <div class=topbar>
   <div class=navbar>
+  <a class=navhead href="../index.html">The Demeter Programmer' Guide</a>
   <table class=navtable>
     <tr>
       <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
-        Next: <a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a>
         &nbsp;&nbsp;
-        Up: <a href="../fit/index.html" class="menu" >Fitting EXAFS data</a>      </td>
+        Up: <a class=navtable href="../fit/index.html" class="menu">Fitting EXAFS data</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../fit/sanity.html" class="menu">Sanity checking a fitting model</a>      </td>
     </tr>
   </table>
   </div>
-  <h1>
-  Setting up an EXAFS fit
-</h1>
 </div>
-
-<hr class=hide />
-
 
 <div class=sidebar>
   <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
-    width=100% border=0 alt='[Demeter logo]'></a>
+    width=90% border=0 alt='[Demeter logo]'></a>
   <br />
-  <a href="../index.html" class="menu" >Home</a><br />
-<a href="../intro.html" class="menu" >Introduction</a><br />
-<a href="../data/index.html" class="menu" >Importing data</a><br />
-<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
-<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
-<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
-<a href="../atoms/index.html" class="menu" >Atoms</a><br />
-<a href="../feff/index.html" class="menu" >Feff</a><br />
-<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
-<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
-<br />
-<a href="../fit/index.html" class="menuselect" >Fitting EXAFS data</a><br />
-&nbsp;-&nbsp;<a href="../fit/collection.html" class="menuselect" >Setting up a fitting model</a><br />
-&nbsp;-&nbsp;<a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a><br />
-&nbsp;-&nbsp;<a href="../fit/after.html" class="menu" >After a fit finishes</a><br />
-&nbsp;-&nbsp;<a href="../fit/happiness.html" class="menu" >The non-statistical happiness parameter</a><br /><br />
-<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
-<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
-<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
-<a href="../su.html" class="menu" >Structural Units</a><br />
-<a href="../ui.html" class="menu" >User interfaces</a><br />
-<a href="../output.html" class="menu" >Output formats</a><br />
-<a href="../examples/index.html" class="menu" >Full examples</a><br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../data/index.html"  class="menu">Importing data</a><br />
+<a href="../mue/index.html"  class="menu">Processing mu(E) data</a><br />
+<a href="../xanes/index.html"  class="menu">Analysis of XANES data</a><br />
+<a href="../highlevel/index.html"  class="menu">High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html"  class="menu">Atoms</a><br />
+<a href="../feff/index.html"  class="menu">Feff</a><br />
+<a href="../paths/index.html"  class="menu">Scattering paths</a><br />
+<a href="../gds/index.html"  class="menu">Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html"  class="menuselect">Fitting EXAFS data</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Setting up a fitting model</span><br />
+&nbsp;&#8618;&nbsp;<a href="../fit/sanity.html"  class="menu">Sanity checking a fitting model</a><br />
+&nbsp;&#8618;&nbsp;<a href="../fit/after.html"  class="menu">After a fit finishes</a><br />
+&nbsp;&#8618;&nbsp;<a href="../fit/happiness.html"  class="menu">The non-statistical happiness parameter</a><br /><a href="../perl/index.html"  class="menu">Using perl to create a fitting model</a><br />
+<a href="../lgcv.html"  class="menu">Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html"  class="menu">Path-like objects</a><br />
+<a href="../su.html"  class="menu">Structural Units</a><br />
+<a href="../ui.html"  class="menu">User interfaces</a><br />
+<a href="../output.html"  class="menu">Output formats</a><br />
+<a href="../examples/index.html"  class="menu">Full examples</a><br />
 </div>
+
+<div class=contentarea>
+
+
+<h1>
+  Setting up an EXAFS fit
+</h1>
 
 In this section, the examples will reinforce the idea that the Fit
 object is simply a collection of Data, Path, and GDS objects.  We have
@@ -80,15 +79,16 @@ for a multiple data set fit has its <tt>data</tt>
 attribute set to an anonymous list of Data objects.  This is shown in
 the first example below.
 
-A Fit object involving multiple  <span class=program>FEFF</span> calculations is made by
-creating some number of Path objects from each  <span class=program>FEFF</span> calculation,
+A Fit object involving multiple <span class=program>FEFF</span> calculations is made by
+creating some number of Path objects from each <span class=program>FEFF</span> calculation,
 then collecting all those Path objects into the 
 <tt>paths</tt> attribute of the Fit object.  This
 is shown in the second example below.
 
+<hr class=hide />
 <a name="multipledatasetfitting">
 
-<h3>  Multiple data set fitting</h3>
+<h2>  Multiple data set fitting</h2>
 </a>
 
 <p>
@@ -97,7 +97,7 @@ The following script expands upon the example in the previous section
 by expanding the isotropic expansion and correlated Debye fitting
 model to a simultaneous refinement of two data sets.  In this example,
 two copper foils measurements were made at 10 K and 150 K.  Both are
-imported from an  <span class=program>ATHENA</span> project file and a Fit object is
+imported from an <span class=program>ATHENA</span> project file and a Fit object is
 established using both data sets.
 </p>
 
@@ -183,10 +183,10 @@ established using both data sets.
 
 This script bears a strong resemblance to the one in the previous
 section.  There are a couple of small differences.  At lines 8-16, two
-records are imported from the  <span class=program>ATHENA</span> project file.  They both
+records are imported from the <span class=program>ATHENA</span> project file.  They both
 have parameters set appropriately.  One fewer GDS object at lines
 19-25 is defined compared to the previous script.  This is because the
-temperature parameter of  <span class=program>IFEFFIT</span>'s
+temperature parameter of <span class=program>IFEFFIT</span>'s
 <tt>debye</tt> function is explicitly set to the
 correct value at lines 43 and 51.
 </p>
@@ -217,13 +217,13 @@ temperature dependent path parameters are set appropriately.
 <p>
 Note that the <tt>sp</tt> atrtibute is 
 <strong>not</strong> changed for the cloned paths.  This is
-central to  <span class=program>DEMETER</span>'s efficient use of  <span class=program>FEFF</span>.  The same
+central to <span class=program>DEMETER</span>'s efficient use of <span class=program>FEFF</span>.  The same
 ScatteringPath object is used for the Path object associated with the
 10 K Data object <strong>and</strong> for the Path object
 associated with the 150 K Data object.  This is conceptually equivalent
 to using the same 
 <span class=file>feffNNNN.dat</span> file in two different path
-paragraphs in a  <span class=program>FEFFIT</span> input file.
+paragraphs in a <span class=program>FEFFIT</span> input file.
 </p>
 
 
@@ -249,48 +249,42 @@ code!
 </tr>
 </table>
 
+<hr class=hide />
 <a name="usingmultiplefeffcalculations">
 
-<h3>  Using multiple Feff calculations</h3>
+<h2>  Using multiple Feff calculations</h2>
 </a>
+
+</div>
 
 <br />
 <hr class=hide />
+<hr class=bottomdivider />
 
 <div class=bottombar>
-  <div class=navbar>
-  <table class=navtable>
+  <div class=copyright>
+  <table>
     <tr>
-      <td align=left>
-        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
-        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2012 Bruce Ravel
+        <br />
       </td>
-      <td align=right>
-        Next: <a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a>
-        &nbsp;&nbsp;
-        Up: <a href="../fit/index.html" class="menu" >Fitting EXAFS data</a>      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
     </tr>
   </table>
-  </div>
-  <div class=copyright>
-   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
-  <br />
-  This document is copyright &copy; 2012 Bruce Ravel
-  <br />
-  email: (bravel |A|T| bnl |D|O|T| gov)
-  <br />
-  
-  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
-  <br />
-  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
-  The Creative Commons Attribution-ShareAlike License</a>.
-  <br />
-  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
-  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
 </div>
 </div>
   </body>

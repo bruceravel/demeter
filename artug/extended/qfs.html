@@ -54,6 +54,8 @@
 &nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
 &nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
 </div>
@@ -96,13 +98,11 @@ local structure actually known. Does this really work?
 
 <p>
 <hr class=hide />
-<a name="usingthequickfirstshelltooltomodel
-firstshelldata">
+<a name="usingthequickfirstshelltooltomodelfirstshelldata">
 </p>
 
 <p>
-<h2>  Using the quick first shell tool to model
-first shell data</h2>
+<h2>  Using the quick first shell tool to model first shell data</h2>
 </a>
 </p>
 
@@ -123,7 +123,7 @@ Re[&chi;(R)].
 </p>
 
 <p>
-<a name=qfs>&nbsp;</a><br><a href=../../images/qfs.1st_k.png><img src="../../images/qfs.1st_k.png" width=32%></a><a href=../../images/qfs.1st_rmag.png><img src="../../images/qfs.1st_rmag.png" width=32%></a><a href=../../images/qfs.1st_rre.png><img src="../../images/qfs.1st_rre.png" width=32%></a>
+<a name=qfs-1st_k>&nbsp;</a><br><a href=../../images/qfs-1st_k.png><img src="../../images/qfs-1st_k.png" width=32%></a><a href=../../images/qfs-1st_rmag.png><img src="../../images/qfs-1st_rmag.png" width=32%></a><a href=../../images/qfs-1st_rre.png><img src="../../images/qfs-1st_rre.png" width=32%></a>
 </p>
 
 <p>
@@ -183,13 +183,11 @@ resulting &chi;(k) functions are nearly the same.
 
 <p>
 <hr class=hide />
-<a name="(mis)usingthequickfirstshelltoolbeyond
-thefirstshell">
+<a name="(mis)usingthequickfirstshelltoolbeyondthefirstshell">
 </p>
 
 <p>
-<h2>  (Mis)Using the quick first shell tool beyond
-the first shell</h2>
+<h2>  (Mis)Using the quick first shell tool beyond the first shell</h2>
 </a>
 </p>
 
@@ -214,7 +212,7 @@ differences, particularly at low k, between the two.
 </p>
 
 <p>
-<a name=qfs>&nbsp;</a><br><a href=../../images/qfs.2nd_k.png><img src="../../images/qfs.2nd_k.png" width=32%></a><a href=../../images/qfs.2nd_rmag.png><img src="../../images/qfs.2nd_rmag.png" width=32%></a><a href=../../images/qfs.2nd_rre.png><img src="../../images/qfs.2nd_rre.png" width=32%></a>
+<a name=qfs-2nd_k>&nbsp;</a><br><a href=../../images/qfs-2nd_k.png><img src="../../images/qfs-2nd_k.png" width=32%></a><a href=../../images/qfs-2nd_rmag.png><img src="../../images/qfs-2nd_rmag.png" width=32%></a><a href=../../images/qfs-2nd_rre.png><img src="../../images/qfs-2nd_rre.png" width=32%></a>
 </p>
 
 <p>
@@ -271,7 +269,7 @@ coordination shell in FeS<sub>2</sub>, another S scatterer at 4.438 &Aring;:
 </p>
 
 <p>
-<a name=qfs>&nbsp;</a><br><a href=../../images/qfs.4th_k.png><img src="../../images/qfs.4th_k.png" width=32%></a><a href=../../images/qfs.4th_rmag.png><img src="../../images/qfs.4th_rmag.png" width=32%></a><a href=../../images/qfs.4th_rre.png><img src="../../images/qfs.4th_rre.png" width=32%></a>
+<a name=qfs-4th_k>&nbsp;</a><br><a href=../../images/qfs-4th_k.png><img src="../../images/qfs-4th_k.png" width=32%></a><a href=../../images/qfs-4th_rmag.png><img src="../../images/qfs-4th_rmag.png" width=32%></a><a href=../../images/qfs-4th_rre.png><img src="../../images/qfs-4th_rre.png" width=32%></a>
 </p>
 
 <p>
@@ -410,7 +408,7 @@ this stage, <span class=program>ARTEMIS</span> looks like this:
 </p>
 
 <p>
-<a href="../../images/qfs.start_qfs.png" target=_blank><img width=75% src="../../images/qfs.start_qfs.png" title="
+<a href="../../images/qfs-start_qfs.png" target=_blank><img width=75% src="../../images/qfs-start_qfs.png" title="
 Getting started with the comparison
 " alt="
 Getting started with the comparison
@@ -422,11 +420,14 @@ I begin a QFS calculation by selecting that option from the menu on the Data pag
 </p>
 
 <p>
-<a href="../../images/qfs.path.png" target=_blank><img class=flexy src="../../images/qfs.path.png" title="
+<div class=figure style="max-width: 851px; min-width: 7em;">
+<a name=qfs-path>
+<img src=../../images/qfs-path.png width=100%>
+</a>
+<p align=center>
 Go compute the QFS path
-" alt="
-Go compute the QFS path
-"></a>
+</p>
+</div>
 </p>
 
 <p>
@@ -434,11 +435,14 @@ The nearest neighbor path in FeS<sub>2</sub> is a S atom at 2.257 &Aring;.
 </p>
 
 <p>
-<a href="../../images/qfs.make_qfs.png" target=_blank><img class=flexy src="../../images/qfs.make_qfs.png" title="
+<div class=smfigureright style="max-width: 347px; min-width: 7em;">
+<a name=qfs-make_qfs>
+<img src=../../images/qfs-make_qfs.png width=100%>
+</a>
+<p align=center>
 Set the QFS parameters
-" alt="
-Set the QFS parameters
-"></a>
+</p>
+</div>
 </p>
 
 <p>
@@ -452,7 +456,7 @@ to the Data page and redo the QFS calculation at that distance.
 </p>
 
 <p>
-<a href="../../images/qfs.compare.png" target=_blank><img width=75% src="../../images/qfs.compare.png" title="
+<a href="../../images/qfs-compare.png" target=_blank><img width=75% src="../../images/qfs-compare.png" title="
 Ready to plot the comparison
 " alt="
 Ready to plot the comparison
