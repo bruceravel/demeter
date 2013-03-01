@@ -152,6 +152,7 @@ sub make_group {
   };
   $data->source("Computed difference spectrum");
   $data->datatype($self->datatype);
+  $data->update_norm(1);
   return $data;
 };
 

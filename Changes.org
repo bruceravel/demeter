@@ -7,6 +7,7 @@
 
 ** 0.9.16  ?? March 2013
 *** Athena
+   + fixed a couple bugs in difference spectrum tool
 
 *** Artemis
    + turn off indicators for Rk plot
