@@ -30,11 +30,24 @@ use Carp;
 ############################
 
 ############################
-## backend
+## backend, see: http://perldoc.perl.org/perlmod.html#BEGIN%2c-UNITCHECK%2c-CHECK%2c-INIT-and-END
 ##
-use Ifeffit qw(ifeffit);
-ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-#use Larch;
+## "INIT blocks are run just before the Perl runtime begins execution,
+##  in "first in, first out" (FIFO) order."
+##
+## "The CHECK and INIT blocks in code compiled by require, string do,
+##  or string eval will not be executed if they occur after the end of
+##  the main compilation phase; that can be a problem in mod_perl and
+##  other persistent environments which use those functions to load
+##  code at runtime."
+INIT {
+  $ENV{DEMETER_BACKEND} ||= 'ifeffit';
+  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+    eval "use Larch";
+  } else {
+    eval "use Ifeffit qw(ifeffit); ifeffit(\"\$plot_device=/gw\n\") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'))";
+  };
+}
 ############################
 
 use Cwd;

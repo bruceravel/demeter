@@ -32,8 +32,8 @@ my $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, screen=>0, repscreen=>0, plotscreen=>0);
 
 use Getopt::Long;
-my ($light_background, $dark_background, $use_pgplot, $use_gnuplot, $is_dos_shell, $echo, $use_larch) =
-  (0, 1, 0, 1, 0, 0, 0);
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot, $is_dos_shell, $echo, $use_larch, $devflag) =
+  (0, 1, 0, 1, 0, 0, 0, 0);
 my $result = GetOptions (
 			 "d" => \$dark_background,
 			 "l" => \$light_background,
@@ -42,12 +42,15 @@ my $result = GetOptions (
 			 "w" => \$is_dos_shell,
 			 's' => \$echo,
 			 'x' => \$use_larch,
+			 'v' => \$devflag,
 			);
 ($light_background = 1) if (not $dark_background);
 ($use_gnuplot = 1) if (not $use_pgplot);
 $demeter->plot_with('gnuplot') if $use_gnuplot;
 $demeter->set_mode(screen=>1) if $echo;
+$use_larch = 1 if ($ENV{DEMETER_BACKEND} eq 'larch');
 $demeter->set_mode(template_process=>"larch") if $use_larch;
+$Demeter::devflag = $devflag;
 
 use Term::ReadLine;
 
