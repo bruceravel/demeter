@@ -32,6 +32,7 @@ sub get_larch_array {
   #Demeter->trace;
   #print '--------------', $param, $/;
   $rpcdata = $client -> get_data($param);
+  return () if ((not defined($rpcdata->result)) or not (defined($rpcdata->result->{value})));
   my $ret = $rpcdata->result->{value};
   return @{eval $ret};
 };
