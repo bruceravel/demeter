@@ -35,6 +35,9 @@ Demeter->po->set(e_bkg=>1, e_pre=>0, e_post=>0, e_norm=>0, emin=>-150, emax=>800
 
 # $_->plot('e') foreach ($data, $dat2, $dat3, $merge);
 
+$data->pjoin($data->arrays);
+
+
 $data->plot('e');
 $data->pause;
 $data->po->start_plot;

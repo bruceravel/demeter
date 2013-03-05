@@ -1,0 +1,8 @@
+t___oss = list();
+for a___tt in dir({$D->group}):
+   if type(getattr({$D->group}, a___tt)) == ndarray:
+      t___oss.append(a___tt)
+   endif
+endfor
+{$D->group}.l___ist = t___oss
+del t___oss

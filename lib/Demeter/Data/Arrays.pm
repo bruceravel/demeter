@@ -151,18 +151,26 @@ sub arrays {
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my @arrays = ();
-  @arrays_text = ();		     # initialize array buffer for accumulating correlations text
-  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
-	      $self->get_mode("feedback"));
-  $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
-  $self->dispense("process", "show_group");
-  $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(feedback=>$save[1]||q{});
-  my $group = $self->group;
-  foreach my $l (@arrays_text) {
-    if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
-      push @arrays, $1;
+
+  if ($self->mo->template_process eq 'larch') {
+    $self->dispense("process", "attributes");
+    @arrays = $self->fetch_array('l___ist');
+    print ">>>>"; $self->pjoin(@arrays);
+  } else {
+    @arrays_text = ();		     # initialize array buffer for accumulating correlations text
+    my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+		$self->get_mode("feedback"));
+    $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
+    $self->dispense("process", "show_group");
+    $self->toggle_echo($save[0]);	# reset everything
+    $self->set_mode(feedback=>$save[1]||q{});
+    my $group = $self->group;
+    foreach my $l (@arrays_text) {
+      if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+	push @arrays, $1;
+      };
     };
+
   };
   return @arrays;
 };
