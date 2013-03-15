@@ -55,4 +55,6 @@ $d1 -> set(name=>"60K, deserialized");
 print "... and plot it\n";
 $d1->plot("k");
 
+$_->DEMOLISH foreach ($d0, $d1);
+
 1;

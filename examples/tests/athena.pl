@@ -54,5 +54,5 @@ print "Rereading athena.prj and replotting first group\n";
 my $d = Demeter::Data::Prj -> new(file=>"athena.prj") -> record(1);
 $d -> plot('k');
 
-$_->DEMOLISH foreach (@data);
+$_->DEMOLISH foreach (@data, $d);
 1;

@@ -68,6 +68,7 @@ sub _write_record {
   local $Data::Dumper::Indent = 0;
   my ($string, $arraystring) = (q{}, q{});
 
+  $self->_update('normalize');
   my @array = ();
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
     #$self -> _update("background");

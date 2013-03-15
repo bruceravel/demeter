@@ -154,8 +154,7 @@ sub arrays {
 
   if ($self->mo->template_process eq 'larch') {
     $self->dispense("process", "attributes");
-    @arrays = $self->fetch_array('l___ist');
-    print ">>>>"; $self->pjoin(@arrays);
+    @arrays = $self->fetch_array($self->group.'.l___ist');
   } else {
     @arrays_text = ();		     # initialize array buffer for accumulating correlations text
     my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
