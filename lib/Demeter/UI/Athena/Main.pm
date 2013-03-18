@@ -706,12 +706,12 @@ sub push_values {
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
-  if ($data->bkg_e0 < 150) {
+  if (($data->bkg_e0 < 150) and ($data->datatype ne 'chi')) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
     $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
   };
-  if (get_Z($data->bkg_z) < 5) {
+  if ((get_Z($data->bkg_z) < 5) and ($data->datatype ne 'chi')) {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
     $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
   } else {

@@ -265,7 +265,6 @@ has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co-
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;

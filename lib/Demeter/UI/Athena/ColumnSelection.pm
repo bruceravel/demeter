@@ -504,6 +504,7 @@ sub display_plot {
     $data -> po -> set(kmin=>0, kmax=>$kmax);
     $data -> po -> start_plot;
     $data -> plot('k') if ($data->chi_string ne '1');
+    $data -> update_data(1) if ($data->chi_string eq '1');
   };
 };
 

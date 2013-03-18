@@ -67,7 +67,7 @@ Immediately import the #-th item from the MRU list
 
 Turn on Larch support (requires a running larch server)
 
-=item C<-d>
+=item C<-v>
 
 Set Demeter's devflag to a true value (used for development)
 

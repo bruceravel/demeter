@@ -184,12 +184,12 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
-    } elsif (($a eq '-ld') or ($a eq '-dl')) {
+    } elsif (($a eq '-lv') or ($a eq '-vl')) {
       $demeter->set_mode(template_process=>"larch");
       $Demeter::devflag = 1;
     } elsif ($a eq '-l') {
       $demeter->set_mode(template_process=>"larch");
-    } elsif ($a eq '-d') {
+    } elsif ($a eq '-v') {
       $Demeter::devflag = 1;
     } elsif (-r $a) {
       $app -> Import($a);

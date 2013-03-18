@@ -22,6 +22,7 @@
 =cut
 
 use Demeter;
+
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 my @common_to_all_data_sets = (bkg_rbkg    => 1.5,

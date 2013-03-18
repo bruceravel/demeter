@@ -13,14 +13,10 @@ if '{$D->i0_string}' == '1':
     __i0_scale     = __xmu_max
 else:
    {$D->group}.i0 = {$D->i0_string}
-    __i0_max       = max({$D->group}.i0)
-    __i0_scale     = __xmu_max / __i0_max
-    del __i0_max
+    __i0_scale     = __xmu_max / max({$D->group}.i0)
 endif
 
 {$D->group}.signal = {$D->signal_string}
-__signal_max   = max({$D->group}.signal)
-__signal_scale = __xmu_max / __signal_max
-del __signal_max
+__signal_scale = __xmu_max / max({$D->group}.signal)
 
-del __xmu_max
+del(__xmu_max)

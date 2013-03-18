@@ -1,0 +1,9 @@
+{ # -*- ifm -*-
+  # import chi template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  $D->datatype('chi');
+  q{}
+}
+##| Reading chi data "{$D->file}" as group {$D->group}
+{$D->group} = read_ascii('{$D->file}')

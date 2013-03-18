@@ -791,10 +791,19 @@ sub template {
     $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
-  #my $bool = ($self eq 'Demeter') ? Demeter->co->devflag : $self->devflag;
+
+  ######################################################################
+  ## devflag screen messages
   if ($devflag) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
-    (my $caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    my $caller;
+    if ((caller(1))[1] =~ m{Moose|MOP}) {
+      ($caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    } elsif (caller[1] =~ m{Dispose}) { # called by dispense() or chart(), need to look 1 frame back
+      ($caller = join("|", (caller(1))[1,2])) =~ s{$path}{};
+    } else {			   # called by template(), look at current frame
+      ($caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    };
     printf("(%s) %s (%s) %s (%s%s)\n",
 	   YELLOW.$caller.RESET,
 	   $category,
@@ -803,6 +812,7 @@ sub template {
 	   ($isthere) ? GREEN : BOLD.RED, Demeter->yesno($isthere).RESET
 	  );
   }
+  ######################################################################
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
     or die "Couldn't construct template: $Text::Template::ERROR";
