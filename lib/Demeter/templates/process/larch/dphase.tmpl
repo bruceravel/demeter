@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # derivative of phase of chi(R) template
+  #   {$D->group} returns the ifeffit group name
+}
+
+##| Set first derivative of phase in R
+{$D->group}.dph = (ceil({$D->group}.chir_mag) / ceil(abs({$D->group}.dph))) * deriv({$D->group}.chir_pha)/deriv({$D->group}.r)
