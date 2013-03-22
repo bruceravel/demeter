@@ -59,3 +59,4 @@ $d->dispense('process', 'dphase');
 # print join('|', $#y, max(@y), min(@y)), $/;
 ok((($#y == 325) and (max(@y)-0.58 < 0.01) and (-1*min(@y)-0.48 < 0.01)), "dphase template works")
 
+## test normalizing a datatype=xanes group

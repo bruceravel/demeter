@@ -275,9 +275,10 @@ sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
   return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
-  my $command = $self->template("process", "fix_chik");
-  ##print $command;
-  $self->dispose($command);
+  #my $command = 
+  $self->dispense("process", "fix_chik");
+  #print $command;
+  #$self->dispose($command);
   return $self;
 };
 
@@ -337,11 +338,11 @@ sub normalize {
     ## group.pre_edge *must* be set here.  does all of this need to be called at this point?
     #my $command = q{};
     #$command .= $self->template("process", "post_autobk");
-    #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
-    #  $command .= $self->template("process", "flatten_fit");
+    if (($self->bkg_fixstep) or ($self->datatype eq 'xanes')) {
+      $self->dispense("process", "flatten_fit");
     #} else {
     #  $command .= $self->template("process", "flatten_set");
-    #};
+    };
     #$self->dispose($command);
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));

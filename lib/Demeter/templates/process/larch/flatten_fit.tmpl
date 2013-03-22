@@ -1,0 +1,44 @@
+{ # -*- ifm -*-
+  # flatten template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+##|
+##| make the flattened, normalized spectrum
+##|   flat_cN are the difference in slope and curvature between
+##|   the pre- and post-edge polynomials
+##|
+{$D->group}.pre_edge  = {$D->bkg_int}+{$D->bkg_slope}*({$D->group}.energy+{$D->bkg_eshift})
+{$D->group}.post_edge = {$D->bkg_nc0}+{$D->bkg_nc1}*({$D->group}.energy+{$D->bkg_eshift})+{$D->bkg_nc2}*({$D->group}.energy+{$D->bkg_eshift})**2
+{$D->group}.prex      = {$D->group}.xmu - {$D->group}.pre_edge
+##|
+##|  compute a step function
+n___step      = index_of({$D->group}.energy, {$D->bkg_e0 - $D->bkg_eshift}) - 1
+n___points    = size({$D->group}.energy) - n___step
+{$D->group}.theta = concatenate((zeros(n___step), ones(n___points)))
+##|
+##| these data require regressing the flat_c? values
+fla___t = group(c0 = param(0, vary=True),
+                c1 = param(0, vary=True),
+		c2 = param(0, vary=True))
+if {$D->bkg_nor2-$D->bkg_nor1} < 300: fla___t.c2.vary = False
+if {$D->bkg_nnorm} == 2:  fla___t.c2.vary = False
+
+fla___t.en = {$D->group}.energy
+fla___t.prex = {$D->group}.prex
+
+def flatten(par):
+    line = par.c0 + par.c1*(par.en+{$D->bkg_eshift}) + par.c2*(par.en+{$D->bkg_eshift})**2
+    resid = par.prex - line
+    return resid
+#enddef
+
+minimize(flatten, fla___t)
+
+{$D->group}.line = fla___t.c0 + fla___t.c1*({$D->group}.energy+{$D->bkg_eshift}) + fla___t.c2*({$D->group}.energy+{$D->bkg_eshift})**2
+{$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}
+if hasattr({$D->group}, 'bkg'):
+   {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.pre_edge+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step}
+endif
+
+del fla___t
