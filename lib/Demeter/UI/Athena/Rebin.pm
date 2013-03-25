@@ -86,12 +86,12 @@ sub new {
   $this->{plotk}  = Wx::Button->new($this, -1, 'Plot data and rebinned data in k',  wxDefaultPosition, $tcsize);
   $this->{make}   = Wx::Button->new($this, -1, 'Make rebinned data group',          wxDefaultPosition, $tcsize);
   $this->{marked} = Wx::Button->new($this, -1, 'Rebin marked data and make groups', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(replot plotk make marked));
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(replot plotk make marked));
 
   EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data, 'E')});
   EVT_BUTTON($this, $this->{plotk},  sub{$this->plot($app->current_data, 'k')});
   EVT_BUTTON($this, $this->{make},   sub{$this->make($app)});
-  EVT_BUTTON($this, $this->{marked}, sub{$this->make_marked($app)});
+  EVT_BUTTON($this, $this->{marked}, sub{$this->marked($app)});
 
   my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
   my $textboxsizer   = Wx::StaticBoxSizer->new( $textbox, wxVERTICAL );
@@ -209,14 +209,16 @@ sub marked {
   my $index = $app->current_index;
   foreach my $j (reverse (0 .. $app->{main}->{list}->GetCount-1)) {
     if ($app->{main}->{list}->IsChecked($j)) {
+      $this->{rebinned} = $app->{main}->{list}->GetIndexedData($j)->rebin;
       if ($index == $app->{main}->{list}->GetCount-1) {
 	$app->{main}->{list}->AddData($this->{rebinned}->name, $this->{rebinned});
       } else {
-	$app->{main}->{list}->InsertData($this->{rebinned}->name, $index+1, $this->{rebinned});
+	$app->{main}->{list}->InsertData($this->{rebinned}->name, $j+1, $this->{rebinned});
       };
       ++$count;
     };
   };
+  $this->{rebinned} = $app->current_data->rebin;
   undef $busy;
   return if not $count;
   $app->modified(1);
