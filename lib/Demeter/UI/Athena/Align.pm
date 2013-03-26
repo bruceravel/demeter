@@ -42,8 +42,8 @@ sub new {
   $this->{fitas}    = Wx::Choice->new($this, -1, wxDefaultPosition, [165,-1],
 				      ['deriv(E)', 'smoothed deriv(E)']);
 
-  $this->{plotas} -> SetSelection(2);
-  $this->{fitas}  -> SetSelection(0);
+  $this->{plotas} -> SetSelection(3);
+  $this->{fitas}  -> SetSelection(1);
 
   $gbs->Add($this->{this},     Wx::GBPosition->new(0,1));
   $gbs->Add($this->{standard}, Wx::GBPosition->new(1,1));

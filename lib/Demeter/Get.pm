@@ -17,7 +17,7 @@ package Demeter::Get;
 
 use feature "switch";
 use Moose::Role;
-use Ifeffit qw(ifeffit get_echo get_scalar get_array get_string put_scalar put_array put_string);
+#use Ifeffit qw(ifeffit get_echo get_scalar get_array get_string put_scalar put_array put_string);
 
 my $mode = Demeter->mo;
 
@@ -56,7 +56,7 @@ sub backend_version {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return (split(" ", get_string('&build')))[0];
+      return (split(" ", Ifeffit::get_string('&build')))[0];
     };
 
     when ('larch') {
@@ -71,7 +71,7 @@ sub fetch_scalar {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_scalar($param);
+      return Ifeffit::get_scalar($param);
     };
 
     when ('larch') {
@@ -112,7 +112,7 @@ sub fetch_string {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_string($param);
+      return Ifeffit::get_string($param);
     };
 
     when ('larch') {
@@ -138,7 +138,7 @@ sub fetch_array {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_array($param);
+      return Ifeffit::get_array($param);
     };
 
     when ('larch') {
@@ -181,7 +181,7 @@ sub echo_lines {
       my $lines = $self->fetch_scalar('&echo_lines');
       $self->dispose("\&screen_echo = $save\n"), return () if not $lines;
       foreach my $l (1 .. $lines) {
-	push @lines, get_echo();
+	push @lines, Ifeffit::get_echo();
       };
       $self->dispose("\&screen_echo = $save\n") if $save;
       return @lines;
@@ -200,7 +200,7 @@ sub place_scalar {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_scalar($param, $value);
+      Ifeffit::put_scalar($param, $value);
     };
 
     when ('larch') {
@@ -216,7 +216,7 @@ sub place_string {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_string($param, $value);
+      Ifeffit::put_string($param, $value);
     };
 
     when ('larch') {
@@ -232,7 +232,7 @@ sub place_array {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_array($param, $arrayref);
+      Ifeffit::put_array($param, $arrayref);
     };
 
     when ('larch') {

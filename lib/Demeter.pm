@@ -50,6 +50,9 @@ INIT {
 }
 ############################
 
+#use Ifeffit qw(ifeffit);
+#ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+
 use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);

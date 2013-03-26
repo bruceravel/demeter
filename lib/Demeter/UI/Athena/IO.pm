@@ -673,6 +673,8 @@ sub _group {
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
     #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    my $save = $data->po->e_smooth;
+    $data->po->set(e_smooth=>3);
     if ($data->reference and $stan->reference) {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name . " using references");
       $stan->align_with_reference($data);
@@ -680,6 +682,7 @@ sub _group {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name);
       $stan->align($data);
     };
+    $data->po->set(e_smooth=>$save);
     $app->OnGroupSelect(0,0,0);
   };
 

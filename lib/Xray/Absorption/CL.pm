@@ -89,11 +89,11 @@ use File::Spec;
 use Storable;
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 #use Xray::Absorption::CLdata qw(cl_f1 cl_f2);
-use Ifeffit qw(ifeffit get_scalar put_array get_array);
+##use Ifeffit qw(ifeffit get_scalar put_array get_array);
 ## the next two line initialize Ifeffit under perl without changing
 ## any ifeffit global variables
-my $foo = get_scalar("\&screen_echo");
-ifeffit("\&screen_echo = $foo\n");
+my $foo = Ifeffit::get_scalar("\&screen_echo");
+Ifeffit::ifeffit("\&screen_echo = $foo\n");
 
 use constant PI    => 4*atan2(1,1);
 use constant RE    => 0.00002817938; # Classical electron radius in Angstroms
@@ -309,10 +309,10 @@ sub cross_section {
   } else {
     @ener = ($energy, $energy+$epsilon/10);
   };
-  put_array("absorption_cl.energy", \@ener);
-  ifeffit("f1f2(z=$z, energy=absorption_cl.energy)\n");
-  my @f1 = get_array("absorption_cl.f1");
-  my @f2 = get_array("absorption_cl.f2");
+  Ifeffit::put_array("absorption_cl.energy", \@ener);
+  Ifeffit::ifeffit("f1f2(z=$z, energy=absorption_cl.energy)\n");
+  my @f1 = Ifeffit::get_array("absorption_cl.f1");
+  my @f2 = Ifeffit::get_array("absorption_cl.f2");
   #print join(" ", @f1), $/;
   #print join(" ", @f2), $/;
 
