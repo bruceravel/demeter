@@ -46,6 +46,38 @@ sub rebin {
   foreach my $k (keys %$rhash) {
     $self -> co -> set_default("rebin", $k, $$rhash{$k});
   };
+
+  my @e = $self->fetch_array($self->group.".energy");
+  my ($efirst, $elast) = ($e[0]+$self->bkg_eshift, $e[$#e]+$self->bkg_eshift);
+  my @bingrid;
+
+  ## pre edge region
+  my $ee = $efirst;
+  while ($ee < $self->co->default('rebin', 'emin')+$self->bkg_e0) {
+    push @bingrid, $ee;
+    $ee += $self->co->default('rebin', 'pre');
+  };
+
+  ## xanes region
+  $ee = $self->co->default('rebin', 'emin')+$self->bkg_e0;
+  while ($ee < $self->co->default('rebin', 'emax')+$self->bkg_e0) {
+    push @bingrid, $ee;
+    $ee += $self->co->default('rebin', 'xanes');
+  };
+
+  ## exafs region
+  $ee = $self->co->default('rebin', 'emax')+$self->bkg_e0;
+  my $kk = $self->e2k($self->co->default('rebin', 'emax'), 'rel');
+  while ($ee < $elast) {
+    push @bingrid, $ee;
+    $kk += $self->co->default('rebin', 'exafs');
+    $ee = $self->k2e($kk, 'abs');
+  };
+  push @bingrid, $elast;
+
+  $self->place_array('re___bin.eee', \@bingrid);
+  ##print join("|", @bingrid), $/;
+
   my $rebinned = $self->clone;
 
   $self -> standard;		# make self the standard for rebinning
@@ -54,11 +86,8 @@ sub rebin {
   $rebinned -> update_norm(1);
   $rebinned -> name($self->name . " rebinned");
 
-  my $string = $rebinned->template("process", "rebin");
-  $rebinned->dispose($string);
-
-  $string = $rebinned->template("process", "deriv");
-  $rebinned->dispose($string);
+  $rebinned->dispense("process", "rebin");
+  $rebinned->dispense("process", "deriv");
   $rebinned->resolve_defaults;
   $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
