@@ -272,7 +272,7 @@ sub get_formula_data {
 	## 1 amu = 1.6605389 x 10^-24 gm
 	push @abovebelow, $bpfu / $apfu / 1.6605389;
       };
-      if (not $density) {
+      if ($density) {
 	my $xabove = $abovebelow[1] * $density;
 	my $xbelow = $abovebelow[0] * $density;
 	my $step   = 10000 / ($xabove - $xbelow);
