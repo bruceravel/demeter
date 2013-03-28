@@ -931,7 +931,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

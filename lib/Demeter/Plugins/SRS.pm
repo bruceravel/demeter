@@ -165,7 +165,7 @@ Demeter::Plugin::SRS - Import data from the XAS beamlines at the old SRS at Dare
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

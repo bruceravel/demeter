@@ -8,12 +8,29 @@
 ** 0.9.16  ?? March 2013
 *** Athena
    + fixed a couple bugs in difference spectrum tool
+   + fixed an error importing data+reference when the energy column is
+     something other than column 1.
+   + align using smoothed derivative is now the default for both
+     preprocessing and for the alignment tool
+   + fixed an issue involving import of chi(k) from column data file
+   + improvements to difference spectrum tool
 
 *** Artemis
+   + phase corrected transforms implemented
    + turn off indicators for Rk plot
    + better documentation for PC plots
 
+*** Hephaestus
+   + fixed an error precluding the formulas tool from reporting the
+     penetration depth for a unit edge step for a nearby edge
+
 *** Demeter
+   + rebinning was ridiculously broken
+   + much progress on Larch templates
+   + fixed an issue surrounding the conditional loading of either
+     Ifeffit.pm or Larch.pm
+   + added a new unit test file 023_miscellany
+   + fixed a bug bringing data up to date before calling write_many
 
 
 ** 0.9.15  21 February 2013
@@ -701,7 +718,7 @@ Path to 1.0:
 
 *** Artemis
    - Verify that fit folder exists before trying to deserialize it
-
+     
      
 * Beta testing releases:
   

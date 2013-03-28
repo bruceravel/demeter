@@ -623,7 +623,7 @@ sub _group {
 
     $ref -> is_col(1);
     $ref -> set(name        => "  Ref " . $data->name,
-		energy      => $yaml->{energy},
+		energy      => $data->energy,
 		numerator   => '$'.$yaml->{ref_numer},
 		denominator => ($yaml->{ref_denom}) ? '$'.$yaml->{ref_denom} : 1,
 		ln          => $yaml->{ref_ln},
@@ -968,7 +968,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
