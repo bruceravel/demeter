@@ -1,8 +1,8 @@
 #! /usr/bin/perl -w
 ######################################################################
 ##  This program is copyright (c) 1998, 1999 Bruce Ravel
-##  <ravel@phys.washington.edu>
-##  http://feff.phys.washington.edu/~ravel/software/atoms/
+##  bravel AT bnl DOT gov
+##  http://bruceravel.github.com/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can

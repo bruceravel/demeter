@@ -1340,7 +1340,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/exafs/>
+L<http://bruceravel.github.com/demeter/exafs/>
 
 
 =head1 LICENCE AND COPYRIGHT

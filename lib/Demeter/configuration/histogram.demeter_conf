@@ -1,17 +1,17 @@
 ## -*- config -*-
 ###########################################################################
-## This configuration file is for Demeter version 0.9.11.
+## This configuration file is for Demeter version 0.9.16.
 ##
-##                     Demeter is copyright (c) 2007-2012 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2013 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
-##                   Ifeffit is copyright (c) 1992-2009 Matt Newville
+##                   Ifeffit is copyright (c) 1992-2013 Matt Newville
 ##                                         newville@cars.uchicago.edu
 ##                       http://cars9.uchicago.edu/~newville/ifeffit/
 ##
 ##	  The latest version of Demeter can always be found at
-##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##               http://bruceravel.github.com/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can

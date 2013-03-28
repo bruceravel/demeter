@@ -34,11 +34,13 @@ energy will display that energy in wavelength units in the status
 bar.  In the Standards tool, some information about the plotted data
 is displayed in the status bar.
 
-The "Tools" menu in the menu bar provides another way of navigating
-between the tools.  The mouse can be used, as can the keyboard.
-"Alt-t" posts the "Tools" menu and  the arrow keys can be used to
-navigate among the entries.  "Alt-e" and "Alt-h" post the "Hephaestus"
-and "Help" menus.
+The "Hephaestus" menu in the menu bar provides another way of
+navigating between the tools.  The mouse can be used, as can the
+keyboard.  "Alt-e" and "Alt-h" post the "Hephaestus" and "Help" menus.
+"Ctrl-1" through "Ctrl-9" change the display the various tools.
+"Ctrl-m" changes the display to the document, while "Ctrl-c" changes
+the display to the configuration tool.
+
 
 =head1 TOOLS
 
@@ -172,11 +174,10 @@ An error will be flagged if any unusual symbols are found in the string.
 =back
 
 The density is entered in units of specific gravity or grams per
-cubic centimeter.  Alternately units of molarity can be used by
+cubic centimeter.  Alternately, units of molarity can be used by
 selecting that from the choice menu.
 
-Finally, the calculation requires an energy in eV at which to make t
-the calculation.
+Finally, an energy in eV is required at which to make the calculation.
 
 Here is an example of the results printed for BN, with a specific
 gravity of 2.29 and at energy of 7800 eV:
@@ -232,8 +233,8 @@ within 100 eV of the Co K edge energy of 7709 eV.
     The Elam database and the full cross-sections were
     used in the calculation.
 
-Suppose you wanted to mix some cobalt ferrite with 35 milligrapms of
-boron nitride measured above in order to make a good tranmission XAS
+Suppose you wanted to mix some cobalt ferrite with 35 milligrams of
+boron nitride measured above in order to make a good transmission XAS
 sample.  That amount of BN contributes 0.2 absorption lengths to the
 total thickness of the sample at this energy.  Weighing out 4
 milligrams of ferrite, then, gives the sample a total absorption of
@@ -254,7 +255,7 @@ edge step of 1.  With 4 milligrams, the edge step will be about
 
 A sample with an edge step of 1 is made by mixing 28.3 milligrams of
 ferrite with the BN.  This sample, however, will be very thick around
-the Co K edge.  28.3 miligrams represents about 7 absorption lengths
+the Co K edge.  28.3 milligrams represents about 7 absorption lengths
 of ferrite.  The ferrite in BN will, therefore, attenuate the beam
 passing through the sample to the level of exp(-7.2), or about 0.07%.
 Only a trickle of X-rays will pass through the sample.
@@ -263,8 +264,8 @@ It is, therefore, impossible to optimize both total absorption and
 edge step absorption for this sample.  Indeed, that is true of most
 materials.  In this case, a good compromise would be to make the total
 absorption a bit thick and the edge step a bit small.  Mixing 8
-miligrams of ferrite with the BN will result is a sample of about 2.2
-absorption lengths.  This will attenuiate the beam to the level of
+milligrams of ferrite with the BN will result is a sample of about 2.2
+absorption lengths.  This will attenuate the beam to the level of
 about 11% -- still plenty of photons for the transmission chamber.
 The edge step will be around 0.28 -- a quite respectable value.
 
@@ -276,7 +277,7 @@ composed of grains that are small compared to the absorption length.
 In this, you would want micron-sized or smaller grains.  Note that a
 stack of laboratory metal meshes are not adequate for separating out
 powders for this sample.  A #400 mesh -- usually the finest one in a
-common stack of seives -- has openings of 37 microns.  That is vastly
+common stack of sieves -- has openings of 37 microns.  That is vastly
 too large for your ferrite XAS samples!
 
 
@@ -320,7 +321,7 @@ It, this leaves enough photons passing through to the reference
 chamber to allow for a reasonable measurement on Ir.
 
 If you know the amplifier gain and voltage signal coming from your
-current-to-voltage amplifier (such as a Keithley 527 or 528),
+current-to-voltage amplifier (such as a Keithley 427 or 428),
 specifying these will compute a crude calculation of photon flux
 incident upon the chamber.
 
@@ -410,7 +411,7 @@ Anomalous scattering for elements can be plotted alone or over-plotted
 with other elements.  You can also select to plot either f', f", or
 both.
 
-The f' and f" data can be save to a file.
+The f' and f" data can be saved to a file.
 
 =head2 Preferences
 
@@ -443,7 +444,7 @@ Kontact. I found it effective so I swiped it for this program.
 =item *
 
 The pictures used on the buttons were cropped from images I found
-using Google The picture of the ion chamber is from the Advanced
+using Google. The picture of the ion chamber is from the Advanced
 Designed Consulting web site.  Their ion chambers are quite nice.  The
 edge finder icon was swiped from the F<find.png> icon in the kid's
 icon theme for KDE.  The line finder icon is from a web page by the
@@ -459,7 +460,7 @@ and Erik Gullikson, whose similar utility on the web set me straight.
 =item *
 
 The information used in the chemical data utility is from the
-kalziumrc file, which was swiped from the Kalzium package.  See
+F<kalziumrc> file, which was swiped from the Kalzium package.  See
 C<http://edu.kde.org/kalzium/> for more details.  The data for
 Mossbauer active isotopes was taken from C<http://www.mossbauer.org>
 

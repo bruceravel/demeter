@@ -1,17 +1,17 @@
 ## -*- config -*-
 ###########################################################################
-## This configuration file is for Demeter version 0.9.11.
+## This configuration file is for Demeter version 0.9.16.
 ##
-##     Demeter and Hephaestus are copyright (c) 2006-2012 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2013 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
-##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                   Ifeffit is copyright (c) 1992-2013 Matt Newville
 ##                                         newville@cars.uchicago.edu
 ##                       http://cars9.uchicago.edu/~newville/ifeffit/
 ##
 ##	  The latest version of Demeter can always be found at
-##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##               http://bruceravel.github.com/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -51,15 +51,15 @@ default=Elam
 description
   The data resource to use for most calculations.  Note that the CL
   resource is always used in the F1F2 utility while the edge and line
-  energies from the Elam resource is always used in the edge finder, line
-  finder and absorption utilities.
+  energies from the Elam resource are always used in the edge finder,
+  line finder and absorption utilities.
 
-variable=units
-type=list
-options=energy wavelength
-default=energy
-description
-  This specifies the default units to use to present energy values.
+# variable=units
+# type=list
+# options=energy wavelength
+# default=energy
+# description
+#   This specifies the default units to use to present energy values.
 
 variable=xsec
 type=list

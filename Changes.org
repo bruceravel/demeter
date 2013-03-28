@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.16  ?? March 2013
+** 0.9.16  28 March 2013
 *** Athena
    + fixed a couple bugs in difference spectrum tool
    + fixed an error importing data+reference when the energy column is

@@ -6,7 +6,7 @@
          logo    = "$rooturl/images/bw/pallas_athene_thumb.jpg"
          css     = "$rooturl/html/ab.css"
          perlcss = "$rooturl/html/perl.css"
-	 athena  = "http://cars9.uchicago.edu/~ravel/software"
+	 athena  = "http://bruceravel.github.com/demeter/"
 	 ifeffit = "http://cars9.uchicago.edu/iffwiki/ifeffit"
 	 xafsorg = "http://xafs.org"
 	 cc      = "http://creativecommons.org/licenses/by-sa/3.0/"

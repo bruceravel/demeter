@@ -120,9 +120,7 @@ Screen mode is the default mode.
 In this mode, the program loops over all materials in the database,
 generating an html file for each material as well as a PNG file for
 each plot type.  This collection of files can be dropped onto a web
-site or viewed locally.  L<Here is an
-example|http://cars9.uchicago.edu/~ravel/software/doc/Standards/>
-using the database that ships with Demeter.
+site or viewed locally. 
 
 =item latex
 
@@ -284,7 +282,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
