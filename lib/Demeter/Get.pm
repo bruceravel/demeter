@@ -41,7 +41,7 @@ sub backend_id {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return "Ifeffit " . get_string('&build')
+      return "Ifeffit " . Ifeffit::get_string('&build')
     };
 
     when ('larch') {
