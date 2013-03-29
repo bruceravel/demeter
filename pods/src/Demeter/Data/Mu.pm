@@ -275,18 +275,15 @@ sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
   return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
-  my $command = $self->template("process", "fix_chik");
-  ##print $command;
-  $self->dispose($command);
+  #my $command = 
+  $self->dispense("process", "fix_chik");
+  #print $command;
+  #$self->dispose($command);
   return $self;
 };
 
 sub initialize_e0 {
   my ($self) = @_;
-  ### entering initialize_e0
-  #my $command = $self->template("process", "find_e0");
-  #$self->dispose($command);
-  #$self->bkg_e0($self->fetch_scalar("e0"));
   $self->e0('ifeffit') if not $self->bkg_e0;
   $self->resolve_defaults;
 };
@@ -323,6 +320,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
 
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
@@ -337,23 +335,25 @@ sub normalize {
     $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
 
-    my $command = q{};
-    $command .= $self->template("process", "post_autobk");
-    if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
-      $command .= $self->template("process", "flatten_fit");
-    } else {
-      $command .= $self->template("process", "flatten_set");
+    ## group.pre_edge *must* be set here.  does all of this need to be called at this point?
+    #my $command = q{};
+    #$command .= $self->template("process", "post_autobk");
+    if (($self->bkg_fixstep) or ($self->datatype eq 'xanes')) {
+      $self->dispense("process", "flatten_fit");
+    #} else {
+    #  $command .= $self->template("process", "flatten_set");
     };
-    $self->dispose($command);
+    #$self->dispose($command);
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
     $self->dispense("process", "is_nor");
   };
-  $self->dispense("process", "nderiv") if not $self->is_nor;
 
   $self->update_norm(0);
   return $self;
@@ -470,6 +470,13 @@ sub autobk {
   ## make sure that a fitted edge step actually exists...
   $self->bkg_fitted_step($self->bkg_step) if not $self->bkg_fitted_step;
 
+  $self->bkg_kwindow('kaiser')        if ($self->is_larch   and ($self->bkg_kwindow eq 'kaiser-bessel'));
+  $self->bkg_kwindow('kaiser-bessel') if ($self->is_ifeffit and ($self->bkg_kwindow eq 'kaiser'       ));
+  my $save = $self->bkg_dk;
+  if ($self->is_larch and ($self->bkg_kwindow eq 'kaiser')) {
+    $self->bkg_dk(0.1) if ($self->bkg_dk < 0.1); # fix numerical error in larch implementation of kaiser window
+  }
+
   my $command = q{};
   if (lc($self->bkg_stan) ne 'none') {
     my $stan = $self->mo->fetch("Data", $self->bkg_stan);
@@ -491,8 +498,8 @@ sub autobk {
     $self->resolve_defaults;
   };
   $self->dispose($command);
-  $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
-
+  ##$self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
+  $self->bkg_dk($save);
 
 ## is it necessary to do post_autobk and flatten templates here?  they
 ## *were* done in the normalize method...
@@ -500,7 +507,7 @@ sub autobk {
   ## begin setting up all the generated arrays from the background removal
   $self->update_fft(1);
   $self->bkg_cl(0);
-  $command .= $self->template("process", "post_autobk");
+  $command = $self->template("process", "post_autobk");
   if ($self->is_nor) {
     $command .= $self->template("process", "deriv");
     $command .= $self->template("process", "nderiv");
@@ -523,6 +530,7 @@ sub autobk {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');
@@ -596,15 +604,15 @@ sub _plotE_command {
     push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
-  if ($self->po->e_pre)  { # show the preline
-    push @suffix_list, 'preline';
+  if ($self->po->e_pre)  { # show the pre_edge
+    push @suffix_list, 'pre_edge';
     my $n = ($incr+2) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
-  if ($self->po->e_post) { # show the postline
-    push @suffix_list, 'postline';
+  if ($self->po->e_post) { # show the post_edge
+    push @suffix_list, 'post_edge';
     my $n = ($incr+3) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
@@ -729,9 +737,9 @@ sub make_margins {
   };
 
   if (($self->po->margin_min > 0) and ($self->po->margin_max > 0)) {
-    $self->dispense("process", "margin", {suffix=>"postline"});
+    $self->dispense("process", "margin", {suffix=>"post_edge"});
   } else {
-    $self->dispense("process", "margin", {suffix=>"preline"});
+    $self->dispense("process", "margin", {suffix=>"pre_edge"});
   };
   return 1;
 };
@@ -863,7 +871,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -1069,7 +1077,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

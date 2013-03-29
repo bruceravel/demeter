@@ -38,7 +38,7 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       LineFinder   => 'ordered list of fluorescence line energies',
 	       Standards    => 'periodic table of XAS data standards',
 	       F1F2	    => 'periodic table of anomalous scattering',
-	       Help	    => 'Hephaestus User Guide',
+	       Help	    => 'Hephaestus Users\' Guide',
 	       Config       => 'control details of Hephaestus\' behavior',
 	     );
 my %label_of = (Absorption   => 'Absorption',
@@ -355,7 +355,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -415,7 +415,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

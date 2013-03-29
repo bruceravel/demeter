@@ -56,6 +56,9 @@ sub new {
   $this->{save} = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{save}, \&on_save);
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{doc}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('monitor', 'thestatusbuffer')});
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT, 2);
   EVT_BUTTON($this, $this->{close}, \&on_close);
@@ -121,7 +124,7 @@ Demeter::UI::Artemis::Status - A statusbar message buffer for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -142,7 +145,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

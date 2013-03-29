@@ -6,6 +6,7 @@ use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::VerbDialog;
 use Demeter::UI::Athena::IO;
 use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::TextBuffer;
@@ -73,6 +74,7 @@ sub OnInit {
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
 
+
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
@@ -123,6 +125,7 @@ sub OnInit {
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
   $app->{selecting_data_group}=0;
+  $app->{update_kweights}=1;
 
   ## -------- text buffers for various TextEntryDialogs
   $app->{rename_buffer}  = [];
@@ -158,10 +161,10 @@ sub OnInit {
 sub process_argv {
   my ($app, @args) = @_;
   if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
-    my $yesno = Wx::MessageDialog->new($app->{main},
-  				       "Athena found an autosave file.  Would you like to import it?",
-  				       "Import autosave?",
-  				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Athena found an autosave file.  Would you like to import it?",
+						 "Import autosave?",
+						 "Import");
     my $result = $yesno->ShowModal;
     if ($result == wxID_YES) {
       $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
@@ -181,6 +184,13 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
+    } elsif (($a eq '-lv') or ($a eq '-vl')) {
+      $demeter->set_mode(template_process=>"larch");
+      $Demeter::devflag = 1;
+    } elsif ($a eq '-l') {
+      $demeter->set_mode(template_process=>"larch");
+    } elsif ($a eq '-v') {
+      $Demeter::devflag = 1;
     } elsif (-r $a) {
       $app -> Import($a);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
@@ -232,10 +242,10 @@ sub on_close {
   my ($app, $event) = @_;
   if ($app->{modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($app->{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Save this project before exiting?",
+						 "Save project?",
+						 "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Not exiting Athena after all.");
@@ -516,7 +526,7 @@ sub menubar {
   $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
   $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
+  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (not Demeter->is_larch);
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
@@ -646,8 +656,8 @@ sub menubar {
 
 
   my $helpmenu   = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "Document",     "Open the Athena document" );
-  $helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
+  #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
@@ -664,7 +674,7 @@ sub menubar {
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $helpmenu       -> Enable($_,0) foreach ($DEMO);
+  #$helpmenu       -> Enable($_,0) foreach ($DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -1494,6 +1504,7 @@ sub side_bar {
   $app->{main}->{kweights}->SetSelection($demeter->co->default("plot", "kweight"));
   EVT_RADIOBOX($app->{main}, $app->{main}->{kweights},
 	       sub {
+		 $::app->{update_kweights} = 1;
 		 $::app->replot(@{$::app->{lastplot}}) if (lc($::app->{lastplot}->[0]) ne 'e');
 	       });
   $app->mouseover($app->{main}->{kweights}, "Select the value of k-weighting to be used in plots in k, R, and q-space.");
@@ -1852,9 +1863,13 @@ sub plot {
 
   ## I am not clear why this is necessary...
   foreach my $i (0 .. $#data) {
+    my @save = $data[0]->get(qw(update_columns update_norm update_bkg update_fft update_bft));
     $data[$i]->bkg_fixstep($is_fixed[$i]);
+    $data[$i]->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+		   update_fft     => $save[3], update_bft  => $save[4],);
   };
   $app->postplot($data[0], $is_fixed[0]);
+
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
   $app->OnGroupSelect(0,0,0);
@@ -1936,6 +1951,7 @@ sub preplot {
 sub postplot {
   my ($app, $data) = @_;
   ##if ($demeter->mo->template_plot eq 'singlefile') {
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     $demeter->po->finish;
     $app->{main}->status("Wrote plot data to ".$demeter->po->file);
@@ -1953,6 +1969,7 @@ sub postplot {
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);
+  $data->set(update_fft => $save[3], update_bft => $save[4],);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -2017,22 +2034,33 @@ sub plot_i0_marked {
   $app->postplot($app->current_data);
 };
 
+## take care to update kweights only when they have changed to avoid
+## having the Plot object update everyone's update_fft attribute
 sub pull_kweight {
   my ($app, $data, $how) = @_;
   my $kw = $app->{main}->{kweights}->GetStringSelection;
   if ($kw eq 'kw') {
     #$data->po->kweight($data->fit_karb_value);
     if ($how eq 'single') {
-      $data->po->kweight($data->fit_karb_value);
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$app->{update_kweights}=0;
+      };
     } else {
       ## check to see if marked groups all have the same arbitrary k-weight
       my @kweights = map {$_->fit_karb_value} $app->marked_groups;
       my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
-      $data->po->kweight($data->fit_karb_value);
-      $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+	$app->{update_kweights}=0;
+      };
     };
   } else {
-    $data->po->kweight($kw);
+    if ($app->{update_kweights}) {
+      $data->po->kweight($kw);
+	$app->{update_kweights}=0;
+      };
   };
   return $data->po->kweight;
 };
@@ -2291,7 +2319,7 @@ sub Clear {
 ## in future times, check to see if Ifeffit is being used
 sub heap_check {
   my ($app, $show) = @_;
-  return if (Demeter->mo->template_process eq 'Larch');
+  return if Demeter->is_larch;
   if ($app->current_data->mo->heap_used > 0.98) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.95) {
@@ -2348,10 +2376,11 @@ sub document {
   if (-e $fname) {
     $fname  = 'file://'.$fname;
     $fname .= '#'.$target if $target;
-    $::app->{main}->status("Displaying document page: $fname");
+    $::app->{main}->status("Displaying local document page: $fname");
     Wx::LaunchDefaultBrowser($fname);
   } else {
     $url .= '#'.$target if $target;
+    $::app->{main}->status("Displaying online document page: $url");
     Wx::LaunchDefaultBrowser($url);
     ##$::app->{main}->status("Document target not found: $fname");
   };
@@ -2547,7 +2576,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -2595,7 +2624,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

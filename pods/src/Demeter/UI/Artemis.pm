@@ -1,5 +1,7 @@
 package Demeter::UI::Artemis;
 
+use feature qw(switch);
+
 use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
@@ -8,6 +10,8 @@ use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
+
+use Demeter::UI::Wx::VerbDialog;
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
@@ -35,6 +39,7 @@ use base 'Wx::App';
 
 use Const::Fast;
 const my $BLANK           => q{___.BLANK.___};
+const my $SAVETHIS        => Wx::NewId();
 const my $MRU	          => Wx::NewId();
 const my $SHOW_BUFFER     => Wx::NewId();
 const my $CONFIG          => Wx::NewId();
@@ -67,6 +72,8 @@ const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
 const my $PLOT_PDF	  => Wx::NewId();
+const my $PLOT_ALL_DATA	  => Wx::NewId();
+const my $PLOT_NO_DATA	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
@@ -156,6 +163,7 @@ sub OnInit {
   $filemenu->AppendSubMenu($mrumenu, "Recent files",    "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
+  $filemenu->Append($SAVETHIS,       "Save current fit", "Save current fit without history to a project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
   $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
@@ -207,7 +215,7 @@ sub OnInit {
   $feedbackmenu->AppendSubMenu($showmenu,  "Show ".Demeter->backend_name." ...",  'Show variables from '.Demeter->backend_name);
   $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools');
     ##if ($demeter->co->default("artemis", "debug_menus"));
-  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
+  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (not Demeter->is_larch);
 
   #my $settingsmenu = Wx::Menu->new;
 
@@ -219,6 +227,9 @@ sub OnInit {
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
   $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
   $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
+  $plotmenu->AppendSeparator;
+  $plotmenu->Append($PLOT_ALL_DATA, "Plot all data sets after fit", "Set all data sets to be plotted after a fit finishes");
+  $plotmenu->Append($PLOT_NO_DATA,  "Plot no data sets after fit", "Set all data sets NOT to be plotted after a fit finishes");
 
 
   my $helpmenu = Wx::Menu->new;
@@ -449,10 +460,10 @@ sub on_close {
 
   if ($frames{main} -> {modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($frames{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+				    "Save this project before exiting?",
+				    "Save project?",
+				    "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $frames{main}->status("Not exiting Artemis.");
@@ -513,7 +524,7 @@ EOH
 
 sub heap_check {
   my ($app, $show) = @_;
-  return if (Demeter->mo->template_process eq 'Larch');
+  return if Demeter->is_larch;
   if ($demeter->mo->heap_used > 0.99) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($demeter->mo->heap_used > 0.95) {
@@ -879,6 +890,14 @@ sub OnMenuClick {
       save_project(\%frames);
       last SWITCH;
     };
+    ($id == $SAVETHIS) and do {
+      if ($frames{History}->{list}->GetCount) {
+	$frames{History}->export($frames{History}->{list}->GetCount-1);
+      } else {
+	$frames{main}->status("You haven't made a fit yet!")
+      };
+      last SWITCH;
+    };
     ($id == $SHOW_BUFFER) and do {
       $frames{Buffer}->Show(1);
       last SWITCH;
@@ -992,6 +1011,21 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PLOT_ALL_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(1);
+      };
+      last SWITCH;
+    };
+    ($id == $PLOT_NO_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(0);
+      };
+      last SWITCH;
+    };
+
     ## -------- help menu
     ($id == $STATUS) and do {
       $frames{Status} -> Show(1);
@@ -1001,8 +1035,10 @@ sub OnMenuClick {
     ## -------- fit menu
     ($id == $IGNORE_NIDP) and do {
       if ($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP)) {
-	my $yesno = Wx::MessageDialog->new($frames{main}, "Are you SURE you want to skip the Nidp test?",
-					   "Skip Nidp test?", wxYES_NO|wxSTAY_ON_TOP|wxNO_DEFAULT);
+	my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						     "Are you SURE you want to skip the Nidp test?",
+						     "Skip Nidp test?",
+						     'Skip test');
 	if ($yesno->ShowModal == wxID_NO) {
 	  $frames{main}->{fitmenu}->Check($IGNORE_NIDP, 0);
 	  return;
@@ -1050,8 +1086,32 @@ sub OnDataRightClick {
 };
 
 
+sub OnDataButtonRightClick {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename ".$data->name);
+  $menu->Append(1, "Discard ".$data->name);
+  $self->PopupMenu($menu, $event->GetPosition);
+};
 
+sub OnDataMenu {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$dnum}->Rename;
+      modified(1);
+    };
 
+    when (1) {
+      $frames{$dnum}->discard_data;
+      modified(1);
+    };
+  };
+};
 
 sub make_data_frame {
   my ($self, $data) = @_;
@@ -1061,11 +1121,12 @@ sub make_data_frame {
   my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".emph($data->name));
   #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
-  mouseover($new, "Display/hide " . $data->name . ".");
+  mouseover($self, "Display/hide this data group.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $idata = $new->GetId;
   my $dnum = sprintf("data%s", $idata);
+  $new->{dnum} = $dnum;
   $self->{$dnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$dnum}->Show($_[0]->GetValue);
@@ -1078,6 +1139,8 @@ sub make_data_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnDataMenu);
+  EVT_RIGHT_UP($new, \&OnDataButtonRightClick);
 
   ++$frames{main}->{cvcount};
   $data->cv($frames{main}->{cvcount});
@@ -1133,6 +1196,30 @@ sub OnFeffRightClick {
   };
 };
 
+sub OnFeffButtonRightClick {
+  my ($self, $event) = @_;
+  #my $fnum = $self->{fnum};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename this Feff object");
+  $menu->Append(1, "Discard this Feff object");
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnFeffMenu {
+  my ($self, $event) = @_;
+  my $fnum = $self->{fnum};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$fnum}->on_rename;
+      modified(1);
+    };
+
+    when (1) {
+      $frames{$fnum}->on_discard;
+      modified(1);
+    };
+  };
+};
 
 ## name for empty feff frame...
 sub make_feff_frame {
@@ -1145,10 +1232,11 @@ sub make_feff_frame {
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   my $ifeff = $new->GetId;
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
-  mouseover($new, "Display/hide $name.");
+  mouseover($new, "Display/hide this Feff calculation.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $fnum = sprintf("feff%s", $ifeff);
+  $new->{fnum} = $fnum;
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$fnum}->Show($_[0]->GetValue);
@@ -1161,6 +1249,8 @@ sub make_feff_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnFeffMenu);
+  EVT_RIGHT_UP($new, \&OnFeffButtonRightClick);
 
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);
@@ -1246,8 +1336,10 @@ sub discard_feff {
   ##my $atomsobject = $frames{$which}->{Atoms}
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($frames{main}, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -1338,6 +1430,7 @@ sub document {
   } else {
     $url .= '#'.$target if $target;
     #$::app->{main}->status("Document target not found: $fname");
+    $::app->{main}->status("Displaying document page: $url");
     Wx::LaunchDefaultBrowser($url);
   };
 };
@@ -1474,7 +1567,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -1522,7 +1615,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

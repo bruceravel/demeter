@@ -110,7 +110,7 @@ subtype IfeffitProgramVar,
 
 ## -------- Window types
 use vars qw(@window_list $window_regexp);
-@window_list = qw(kaiser-bessel hanning welch parzen sine gaussian);
+@window_list = qw(kaiser-bessel kaiser hanning welch parzen sine gaussian);
 $window_regexp = Regexp::Assemble->new()->add(@window_list)->re;
 subtype Window,
   as Str,
@@ -471,7 +471,7 @@ Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -496,7 +496,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

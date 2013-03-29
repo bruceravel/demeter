@@ -37,7 +37,8 @@ our $image = Wx::Bitmap->newFromXPM(\@icon);
 sub new {
   my ($class, $parent, $id, $message, $title, $verb, $cancel) = @_;
 
-  my $this = $class->SUPER::new($parent, $id, $title, Wx::GetMousePosition, wxDefaultSize,
+  ##Wx::GetMousePosition
+  my $this = $class->SUPER::new($parent, $id, $title, wxDefaultPosition, wxDefaultSize,
 				wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
 			       );
 

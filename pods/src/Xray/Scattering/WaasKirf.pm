@@ -2,7 +2,7 @@
 ######################################################################
 ##  This module is copyright (c) 2005-2008 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software/exafs/
+##  http://bruceravel.github.com/demeter/exafs/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -242,6 +242,6 @@ valence states.  The final two are ways of refering to an empty site
 =head1 AUTHOR
 
   Bruce Ravel, bravel AT bnl DOT gov
-  http://cars9.uchicago.edu/~ravel/software/exafs/
+  http://bruceravel.github.com/demeter/exafs/
 
 =cut

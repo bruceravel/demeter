@@ -52,6 +52,7 @@
 	<li><a href="#VERSION">VERSION</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#X15B_files">X15B files</a></li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 </ul>
 <hr />
@@ -63,7 +64,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.16.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -88,6 +89,13 @@ in a form that will work well with Athena or virtually any other
 analysis or plotting program.  The columns are: energy, the I0 ion
 chamber, the narrow and wide windows on the germanium detector, and
 the transmission ion chamber.</p>
+
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Only the relevant columns from the original data file are passed along
+to the output ascii file.  These column numbers can be configured in
+the <cite>x15b.demeter_conf</cite> file or via Athena's project registry
+configuration interface.</p>
 
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

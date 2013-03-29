@@ -7,9 +7,15 @@ sub fft {
     carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
-  #  $self->_update("fft");
+  $self->fft_kwindow('kaiser')        if ($self->is_larch   and ($self->fft_kwindow eq 'kaiser-bessel'));
+  $self->fft_kwindow('kaiser-bessel') if ($self->is_ifeffit and ($self->fft_kwindow eq 'kaiser'       ));
+  my $save = $self->fft_dk;
+  if ($self->is_larch and ($self->fft_kwindow eq 'kaiser')) {
+    $self->fft_dk(0.1) if ($self->fft_dk < 0.1); # fix numerical error in larch implementation of kaiser window
+  }
   $self->dispose($self->_fft_command);
   $self->chi_noise;
+  $self->fft_dk($save);
   $self->update_fft(0);
 };
 sub _fft_command {
@@ -25,8 +31,14 @@ sub bft {
     carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
-  #  $self->_update("fft");
+  $self->bft_rwindow('kaiser')        if ($self->is_larch   and ($self->bft_rwindow eq 'kaiser-bessel'));
+  $self->bft_rwindow('kaiser-bessel') if ($self->is_ifeffit and ($self->bft_rwindow eq 'kaiser'       ));
+  my $save = $self->bft_dr;
+  if ($self->is_larch and ($self->bft_rwindow eq 'kaiser')) {
+    $self->bft_dr(0.1) if ($self->bft_dr < 0.1); # fix numerical error in larch implementation of kaiser window
+  }
   $self->dispose($self->_bft_command);
+  $self->bft_dr($save);
   $self->update_bft(0);
 };
 sub _bft_command {
@@ -44,7 +56,7 @@ Demeter::Data::FT - Fourier transform mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -95,7 +107,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

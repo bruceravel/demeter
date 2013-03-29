@@ -118,16 +118,17 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;
-  $self->dispense('process', 'read_group', {file=>$a, group=>'a', type=>'raw'});
+  my $gp = $self->group || Demeter->mo->throwaway_group;
+  $self->dispense('process', 'read_group', {file=>$a, group=>$gp, type=>'raw'});
   my $col_string = $self->fetch_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
     printf "%s\n\t%s    col_string=%s\n", $a, $passfail, $col_string;
   };
-  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0
+  $self->dispense('process', 'erase', {items=>"\@group $gp"}), return 0
     if ($col_string =~ /^(\s*|--undefined--)$/);
-  $self->clear_ifeffit_titles('a');
+  $self->clear_ifeffit_titles($gp);
 
   ## now check that the data file had more  than 1 data point
   my $onepoint = 0;
@@ -138,15 +139,15 @@ sub is_data {
       $onepoint = 1;
       $self->dispense('process', 'erase', {items=>$scalar});
     };
-    my @array = $self->fetch_array("a.$l");
+    my @array = $self->fetch_array("$gp.$l");
     if (@array) {
       my $npts = $#array+1;
       $tooshort = 1 if ($npts < $self->co->default(qw(file minlength)));
     };
   };
-  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0 if $onepoint;
-  $self->dispense('process', 'erase', {items=>"\@group a"}), return 0 if $tooshort;
-  $self->dispense('process', 'erase', {items=>"\@group a"});
+  $self->dispense('process', 'erase', {items=>"\@group $gp"}), return 0 if $onepoint;
+  $self->dispense('process', 'erase', {items=>"\@group $gp"}), return 0 if $tooshort;
+  $self->dispense('process', 'erase', {items=>"\@group $gp"});
   return 1;
 };
 
@@ -214,7 +215,7 @@ Demeter::Files - File import tests
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 

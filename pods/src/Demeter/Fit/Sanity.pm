@@ -37,6 +37,7 @@ sub S_data_files_exist {
   foreach my $d (@data) {
     next if $d->from_athena;
     next if $d->from_yaml;
+    next if not $d->fit_include;
     return 0 if ($d->file eq $NULLFILE);
     my $file = $d->file;
     if (not -e $file) {
@@ -55,6 +56,8 @@ sub S_feff_files_exist {
   my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
+    next if not $p->include;
+    next if not $p->data->fit_include;
     my ($pathto, $nnnn) = $p->get(qw(folder file));
     my $file = File::Spec->catfile($pathto, $nnnn);
     if (not -e $file) {
@@ -87,6 +90,7 @@ sub S_defined_not_used {
     foreach my $p (@paths) {
       next if (ref($p) !~ m{Path});
       next if not $p->include;
+      next if not $p->data->fit_include;
       last if $thisfound;
       foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
 	++$thisfound if (lc($p->$pp) =~ /\b$name\b/);
@@ -143,6 +147,7 @@ sub S_used_not_defined {
   foreach my $p (@paths) {
     next if not defined($p);
     next if not $p->include;
+    next if not $p->data->fit_include;
     my $label = $p->name;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my @list = split(/$tokenizer_regexp+/, $p->$pp);
@@ -185,6 +190,8 @@ sub S_binary_ops {
   };
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
+    next if not $p->data->fit_include;
     my $label = $p->name;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
@@ -219,6 +226,8 @@ sub S_function_names {
   };
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
+    next if not $p->data->fit_include;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
       if ($mathexp =~ m{(\b\w+)\s*\(}) {
@@ -246,6 +255,7 @@ sub S_unique_group_names {
   my %tag_seen = ();
   my %cv_seen  = ();
   foreach my $d (@data) {
+    next if not $d->fit_include;
     ++$dseen{$d->group};
     $d->add_trouble('namenotunique') if ($dseen{$d->group} > 1);
     ++$tag_seen{$d->tag};
@@ -273,6 +283,8 @@ sub S_unique_group_names {
   my %pseen = ();
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
+    next if not $p->data->fit_include;
     ++$pseen{$p->group};
     $p->add_trouble('namenotunique') if ($pseen{$p->group} > 1);
   };
@@ -331,6 +343,8 @@ sub S_parens_not_match {
   };
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
+    next if not $p->data->fit_include;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
       my $not_ok = $self->check_parens($mathexp);
@@ -477,6 +491,8 @@ sub S_exceed_ifeffit_limits {
   my $n_paths = 0;
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
+    next if not $p->data->fit_include;
     ++$n_paths if ($p->include);
   };
   if ($n_paths > $self->fetch_scalar('&max_paths')) {
@@ -507,6 +523,8 @@ sub S_path_calculation_exists {
   my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
+    next if not $p->include;
+    next if not $p->data->fit_include;
     next if (ref($p->sp) =~ m{(?:ScatteringPath|SSPath|FPath)});
     my $nnnn = File::Spec->catfile($p->folder, $p->file);
     next if ((-e $nnnn) and $p->file);
@@ -536,6 +554,8 @@ sub S_default_path {
   my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
+    next if not $p->include;
+    next if not $p->data->fit_include;
     ++$found if $p->default_path;
   };
   $self->add_trouble('defaultpath') if ($found > 1);
@@ -630,7 +650,7 @@ Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -848,7 +868,7 @@ The Ifeffit group name for this path is not unique.
 
 =item C<pathdataname>
 
-This path has an Ifeffit group name which is used by a Data object.
+This path has an Ifeffit/Larch group name which is used by a Data object.
 
 =item C<parens> + C<$pp>
 
@@ -856,8 +876,8 @@ The math expression for the C<$pp> path parameter has unmatched parentheses.
 
 =item C<reffrmax>
 
-The R effective for this path is well beyond the C<rmax> value of its
-Data object.
+The R effective for this path is much larger than the C<rmax> value
+chosen for the fit to the data.
 
 =item C<nocalc>
 
@@ -1008,7 +1028,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

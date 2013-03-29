@@ -49,6 +49,7 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 			       $self->suffix(q{flat}), $self->space_description('flattened mu(E)')  if ((lc($new) =~ m{\Anor}) and $self->data and ($self->data->bkg_flatten));
 			       $self->suffix(q{nder}), $self->space_description('derivative mu(E)') if  (lc($new) =~ m{\An?der});
 			       $self->suffix(q{chi}),  $self->space_description('chi(k)')           if  (lc($new) =~ m{\Achi});
+			       $self->suffix(q{xmu}),  $self->space_description('raw mu(E)')        if  (lc($new) =~ m{\Axmu});
 			      });
 has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
@@ -897,7 +898,7 @@ Demeter::LCF - Linear combination fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -1141,10 +1142,10 @@ standards.  In it's simplest form, the sole argument is a Data objectL
 You can also set certain parameters of the standard by supplying an
 optional anonymous hash:
 
-  $lcf -> add($data_object, { required => 0,
-                              float_e0 => 0,
-                              weight   => 1/3,
-                              e0       => 1/3,});
+  $lcf -> add($data_object, required => 0,
+                            float_e0 => 0,
+                            weight   => 1/3,
+                            e0       => 1/3,);
 
 The C<required> parameter flags this standard as one that is required
 to be in a combinatorial fit.  C<float_e0> is true when you wish to
@@ -1551,7 +1552,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

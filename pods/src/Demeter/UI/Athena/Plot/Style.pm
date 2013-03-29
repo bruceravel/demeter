@@ -126,7 +126,10 @@ sub discard_style {
   my ($this, $event, $app) = @_;
   my $i = $this->{list}->GetSelection;
   my $style = $this->{list}->GetClientData($i);
-  my $yesno = Wx::MessageDialog->new($this, "Really discard ".$style->name."?", "Really discard?", wxYES_NO);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
+					       "Really discard the \"".$style->name."\" plotting style?",
+					       "Really discard?",
+					       "Discard");
   if ($yesno->ShowModal == wxID_NO) {
     $app->{main}->status("Not discarding ".$style->name);
     return;
@@ -168,7 +171,7 @@ Demeter::UI::Athena::Plot::Style - plotting style controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -188,7 +191,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

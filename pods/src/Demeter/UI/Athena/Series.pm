@@ -182,8 +182,10 @@ sub make {
     return;
   };
   if ($n > 10) {
-    my $yesno = Wx::MessageDialog->new($this, "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
-				       "Continue?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
+						 "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
+						 "Continue?",
+						 "Continue");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -264,7 +266,7 @@ Demeter::UI::Athena::Series - A tool for copying series of groups in Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -299,7 +301,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -98,25 +98,25 @@ sub new {
   $hbox -> Add($this->{plotafter},1, wxALL, 1);
   EVT_CHECKBOX($this, $this->{include},      sub{include_label(@_)});
 
-  my $cpane = Wx::CollapsiblePane->new($this, -1, "Other path options");
-  $vbox -> Add($cpane, 0, wxALL|wxLEFT, 4);
-  my $window = $cpane->GetPane;
-  my $sizer = Wx::BoxSizer->new( wxVERTICAL );
-  $this->{useasdefault} = Wx::CheckBox->new($window, -1, "Use this path as the default after the fit");
-  $this->{useforpc}     = Wx::CheckBox->new($window, -1, "Use this path for phase corrected plotting.");
-  $sizer -> Add($this->{useasdefault}, 0, wxGROW|wxALL, 1);
-  $sizer -> Add($this->{useforpc},     0, wxGROW|wxALL, 1);
-  EVT_CHECKBOX($this, $this->{useasdefault}, sub{set_default_path(@_)});
+  #my $cpane = Wx::CollapsiblePane->new($this, -1, "Other path options");
+  #$vbox -> Add($cpane, 0, wxALL|wxLEFT, 4);
+  #my $window = $cpane->GetPane;
+  #my $sizer = Wx::BoxSizer->new( wxVERTICAL );
+  ##$this->{useasdefault} = Wx::CheckBox->new($this, -1, "Use this path as the default after the fit");
+  $this->{useforpc}     = Wx::CheckBox->new($this, -1, "Use this path for phase corrected plotting.");
+  ##$vbox -> Add($this->{useasdefault}, 0, wxGROW|wxALL, 1);
+  $vbox -> Add($this->{useforpc},     0, wxGROW|wxALL, 1);
+  ##EVT_CHECKBOX($this, $this->{useasdefault}, sub{set_default_path(@_)});
   EVT_CHECKBOX($this, $this->{useforpc},     sub{set_pc_path(@_)});
-  $window->SetSizer($sizer);
+  #$window->SetSizer($sizer);
   #$sizer->SetSizeHints($window);
-  EVT_COLLAPSIBLEPANE_CHANGED($this, $cpane, sub{$this -> SetSizerAndFit($vbox);
-						 $this->{datapage} -> SetSizerAndFit($this->{datapage}->{mainbox});
-					       });
+  #EVT_COLLAPSIBLEPANE_CHANGED($this, $cpane, sub{$this -> SetSizerAndFit($vbox);
+  #						 $this->{datapage} -> SetSizerAndFit($this->{datapage}->{mainbox});
+  #					       });
 
   $this->mouseover("include",      "Check this button to include this path in the fit, uncheck to exclude it.");
   $this->mouseover("plotafter",    "Check this button to have this path automatically transfered to the plotting list after a fit.");
-  $this->mouseover("useasdefault", "Check this button to have this path serve as the default path for evaluation of def and after parameters for the log file.");
+  #$this->mouseover("useasdefault", "Check this button to have this path serve as the default path for evaluation of def and after parameters for the log file.");
   $this->mouseover("useforpc",     "Check this button to use this path for phase corrected plotting for this data set and its paths.");
 
 
@@ -178,6 +178,13 @@ sub new {
   $this->{pp_n}->{was} = q{};
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  my $last = q{label}; # fourth
+  #$last = 'dphase' if ($this->{datapage}->{data}->co->default('artemis', 'offer_dphase'));
+  foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
+    next if (($k eq 'dphase') and (not $this->{datapage}->{data}->co->default('artemis', 'offer_dphase')));
+    $this->{"pp_$k"}->MoveAfterInTabOrder($this->{"pp_$last"});
+    $last = $k;
+  };
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
@@ -263,7 +270,7 @@ sub populate {
 
   $this->{include}      -> SetValue($pathobject->include);
   $this->{plotafter}    -> SetValue($pathobject->plot_after_fit);
-  $this->{useasdefault} -> SetValue($pathobject->default_path);
+  #$this->{useasdefault} -> SetValue($pathobject->default_path);
   $this->{useforpc}     -> SetValue($pathobject->pc);
 };
 
@@ -280,7 +287,7 @@ sub fetch_parameters {
   };
   $this->{path}->include( $this->{include}->GetValue );
   $this->{path}->plot_after_fit($this->{plotafter}->GetValue);
-  $this->{path}->default_path($this->{useasdefault}->GetValue);
+  #$this->{path}->default_path($this->{useasdefault}->GetValue);
   $this->{path}->pc($this->{useforpc}->GetValue);
   $this->{path}->mark($this->marked);
   ## default path after fit...
@@ -539,17 +546,17 @@ sub include_label {
   $self->{datapage}->{pathlist}->SetPageText($which, $label);
   $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
 };
-sub set_default_path {
-  my ($self, $event) = @_;
-  foreach my $fr (keys %Demeter::UI::Artemis::frames) {
-    my $datapage = $Demeter::UI::Artemis::frames{$fr};
-    next if ($fr !~ m{data});
-    foreach my $n (0 .. $datapage->{pathlist}->GetPageCount - 1) {
-      next if ($self eq $datapage->{pathlist}->GetPage($n));
-      $datapage->{pathlist}->GetPage($n)->{useasdefault}->SetValue(0);
-    };
-  };
-};
+# sub set_default_path {
+#   my ($self, $event) = @_;
+#   foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+#     my $datapage = $Demeter::UI::Artemis::frames{$fr};
+#     next if ($fr !~ m{data});
+#     foreach my $n (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+#       next if ($self eq $datapage->{pathlist}->GetPage($n));
+#       $datapage->{pathlist}->GetPage($n)->{useasdefault}->SetValue(0);
+#     };
+#   };
+# };
 sub set_pc_path {
   my ($self, $event) = @_;
   foreach my $fr (keys %Demeter::UI::Artemis::frames) {
@@ -560,6 +567,8 @@ sub set_pc_path {
       $datapage->{pathlist}->GetPage($n)->{useforpc}->SetValue(0);
     };
   };
+  my $verb = ($self->{useforpc}->GetValue) ? "Set" : "Unset";
+  $self->{datapage}->status("$verb \"".$self->{path}->name."\" as the phase correction path.");
 };
 
 sub Rename {
@@ -623,7 +632,7 @@ Demeter::UI::Artemis::Path - Path group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

@@ -47,7 +47,7 @@ denv - Display Demeter's operating environment
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -70,7 +70,7 @@ Append information about Wx and WxPerl to the report.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

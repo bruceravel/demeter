@@ -659,6 +659,7 @@ sub set_widget_state {
 
 sub push_values {
   my ($this, $data) = @_;
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   my $is_fixed = $data->bkg_fixstep;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck|file)\z});
@@ -705,12 +706,12 @@ sub push_values {
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
-  if ($data->bkg_e0 < 150) {
+  if (($data->bkg_e0 < 150) and ($data->datatype ne 'chi')) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
     $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
   };
-  if (get_Z($data->bkg_z) < 5) {
+  if ((get_Z($data->bkg_z) < 5) and ($data->datatype ne 'chi')) {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
     $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
   } else {
@@ -725,6 +726,8 @@ sub push_values {
   };
   $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
 
+  $data->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+	     update_fft     => $save[3], update_bft  => $save[4],);
   $this->{freeze}->SetValue($data->quenched);
   return $data;
 };
@@ -1079,8 +1082,8 @@ sub ContextMenu {
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
     $menu->AppendSeparator;
-    $menu->Append($ESHIFT_ALL,     "Show e0 shifts of all groups");
-    $menu->Append($ESHIFT_MARKED,  "Show e0 shifts of marked groups");
+    $menu->Append($ESHIFT_ALL,     "Show energy shifts of all groups");
+    $menu->Append($ESHIFT_MARKED,  "Show energy shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
     $menu->Append($E0_IFEFFIT,   "Set E0 to ".Demeter->backend_name."'s default");
@@ -1241,6 +1244,8 @@ sub DoContextMenu {
 sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
+  my $stat = Statistics::Descriptive::Full->new();
+
   my $text = "  group                    $description\n" . "=" x 40 . "\n";
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -1252,8 +1257,12 @@ sub parameter_table {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    $text .= sprintf($format, $d->name, $d->$which);
+    my $val = $d->$which;
+    $text .= sprintf($format, $d->name, $val);
+    $stat -> add_data($val) if looks_like_number($val);
   };
+  $text .= sprintf("\n\nAverage = %.5f  Standard deviation = %.5f\n", $stat->mean, $stat->standard_deviation)
+    if $stat->count > 1;
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;
@@ -1377,7 +1386,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -1399,7 +1408,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

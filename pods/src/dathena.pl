@@ -49,7 +49,7 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -67,7 +67,7 @@ Immediately import the #-th item from the MRU list
 
 Turn on Larch support (requires a running larch server)
 
-=item C<-d>
+=item C<-v>
 
 Set Demeter's devflag to a true value (used for development)
 
@@ -77,7 +77,7 @@ Set Demeter's devflag to a true value (used for development)
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -24,6 +24,7 @@ use Carp;
 use Regexp::Assemble;
 use Fcntl qw(:flock);
 use List::Util qw(sum);
+use List::MoreUtils qw(any);
 use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
@@ -54,6 +55,18 @@ const my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floati
 sub now {
   my ($self) = @_;
   return sprintf("%s", DateTime->now(time_zone => $tz));
+};
+
+sub attribute_exists {
+  my ($self, $att) = @_;
+  return any {$_ eq $att} (map {$_->name} $self->meta->get_all_attributes);
+}
+
+sub is_larch {
+  return (Demeter->mo->template_process eq 'larch');
+};
+sub is_ifeffit {
+  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
 };
 
 sub environment {
@@ -355,7 +368,8 @@ sub ifeffit_heap {
 my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
-  @titles_text = ();
+  return $self if $self->is_larch; # this functionality is simply not necessary with Larch
+  @titles_text = ();		   # in Larch, _main will not be littered with these strings
   $group ||= $self->group;
   my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),
@@ -446,7 +460,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -610,7 +624,7 @@ and is Copyright (C) 2007 and is licensed like Perl itself.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

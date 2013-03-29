@@ -44,6 +44,7 @@ has 'template_analysis' => (is => 'rw', isa => 'Str', default => 'ifeffit');
 has 'template_plot'     => (is => 'rw', isa => 'Str', default => 'pgplot');
 has 'template_feff'     => (is => 'rw', isa => 'Str', default => 'feff6');
 has 'template_report'   => (is => 'rw', isa => 'Str', default => 'standard');
+has 'template_plugin'   => (is => 'rw', isa => 'Str', default => 'ifeffit');
 # has 'template_process'  => (is => 'rw', isa => 'TemplateProcess',  default => 'ifeffit');
 # has 'template_fit'      => (is => 'rw', isa => 'TemplateFit',      default => 'ifeffit');
 # has 'template_analysis' => (is => 'rw', isa => 'TemplateAnalysis', default => 'ifeffit');
@@ -432,6 +433,7 @@ has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
+has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
 has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
 has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
@@ -593,7 +595,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -962,7 +964,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

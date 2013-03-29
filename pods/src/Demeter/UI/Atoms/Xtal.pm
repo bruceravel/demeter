@@ -829,12 +829,11 @@ sub save_file {
       } else {
 	$file = $fd->GetPath;
 	if (-e $file) {
-	  my $yesno = Wx::MessageDialog->new($self,
-					     "Overwrite existing file \"$file\"?",
-					     "Overwrite file?",
-					     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
-					    );
-                                            ##Wx::GetMousePosition  how is this done?
+	  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						       "Overwrite existing file \"$file\"?",
+						       "Overwrite file?",
+						       "Overwrite",
+						      );
 	  my $ok = $yesno->ShowModal;
 	  if ($ok == wxID_NO) {
 	    $self->{parent}->status("Not overwriting \"$file\"");
@@ -889,8 +888,10 @@ sub run_atoms {
 sub clear_all {
   my ($self, $skip_dialog) = @_;
   return $self->_do_clear_all if (not $atoms->co->default("atoms", "do_confirm"));
-  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard these crystal data?",
-				     "Discard?", wxYES_NO);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Do you really wish to discard these crystal data?",
+					       "Discard?",
+					       "Discard");
   if ((not $skip_dialog) and ($yesno->ShowModal == wxID_NO)) {
     $self->{parent}->status("Not discarding data.");
   } else {
@@ -948,7 +949,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -958,7 +959,7 @@ This class is used to populate the Atoms tab in the Wx version of Atoms.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

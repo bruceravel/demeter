@@ -560,10 +560,10 @@ sub combi {
   };
   my $size = $this->{LCF}->combi_size;
   if ($size > 70) {
-    my $yesno = Wx::MessageDialog->new($::app->{main},
-				       "Really perform $size fits?",
-				       "Perform $size fits?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+						 "You have asked to do $size fits!  Really perform this many fits?",
+						 "Perform $size fits?",
+						 "Perform fits");
     my $result = $yesno->ShowModal;
     if ($result == wxID_NO) {
       $::app->{main}->status("Not doing combinatorial sequence of $size fits.");
@@ -739,8 +739,6 @@ sub sequence {
 
   $this->seq_results(@groups);
   $this->{markedresults} -> SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
-  $this->{plotmarked}    -> Enable(1);
-  $this->{markedreport}  -> Enable(1);
   $this->seq_select($i);
   $this->{markedresults} -> SetItemState(0, 0, wxLIST_STATE_SELECTED);
   $this->{markedresults} -> SetItemState($i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
@@ -748,6 +746,8 @@ sub sequence {
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf "Fit %d groups %d minutes, %d seconds.", $#groups+1, $dur->minutes, $dur->seconds;
+  $this->{plotmarked}    -> Enable(1);
+  $this->{markedreport}  -> Enable(1);
   $::app->{main}->status($finishtext);
 
   undef $busy;
@@ -951,7 +951,7 @@ Demeter::UI::Athena::LCF - A linear combination fitting tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -982,7 +982,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

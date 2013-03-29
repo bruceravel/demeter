@@ -28,11 +28,11 @@ sub overwrite_prompt {
   my ($self, $file, $frame) = @_;
   $frame ||= $self;
   return 0 if (not -e $file);
-  my $yesno = Wx::MessageDialog->new($self,
-				     "Overwrite existing file \"$file\"?",
-				     "Overwrite file?",
-				     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
-				    ); ##Wx::GetMousePosition --  how is this done?
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Overwrite existing file \"$file\"?",
+					       "Overwrite file?",
+					       "Overwrite"
+					      ); ##Wx::GetMousePosition --  how is this done?
   my $ok = $yesno->ShowModal;
   if ($ok == wxID_NO) {
     $frame->status("Not overwriting \"$file\"");
@@ -49,7 +49,7 @@ Demeter::UI::Wx::OverwritePrompt - A prompt dialog for overwriting a file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -102,7 +102,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

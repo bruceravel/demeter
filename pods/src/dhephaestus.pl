@@ -41,7 +41,7 @@ hephaestus - A souped-up periodic table for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -54,7 +54,7 @@ perform an XAS experiment.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

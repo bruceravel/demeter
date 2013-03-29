@@ -42,8 +42,8 @@ sub new {
   $this->{fitas}    = Wx::Choice->new($this, -1, wxDefaultPosition, [165,-1],
 				      ['deriv(E)', 'smoothed deriv(E)']);
 
-  $this->{plotas} -> SetSelection(2);
-  $this->{fitas}  -> SetSelection(0);
+  $this->{plotas} -> SetSelection(3);
+  $this->{fitas}  -> SetSelection(1);
 
   $gbs->Add($this->{this},     Wx::GBPosition->new(0,1));
   $gbs->Add($this->{standard}, Wx::GBPosition->new(1,1));
@@ -251,7 +251,7 @@ Demeter::UI::Athena::Align - An alignment tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -282,7 +282,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

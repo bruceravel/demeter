@@ -24,7 +24,11 @@ sub dispose {
   return $rpcdata;
 };
 
-
+# sub get_messages {
+#   $rpcdata = $client -> get_messages();
+#   use Data::Dumper;
+#   print Data::Dumper->Dump([$rpcdata]), $/;
+# };
 
 
 sub get_larch_array {
@@ -32,8 +36,15 @@ sub get_larch_array {
   #Demeter->trace;
   #print '--------------', $param, $/;
   $rpcdata = $client -> get_data($param);
-  my $ret = $rpcdata->result->{value};
-  return @{eval $ret};
+  return () if (not defined($rpcdata->result));
+  if (ref($rpcdata->result) eq 'HASH') {
+    my $ret = $rpcdata->result->{value};
+    return @{eval $ret};
+  } else {
+    my $ret = eval $rpcdata->result;
+    return @$ret;
+  };
+  #or not (defined($rpcdata->result->{value})));
 };
 
 sub put_larch_array {

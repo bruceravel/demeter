@@ -549,10 +549,12 @@ sub trouble_report {
     foreach my $t (split(/\|/, $obj->trouble)) {
       my $pathfile = q{};
       if ($which =~ m{Path}) {
-	$pathfile = ($obj->sp) ? $obj->sp->intrpline : File::Spec->catfile($obj->folder, $obj->file);
-	$pathfile = '(' . $pathfile . ')';
+	#$pathfile = ($obj->sp) ? $obj->sp->intrpline : File::Spec->catfile($obj->folder, $obj->file);
+	#$pathfile = '(' . $pathfile . ')';
+	$pathfile = "in data set '".$obj->data->name."'";
       };
-      $text .= sprintf("%s: %s %s\n%s\n\n", uc($which), $obj->name, $pathfile, wrap("     ", "     ", $obj->translate_trouble($t)));
+      $text .= sprintf("%s: '%s' %s\n%s\n\n", uc($which), $obj->name, $pathfile,
+		       wrap("     ", "     ", $obj->translate_trouble($t)));
       ##$text .= sprintf("%s: %s\t(%s)\n%s\n\n", $which, $obj->name, $t, wrap("     ", "     ", $obj->translate_trouble($t)));
     };
   };
@@ -1709,7 +1711,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -2071,7 +2073,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -151,18 +151,25 @@ sub arrays {
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my @arrays = ();
-  @arrays_text = ();		     # initialize array buffer for accumulating correlations text
-  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
-	      $self->get_mode("feedback"));
-  $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
-  $self->dispense("process", "show_group");
-  $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(feedback=>$save[1]||q{});
-  my $group = $self->group;
-  foreach my $l (@arrays_text) {
-    if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
-      push @arrays, $1;
+
+  if ($self->mo->template_process eq 'larch') {
+    $self->dispense("process", "attributes");
+    @arrays = $self->fetch_array($self->group.'.l___ist');
+  } else {
+    @arrays_text = ();		     # initialize array buffer for accumulating correlations text
+    my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+		$self->get_mode("feedback"));
+    $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
+    $self->dispense("process", "show_group");
+    $self->toggle_echo($save[0]);	# reset everything
+    $self->set_mode(feedback=>$save[1]||q{});
+    my $group = $self->group;
+    foreach my $l (@arrays_text) {
+      if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+	push @arrays, $1;
+      };
     };
+
   };
   return @arrays;
 };
@@ -225,6 +232,8 @@ sub points {
   };
   if (defined $args{weight}) {
     $args{weight} || 0;
+    $#y = $#k if ($#k < $#y);
+    $#k = $#y if ($#k > $#y);
     @y = pairwise {$args{scale}*$a**$args{weight}*$b + $args{yoffset}} @k, @y;
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;
@@ -251,7 +260,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 METHODS
 
@@ -361,7 +370,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

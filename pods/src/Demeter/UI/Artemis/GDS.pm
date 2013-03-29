@@ -33,6 +33,7 @@ const my $IMPORT      => 4;
 const my $EXPORT      => 5;
 const my $DISCARD     => 6;
 const my $ADD	      => 8;
+const my $DOC	      => 10;
 const my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 
 const my $GUESS	      => Wx::NewId();
@@ -91,6 +92,8 @@ my %hints = (
 	     import    => "Import parameters from a text file",
 	     export    => "Export parameters to a text file",
 	     addgds    => "Add space for one more parameter",
+	     doc       => "Show documentation for the GDS window in a browser",
+	     close     => "Close GDS window",
 	    );
 
 
@@ -169,6 +172,8 @@ sub new {
   $this->{toolbar} -> AddTool(-1, "Discard all",   Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, "Add GDS",       Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
+  $this->{toolbar} -> AddSeparator;
+  $this->{toolbar} -> AddTool(-1, "About: GDS", Demeter::UI::Artemis::icon("doc"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $this->{toolbar} -> Realize;
   $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
 
@@ -176,8 +181,9 @@ sub new {
 
   $this -> SetSizerAndFit( $hbox );
   my ($xx, $yy) = $this->GetSizeWH;
-  $this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
-  $this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
+  $this -> SetSizeHints($xx, 1.1*$yy, $xx, -1);
+  #$this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
+  #$this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
   return $this;
 };
 
@@ -239,6 +245,9 @@ sub OnToolClick {
       $parent->initialize_row( $grid->GetNumberRows - 1 );
       $parent->{grid}->ClearSelection;
       last SWITCH;
+    };
+    ($which == $DOC) and do {	     # add a line
+      $::app->document('gds');
     };
   };
 };
@@ -511,10 +520,10 @@ sub discard_all {
   my ($parent, $force) = @_;
   my $grid = $parent->{grid};
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       "Really throw away all parameters?",
-				       "Verify action",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 "Really throw away all parameters?",
+						 "Verify action",
+						 "Throw them away");
     if ($yesno->ShowModal == wxID_NO) {
       $parent->status("Not discarding parameters.");
       return 0;
@@ -868,8 +877,12 @@ sub find {
 	my $pp = $page->{"pp_$k"}->GetValue;
 	if ($pp =~ m{\b$this\b}) {
 	  ++$count;
-	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s'\n", 
-			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel);
+	  my $lab = $page->{idlabel}->GetLabel;
+	  $lab =~ s{\A\(\(\(\s}{};
+	  $lab =~ s{\s+(\)\)\))?\z}{};
+	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s' in data set '%s'\n",
+			   $count, $k, $page->{fefflabel}->GetLabel, $lab,
+			   $Demeter::UI::Artemis::frames{$f}->{name}->GetLabel);
 	};
       };
     };
@@ -888,12 +901,16 @@ sub rename_global {
   my $count = 0;
 
   ## -------- get new name
-  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this to", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     $parent->status("Parameter renaming canceled.");
     return;
   };
   my $newname = $ted->GetValue;
+  if ($newname =~ m{\A\s*\z}) {
+    $parent->status("Parameter renaming canceled.");
+    return
+  };
 
   ## -------- change this parameter's name
   $parent->{grid}->SetCellValue($thisrow,1,$newname);
@@ -1058,10 +1075,10 @@ sub OnDropText {
 
   ## row already has a parameter in it
   } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
-				       "Replace parameter?",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
+						 "Replace parameter?",
+						 "Replace");
     if ($yesno->ShowModal == wxID_NO) {
       return 0;
     } else {
@@ -1092,7 +1109,7 @@ Demeter::UI::Artemis::GDS - A Guess/Def/Set interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -1127,7 +1144,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

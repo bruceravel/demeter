@@ -1,7 +1,7 @@
 package MooseX::Quenchable;
 
 {
-  $MooseX::Quenchable::VERSION = '0.9.14';
+  $MooseX::Quenchable::VERSION = '0.9.16';
 }
 use Moose::Role 0.90;
 use MooseX::Aliases;
@@ -11,7 +11,7 @@ has 'quenched'    => (is => 'rw', isa => 'Bool',   default => 0, alias=>'frozen'
 
 package MooseX::Quenchable::Attribute;
 {
-  $MooseX::Quenchable::Attribute::VERSION = '0.9.14';
+  $MooseX::Quenchable::Attribute::VERSION = '0.9.16';
 }
 use Moose::Role 0.90;
 
@@ -53,7 +53,7 @@ around accessor_metaclass => sub {
 
 package MooseX::Quenchable::Accessor;
 {
-  $MooseX::Quenchable::Accessor::VERSION = '0.9.14';
+  $MooseX::Quenchable::Accessor::VERSION = '0.9.16';
 }
 use Moose::Role 0.90;
 
@@ -72,7 +72,7 @@ around _inline_store => sub {
 
 package Moose::Meta::Attribute::Custom::Trait::Quenchable;
 {
-  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.14';
+  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.16';
 }
 sub register_implementation { 'MooseX::Quenchable::Attribute' }
 
@@ -87,7 +87,7 @@ MooseX::Quenchable - silently freeze attribute values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -135,7 +135,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -47,7 +47,7 @@ sub new {
   $vbox -> Add($text, 1, wxGROW|wxALL, 5);
   my $save = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($save, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
+  my $button = Wx::Button->new($this, wxID_OK, q{Close}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   EVT_BUTTON($this, $save, sub{OnSave(@_)});
@@ -141,7 +141,7 @@ Demeter::UI::Artemis::ShowText - A text display dialog for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

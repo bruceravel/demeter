@@ -31,10 +31,11 @@ sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  $this->{PEAK}  = Demeter::PeakFit->new(backend=>'ifeffit');
-  $this->{emin}  = -15; #$demeter->co->default('peakfit', 'emin');
-  $this->{emax}  =  15; #$demeter->co->default('peakfit', 'emax');
-  $this->{count} =  0;
+  $this->{PEAK}   = Demeter::PeakFit->new(backend=>'ifeffit');
+  $this->{emin}   = -15; #$demeter->co->default('peakfit', 'emin');
+  $this->{emax}   =  15; #$demeter->co->default('peakfit', 'emax');
+  $this->{count}  =  0;
+  $this->{fitted} =  0;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
@@ -193,8 +194,10 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   $this->{PEAK}->data($::app->current_data);
-  foreach my $ac (qw(fit plot reset save resultreport resultplot)) { # make 
-    $this->{$ac}->Enable(0);
+  if (not $this->{fitted}) {
+    foreach my $ac (qw(fit plot reset save resultreport resultplot)) { # make 
+      $this->{$ac}->Enable(0);
+    };
   };
   $this->{PEAK} -> po -> set(e_norm   => 1,
 			     e_markers=> 1,
@@ -384,6 +387,7 @@ sub fit {
 	$this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
       };
     };
+    $this->{fitted} = 1;
   };
   $peak -> plot('e');
   $::app->{lastplot} = ['E', 'single'];
@@ -430,10 +434,10 @@ sub make {
 sub discard {
   my ($this, $n) = @_;
   my $name = $this->{'name'.$n}->GetValue;
-  my $yesno = Wx::MessageDialog->new($::app->{main},
-				     "Really delete $name (lineshape #$n)?",
-				     "Delete lineshape?",
-				     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+					       "Really delete $name (lineshape #$n)?",
+					       "Delete lineshape?",
+					       "Delete lineshape");
   my $result = $yesno->ShowModal;
   if ($result == wxID_NO) {
     $::app->{main}->status("Not deleting lineshape.");
@@ -484,7 +488,7 @@ Demeter::UI::Athena::PeakFit - A peak fitting for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -515,7 +519,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

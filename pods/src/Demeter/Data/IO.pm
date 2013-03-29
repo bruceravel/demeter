@@ -364,7 +364,7 @@ Demeter::Data::IO - Data Input/Output methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -399,8 +399,8 @@ the data and the text of the C<fit_parameter_report> method.
 
 =item C<xmu>
 
-This is a seven column file of energy, mu(E), bkg(E), preline(E),
-postline(E), first derivative of mu(E), and second derivative of
+This is a seven column file of energy, mu(E), bkg(E), pre_edge(E),
+post_edge(E), first derivative of mu(E), and second derivative of
 mu(E).
 
 =item C<norm>
@@ -516,7 +516,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

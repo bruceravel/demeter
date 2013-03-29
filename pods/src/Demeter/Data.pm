@@ -95,6 +95,7 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
+has 'forcekey'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
@@ -264,7 +265,6 @@ has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co-
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
@@ -298,11 +298,12 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 					},
 			  default => 0);
 
-has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
+has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'hanning'},
 		      traits => [ qw(Quenchable) ],
-		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+		      coerce => 1,
+		      trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) });
 
-has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
+has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
 
 has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
 
@@ -321,7 +322,7 @@ has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1},
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten")},
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
@@ -444,7 +445,7 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  ##$self->dispense('process', 'erase', {items=>"\@group ".$self->group});
+  $self->dispense('process', 'erase', {items=>$self->group}) if $self->is_larch;
   $self->alldone;
 };
 
@@ -581,6 +582,8 @@ sub unset_standard {
 sub set_windows {
   my ($self, $window) = @_;
   $window = lc($window);
+  $window='kaiser' if ($self->is_larch and ($window eq 'kaiser-bessel'));
+  $window='kaiser-bessel' if ($self->is_ifeffit and ($window eq 'kaiser'));
   return 0 if not is_Window($window);
   $self->bkg_kwindow($window);
   $self->fft_kwindow($window);
@@ -597,7 +600,7 @@ sub determine_data_type {
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
     $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine', type=>'raw'});
-    my $f = (split(" ", $self->fetch_string('$column_label')))[0];
+    my $f = (split(" ", $self->fetch_string('column_label')))[0];
     my @x = $self->fetch_array("deter___mine.$f");
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($x[0] > 100) {		# seems to be energy data
@@ -622,6 +625,7 @@ sub determine_data_type {
 
 sub _update {
   my ($self, $which) = @_;
+  #print join("|", $which, caller, $self->update_norm, $self->update_bkg, $self->update_fft), $/;
   $which = lc($which);
  WHICH: {
     ($which eq 'data') and do {
@@ -714,6 +718,27 @@ sub read_data {
   return $self;
 };
 
+## remove all arrays of this group that are not needed for further
+## data processing
+sub extraneous {
+  my ($self) = @_;
+  my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
+			post_edge nbkg prex theta line flat nder
+			nsec bkg flat nbkg norm fbkg));
+  my $items = join(" " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
+  #print $items, $/;
+  my $command = q{};
+  $command .= $self->template('process', 'erase', {items=>$items});
+  #$command .= $self->template("process", "post_autobk");
+  #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+  #  $command .= $self->template("process", "flatten_fit");
+  #} else {
+  #  $command .= $self->template("process", "flatten_set");
+  #};
+  $self->dispose($command);
+  $self->update_norm(1);
+}
+
 sub explain_recordtype {
   my ($self) = @_;
   my $string = ($self->datatype eq 'xmu')        ? 'mu(E)'
@@ -779,7 +804,7 @@ sub sort_data {
     ## now feed columns back to ifeffit
     my $group = $self->group;
     $self->dispense('process', 'comment', {comment=>"replacing arrays for $group with sorted versions"});
-    $self->dispense('process', 'erase', {items=>"\@group $group"});
+    $self->dispense('process', 'erase', {items=>"\@group $group"}) if (not $self->is_larch);
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
@@ -933,6 +958,7 @@ override 'deserialize' => sub {
   $self -> update_data(0);
   $self -> update_columns(0);
   $self -> update_norm(1);
+  $self -> dispense('process','make_group');
 
   my $path = $self -> mo -> fetch('Path', $self->fft_pcpathgroup);
   $self -> fft_pcpath($path);
@@ -967,7 +993,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 
 =head1 SYNOPSIS
@@ -1062,6 +1088,14 @@ C<title> attibute.
 This is a text string used as a temporary override to the name of Data
 object for use in a plot.  It should be reset to an empty string as
 soon as the plot requiring the name override is finished.
+
+=item C<forcekey> (string)
+
+When this is true, it forces the plotting system to use the name of
+the Data group as the legend key regardless of the type of plot.  This
+was needed to force an R123 plot to use the scaling information as the
+key rather than having the key be the part plotted, which is what
+normally happens for a single group R or q space plot.
 
 =item C<cv> (number)
 
@@ -1265,6 +1299,11 @@ the C<normalize> method.
 
 The cubic parameter in the post-edge regression.  This is set as part of
 the C<normalize> method.
+
+=item C<bkg_nc3> (number)
+
+The quartic parameter in the post-edge regression.  This is set as part of
+the C<normalize> method.  (Larch only)
 
 =item C<bkg_flatten> (boolean) I<[1]>
 
@@ -1833,7 +1872,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -487,6 +487,8 @@ sub display_plot {
     $this->{energy} -> SetValue($data->energy_string);
     $this->{mue}    -> SetValue($data->xmu_string);
     return if $this->{pauseplot}->GetValue;
+    return if ($this->{energy}->GetValue !~ $data->group);
+    return if ($this->{mue}->GetValue    !~ $data->group);
     my @energy = $data->get_array('energy');
     my ($emin, $emax) = minmax(@energy);
     $data -> po -> set(emin=>$emin, emax=>$emax);
@@ -502,6 +504,7 @@ sub display_plot {
     $data -> po -> set(kmin=>0, kmax=>$kmax);
     $data -> po -> start_plot;
     $data -> plot('k') if ($data->chi_string ne '1');
+    $data -> update_data(1) if ($data->chi_string eq '1');
   };
 };
 
@@ -517,7 +520,7 @@ Demeter::UI::Athena::ColumnSelection - Athena's column selection dialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

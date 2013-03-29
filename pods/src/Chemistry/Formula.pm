@@ -1,8 +1,7 @@
 ######################################################################
 ##  This module is copyright (c) 2001-2013 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software
-##  http://cars9.uchicago.edu/svn/libperlxray
+##  http://bruceravel.github.com/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -319,7 +318,7 @@ can be found on CPAN.  C::Scan is maintained by Hugo van der Sanden.
 
 Bruce Ravel <bravel AT bnl DOT gov>
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 SVN repository: http://cars9.uchicago.edu/svn/libperlxray/
 
@@ -336,8 +335,8 @@ __DATA__
 ##  Chemistry::Formula.  Please feel free to add to this file and to
 ##  contribute your additions back to the author:
 ##    Bruce Ravel
-##    <ravel@phys.washington.edu>
-##    http://feff.phys.washington.edu/~ravel/atoms/
+##    bravel AT bnl DOT gov
+##    http://bruceravel.github.com/demeter/
 ##
 ######################################################################
 ##

@@ -68,6 +68,7 @@ sub _write_record {
   local $Data::Dumper::Indent = 0;
   my ($string, $arraystring) = (q{}, q{});
 
+  $self->_update('normalize');
   my @array = ();
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
     #$self -> _update("background");
@@ -138,7 +139,7 @@ Demeter::Data::Athena - Write Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 DESCRIPTION
 
@@ -213,7 +214,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -213,10 +213,14 @@ sub on_discard {
   my $feffobject  = $self->{Feff}->{feffobject};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
-    $self->status("Not discarding Feff calculation \"$this\".");
-    return if ($yesno->ShowModal == wxID_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
+    if ($yesno->ShowModal == wxID_NO) {
+      $self->status("Not discarding Feff calculation \"$this\".");
+      return;
+    };
   };
 
   ## remove paths & VPaths from the plot list
@@ -403,7 +407,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
@@ -569,7 +573,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -426,7 +426,7 @@ sub new {
   $togglebox -> Add($this->{plot_after}, 0, wxLEFT|wxRIGHT, 5);
   $togglebox -> Add($this->{fit_bkg},    0, wxLEFT|wxRIGHT, 5);
   $this->{include}    -> SetValue(1);
-  $this->{plot_after} -> SetValue(1);
+  $this->{plot_after} -> SetValue(not $nset);
 
   $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
   $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
@@ -443,17 +443,30 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
-  $this->{pcplot}->Enable(0);
+  #$this->{pcplot}->Enable(0);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
-		 if ($self->{data}->fft_pcpath) {
-		   $self->{data}->update_fft(1);
+		 if ($self->{pcplot}->GetValue) {
+		   $self->{data}->fft_pcpath(q{});
 		   foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
-		     $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     if ($self->{pathlist}->GetPage($n)->{useforpc}->GetValue) {
+		       $self->{data}->fft_pcpath($self->{pathlist}->GetPage($n)->{path});
+		       last;
+		     };
 		   };
-		   $self->{data}->fft_pcpath->_update('fft');
-		 }
+
+		   if ($self->{data}->fft_pcpath) {
+		     $self->{data}->update_fft(1);
+		     foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
+		       $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     };
+		     $self->{data}->fft_pcpath->_update('fft');
+		   } else {
+		     $self->status("You have not selected a path to use for phase corrected Fourier transforms", "alert");
+		     $self->{pcplot}->SetValue(0);
+		   };
+		 };
 	       });
 
   EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
@@ -828,6 +841,7 @@ sub make_menubar {
 
 sub populate {
   my ($self, $data) = @_;
+  $data->frozen(0);
   $self->{data} = $data;
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);
@@ -978,7 +992,7 @@ sub plot {
   };
   $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
-  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
+  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data}) if ($how ne 'rk');
   $Demeter::UI::Artemis::frames{Plot}->{last} = ($how eq 'rmr')   ? 'r'
                                               : ($how eq 'r123')  ? 'r'
                                               : ($how eq 'k123')  ? 'k'
@@ -1085,7 +1099,9 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->serialization, 'YAML of '.$pathobject->label)
+      my $text = "# Path index = " . $pathobject->Index . $/;
+      $text .= $pathobject->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $text, 'YAML of '.$pathobject->label)
 	-> Show;
       last SWITCH;
     };
@@ -1897,8 +1913,10 @@ sub discard_data {
   my $dataobject = $self->{data};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this data set?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -2206,11 +2224,11 @@ sub quickfs {
 		     data      => $datapage->{data},
 		    );
   if ($firstshell->error) {
-    my $okcancel = Wx::MessageDialog->new($datapage,
-					  $firstshell->error . "\n\nDo you want to carry on?",
-					  "Warning!",
-					  wxOK|wxCANCEL|wxICON_ERROR);
-    if ($okcancel->ShowModal == wxID_CANCEL) {
+    my $okcancel = Demeter::UI::Wx::VerbDialog->new($datapage, -1,
+						    $firstshell->error . "\n\nDo you want to continue?",
+						    "warning!",
+						    "Continue");
+    if ($okcancel->ShowModal != wxID_YES) {
       $datapage->status("Making quick first shell path canceled.");
       $firstshell -> DEMOLISH;
       return;
@@ -2669,7 +2687,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 

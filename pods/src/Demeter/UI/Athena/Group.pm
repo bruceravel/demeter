@@ -124,10 +124,10 @@ sub Remove {
     $message = "Discarded entire project";
     if ($app->{modified}) {
       ## offer to save project....
-      my $yesno = Wx::MessageDialog->new($app->{main},
-					 "Save this project before exiting?",
-					 "Save project?",
-					 wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+      my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						   "Save this project before closing?",
+						   "Save project?",
+						   'Save', 1);
       my $result = $yesno->ShowModal;
       if ($result == wxID_CANCEL) {
 	$app->{main}->status("Not exiting Athena after all.");
@@ -391,7 +391,7 @@ Demeter::UI::Athena::Group - data group functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.16.
 
 =head1 SYNOPSIS
 
