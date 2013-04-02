@@ -1,0 +1,6 @@
+##|
+##| Self absorption correction: Booth and Bridges algorithm, thick limit
+s___a.k = {$D->group}.k
+s___a.s     = s___a.mua/s___a.alpha
+s___a.denom = 1 - s___a.s*({$D->group}.chi + 1)
+s___a.chi   = {$D->group}.chi / (1-s___a.s)

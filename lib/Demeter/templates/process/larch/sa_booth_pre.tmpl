@@ -1,0 +1,11 @@
+##|
+##| Self absorption correction: Booth and Bridges algorithm
+##| (s___a.mut and s___a.mua were computed and inserted into ifeffit's memory)
+s___a.ratio   = sin(pi*{$angle_in}/180) / sin(pi*{$angle_out}/180)
+s___a.alpha   = s___a.mut + s___a.ratio*{$muf}
+s___a.exparg  = {$thickness}*s___a.alpha/sin(pi*{$angle_in}/180)
+s___a.beta    = s___a.mua * exp(-1 * s___a.exparg) * s___a.exparg
+s___a.gamma   = 1 - exp(-1 * s___a.exparg)
+s___a.term1   = s___a.gamma*(s___a.alpha - s___a.mua*({$D->group}.chi+1)) + s___a.beta
+s___a.term2   = 4*s___a.alpha*s___a.beta*s___a.gamma*{$D->group}.chi
+s___a.sqrtarg = s___a.term1**2 + s___a.term2

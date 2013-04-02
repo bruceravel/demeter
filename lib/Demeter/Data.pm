@@ -819,7 +819,7 @@ sub _read_data_command {
   my ($self, $type) = @_;
   my $string = q[];
   $self->raw_check;
-  if ($type eq 'xmu') {
+  if (($type eq 'xmu') and ($self->is_ifeffit)) { # for larch better to use "read" template
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
     $self->provenance("mu(E) file ".$self->file);
