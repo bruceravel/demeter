@@ -1,12 +1,12 @@
-mar___min = index_of({$D->group}.energy, {$D->bkg_e0}+{$D->bkg_eshift}+{$P->margin_min})
-mar___max = index_of({$D->group}.energy, {$D->bkg_e0}+{$D->bkg_eshift}+{$P->margin_max})
+{$D->group}.mar___min = index_of({$D->group}.energy, {$D->bkg_e0+$D->bkg_eshift+$P->margin_min})
+{$D->group}.mar___max = index_of({$D->group}.energy, {$D->bkg_e0+$D->bkg_eshift+$P->margin_max}) + 1
 
-set({$D->group}.menergy = {$D->group}.energy + {$D->bkg_eshift},
-    {$D->group}.margin1 = {$D->group}.{$suffix} + {$P->margin},
-    {$D->group}.margin2 = {$D->group}.{$suffix} - {$P->margin})
+{$D->group}.menergy = {$D->group}.energy + {$D->bkg_eshift}
+{$D->group}.margin1 = {$D->group}.{$suffix} + {$P->margin}
+{$D->group}.margin2 = {$D->group}.{$suffix} - {$P->margin}
 
-set({$D->group}.menergy = slice({$D->group}.menergy, mar___min, mar___max),
-    {$D->group}.margin1 = slice({$D->group}.margin1, mar___min, mar___max),
-    {$D->group}.margin2 = slice({$D->group}.margin2, mar___min, mar___max))
+{$D->group}.menergy = {$D->group}.menergy[{$D->group}.mar___min:{$D->group}.mar___max]
+{$D->group}.margin1 = {$D->group}.margin1[{$D->group}.mar___min:{$D->group}.mar___max]
+{$D->group}.margin2 = {$D->group}.margin2[{$D->group}.mar___min:{$D->group}.mar___max]
 
-show mar___min mar___max
+del {$D->group}.mar___min, {$D->group}.mar___max

@@ -445,7 +445,7 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  $self->dispense('process', 'erase', {items=>$self->group}) if $self->is_larch;
+  $self->dispense('process', 'erase', {items=>$self->group}) if ($self->is_larch and ($self->group ne 'default___'));
   $self->alldone;
 };
 
@@ -725,17 +725,17 @@ sub extraneous {
   my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
 			post_edge nbkg prex theta line flat nder
 			nsec bkg flat nbkg norm fbkg));
-  my $items = join(" " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
+  my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
   #print $items, $/;
   my $command = q{};
-  $command .= $self->template('process', 'erase', {items=>$items});
+  $command .= $self->dispense('process', 'erase', {items=>$items});
   #$command .= $self->template("process", "post_autobk");
   #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
   #  $command .= $self->template("process", "flatten_fit");
   #} else {
   #  $command .= $self->template("process", "flatten_set");
   #};
-  $self->dispose($command);
+  ##$self->dispose($command);
   $self->update_norm(1);
 }
 

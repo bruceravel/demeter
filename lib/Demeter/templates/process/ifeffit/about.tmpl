@@ -4,7 +4,7 @@
 "{$D->name}" is a {$D->recordtype} record.  It can be plotted in {$D->plotspaces} space. 
 It's {$D->backend_name} group name is '{$D->group}'.
 {
-  $OUT .= ($D->is_col)    ? "\nmu(E) was constructed from columns as \"" . $D->xmu_string      . "\"\n"  : q{};
+  $OUT .= ($D->is_col)    ? "\nmu(E) was constructed from columns as \n\t" . $D->xmu_string      . "\n"  : q{};
   $OUT .= ($D->reference) ? "\nThis record is tied to \""                . $D->reference->name . "\"\n"  : q{};
 }
 This {$D->recordtype} record has {$D->npts} points from {$D->xmin} to {$D->xmax}.

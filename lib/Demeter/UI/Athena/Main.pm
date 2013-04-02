@@ -638,7 +638,6 @@ sub mode {
   };
 
   my $is_merge = ($group) ? $group->is_merge : 0;
-  $this->{app}->set_mergedplot($is_merge);
 
   if ($group and ($group->reference)) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($group->co->default("athena", "tied")) );
