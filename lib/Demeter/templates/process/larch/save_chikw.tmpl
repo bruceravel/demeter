@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # save chi(k) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+  $kw = ($S->co->default('file', 'chik_out') eq 'kw') ? $D->fit_karb_value : $S->co->default('file', 'chik_out');
+  q{}
+}
+##|
+##| saving "{$S->name}" as k^{$kw}*chi(k)
+{$S->group}.chik  = {$S->group}.k**{$kw}*{$S->group}.chi,
+write_ascii("{$filename}", {$S->group}.k, {$S->group}.chik
+            label="k k{$kw}_chi", header={$S->group}.myheader)
+del {$S->group}.chik

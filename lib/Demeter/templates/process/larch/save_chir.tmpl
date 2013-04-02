@@ -1,0 +1,11 @@
+{ # -*- ifm -*-
+  # save chi(R) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+}
+##|
+##| saving "{$S->name}" as chi(R)
+write_ascii("{$filename}",
+            {$S->group}.r, {$S->group}.chir_re, {$S->group}.chir_im,
+            {$S->group}.chir_mag, {$S->group}.chir_pha, {$D->group}.rwin, {$S->group}.dph,
+            label="r chir_re chir_im chir_mag chir_pha win deriv_phase", header={$S->group}.myheader)

@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # save chi(k) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+}
+##|
+##| saving "{$S->name}" as chi(k)
+{$S->group}.chik  = {$S->group}.k*{$S->group}.chi
+{$S->group}.chik2 = {$S->group}.k**2*{$S->group}.chi
+{$S->group}.chik3 = {$S->group}.k**3*{$S->group}.chi
+write_ascii("{$filename}",
+            {$S->group}.k, {$S->group}.chi, {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$D->group}.kwin,
+            label="k chi chik chik2 chik3 win", header={$S->group}.myheader)
+del {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3

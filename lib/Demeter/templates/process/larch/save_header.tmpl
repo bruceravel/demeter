@@ -1,0 +1,6 @@
+{$D->group}.myheader = []
+{
+  foreach $g (@{ $C->get('headers') }) {
+    $OUT .= $D->group . ".myheader.append(\"# " . $g . "\")\n";
+  }
+}

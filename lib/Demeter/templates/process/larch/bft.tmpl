@@ -4,6 +4,6 @@
   #   {$D->parameter} returns the value of that parameter
 }
 
-xftr({$D->group}.r, {$D->group}.chir, group={$D->group},
+xftr({$D->group}.r, {$D->group}.chir, group={$D->group}, with_phase=True,
      rmin={$D->bft_rmin}, rmax={$D->bft_rmax}, window='{$D->bft_rwindow}',
      dr={$D->bft_dr}, dr2={$D->bft_dr} )

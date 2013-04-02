@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # save chi(q) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+}
+##|
+##| saving "{$S->name}" as chi(q)
+{$S->group}.chik = {$S->group}.k**{$D->get_kweight}*{$S->group}.chi
+write_ascii("{$filename}",
+            {$S->group}.q, {$S->group}.chiq_re, {$S->group}.chiq_im,
+            {$S->group}.chiq_mag, {$S->group}.chiq_pha, {$S->group}.kwin, {$S->group}.chik,
+            label="q chiq_re chiq_im chiq_mag chiq_pha win chik", header={$S->group}.myheader)
+del {$S->group}.chik
