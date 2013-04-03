@@ -1,0 +1,16 @@
+{
+  $esd = 0;
+  $ess = 0;
+  $prefactor = 1;
+  $prefactor = -1 if $S->invert;
+  if ($S->xsuff eq 'energy') {
+    $esd = $D->bkg_eshift;
+    $ess = $DS->bkg_eshift;
+  };
+  q{}
+}
+##| Compute difference  {$DS->name} - {$D->name} as {$S->space}
+{$S->group} = group()
+{$D->group}.int    = interp({$DS->group}.{$S->xsuff}+{$ess}, {$D->group}.{$S->xsuff}+{$esd}, {$D->group}.{$S->dataspace})
+{$S->group}.energy = {$DS->group}.{$S->xsuff}+{$ess}-{$esd}
+{$S->group}.diff   = {$prefactor} * ({$D->group}.int - {$DS->group}.{$S->standardspace})

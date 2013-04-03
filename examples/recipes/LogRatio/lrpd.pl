@@ -6,16 +6,19 @@
 ## data consists of two scattering shells.  But these data are handy...
 
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:ui=screen :plotwith=gnuplot, :d=1);
+Demeter->set_mode(template_process => 'larch', template_analysis => 'larch', screen=>0);
 
-my $standard = Demeter::Data->new(file=>'../../data/fe.060.xmu', name => 'Fe 60K');
-my $data     = Demeter::Data->new(file=>'../../data/fe.300.xmu', name => 'Fe 60K');
 
-$standard ->set_mode(screen=>1);
+my @common = (energy=>'$1', numerator=>'$2', denominator=>1, ln=>0);
+my $standard = Demeter::Data->new(file=>'../../data/fe.060.xmu', name => 'Fe 60K',  @common);
+my $data     = Demeter::Data->new(file=>'../../data/fe.300.xmu', name => 'Fe 300K', @common);
 
 my $lrpd = Demeter::LogRatio->new(standard=>$standard, data=>$data);
 $lrpd->fit;
 print $lrpd->report;
 $lrpd->plot_odd;
+$lrpd->data->pause;
+$lrpd->plot_even;
 $lrpd->data->pause;
 $lrpd->save("foo");

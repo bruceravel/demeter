@@ -53,6 +53,7 @@ sub fit {
 		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd3")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd4")));
+  print join("|". @cumulants), $/;
   my @errorbars = (sprintf("%.5f", $self->fetch_scalar("delta_lr___pd0")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd1")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd2")),

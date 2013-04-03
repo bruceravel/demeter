@@ -1,0 +1,36 @@
+## do log-ratio fit of {$S->data->name} to {$S->standard->name}
+lr_e = group(pd0 = param(1, vary=True),
+             pd2 = param(0, vary=True),
+             pd4 = param(0, vary=True))
+lr_o = group(pd1 = param(0, vary=True),
+             pd3 = param(0, vary=True))
+
+i1 = index_of({$S->data->group}.q, {$S->qmin})
+i2 = index_of({$S->data->group}.q, {$S->qmax})
+
+lr__data = group(x={$S->data->group}.q[i1:i2], y={$S->data->group}.chiq_mag[i1:i2], z={$S->data->group}.chiq_pha[i1:i2])
+lr__stan = group(x={$S->standard->group}.q[i1:i2], y={$S->standard->group}.chiq_mag[i1:i2], z={$S->standard->group}.chiq_pha[i1:i2])
+
+def lr_even_fit(par, stan, data):
+    ratio = data.y / stan.y
+    even  = par.pd0 - 2*par.pd2*stan.x**2 + (2/3)*par.pd4*stan.x**4
+    resev = ratio - even
+    return resev
+enddef
+
+def lr_odd_fit(par, stan, data):
+    diff  = data.z - stan.z
+    odd   = 2*par.pd1*stan.x - (4/3)*par.pd3*stan.x**3 + {$S->twopi}*2*pi
+    resod = diff - odd
+    return resod
+enddef
+
+minimize(lr_even_fit, lr_e, args=(lr__stan, lr__data))
+minimize(lr_odd_fit,  lr_o, args=(lr__stan, lr__data))
+
+{$S->data->group}.ratio = {$S->data->group}.chiq_mag / {$S->standard->group}.chiq_mag
+{$S->data->group}.diff  = {$S->data->group}.chiq_pha - {$S->standard->group}.chiq_pha
+{$S->data->group}.even  = lr_e.pd0 - 2*lr_e.pd2*{$S->standard->group}.q**2 + (2/3)*lr_e.pd4*{$S->standard->group}.q**4
+{$S->data->group}.odd   = 2*lr_o.pd1*{$S->standard->group}.q - (4/3)*lr_o.pd3*{$S->standard->group}.q**3 + {$S->twopi}*2*pi
+
+del i1, i2, lr__data, lr__stan

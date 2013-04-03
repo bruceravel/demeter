@@ -97,6 +97,22 @@ sub fetch_scalar {
 	  $param = $1.'.'.$2;
 	  return Larch::get_larch_scalar($param);
 	}
+	when (/\A(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
 	default {
 	  return Larch::get_larch_scalar($param);
 	};

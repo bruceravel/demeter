@@ -185,11 +185,11 @@ sub process_argv {
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
     } elsif (($a eq '-lv') or ($a eq '-vl')) {
-      $demeter->set_mode(template_process=>"larch");
+      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
       $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
       $Demeter::devflag = 1;
     } elsif ($a eq '-l') {
-      $demeter->set_mode(template_process=>"larch");
+      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
       $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
     } elsif ($a eq '-v') {
       $Demeter::devflag = 1;
