@@ -727,8 +727,7 @@ sub extraneous {
 			nsec bkg flat nbkg norm fbkg));
   my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
   #print $items, $/;
-  my $command = q{};
-  $command .= $self->dispense('process', 'erase', {items=>$items});
+  $self->dispense('process', 'erase', {items=>$items}) if ($items !~ m{\A\s*\z});
   #$command .= $self->template("process", "post_autobk");
   #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
   #  $command .= $self->template("process", "flatten_fit");

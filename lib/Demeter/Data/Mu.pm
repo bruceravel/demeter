@@ -241,6 +241,8 @@ sub put_data {
 
   if (($self->display) and ($self->datatype ne 'chi')) {
     $self->dispense("process", "display");
+    $self->update_data(1) if ($self->xmu_string =~ m{\(1\)\s*/\s*\(1\)}); ##
+    $self->update_data(1) if ($self->xmu_string =~ m{\.xmu\b}); ##
     return;
   };
 
