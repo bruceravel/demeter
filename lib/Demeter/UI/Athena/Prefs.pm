@@ -26,7 +26,7 @@ sub new {
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate([qw(athena bft bkg clamp convolution dispersive
 			edgestep fft file fit gnuplot indicator interpolation
-			lcf marker merge operations pca peakfit plot rebin xanes)]);
+			lcf marker merge operations pca peakfit plot rebin smooth xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
   $config->{params}->Expand($config->{params}->GetRootItem);
 

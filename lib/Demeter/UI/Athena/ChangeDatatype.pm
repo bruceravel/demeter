@@ -39,7 +39,7 @@ sub new {
 
 
   $this->{to} = Wx::RadioBox->new($this, -1, "Change datatype to...", wxDefaultPosition, wxDefaultSize,
-				   ["$MU(E)", "xanes", "norm(E)", "$CHI(k)", "Feff's xmu.dat"], 1, wxRA_SPECIFY_ROWS);
+				  ["$MU(E)", "xanes", "norm(E)"], 1, wxRA_SPECIFY_ROWS); #, "$CHI(k)", "Feff's xmu.dat"
   $box->Add($this->{to},  0, wxALL, 5);
 
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );

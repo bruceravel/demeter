@@ -426,6 +426,7 @@ sub deglitch_margins {
 sub smooth {
   my ($self, $n, $how) = @_;
   ($n = 1) if ($n < 1);
+  ($n = 1) if $self->is_larch;
   $how ||= $self->datatype;
   if ($how =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");

@@ -109,6 +109,30 @@ description
 
 
 ######################################################################
+section=smooth
+section_description
+  These parameters determine how varous kinds of smoothing are
+  performed by Demeter.
+
+variable=sg_size
+type=positive integer
+default=31
+maxint=9
+maxint=39
+description
+  The window size of a Savitzky-Golay filter.  If even, the +1 odd
+  integer will be used
+
+variable=sg_order
+type=positive integer
+default=4
+maxint=9
+maxint=39
+description
+  The polynomial order of a Savitzky-Golay filter.  If equal to or
+  greater than the size, a value of size-1 will be used. 
+
+######################################################################
 section=merge
 section_description
   These parameters determine how convolution is performed by Demeter.

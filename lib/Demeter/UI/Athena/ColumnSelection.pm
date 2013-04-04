@@ -92,7 +92,10 @@ sub new {
   $buttons -> Add($this->{ok}, 1, wxGROW|wxALL, 5);
   $this->{cancel} = Wx::Button->new($leftpane, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $buttons -> Add($this->{cancel}, 1, wxGROW|wxALL, 5);
+  $this->{about} = Wx::Button->new($leftpane, wxID_ABOUT, "About", wxDefaultPosition, wxDefaultSize);
+  $buttons -> Add($this->{about}, 1, wxGROW|wxALL, 5);
   $left -> Add($buttons, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{about}, sub{  $app->document("import.columns")});
 
   my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [-1,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );

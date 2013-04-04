@@ -218,6 +218,10 @@ sub alignment_sentinal {
 sub plot {
   my ($this, $data) = @_;
   my $busy = Wx::BusyCursor->new();
+  my @sg = ($data->co->default("smooth", "sg_size"), $data->co->default("smooth", "sg_order"));
+  $data->co->set_default("smooth", "sg_size", 21);
+  $data->co->set_default("smooth", "sg_order", 4);
+
   my $save = $data->po->e_smooth;
   my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
   if (not defined($stan) or ($stan->group eq $data->group)) {
@@ -237,6 +241,9 @@ sub plot {
   $data->po->set(e_der=>1, e_smooth=>3)  if ($this->{plotas}->GetSelection == 3);
   $data->po->start_plot;
   $_->plot('e') foreach ($stan, $data);
+
+  $data->co->set_default("smooth", "sg_size",  $sg[0]);
+  $data->co->set_default("smooth", "sg_order", $sg[1]);
   $data->po->e_smooth($save);
   $::app->{main}->status("Plotted ".$stan->name." and ".$data->name, 'nobuffer');
   undef $busy;

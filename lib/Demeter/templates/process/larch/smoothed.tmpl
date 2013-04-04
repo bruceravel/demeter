@@ -1,0 +1,10 @@
+{
+  $s = $C->default("smooth", "sg_size");
+  $s += 1 if not $s%2;
+  $o = $C->default("smooth", "sg_order");
+  $o = $s - 1 if $o >= $s;
+  q{}
+}
+##|
+##| smoothing {$D->name}
+{$D->group}.smooth = savitzky_golay({$D->group}.{$C->get("smooth_suffix")}, window_size={$s}, order={$o})

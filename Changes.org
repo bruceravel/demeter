@@ -5,6 +5,15 @@
 
 * Initial release
 
+** 0.9.17  ?? April 2013
+*** Athena
+   + Fixed a bug where a column label of xmu would cause a definition loop
+
+*** Artemis
+
+*** Demeter
+   + Lots more Larch templates
+
 ** 0.9.16  28 March 2013
 *** Athena
    + fixed a couple bugs in difference spectrum tool

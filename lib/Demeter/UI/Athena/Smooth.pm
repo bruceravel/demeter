@@ -25,8 +25,9 @@ sub new {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
   $hbox -> Add(Wx::StaticText->new($this, -1, 'Algorithm'), 0, wxALL, 5);
+  my $first = (Demeter->is_ifeffit) ? 'Three-point smoothing' : 'Savitzky-Golay';
   $this->{choice} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
-				    ['Three-point smoothing', 'Boxcar average', 'Gaussian Filter']);
+				    [$first, 'Boxcar average', 'Gaussian Filter']);
   $hbox -> Add($this->{choice}, 1, wxGROW|wxALL, 2);
   $box  -> Add($hbox, 0, wxGROW|wxALL, 5);
   $this->{choice}->SetSelection(1);
@@ -87,18 +88,32 @@ sub OnChoice {
   given ($this->{choice}->GetStringSelection) {
     when ('Three-point smoothing') {
       $this->{widthlabel}->SetLabel("Repetitions");
+      $this->{widthlabel}->Enable(1);
+      $this->{width}->Enable(1);
+      $this->{devlabel}->Enable(0);
+      $this->{dev}->Enable(0);
+      #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
+    };
+    when ('Savitzky-Golay') {
+      $this->{widthlabel}->SetLabel("Size");
+      $this->{widthlabel}->Enable(0);
+      $this->{width}->Enable(0);
       $this->{devlabel}->Enable(0);
       $this->{dev}->Enable(0);
       #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
     };
     when ('Boxcar average') {
       $this->{widthlabel}->SetLabel("Kernel size");
+      $this->{widthlabel}->Enable(1);
+      $this->{width}->Enable(1);
       $this->{devlabel}->Enable(0);
       $this->{dev}->Enable(0);
       #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
     };
     when ('Gaussian Filter') {
       $this->{widthlabel}->SetLabel("Kernel size");
+      $this->{widthlabel}->Enable(1);
+      $this->{width}->Enable(1);
       $this->{devlabel}->Enable(1);
       $this->{dev}->Enable(1);
       #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
@@ -111,11 +126,17 @@ sub plot {
   my ($this, $data) = @_;
   my $width = $this->{width}->GetValue;
   my $text = "Plotted \"".$data->name."\" with its ";
+  $data->standard;
   given ($this->{choice}->GetStringSelection) {
     when ('Three-point smoothing') {
       $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
       $this->{data} -> smooth($width);
       $text .= "smoothed data, three-point smoothed $width times";
+    };
+    when ('Savitzky-Golay') {
+      $this->{data}  = $data->clone(name=>$data->name." Savitzky-Golay");
+      $this->{data} -> smooth(1);
+      $text .= "smoothed data, Savitzky-Golay";
     };
     when ('Boxcar average') {
       $this->{data} = $data->boxcar($width);
@@ -128,12 +149,13 @@ sub plot {
     };
   };
   $::app->{main}->{PlotE}->pull_single_values;
-  Demeter->po->set(e_norm=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
+  Demeter->po->set(e_norm=>0, e_bkg=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
   Demeter->po->start_plot;
   $data->plot('E');
   $this->{data}->plot('E');
   $this->{save}->Enable(1);
   $::app->{main}->status($text);;
+  $data->unset_standard;
   $this->{data}->DEMOLISH;
 };
 
@@ -141,12 +163,19 @@ sub save {
   my ($this, $app) = @_;
   my $width = $this->{width}->GetValue;
   my $text = " \"" . $app->current_data->name."\" and made a new data group";
+  $app->current_data->standard;
   given ($this->{choice}->GetStringSelection) {
     when ('Three-point smoothing') {
       $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
       $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
       $this->{data} -> smooth($width);
       $text = "Smoothed" . $text;
+    };
+    when ('Savitzky-Golay') {
+      $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." Savitzky-Golay");
+      $this->{data} -> source("Smoothed ".$app->current_data->name.", Savitzky-Golay");
+      $this->{data} -> smooth(1);
+      $text = "SG" . $text;
     };
     when ('Boxcar average') {
       $this->{data} = $app->current_data->boxcar($width);
@@ -160,6 +189,7 @@ sub save {
       $text = "Gaussian filter of" . $text;
     };
   };
+  $app->current_data->unset_standard;
   $this->{data} ->_update('fft');
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
