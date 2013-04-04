@@ -445,7 +445,17 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  $self->dispense('process', 'erase', {items=>$self->group}) if ($self->is_larch and ($self->group ne 'default___'));
+  ## It seems as though this is getting called when I discard the
+  ## group AND when perl is doing its final clean up.  I guess I don't
+  ## quite understand how perl & Moose shut down...  Anyway, the
+  ## following is essentially a check to see if this block of code has
+  ## already been called for this Data object and avoid revivifying
+  ## it.  But I still get the chance to clean up the Larch group
+  ## before leaving, so I can leave a tidy server alive and running.
+  return if not Demeter->mo->fetch('Data', $self->group);
+  if ($self->is_larch and ($self->group ne 'default___')) {
+    $self->dispense('process', 'erase', {items=>$self->group});
+  };
   $self->alldone;
 };
 
