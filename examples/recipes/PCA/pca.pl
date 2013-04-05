@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:analysis :ui=screen :plotwith=gnuplot :d=1);
+#Demeter->set_mode(template_process => 'larch', template_analysis => 'larch', screen=>0);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $pca = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
@@ -13,8 +14,8 @@ $pca ->add(@set);
 $pca->set_mode(screen=>0);
 $pca->do_pca;
 
-print $pca->serialization;
-exit;
+#print $pca->serialization;
+#exit;
 
 # my ($iv, $ic) = $pca->loadings->pca_sorti();
 # print $iv, $/;

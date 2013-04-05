@@ -1,0 +1,4 @@
+##| preparing for PCA in chi(k)
+{$S->group}.x     = {$DS->group}.k[{$i1}:{$i2}]
+{$S->group}.{$DS->group} = {$DS->group}.chi[{$i1}:{$i2}]
+{$S->group}.{$DS->group} = {$S->group}.{$DS->group} * {$S->group}.x**{$P->kweight}
