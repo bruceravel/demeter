@@ -1,0 +1,10 @@
+{
+  $datastack = $S->group . '.' . join(', '.$S->group.'.', map {$_->group} (@{$S->stack}));
+  @list = map {$_->name} (@{$S->stack});
+  foreach (@list) {$_ =~ s/\s+/_/g};
+  $labels = join(" ", @list); 
+  q{}
+}
+write_ascii("{$filename}", {$S->group}.x,
+           {$datastack},
+           label="x data {$labels}", header={$S->group}.myheader)

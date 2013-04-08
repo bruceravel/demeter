@@ -1,0 +1,7 @@
+{
+  ($name = $D->name) =~ s{\s+}{_}g;
+  q{}
+}
+write_ascii("{$filename}", {$S->group}.x,
+           {$S->group}.{$D->group}, {$S->group}.rec{$index}, {$S->group}.diff{$index},
+           label="x {$name} reconstruction residual", header={$S->group}.myheader)

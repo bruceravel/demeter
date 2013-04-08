@@ -1,0 +1,11 @@
+{
+  @titles = split(/\n/, $S->header);
+  $i=0;
+  q{}
+}
+{$S->group}.myheader = ["Demeter PCA {$which} file - Demeter version {$S->version}"]
+{
+  foreach $t (@titles) {
+    $OUT .= $S->group . ".myheader.append(\"" . $t . "\")\n"
+  }
+}

@@ -195,6 +195,8 @@ sub do_pca {
 
 sub reconstruct {
   my ($self, $ncomp) = @_;
+  $ncomp ||= $self->ncompused;
+  $ncomp ||= 2;
   $self->do_pca if $self->update_pca;
   $self->ncompused($ncomp);
   $ncomp = $ncomp-1;
@@ -290,7 +292,7 @@ sub plot_stack {
 };
 
 sub plot_reconstruction {
-  my ($self, $index) = @_;
+  my ($self, $index, $noplot) = @_;
   $self->po->start_plot;
   $self->e0($self->stack->[0]->bkg_e0);
   $self->data($self->stack->[$index]);
@@ -299,7 +301,7 @@ sub plot_reconstruction {
   my @diff  = pairwise {$a - $b} @recon, @data;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
-  $self->chart('plot', 'pca_plot_reconstruction', {index=>$index});
+  $self->chart('plot', 'pca_plot_reconstruction', {index=>$index}) if not $noplot;
   $self->data(q{});
   return $self;
 };
@@ -377,6 +379,8 @@ sub save_stack {
 
 sub save_reconstruction {
   my ($self, $index, $filename) = @_;
+  $self->reconstruct;
+  $self->plot_reconstruction($index, 1);
   $self->data($self->stack->[$index]);
   $self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
   $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
