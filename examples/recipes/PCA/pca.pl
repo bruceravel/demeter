@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot :d=1);
-Demeter->set_mode(template_process => 'larch', template_analysis => 'larch', screen=>0);
+use Demeter qw(:analysis :ui=screen :plotwith=gnuplot :d=0);
+#Demeter->set_mode(template_process => 'larch', template_analysis => 'larch', screen=>0);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $pca = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
@@ -10,6 +10,8 @@ my $pca = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
 my @set = $prj->records(1..8);
 #my @set = $prj->records(9,11,12,13,15);
 $pca ->add(@set);
+my $target = $prj->record(9);
+
 
 $pca->set_mode(screen=>0);
 $pca->do_pca;
@@ -31,8 +33,15 @@ $ARGV[0] ||= 0;
 
 my $data_index = $ARGV[0];
 $pca->ncompused(2);
-$pca->save_reconstruction($data_index, "foo");
-$pca->set_mode(screen=>0);
+#$pca->save_reconstruction($data_index, "foo");
+$pca->tt($target,3);
+#print $pca->tt_report($target,4);
+#print $/;
+#print $pca->eigenvalues, $/;
+$pca->plot_tt($target);
+$pca->pause;
+exit;
+
 my $save = $pca->prompt;
 my $n = 0;
 while ($n !~ m{q}) {

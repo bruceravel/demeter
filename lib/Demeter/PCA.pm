@@ -29,6 +29,7 @@ use Demeter::StrTypes qw( Empty );
 
 use PDL::Lite;
 use PDL::Stats::GLM;
+use PDL::MatrixOps;
 
 use List::Util;
 use List::MoreUtils qw(pairwise);
@@ -208,26 +209,38 @@ sub reconstruct {
 
 sub tt {
   my ($self, $target, $ncomp) = @_;
-  $ncomp ||= $self->ndata;
+  #$ncomp ||= $self->ndata;
+  $ncomp ||= $self->ncompused;
+  $ncomp ||= 2;
+  $self->ncompused($ncomp);
+  my $nc = $ncomp-1;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
   # #$self->toggle_echo(1);
   # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
-  $self->data($target);
-  $self->dispense('analysis', 'pca_tt', {ncomp=>$ncomp});
-  my @coef = ();
-  foreach my $i (0 .. $self->ndata-1) {
-    push @coef, $self->fetch_scalar("_p$i");
-  };
-  $self->ttcoefficients(\@coef);
+ $self->data($target);
+ $self->dispense('analysis', 'save_pca_tt', {ncomp=>$ncomp});
+ my @coef = ();
+ foreach my $i (0 .. $self->ndata-1) {
+   push @coef, $self->fetch_scalar("_p$i");
+ };
+ $self->ttcoefficients(\@coef);
 
-  # my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
-  # my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
-  # my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
-  # my @array      = $tt->list;
-  # $self->put_array("tt", \@array);
+  ## numbers in comments refer to equations in Malinowski, Chapter 3
 
+#   my $row_matrix  = $self->eigenvectors->transpose x $self->data_matrix; # 3.66
+#   my $data_dagger = $self->eigenvectors->slice("0:$nc,:") x $row_matrix->slice(":,0:$nc"); # 3.71
+#   my $row_dagger  = $self->eigenvectors->transpose->slice(":,0:$nc") x $data_dagger;
+
+#   my $lambda     = stretcher($self->eigenvalues->slice("0:$nc")); # matrix of eigenvalues on the diagonal
+# #  my $tt         = $tarpdl x $row_matrix->slice(":,0:$nc")->transpose x $lambda->inv x $row_matrix->slice(":,0:$nc");
+#   my $tt         = $tarpdl x $row_dagger->transpose x $lambda->inv x $row_dagger; # 3.84 and 3.97
+
+#   my @array      = $tt->list;
+#   $self->put_array("tt", \@array);
+#   $self->data($target);
+#   $self->dispense('analysis', 'pca_tt');
   return $self;
 };
 
@@ -345,6 +358,7 @@ sub tt_report {
   my $text = $target->name . ":\n";
   foreach my $c (@{$self->ttcoefficients}) {
     ++$i;
+    last if $i > $self->ncompused;
     $text .= sprintf("%4d: %9.5f\n", $i, $c)
   };
   return $text;
