@@ -287,13 +287,15 @@ sub _data {
     $do_guess = 1;
   };
   $yaml->{energy} = $data->energy;
-  my $untext = $data->guess_units;
-  my $un = ($untext eq 'eV')     ? 0
-         : ($untext eq 'keV')    ? 1
-         : ($untext eq 'lambda') ? 2
-	 :                         0;
-  $yaml->{units} = $un;
-  if ($untext eq 'keV') {
+  if ($do_guess) {
+    my $untext = $data->guess_units;
+    my $un = ($untext eq 'eV')     ? 0
+           : ($untext eq 'keV')    ? 1
+	   : ($untext eq 'lambda') ? 2
+	   :                         0;
+    $yaml->{units} = $un;
+  };
+  if ($yaml->{units} == 1) {	# keV units
     $data->is_kev(1);
     $data->update_data(1);
     $data->_update('data');
