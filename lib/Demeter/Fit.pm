@@ -1039,7 +1039,7 @@ sub fetch_correlations {
 		   ($NUMBER)	       # a number
 		}xi) {
       my ($x, $y, $correl) = ($1, $2, $3);
-      print join(" ", $x, $y, $correl), $/;
+      #print join(" ", $x, $y, $correl), $/;
       $correlations_of{$x}{$y} = $correl;
     };
     if ($self->co->default("fit", "bkg_corr")) {

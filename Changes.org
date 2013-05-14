@@ -5,11 +5,15 @@
 
 * Initial release
 
-** 0.9.17  ?? April 2013
+** 0.9.17  ?? May 2013
 *** Athena
-   + Fixed a bug where a column label of xmu would cause a definition loop
+   + Fixed a bug where a column label of "xmu" would cause a definition loop
+   + Fixed an issue regarding selection of energy units in column selection dialog
 
 *** Artemis
+   + Scrub characters from atom tags that will confuse Feff.  This was
+     first seen with a tag with an apostrophe, which confused Feff
+     when reading the paths.dat file
 
 *** Demeter
    + Lots more Larch templates

@@ -72,7 +72,8 @@ sub is_ifeffit {
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
-  return "Demeter " . $Demeter::VERSION . " with perl $] on $os";
+  my $string .= "using " . $self->backend_name . " " . $self->backend_version;
+  return "Demeter " . $Demeter::VERSION . " with perl $] and $string on $os";
 };
 
 sub module_environment {
