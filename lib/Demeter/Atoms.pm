@@ -52,7 +52,7 @@ use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
 
-use Demeter::Constants qw($NUMBER $SEPARATOR $EPSILON4);
+use Demeter::Constants qw($NUMBER $SEPARATOR $EPSILON4 $FEFFNOTOK);
 use Const::Fast;
 const my $FRAC      => 100000;
 
@@ -404,6 +404,7 @@ sub parse_atoms_line {
   my ($el, $x, $y, $z, $tag) = split(" ", $line);
   $tag ||= $el;
   ($tag = $el) if ($tag =~ m{\A$NUMBER\z});
+  $tag =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
   my $this = join("|",$el, $x, $y, $z, $tag);
   $self->push_sites($this);
   return $self;

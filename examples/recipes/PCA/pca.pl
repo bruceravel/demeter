@@ -36,8 +36,6 @@ $pca->ncompused(2);
 #$pca->save_reconstruction($data_index, "foo");
 $pca->tt($target,3);
 #print $pca->tt_report($target,4);
-#print $/;
-#print $pca->eigenvalues, $/;
 $pca->plot_tt($target);
 $pca->pause;
 exit;

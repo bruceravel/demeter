@@ -869,7 +869,7 @@ sub rfactor {
   if (lc($self->fit_space) eq 'k') {
     ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
     @x  = $self -> get_array("k");
-    @di = $self -> get_array("chi");
+    @dr = $self -> get_array("chi");
     @fr = $self -> get_array("chi", "fit");
     foreach my $i (0 .. $#x) {
       next if ($x[$i] < $xmin);
