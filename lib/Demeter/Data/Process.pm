@@ -91,6 +91,9 @@ sub rebin {
   $rebinned->resolve_defaults;
   $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
+  $rebinned->npts($#bingrid+1);
+  $rebinned->xmin($bingrid[0]);
+  $rebinned->xmax($bingrid[$#bingrid]);
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $rebinned;
