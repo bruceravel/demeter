@@ -536,10 +536,16 @@ sub _group {
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
+    my %hash;
+    foreach my $w (qw(emin emax pre xanes exafs)) {
+      my $key = 'rebin_'.$w;
+      $hash{$w} = $yaml->{$key};
+      Demeter->co->set_default('rebin', $w, $value);
+    };
     my $ret = $data->rebin_is_sensible;
     if ($ret->is_ok) {
       $app->{main}->status("Rebinning ". $data->name);
-      my $rebin  = $data->rebin;
+      my $rebin  = $data->rebin(\%hash);
       foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($data->$att);
       };
@@ -650,10 +656,16 @@ sub _group {
       $ref -> e0('dmax');
     };
     if ($do_rebin) {
+      my %hash;
+      foreach my $w (qw(emin emax pre xanes exafs)) {
+	my $key = 'rebin_'.$w;
+	Demeter->co->set_default('rebin', $w, $value);
+	$hash{$w} = $yaml->{$key};
+      };
       my $ret = $data->rebin_is_sensible;
       if ($ret->is_ok) {
 	$app->{main}->status("Rebinning reference for ". $data->name);
-	my $rebin  = $ref->rebin;
+	my $rebin  = $ref->rebin(\%hash);
 	foreach my $att (qw(energy numerator denominator ln name)) {
 	  $rebin->$att($ref->$att);
 	};

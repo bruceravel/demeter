@@ -60,11 +60,14 @@ sub save_project {
   Demeter::UI::Artemis::update_order_file();
 
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+  my $save = $rframes->{main} -> {currentfit} -> fitted;
+  $rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
 						nozip    => 1,
 						copyfeff => 0,
 					       );
+  $rframes->{main} -> {currentfit} -> fitted($save);
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});

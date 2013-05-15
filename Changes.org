@@ -9,11 +9,14 @@
 *** Athena
    + Fixed a bug where a column label of "xmu" would cause a definition loop
    + Fixed an issue regarding selection of energy units in column selection dialog
+   + Fixed a problem with rebinning parameters not being honored when
+     making a rebinned group from the rebin tool or column selection dialog
 
 *** Artemis
    + Scrub characters from atom tags that will confuse Feff.  This was
      first seen with a tag with an apostrophe, which confused Feff
      when reading the paths.dat file
+   + Fixed a bug whereby creating a VPath would erase the _fit and _res arrays
 
 *** Demeter
    + Lots more Larch templates
