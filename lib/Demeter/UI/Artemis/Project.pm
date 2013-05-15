@@ -451,11 +451,11 @@ sub restore_fit {
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
-      my $me = (defined $g->initial) ? $g->initial : $g->bestfit;
+      my $me = (defined $g->initial and $g->initial) ? $g->initial : $g->bestfit;
       $me ||= $g->mathexp;
       $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     } else {
-      my $me = (defined $g->initial) ? $g->initial : $g->mathexp;
+      my $me = (defined $g->initial and $g->initial) ? $g->initial : $g->mathexp;
       $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     };
     $grid -> {$g->name} = $g;
