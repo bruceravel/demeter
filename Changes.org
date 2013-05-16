@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.17  ?? May 2013
+** 0.9.17  23 May 2013
 *** Athena
    + Fixed a bug where a column label of "xmu" would cause a definition loop
    + Fixed an issue regarding selection of energy units in column selection dialog
@@ -18,9 +18,16 @@
      when reading the paths.dat file
    + Fixed a bug whereby creating a VPath would erase the _fit and _res arrays
    + Fixed an error importing non-guess GDS parameters from a dpj (or apj) file
+   + Message discouraging use of external feff import
+   + Fixed a bug importing external feff calculations related to
+     identifying which atoms contribute to the geometry listed in a
+     feffNNNN.dat file
+   + Attempt a fix to an as-yet unclear problem with a Fit object not
+     yet being defined when a fit is run
 
 *** Demeter
    + Lots more Larch templates
+   + updater.iss now includes more things, including Ifeffit.dll
 
 ** 0.9.16  28 March 2013
 *** Athena
