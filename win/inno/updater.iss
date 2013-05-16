@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyInstName "Demeter Updater for Windows"
-#define MyAppVersion "0.9.15"
+#define MyAppVersion "0.9.17"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.com/demeter"
 #define Demeter "Demeter with Strawberry Perl"
@@ -20,7 +20,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
+AppCopyright=Demeter is copyright (c) 2006-2013 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
 AppComments=XAS Data Processing and Analysis
 
 SourceDir=c:\strawberry
@@ -49,8 +49,12 @@ UpdateUninstallLogAppName=no
 Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
+Source: perl\site\lib\Ifeffit.pm; DestDir: {app}\perl\site\lib; Flags: overwritereadonly ignoreversion replacesameversion;
 Source: perl\site\lib\Demeter.pm; DestDir: {app}\perl\site\lib; Flags: overwritereadonly ignoreversion replacesameversion;
-Source: perl\site\lib\Demeter\*; DestDir: {app}\perl\site\lib\Demeter; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: *.prj,*.stan,*~; 
+Source: perl\site\lib\Demeter\*; DestDir: {app}\perl\site\lib\Demeter; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: *.prj,*.stan,*~,artug\*,aug\*; 
+Source: perl\site\lib\Xray\*; DestDir: {app}\perl\site\lib\Xray; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: BLA.pm,BLA\*; 
+Source: perl\site\lib\auto\Ifeffit\Ifeffit.bs; DestDir: {app}\perl\site\lib\auto\Ifeffit; Flags: overwritereadonly ignoreversion replacesameversion;
+Source: perl\site\lib\auto\Ifeffit\Ifeffit.dll; DestDir: {app}\perl\site\lib\auto\Ifeffit; Flags: overwritereadonly ignoreversion replacesameversion;
 
 Source: perl\site\lib\MooseX\SetGet.pm; DestDir: {app}\perl\site\lib\MooseX; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; 
 Source: perl\site\lib\MooseX\Quenchable.pm; DestDir: {app}\perl\site\lib\MooseX; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; 
