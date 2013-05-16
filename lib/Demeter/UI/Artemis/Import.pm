@@ -329,6 +329,37 @@ sub _external_feff {
   my ($fname, $noshow) = @_;
   my $file = $fname;
   $noshow ||= 0;
+
+  my $message = <<EOH
+Importing an external Feff calculation is usually a
+bad idea!
+
+If your external Feff calculation was made using a
+different version of Feff than that used by Artemis,
+then importing a Feff calculation is likely to fail
+in ways that may crash Artemis.
+
+If you rerun Feff after importing an external Feff
+calculation, your fits are likely to fail in surprising
+ways.
+
+Atoms or Feff input files are typically imported by
+selecting "Import project or data" from the File
+menu and the execution of Feff is managed by Artemis.
+
+Think carefully about whether you want to continue.
+EOH
+    ;
+  my $okcancel = Wx::MessageDialog->new($datapage,
+					$message,
+					"Caution!",
+					wxYES_NO);
+  if ($okcancel->ShowModal != wxID_YES) {
+    $rframes->{main}->status("Not importing an external Feff calculation.");
+    return;
+  };
+
+
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Atoms or Feff input file", cwd, q{},
 				  "Atoms/Feff input (*.inp)|*.inp|All files (*)|*",

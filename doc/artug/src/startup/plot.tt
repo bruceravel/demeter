@@ -24,7 +24,7 @@ window.  The [% INCLUDE font/quote a="kw" %] option uses the arbitrary
 [% END %]
 
 [% FILTER html_para %]
-Beneath the k-weight buttons is a set of tabs used to control differnt
+Beneath the k-weight buttons is a set of tabs used to control different
 aspects of plots.  The [% INCLUDE font/quote a="limits" %] tab provides
 controls for the most commonly used plotting options.
 [% END %]
@@ -46,15 +46,15 @@ buttons used to display additional functions related to the data.
 These are:
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Fit" %] When checked, whenever the data is
-plotted the current, corresponding fit will be plotted.
+plotted, the most recent fit will be plotted.
 [% END %]
 [% WRAPPER html/dt dt="Background" %] When checked, the background
 function will be plotted, but only if it was refined in the most
 recent fit.
 [% END %]
 [% WRAPPER html/dt dt="Window" %] When checked the window function
-will be plotted over the data.  The window will be scaled appropriate
-to the current k-weight value.  When plotting in q, the k-space window
+will be plotted over the data.  The window will be scaled appropriately
+for the current k-weight value.  When plotting in q, the k-space window
 will be used.
 [% END %]
 [% WRAPPER html/dt dt="Residual" %] When checked, the difference

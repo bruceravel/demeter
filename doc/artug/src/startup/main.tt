@@ -89,11 +89,12 @@ shortcuts are shown in the menu.
 [% WRAPPER html/li %]
 The first option is used to import any kind of data into [% artemis %],
 including [% artemis %] or [% athena %] project files, ASCII files
-containing [% chik %] data, [% feff %] or [% atoms %] input files, or
+containing [% chik %] data, [% feff %] or [% atoms %] input files, CIF
+files, or
 a few other things.  [% artemis %] is usually good about properly
-identifyin the type of input file and doing the right thing with it.
-You can use the [% INCLUDE font/quote a="import" %] submenu to be more
-specific. 
+identifying the type of input file and doing the right thing with it.
+In the rare situation where this doesn't[%#'%] work, try the
+[% INCLUDE font/quote a="import" %] submenu. 
 [% END %]
 [% WRAPPER html/li %]
 The second option provides a submenu of recently imported files broken
@@ -122,7 +123,7 @@ in some other way, for instance as part of a script for automated batch
 processing.
 [% END %]
 [% WRAPPER html/li %]
-The next menu item diplsays a window used to set 
+The next menu item displays a window used to set 
 [% INCLUDE html/link link="../prefs.html" text="program preferences."%]
 [% END %]
 [% WRAPPER html/li %]

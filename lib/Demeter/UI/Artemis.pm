@@ -148,7 +148,7 @@ sub OnInit {
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
   $importmenu->Append($IMPORT_DPJ,      "Demeter fit serialization",     "Import a Demeter fit serialization (.dpj) file");
   $importmenu->AppendSeparator;
-  $importmenu->Append($IMPORT_FEFF,     "a Feff calculation",            "Import a Feff input file and the results of a calculation made with that file");
+  $importmenu->Append($IMPORT_FEFF,     "an external Feff calculation",  "Import a Feff input file and the results of a calculation already made with that file");
   $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
@@ -617,6 +617,8 @@ sub fit {
 
 
   ## get name, fom, and description + other properties
+  $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
+    if (not $rframes->{main} -> {currentfit});
   my $fit = $rframes->{main} -> {currentfit};
   $fit -> set(data => \@data, paths => \@paths, gds => \@gds);
   my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
@@ -929,7 +931,7 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $IMPORT_FEFF) and do {
-      Import('feff', q{});
+      Import('external', q{});
       last SWITCH;
     };
     ($id == $IMPORT_FEFFIT) and do {
