@@ -208,6 +208,14 @@ sub slurp {
   return $text;
 };
 
+sub write_file {
+  my ($file, $string) = @_;
+  open(my $OUT, '>', $file);
+  print $OUT $string;
+  close $OUT;
+  return $file;
+};
+
 sub readable {
   my ($self, $file) = @_;
   return "$file does not exist"  if (not -e $file);
@@ -574,6 +582,18 @@ significant digits beyond the decimal.
 
   my $frac = $demeter_object -> fract(0.5);
   ## will print as "1/2"
+
+=item C<slurp>
+
+Slurp a file into a scalar.
+
+  my $string = $demeter_object -> slurp('/path/to/file');
+
+=item C<write_file>
+
+Dump a string into a file.
+
+  $demeter_object -> write_file($file, $string);
 
 =item C<Dump>
 

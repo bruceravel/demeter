@@ -540,7 +540,7 @@ sub _group {
     foreach my $w (qw(emin emax pre xanes exafs)) {
       my $key = 'rebin_'.$w;
       $hash{$w} = $yaml->{$key};
-      Demeter->co->set_default('rebin', $w, $value);
+      Demeter->co->set_default('rebin', $w, $yaml->{$key});
     };
     my $ret = $data->rebin_is_sensible;
     if ($ret->is_ok) {
@@ -659,7 +659,7 @@ sub _group {
       my %hash;
       foreach my $w (qw(emin emax pre xanes exafs)) {
 	my $key = 'rebin_'.$w;
-	Demeter->co->set_default('rebin', $w, $value);
+	Demeter->co->set_default('rebin', $w, $yaml->{$key});
 	$hash{$w} = $yaml->{$key};
       };
       my $ret = $data->rebin_is_sensible;
