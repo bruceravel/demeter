@@ -1825,8 +1825,11 @@ sub plot {
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
+    my $first_z = $data[0]->bkg_z;
+    my $different = 0;
     foreach my $d (@data) {
       $d->plot($space);
+      ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
     };
     $data[0]->plot_window('k') if (($how eq 'single') and
@@ -1837,6 +1840,9 @@ sub plot {
       $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
     } else {
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
+    };
+    if ((lc($space) eq 'e') and $different) {
+      $::app->{main}->status("This marked-groups plot involved data measured on different elements.", 'alert');
     };
 
   ## R
@@ -2022,11 +2028,11 @@ sub plot_e00 {
   my ($app) = @_;
 
   $app->preplot('e', $app->current_data);
-  $app->{main}->{PlotE}->pull_single_values;
+  $app->{main}->{PlotE}->pull_marked_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
-			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+			      e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0); #e_norm=>1, 
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);

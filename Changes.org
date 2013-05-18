@@ -11,6 +11,8 @@
    + Fixed an issue regarding selection of energy units in column selection dialog
    + Fixed a problem with rebinning parameters not being honored when
      making a rebinned group from the rebin tool or column selection dialog
+   + Plotting with E0=0 now respects marked groups normalization button
+   + Added a status bar warning when plotting marked groups of different elements
 
 *** Artemis
    + Scrub characters from atom tags that will confuse Feff.  This was
@@ -27,7 +29,7 @@
 
 *** Demeter
    + Lots more Larch templates
-   + updater.iss now includes more things, including Ifeffit.dll
+   + updater.iss now includes more things, including Ifefgfit.dll
 
 ** 0.9.16  28 March 2013
 *** Athena
