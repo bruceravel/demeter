@@ -2048,7 +2048,7 @@ sub plot_i0_marked {
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
