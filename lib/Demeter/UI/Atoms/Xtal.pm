@@ -56,6 +56,7 @@ package  Demeter::UI::Atoms::Xtal;
 use Demeter::StrTypes qw( Element );
 use Demeter::NumTypes qw( PosNum );
 use Demeter::Constants qw($FEFFNOTOK);
+use Demeter::UI::Wx::VerbDialog;
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);

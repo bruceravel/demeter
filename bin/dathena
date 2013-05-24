@@ -36,7 +36,7 @@ BEGIN {
   };
 };
 use Wx;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 use Demeter::UI::Athena;
 use vars qw($app);
 $app  = Demeter::UI::Athena->new;

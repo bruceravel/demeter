@@ -80,11 +80,11 @@ print $atoms -> Write($which);
 
 
 sub wx {
- require Wx;
- require Demeter::UI::Atoms;
- Wx::InitAllImageHandlers();
- $app = Demeter::UI::Atoms->new;
- $app -> MainLoop;
+  require Wx;
+  require Demeter::UI::Atoms;
+  Wx::InitAllImageHandlers();
+  $app = Demeter::UI::Atoms->new;
+  $app -> MainLoop;
 };
 
 
