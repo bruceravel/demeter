@@ -29,7 +29,7 @@ BEGIN {
 }
 use Wx;
 use Demeter::UI::Hephaestus;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 my $window = Demeter::UI::Hephaestus->new;
 $window   -> MainLoop;
 
