@@ -5,7 +5,15 @@
 
 * Initial release
 
-** 0.9.17  23 May 2013
+** 0.9.18  ?? June 2013
+*** Athena
+
+*** Artemis
+   + Clear project name when closing a project
+
+*** Demeter
+
+** 0.9.17  28 May 2013
 *** Athena
    + Fixed a bug where a column label of "xmu" would cause a definition loop
    + Fixed an issue regarding selection of energy units in column selection dialog

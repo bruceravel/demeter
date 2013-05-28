@@ -559,8 +559,8 @@ sub modified {
   my ($is_modified) = @_;
   my $main = $Demeter::UI::Artemis::frames{main};
   my $title = ($is_modified)
-    ? 'Artemis [EXAFS data analysis] *' . $main->{projectname} . '*'
-      : 'Artemis [EXAFS data analysis] ' . $main->{projectname};
+    ? 'Artemis [EXAFS data analysis] - *' . $main->{projectname} . '*'
+      : 'Artemis [EXAFS data analysis] - ' . $main->{projectname};
   $main->{modified} = ($is_modified);
   $main->SetTitle($title);
 };
@@ -648,6 +648,11 @@ sub close_project {
   $rframes->{main}->{description}->SetValue(q{});
   $rframes->{main}->{fitspace}->[1]->SetValue(1);
   $rframes->{main}->{cvcount} = 0;
+
+  ## -------- clear project name
+  $rframes->{main}->{projectname} = q{<untitled>};
+  $rframes->{main}->{projectpath} = q{};
+  modified(0);
 
   return 1;
 };
