@@ -563,7 +563,7 @@ sub make_one_path {
   $self->check_workspace;
 
   my $pd = File::Spec->catfile($workspace, "paths.dat");
-  open my $PD, ">".$pd;
+  open(my $PD, ">", $pd);
   print $PD $self->_pathsdat_head;
   print $PD $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
   #local $|=1;
@@ -1171,7 +1171,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 
 =head1 SYNOPSIS

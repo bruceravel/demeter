@@ -44,7 +44,7 @@ use List::MoreUtils qw(pairwise notall all any);
 use Math::Round qw(round);
 #use Math::Trig qw(acos atan);
 use POSIX qw(acos);
-use Demeter::Constants qw($PI $EPSILON5 $EPSILON6);
+use Demeter::Constants qw($PI $EPSILON5 $EPSILON6 $FEFFNOTOK);
 use String::Random qw(random_string);
 
 
@@ -166,6 +166,7 @@ sub intrplist {
   my @sites  = @{ $feff->sites };
   foreach my $a (@atoms[1 .. $#atoms-1]) {
     my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+    $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
     push @intrp, sprintf("%-6s", $this);
   };
   push @intrp, $token;
@@ -515,6 +516,7 @@ sub pathsdat {
     @coords[0..2] = map {$scale*$_} @coords[0..2];
     ## this bit o' yuck gets a tag from the potentials list entry if not in the sites list
     $coords[4] ||= $feff->site_tag($a);
+    $coords[4] =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
     $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", @coords);
     $pd .= sprintf("  %9.4f %9.4f %9.4f",$rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args{angles};
     $pd .= "\n";
@@ -712,7 +714,7 @@ Demeter::ScatteringPath - Create and manipulate scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 
 =head1 SYNOPSIS

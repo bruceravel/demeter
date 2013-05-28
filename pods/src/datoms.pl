@@ -80,11 +80,11 @@ print $atoms -> Write($which);
 
 
 sub wx {
- require Wx;
- require Demeter::UI::Atoms;
- Wx::InitAllImageHandlers();
- $app = Demeter::UI::Atoms->new;
- $app -> MainLoop;
+  require Wx;
+  require Demeter::UI::Atoms;
+  Wx::InitAllImageHandlers();
+  $app = Demeter::UI::Atoms->new;
+  $app -> MainLoop;
 };
 
 
@@ -95,11 +95,11 @@ atoms - Convert crystallography data to a feff.inp file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 
-  atoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
+  datoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
 
 If no input or CIF file is specified at the command line, F<atoms.inp>
 in the current working directory will be used, if available.

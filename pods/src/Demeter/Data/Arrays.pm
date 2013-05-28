@@ -57,6 +57,7 @@ sub put {
   my ($self, $eref, $xref, @args) = @_;
   my $data = $self->new();	# return a Data is called by Data, return a Data::Pixel if called by D::P
   $data -> set(@args);
+  $data -> dispense("process", "make_group") if $data->is_larch;
   if ($data->datatype eq 'chi') {
     $data -> put_k($eref);
     $data -> put_chi($xref);
@@ -260,7 +261,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 METHODS
 

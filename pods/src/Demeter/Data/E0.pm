@@ -60,9 +60,14 @@ sub e0 {
 sub e0_ifeffit {
   my ($self) = @_;
   $self->dispense('process', 'find_e0');
+  my $was = $self->bkg_e0;
   my $e0 = $self->fetch_scalar('e0');
-  $self->bkg_e0(sprintf("%.5f", $e0));
-  return $e0;
+  if (abs($was - $e0) > $EPSILON3) {
+    $self->bkg_e0(sprintf("%.5f", $e0));
+    return $e0;
+  } else {
+    return $was;		# avoid a tiny numerical "surprise" from Larch
+  };
 };
 
 
@@ -302,7 +307,7 @@ Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

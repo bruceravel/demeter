@@ -638,7 +638,6 @@ sub mode {
   };
 
   my $is_merge = ($group) ? $group->is_merge : 0;
-  $this->{app}->set_mergedplot($is_merge);
 
   if ($group and ($group->reference)) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($group->co->default("athena", "tied")) );
@@ -1386,7 +1385,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

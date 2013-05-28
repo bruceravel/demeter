@@ -60,11 +60,14 @@ sub save_project {
   Demeter::UI::Artemis::update_order_file();
 
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+  my $save = $rframes->{main} -> {currentfit} -> fitted;
+  $rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
 						nozip    => 1,
 						copyfeff => 0,
 					       );
+  $rframes->{main} -> {currentfit} -> fitted($save);
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
@@ -448,11 +451,11 @@ sub restore_fit {
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
-      my $me = (defined $g->initial) ? $g->initial : $g->bestfit;
+      my $me = (defined $g->initial and $g->initial) ? $g->initial : $g->bestfit;
       $me ||= $g->mathexp;
       $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     } else {
-      my $me = (defined $g->initial) ? $g->initial : $g->mathexp;
+      my $me = (defined $g->initial and $g->initial) ? $g->initial : $g->mathexp;
       $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     };
     $grid -> {$g->name} = $g;
@@ -671,7 +674,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

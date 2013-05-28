@@ -185,10 +185,12 @@ sub process_argv {
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
     } elsif (($a eq '-lv') or ($a eq '-vl')) {
-      $demeter->set_mode(template_process=>"larch");
+      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
+      $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
       $Demeter::devflag = 1;
     } elsif ($a eq '-l') {
-      $demeter->set_mode(template_process=>"larch");
+      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
+      $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
     } elsif ($a eq '-v') {
       $Demeter::devflag = 1;
     } elsif (-r $a) {
@@ -341,6 +343,7 @@ const my $COPY			=> Wx::NewId();
 #const my $COPY_SERIES		=> Wx::NewId();
 const my $REMOVE		=> Wx::NewId();
 const my $REMOVE_MARKED		=> Wx::NewId();
+const my $DATA_ABOUT		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
@@ -501,7 +504,10 @@ sub menubar {
   $filemenu->Append(wxID_EXIT,  "E&xit\tCtrl+q" );
 
   my $monitormenu = Wx::Menu->new;
+  #print ">>>>", Demeter->is_larch, $/;
   my $ifeffitmenu = Wx::Menu->new;
+  $app->{main}->{monitormenu} = $monitormenu;
+  $app->{main}->{ifeffitmenu} = $ifeffitmenu;
   #my $yamlmenu    = Wx::Menu->new;
 
   my $debugmenu   = Wx::Menu->new;
@@ -520,13 +526,16 @@ sub menubar {
 
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
-  $monitormenu->AppendSeparator;
+  my $thing1 = $monitormenu->AppendSeparator;
   $ifeffitmenu->Append($IFEFFIT_STRINGS, "strings",      "Examine all the strings currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_SCALARS, "scalars",      "Examine all the scalars currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
-  $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (not Demeter->is_larch);
+  my $thing2 = $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
+  my $thing3 = $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  $app->{main}->{ifeffititems} = [$thing1, $thing2, $thing3]; # clean up Ifeffit menu entries for larch backend
+                                                              # see line 192
+
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
@@ -560,7 +569,8 @@ sub menubar {
   $groupmenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
-  $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
+  $groupmenu->Append($DATA_YAML,      "Show YAML for current group", "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
   $groupmenu->AppendSeparator;
@@ -846,6 +856,13 @@ sub OnMenuClick {
     };
     ($id == $REMOVE_MARKED) and do {
       $app->Remove('marked');
+      last SWITCH;
+    };
+    ($id == $DATA_ABOUT) and do {
+      last SWITCH if $app->is_empty;
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->current_data->about, 'About current group')
+	  -> Show;
       last SWITCH;
     };
     ($id == $DATA_YAML) and do {
@@ -1808,8 +1825,11 @@ sub plot {
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
+    my $first_z = $data[0]->bkg_z;
+    my $different = 0;
     foreach my $d (@data) {
       $d->plot($space);
+      ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
     };
     $data[0]->plot_window('k') if (($how eq 'single') and
@@ -1820,6 +1840,9 @@ sub plot {
       $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
     } else {
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
+    };
+    if ((lc($space) eq 'e') and $different) {
+      $::app->{main}->status("This marked-groups plot involved data measured on different elements.", 'alert');
     };
 
   ## R
@@ -2005,11 +2028,11 @@ sub plot_e00 {
   my ($app) = @_;
 
   $app->preplot('e', $app->current_data);
-  $app->{main}->{PlotE}->pull_single_values;
+  $app->{main}->{PlotE}->pull_marked_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
-			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+			      e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0); #e_norm=>1, 
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -2025,7 +2048,7 @@ sub plot_i0_marked {
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -2576,7 +2599,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

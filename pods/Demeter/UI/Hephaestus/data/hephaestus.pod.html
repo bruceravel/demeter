@@ -79,7 +79,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.16.</p>
+<p>This documentation refers to Demeter version 0.9.17.</p>
 
 <h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
 
@@ -244,13 +244,20 @@ gravity of 2.29 and at energy of 7800 eV:</p>
     The Elam database and the full cross-sections were
     used in the calculation.
 
-</pre><p>This tells us that 9000 eV photons will be e-fold attenuated (about
-67%) in just over 1 millimeter of packed BN.  To make a sample with an
-area of 1 square centimeter facing the beam and which has an
-absorption length of 1, one must weigh out about 175 milligrams of BN.
-In practice, this is quite a lot of BN and will make a rather thick
-pellet.  One might weight out a fraction of the 175 milligrams for a
-real sample, giving the matrix that much less than 1 absorption length.</p>
+</pre><p>This reports on an important physical parameter, the <i>absorption
+length</i>.  This is defined as the length of sample over which the
+intensity of the incident beam will be attenuated by 1/e, or about
+63%, at the specified energy.  Note that absorption length is an
+energy dependent parameter and that it changes significantly across an
+absorption edge.</p>
+
+<p>Here we see that 9000 eV photons will be e-fold attenuated in just
+over 1 millimeter of packed BN.  To make a sample with an area of 1
+square centimeter facing the beam and which has an absorption length
+of 1, one must weigh out about 175 milligrams of BN.  In practice,
+this is quite a lot of BN and will make a rather thick pellet.  One
+might weigh out a fraction of the 175 milligrams for a real sample,
+giving the matrix that much less than 1 absorption length.</p>
 
 <p>As another example, here is the calculation on cobalt ferrite,
 CoFe2O4, which has a specific gravity of about 5.  Computing the cross
@@ -281,56 +288,86 @@ within 100 eV of the Co K edge energy of 7709 eV.</p>
     The Elam database and the full cross-sections were
     used in the calculation.
 
-</pre><p>Suppose you wanted to mix some cobalt ferrite with 35 milligrams of
-boron nitride measured above in order to make a good transmission XAS
-sample.  That amount of BN contributes 0.2 absorption lengths to the
-total thickness of the sample at this energy.  Weighing out 4
-milligrams of ferrite, then, gives the sample a total absorption of
-1.2.  That is, the beam passing through the sample will attenuate to
-the level of exp(-1.2), or about 30%, of the intensity of the incident
-beam.</p>
+</pre><p>Here we introduce a second important physical parameter, the <i>unit
+edge step length</i>.  This is defined as the length over which the total
+absorption will change by a factor of 1/e as  the incident beam energy
+is scanned over the absorption edge.  To say that another way, the
+absorption will be e-fold greater just above the edge than just below
+the edge.  With that length of sample, the edge step of a transmission
+XAS scan will be 1.</p>
+
+<p>Suppose you wanted to mix some cobalt ferrite with 35 milligrams
+(i.e. an amount that will contribute 0.2 to the total absorption of
+the sample) of boron nitride measured above in order to make a good
+transmission XAS sample.  That amount of BN contributes 0.2 absorption
+lengths to the total thickness of the sample at this energy.  Weighing
+out 4 milligrams of ferrite, then, gives the sample a total absorption
+of 1.2.  That is, the beam passing through the sample will attenuate
+to the level of exp(-1.2), or about 30%, of the intensity of the
+incident beam.</p>
 
 <p>Note that this sample has more Fe than Co and that the calculation
 energy is above the Fe K edge energy.  The Fe part of the sample is
 rather absorbing at this energy.  As a result, a relatively small
 mass of sample constitutes an absorption length.</p>
 
-<p>That sample will have an edge step of about 0.14 through the Co edge.
-That is because the second calculation tells you that you need 28.3
-milligrams of ferrite in your 1 square centimeter sample to make an
-edge step of 1.  With 4 milligrams, the edge step will be about
-4/28.3 = 0.14.</p>
+<p>The 4 milligrams of sample required for one absorption length is
+distributed over 8.2 microns.  The unit edge step calculation tells us
+that the edge step will be one with 28.3 microns of sample.  Thus, the
+sample with one absorption length of ferrite will have an edge step of
+8.2/28.3 = 0.34.</p>
 
 <p>A sample with an edge step of 1 is made by mixing 28.3 milligrams of
-ferrite with the BN.  This sample, however, will be very thick around
-the Co K edge.  28.3 milligrams represents about 7 absorption lengths
-of ferrite.  The ferrite in BN will, therefore, attenuate the beam
-passing through the sample to the level of exp(-7.2), or about 0.07%.
-Only a trickle of X-rays will pass through the sample.</p>
+ferrite with the BN.  This sample, however, will be rather thick
+around the Co K edge.  28.3 milligrams represents 2.9 (= 1/0.34)
+absorption lengths of ferrite.  The ferrite in BN will, therefore,
+attenuate the beam passing through the sample to the level of
+exp(-3.1), or about 4.5%.</p>
 
-<p>It is, therefore, impossible to optimize both total absorption and
-edge step absorption for this sample.  Indeed, that is true of most
-materials.  In this case, a good compromise would be to make the total
-absorption a bit thick and the edge step a bit small.  Mixing 8
-milligrams of ferrite with the BN will result is a sample of about 2.2
-absorption lengths.  This will attenuate the beam to the level of
-about 11% -- still plenty of photons for the transmission chamber.
-The edge step will be around 0.28 -- a quite respectable value.</p>
+<p>In an early XAS paper -- E. A. Stern and K. Kim, <i>Physical Review</i>
+<strong>23</strong>:8 (1981) (<a href="http://dx.doi.org/10.1103/PhysRevB.23.3781">http://dx.doi.org/10.1103/PhysRevB.23.3781</a>) -- it
+was shown that the edge step of a sample should not exceed 1.5.  Using
+a simple statistical argument that presumes that measurement
+uncertainty is dominated by shot noise, the authors show that a sample
+is optimized when the total absorption is 2.6.  In this case, the
+sample of ferrite in BN can be made such that both total absorption
+and edge step are close to optimal.  For instance, making the sample
+with 2 absorption lengths (i.e. 8 milligrams or 16.4 microns) of
+ferrite will result in an edge step of 0.68 -- an excellent sample!
+Not all materials -- particularly those for which a minority dopant is
+the target of the XAS experiment -- work out so well.  In practice,
+sample preparation is an exercise in compromise between total
+absorption and size of edge step.</p>
 
-<p>As a final note, the calculation of absorption length in units of
-length, in this case 8.2 microns, is another useful metric for high
-quality sample preparation.  To mix ferrite powder with BN to obtain a
-nicely homogeneous sample, it is necessary that the ferrite powder be
+<p>Two final notes:</p>
+
+<dl>
+	<dt>1</dt>
+		<dd><p>The calculation of absorption length in units of length, in this case
+8.2 microns, is another useful metric for high quality sample
+preparation.  To mix ferrite powder with BN to obtain a nicely
+homogeneous sample, it is necessary that the ferrite powder be
 composed of grains that are small compared to the absorption length.
 In this, you would want micron-sized or smaller grains.  Note that a
 stack of laboratory metal meshes are not adequate for separating out
 powders for this sample.  A #400 mesh -- usually the finest one in a
 common stack of sieves -- has openings of 37 microns.  That is vastly
-too large for your ferrite XAS samples!</p>
-
-
-
-
+too large for your ferrite XAS samples!</p></dd>
+	<dt>2</dt>
+		<dd><p>Transmission XAS samples are often made with 10s of milligrams of
+material.  That is true for the example given above and, indeed, for
+many materials science problems.  10s of milligrams of sample is a
+very small quantity.  That material must be distributed in the beam
+uniformly and packaged in a manner that can be readily handled.
+What's more, the sample may need to survive placement in a cryostat, a
+furnace, or some other <i>in situ</i> environment.  In the example given
+above, reference is made to boron nitride.  BN is often used a sample
+matrix by mixing the sample thoroughly in the BN and pressing the
+mixed powders into a pellet using a hydrolic press.  This results in a
+sample which is thick enough to manage by hand and sturdy enough for a
+cryostat or furnace.  Other materials are commonly used for this
+purpose, such as graphite, polyethylene glycol, and sucrose.</p></dd>
+</dl>
 <h2 id="Ion_Chambers">Ion Chambers</h2>
 
 <p>This tool is used to determine appropriate contents of ion chambers at

@@ -36,7 +36,7 @@ BEGIN {
   };
 };
 use Wx;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 use Demeter::UI::Athena;
 use vars qw($app);
 $app  = Demeter::UI::Athena->new;
@@ -49,7 +49,7 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

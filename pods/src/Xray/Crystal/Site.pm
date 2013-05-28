@@ -19,8 +19,9 @@ use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use Safe;
 use Scalar::Util;
-use Const::Fast;
-const my $EPSILON  => 0.00001;
+#use Const::Fast;
+#const my $EPSILON  => 0.00001;
+use Demeter::Constants qw($EPSILON5 $FEFFNOTOK);
 
 
 use Moose;
@@ -31,22 +32,22 @@ with 'MooseX::SetGet';
 sub _canonicalize_coordinate {
   my ($pos) = @_;
   $pos -= int($pos);		# move to first octant
-  ($pos += 1) if ($pos < -1*$EPSILON);
-  ($pos  = 0) if (abs($pos) < $EPSILON);
+  ($pos += 1) if ($pos < -1*$EPSILON5);
+  ($pos  = 0) if (abs($pos) < $EPSILON5);
  SYM: {				# positions of special symmetry
-    if (abs($pos)        < $EPSILON) {($pos = 0);   last SYM;}
-    if (abs($pos-0.125)  < $EPSILON) {($pos = 1/8); last SYM;}
-    if (abs($pos-0.1666) < $EPSILON) {($pos = 1/6); last SYM;}
-    if (abs($pos-0.25)   < $EPSILON) {($pos = 1/4); last SYM;}
-    if (abs($pos-0.3333) < $EPSILON) {($pos = 1/3); last SYM;}
-    if (abs($pos-0.375)  < $EPSILON) {($pos = 3/8); last SYM;}
-    if (abs($pos-0.5)    < $EPSILON) {($pos = 1/2); last SYM;}
-    if (abs($pos-0.625)  < $EPSILON) {($pos = 5/8); last SYM;}
-    if (abs($pos-0.6666) < $EPSILON) {($pos = 2/3); last SYM;}
-    if (abs($pos-0.75)   < $EPSILON) {($pos = 3/4); last SYM;}
-    if (abs($pos-0.8333) < $EPSILON) {($pos = 5/6); last SYM;}
-    if (abs($pos-0.875)  < $EPSILON) {($pos = 7/8); last SYM;}
-    if (abs($pos-1)      < $EPSILON) {($pos = 0);   last SYM;}
+    if (abs($pos)        < $EPSILON5) {($pos = 0);   last SYM;}
+    if (abs($pos-0.125)  < $EPSILON5) {($pos = 1/8); last SYM;}
+    if (abs($pos-0.1666) < $EPSILON5) {($pos = 1/6); last SYM;}
+    if (abs($pos-0.25)   < $EPSILON5) {($pos = 1/4); last SYM;}
+    if (abs($pos-0.3333) < $EPSILON5) {($pos = 1/3); last SYM;}
+    if (abs($pos-0.375)  < $EPSILON5) {($pos = 3/8); last SYM;}
+    if (abs($pos-0.5)    < $EPSILON5) {($pos = 1/2); last SYM;}
+    if (abs($pos-0.625)  < $EPSILON5) {($pos = 5/8); last SYM;}
+    if (abs($pos-0.6666) < $EPSILON5) {($pos = 2/3); last SYM;}
+    if (abs($pos-0.75)   < $EPSILON5) {($pos = 3/4); last SYM;}
+    if (abs($pos-0.8333) < $EPSILON5) {($pos = 5/6); last SYM;}
+    if (abs($pos-0.875)  < $EPSILON5) {($pos = 7/8); last SYM;}
+    if (abs($pos-1)      < $EPSILON5) {($pos = 0);   last SYM;}
   };
   return $pos;
 };
@@ -65,7 +66,10 @@ subtype 'Elem'
 
 has 'element'	  => (is => 'rw', isa => 'Elem',  default => q{},
 		      trigger => sub{ my ($self, $new) = @_; $self->tag($new) if not $self->tag});
-has 'tag'	  => (is => 'rw', isa => 'Str',  default => q{});
+subtype 'Tag'
+  => as 'Str'
+  => where { sub{ (my $foo = $_) =~ s{$FEFFNOTOK}{}g; return $foo} };
+has 'tag'	  => (is => 'rw', isa => 'Tag',  default => q{});
 has 'utag'	  => (is => 'rw', isa => 'Str',  default => q{});
 has 'x'		  => (is => 'rw', isa => 'Num',  default => 0);
 has 'y'		  => (is => 'rw', isa => 'Num',  default => 0);
@@ -335,7 +339,7 @@ Xray::Crystal::Site - A crystallographic site object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

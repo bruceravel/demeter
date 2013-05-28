@@ -53,6 +53,7 @@ sub fit {
 		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd3")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd4")));
+  print join("|". @cumulants), $/;
   my @errorbars = (sprintf("%.5f", $self->fetch_scalar("delta_lr___pd0")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd1")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd2")),
@@ -97,7 +98,7 @@ Demeter::LogRatio - Log-ratio/phase-difference analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

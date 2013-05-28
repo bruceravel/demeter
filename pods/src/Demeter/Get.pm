@@ -41,7 +41,7 @@ sub backend_id {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return "Ifeffit " . get_string('&build')
+      return "Ifeffit " . Ifeffit::get_string('&build')
     };
 
     when ('larch') {
@@ -95,6 +95,22 @@ sub fetch_scalar {
 	}
 	when (/(aa__)_(esh|scale)/) {
 	  $param = $1.'.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2.'.stderr';
 	  return Larch::get_larch_scalar($param);
 	}
 	default {
@@ -254,7 +270,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

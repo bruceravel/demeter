@@ -91,6 +91,9 @@ sub rebin {
   $rebinned->resolve_defaults;
   $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
+  $rebinned->npts($#bingrid+1);
+  $rebinned->xmin($bingrid[0]);
+  $rebinned->xmax($bingrid[$#bingrid]);
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $rebinned;
@@ -426,6 +429,7 @@ sub deglitch_margins {
 sub smooth {
   my ($self, $n, $how) = @_;
   ($n = 1) if ($n < 1);
+  ($n = 1) if $self->is_larch;
   $how ||= $self->datatype;
   if ($how =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");
@@ -618,7 +622,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

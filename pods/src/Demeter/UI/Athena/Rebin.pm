@@ -132,7 +132,7 @@ sub push_values {
     $this->Enable(0);
   } else {
     #$this->{rebinned} = $data->rebin;
-    $this->plot($data);
+    $this->plot($data, 'E');
   };
 };
 sub mode {
@@ -170,6 +170,7 @@ sub plot {
 sub make {
   my ($this, $app) = @_;
 
+  my %hash;
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -177,9 +178,10 @@ sub make {
       $app->{main}->status("Not rebinning -- your value for $w is not a number!", 'error|nobuffer');
       return;
     };
+    $hash{$w} = $value;
     $app->current_data->co->set_default('rebin', $w, $value);
   };
-  $this->{rebinned} = $app->current_data->rebin;
+  $this->{rebinned} = $app->current_data->rebin(\%hash);
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
@@ -195,6 +197,7 @@ sub marked {
   my ($this, $app) = @_;
   my $busy = Wx::BusyCursor->new();
 
+  my %hash;
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -202,6 +205,7 @@ sub marked {
       $app->{main}->status("Not rebinning marked groups -- your value for $w is not a number!", 'error|nobuffer');
       return;
     };
+    $hash{$w} = $value;
     $app->current_data->co->set_default('rebin', $w, $value);
   };
 
@@ -209,7 +213,7 @@ sub marked {
   my $index = $app->current_index;
   foreach my $j (reverse (0 .. $app->{main}->{list}->GetCount-1)) {
     if ($app->{main}->{list}->IsChecked($j)) {
-      $this->{rebinned} = $app->{main}->{list}->GetIndexedData($j)->rebin;
+      $this->{rebinned} = $app->{main}->{list}->GetIndexedData($j)->rebin(\%hash);
       if ($index == $app->{main}->{list}->GetCount-1) {
 	$app->{main}->{list}->AddData($this->{rebinned}->name, $this->{rebinned});
       } else {
@@ -233,7 +237,7 @@ Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athen
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

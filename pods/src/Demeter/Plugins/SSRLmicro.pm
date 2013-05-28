@@ -111,7 +111,7 @@ Demeter::Plugin::SSRLmicro - SSRL XAFS microXAFS Data Collector filetype plugin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

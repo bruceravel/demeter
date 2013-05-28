@@ -28,7 +28,7 @@ use File::Path;
 use File::Spec;
 
 use Demeter::StrTypes qw(FileName);
-use Demeter::Constants qw($CTOKEN);
+use Demeter::Constants qw($CTOKEN $EPSILON4);
 
 has '+source'   => (default => 'external');
 has 'file'      => (is => 'rw', isa => FileName,  default => q{},
@@ -170,17 +170,25 @@ sub parse_info_from_nnnn {
     next unless $flag;
     ## make a simple id string out of the coordinates of the scatterers in this path
     my @fields = split(" ", $_);
-    push @geometry, join("", @fields[0..2]);
+    push @geometry, [@fields[0..2]];
   };
   close $NNNN;
 
   ## make a ScatteringPath string out of this scattering geometry
   ## see _visit and _parentage in Demeter::Feff
-  my @sitestrings = map { sprintf("%.4f%.4f%.4f", $_->[0], $_->[1], $_->[2]) } @{$self->sites};
   my $string = q{};
   foreach my $atom (@geometry) {
-    my $this = firstidx {$_ eq $atom} @sitestrings;
-    $string .= "$this.";
+    my $i = 0;
+    foreach my $s (@{$self->sites}) { # identify atoms in the feffNNNN geometry by index in the feff.inp ATOMS list
+      if ( (abs($atom->[0] - $s->[0]) < $EPSILON4) and
+	   (abs($atom->[1] - $s->[1]) < $EPSILON4) and
+	   (abs($atom->[2] - $s->[2]) < $EPSILON4) ) {
+	$string .= "$i.";
+	last;
+      } else {
+	++$i;
+      };
+    };
   };
   $string =~ s{\A0}{$CTOKEN};
   $string .= $CTOKEN;
@@ -236,7 +244,7 @@ Demeter::Feff::External - Import and manipulate external Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

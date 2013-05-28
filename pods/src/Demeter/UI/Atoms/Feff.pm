@@ -14,6 +14,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Demeter::UI::Wx::MRU;
+use Demeter::UI::Wx::VerbDialog;
 
 my %hints = (
 	     open     => "Import an existing feff.inp file -- Hint: Right click for recent files",
@@ -518,7 +519,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

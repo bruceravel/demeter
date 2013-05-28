@@ -1039,7 +1039,7 @@ sub fetch_correlations {
 		   ($NUMBER)	       # a number
 		}xi) {
       my ($x, $y, $correl) = ($1, $2, $3);
-      print join(" ", $x, $y, $correl), $/;
+      #print join(" ", $x, $y, $correl), $/;
       $correlations_of{$x}{$y} = $correl;
     };
     if ($self->co->default("fit", "bkg_corr")) {
@@ -1711,7 +1711,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

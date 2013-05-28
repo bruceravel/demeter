@@ -29,6 +29,7 @@ use Demeter::StrTypes qw( Empty );
 
 use PDL::Lite;
 use PDL::Stats::GLM;
+use PDL::MatrixOps;
 
 use List::Util;
 use List::MoreUtils qw(pairwise);
@@ -195,37 +196,77 @@ sub do_pca {
 
 sub reconstruct {
   my ($self, $ncomp) = @_;
+  $ncomp ||= $self->ncompused;
+  $ncomp ||= 2;
   $self->do_pca if $self->update_pca;
   $self->ncompused($ncomp);
-  $ncomp = $ncomp-1;
-  my $slice = $self->eigenvectors->slice(":,0:$ncomp");
-  my $reproduced = $slice->transpose x $slice x $self->data_matrix;
+  my $nc = $ncomp-1;
+  my $slice = $self->eigenvectors->slice(":,0:$nc");
+  my $reproduced = $slice->transpose x $slice x $self->data_matrix; # 3.74
   $self->reconstructed($reproduced);
   return $self;
 };
 
 sub tt {
   my ($self, $target, $ncomp) = @_;
-  $ncomp ||= $self->ndata;
+  #$ncomp ||= $self->ndata;
+  $self->reconstruct($ncomp);
+  $ncomp ||= $self->ncompused;
+  $ncomp ||= 2;
+  $self->do_pca if $self->update_pca;
+  $self->ncompused($ncomp);
+  my $nc = $ncomp-1;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
+
   # #$self->toggle_echo(1);
   # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
+  # $self->data($target);
+  # $self->dispense('analysis', 'save_pca_tt', {ncomp=>$ncomp});
+  # my @coef = ();
+  # foreach my $i (0 .. $self->ndata-1) {
+  #   push @coef, $self->fetch_scalar("_p$i");
+  # };
+  # $self->ttcoefficients(\@coef);
+
+  ## numbers in comments refer to equations in Malinowski, Chapter 3
+
+  #print join(", ", $self->data_matrix->dims), $/;
+  #print join(", ", $self->reconstructed->dims), $/;
+
+  my $decomposed = $self->eigenvectors x $self->data_matrix;
+  my $u = $self->data_matrix / $self->eigenvalues->transpose;
+  my $e = $u->slice(":,0:$nc")->transpose x $u->slice(":,0:$nc");
+  my $tt = $e x $tarpdl->transpose;
+
+
+#   my $row_matrix =  $self->eigenvectors x $self->data_matrix; # 3.66
+
+#   #print $self->eigenvectors / sqrt($self->eigenvalues->transpose);
+#   #print $self->eigenvectors;
+# #  print $row_matrix x $row_matrix->transpose, $/;
+
+#   # my $data_dagger = $self->eigenvectors->slice("0:$nc,:") x $row_matrix->slice(":,0:$nc"); # 3.71
+#   # my $row_dagger  = $self->eigenvectors->transpose->slice(":,0:$nc") x $data_dagger;
+#   my $row_dagger = $row_matrix->slice(":,0:$nc");
+
+#   my $slice      = $self->eigenvectors->slice(":,0:$nc");
+#   #my $row_dagger = $slice x $self->data_matrix;
+#   #my $row_dagger = $slice x $self->reconstructed;
+#   print $slice x $slice->transpose, $/;
+
+
+#   my $lambda     = stretcher($self->eigenvalues->slice("0:$nc")); # matrix of eigenvalues on the diagonal
+#   my $transform  = $tarpdl x $row_dagger->transpose x $lambda->inv; # 3.97
+#   my $tt         = $transform x $row_dagger; # 3.84
+
+#  print $lambda, $/;
+
+  my @array      = $tt->list;
+  $self->put_array("tt", \@array);
   $self->data($target);
-  $self->dispense('analysis', 'pca_tt', {ncomp=>$ncomp});
-  my @coef = ();
-  foreach my $i (0 .. $self->ndata-1) {
-    push @coef, $self->fetch_scalar("_p$i");
-  };
-  $self->ttcoefficients(\@coef);
-
-  # my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
-  # my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
-  # my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
-  # my @array      = $tt->list;
-  # $self->put_array("tt", \@array);
-
+  $self->dispense('analysis', 'pca_tt');
   return $self;
 };
 
@@ -290,7 +331,7 @@ sub plot_stack {
 };
 
 sub plot_reconstruction {
-  my ($self, $index) = @_;
+  my ($self, $index, $noplot) = @_;
   $self->po->start_plot;
   $self->e0($self->stack->[0]->bkg_e0);
   $self->data($self->stack->[$index]);
@@ -299,7 +340,7 @@ sub plot_reconstruction {
   my @diff  = pairwise {$a - $b} @recon, @data;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
-  $self->chart('plot', 'pca_plot_reconstruction', {index=>$index});
+  $self->chart('plot', 'pca_plot_reconstruction', {index=>$index}) if not $noplot;
   $self->data(q{});
   return $self;
 };
@@ -343,6 +384,7 @@ sub tt_report {
   my $text = $target->name . ":\n";
   foreach my $c (@{$self->ttcoefficients}) {
     ++$i;
+    last if $i > $self->ncompused;
     $text .= sprintf("%4d: %9.5f\n", $i, $c)
   };
   return $text;
@@ -377,6 +419,8 @@ sub save_stack {
 
 sub save_reconstruction {
   my ($self, $index, $filename) = @_;
+  $self->reconstruct;
+  $self->plot_reconstruction($index, 1);
   $self->data($self->stack->[$index]);
   $self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
   $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
@@ -460,7 +504,7 @@ Demeter::PCA - Principle components analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

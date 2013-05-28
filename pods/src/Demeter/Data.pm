@@ -445,7 +445,17 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  $self->dispense('process', 'erase', {items=>$self->group}) if $self->is_larch;
+  ## It seems as though this is getting called when I discard the
+  ## group AND when perl is doing its final clean up.  I guess I don't
+  ## quite understand how perl & Moose shut down...  Anyway, the
+  ## following is essentially a check to see if this block of code has
+  ## already been called for this Data object and avoid revivifying
+  ## it.  But I still get the chance to clean up the Larch group
+  ## before leaving, so I can leave a tidy server alive and running.
+  return if not Demeter->mo->fetch('Data', $self->group);
+  if ($self->is_larch and ($self->group ne 'default___')) {
+    $self->dispense('process', 'erase', {items=>$self->group});
+  };
   $self->alldone;
 };
 
@@ -725,17 +735,16 @@ sub extraneous {
   my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
 			post_edge nbkg prex theta line flat nder
 			nsec bkg flat nbkg norm fbkg));
-  my $items = join(" " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
+  my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
   #print $items, $/;
-  my $command = q{};
-  $command .= $self->template('process', 'erase', {items=>$items});
+  $self->dispense('process', 'erase', {items=>$items}) if ($items !~ m{\A\s*\z});
   #$command .= $self->template("process", "post_autobk");
   #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
   #  $command .= $self->template("process", "flatten_fit");
   #} else {
   #  $command .= $self->template("process", "flatten_set");
   #};
-  $self->dispose($command);
+  ##$self->dispose($command);
   $self->update_norm(1);
 }
 
@@ -819,7 +828,7 @@ sub _read_data_command {
   my ($self, $type) = @_;
   my $string = q[];
   $self->raw_check;
-  if ($type eq 'xmu') {
+  if (($type eq 'xmu') and ($self->is_ifeffit)) { # for larch better to use "read" template
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
     $self->provenance("mu(E) file ".$self->file);
@@ -860,7 +869,7 @@ sub rfactor {
   if (lc($self->fit_space) eq 'k') {
     ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
     @x  = $self -> get_array("k");
-    @di = $self -> get_array("chi");
+    @dr = $self -> get_array("chi");
     @fr = $self -> get_array("chi", "fit");
     foreach my $i (0 .. $#x) {
       next if ($x[$i] < $xmin);
@@ -993,7 +1002,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 
 =head1 SYNOPSIS

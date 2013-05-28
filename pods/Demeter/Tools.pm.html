@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.16.</p>
+<p>This documentation refers to Demeter version 0.9.17.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -155,6 +155,14 @@ feff8 input file's potentials list.</p></dd>
 significant digits beyond the decimal.</p></dd>
 <dd><pre>  my $frac = $demeter_object -&gt; fract(0.5);
   ## will print as &quot;1/2&quot;
+
+</pre></dd>	<dt><code>slurp</code></dt>
+		<dd><p>Slurp a file into a scalar.</p></dd>
+<dd><pre>  my $string = $demeter_object -&gt; slurp('/path/to/file');
+
+</pre></dd>	<dt><code>write_file</code></dt>
+		<dd><p>Dump a string into a file.</p></dd>
+<dd><pre>  $demeter_object -&gt; write_file($file, $string);
 
 </pre></dd>	<dt><code>Dump</code></dt>
 		<dd><p>This is just a wrapper around <a href="http://search.cpan.org/perldoc?Data%3A%3ADumper">Data::Dumper</a>.  Pass it a reference

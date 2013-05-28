@@ -72,7 +72,8 @@ sub is_ifeffit {
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
-  return "Demeter " . $Demeter::VERSION . " with perl $] on $os";
+  my $string .= "using " . $self->backend_name . " " . $self->backend_version;
+  return "Demeter " . $Demeter::VERSION . " with perl $] and $string on $os";
 };
 
 sub module_environment {
@@ -205,6 +206,14 @@ sub slurp {
   my $text = <$FH>;
   close $FH;
   return $text;
+};
+
+sub write_file {
+  my ($file, $string) = @_;
+  open(my $OUT, '>', $file);
+  print $OUT $string;
+  close $OUT;
+  return $file;
 };
 
 sub readable {
@@ -460,7 +469,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 
@@ -573,6 +582,18 @@ significant digits beyond the decimal.
 
   my $frac = $demeter_object -> fract(0.5);
   ## will print as "1/2"
+
+=item C<slurp>
+
+Slurp a file into a scalar.
+
+  my $string = $demeter_object -> slurp('/path/to/file');
+
+=item C<write_file>
+
+Dump a string into a file.
+
+  $demeter_object -> write_file($file, $string);
 
 =item C<Dump>
 

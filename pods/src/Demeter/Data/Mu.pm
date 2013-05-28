@@ -25,7 +25,7 @@ use File::Basename;
 use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any all zip);
-use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON4);
+use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON3 $EPSILON4);
 
 use Text::Template;
 use Text::Wrap;
@@ -241,7 +241,9 @@ sub put_data {
 
   if (($self->display) and ($self->datatype ne 'chi')) {
     $self->dispense("process", "display");
-    return;
+    $self->update_data(1) if ($self->xmu_string =~ m{\(1\)\s*/\s*\(1\)}); ## need to reread data file to
+    $self->update_data(1) if ($self->xmu_string =~ m{\.xmu\b}); ## avoid a looping definition of the column
+    return;			                                ## labeled "xmu"
   };
 
   if ($self->datatype eq 'chi') {
@@ -305,8 +307,9 @@ sub normalize {
     my $precmd = $self->template("process", "normalize");
     $self->dispose($precmd);
 
+    my $was = $self->bkg_e0;
     my $e0 = $self->fetch_scalar("e0");
-    $self->bkg_e0($e0);
+    $self->bkg_e0($e0) if (abs($was - $e0) > $EPSILON3); # avoid a tiny numerical "surprise" from Larch
     if (lc($self->bkg_z) eq 'h') {
       my ($elem, $edge) = $self->find_edge($e0);
       $self->bkg_z($elem);
@@ -486,9 +489,10 @@ sub autobk {
   $fixed = $self->bkg_step if $self->bkg_fixstep;
 
   if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
+    my $was = $self->bkg_e0;
     my $e0 = $self->fetch_scalar("e0");
     my ($elem, $edge) = $self->find_edge($e0);
-    $self->bkg_e0($e0);
+    $self->bkg_e0($e0) if (abs($was - $e0) > $EPSILON3); # avoid a tiny numerical "surprise" from Larch
     $self->bkg_z($elem);
     $self->fft_edge($edge);
     $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
@@ -871,7 +875,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 

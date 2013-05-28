@@ -55,6 +55,8 @@ package  Demeter::UI::Atoms::Xtal;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::NumTypes qw( PosNum );
+use Demeter::Constants qw($FEFFNOTOK);
+use Demeter::UI::Wx::VerbDialog;
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
@@ -692,13 +694,16 @@ sub get_crystal_data {
     #warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
-      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5) || $self->{sitesgrid}->GetCellValue($row, 1));
+      my $thistag = $self->{sitesgrid}->GetCellValue($row, 5);
+      $thistag =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      $atoms->core($thistag || $self->{sitesgrid}->GetCellValue($row, 1));
       ++$core_selected;
     };
-    my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
-    my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0; $y = $self->number($y);
-    my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0; $z = $self->number($z);
-    my $tag  = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    my $x     = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
+    my $y     = $self->{sitesgrid}->GetCellValue($row, 3) || 0; $y = $self->number($y);
+    my $z     = $self->{sitesgrid}->GetCellValue($row, 4) || 0; $z = $self->number($z);
+    my $tag   = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    $tag  =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 2) . "\" is not a valid x-coordinate value for site $rr (should be a number).\n\n" if ($x == -9999);
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 3) . "\" is not a valid y-coordinate value for site $rr (should be a number).\n\n" if ($y == -9999);
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 4) . "\" is not a valid z-coordinate value for site $rr (should be a number).\n\n" if ($z == -9999);
@@ -949,7 +954,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

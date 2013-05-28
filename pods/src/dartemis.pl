@@ -29,7 +29,7 @@ BEGIN {
 };
 use Wx;
 use Demeter::UI::Artemis;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 use vars qw($app);
 $app = Demeter::UI::Artemis->new;
 $app -> process_argv(@ARGV);
@@ -41,7 +41,7 @@ artemis - EXAFS data analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 DESCRIPTION
 

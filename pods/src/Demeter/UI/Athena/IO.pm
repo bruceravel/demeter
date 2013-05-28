@@ -287,13 +287,15 @@ sub _data {
     $do_guess = 1;
   };
   $yaml->{energy} = $data->energy;
-  my $untext = $data->guess_units;
-  my $un = ($untext eq 'eV')     ? 0
-         : ($untext eq 'keV')    ? 1
-         : ($untext eq 'lambda') ? 2
-	 :                         0;
-  $yaml->{units} = $un;
-  if ($untext eq 'keV') {
+  if ($do_guess) {
+    my $untext = $data->guess_units;
+    my $un = ($untext eq 'eV')     ? 0
+           : ($untext eq 'keV')    ? 1
+	   : ($untext eq 'lambda') ? 2
+	   :                         0;
+    $yaml->{units} = $un;
+  };
+  if ($yaml->{units} == 1) {	# keV units
     $data->is_kev(1);
     $data->update_data(1);
     $data->_update('data');
@@ -534,10 +536,16 @@ sub _group {
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
+    my %hash;
+    foreach my $w (qw(emin emax pre xanes exafs)) {
+      my $key = 'rebin_'.$w;
+      $hash{$w} = $yaml->{$key};
+      Demeter->co->set_default('rebin', $w, $yaml->{$key});
+    };
     my $ret = $data->rebin_is_sensible;
     if ($ret->is_ok) {
       $app->{main}->status("Rebinning ". $data->name);
-      my $rebin  = $data->rebin;
+      my $rebin  = $data->rebin(\%hash);
       foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($data->$att);
       };
@@ -648,10 +656,16 @@ sub _group {
       $ref -> e0('dmax');
     };
     if ($do_rebin) {
+      my %hash;
+      foreach my $w (qw(emin emax pre xanes exafs)) {
+	my $key = 'rebin_'.$w;
+	Demeter->co->set_default('rebin', $w, $yaml->{$key});
+	$hash{$w} = $yaml->{$key};
+      };
       my $ret = $data->rebin_is_sensible;
       if ($ret->is_ok) {
 	$app->{main}->status("Rebinning reference for ". $data->name);
-	my $rebin  = $ref->rebin;
+	my $rebin  = $ref->rebin(\%hash);
 	foreach my $att (qw(energy numerator denominator ln name)) {
 	  $rebin->$att($ref->$att);
 	};
@@ -968,7 +982,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.16.
+This documentation refers to Demeter version 0.9.17.
 
 =head1 SYNOPSIS
 
