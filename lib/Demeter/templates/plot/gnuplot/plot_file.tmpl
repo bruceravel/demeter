@@ -5,9 +5,10 @@
   $linetype ||= 'errorbars';
   $columns = ($linetype eq 'errorbars') ? '1:2:3' : '1:2';
   $xlabel ||= 'fit';
+  $title  ||= 'Fitting parameter';
   q{}
 }
-set title "\{/*1.6 Fitting parameter\}"
+set title "\{/*1.6 {$title}\}"
 set xrange [{$xmin}:{$xmax}]
 {$yrange}
 set xlabel "\{/*1.4 {$xlabel}\}"

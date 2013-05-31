@@ -1043,6 +1043,7 @@ const my $E0_PEAK            => Wx::NewId();
 const my $STEP_ALL           => Wx::NewId();
 const my $STEP_MARKED        => Wx::NewId();
 const my $STEP_ERROR         => Wx::NewId();
+const my $ESHIFT_THIS        => Wx::NewId();
 const my $ESHIFT_ALL         => Wx::NewId();
 const my $ESHIFT_MARKED      => Wx::NewId();
 
@@ -1081,6 +1082,7 @@ sub ContextMenu {
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
     $menu->AppendSeparator;
+    $menu->Append($ESHIFT_THIS,    "Show energy shift of this group");
     $menu->Append($ESHIFT_ALL,     "Show energy shifts of all groups");
     $menu->Append($ESHIFT_MARKED,  "Show energy shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
@@ -1229,6 +1231,11 @@ sub DoContextMenu {
       $main->edgestep_error($app);
       last SWITCH;
     };
+    ($id == $ESHIFT_THIS) and do {
+      $app->{main}->status(sprintf("%s: energy shift = %.5f +/- %.5f",
+				   $data->name, $data->bkg_eshift, $data->bkg_delta_eshift));
+      last SWITCH;
+    };
     ($id == $ESHIFT_ALL) and do {
       $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
       last SWITCH;
@@ -1243,28 +1250,53 @@ sub DoContextMenu {
 sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
-  my $stat = Statistics::Descriptive::Full->new();
+  my $stat  = Statistics::Descriptive::Full->new();
+  my $error = Statistics::Descriptive::Full->new();
 
-  my $text = "  group                    $description\n" . "=" x 40 . "\n";
+  my $text = "  group              $description\n" . "=" x 40 . "\n";
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
   };
-  my $format = ' "%-'.$max.'s"  %.5f'."\n";
+
+  my $with_uncertainty = ($which eq 'bkg_eshift') ? 1 : 0;
+  my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
+
+  my $format = ($with_uncertainty) ? ' "%-'.$max.'s"  %9.5f +/- %9.5f'."\n" : ' "%-'.$max.'s"  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    my $val = $d->$which;
-    $text .= sprintf($format, $d->name, $val);
-    $stat -> add_data($val) if looks_like_number($val);
+    my $val   = $d->$which;
+    my $uncer = $uncertainty{$which};
+    $text .= ($with_uncertainty) ? sprintf($format, $d->name, $val, $d->$uncer) : sprintf($format, $d->name, $val);
+    $stat  -> add_data($val)       if looks_like_number($val);
+    $error -> add_data($d->$uncer) if ($with_uncertainty);
   };
-  $text .= sprintf("\n\nAverage = %.5f  Standard deviation = %.5f\n", $stat->mean, $stat->standard_deviation)
+  $text .= sprintf("\n\nAverage = %9.5f  Standard deviation = %9.5f\n", $stat->mean, $stat->standard_deviation)
     if $stat->count > 1;
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;
+
+  if ($with_uncertainty) {
+    Demeter->po->start_plot;
+    my $tempfile = Demeter->po->tempfile;
+    open my $T, '>'.$tempfile;
+    my $i = -1;
+    my @y = $stat->get_data;
+    my @z = $error->get_data;
+    foreach my $i (0 .. $#y) {
+      printf $T "%d  %.5f  %.5f\n", $i, $y[$i], $z[$i];
+    };
+    close $T;
+    (my $p = $which) =~ s{_}{\\_}g;
+    (my $t = $which) =~ s{_}{\\\\_}g;
+    Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>-0.2, xmax=>$#y+0.2,
+					 xlabel=>'data set', title=>$t,
+					 param=>$p, showy=>0});
+  };
 };
 
 

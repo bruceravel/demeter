@@ -231,11 +231,13 @@ has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  alias => 'eshift',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; 
+					  #$self->fetch_delta_eshift;
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
 					  $self->shift_reference if not $self->tying;
 					  $self->tying(0); # prevent deep recursion
 					});
+has 'bkg_delta_eshift'=> (is => 'rw', isa => 'Num',   default => 0, traits => [ qw(Quenchable) ],);
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  traits => [ qw(Quenchable) ],

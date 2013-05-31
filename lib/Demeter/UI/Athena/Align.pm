@@ -62,12 +62,20 @@ sub new {
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
   $this->{shiftlabel} = Wx::StaticText->new($this, -1, "Shift by");
   $this->{shift}      = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{units}      = Wx::StaticText->new($this, -1, "eV");
-  $this->{replot}     = Wx::Button->new($this, -1, "Replot", @ps2);
+  $this->{units}      = Wx::StaticText->new($this, -1, "eV     ");
+  $this->{errorlabel} = Wx::StaticText->new($this, -1, "Uncertainty");
+  $this->{error}      = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxTE_READONLY);
   $hbox->Add($this->{shiftlabel}, 0, wxALL,          4);
   $hbox->Add($this->{shift},      0, wxLEFT|wxRIGHT, 2);
   $hbox->Add($this->{units},      0, wxALL,          4);
-  $hbox->Add($this->{replot},     0, wxLEFT,         8);
+  $hbox->Add($this->{errorlabel}, 0, wxALL,          4);
+  $hbox->Add($this->{error},      0, wxLEFT|wxRIGHT, 2);
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
+  $this->{replot}     = Wx::Button->new($this, -1, "Replot", @ps2);
+  $hbox->Add($this->{replot},     0, wxALL,         3);
+
 
   $this->{shift} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   EVT_TEXT($this, $this->{shift}, sub{OnShift(@_, $app->current_data)});
@@ -130,6 +138,9 @@ sub push_values {
   $this->{this}  -> SetLabel($data->name);
   ##$this->{shiftlabel} -> SetLabel("Shift " . $data->name . " by");
   $this->{shift} -> SetValue($data->bkg_eshift);
+  $this->{error} -> SetEditable(1);
+  $this->{error} -> SetValue($data->bkg_delta_eshift);
+  $this->{error} -> SetEditable(0);
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
     my $data = $::app->{main}->{list}->GetIndexedData($i);
@@ -206,6 +217,9 @@ sub autoalign {
   $stan->align(@all);
   undef $busy;
   $this->{shift}->SetValue($data->bkg_eshift);
+  $this->{error}->SetEditable(1);
+  $this->{error}->SetValue($data->bkg_delta_eshift);
+  $this->{error}->SetEditable(0);
   $this->plot($data);
   $data->po->e_smooth($save);
   $::app->modified(1);

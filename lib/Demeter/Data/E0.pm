@@ -15,6 +15,7 @@ package Demeter::Data::E0;
 
 =cut
 
+use feature "switch";
 use autodie qw(open close);
 
 use Moose::Role;
@@ -187,8 +188,13 @@ sub align {
     $d -> dispense("process", "align");
     $shift = sprintf("%.3f", $d->fetch_scalar("aa___esh"));
     #print ">>>>>>", $shift, $/;
+    $d -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
+    if ($d->reference) {
+      $d -> reference -> bkg_delta_eshift($d -> bkg_delta_eshift);
+      $d -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -216,10 +222,13 @@ sub align_with_reference {
     $this -> _update("background");
     $this -> dispense("process", "align");
     $shift = sprintf("%.3f", $self->fetch_scalar("aa___esh"));
+    $this -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
-    $this -> reference -> update_bkg(1) if $this->reference;
-
+    if ($this->reference) {
+      $this -> reference -> bkg_delta_eshift($this -> bkg_delta_eshift);
+      $this -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -294,9 +303,6 @@ sub _postline_marker_command {
   $command   .= $self->template("plot", "marker", { x => $x, 'y'=> $y});
   return $command;
 };
-
-
-
 
 1;
 
