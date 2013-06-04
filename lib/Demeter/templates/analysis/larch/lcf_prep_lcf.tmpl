@@ -1,0 +1,29 @@
+{
+  # here $S is the LCF group
+  @list = $S->standards_list;
+  $string = q{'} . $list[0] . q{',};
+  $mix = join('.', $S->group, shift(@list));
+  foreach my $stan (@list) {
+    $mix .= ' + ' . join('.', $S->group, $stan);
+    $string .= q{'} . $stan . q{',};
+  };
+  chop $string;
+  q{};
+}
+
+for x in ({$string}):
+    ## amplitude/e0 parameters, bkg_eshift for this standard
+    __a  = getattr(demlcf,   x+'_a')
+    __e  = getattr(demlcf,   x+'_e')
+    __sh = getattr(demlcfsh, x)
+    ## arrays for interpolation
+    __grid = getattr({$S->group}, 'x')
+    __ener = getattr(_main.get_group(x), 'energy')
+    __data = getattr(_main.get_group(x), '{$S->suffix}')
+    ## this standard, weighted, interpolated onto data grid
+    __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+    setattr({$S->group}, x, __new)
+endfor
+
+{$S->group}.lcf = {$mix}
+{$S->group}.resid = {$S->group}.lcf - {$S->group}.func

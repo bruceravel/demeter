@@ -482,6 +482,13 @@ sub truefalse {
       : $self->is_true($attribute); # is this word t/f?
   return ($value) ? 'true' : 'false';
 };
+sub TrueFalse {
+  my ($self, $attribute) = @_;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  return ($value) ? 'True' : 'False';
+};
 sub onezero {
   my ($self, $attribute) = @_;
   my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)

@@ -12,7 +12,7 @@
 ##|
 n___step     = {$D->iofx('energy', $D->bkg_e0 - $D->bkg_eshift) - 1}
 n___points    = size({$D->group}.energy) - n___step
-t___oss       = group()
+t___oss       = group(__name__='t___oss')
 t___oss.zeros = zeros(n___step)
 t___oss.ones  = ones(n___points)
 {$D->group}.theta = array(list(t___oss.zeros) + list(t___oss.ones))

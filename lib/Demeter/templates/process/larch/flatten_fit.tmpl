@@ -20,7 +20,7 @@ n___points    = size({$D->group}.energy) - n___step
 ##| these data require regressing the flat_c? values
 fla___t = group(c0 = param(0, vary=True),
                 c1 = param(0, vary=True),
-		c2 = param(0, vary=True))
+		c2 = param(0, vary=True), __name__='fla___t')
 if {$D->bkg_nor2-$D->bkg_nor1} < 300: fla___t.c2.vary = False
 if {$D->bkg_nnorm} == 2:  fla___t.c2.vary = False
 

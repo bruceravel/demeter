@@ -1,0 +1,13 @@
+{
+  # here $S is the LCF group
+  q{}
+}
+##| prepare groups for LCF fitting
+{$S->group} = group(x = {$D->group}.energy + {$D->bkg_eshift}, func = {$D->group}.{$S->suffix}{$noise}, __name__='{$S->group}')
+
+## add noise to the data?
+if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.random(size=len({$S->group}.x), scale={$S->noise})
+
+demlcf   = group({$S->group} = param(0, vary={$S->TrueFalse($S->one_e0)}), __name__='demlcf')
+demlcfsh = group(toss = param(0, vary=False), __name__='demlcfsh')
+if '{$S->space}' == 'chi': demlcfe.{$S->group}.vary = False

@@ -10,7 +10,7 @@
   $shift = ($C->get("merge_space") eq 'energy') ? $D->bkg_eshift : 0;
   q{}
 }
-m___erge = group()
+m___erge = group(__name__='m___erge')
 m___erge.xxx    = {$D->group}.{$C->get("merge_space")} + {$shift}
 m___erge.i1     = index_of(m___erge.xxx, {$C->get("merge_min")})
 m___erge.i2     = index_of(m___erge.xxx, {$C->get("merge_max")})

@@ -14,7 +14,7 @@
 
 *** Demeter
    + Deal more gracefully with a corrupted MRU file
-   + Record uncertainty in fitted E0 shift
+   + Record uncertainty in E0 shift when auto-aligning
 
 ** 0.9.17 28 May       2013
 *** Athena

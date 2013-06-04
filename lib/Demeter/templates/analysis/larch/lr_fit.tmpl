@@ -1,9 +1,9 @@
 ## do log-ratio fit of {$S->data->name} to {$S->standard->name}
 lr_e = group(pd0 = param(1, vary=True),
              pd2 = param(0, vary=True),
-             pd4 = param(0, vary=True))
+             pd4 = param(0, vary=True), __name__='lr_e')
 lr_o = group(pd1 = param(0, vary=True),
-             pd3 = param(0, vary=True))
+             pd3 = param(0, vary=True), __name__='lr_o')
 
 i1 = index_of({$S->data->group}.q, {$S->qmin})
 i2 = index_of({$S->data->group}.q, {$S->qmax})

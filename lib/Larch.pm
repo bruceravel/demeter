@@ -34,7 +34,7 @@ sub dispose {
 sub get_larch_array {
   my ($param) = @_;
   #Demeter->trace;
-  #print '--------------', $param, $/;
+  print '--------------', $param, $/;
   $rpcdata = $client -> get_data($param);
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {

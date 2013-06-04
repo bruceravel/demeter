@@ -17,6 +17,7 @@ package Demeter::LCF;
 
 use Carp;
 #use Demeter::Carp;
+use feature "switch";
 use autodie qw(open close);
 
 use Moose;
@@ -331,19 +332,38 @@ sub fit {
   ## create the array to minimize and perform the fit
   $self -> dispense("analysis", "lcf_fit");
 
-  my $sumsqr = 0;
-  foreach my $st (@all) {
-    my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
-    $sumsqr += $dw**2;
-    if ($self->one_e0) {
-      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
-    } else {
-      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
+  given (Demeter->mo->template_analysis) {
+
+    when (/ifeffit|iff_columns/) {
+      my $sumsqr = 0;
+      foreach my $st (@all) {
+	my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
+	$sumsqr += $dw**2;
+	if ($self->one_e0) {
+	  $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
+	} else {
+	  $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
+	};
+      };
+      if ($self->unity) {		# propagate uncertainty for last amplitude
+	my ($w, $dw) = $self->weight($all[$#all]);
+	$self->weight($all[$#all], $w, sqrt($sumsqr));
+      };
     };
-  };
-  if ($self->unity) {		# propagate uncertainty for last amplitude
-    my ($w, $dw) = $self->weight($all[$#all]);
-    $self->weight($all[$#all], $w, sqrt($sumsqr));
+
+    when ('larch') {
+      foreach my $st (@all) {
+	$self->weight($st, $self->fetch_scalar("demlcf.".$st->group."_a"),
+	                   $self->fetch_scalar("demlcf.".$st->group."_a.stderr"));
+	if ($self->one_e0) {
+	  $self->e0($st, $self->fetch_scalar("demlcf.".$self->group),
+		         $self->fetch_scalar("demlcf.".$self->group.".stderr"));
+	} else {
+	  $self->e0($st, $self->fetch_scalar("demlcf.".$st->group.'_e'),
+		         $self->fetch_scalar("demlcf.".$st->group.'_e.stderr'));
+	};
+      };
+    };
   };
   $self->_statistics;
 
@@ -354,36 +374,48 @@ sub fit {
 
 sub _statistics {
   my ($self) = @_;
-  my @x     = $self->get_array('x');
-  my @func  = $self->get_array('func');
-  my @resid = $self->get_array('resid');
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $self->xmin);
-    next if ($x[$i] > $self->xmax);
-    ++$count;
-    $avg += $func[$i];
-  };
-  $avg /= $count if $count != 0;
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $self->xmin);
-    next if ($x[$i] > $self->xmax);
-    $rfact  += $resid[$i]**2;
-    if ($self->space =~ m{\Anor}) {
-      $sumsqr += ($func[$i]-$avg)**2;
-    } else {
-      $sumsqr += $func[$i]**2;
+  given (Demeter->mo->template_analysis) {
+
+    when (/ifeffit|iff_columns/) {
+      my @x     = $self->get_array('x');
+      my @func  = $self->get_array('func');
+      my @resid = $self->get_array('resid');
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	++$count;
+	$avg += $func[$i];
+      };
+      $avg /= $count if $count != 0;
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	$rfact  += $resid[$i]**2;
+	if ($self->space =~ m{\Anor}) {
+	  $sumsqr += ($func[$i]-$avg)**2;
+	} else {
+	  $sumsqr += $func[$i]**2;
+	};
+      };
+      $self->npoints($count);
+      if ($self->space eq 'nor') {
+	$self->rfactor(sprintf("%.7f", $count*$rfact/$sumsqr));
+      } else {
+	$self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
+      };
+      $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+      $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+      $self->nvarys($self->fetch_scalar('n_varys'));
+    };
+
+    when ('larch') {
+      $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
+      $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));
+      $self->nvarys($self->fetch_scalar('demlcf.nvarys'));
+
     };
   };
-  $self->npoints($count);
-  if ($self->space eq 'nor') {
-    $self->rfactor(sprintf("%.7f", $count*$rfact/$sumsqr));
-  } else {
-    $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
-  };
-  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
-  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
-  $self->nvarys($self->fetch_scalar('n_varys'));
 
   my $sum = 0;
   foreach my $stan (@{ $self->standards }) {

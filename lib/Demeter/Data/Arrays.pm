@@ -112,6 +112,7 @@ sub get_array {
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
+
   my @array = $self->fetch_array($text);
   if (not @array) {		# only do this error check if the specified array is not returned
     my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
@@ -231,6 +232,7 @@ sub points {
   } else {
     @y = $self->get_array($args{suffix});
   };
+  print join("|", @y), $/;
   if (defined $args{weight}) {
     $args{weight} || 0;
     $#y = $#k if ($#k < $#y);

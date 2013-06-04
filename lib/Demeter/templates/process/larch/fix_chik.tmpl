@@ -1,4 +1,4 @@
-fi___x     = group()
+fi___x     = group(__name__='fi___x')
 fi___x.k   = linspace(min({$D->group}.k), max({$D->group}.k), int((max({$D->group}.k)-min({$D->group}.k))/0.05+1))
 fi___x.kk  = linspace(0, min({$D->group}.k)-0.05, int(min({$D->group}.k)/0.05))
 fi___x.yy  = zeros(int(min({$D->group}.k)/0.05))

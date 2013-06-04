@@ -12,7 +12,7 @@
   q{};
 }
 ##| cloning {$D->group} as group {$DS->group}
-{$DS->group} = group()
+{$DS->group} = group(__name__='{$DS->group}')
 {$DS->group}.{$xsuff} = {$D->group}.{$xsuff}
 {$DS->group}.{$ysuff} = {$D->group}.{$ysuff}
 {$i0}

@@ -1,5 +1,5 @@
 ##| preparing for PCA in energy
-{$S->group} = group()
+{$S->group} = group(__name__='{$S->group}')
 {$DS->group}.eee  = {$DS->group}.energy+{$DS->bkg_eshift}
 {$S->group}.x     = {$DS->group}.eee[{$i1}:{$i2}]
 {$S->group}.{$DS->group} = {$DS->group}.{$suff}[{$i1}:{$i2}]
