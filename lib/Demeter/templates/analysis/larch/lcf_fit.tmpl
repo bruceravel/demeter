@@ -20,12 +20,19 @@ def lcf_fit(par, par_sh, lcf):
         __a  = getattr(par,  x+'_a')
         __e  = getattr(par,  x+'_e')
         __sh = getattr(par_sh, x)
-        ## arrays for interpolation
-        __grid = getattr(lcf, 'x')
-        __ener = getattr(_main.get_group(x), 'energy')
-        __data = getattr(_main.get_group(x), '{$S->suffix}')
-        ## this standard, weighted, interpolated onto data grid
-	__new  = __a * interp(__grid, __ener+__e+__sh, __data)
+        if '{$S->space}' == 'chi':
+            __grid = getattr(lcf, 'x')
+            __kgri = getattr(_main.get_group(x), 'k')
+            __data = getattr(_main.get_group(x), 'chi')
+            __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
+        else:
+            ## arrays for interpolation
+            __grid = getattr(lcf, 'x')
+            __ener = getattr(_main.get_group(x), 'energy')
+            __data = getattr(_main.get_group(x), '{$S->suffix}')
+            ## this standard, weighted, interpolated onto data grid
+            __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+        endif
         setattr(lcf, x, __new)
     endfor
     lcf.lcf = {$mix}
@@ -35,4 +42,5 @@ enddef
 
 ##| perform the LCF fit
 minimize(lcf_fit, demlcf, args=(demlcfsh, {$S->group}))
-#print fit_report(demlcf)
+_sys.paramGroup = None
+demlcf.rfactor = sum({$S->group}.resid[i1:i2]**2) / sum({$S->group}.func[i1:i2]**2)

@@ -31,6 +31,7 @@ use Demeter::StrTypes qw( Empty );
 use List::Util qw(min);
 use List::MoreUtils qw(any none uniq pairwise);
 use Math::Combinatorics;
+use Scalar::Util qw(looks_like_number);
 use Spreadsheet::WriteExcel;
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -244,6 +245,7 @@ sub weight {
   };
   $params[2] = $value;
   $params[3] = $error || 0;
+  $params[3] = 0 if not looks_like_number($params[3]); # uncertainty will be "null" in larch if not varied
   $self->set_option($stan, \@params);
   return wantarray ? ($params[2], $params[3]) : $params[2];
 };
@@ -259,6 +261,7 @@ sub e0 {
   };
   $params[4] = $value;
   $params[5] = $error || 0;
+  $params[5] = 0 if not looks_like_number($params[5]); # uncertainty will be "null" in larch if not varied
   $self->set_option($stan, \@params);
   return wantarray ? ($params[4], $params[5]) : $params[4];
 };
@@ -410,9 +413,11 @@ sub _statistics {
     };
 
     when ('larch') {
+      $self->rfactor(sprintf("%.7f", $self->fetch_scalar('demlcf.rfactor')));
       $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
       $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));
       $self->nvarys($self->fetch_scalar('demlcf.nvarys'));
+      $self->npoints($self->nvarys+$self->fetch_scalar('demlcf.nfree'));
 
     };
   };
@@ -651,9 +656,21 @@ sub restore {
     #$self->push_standards($this_data), weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
     #$self->weight($this_data->group, $w, $dw);
     #$self->e0($this_data->group, $e0, $de0);
-    $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
+    if (Demeter->mo->template_analysis eq 'larch') {
+      if ($self->space =~ m{\Achi}) {
+	$self->dispose($this_data->template('analysis', 'lcf_prep_standard_k'));
+      } else {
+	$self->dispose($this_data->template('analysis', 'lcf_prep_standard'));
+      };
+    } else {
+      $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
+    };
   };
-  $self->dispense('analysis', 'lcf_sum');
+  if (Demeter->mo->template_analysis eq 'larch') {
+    $self->dispense('analysis', 'lcf_prep_lcf');
+  } else {
+    $self->dispense('analysis', 'lcf_sum');
+  };
   $self->mo->standard(q{});
   return $self;
 };

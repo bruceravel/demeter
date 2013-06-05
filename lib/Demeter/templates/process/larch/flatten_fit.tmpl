@@ -34,6 +34,7 @@ def flatten(par):
 #enddef
 
 minimize(flatten, fla___t)
+_sys.paramGroup = None
 
 {$D->group}.line = fla___t.c0 + fla___t.c1*({$D->group}.energy+{$D->bkg_eshift}) + fla___t.c2*({$D->group}.energy+{$D->bkg_eshift})**2
 {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}

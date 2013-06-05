@@ -1,0 +1,21 @@
+{
+  # here $S is the data group being prepped as a standard
+  # and $DS is the LCF group
+  ($e0, $de0) = $DS->e0($S);
+  ($weight, $error) = $DS->weight($S);
+  q{}
+}
+##| prepare {$S->name} ({$S->group}) as an LCF standard
+demlcfsh.{$S->group} = param(0, vary=False)
+
+## set bounds on amplitude if constrained to be between 0 and 1
+__aparam = '{$S->group}'+'_a'
+if {$DS->TrueFalse($DS->inclusive)}:
+    setattr(demlcf, __aparam, param({$weight}, vary=True, min=0, max=1))
+else:
+    setattr(demlcf, __aparam, param({$weight}, vary=True))
+endif
+
+## e0 shift must be 0 and must not vary for an LCF in k
+__eparam = '{$S->group}'+'_e'
+setattr(demlcf, __eparam, param({$e0}, vary=False))

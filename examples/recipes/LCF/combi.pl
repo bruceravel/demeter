@@ -20,6 +20,7 @@ my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0,
 			      plot_difference=>1, plot_components=>0);
 
 $prj -> set_mode('screen' => 0);
+#$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
 #$prj -> co -> set_default('lcf', 'plot_during', 1);
 
 my $data     = $prj->record(4);

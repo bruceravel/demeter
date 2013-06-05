@@ -16,12 +16,19 @@ for x in ({$string}):
     __a  = getattr(demlcf,   x+'_a')
     __e  = getattr(demlcf,   x+'_e')
     __sh = getattr(demlcfsh, x)
-    ## arrays for interpolation
-    __grid = getattr({$S->group}, 'x')
-    __ener = getattr(_main.get_group(x), 'energy')
-    __data = getattr(_main.get_group(x), '{$S->suffix}')
-    ## this standard, weighted, interpolated onto data grid
-    __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+    if '{$S->space}' == 'chi':
+        __grid = getattr({$S->group}, 'x')
+        __kgri = getattr(_main.get_group(x), 'k')
+        __data = getattr(_main.get_group(x), 'chi')
+        __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
+    else:
+        ## arrays for interpolation
+        __grid = getattr({$S->group}, 'x')
+        __ener = getattr(_main.get_group(x), 'energy')
+        __data = getattr(_main.get_group(x), '{$S->suffix}')
+        ## this standard, weighted, interpolated onto data grid
+        __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+    endif
     setattr({$S->group}, x, __new)
 endfor
 

@@ -20,9 +20,9 @@ my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
 			      plot_difference=>1, plot_components=>1, noise=>0);
 
 $prj -> set_mode('screen' => 0);
-$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
+#$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
 
-my $data = $prj->record(3);
+my $data = $prj->record(4);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
 
 $lcf->data($data);
@@ -35,18 +35,18 @@ if ($lcf->space eq 'chi') {
   $lcf->xmin(3);
   $lcf->xmax(12);
   $lcf->po->kmax(14);
+  $lcf->po->kweight(2);
 } else {
   $lcf->xmin($data->bkg_e0-20);
   $lcf->xmax($data->bkg_e0+60);
   $lcf->po->set(emin=>-30, emax=>80);
 };
 
-#$lcf -> fit;
+$lcf -> fit;
 #print $lcf->report;
 #$prj -> set_mode('plotscreen' => 1);
 $lcf -> plot_fit;
 $lcf->pause;
-exit;
 $lcf -> save('foo.dat');
 print $lcf->report;
 #$lcf->clean;

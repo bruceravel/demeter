@@ -1,0 +1,15 @@
+{
+  # here $S is the LCF group
+  q{}
+}
+##| prepare groups for LCF fitting
+{$S->group} = group(x = {$D->group}.k, func = {$D->group}.{$S->suffix}, __name__='{$S->group}')
+
+## add noise to the data?
+if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.random(size=len({$S->group}.x), scale={$S->noise})
+
+## k-weight the data after adding noise
+{$S->group}.func = {$S->group}.func*{$D->group}.k**{$P->kweight}
+
+demlcf   = group(__name__='demlcf')
+demlcfsh = group(__name__='demlcfsh')
