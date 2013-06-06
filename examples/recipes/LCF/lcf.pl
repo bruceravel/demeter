@@ -16,11 +16,11 @@
 use Demeter qw(:ui=screen :plotwith=gnuplot :d=1);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
-my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
+my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>1, one_e0=>0, linear=>1,
 			      plot_difference=>1, plot_components=>1, noise=>0);
 
 $prj -> set_mode('screen' => 0);
-#$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
+$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
 
 my $data = $prj->record(4);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);

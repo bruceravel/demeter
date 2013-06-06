@@ -145,8 +145,8 @@ standards was not correct or that the choice of standards is not
 appropriate to the data.
 [% END %]
 [% WRAPPER html/dt dt="Constrain all standards to use a single E0 shift" %]
-You can force all standards to use a single [%e0%] parameter in the
-fit. This is equivalent (albeit with a sign change) to fixing all the
+You can force all standards to use a single [%e0%] shift parameter in the
+fit.  This is equivalent (albeit with a sign change) to fixing all the
 standards and using an [%e0%] shift on the unknown data.
 [% END %]
 [% WRAPPER html/dt dt="Adding noise to the data" %]
@@ -154,16 +154,21 @@ It is sometimes useful to check the robustness of the fit against
 noisy data. This is particularly true for a data set wherein some data
 are much noisier than others. To this end, [%athena%] allows you to add
 pseudo-random noise to the data before performing the fit. This is
-done using [%ifeffit%]'s[%#'%] [% INCLUDE font/mono a="random()" %]
-function with a user-supplied value for
-sigma. No care is taken to normalize sigma relative to the data, so a
-bit of trial and error might be necessary to find a suitable level of
-noise for your test. For normalized [%mue%], sigma has a simple
-interpretation -- it is a fraction of the edge step. For derivative
-[%mue%] and [%chik%] data, you will need to compare your sigma value to
-the actual values of the data. You can examine the level of noise
+done by generating an array of psuedo-random numbers and adding this
+array to the data.   Given that normalized [%mue%] is used in lCF
+fits, [%sigma%] (the scale of the noise) has a simple
+interpretation -- it is a fraction of the edge step.  
+A bit of trial and error might be necessary to find a suitable level of
+noise for your test. For fits to
+[%chik%], note that the noise is added to the data
+[% INCLUDE font/b a="before" %] k-weighting.
+You can examine the level of noise
 relative to your data before fitting by using the
-[% INCLUDE font/quote a="Plot data and sum" %] from the operations list.
+[% INCLUDE font/quote a="Plot data and sum" %] from the actions list.
+[% END %]
+[% WRAPPER html/dt dt="Adding a linear term to the fit" %]
+A line with a variable slope and offset can be added to a fit.  The
+line is only evaluated after the [%e0%] value of data being fit.
 [% END %]
 [% END %]
 
@@ -171,7 +176,7 @@ relative to your data before fitting by using the
 
 [% FILTER html_para -%]
 To perform the fit, click [% INCLUDE font/quote a="Fit" %] from the
-operations list. After the
+actions list. After the
 fit finishes, the data and the linear combination will be plotted
 along with vertical bars indicating the range over which the fit was
 evaluated. The values of all the fitting parameters are written to the
@@ -219,19 +224,19 @@ context of any external knowledge you have about the system.
 
 You can replot the data and the fit using the most recent values for
 the fitted parameters by clicking [% INCLUDE font/quote a="Plot" %]
-in the operations list.
+in the actions list.
 
 You can save the text from the fit results box to a file by clicking
-[% INCLUDE font/quote a="Write a report" %] in the operations list.
+[% INCLUDE font/quote a="Write a report" %] in the actions list.
 This writes a column data file with the fit results as the header
 information. The columns in the file are x-axis (either energy or k),
 the data, the best fit, the residual, and each of the weighted
 components.
 
 You can make a data group out of the linear combination by clicking
-[% INCLUDE font/quote a="Make fit group" %] in the operations list or out
+[% INCLUDE font/quote a="Make fit group" %] in the actions list or out
 of the residual by clicking
-[% INCLUDE font/quote a="Make difference group" %] in the operations
+[% INCLUDE font/quote a="Make difference group" %] in the actions
 list. This will allow you to plot and
 manipulate the fit or difference after leaving the linear combination
 tool. The data group containing the fit result will be treated as
@@ -239,7 +244,7 @@ normal data that can have a background removed or be Fourier
 transformed. When you save a fit using the derivative spectra, the fit
 group will be saved as a normal [%mue%] spectrum.
 
-[% INCLUDE font/quote a="Reset" %] in the operations list returns
+[% INCLUDE font/quote a="Reset" %] in the actions list returns
 almost everything in the tool back to its original state.
 
 If you need more than four standards, the number of standards as well
@@ -254,7 +259,7 @@ link="../other/prefs.html" %].
 The various operational parameters described above can be constrained
 between data groups in the same manner as background removal and
 Fourier transform parameters on [%athena%]'s[%#'%] main page. Two items in the
-operations list are [% INCLUDE font/quote a="Set params, all groups" %]
+actions list are [% INCLUDE font/quote a="Set params, all groups" %]
 and [% INCLUDE font/quote a="Set params, marked groups" %]. These will
 export the current group's[%#'%] values for
 fitting range, noise, weights between 0 and 1, force weights to sum to
@@ -266,7 +271,7 @@ next section.
 [% PROCESS section label="Batch processing" %]
 
 [% FILTER html_para -%]
-One of the choices in the operations list is to
+One of the choices in the actions list is to
 [% INCLUDE font/quote a="Fit marked groups" %]. All groups marked
 by having their purple buttons checked
 will be fit in the manner described above using the current selection
@@ -326,7 +331,7 @@ greatly reducing the scope of the combinatorial problem.
 [% END %]
 [% WRAPPER html/li %]
 Click [% INCLUDE font/quote a="Fit all possible combinations" %]
-in the operations list and go
+in the actions list and go
 get a cup of coffee. If the number of possible standards is large,
 this series of fits could take a while. For example, with 11 standards
 and considering up to the quaternary combinations, [%athena%] will

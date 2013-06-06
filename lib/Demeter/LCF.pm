@@ -53,10 +53,14 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 			       $self->suffix(q{chi}),  $self->space_description('chi(k)')           if  (lc($new) =~ m{\Achi});
 			       $self->suffix(q{xmu}),  $self->space_description('raw mu(E)')        if  (lc($new) =~ m{\Axmu});
 			      });
-has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
-has 'noise'  => (is => 'rw', isa => 'Num',    default => 0);
+has 'suffix'    => (is => 'rw', isa => 'Str',    default => q{flat});
+has 'noise'     => (is => 'rw', isa => 'Num',    default => 0);
 has 'kweight'   => (is => 'rw', isa => 'Num',  default => 0);
+has 'slope'     => (is => 'rw', isa => 'Num',  default => 0);
+has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
+has 'delslope'  => (is => 'rw', isa => 'Num',  default => 0);
+has 'deloffset' => (is => 'rw', isa => 'Num',  default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
@@ -366,6 +370,14 @@ sub fit {
 		         $self->fetch_scalar("demlcf.".$st->group.'_e.stderr'));
 	};
       };
+      $self->slope    ($self->fetch_scalar("demlcf._slope"));
+      my $del = $self->fetch_scalar("demlcf._slope.stderr");
+      $del = 0 if not looks_like_number($del);
+      $self->delslope ($del);
+      $self->offset   ($self->fetch_scalar("demlcf._offset"));
+      $del = $self->fetch_scalar("demlcf._offset.stderr");
+      $del = 0 if not looks_like_number($del);
+      $self->deloffset($del);
     };
   };
   $self->_statistics;

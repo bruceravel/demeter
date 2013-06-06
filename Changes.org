@@ -8,6 +8,8 @@
 ** 0.9.18 ?? June      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
+   + In LCF, interaction of individual and over-all e0 shifts makes more sense
+   + linear term in LCF fit disabled when using ifeffit
 
 *** Artemis
    + Clear project name when closing a project
@@ -15,6 +17,10 @@
 *** Demeter
    + Deal more gracefully with a corrupted MRU file
    + Record uncertainty in E0 shift when auto-aligning
+   + Larch templates for LCF fitting
+   + Verify that weights, e0s, and uncertainties are all numbers in LCF object
+   + Reset symbol table after a call to minimize in Larch templates that do so
+   + LCF linear term now works, but only in Larch
 
 ** 0.9.17 28 May       2013
 *** Athena

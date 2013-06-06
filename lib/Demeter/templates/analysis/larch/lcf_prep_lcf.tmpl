@@ -11,26 +11,33 @@
   q{};
 }
 
-for x in ({$string}):
+for g in ({$string}):
     ## amplitude/e0 parameters, bkg_eshift for this standard
-    __a  = getattr(demlcf,   x+'_a')
-    __e  = getattr(demlcf,   x+'_e')
-    __sh = getattr(demlcfsh, x)
+    __a  = getattr(demlcf,   g+'_a')
+    __e  = getattr(demlcf,   g+'_e')
+    __sh = getattr(demlcfsh, g)
+    __grid = getattr({$S->group}, 'x')
     if '{$S->space}' == 'chi':
-        __grid = getattr({$S->group}, 'x')
-        __kgri = getattr(_main.get_group(x), 'k')
-        __data = getattr(_main.get_group(x), 'chi')
+        __kgri = getattr(_main.get_group(g), 'k')
+        __data = getattr(_main.get_group(g), 'chi')
+	## the k-grids are not guaranteed to be of the same length (may be off by one or a few)
         __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
     else:
         ## arrays for interpolation
-        __grid = getattr({$S->group}, 'x')
-        __ener = getattr(_main.get_group(x), 'energy')
-        __data = getattr(_main.get_group(x), '{$S->suffix}')
+        __ener = getattr(_main.get_group(g), 'energy')
+        __data = getattr(_main.get_group(g), '{$S->suffix}')
         ## this standard, weighted, interpolated onto data grid
         __new  = __a * interp(__grid, __ener+__e+__sh, __data)
     endif
-    setattr({$S->group}, x, __new)
+    setattr({$S->group}, g, __new)
 endfor
 
-{$S->group}.lcf = {$mix}
+if '{$S->space}' == 'chi':
+   {$S->group}.line = zeros(len({$S->group}.x))
+else:
+   {$S->group}.line = demlcf._slope * {$S->group}.x + demlcf._offset
+   {$S->group}.line[:i0] = 0
+endif
+
+{$S->group}.lcf = {$mix} + {$S->group}.line
 {$S->group}.resid = {$S->group}.lcf - {$S->group}.func

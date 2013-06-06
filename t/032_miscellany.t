@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 6;
+use Test::More tests => 70;
 
 use Demeter qw(:data);
 use File::CountLines qw(count_lines);
@@ -57,6 +57,24 @@ $d->dispense('process', 'dphase');
 # $d->plot('r');
 # $d->pause;
 # print join('|', $#y, max(@y), min(@y)), $/;
-ok((($#y == 325) and (max(@y)-0.58 < 0.01) and (-1*min(@y)-0.48 < 0.01)), "dphase template works")
+ok((($#y == 325) and (max(@y)-0.58 < 0.01) and (-1*min(@y)-0.48 < 0.01)), "dphase template works");
 
 ## test normalizing a datatype=xanes group
+
+
+## true/false utilities
+my @true  = (qw(1 t T true True TRUE yes));
+my @false = (qw(0 f F false False FALSE no), '', ' ');
+
+foreach my $x (@true) {
+  ok(Demeter->onezero($x)   eq '1',     ">$x< evaluates to 1");
+  ok(Demeter->yesno($x)     eq 'yes',   ">$x< evaluates to yes");
+  ok(Demeter->truefalse($x) eq 'true',  ">$x< evaluates to true");
+  ok(Demeter->TrueFalse($x) eq 'True',  ">$x< evaluates to True");
+};
+foreach my $x (@false) {
+  ok(Demeter->onezero($x)   eq '0',     ">$x< evaluates to 0");
+  ok(Demeter->yesno($x)     eq 'no',    ">$x< evaluates to no");
+  ok(Demeter->truefalse($x) eq 'false', ">$x< evaluates to false");
+  ok(Demeter->TrueFalse($x) eq 'False', ">$x< evaluates to False");
+};

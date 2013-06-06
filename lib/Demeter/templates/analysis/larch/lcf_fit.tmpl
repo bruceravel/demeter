@@ -11,31 +11,41 @@
   q{};
 }
 ##| set up the LCF objective function
+i0 = index_of({$S->group}.x, {$S->data->bkg_e0})
 i1 = index_of({$S->group}.x, {$S->xmin})
 i2 = index_of({$S->group}.x, {$S->xmax})
 
 def lcf_fit(par, par_sh, lcf):
-    for x in ({$string}):
+    for g in ({$string}):
         ## amplitude/e0 parameters, bkg_eshift for this standard
-        __a  = getattr(par,  x+'_a')
-        __e  = getattr(par,  x+'_e')
-        __sh = getattr(par_sh, x)
+        __a  = getattr(par,    g+'_a')
+        __e  = getattr(par,    g+'_e')
+        __sh = getattr(par_sh, g)
+        __grid = getattr(lcf, 'x')
         if '{$S->space}' == 'chi':
-            __grid = getattr(lcf, 'x')
-            __kgri = getattr(_main.get_group(x), 'k')
-            __data = getattr(_main.get_group(x), 'chi')
+            __kgri = getattr(_main.get_group(g), 'k')
+            __data = getattr(_main.get_group(g), 'chi')
+            __line = zeros(len({$S->group}.g))
             __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
         else:
             ## arrays for interpolation
-            __grid = getattr(lcf, 'x')
-            __ener = getattr(_main.get_group(x), 'energy')
-            __data = getattr(_main.get_group(x), '{$S->suffix}')
+            __ener = getattr(_main.get_group(g), 'energy')
+            __data = getattr(_main.get_group(g), '{$S->suffix}')
+            __line = par._slope * __grid + par._offset
+            __line[:i0] = 0            
             ## this standard, weighted, interpolated onto data grid
-            __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+            __new  = __a * interp(__grid, __ener+__e+__sh, __data) + __line
         endif
-        setattr(lcf, x, __new)
+        setattr(lcf, g, __new)
     endfor
-    lcf.lcf = {$mix}
+    if '{$S->space}' == 'chi':
+       lcf.line = zeros(len(lcf.x))
+    else:
+       lcf.line = par._slope * lcf.x + par._offset
+       lcf.line[:i0] = 0            
+    endif
+
+    lcf.lcf = {$mix} + lcf.line
     lcf.resid = lcf.lcf - lcf.func
     return lcf.resid[i1:i2]
 enddef

@@ -7,8 +7,11 @@
 {$S->group} = group(x = {$D->group}.energy + {$D->bkg_eshift}, func = {$D->group}.{$S->suffix}, __name__='{$S->group}')
 
 ## add noise to the data?
-if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.random(size=len({$S->group}.x), scale={$S->noise})
+if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.normal(size=len({$S->group}.x), scale={$S->noise})
 
-demlcf   = group({$S->group} = param(0, vary={$S->TrueFalse($S->one_e0)}), __name__='demlcf')
+## add a linear term after e0?
+demlcf   = group({$S->group} = param(0, vary={$S->TrueFalse($S->one_e0)}),
+                 _slope      = param(0, vary={$S->TrueFalse($S->linear)}),
+                 _offset     = param(0, vary={$S->TrueFalse($S->linear)}),
+                 __name__='demlcf')
 demlcfsh = group(__name__='demlcfsh')
-if '{$S->space}' == 'chi': demlcfe.{$S->group}.vary = False

@@ -111,9 +111,14 @@ sub main_page {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($hbox, 2, wxLEFT|wxRIGHT|wxGROW, 5);
 
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox -> Add($vbox, 1, wxGROW|wxALL, 5);
+
+
+  ## ------------- fitting options
   my $optionsbox       = Wx::StaticBox->new($panel, -1, 'Options', wxDefaultPosition, wxDefaultSize);
   my $optionsboxsizer  = Wx::StaticBoxSizer->new( $optionsbox, wxVERTICAL );
-  $hbox -> Add($optionsboxsizer, 1, wxGROW|wxALL, 5);
+  $vbox -> Add($optionsboxsizer, 0, wxGROW|wxALL, 5);
   $this->{components} = Wx::CheckBox->new($panel, -1, 'Plot weighted components');
   $this->{residual}   = Wx::CheckBox->new($panel, -1, 'Plot residual');
   $this->{inclusive}  = Wx::CheckBox->new($panel, -1, 'All weights between 0 and 1');
@@ -134,14 +139,12 @@ sub main_page {
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(linear one_e0));
   $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
-  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
-    foreach (qw(usemarked reset));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
 
   $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
   $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
   $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
   $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+  $this->{linear}->Enable(0) if (Demeter->mo->template_analysis ne 'larch');
 
   my $noisebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($noisebox, 0, wxGROW|wxALL, 1);
@@ -150,12 +153,25 @@ sub main_page {
   $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $noisebox->Add($this->{noise}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'to data'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
+
+  ## ------------- combinatorics options
+  my $combinbox       = Wx::StaticBox->new($panel, -1, 'Combinatorics', wxDefaultPosition, wxDefaultSize);
+  my $combinboxsizer  = Wx::StaticBoxSizer->new( $combinbox, wxVERTICAL );
+  $vbox -> Add($combinboxsizer, 0, wxGROW|wxALL, 5);
+
+  $combinboxsizer->Add($this->{spacer}, 1, wxALL, 3);
+  $combinboxsizer->Add($this->{usemarked}, 0, wxGROW|wxALL, 0);
   my $maxbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $optionsboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
+  $combinboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'Use at most'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{max} = Wx::SpinCtrl->new($panel, -1, 4, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 2, 100);
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
+  ## ------------- reset button
+  $vbox->Add($this->{spacer}, 1, wxALL, 3);
+  $vbox->Add($this->{reset}, 0, wxGROW|wxALL, 0);
 
 
   $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
@@ -170,7 +186,7 @@ sub main_page {
   EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear         ($this->{linear}    ->GetValue)});
   EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive      ($this->{inclusive} ->GetValue)});
   EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity          ($this->{unity}     ->GetValue)});
-  EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0         ($this->{one_e0}    ->GetValue)});
+  EVT_CHECKBOX($this, $this->{one_e0},     sub{use_one_e0(@_)});
   EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
   EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
@@ -312,6 +328,8 @@ sub add_standard {
   $this->{'standard'.$i}->SetSelection(0);
   EVT_TEXT_ENTER($this, $this->{'weight'.$i}, sub{1});
   EVT_TEXT_ENTER($this, $this->{'e0'.$i}, sub{1});
+  EVT_CHECKBOX($this, $this->{'fite0'.$i}, sub{use_individual_e0(@_, $i)});
+
   $this->{'standard'.$i}->{callback} = sub{$this->OnSelect};
   $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
@@ -397,6 +415,26 @@ sub Pluck {
   $::app->{main}->status($text);
 }
 
+sub use_one_e0 {
+  my ($this, $event) = @_;
+  my $val = $this->{one_e0}->GetValue;
+  $this->{LCF}->one_e0($val);
+  if ($val) {
+    foreach my $i (0 .. $this->{nstan}-1) {
+      $this->{'e0'.$i}->SetValue(0);
+      $this->{'fite0'.$i}->SetValue(0);
+    };
+  };
+};
+
+sub use_individual_e0 {
+  my ($this, $event, $i) = @_;
+  my $val = $this->{'fite0'.$i}->GetValue;
+  if ($val) {
+    $this->{one_e0}->SetValue(0);
+    $this->{LCF}->one_e0(0);
+  };
+};
 
 sub use_marked {
   my ($this, $event) = @_;

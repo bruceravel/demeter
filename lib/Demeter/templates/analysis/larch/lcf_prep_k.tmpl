@@ -6,10 +6,13 @@
 {$S->group} = group(x = {$D->group}.k, func = {$D->group}.{$S->suffix}, __name__='{$S->group}')
 
 ## add noise to the data?
-if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.random(size=len({$S->group}.x), scale={$S->noise})
+if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.normal(size=len({$S->group}.x), scale={$S->noise})
 
 ## k-weight the data after adding noise
 {$S->group}.func = {$S->group}.func*{$D->group}.k**{$P->kweight}
 
-demlcf   = group(__name__='demlcf')
+demlcf   = group({$S->group} = param(0, vary=False),
+                 _slope      = param(0, vary=False),
+                 _offset     = param(0, vary=False),
+                 __name__='demlcf')
 demlcfsh = group(__name__='demlcfsh')
