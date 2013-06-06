@@ -43,10 +43,17 @@ if ($lcf->space eq 'chi') {
 };
 
 $lcf -> fit;
+print $lcf->ninfo, $/;
 #print $lcf->report;
 #$prj -> set_mode('plotscreen' => 1);
 $lcf -> plot_fit;
 $lcf->pause;
+
+#$lcf->xmax($data->bkg_e0+70);
+#$lcf -> fit;
+
+exit;
+
 $lcf -> save('foo.dat');
 print $lcf->report;
 #$lcf->clean;

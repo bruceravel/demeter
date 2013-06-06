@@ -10,6 +10,7 @@
    + Display uncertainties in fitted E0 shifts
    + In LCF, interaction of individual and over-all e0 shifts makes more sense
    + linear term in LCF fit disabled when using ifeffit
+   + reorganized widgets on LCF tool, added mouseover hints
 
 *** Artemis
    + Clear project name when closing a project

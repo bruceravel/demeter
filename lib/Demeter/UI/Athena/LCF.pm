@@ -128,14 +128,25 @@ sub main_page {
   $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{reset}      = Wx::Button->new($panel, -1, 'Reset', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{spacer}     = Wx::StaticLine->new($panel, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL);
+
+  $::app->mouseover($this->{components},  "Include the weighted components in the plot.");
+  $::app->mouseover($this->{residual},    "Include the residual from the fit in the plot.");
+  $::app->mouseover($this->{inclusive},   "Force all weights to evaluate to values between 0 and 1.");
+  $::app->mouseover($this->{unity},       "Force the weights to sum to 1, otherwise allow the weight of each group to float.");
+  $::app->mouseover($this->{linear},      "Include a linear component (m*E + b) in the fit which is only evaluated after E0.");
+  $::app->mouseover($this->{one_e0},      "Force the standards to share a single E0 parameter.  This is equivalent (albeit with a sign change) to floating E0 for the data.");
+  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
+  $::app->mouseover($this->{reset},       "Reset all LCF parameters to their default values.");
+
+
   #$optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
   #  foreach (qw(components residual spacer inclusive unity spacer linear one_e0 usemarked reset));
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(components residual));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  #$optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(inclusive unity));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  #$optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(linear one_e0));
   $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
@@ -154,14 +165,25 @@ sub main_page {
   $noisebox->Add($this->{noise}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'to data'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+  my $ninfobox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $optionsboxsizer->Add($ninfobox, 0, wxGROW|wxALL, 1);
+  #$ninfobox->Add(Wx::StaticText->new($panel, -1, 'Information content'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{ninfo} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{ninfo} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  #$ninfobox->Add($this->{ninfo}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+
+  $::app->mouseover($this->{noise}, "Add randomly distributed noise, scaled by this amount, to the data before doing the fit.");
+  $::app->mouseover($this->{ninfo}, "Specify the information content of your data.  If 0, Athena will estimate the information content.");
+
+
+  ## ------------- use marked button
+  $vbox->Add($this->{usemarked}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   ## ------------- combinatorics options
   my $combinbox       = Wx::StaticBox->new($panel, -1, 'Combinatorics', wxDefaultPosition, wxDefaultSize);
   my $combinboxsizer  = Wx::StaticBoxSizer->new( $combinbox, wxVERTICAL );
   $vbox -> Add($combinboxsizer, 0, wxGROW|wxALL, 5);
 
-  $combinboxsizer->Add($this->{spacer}, 1, wxALL, 3);
-  $combinboxsizer->Add($this->{usemarked}, 0, wxGROW|wxALL, 0);
   my $maxbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $combinboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'Use at most'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
@@ -169,9 +191,11 @@ sub main_page {
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+  $::app->mouseover($this->{max}, "In a combinatorial fit, only consider combinations up to this number of standards.");
+
   ## ------------- reset button
   $vbox->Add($this->{spacer}, 1, wxALL, 3);
-  $vbox->Add($this->{reset}, 0, wxGROW|wxALL, 0);
+  $vbox->Add($this->{reset}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
 
   $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
@@ -190,7 +214,6 @@ sub main_page {
   EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
   EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
-
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
@@ -217,6 +240,16 @@ sub main_page {
   EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
   EVT_BUTTON($this, $this->{make},      sub{make(@_)});
   EVT_BUTTON($this, $this->{plotr},     sub{fft(@_)});
+
+  $::app->mouseover($this->{fit},       "Fit the current group using the current model.");
+  $::app->mouseover($this->{plot},      "Plot the data with current sum of standards.");
+  $::app->mouseover($this->{report},    "Save a column data file containing the current fit and its components.");
+  $::app->mouseover($this->{combi},     "Perform a combinatorial fitting sequence using all possible combinations from the standards list.");
+  $::app->mouseover($this->{fitmarked}, "Fit all marked groups using the current fitting model.");
+  $::app->mouseover($this->{make},      "Turn the current sum of standards into its own data group.");
+  $::app->mouseover($this->{plotr},     "Plot the current group and the current model in R space.");
+  $::app->mouseover($this->{document},  "Show the document page for LCF in a browser.");
+
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -260,7 +293,7 @@ sub combi_page {
 
   $this->{fitresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
   $this->{fitresults}->InsertColumn( 0, "#",        wxLIST_FORMAT_LEFT, 20 );
-  $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 100 );
+  $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 150 );
   $this->{fitresults}->InsertColumn( 2, "Weight",   wxLIST_FORMAT_LEFT, 130 );
   $this->{fitresults}->InsertColumn( 3, "E0",       wxLIST_FORMAT_LEFT, 130 );
   $box->Add($this->{fitresults}, 1, wxALL|wxGROW, 3);
@@ -491,11 +524,11 @@ sub OnSpace {
 
 sub fetch {
   my ($this) = @_;
-
   my $max = $this->{max}->GetValue;
   $max = 2 if ($max < 2);
   $this->{LCF}->max_standards($max);
   my $noise = $this->{noise}->GetValue;
+  #$noise =~ s{\.{2,}}{.}g;
   $noise = 0 if (not looks_like_number($noise));
   $noise = 0 if ($noise < 0);
   $this->{LCF}->noise($noise);

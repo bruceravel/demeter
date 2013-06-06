@@ -26,6 +26,7 @@ with 'Demeter::Data::Arrays';
 
 use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
+use Demeter::Constants qw($PI);
 use Demeter::StrTypes qw( Empty );
 
 use List::Util qw(min);
@@ -64,10 +65,11 @@ has 'deloffset' => (is => 'rw', isa => 'Num',  default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
-has 'linear'    => (is => 'rw', isa => 'Bool', default => 0);
-has 'inclusive' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "inclusive")  || 0});
-has 'unity'     => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "unity")      || 1});
-has 'one_e0'    => (is => 'rw', isa => 'Bool', default => 0);
+has 'linear'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'inclusive'  => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "inclusive")  || 0});
+has 'unity'      => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "unity")      || 1});
+has 'one_e0'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'has_stddev' => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "components")  || 0});
 has 'plot_difference' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "difference")  || 0});
@@ -75,6 +77,7 @@ has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->
 
 has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
+has 'ninfo'     => (is => 'rw', isa => 'Num', default => 0);
 has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
 has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
 has 'standards' => (
@@ -328,9 +331,28 @@ sub prep_arrays {
   return $self;
 };
 
+sub compute_ninfo {
+  my ($self) = @_;
+  my $ni = 0;
+  ## for fit to chi(k), use the standard EXAFS definition with delta_k
+  ## set to the fitting range and deltaR set arbitrarily to 3
+  if ($self->space eq 'chi') {
+    my $dk = $self->xmax - $self->xmin;
+    my $dr = 3; ## let's assume 1 to 4
+    $ni = 2*$dk*$dr/$PI + 1;
+  ## for XANES (norm or deriv) divide the data range by the core-hole lifetime
+  } else {
+    $ni =($self->xmax - $self->xmin) / Xray::Absorption->get_gamma($self->data->bkg_z, $self->data->fft_edge);
+  };
+  $self->ninfo($ni);
+  return $ni;
+};
+
 sub fit {
   my ($self, $quiet) = @_;
   $self->_sanity;
+  $self->compute_ninfo if not $self->ninfo;
+  $self->has_stddev( ($self->space !~ m{\Achi}) and $self->get_array('stddev') );
 
   $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
   my @all = @{ $self->standards };
@@ -575,6 +597,7 @@ sub clear {
 
 sub clean {
   my ($self) = @_;
+  $self->ninfo(0);
   $self->dispense('analysis', 'lcf_clean');
   return $self;
 };
