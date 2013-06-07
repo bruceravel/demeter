@@ -52,7 +52,7 @@ sub AddColour {
 sub Find {
   my $self = shift;
   my $name = shift;
-  my $colour = Wx::Colour->new(wxNullColour);
+  my $colour = wxNullColour;
 
   $name = uc($name) if (not exists( $self->{__colours}->{$name} ));
   if (exists( $self->{__colours}->{$name} )) {

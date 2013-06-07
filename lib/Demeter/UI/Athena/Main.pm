@@ -568,7 +568,7 @@ sub mode {
 
   foreach my $w (qw(group_group_label background_group_label fft_group_label
 		    bft_group_label plot_group_label)) {
-    $this->{$w} -> SetForegroundColour( Wx::Colour->new(wxNullColour) );
+    $this->{$w} -> SetForegroundColour( wxNullColour );
   };
   if ($::app) {
     $this->Refresh;

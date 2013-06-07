@@ -160,7 +160,7 @@ sub new {
     $this->{"pp_$k"}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
 
-    my $black = Wx::Colour->new(wxNullColour);
+    my $black = wxNullColour;
     $label -> SetNormalColour($black);
     $label -> SetHoverColour($black);
     $label -> SetVisitedColour($black);
