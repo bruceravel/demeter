@@ -452,6 +452,10 @@ sub identify {
   #if ($full) {};
   return $string;
 };
+sub backends {
+  my ($self) = @_;
+  my $string = sprintf("using %s \& %s", $ENV{DEMETER_BACKEND}, $config->default('plot', 'plotwith'));
+};
 sub version {
   my ($self) = @_;
   return $VERSION

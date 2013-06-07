@@ -35,6 +35,7 @@
    + Fixed a Wx bug involving misuse of the wxNullColour symbol
    + Fixed a trivial display issue when config panel is first opened from plugin registry
    + indicate parameter units in Demeter::UI::Wx::Config more concisely
+   + identify backends at GUI startup
 
 ** 0.9.17 28 May       2013
 *** Athena

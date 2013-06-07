@@ -432,7 +432,7 @@ sub OnInit {
 		     feedback     => \&feedback,
 		    );
 
-  $frames{main}->status("Welcome to Artemis (" . $demeter->identify . ")");
+  $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   1;
 }
 

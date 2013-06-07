@@ -62,6 +62,8 @@ sub target {
     };
   };
 
+  $value = Demeter->truefalse($value) if Demeter->co->Type($parent, $param) eq 'boolean';
+
   ($save)
     ? $::app->{main}->status("Now using $value for $parent-->$param and an ini file was saved")
       : $::app->{main}->status("Now using $value for $parent-->$param");

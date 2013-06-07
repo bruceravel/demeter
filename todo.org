@@ -4,6 +4,7 @@
 
 * larch chores
 
++ start work on Artemis-related templates
 + kaiser vs. kaiser-bessel
 + use of stddev array in LCF is slightly incorrect.  needs to be
   sensitive to the sapce in which the merge was made.

@@ -1304,6 +1304,7 @@ sub edgestep_error {
   my ($main, $app) = @_;
   my $data = $app->current_data;
   my $busy = Wx::BusyCursor->new();
+  my $start = DateTime->now( time_zone => 'floating' );
 
   $data->sentinal(sub{$app->{main}->status(sprintf("Sample #%d of %d", $_[0]+1, $_[1]+1), 'wait|nobuffer')});
   my ($mean, $stddev, $report) = $data->edgestep_error(1);
@@ -1313,8 +1314,13 @@ sub edgestep_error {
       -> Show if Demeter->co->default('edgestep', 'fullreport');
 
   $data->sentinal(sub{1});
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf "(that took %d minutes, %d seconds)", $dur->minutes, $dur->seconds;
+
   $app->OnGroupSelect(0,0,0);
-  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f", $data->name, $data->bkg_step, $stddev));
+  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
+			       $data->name, $data->bkg_step, $stddev, $finishtext));
   undef $busy;
 };
 

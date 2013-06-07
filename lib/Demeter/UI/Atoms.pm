@@ -22,6 +22,7 @@ use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU EVT_LEFT_DOWN);
 
 use Demeter::UI::Artemis::Close qw(on_close);
+use Demeter::UI::Wx::SpecialCharacters qw($MDASH);
 
 my $icon_dimension = 30;
 
@@ -54,7 +55,7 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
-  $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
+  $statusbar -> SetStatusText("Welcome to Atoms $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $self->{statusbar} = $statusbar;
 
   if ($component) {

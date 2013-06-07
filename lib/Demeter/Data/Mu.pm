@@ -407,11 +407,11 @@ sub edgestep_error {
 		     $stat->mean, $sd, $stat->count);
 
   my @full = $stat->get_data;
-  my ($final, $m, $unchanged, $prev) = (0, 3.0, 0, 0);
+  my ($final, $m, $unchanged, $prev) = (0, $margin, 0, 0);
 
   ## weed out outliers until the original edge step value and the
   ## average are close enough
-  while (abs($init - $final) > $sd/3) {
+  while (abs($init - $final) > $sd/$margin) {
     my @list = ();
     foreach my $es (@full) {
       next if (abs($es-$init) > $m*$sd);

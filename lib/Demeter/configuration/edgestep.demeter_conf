@@ -63,7 +63,7 @@ description
 
 variable=margin
 type=real
-default=1.5
+default=2.5
 description
   The size of the margin for weeding out outliers.  This is an attempt
   to remove obviously poor normalizations from the sampling of

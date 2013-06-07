@@ -152,7 +152,7 @@ sub OnInit {
   $app->{main} -> Show( 1 );
   $app->{main} -> Refresh;
   $app->{main} -> Update;
-  $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
+  $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
   1;
