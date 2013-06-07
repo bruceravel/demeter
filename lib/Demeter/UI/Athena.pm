@@ -184,8 +184,6 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
-    } elsif ($a eq '-d') {
-      $Demeter::devflag = 1;
     } elsif (-r $a) {
       $app -> Import($a);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
