@@ -184,14 +184,7 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
-    } elsif (($a eq '-lv') or ($a eq '-vl')) {
-      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
-      $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
-      $Demeter::devflag = 1;
-    } elsif ($a eq '-l') {
-      $demeter->set_mode(template_process=>"larch", template_analysis=>"larch");
-      $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
-    } elsif ($a eq '-v') {
+    } elsif ($a eq '-d') {
       $Demeter::devflag = 1;
     } elsif (-r $a) {
       $app -> Import($a);
@@ -200,6 +193,7 @@ sub process_argv {
     }; # switches?
   };
 };
+
 
 sub ifeffit_buffer {
   my ($text) = @_;
@@ -687,6 +681,10 @@ sub menubar {
   #$helpmenu       -> Enable($_,0) foreach ($DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
+  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+    $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
+  };
+
   return $app;
 };
 

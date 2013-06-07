@@ -40,7 +40,7 @@ use Carp;
 ##  the main compilation phase; that can be a problem in mod_perl and
 ##  other persistent environments which use those functions to load
 ##  code at runtime."
-INIT {
+BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     eval "use Larch";
@@ -881,6 +881,10 @@ sub conditional_features {
 };
 
 
+Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
+		  template_analysis => $ENV{DEMETER_BACKEND},
+		  template_fit      => $ENV{DEMETER_BACKEND});
+$devflag = 1 if $ENV{DEMETER_DEVFLAG};
 
 __PACKAGE__->meta->make_immutable;
 1;

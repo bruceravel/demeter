@@ -6,8 +6,8 @@
 ## data consists of two scattering shells.  But these data are handy...
 
 
-use Demeter qw(:ui=screen :plotwith=gnuplot, :d=1);
-Demeter->set_mode(template_process => 'larch', template_analysis => 'larch', screen=>0);
+use Demeter qw(:ui=screen :plotwith=gnuplot);
+Demeter->set_mode(screen=>0);
 
 
 my @common = (energy=>'$1', numerator=>'$2', denominator=>1, ln=>0);

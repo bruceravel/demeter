@@ -16,12 +16,16 @@
    + Clear project name when closing a project
 
 *** Demeter
+   + DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
+     * export DEMETER_BACKEND = ifeffit|larch to control which backend is used
+     * export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
    + Deal more gracefully with a corrupted MRU file
    + Record uncertainty in E0 shift when auto-aligning
    + Larch templates for LCF fitting
    + Verify that weights, e0s, and uncertainties are all numbers in LCF object
    + Reset symbol table after a call to minimize in Larch templates that do so
    + LCF linear term now works, but only in Larch
+   + Fixed a Wx bug involving misuse of the wxNullColour symbol
 
 ** 0.9.17 28 May       2013
 *** Athena

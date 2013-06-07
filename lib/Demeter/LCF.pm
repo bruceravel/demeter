@@ -344,7 +344,7 @@ sub compute_ninfo {
   } else {
     $ni =($self->xmax - $self->xmin) / Xray::Absorption->get_gamma($self->data->bkg_z, $self->data->fft_edge);
   };
-  $self->ninfo($ni);
+  $self->ninfo(sprintf("%.3f",$ni));
   return $ni;
 };
 

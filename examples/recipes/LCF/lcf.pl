@@ -13,14 +13,13 @@
 ## The data are contained in an Athena project file that is one of the
 ## standard examples in the Demeter distro.
 
-use Demeter qw(:ui=screen :plotwith=gnuplot :d=1);
+use Demeter qw(:ui=screen :plotwith=gnuplot);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
-my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>1, one_e0=>0, linear=>1,
+my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>1, one_e0=>0, linear=>0,
 			      plot_difference=>1, plot_components=>1, noise=>0);
 
 $prj -> set_mode('screen' => 0);
-$prj -> set_mode(template_process=>"larch", template_analysis=>"larch");
 
 my $data = $prj->record(4);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
@@ -43,8 +42,7 @@ if ($lcf->space eq 'chi') {
 };
 
 $lcf -> fit;
-print $lcf->ninfo, $/;
-#print $lcf->report;
+print $lcf->report;
 #$prj -> set_mode('plotscreen' => 1);
 $lcf -> plot_fit;
 $lcf->pause;
