@@ -8,7 +8,7 @@
 ** 0.9.18 ?? June      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
-   + In LCF, interaction of individual and over-all e0 shifts makes more sense
+   + LCF tool: the interaction of individual and over-all e0 shifts now makes sense
    + linear term in LCF fit disabled when using ifeffit
    + reorganized widgets on LCF tool, added mouseover hints
 
@@ -17,15 +17,24 @@
 
 *** Demeter
    + DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
-     * export DEMETER_BACKEND = ifeffit|larch to control which backend is used
-     * export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
+      - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
+      - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
    + Deal more gracefully with a corrupted MRU file
    + Record uncertainty in E0 shift when auto-aligning
-   + Larch templates for LCF fitting
-   + Verify that weights, e0s, and uncertainties are all numbers in LCF object
-   + Reset symbol table after a call to minimize in Larch templates that do so
+   + Coerce values for weights, e0s, and their uncertainties to numbers in LCF object
    + LCF linear term now works, but only in Larch
+   + changed "ifeffit" attribute in Mode object to "backend"
+      - made "ifeffit" and "larch" as aliases for "backend"
+      - replaced "ifeffit" with "backend" everywhere in the distribution
+
+*** Larch
+   + Larch templates for LCF fitting
+   + Reset symbol table after a call to minimize in Larch templates that do so
+
+*** Wx
    + Fixed a Wx bug involving misuse of the wxNullColour symbol
+   + Fixed a trivial display issue when config panel is first opened from plugin registry
+   + indicate parameter units in Demeter::UI::Wx::Config more concisely
 
 ** 0.9.17 28 May       2013
 *** Athena

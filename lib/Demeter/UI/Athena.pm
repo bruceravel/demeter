@@ -68,7 +68,7 @@ sub OnInit {
   local $|=1;
   #print DateTime->now, "  Initializing Demeter ...\n";
   $demeter = Demeter->new;
-  $demeter->set_mode(ifeffit=>1, screen=>0);
+  $demeter->set_mode(backend=>1, screen=>0);
   $demeter->mo->silently_ignore_unplottable(1);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');

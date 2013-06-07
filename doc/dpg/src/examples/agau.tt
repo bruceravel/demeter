@@ -19,7 +19,7 @@ print "Multiple data set fit to several AgAu samples using Demeter $Demeter::VER
 
 ### -------- import five sets of Ag and Ag/Au data from an Athena project file
 my $prj = Demeter::Data::Prj->new(file => 'AgAu_merged.prj');
-$prj -> set_mode(screen=>0, ifeffit=>1);
+$prj -> set_mode(screen=>0, backend=>1);
 my @common = (fft_kmin  => 2,   fft_kmax  => 11,
               bft_rmax  => 3.2, bft_rmin  => 1.8,
               fit_k1    => 1,   fit_k2    => 0,    fit_k3    => 1,);

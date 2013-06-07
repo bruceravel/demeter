@@ -1192,7 +1192,7 @@ for complete details.
 This is the method used to set the attributes described in
 L<Demeter::Dispose>.  Any Demeter object can call this method.
 
-   $object -> set_mode(ifeffit => 1,
+   $object -> set_mode(backend => 1,
                        screen  => 1,
                        buffer  => \@buffer_array
                       );

@@ -108,7 +108,7 @@ my %hints = (
 sub OnInit {
   my ($app) = @_;
   $demeter = Demeter->new;
-  $demeter -> set_mode(ifeffit=>1, screen=>0);
+  $demeter -> set_mode(backend=>1, screen=>0);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
@@ -643,7 +643,7 @@ sub fit {
     };
   };
 
-  $fit->set_mode(ifeffit=>1, screen=>0);
+  $fit->set_mode(backend=>1, screen=>0);
   ##autosave($name);
   my $result = $fit->fit;
   my $finishtext = q{};

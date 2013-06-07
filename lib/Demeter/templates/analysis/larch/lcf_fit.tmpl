@@ -46,7 +46,7 @@ def lcf_fit(par, par_sh, lcf):
     endif
 
     lcf.lcf = {$mix} + lcf.line
-    lcf.resid = lcf.lcf - lcf.func
+    lcf.resid = (lcf.lcf - lcf.func) / lcf.epsilon
     return lcf.resid[i1:i2]
 enddef
 

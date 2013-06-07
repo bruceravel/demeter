@@ -23,7 +23,7 @@ unlink("hgfit.dpj") if (-e "hgfit.dpj");
 ## I like to have a dummy object around for things like set_mode and
 ## simpleGDS, although you can use any object for those purposes...
 my $demeter = Demeter->new;
-$demeter -> set_mode(screen  => 0, ifeffit => 1, file => ">hgfit.iff");
+$demeter -> set_mode(screen  => 0, backend => 1, file => ">hgfit.iff");
 $demeter -> po -> set(kweight => 2, rmax => 6);
 
 

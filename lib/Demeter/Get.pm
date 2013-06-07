@@ -17,7 +17,6 @@ package Demeter::Get;
 
 use feature "switch";
 use Moose::Role;
-#use Ifeffit qw(ifeffit get_echo get_scalar get_array get_string put_scalar put_array put_string);
 
 my $mode = Demeter->mo;
 

@@ -30,7 +30,7 @@ use Term::ReadLine;
 
 use Demeter;
 my $demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0);
+$demeter->set_mode(backend=>1, screen=>0);
 
 use Getopt::Long;
 my ($light_background, $dark_background, $use_pgplot, $use_gnuplot, $is_dos_shell) = (0, 1, 1, 0, 0);

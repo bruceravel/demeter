@@ -44,18 +44,18 @@ uranyl complex onthe right.
 
 
 [% FILTER html_para %] 
-Following Shelly's example, I will take bits and pieces from this
+Following Shelly's[%#'%] example, I will take bits and pieces from this
 crystalline analog and use them to understand the EXAFS from my
 solution sample.  The rest of the crystal is simply unused.  I expect
 that the solvated complex looks basically like this snippet of the
 full crystal.
 
 Note that there are two crystallographically distinct axial oxygen
-sites and and two equatorial sites. When you run this through Feff's
+sites and and two equatorial sites. When you run this through Feff's[%#'%]
 pathfinder, you find that each site leads to a single scattering path
 of a slightly different length than its partner. It is highly unlikely
 that I can use an EXAFS measurement of medium quality to distinguish
-two slightly different oxygen distances. In Shelly's paper, you can
+two slightly different oxygen distances. In Shelly's[%#'%] paper, you can
 see that she removes these slight degeneracies by using a subset of
 the paths Feff generates and resetting their degeneracies
 appropriately. For instance, she uses just one of the axial oxygen
@@ -142,7 +142,7 @@ unlink("controlfit.iff") if (-e "controlfit.iff");
 
 my $prj = Demeter::Data::Prj -> new(file=>'U_DNA.prj');
 my $data = $prj -> record(1);
-$data -> set_mode(screen  => 0, ifeffit => 1, file => ">controlfit.iff");
+$data -> set_mode(screen  => 0, backend => 1, file => ">controlfit.iff");
 
 $data -> set(name       => 'U control',
              fft_kmin   => 3.0,    fft_kmax  => 10.5,

@@ -4,8 +4,33 @@
 
 * larch chores
 
-+ store uncertainty in alignment e0 shift (aa__.esh.stderr)
 + kaiser vs. kaiser-bessel
++ use of stddev array in LCF is slightly incorrect.  needs to be
+  sensitive to the sapce in which the merge was made.
+
+** Larch v. Ifeffit problem areas
+
+   + Xray/Absorption/CL.pm -- this needs to be refactored
+   + tests need to be tested with Larch
+   + in particular, need a t/001_larch.t test (with an appropriate SKIP in case of no server)
+   + "nergy": XDAC vs. Ifeffit.  Larch will see "energy".
+      * Perhaps a larch or ifeffit configuration attribute
+      * ack-ing for '\bnergy\b' yields:
+        : examples/recipes/MultiChannel/mc2prj
+        : 54:  #my @energy    = $mc->get_array('nergy');
+	:
+        : lib/Demeter/Plugins/10BMMultiChannel.pm
+	: 53:    my @energy = $mc->get_array('nergy');
+	:
+	: lib/Demeter/Plugins/X23A2MED.pm
+	: 324:becomes "nergy".  Go figure.
+	:
+	: lib/Demeter/Plugins/x23a2med.demeter_conf
+	: 10:default=nergy
+   + Need to add Larch copyright statement throughout
+        : ##             Larch is copyright (c) 2013 Matt Newville, Tom Trainer
+        : ##                                 http://xraypy.github.io/xraylarch/
+
 
 * things that need doing
   

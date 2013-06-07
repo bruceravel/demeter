@@ -21,7 +21,7 @@ print "Sample fit to copper data demonstrating the singlefile plotting backend.\
 
 my $data = Demeter::Data -> new();
 
-$data->set_mode(screen  => 0, ifeffit => 1);
+$data->set_mode(screen  => 0, backend => 1);
 
 $data ->set(file       => "../../cu/cu10k.chi",
 	    fft_kmin   => 3,	       fft_kmax   => 14,

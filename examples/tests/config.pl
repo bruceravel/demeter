@@ -24,7 +24,7 @@ use Demeter;
 my $demeter = Demeter->new;
 my $config = $demeter->co;
 print "Testing the configuration system\n";
-$config->set_mode(screen  => 0, ifeffit => 1);
+$config->set_mode(screen  => 0, backend => 1);
 
 print "This is the full description of the \"bkg\" parameter group:\n";
 print $config -> describe_param("bkg"),

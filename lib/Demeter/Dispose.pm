@@ -20,7 +20,6 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Demeter::Constants qw($ENDOFLINE);
-#use Ifeffit qw(ifeffit get_echo get_scalar);
 
 use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
@@ -241,7 +240,7 @@ sub dispose {
   };
 
   ## -------- send reprocessed command text to ifeffit
-  if ($self->get_mode("ifeffit")) {
+  if ($self->get_mode("backend")) {
     #if ($self->mo->template_process eq 'larch') {
     if ($self->is_larch) {
       Larch::dispose($command);
@@ -324,7 +323,7 @@ This documentation refers to Demeter version 0.9.17.
 =head1 SYNOPSIS
 
   my $data_object = Demeter::Data -> new();
-  $data_object -> set_mode(ifeffit=>1, buffer=>\@buffer, screen=>1);
+  $data_object -> set_mode(backend=>1, buffer=>\@buffer, screen=>1);
   $data_object -> dispose($ifeffit_command);
 
 
@@ -381,7 +380,7 @@ C<ifeffit> disposal channel enabled.
 
 Use the C<set_mode> class method to establish the disposal channels.
 
-   Demeter->set_mode(ifeffit=>1, screen=>1, file=>0, buffer=>0);
+   Demeter->set_mode(backend=>1, screen=>1, file=>0, buffer=>0);
    $dataobject -> dispose($commands);
 
 When explicitly disposing a plotting command, use the plotting flag:

@@ -89,7 +89,6 @@ use File::Spec;
 use Storable;
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 #use Xray::Absorption::CLdata qw(cl_f1 cl_f2);
-##use Ifeffit qw(ifeffit get_scalar put_array get_array);
 ## the next two line initialize Ifeffit under perl without changing
 ## any ifeffit global variables
 my $foo = Ifeffit::get_scalar("\&screen_echo");

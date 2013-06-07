@@ -27,7 +27,7 @@ my @common = (fft_kmin   => 3,	  fft_kmax   => 14,
 	      fit_k1     => 1,	  fit_k3     => 1,);
 
 my $data_010k = Demeter::Data -> new(@common);
-$data_010k -> set_mode(screen  => 0, ifeffit => 1, file => ">mdsfit.iff", );
+$data_010k -> set_mode(screen  => 0, backend => 1, file => ">mdsfit.iff", );
 $data_010k -> set(file	     => "cu10k.chi",
 		  cv         => 10,
 		  name       => '10 K copper data',

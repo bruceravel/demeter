@@ -26,7 +26,7 @@ the screen (which is useful for debugging purposes)
 [% END %]
 
 [% WRAPPER codesample -%]
-$any_object -> set_mode(ifeffit=>1, screen=>1);
+$any_object -> set_mode(backend=>1, screen=>1);
 [% END %]
 
 [% FILTER html_para %]

@@ -61,12 +61,12 @@ SKIP: {
        $demeter->fetch_scalar('&plot_key_dy') == 0.3),                     "pgplot legend method works");
 };
 
-$this->set_mode(ifeffit=>0);
+$this->set_mode(backend=>0);
 SKIP: {
   skip "font test -- not using pgplot", 1 if $this->mo->template_plot ne 'pgplot';
   $this->font(size=>7, font=>4);
   ok( ($this->charfont == 4 and $this->charsize == 7),                  "pgplot font method (seems to) work");
-  $this->set_mode(ifeffit=>1);
+  $this->set_mode(backend=>1);
 };
 
 SKIP: {

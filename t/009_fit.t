@@ -77,7 +77,7 @@ ok( $#{ $this->paths } == 0,  'set paths array attribute');
 
 
 ## -------- run a fit
-$this -> set_mode(screen=>0, ifeffit=>1);
+$this -> set_mode(screen=>0, backend=>1);
 $this->fit;
 
 

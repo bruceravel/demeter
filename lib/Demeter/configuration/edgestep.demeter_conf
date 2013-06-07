@@ -76,6 +76,7 @@ description
 variable=pre1
 type=real
 default=20
+units=eV
 description
   The size of the bubble around the initial bkg_pre1 value from which
   an evenly distributed random value will be chosen for bkg_pre1 for
@@ -84,6 +85,7 @@ description
 variable=pre2
 type=real
 default=10
+units=eV
 description
   The size of the bubble around the initial bkg_pre2 value from which
   an evenly distributed random value will be chosen for bkg_pre2 for
@@ -92,6 +94,7 @@ description
 variable=nor1
 type=real
 default=15
+units=eV
 description
   The size of the bubble around the initial bkg_nor1 value from which
   an evenly distributed random value will be chosen for bkg_nor1 for
@@ -100,6 +103,7 @@ description
 variable=nor2
 type=real
 default=30
+units=eV
 description
   The size of the bubble around the initial bkg_nor2 value from which
   an evenly distributed random value will be chosen for bkg_nor2 for

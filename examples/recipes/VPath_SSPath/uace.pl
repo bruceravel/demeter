@@ -8,7 +8,7 @@ unlink("controlfit.iff") if (-e "controlfit.iff");
 
 my $prj = Demeter::Data::Prj -> new(file=>'U.prj');
 my $data = $prj -> record(1);
-$data -> set_mode(screen  => 0, ifeffit => 1); #, file => ">controlfit.iff");
+$data -> set_mode(screen  => 0, backend => 1); #, file => ">controlfit.iff");
 
 $data -> set(name       => 'U control',
              fft_kmin   => 3.0,    fft_kmax  => 10.5,

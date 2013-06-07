@@ -23,7 +23,7 @@ unlink "cufit.iff" if (-e "cufit.iff");
 print "make a Data object and set the FT and fit parameters\n";
 my $data = Demeter::Data -> new();
 
-$data->set_mode(screen  => 0, ifeffit => 1, file => ">cufit.iff", );
+$data->set_mode(screen  => 0, backend => 1, file => ">cufit.iff", );
 $data -> plot_with('gnuplot');    ## similar to the plotwith pragma
 
 $data ->set(file       => "cu10k.chi",

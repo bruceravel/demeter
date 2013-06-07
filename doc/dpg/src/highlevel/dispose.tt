@@ -36,7 +36,7 @@ pre_edge("{$D->group}.energy+{$D->bkg_eshift}",
 
 [% FILTER html_para %]
 In this example, [% INCLUDE font/mono a="\$D" %] represents the Data
-object.  Thus [% ifeffit %]'s [% INCLUDE font/mono a="pre-edge" %]
+object.  Thus [% ifeffit %]'s[%#'%] [% INCLUDE font/mono a="pre-edge" %]
 command is filled in ith attribute values apprporiate to the current
 Data object.
 
@@ -82,7 +82,7 @@ The [% INCLUDE font/mono a="\$text" %] given as an argument to the
 [% INCLUDE font/mono a="dispose" %] method typically comes from the
 evaluation of a template, but can be any text generated in any
 fashion.  Thus, it is a completely generic way for a program to
-communicate with [% demeter %]'s backends.
+communicate with [% demeter %]'s[%#'%] backends.
 
 The targets of the [% INCLUDE font/mono a="dispose" %] method are set
 using the [% INCLUDE font/mono a="set_mode" %] method, another method
@@ -92,7 +92,7 @@ methods in [% demeter %]:
 [% END %]
 
 [% WRAPPER codesample -%]
-$any_object -> set_mode(screen=>1, ifeffit=>1);
+$any_object -> set_mode(screen=>1, backend=>1);
 [% END %]
 
 [% FILTER html_para %]
@@ -161,7 +161,7 @@ post-process the commands.  For example, this disposal mode is used by
 [% artemis %] to display colorized text in its plotting buffer.
 [% END %]
 [% WRAPPER html/dt dt="feedback" %] When set to a code reference,
-the text of [% ifeffit %]'s response to commands will be sent to that
+the text of [% ifeffit %]'s[%#'%] response to commands will be sent to that
 code reference as the 
 sole argument.  This is useful for user interfaces that want to
 post-process the commands.  For example, this disposal mode is used by
@@ -357,7 +357,7 @@ which uses a text file as its input.
 [% demeter %] currently ships with two different sets in the [% feff %]
 input template category, one for [% feff6 %] and one for [% feff8 %].
 (Actually the [% feff8 %] set has not yet been written at the time
-this document is being written.  In fact, [% demeter %]'s [% feff8 %]
+this document is being written.  In fact, [% demeter %]'s[%#'%] [% feff8 %]
 interface has not yet been started.
 
 There is only one set in the [% atoms %] input template category.  It
@@ -499,7 +499,7 @@ set {$D->group}.{$C->get("conv_which")} = {$type}({$D->group}.{$x}, {$D->group}.
 
 [% FILTER html_para %]
 Note that this example uses the [% INCLUDE font/mono a='$C' %] special
-template variable to access the Config object and the Config object's
+template variable to access the Config object and the Config object's[%#'%]
 [% INCLUDE font/mono a="get" %] method to oibjtain the values of these
 arbitrarily named scalars.
 
