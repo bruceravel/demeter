@@ -1,0 +1,6 @@
+## {$L->function} lineshape (peak group: {$S->group}, lineshape: {$L->group})
+dempeak.{$L->group}_0 = param({$L->a0}, vary={$S->isvary($L,0)})
+dempeak.{$L->group}_1 = param({$L->a1}, vary={$S->isvary($L,1)})
+dempeak.{$L->group}_2 = param({$L->a2}, vary={$S->isvary($L,2)})
+dempeak.{$L->group}_3 = param({$L->a3}, vary={$S->isvary($L,3)})
+dempeak.{$L->group}_type = '{$L->function}'

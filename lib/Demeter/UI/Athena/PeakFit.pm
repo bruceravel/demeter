@@ -5,18 +5,37 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK);
+use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK EVT_CHOICE EVT_LEFT_DOWN EVT_MENU);
 
+use Const::Fast;
 use Cwd;
 use File::Basename;
 use File::Spec;
 use Scalar::Util qw(looks_like_number);
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any firstidx);
+use List::Util qw(max);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:greek);
 
 use vars qw($label);
 $label = "Peak fitting";	# used in the Choicebox and in status bar messages to identify this tool
+
+
+our $steps = ($ENV{DEMETER_BACKEND} eq 'larch') ? ['Atan', 'Erf', 'Logistic'] : ['Atan', 'Erf'];
+our $peaks = ($ENV{DEMETER_BACKEND} eq 'larch')
+  ? ['Gaussian', 'Lorentzian', 'Voigt', 'Pseudo_Voigt', 'Pearson7', 'Students_t']
+  : ['Gaussian', 'Lorentzian'];
+
+const my %SWAPHASH => (Gaussian	    => Wx::NewId(),
+		       Lorentzian   => Wx::NewId(),
+		       Voigt	    => Wx::NewId(),
+		       Pseudo_Voigt => Wx::NewId(),
+		       Pearson7	    => Wx::NewId(),
+		       Students_t   => Wx::NewId(),
+		       Atan	    => Wx::NewId(),
+		       Erf	    => Wx::NewId(),
+		       Logistic	    => Wx::NewId(),);
+
 
 my $tcsize = [60,-1];
 my $demeter  = $Demeter::UI::Athena::demeter;
@@ -31,7 +50,7 @@ sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  $this->{PEAK}   = Demeter::PeakFit->new(backend=>'ifeffit');
+  $this->{PEAK}   = Demeter::PeakFit->new(backend=>$ENV{DEMETER_BACKEND});
   $this->{emin}   = -15; #$demeter->co->default('peakfit', 'emin');
   $this->{emax}   =  15; #$demeter->co->default('peakfit', 'emax');
   $this->{count}  =  0;
@@ -83,6 +102,7 @@ sub main_page {
   my $panel = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $this->{panel} = $panel;
   $this->{vbox} = Wx::BoxSizer->new( wxVERTICAL);
+  $this->{increment} =  0;
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxHORIZONTAL );
@@ -102,24 +122,43 @@ sub main_page {
   EVT_BUTTON($this, $this->{save},  sub{ $this->save });
   #EVT_BUTTON($this, $this->{make},  sub{ $this->make });
 
-  my $addbox       = Wx::StaticBox->new($panel, -1, 'Add lineshape', wxDefaultPosition, wxDefaultSize);
-  my $addboxsizer  = Wx::StaticBoxSizer->new( $addbox, wxHORIZONTAL );
-  $this->{vbox}   -> Add($addboxsizer, 0, wxGROW|wxALL, 5);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $this->{vbox} -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  $this->{atan}         = Wx::Button->new($panel, -1, "Arctangent");
-  $this->{erf}          = Wx::Button->new($panel, -1, "Error function");
-  $this->{gaussian}     = Wx::Button->new($panel, -1, "Gaussian");
-  $this->{lorentzian}   = Wx::Button->new($panel, -1, "Lorentzian");
-  $this->{pseudovoight} = Wx::Button->new($panel, -1, "Pseudo Voight");
-  foreach my $ls (qw(atan erf gaussian lorentzian pseudovoight)) {
-    $addboxsizer -> Add($this->{$ls}, 1, wxLEFT|wxRIGHT, 3);
-    EVT_BUTTON($this, $this->{$ls}, sub{ $this->add($ls) });
-  };
+  my $stepbox      = Wx::StaticBox->new($panel, -1, 'Step functions', wxDefaultPosition, wxDefaultSize);
+  my $stepboxsizer = Wx::StaticBoxSizer->new( $stepbox, wxHORIZONTAL );
+  $hbox -> Add($stepboxsizer, 1, wxGROW|wxALL, 5);
+  $this->{steps}   = Wx::Choice->new($panel, -1, wxDefaultPosition, wxDefaultSize, $steps);
+  $this->{addstep} = Wx::Button->new($panel, -1, "Add step");
+  $stepboxsizer->Add($this->{steps},   0, wxALL, 5);
+  $stepboxsizer->Add($this->{addstep}, 1, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{addstep}, sub{OnShape(@_, 'steps')});
 
-  $this->{main}  = Wx::ScrolledWindow->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $peakbox      = Wx::StaticBox->new($panel, -1, 'Peak functions', wxDefaultPosition, wxDefaultSize);
+  my $peakboxsizer = Wx::StaticBoxSizer->new( $peakbox, wxHORIZONTAL );
+  $hbox -> Add($peakboxsizer, 1, wxGROW|wxALL, 5);
+  $this->{peaks}   = Wx::Choice->new($panel, -1, wxDefaultPosition, wxDefaultSize, $peaks);
+  $this->{addpeak} = Wx::Button->new($panel, -1, "Add peak");
+  $peakboxsizer->Add($this->{peaks},   0, wxALL, 5);
+  $peakboxsizer->Add($this->{addpeak}, 1, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{addpeak}, sub{OnShape(@_, 'peaks')});
+
+
+
+  # $this->{atan}         = Wx::Button->new($panel, -1, "Arctangent");
+  # $this->{erf}          = Wx::Button->new($panel, -1, "Error function");
+  # $this->{gaussian}     = Wx::Button->new($panel, -1, "Gaussian");
+  # $this->{lorentzian}   = Wx::Button->new($panel, -1, "Lorentzian");
+  # $this->{pseudovoight} = Wx::Button->new($panel, -1, "Pseudo Voight");
+  # foreach my $ls (qw(atan erf gaussian lorentzian pseudovoight)) {
+  #   $addboxsizer -> Add($this->{$ls}, 1, wxLEFT|wxRIGHT, 3);
+  #   EVT_BUTTON($this, $this->{$ls}, sub{ $this->add($ls) });
+  # };
+
+  $this->{main}  = Wx::ScrolledWindow->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB);
   $this->{lsbox} = Wx::BoxSizer->new( wxVERTICAL );
-  $this->{main} -> SetScrollbars(20, 20, 50, 50);
-  $this->{main} -> SetSizerAndFit($this->{lsbox});
+  $this->{main} -> SetScrollbars(10, 5, 30, 72);
+  $this->{main} -> SetSizer($this->{lsbox});
   $this->{vbox} -> Add($this->{main}, 1, wxGROW|wxALL, 5);
 
   $panel->SetSizerAndFit($this->{vbox});
@@ -225,18 +264,42 @@ sub tilt {
 };
 
 
+sub OnShape {
+  my ($this, $event, $which) = @_;
+  my $sel = $this->{$which}->GetStringSelection;
+  $this->add($sel);
+};
+
 sub add {
   my ($this, $function) = @_;
   ++$this->{count};
-  if (any {$function eq $_} qw(atan erf gaussian lorentzian)) {
-    $this->{'func'.$this->{count}} = $this->threeparam($function, $this->{count});
+  my $box;
+  my @list = (@$steps, @$peaks);
+  if (any {$function eq $_} @list) {
+    my $func = lc($function);
+    ($box, $this->{'func'.$this->{count}}) = $this->threeparam($func, $this->{count});
   } else {
     $this->tilt("$function is not yet implemented",1);
+    --$this->{count};
     return;
   };
+
+#  $this->{lsbox} -> Add($this->{'func'.$this->{count}}, 0, wxGROW|wxALL, 5);
+#  $this->{main}  -> SetScrollbars(0, 72, 0, $this->{count});
+#  $this->{main}  -> SetSizer($this->{lsbox});
+  $this->{main}  -> Scroll(0,0);
   $this->{lsbox} -> Add($this->{'func'.$this->{count}}, 0, wxGROW|wxALL, 5);
-  $this->{main} -> SetSizerAndFit($this->{lsbox});
-  $this->{main} -> SetScrollbars(0, 100, 0, $this->{count});
+  $this->{main}  -> SetSizer($this->{lsbox});
+  my $n               = ($this->{count}<5) ? 5 : $this->{count};
+  my ($x,$y)          = $box->GetSizeWH;
+  $this->{increment}  = max($y, $this->{increment});
+  $this->{main}  -> SetScrollbars(10, $n, 30, $this->{increment}+11);
+  $this->{main}  -> Refresh;
+  ($x,$y)             = $box->GetSizeWH;
+  $this->{increment}  = max($y, $this->{increment});
+  if ($this->{count}>4) {
+    $this->{main}  -> Scroll(0,$n*$this->{increment});
+  };
 
   foreach my $ac (qw(fit plot reset)) {
     $this->{$ac}->Enable(1);
@@ -261,7 +324,19 @@ sub threeparam {
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Name"), 0, wxALL, 3);
   $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$index, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'name'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
-  $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change to '.lc($map{$swap{$fun}}), q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+
+  if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+    $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change to '.lc($map{$swap{$fun}}),
+						q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+    $this->{'swap'.$n}->SetNormalColour(wxBLACK);
+    EVT_HYPERLINK($this, $this->{"swap$n"}, sub{ $this->swap($_[1], $n) });
+  } else {
+    $this->{'swap'.$n} = Wx::StaticText->new($this->{main}, -1, 'change function');
+    $this->{'swap'.$n} -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
+						 wxDEFAULT, wxNORMAL, wxBOLD, 1, "" ));
+    EVT_LEFT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
+    EVT_MENU($this->{"swap$n"}, -1, sub{ $this->do_swap_larch(@_, $n) });
+  };
   $hbox -> Add($this->{'swap'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox->Add(1,1,1);
   $this->{'skip'.$n} = Wx::CheckBox->new($this->{main}, -1, 'exclude');
@@ -273,39 +348,54 @@ sub threeparam {
   $boxsizer->Add($hbox, 0, wxGROW|wxALL, 3);
 
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Height"), 0, wxALL, 3);
-  $this->{'val0'.$n} = Wx::TextCtrl->new($this->{main}, -1, 1, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{'val0'.$n} = Wx::TextCtrl->new($this->{main}, -1, 1, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val0'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'fix0'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
-  $hbox -> Add($this->{'fix0'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $hbox -> Add($this->{'fix0'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
 
   $hbox->Add(1,1,1);
 
-  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Center"), 0, wxALL, 3);
+  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Cen"), 0, wxALL, 3);
   $this->{'val1'.$n} = Wx::TextCtrl->new($this->{main}, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val1'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'grab'.$n} = Wx::BitmapButton -> new($this->{main}, -1, $bullseye);
   $hbox->Add($this->{'grab'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'fix1'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
-  $hbox -> Add($this->{'fix1'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $hbox -> Add($this->{'fix1'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
 
   $hbox->Add(1,1,1);
 
-  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Width"), 0, wxALL, 3);
-  $this->{'val2'.$n} = Wx::TextCtrl->new($this->{main}, -1, $this->{PEAK}->defwidth, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Wid"), 0, wxALL, 3);
+  $this->{'val2'.$n} = Wx::TextCtrl->new($this->{main}, -1, $this->{PEAK}->defwidth, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'fix2'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
-  $hbox -> Add($this->{'fix2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $hbox -> Add($this->{'fix2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
 
-  $this->{'swap'.$n}->SetNormalColour(wxBLACK);
+  if ($fun !~ m{atan|erf|logistic}) {
+    $this->{'lab3'.$n} = Wx::StaticText->new($this->{main}, -1, "S");
+    $hbox -> Add($this->{'lab3'.$n}, 0, wxALL, 3);
+    $this->{'val3'.$n} = Wx::TextCtrl->new($this->{main}, -1, $this->{PEAK}->defwidth, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
+    $hbox -> Add($this->{'val3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
+    $this->{'fix3'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
+    $hbox -> Add($this->{'fix3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
+    if ($fun =~ m{gaussian|lorentzian|strudents_t}) {
+      $this->{'lab3'.$n}->Enable(0);
+      $this->{'val3'.$n}->Enable(0);
+      $this->{'fix3'.$n}->Enable(0);
+    };
+
+  };
+
   $this->{'fix0'.$n}->SetValue(0);
   $this->{'fix1'.$n}->SetValue(1);
   $this->{'fix2'.$n}->SetValue(0);
+  $this->{'fix3'.$n}->SetValue(0) if ($fun !~ m{atan|erf|logistic});
+
 
   EVT_BUTTON($this, $this->{'grab'.$n}, sub{ $this->grab_center($n) });
   EVT_BUTTON($this, $this->{'del'.$n},  sub{ $this->discard($n) });
-  EVT_HYPERLINK($this, $this->{"swap$n"}, sub{ $this->swap($n) });
 
-  return $boxsizer;
+  return ($box, $boxsizer);
 };
 
 sub increment {
@@ -366,7 +456,7 @@ sub fit {
 					   a2    => $this->{'val2'.$i}->GetValue,
 					   fix2  => $this->{'fix2'.$i}->GetValue,
 					  );
-    if ($this->{'type'.$i} eq 'pseudovoight') {
+    if ($this->{'lineshape'.$i}->nparams == 4) {
       $this->{'lineshape'.$i}->a3($this->{'val3'.$i}->GetValue);
       $this->{'lineshape'.$i}->fix3($this->{'fix3'.$i}->GetValue);
     };
@@ -465,6 +555,15 @@ sub discard {
 };
 
 sub swap {
+  my ($this, $event, $n) = @_;
+  if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+    $this->swap_ifeffit($n);
+  } else {
+    $this->swap_larch($n, $event);
+  };
+};
+
+sub swap_ifeffit {
   my ($this, $n) = @_;
   my $name = $this->{'name'.$n}->GetValue;
   my $type = $this->{'type'.$n};
@@ -478,6 +577,44 @@ sub swap {
   $this->{"swap$n"} -> SetLabel("change to $type");
   $::app->{main} -> Update;
 };
+
+sub swap_larch {
+  my ($this, $n, $event) = @_;
+  my $type = $this->{'type'.$n};
+  $this->{curentn} = $n;
+
+  my $menu  = Wx::Menu->new(q{});
+  if (any {$type eq lc($_)} @$peaks) {
+    foreach my $p (@$peaks) {
+      next if $type eq lc($p);
+      if ($p eq 'pseudo_voigt') {
+	$menu->Append($SWAPHASH{Pseudo_Voigt}, $p);
+      } else {
+	$menu->Append($SWAPHASH{ucfirst($p)}, $p);
+      };
+    };
+  } elsif (any {$type eq lc($_)} @$steps) {
+    foreach my $p (@$steps) {
+      next if $type eq lc($p);
+      $menu->Append($SWAPHASH{ucfirst($p)}, $p);
+    };
+  };
+
+  my $here = $event->GetPosition;
+  $this->{'swap'.$n} -> PopupMenu($menu, $here);
+};
+
+sub do_swap_larch {
+  my ($this, $text, $event, $n) = @_;
+  my $id = $event->GetId;
+  my %hash = reverse(%SWAPHASH);
+  my $selection = $hash{$id};
+  $this->{'name'.$n}->SetValue(lc($selection)." $n");
+  $this->{'type'.$n} = lc($selection);
+  $this->{'box'.$n} -> SetLabel($selection);
+  $::app->{main} -> Update;
+};
+
 
 1;
 

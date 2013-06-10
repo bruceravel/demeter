@@ -34,7 +34,7 @@ my $build = DemeterBuilder
 	 requires           => {
 				'Moose'			    => '2.04',
 				'MooseX::Aliases'           => '0.10',
-				'MooseX::StrictConstructor' => '0.19',
+				#'MooseX::StrictConstructor' => '0.19',
 				'MooseX::Singleton'	    => '0.29',
 				'MooseX::Types'		    => '0.31',
 

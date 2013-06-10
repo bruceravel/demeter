@@ -57,6 +57,7 @@ has 'xmax'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax')
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
+has 'ninfo'        => (is => 'rw', isa => 'Num',  default => 0);
 has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
 has 'ntitles'      => (is => 'rw', isa => 'Int',  default => 0);
@@ -99,7 +100,7 @@ has 'tempfiles' => (
 				 }
 		   );
 
-enum 'PeakFitBackends' => ['ifeffit', 'fityk'];
+enum 'PeakFitBackends' => ['ifeffit', 'larch', 'fityk'];
 coerce 'PeakFitBackends',
   from 'Str',
   via { lc($_) };
@@ -111,12 +112,17 @@ has backend => (is => 'rw', isa => 'PeakFitBackends', coerce => 1, alias => 'md'
 			       };
 			       if ($new eq 'ifeffit') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Ifeffit')};
-				 print $@;
+				 #print $@;
 				 $@ and die("PeakFit backend Demeter::PeakFit::Ifeffit could not be loaded");
+				 $self->initialize;
+			       } elsif ($new eq 'larch') {
+				 eval {apply_all_roles($self, 'Demeter::PeakFit::Larch')};
+				 #print $@;
+				 $@ and die("PeakFit backend Demeter::PeakFit::Larch does not exist");
 				 $self->initialize;
 			       } elsif ($new eq 'fityk') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Fityk')};
-				 print $@;
+				 #print $@;
 				 $@ and die("PeakFit backend Demeter::PeakFit::Fityk does not exist");
 				 $self->initialize;
 			       } else {
@@ -203,6 +209,15 @@ sub add {
   return $this;
 };
 
+sub compute_ninfo {
+  my ($self) = @_;
+  my $ni = 0;
+  ## for XANES divide the data range by the core-hole lifetime
+  $ni =($self->xmax - $self->xmin) / Xray::Absorption->get_gamma($self->data->bkg_z, $self->data->fft_edge);
+  $self->ninfo(sprintf("%.3f",$ni));
+  return $ni;
+};
+
 
 sub fit {
   my ($self, $nofit) = @_;
@@ -210,6 +225,7 @@ sub fit {
   $self->start_spinner("Demeter is performing a peak fit") if ($self->mo->ui eq 'screen');
 
   ## this does the right stuff for XES/Data
+  $self->compute_ninfo;# if not $self->ninfo;
   my ($emin, $emax) = $self->data->prep_peakfit($self->xmin, $self->xmax);
   $self->xmin($emin);
   $self->xmax($emax);
@@ -274,7 +290,7 @@ sub plot {
 
   $self->po->start_plot;
   $self->data->plot('E');
-  $self->chart('plot', 'overpeak');
+  $self->chart('plot', 'overpeak', {thiskey=>$self->name});
   $self->po->increment;
   if ($self->plot_residual) {
     ## prep the residual plot
@@ -285,7 +301,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->chart('plot', 'overpeak');
+    $self->chart('plot', 'overpeak', {thiskey=>'residual'});
 
     ## restore values and increment the plot
     $self->yaxis($save);
@@ -295,7 +311,11 @@ sub plot {
   };
   if ($self->plot_components) {
     foreach my $ls (@{$self->lineshapes}) {
-      $ls->chart('plot', 'overpeak');
+      if (Demeter->mo->template_analysis eq 'larch') {
+	$self->chart('plot', 'overpeak', {suffix=>$ls->group, thiskey=>$ls->name});
+      } else {
+	$ls->chart('plot', 'overpeak', {thiskey=>$ls->name});
+      };
       $self->po->increment;
     };
   };
@@ -306,8 +326,8 @@ sub plot {
 sub report {
   my ($self) = @_;
   my $string = "Fit to " . $self->data->name . "\n";
-  $string .= sprintf("   using %d data points with %d lineshapes and %d variables\n\n",
-		     $self->ndata, $#{$self->lineshapes}+1, $self->nparam);
+  $string .= sprintf("   using %d data points with %d lineshapes and %d variables (%.3f measurements)\n\n",
+		     $self->ndata, $#{$self->lineshapes}+1, $self->nparam, $self->ninfo);
   foreach my $ls (@{$self->lineshapes}) {
     $string .= $ls->report;
   };
@@ -481,7 +501,7 @@ After the fit finishes, the statistics of the fit will be accumulated
 from the fitting engine and stored in this and all the LineShape
 objects.
 
-=item C<engine_objectt>
+=item C<engine_object>
 
 This returns the object for interacting with the fitting engine (if
 there is one).  This is used extensively by

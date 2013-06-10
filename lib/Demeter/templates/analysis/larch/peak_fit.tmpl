@@ -1,0 +1,56 @@
+{
+  # here $S is the Peak group
+  @list = @{$S->linegroups};
+  $string = q{'} . $list[0] . q{',};
+  $mix = join('', 'peak.', shift(@list));
+  foreach my $stan (@list) {
+    $mix .= ' + ' . join('', 'peak.', $stan);
+    $string .= q{'} . $stan . q{',};
+  };
+  chop $string;
+  q{};
+}
+
+
+def peakfit(par, peak):
+    for g in ({$string}):
+        a0 = getattr(par, g+'_0')
+        a1 = getattr(par, g+'_1')
+        a2 = getattr(par, g+'_2')
+        a3 = getattr(par, g+'_3')
+        type = getattr(par, g+'_type')
+        if type == 'atan':
+           __new = a0 * (atan((peak.energy-a1)/a2)/pi + 0.5)
+        elif type == 'gaussian':
+           __new = a0 * gaussian(peak.energy, a1, a2)
+        elif type == 'lorentzian':
+           __new = a0 * lorentzian(peak.energy, a1, a2)
+        elif type == 'erf':
+           __new = a0 * (erf((peak.energy-a1)/a2)+1)
+        elif type == 'linear':
+           __new = a0 + a1*peak.energy
+        elif type == 'voigt':
+           __new = a0 * voigt(peak.energy, a1, a2, a3)
+        elif type == 'pseudo_voigt':
+           __new = a0 * pvoigt(peak.energy, a1, a2, a3)
+        elif type == 'pearson7':
+           __new = a0 * pearson7(peak.energy, a1, a2, a3)
+        elif type == 'breit_wigner':
+           __new = a0 * breit_wigner(peak.energy, a1, a2, a3)
+        elif type == 'logistic':
+           __new = a0 * logistic(peak.energy, a1, a2)
+        elif type == 'students_t':
+           __new = a0 * students_t(peak.energy, a1, a2)
+        else:
+           __new = zeros(len(peak.energy))
+        endif
+        setattr(peak, g, __new)
+    endfor
+    peak.func = {$mix}
+    peak.resid = (peak.peak - peak.func) / peak.epsilon
+    return peak.resid
+enddef
+
+##| perform the peak fit
+minimize(peakfit, dempeak, args=({$S->group},))
+_sys.paramGroup = None

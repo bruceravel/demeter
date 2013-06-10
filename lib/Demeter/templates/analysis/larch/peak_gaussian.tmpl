@@ -1,0 +1,2 @@
+## gaussian lineshape ({$S->name})
+{$S->group}.{$L->group} = dempeak.{$L->group}_0 * exp(- ({$S->group}.energy-dempeak.{$L->group}_1)**2 / (2*dempeak.{$L->group}_2**2)) / (dempeak.{$L->group}_2 * sqrt(2*pi))

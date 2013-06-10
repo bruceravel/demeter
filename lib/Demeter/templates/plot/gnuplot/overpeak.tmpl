@@ -8,12 +8,12 @@
   $file = $P->tempfile;
   $S->points(file    => $file,
              space   => 'E',
-	     suffix  => $S->yaxis,
+	     suffix  => $suffix||$S->yaxis,
 	     shift   => $D->eshift,
 	     scale   => $D->plot_multiplier,
 	     yoffset => $D->y_offset
 	    );
-  $thiskey = $D->plotkey || $S->name;
+  $thiskey ||= $D->plotkey || $S->name;
   $thiskey =~ s{_}{\\\\_}g;
   q{}
 }

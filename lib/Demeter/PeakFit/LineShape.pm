@@ -33,7 +33,9 @@ has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 has 'function' => (is => 'rw', isa => Lineshape, default => q{},
 		   trigger => sub{ my ($self, $new) = @_;
 				   $self->np($self->nparams);
-				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
+				   $self->fix2(1) if lc($new) =~ m{linear};
+				   $self->fix3(1) if lc($new) =~ m{atan|erf|gaussian|lorentzian|lognormal|students_t};
+				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|logistic|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
 				 });
 has 'peaked'   => (is => 'rw', isa => 'Bool', default => 1, alias => 'is_peak');
 has 'np'       => (is => 'rw', isa => 'Int',  default => 0);

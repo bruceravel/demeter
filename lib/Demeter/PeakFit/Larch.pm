@@ -1,20 +1,27 @@
-package Demeter::PeakFit::Ifeffit;
+package Demeter::PeakFit::Larch;
 
 use Moose::Role;
-use Demeter::StrTypes qw( IfeffitLineshape );
+use Demeter::StrTypes qw( LarchLineshape );
+use Scalar::Util qw(looks_like_number);
 
 has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Ifeffit.pm');
+has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Larch.pm');
 has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
-			    linear	     => 2,
-			    gaussian	     => 3,
-			    lorentzian	     => 3,
-			    pseudovoight     => 4,
-			    atan	     => 3,
-			    erf  	     => 3,
+			    linear       => 2,
+			    gaussian     => 3,
+			    lorentzian   => 3,
+			    pseudo_voigt => 4,
+			    atan         => 3,
+			    erf          => 3,
+			    voigt        => 4,
+			    pearson7     => 4,
+			    breit_wigner => 4,
+			    logistic     => 2,
+			    lognormal    => 2,
+			    students_t   => 2,
 			  }});
 
 sub DEMOLISH {
@@ -29,7 +36,7 @@ sub initialize {
 
 sub normalize_function {
   my ($self, $function) = @_;
-  foreach my $f (@Demeter::StrTypes::ifeffitlineshape_list) {
+  foreach my $f (@Demeter::StrTypes::larchlineshape_list) {
     return $f if (lc($function) eq lc($f));
   };
   return 0;
@@ -37,7 +44,7 @@ sub normalize_function {
 
 sub valid {
   my ($self, $function) = @_;
-  return is_IfeffitLineshape($function);
+  return is_LarchLineshape($function);
 };
 
 sub cleanup {
@@ -62,16 +69,17 @@ sub prep_data {
 };
 
 
-sub guess_set {
+sub isvary {
   my ($self, $ls, $n) = @_;
   my $att = 'fix'.$n;
-  return ($ls->$att) ? 'set  ' : 'guess';
+  return ($ls->$att) ? 'False' : 'True';
 };
 
 sub define {
   my ($self, $ls) = @_;
-  my $template = "peak_".$ls->function;
-  $self->dispense('analysis', $template, {L=>\$ls});
+  $self->dispense('analysis', 'peak_param', {L=>\$ls});
+  #my $template = "peak_".$ls->function;
+  #$self->dispense('analysis', $template, {L=>\$ls});
   return $self;
 };
 
@@ -93,7 +101,8 @@ sub fetch_model_y {
 
 sub put_arrays {
   my ($self, $ls, $rx) = @_;
-  $self->dispense('analysis', 'peak_put', {L=>\$ls});
+  1;
+  #$self->dispense('analysis', 'peak_put', {L=>\$ls});
 };
 
 sub resid {
@@ -111,11 +120,13 @@ sub fetch_statistics {
   foreach my $ls (@{$self->lineshapes}) {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
-      my $scalar = $ls->group.'_'.$n;
+      my $scalar = sprintf("dempeak.%s_%d", $ls->group, $n);
       $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
       $att = 'e'.$n;
-      $scalar = 'delta_'.$scalar;
-      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
+      $scalar = $scalar.'.stderr';
+      my $value = $self->fetch_scalar($scalar);
+      $value = 0 if not looks_like_number($value);
+      $ls->$att(sprintf("%.5f", $value));
     };
     $ls->area($ls->a0);
   };
@@ -134,7 +145,7 @@ sub pf_dispose {
 
 =head1 NAME
 
-Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
+Demeter::PeakFit::Larch - Larch backend to Demeter's peak fitting tool
 
 =head1 VERSION
 
@@ -149,7 +160,7 @@ This documentation refers to Demeter version 0.9.17.
 
 =head1 LINESHAPES
 
-These are Fityk's built in lineshapes.  Note that the format of this
+These are Larch's available lineshapes.  Note that the format of this
 document section is parsed by the reporting methods of this object.
 
 =over 4
@@ -166,7 +177,11 @@ document section is parsed by the reporting methods of this object.
 
  (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
 
-=item pseudovoigt(height, center, hwhm, eta)
+=item voigt(height, center, hwhm, gamma)
+
+ convolution of Lorentzian and Gaussian functions
+
+=item pvoigt(height, center, hwhm, frac)
 
  eta*loren + (1-eta)*gauss
 
@@ -178,6 +193,25 @@ document section is parsed by the reporting methods of this object.
 
  step*(erf((x-e0)/width) + 1)
 
+=item pearson7(height, center, sigma, exponent)
+
+ Pearson7 lineshape
+
+=item breit_wigner(height, center, sigma, q)
+
+ height*(q*sigma/2 + x - center)**2 / ( (sigma/2)**2 + (x - center)**2 )
+
+=item logistic(height, center, sigma)
+
+ height*(1 - 1 / (1 + exp((x-center)/sigma)))
+
+=item lognormal(height, center, sigma)
+
+ (height/x) * exp(-(ln(x) - center)/ (2* sigma**2))
+
+=item students_t(height, center, sigma)
+
+ height*gamma((sigma+1)/2) * (1 + (x-center)**2/sigma)^(-(sigma+1)/2) / (sqrt(sigma*pi)gamma(sigma/2))
 
 =back
 

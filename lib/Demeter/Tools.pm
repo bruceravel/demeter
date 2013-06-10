@@ -76,6 +76,7 @@ sub environment {
   return "Demeter " . $Demeter::VERSION . " with perl $] and $string on $os";
 };
 
+#		     MooseX::StrictConstructor
 sub module_environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
@@ -87,7 +88,6 @@ sub module_environment {
 		     Ifeffit
 		     Moose
 		     MooseX::Aliases
-		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types
 		     Archive::Zip

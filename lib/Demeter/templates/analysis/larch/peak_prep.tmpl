@@ -1,0 +1,14 @@
+##| preparing for peak fitting in energy
+
+dempeak = group(__name__='dempeak')
+
+{$S->group} = group(eee = {$D->group}.energy+{$D->bkg_eshift}, __name__='{$S->group}')
+{$S->group}.energy = {$S->group}.eee[{$i1}:{$i2}]
+{$S->group}.peak   = {$D->group}.{$D->nsuff}[{$i1}:{$i2}]
+{$S->group}.func   = zeros(len({$S->group}.energy))
+
+if hasattr({$D->group}, 'stddev'):
+    {$S->group}.epsilon = {$D->group}.stddev[{$i1}:{$i2}]
+else:
+    {$S->group}.epsilon = ones(len({$S->group}.energy))
+endif

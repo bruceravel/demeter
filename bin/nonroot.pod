@@ -98,7 +98,6 @@ system, looked like this:
         !  Moose is not installed
         !  MooseX::Aliases is not installed
         !  MooseX::Singleton is not installed
-        !  MooseX::StrictConstructor is not installed
         !  MooseX::Types is not installed
         !  PDL is not installed
         !  PDL::Stats is not installed

@@ -40,6 +40,7 @@ use MooseX::Types -declare => [qw( Empty
 				   NotReserved
                                    FitykFunction
 				   IfeffitLineshape
+                                   LarchLineshape
 				   Lineshape
 				)];
 
@@ -437,6 +438,17 @@ subtype IfeffitLineshape,
   where { lc($_) =~ m{\A$ifeffitlineshape_regexp\z} },
   message { "$_ is not a defined lineshape in Ifeffit" };
 
+## -------- Larch lineshapes  skipped: lognormal breit_wigner
+use vars qw(@larchlineshape_list $larchlineshape_regexp);
+@larchlineshape_list = qw(linear gaussian lorentzian voigt pseudo_voigt pearson7
+			  logistic students_t
+			  atan erf);
+$larchlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @larchlineshape_list)->re;
+subtype LarchLineshape,
+  as Str,
+  where { lc($_) =~ m{\A$larchlineshape_regexp\z} },
+  message { "$_ is not a defined lineshape in Larch" };
+
 ## -------- Fityk defined functions
 use vars qw(@fitykfunction_list $fitykfunction_regexp);
 @fitykfunction_list = qw(Constant Linear Quadratic Cubic Polynomial4 Polynomial5 Polynomial6
@@ -454,7 +466,7 @@ subtype FitykFunction,
 
 ## -------- all lineshapes of all possible backends
 use vars qw(@lineshape_list $lineshape_regexp);
-@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list);
+@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list, @larchlineshape_list);
 $lineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @lineshape_list)->re;
 subtype Lineshape,
   as Str,
