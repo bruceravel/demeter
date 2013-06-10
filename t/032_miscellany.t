@@ -20,15 +20,18 @@
 use Test::More tests => 70;
 
 use Demeter qw(:data);
+use File::Basename;
 use File::CountLines qw(count_lines);
+use File::Spec;
 use List::Util qw(max min);
 
+my $here  = dirname($0);
 my $epsilon = 0.001;
 my $d = Demeter::Data->new(fft_kmin=>3, fft_kmax=>12, fft_dk=>1, fft_kwindow=>'hanning');
 $d->po->kweight(1);
 
 ## chi(k) data from an ascii column file
-$d->set(datatype=>'chi', file=>'cu10k.chi');
+$d->set(datatype=>'chi', file=>File::Spec->catfile($here, 'cu10k.chi'));
 $d->_update('bft');
 my @y = $d->get_array('chi');
 ok($#y == 499, "import chi(k) data from an ascii column file (".$#y.")");
@@ -36,14 +39,14 @@ ok($#y == 499, "import chi(k) data from an ascii column file (".$#y.")");
 ok(abs(max(@y)-0.942367) < $epsilon, "chi(k) data from ascii file interpreted correctly (".max(@y).")");
 
 ## chi(k) data on a weird grid
-$d->set(datatype=>'chi', file=>'nonuniform.chi');
+$d->set(datatype=>'chi', file=>File::Spec->catfile($here, 'nonuniform.chi'));
 $d->_update('bft');
 @y = $d->get_array('chir_mag');
 ok($#y == 325, "nonuniform chi(k) data binned onto standard grid (".$#y.")");
 ok(abs(max(@y)-0.58562) < $epsilon, "nonuniform chi(k) data interpreted correctly (".max(@y).")");
 
 ## write_many
-my $prj = Demeter::Data::Prj->new(file=>'cyanobacteria.prj');
+my $prj = Demeter::Data::Prj->new(file=>File::Spec->catfile($here, 'cyanobacteria.prj'));
 my @data = $prj->records(9,10,11);
 $data[0] -> save_many('many.dat', 'xmu', @data);
 ok(count_lines('many.dat') == 334, 'save_many template works');

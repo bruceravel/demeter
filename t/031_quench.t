@@ -17,19 +17,21 @@
 
 =cut
 
-use Test::More tests => 127;
+use Test::More tests => 130;
 
 use Demeter qw(:data);
 
 my $d = Demeter::Data->new;
+my $number_quanchable = 51;
 
 my @qatts = ();
 foreach my $a ($d->meta->get_attribute_list) {
   my $t = $d->meta->get_attribute($a)->applied_traits || [];
   push @qatts, $a if $d->meta->get_attribute($a)->does('MooseX::Quenchable::Attribute');
 };
+print join("|", @qatts, $#qatts), $/;
 
-ok($#qatts == 50, "found the correct number of quenchable attributes ($#qatts)");
+ok($#qatts == $number_quanchable, "found the correct number of quenchable attributes ($#qatts)");
 
 #my %types = ();
 
