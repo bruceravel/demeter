@@ -86,10 +86,10 @@ sub new {
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
   $this->{mainpage} = $this->main_page($this->{notebook});
   $this->{fitspage} = $this->fit_page($this->{notebook});
-  #this->{$markedpage} = $this->marked_page($this->{notebook});
+  $this->{markedpage} = $this->marked_page($this->{notebook});
   $this->{notebook} ->AddPage($this->{mainpage}, 'Lineshapes',    1);
   $this->{notebook} ->AddPage($this->{fitspage}, 'Fit results',   0);
-  #$this->{notebook} ->AddPage($this->{markedpage}, 'Sequence',      0);
+  $this->{notebook} ->AddPage($this->{markedpage}, 'Sequence',      0);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: peak fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -112,15 +112,17 @@ sub main_page {
   $this->{vbox}   -> Add($actionsboxsizer, 0, wxGROW|wxALL, 5);
   $this->{fit}         = Wx::Button->new($panel, -1, "Fit");
   $this->{plot}        = Wx::Button->new($panel, -1, "Plot sum");
+  $this->{fitmarked}   = Wx::Button->new($panel, -1, "Fit marked");
   $this->{reset}       = Wx::Button->new($panel, -1, "Reset");
   $this->{save}        = Wx::Button->new($panel, -1, "Save fit");
   #$this->{make}        = Wx::Button->new($panel, -1, "Make group");
-  foreach my $ac (qw(fit plot reset save)) { #  make
+  foreach my $ac (qw(fit plot fitmarked reset save)) { #  make
     $actionsboxsizer -> Add($this->{$ac}, 1, wxLEFT|wxRIGHT, 3);
     $this->{$ac}->Enable(0);
   };
   EVT_BUTTON($this, $this->{fit},   sub{ $this->fit(0) });
   EVT_BUTTON($this, $this->{plot},  sub{ $this->fit(1) });
+  EVT_BUTTON($this, $this->{fitmarked},  sub{ $this->sequence });
   EVT_BUTTON($this, $this->{reset}, sub{ $this->reset_all });
   EVT_BUTTON($this, $this->{save},  sub{ $this->save });
   #EVT_BUTTON($this, $this->{make},  sub{ $this->make });
@@ -198,26 +200,30 @@ sub marked_page {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
 
   $this->{markedresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
-  $this->{markedresults}->InsertColumn( 0, "Data",            wxLIST_FORMAT_LEFT, 100 );
+  $this->{markedresults}->InsertColumn( 0, "Data",            wxLIST_FORMAT_LEFT, 200 );
   $this->{markedresults}->InsertColumn( 1, "R-factor",        wxLIST_FORMAT_LEFT, 120 );
   $this->{markedresults}->InsertColumn( 2, "Red. chi-square", wxLIST_FORMAT_LEFT, 120 );
   $box->Add($this->{markedresults}, 1, wxALL|wxGROW, 3);
   EVT_LIST_ITEM_SELECTED($this, $this->{markedresults}, sub{seq_select(@_)});
 
-  $this->{mreport} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
-  $this->{mreport}->InsertColumn( 0, "Data", wxLIST_FORMAT_LEFT, 100 );
-  $this->{mreport}->InsertColumn( 1, "LS 1", wxLIST_FORMAT_LEFT, 120 );
-  $this->{mreport}->InsertColumn( 2, "LS 2", wxLIST_FORMAT_LEFT, 120 );
-  $this->{mreport}->InsertColumn( 2, "LS 2", wxLIST_FORMAT_LEFT, 120 );
-  $box->Add($this->{mreport}, 1, wxALL|wxGROW, 3);
+  $this->{mresult} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
+				       wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+  $this->{mresult}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $box->Add($this->{mresult}, 1, wxGROW|wxALL, 3);
 
-
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $box->Add($hbox, 0, wxGROW|wxALL, 2);
+  $this->{mchoices} = Wx::Choice->new($panel, -1, wxDefaultPosition, wxDefaultSize, ['a', 'b', 'c']);
+  $hbox->Add($this->{mchoices},   1, wxALL, 0);
   $this->{plotmarked}	 = Wx::Button->new($panel, -1, 'Plot components from fit sequence');
+  $hbox->Add($this->{plotmarked},   2, wxGROW|wxLEFT, 5);
+
   $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Save fit sequence report as an Excel file');
-  $box->Add($this->{plotmarked},   0, wxGROW|wxALL, 2);
   $box->Add($this->{markedreport}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{markedreport}, sub{seq_report(@_)});
   EVT_BUTTON($this, $this->{plotmarked},   sub{seq_plot(@_)});
+  $this->{mchoices}->Enable(0);
   $this->{plotmarked}->Enable(0);
   $this->{markedreport}->Enable(0);
 
@@ -437,18 +443,14 @@ sub grab_center {
 };
 
 
-sub fit {
-  my ($this, $nofit) = @_;
-  $nofit ||= 0;
-  my $busy = Wx::BusyCursor->new();
+sub fetch {
+  my ($this) = @_;
+
   my $peak = $this->{PEAK};
-  $peak -> data($::app->current_data);
   $peak -> xmin($this->{emin}->GetValue);
   $peak -> xmax($this->{emax}->GetValue);
   $peak -> plot_components($this->{components}->GetValue);
   $peak -> plot_residual($this->{residual}->GetValue);
-
-  $peak -> clean;
   my $nls = 0;
   foreach my $i (1 .. $this->{count}) {
     next if (not exists $this->{"func$i"});
@@ -470,6 +472,17 @@ sub fit {
       $this->{'lineshape'.$i}->fix3($this->{'fix3'.$i}->GetValue);
     };
   };
+  return $nls;
+};
+
+sub fit {
+  my ($this, $nofit) = @_;
+  $nofit ||= 0;
+  my $busy = Wx::BusyCursor->new();
+  my $peak = $this->{PEAK};
+  $peak -> data($::app->current_data);
+  $peak -> clean;
+  my $nls = $this -> fetch;
 
 
   $peak -> fit($nofit);
@@ -493,13 +506,126 @@ sub fit {
 
 
   if (not $nofit) {
-    foreach my $ac (qw(save resultreport resultplot)) {
+    foreach my $ac (qw(save fitmarked resultreport resultplot)) {
       $this->{$ac}->Enable(1);
     };
     $::app->{main}->status(sprintf("Performed peak fitting on %s using %d lineshapes and %d variables",
 				   $peak->data->name, $nls, $peak->nparam));
   };
   undef $busy;
+};
+
+sub sequence {
+  my ($this) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my @groups = $::app->marked_groups;
+  my $i = 0;
+  my $start = DateTime->now( time_zone => 'floating' );
+  $this->{PEAK} -> sentinal(sub{$this->seq_sentinal($#groups+1)});
+  $this->{PEAK} -> clean;
+  my $nls = $this -> fetch;
+  $this->{PEAK} -> sequence(@groups);
+
+  ## restore the proper fit
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{PEAK}->report);
+  foreach my $i (1 .. $this->{count}) {
+    next if not exists $this->{"func$i"};
+    next if $this->{'skip'.$i}->GetValue;
+    $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
+    $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
+    $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
+    if ($this->{'lineshape'.$i}->nparams == 4) {
+      $this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
+    };
+  };
+
+  ## fill in the sequence notebook page
+  $this->seq_results(@groups);
+
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf("Peak fit of %d groups in %d minutes, %d seconds.",
+			   $#groups+1, $dur->minutes, $dur->seconds);
+  $this->{mchoices}     -> Enable(1);
+  $this->{plotmarked}   -> Enable(1);
+  $this->{markedreport} -> Enable(1);
+  $::app->{main}->status($finishtext);
+  undef $busy;
+};
+sub seq_sentinal {
+  my ($this, $size) = @_;
+  $::app->{main}->status($this->{PEAK}->seq_count." of $size peak fits", 'wait|nobuffer');
+};
+
+sub seq_results {
+  my ($this, @data) = @_;
+  #Demeter->Dump($this->{PEAK}->seq_results);
+
+  $this->{markedresults}->DeleteAllItems;
+  $this->{mresult}->Clear;
+
+  my ($i, $row) = (0,0);
+  foreach my $res (@{ $this->{PEAK}->seq_results }) {
+    my $rfact = $res->{Rfactor};
+    my $chinu = $res->{Chinu};
+
+    my $idx = $this->{markedresults}->InsertStringItem($i, $row);
+    $this->{markedresults}->SetItemData($idx, $i);
+    $this->{markedresults}->SetItem( $idx, 0, $data[$i]->name );
+    $this->{markedresults}->SetItem( $idx, 1, sprintf("%.5g", $rfact) );
+    $this->{markedresults}->SetItem( $idx, 2, sprintf("%.5g", $chinu) );
+    ++$i;
+  };
+  $this->{PEAK}->restore($this->{PEAK}->seq_results->[0]);
+  $this->{mresult}->SetValue($this->{PEAK}->report);
+  $this->{notebook}->ChangeSelection(2);
+
+  $this->{mchoices}->Clear;
+  foreach my $ls (@{$this->{PEAK}->lineshapes}) {
+    $this->{mchoices}->Append(sprintf("%s - %s", $ls->name, 'height'),   [$ls->group, 0]) if not $ls->fix0;
+    $this->{mchoices}->Append(sprintf("%s - %s", $ls->name, 'centroid'), [$ls->group, 1]) if not $ls->fix1;
+    $this->{mchoices}->Append(sprintf("%s - %s", $ls->name, 'width'),    [$ls->group, 2]) if not $ls->fix2;
+    $this->{mchoices}->Append(sprintf("%s - %s", $ls->name, 'gamma'),    [$ls->group, 3]) if not $ls->fix3;
+  };
+  $this->{mchoices}->SetSelection(0);
+
+};
+
+sub seq_plot {
+  my ($this, $event) = @_;
+  my $i = $this->{mchoices}->GetSelection;
+  my $param = $this->{mchoices}->GetClientData($i); # this return [lineshape group, 0 to 3]
+
+  Demeter->po->start_plot;
+  my $tempfile = Demeter->po->tempfile;
+  open my $T, '>'.$tempfile;
+  my $j = -1;
+
+  foreach my $res (@{ $this->{PEAK}->seq_results }) {
+    my $rarr = $res->{$param->[0]};
+    my $n = 2 + 3*$param->[1];
+    my ($val, $err) = ($rarr->[$n], $rarr->[$n+1]);
+    print $T ++$j, "  ", $val, "  ", $err, $/;
+  };
+  close $T;
+  my ($t, $p) = split(/ - /, $this->{mchoices}->GetStringSelection);
+  Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>-0.2, xmax=>$j+0.2,
+				       xlabel=>'data set', title=>$t,
+				       param=>$p, showy=>0});
+
+};
+sub seq_report {
+  $::app->{main}->status("Not yet");
+};
+sub seq_select {
+  my ($this, $event) = @_;
+  my $index  = (ref($event) =~ m{Event}) ? $event->GetIndex : $event;
+  $this->{PEAK}    -> restore($this->{PEAK}->seq_results->[$index]);
+  $this->{mresult} -> SetValue($this->{PEAK}->report);
+  $this->{PEAK}    -> plot_components($this->{components}->GetValue);
+  $this->{PEAK}    -> plot_residual($this->{residual}->GetValue);
+  $this->{PEAK}    -> plot;
 };
 
 sub save {

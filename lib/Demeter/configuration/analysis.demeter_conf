@@ -47,7 +47,7 @@ section_description
 
 variable=backend
 type=list
-options=ifeffit fityk
+options=larch ifeffit fityk
 default=ifeffit
 description
   This tells Demeter which peak fitting backend to use.  This
@@ -71,6 +71,16 @@ restart=1
 units=eV (relative to e0)
 description
   The default lower bound of an analysis in energy.
+
+variable=plot_during
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When true, a plot will be made at every step during a combinatorial
+  or sequence fit.
+
 
 ######################################################################
 section=pca

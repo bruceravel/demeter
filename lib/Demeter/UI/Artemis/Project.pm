@@ -191,23 +191,27 @@ sub read_project {
   };
   $fname = Demeter->follow_link($fname);
 
-  if (not Demeter->is_zipproj($fname,0, 'any')) {
+  if (Demeter->is_zipproj($fname,0, 'any')) {
     if (project_started($rframes)) {
       my $yesno = Demeter::UI::Wx::VerbDialog->new($rframes->{main},, -1,
 						   "Save current project before opening a new one?",
 						   "Save project?",
-						   "Save");
+						   "Save", 1);
       my $result = $yesno->ShowModal;
+      if ($result == wxID_CANCEL) {
+	$rframes->{main}->status("File import canceled");
+	return;
+      };
       save_project($rframes) if $result == wxID_YES;
       close_project($rframes, 1);
     };
   };
 
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
+    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
     Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
     Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
-    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
     $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');
     return;

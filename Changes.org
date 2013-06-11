@@ -14,9 +14,13 @@
    + improvements to the peak fitting tool
       - scrolled area now working correctly
       - now capable of 4-parameter lineshapes
+      - initial guess for step width is core hole lifetime
+      - fit sequence on marked groups
+      - plot of individual parameter values over a sequence
 
 *** Artemis
    + Clear project name when closing a project
+   + fixed a problem importing data via "Open project or data" in certain situations
 
 *** Demeter
    + DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
@@ -34,7 +38,12 @@
      newly implemented attributes of Demeter objects.  this is not
      actually solvable looking backwards, but should be forwards)
    + improved Dump method in Tools.pm to allow use of Data:Dump::Color or Data::Dump if available
-   + collecting statistics in peak fit
+   + Peak fitting improvements
+      - collecting statistics in peak fit
+      - method for fit sequence over a set of groups
+      - deal sensibly with 4-parameter lineshapes
+   + deglitching no longer prohibited on datatype=xanes
+   + respect the gnuplot->datastyle configuration parameter
 
 *** Larch
    + Larch templates for LCF fitting

@@ -29,7 +29,7 @@ use Demeter::StrTypes qw( Empty );
 
 use File::Spec;
 use List::Util qw(min max);
-use List::MoreUtils qw(any none);
+use List::MoreUtils qw(any none uniq);
 use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -104,6 +104,25 @@ has 'tempfiles' => (
 				  'clear_tempfiles' => 'clear',
 				 }
 		   );
+
+
+has 'doing_seq' => (is => 'rw', isa => 'Bool', default => 0);
+has 'include_caller' => (is => 'rw', isa => 'Bool', default => 1);
+has 'seq_count' => (is => 'rw', isa => 'Int',  default => 0);
+has 'seq_results'=> (
+		     traits    => ['Array'],
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     handles   => {
+				   'push_seq_results'    => 'push',
+				   'pop_seq_results'     => 'pop',
+				   'shift_seq_results'   => 'shift',
+				   'unshift_seq_results' => 'unshift',
+				   'clear_seq_results'   => 'clear',
+				  },
+		    );
+
 
 enum 'PeakFitBackends' => ['ifeffit', 'larch', 'fityk'];
 coerce 'PeakFitBackends',
@@ -227,10 +246,13 @@ sub compute_ninfo {
 sub fit {
   my ($self, $nofit) = @_;
   $nofit ||= 0;
-  $self->start_spinner("Demeter is performing a peak fit") if ($self->mo->ui eq 'screen');
+  $self->start_spinner("Demeter is performing a peak fit")
+    if (($self->mo->ui eq 'screen') and not $self->doing_seq and not $nofit);
 
+  $self->data->_update('fft');
   ## this does the right stuff for XES/Data
   $self->compute_ninfo;# if not $self->ninfo;
+  #my @save = $self->get(qw(xmin xmax));
   my ($emin, $emax) = $self->data->prep_peakfit($self->xmin, $self->xmax);
   $self->xmin($emin);
   $self->xmax($emax);
@@ -275,11 +297,95 @@ sub fit {
   $self->post_fit(\@all);
 
   $self->fetch_statistics;
+  #$self -> xmin($save[0]);
+  #$self -> xmax($save[1]);
 
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  $self->stop_spinner
+    if (($self->mo->ui eq 'screen') and not $self->doing_seq and not $nofit);
   return $self;
 };
 
+
+sub sequence {
+  my ($self, @groups) = @_;
+  my $first = $self->data;
+  my @data = ($self->include_caller) ? uniq($first, @groups) : uniq(@groups);
+  my $nfits = $#data+1;
+
+  $self->doing_seq(1);
+  $self->start_counter("Performing a sequence of Peak fits", $nfits) if ($self->mo->ui eq 'screen');
+  my @results = ();
+  my $count = 1;
+  my @save = $self->get(qw(xmin xmax));
+
+  foreach my $d (@data) {
+    $self->seq_count($count);
+    $self->count if ($self->mo->ui eq 'screen');
+    $self->call_sentinal;
+    $self->xmin($save[0]);
+    $self->xmax($save[1]);
+    $self->data($d);
+
+    $self->fit;
+
+    my %fit = (
+	       Rfactor => $self->rfactor,
+	       Chinu   => $self->chinu,
+	       Chisqr  => $self->chisqr,
+	       Nparam  => $self->nparam,
+	       Data    => $d->group,
+	       Xmin    => $save[0],
+	       Xmax    => $save[1],
+	      );
+    foreach my $ls (@{$self->lineshapes}) { # use of capitalized keys above avoid key collision
+      $fit{$ls->group} = [$ls->get(qw(function name a0 e0 fix0 a1 e1 fix1 a2 e2 fix2 a3 e3 fix3))];
+    };
+    ##Demeter->Dump(\%fit);
+    push @results, \%fit;
+    ++$count;
+  };
+
+
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->data($first);
+  my $which = "lcf_prep";
+  $self->dispense("analysis", 'peak_prep');
+  $self->set(doing_seq=>0, seq_results=>\@results);
+  $self->restore($results[1]);
+  ##Demeter->Dump($self->seq_results);
+  $self->plot_fit if $self->co->default('lcf', 'plot_during');
+  return $self;
+};
+
+
+
+sub restore {
+  my ($self, $rhash) = @_;
+  $self->rfactor($rhash->{Rfactor});
+  $self->chinu($rhash->{Chinu});
+  $self->chisqr($rhash->{Chisqr});
+  $self->nparam($rhash->{Nparam});
+  $self->xmin($rhash->{Xmin});
+  $self->xmax($rhash->{Xmax});
+  $self->data(Demeter->mo->fetch("Data", $rhash->{Data}));
+  my @data_x = $self->fetch_data_x;
+  foreach my $ls (@{$self->lineshapes}) { # use of capitalized keys above avoid key collision
+    my $gp = $ls->group;
+    $ls->a0  ($rhash->{$gp}->[2]);
+    $ls->e0  ($rhash->{$gp}->[3]);
+    $ls->fix0($rhash->{$gp}->[4]);
+    $ls->a1  ($rhash->{$gp}->[5]);
+    $ls->e1  ($rhash->{$gp}->[6]);
+    $ls->fix1($rhash->{$gp}->[7]);
+    $ls->a2  ($rhash->{$gp}->[8]);
+    $ls->e2  ($rhash->{$gp}->[9]);
+    $ls->fix2($rhash->{$gp}->[10]);
+    $ls->a3  ($rhash->{$gp}->[11]);
+    $ls->e3  ($rhash->{$gp}->[12]);
+    $ls->fix3($rhash->{$gp}->[13]);
+  };
+  $self->fit(1);
+};
 
 
 sub plot {

@@ -46,9 +46,9 @@ has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{flat});
 has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
 has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(height yint) ]);
+has 'a0'       => (is => 'rw', isa => 'Num',  default => 1, alias => [ qw(height yint) ]);
 has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(center slope) ]);
-has 'a2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'hwhm');
+has 'a2'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'hwhm');
 has 'a3'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'eta');
 has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);

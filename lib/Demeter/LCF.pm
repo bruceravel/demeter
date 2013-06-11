@@ -849,7 +849,7 @@ sub sequence {
     $self->call_sentinal;
     $self->data($d);
     $self->clear_standards;
-   foreach my $st (@standards) {
+    foreach my $st (@standards) {
       $self->push_standards($st);
       $self->weight($st, 1/($#standards+1));
       $self->e0($st, 0);
