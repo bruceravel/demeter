@@ -1,0 +1,10 @@
+{
+  $components = join(" ", map {$_ =~ s{ +}{_}g; $_} map {$_->name} (@{$S->lineshapes}));
+  @list = map {$S->group.'.'.$_->group} (@{$S->lineshapes});
+  $shapes = join(', ', @list);
+  q{}
+}
+write_ascii("{$filename}",
+            {$S->group}.{$S->xaxis}, {$S->group}.func, {$S->group}.peak, {$S->group}.resid,
+            {$shapes},
+            label="energy data fit residual {$components}", header={$S->group}.myheader)

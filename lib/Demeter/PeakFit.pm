@@ -40,27 +40,32 @@ if ($Demeter::mode->ui eq 'screen') {
 use vars qw($Fityk_exists);
 $Fityk_exists       = eval "require fityk";
 
-has '+plottable'   => (default => 1);
-has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
-has '+name'        => (default => 'PeakFit' );
-has 'screen'       => (is => 'rw', isa => 'Bool', default => 0);
-has 'buffer'       => (is => 'rw', isa => 'ArrayRef | ScalarRef');
-has 'engine'       => (is => 'rw', isa => 'Bool', default => 1);
+has '+plottable'      => (default => 1);
+has '+data'	      => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+name'	      => (default => 'PeakFit' );
+has 'screen'	      => (is => 'rw', isa => 'Bool', default => 0);
+has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'engine'	      => (is => 'rw', isa => 'Bool', default => 1);
 
-has 'xaxis'        => (is => 'rw', isa => 'Str',  default => q{energy});
-has 'yaxis'        => (is => 'rw', isa => 'Str',  default => q{flat});
-has 'sigma'        => (is => 'rw', isa => 'Str',  default => q{});
+has 'xaxis'	      => (is => 'rw', isa => 'Str',  default => q{energy});
+has 'yaxis'	      => (is => 'rw', isa => 'Str',  default => q{flat});
+has 'sigma'	      => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'xmin'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
-has 'xmax'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
+has 'xmin'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
+has 'xmax'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
 
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'ninfo'        => (is => 'rw', isa => 'Num',  default => 0);
-has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
-has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
-has 'ntitles'      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ninfo'	      => (is => 'rw', isa => 'Num',  default => 0);
+has 'nparam'	      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ndata'	      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ntitles'	      => (is => 'rw', isa => 'Int',  default => 0);
+
+has 'rfactor'	      => (is => 'rw', isa => 'Num', default => 0);
+has 'chisqr'	      => (is => 'rw', isa => 'Num', default => 0);
+has 'chinu'	      => (is => 'rw', isa => 'Num', default => 0);
+
 has 'lineshapes'   => (
 		       traits    => ['Array'],
 		       is        => 'rw',
@@ -325,9 +330,7 @@ sub plot {
 
 sub report {
   my ($self) = @_;
-  my $string = "Fit to " . $self->data->name . "\n";
-  $string .= sprintf("   using %d data points with %d lineshapes and %d variables (%.3f measurements)\n\n",
-		     $self->ndata, $#{$self->lineshapes}+1, $self->nparam, $self->ninfo);
+  my $string = $self->template("analysis", "peak_report");
   foreach my $ls (@{$self->lineshapes}) {
     $string .= $ls->report;
   };

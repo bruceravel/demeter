@@ -108,6 +108,31 @@ sub post_fit {
 
 sub fetch_statistics {
   my ($self) = @_;
+
+  my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
+  my @x     = $self->get_array('energy');
+  my @func  = $self->get_array('func');
+  my @resid = $self->get_array('resid');
+  #foreach my $i (0 .. $#x) {
+  #  next if ($x[$i] < $self->xmin);
+  #  next if ($x[$i] > $self->xmax);
+  #  ++$count;
+  #  $avg += $func[$i];
+  #};
+  #$avg /= $count if $count != 0;
+  foreach my $i (0 .. $#x) {
+    next if ($x[$i] < $self->xmin);
+    next if ($x[$i] > $self->xmax);
+    $rfact  += $resid[$i]**2;
+    $sumsqr += $func[$i]**2;
+  };
+  #$self->npoints($count);
+  $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
+  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+  #$self->nvarys($self->fetch_scalar('n_varys'));
+
+
   foreach my $ls (@{$self->lineshapes}) {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;

@@ -38,6 +38,12 @@ use Demeter::Constants qw($NULLFILE);
 use Const::Fast;
 const my $FRAC => 100000;
 
+use vars qw($DataDump_exists $DataDumpColor_exists);
+$DataDump_exists = eval "require Data::Dump" || 0;
+if ($DataDump_exists) {
+  $Data::Dump::INDENT = '| ';
+};
+$DataDumpColor_exists = eval "require Data::Dump::Color" || 0;
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
 # require Exporter;
@@ -404,8 +410,16 @@ sub clear_ifeffit_titles {
 
 sub Dump {
   my ($self, $ref, $name) = @_;
-  return Data::Dumper->Dump([$ref], [$name]) if $name;
-  return Dumper($ref);
+  if ($DataDumpColor_exists) {
+    Data::Dump::Color->dd($ref);
+  } elsif ($DataDump_exists) {
+    Data::Dump->dd($ref);
+  } elsif ($name) {
+    print Data::Dumper->Dump([$ref], [$name]);
+    return 1;
+  } else {
+    print Dumper($ref);
+  };
 };
 
 

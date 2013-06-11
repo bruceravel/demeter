@@ -11,6 +11,7 @@
   q{};
 }
 
+dempeak.ninfo = {$S->ninfo}
 
 def peakfit(par, peak):
     for g in ({$string}):
@@ -54,3 +55,4 @@ enddef
 ##| perform the peak fit
 minimize(peakfit, dempeak, args=({$S->group},))
 _sys.paramGroup = None
+dempeak.rfactor = sum({$S->group}.resid**2) / sum({$S->group}.func**2)

@@ -14,6 +14,7 @@
 i0 = index_of({$S->group}.x, {$S->data->bkg_e0})
 i1 = index_of({$S->group}.x, {$S->xmin})
 i2 = index_of({$S->group}.x, {$S->xmax})
+demlcf.ninfo = {$S->ninfo}
 
 def lcf_fit(par, par_sh, lcf):
     for g in ({$string}):

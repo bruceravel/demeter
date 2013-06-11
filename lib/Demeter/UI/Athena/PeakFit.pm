@@ -42,8 +42,11 @@ my $demeter  = $Demeter::UI::Athena::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
-my %map  = (atan => "Arctangent", erf => "Error function",
-	    gaussian => "Gaussian", lorentzian => "Lorentzian");
+my %map  = (atan => "Arctangent", erf => "Error function", logistic => 'Logistic',
+	    gaussian => "Gaussian", lorentzian => "Lorentzian", voigt => 'Voigt',
+	    pvoigt => 'Pseudo-Voigt', pseudo_voigt => 'Pseudo-Voigt',
+	    pearson7 => 'Pearson7', breit_wigner => 'Breit-Wigner', lognormal => 'LogNormal',
+	    students_t => 'Student\'s T');
 my %swap = (atan => "erf", erf => "atan", gaussian => "lorentzian", lorentzian => "gaussian");
 
 sub new {
@@ -355,7 +358,8 @@ sub threeparam {
 
   $hbox->Add(1,1,1);
 
-  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Cen"), 0, wxALL, 3);
+  my $lab = ($fun =~ m{atan|erf|logistic}) ? 'Center' : $E0;
+  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, $lab), 0, wxALL, 3);
   $this->{'val1'.$n} = Wx::TextCtrl->new($this->{main}, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val1'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'grab'.$n} = Wx::BitmapButton -> new($this->{main}, -1, $bullseye);
@@ -365,16 +369,19 @@ sub threeparam {
 
   $hbox->Add(1,1,1);
 
-  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Wid"), 0, wxALL, 3);
-  $this->{'val2'.$n} = Wx::TextCtrl->new($this->{main}, -1, $this->{PEAK}->defwidth, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
+  $lab = ($fun =~ m{atan|erf|logistic}) ? 'Width' : $SIGMA;
+  my $value = ($fun =~ m{atan|erf|logistic}) ? sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z, $this->{PEAK}->data->fft_edge)) : $this->{PEAK}->defwidth;
+  $hbox -> Add(Wx::StaticText->new($this->{main}, -1, $lab), 0, wxALL, 3);
+  $this->{'val2'.$n} = Wx::TextCtrl->new($this->{main}, -1, $value, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'fix2'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
   $hbox -> Add($this->{'fix2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
 
   if ($fun !~ m{atan|erf|logistic}) {
-    $this->{'lab3'.$n} = Wx::StaticText->new($this->{main}, -1, "S");
+    $hbox->Add(1,1,1);
+    $this->{'lab3'.$n} = Wx::StaticText->new($this->{main}, -1, $GAMMA);
     $hbox -> Add($this->{'lab3'.$n}, 0, wxALL, 3);
-    $this->{'val3'.$n} = Wx::TextCtrl->new($this->{main}, -1, $this->{PEAK}->defwidth, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
+    $this->{'val3'.$n} = Wx::TextCtrl->new($this->{main}, -1, 0.5, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
     $hbox -> Add($this->{'val3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
     $this->{'fix3'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
     $hbox -> Add($this->{'fix3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
@@ -455,6 +462,8 @@ sub fit {
 					   fix1  => $this->{'fix1'.$i}->GetValue,
 					   a2    => $this->{'val2'.$i}->GetValue,
 					   fix2  => $this->{'fix2'.$i}->GetValue,
+					   a3    => 0,
+					   fix3  => 1,
 					  );
     if ($this->{'lineshape'.$i}->nparams == 4) {
       $this->{'lineshape'.$i}->a3($this->{'val3'.$i}->GetValue);
@@ -473,7 +482,7 @@ sub fit {
       $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
       $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
       $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
-      if ($this->{'type'.$i} eq 'pseudovoight') {
+      if ($this->{'lineshape'.$i}->nparams == 4) {
 	$this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
       };
     };
@@ -613,6 +622,15 @@ sub do_swap_larch {
   $this->{'type'.$n} = lc($selection);
   $this->{'box'.$n} -> SetLabel($selection);
   $::app->{main} -> Update;
+  if (lc($selection) =~ m{gaussian|lorentzian|strudents_t}) {
+    $this->{'lab3'.$n}->Enable(0);
+    $this->{'val3'.$n}->Enable(0);
+    $this->{'fix3'.$n}->Enable(0);
+  } else {
+    $this->{'lab3'.$n}->Enable(1);
+    $this->{'val3'.$n}->Enable(1);
+    $this->{'fix3'.$n}->Enable(1);
+  };
 };
 
 

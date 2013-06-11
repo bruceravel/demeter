@@ -49,7 +49,7 @@ has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(height yint) ]);
 has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(center slope) ]);
 has 'a2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'hwhm');
-has 'a3'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eta');
+has 'a3'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'eta');
 has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a6'       => (is => 'rw', isa => 'Num',  default => 0);

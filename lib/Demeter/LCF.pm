@@ -451,7 +451,13 @@ sub _statistics {
       $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
       $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));
       $self->nvarys($self->fetch_scalar('demlcf.nvarys'));
-      $self->npoints($self->nvarys+$self->fetch_scalar('demlcf.nfree'));
+      my @x     = $self->get_array('x');
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	++$count;
+      };
+      $self->npoints($count);
 
     };
   };

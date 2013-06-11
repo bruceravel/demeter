@@ -23,6 +23,30 @@ has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			    lognormal    => 2,
 			    students_t   => 2,
 			  }});
+has 'correlations' => (
+		       traits    => ['Hash'],
+		       is        => 'rw',
+		       isa       => 'HashRef[HashRef]',
+		       default   => sub { {} },
+		       handles   => {
+				     'exists_in_correlations' => 'exists',
+				     'keys_in_correlations'   => 'keys',
+				     'get_correlations'       => 'get',
+				     'set_correlations'       => 'set',
+				    }
+		      );
+has 'mappings' => (
+		   traits    => ['Hash'],
+		   is        => 'rw',
+		   isa       => 'HashRef',
+		   default   => sub { {} },
+		   handles   => {
+				 'exists_in_mappings' => 'exists',
+				 'keys_in_mappings'   => 'keys',
+				 'get_mappings'       => 'get',
+				 'set_mappings'       => 'set',
+				}
+		  );
 
 sub DEMOLISH {
   my ($self) = @_;
@@ -117,12 +141,27 @@ sub post_fit {
 
 sub fetch_statistics {
   my ($self) = @_;
+
+  $self->rfactor(sprintf("%.7f", $self->fetch_scalar('dempeak.rfactor')));
+  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('dempeak.chi_square')));
+  $self->chinu(sprintf("%.7f", $self->fetch_scalar('dempeak.chi_reduced')));
+  #$self->nvarys($self->fetch_scalar('demlcf.nvarys'));
+  #$self->npoints($self->nvarys+$self->fetch_scalar('demlcf.nfree'));
+
+
+  my @which = qw(height centroid width 4th);
   foreach my $ls (@{$self->lineshapes}) {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
       my $scalar = sprintf("dempeak.%s_%d", $ls->group, $n);
       $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
       $att = 'e'.$n;
+
+      my %correls = $self->fetch_array($scalar.'.correl');
+      my $this = sprintf("%s_%d", $ls->group, $n);
+      $self->set_correlations($this, \%correls);
+      $self->set_mappings($this, sprintf("%s %s", $ls->name, $which[$n]));
+
       $scalar = $scalar.'.stderr';
       my $value = $self->fetch_scalar($scalar);
       $value = 0 if not looks_like_number($value);
@@ -130,6 +169,8 @@ sub fetch_statistics {
     };
     $ls->area($ls->a0);
   };
+  Demeter->Dump($self->correlations);
+  Demeter->Dump($self->mappings);
 };
 
 sub pf_dispose {

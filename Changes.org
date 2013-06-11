@@ -11,6 +11,9 @@
    + LCF tool: the interaction of individual and over-all e0 shifts now makes sense
    + linear term in LCF fit disabled when using ifeffit
    + reorganized widgets on LCF tool, added mouseover hints
+   + improvements to the peak fitting tool
+      - scrolled area now working correctly
+      - now capable of 4-parameter lineshapes
 
 *** Artemis
    + Clear project name when closing a project
@@ -26,10 +29,17 @@
    + changed "ifeffit" attribute in Mode object to "backend"
       - made "ifeffit" and "larch" as aliases for "backend"
       - replaced "ifeffit" with "backend" everywhere in the distribution
+   + removed dependence on MooseX::StrictConstructor (this addresses a
+     problem with backwards compatibility of project files which have
+     newly implemented attributes of Demeter objects.  this is not
+     actually solvable looking backwards, but should be forwards)
+   + improved Dump method in Tools.pm to allow use of Data:Dump::Color or Data::Dump if available
+   + collecting statistics in peak fit
 
 *** Larch
    + Larch templates for LCF fitting
    + Reset symbol table after a call to minimize in Larch templates that do so
+   + Larch templates for Peak fitting
 
 *** Wx
    + Fixed a Wx bug involving misuse of the wxNullColour symbol

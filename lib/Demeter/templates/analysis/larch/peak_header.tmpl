@@ -1,0 +1,7 @@
+{$S->group}.myheader = ["Demeter Peak Fit output file - Demeter version {$S->version}"]
+{
+  foreach $g (split(/\n/, $S->template("analysis", "peak_report"))) {
+    $gg = ($g =~ m{\A\#}) ? '# '.$g : $g;
+    $OUT .= $S->group . ".myheader.append(\"" . $gg . "\")\n";
+  }
+}
