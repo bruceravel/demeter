@@ -9,7 +9,6 @@
 {
   $emin = $D->bkg_e0 + $P->emin;
   $emax = $D->bkg_e0 + $P->emax;
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   ($ylabel = $P->ylabel) =~ s[\\gm][{/Symbol m}];
   $file = $P->tempfile;
   $D->points(file    => $file,
@@ -33,4 +32,4 @@ set ylabel "\{/*1.4 {$ylabel}\}"
 set xrange [ {$emin} : {$emax} ]
 
 # {$D->name}: ifeffit group = {$D->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->color} title "{$thiskey}"
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->color} title "{$thiskey}"

@@ -385,7 +385,7 @@ sub Truncate {
 
 sub deglitch {
   my ($self, @values) = @_;
-  carp("$self is not mu(E) data\n\n"), return if ($self->datatype ne "xmu");
+  carp("$self is not mu(E) data\n\n"), return if ($self->datatype !~ m{xmu|xanes});
   $self -> _update("normalize");
   my @x = $self->get_array("energy");
   foreach my $v (@values) {

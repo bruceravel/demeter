@@ -8,7 +8,6 @@
 }
 {
   $this = $PT || $D;
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $ylabel = $P->plot_qylabel;
   $file = $P->tempfile;
   $this->points(file    => $file,
@@ -36,4 +35,4 @@ set ylabel "\{/*1.2 {$ylabel}\}"
 set xrange [ {$P->qmin} : {$P->qmax} ]
 
 # {$this->name}: ifeffit group = {$D->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

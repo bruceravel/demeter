@@ -7,7 +7,6 @@
   #  color fg bg grid gridcolor
 }
 {
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $ylabel = ;
   $file = $P->tempfile;
   $D->points(file    => $file,
@@ -31,4 +30,4 @@ set ylabel "\{/*1.4 model function\}"
 set xrange [ {$P->emin} : {$P->emax} ]
 
 # {$S->name}: ifeffit group = {$S->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

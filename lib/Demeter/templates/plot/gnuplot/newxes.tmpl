@@ -7,7 +7,6 @@
   #  color fg bg grid gridcolor
 }
 {
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $ylabel = ($suffix eq 'norm') ? "Normalized emission" 
           : ($suffix eq 'sub')  ? "Baseline subtracted emission" 
           : "Emission";
@@ -33,4 +32,4 @@ set ylabel "\{/*1.4 {$ylabel}\}"
 set xrange [ {$P->emin} : {$P->emax} ]
 
 # {$D->name}: ifeffit group = {$D->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

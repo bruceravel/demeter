@@ -257,7 +257,7 @@ options=lines points linespoints
 description
   The line style used to plot the fit after a fit.  Demeter does not
   provide complete control over gnuplot lines styles via its
-  configuration system.
+  configuration system.  NOT CURRENTLY USED!
 
 variable=partstyle
 type=list
@@ -267,6 +267,7 @@ description
   The line style used to plot parts of a fit (i.e. the window, the
   residual, or the background).  Demeter does not provide complete
   control over gnuplot lines styles via its configuration system.
+  NOT CURRENTLY USED!
 
 variable=pathstyle
 type=list
@@ -275,7 +276,7 @@ options=lines points linespoints
 description
   The line style used to plot paths used in a fit.  Demeter does not
   provide complete control over gnuplot lines styles via its
-  configuration system.
+  configuration system.  NOT CURRENTLY USED!
 
 variable=pluck_timeout
 type=positive integer

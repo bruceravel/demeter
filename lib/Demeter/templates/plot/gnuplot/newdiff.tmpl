@@ -11,7 +11,6 @@
     $emin = $P->kmin;
     $emax = $P->kmax;
   };
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $xlabel = ($S->space =~ m{\Achi}) ? "Wavenumber&\{aa\}(\{\305\}^\{-1\})" : "Energy&\{aa\}(eV)";
   ($ylabel = "Difference of absorption")            if ($S->space =~ m{\Axmu});
   ($ylabel = "Difference of normalized absorption") if ($S->space =~ m{\Anor});

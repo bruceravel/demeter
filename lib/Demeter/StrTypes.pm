@@ -380,7 +380,7 @@ subtype TemplateAnalysis,
 
 ## -------- Line types in PGPLOT
 use vars qw(@pgplotlines_list $pgplotlines_regexp);
-@pgplotlines_list = qw(solid dashed dotted dot-dash points linespoints);
+@pgplotlines_list = qw(solid dashed dotted dot-dash points lines linespoints);
 $pgplotlines_regexp = Regexp::Assemble->new()->add(@pgplotlines_list)->re;
 subtype PgplotLine,
   as Str,
