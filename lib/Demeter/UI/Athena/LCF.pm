@@ -909,9 +909,9 @@ sub seq_select {
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel.'_sequence';
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'lcf_sequence' : $::app->{main}->{project}->GetLabel.'_lcf_sequence';
   $init .= '.xls';
-  my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
@@ -922,7 +922,7 @@ sub seq_report {
   my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->sequence_report($fname);
-  $::app->{main}->status("Wrote fit sequence report as an Excel spreadsheet to $fname");
+  $::app->{main}->status("Wrote LCF fit sequence report as an Excel spreadsheet to $fname");
 };
 
 sub seq_plot {

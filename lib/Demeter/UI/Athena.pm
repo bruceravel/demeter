@@ -118,6 +118,7 @@ sub OnInit {
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
   $app->{lastplot} = [q{}, q{single}];
+  $app->{plotting} = 0;
   $app->{selected} = -1;
   $app->{modified} = 0;
   $app->{most_recent} = 0;
@@ -1643,7 +1644,7 @@ sub OnGroupSelect {
   };
 
   if ($is_index != -1) {
-    $showing->push_values($is);
+    $showing->push_values($is, $plot);
     $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
@@ -1891,7 +1892,10 @@ sub plot {
 
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
+  my $this = $app->get_view($app->{main}->{views}->GetSelection);
+  $app->{plotting} = 1;
   $app->OnGroupSelect(0,0,0);
+  $app->{plotting} = 0;
   undef $busy;
 };
 
@@ -1984,6 +1988,7 @@ sub postplot {
   if ($data eq $app->current_data) {
     $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+    $app->{plotting} = 1;
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   };
   $data->bkg_fixstep($is_fixed);

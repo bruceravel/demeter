@@ -8,6 +8,10 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK EVT_CHOICE EVT_LEFT_DOWN EVT_MENU);
 
 use Const::Fast;
+const my $STEPLIKE => qr(atan|erf|logistic)i;
+const my $PEAKLIKE => qr(gaussian|lorentzian|voigt|pvoit|pseudo_voigt|pseudo-voigt|pearson7|students_t)i;
+const my $PEAK3    => qr(gaussian|lorentzian|students_t)i;
+
 use Cwd;
 use File::Basename;
 use File::Spec;
@@ -16,6 +20,7 @@ use List::MoreUtils qw(any firstidx);
 use List::Util qw(max);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:greek);
+use Demeter::UI::Wx::VerbDialog;
 
 use vars qw($label);
 $label = "Peak fitting";	# used in the Choicebox and in status bar messages to identify this tool
@@ -24,7 +29,7 @@ $label = "Peak fitting";	# used in the Choicebox and in status bar messages to i
 our $steps = ($ENV{DEMETER_BACKEND} eq 'larch') ? ['Atan', 'Erf', 'Logistic'] : ['Atan', 'Erf'];
 our $peaks = ($ENV{DEMETER_BACKEND} eq 'larch')
   ? ['Gaussian', 'Lorentzian', 'Voigt', 'Pseudo_Voigt', 'Pearson7', 'Students_t']
-  : ['Gaussian', 'Lorentzian'];
+  : ['Gaussian', 'Lorentzian', 'Pseudo_Voigt'];
 
 const my %SWAPHASH => (Gaussian	    => Wx::NewId(),
 		       Lorentzian   => Wx::NewId(),
@@ -77,6 +82,10 @@ sub new {
   $this->{emax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox->Add($this->{emax_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+  EVT_BUTTON($this, $this->{emin_pluck}, sub{ $this->grab_bound('emin') });
+  EVT_BUTTON($this, $this->{emax_pluck}, sub{ $this->grab_bound('emax') });
+
+
   $this->{components} = Wx::CheckBox->new($this, -1, "Plot components");
   $this->{residual}   = Wx::CheckBox->new($this, -1, "Plot residual");
   $hbox->Add($this->{components}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
@@ -90,6 +99,7 @@ sub new {
   $this->{notebook} ->AddPage($this->{mainpage}, 'Lineshapes',    1);
   $this->{notebook} ->AddPage($this->{fitspage}, 'Fit results',   0);
   $this->{notebook} ->AddPage($this->{markedpage}, 'Sequence',      0);
+
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: peak fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -247,6 +257,7 @@ sub push_values {
       $this->{$ac}->Enable(0);
     };
   };
+  return if ($::app->{plotting});
   $this->{PEAK} -> po -> set(e_norm   => 1,
 			     e_markers=> 1,
 			     e_bkg    => 0,
@@ -310,7 +321,7 @@ sub add {
     $this->{main}  -> Scroll(0,$n*$this->{increment});
   };
 
-  foreach my $ac (qw(fit plot reset)) {
+  foreach my $ac (qw(fit plot)) {
     $this->{$ac}->Enable(1);
   };
 
@@ -334,7 +345,7 @@ sub threeparam {
   $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$index, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'name'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+  if (($ENV{DEMETER_BACKEND} eq 'ifeffit') and ($fun =~ m{$STEPLIKE})) {
     $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change to '.lc($map{$swap{$fun}}),
 						q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
     $this->{'swap'.$n}->SetNormalColour(wxBLACK);
@@ -344,7 +355,7 @@ sub threeparam {
     $this->{'swap'.$n} -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
 						 wxDEFAULT, wxNORMAL, wxBOLD, 1, "" ));
     EVT_LEFT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
-    EVT_MENU($this->{"swap$n"}, -1, sub{ $this->do_swap_larch(@_, $n) });
+    EVT_MENU($this->{"swap$n"}, -1, sub{ $this->do_swap_peak(@_, $n) });
   };
   $hbox -> Add($this->{'swap'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox->Add(1,1,1);
@@ -364,7 +375,7 @@ sub threeparam {
 
   $hbox->Add(1,1,1);
 
-  my $lab = ($fun =~ m{atan|erf|logistic}) ? 'Center' : $E0;
+  my $lab = ($fun =~ m{$STEPLIKE}) ? 'Center' : $E0;
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, $lab), 0, wxALL, 3);
   $this->{'val1'.$n} = Wx::TextCtrl->new($this->{main}, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val1'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
@@ -375,15 +386,15 @@ sub threeparam {
 
   $hbox->Add(1,1,1);
 
-  $lab = ($fun =~ m{atan|erf|logistic}) ? 'Width' : $SIGMA;
-  my $value = ($fun =~ m{atan|erf|logistic}) ? sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z, $this->{PEAK}->data->fft_edge)) : $this->{PEAK}->defwidth;
+  $lab = ($fun =~ m{$STEPLIKE}) ? 'Width' : $SIGMA;
+  my $value = ($fun =~ m{$STEPLIKE}) ? sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z, $this->{PEAK}->data->fft_edge)) : $this->{PEAK}->defwidth;
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, $lab), 0, wxALL, 3);
   $this->{'val2'.$n} = Wx::TextCtrl->new($this->{main}, -1, $value, wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'val2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
   $this->{'fix2'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
   $hbox -> Add($this->{'fix2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
 
-  if ($fun !~ m{atan|erf|logistic}) {
+  if ($fun !~ m{$STEPLIKE}) {
     $hbox->Add(1,1,1);
     $this->{'lab3'.$n} = Wx::StaticText->new($this->{main}, -1, $GAMMA);
     $hbox -> Add($this->{'lab3'.$n}, 0, wxALL, 3);
@@ -391,7 +402,7 @@ sub threeparam {
     $hbox -> Add($this->{'val3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 0);
     $this->{'fix3'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
     $hbox -> Add($this->{'fix3'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 1);
-    if ($fun =~ m{gaussian|lorentzian|strudents_t}) {
+    if ($fun =~ m{$PEAK3}) {
       $this->{'lab3'.$n}->Enable(0);
       $this->{'val3'.$n}->Enable(0);
       $this->{'fix3'.$n}->Enable(0);
@@ -402,7 +413,7 @@ sub threeparam {
   $this->{'fix0'.$n}->SetValue(0);
   $this->{'fix1'.$n}->SetValue(1);
   $this->{'fix2'.$n}->SetValue(0);
-  $this->{'fix3'.$n}->SetValue(0) if ($fun !~ m{atan|erf|logistic});
+  $this->{'fix3'.$n}->SetValue(0) if ($fun !~ m{$STEPLIKE});
 
 
   EVT_BUTTON($this, $this->{'grab'.$n}, sub{ $this->grab_center($n) });
@@ -423,6 +434,23 @@ sub increment {
   return $index;
 };
 
+sub grab_bound {
+  my ($this, $which) = @_;
+  my $on_screen = lc($::app->{lastplot}->[0]);
+  if ($on_screen ne 'e') {
+    $::app->{main}->status("You can only pluck for a peakfit from an energy plot.");
+    return;
+  };
+
+  my ($ok, $x, $y) = $::app->cursor;
+  return if not $ok;
+  $::app->{main}->status(q{Pluck canceled}), return if ($x < -90000);
+
+  $this->{$which}->SetValue(sprintf("%.3f", $x-$this->{PEAK}->data->bkg_e0));
+
+  $::app->{main}->status("Plucked $x for $which");
+};
+
 
 sub grab_center {
   my ($this, $n) = @_;
@@ -434,10 +462,11 @@ sub grab_center {
 
   my ($ok, $x, $y) = $::app->cursor;
   return if not $ok;
+  $::app->{main}->status(q{Pluck canceled}), return if ($x < -90000);
   $y = $this->{PEAK}->data->yofx($this->{PEAK}->data->nsuff, q{}, $x);
 
   $this->{'val1'.$n}->SetValue($x);
-  $this->{'val0'.$n}->SetValue(sprintf("%.2f",$y));
+  $this->{'val0'.$n}->SetValue(sprintf("%.3f",$y));
 
   $::app->{main}->status("Plucked $x for ".$this->{'type'.$n}." center");
 };
@@ -447,8 +476,17 @@ sub fetch {
   my ($this) = @_;
 
   my $peak = $this->{PEAK};
+  my $string = q{};
   $peak -> xmin($this->{emin}->GetValue);
   $peak -> xmax($this->{emax}->GetValue);
+  ## sanity checks
+  if (abs($this->{emin}->GetValue) > 200) {
+    $string .= "The lower bound of the fit is very far from E0\n\n";
+  };
+  if (abs($this->{emax}->GetValue) > 200) {
+    $string .= "The upper bound of the fit is very far from E0\n\n";
+  };
+
   $peak -> plot_components($this->{components}->GetValue);
   $peak -> plot_residual($this->{residual}->GetValue);
   my $nls = 0;
@@ -456,7 +494,9 @@ sub fetch {
     next if (not exists $this->{"func$i"});
     next if $this->{'skip'.$i}->GetValue;
     ++$nls;
-    $this->{'lineshape'.$i} = $peak -> add($this->{'type'.$i},
+    my $fun = $this->{'type'.$i};
+    $fun = 'pvoigt' if $fun =~ m{pseudo[-_]voigt}i;
+    $this->{'lineshape'.$i} = $peak -> add($fun,
 					   name  => $this->{'name'.$i}->GetValue,
 					   a0    => $this->{'val0'.$i}->GetValue,
 					   fix0  => $this->{'fix0'.$i}->GetValue,
@@ -467,12 +507,30 @@ sub fetch {
 					   a3    => 0,
 					   fix3  => 1,
 					  );
+    ## sanity checks
+    if ($this->{'val1'.$i}->GetValue < ($this->{PEAK}->data->bkg_e0-30)) {
+      $string .= sprintf("The centroid of %s appears to be well below the XANES data range.\n\n",
+			 $this->{'lineshape'.$i}->name);
+    };
+    if ($this->{'val1'.$i}->GetValue > ($this->{PEAK}->data->bkg_e0+200)) {
+      $string .= sprintf("The centroid of %s appears to be well above the XANES data range.\n\n",
+			 $this->{'lineshape'.$i}->name);
+    };
+    if ($this->{'val2'.$i}->GetValue < 0) {
+      $string .= sprintf("The width of %s is negative.\n\n",
+			 $this->{'lineshape'.$i}->name);
+    };
     if ($this->{'lineshape'.$i}->nparams == 4) {
       $this->{'lineshape'.$i}->a3($this->{'val3'.$i}->GetValue);
       $this->{'lineshape'.$i}->fix3($this->{'fix3'.$i}->GetValue);
+      ## sanity checks
+      if ($this->{'val3'.$i}->GetValue < 0) {
+	$string .= sprintf("The 4th parameter of %s is negative.\n\n",
+			   $this->{'lineshape'.$i}->name);
+      };
     };
   };
-  return $nls;
+  return ($nls, $string);
 };
 
 sub fit {
@@ -482,8 +540,18 @@ sub fit {
   my $peak = $this->{PEAK};
   $peak -> data($::app->current_data);
   $peak -> clean;
-  my $nls = $this -> fetch;
-
+  my ($nls, $warning) = $this -> fetch;
+  if ($warning) {
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+						 $warning,
+						 "Continue anyway?",
+						 "Continue");
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_NO) {
+      $::app->{main}->status("Peak fit canceled");
+      return;
+    };
+  };
 
   $peak -> fit($nofit);
   if (not $nofit) {
@@ -506,7 +574,7 @@ sub fit {
 
 
   if (not $nofit) {
-    foreach my $ac (qw(save fitmarked resultreport resultplot)) {
+    foreach my $ac (qw(save reset fitmarked resultreport resultplot)) {
       $this->{$ac}->Enable(1);
     };
     $::app->{main}->status(sprintf("Performed peak fitting on %s using %d lineshapes and %d variables",
@@ -616,16 +684,33 @@ sub seq_plot {
 
 };
 sub seq_report {
-  $::app->{main}->status("Not yet");
+  my ($this, $event) = @_;
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'peak_sequence' : $::app->{main}->{project}->GetLabel.'_peak_sequence';
+  $init .= '.xls';
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save peak fit sequence results", cwd, $init,
+				"Excel (*.xls)|*.xls|All files (*)|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving peak fit sequence results has been canceled.");
+    return 0;
+  };
+  my $fname = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  $this->{PEAK}->report_excel($fname);
+  $::app->{main}->status("Wrote peak fit sequence report as an Excel spreadsheet to $fname");
 };
+
 sub seq_select {
   my ($this, $event) = @_;
+  my $busy = Wx::BusyCursor->new();
   my $index  = (ref($event) =~ m{Event}) ? $event->GetIndex : $event;
   $this->{PEAK}    -> restore($this->{PEAK}->seq_results->[$index]);
   $this->{mresult} -> SetValue($this->{PEAK}->report);
   $this->{PEAK}    -> plot_components($this->{components}->GetValue);
   $this->{PEAK}    -> plot_residual($this->{residual}->GetValue);
   $this->{PEAK}    -> plot;
+  undef $busy;
 };
 
 sub save {
@@ -648,7 +733,26 @@ sub save {
 
 sub reset_all {
   my ($this) = @_;
-  $this->tilt("Resetting is not yet implemented",1);
+  $this->{result}->Clear;
+  foreach my $i (1 .. $this->{count}) {
+    next if not exists $this->{"func$i"};
+    ## height of data at centroid
+    my $y = $this->{PEAK}->data->yofx($this->{PEAK}->data->nsuff, q{}, $this->{'val1'.$i}->GetValue);
+    $this->{'val0'.$i}->SetValue(sprintf("%.3f", $y));
+    ## width=0.5 or gamma_ch for $STEPLIKE
+    $this->{'val2'.$i}->SetValue(0.5);
+    if ($this->{"type$i"} =~ m{$STEPLIKE}) {
+      $this->{'val2'.$i}->SetValue(sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z,
+										$this->{PEAK}->data->fft_edge)))
+    };
+    if ($this->{'lineshape'.$i}->nparams == 4) {
+      $this->{'val3'.$i}->SetValue(0.5);
+    };
+    $this->{'fix0'.$i}->SetValue(0);
+    $this->{'fix1'.$i}->SetValue(1);
+    $this->{'fix2'.$i}->SetValue(0);
+    $this->{'fix3'.$i}->SetValue(0) if ($this->{"type$i"} !~ m{$STEPLIKE});
+  };
 };
 
 sub make {
@@ -691,14 +795,14 @@ sub discard {
 
 sub swap {
   my ($this, $event, $n) = @_;
-  if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
-    $this->swap_ifeffit($n);
+  if (($ENV{DEMETER_BACKEND} eq 'ifeffit') and ($this->{'type'.$n} =~ m{$STEPLIKE})) {
+    $this->swap_ifeffit_step($n);
   } else {
-    $this->swap_larch($n, $event);
+    $this->swap_peak($n, $event);
   };
 };
 
-sub swap_ifeffit {
+sub swap_ifeffit_step {
   my ($this, $n) = @_;
   my $name = $this->{'name'.$n}->GetValue;
   my $type = $this->{'type'.$n};
@@ -713,7 +817,7 @@ sub swap_ifeffit {
   $::app->{main} -> Update;
 };
 
-sub swap_larch {
+sub swap_peak {
   my ($this, $n, $event) = @_;
   my $type = $this->{'type'.$n};
   $this->{curentn} = $n;
@@ -739,7 +843,7 @@ sub swap_larch {
   $this->{'swap'.$n} -> PopupMenu($menu, $here);
 };
 
-sub do_swap_larch {
+sub do_swap_peak {
   my ($this, $text, $event, $n) = @_;
   my $id = $event->GetId;
   my %hash = reverse(%SWAPHASH);
@@ -748,7 +852,7 @@ sub do_swap_larch {
   $this->{'type'.$n} = lc($selection);
   $this->{'box'.$n} -> SetLabel($selection);
   $::app->{main} -> Update;
-  if (lc($selection) =~ m{gaussian|lorentzian|strudents_t}) {
+  if (lc($selection) =~ m{$PEAK3}) {
     $this->{'lab3'.$n}->Enable(0);
     $this->{'val3'.$n}->Enable(0);
     $this->{'fix3'.$n}->Enable(0);

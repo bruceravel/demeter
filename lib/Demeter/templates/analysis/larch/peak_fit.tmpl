@@ -32,7 +32,7 @@ def peakfit(par, peak):
            __new = a0 + a1*peak.energy
         elif type == 'voigt':
            __new = a0 * voigt(peak.energy, a1, a2, a3)
-        elif type == 'pseudo_voigt':
+        elif type == 'pseudo_voigt' or type == 'pvoigt':
            __new = a0 * pvoigt(peak.energy, a1, a2, a3)
         elif type == 'pearson7':
            __new = a0 * pearson7(peak.energy, a1, a2, a3)
@@ -53,6 +53,11 @@ def peakfit(par, peak):
 enddef
 
 ##| perform the peak fit
-minimize(peakfit, dempeak, args=({$S->group},))
-_sys.paramGroup = None
+if {$S->TrueFalse($nofit)}:
+    peakfit(dempeak, {$S->group})
+    show {$S->group}
+else:
+    minimize(peakfit, dempeak, args=({$S->group},))
+    _sys.paramGroup = None
+endif
 dempeak.rfactor = sum({$S->group}.resid**2) / sum({$S->group}.func**2)

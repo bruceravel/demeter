@@ -9,12 +9,12 @@ has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
-			    linear	     => 2,
-			    gaussian	     => 3,
-			    lorentzian	     => 3,
-			    pseudovoight     => 4,
-			    atan	     => 3,
-			    erf  	     => 3,
+			    linear     => 2,
+			    gaussian   => 3,
+			    lorentzian => 3,
+			    pvoigt     => 4,
+			    atan       => 3,
+			    erf        => 3,
 			  }});
 
 sub DEMOLISH {
@@ -191,7 +191,7 @@ document section is parsed by the reporting methods of this object.
 
  (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
 
-=item pseudovoigt(height, center, hwhm, eta)
+=item pvoigt(height, center, hwhm, eta)
 
  eta*loren + (1-eta)*gauss
 

@@ -13,6 +13,7 @@ has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			    linear       => 2,
 			    gaussian     => 3,
 			    lorentzian   => 3,
+			    pvoigt       => 4,
 			    pseudo_voigt => 4,
 			    atan         => 3,
 			    erf          => 3,
@@ -75,7 +76,7 @@ sub cleanup {
   my ($self, $ref) = @_;
   my $string = q{};
   foreach my $g (@$ref) {
-    $string .= 'erase @group ' . $g . "\n";
+    $string .= "del ".$self->group.".$g\n";
   };
   $self->pf_dispose($string);
   return $self;
@@ -169,8 +170,8 @@ sub fetch_statistics {
     };
     $ls->area($ls->a0);
   };
-  Demeter->Dump($self->correlations);
-  Demeter->Dump($self->mappings);
+  #Demeter->Dump($self->correlations);
+  #Demeter->Dump($self->mappings);
 };
 
 sub pf_dispose {

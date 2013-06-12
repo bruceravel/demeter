@@ -30,6 +30,7 @@ use Demeter::StrTypes qw( Empty );
 use File::Spec;
 use List::Util qw(min max);
 use List::MoreUtils qw(any none uniq);
+use Spreadsheet::WriteExcel;
 use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -186,15 +187,15 @@ sub add {
   croak("$function is not a valid lineshape") if not $self->valid($function);
 
   my %args = @args;
-  $args{a0} ||= $args{height} || $args{yint}  || 0.3;
-  $args{a1} ||= $args{center} || $args{slope} || 0;
-  $args{a2} ||= $args{hwhm}   || $args{sigma} || $args{width} || $self->defwidth;
-  $args{a3} ||= $args{eta}    || 0;
-  $args{a4} ||= 0;
-  $args{a5} ||= 0;
-  $args{a6} ||= 0;
-  $args{a7} ||= 0;
-  $args{a8} ||= 0;
+  $args{a0}   ||= $args{height} || $args{yint}  || 0.3;
+  $args{a1}   ||= $args{center} || $args{slope} || 0;
+  $args{a2}   ||= $args{hwhm}   || $args{sigma} || $args{width} || $self->defwidth;
+  $args{a3}   ||= $args{eta}    || 0;
+  $args{a4}   ||= 0;
+  $args{a5}   ||= 0;
+  $args{a6}   ||= 0;
+  $args{a7}   ||= 0;
+  $args{a8}   ||= 0;
   $args{fix0} ||= $args{fixheight} || $args{fixyint}  || 0;
   $args{fix1} ||= $args{fixcenter} || $args{fixslope} || 0;
   $args{fix2} ||= $args{fixhwhm}   || $args{fixsigma} || $args{fixwidth} || 0;
@@ -333,6 +334,8 @@ sub sequence {
 	       Chinu   => $self->chinu,
 	       Chisqr  => $self->chisqr,
 	       Nparam  => $self->nparam,
+	       Ninfo   => $self->ninfo,
+	       Ndata   => $self->ndata,
 	       Data    => $d->group,
 	       Xmin    => $save[0],
 	       Xmax    => $save[1],
@@ -359,12 +362,15 @@ sub sequence {
 
 
 
+
 sub restore {
   my ($self, $rhash) = @_;
   $self->rfactor($rhash->{Rfactor});
   $self->chinu($rhash->{Chinu});
   $self->chisqr($rhash->{Chisqr});
   $self->nparam($rhash->{Nparam});
+  $self->ninfo($rhash->{Ninfo});
+  $self->ndata($rhash->{Ndata});
   $self->xmin($rhash->{Xmin});
   $self->xmax($rhash->{Xmax});
   $self->data(Demeter->mo->fetch("Data", $rhash->{Data}));
@@ -388,6 +394,91 @@ sub restore {
 };
 
 
+sub report_excel {
+  my ($self, $fname) = @_;
+  my @stats  = qw(rfactor chinu chisqr ndata nparam ninfo);
+  my @names  = map {$_->name} @{$self->lineshapes};
+
+  my $workbook;
+  {
+    ## The evals in Spreadsheet::WriteExcel::Workbook::_get_checksum_method
+    ## will set the eval error variable ($@) if any of Digest::XXX
+    ## (XXX = MD4 | PERL::MD4 | MD5) are not installed on the machine.
+    ## This is not a problem -- crypto is not needed in the exported
+    ## Excel file.  However, setting $@ will post a warning given that
+    ## $SIG{__DIE__} is defined to use Wx::Perl::Carp.  So I need to
+    ## locally undefine $SIG{__DIE__} to avoid having a completely
+    ## pointless error message posted to the screen when the S::WE
+    ## object is instantiated
+    local $SIG{__DIE__} = undef;
+    $workbook = Spreadsheet::WriteExcel->new($fname);
+  };
+  my $worksheet = $workbook->add_worksheet();
+
+  my $head = $workbook->add_format();
+  $head -> set_bold;
+  $head -> set_bg_color('grey');
+  $head -> set_align('left');
+  my $group = $workbook->add_format();
+  $group -> set_bold;
+  $group -> set_bg_color('grey');
+  $group -> set_align('left');
+
+
+  my $col = 0;
+  $worksheet->write(1, $col++, 'Data', $head);
+  foreach my $s (@stats) {
+    $worksheet->write(1, $col++, $s, $head);
+  };
+  my $k = 0;
+  foreach my $n (@{$self->lineshapes}) {
+    $worksheet->write(1, $col,   'function', $head);
+    $worksheet->write(1, $col+1, 'height',   $head);
+    $worksheet->write(1, $col+2, 'error',    $head);
+    $worksheet->write(1, $col+3, 'centroid', $head);
+    $worksheet->write(1, $col+4, 'error',    $head);
+    $worksheet->write(1, $col+5, 'width',    $head);
+    $worksheet->write(1, $col+6, 'error',    $head);
+    if ($n->nparams == 4) {
+      $worksheet->merge_range(0,  $col, 0, $col+8, $n->name, $group);
+      $worksheet->write(1, $col+7, 'gamma',    $head);
+      $worksheet->write(1, $col+8, 'error',    $head);
+      $col+=9;
+    } else {
+      $worksheet->merge_range(0,  $col, 0, $col+6, $n->name, $group);
+      $col+=7;
+    };
+    ++$k;
+  };
+
+  my $row = 2;
+  $col = 0;
+  foreach my $res (@{$self->seq_results}) {
+    $worksheet->write($row, $col++, $self->mo->fetch('Data', $res->{Data})->name);
+    foreach my $s (@stats) {
+      $worksheet->write($row, $col++, $res->{ucfirst($s)});
+    };
+    foreach my $n (@{$self->lineshapes}) {
+      $worksheet->write($row, $col++, $res->{$n->group}->[0]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[2]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[3]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[5]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[6]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[8]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[9]);
+      if ($n->nparams == 4) {
+	$worksheet->write($row, $col++, $res->{$n->group}->[11]);
+	$worksheet->write($row, $col++, $res->{$n->group}->[12]);
+      };
+    };
+    ++$row;
+    $col=0;
+  };
+  $workbook->close;
+};
+
+
+
 sub plot {
   my ($self) = @_;
   $self -> po -> set(e_norm   => 1,
@@ -401,7 +492,7 @@ sub plot {
 
   $self->po->start_plot;
   $self->data->plot('E');
-  $self->chart('plot', 'overpeak', {thiskey=>$self->name});
+  $self->chart('plot', 'overpeak', {suffix=>'func', thiskey=>$self->name});
   $self->po->increment;
   if ($self->plot_residual) {
     ## prep the residual plot
@@ -412,7 +503,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->chart('plot', 'overpeak', {thiskey=>'residual'});
+    $self->chart('plot', 'overpeak', {suffix='resid', thiskey=>'residual'});
 
     ## restore values and increment the plot
     $self->yaxis($save);
@@ -446,14 +537,16 @@ sub report {
 
 sub clean {
   my ($self) = @_;
-  if (@{$self->linegroups}) {    # clean up from previous fit
-    $self->cleanup($self->linegroups);
-    $self->clear_linegroups;
-  };
+  # if (@{$self->linegroups}) {    # clean up from previous fit
+  #   $self->cleanup($self->linegroups);
+  #   $self->clear_linegroups;
+  # };
+  $self->cleanup($self->linegroups);
   foreach my $ls (@{$self->lineshapes}) {
     $ls->DEMOLISH;
   };
   $self->clear_lineshapes;
+  $self->clear_linegroups;
   return $self;
 };
 

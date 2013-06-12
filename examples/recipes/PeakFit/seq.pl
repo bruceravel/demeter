@@ -8,7 +8,7 @@ use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
 # 			      denominator => '$3',
 # 			      ln          =>  1,
 # 			     );
-my $prj  = Demeter::Data::Prj->new(file=>'tipb_copies.prj');
+my $prj  = Demeter::Data::Prj->new(file=>'tipb.prj');
 my @data = $prj->slurp;
 #$_->bkg_fixstep(0) foreach @data;
 
@@ -27,6 +27,7 @@ $peak->sequence(@data);
 #$peak -> fit(0);
 
 print $peak -> report;
-$peak -> plot('e');
-$peak -> pause;
+#$peak -> plot('e');
+#$peak -> pause;
 #$peak -> save('foo.dat');
+$peak->report_excel('foo.xls');

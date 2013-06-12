@@ -99,6 +99,7 @@ sub push_values {
     $this->Enable(0);
     return;
   };
+  return if $::app->{plotting};
   $this->plot($data);
   1;
 };

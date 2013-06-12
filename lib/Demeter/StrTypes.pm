@@ -431,7 +431,7 @@ coerce NotReserved,
 
 ## -------- Ifeffit lineshapes
 use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);
-@ifeffitlineshape_list = qw(linear gaussian lorentzian pseudovoight atan erf);
+@ifeffitlineshape_list = qw(linear gaussian lorentzian pvoigt atan erf);
 $ifeffitlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @ifeffitlineshape_list)->re;
 subtype IfeffitLineshape,
   as Str,
@@ -440,7 +440,7 @@ subtype IfeffitLineshape,
 
 ## -------- Larch lineshapes  skipped: lognormal breit_wigner
 use vars qw(@larchlineshape_list $larchlineshape_regexp);
-@larchlineshape_list = qw(linear gaussian lorentzian voigt pseudo_voigt pearson7
+@larchlineshape_list = qw(linear gaussian lorentzian voigt pvoigt pseudo_voigt pearson7
 			  logistic students_t
 			  atan erf);
 $larchlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @larchlineshape_list)->re;

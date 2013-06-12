@@ -74,6 +74,7 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
+  return if $::app->{plotting};
   $this->plot($data);
 };
 

@@ -170,7 +170,7 @@ sub push_values {
   $this->{make}->Enable(0);
   my $save = $this->{plotspectra}->GetValue;
   $this->{plotspectra}->SetValue(1);
-  $this->plot;
+  $this->plot if not $::app->{plotting};
   $this->{plotspectra}->SetValue($save);
 };
 

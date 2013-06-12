@@ -2,36 +2,33 @@
         about = 'Interpreting data as a sum of line shapes'
 %]
 
-[% WRAPPER html/todo %]
-Explain all the new buttons and features.  Give some disclaimers,
-particularly about varying energy.  Discuss saving results on results
-tab. 
-[% END %]
-
 [% FILTER html_para -%]
 Peak fitting involves fitting a number of analytical line shapes to
 XANES data.  The typical approach is to simulate the XANES data using
-one or two step-like function and several Gaussians or Lorentzians for
+one or two step-like functions and several peak functions for
 the peaks in the data.  The centroids, amplitudes, and widths of the
 various line shapes are either fixed or varied to best fit the data.
 In [% athena %]'s[%#'%] implementation of peak fitting, a
 Levenberg-Marquardt non-linear least-squares minimization is used.
 (To be specific, [% ifeffit %]'s[%#'%] [% INCLUDE font/mono a="minimize" %]
-command is used after constructing an array with a sum of line shapes.)
+command is used after constructing an array with a sum of line shapes
+or [%larch%]'s[%#'%] [% INCLUDE font/mono a="minimize" %] function is
+using an objective function which contructs an array with a sum of the
+line shapes.)
 
 Peak fitting is an inherently empirical analysis technique.  By
 themselves, the line shapes used have little physical meaning.  The
 utility of peak fitting is in quantifying the variation of certain
 spectral features in a sequence of data.  As an example, consider the
 small peak that appears just before the main rising part of the edge
-in a titanate perovskite.  In
-[% INCLUDE imageref text="the plot below" label="peak_fit" %], this is
-the peak around 4968 eV.  This peak varies as a function of
-temperature as you approach then exceed the crystallographic phase
-transition.  The size of the peak can be related to the amount of
-distortion in this tetragonal structure.  Peak fitting is a useful
-tool in this temperature-dependent study as it can quantify the
-relationship between a spectral feature and an extrinsic parameter.
+in the perovskite [%pbtio3%].  In [% INCLUDE imageref text="the plot
+below" label="peak_fit" %], this is the peak around 4967 eV.  This
+peak varies as a function of temperature as you approach then exceed
+the crystallographic phase transition.  The size of the peak can be
+related to the amount of displacement of the Ti atom from the near-by
+postition of centrosymmetry.  Peak fitting is a useful tool in this
+temperature-dependent study as it can quantify the relationship
+between a spectral feature and an extrinsic parameter.
 [% END %]
 
 [% WRAPPER figure file="peak.png" %]
@@ -40,57 +37,62 @@ The peak fitting tool.
 
 [% FILTER html_para -%]
 [% INCLUDE imageref text="The screenshot above" label="peak_fit" %]
-shows the peak fitting tool.  The available line shapes include
+shows the peak fitting tool.  The available line shapes when useing
+[%ifeffit%] include
 [% END %]
 
 [% WRAPPER html/list type='ul' %]
 [% WRAPPER html/li %]
-arc tangent 
+arc tangent (step-like)
 [% END %]
 [% WRAPPER html/li %]
-error function 
+error function (step-like)
 [% END %]
 [% WRAPPER html/li %]
-Gaussian 
+Gaussian (peak)
 [% END %]
 [% WRAPPER html/li %]
-Lorentzian 
+Lorentzian (peak) 
+[% END %]
+[% WRAPPER html/li %]
+pseudo-Voigt (peak)
 [% END %]
 [% END %]
 
+[%larch%] adds one step-like function and several peak functions:
+[% WRAPPER html/list type='ul' %]
+[% WRAPPER html/li %]
+logistic (step-like)
+[% END %]
+[% WRAPPER html/li %]
+Voigt (step-like)
+[% END %]
+[% WRAPPER html/li %]
+Pearson7 (peak)
+[% END %]
+[% WRAPPER html/li %]
+Student's[%#'%] T (peak) 
+[% END %]
+[% END %]
+
+
 [% FILTER html_para -%]
-Two other obviously useful functions are not available in the current
-version of [% athena %], the pseudo-Voight (typically implemented as a
-weighted sum of a Gaussian and a Lorentzian) and the Cromer-Lieberman
+An obviously useful function are not available in the current
+version of [% athena %] is a broadened Cromer-Lieberman
 calculation of the bare atomic edge step (which might better
 approximate the shape of the XANES data).
 
-Each line shape has an independent centroid, amplitude, and width.  By
-default, the centroids are fixed and the amplitude and width are
-varied in the fit.  Which parameters are fixed and which are varied
-are controlled by the check buttons in the columns labeled
-[% INCLUDE font/quote a="Fit" %].  The
-[% INCLUDE html/link text="pluck button" link="../ui/pluck.html" %]
-next to the centroid can be used to grab a value from the plot.
-
-In my experience, the fits are fairly unstable when the centroids are
-varied, particularly with peak functions placed close together.  I
-typically leave the centroid values fixed, adjusting them by hand and
-rerunning the fits if necessary.
+Each line shape has an independent centroid, amplitude, and width.  A
+few line shapes have a fourth parameter.  For instance, the
+pseudo-Voigt function has a parameter for mixing Gaussian and
+Lorentzian content. By default, the centroids are fixed and the other
+parameters are varied in the fit.
 
 The peak shapes are unit normalized.  This means that the amplitude
 [% INCLUDE font/b a="is" %] the area under the peak.
 
-The result of a fit can be saved as a group in the group list for
-later comparison to your data.  The log file is a column data file
-containing the fit results in the header and columns of
-[% END %]
-[% WRAPPER html/list type="ol" -%]
-[% WRAPPER html/li %] energy [% END %]
-[% WRAPPER html/li %] the data [% END %]
-[% WRAPPER html/li %] the fit [% END %]
-[% WRAPPER html/li %] the residual [% END %]
-[% WRAPPER html/li %] each component [% END %]
+Here is the result of a fit to the [%pbtio3%] after slightly tweaking
+the centroids of the three lineshapes from the values shown above.
 [% END %]
 
 [% WRAPPER figure file="peak_fit.png" %]
@@ -98,13 +100,163 @@ Fit to [% pbtio3 %] data measured at room temperature using an
 arc-tangent, a Lorentzian, and a Gaussian.
 [% END %]
 
+[% PROCESS section label="Fitting a single data group" %]
+
+[% FILTER html_para -%]
+
+[% WRAPPER figure file="peak_select.png" %]
+Choosing the lineshape to add to the model.
+[% END %]
+
+Line shapes are added to the fitting model by clicking the buttons
+labeled [% INCLUDE font/quote a="Add step" %] or [% INCLUDE font/quote
+a="Add peak" %].  The functional form of the lineshape is chosen by
+selection from the menu to the left of those buttons.
+
+Clicking one of the [% INCLUDE font/quote a="Add" %] buttons inserts a
+field for that lineshape in the area below the buttons.  In the
+screenshot above, three lineshapes have been added: one arc-tangent to
+model the main edge step, a pseudo-Voigt function to model the first
+pre-edge peak, and a Gaussian to model the second pre-edge peak.
+
+[%athena%] cannot know what feature in the data each line shape is
+intended to model.  You [% INCLUDE font/b a="must" %] select the
+centroid of each line shape.  This can be done by typing an energy
+value into the box labeled either [% INCLUDE font/quote a="Center" %]
+or [%e0%].  Alternately, you can use the pluck button to take the
+energy value from the plot using the mouse.
+
+When the pluck button is used, [%athena%] will make a guess for the
+initial value of the height of the lineshape.  This is the value of
+the data at the position plucked for the centroid.  The initial guess
+for the width of the line shape is 0.5 eV for peak shapes and the
+core-hole lifetime in eV units for the absorbing element of the data
+being fitted.
+
+Which parameters are fixed and which are varied are controlled by the
+check buttons labeled [% INCLUDE font/quote a="Fix" %] next to each
+parameter value.  By default, the centroid is fixed and the other two
+(or three) parameters are floated in the fit.  In my experience, the
+fits are fairly unstable when the centroids are varied, particularly
+with peak functions placed close together.  I typically leave the
+centroid values fixed, adjusting them by hand and rerunning the fits
+if necessary.
+
+The [% INCLUDE font/quote a="Reset" %] button (which becomes enabled
+only after a fit is performed) is used to restore parameters for each
+lineshape to their default values.  This is handy if a fit results in
+strange values due to some numerical instability of the fitting model,
+which might happen, for example, if centroids are floated.
+
+If you wish to try a different lineshape at the same energy position,
+you can click on the [% INCLUDE font/quote a="change function" %] hot text
+to post a menu of other choices for line shape.
+[% END %]
+
+[% WRAPPER figure file="peak_change.png" %]
+The peak fitting results tab.
+[% END %]
+
+[% FILTER html_para -%]
+With [%ifeffit%], there are only two step-like shapes.  So for
+changing the shape of a step-like function, the hot text simply
+toggles between the two.
+
+Once you have set all the parameters of the fitting model, the fit is
+performed by clicking the [% INCLUDE font/quote a="Fit" %] button in
+the [% INCLUDE font/quote a="Actions" %] section at the top of the
+page.  Alternately, you can examine the current state of the model
+without running the fit by clicking the 
+[% INCLUDE font/quote a="Plot sum" %] button.
+[% END %]
+
+
+[% PROCESS section label="The fit results tab" %]
+
+[% FILTER html_para -%]
+After a fit finishes, the remaining buttons in
+the [% INCLUDE font/quote a="Actions" %] section are enabled and the
+text box on the results tab is filled in with the outcome of the fit.
+[% END %]
+
 [% WRAPPER figure file="peak_results.png" %]
 The peak fitting results tab.
 [% END %]
 
-[% WRAPPER html/caution -%]
-Humble confession: the peak fitting tool is one of the weaker parts
-of [% athena %].  It is serviceable, but somewhat buggy and missing
-some important features.  One of these days it will get some more of
-my attention.
+[% FILTER html_para -%]
+The [% INCLUDE font/quote a="Plot data and fit" %] button at the
+bottom of the results tab makes the same plot as the 
+[% INCLUDE font/quote a="Plot sum" %] button on the main tab.  The
+plot can be modified to include traces for each individual line shape
+and for the residual of the fit by toggling the checkbuttons above the
+note tabs.
+
+The result of the fit can be saved to a column data file by clicking
+that button at the bottom of the results tab.  (The same thing happens
+with the [% INCLUDE font/quote a="Save fit" %] button on the main
+tab.)  The output file 
+contains the fit results in the header and has columns of
+[% WRAPPER html/list type="ol" -%]
+[% WRAPPER html/li %] energy [% END %]
+[% WRAPPER html/li %] the data [% END %]
+[% WRAPPER html/li %] the fit [% END %]
+[% WRAPPER html/li %] the residual [% END %]
+[% WRAPPER html/li %] one column for each component [% END %]
+[% END %]
+[% END %]
+
+
+[% PROCESS section label="Fitting multiple groups and the sequence tab" %]
+
+[% FILTER html_para -%]
+Once you have found a fitting model that works for a representative
+data set, [%athena%] offers soem automation for examining an ensemble
+of data.  The button on the main tab labeled 
+[% INCLUDE font/quote a="Fit marked" %] will apply the current fitting
+model to every marked group in the data list in sequence.  For
+example, in the case of the temperature dependent [%pbtio3%] data
+measured at the Ti K edge, we see the first pre-edge peak
+reduces in size in the measured data as the temperature rises.
+Consequently, we would expect to see measured height of that peak get
+smaller with temperature.
+
+The results of the sequence of fits using the fitting model are shown
+in the [% INCLUDE font/quote a="Sequence" %] tab.
+[% END %]
+
+[% WRAPPER figure file="peak_sequence.png" %]
+The peak fitting sequence tab.
+[% END %]
+
+[% FILTER html_para -%]
+The table at the top shows the R-factor and [%chinu%] for each fit in
+the sequence.  Selecting a row of this table by clicking on it will
+display the detailed results from that fit in the text box and will
+plot the result of that fit.
+
+[%athena%] provides a couple of ways of examining the results of the
+fit sequence.  The list of parameters that were varied in the fit are
+loaded into the menu just below the text box.  Selecting a parameter
+then clicking on the adjacent plot button will show the evolution of
+that parameter over the ensemble of data.  
+
+Here we see the example of the height of the pseudo-Voigt line shape
+as a function of temperature.  As expected, the value trends downward.
+[% END %]
+
+[% WRAPPER figure file="peak_height.png" %]
+The results for peak height for the feature 4967 eV as measureed over
+the entire data ensemble.
+[% END %]
+
+[% FILTER html_para -%]
+Finally, the results of the fitting sequence can be exported to a
+spreadsheet file for easy viewing and manipulation in a spreadsheet
+program, such as Excel, LibreOffice Calc, or Google Docs.  This
+spreadsheet contains the statistics for each fit along with all the
+parameter values and their uncertainties.
+[% END %]
+
+[% WRAPPER figure file="peak_excel.png" %]
+The results for of a fit sequence exported as a spreadsheet.
 [% END %]

@@ -132,7 +132,7 @@ sub push_values {
     $this->Enable(0);
   } else {
     #$this->{rebinned} = $data->rebin;
-    $this->plot($data, 'E');
+    $this->plot($data, 'E') if not $::app->{plotting};
   };
 };
 sub mode {
