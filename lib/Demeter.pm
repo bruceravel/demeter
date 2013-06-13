@@ -807,8 +807,8 @@ sub template {
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
 
   ######################################################################
-  ## devflag screen messages
-  if ($devflag) {
+  ## devflag screen messages (but not during unit tests)
+  if (($devflag) and ((caller)[1] !~ m{\.t\z})) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     my $caller;
     if ((caller(1))[1] =~ m{Moose|MOP}) {
@@ -825,7 +825,7 @@ sub template {
 	   $file,
 	   ($isthere) ? GREEN : BOLD.RED, Demeter->yesno($isthere).RESET
 	  );
-  }
+  };
   ######################################################################
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)

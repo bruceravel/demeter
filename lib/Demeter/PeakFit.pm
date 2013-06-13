@@ -503,7 +503,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->chart('plot', 'overpeak', {suffix='resid', thiskey=>'residual'});
+    $self->chart('plot', 'overpeak', {suffix=>'resid', thiskey=>'residual'});
 
     ## restore values and increment the plot
     $self->yaxis($save);
