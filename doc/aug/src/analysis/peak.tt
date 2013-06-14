@@ -221,7 +221,10 @@ Consequently, we would expect to see measured height of that peak get
 smaller with temperature.
 
 The results of the sequence of fits using the fitting model are shown
-in the [% INCLUDE font/quote a="Sequence" %] tab.
+in the [% INCLUDE font/quote a="Sequence" %] tab.  You can have each
+fit plotted during the sequence by setting the 
+[% INCLUDE preference group="peakfit" option="plot_during" %]
+parameter.
 [% END %]
 
 [% WRAPPER figure file="peak_sequence.png" %]

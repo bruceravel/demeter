@@ -59,6 +59,7 @@ has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'ninfo'	      => (is => 'rw', isa => 'Num',  default => 0);
+has 'epsilon'	      => (is => 'rw', isa => 'Num',  default => 0);
 has 'nparam'	      => (is => 'rw', isa => 'Int',  default => 0);
 has 'ndata'	      => (is => 'rw', isa => 'Int',  default => 0);
 has 'ntitles'	      => (is => 'rw', isa => 'Int',  default => 0);
@@ -328,6 +329,7 @@ sub sequence {
     $self->data($d);
 
     $self->fit;
+    $self->plot if $self->co->default('peakfit', 'plot_during');
 
     my %fit = (
 	       Rfactor => $self->rfactor,

@@ -5,7 +5,8 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK EVT_CHOICE EVT_LEFT_DOWN EVT_MENU);
+use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK EVT_CHOICE
+		 EVT_LEFT_DOWN EVT_RIGHT_DOWN EVT_MENU);
 
 use Const::Fast;
 const my $STEPLIKE => qr(atan|erf|logistic)i;
@@ -340,7 +341,7 @@ sub threeparam {
   $this->{'type'.$n} = $fun;
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $boxsizer->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $boxsizer->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 3);
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Name"), 0, wxALL, 3);
   $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$index, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'name'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
@@ -349,12 +350,17 @@ sub threeparam {
     $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change to '.lc($map{$swap{$fun}}),
 						q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
     $this->{'swap'.$n}->SetNormalColour(wxBLACK);
+    $this->{'swap'.$n}->SetVisitedColour(wxBLACK);
     EVT_HYPERLINK($this, $this->{"swap$n"}, sub{ $this->swap($_[1], $n) });
+    EVT_RIGHT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
   } else {
-    $this->{'swap'.$n} = Wx::StaticText->new($this->{main}, -1, 'change function');
-    $this->{'swap'.$n} -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
-						 wxDEFAULT, wxNORMAL, wxBOLD, 1, "" ));
-    EVT_LEFT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
+    $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change function',
+						q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+    $this->{'swap'.$n}->SetNormalColour(wxBLACK);
+    $this->{'swap'.$n}->SetVisitedColour(wxBLACK);
+    EVT_HYPERLINK($this, $this->{"swap$n"}, sub{ $this->swap($_[1], $n) });
+    #EVT_LEFT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
+    EVT_RIGHT_DOWN($this->{"swap$n"}, sub{$this->swap($_[1], $n)});
     EVT_MENU($this->{"swap$n"}, -1, sub{ $this->do_swap_peak(@_, $n) });
   };
   $hbox -> Add($this->{'swap'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
@@ -569,7 +575,10 @@ sub fit {
     };
     $this->{fitted} = 1;
   };
+  #my $save = $peak->po->title;
+  #$peak->po->title($::app->{main}->{Other}->{title}->GetValue);
   $peak -> plot('e');
+  #$peak->po->title($save);
   $::app->{lastplot} = ['E', 'single'];
 
 
@@ -592,7 +601,10 @@ sub sequence {
   $this->{PEAK} -> sentinal(sub{$this->seq_sentinal($#groups+1)});
   $this->{PEAK} -> clean;
   my $nls = $this -> fetch;
+  my $save = $this->{PEAK} -> include_caller;
+  $this->{PEAK} -> include_caller(0);
   $this->{PEAK} -> sequence(@groups);
+  $this->{PEAK} -> include_caller($save);
 
   ## restore the proper fit
   $this->{result}->Clear;
@@ -838,9 +850,7 @@ sub swap_peak {
       $menu->Append($SWAPHASH{ucfirst($p)}, $p);
     };
   };
-
-  my $here = $event->GetPosition;
-  $this->{'swap'.$n} -> PopupMenu($menu, $here);
+  $this->{'swap'.$n} -> PopupMenu($menu, Wx::Point->new(10,10));
 };
 
 sub do_swap_peak {

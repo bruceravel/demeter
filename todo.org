@@ -4,10 +4,11 @@
 
 * larch chores
 
-+ start work on Artemis-related templates
-+ kaiser vs. kaiser-bessel
-+ use of stddev array in LCF is slightly incorrect.  needs to be
++ [ ] start work on Artemis-related templates
++ [ ] kaiser vs. kaiser-bessel
++ [ ] use of stddev array in LCF is slightly incorrect.  needs to be
   sensitive to the sapce in which the merge was made.
++ [ ] command line in command buffer in A&A
 
 ** Larch v. Ifeffit problem areas
 
@@ -48,7 +49,7 @@
         the executables can all be found,
   - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [1/20] [5%]
+** Demeter bugs, shortcomings, missing features  [2/20] [10%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together (e.g. MED data with reference)
@@ -63,8 +64,7 @@
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
   - [ ] OpenBabel interface, tied into Feff
   - [ ] MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
-  - [ ] need to disable indicators during the Rk plot.  Indicators (as
-	    implemented) are not consistent with multiplot
+  - [X] need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
   - [ ] Feff8 integration
   - [ ] Use PDL in pathfinder
   - [ ] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
@@ -77,20 +77,19 @@
 
 *** needs testing [/]
 
-*** Tools [19/25] [76%]
+*** Tools [21/25] [84%]
    1. [X] main
    2. [X] calibrate
    3. [X] align
    4. [X] deglitch
-   5. [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG
-      filter]]; +smooth with boxcar average [[http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333][See this]]+
+   5. [X] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG filter]]; +smooth with boxcar average [[http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333][See this]]+
    6. [X] truncate
    7. [X] rebin
    8. [X] convolution and noise
    9. [ ] /deconvolution/
    10. [X] self absorption
    11. [X] copy series
-   12. [ ] data summation
+   12. [X] data summation
 
    13. [ ] dispersive
    14. [ ] multi-electron removal
@@ -114,7 +113,7 @@
     3. +PCA+
     4. boxcar average
 
-*** needs doing [2/14] [14%]
+*** needs doing [0/12] [0%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
@@ -122,55 +121,55 @@
    - [ ] implement megamerge
    - [ ] links to documentation on each tool
    - [-] *Main window* [2/3] [66%]
-       + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
-       + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
-       + [X] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
+     + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
+     + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
+     + [X] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [ ] *Convolve/noise tool*
-       + add noise to chi data
+     + add noise to chi data
    - [ ] *Difference tool* [0/1]
-       + [ ] difference in k
+     + [ ] difference in k
    - [ ] *LCF tool* [0/3]
-       + [ ] persistance of LCF results
-       + [ ] satisfying both inclusive and unity can be trouble for
-             poorly normalized data and/or poor standard selection
-             (see email from Jack Hitch)
-       + [ ] compute R-factor in k or R using fit from energy.  (see
-             mail from Scott 7 January 2012)
+     + [ ] persistance of LCF results
+     + [ ] satisfying both inclusive and unity can be trouble for
+           poorly normalized data and/or poor standard selection
+           (see email from Jack Hitch)
+     + [ ] compute R-factor in k or R using fit from energy.  (see
+           mail from Scott 7 January 2012)
    - [ ] *PCA tool* [0/10]
-       + [ ] manual entry of component coefficients (??)
-       + [ ] cluster analysis, select two components and plot the
-             associations of each data with those two in a scatter plot.
-       + [ ] persistance
-       + [ ] worry about "def group.tt" line being to long in tt template
-       + [ ] plotting in pgplot
-       + [ ] error analysis, RET, SPOIL, etc, determination of number
-             of components, validity of TT, etc
-       + [ ] specialized file headers for reconstruction and tt save files
-       + [ ] save eigenvectors to a file
-       + [ ] pluck buttons for analysis range don't work
-       + [ ] if the marked groups are changed after performing the PCA
-             but before reconstructing data, the plot will fail with
-             and exception.  need to save the list of data that went
-             into the PCA and check against that rather than the
-             current list of marked groups
-   - [-] *Peakfit tool* [7/18]
-       + [ ] implement pseudovoight
-       + [ ] verify that all centroids are within (or near) fit range
-       + [ ] verify that fit is sensible (ndata vs nparam)
-       + [ ] +make group from fitted function+
-       + [ ] behavior when changing data
-       + [ ] pluck fit ranges
-       + [ ] ndata is full data range rather than fit range with Fityk backend
-       + [ ] broken using XES
-       + [ ] explicitly set title of plot
-       + [ ] sequence over marked groups
-       + [ ] persistance
+     + [ ] manual entry of component coefficients (??)
+     + [ ] cluster analysis, select two components and plot the
+           associations of each data with those two in a scatter plot.
+     + [ ] persistance
+     + [ ] worry about "def group.tt" line being to long in tt template
+     + [ ] plotting in pgplot
+     + [ ] error analysis, RET, SPOIL, etc, determination of number
+           of components, validity of TT, etc
+     + [ ] specialized file headers for reconstruction and tt save files
+     + [ ] save eigenvectors to a file
+     + [ ] pluck buttons for analysis range don't work
+     + [ ] if the marked groups are changed after performing the PCA
+           but before reconstructing data, the plot will fail with
+           and exception.  need to save the list of data that went
+           into the PCA and check against that rather than the
+           current list of marked groups
+   - [-] *Peakfit tool* [7/11]
+     + [X] implement pseudovoight
+     + [X] verify that all centroids are within (or near) fit range
+     + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
+     + [X] behavior when changing data
+     + [X] pluck fit ranges
+     + [X] +ndata is full data range rather than fit range with Fityk backend+ (igoring this)
+     + [ ] broken using XES
+     + [X] +explicitly set title of plot+ (i can live with this)
+     + [X] sequence over marked groups
+     + [ ] persistance
+     + [ ] explicitly state ninfo and epsilon
    - *Data watcher*
    - [ ] *Plot menu*
-       + zoom/unzoom/cursor for pgplot
-   - [-] *Help menu* [1/3]
-       + [ ] demos
-       + [ ] document
+     + zoom/unzoom/cursor for pgplot
+   - [ ] *Help menu* [0/2]
+     + [ ] demos
+     + [ ] document
    - *metadata*
 
 *** TODO 

@@ -78,8 +78,7 @@ onvalue=1
 offvalue=0
 default=false
 description
-  When true, a plot will be made at every step during a combinatorial
-  or sequence fit.
+  When true, a plot will be made at every step during a sequence of fits.
 
 
 ######################################################################

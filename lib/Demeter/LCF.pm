@@ -78,6 +78,7 @@ has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->
 has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
 has 'ninfo'     => (is => 'rw', isa => 'Num', default => 0);
+has 'epsilon'   => (is => 'rw', isa => 'Num', default => 0);
 has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
 has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
 has 'standards' => (

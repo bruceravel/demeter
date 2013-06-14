@@ -52,10 +52,9 @@ def peakfit(par, peak):
     return peak.resid
 enddef
 
-##| perform the peak fit
+##| sum the lineshapes or perform the peak fit
 if {$S->TrueFalse($nofit)}:
     peakfit(dempeak, {$S->group})
-    show {$S->group}
 else:
     minimize(peakfit, dempeak, args=({$S->group},))
     _sys.paramGroup = None
