@@ -26,7 +26,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use List::Util qw(min);
+use List::Util qw(min max);
 use List::MoreUtils qw(any);
 use Time::HiRes qw(usleep);
 use Const::Fast;
@@ -360,6 +360,10 @@ const my $E0_ZERO_MARKED        => Wx::NewId();
 const my $E0_DMAX_MARKED        => Wx::NewId();
 const my $E0_PEAK_MARKED        => Wx::NewId();
 
+const my $WL_THIS               => Wx::NewId();
+const my $WL_MARKED             => Wx::NewId();
+const my $WL_ALL                => Wx::NewId();
+
 const my $FREEZE_TOGGLE		=> Wx::NewId();
 const my $FREEZE_ALL		=> Wx::NewId();
 const my $UNFREEZE_ALL		=> Wx::NewId();
@@ -549,6 +553,11 @@ sub menubar {
   #$e0markedmenu->Append($E0_DMAX_MARKED,      "the peak of the first derivative", "Set E0 for marked groups to the peak of the first derivative");
   #$e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
 
+  my $wlmenu = Wx::Menu->new;
+  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
+  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
+  $wlmenu->Append($WL_ALL,    "for all groups",    "Find the white line position for all groups");
+
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
   $groupmenu->Append($COPY,   "Copy current group\tShift+Ctrl+y",   "Copy the current group");
@@ -560,6 +569,7 @@ sub menubar {
   $groupmenu->AppendSeparator;
   $groupmenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
   $groupmenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
+  $groupmenu->AppendSubMenu($wlmenu, "Find white line position...", "Find white line positions");
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
@@ -946,6 +956,35 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- white line positions
+    ($id == $WL_THIS) and do {
+      my $data = $app->current_data;
+      my ($val, $err) = $data->find_white_line;
+      $app->{main}->{'PlotE'}->pull_single_values;
+      $data->po->set(emin=>-40, emax=>60, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, 
+		     e_sec=>0, e_mu=>1, e_i0=>0, e_signal=>0);
+      #$app->plot(0, 0, 'E', 'single');
+      return if not $app->preplot('e', $data);
+      $data->po->start_plot;
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
+      $data->plot('E');
+      $data->standard;
+      my $indic = Demeter::Plot::Indicator->new(space=>'E', x=>$val-$data->bkg_e0);
+      $indic->plot();
+      $data->unset_standard;
+      $app->{lastplot} = ['E', 'single'];
+      $app->postplot($data, $data->bkg_fixstep);
+      $app->{main}->status(sprintf("White line position %.3f eV", $val));
+      last SWITCH;
+    };
+    ($id == $WL_MARKED) and do {
+      $app->find_wl('marked');
+      last SWITCH;
+    };
+    ($id == $WL_ALL) and do {
+      $app->find_wl('all');
+      last SWITCH;
+    };
 
     ## -------- merge menu
     ($id == $MERGE_MUE) and do {
@@ -2156,6 +2195,32 @@ sub mark {
     $text .= '/'.$regex.'/' if ($how =~ m{regexp});
     $app->{main}->status($text);
   };
+};
+
+sub find_wl {
+  my ($app, $how) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+
+  my $busy = Wx::BusyCursor->new();
+  $app->{main}->status("Finding white line positions for $how groups", 'wait');
+  my $max = 0;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
+  };
+
+  my $text = "  group       white line position\n" . "=" x 40 . "\n";
+  my $format = ' %-'.$max.'s          %9.3f'."\n";
+  foreach my $i (0 .. $clb->GetCount-1) {
+    next if (($how eq 'marked') and not $clb->IsChecked($i));
+    $text .= sprintf($format, $clb->GetIndexedData($i)->name, $clb->GetIndexedData($i)->find_white_line);
+  };
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $text, "White line positions")
+      -> Show;
+  $app->{main}->status("Found white line positions");
+  undef $busy;
 };
 
 sub quench {

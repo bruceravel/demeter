@@ -1,0 +1,11 @@
+{ # -*- ifm -*-
+  # template for interpolating to the energy grid of the data standard
+  # {$D->parameter} for the current Data group
+  # {$DS->parameter} for the Data standard
+}
+set __int.int = range({$emin}, {$emax}, {$C->default('whiteline', 'grid')})
+set {$D->group}.int = splint({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$suffix}, __int.int)
+set __wl = nofx({$D->group}.int, ceil({$D->group}.int))
+erase __int.int
+erase {$D->group}.int
+

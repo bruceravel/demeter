@@ -45,13 +45,16 @@ BEGIN {
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     eval "use Larch";
   } else {
-    eval "use Ifeffit qw(ifeffit); ifeffit(\"\$plot_device=/gw\n\") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'))";
+    eval "use Ifeffit qw(ifeffit);"
   };
 }
 ############################
 
 #use Ifeffit qw(ifeffit);
 #ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+ ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+};
 
 use Cwd;
 ##use DateTime;

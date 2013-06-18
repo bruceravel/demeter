@@ -175,3 +175,39 @@ default=true
 description
   When true, a data set in a merge group that is too short compared
   to the first item in the group will be excluded from a merge.
+
+######################################################################
+section=whiteline
+section_description
+  These parameters determine how white line positions are found.  The 
+  algorithm is to find the first local maximum in the mu(E) spectrum
+  after E0.  The data in some margin about that local maximum are
+  interpolated onto a fine grid.  The maximum of mu(E) on the fine
+  grid is the white line position.
+
+variable=margin
+type=positive integer
+default=6
+minint=4
+maxint=20
+description
+  The number of data points to either side of the local maximum found
+  in the first pass over which the mu(E) data will be interpolated.
+
+variable=grid
+type=real
+default=0.02
+units=eV
+description
+  The size of the enrgy grid onto which the mu(E) data in the white line 
+  are interpolated to find the white line position.
+
+variable=refine
+type=list
+options=interpolate peakfit
+default=interpolate
+description
+  This tells Demeter how to perform the second pass of finding the white
+  line position.  The choices are to interpolate the data onto a fine grid
+  or to fit a peak shape to the white line.  This parameter is not currently
+  used.

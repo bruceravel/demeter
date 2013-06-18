@@ -82,7 +82,7 @@ sub OnLeftDclick {
     ## (ok, lots of other lines will start with a dash, but few will
     ## actually return something from fetch)
     ($line[0] eq '-') and do {
-      foreach my $type (qw(GDS Data Path Feff VPath)) {
+      foreach my $type (qw(GDS Data Path Feff VPath LineShape)) {
 	$kind = $type;
 	$object = Demeter->mo->fetch($type, $line[1]);
 	last SWITCH if $object;

@@ -457,7 +457,8 @@ sub fetch {
   my $re = join("|", @{$self->types});
   return q{} if ($type !~ m{(?:$re)});
   my $list = $self->$type;
-  foreach my $o (@$list) {
+  my @objects = grep {defined($_)} @$list;
+  foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };
   return q{};

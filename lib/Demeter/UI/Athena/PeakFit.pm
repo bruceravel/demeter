@@ -149,6 +149,7 @@ sub main_page {
   $stepboxsizer->Add($this->{steps},   0, wxALL, 5);
   $stepboxsizer->Add($this->{addstep}, 1, wxGROW|wxALL, 5);
   EVT_BUTTON($this, $this->{addstep}, sub{OnShape(@_, 'steps')});
+  $this->{steps}->SetSelection(0);
 
   my $peakbox      = Wx::StaticBox->new($panel, -1, 'Peak functions', wxDefaultPosition, wxDefaultSize);
   my $peakboxsizer = Wx::StaticBoxSizer->new( $peakbox, wxHORIZONTAL );
@@ -158,6 +159,7 @@ sub main_page {
   $peakboxsizer->Add($this->{peaks},   0, wxALL, 5);
   $peakboxsizer->Add($this->{addpeak}, 1, wxGROW|wxALL, 5);
   EVT_BUTTON($this, $this->{addpeak}, sub{OnShape(@_, 'peaks')});
+  $this->{peaks}->SetSelection(0);
 
 
 
@@ -546,6 +548,8 @@ sub fit {
   my $peak = $this->{PEAK};
   $peak -> data($::app->current_data);
   $peak -> clean;
+  $this->{markedresults}->DeleteAllItems;
+  $this->{mresult}->Clear;
   my ($nls, $warning) = $this -> fetch;
   if ($warning) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,

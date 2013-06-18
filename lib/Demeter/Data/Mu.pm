@@ -24,7 +24,7 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use List::Util qw(max);
-use List::MoreUtils qw(any all zip);
+use List::MoreUtils qw(any all zip firstidx);
 use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON3 $EPSILON4);
 
 use Text::Template;
@@ -864,6 +864,49 @@ sub _save_norm_command {
   return $string;
 };
 
+sub find_white_line {
+  my ($self) = @_;
+  return -999 if ($self->datatype !~ m{xmu|xanes});
+  $self->_update('fft');
+  #my $sm = $self->boxcar(11);
+  #$sm->_update('fft');
+  my @energy = $self->get_array("energy");
+  my @mu     = $self->get_array("xmu");
+  #my @flat   = $self->get_array("flat");
+  my $e0 = $self->bkg_e0;
+  my $i = firstidx {$_ > $e0} @energy;
+  my $prev = $mu[$i++];
+  my ($wl, $iwl, $err) = (0,0,0);
+  foreach my $j ($i .. $#mu) {
+    if ($mu[$j] < $prev) {
+      $wl = $energy[$j-1];
+      $iwl = $j-1;
+      last;
+    };
+    $prev = $mu[$j];
+  };
+
+  my $margin = Demeter->co->default('whiteline', 'margin');
+  my $grid   = Demeter->co->default('whiteline', 'grid');
+  my ($en, $ex) = ($energy[$iwl-$margin]+$self->bkg_eshift, $energy[$iwl+$margin]+$self->bkg_eshift);
+  $self->dispense('process', 'find_wl', {emin=>$en, emax=>$ex, suffix=>'flat'});
+  $wl = $en + $grid*($self->fetch_scalar('__wl')-1);
+  return (wantarray) ? ($wl, $err) : $wl;
+
+  # my $margin = 5;
+  # print join("|", $wl, $iwl, $energy[$iwl], $mu[$iwl]), $/;
+  # my $peak = Demeter::PeakFit->new(data=>$self,
+  # 				   xmin=>$energy[$iwl-$margin]+$self->bkg_eshift-$self->bkg_e0,
+  # 				   xmax=>$energy[$iwl+$margin]+$self->bkg_eshift-$self->bkg_e0);
+  # print join("|", $energy[$iwl-3]+$self->bkg_eshift, $energy[$iwl+3]+$self->bkg_eshift), $/;
+  # print join("|", $peak->xmin, $peak->xmax,$flat[$iwl]), $/;
+  # $peak -> backend($ENV{DEMETER_BACKEND});
+  # my $ls = $peak -> add('gaussian', center=>$energy[$iwl], fix1=>0, height=>$flat[$iwl],
+  # 			width=>($energy[$iwl+$margin]-$energy[$iwl+$margin])/2, name=>'wl');
+  # $peak -> fit;
+  # $peak -> plot;
+  # return (wantarray) ? ($ls->a1, $ls->e1) : $ls->a1;
+};
 
 
 1;

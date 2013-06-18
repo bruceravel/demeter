@@ -75,6 +75,21 @@ has 'fix7'     => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'area'     => (is => 'rw', isa => 'Num',  default => 0);
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_LineShape($self);
+  return $self;
+};
+
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  foreach my $att (qw{data parent}) {
+    delete $all{$att};
+  };
+  return %all;
+};
+
 sub nparams {
   my ($self, $function) = @_;
   $function ||= $self->function;

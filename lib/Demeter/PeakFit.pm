@@ -379,6 +379,8 @@ sub restore {
   my @data_x = $self->fetch_data_x;
   foreach my $ls (@{$self->lineshapes}) { # use of capitalized keys above avoid key collision
     my $gp = $ls->group;
+    #local $|=1;
+    #Demeter->Dump($rhash->{$gp});
     $ls->a0  ($rhash->{$gp}->[2]);
     $ls->e0  ($rhash->{$gp}->[3]);
     $ls->fix0($rhash->{$gp}->[4]);
@@ -518,7 +520,7 @@ sub plot {
       if (Demeter->mo->template_analysis eq 'larch') {
 	$self->chart('plot', 'overpeak', {suffix=>$ls->group, thiskey=>$ls->name});
       } else {
-	$ls->chart('plot', 'overpeak', {thiskey=>$ls->name});
+	$ls->chart('plot', 'overpeak', {suffix=>'func', thiskey=>$ls->name});
       };
       $self->po->increment;
     };
