@@ -1091,7 +1091,7 @@ sub ContextMenu {
     $menu->Append($E0_TABULATED, "Set E0 to the tabulated value");
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
-    #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
+    $menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
   } elsif ($which eq 'bkg_step') {
     $menu->AppendSeparator;
     $menu->Append($STEP_ALL,     "Show edge steps of all groups");

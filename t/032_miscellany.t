@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 70;
+use Test::More tests => 71;
 
 use Demeter qw(:data);
 use File::Basename;
@@ -81,3 +81,9 @@ foreach my $x (@false) {
   ok(Demeter->truefalse($x) eq 'false', ">$x< evaluates to false");
   ok(Demeter->TrueFalse($x) eq 'False', ">$x< evaluates to False");
 };
+
+
+## white line position
+my $au = $prj->record(3);
+my ($val, $err) = $au->find_white_line;
+ok(abs($val-11921.743) < 0.07, 'white line position');

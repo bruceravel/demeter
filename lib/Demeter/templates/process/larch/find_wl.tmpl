@@ -1,0 +1,10 @@
+{ # -*- ifm -*-
+  # template for interpolating as part of the white line finder
+  # {$D->parameter} for the current Data group
+}
+__intarr = linspace({$emin}, {$emax}, {1+int(($emax-$emin)/$C->default('whiteline', 'grid'))})
+{$D->group}.int = interp(__intarr, {$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$suffix})
+__wl = index_nearest({$D->group}.int, max({$D->group}.int))
+del __intarr
+del {$D->group}.int
+

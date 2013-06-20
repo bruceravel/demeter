@@ -47,7 +47,7 @@ section_description
 
 variable=e0
 type=list
-options=derivative zero fraction atomic
+options=derivative zero fraction atomic peak
 default=derivative  
 units=eV
 description
@@ -60,7 +60,9 @@ description
   the e0_fraction parameter).  The atomic method asigns the tabulated
   value to E0.  This works by first determining E0 using the
   derivative method to determine the atomic species of the absorber.
-  Then the E0 value is reset to the tabulated value.
+  Then the E0 value is reset to the tabulated value.  Finally the peak
+  method works by first finding E0 using the derivative method, then finding
+  first peak after that value of E0.
 
 
 variable=e0_fraction

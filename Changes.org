@@ -10,18 +10,21 @@
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
    + Improvements to LCF tool
-      - LCF tool: the interaction of individual and over-all e0 shifts now makes sense
-      - linear term in LCF fit disabled when using ifeffit
-      - reorganized widgets on LCF tool, added mouseover hints
+     - LCF tool: the interaction of individual and over-all e0 shifts now makes sense
+     - linear term in LCF fit disabled when using ifeffit
+     - reorganized widgets on LCF tool, added mouseover hints
    + improvements to the peak fitting tool
-      - scrolled area now working correctly
-      - now capable of 4-parameter lineshapes
-      - initial guess for step width is core hole lifetime
-      - fit sequence on marked groups
-      - plot of individual parameter values over a sequence
-      - pseudo-Voigt now available from Ifeffit
-      - sanity check of parameter values before fitting
-      - pluck buttons for fit range work
+     - scrolled area now working correctly
+     - now capable of 4-parameter lineshapes
+     - initial guess for step width is core hole lifetime
+     - fit sequence on marked groups
+     - plot of individual parameter values over a sequence
+     - pseudo-Voigt now available from Ifeffit
+     - sanity check of parameter values before fitting
+     - pluck buttons for fit range work
+   + Applications of white line position finder
+     - set e0 to white line top
+     - find + plot (this group) or tabulate (all and marked) white line positions
 
 *** Artemis
    + Clear project name when closing a project
@@ -29,29 +32,30 @@
 
 *** Demeter
    + DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
-      - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
-      - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
+     - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
+     - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
    + Deal more gracefully with a corrupted MRU file
    + Record uncertainty in E0 shift when auto-aligning
    + Coerce values for weights, e0s, and their uncertainties to numbers in LCF object
    + LCF linear term now works, but only in Larch
    + changed "ifeffit" attribute in Mode object to "backend"
-      - made "ifeffit" and "larch" as aliases for "backend"
-      - replaced "ifeffit" with "backend" everywhere in the distribution
+     - made "ifeffit" and "larch" as aliases for "backend"
+     - replaced "ifeffit" with "backend" everywhere in the distribution
    + removed dependence on MooseX::StrictConstructor (this addresses a
      problem with backwards compatibility of project files which have
      newly implemented attributes of Demeter objects.  this is not
      actually solvable looking backwards, but should be forwards)
    + improved Dump method in Tools.pm to allow use of Data:Dump::Color or Data::Dump if available
    + Peak fitting improvements
-      - collecting statistics in peak fit
-      - method for fit sequence over a set of groups
-      - deal sensibly with 4-parameter lineshapes
-      - implemented pseudo-Voigt function with Ifeffit
-      - fixed an ifeffit bug related to e0 shifts in peak fitting that has been plaguing Athena for a long time
-      - updated Athena Users' Guide page to explain all the new features
+     - collecting statistics in peak fit
+     - method for fit sequence over a set of groups
+     - deal sensibly with 4-parameter lineshapes
+     - implemented pseudo-Voigt function with Ifeffit
+     - fixed an ifeffit bug related to e0 shifts in peak fitting that has been plaguing Athena for a long time
+     - updated Athena Users' Guide page to explain all the new features
    + deglitching no longer prohibited on datatype=xanes
    + respect the gnuplot->datastyle configuration parameter
+   + method for finding peak position of white line
 
 *** Larch
    + Larch templates for LCF fitting

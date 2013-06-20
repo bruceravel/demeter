@@ -544,14 +544,14 @@ sub menubar {
   $e0allmenu->Append($E0_FRACTION_ALL,  "a fraction of the edge step", "Set E0 for all groups to a fraction of the edge step");
   $e0allmenu->Append($E0_ZERO_ALL,      "the zero of the second derivative", "Set E0 for all groups to the zero of the second derivative");
   #$e0allmenu->Append($E0_DMAX_ALL,      "the peak of the first derivative", "Set E0 for all groups to the peak of the first derivative");
-  #$e0allmenu->Append($E0_PEAK_ALL,      "the peak of the white line", "Set E0 for all groups to the peak of the white line");
+  $e0allmenu->Append($E0_PEAK_ALL,      "the peak of the white line", "Set E0 for all groups to the peak of the white line");
   my $e0markedmenu   = Wx::Menu->new;
   $e0markedmenu->Append($E0_IFEFFIT_ALL,      "Ifeffit's default", "Set E0 for marked groups to Ifeffit's default");
   $e0markedmenu->Append($E0_TABULATED_MARKED, "the tabulated value", "Set E0 for marked groups to the tabulated value");
   $e0markedmenu->Append($E0_FRACTION_MARKED,  "a fraction of the edge step", "Set E0 for marked groups to a fraction of the edge step");
   $e0markedmenu->Append($E0_ZERO_MARKED,      "the zero of the second derivative", "Set E0 for marked groups to the zero of the second derivative");
   #$e0markedmenu->Append($E0_DMAX_MARKED,      "the peak of the first derivative", "Set E0 for marked groups to the peak of the first derivative");
-  #$e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
+  $e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
 
   my $wlmenu = Wx::Menu->new;
   $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
@@ -2025,10 +2025,13 @@ sub postplot {
   };
   my $is_fixed = $data->bkg_fixstep;
   if ($data eq $app->current_data) {
+    my $was = $app->{modified};
     $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
+    $data->bkg_fixstep($is_fixed);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
     $app->{plotting} = 1;
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+    $app->modified($was);
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);
@@ -2209,12 +2212,15 @@ sub find_wl {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
   };
+  $max += 2;
 
-  my $text = "  group       white line position\n" . "=" x 40 . "\n";
-  my $format = ' %-'.$max.'s          %9.3f'."\n";
+  my $format  = '  %-'.$max.'s     %9.3f'."\n";
+  my $tformat = '# %-'.$max.'s     %s'."\n";
+  my $text = sprintf($tformat, 'group', 'white line position');
+  $text .= '# ' . '=' x 50 . "\n";
   foreach my $i (0 .. $clb->GetCount-1) {
     next if (($how eq 'marked') and not $clb->IsChecked($i));
-    $text .= sprintf($format, $clb->GetIndexedData($i)->name, $clb->GetIndexedData($i)->find_white_line);
+    $text .= sprintf($format, '"'.$clb->GetIndexedData($i)->name.'"', $clb->GetIndexedData($i)->find_white_line);
   };
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "White line positions")

@@ -32,7 +32,7 @@ use Xray::Absorption;
 sub e0 {
   my ($self, $how) = @_;
   ($how = "ifeffit") if (!$how);
-  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
+  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|peak|$NUMBER)\z}) and (ref($how) !~ m{Data}));
   $self->_update('normalize');
   my $e0;
  MODE: {
@@ -41,6 +41,7 @@ sub e0 {
     $e0 = $self->e0_fraction,       last MODE if ($how eq "fraction");
     $e0 = $self->e0_atomic,         last MODE if ($how eq "atomic");
     $e0 = $self->e0_dmax,           last MODE if ($how eq "dmax");
+    $e0 = $self->e0_wl,             last MODE if ($how eq "peak");
     $e0 = $how->bkg_e0,             last MODE if (ref($how) =~ m{Data});
     ($how =~ m{\A$NUMBER\z}) and do {
       $self->bkg_e0($how);
@@ -150,6 +151,12 @@ sub e0_dmax {
   my $max = max(@y);
   my $i = firstidx {$_ >= $max} @y;
   return $x[$i];
+};
+
+sub e0_wl {
+  my ($self) = @_;
+  my $e0 = $self->find_white_line;
+  return $e0;
 };
 
 sub calibrate {
