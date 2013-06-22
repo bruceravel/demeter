@@ -80,6 +80,9 @@ const my $TERM_3          => Wx::NewId();
 const my $TERM_4          => Wx::NewId();
 const my $IFEFFIT_MEMORY  => Wx::NewId();
 const my $IGNORE_NIDP     => Wx::NewId();
+const my $IGNORE_RBKG     => Wx::NewId();
+const my $IGNORE_RMAX     => Wx::NewId();
+const my $IGNORE_DATACOLL => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -204,10 +207,19 @@ sub OnInit {
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
+  my $sanitymenu = Wx::Menu->new;
+  $sanitymenu->AppendCheckItem($IGNORE_NIDP, "Skip Nidp check", "Skip test verifying that the number of guesses is less than Nidp (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_NIDP, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_RBKG, "Skip Rmin>Rbkg check", "Skip test verifying that Rmin is equal to or greater than Rbkg (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_RBKG, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_RMAX, "Skip paths within Rmax check", "Skip test verifying that no paths are much larger than Rmax (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_RMAX, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_DATACOLL, "Skip data collision check", "Skip test that no data group is used more than once in the fit (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_DATACOLL, 0);
+
   my $fitmenu = Wx::Menu->new;
   $frames{main}->{fitmenu} = $fitmenu;
-  $fitmenu->AppendCheckItem($IGNORE_NIDP, "Skip Nidp check", "Skip test verifying that the number of guesses is less than Nidp (this is STRONGLY discouraged!)");
-  $fitmenu->Check($IGNORE_NIDP, 0);
+  $fitmenu->AppendSubMenu($sanitymenu, 'Disable sanity checks', 'Disable selected sanity checks that are performed on a fit.');
 
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer');
@@ -628,6 +640,9 @@ sub fit {
   $fit->fom($fit->mo->currentfit);
   #$fit->ignore_errors(1);
   $fit->ignore_nidp($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP));
+  $fit->ignore_rbkg($frames{main}->{fitmenu}->IsChecked($IGNORE_RBKG));
+  $fit->ignore_rmax($frames{main}->{fitmenu}->IsChecked($IGNORE_RMAX));
+  $fit->ignore_datacollision($frames{main}->{fitmenu}->IsChecked($IGNORE_DATACOLL));
   $rframes->{main} -> {currentfit} = $fit;
 
   ## get fitting space
@@ -1043,6 +1058,18 @@ sub OnMenuClick {
 						     'Skip test');
 	if ($yesno->ShowModal == wxID_NO) {
 	  $frames{main}->{fitmenu}->Check($IGNORE_NIDP, 0);
+	  return;
+	};
+      };
+    };
+    ($id == $IGNORE_RBKG) and do {
+      if ($frames{main}->{fitmenu}->IsChecked($IGNORE_RBKG)) {
+	my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						     "Are you SURE you want to skip the Rmin>Rbkg test?",
+						     "Skip Rbkg test?",
+						     'Skip test');
+	if ($yesno->ShowModal == wxID_NO) {
+	  $frames{main}->{fitmenu}->Check($IGNORE_RBKG, 0);
 	  return;
 	};
       };

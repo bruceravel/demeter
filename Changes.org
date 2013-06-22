@@ -25,15 +25,17 @@
    + Applications of white line position finder
      - set e0 to white line top
      - find + plot (this group) or tabulate (all and marked) white line positions
+     - configuration parameter group for controlling algorithm
 
 *** Artemis
    + Clear project name when closing a project
    + fixed a problem importing data via "Open project or data" in certain situations
+   + temporarily disable any non-critical sanity check for a fit
 
 *** Demeter
-   + DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
+   + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
      - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
-     - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are echoed
+     - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are printed
    + Deal more gracefully with a corrupted MRU file
    + Record uncertainty in E0 shift when auto-aligning
    + Coerce values for weights, e0s, and their uncertainties to numbers in LCF object
@@ -55,7 +57,7 @@
      - updated Athena Users' Guide page to explain all the new features
    + deglitching no longer prohibited on datatype=xanes
    + respect the gnuplot->datastyle configuration parameter
-   + method for finding peak position of white line
+   + method for finding peak position of white line, both ifeffit & larch
 
 *** Larch
    + Larch templates for LCF fitting

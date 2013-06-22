@@ -84,9 +84,15 @@ has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
-has 'ignore_nidp'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
 has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
+
+## -------- flags for skipping certain sanity checks
+has 'ignore_nidp'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_rbkg'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_rmax'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_datacollision' => (is => 'rw', isa => 'Bool', default => 0);
+
 
 ## -------- array attributes
 has 'gds' => (
@@ -307,10 +313,10 @@ sub _verify_fit {
   $trouble_found += $self->S_nidp unless $self->ignore_nidp;
 
   ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
-  $trouble_found += $self->S_rmin_rbkg;
+  $trouble_found += $self->S_rmin_rbkg unless $self->ignore_rbkg;
 
   ## 13. verify that Reffs of all paths are within some margin of rmax
-  $trouble_found += $self->S_reff_rmax;
+  $trouble_found += $self->S_reff_rmax unless $self->ignore_rmax;
 
   ## 14. check that Ifeffit's hard wired limits are not exceeded
   $trouble_found += $self->S_exceed_ifeffit_limits;
@@ -321,7 +327,7 @@ sub _verify_fit {
   ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
   $trouble_found += $self->S_path_calculation_exists;
 
-  ## 17. check that there are no unresolved merge parameetrs
+  ## 17. check that there are no unresolved merge parameters
   $trouble_found += $self->S_notice_merge;
 
   ## 18. check that no more than one path is flagged as the default path
@@ -331,7 +337,7 @@ sub _verify_fit {
   $trouble_found += $self->S_cycle_loop;
 
   ## 20. check for obvious cases of a data set used more than once
-  $trouble_found += $self->S_data_collision;
+  $trouble_found += $self->S_data_collision unless $self->ignore_datacollision;
 
   ## 21. check that each data set used in the fit has one or more paths assigned to it
   $trouble_found += $self->S_data_paths;
