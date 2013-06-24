@@ -13,6 +13,14 @@ alignment tool, shown [%INCLUDE imageref text="below" label="align"
 in=1%], to make this somewhat easier.
 [% END %]
 
+[% WRAPPER html/newfeature %]
+In version 0.9.18, a control was added to display the uncertainty in
+the energy shift.  This value can be displayed via the context menu
+attached to the [% INCLUDE font/param a="Energy shift" %] label on the
+main page.
+[% END %]
+
+
 [% WRAPPER figure file="align.png" %]
 The data alignment tool.
 [% END %]

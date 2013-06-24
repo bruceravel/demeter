@@ -79,6 +79,12 @@ Points that require special attention are written inside of
 attention-grabbing boxes.[%br%][%br%]
 [% END %]
 
+[% WRAPPER html/newfeature %]
+Features that have been recently added to [%athena%] are indiecated
+like this if they have not yet been fully documented.
+[% END %]
+
+
 [% SWITCH document_style %]
 [% CASE 'pod' %]
 [% FILTER html_para %]
@@ -91,7 +97,7 @@ marked with this text:
 [% END %]
 [% CASE %]
 [% FILTER html_para %]
-[% WRAPPER image file="LightningBolt.png" %] 
+[% WRAPPER image10 file="LightningBolt.png" %] 
 Lightning symbol
 [% END %]
 This symbol indicates a
@@ -109,7 +115,7 @@ over on their first reading of this document is marked with this text:
 [% END %]
 [% CASE %]
 [% FILTER html_para %]
-[% WRAPPER image file="bend.png" %] 
+[% WRAPPER image10 file="bend.png" %] 
 Bend symbol
 [% END %]
 This symbol indicates a section
@@ -132,7 +138,8 @@ old browsers.
 [% FILTER html_para %]
 I have to thank Matt Newville, of course.  Without [% ifeffit %] there
 wouldn't[%#'%] be an [%athena%].  One afternoon over coffee, Julie Cross
-and Shelly Kelly lit the spark that eventually lead to this document.
+and Shelly Kelly lit the spark that eventually lead to the first
+version of this document.
 Some content of this document was inspired by the XAS review
 article by Shelly Kelly and Dean Hesterberg
 ([% INCLUDE citation

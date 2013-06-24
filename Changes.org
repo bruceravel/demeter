@@ -26,6 +26,7 @@
      - set e0 to white line top
      - find + plot (this group) or tabulate (all and marked) white line positions
      - configuration parameter group for controlling algorithm
+   + Move several items from Group menu to a new Energy menu
 
 *** Artemis
    + Clear project name when closing a project

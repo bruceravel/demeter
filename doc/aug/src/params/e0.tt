@@ -31,7 +31,7 @@ and [% INCLUDE html/link text="alignment" link="../process/align.html" %]
 tools can be used to refine the values for
 [% INCLUDE font/param a="e0" %].  You can also edit its value directly
 by typing in its entry box.  The right-click context menu for
-[% INCLUDE font/param a="e0" %] and the Group menu have several
+[% INCLUDE font/param a="e0" %] and the Energy menu have several
 options for other ways of setting [% INCLUDE font/param a="e0" %].
 
 There are a few situations where the default algorithm will fail.
@@ -41,6 +41,11 @@ inflections in the edge, such as zero-valent zirconium, might have the
 wrong inflection chosen.  Materials with huge edge peaks, such as
 [%k2cro4%], will have a point in the leading edge of the peak chosen
 rather than a point in the main edge.
+[% END %]
+
+[% WRAPPER html/newfeature %]
+In version 0.9.18, features related to [%e0%] moved from the Group
+menu to the Energy menu.
 [% END %]
 
 [% PROCESS section label="Other ways of setting e0" %]
@@ -90,7 +95,7 @@ the same caveats given for the default algorithm.
 
 The [%- PROCESS preference group="Bkg" option="e0" %] 
 [% INCLUDE html/link text="configuration parameter" link="../other/prefs.html" %]
-can be set to one of these four options, setting the default
+can be set to one of these options, setting the default
 algorithm for determining [% INCLUDE font/param a="E0" %].
 
 Submenus under the Group menu can be used to set E0 using one of these

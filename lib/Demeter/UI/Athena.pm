@@ -567,23 +567,28 @@ sub menubar {
   $groupmenu->Append($VALUES_ALL,    "Set all groups' values to the current",    "Push this groups parameter values onto all other groups.");
   $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
   $groupmenu->AppendSeparator;
-  $groupmenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
-  $groupmenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
-  $groupmenu->AppendSubMenu($wlmenu, "Find white line position...", "Find white line positions");
-  $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
   $groupmenu->Append($DATA_YAML,      "Show YAML for current group", "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
   $groupmenu->AppendSeparator;
-  $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
-  $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
-  $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
   $groupmenu->Append(wxID_CLOSE,       "&Close\tCtrl+w" );
   $app->{main}->{groupmenu} = $groupmenu;
+
+
+  my $energymenu  = Wx::Menu->new;
+  $energymenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
+  $energymenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
+  $energymenu->AppendSeparator;
+  $energymenu->AppendSubMenu($wlmenu, "Find white line position...", "Find white line positions");
+  $energymenu->AppendSeparator;
+  $energymenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
+  $energymenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $app->{main}->{energymenu} = $energymenu;
+
 
   my $freezemenu  = Wx::Menu->new;
   $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group\tShift+Ctrl+f", "Toggle the frozen state of this group");
@@ -676,6 +681,7 @@ sub menubar {
 
   $bar->Append( $filemenu,    "&File" );
   $bar->Append( $groupmenu,   "&Group" );
+  $bar->Append( $energymenu,  "&Energy" );
   $bar->Append( $markmenu,    "&Mark" );
   $bar->Append( $plotmenu,    "&Plot" );
   $bar->Append( $freezemenu,  "Free&ze" );
@@ -1687,9 +1693,9 @@ sub OnGroupSelect {
     $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
-  $app->{main}->{groupmenu} -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
-  $app->{main}->{groupmenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
-  $app->{main}->{groupmenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
+  $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
+  $app->{main}->{energymenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
 
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};

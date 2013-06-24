@@ -154,6 +154,13 @@ is shown on the right side of
 [% INCLUDE imageref text="the figure above" label="bkg_prepost"%].
 [% END %]
 
+[% WRAPPER html/newfeature %]
+In version 0.9.18, an option was added to the context menu attached to
+the [% INCLUDE font/param a="edge step" %] label for approximating the
+error bar on the edge step.
+[% END %]
+
+
 [% PROCESS section label="The flattening algorithm" %]
 
 [% FILTER html_para %]
