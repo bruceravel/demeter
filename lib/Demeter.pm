@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.17');
+our $VERSION = version->new('0.9.18');
 use feature "switch";
 
 ############################
@@ -903,7 +903,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17
+This documentation refers to Demeter version 0.9.18
 
 =head1 SYNOPSIS
 

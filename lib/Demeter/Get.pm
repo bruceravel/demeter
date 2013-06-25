@@ -273,7 +273,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

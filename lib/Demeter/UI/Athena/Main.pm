@@ -88,6 +88,7 @@ sub group {
   $hbox -> Add(1,1,1);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
+  $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
@@ -1263,14 +1264,16 @@ sub parameter_table {
   my $with_uncertainty = ($which eq 'bkg_eshift') ? 1 : 0;
   my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
 
-  my $format = ($with_uncertainty) ? ' "%-'.$max.'s"  %9.5f +/- %9.5f'."\n" : ' "%-'.$max.'s"  %9.5f'."\n";
+  $max+=2;
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f +/- %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
     my $val   = $d->$which;
     my $uncer = $uncertainty{$which};
-    $text .= ($with_uncertainty) ? sprintf($format, $d->name, $val, $d->$uncer) : sprintf($format, $d->name, $val);
+    $text .= ($with_uncertainty) ? sprintf($format, '"'.$d->name.'"', $val, $d->$uncer)
+      : sprintf($format, '"'.$d->name.'"', $val);
     $stat  -> add_data($val)       if looks_like_number($val);
     $error -> add_data($d->$uncer) if ($with_uncertainty);
   };
@@ -1423,7 +1426,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

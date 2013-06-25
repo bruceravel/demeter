@@ -92,7 +92,7 @@ Demeter::MRU - Handle lists of recently used file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

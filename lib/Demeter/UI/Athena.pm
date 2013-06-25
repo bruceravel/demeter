@@ -450,7 +450,7 @@ sub menubar {
   $exportmenu->Append($REPORT_MARKED, "Excel report on marked groups", "Write an Excel report on the parameter values of the marked data groups" );
   $exportmenu->AppendSeparator;
   $exportmenu->Append($FPATH,         "Empirical standard",            "Write a file containing an empirical standard derived from this group which Artemis can import as a fitting standard" );
-  $exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
+  ##$exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
 
   my $savecurrentmenu = Wx::Menu->new;
   $savecurrentmenu->Append($SAVE_MUE,    "$MU(E)",  "Save $MU(E) from the current group" );
@@ -690,7 +690,7 @@ sub menubar {
   $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
 
-  $exportmenu     -> Enable($_,0) foreach ($XFIT);
+  ##$exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
   #$helpmenu       -> Enable($_,0) foreach ($DEMO);
@@ -1403,7 +1403,7 @@ sub main_window {
   $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
   $app->EVT_BUTTON($app->{main}->{none},   sub{$app->mark('none')});
   $app->EVT_BUTTON($app->{main}->{invert}, sub{$app->mark('invert')});
-  $app->mouseover($app->{main}->{save},   "One-click-save your project");
+  $app->mouseover($app->{main}->{save},   "Save your project with one click");
   $app->mouseover($app->{main}->{all},    "Mark all groups");
   $app->mouseover($app->{main}->{none},   "Clear all marks");
   $app->mouseover($app->{main}->{invert}, "Invert all marks");
@@ -2677,7 +2677,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

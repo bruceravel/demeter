@@ -226,7 +226,7 @@ Demeter::Feff::Distributions::Triangle - Histograms for short triangular paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
