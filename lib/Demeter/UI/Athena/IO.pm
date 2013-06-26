@@ -249,7 +249,7 @@ sub _data {
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
   if ($data->unreadable) {
-    $app->{main}->status($data->file." could not be read as data.", 'alert');
+    $app->{main}->status($data->file." could not be read as data. (Do you need to enable a plugin?)", 'alert');
     $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
     $data->DEMOLISH;
     return 0;

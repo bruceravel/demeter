@@ -2037,7 +2037,7 @@ sub postplot {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
     $app->{plotting} = 1;
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
-    $app->modified($was);
+    $app->{modified} = $was;
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);
@@ -2392,7 +2392,7 @@ sub modified {
     $r = int( min ( 255, $r + (255 - $r) * 2 * $n ) );
     $g = int($g * (1-$n));
     $b = int($b * (1-$n));
-    ##print join(" ", $r, $g, $b), $/;
+    ##print join(" ", $r, $g, $b, $n, $app->{modified}, $is_modified, $j, caller), $/;
     $app->{main}->{save}->SetBackgroundColour(Wx::Colour->new($r, $g, $b));
   } else {
     $app->{main}->{save}->SetBackgroundColour($c);

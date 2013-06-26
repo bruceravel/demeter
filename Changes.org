@@ -27,6 +27,7 @@
      - find + plot (this group) or tabulate (all and marked) white line positions
      - configuration parameter group for controlling algorithm
    + Move several items from Group menu to a new Energy menu
+   + fixed a bug that had the red save indicator changing color too quickly
 
 *** Artemis
    + Clear project name when closing a project
