@@ -509,11 +509,14 @@ sub pathsdat {
   shift @atoms; pop @atoms;
   my $i=1;
   my ($rrleg, $rbeta, $reta) = $self->get(qw(rleg beta eta));
+  my @c = $feff->central;
   foreach my $a (@atoms) {
     my @coords = @{ $sites[$a] };
     ## use fuzzy length for fuzzily degenerate paths, need to scale coordinates
     my $scale = $self->fuzzy / $self->halflength;
-    @coords[0..2] = map {$scale*$_} @coords[0..2];
+    foreach my $j (0..2) {
+      $coords[$j] = $c[$j] + ($coords[$j]-$c[$j])*$scale;
+    };
     ## this bit o' yuck gets a tag from the potentials list entry if not in the sites list
     $coords[4] ||= $feff->site_tag($a);
     $coords[4] =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
