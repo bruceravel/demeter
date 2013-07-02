@@ -5,7 +5,6 @@
   #   {$P->parameter} returns the value of a Plot parameter
   $k = ($D->is_larch) ? 'k' : '';
   $suffix  = ($C->get("window_space") eq 'r') ? 'rwin' : $k.'win';
-  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $file = $P->tempfile;
   $D->points(file    => $file,
              space   => ($C->get("window_space") =~ m{\Ar}) ? 'r' : 'k',
@@ -15,4 +14,4 @@
 	    );
   q{}
 }
-replot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "window"
+replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "window"
