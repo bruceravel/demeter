@@ -17,11 +17,12 @@
 
 =cut
 
-use Test::More tests => 36;
+use Test::More tests => 39;
 
 use Demeter qw(:data);
 
 use File::Basename;
+use File::Path;
 use File::Spec;
 my $here  = dirname($0);
 
@@ -66,6 +67,17 @@ foreach my $type (sort keys %athena) {
   $obj     -> DESTROY;
 };
 
+
+## test the Zip plugin
+my $this = Demeter::Plugins::Zip->new(file=>File::Spec->catfile($here, 'data.zip'));
+ok( $this->is, "data.zip is a zip file" );
+my $fixed = $this->fix;
+ok( (ref($fixed) eq 'ARRAY'), "fix returns an array ref" );
+ok( ((-d $this->folder) and
+     (-e File::Spec->catfile($this->folder, 'fe.060')) and
+     (-e File::Spec->catfile($this->folder, 'fe.061')) and
+     (-e File::Spec->catfile($this->folder, 'fe.062'))),  "unpacking zip file works");
+$this->clean;
 
 
 ##'$6+$7+$8+$9+$10+$11+$12+$13+$14+$15+$16+$17+$18+$19+$20+$21+$22+$23+$24+$25+$26+$27+$28+$29+$30+$31+$32+$33+$34+$35+$36+$37'

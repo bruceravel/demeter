@@ -77,7 +77,7 @@ sub Import {
 
   $app->{main}->{views}->SetSelection(0) if not $args{no_main};
 
-  my @files = ($fname);
+  my @files = (ref($fname) eq 'ARRAY') ? @$fname : ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
 				  "All files |*.*;*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
@@ -127,6 +127,7 @@ sub Import {
 	$stashfile = ($plugin) ? $plugin->fixed : $file;
 	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
 	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+	      : ($plugin and ($plugin->output eq 'list'))                ? 'list'
               : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
               :                                                            '???';
       };
@@ -145,6 +146,14 @@ sub Import {
       $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
+      ($type eq 'list') and do {
+	$app->Import($plugin->fixed);
+	Demeter->push_mru("xasdata", $plugin->file);
+	chdir(dirname($plugin->file));
+	$plugin->clean;
+	$retval = 0;
+	last SWITCH;
+      };
     };
     undef $xdi;
     if ($plugin) {
