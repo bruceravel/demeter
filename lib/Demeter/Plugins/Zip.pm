@@ -10,7 +10,7 @@ use Scalar::Util qw(looks_like_number);
 use String::Random qw(random_string);
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Zip file of data files");
+has '+description' => (default => "a zip file of data files");
 has '+version'     => (default => 0.1);
 has '+output'      => (default => 'list');
 
