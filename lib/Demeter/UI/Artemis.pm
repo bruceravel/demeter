@@ -337,6 +337,10 @@ sub OnInit {
   $hname -> Add($frames{main}->{name}, 1, wxALL, 2);
   mouseover($frames{main}->{name}, "Provide a short description of this fitting model.");
 
+  $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
+  $hname -> Add($frames{main}->{savehist}, 0, wxALL, 2);
+  $frames{main}->{savehist}->SetValue(1);
+  $hname  -> Add(Wx::StaticLine->new($frames{main}, -1, wxDefaultPosition, [4,-1], wxLI_VERTICAL),   0, wxGROW|wxLEFT|wxRIGHT, 7);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
 		  Wx::RadioButton->new($frames{main}, -1, 'R', wxDefaultPosition, wxDefaultSize),
@@ -638,6 +642,7 @@ sub fit {
   $fit->name($name);
   $fit->description($rframes->{main}->{description}->GetValue);
   $fit->fom($fit->mo->currentfit);
+  $fit->keep($frames{main}->{savehist}->GetValue);
   #$fit->ignore_errors(1);
   $fit->ignore_nidp($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP));
   $fit->ignore_rbkg($frames{main}->{fitmenu}->IsChecked($IGNORE_RBKG));
@@ -672,11 +677,15 @@ sub fit {
     update_order_file();
 
     $rframes->{Log}->{name} = $fit->name;
-    $rframes->{Log}->Show(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
+    $rframes->{Log}->Show(1) if ( ($fit->co->default("artemis", "show_after_fit") eq 'log') or
+				  (($fit->co->default("artemis", "show_after_fit") eq 'history') and
+				   not $frames{main}->{savehist}->GetValue) );
     $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Refresh;
-    $rframes->{main}->{log_toggle}->SetValue(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
+    $rframes->{main}->{log_toggle}->SetValue(1) if ( ($fit->co->default("artemis", "show_after_fit") eq 'log') or
+						     (($fit->co->default("artemis", "show_after_fit") eq 'history') and
+						      not $frames{main}->{savehist}->GetValue) );
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
@@ -712,13 +721,15 @@ sub fit {
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
-    $rframes->{History}->{list}->AddData($fit->name, $fit);
-    $rframes->{History}->add_plottool($fit);
-    if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
-      $rframes->{History}->Show(1);
-      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-      $rframes->{History}->put_log($fit);
-      $rframes->{History}->set_params($fit);
+    if ($frames{main}->{savehist}->GetValue) {
+      $rframes->{History}->{list}->AddData($fit->name, $fit);
+      $rframes->{History}->add_plottool($fit);
+      if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
+	$rframes->{History}->Show(1);
+	$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+	$rframes->{History}->put_log($fit);
+	$rframes->{History}->set_params($fit);
+      };
     };
     undef $dur;
     undef $finish;

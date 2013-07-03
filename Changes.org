@@ -28,6 +28,8 @@
      - configuration parameter group for controlling algorithm
    + Move several items from Group menu to a new Energy menu
    + fixed a bug that had the red save indicator changing color too quickly
+   + use new list-returning filetype plugin by calling Import recursively after generating the list
+   + up and down, (alt/ctrl)-(j/k) now mapped correctly (j=down, k=up)
 
 *** Artemis
    + Clear project name when closing a project
@@ -60,11 +62,16 @@
    + deglitching no longer prohibited on datatype=xanes
    + respect the gnuplot->datastyle configuration parameter
    + method for finding peak position of white line, both ifeffit & larch
+   + fixed a bug generating paths.dat for a fuzzily degenerate path from a feff.inp with the absorber not at (000)
+   + allow file type plugins to return a list of processed files, made Zip.pm to demonstrate
 
 *** Larch
    + Larch templates for LCF fitting
    + Reset symbol table after a call to minimize in Larch templates that do so
    + Larch templates for Peak fitting
+   + wrote empirical standard template, but need analysis templates to
+     make use of empirical standards, so disabled empirical standard
+     export in Athena when larch is in use
 
 *** Wx
    + Fixed a Wx bug involving misuse of the wxNullColour symbol

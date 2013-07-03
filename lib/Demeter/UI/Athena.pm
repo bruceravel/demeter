@@ -106,10 +106,10 @@ sub OnInit {
   $app -> side_bar($hbox);
 
   my $accelerator = Wx::AcceleratorTable->new(
-   					      [wxACCEL_CTRL, 106, $FOCUS_UP],
-   					      [wxACCEL_CTRL, 107, $FOCUS_DOWN],
-   					      [wxACCEL_ALT,  106, $MOVE_UP],
-   					      [wxACCEL_ALT,  107, $MOVE_DOWN],
+   					      [wxACCEL_CTRL, 107, $FOCUS_UP],
+   					      [wxACCEL_CTRL, 106, $FOCUS_DOWN],
+   					      [wxACCEL_ALT,  107, $MOVE_UP],
+   					      [wxACCEL_ALT,  106, $MOVE_DOWN],
    					     );
   $app->{main}->SetAcceleratorTable( $accelerator );
 
@@ -694,6 +694,7 @@ sub menubar {
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
   #$helpmenu       -> Enable($_,0) foreach ($DEMO);
+  $exportmenu     -> Enable($FPATH, 0) if ($ENV{DEMETER_BACKEND} eq 'larch');
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   if ($ENV{DEMETER_BACKEND} eq 'larch') {

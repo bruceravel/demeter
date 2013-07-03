@@ -73,6 +73,7 @@ has 'grabbed'        => (is => 'rw', isa => 'Bool',   default => 0);
 has 'thawed'         => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'logcache'       => (is => 'rw', isa => 'Str',    default => q{});
+has 'keep'           => (is => 'rw', isa => 'Bool',   default => 1);
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});

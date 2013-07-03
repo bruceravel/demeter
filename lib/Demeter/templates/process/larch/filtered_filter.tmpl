@@ -1,0 +1,18 @@
+##| creating a filtered path from {$S->source->name}
+{$S->group} = group(k   = {$S->source->group}.k,
+                    chi = {$S->source->group}.chi)
+
+xftf({$S->group}.k, {$S->group}.chi, group={$S->group}, with_phase=True,
+     kmin={$S->kmin}, kmax={$S->kmax}, dk={$S->source->fft_dk}, dk2={$S->source->fft_dk},
+     window='{$S->source->fft_kwindow}', kweight={$D->get_kweight}, rmax_out={$D->rmax_out})
+
+xftr({$S->group}.r, {$S->group}.chir, group={$S->group}, with_phase=True,
+     rmin={$S->rmin}, rmax={$S->rmax}, window='{$S->source->bft_rwindow}',
+     dr={$S->source->bft_dr}, dr2={$S->source->bft_dr} )
+
+{$S->group}.filtered = ( ({sprintf "%7.4f", $S->reff}**2)*{$S->group}.chiq_mag ) / ( ({$S->group}.q+1e-6)**({$D->get_kweight}-1) )
+{$S->group}.filtered = splint({$S->group}.q, {$S->group}.filtered, {$S->group}.grid)
+{$S->group}.phase    = {$S->group}.chiq_pha - 2*{sprintf "%7.4f", $S->reff}*{$S->group}.q + pi/2
+{$S->group}.phase    = splint({$S->group}.q, {$S->group}.phase, {$S->group}.grid)
+
+##del h___isto
