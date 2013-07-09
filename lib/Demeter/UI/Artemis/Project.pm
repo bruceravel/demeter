@@ -102,8 +102,18 @@ sub save_project {
   print $JO $rframes->{Journal}->{journal}->GetValue;
   close $JO;
 
+  opendir(my $FD, File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'));
+  my @toss = ();
+  foreach my $d (readdir($FD)) {
+    next if ($d =~ m{\A\.});
+    next if -e File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $d, 'keep');
+    push @toss, $d;		# gather all fits that lack the keep file
+  };				# so these can be excluded from the saved project
+  closedir $FD;
+  my $toss_regexp = join("|", @toss);
+
   my $zip = Archive::Zip->new();
-  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
+  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} and not m{$toss_regexp} });
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
@@ -382,6 +392,7 @@ sub read_project {
       if ($fit->fitted) {
 	$rframes->{History}->{list}->AddData($fit->name, $fit);
 	$rframes->{History}->add_plottool($fit);
+	Demeter->Touch(File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $fit->group, 'keep'));
 	$lastfit = $fit;
       } elsif ($fit->group ne $current) {
 	foreach my $g ( @{ $fit->gds }) {

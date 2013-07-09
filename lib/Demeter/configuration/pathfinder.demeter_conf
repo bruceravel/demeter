@@ -220,3 +220,13 @@ type=real
 default=7
 description
   A ranking above this value is considered a low importance path.
+
+variable=postcrit
+type=real
+default=3.0
+description
+  This parameter is used to restrict the path list after the path
+  ranking has been calculated.  This will not affect the speed or any
+  other aspect of the operation of the pathfinder.  In Artemis, this
+  is used to restrict the paths displayed in the path list to those
+  that exceed the given size.

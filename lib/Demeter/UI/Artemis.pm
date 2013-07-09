@@ -39,6 +39,7 @@ use base 'Wx::App';
 
 use Const::Fast;
 const my $BLANK           => q{___.BLANK.___};
+const my $SAVENOHIST      => Wx::NewId();
 const my $SAVETHIS        => Wx::NewId();
 const my $MRU	          => Wx::NewId();
 const my $SHOW_BUFFER     => Wx::NewId();
@@ -337,9 +338,6 @@ sub OnInit {
   $hname -> Add($frames{main}->{name}, 1, wxALL, 2);
   mouseover($frames{main}->{name}, "Provide a short description of this fitting model.");
 
-  $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
-  $hname -> Add($frames{main}->{savehist}, 0, wxALL, 2);
-  $frames{main}->{savehist}->SetValue(1);
   $hname  -> Add(Wx::StaticLine->new($frames{main}, -1, wxDefaultPosition, [4,-1], wxLI_VERTICAL),   0, wxGROW|wxLEFT|wxRIGHT, 7);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
@@ -378,6 +376,11 @@ sub OnInit {
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
   mouseover($frames{main}->{fitbutton}, "Start the fit.");
+
+  $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
+  $vbox -> Add($frames{main}->{savehist}, 0, wxALL, 2);
+  $frames{main}->{savehist}->SetValue(1);
+  mouseover($frames{main}->{savehist}, "If clicked, the next fit will be saved in the fit hstory of this project.");
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
@@ -438,7 +441,7 @@ sub OnInit {
   mkpath($frames{main}->{plot_folder}, 0);
 
   $frames{main}->{autosave_file} = File::Spec->catfile($demeter->stash_folder, $this.'.autosave');
-  #touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
+  #Demeter->Touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
@@ -686,6 +689,7 @@ sub fit {
     $rframes->{main}->{log_toggle}->SetValue(1) if ( ($fit->co->default("artemis", "show_after_fit") eq 'log') or
 						     (($fit->co->default("artemis", "show_after_fit") eq 'history') and
 						      not $frames{main}->{savehist}->GetValue) );
+    Demeter->Touch(File::Spec->catfile($frames{main}->{project_folder}, 'fits', $fit->group, 'keep')) if $fit->keep;
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {

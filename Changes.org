@@ -35,6 +35,10 @@
    + Clear project name when closing a project
    + fixed a problem importing data via "Open project or data" in certain situations
    + temporarily disable any non-critical sanity check for a fit
+   + button for not saving a fit to the history
+   + recognize keep attribute of fit object for finer control over history creation
+   + display contents of misc.dat in Intrp page headerinder->postcrit parameter to restrict pathlist on intrp page
+   + use new path
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
@@ -64,6 +68,7 @@
    + method for finding peak position of white line, both ifeffit & larch
    + fixed a bug generating paths.dat for a fuzzily degenerate path from a feff.inp with the absorber not at (000)
    + allow file type plugins to return a list of processed files, made Zip.pm to demonstrate
+   + keep attribute of Fit object for use in Artemis project creation
 
 *** Larch
    + Larch templates for LCF fitting

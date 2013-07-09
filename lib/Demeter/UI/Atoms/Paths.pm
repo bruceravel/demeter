@@ -3,6 +3,7 @@ package Demeter::UI::Atoms::Paths;
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
 
+use Const::Fast;
 use Cwd;
 use File::Spec;
 
@@ -100,7 +101,21 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
+const my $SHOWGEOM => Wx::NewId();
+const my $SELR => Wx::NewId();
+
 sub OnRightClick {
+  my ($parent, $event) = @_;
+  my $menu  = Wx::Menu->new(q{});
+  $menu->Append($SHOWGEOM, "Show geometry for this path");
+  $menu->AppendSeparator;
+  $menu->Append($SELR, "Select all paths longer than R");
+  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
+  $parent -> PopupMenu($menu, Wx::GetMousePosition); #$parent->{paths}->GetItemPosition($event->GetItem));
+
+};
+
+sub show_geometry {
   my ($parent, $event) = @_;
   my $list = $parent->{paths};
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };

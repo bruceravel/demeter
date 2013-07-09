@@ -411,18 +411,20 @@ sub fill_intrp_page {
   $feff->rank_paths;
   my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
   foreach my $p (@{ $feff->pathlist }) {
-    my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
-    $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
-    $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
-    #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
-    #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
-    ++$i;
+    if ($p->get_rank($which) > Demeter->co->default('pathfinder', 'postcrit')) {
+      my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
+      $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
+      $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
+      #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
+      #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
+      ++$i;
+    };
   };
   my $which = 6;
   if (Demeter->po->space eq 'k') {

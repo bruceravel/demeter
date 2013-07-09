@@ -48,6 +48,7 @@ my $build = DemeterBuilder
 				'Encoding::FixLatin'        => '0',
 				'File::Copy::Recursive'     => '0',
 				'File::CountLines'          => '0',
+				'File::Touch'	            => '0',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0', # what is this used for?
@@ -94,7 +95,6 @@ my $build = DemeterBuilder
 				'Pod::ProjectDocs'        => '0',
 				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'      => '0',
-				'File::Touch'	          => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',

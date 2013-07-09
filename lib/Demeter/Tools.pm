@@ -30,6 +30,7 @@ use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
 use Text::Wrap;
+use File::Touch;
 #use Memoize;
 #memoize('distance');
 
@@ -459,6 +460,11 @@ sub pjoin {
   local $|=1;
   print join("|", @stuff) . $/;
   return join("|", @stuff) . $/;
+};
+
+sub Touch {
+  my ($self, $fname) = @_;
+  File::Touch::touch($fname);
 };
 
 

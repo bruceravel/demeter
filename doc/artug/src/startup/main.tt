@@ -103,7 +103,15 @@ projects, structure data for [% atoms %] or [% feff%], and a couple of
 other more obscure file types.
 [% END %]
 [% WRAPPER html/li %]
-The next two items are used to save [% artemis %] project files.
+The next three items are used to save [% artemis %] project files.  
+[% INCLUDE font/quote a="Save project" %] saves the current state of
+the project to its current, prompting for a name if it does not yet
+have one.
+[% INCLUDE font/quote a="Save project as" %] will prompt for the name
+to which to save the current
+state of the project.
+[% INCLUDE font/quote a="Save current fit" %] will save a project file
+containing only the current fit, without any of the history.
 [% END %]
 [% WRAPPER html/li %]
 The [% INCLUDE font/quote a="import" %] submenu is used to specify the

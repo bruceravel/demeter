@@ -535,7 +535,7 @@ sub _pathsdat_head {
   $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-  $header .= $prefix . " " . "-" x 79 . "\n";
+  $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };
 sub pathsdat {
@@ -932,7 +932,8 @@ sub intrp_header {
   map {$markup{$_} ||= q{} } qw(comment open close 0 1 2);
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
-  my @lines = split(/\n/, $self->_pathsdat_head('#'));
+  my @miscdat = map {'# '.$_} grep {$_ =~ m{\A\s*(?:Abs|Pot|Gam|Mu)}} split(/\n/, $self->miscdat);
+  my @lines = (split(/\n/, $self->_pathsdat_head('#')), @miscdat, "# " . "-" x 70 . "\n");
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
