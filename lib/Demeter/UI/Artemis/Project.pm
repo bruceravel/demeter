@@ -292,7 +292,7 @@ sub read_project {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     if (not -e $yaml) {
-      rmdir File::Spec->catfile($projfolder, 'feff', $d);
+      rmtree(File::Spec->catfile($projfolder, 'feff', $d));
       next;
     };
     my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
@@ -619,6 +619,16 @@ sub close_project {
   foreach my $k (keys %$rframes) {
     next unless ($k =~ m{feff});
     Demeter::UI::Artemis::discard_feff($k, 1);
+  };
+  my $feffdir = File::Spec->catfile($rframes->{main}->{project_folder}, 'feff/');
+  my @dirs = ();
+  if (-d $feffdir) {
+    opendir(my $FEFF, $feffdir);
+    @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
+    closedir $FEFF;
+  };
+  foreach my $d (@dirs) {
+    rmtree(File::Spec->catfile($feffdir, $d));
   };
 
   ## -------- clear all Paths

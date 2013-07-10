@@ -1390,16 +1390,31 @@ sub discard_feff {
   ## remove the button from the data tool bar
   my $fnum = $frames{$which}->{fnum};
   (my $id = $fnum) =~ s{feff}{};
-  $frames{main}->{$fnum}->Destroy;
 
   ## remove the frame with the feff calculation
   $frames{$fnum}->Hide;
   $frames{$fnum}->Destroy;
   delete $frames{$fnum};
 
+  ## remove the button from the feff tool bar
+  $frames{main}->{feffbox}->Hide($frames{main}->{$fnum});
+  $frames{main}->{feffbox}->Detach($frames{main}->{$fnum});
+  $frames{main}->{feffbox}->Layout;
+  #$frames{main}->{$fnum}->Destroy;
+
+
+
   ## destroy the ScatteringPath object
   ## destroy the feff object
-  $feffobject->DESTROY if (defined($feffobject) and (ref($feffobject) =~ m{Demeter}));
+  if (defined($feffobject) and (ref($feffobject) =~ m{Demeter})) {
+    rmtree($feffobject->workspace);
+    $feffobject->DEMOLISH;
+  };
+  foreach my $obj (@{Demeter->mo->Atoms}, @{Demeter->mo->Feff}, @{Demeter->mo->External},
+		   @{Demeter->mo->GDS}, @{Demeter->mo->ScatteringPath},
+		   @{Demeter->mo->VPath}, @{Demeter->mo->SSPath}, @{Demeter->mo->FPath}, @{Demeter->mo->FSPath}) {
+    $obj->remove;
+  };
 }
 
 sub export {

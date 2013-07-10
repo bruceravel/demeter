@@ -84,6 +84,7 @@ sub new {
   $self->{paths}->SetColumnWidth( 6, 180 );
 
   EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, \&OnRightClick);
+  EVT_MENU($self, -1, sub{ $self->OnMenu(@_) });
   EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag) if $parent->{component};
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
@@ -102,24 +103,38 @@ sub icon {
 };
 
 const my $SHOWGEOM => Wx::NewId();
-const my $SELR => Wx::NewId();
+const my $SELR     => Wx::NewId();
+const my $SELA     => Wx::NewId();
+const my $SELSS    => Wx::NewId();
+const my $SELFOR   => Wx::NewId();
 
 sub OnRightClick {
   my ($parent, $event) = @_;
   my $menu  = Wx::Menu->new(q{});
   $menu->Append($SHOWGEOM, "Show geometry for this path");
   $menu->AppendSeparator;
-  $menu->Append($SELR, "Select all paths longer than R");
-  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
-  $parent -> PopupMenu($menu, Wx::GetMousePosition); #$parent->{paths}->GetItemPosition($event->GetItem));
-
+  $menu->Append($SELA,     "Select paths with rank above A");
+  $menu->Append($SELR,     "Select paths shorter than R");
+  $menu->Append($SELFOR,   "Select forward scattering paths");
+  $menu->Append($SELSS,    "Select single scattering paths");
+  $parent -> PopupMenu($menu, $parent->GetPosition);
 };
+
+sub OnMenu {
+  my ($parent, $p2, $event) = @_;
+  my $id = $event->GetId;
+  if ($id == $SHOWGEOM) {
+    $parent->show_geometry($event);
+  } else {
+    $parent->Select($id);
+  };
+}
 
 sub show_geometry {
   my ($parent, $event) = @_;
   my $list = $parent->{paths};
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
-  my $which = $event->GetIndex;
+  my $which = $event->GetInt;
   my $i = $list->GetItemData($which);
   my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
   my $pd = $sp->pathsdat;
@@ -128,6 +143,61 @@ sub show_geometry {
   my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;
   my $dialog = Demeter::UI::Artemis::ShowText->new($parent, $text, $sp->intrplist)
     -> Show;
+};
+
+sub Select {
+  my ($parent, $id) = @_;
+  if ($id == $SELR) {
+    my $ted = Wx::TextEntryDialog->new( $self, "Select paths shorter than this path length:",
+					"Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $self->status("Path selection canceled.");
+      return;
+    };
+    my $r = $ted->GetValue;
+    if ($r !~ m{$NUMBER}) {
+      $self->status("Oops!  That wasn't a number.");
+      return;
+    };
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 2)->GetText < $r)
+      };
+
+  } elsif ($id == $SELA) {
+    my $ted = Wx::TextEntryDialog->new( $self, "Select paths which rank above:",
+					"Enter a path ranking", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $self->status("Path selection canceled.");
+      return;
+    };
+    my $a = $ted->GetValue;
+    if ($a !~ m{$NUMBER}) {
+      $self->status("Oops!  That wasn't a number.");
+      return;
+    };
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 4)->GetText > $a)
+      };
+
+  } elsif ($id == $SELSS) {
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 5)->GetText == 2)
+      };
+
+  } elsif ($id == $SELFOR) {
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 6)->GetText =~ m{forward (?:scat|thro)})
+      };
+
+  };
 };
 
 sub OnDrag {
