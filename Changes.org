@@ -30,6 +30,7 @@
    + fixed a bug that had the red save indicator changing color too quickly
    + use new list-returning filetype plugin by calling Import recursively after generating the list
    + up and down, (alt/ctrl)-(j/k) now mapped correctly (j=down, k=up)
+   + fixed a problem importing chi(k) data from an ascii file
 
 *** Artemis
    + Clear project name when closing a project

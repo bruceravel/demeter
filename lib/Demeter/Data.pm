@@ -736,7 +736,7 @@ sub extraneous {
   my ($self) = @_;
   my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
 			post_edge nbkg prex theta line flat nder
-			nsec bkg flat nbkg norm fbkg));
+			nsec bkg flat nbkg norm fbkg k chi));
   my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
   #print $items, $/;
   $self->dispense('process', 'erase', {items=>$items}) if ($items !~ m{\A\s*\z});

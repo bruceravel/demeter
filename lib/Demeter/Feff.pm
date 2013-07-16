@@ -535,7 +535,7 @@ sub _pathsdat_head {
   $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-  $header .= sprintf("%s Post criteria = %.4f\n",           $prefix, $self->co->default('pathfinder', 'postcrit'));
+  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->co->default('pathfinder', 'postcrit'));
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };

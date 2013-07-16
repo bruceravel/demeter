@@ -1171,44 +1171,47 @@ sub grab {			# deserialize lite -- grab the yaml
     #print join("|", $self->name, $d, $self->mo->fetch('Data', $d)), $/;
 
     #print ">>>>>>> $d\n";
-    my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
-      : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
-    my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
-    delete $r_attributes->{fit_pcpath};	   # correct an early
-    delete $r_attributes->{fit_do_pcpath}; # design mistake...
-    ## correct for earlier XDI design
-    foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
-		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
-		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
-		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
-      delete $r_attributes->{$x};
-    };
-    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
-      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
-    };
-    my %hash = %$r_attributes;
-    next if not exists $hash{group};
-    #Demeter->trace;
-    #print '>>>>', $hash{group}, $/;
+    foreach my $which ('', '_standard') {
+      my $yaml = ($args{file}) ? $zip->contents("$d$which.yaml")
+	: $self->slurp(File::Spec->catfile($args{folder}, "$d$which.yaml"));
+      my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+      delete $r_attributes->{fit_pcpath};	   # correct an early
+      delete $r_attributes->{fit_do_pcpath}; # design mistake...
+      ## correct for earlier XDI design
+      foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+			xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+			xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+			xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+	delete $r_attributes->{$x};
+      };
+      if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+	$r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+      };
+      my %hash = %$r_attributes;
+      next if not exists $hash{group};
+      #Demeter->trace;
+      #print '>>>>', $hash{group}, $/;
 
-    my $savecv = $self->mo->datacount;
-    my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
-    delete $hash{group};
-    $this->set(%hash);
-    $this->cv($r_attributes->{cv}||0);
-    $self->mo->datacount($savecv);
-    #$datae{$d} = $this;
-    #$datae{$this->group} = $this;
-    if ($this->datatype eq 'xmu') {
-      $self->place_array($this->group.".energy", $r_x);
-      $self->place_array($this->group.".xmu",    $r_y);
-    } elsif  ($this->datatype eq 'chi') {
-      $self->place_array($this->group.".k",      $r_x);
-      $self->place_array($this->group.".chi",    $r_y);
+      my $savecv = $self->mo->datacount;
+      my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
+      delete $hash{group};
+      $this->set(%hash);
+      if ($which eq '') {
+	$this->cv($r_attributes->{cv}||0);
+	$self->mo->datacount($savecv);
+      };
+      #$datae{$d} = $this;
+      #$datae{$this->group} = $this;
+      if ($this->datatype eq 'xmu') {
+	$self->place_array($this->group.".energy", $r_x);
+	$self->place_array($this->group.".xmu",    $r_y);
+      } elsif  ($this->datatype eq 'chi') {
+	$self->place_array($this->group.".k",      $r_x);
+	$self->place_array($this->group.".chi",    $r_y);
+      };
+      $this -> set(update_data=>0, update_columns=>0);
+      push @data, $this;
     };
-    $this -> set(update_data=>0, update_columns=>0);
-    push @data, $this;
-
   };
   $self->data(\@data);
 
@@ -1289,6 +1292,12 @@ override 'serialize' => sub {
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
     $d -> serialization($datafile);
     $d -> serialize($datafile);
+    if ($d->bkg_stan ne 'None') {
+      my $stan = $d->mo->fetch('Data', $d->bkg_stan);
+      $datafile =  File::Spec->catfile($self->folder, $dd."_standard.yaml");
+      $stan -> serialization($datafile);
+      $stan -> serialize($datafile);
+    };
   };
 
   ## -------- save a yaml containing the paths

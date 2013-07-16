@@ -1410,9 +1410,10 @@ sub discard_feff {
     rmtree($feffobject->workspace);
     $feffobject->DEMOLISH;
   };
-  foreach my $obj (@{Demeter->mo->Atoms}, @{Demeter->mo->Feff}, @{Demeter->mo->External},
-		   @{Demeter->mo->GDS}, @{Demeter->mo->ScatteringPath},
-		   @{Demeter->mo->VPath}, @{Demeter->mo->SSPath}, @{Demeter->mo->FPath}, @{Demeter->mo->FSPath}) {
+  foreach my $obj (@{Demeter->mo->Atoms}, @{Demeter->mo->Feff},   @{Demeter->mo->External},
+		   @{Demeter->mo->GDS},   @{Demeter->mo->ScatteringPath},
+		   @{Demeter->mo->VPath}, @{Demeter->mo->SSPath}, @{Demeter->mo->FPath},
+		   @{Demeter->mo->FSPath}) {
     $obj->remove;
   };
 }
