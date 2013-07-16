@@ -160,6 +160,10 @@ sub import_autosave {
   $dialog->SetFocus;
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $Demeter::UI::Artemis::frames{main}->status("Autosave import canceled.");
+    opendir(my $stash, Demeter->stash_folder);
+    my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
+    closedir $stash;
+    foreach my $as (@list) { unlink File::Spec->catfile(Demeter->stash_folder, $as) };
   } else {
     my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);

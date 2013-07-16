@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.18 ?? June      2013
+** 0.9.18 ?? July      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
@@ -38,8 +38,9 @@
    + temporarily disable any non-critical sanity check for a fit
    + button for not saving a fit to the history
    + recognize keep attribute of fit object for finer control over history creation
-   + display contents of misc.dat in Intrp page headerinder->postcrit parameter to restrict pathlist on intrp page
-   + use new path
+   + display contents of misc.dat in Path page headerinder->postcrit parameter to restrict pathlist on intrp page
+   + use new path selection tool on Path page
+   + remove autosave files if user chooses not to import them
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
