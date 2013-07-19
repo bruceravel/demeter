@@ -921,9 +921,9 @@ sub rfactor {
       };
     };
   };
-  $self->fit_rfactor1($nn[1]/$dd[1]);
-  $self->fit_rfactor2($nn[2]/$dd[2]);
-  $self->fit_rfactor3($nn[3]/$dd[3]);
+  $self->fit_rfactor1($nn[1]/$dd[1]) if $dd[1]>0;
+  $self->fit_rfactor2($nn[2]/$dd[2]) if $dd[2]>0;
+  $self->fit_rfactor3($nn[3]/$dd[3]) if $dd[3]>0;
   return $self;
 };
 

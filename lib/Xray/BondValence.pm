@@ -1,5 +1,19 @@
 package Xray::BondValence;
 
+use strict;
+use warnings;
+use version;
+
+require Exporter;
+use vars qw($VERSION);
+
+our @ISA = qw(Exporter);
+our @EXPORT = qw();
+our @EXPORT_OK = qw(bvparams);
+
+$VERSION = version->new("0.1.0");
+
+
 use Chemistry::Elements qw(get_Z get_symbol);
 use File::Spec;
 
@@ -75,22 +89,35 @@ sub read_database {
 };
 
 sub available {
-  my ($el) = @_;
+  my ($el, $valence, $scat) = @_;
+  $valence ||= '.';		# match all valences if not specified
+  $scat    ||= '.';		# match all scatterers if not specified
   $el = get_symbol($el);
   return () if not $el;
+  my @list = ();
   foreach my $key (%$parameters) {
-    next if ($key !~ m{\A$el:});
+    next if ($key !~ m{\A$el:$valence:$scat});
     push @list, $key;
   };
   return sort {$a cmp $b} @list;
-  # foreach my $k (sort {$a cmp $b} @list) {
-  #   my @l = split(/\:/, $k);
-  #   if ($l[1] == 9) {
-  #     printf "%s bound to %s %d\n",  @l[0,2,3];
-  #   } else {
-  #     printf "%s %d+ bound to %s %d\n",  @l;
-  #   };
-  # };
+};
+
+sub valences {
+  my ($el) = @_;
+  my @list = available($el);
+  my %found;
+  foreach my $item (@list) {
+    ++$found{$1} if ($item =~ m{\A$el:(\d+):});
+  };
+  return sort keys %found;
+};
+
+sub bvparams {
+  my ($el, $val, $scat) = @_;
+  my ($item) = available($el, $val, $scat);
+  my $hash = $parameters->{$item}->[0];
+  $hash->{reference} = $references{$hash->{reference}};
+  return %$hash;
 };
 
 use vars qw($DataDump_exists $DataDumpColor_exists);
@@ -102,8 +129,8 @@ sub Dump {
     Data::Dump::Color->dd($parameters);
   } elsif ($DataDump_exists) {
     Data::Dump->dd($parameters);
-  } elsif ($name) {
-    print Data::Dumper->Dump([$parameters], [$parameters]);
+  # } elsif ($name) {
+  #   print Data::Dumper->Dump([$parameters], [$parameters]);
     return 1;
   } else {
     print Dumper($parameters);

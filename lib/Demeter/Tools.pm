@@ -152,6 +152,9 @@ sub wx_environment {
 ##     Windows Vista          2      6       0
 ##     Windows Server 2008    2      6       0  note this overlap .. not a huge issue for this app...
 ##     Windows 7              2      6       1
+##     Windows Server 2008 R2 2      6       1
+##     Windows 8              2      6       2
+##     Windows Server 2012    2      6       2
 sub windows_version {
   my @os = eval "Win32::GetOSVersion()";
   my $os = "Some Windows thing";
@@ -168,6 +171,7 @@ sub windows_version {
     $os = "Windows Vista",       last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
     $os = "Windows Server 2008", last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
     $os = "Windows 7",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 1));
+    $os = "Windows 8",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 2));
   };
   return $os;
 };

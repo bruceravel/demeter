@@ -60,14 +60,14 @@ sub save_project {
   Demeter::UI::Artemis::update_order_file();
 
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
-  my $save = $rframes->{main} -> {currentfit} -> fitted;
-  $rframes->{main} -> {currentfit} -> fitted(1);
+  #my $save = $rframes->{main} -> {currentfit} -> fitted;
+  #$rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
 						nozip    => 1,
 						copyfeff => 0,
 					       );
-  $rframes->{main} -> {currentfit} -> fitted($save);
+  #$rframes->{main} -> {currentfit} -> fitted($save);
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
@@ -221,6 +221,7 @@ sub read_project {
     };
   };
 
+  ## ---------- other input types ----------------------------------------------------------
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
     Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
@@ -242,6 +243,7 @@ sub read_project {
   my $projfolder = $rframes->{main}->{project_folder};
   chdir $projfolder;
 
+  ## ---------- unpack project file --------------------------------------------------------
   $rframes->{main}->status("Opening project file $fname.", $statustype);
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
@@ -250,11 +252,6 @@ sub read_project {
   };
   chdir($wasdir);
 
-#  ##print join($/, $zip->memberNames), $/;
-#  (my $pf = $rframes->{main}->{project_folder}) =~ s{\\}{/}g;
-#  $zip->extractTree(".", $rframes->{main}->{project_folder});
-#  print $zip->extractTree(".", $directories, $volume), $/;
-#  undef $zip;
 
   my $import_problems = q{};
 
@@ -345,10 +342,7 @@ sub read_project {
     };
   };
 
-  ## -------- import fit history from project file (currently only importing most recent)
-  #opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
-  #@dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
-  #closedir $FITS;
+  ## -------- import fit history from project file
   @dirs = ();			# need to retrieve in historical order for fit history
   foreach my $d (sort {$a<=>$b} grep {$_ =~ m{\A\d+\z}} keys(%{$Demeter::UI::Artemis::fit_order{order}})) {
     next if $d eq 'current';
@@ -356,8 +350,7 @@ sub read_project {
   };
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
-  $current ||= $dirs[0];
-  ##print join("|", $current, @dirs), $/;
+  $current ||= $dirs[$#dirs];
   my $currentfit;
   my $lastfit;
   my @fits;
@@ -377,7 +370,7 @@ sub read_project {
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
     $fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     #$fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
-    if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
+    if (($d ne $current) and ((not $fit->fitted) or ($fit->chi_square == 0))) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
     };
@@ -385,6 +378,18 @@ sub read_project {
     ++$count;
     push @fits, $fit;
   };
+
+  ## ------- find most recent fit that was actually fit and make it current
+  #my $toss = 0;
+  #foreach my $f (reverse @fits) {
+  #  if ($f->fitted and ($f->chi_square > 0)) {
+  #    $current = $f->group;
+  #    last;
+  #  };
+  #  ++$toss;
+  #};
+  #pop @fits foreach (1..$toss);
+
   if (@fits) {		# found some actual fits
     $rframes->{main}->status("Found fit history, creating history window", $statustype);
     my $found = 0;
@@ -393,7 +398,9 @@ sub read_project {
     };
     $current = $fits[-1]->group if not $found;
     foreach my $fit (@fits) {
-      if ($fit->fitted) {
+      ## this attempts to weed out fit objects/folders for which the
+      ## fit did not run to completion due to failure of sanity checks
+      if ($fit->fitted and ($fit->chi_square > 0)) {
 	$rframes->{History}->{list}->AddData($fit->name, $fit);
 	$rframes->{History}->add_plottool($fit);
 	Demeter->Touch(File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $fit->group, 'keep'));
@@ -406,7 +413,7 @@ sub read_project {
       next unless ($fit->group eq $current);
       $currentfit = $fit;
       $fit->sentinal(sub{$::app->{main}->status($_[0], $statustype)});
-      $rframes->{main}->status("Unpacking current fit", $statustype);
+      $rframes->{main}->status("Unpacking current fit ".$fit->group, $statustype);
       $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
       #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
       #$rframes->{History}->OnSelect;
@@ -444,8 +451,8 @@ sub read_project {
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   $rframes->{main}->status("Imported project $fname.");
 
-  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  $rframes->{main} -> {currentfit} = $newfit;
+#  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+#  $rframes->{main} -> {currentfit} = $newfit;
   #++$Demeter::UI::Artemis::fit_order{order}{current};
 
   modified(0);

@@ -830,7 +830,7 @@ sub logtext {
   $footer ||= q{};
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
-  return $self->logcache if $self->logcache;
+  #return $self->logcache if $self->logcache;
   my $text = q{};
   return $text if (not @{ $self->paths });
 

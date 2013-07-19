@@ -201,7 +201,7 @@ sub OnInit {
   $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
-  #$debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
+  $debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
@@ -347,6 +347,7 @@ sub OnInit {
   $frames{main}->{fitspace} = \@fitspace;
   my $savebutton = Wx::Button->new($frames{main}, wxID_SAVE, q{});
   EVT_BUTTON($savebutton, -1, sub{save_project(\%frames, $frames{main}->{projectpath})});
+  mouseover($savebutton, "One-click save this project");
 
   $hname  -> Add($label,   0, wxALL, 3);
   map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
@@ -380,7 +381,7 @@ sub OnInit {
   $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
   $vbox -> Add($frames{main}->{savehist}, 0, wxALL, 2);
   $frames{main}->{savehist}->SetValue(1);
-  mouseover($frames{main}->{savehist}, "If clicked, the next fit will be saved in the fit hstory of this project.");
+  mouseover($frames{main}->{savehist}, "If clicked on, the next fit will be saved in the fit hstory of this project.");
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
@@ -669,6 +670,7 @@ sub fit {
   $fit->set_mode(backend=>1, screen=>0);
   ##autosave($name);
   my $result = $fit->fit;
+
   my $finishtext = q{};
   my $code = "normal";
   if ($result eq $fit) {

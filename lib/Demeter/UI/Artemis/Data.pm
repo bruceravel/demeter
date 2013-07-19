@@ -2216,8 +2216,7 @@ sub quickfs {
   };
 
   my $firstshell = Demeter::FSPath->new();
-  $firstshell -> set(make_gds  => $make,
-		     edge      => $edge,
+  $firstshell -> set(edge      => $edge,
 		     abs       => $abs,
 		     scat      => $scat,
 		     distance  => $distance,
@@ -2237,6 +2236,7 @@ sub quickfs {
   $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
+  $firstshell -> make_gds($make);
   $firstshell -> _update('bft');
   $firstshell -> save_feff_yaml;
   $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};
