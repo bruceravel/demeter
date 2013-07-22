@@ -157,6 +157,7 @@ override set_parent_method => sub {
   $feff ||= $self->parent;
   return if not $feff;
   $self->parentgroup($feff->group);
+  $self->bvabs($feff->abs_species);
   $feff->make_workspace if not $feff->workspace;
   $self->workspace($feff->workspace) if not $self->workspace;
   my $text = ($self->co->default("fspath","coordination") == 6)

@@ -9,7 +9,7 @@ use vars qw($VERSION);
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw();
-our @EXPORT_OK = qw(bvparams);
+our @EXPORT_OK = qw(bvparams bvdescribe valences available);
 
 $VERSION = version->new("0.1.0");
 
@@ -89,14 +89,19 @@ sub read_database {
 };
 
 sub available {
-  my ($el, $valence, $scat) = @_;
+  my ($el, $valence, $scat, $scatval) = @_;
   $valence ||= '.';		# match all valences if not specified
   $scat    ||= '.';		# match all scatterers if not specified
+  $scatval ||= '.';		# match all scatterer valences if not specified
+  if (ref($el) =~ m{Demeter}) {
+    my $path = $el;
+    ($el, $valence, $scat, $scatval) = $path->get(qw(bvabs valence_abs bvscat valence_scat));
+  };
   $el = get_symbol($el);
   return () if not $el;
   my @list = ();
   foreach my $key (%$parameters) {
-    next if ($key !~ m{\A$el:$valence:$scat});
+    next if ($key !~ m{\A$el:$valence:$scat:$scatval});
     push @list, $key;
   };
   return sort {$a cmp $b} @list;
@@ -104,6 +109,7 @@ sub available {
 
 sub valences {
   my ($el) = @_;
+  $el = $el->bvabs if ($el =~ m{Demeter});
   my @list = available($el);
   my %found;
   foreach my $item (@list) {
@@ -112,19 +118,44 @@ sub valences {
   return sort keys %found;
 };
 
+sub anions {
+  my %seen;
+  my @list;
+  foreach my $key (keys %$parameters) {
+    @list = split(/:/, $key);
+    ++$seen{join(" ", $list[2], $list[3])};
+  };
+  my $sum = 0;
+  $sum += $_ foreach (values %seen);
+  return %seen;
+};
+
 sub bvparams {
-  my ($el, $val, $scat) = @_;
-  my ($item) = available($el, $val, $scat);
-  my $hash = $parameters->{$item}->[0];
-  $hash->{reference} = $references{$hash->{reference}};
+  my ($el, $val, $scat, $scatval) = @_;
+  my ($item) = available($el, $val, $scat, $scatval);
+  my $hash = {};
+  $hash = $parameters->{$item}->[0] if ($item and exists $parameters->{$item});
+  $hash->{reference} = $references{$hash->{reference}} if exists $hash->{reference};
   return %$hash;
 };
 
-use vars qw($DataDump_exists $DataDumpColor_exists);
-$DataDump_exists = eval "require Data::Dump" || 0;
-$DataDumpColor_exists = eval "require Data::Dump::Color" || 0;
+sub bvdescribe {
+  my ($el, $valence, $scat, $scatval) = @_;
+  $valence ||= '.';		# match all valences if not specified
+  $scat    ||= '.';		# match all scatterers if not specified
+  $scatval ||= '.';		# match all scatterer valences if not specified
+  if (ref($el) =~ m{Demeter}) {
+    my $path = $el;
+    ($el, $valence, $scat, $scatval) = $path->get(qw(bvabs valence_abs bvscat valence_scat));
+  };
+  my %hash = bvparams($el, $valence, $scat, $scatval);
+  return sprintf("%s %s+ with %s %s: b=%s  r0=%s", $el, $valence, $scat, $scatval, $hash{b}, $hash{r0});
+};
+
 sub Dump {
   my ($nocolor) = @_;
+  my $DataDump_exists = eval "require Data::Dump" || 0;
+  my $DataDumpColor_exists = eval "require Data::Dump::Color" || 0;
   if ($DataDumpColor_exists and not $nocolor) {
     Data::Dump::Color->dd($parameters);
   } elsif ($DataDump_exists) {
@@ -139,3 +170,31 @@ sub Dump {
 
 $parameters = read_database;
 1;
+
+# As -3|68
+# B   3|1
+# Br -1|125
+# C  -4|6
+# C   2|3
+# C   4|1
+# Cl -1|142
+# Cl -2|1
+# Co -1|1
+# F  -1|168
+# H  -1|68
+# Hg  2|1
+# I  -1|99
+# I  -2|1
+# I   0|1
+# Mn -2|1
+# N  -2|1
+# N  -3|109
+# O  -1|1
+# O  -2|183
+# P  -3|68
+# P   5|1
+# S  -2|128
+# S   2|1
+# Se -1|4
+# Se -2|78
+# Te -2|70

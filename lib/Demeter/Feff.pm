@@ -287,6 +287,14 @@ sub site_tag {
   return $tag;
 };
 
+sub site_species {
+  my ($self, $a) = @_;
+  my @sites  = @{ $self->sites };
+  my @ipots  = @{ $self->potentials };
+  my $i = $sites[$a]->[3];
+  return get_symbol($ipots[$i]->[1]);
+};
+
 sub rdinp {
   my ($self) = @_;
   $self->clear;

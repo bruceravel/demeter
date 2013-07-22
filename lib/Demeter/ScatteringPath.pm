@@ -154,6 +154,13 @@ override serialization => sub {
   return YAML::Tiny::Dump(\%pathinfo);
 };
 
+## identify the scatter for a single scattering path, return He (obviously silly) is MS
+sub scatterer {
+  my ($self) = @_;
+  return 'He' if $self->nleg > 2;
+  my @atoms  = split(/\./, $self->string);
+  return $self->feff->site_species($atoms[1]);
+};
 
 ## construct the intrp line by disentangling the SP string
 sub intrplist {
