@@ -54,10 +54,11 @@ sub new {
   };
   my $i = 0;
   foreach my $s (sort keys %unique) {
-    $gbs -> Add( Wx::StaticText -> new($this, -1, get_symbol($s).' valence:'),  Wx::GBPosition->new($i,3));
+    my $ss = get_symbol($s);
+    $gbs -> Add( Wx::StaticText -> new($this, -1, $ss.' valence:'),  Wx::GBPosition->new($i,3));
     my @list = uniq map {(split(/:/, $_))[3]} available($abs, '.', $s); # find possible valences for scatterer
-    $this->{"valence_scat$i"} = Wx::Choice -> new($this, -1, wxDefaultPosition, wxDefaultSize, [@list]);
-    $gbs -> Add( $this->{"valence_scat$i"}, Wx::GBPosition->new($i,4));
+    $this->{"valence_scat$ss"} = Wx::Choice -> new($this, -1, wxDefaultPosition, wxDefaultSize, [@list]);
+    $gbs -> Add( $this->{"valence_scat$ss"}, Wx::GBPosition->new($i,4));
     ++$i;
   };
 
@@ -113,8 +114,9 @@ sub OnCompute {
 				Wx::Font->new(9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" ) );
   my $sum = 0;
   foreach my $p (@paths) {
+    $p->_update("fft");
     $p->valence_abs($this->{valence_abs}->GetStringSelection);
-    $p->valence_scat($this->{valence_scat0}->GetStringSelection);
+    $p->valence_scat($this->{"valence_scat".$p->bvscat}->GetStringSelection);
     my @found = available($p);
     if ($#found == -1) {
       my $text  = sprintf("Bond valence parameters are not available for the combination of %s %d and %s %d",
