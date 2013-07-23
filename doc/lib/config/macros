@@ -20,6 +20,7 @@
 
 [% MACRO AA      BLOCK -%]&Aring;[%- END -%]
 [% MACRO iAA     BLOCK -%]&Aring;&#8315;&sup1;[%- END -%]
+[% MACRO Sigma   BLOCK -%]&Sigma;[%- END -%]
 [% MACRO sigma   BLOCK -%]&sigma;[%- END -%]
 [% MACRO alpha   BLOCK -%]&alpha;[%- END -%]
 [% MACRO beta    BLOCK -%]&beta;[%- END -%]

@@ -85,14 +85,20 @@ sub new {
   ## --- feedback
   my $fbbox      = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
   my $fbboxsizer = Wx::StaticBoxSizer->new( $fbbox, wxVERTICAL );
-  $this->{feedback}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [120, 200], wxTE_MULTILINE);
+  $this->{feedback}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [120, 200], wxTE_MULTILINE|wxTE_READONLY);
   $fbboxsizer   -> Add($this->{feedback},  1, wxGROW|wxALL, 0);
-  $vbox         -> Add($fbboxsizer, 1, wxGROW|wxALL, 0);
+  $vbox         -> Add($fbboxsizer, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 
+
+  ## --- document button
+  $this->{doc} = Wx::Button->new($this, -1, q{Docmentation: BVS}, wxDefaultPosition, wxDefaultSize, 0, );
+  $vbox -> Add($this->{doc}, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('bvs')});
 
   ## --- OK button
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
+
 
   $this -> SetSizerAndFit( $vbox );
   return $this;
@@ -111,10 +117,10 @@ sub OnCompute {
   $this->{bvs}->SetValue(sprintf("%.3f", $sum));
 
   my %seen;
-  my $text = q{};
+  my $text = "Bond valence parameters:\n";
   foreach my $p (@paths) {
     next if $seen{$p->bvscat};
-    $text .= bvdescribe($p).$/.$/;
+    $text .= "\t".bvdescribe($p).$/;
     ++$seen{$p->bvscat};
   };
   $this->{feedback}->SetValue($text);

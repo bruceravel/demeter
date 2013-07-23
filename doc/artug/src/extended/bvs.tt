@@ -1,0 +1,19 @@
+[% META title = 'Using bond valence sums in Artemis' %]
+
+[% FILTER html_para -%]
+
+[% INCLUDE citation
+      author = "I. D. Brown and D. Altermatt"
+      journal = "Acta Cryst. B"
+      volume = 41
+      pages = "244-247"
+      year = 1985
+      doi = "10.1107/S0108768185002063"
+%]
+
+[%Sigma%]_j exp( (r0_j - R_j)/b ), where r0 is an empirical parameters
+that depends upon the species and valences of the absorber/scatterer
+pair and b is an empirical parameter that is equal to 0.37 in almost
+all situations.
+
+[% END %]

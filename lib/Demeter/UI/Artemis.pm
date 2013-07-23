@@ -1480,6 +1480,10 @@ sub document {
     push @path, $doc;
     $file = 'index';
     $url .= $doc . '/index.html';
+  } elsif ($doc eq 'bvs') {
+    push @path, 'extended';
+    $file = 'bvs';
+    $url .= 'extended/bvs.html';
   } else {
     $file = $doc;
     $url .= $doc . '.html';
