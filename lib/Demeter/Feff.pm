@@ -120,9 +120,10 @@ has 'absorber' => (
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
 		       trigger => sub{ my ($self, $new) = @_; 
-				       return if not exists $self->potentials->[$new];
-				       return if not exists $self->potentials->[$new]->[2];
-				       my $elem = get_symbol($self->potentials->[$new]->[1]) || 'He';
+				       #return if not exists $self->sites->[$new];
+				       #return if not exists $self->sites->[$new]->[3];
+				       return if $#{ $self->potentials } == -1;
+				       my $elem = get_symbol($self->potentials->[0]->[1]) || 'He';
 				       $self->abs_species($elem);
 				     });
 has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1, alias=>'abs_element');
@@ -418,7 +419,7 @@ sub _ipot {
   my @entries = (q{}, q{}, q{});
   @entries = split(/$SEPARATOR/, $line);
   shift @entries if ($entries[0] =~ m{^\s*$}); # $
-  #print join("|", @entries[0..2]), $/;
+  ##print ">>>>>>>", join("|", @entries[0..2]), $/;
   $self->push_potentials([@entries[0..2]]);
   return @entries[0..2];
 };

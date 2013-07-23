@@ -20,8 +20,9 @@ use warnings;
 
 use Chemistry::Elements qw(get_symbol);
 use Demeter::UI::Wx::SpecialCharacters qw($S02);
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw(any uniq);
 use Scalar::Util qw(looks_like_number);
+use Statistics::Descriptive;
 use Xray::BondValence qw(bvdescribe valences available);
 
 use Wx qw( :everything );
@@ -108,10 +109,20 @@ sub OnCompute {
   my ($this, $event, @paths) = @_;
   my $s02 = $this->{s02}->GetValue;
   return if not looks_like_number($s02);
+  my $color = Wx::TextAttr->new(Wx::Colour->new('#550000'), wxNullColour,
+				Wx::Font->new(9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" ) );
   my $sum = 0;
   foreach my $p (@paths) {
     $p->valence_abs($this->{valence_abs}->GetStringSelection);
     $p->valence_scat($this->{valence_scat0}->GetStringSelection);
+    my @found = available($p);
+    if ($#found == -1) {
+      my $text  = sprintf("Bond valence parameters are not available for the combination of %s %d and %s %d",
+			  $p->bvabs, $p->valence_abs, $p->bvscat, $p->valence_scat);
+      $this->{feedback}->SetValue($text);
+      $this->{feedback}->SetStyle(0, $this->{feedback} -> GetLastPosition, $color);
+      return;
+    };
     $sum += $p->bv($s02);
   };
   $this->{bvs}->SetValue(sprintf("%.3f", $sum));
@@ -120,10 +131,50 @@ sub OnCompute {
   my $text = "Bond valence parameters:\n";
   foreach my $p (@paths) {
     next if $seen{$p->bvscat};
-    $text .= "\t".bvdescribe($p).$/;
+    $text .= "  ".bvdescribe($p).$/;
     ++$seen{$p->bvscat};
   };
   $this->{feedback}->SetValue($text);
+  $this->{feedback}->SetInsertionPointEnd;
+
+  $text = "\n" . $this->sanity_path_too_long(@paths) . "\n\n";
+  $text .= $this->sanity_paths_split_shells(@paths) . "\n\n";
+  $text .= $this->sanity_ms_paths(@paths) . "\n";
+
+  if ($text !~ m{\A\s*\z}) {
+    my $was = $this->{feedback} -> GetInsertionPoint;
+    $this->{feedback}->AppendText($text);
+    $this->{feedback}->SetStyle($was, $this->{feedback} -> GetInsertionPoint, $color);
+  };
+};
+
+sub sanity_path_too_long {
+  my ($this, @paths) = @_;
+  if (any {$_->R > 2.5} @paths) {
+    return "Some paths are longer than 2.5A.  Bond valence sums are only valid on paths in the first coordination shell.";
+  };
+  return q{};
+};
+
+sub sanity_paths_split_shells {
+  my ($this, @paths) = @_;
+  return q{} if $#paths < 1;
+  my $stat = Statistics::Descriptive::Full->new();
+  foreach my $p (@paths) {
+    $stat->add_data($p->R);
+  };
+  if ($stat->standard_deviation > 0.2) {
+    return "The standard deviation of your paths is larger than 0.2A.  A bond valence sum should only include paths in the first coordination shell.";
+  };
+  return q{};
+};
+
+sub sanity_ms_paths {
+  my ($this, @paths) = @_;
+  if (any {$_->nleg > 2} @paths) {
+    return "Some paths are multiple scattering paths.  Bond valence sums should use only single scattering paths.";
+  };
+  return q{};
 };
 
 1;

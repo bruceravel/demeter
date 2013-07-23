@@ -1,6 +1,10 @@
 [% META title = 'Using bond valence sums in Artemis' %]
 
+
+
 [% FILTER html_para -%]
+
+
 
 [% INCLUDE citation
       author = "I. D. Brown and D. Altermatt"
@@ -17,3 +21,12 @@ pair and b is an empirical parameter that is equal to 0.37 in almost
 all situations.
 
 [% END %]
+
+[% PROCESS section label="Computing a bond valence sum from a fit" %]
+
+[% WRAPPER figure file="bvs.png" %]
+The bond valence sum dialog.
+[% END %]
+
+
+[% PROCESS section label="Using a bond valance sum as a restraint" %]

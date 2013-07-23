@@ -57,6 +57,7 @@ sub S_check_ipots {
   #foreach my $rp (@pots) {
   foreach my $rp (@{$self->potentials}) {
     my $ipot = $rp->[0];
+    print 
     if ($ipot > 7) {
       $$r_problems{defined_ipot_gt_7} = 1;
       push @{$$r_problems{errors}}, "You have defined a potential index greater than 7.";

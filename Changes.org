@@ -46,12 +46,14 @@
    + data from Athena project file which uses a background removal
      standard is now imported correctly along with the data for the
      removal standard
+   + add tool for computing bond valence sums from marked path(s)
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
      - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
      - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are printed
    + Deal more gracefully with a corrupted MRU file
+   + Add interface to bond valence sum database
    + Record uncertainty in E0 shift when auto-aligning
    + Coerce values for weights, e0s, and their uncertainties to numbers in LCF object
    + LCF linear term now works, but only in Larch
@@ -76,6 +78,7 @@
    + fixed a bug generating paths.dat for a fuzzily degenerate path from a feff.inp with the absorber not at (000)
    + allow file type plugins to return a list of processed files, made Zip.pm to demonstrate
    + keep attribute of Fit object for use in Artemis project creation
+   + fixed a bug identifying absorber species in Feff object which manifested for som hand-made feff.inp files
 
 *** Larch
    + Larch templates for LCF fitting

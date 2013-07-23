@@ -2310,6 +2310,12 @@ sub bond_valence_sum {
     return;
   };
   foreach my $p (@paths) {
+    if ($p->nleg > 2) {
+      $datapage->status("You cannot include multiple scattering paths in a bond valence sum.", 'alert');
+      return;
+    };
+  };
+  foreach my $p (@paths) {
     my @available = Xray::BondValence::available($p->bvabs, '.', $p->bvscat);
     if ($#available == -1 ) {
       $datapage->status(sprintf("Bond valence parameters do not exist for the %s scatterer", $p->bvscat), 'alert');

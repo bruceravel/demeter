@@ -135,7 +135,7 @@ sub bvparams {
   my ($item) = available($el, $val, $scat, $scatval);
   my $hash = {};
   $hash = $parameters->{$item}->[0] if ($item and exists $parameters->{$item});
-  $hash->{reference} = $references{$hash->{reference}} if exists $hash->{reference};
+  $hash->{citation} = $references{$hash->{reference}} if exists $hash->{reference};
   return %$hash;
 };
 
