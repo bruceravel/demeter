@@ -185,6 +185,14 @@ restart=1
 description
   If true, show the data watcher tool.
 
+variable=show_dispersive
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  If true, show the dispersive data calibration tool.
 
 variable=bkg_spin_step
 type=real

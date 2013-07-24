@@ -82,3 +82,12 @@ description
   This is the upper plotting limit for displaying the calibration
   standard along with the calibrated dispersive standard.  This is
   currently only used in Athena.
+
+variable=nsmooth
+type=positive integer
+minint=0
+maxint=10
+default=4
+description
+  The number of times to apply Ifeffit's three-point smoothing
+  algorithm the pixel data as part of the refinement.

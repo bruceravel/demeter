@@ -1,3 +1,3 @@
-##| apply calibration parameter to DXAS data
-set {$S->group}.energy = {$DS->offset} + {$DS->linear}*{$DS->group}.energy + abs({$DS->quadratic})*{$DS->group}.energy**2
+##| apply calibration parameters to DXAS data
+set {$S->group}.energy = {$DS->offset} + {$DS->linear}*{$DS->group}.energy + {$DS->quadratic}*{$DS->group}.energy**2
 set {$S->group}.xmu    = {$DS->group}.xmu

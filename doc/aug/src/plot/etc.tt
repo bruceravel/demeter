@@ -110,6 +110,15 @@ The I0 signals of three marked groups
 [% END %]
 [% END %]
 
+[% WRAPPER html/newfeature %]
+In version 0.9.18, there is an option for plotting the marked
+groups as normalized [%mue%], but scaled by the size of the edge step.
+Without flattening, this is identical to plotting the [%mue%] data
+with the pre-edge line subtracted.  Otherwise, it is different in that
+the post-edge region will be flattened and will oscillate around the
+level of the edge step size.
+[% END %]
+
 [% END %]
 
 

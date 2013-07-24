@@ -32,6 +32,7 @@
    + up and down, (alt/ctrl)-(j/k) now mapped correctly (j=down, k=up)
    + fixed a problem importing chi(k) data from an ascii file
    + in column selection dialog when selecting energy column, Athena rechecks energy units of new selection
+   + plot norm(E) scaled by size of edge step (from Plot menu)
 
 *** Artemis
    + Clear project name when closing a project

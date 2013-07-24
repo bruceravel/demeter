@@ -26,7 +26,7 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
-  if (not $Demeter::UI::Athena::dispersive_allowed) {
+  if (not Demeter->co->default('athena', 'show_dispersive')) {
     $box->Add(Wx::StaticText->new($this, -1, "Dispersive data calibration is disabled at this time."),
 	      0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
     $box->Add(1,1,1);
@@ -40,6 +40,19 @@ sub new {
     $hbox -> Add($this->{group}, 0, wxGROW|wxALL, 3);
     $box -> Add($hbox, 0, wxGROW|wxALL, 5);
 
+
+    $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+    $box -> Add($hbox, 0, wxGROW|wxALL, 5);
+    my $leftbox = Wx::BoxSizer->new( wxVERTICAL);
+    $hbox -> Add($leftbox, 0, wxGROW|wxALL, 5);
+
+    $this->{beamline} = Wx::RadioBox->new($this, -1, 'Beamline', wxDefaultPosition, wxDefaultSize,
+					  ['SLRI BL5', 'ESRF ID24',], 1, wxRA_SPECIFY_COLS);
+    $leftbox->Add($this->{beamline}, 0, wxGROW|wxALL, 5);
+
+    my $rightbox = Wx::BoxSizer->new( wxVERTICAL);
+    $hbox -> Add($rightbox, 1, wxGROW|wxALL, 5);
+
     ################################################################################
     ## control for importing dispersive standard
     my $dispbox       = Wx::StaticBox->new($this, -1, 'Import dispersive standard', wxDefaultPosition, wxDefaultSize);
@@ -50,7 +63,7 @@ sub new {
 					       wxDefaultPosition, wxDefaultSize,
 					       wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR);
     $dispboxsizer -> Add($this->{import}, 1, wxGROW|wxALL, 5);
-    $box -> Add($dispboxsizer, 0, wxGROW|wxALL, 5);
+    $rightbox -> Add($dispboxsizer, 0, wxGROW|wxALL, 5);
 
 
     ################################################################################
@@ -74,7 +87,7 @@ sub new {
     #$gbs->Add($this->{constrain}, Wx::GBPosition->new(0,2));
     $gbs->Add($this->{reset},     Wx::GBPosition->new(1,2));
 
-    $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    $rightbox -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
 
     ################################################################################
@@ -114,7 +127,7 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  return if not $Demeter::UI::Athena::dispersive_allowed;
+  return if not Demeter->co->default('athena', 'show_dispersive');
   $this->{group}->SetLabel($data->name);
   my $onoff = ($this->filecheck(1)) ? 1 : 0;
   map {$this->{$_}->Enable($onoff)} qw(reset refine replot make constrain);
@@ -159,7 +172,15 @@ sub set {
   my $busy = Wx::BusyCursor->new();
   $::app->{main}->status("Processing calibration and dispersive standards and setting initial parameter guesses");
   my $nor2 = Demeter->co->default("dispersive", "bkg_nor2") || 1000;
-  $this->{pixel}      = Demeter::Data::Pixel->new(file=>$file, bkg_nor2=>$nor2);
+
+  my @columns;
+  if ($this->{beamline}->GetStringSelection =~ m{SLRI}) {
+    @columns = (energy=>'$1', numerator=>'$2', denominator=>'$3', ln=>1);
+  } elsif ($this->{beamline}->GetStringSelection =~ m{ESRF}) {
+    @columns = (energy=>'$1', numerator=>'$2', denominator=>1, ln=>1);
+  };
+
+  $this->{pixel}      = Demeter::Data::Pixel->new(file=>$file, bkg_nor2=>$nor2, @columns);
   $this->{pixel}     -> standard($::app->current_data);
   $this->{pixel}     -> guess;
   $this->{offset}    -> SetValue(sprintf("%.6f", $this->{pixel}->offset));

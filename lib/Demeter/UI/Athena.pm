@@ -384,6 +384,7 @@ const my $PLOT_K123		=> Wx::NewId();
 const my $PLOT_R123		=> Wx::NewId();
 const my $PLOT_E00		=> Wx::NewId();
 const my $PLOT_I0MARKED		=> Wx::NewId();
+const my $PLOT_NORMSCALED       => Wx::NewId();
 const my $PLOT_STDDEV		=> Wx::NewId();
 const my $PLOT_VARIENCE		=> Wx::NewId();
 const my $TERM_1		=> Wx::NewId();
@@ -618,6 +619,7 @@ sub menubar {
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
   $markedplotmenu ->Append($PLOT_E00,        "Plot with E0 at E=0",   "Plot each of the marked groups with its edge energy at E=0" );
   $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",               "Plot I0 for each of the marked groups" );
+  $markedplotmenu ->Append($PLOT_NORMSCALED, "Plot norm(E) scaled by edge step", "Plot normalized data for all marked groups, scaled by the size of the edge step" );
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
 
@@ -1224,6 +1226,10 @@ sub OnMenuClick {
       $app->plot_i0_marked;
       last SWITCH;
     };
+    ($id == $PLOT_NORMSCALED) and do {
+      $app->plot_norm_scaled;
+      last SWITCH;
+    };
 
     ($id == $PLOT_PNG) and do {
       $app->image('png');
@@ -1468,6 +1474,7 @@ sub main_window {
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
+    next if (($which eq 'Dispersive') and (not Demeter->co->default(qw(athena show_dispersive))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
 
     my $page = Wx::Panel->new($app->{main}->{views}, -1);
@@ -1502,8 +1509,12 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(12, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(18, $null, $Demeter::UI::Athena::Null::label, 0);
+  my $dashes = 11;		# deal correctly with optional tools
+  ++$dashes if Demeter->co->default(qw(athena show_dispersive));
+  ++$dashes if Demeter->co->default(qw(athena show_watcher));
+  $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
+  $dashes +=6;
+  $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1756,8 +1767,13 @@ sub get_view {
 	       'PluginRegistry',	   # 22
 	       'Prefs',		           # 23
 	      );
+  my $watcher = 20;
+  if (not Demeter->co->default(qw(athena show_dispersive))) {
+    splice(@views, 9, 1);
+    --$watcher;
+  };
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 20, 1);
+    splice(@views, $watcher, 1);
   };
   return $views[$i];
 };
@@ -1787,7 +1803,9 @@ sub make_page {
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
-  my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
+  my $c = 4;
+  --$c if (not Demeter->co->default(qw(athena show_dispersive)));
+  --$c if (not Demeter->co->default(qw(athena show_watcher)));
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $nviews, $ngroups, $event->GetSelection), $/;
@@ -2104,6 +2122,26 @@ sub plot_i0_marked {
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_i0=>0, e_markers=>1);
+  $app->postplot($app->current_data);
+};
+
+sub plot_norm_scaled {
+  my ($app) = @_;
+
+  $app->preplot('e', $app->current_data);
+  $app->{main}->{PlotE}->pull_single_values;
+  $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
+			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  $app->current_data->po->start_plot;
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    my $data = $app->{main}->{list}->GetIndexedData($i);
+    my $save = $data->plot_multiplier;
+    $data->plot_multiplier($data->bkg_step);
+    $data->plot('e') if $app->{main}->{list}->IsChecked($i);
+    $data->plot_multiplier($save);
+  };
+  $app->current_data->po->set(e_markers=>1);
   $app->postplot($app->current_data);
 };
 

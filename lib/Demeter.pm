@@ -165,8 +165,7 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists
-	    $dispersive_allowed);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -174,7 +173,6 @@ $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
-$dispersive_allowed = 0;
 ######################################################################
 
 use Demeter::Plot;
@@ -883,7 +881,6 @@ sub conditional_features {
   $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
   $text .= "File::Monitor::Lite:         " . $self->yesno($FML_exists);
   $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
-  $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
 

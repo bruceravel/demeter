@@ -80,7 +80,7 @@ attention-grabbing boxes.[%br%][%br%]
 [% END %]
 
 [% WRAPPER html/newfeature %]
-Features that have been recently added to [%athena%] are indiecated
+Features that have been recently added to [%athena%] are indicated
 like this if they have not yet been fully documented.
 [% END %]
 

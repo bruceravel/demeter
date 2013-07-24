@@ -1,27 +1,10 @@
-##|  compute a step function
-set(c___enter      = {$S->standard->bkg_e0} - {$S->standard->bkg_eshift},
-    n___step       = nofx({$S->standard->group}.energy, c___enter) - 1,
-    n___points     = npts({$S->standard->group}.energy) - n___step,
-    p___ixel.zeros = zeros(n___step),
-    p___ixel.ones  = ones(n___points),
-    p___ixel.theta = join(p___ixel.zeros, p___ixel.ones))
+guess pixel___scale = 1
 
-set p___ixel.ateht   = -1*(p___ixel.theta - 1)
+def p___ixel.diff = {$S->standard->group}.der - pixel___scale * {$S->group}.xc
 
-def(p___ixel.first  = p___ixel.ateht * ({$S->standard->group}.flat - {$S->group}.xc),
-    p___ixel.scale  = (abs({$S->standard->group}.energy-{$S->standard->bkg_e0}))**0.25,
-    p___ixel.second = p___ixel.theta * p___ixel.scale * ({$S->standard->group}.flat - {$S->group}.xc),
-    p___ixel.diff   = p___ixel.first + p___ixel.second)
-
-#def(p___ixel.scale  = (abs({$S->standard->group}.energy-{$S->standard->bkg_e0}))**0.25,
-#    p___ixel.diff = p___ixel.scale*({$S->standard->group}.flat - {$S->group.xc}))
-
-set(pixel___xmin = floor({$S->group}.ec + 5),
-    pixel___xmax = ceil({$S->group}.ec - 200))
-
-#plot({$S->standard->group}.energy, p___ixel.diff, xmax=11650, key=before)
+show {$S->group}.ec
+set(pixel___xmin = max(floor({$S->group}.ec + 5), floor({$S->standard->group}.energy)),
+    pixel___xmax = min(ceil({$S->group}.ec - 10), ceil({$S->standard->group}.energy)))
+show pixel___xmin pixel___xmax
 minimize(p___ixel.diff, x={$S->standard->group}.energy, xmin=pixel___xmin, xmax=pixel___xmax)
-
-#plot({$S->standard->group}.energy, p___ixel.diff, key=before)
-#plot({$S->group}.ec, {$S->group}.flat, key=after)
 
