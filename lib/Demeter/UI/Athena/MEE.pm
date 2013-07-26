@@ -30,7 +30,6 @@ sub new {
   $this->{algorithm} = Wx::RadioBox->new($this, -1, 'Algorithm', wxDefaultPosition, wxDefaultSize,
 					 ['Reflection', 'Arctangent']);
   $box->Add($this->{algorithm}, 0, wxGROW|wxALL, 5);
-  $this->{algorithm} -> Enable(1,0);
   EVT_RADIOBOX($this, $this->{algorithm}, sub{$this->{update} = 1});
 
   ## parameters
@@ -113,10 +112,10 @@ sub plot {
     };
   };
   if ($this->{update}) {
-    $this->{mee} = $data->mee(shift=>$this->{shift}->GetValue,
-			      amp  =>$this->{amp}  ->GetValue,
-			      width=>$this->{width}->GetValue,
-			      how  =>$this->{algorithm}->GetStringSelection);
+    $this->{mee} = $data->mee(shift => $this->{shift}->GetValue,
+			      amp   => $this->{amp}  ->GetValue,
+			      width => $this->{width}->GetValue,
+			      how   => $this->{algorithm}->GetStringSelection);
   };
   Demeter->po->start_plot;
   $::app->{main}->{'Plot'.uc($space)}->pull_marked_values;
@@ -154,24 +153,22 @@ This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
-This module provides a
+This module provides a tool for interactively removing a multielectron
+excitation from XAS data.  The MEE is modeled as either a reflection
+of the XAS data or as an arctangent and subtracted from the data.  The
+user can set the energy shift, amplitude, and broadening parameters,
+then plot the resulting data in energy, k, or R.  A data group can be
+made from the subtracted data and placed in the group list.
 
 =head1 CONFIGURATION
 
+There are currently no configuration parameters.
 
 =head1 DEPENDENCIES
 
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-This 'n' that
-
-=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

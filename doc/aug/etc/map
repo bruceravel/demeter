@@ -107,7 +107,7 @@
 			      conv   = { name = 'Convolution and noise' }
 			      deconv = { name = 'Deconvolution' }
 			      sa     = { name = 'Self-Absorption correction' }
-			      mee    = { name = 'Step function removal' }
+			      mee    = { name = 'Multi-electron excitation' }
 			      merge  = { name = 'Merging' }
 			      series = { name = 'Copy series' }
 			      sum    = { name = 'Data summation' }

@@ -165,8 +165,8 @@
      + [ ] persistance
      + [ ] explicitly state ninfo and epsilon
    - *Data watcher*
-   - [ ] *MEE tool* [0/2]
-     + [ ] arctan removal
+   - [-] *MEE tool* [1/2]
+     + [X] arctan removal
      + [ ] good guesses for parameters
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
