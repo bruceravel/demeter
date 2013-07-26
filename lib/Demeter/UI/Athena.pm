@@ -1425,6 +1425,7 @@ sub main_window {
 		   ConvoluteNoise   => "Convolute and add noise to data",
 		   Deconvolute	    => "Deconvolute data",
 		   SelfAbsorption   => "Self-absorption correction",
+		   MEE              => "Multi-electron excitation removal",
 		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
 		   Summer	    => "Data summation",
@@ -1456,21 +1457,22 @@ sub main_window {
 		     'ConvoluteNoise',	  # 6
 		     'Deconvolute',	  # 7
 		     'SelfAbsorption',	  # 8
-		     'Dispersive',	  # 9
-		     'Series',            # 10
-		     'Summer',            # 11
+		     'MEE',               # 9
+		     'Dispersive',	  # 10
+		     'Series',            # 11
+		     'Summer',            # 12
 		     # -----------------------
-		     'LCF',		  # 13
-		     'PCA',		  # 14
-		     'PeakFit',		  # 15
-		     'LogRatio',	  # 16
-		     'Difference',	  # 17
+		     'LCF',		  # 14
+		     'PCA',		  # 15
+		     'PeakFit',		  # 16
+		     'LogRatio',	  # 17
+		     'Difference',	  # 18
 		     # -----------------------
-		     'XDI',               # 19
-		     'Watcher',           # 20
-		     'Journal',		  # 21
-		     'PluginRegistry',    # 22
-		     'Prefs',		  # 23
+		     'XDI',               # 20
+		     'Watcher',           # 21
+		     'Journal',		  # 22
+		     'PluginRegistry',    # 23
+		     'Prefs',		  # 24
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
@@ -1509,7 +1511,7 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  my $dashes = 11;		# deal correctly with optional tools
+  my $dashes = 12;		# deal correctly with optional tools
   ++$dashes if Demeter->co->default(qw(athena show_dispersive));
   ++$dashes if Demeter->co->default(qw(athena show_watcher));
   $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
@@ -1751,25 +1753,26 @@ sub get_view {
 	       'ConvoluteNoise',	   # 6
 	       'Deconvolute',		   # 7
 	       'SelfAbsorption',	   # 8
-	       'Dispersive',	           # 9
-	       'Series',		   # 10
-	       'Summer',		   # 11
+	       'MEE',	                   # 9
+	       'Dispersive',	           # 10
+	       'Series',		   # 11
+	       'Summer',		   # 12
 	       q{}, # -----------------------
-	       'LCF',			   # 13
-	       'PCA',			   # 14
-	       'PeakFit',		   # 15
-	       'LogRatio',		   # 16
-	       'Difference',		   # 17
+	       'LCF',			   # 14
+	       'PCA',			   # 15
+	       'PeakFit',		   # 16
+	       'LogRatio',		   # 17
+	       'Difference',		   # 18
 	       q{}, # -----------------------
-	       'XDI',			   # 19
-	       'Watcher',		   # 20
-	       'Journal',		   # 21
-	       'PluginRegistry',	   # 22
-	       'Prefs',		           # 23
+	       'XDI',			   # 20
+	       'Watcher',		   # 21
+	       'Journal',		   # 22
+	       'PluginRegistry',	   # 23
+	       'Prefs',		           # 24
 	      );
-  my $watcher = 20;
+  my $watcher = 21;
   if (not Demeter->co->default(qw(athena show_dispersive))) {
-    splice(@views, 9, 1);
+    splice(@views, 10, 1);
     --$watcher;
   };
   if (not Demeter->co->default(qw(athena show_watcher))) {
@@ -1803,7 +1806,7 @@ sub make_page {
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
-  my $c = 4;
+  my $c = 5;
   --$c if (not Demeter->co->default(qw(athena show_dispersive)));
   --$c if (not Demeter->co->default(qw(athena show_watcher)));
   my $ngroups = $app->{main}->{list}->GetCount;

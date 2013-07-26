@@ -613,6 +613,44 @@ sub interpolate {
 };
 
 
+sub mee {
+  my ($self, @args) = @_;
+  my %args = @args;
+  $args{width} ||= 0;
+  $args{shift} ||= 0;
+  $args{amp}   ||= 1;
+  $args{how}   ||= 'reflect';	# reflect | arctan
+  $self->_update('background');
+  $self->dispense('process', 'mee_reflect', {width=>$args{width}, amp=>$args{amp}, shift=>$args{shift}});
+
+  my @x = $self->fetch_array($self->group.'.energy');
+  my @y = $self->fetch_array('m___ee.xint');
+  my $e1 = $x[0] + $args{shift};
+  my $yoff = 0;
+  foreach my $i (0 .. $#x) {
+    if ($x[$i] < $e1) {
+      ## this replaces the extrapolated part of the shifted spectrum
+      ## with zeros in the pre-edge
+      $yoff = $y[$i];
+      $y[$i] = 0;
+    } else {
+      ## this corrects for the pre-edge not going to the baseline
+      ## after the convolution and approximately corrects the edge
+      ## step of the convoluted mu(E) data
+      ## $y[$i] = ($y[$i] - $yoff);# * (1 + $yoff);
+    };
+  };
+  $self->place_array("m___ee.xint", \@y);
+
+  my $new = $self->clone;
+  $new -> name($new->name . ' (MEE)');
+  $new -> standard;
+  $self->dispense('process', 'mee_do');
+  $new -> unset_standard;
+  return $new;
+};
+
+
 1;
 
 

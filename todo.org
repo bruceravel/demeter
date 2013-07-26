@@ -77,7 +77,7 @@
 
 *** needs testing [/]
 
-*** Tools [21/25] [84%]
+*** Tools [22/25] [88%]
    1. [X] main
    2. [X] calibrate
    3. [X] align
@@ -92,7 +92,7 @@
    12. [X] data summation
 
    13. [ ] dispersive
-   14. [ ] multi-electron removal
+   14. [X] multi-electron removal
 
    15. [X] LCF
    16. [X] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
@@ -113,7 +113,7 @@
     3. +PCA+
     4. boxcar average
 
-*** needs doing [0/12] [0%]
+*** needs doing [0/13] [0%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
@@ -165,6 +165,9 @@
      + [ ] persistance
      + [ ] explicitly state ninfo and epsilon
    - *Data watcher*
+   - [ ] *MEE tool* [0/2]
+     + [ ] arctan removal
+     + [ ] good guesses for parameters
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
    - [ ] *Help menu* [0/2]

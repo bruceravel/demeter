@@ -1,0 +1,6 @@
+##| performing multi-electron excitation removal using a reflection of the Edge
+set(m___ee.nn     = lconvolve({$S->group}.energy, {$S->group}.norm, {$width}),
+    m___ee.energy = {$S->group}.energy,
+    m___ee.ee     = m___ee.energy +  {$shift},
+    m___ee.xint   = interp(m___ee.ee, m___ee.nn, {$S->group}.energy))
+##| use perl to pad zeros at the beginning of the shifted array

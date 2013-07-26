@@ -26,6 +26,7 @@
      - set e0 to white line top
      - find + plot (this group) or tabulate (all and marked) white line positions
      - configuration parameter group for controlling algorithm
+   + Multi-electron excitation removal tool
    + Move several items from Group menu to a new Energy menu
    + fixed a bug that had the red save indicator changing color too quickly
    + use new list-returning filetype plugin by calling Import recursively after generating the list
@@ -80,6 +81,7 @@
    + allow file type plugins to return a list of processed files, made Zip.pm to demonstrate
    + keep attribute of Fit object for use in Artemis project creation
    + fixed a bug identifying absorber species in Feff object which manifested for som hand-made feff.inp files
+   + multi-electron excitation removal in Demeter::Data::Process
 
 *** Larch
    + Larch templates for LCF fitting
