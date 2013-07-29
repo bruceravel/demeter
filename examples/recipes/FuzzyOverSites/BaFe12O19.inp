@@ -1,0 +1,38 @@
+title name:     Barium Hexaferrite
+title formula:  BaFe12O19
+title sites:    Ba1,Fe1--5,O1--5
+title refer1:   Townes et al, Z. Krist. 125 (1967) pp.437-449
+title schoen:
+title notes1:   see note from d. haskel at end of atoms.inp about
+title notes2:   moving Fe2 from 2b to 4e and making them "half" atoms
+space  = p 63/m m c
+a    = 5.893    c    = 23.194
+rmax = 6.00
+core = Ba1
+atom
+Ba     0.33333   0.66666   0.25000  Ba1
+Fe     0.00000   0.00000   0.00000  Fe1
+Fe     0.00000   0.00000   0.25000  Fe2
+Fe     0.66666   0.33333   0.02720  Fe3
+Fe     0.66666   0.33333   0.19010  Fe4
+Fe     0.16910   0.33820   0.10820  Fe5
+O      0.00000   0.00000   0.14990  O1
+O      0.33333   0.66666   0.05460  O2
+O      0.81660   1.63320   0.25000  O3
+O      0.84800   1.69600   0.05210  O4
+O      0.49800   0.99600   0.14950  O5
+------
+% additional notes from d haskel:
+%
+%  The X-ray diffraction analysis shows that a better refinement is
+% obtained when the Fe(2) atoms are splitted in 1/2, and randomily
+% positioned above and below the basal plane of the bypiramid. In this
+% way, a new crystallographic site is created. The actual unit cell's
+% coordinates of the new site are : 0.0, 0.0, 0.2567 but with 1/2 the
+% atom instead of a full one.
+%
+%  I decided to put it back to the z=0.25 plane, since I couldn't have
+% the splitting in 1/2 and then the feff.inp file created would have too
+% many Fe(2) irons. since I am interested in the distances from the Ba
+% atoms, the difference between 0.25 and 0.2567 is almost
+% negligible. Anyhow, the actual XRD structure has 1/2 Fe(2) at 0.2567.

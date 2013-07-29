@@ -84,6 +84,7 @@
    + keep attribute of Fit object for use in Artemis project creation
    + fixed a bug identifying absorber species in Feff object which manifested for some hand-made feff.inp files
    + multi-electron excitation removal in Demeter::Data::Process
+   + document temp and log file locations for A&A
 
 *** Larch
    + Larch templates for LCF fitting

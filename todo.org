@@ -4,6 +4,7 @@
 
 * larch chores
 
++ [ ] finsh Athena templates, including recently added ones (e.g. MEE templates)
 + [ ] start work on Artemis-related templates
 + [ ] kaiser vs. kaiser-bessel
 + [ ] use of stddev array in LCF is slightly incorrect.  needs to be
@@ -49,12 +50,12 @@
         the executables can all be found,
   - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [2/20] [10%]
+** Demeter bugs, shortcomings, missing features  [3/20] [15%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
-  - [ ] set E0 to peak of white line
+  - [X] set E0 to peak of white line
   - [ ] clnorm + Julia and Jingen's MBACK replacement
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
@@ -113,13 +114,13 @@
     3. +PCA+
     4. boxcar average
 
-*** needs doing [0/13] [0%]
+*** needs doing [2/14] [14%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
-   - [ ] report to a text dialog on values of a particular parameter for all/marked groups
+   - [X] report to a text dialog on values of a particular parameter for all/marked groups
    - [ ] implement megamerge
-   - [ ] links to documentation on each tool
+   - [X] links to documentation on each tool
    - [-] *Main window* [2/3] [66%]
      + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
      + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
@@ -135,47 +136,43 @@
            (see email from Jack Hitch)
      + [ ] compute R-factor in k or R using fit from energy.  (see
            mail from Scott 7 January 2012)
-   - [ ] *PCA tool* [0/10]
+   - [-] *PCA tool* [2/10]
+     + [ ] persistance
      + [ ] manual entry of component coefficients (??)
      + [ ] cluster analysis, select two components and plot the
            associations of each data with those two in a scatter plot.
-     + [ ] persistance
      + [ ] worry about "def group.tt" line being to long in tt template
      + [ ] plotting in pgplot
      + [ ] error analysis, RET, SPOIL, etc, determination of number
            of components, validity of TT, etc
      + [ ] specialized file headers for reconstruction and tt save files
-     + [ ] save eigenvectors to a file
      + [ ] pluck buttons for analysis range don't work
-     + [ ] if the marked groups are changed after performing the PCA
+     + [X] save eigenvectors to a file
+     + [X] if the marked groups are changed after performing the PCA
            but before reconstructing data, the plot will fail with
            and exception.  need to save the list of data that went
            into the PCA and check against that rather than the
            current list of marked groups
    - [-] *Peakfit tool* [7/11]
+     + [ ] persistance
+     + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
+     + [ ] broken using XES
+     + [ ] explicitly state ninfo and epsilon
      + [X] implement pseudovoight
      + [X] verify that all centroids are within (or near) fit range
-     + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
      + [X] behavior when changing data
      + [X] pluck fit ranges
      + [X] +ndata is full data range rather than fit range with Fityk backend+ (igoring this)
-     + [ ] broken using XES
      + [X] +explicitly set title of plot+ (i can live with this)
      + [X] sequence over marked groups
-     + [ ] persistance
-     + [ ] explicitly state ninfo and epsilon
-   - *Data watcher*
+   - [ ] *Data watcher*
    - [-] *MEE tool* [1/2]
      + [X] arctan removal
      + [ ] good guesses for parameters
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
-   - [ ] *Help menu* [0/2]
-     + [ ] demos
-     + [ ] document
-   - *metadata*
+   - [ ] *metadata tool*
 
-*** TODO 
 ** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
@@ -193,6 +190,11 @@
   - [ ] clampbox does not get enabled/disabled explicitly, is this
 	another aspect of StaticBox that is different on Windows? (see
 	link above)
+  - [ ] Need to test that paths with (parens|commas|quotes) get
+	followed correctly in all situations
+  - [ ] Initial initialization of gnuplot and feff executable
+        locations in the situation where the package has been moved or
+        reinstalled such that and old demeter.ini still exists
   - [X] relocation of Strawberry leaves Ifeffit unable to find phase
 	shift and CL tables (use an ENV variable?)
   - [X] The Strawberry+Demeter package does not coexist at all with
@@ -200,11 +202,6 @@
         armed with all dependencies.  Would need to compile wrapper
         and somehow get gnuplot on the machine. *Solved by explicitly
         calling Strawberry in the .bat files*
-  - [ ] Need to test that paths with (parens|commas|quotes) get
-	followed correctly in all situations
-  - [ ] Initial initialization of gnuplot and feff executable
-        locations in the situation where the package has been moved or
-        reinstalled such that and old demeter.ini still exists
 
 
 ** Artemis
@@ -281,11 +278,13 @@
   - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
 
-** Atoms [3/6] [50%]
+** Atoms [3/8] [37%]
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
   - [ ] very confusing error message when core is not a tag
+  - [ ] Why does Amam in lepidocrocite get changed to Cmcm ?
+  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
   - [X] Shell tags in the feff.inp ATOMS list
   - [X] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
          : title name:     Fe2O3  hematite
