@@ -191,3 +191,45 @@ data structures; tools for formal graph theory; tools for manipulating
 zip, INI, and yaml files; and many others.  These tools from CPAN are
 extensively tested and highly reliable.
 [% END %]
+
+[% PROCESS section label="Folders and log files" %]
+
+[% FILTER html_para %]
+On occasion, it is helpful to know something about how [%artemis%]
+writes information to disk during its operations.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="working folder" %]
+Many of [%artemis%]'[%#'%] chores involve writing temporary files.
+Project files are unpacked in temporary folders.  [%gnuplot%] writes temporary
+files as part of its plot creation.  These files are stored in the 
+[% INCLUDE font/quote a="stash folder" %].  On linux (and other
+unixes) this is [% INCLUDE font/file a="$HOME/.horae/stash/" %].  On
+Windows this is [% INCLUDE font/file a="%APPDATA%\\demeter\\stash"%].
+[% END %] 
+[% WRAPPER html/dt dt="log files" %]
+When [%artemis%] runs into problems, it attempts to write enough
+information to the screen that the problem can be addressed.  This
+screen information is what Bruce needs to troubleshoot bugs.  On a
+linux (or other unix) machine, simply run [%artemis%] from the command
+line and the informative screen messages will be written to the
+screen.
+
+On a Windows machine, it is uncommon to run the software from the
+command line, so [%artemis%] has been instrumented to write a run-time
+log file.  This log file is called 
+[% INCLUDE font/file a="dartemis.log"%] and can be found in the 
+[% INCLUDE font/file a="%APPDATA%\\demeter"%] folder.  
+[% END %] 
+[% END %]
+
+[% FILTER html_para %]
+[% INCLUDE font/quote a="%APPDATA%"%]
+is [% INCLUDE font/file a="C:\\Users\\<username>\\AppData\Roaming\\" %]
+on Windows 7 and 
+[% INCLUDE font/file a="C:\\Documents and Settings\\<username>\\Application Data\\" %]
+on Windows XP and Vista.  In either case, 
+[% INCLUDE font/quote a="username" %]
+is your log-in name.
+[% END %]
