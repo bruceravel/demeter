@@ -5,7 +5,10 @@
 
 * Initial release
 
-** 0.9.18 ?? July      2013
+** 0.9.19 ?? ??          2013
+
+
+** 0.9.18 ?? August      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
@@ -34,6 +37,7 @@
    + fixed a problem importing chi(k) data from an ascii file
    + in column selection dialog when selecting energy column, Athena rechecks energy units of new selection
    + plot norm(E) scaled by size of edge step (from Plot menu)
+   + Fixed a PCA bug involving mistakes keeping track of which groups are included in the PCA stack
 
 *** Artemis
    + Clear project name when closing a project
@@ -80,7 +84,7 @@
    + fixed a bug generating paths.dat for a fuzzily degenerate path from a feff.inp with the absorber not at (000)
    + allow file type plugins to return a list of processed files, made Zip.pm to demonstrate
    + keep attribute of Fit object for use in Artemis project creation
-   + fixed a bug identifying absorber species in Feff object which manifested for som hand-made feff.inp files
+   + fixed a bug identifying absorber species in Feff object which manifested for some hand-made feff.inp files
    + multi-electron excitation removal in Demeter::Data::Process
 
 *** Larch
@@ -96,6 +100,39 @@
    + Fixed a trivial display issue when config panel is first opened from plugin registry
    + indicate parameter units in Demeter::UI::Wx::Config more concisely
    + identify backends at GUI startup
+
+
+*** Top of the to do list for 0.9.19:
+
+   + Implement dispersive data tool (acknowledgment: Pinit Kidkhunthod)
+   + Address several Atoms bugs (acknowledgment: Chanapa Kongmark)
+   + Problem with display of $S02 character on some Windows platforms (several)
+   + Move all paths between path lists in multile data set fit (acknowledgment: Shelly Kelly)
+   + Fuzzy degeneracy over multiple sites (Shelly pushed for this)
+
+
+*** Acknowledgments
+
+With so many new features and bug fixes, I owe a big "Thank You!" to lots of people:
+
+   + _John Hayes_ (reported a PCA bug)
+   + _Martin Stennet_ and _Neil Hyatt_ (for requesting the multi-electron excitation tool)
+   + _Chachi Rojas_ and _Anthony Ardizzi_ (for bug reports and suggestions regarding to Artemis' fit history)
+   + _Shelly Kelly_ (for pointing out bugs involving background removal standards and
+     importing chi(k) data  and for suggesting improvements to the Intrp page)
+   + _Eric Breyneart_ (for contributing a SPEC file plugin and for reporting a bug in the use of fuzzy degeneracy) 
+   + _Alessandra Leri_ (for suggesting the white line finder and its applications, the edge
+     step uncertainty tool, and the plot of norm(E) scaled by edge step)
+   + _Roberto Rodriguez_ (for reporting a bug involving a corrupted MRU file)
+   + _George Strbinsky_ (for reporting bugs in the deglithing tool and in the gnuplot interface)
+   + _Joe Woicik_ and others (for noticing several bugs in Artemis' File->Import data menu item)
+   + _Shoaib Muhammad_ (for suggesting a change to Artemis' interaction with autosave files
+     and for reporting a bug in clearing Feff calculcation when closing projects
+   + _Simon Bare_ (for pointing out that (Ctrl/Alt)-(j/k) were implemented inconsistently
+
+I think that's everyone.  If I missed your name, it's just that I suck
+at record-keeping, not that I don't value your input.
+
 
 ** 0.9.17 28 May       2013
 *** Athena
