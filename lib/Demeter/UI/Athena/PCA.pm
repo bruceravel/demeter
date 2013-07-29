@@ -118,7 +118,7 @@ sub new {
     $clusterboxsizer    -> Add($this->{clusplot},  1, wxGROW|wxALL, 0);
 
     foreach my $w (qw(frombox stack screebox cumvar)) {
-      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 1);
     };
     $plotboxsizer -> Add($clusterboxsizer, 0, wxGROW|wxALL, 0);
     foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp cluster1 cluster2 clusvs clusplot)) {
