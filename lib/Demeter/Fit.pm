@@ -325,6 +325,9 @@ sub _verify_fit {
   ## 15. check that parameters do not have program variable names
   $trouble_found += $self->S_program_var_names;
 
+  ## 15.1. check that parameters do not have unallowed characters in their names
+  $trouble_found += $self->S_bad_character;
+
   ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
   $trouble_found += $self->S_path_calculation_exists;
 
