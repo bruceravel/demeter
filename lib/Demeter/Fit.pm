@@ -1413,6 +1413,7 @@ override 'deserialize' => sub {
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
+  $self->datagroups($r_data);
 
   ## -------- import the data
   my @data = ();

@@ -89,10 +89,10 @@ sub guess {
   my $da9 = $self->e0('fraction');
   $self->e0('ifeffit');
 
-  print "\n$st1  $st9 \n";
-  print "\n$da1  $da9 \n";
-  printf "%.9f\n", ($st9-$st1)/($da9-$da1);
-  printf "%.9f\n",  $st1 - (($st9-$st1)/($da9-$da1)) * $da1;
+  #print "\n$st1  $st9 \n";
+  #print "\n$da1  $da9 \n";
+  #printf "%.9f\n", ($st9-$st1)/($da9-$da1);
+  #printf "%.9f\n",  $st1 - (($st9-$st1)/($da9-$da1)) * $da1;
 
   $self->linear(($st9-$st1)/($da9-$da1));
   $self->offset($st1 - ($self->linear * $da1));

@@ -46,6 +46,7 @@ has 'space'         => (is => 'rw', isa => 'Str',     default => 'norm',
 has 'dataspace'     => (is => 'rw', isa => 'Str',     default => 'norm',);
 has 'standardspace' => (is => 'rw', isa => 'Str',     default => 'norm',);
 
+has 'multiplier'    => (is => 'rw', isa => 'Num',     default => 1);
 has 'invert'        => (is => 'rw', isa => 'Bool',    default => 0);
 has 'xmin'          => (is => 'rw', isa => 'Num',     default => -20);
 has 'xmax'          => (is => 'rw', isa => 'Num',     default =>  30);
@@ -97,20 +98,33 @@ sub diff {
 };
 
 sub plot {
-  my ($self) = @_;
+  my ($self, $space) = @_;
+  $space ||= 'E';
   $self->po->title(join(' - ', $self->data->name, $self->standard->name)) if not $self->po->title;
   $self->standard->standard;
-  if ($self->plotspectra) {
-    my $save = $self->po->e_markers;
+  my $save = $self->po->e_markers;
+  if (lc($space) eq 'k') {
+    $::app->{main}->{'PlotK'}->pull_marked_values;
     $self->po->e_markers(0);
     $self->po->start_plot;
-    $self->data->plot('E');
-    $self->standard->plot('E');
-    $self->chart("plot", "overdiff");
+    $self->data->plot($space);
+    $self->standard->plot($space);
+    my $new = $self->make_group;
+    $new->datatype('xmu');
+    $new->_update('bft');
+    $new->plot($space);
+    $self->po->e_markers($save);
+    $new->DEMOLISH;
+  } elsif ($self->plotspectra) {
+    $self->po->e_markers(0);
+    $self->po->start_plot;
+    $self->data->plot($space);
+    $self->standard->plot($space);
+    $self->chart("plot", "overdiff", {space=>$space});
     $self->po->e_markers($save);
   } else {
     my $which = ($self->po->New) ? 'newdiff' : 'overdiff';
-    $self->chart("plot", $which);
+    $self->chart("plot", $which, {space=>$space});
     $self->po->increment;
   };
 
@@ -162,6 +176,7 @@ sub make_name {
   my %table = (d   => $self->data->name,
 	       s   => $self->standard->name,
 	       f   => $self->dataspace,
+	       m   => $self->multiplier,
 	       n   => $self->xmin,
 	       x   => $self->xmax,
 	       a   => sprintf("%.5f", $self->area),

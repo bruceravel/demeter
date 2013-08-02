@@ -50,6 +50,7 @@
      standard is now imported correctly along with the data for the
      removal standard
    + add tool for computing bond valence sums from marked path(s)
+   + new pre-fit sanity check to make sure that GDS parameter names only have allowed characters
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables

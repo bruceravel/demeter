@@ -26,7 +26,8 @@ print Ifeffit::get_scalar('pixel___xmax'), $/;
 
 my $new = $data->apply;
 $new -> bkg_nor1(50);
-#$new->po->e_der(1);
+$new->po->e_der(1);
+#$new->po->e_norm(0);
 $_->plot('e') foreach ($stan, $new);
 $stan->pause;
 
