@@ -341,7 +341,7 @@ sub marked_areas {
   };
   close $O;
   Demeter->chart('plot', 'plot_file', {file=>$temp, xmin=>1, xmax=>$#all+1, param=>'integrated area',
-				       showy=>0, xlabel=>'data group', linetype=>'linespoints'});
+				       showy=>0, xlabel=>'data group', linetype=>'linespoints', title=>'areas'});
 
   $::app->{main}->status("Plotted sequence of difference spectra");
   undef $busy;

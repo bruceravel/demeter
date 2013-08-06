@@ -1,9 +1,5 @@
 [% META title = 'Difference spectra' %]
 
-[% WRAPPER html/todo %]
-Discuss spaces, discuss group naming, discuss and show integration,
-discuss and show additional uses of diff spectra. 
-[% END %]
 
 [% FILTER html_para %]
 In many situations, the trends in a sequence measured data can be
@@ -23,9 +19,8 @@ Selecting one of the difference spectra options from the
 main menu replaces the main window with
 the difference tool, as shown
 [% INCLUDE imageref text="below" label="diff" in=1 %].
-Difference spectra can be
-computed as [% mu %], normalized [% mu %], [% chik %], [% chir %], or
-[% chiq %].
+Difference spectra can be computed as [%mu%], normalized [%mu%], and
+derivative or second derivative of [%mu%].
 
 For difference spectra to be meaningful, it is essential that data
 processing be performed correctly for each data group.  It is
@@ -43,15 +38,61 @@ The difference spectrum tool with data taken from the
 
 [% FILTER html_para %]
 As you click on each group in the group list, the difference spectrum
-is calculated and plotted.  You can select two points, shown in
+is computed as the difference between the groups selected as the
+standard by menu control at the top of the window and the selected
+group from the group list.  The difference spectrum will be plotted,
+optionally along with the data and standard used to make the
+subtraction.  The form of the difference spectrum
+[%ndash%] [%mu%], normalized [%mu%], and derivative or second
+derivative of [%mu%] [%ndash%] is selected from the menu labeled
+[%INCLUDE font/quote a="Form" %].  The multiplier is a scaling factor
+that can be applied to the standard before subtraction.
+
+If you have accidentally swapped the standard and data, click the 
+[% INCLUDE font/quote a="invert" %] button to change the order of the
+subtraction. 
+
+You can select two points, shown in
 [% INCLUDE imageref text="the plot below" label="diff_diff" %]
-by the orange markers, and integrate the area under that part of
+by the brown markers, and integrate the area under that part of
 the spectrum.
 
-The difference spectra in energy or k can be saved to data groups.
-Those data groups are treated like any other energy or k group.
-Difference groups in energy can have a background removed and
-difference spectra can be Fourier transformed.
+The difference spectra saved to data groups.  Those data groups are
+treated in every way like any other data group.  By default,
+difference groups are marked as normalized groups [%ndash%] that is,
+a flag is set which skips the normalization algorithm.  The
+[% INCLUDE font/quote a="renomralize" %]
+button can be ticked to make the resulting group a normal [%mu%]
+group.  When the form of the difference is set to plain [%mu%], that
+button will be ticked.
+
+The name of the resulting data group will be set using the 
+[% INCLUDE font/quote a="Name template" %], which includes a
+mini-language of tokens that will be substituted by specific values.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="%d" %]
+Replaced by the name of the data group.
+[% END %]
+[% WRAPPER html/dt dt="%s" %]
+Replaced by the name of the standard group.
+[% END %]
+[% WRAPPER html/dt dt="%f" %]
+Replaced by the form of the difference spectrum
+[% END %]
+[% WRAPPER html/dt dt="%m" %]
+Replaced by the multiplier value
+[% END %]
+[% WRAPPER html/dt dt="%n" %]
+Replaced by the lower bound of the integration range
+[% END %]
+[% WRAPPER html/dt dt="%x" %]
+Replaced by the upper bound of the integration range
+[% END %]
+[% WRAPPER html/dt dt="%a" %]
+Replaced by the compted area over the integration range
+[% END %]
 [% END %]
 
 [% WRAPPER quadplot files=["diff_diff.png", "diff_diffsequence.png"] %]
@@ -61,8 +102,41 @@ current group in the screenshot of the difference tool.
 [% END %]
 
 [% FILTER html_para %]
+The integrated areas obtained by computing a sequence over all groups
+marked in the group list can be plotted by clicking the button labeled
+[% INCLUDE font/quote a="Plot integrated areas for all marked groups."%]
+The reult of this shown below.
+[% END %]
+
+
+[% WRAPPER figure file="diff_areas.png" %]
+Integrated areas for a sequence of difference spectra.
+[% END %]
+
+
+[% PROCESS section label="Uses of difference spectra" %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Magnetic dichroism" %]
 This part of [% athena %] is directly applicable to dichroism
-studies.  The difference spectra in normalized [% mu %] and the
+studies.  The difference spectra is made in normalized [% mu %] and the
 integration can be used to measure magnetic moments in magnetic
 materials.
+[% END %]
+[% WRAPPER html/dt dt="Experimental corrections" %]
+Certain kinds of corrections for nonlinearities in the XAS measurement
+can be corrected by normalizing measured data by a blank scan
+[%ndash%] that is a measurement through the same energy range using
+the same instrumentation, but measured without the sample in the beam
+path.  This sort of correction, as shown in
+[% INCLUDE citation
+author = "C. T. Chantler, et al."
+journal = "J Synchrotron Radiat."
+volume = "19"
+pages = 851-862
+year = 2102
+doi = "10.1107/S0909049512039544"
+%], is equivalent to a difference spectrum measured in plain [%mue%]
+between the data and balnk scan.
+[% END %]
 [% END %]
