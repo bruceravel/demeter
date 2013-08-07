@@ -627,10 +627,7 @@ sub sequence {
   ## fill in the sequence notebook page
   $this->seq_results(@groups);
 
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Peak fit of %d groups in %d minutes, %d seconds.",
-			   $#groups+1, $dur->minutes, $dur->seconds);
+  my $finishtext = Demeter->howlong($start, sprintf("Peak fitting %d groups", $#groups+1));
   $this->{mchoices}     -> Enable(1);
   $this->{plotmarked}   -> Enable(1);
   $this->{markedreport} -> Enable(1);

@@ -7,7 +7,7 @@ title notes1:   see note from d. haskel at end of atoms.inp about
 title notes2:   moving Fe2 from 2b to 4e and making them "half" atoms
 space  = p 63/m m c
 a    = 5.893    c    = 23.194
-rmax = 6.00
+rmax = 9.00
 core = Ba1
 atom
 Ba     0.33333   0.66666   0.25000  Ba1

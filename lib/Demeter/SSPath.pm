@@ -84,6 +84,13 @@ sub set_rattle {
   return $self;
 };
 
+sub scatterer {
+  my ($self) = @_;
+  my $feff = $self->parent;
+  return $self if not $feff;
+  my @ipots = @{ $feff->potentials };
+  return get_symbol($ipots[$self->ipot]->[1]);
+};
 
 override make_name => sub {
   my ($self) = @_;

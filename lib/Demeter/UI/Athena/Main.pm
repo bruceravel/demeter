@@ -1317,10 +1317,7 @@ sub edgestep_error {
       -> Show if Demeter->co->default('edgestep', 'fullreport');
 
   $data->sentinal(sub{1});
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "(that took %d minutes, %d seconds)", $dur->minutes, $dur->seconds;
-
+  my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
   $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
 			       $data->name, $data->bkg_step, $stddev, $finishtext));

@@ -673,9 +673,7 @@ sub combi {
   $this->{stats}->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   $this->{notebook}->ChangeSelection(2);
 
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "Did %d combinatorial fits in %d minutes, %d seconds.", $size, $dur->minutes, $dur->seconds;
+  my $finishtext = Demeter->howlong($start, sprintf("%d combinatorial fits",$size));
   $::app->{main}->status($finishtext);
 
   undef $busy;
@@ -814,9 +812,7 @@ sub sequence {
   $this->{markedresults} -> SetItemState(0, 0, wxLIST_STATE_SELECTED);
   $this->{markedresults} -> SetItemState($i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "Fit %d groups %d minutes, %d seconds.", $#groups+1, $dur->minutes, $dur->seconds;
+  my $finishtext = Demeter->howlong($start, sprintf("Fitting %d groups",$#groups+1));
   $this->{plotmarked}    -> Enable(1);
   $this->{markedreport}  -> Enable(1);
   $::app->{main}->status($finishtext);

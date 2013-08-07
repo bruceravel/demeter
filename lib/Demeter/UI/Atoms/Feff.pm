@@ -262,6 +262,7 @@ Should we continue?',
   my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
   $self->{parent}->{notebook}->ChangeSelection($n);
   $self->{parent}->{Console}->{console}->Update;
+  my $start = DateTime->now( time_zone => 'floating' );
   my $busy = Wx::BusyCursor->new();
 
   $feff->execution_wrapper(sub{$self->run_and_gather(@_)});
@@ -335,6 +336,7 @@ Should we continue?',
   $feff->clear_iobuffer;
 
   $feff->execution_wrapper(0);
+  $self->{parent}->{Console}->{console}->AppendText(Demeter->howlong($start, 'Your Feff calculation')."\n\n");
 
   #unlink $inpfile;
   undef $busy;

@@ -333,7 +333,7 @@ sub rdinp {
 	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
 	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
 	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
-	$self -> push_othercards($thiscard);  ## pass through all other cards
+	$self -> push_othercards($_);  ## pass through all other cards
       };
 
       #print join("|", $thiscard, @line), $/;
@@ -659,6 +659,10 @@ sub pathfinder {
   my @list_of_paths = $self->_collapse_heap($heap);
   undef $heap;
   ##$_->details foreach (@list_of_paths);
+  foreach my $sp (@list_of_paths) {
+    $sp->pathfinding(0);
+    $sp->mo->push_ScatteringPath($sp);
+  };
   $self->set(pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1);
   $self->stop_spinner if ((not $self->screen) and ($self->mo->ui eq 'screen'));
   return $self;
@@ -727,7 +731,7 @@ sub _populate_tree {
     $self->click('.') if not ($innercount % $freq);
     $tree->addChild(Tree::Simple->new($ind));
   };
-  if ($self->get('nlegs') == 2) {
+  if ($self->nlegs == 2) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
 			      $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
     return $tree;
@@ -746,14 +750,14 @@ sub _populate_tree {
       $self->click('+') if not ($outercount % ($freq*20));
       next if ($leglength[$cindex][$ind] > $rmax); # prune distant atoms
       next if ($thiskid == $ind); # avoid same atom twice
-      next if (($self->get('nlegs') == 3) and ($ind  == $cindex)); # exclude absorber from this generation
+      next if (($self->nlegs == 3) and ($ind  == $cindex)); # exclude absorber from this generation
       next if (_length($cindex, $thiskid, $ind, $cindex) > $rmax2);	     # prune long paths from the tree
       ++$innercount;
       $self->click('.') if not ($innercount % $freq);
       $k->addChild(Tree::Simple->new($ind));
     };
   };
-  if ($self->get('nlegs') == 3) {
+  if ($self->nlegs == 3) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
 			      $tree->size, $natoms, $rmax));
     return $tree;
@@ -862,13 +866,13 @@ sub _visit {
 
 =cut
 sub _parentage {
-  my ($tree, $this) = @_;
-  if (lc($tree->getParent) eq 'root') {
+  ##my ($tree, $this) = @_;
+  if (lc($_[0]->getParent) eq 'root') {
     return q{};
   } else {
-    return _parentage($tree->getParent, $tree->getNodeValue())
+    return _parentage($_[0]->getParent, $_[0]->getNodeValue())
       . "."
-	. $tree->getNodeValue();
+	. $_[0]->getNodeValue();
   };
 };
 
@@ -907,7 +911,8 @@ sub _collapse_heap {
       if (not $is_different) {
 	my @degen = @{ $p->degeneracies };
 	push @degen, $elem->string;
-	$p->set(n=>$#degen+1, degeneracies=>\@degen);
+	$p->n($#degen+1);
+	$p->degeneracies(\@degen);
 	my $fuzzy = $p->fuzzy + $elem->halflength;
 	$p->fuzzy($fuzzy);
 	$new_path = 0;
@@ -915,7 +920,8 @@ sub _collapse_heap {
       };
     };
     if ($new_path) {
-      $elem->set(fuzzy=>$elem->halflength, degeneracies=>[$elem->string]);
+      $elem->fuzzy($elem->halflength);
+      $elem->degeneracies([$elem->string]);
       push(@list_of_paths, $elem);
     } else {
       $elem->DEMOLISH;
@@ -923,8 +929,7 @@ sub _collapse_heap {
   };
 
   foreach my $sp (@list_of_paths) {
-    my ($fuzzy, $n) = $sp->get(qw(fuzzy n));
-    $sp->fuzzy($fuzzy/$n);
+    $sp->fuzzy($sp->fuzzy/$sp->n);
   };
   my $path_count = $#list_of_paths+1;
   $self->report("\n    (found $path_count unique paths)\n");
@@ -1043,7 +1048,10 @@ sub run_feff {
 sub click {
   my ($self, $char) = @_;
   &{$self->execution_wrapper}($char) if ($self->execution_wrapper);
-  print $char if $self->screen;
+  if ($self->screen) {
+    local $|=1;
+    print $char;
+  }
 }
 
 
@@ -1055,7 +1063,10 @@ sub report {
   &{$self->execution_wrapper}($string)  if ($self->execution_wrapper);
   ## screen
   my $which = ($err) ? 'fefferr' : 'feffout';
-  print $self->_ansify($string, $which) if $self->screen;
+  if ($self->screen) {
+    local $|=1;
+    print $self->_ansify($string, $which);
+  };
   ## buffer
   if ($self->buffer) {
     my @list = split("\n", $string);
@@ -1146,7 +1157,8 @@ sub read_yaml {
   ## snarf attributes of each ScatteringPath object
   my @paths;
   foreach my $path (@refs) {
-    my $sp = Demeter::ScatteringPath->new(feff=>$self);
+    my $sp = Demeter::ScatteringPath->new(feff=>$self, pathfinding=>0);
+    $sp->mo->push_ScatteringPath($sp);
     foreach my $key ($sp->savelist) {
       next if not defined $path->{$key};
       $sp -> $key($path->{$key});

@@ -54,15 +54,16 @@
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
-     - export DEMETER_BACKEND = ifeffit|larch to control which backend is used
-     - export DEMETER_DEVFLAG = 0|1 to control whether development screen messages are printed
+     - =export DEMETER_BACKEND = ifeffit|larch= to control which backend is used
+     - =export DEMETER_DEVFLAG = 0|1= to control whether development screen messages are printed
+   + Did some profiling on path finder, found a way to significantly improve performance
    + Added Eric Breynaert's SPEC file plugin for SNBL at ESRF
    + Deal more gracefully with a corrupted MRU file
    + Add interface to bond valence sum database
    + Record uncertainty in E0 shift when auto-aligning
    + Coerce values for weights, e0s, and their uncertainties to numbers in LCF object
    + LCF linear term now works, but only in Larch
-   + changed "ifeffit" attribute in Mode object to "backend"
+   + changed =ifeffit= attribute in Mode object to =backend=
      - made "ifeffit" and "larch" as aliases for "backend"
      - replaced "ifeffit" with "backend" everywhere in the distribution
    + removed dependence on MooseX::StrictConstructor (this addresses a
@@ -85,6 +86,7 @@
    + keep attribute of Fit object for use in Artemis project creation
    + fixed a bug identifying absorber species in Feff object which manifested for some hand-made feff.inp files
    + multi-electron excitation removal in Demeter::Data::Process
+   + =howlong= method in Demeter::Tools + refactored some code to use it
    + document temp and log file locations for A&A
 
 *** Larch

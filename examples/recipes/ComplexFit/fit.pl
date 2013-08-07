@@ -74,7 +74,7 @@ my @gds = (
 
 ## -------- run the feff calculation
 my $feff = Demeter::Feff->new(file=>'withHg.inp', workspace=>'15');
-$feff -> set(screen=>q{}, save=>1);
+$feff -> set(screen=>0, save=>1);
 $feff -> make_workspace('15');
 $feff -> co -> set_default("pathfinder", "fs_angle", 25);
 $feff -> rmax(4.5);
@@ -94,6 +94,8 @@ my @paths  = ();
 my $index  = 0;
 my @common = (parent => $feff, data => $data, s02 => "amp", e0 => "enot",);
 
+Demeter->set_mode(screen=>0);
+$_->dispose($_->write_gds) foreach @gds;
 my $p = $feff->find_path(lt=>3, tagmatch=>['N']);	       ## find the nearest neighbor, N at a short distance
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,

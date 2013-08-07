@@ -724,9 +724,7 @@ sub fit {
       $rframes->{Plot}->plot(q{}, $how);
     };
     $rframes->{GDS}->fill_results(@gds);
-    my $finish = DateTime->now( time_zone => 'floating' );
-    my $dur = $finish->delta_ms($start);
-    $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
+    $finishtext = Demeter->howlong($start, 'Your fit');
     if ($frames{main}->{savehist}->GetValue) {
       $rframes->{History}->{list}->AddData($fit->name, $fit);
       $rframes->{History}->add_plottool($fit);
@@ -737,8 +735,6 @@ sub fit {
 	$rframes->{History}->set_params($fit);
       };
     };
-    undef $dur;
-    undef $finish;
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
     $rframes->{Log}->Show(1);

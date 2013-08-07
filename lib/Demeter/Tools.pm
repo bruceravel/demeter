@@ -64,6 +64,20 @@ sub now {
   return sprintf("%s", DateTime->now(time_zone => $tz));
 };
 
+sub howlong {
+  my ($self, $start, $id) = @_;
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->delta_ms($start);
+  $id ||= 'That';
+  my $text;
+  if ($dur->minutes) {
+    $text = sprintf "%s took %d minutes and %d seconds.", $id, $dur->minutes, $dur->seconds;
+  } else {
+    $text = sprintf "%s took %d seconds.", $id, $dur->seconds;
+  };
+  return $text;
+};
+
 sub attribute_exists {
   my ($self, $att) = @_;
   return any {$_ eq $att} (map {$_->name} $self->meta->get_all_attributes);
@@ -537,6 +551,32 @@ This returns a string with the current date and time in a convenient,
 human-readable format.
 
    print "The time is: ", $demeter_object -> now, $/;
+
+=item C<howlong>
+
+This returns a string used for indicating an amount of elapsed time.
+The argument is a DataTime object made at the beginning of the event
+whose elapsed time is being measured.
+
+   my $start = DateTime->now( time_zone => 'floating' );
+   #  ... do something
+   my $text = Demeter->howlong($start);
+
+returns
+
+   That took NN seconds.
+
+It can be customized:
+
+   my $text = Demeter->howlong($start, "Your fit");
+
+returns
+
+   Your fit took NN seconds.
+
+For something longer than a minute, it would return
+
+   Your fit took MM minutes and NN seconds.
 
 =item C<environment>
 

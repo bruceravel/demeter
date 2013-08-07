@@ -286,7 +286,7 @@ sub metric {
   my ($self, $x,$y,$z) = @_;
   my ($xp, $yp, $zp);
   my ($a, $b, $c, $txx, $tyx, $tyz, $tzx, $tzz) =
-    $self->get(qw(a b c txx tyx tyz tzx tzz));
+    ($self->a, $self->b, $self->c, $self->txx, $self->tyx, $self->tyz, $self->tzx, $self->tzz);
   $xp = $x*$a*$txx;
   $yp = $x*$a*$tyx + $y*$b + $z*$c*$tyz;
   $zp = $x*$a*$tzx +         $z*$c*$tzz;

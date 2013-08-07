@@ -94,6 +94,8 @@ has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 
+has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
+
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 #has 'ipots'        => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -101,12 +103,20 @@ has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 
 
 sub BUILD {
-  my ($self, @params) = @_;
-  $self->mo->push_ScatteringPath($self);
+  #my ($self, @params) = @_;
+  ## cannot do this now, keeping track of SP objects in this while
+  ## during pathfinder is too damn inefficient
+  #$self->mo->push_ScatteringPath($self);
+  return $_[0];
+};
+override remove => sub {	# a bit of optimization, skipping the "($self) = @_" step
+  return $_[0] if $_[0]->pathfinding;
+  $_[0]->mo->remove($_[0]) if (defined($_[0]) and ref($_[0]) =~ m{Demeter} and defined($_[0]->mo));
+  return $_[0];
 };
 sub DEMOLISH {
-  my ($self) = @_;
-  $self->alldone;
+  #my ($self) = @_;
+  $_[0]->remove;
 };
 
 # override all => sub {
@@ -207,13 +217,14 @@ sub ssipot {
 ## set halflength and beta list for this path
 sub evaluate {
   my ($self) = @_;
-  my ($feff, $string) = $self->get(qw{feff string});
+  my ($feff, $string) = ($self->feff, $self->string);
 
   ## compute nlegs
   $self -> compute_nleg_nkey($string);
   $self -> compute_halflength($feff, $string);
   $self -> compute_beta($feff, $string);
-  $self -> set(betakey=>$self->_betakey, etakey=>$self->_etakey);
+  $self -> betakey($self->_betakey);
+  $self -> etakey($self->_etakey);
   $self -> identify_path;
   $self -> randstring(random_string('ccccccccc').'.sp');
   return $self;
@@ -231,7 +242,8 @@ sub compute_nleg_nkey {
     $nkey += $cofactor * $_;
     $cofactor *= 1000;
   };
-  $self->set(nleg=>$na, nkey=>$nkey);
+  $self->nleg($na);
+  $self->nkey($nkey);
   return ($na, $nkey);
 };
 
@@ -258,7 +270,8 @@ sub compute_halflength {
   my $cindex = $feff->abs_index;
   #my $halflength = sprintf("%.5f", 0.5*$feff->_length($cindex, @atoms, $cindex));
   my $halflength = sprintf("%.5f", 0.5*Demeter::Feff::_length($cindex, @atoms, $cindex));
-  $self->set(halflength=>$halflength, heapvalue=>$halflength);
+  $self->halflength($halflength);
+  $self->heapvalue($halflength);
   return $halflength;
 };
 
@@ -333,6 +346,9 @@ sub compute_beta {
   $atoms[0]   = $ai;		#  replace central atom tokens
   $atoms[-1]  = $ai;
 
+  ## predefine variables so they do not re-instantiated during loops
+  my ($im1, $i, $ip1, @asite, @bsite, @csite, @vector, $ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $b);
+
   my (@alpha, @beta, @gamma, @eta, @aleph, @gimel, @rleg);
   $rleg[0]  = 0;
   $alpha[0] = 0;
@@ -351,29 +367,29 @@ sub compute_beta {
     #$aleph[$j] = [0,0];
     #$gimel[$j] = [0,0];
 
-    my ($im1, $i, $ip1) = ($j-1, $j, $j+1);
+    ($im1, $i, $ip1) = ($j-1, $j, $j+1);
     if ($j == $#atoms) {
       ($im1, $i, $ip1) = ($j-1, 0, 1);
     };#  elsif ($j == $#atoms+1) {
     # 	($im1, $i, $ip1) = ($#atoms-1, $#atoms, 0);
     #       };
 
-    my @asite = @{ $rsites->[$atoms[$im1]] }[0..2];
-    my @bsite = @{ $rsites->[$atoms[$i  ]] }[0..2];
-    my @csite = @{ $rsites->[$atoms[$ip1]] }[0..2];
+    @asite = @{ $rsites->[$atoms[$im1]] }[0..2];
+    @bsite = @{ $rsites->[$atoms[$i  ]] }[0..2];
+    @csite = @{ $rsites->[$atoms[$ip1]] }[0..2];
 
-    my @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
-    my ($ct, $st, $cp, $sp)     = _trig(@vector);
+    @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
+    ($ct, $st, $cp, $sp)     = _trig(@vector);
     @vector    = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
     $rleg[$j]  = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
-    my ($ctp, $stp, $cpp, $spp) = _trig(@vector);
+    ($ctp, $stp, $cpp, $spp) = _trig(@vector);
 
-    my $cppp = $cp*$cpp + $sp*$spp;
-    my $sppp = $spp*$cp - $cpp*$sp;
+    $cppp = $cp*$cpp + $sp*$spp;
+    $sppp = $spp*$cp - $cpp*$sp;
     #my $phi  = atan2($sp,  $cp);
     #my $phip = atan2($spp, $cpp);
 
-    my $b = $ct*$ctp + $st*$stp*$cppp;
+    $b = $ct*$ctp + $st*$stp*$cppp;
     if ($b < -1) {
       $beta[$j] = "180.0000";
     } elsif ($b >  1) {
@@ -392,9 +408,9 @@ sub compute_beta {
     $gimel[$j] = [-$st*$ctp*$cppp + $ct*$stp,  -$st *$sppp];
   };
 
-  my @asite = @{ $rsites->[$atoms[$#atoms]] }[0..2];
-  my @bsite = @{ $rsites->[$atoms[0      ]] }[0..2];
-  my @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
+  @asite = @{ $rsites->[$atoms[$#atoms]] }[0..2];
+  @bsite = @{ $rsites->[$atoms[0      ]] }[0..2];
+  @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
   $rleg[$#atoms+1] = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
 
   #$alpha[0] = $alpha[$#atoms];
@@ -595,7 +611,7 @@ sub all_degeneracies {
 
 sub identify_path {
   my ($self) = @_;
-  my ($nleg, $feff) = $self->get(qw(nleg feff));
+  my ($nleg, $feff) = ($self->nleg, $self->feff);
   my @beta = @{ $self->beta };
   my ($type, $weight) = (q{}, 0);
 
