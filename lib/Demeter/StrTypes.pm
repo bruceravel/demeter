@@ -14,6 +14,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Line
 				   AtomsEdge
 				   FeffCard
+				   Feff9Card
 				   Clamp
 				   Config
 				   Statistic
@@ -213,6 +214,25 @@ subtype FeffCard,
   as Str,
   where { lc($_) =~ m{\A$feffcard_regexp\z} },
   message { "That string ($_) is not a Feff keyword" };
+
+## -------- Feff9 cards
+use vars qw(@feff9card_list $feff9card_regexp);
+@feff9card_list = qw(ABSOLUTE AFOLP ATOMS BANDSTRUCTURE CFAVERAGE CHBROAD CHBROAD
+		     CHSHIFT CHWIDTH CIF CONFIG CONTROL COORDINATES COREHOLE
+		     CORRECTIONS CRITERIA DANES DEBYE DEBYE DIMS EDGE EGAP EGRID
+		     ELLIPTICITY ELNES END EPS0 EQUIVALENCE EXAFS EXCHANGE EXELFS
+		     EXTPOT FMS FOLP FPRIME HOLE INTERSTITIAL ION IORDER JUMPRM KMESH
+		     LATTICE LDEC LDOS LJMAX MAGIC MBCONV MPSE MULTIPOLE NLEG NOHOLE
+		     NRIXS NSTAR NUMDENS OPCONS OVERLAP PCRITERIA PLASMON PMBSE
+		     POLARIZATION POTENTIALS PREPS PRINT RCONV REAL RECIPROCAL RESTART
+		     RGRID RMULTIPLIER RPATH RPHASES RSIGMA S02 SCF SCREEN SELF
+		     SETEDGE SFCONV SFSE SGROUP SIG2 SIG3 SPIN SS STRFACTORS SYMMETRY
+		     TARGET TDLDA TITLE UNFREEZEF XANES XES XNCD);
+$feff9card_regexp = Regexp::Assemble->new()->add(@feff9card_list)->re;
+subtype Feff9Card,
+  as Str,
+  where { uc($_) =~ m{\A$feff9card_regexp\z} },
+  message { "That string ($_) is not a Feff9 keyword" };
 
 ## -------- Clamp words
 use vars qw(@clamp_list $clamp_regexp);

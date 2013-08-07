@@ -1,6 +1,6 @@
 package  Demeter::UI::Atoms::Feff;
 
-use Demeter::StrTypes qw( Element );
+use Demeter::StrTypes qw( Element Feff9Card );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
@@ -12,7 +12,7 @@ use base 'Wx::Panel';
 
 #use Wx::Perl::ProcessStream qw( :everything );
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RIGHT_DOWN);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::VerbDialog;
 
@@ -61,6 +61,8 @@ sub new {
   $self->{feffboxsizer} -> Add($self->{feff}, 1, wxEXPAND|wxALL, 0);
 
   $vbox -> Add($self->{feffboxsizer}, 1, wxEXPAND|wxALL, 5);
+  EVT_RIGHT_DOWN($self->{feff}, sub{ OnCardClick(@_, $self) });
+  EVT_MENU($self->{feff}, -1, sub{ OnCardMenu(@_, $self) });
 
   #print ">>> ", $parent->{feffobject}, $/;
   $self->{feffobject} = $parent->{feffobject} || Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
@@ -109,6 +111,43 @@ sub OnToolRightClick {
   } else {
    $self->import( $dialog->GetMruSelection );
   };
+};
+
+sub OnCardClick {
+  my ($text, $event, $this) = @_;
+  my ($res, $col, $row) = $text->HitTest($event->GetPosition);
+  my $line = $text->GetLineText($row);
+  my ($start, $end) = (0, length($line));
+  foreach my $i (reverse(0 .. $col)) {
+    if (substr($line, $i, 1) =~ m{[ \t*]}) {
+      $start = $i+1;
+      last;
+    };
+  };
+  foreach my $i ($col .. length($line)) {
+    if (substr($line, $i, 1) =~ m{\s}) {
+      $end = $i-1;
+      last;
+    };
+  };
+  my $result = substr($line, $start, $end);
+  $result =~ s{\s+\z}{};
+  print ">$result<\n";
+  $result = 'RPATH' if $result eq 'RMAX';
+  if (is_Feff9Card($result)) {
+    $this->{feffdoccard} = $result;
+    my $menu  = Wx::Menu->new(q{});
+    $menu -> Append(Wx::NewId(), "Show document for Feff card: $result");
+    $text -> PopupMenu($menu, $event->GetPosition);
+  } else {
+    $event->Skip;
+  };
+};
+
+sub OnCardMenu {
+  my ($text, $event, $this) = @_;
+  my $url = 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=' . $this->{feffdoccard};
+  Wx::LaunchDefaultBrowser($url);
 };
 
 sub noop {
