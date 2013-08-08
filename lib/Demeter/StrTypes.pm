@@ -14,6 +14,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Line
 				   AtomsEdge
 				   FeffCard
+				   Feff6Card
 				   Feff9Card
 				   Clamp
 				   Config
@@ -214,6 +215,19 @@ subtype FeffCard,
   as Str,
   where { lc($_) =~ m{\A$feffcard_regexp\z} },
   message { "That string ($_) is not a Feff keyword" };
+
+## -------- Feff6 cards
+use vars qw(@feff6card_list $feff6card_regexp);
+@feff6card_list = qw(AFOLP ATOMS CONTROL CORRECTIONS CRITERIA DEBYE ELLIPTICITY END
+		     EXCHANGE FOLP HOLE ION NEMAX NLEG NOGEOM OVERLAP PCRITERIA
+		     POLARIZATION POTENTIALS PRINT RMAX RMULTIPLIER SIG2 SS TITLE
+		     XANES);
+$feff6card_regexp = Regexp::Assemble->new()->add(@feff6card_list)->re;
+subtype Feff6Card,
+  as Str,
+  where { uc($_) =~ m{\A$feff6card_regexp\z} },
+  message { "That string ($_) is not a Feff6 keyword" };
+
 
 ## -------- Feff9 cards
 use vars qw(@feff9card_list $feff9card_regexp);

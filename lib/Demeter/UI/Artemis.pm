@@ -1476,16 +1476,18 @@ sub document {
     push @path, $doc;
     $file = 'index';
     $url .= $doc . '/index.html';
-  } elsif ($doc eq 'bvs') {
-    push @path, 'extended';
-    $file = 'bvs';
-    $url .= 'extended/bvs.html';
+  } elsif ($doc =~ m{\A\w+\.\w+\z}) {
+    my ($dir, $fname) = split(/\./, $doc);
+    push @path, $dir;
+    $file = $fname;
+    $url .= $dir . '/' . $fname . '.html';
   } else {
     $file = $doc;
     $url .= $doc . '.html';
   };
-  my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
   if (-e $fname) {
+    $fname  = 'file://'.$fname;
     $fname .= '#'.$target if $target;
     $::app->{main}->status("Displaying document page: $fname");
     Wx::LaunchDefaultBrowser($fname);

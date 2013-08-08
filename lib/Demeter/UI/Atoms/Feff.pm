@@ -1,6 +1,6 @@
 package  Demeter::UI::Atoms::Feff;
 
-use Demeter::StrTypes qw( Element Feff9Card );
+use Demeter::StrTypes qw( Element Feff6Card Feff9Card );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
@@ -22,6 +22,7 @@ my %hints = (
 	     exec     => "Run Feff on this cluster",
 	     boiler   => "Insert boilerplate for a feff.inp file",
 	     clear    => "Clear all data",
+	     doc      => "Show the Feff input document page in a browser",
 	    );
 
 sub new {
@@ -38,6 +39,8 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Save file",  $self->icon("save"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save} );
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),       wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddTool(-1, "Template",   $self->icon("boilerplate"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{boiler});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -94,7 +97,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(import save_file clear_all insert_boilerplate noop run_feff );
+  my @callbacks = qw(import save_file clear_all insert_boilerplate noop document noop run_feff );
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -132,9 +135,9 @@ sub OnCardClick {
   };
   my $result = substr($line, $start, $end);
   $result =~ s{\s+\z}{};
-  print ">$result<\n";
-  $result = 'RPATH' if $result eq 'RMAX';
-  if (is_Feff9Card($result)) {
+  ##print ">$result<\n";
+  $result = 'RPATH' if ((Demeter->feffdocversion != 6) and ($result eq 'RMAX'));
+  if (is_Feff6Card($result) or is_Feff9Card($result)) {
     $this->{feffdoccard} = $result;
     my $menu  = Wx::Menu->new(q{});
     $menu -> Append(Wx::NewId(), "Show document for Feff card: $result");
@@ -146,12 +149,16 @@ sub OnCardClick {
 
 sub OnCardMenu {
   my ($text, $event, $this) = @_;
-  my $url = 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=' . $this->{feffdoccard};
+  my $url = Demeter->feffcardpage($this->{feffdoccard});
   Wx::LaunchDefaultBrowser($url);
 };
 
 sub noop {
   return 1;
+};
+
+sub document {
+  $::app->document('feff.feff');
 };
 
 sub import {

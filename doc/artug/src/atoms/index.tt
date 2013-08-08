@@ -1,5 +1,20 @@
 [% META title = 'Crystallography for EXAFS' chapter = 1 %]
 
 [% FILTER html_para -%]
-Blah
+This chapter provides an overview of crystallography tools as
+implemented in [%artemis%].  Crystallographic data is provided either
+in the form of a CIF file or in a simpler format that has long been
+the input format for my [%atoms%] program.
+
+Compared to other crystallography codes, the crystallography
+capabilities in [%artemis%] are, perhaps, a little crude and
+incomplete.  The goal is to provide enough functionality to support
+the needs of the X-ray absorption spectroscopist.
+
+This section discussed conventions for [% INCLUDE html/link
+link="space.html" text="denoting space groups"%], the details of
+calculations using [% INCLUDE html/link
+link="abs.html" text="tables of absorption coefficients"%],
+and provides a [% INCLUDE html/link
+link="example.html" text="worked example"%].
 [% END %]

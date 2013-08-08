@@ -35,6 +35,7 @@ use File::Touch;
 #memoize('distance');
 
 
+use Demeter::StrTypes qw( Feff6Card Feff9Card );
 use Demeter::Constants qw($NULLFILE);
 use Const::Fast;
 const my $FRAC => 100000;
@@ -499,6 +500,42 @@ sub follow_link {
   return $file;
 };
 
+sub feffdocversion {
+  my ($self, $version) = @_;
+  my $current = ($self->co->default('feff', 'executable') =~ m{6}) ? 6 : 9;
+  $version = 9 if $current == 8;
+  $version ||= 6;
+  return $version;
+};
+sub feffdoc {
+  my ($self, $version) = @_;
+  $version ||= $self->feffdocversion;
+  return 'http://leonardo.phys.washington.edu/feff/wiki/index.php' if $version == 9;
+  return 'http://www.feffproject.org/FEFF/Docs/feff6/feff6.html';
+};
+
+sub feffcardpage {
+  my ($self, $card, $version) = @_;
+  $version ||= $self->feffdocversion;
+
+  if ($version == 6) {
+    my $base = 'http://www.feffproject.org/FEFF/Docs/feff6/feff6-4.html#';
+    if (is_Feff6Card(uc($card))) {
+      return $base . substr(lc($card), 0, 3);
+    } elsif (is_Feff9Card(uc($card))) {
+      return 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=' . uc($card);
+    } else {
+      return $self->feffdoc(6);
+    };
+  } else {
+    my $base = 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=';
+    if (is_Feff9Card(uc($card))) {
+      return $base . uc($card);
+    } else {
+      return $self->feffdoc(9);
+    };
+  };
+};
 1;
 
 =head1 NAME

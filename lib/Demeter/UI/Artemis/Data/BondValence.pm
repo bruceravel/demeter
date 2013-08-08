@@ -95,7 +95,7 @@ sub new {
   ## --- document button
   $this->{doc} = Wx::Button->new($this, -1, q{Docmentation: BVS}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{doc}, 0, wxGROW|wxALL, 5);
-  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('bvs')});
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('extended.bvs')});
 
   ## --- OK button
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );

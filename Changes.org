@@ -51,6 +51,7 @@
      removal standard
    + add tool for computing bond valence sums from marked path(s)
    + new pre-fit sanity check to make sure that GDS parameter names only have allowed characters
+   + right click on cards in feff.inp to go directly to the on-line Feff documentation
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
@@ -131,6 +132,7 @@ With so many new features and bug fixes, I owe a big "Thank You!" to lots of peo
    + _Shoaib Muhammad_ (for suggesting a change to Artemis' interaction with autosave files
      and for reporting a bug in clearing Feff calculcation when closing projects
    + _Simon Bare_ (for pointing out that (Ctrl/Alt)-(j/k) were implemented inconsistently
+   + _Kevin Jorissen_ (for suggesting direct linking to on-line Feff document)
 
 I think that's everyone.  If I missed your name, it's just that I suck
 at record-keeping, not that I don't value your input.

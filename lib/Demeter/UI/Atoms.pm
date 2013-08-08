@@ -64,7 +64,7 @@ sub new {
     $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
     $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
     $self->{toolbar} -> AddSeparator;
-    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
+    $self->{toolbar} -> AddTool(-1, "Feff doc", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Open Feff's on-line document in a browser" );
     $self->{toolbar} -> Realize;
     $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
     #$vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
@@ -258,10 +258,13 @@ sub on_discard {
 
 sub on_about {
   my ($self) = @_;
-  my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
-  $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
-  $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
-  Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
+  my $url = Demeter->feffdoc;
+  Wx::LaunchDefaultBrowser($url);
+
+  # my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
+  # $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
+  # $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
+  # Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
 };
 
 sub noop {

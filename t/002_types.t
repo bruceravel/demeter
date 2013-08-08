@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::Simple tests => 452;
+use Test::Simple tests => 571;
 
 use Demeter qw(:none);
 use Demeter::StrTypes qw( Empty
@@ -31,6 +31,8 @@ use Demeter::StrTypes qw( Empty
 			  Line
 			  AtomsEdge
 			  FeffCard
+			  Feff6Card
+			  Feff9Card
 			  Clamp
 			  Config
 			  Statistic
@@ -114,6 +116,14 @@ foreach my $f (@Demeter::StrTypes::atomsedge_list) {
 foreach my $f (@Demeter::StrTypes::feffcard_list) {
   my $ff = scramble_case($f);
   ok( is_FeffCard($ff), "Feff card $ff recognized" );
+};
+foreach my $f (@Demeter::StrTypes::feff6card_list) {
+  my $ff = scramble_case($f);
+  ok( is_Feff6Card($ff), "Feff6 card $ff recognized" );
+};
+foreach my $f (@Demeter::StrTypes::feff9card_list) {
+  my $ff = scramble_case($f);
+  ok( is_Feff9Card($ff), "Feff9 card $ff recognized" );
 };
 
 foreach my $f (@Demeter::StrTypes::clamp_list) {

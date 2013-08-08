@@ -1,6 +1,15 @@
 [% META title = 'The Feff tab' %]
 
 [% FILTER html_para -%]
+The [%feff6%] document can be 
+[% INCLUDE html/link link="http://www.feffproject.org/FEFF/Docs/feff6/feff6.html"
+text="found here"%].
+
+The [%feff9%] document can be 
+[% INCLUDE html/link link="http://leonardo.phys.washington.edu/feff/wiki/index.php"
+text="found here"%].
+
+
 When you click the [% INCLUDE font/quote a="Run Atoms" %] button on
 the [%atoms%] tab, the resulting input data for [%feff%], which
 constists of a list of Cartesian coordinates for the atoms in the
@@ -28,10 +37,34 @@ font/quote a="Save" %] button will post the standard column selection
 dialog for choosing a file name for saving the current [%feff%] input
 data.  The [% INCLUDE font/quote a="Clear" %] button will remove all
 text from the big text box.
+[% END %]
 
 The [%feff%] calculation is started by clicking the 
-[% INCLUDE font/quote a="Run Feff" %] button.
+w[% INCLUDE font/quote a="Run Feff" %] button.
 
+[% PROCESS section label="Feff documentation" %]
+
+[% FILTER html_para -%]
+This page allows you to link directly to [%feff%]'s[%#'%]
+documentation.  Right clicking on the text window containing the
+[% INCLUDE font/file a="feff.inp" %] usually posts the standard 
+[% INCLUDE font/quote a="cut/copy/paste" %] menu.  However, if you
+right click on one of [%feff%]'s[%#'%] keywords 
+(or [% INCLUDE font/quote a="cards"%]), you will get a small menu which
+will link you to the documentation for that keyword.  Clicking on the
+posted menu will open a browser and display the appropriate document
+page from [% INCLUDE html/link link="http://feffproject.org"
+text="The Feff Project website"%].
+[% END %]
+
+[% WRAPPER figure file="feff-doc.png" %]
+Right clicking on a [%feff%] card for a direct link to
+[%feff%]'s[%#'%] documentation.
+[% END %]
+
+[% PROCESS section label="Feff input templates" %]
+
+[% FILTER html_para -%]
 The [% INCLUDE font/quote a="Template" %] button is used to put
 boilerplate for [%feff%] input data into the big text box.  This is
 useful if your list of Cartesian coordinates comes from some other

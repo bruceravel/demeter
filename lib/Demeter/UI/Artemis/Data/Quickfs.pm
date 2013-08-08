@@ -72,9 +72,12 @@ sub new {
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
 
+  ## --- document button
+  $this->{doc} = Wx::Button->new($this, -1, q{Docmentation: QFS}, wxDefaultPosition, wxDefaultSize, 0, );
+  $vbox -> Add($this->{doc}, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('extended.qfs')});
   $this->{cancel} = Wx::Button->new($this, wxID_CANCEL, q{}, wxDefaultPosition, wxDefaultSize);
   $vbox -> Add($this->{cancel}, 0, wxGROW|wxALL, 5);
-
 
   $this -> SetSizerAndFit( $vbox );
   return $this;

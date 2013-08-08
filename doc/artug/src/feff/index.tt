@@ -42,8 +42,7 @@ first of these is used to change the label for this [%feff%]
 calculation.  Among other things, this is the label used in the
 [%feff%] list on the Main window.  The second button is used to
 discard the [%feff%] calculation and this window.  The final button
-provides some information about how [%artemis%] is configured to
-interact with [%feff%].
+will open a web browser and take you to the [%feff%] document.
 
 There are a series of tabs across the top.  These will contain
 different stages of the structural calculation.  Here we will examine

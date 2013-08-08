@@ -22,6 +22,7 @@ my %hints = (
 	     chir_mag => "Plot paths as the magnitude of chi(R)",
 	     chir_re  => "Plot paths as the real part of chi(R)",
 	     chir_im  => "Plot paths as the imaginary part of chi(R)",
+	     doc      => "Show the path interpretation documentation in a browser",
 	    );
 
 sub new {
@@ -41,6 +42,8 @@ sub new {
   $self->{toolbar} -> AddRadioTool(6, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
   $self->{toolbar} -> AddRadioTool(7, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
   $self->{toolbar} -> AddRadioTool(8, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
   $self->{toolbar} -> ToggleTool(6, 1);
 
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -231,7 +234,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv---------order of toolbar on the screen------------vV
-  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot);
+  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot noop document);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure($event->GetId);
 };
@@ -239,6 +242,11 @@ sub OnToolClick {
 sub noop {
   return 1;
 };
+
+sub document {
+  $::app->document('feff.paths');
+};
+
 
 sub set_plot {
   my ($self, $id) = @_;
@@ -292,7 +300,7 @@ sub plot {
     my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
     my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
 
-    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at ", $feff));
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at "));
     $self->{parent}->{Console}->{console}->AppendText("(Feff executable: ".
 						      $feff->co->default(qw(feff executable)) .
 						      ")\n\n");
@@ -304,7 +312,7 @@ sub plot {
     $this    = $self->{paths}->GetNextSelected($this);
 
     $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
-    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at "));
   };
   $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
@@ -313,7 +321,7 @@ sub plot {
 sub now {
   my ($self, $text, $feff) = @_;
   my $string = $/ x 2;
-  $string   .= '********** ' . $text . $feff->now;
+  $string   .= '********** ' . $text . Demeter->now;
   $string   .= $/ x 2;
   return $string;
 };
