@@ -94,3 +94,15 @@ default=#787878
 description
   The color of the interpretation text for low importance paths.  The
   default is a grey tone.
+
+variable=doc6_url
+type=string
+default=http://www.feffproject.org/FEFF/Docs/feff6/feff6.html
+description
+  The URL of the Feff6 document.
+
+variable=doc9_url
+type=string
+default=http://leonardo.phys.washington.edu/feff/wiki/index.php
+description
+  The URL of the Feff9 document.

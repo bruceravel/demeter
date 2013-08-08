@@ -510,8 +510,8 @@ sub feffdocversion {
 sub feffdoc {
   my ($self, $version) = @_;
   $version ||= $self->feffdocversion;
-  return 'http://leonardo.phys.washington.edu/feff/wiki/index.php' if $version == 9;
-  return 'http://www.feffproject.org/FEFF/Docs/feff6/feff6.html';
+  return Demeter->co->default('feff', 'doc9_url') if $version == 9;
+  return Demeter->co->default('feff', 'doc6_url');
 };
 
 sub feffcardpage {
@@ -519,16 +519,17 @@ sub feffcardpage {
   $version ||= $self->feffdocversion;
 
   if ($version == 6) {
-    my $base = 'http://www.feffproject.org/FEFF/Docs/feff6/feff6-4.html#';
+    my $base = Demeter->co->default('feff', 'doc6_url');
+    $base =~ s{feff6\.html\z}{feff6-4.html#};
     if (is_Feff6Card(uc($card))) {
       return $base . substr(lc($card), 0, 3);
     } elsif (is_Feff9Card(uc($card))) {
-      return 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=' . uc($card);
+      return Demeter->co->default('feff', 'doc9_url').'?title=' . uc($card);
     } else {
       return $self->feffdoc(6);
     };
   } else {
-    my $base = 'http://leonardo.phys.washington.edu/feff/wiki/index.php?title=';
+    my $base = Demeter->co->default('feff', 'doc9_url').'?title=';
     if (is_Feff9Card(uc($card))) {
       return $base . uc($card);
     } else {
@@ -696,10 +697,20 @@ Dump a string into a file.
 
   $demeter_object -> write_file($file, $string);
 
+=item C<randomstring>
+
+Return a rendom character string using  C<random_string> from L<String::Random>.
+
+  $string = Demeter->randomstring($length);
+
+The resulting string will be C<$length> characters long.  If not
+specified, it will be 6 characters long.
+
 =item C<Dump>
 
-This is just a wrapper around L<Data::Dumper>.  Pass it a reference
-and it will be pretty-printed;
+This is just a wrapper around L<Data::Dump::Color>, L<Data::Dump> or
+L<Data::Dumper>, whichever is installed.  Pass it a reference and it
+will be pretty-printed;
 
   print $any_object -> Dump(\@some_array);
 
@@ -709,7 +720,49 @@ Print an ANSI-colorized stack trace to STDOUT from any location.
 
   $any_object -> trace;
 
+=item C<pjoin>
+
+Write stuff to the screen in an ugly but easy to read manner.
+
+  Demeter->pjoin($this, $that, @and_the_other);
+
+=item C<Touch>
+
+This is a wrapper around the C<touch> method from L<File::Touch>.
+
+  Demeter->Touch($some_file);
+
+=item C<feffdocversion>
+
+This method attempts to determine the appropriate version of the Feff
+document to show.  If the version is not specified, it will be
+determined from the value of the C<feff-E<gt>feff-executable>
+configuration parameter.
+
+  $version = Demeter->feffdocversion;
+
+The only two options currently supported are 6 and 9.
+
+=item C<feffdoc>
+
+This returns the URL of the main page of the Feff documentation for
+either version 6 or 9, depending on which is requested or determined
+via the C<feffdocversion> method.
+
+  $url = Demeter->feffdoc;
+
+=item C<feffcardpage>
+
+This returns the URL for the page documenting a specific card in the
+Feff6 or Feff9 input file.
+
+  $url = Demeter->feffcardpage($card, $version);
+
+Specifying the Feff version is optional.  If not specified, it will
+use the value returned by the C<feffdocversion> method.
+
 =back
+
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

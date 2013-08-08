@@ -30,6 +30,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
+  $self->{card}      = q{};
   #$self->{feffobject} = $parent->{feffobject} || $Demeter::UI::Atoms::demeter;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -40,7 +41,7 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),       wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddTool(-1, "Template",   $self->icon("boilerplate"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{boiler});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
+  $self->{toolbar} -> AddTool(-1, "Doc",        $self->icon("document"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -138,7 +139,7 @@ sub OnCardClick {
   ##print ">$result<\n";
   $result = 'RPATH' if ((Demeter->feffdocversion != 6) and ($result eq 'RMAX'));
   if (is_Feff6Card($result) or is_Feff9Card($result)) {
-    $this->{feffdoccard} = $result;
+    $this->{card} = $result;
     my $menu  = Wx::Menu->new(q{});
     $menu -> Append(Wx::NewId(), "Show document for Feff card: $result");
     $text -> PopupMenu($menu, $event->GetPosition);
@@ -149,7 +150,7 @@ sub OnCardClick {
 
 sub OnCardMenu {
   my ($text, $event, $this) = @_;
-  my $url = Demeter->feffcardpage($this->{feffdoccard});
+  my $url = Demeter->feffcardpage($this->{card});
   Wx::LaunchDefaultBrowser($url);
 };
 
