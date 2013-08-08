@@ -229,4 +229,5 @@ description
   ranking has been calculated.  This will not affect the speed or any
   other aspect of the operation of the pathfinder.  In Artemis, this
   is used to restrict the paths displayed in the path list to those
-  that exceed the given size.
+  that exceed the given size.  In Artemis, a change to this parameter
+  will take affect after the next Feff calculation. 

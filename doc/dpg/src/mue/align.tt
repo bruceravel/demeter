@@ -3,7 +3,7 @@
 [% FILTER html_para %]
 [% demeter %] uses a rather simple alignment algorithm.  First, one
 Data object is chosen as the alignment standard.  The standard is one
-that doesn't move -- other data are aligned to the standard by
+that doesn't[%#'%] move -- other data are aligned to the standard by
 applying an [% e0 %] shift.  The derivative spectrum is computed for
 both the standard and the data.  An [% e0 %] shift and an overall
 amplitude are the variable parameters used to fit the data to the
@@ -27,7 +27,7 @@ Here is a simple example:
 my $prj = Demeter::Data::Prj -> new(file=>'U_DNA.prj');
 my @data = $prj -> records(1, 2, 3, 4);
 
-## ... set background removal and Foruier transform attributes for
+## ... set background removal and Fourier transform attributes for
 ##     each data set ...
 
 ## align to the standard

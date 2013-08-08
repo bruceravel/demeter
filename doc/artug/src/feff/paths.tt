@@ -85,7 +85,7 @@ The meaning of a [% INCLUDE font/quote a="raw" %] [%feff%] calculation
 is that it is displayed as [%chik%] with [%s02%] set to 1.0 and each
 of [%e0%], [%delr%], and [%sigma2%] set to 0.  A plot of [%chir%] for
 the [% INCLUDE font/quote a="raw" %] [%feff%] calculation, then,
-displays the Foruier transform of [%chik%] parameterized with those
+displays the Fourier transform of [%chik%] parameterized with those
 values.
 
 It is, therefore, very quick and easy to examine the results of a
@@ -94,12 +94,28 @@ the plot of paths is made.  The options are [%chik%], [%chir_mag%],
 [%chir_re%], and [%chir_im%].  The k-weight selected in the Plot
 window is used to make the plot of paths.
 
-Right clicking on an entry in the paths list will open a dialog window
-with more details about the geomtery of the scattering path.  In the
-following figure, the selected path (0006) was right-clicked on,
-opening the dialog depicted below.
+Right clicking on an entry in the paths list will post a menu.  The
+first item on the menu opens a dialog window with more details about
+the geomtery of the selected scattering path.  In the following
+figure, the selected path (0006) was right-clicked on, opening the
+dialog depicted below.
+
+The other context menu options are used to set the path select on the
+basis of distance, ranking, or scattering geometry.  These options are
+useful for selecting groups of paths to drag and drop onto the Data
+window.
 [% END %]
 
 [% WRAPPER figure file="feff-pathsinfo.png" %]
 Information about the geometry of a scattering path.
+[% END %]
+
+[% FILTER html_para -%]
+The contents of the path interpretation can be filtered after running
+the [%feff%] calculation by setting the 
+[% INCLUDE preference group="pathfinder" option="postcrit" %]
+parameter.  By default, it is set to 3, which means that only paths
+with a ranking above 3 will be displayed in the path interpretation.
+Resetting this parameter allows you tune how many paths get displayed
+after the calculation.
 [% END %]
