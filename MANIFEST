@@ -38,6 +38,8 @@ doc/artug/images/Artemis.jpg
 doc/artug/images/Artemis_logo.jpg
 doc/artug/images/athenaselection.png
 doc/artug/images/bend.png
+doc/artug/images/bvs.png
+doc/artug/images/bvs_restrain.png
 doc/artug/images/collinear.png
 doc/artug/images/command_buffer.png
 doc/artug/images/data-actionsmenu.png
@@ -62,6 +64,7 @@ doc/artug/images/emp_qplot.png
 doc/artug/images/emp_rplot.png
 doc/artug/images/feff-atoms.png
 doc/artug/images/feff-console.png
+doc/artug/images/feff-doc.png
 doc/artug/images/feff-export.png
 doc/artug/images/feff-feff.png
 doc/artug/images/feff-pathlike.png
@@ -170,6 +173,7 @@ doc/artug/src/diana.tt
 doc/artug/src/examples/fes2.tt
 doc/artug/src/examples/index.tt
 doc/artug/src/examples/methyltin.tt
+doc/artug/src/extended/bvs.tt
 doc/artug/src/extended/constraints.tt
 doc/artug/src/extended/cv.tt
 doc/artug/src/extended/delr.tt
@@ -258,6 +262,7 @@ doc/aug/images/deglitch_plot.png
 doc/aug/images/deglitch_point.png
 doc/aug/images/deglitch_pointremoved.png
 doc/aug/images/diff.png
+doc/aug/images/diff_areas.png
 doc/aug/images/diff_diff.png
 doc/aug/images/diff_diffsequence.png
 doc/aug/images/diff_mu.png
@@ -311,6 +316,9 @@ doc/aug/images/LightningBolt.png
 doc/aug/images/lr.png
 doc/aug/images/lr_fit.png
 doc/aug/images/lr_pd_fit.png
+doc/aug/images/mee.png
+doc/aug/images/mee_e.png
+doc/aug/images/mee_k.png
 doc/aug/images/merge_stddev.png
 doc/aug/images/merge_variance.png
 doc/aug/images/mergemenu.png
@@ -797,6 +805,7 @@ examples/filter.pl
 examples/h12213.cif
 examples/harness
 examples/hematite.inp
+examples/kev.dat
 examples/LaCoO3.inp
 examples/nonuniform.chi
 examples/notdata.0
@@ -804,6 +813,7 @@ examples/notdata.1
 examples/notdata.5
 examples/PbFe12O19.inp
 examples/plot
+examples/recipes/BondValence/bv.pl
 examples/recipes/ComplexFit/0README
 examples/recipes/ComplexFit/dna2feff.pl
 examples/recipes/ComplexFit/feff6.tmpl
@@ -861,6 +871,8 @@ examples/recipes/FeS2/fes2_rt01_mar02.xmu
 examples/recipes/FeS2/README.org
 examples/recipes/Filetypes/SSRLB/IN_540_001.003
 examples/recipes/Filetypes/SSRLB/ssrlb.pl
+examples/recipes/FuzzyOverSites/BaFe12O19.inp
+examples/recipes/FuzzyOverSites/febaa.300
 examples/recipes/Histogram/Au.inp
 examples/recipes/Histogram/Au_feff.inp
 examples/recipes/Histogram/Au_feff.yaml
@@ -891,6 +903,7 @@ examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
 examples/recipes/LCF/seq.pl
 examples/recipes/LogRatio/lrpd.pl
+examples/recipes/MEE/mee.pl
 examples/recipes/Megamerge/megamerge.pl
 examples/recipes/Methyltin/DMT.fpj
 examples/recipes/Methyltin/fit.pl
@@ -920,6 +933,7 @@ examples/recipes/PeakFit/tipb.prj
 examples/recipes/PeakFit/xes.pl
 examples/recipes/Plugins/dtcorrect.pl
 examples/recipes/Plugins/LSCF_LAO_asdep_TXRF.018
+examples/recipes/QuickFirstShell/FeO.inp
 examples/recipes/QuickFirstShell/FeO.prj
 examples/recipes/QuickFirstShell/firstshell.pl
 examples/recipes/RankPath/feff.inp
@@ -1087,6 +1101,7 @@ lib/Demeter/Plugins/LNLS.pm
 lib/Demeter/Plugins/Lytle.pm
 lib/Demeter/Plugins/PFBL12C.pm
 lib/Demeter/Plugins/SLRIBL4.pm
+lib/Demeter/Plugins/SPEC.pm
 lib/Demeter/Plugins/SRS.pm
 lib/Demeter/Plugins/SSRLA.pm
 lib/Demeter/Plugins/SSRLB.pm
@@ -1494,6 +1509,9 @@ lib/Demeter/templates/process/ifeffit/k123.tmpl
 lib/Demeter/templates/process/ifeffit/kev.tmpl
 lib/Demeter/templates/process/ifeffit/make_group.tmpl
 lib/Demeter/templates/process/ifeffit/margin.tmpl
+lib/Demeter/templates/process/ifeffit/mee_arctan.tmpl
+lib/Demeter/templates/process/ifeffit/mee_do.tmpl
+lib/Demeter/templates/process/ifeffit/mee_reflect.tmpl
 lib/Demeter/templates/process/ifeffit/merge.tmpl
 lib/Demeter/templates/process/ifeffit/merge_end.tmpl
 lib/Demeter/templates/process/ifeffit/merge_interp.tmpl
@@ -1677,6 +1695,7 @@ lib/Demeter/UI/Artemis/Close.pm
 lib/Demeter/UI/Artemis/Config.pm
 lib/Demeter/UI/Artemis/Data.pm
 lib/Demeter/UI/Artemis/Data/AddParameter.pm
+lib/Demeter/UI/Artemis/Data/BondValence.pm
 lib/Demeter/UI/Artemis/Data/Quickfs.pm
 lib/Demeter/UI/Artemis/DND/PathDrag.pm
 lib/Demeter/UI/Artemis/DND/PlotListDrag.pm
@@ -1747,6 +1766,7 @@ lib/Demeter/UI/Athena/Journal.pm
 lib/Demeter/UI/Athena/LCF.pm
 lib/Demeter/UI/Athena/LogRatio.pm
 lib/Demeter/UI/Athena/Main.pm
+lib/Demeter/UI/Athena/MEE.pm
 lib/Demeter/UI/Athena/Null.pm
 lib/Demeter/UI/Athena/PCA.pm
 lib/Demeter/UI/Athena/PeakFit.pm
@@ -1890,11 +1910,13 @@ lib/Xray/Absorption/Henke.pm
 lib/Xray/Absorption/McMaster.pm
 lib/Xray/Absorption/None.pm
 lib/Xray/Absorption/Shaltout.pm
+lib/Xray/BondValence.pm
 lib/Xray/Crystal.pm
 lib/Xray/Crystal/Cell.pm
 lib/Xray/Crystal/share/space_groups.db.PL
 lib/Xray/Crystal/Site.pm
 lib/Xray/Crystal/SpaceGroup.pm
+lib/Xray/data/bvparm2006.cif
 lib/Xray/data/chantler/01.dat.elem
 lib/Xray/data/chantler/02.dat.elem
 lib/Xray/data/chantler/03.dat.elem
@@ -2394,6 +2416,7 @@ t/filetypes/hxma.dat
 t/filetypes/lnls.dat
 t/filetypes/lytle.dat
 t/filetypes/pfbl12c.dat
+t/filetypes/snbl.dat
 t/filetypes/srs32.dat
 t/filetypes/srs9.dat
 t/filetypes/srsc.dat
