@@ -37,6 +37,7 @@
    + Fixed a PCA bug involving mistakes keeping track of which groups are included in the PCA stack
 
 *** Artemis
+   + Benefit by improved pathfinder performance
    + Clear project name when closing a project
    + fixed a problem importing data via "Open project or data" in certain situations
    + temporarily disable any non-critical sanity check for a fit

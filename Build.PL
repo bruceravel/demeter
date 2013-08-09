@@ -155,6 +155,7 @@ my $build = DemeterBuilder
 
 ## include all required non-perl files in the installation
 $build->add_build_element('db');
+$build->add_build_element('cif');
 $build->add_build_element('dem');
 $build->add_build_element('demeter_conf');
 $build->add_build_element('fit_serialization');

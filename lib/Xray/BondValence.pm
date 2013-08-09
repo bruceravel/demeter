@@ -67,7 +67,7 @@ our $data_dir = File::Spec->catfile(identify_self(), 'data');
 
 sub read_database {
   my %all;
-  open(my $D, File::Spec->catfile($data_dir, 'bvparm2006.cif'));
+  open(my $D, '<', File::Spec->catfile($data_dir, 'bvparm2006.cif'));
   my $flag = 0;
   my ($key, $comment);
   while (<$D>) {

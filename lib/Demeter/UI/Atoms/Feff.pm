@@ -472,8 +472,8 @@ sub fill_intrp_page {
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
-      ++$i;
     };
+    ++$i;
   };
   my $which = 6;
   if (Demeter->po->space eq 'k') {

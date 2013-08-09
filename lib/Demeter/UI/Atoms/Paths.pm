@@ -13,7 +13,7 @@ use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_LIST_ITEM_RIGHT_CLICK
-		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
+		 EVT_LEFT_DOWN EVT_RIGHT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
 	     save     => "Save this Feff calculation to a Demeter save file",
@@ -86,7 +86,8 @@ sub new {
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
-  EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, \&OnRightClick);
+  #EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, sub{OnRightClick(@_)});
+  EVT_RIGHT_DOWN($self->{paths}, sub{OnRightClick(@_, $self)});
   EVT_MENU($self, -1, sub{ $self->OnMenu(@_) });
   EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag) if $parent->{component};
 
@@ -112,15 +113,21 @@ const my $SELSS    => Wx::NewId();
 const my $SELFOR   => Wx::NewId();
 
 sub OnRightClick {
-  my ($parent, $event) = @_;
+  my ($list, $event, $parent) = @_;
+  foreach my $it (0 .. $list->GetItemCount-1) {
+    $list->SetItemState($it, 0, wxLIST_STATE_SELECTED);
+  };
+  my ($item, $flags) = $list->HitTest($event->GetPosition);
+  $list->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
+  $parent->{rcselected}=$item;
   my $menu  = Wx::Menu->new(q{});
   $menu->Append($SHOWGEOM, "Show geometry for this path");
   $menu->AppendSeparator;
   $menu->Append($SELA,     "Select paths with rank above A");
   $menu->Append($SELR,     "Select paths shorter than R");
-  $menu->Append($SELFOR,   "Select forward scattering paths");
   $menu->Append($SELSS,    "Select single scattering paths");
-  $parent -> PopupMenu($menu, $parent->GetPosition);
+  $menu->Append($SELFOR,   "Select forward scattering paths");
+  $list->PopupMenu($menu, $event->GetPosition);
 };
 
 sub OnMenu {
@@ -137,8 +144,11 @@ sub show_geometry {
   my ($parent, $event) = @_;
   my $list = $parent->{paths};
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
-  my $which = $event->GetInt;
-  my $i = $list->GetItemData($which);
+  ## the ItemData is the index of that path in the Feff objects
+  ## pathslist -- the counting is done correctly, even if not all
+  ## paths are displayed in the path interpretation due to the
+  ## postcrit
+  my $i = $list->GetItemData($parent->{rcselected});
   my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
   my $pd = $sp->pathsdat;
   $pd =~ s{\A\s+\d+}{};

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyInstName "Demeter Updater for Windows"
-#define MyAppVersion "0.9.17"
+#define MyAppVersion "0.9.18"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.com/demeter"
 #define Demeter "Demeter with Strawberry Perl"
