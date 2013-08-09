@@ -633,7 +633,7 @@ object is the glue that allows things like that to happen.
 
 =over 4
 
-=item C<backend
+=item C<backend>
 
 Dispose commands to Larch or Ifeffit, as appropriate, when true.
 

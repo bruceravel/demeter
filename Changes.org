@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.18 ?? August      2013
+** 0.9.18 9  August      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
@@ -105,13 +105,18 @@
    + identify backends at GUI startup
 
 
-*** Top of the to do list for 0.9.19:
-
+*** Top of the to do list 
+**** certainly for 0.9.19:
    + Implement dispersive data tool (acknowledgment: Pinit Kidkhunthod)
    + Address several Atoms bugs (acknowledgment: Chanapa Kongmark)
    + Problem with display of $S02 character on some Windows platforms (several)
    + Move all paths between path lists in multile data set fit (acknowledgment: Shelly Kelly)
+   + Verify proper performance of Ctrl-DND of paths, update? renamed name preserved?
+
+**** hopefully for 0.9.19:
    + Fuzzy degeneracy over multiple sites (Shelly pushed for this)
+   + feff8.5exafs integration (https://github.com/xraypy/feff85exafs)
+   + PCA improvements (better TT, indicator functions, cluster analysis)
 
 
 *** Acknowledgments
@@ -122,7 +127,7 @@ With so many new features and bug fixes, I owe a big "Thank You!" to lots of peo
    + _Martin Stennet_ and _Neil Hyatt_ (for requesting the multi-electron excitation tool)
    + _Chachi Rojas_ and _Anthony Ardizzi_ (for bug reports and suggestions regarding to Artemis' fit history)
    + _Shelly Kelly_ (for pointing out bugs involving background removal standards and
-     importing chi(k) data  and for suggesting improvements to the Intrp page)
+     importing chi(k) data  and for suggesting improvements to the Path Interpretation page)
    + _Eric Breyneart_ (for contributing a SPEC file plugin and for reporting a bug in the use of fuzzy degeneracy) 
    + _Alessandra Leri_ (for suggesting the white line finder and its applications, the edge
      step uncertainty tool, and the plot of norm(E) scaled by edge step)
@@ -132,7 +137,7 @@ With so many new features and bug fixes, I owe a big "Thank You!" to lots of peo
    + _Shoaib Muhammad_ (for suggesting a change to Artemis' interaction with autosave files
      and for reporting a bug in clearing Feff calculcation when closing projects
    + _Simon Bare_ (for pointing out that (Ctrl/Alt)-(j/k) were implemented inconsistently
-   + _Kevin Jorissen_ (for suggesting direct linking to on-line Feff document)
+   + _Kevin Jorissen_ (for suggesting direct linking to the on-line Feff document)
 
 I think that's everyone.  If I missed your name, it's just that I suck
 at record-keeping, not that I don't value your input.
