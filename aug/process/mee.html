@@ -1,7 +1,7 @@
 <!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>Step function removal</title>
+    <title>Multi-electron excitation removal</title>
     <link rel="stylesheet" href=../ab.css />
     <link rel="stylesheet" href=../ppi.css />
     <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
@@ -55,7 +55,7 @@
 &nbsp;&#8618;&nbsp;<a href="../process/deconv.html"  class="menu">Deconvolution</a><br />
 &nbsp;&#8618;&nbsp;<a href="../process/sa.html"  class="menu">Self-Absorption correction</a><br />
 &nbsp;&#8618;&nbsp;<a href="../process/pixel.html"  class="menu">Dispersive XAS</a><br />
-&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Step function removal</span><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Multi-electron excitation</span><br />
 &nbsp;&#8618;&nbsp;<a href="../process/series.html"  class="menu">Copy series</a><br />
 &nbsp;&#8618;&nbsp;<a href="../process/sum.html"  class="menu">Data summation</a><br /><a href="../analysis/index.html"  class="menu">Data analysis</a><br />
 <a href="../other/index.html"  class="menu">Other main window chores</a><br />
@@ -66,10 +66,10 @@
 
 
 <h1>
-  <img src="../../images/bend.png" width="300" height="295" alt="" align="center" />  Step function removal
+  <img src="../../images/bend.png" width="100" height="98" alt="" align="center" />  Multi-electron excitation removal
 </h1>
 <h2>
-  Handling multi-electron excitations and small contamination by another edge 
+  Handling multi-electron excitations 
 </h2>
 
 <p>
@@ -81,7 +81,7 @@ interpretation of XAS data.  One such is the so-called
 &ldquo;shake-off&rdquo; effect in which the
 photoelectron has sufficient kinetic energy to excite a high-lying
 electron.  For example, at around 415 eV above the uranium L<sub>III</sub>
-edge, the photoelectron can excite an  or N<sub>7</sub>
+edge, the photoelectron can excite an N<sub>6</sub> or N<sub>7</sub>
 transition.
 </p>
 
@@ -119,36 +119,89 @@ requires considerable user input and sufficient knowledge to properly
 evaluate the results.
 </p>
 
-
-<p class=caution>
-<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
-This algorithm can do serious damage to your data.  Without a sober,
-knowledgeable assessment of the results of applying this algorithm
-made by <strong>you, the user</strong>, this part of
-<span class=program>ATHENA</span> should be considered fragile and dangerous.
-</p>
-
 <p>
-
 That said, let's carry on.
 </p>
 
 <p>
+<div class=figure style="max-width: 800px; min-width: 7em;">
+<a name=mee>
+<img src=../../images/mee.png width=100%>
+</a>
+<p align=center>
+The multi-electron excitation removal tool.
+</p>
+</div>
+</p>
+
 <p>
-<p align=center>
-<a href="../../images/comingsoon.jpg" target=_blank><img class=flexy src="../../images/comingsoon.jpg" title="" alt=""></a>
+Unfortunately, <span class=program>ATHENA</span> has no practical way of guessing sensible
+starting values for the three parameters.  So it is entirely up to the
+user to set these appropriately.
 </p>
-<p align=center>
-Multi-electron excitation removal is on <span class=program>ATHENA</span>'s to do list.
+
+<p>
+Shown below are data on LaCoO<sub>3</sub> which display a [3p4d]5d excitation
+at about 120 volts above the edge.
 </p>
+
+<p>
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=mee_e>&nbsp;</a><br><a href=../../images/mee_e.png><img src="../../images/mee_e.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/mee_k.png><img src="../../images/mee_k.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The results of removing the [3p4d]5d multi-electron excitation in La
+L<sub>III</sub>-edge data, which occurs
+at about 120 volts above the edge.  This excitation is seen near the
+cursor in the energy plot.  Its effect is much more pronounced in the
+&chi;(k) data on the right.
+See A. Kodre, et al, <em>J
+Physique IV: Colloque</em>, <strong>4</strong>, 
+(1994) p.&nbsp;C9 397-400<a href="http://dx.doi.org/10.1051/jp4:1994966"> (DOI: 10.1051/jp4:1994966)</a>.
 </p>
+</div>
+</p>
+
+<p>
+Using the parameter shown inthe screen shot above, the removal is
+performed and shown as the red line in the figures.  The shift was
+first guessed as the separation between the white line in the XANES
+data and the prominant feature at 5.7&Aring;&#8315;&sup1;.  That came out to be
+121.04 eV.  After a bit of examination, I settled on 122 eV.
+</p>
+
+<p>
+The amplitude by which the reflected data is scaled is 0.014 in this
+example.  That number is a fraction of the edge step.  That is, its
+value is to be compared to the normalized data.  If this is set to a
+negative number, it will be reset to zero (which has the effect of not
+doing a removal).
+</p>
+
+<p>
+Finally, the XANES data are broadened by a couple volts.  If you set
+this to be zero or a negative number, a value of 0.01 eV will be used.
+</p>
+
+<p>
+Once you find a set of parameters that does a good job of removing the
+excitation, the excitation-subtracted data can be saved as a group in
+the group list.
 </p>
 
 <p>
 This is a good reference on the effect of small
 multi-electron excitations on otherwise excellent &chi;(k) data:
 C. Hennig, <em>Phys. Rev. B</em>, <strong>75</strong>, 
-(2007) p.&nbsp;035120<a href="http://dx.doi.org/10.1103/PhysRevB.75.035120"> (DOI: 10.1103/PhysRevB.75.035120)</a>.</p>
+(2007) p.&nbsp;035120<a href="http://dx.doi.org/10.1103/PhysRevB.75.035120"> (DOI: 10.1103/PhysRevB.75.035120)</a>.
+</p>
+
+<p>
+Note that this tool can also be used to approximately remove the
+contamination from a small edge of another element that shows up in
+the data.
+</p>
 
 </div>
 

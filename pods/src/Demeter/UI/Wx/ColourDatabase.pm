@@ -52,7 +52,7 @@ sub AddColour {
 sub Find {
   my $self = shift;
   my $name = shift;
-  my $colour = Wx::Colour->new(wxNullColour);
+  my $colour = wxNullColour;
 
   $name = uc($name) if (not exists( $self->{__colours}->{$name} ));
   if (exists( $self->{__colours}->{$name} )) {
@@ -200,7 +200,7 @@ Demeter::UI::Wx::ColourDatabase - An objective interface to Wx::ColourDatabase
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

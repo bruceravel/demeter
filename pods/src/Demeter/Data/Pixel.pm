@@ -32,6 +32,7 @@ use List::MoreUtils qw(minmax);
 #has '+name' => (default => 'pixel data',);
 has '+datatype' => (default => 'xmu',);
 has '+is_special' => (default => 1,);
+has '+is_pixel' => (default => 1,);
 
 has 'standard' => (is => 'rw', isa => Empty.'|Demeter::Data',  default => q{},
 		   trigger => sub{ my($self, $new) = @_;
@@ -47,6 +48,7 @@ has 'standardgroup' => (is => 'rw', isa => 'Str',  default => q{});
 has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
 has 'linear'    => (is => 'rw', isa => 'Num',  default => 0.4);
 has 'quadratic' => (is => 'rw', isa => 'Num',  default => sub{ shift->co->default("dispersive", "quadratic")  || 0});
+has 'quartic'   => (is => 'rw', isa => 'Num',  default => 0);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -80,6 +82,7 @@ sub guess {
   my $st9 = $self->standard->e0('fraction');
   $self->standard->e0('ifeffit');
 
+  $self->_update('background');
   $self->bkg_e0_fraction(0.1);
   my $da1 = $self->e0('fraction');
   $self->bkg_e0_fraction(0.9);
@@ -112,6 +115,7 @@ sub pixel {
   $self->offset($self->fetch_scalar("pixel___a"));
   $self->linear($self->fetch_scalar("pixel___b"));
   $self->quadratic($self->fetch_scalar("pixel___c"));
+  #$self->quartic($self->fetch_scalar("pixel___d"));
   #print $self->fetch_scalar('pixel___xmin'), " ",$self->fetch_scalar('pixel___xmax'), $/;
   #print $self->linear, "  ", $self->offset, "  ", $self->quadratic, $/;
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
@@ -149,7 +153,7 @@ Demeter::Data::Pixel - Handle dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

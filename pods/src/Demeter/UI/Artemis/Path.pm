@@ -160,7 +160,7 @@ sub new {
     $this->{"pp_$k"}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
 
-    my $black = Wx::Colour->new(wxNullColour);
+    my $black = wxNullColour;
     $label -> SetNormalColour($black);
     $label -> SetHoverColour($black);
     $label -> SetVisitedColour($black);
@@ -632,7 +632,7 @@ Demeter::UI::Artemis::Path - Path group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

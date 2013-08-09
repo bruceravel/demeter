@@ -169,7 +169,10 @@ sub populate {
     $self->{params}->SelectItem($first);
     my $this = $self->{params}->GetItemText( $self->{params}->GetSelection );
     $self->{desc}->Clear;
-    $self->{desc}->WriteText(Demeter->co->description($this))
+    {				# this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
+      local $Text::Wrap::columns = 47;
+      $self->{desc}  -> WriteText(wrap(q{}, q{}, Demeter->co->description($this)));
+    };
   };
 };
 
@@ -190,7 +193,7 @@ sub tree_select {
 
     my $description = Demeter->co->description($parent, $param);
     if (Demeter->co->units($parent, $param)) {
-      $description .= $/ x 3 . "This parameter is in units of " . Demeter->co->units($parent, $param) . ".";
+      $description .= $/ x 3 . "Units: " . Demeter->co->units($parent, $param);
     };
     if (Demeter->co->restart($parent, $param)) {
       $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application.";
@@ -402,7 +405,7 @@ Demeter::UI::Wx::Config - A configuration widget for Demeter applications
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

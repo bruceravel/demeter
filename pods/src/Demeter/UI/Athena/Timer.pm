@@ -68,7 +68,7 @@ Demeter::UI::Athena::Timer - A timer for use with Athena's data watcher
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

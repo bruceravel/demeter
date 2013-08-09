@@ -99,6 +99,7 @@ sub push_values {
     $this->Enable(0);
     return;
   };
+  return if $::app->{plotting};
   $this->plot($data);
   1;
 };
@@ -175,7 +176,7 @@ Demeter::UI::Athena::Calibrate - A calibration tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

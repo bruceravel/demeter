@@ -97,6 +97,7 @@ my %hints = (
 	     open      => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
 	     save      => "Save an atoms input file from these crystallographic data",
 	     exec      => "Generate input data for Feff from these crystallographic data",
+	     doc       => "Show the Atoms documentation in a browser",
 	     clear     => "Clear this crystal structure",
 	     output    => "Write a feff.inp file or some other format",
 	     add       => "Add another entry to the list of sites",
@@ -133,6 +134,8 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Save data",  $self->icon("save"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save} );
   $self->{toolbar} -> AddTool(-1, "Export",     $self->icon("output"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{output});
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -433,7 +436,7 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file write_output clear_all noop run_atoms );
+  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -890,6 +893,10 @@ sub run_atoms {
   };
 };
 
+sub document {
+  $::app->document('feff');
+};
+
 sub clear_all {
   my ($self, $skip_dialog) = @_;
   return $self->_do_clear_all if (not $atoms->co->default("atoms", "do_confirm"));
@@ -954,7 +961,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

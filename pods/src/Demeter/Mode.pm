@@ -1,6 +1,7 @@
 package Demeter::Mode;
 
 use Moose; #X::Singleton;
+use MooseX::Aliases;
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -15,11 +16,11 @@ use List::MoreUtils qw(zip);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
-has 'group'     => (is => 'rw', isa => 'Str',     default => q{Mode});
-has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
+has 'group'      => (is => 'rw', isa => 'Str', default => q{Mode});
+has 'name'       => (is => 'rw', isa => 'Str', default => q{Mode});
 
-has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
-has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
+has 'backend'    => (is => 'rw', isa => 'Bool', default => 1, alias=>['ifeffit', 'larch']);
+has $_           => (is => 'rw', isa => 'Bool', default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
 has 'buffer'     => (is => 'rw', isa => Empty.'|ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
@@ -456,7 +457,8 @@ sub fetch {
   my $re = join("|", @{$self->types});
   return q{} if ($type !~ m{(?:$re)});
   my $list = $self->$type;
-  foreach my $o (@$list) {
+  my @objects = grep {defined($_)} @$list;
+  foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };
   return q{};
@@ -595,7 +597,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -631,9 +633,9 @@ object is the glue that allows things like that to happen.
 
 =over 4
 
-=item C<ifeffit>
+=item C<backend>
 
-Dispose commands to Ifeffit when true.
+Dispose commands to Larch or Ifeffit, as appropriate, when true.
 
 =item C<screen>
 

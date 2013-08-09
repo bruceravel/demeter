@@ -33,39 +33,43 @@ sub new {
 
   my $label = Wx::StaticText->new($this, -1, "Standard");
   $gbs->Add($label, Wx::GBPosition->new(0,0));
-  $label = Wx::StaticText->new($this, -1, "Data");
+  $label = Wx::StaticText->new($this, -1, "Multiplier");
   $gbs->Add($label, Wx::GBPosition->new(1,0));
-  $label = Wx::StaticText->new($this, -1, "Form");
+  $label = Wx::StaticText->new($this, -1, "Data");
   $gbs->Add($label, Wx::GBPosition->new(2,0));
-  $label = Wx::StaticText->new($this, -1, "Name template");
+  $label = Wx::StaticText->new($this, -1, "Form");
   $gbs->Add($label, Wx::GBPosition->new(3,0));
+  $label = Wx::StaticText->new($this, -1, "Name template");
+  $gbs->Add($label, Wx::GBPosition->new(4,0));
 
-  $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
-  $this->{data}     = Wx::StaticText->new($this, -1, q{Group});
-  $this->{form}     = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
-				      ["$MU(E)", "normalized $MU(E)", "derivative $MU(E)",
-				       "deriv. of normalized $MU(E)", "2nd derivative $MU(E)",
-				       "2nd deriv. of normalized $MU(E)"]); # , "$CHI(k)"
-  $this->{template} = Wx::TextCtrl->new($this, -1, 'diff %d - %s', wxDefaultPosition, [150,-1]);
-  $gbs->Add($this->{standard}, Wx::GBPosition->new(0,1));
-  $gbs->Add($this->{data},     Wx::GBPosition->new(1,1));
-  $gbs->Add($this->{form},     Wx::GBPosition->new(2,1));
-  $gbs->Add($this->{template}, Wx::GBPosition->new(3,1));
+  $this->{standard}   = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
+  $this->{multiplier} = Wx::TextCtrl->new($this, -1, '1', wxDefaultPosition, [150,-1]);
+  $this->{data}       = Wx::StaticText->new($this, -1, q{Group});
+  $this->{form}       = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
+					["$MU(E)", "normalized $MU(E)", "derivative $MU(E)",
+					 "deriv. of normalized $MU(E)", "2nd derivative $MU(E)",
+					 "2nd deriv. of normalized $MU(E)"]); # , "$CHI(k)"
+  $this->{template}   = Wx::TextCtrl->new($this, -1, 'diff %d - %s', wxDefaultPosition, [150,-1]);
+  $gbs->Add($this->{standard},   Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{multiplier}, Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{data},       Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{form},       Wx::GBPosition->new(3,1));
+  $gbs->Add($this->{template},   Wx::GBPosition->new(4,1));
   $this->{form}->SetSelection(1);
   EVT_CHOICE($this, $this->{form}, \&OnChoice);
   EVT_TEXT($this, $this->{template}, sub{$this->{updatemarked} = 1});
   $this->{template}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize,
 					     wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" )) ;
-  $::app->mouseover($this->{template}, 'TOKENS: %d=data name; %s=standard name; %f=form; %n=xmin; %x=xmax; %a=area');
+  $::app->mouseover($this->{template}, 'TOKENS: %d=data name; %s=standard name; %f=form; %m=multiplier; %n=xmin; %x=xmax; %a=area');
 
   $this->{invert}  = Wx::CheckBox->new($this, -1, 'Invert difference spectrum');
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
   $this->{make_nor} = Wx::CheckBox->new($this, -1, 'Allow difference group to be renormalized');
   $this->{do_integrate} = Wx::CheckBox->new($this, -1, 'Do integration');
-  $gbs->Add($this->{invert},  Wx::GBPosition->new(4,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(5,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(6,0), Wx::GBSpan->new(1,2));
-  $gbs->Add($this->{do_integrate}, Wx::GBPosition->new(7,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{invert},  Wx::GBPosition->new(5,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(6,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{make_nor}, Wx::GBPosition->new(7,0), Wx::GBSpan->new(1,2));
+  $gbs->Add($this->{do_integrate}, Wx::GBPosition->new(8,0), Wx::GBSpan->new(1,2));
   $this->{invert}->SetValue(0);
   $this->{plotspectra}->SetValue(1);
   $this->{make_nor}->SetValue(0);
@@ -91,6 +95,7 @@ sub new {
   $this->{xmax_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox->Add($this->{xmax_pluck}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 1);
 
+  $this->{multiplier} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, $app, 'xmin')});
@@ -111,15 +116,17 @@ sub new {
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   $this->{plot}        = Wx::Button->new($this, -1, 'Plot difference spectrum', wxDefaultPosition, $tcsize);
+  $this->{plotk}       = Wx::Button->new($this, -1, 'Plot difference spectrum in k', wxDefaultPosition, $tcsize);
   $this->{make}        = Wx::Button->new($this, -1, 'Make difference group',    wxDefaultPosition, $tcsize);
   $this->{marked}      = Wx::Button->new($this, -1, 'Plot difference spectra for all marked groups', wxDefaultPosition, $tcsize);
   $this->{markedareas} = Wx::Button->new($this, -1, 'Plot integrated areas from all marked groups', wxDefaultPosition, $tcsize);
   $this->{markedmake}  = Wx::Button->new($this, -1, 'Make difference groups from all marked groups', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make));
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot plotk make));
   $box -> Add(1,15,0);
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(marked markedareas markedmake));
   $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake));
-  EVT_BUTTON($this, $this->{plot},        sub{$this->plot});
+  EVT_BUTTON($this, $this->{plot},        sub{$this->plot('E')});
+  EVT_BUTTON($this, $this->{plotk},       sub{$this->plot('k')});
   EVT_BUTTON($this, $this->{make},        sub{$this->make});
   EVT_BUTTON($this, $this->{marked},      sub{$this->marked_spectra});
   EVT_BUTTON($this, $this->{markedareas}, sub{$this->marked_areas});
@@ -170,7 +177,7 @@ sub push_values {
   $this->{make}->Enable(0);
   my $save = $this->{plotspectra}->GetValue;
   $this->{plotspectra}->SetValue(1);
-  $this->plot;
+  $this->plot if not $::app->{plotting};
   $this->{plotspectra}->SetValue($save);
 };
 
@@ -193,8 +200,8 @@ sub ToggleIntegration {
 sub setup {
   my ($this, $data, $diff) = @_;
   $diff ||= $this->{Diff};
-  foreach my $att (qw(xmin xmax invert plotspectra)) {
-    next if (($att =~ m{\Axm}) and (not looks_like_number($this->{$att}->GetValue)));
+  foreach my $att (qw(xmin xmax invert plotspectra multiplier)) {
+    next if (($att =~ m{\A(?:xm|mu)}) and (not looks_like_number($this->{$att}->GetValue)));
     $diff->$att($this->{$att}->GetValue);
   };
   my $form = $forms[$this->{form}->GetSelection];
@@ -228,13 +235,14 @@ sub setup {
 };
 
 sub plot {
-  my ($this) = @_;
+  my ($this, $space) = @_;
   $this->setup($::app->current_data);
   $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
 
   Demeter->po->start_plot;
-  $this->{Diff}->plot;
-  $::app->{lastplot} = ['E', 'single'];
+  $this->{Diff}->is_nor(not $this->{make_nor}->GetValue);
+  $this->{Diff}->plot($space);
+  $::app->{lastplot} = [$space, 'single'];
   $this->{$_}->Enable(1) foreach (qw(make marked markedareas markedmake));
   $::app->heap_check(0);
 };
@@ -333,7 +341,7 @@ sub marked_areas {
   };
   close $O;
   Demeter->chart('plot', 'plot_file', {file=>$temp, xmin=>1, xmax=>$#all+1, param=>'integrated area',
-				       showy=>0, xlabel=>'data group', linetype=>'linespoints'});
+				       showy=>0, xlabel=>'data group', linetype=>'linespoints', title=>'areas'});
 
   $::app->{main}->status("Plotted sequence of difference spectra");
   undef $busy;
@@ -359,7 +367,7 @@ Demeter::UI::Athena::Difference - A difference spectrum tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

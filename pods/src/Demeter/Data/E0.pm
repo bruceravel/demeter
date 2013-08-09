@@ -15,6 +15,7 @@ package Demeter::Data::E0;
 
 =cut
 
+use feature "switch";
 use autodie qw(open close);
 
 use Moose::Role;
@@ -31,7 +32,7 @@ use Xray::Absorption;
 sub e0 {
   my ($self, $how) = @_;
   ($how = "ifeffit") if (!$how);
-  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
+  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|peak|$NUMBER)\z}) and (ref($how) !~ m{Data}));
   $self->_update('normalize');
   my $e0;
  MODE: {
@@ -40,6 +41,7 @@ sub e0 {
     $e0 = $self->e0_fraction,       last MODE if ($how eq "fraction");
     $e0 = $self->e0_atomic,         last MODE if ($how eq "atomic");
     $e0 = $self->e0_dmax,           last MODE if ($how eq "dmax");
+    $e0 = $self->e0_wl,             last MODE if ($how eq "peak");
     $e0 = $how->bkg_e0,             last MODE if (ref($how) =~ m{Data});
     ($how =~ m{\A$NUMBER\z}) and do {
       $self->bkg_e0($how);
@@ -151,6 +153,12 @@ sub e0_dmax {
   return $x[$i];
 };
 
+sub e0_wl {
+  my ($self) = @_;
+  my $e0 = $self->find_white_line;
+  return $e0;
+};
+
 sub calibrate {
   my ($self, $ref, $e0) = @_;
   $self -> _update("background");
@@ -187,8 +195,13 @@ sub align {
     $d -> dispense("process", "align");
     $shift = sprintf("%.3f", $d->fetch_scalar("aa___esh"));
     #print ">>>>>>", $shift, $/;
+    $d -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
+    if ($d->reference) {
+      $d -> reference -> bkg_delta_eshift($d -> bkg_delta_eshift);
+      $d -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -216,10 +229,13 @@ sub align_with_reference {
     $this -> _update("background");
     $this -> dispense("process", "align");
     $shift = sprintf("%.3f", $self->fetch_scalar("aa___esh"));
+    $this -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
-    $this -> reference -> update_bkg(1) if $this->reference;
-
+    if ($this->reference) {
+      $this -> reference -> bkg_delta_eshift($this -> bkg_delta_eshift);
+      $this -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -295,9 +311,6 @@ sub _postline_marker_command {
   return $command;
 };
 
-
-
-
 1;
 
 
@@ -307,7 +320,7 @@ Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

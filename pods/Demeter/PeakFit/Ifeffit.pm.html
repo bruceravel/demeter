@@ -69,7 +69,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.17.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -95,14 +95,14 @@ document section is parsed by the reporting methods of this object.</p>
 </pre></dd>	<dt>lorentzian(height, center, sigma)</dt>
 <dd><pre> (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
 
-</pre></dd>	<dt>pseudovoigt(height, center, hwhm, eta)</dt>
+</pre></dd>	<dt>pvoigt(height, center, hwhm, eta)</dt>
 <dd><pre> eta*loren + (1-eta)*gauss
 
 </pre></dd>	<dt>atan(step, e0, width)</dt>
-<dd><pre>  step*[atan((x-E0)/width)/pi + 0.5]
+<dd><pre> step*[atan((x-E0)/width)/pi + 0.5]
 
 </pre></dd>	<dt>erf(step, e0, width)</dt>
-<dd><pre>  step*(erf((x-e0)/width) + 1)
+<dd><pre> step*(erf((x-e0)/width) + 1)
 
 </pre></dd><dd>
 

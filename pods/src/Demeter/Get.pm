@@ -17,7 +17,6 @@ package Demeter::Get;
 
 use feature "switch";
 use Moose::Role;
-#use Ifeffit qw(ifeffit get_echo get_scalar get_array get_string put_scalar put_array put_string);
 
 my $mode = Demeter->mo;
 
@@ -93,8 +92,12 @@ sub fetch_scalar {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
 	}
-	when (/(aa__)_(esh|scale)/) {
+	when (/(aa__)_(esh|scale)\b/) {
 	  $param = $1.'.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(aa__)_(esh|scale)/) {
+	  $param = $1.'.'.$2.'.stderr';
 	  return Larch::get_larch_scalar($param);
 	}
 	when (/\A(lr_)__(pd[024])/) {
@@ -270,7 +273,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

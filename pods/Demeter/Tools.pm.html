@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.17.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -102,6 +102,26 @@ coordinates, in that order.</p></dd>
 		<dd><p>This returns a string with the current date and time in a convenient,
 human-readable format.</p></dd>
 <dd><pre>   print &quot;The time is: &quot;, $demeter_object -&gt; now, $/;
+
+</pre></dd>	<dt><code>howlong</code></dt>
+		<dd><p>This returns a string used for indicating an amount of elapsed time.
+The argument is a DataTime object made at the beginning of the event
+whose elapsed time is being measured.</p></dd>
+<dd><pre>   my $start = DateTime-&gt;now( time_zone =&gt; 'floating' );
+   #  ... do something
+   my $text = Demeter-&gt;howlong($start);
+
+</pre></dd>		<dd><p>returns</p></dd>
+<dd><pre>   That took NN seconds.
+
+</pre></dd>		<dd><p>It can be customized:</p></dd>
+<dd><pre>   my $text = Demeter-&gt;howlong($start, &quot;Your fit&quot;);
+
+</pre></dd>		<dd><p>returns</p></dd>
+<dd><pre>   Your fit took NN seconds.
+
+</pre></dd>		<dd><p>For something longer than a minute, it would return</p></dd>
+<dd><pre>   Your fit took MM minutes and NN seconds.
 
 </pre></dd>	<dt><code>environment</code></dt>
 		<dd><p>This returns a string showing the version numbers of Demeter and perl,
@@ -164,16 +184,55 @@ significant digits beyond the decimal.</p></dd>
 		<dd><p>Dump a string into a file.</p></dd>
 <dd><pre>  $demeter_object -&gt; write_file($file, $string);
 
-</pre></dd>	<dt><code>Dump</code></dt>
-		<dd><p>This is just a wrapper around <a href="http://search.cpan.org/perldoc?Data%3A%3ADumper">Data::Dumper</a>.  Pass it a reference
-and it will be pretty-printed;</p></dd>
+</pre></dd>	<dt><code>randomstring</code></dt>
+		<dd><p>Return a rendom character string using  <code>random_string</code> from <a href="http://search.cpan.org/perldoc?String%3A%3ARandom">String::Random</a>.</p></dd>
+<dd><pre>  $string = Demeter-&gt;randomstring($length);
+
+</pre></dd>		<dd><p>The resulting string will be <code>$length</code> characters long.  If not
+specified, it will be 6 characters long.</p></dd>
+	<dt><code>Dump</code></dt>
+		<dd><p>This is just a wrapper around <a href="http://search.cpan.org/perldoc?Data%3A%3ADump%3A%3AColor">Data::Dump::Color</a>, <a href="http://search.cpan.org/perldoc?Data%3A%3ADump">Data::Dump</a> or
+<a href="http://search.cpan.org/perldoc?Data%3A%3ADumper">Data::Dumper</a>, whichever is installed.  Pass it a reference and it
+will be pretty-printed;</p></dd>
 <dd><pre>  print $any_object -&gt; Dump(\@some_array);
 
 </pre></dd>	<dt><code>trace</code></dt>
 		<dd><p>Print an ANSI-colorized stack trace to STDOUT from any location.</p></dd>
 <dd><pre>  $any_object -&gt; trace;
 
-</pre></dd></dl>
+</pre></dd>	<dt><code>pjoin</code></dt>
+		<dd><p>Write stuff to the screen in an ugly but easy to read manner.</p></dd>
+<dd><pre>  Demeter-&gt;pjoin($this, $that, @and_the_other);
+
+</pre></dd>	<dt><code>Touch</code></dt>
+		<dd><p>This is a wrapper around the <code>touch</code> method from <a href="http://search.cpan.org/perldoc?File%3A%3ATouch">File::Touch</a>.</p></dd>
+<dd><pre>  Demeter-&gt;Touch($some_file);
+
+</pre></dd>	<dt><code>feffdocversion</code></dt>
+		<dd><p>This method attempts to determine the appropriate version of the Feff
+document to show.  If the version is not specified, it will be
+determined from the value of the <code>feff-&gt;feff-executable</code>
+configuration parameter.</p></dd>
+<dd><pre>  $version = Demeter-&gt;feffdocversion;
+
+</pre></dd>		<dd><p>The only two options currently supported are 6 and 9.</p></dd>
+	<dt><code>feffdoc</code></dt>
+		<dd><p>This returns the URL of the main page of the Feff documentation for
+either version 6 or 9, depending on which is requested or determined
+via the <code>feffdocversion</code> method.</p></dd>
+<dd><pre>  $url = Demeter-&gt;feffdoc;
+
+</pre></dd>	<dt><code>feffcardpage</code></dt>
+		<dd><p>This returns the URL for the page documenting a specific card in the
+Feff6 or Feff9 input file.</p></dd>
+<dd><pre>  $url = Demeter-&gt;feffcardpage($card, $version);
+
+</pre></dd>		<dd><p>Specifying the Feff version is optional.  If not specified, it will
+use the value returned by the <code>feffdocversion</code> method.</p></dd>
+</dl>
+
+
+
 <h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>

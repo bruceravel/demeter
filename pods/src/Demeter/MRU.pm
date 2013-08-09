@@ -63,7 +63,10 @@ sub push_mru {
 
 sub get_mru_list {
   my ($self, @groups) = @_;
-  my $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"));
+  #my $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"));
+  my $rmru;
+  eval {local $SIG{__DIE__}=sub {}; $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"))};
+  return () if ($@);
   my %mru = %$rmru;
   #tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
   my @list_of_files = ();
@@ -89,7 +92,7 @@ Demeter::MRU - Handle lists of recently used file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

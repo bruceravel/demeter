@@ -112,17 +112,18 @@ sub get_array {
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
+
   my @array = $self->fetch_array($text);
-  if (not @array) {		# only do this error check if the specified array is not returned
-    my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
-    my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
-    my $grp = $self->group;
-    if ($suffix !~ m{\b$group_regexp\b}) {
-      #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
-      return ();
-    };
-    #$self->running if ($part eq 'run');
-  };
+  # if (not @array) {		# only do this error check if the specified array is not returned
+  #   my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
+  #   my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
+  #   my $grp = $self->group;
+  #   if ($suffix !~ m{\b$group_regexp\b}) {
+  #     #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
+  #     return ();
+  #   };
+  #   #$self->running if ($part eq 'run');
+  # };
   return @array;
 };
 sub ref_array {
@@ -231,6 +232,7 @@ sub points {
   } else {
     @y = $self->get_array($args{suffix});
   };
+  #print join("|", @y), $/;
   if (defined $args{weight}) {
     $args{weight} || 0;
     $#y = $#k if ($#k < $#y);
@@ -261,7 +263,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 METHODS
 

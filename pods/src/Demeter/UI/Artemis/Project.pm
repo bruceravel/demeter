@@ -60,14 +60,14 @@ sub save_project {
   Demeter::UI::Artemis::update_order_file();
 
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
-  my $save = $rframes->{main} -> {currentfit} -> fitted;
-  $rframes->{main} -> {currentfit} -> fitted(1);
+  #my $save = $rframes->{main} -> {currentfit} -> fitted;
+  #$rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
 						nozip    => 1,
 						copyfeff => 0,
 					       );
-  $rframes->{main} -> {currentfit} -> fitted($save);
+  #$rframes->{main} -> {currentfit} -> fitted($save);
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
@@ -102,8 +102,18 @@ sub save_project {
   print $JO $rframes->{Journal}->{journal}->GetValue;
   close $JO;
 
+  opendir(my $FD, File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'));
+  my @toss = ();
+  foreach my $d (readdir($FD)) {
+    next if ($d =~ m{\A\.});
+    next if -e File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $d, 'keep');
+    push @toss, $d;		# gather all fits that lack the keep file
+  };				# so these can be excluded from the saved project
+  closedir $FD;
+  my $toss_regexp = join("|", @toss);
+
   my $zip = Archive::Zip->new();
-  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
+  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} and not m{$toss_regexp} });
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
@@ -150,6 +160,10 @@ sub import_autosave {
   $dialog->SetFocus;
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $Demeter::UI::Artemis::frames{main}->status("Autosave import canceled.");
+    opendir(my $stash, Demeter->stash_folder);
+    my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
+    closedir $stash;
+    foreach my $as (@list) { unlink File::Spec->catfile(Demeter->stash_folder, $as) };
   } else {
     my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);
@@ -191,23 +205,28 @@ sub read_project {
   };
   $fname = Demeter->follow_link($fname);
 
-  if (not Demeter->is_zipproj($fname,0, 'any')) {
+  if (Demeter->is_zipproj($fname,0, 'any')) {
     if (project_started($rframes)) {
       my $yesno = Demeter::UI::Wx::VerbDialog->new($rframes->{main},, -1,
 						   "Save current project before opening a new one?",
 						   "Save project?",
-						   "Save");
+						   "Save", 1);
       my $result = $yesno->ShowModal;
+      if ($result == wxID_CANCEL) {
+	$rframes->{main}->status("File import canceled");
+	return;
+      };
       save_project($rframes) if $result == wxID_YES;
       close_project($rframes, 1);
     };
   };
 
+  ## ---------- other input types ----------------------------------------------------------
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
+    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
     Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
     Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
-    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
     $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');
     return;
@@ -224,6 +243,7 @@ sub read_project {
   my $projfolder = $rframes->{main}->{project_folder};
   chdir $projfolder;
 
+  ## ---------- unpack project file --------------------------------------------------------
   $rframes->{main}->status("Opening project file $fname.", $statustype);
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
@@ -232,11 +252,6 @@ sub read_project {
   };
   chdir($wasdir);
 
-#  ##print join($/, $zip->memberNames), $/;
-#  (my $pf = $rframes->{main}->{project_folder}) =~ s{\\}{/}g;
-#  $zip->extractTree(".", $rframes->{main}->{project_folder});
-#  print $zip->extractTree(".", $directories, $volume), $/;
-#  undef $zip;
 
   my $import_problems = q{};
 
@@ -278,7 +293,7 @@ sub read_project {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     if (not -e $yaml) {
-      rmdir File::Spec->catfile($projfolder, 'feff', $d);
+      rmtree(File::Spec->catfile($projfolder, 'feff', $d));
       next;
     };
     my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
@@ -327,10 +342,7 @@ sub read_project {
     };
   };
 
-  ## -------- import fit history from project file (currently only importing most recent)
-  #opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
-  #@dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
-  #closedir $FITS;
+  ## -------- import fit history from project file
   @dirs = ();			# need to retrieve in historical order for fit history
   foreach my $d (sort {$a<=>$b} grep {$_ =~ m{\A\d+\z}} keys(%{$Demeter::UI::Artemis::fit_order{order}})) {
     next if $d eq 'current';
@@ -338,8 +350,7 @@ sub read_project {
   };
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
-  $current ||= $dirs[0];
-  ##print join("|", $current, @dirs), $/;
+  $current ||= $dirs[$#dirs];
   my $currentfit;
   my $lastfit;
   my @fits;
@@ -359,7 +370,7 @@ sub read_project {
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
     $fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     #$fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
-    if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
+    if (($d ne $current) and ((not $fit->fitted) or ($fit->chi_square == 0))) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
     };
@@ -367,6 +378,18 @@ sub read_project {
     ++$count;
     push @fits, $fit;
   };
+
+  ## ------- find most recent fit that was actually fit and make it current
+  #my $toss = 0;
+  #foreach my $f (reverse @fits) {
+  #  if ($f->fitted and ($f->chi_square > 0)) {
+  #    $current = $f->group;
+  #    last;
+  #  };
+  #  ++$toss;
+  #};
+  #pop @fits foreach (1..$toss);
+
   if (@fits) {		# found some actual fits
     $rframes->{main}->status("Found fit history, creating history window", $statustype);
     my $found = 0;
@@ -375,9 +398,12 @@ sub read_project {
     };
     $current = $fits[-1]->group if not $found;
     foreach my $fit (@fits) {
-      if ($fit->fitted) {
+      ## this attempts to weed out fit objects/folders for which the
+      ## fit did not run to completion due to failure of sanity checks
+      if ($fit->fitted and ($fit->chi_square > 0)) {
 	$rframes->{History}->{list}->AddData($fit->name, $fit);
 	$rframes->{History}->add_plottool($fit);
+	Demeter->Touch(File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $fit->group, 'keep'));
 	$lastfit = $fit;
       } elsif ($fit->group ne $current) {
 	foreach my $g ( @{ $fit->gds }) {
@@ -387,7 +413,7 @@ sub read_project {
       next unless ($fit->group eq $current);
       $currentfit = $fit;
       $fit->sentinal(sub{$::app->{main}->status($_[0], $statustype)});
-      $rframes->{main}->status("Unpacking current fit", $statustype);
+      $rframes->{main}->status("Unpacking current fit ".$fit->group, $statustype);
       $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
       #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
       #$rframes->{History}->OnSelect;
@@ -425,8 +451,8 @@ sub read_project {
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   $rframes->{main}->status("Imported project $fname.");
 
-  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  $rframes->{main} -> {currentfit} = $newfit;
+#  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+#  $rframes->{main} -> {currentfit} = $newfit;
   #++$Demeter::UI::Artemis::fit_order{order}{current};
 
   modified(0);
@@ -559,8 +585,8 @@ sub modified {
   my ($is_modified) = @_;
   my $main = $Demeter::UI::Artemis::frames{main};
   my $title = ($is_modified)
-    ? 'Artemis [EXAFS data analysis] *' . $main->{projectname} . '*'
-      : 'Artemis [EXAFS data analysis] ' . $main->{projectname};
+    ? 'Artemis [EXAFS data analysis] - *' . $main->{projectname} . '*'
+      : 'Artemis [EXAFS data analysis] - ' . $main->{projectname};
   $main->{modified} = ($is_modified);
   $main->SetTitle($title);
 };
@@ -604,6 +630,16 @@ sub close_project {
   foreach my $k (keys %$rframes) {
     next unless ($k =~ m{feff});
     Demeter::UI::Artemis::discard_feff($k, 1);
+  };
+  my $feffdir = File::Spec->catfile($rframes->{main}->{project_folder}, 'feff/');
+  my @dirs = ();
+  if (-d $feffdir) {
+    opendir(my $FEFF, $feffdir);
+    @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
+    closedir $FEFF;
+  };
+  foreach my $d (@dirs) {
+    rmtree(File::Spec->catfile($feffdir, $d));
   };
 
   ## -------- clear all Paths
@@ -649,6 +685,11 @@ sub close_project {
   $rframes->{main}->{fitspace}->[1]->SetValue(1);
   $rframes->{main}->{cvcount} = 0;
 
+  ## -------- clear project name
+  $rframes->{main}->{projectname} = q{<untitled>};
+  $rframes->{main}->{projectpath} = q{};
+  modified(0);
+
   return 1;
 };
 
@@ -674,7 +715,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

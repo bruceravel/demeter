@@ -34,6 +34,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Quickfs;
+use Demeter::UI::Artemis::Data::BondValence;
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
@@ -44,6 +45,7 @@ use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(firstidx any);
 use YAML::Tiny;
+use Xray::BondValence;
 
 my $windows  = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter  = $Demeter::UI::Artemis::demeter;
@@ -150,6 +152,7 @@ const my $ACTION_VPATH	      => Wx::NewId();
 const my $ACTION_TRANSFER     => Wx::NewId();
 const my $ACTION_AFTER	      => Wx::NewId();
 const my $ACTION_NONEAFTER    => Wx::NewId();
+const my $ACTION_BVS          => Wx::NewId();
 
 const my $INCLUDE_MARKED      => Wx::NewId();
 const my $EXCLUDE_MARKED      => Wx::NewId();
@@ -812,6 +815,7 @@ sub make_menubar {
   $self->{actionsmenu} = Wx::Menu->new;
   $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tAlt+Shift+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_BVS,       "Compute bond valence sum\tAlt+Shift+b", "Compute bond valence summ from marked paths",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tAlt+Shift+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tAlt+Shift+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
@@ -1209,6 +1213,11 @@ sub OnMenuClick {
 
     ($id == $ACTION_VPATH) and do {
       $datapage->OnMakeVPathButton;
+      last SWITCH;
+    };
+
+    ($id == $ACTION_BVS) and do {
+      $datapage->bond_valence_sum;
       last SWITCH;
     };
 
@@ -2216,8 +2225,7 @@ sub quickfs {
   };
 
   my $firstshell = Demeter::FSPath->new();
-  $firstshell -> set(make_gds  => $make,
-		     edge      => $edge,
+  $firstshell -> set(edge      => $edge,
 		     abs       => $abs,
 		     scat      => $scat,
 		     distance  => $distance,
@@ -2237,6 +2245,7 @@ sub quickfs {
   $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
+  $firstshell -> make_gds($make);
   $firstshell -> _update('bft');
   $firstshell -> save_feff_yaml;
   $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};
@@ -2276,6 +2285,56 @@ sub empirical {
   $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
   $page->include_label;
   $datapage->status("Imported \"$file\" as an empirical standard.");
+};
+
+sub bond_valence_sum {
+  my ($datapage) = @_;
+  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+  my @paths = ();
+  foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+    $datapage->{pathlist}->GetPage($p)->{path}->valence_abs(3);
+    if ($datapage->{pathlist}->IsChecked($p)) {
+      push @paths, $datapage->{pathlist}->GetPage($p)->{path};
+    };
+  };
+
+  ## ------ sanity checks -----------------------------------------------
+  if ($#paths == -1) {
+    $datapage->status("Bond valence sum canceled -- no marked paths", 'alert');
+    return;
+  };
+  my @valences = Xray::BondValence::valences($paths[0]->bvabs);
+  if ($#valences == -1) {
+    $datapage->status(sprintf("Bond valence parameters do not exist for the %s absorber", $paths[0]->bvabs), 'alert');
+    return;
+  };
+  foreach my $p (@paths) {
+    if ($p->nleg > 2) {
+      $datapage->status("You cannot include multiple scattering paths in a bond valence sum.", 'alert');
+      return;
+    };
+  };
+  foreach my $p (@paths) {
+    my @available = Xray::BondValence::available($p->bvabs, '.', $p->bvscat);
+    if ($#available == -1 ) {
+      $datapage->status(sprintf("Bond valence parameters do not exist for the %s scatterer", $p->bvscat), 'alert');
+      return;
+    };
+  };
+  ## --------------------------------------------------------------------
+
+  my $dialog = Demeter::UI::Artemis::Data::BondValence->new($datapage, @paths);
+  my $result = $dialog -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $datapage->status("Canceled quick first shell model creation.");
+    return;
+  };
+
+#  my $sum = 0;
+#  $sum += $_->bv foreach (@paths);
+#  my $text = Xray::BondValence::bvdescribe($paths[0]);
+#  $datapage->status(sprintf("Bond valence sum = %.3f (%s)", $sum, $text));
 };
 
 sub histogram_sentinal_rdf {
@@ -2687,7 +2746,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

@@ -77,7 +77,7 @@ sub Import {
 
   $app->{main}->{views}->SetSelection(0) if not $args{no_main};
 
-  my @files = ($fname);
+  my @files = (ref($fname) eq 'ARRAY') ? @$fname : ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
 				  "All files |*.*;*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
@@ -127,6 +127,7 @@ sub Import {
 	$stashfile = ($plugin) ? $plugin->fixed : $file;
 	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
 	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+	      : ($plugin and ($plugin->output eq 'list'))                ? 'list'
               : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
               :                                                            '???';
       };
@@ -145,6 +146,14 @@ sub Import {
       $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
+      ($type eq 'list') and do {
+	$app->Import($plugin->fixed);
+	Demeter->push_mru("xasdata", $plugin->file);
+	chdir(dirname($plugin->file));
+	$plugin->clean;
+	$retval = 0;
+	last SWITCH;
+      };
     };
     undef $xdi;
     if ($plugin) {
@@ -249,7 +258,7 @@ sub _data {
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
   if ($data->unreadable) {
-    $app->{main}->status($data->file." could not be read as data.", 'alert');
+    $app->{main}->status($data->file." could not be read as data. (Do you need to enable a plugin?)", 'alert');
     $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
     $data->DEMOLISH;
     return 0;
@@ -982,7 +991,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

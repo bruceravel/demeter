@@ -1,6 +1,6 @@
 package  Demeter::UI::Atoms::Feff;
 
-use Demeter::StrTypes qw( Element );
+use Demeter::StrTypes qw( Element Feff6Card Feff9Card );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
@@ -12,7 +12,7 @@ use base 'Wx::Panel';
 
 #use Wx::Perl::ProcessStream qw( :everything );
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RIGHT_DOWN);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::VerbDialog;
 
@@ -22,6 +22,7 @@ my %hints = (
 	     exec     => "Run Feff on this cluster",
 	     boiler   => "Insert boilerplate for a feff.inp file",
 	     clear    => "Clear all data",
+	     doc      => "Show the Feff input document page in a browser",
 	    );
 
 sub new {
@@ -29,6 +30,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
+  $self->{card}      = q{};
   #$self->{feffobject} = $parent->{feffobject} || $Demeter::UI::Atoms::demeter;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -38,6 +40,8 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Save file",  $self->icon("save"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save} );
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),       wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddTool(-1, "Template",   $self->icon("boilerplate"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{boiler});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(-1, "Doc",        $self->icon("document"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -61,6 +65,8 @@ sub new {
   $self->{feffboxsizer} -> Add($self->{feff}, 1, wxEXPAND|wxALL, 0);
 
   $vbox -> Add($self->{feffboxsizer}, 1, wxEXPAND|wxALL, 5);
+  EVT_RIGHT_DOWN($self->{feff}, sub{ OnCardClick(@_, $self) });
+  EVT_MENU($self->{feff}, -1, sub{ OnCardMenu(@_, $self) });
 
   #print ">>> ", $parent->{feffobject}, $/;
   $self->{feffobject} = $parent->{feffobject} || Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
@@ -92,7 +98,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(import save_file clear_all insert_boilerplate noop run_feff );
+  my @callbacks = qw(import save_file clear_all insert_boilerplate noop document noop run_feff );
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -111,8 +117,49 @@ sub OnToolRightClick {
   };
 };
 
+sub OnCardClick {
+  my ($text, $event, $this) = @_;
+  my ($res, $col, $row) = $text->HitTest($event->GetPosition);
+  my $line = $text->GetLineText($row);
+  my ($start, $end) = (0, length($line));
+  foreach my $i (reverse(0 .. $col)) {
+    if (substr($line, $i, 1) =~ m{[ \t*]}) {
+      $start = $i+1;
+      last;
+    };
+  };
+  foreach my $i ($col .. length($line)) {
+    if (substr($line, $i, 1) =~ m{\s}) {
+      $end = $i-1;
+      last;
+    };
+  };
+  my $result = substr($line, $start, $end);
+  $result =~ s{\s+\z}{};
+  ##print ">$result<\n";
+  $result = 'RPATH' if ((Demeter->feffdocversion != 6) and ($result eq 'RMAX'));
+  if (is_Feff6Card($result) or is_Feff9Card($result)) {
+    $this->{card} = $result;
+    my $menu  = Wx::Menu->new(q{});
+    $menu -> Append(Wx::NewId(), "Show document for Feff card: $result");
+    $text -> PopupMenu($menu, $event->GetPosition);
+  } else {
+    $event->Skip;
+  };
+};
+
+sub OnCardMenu {
+  my ($text, $event, $this) = @_;
+  my $url = Demeter->feffcardpage($this->{card});
+  Wx::LaunchDefaultBrowser($url);
+};
+
 sub noop {
   return 1;
+};
+
+sub document {
+  $::app->document('feff.feff');
 };
 
 sub import {
@@ -262,6 +309,7 @@ Should we continue?',
   my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
   $self->{parent}->{notebook}->ChangeSelection($n);
   $self->{parent}->{Console}->{console}->Update;
+  my $start = DateTime->now( time_zone => 'floating' );
   my $busy = Wx::BusyCursor->new();
 
   $feff->execution_wrapper(sub{$self->run_and_gather(@_)});
@@ -335,6 +383,7 @@ Should we continue?',
   $feff->clear_iobuffer;
 
   $feff->execution_wrapper(0);
+  $self->{parent}->{Console}->{console}->AppendText(Demeter->howlong($start, 'Your Feff calculation')."\n\n");
 
   #unlink $inpfile;
   undef $busy;
@@ -411,18 +460,20 @@ sub fill_intrp_page {
   $feff->rank_paths;
   my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
   foreach my $p (@{ $feff->pathlist }) {
-    my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
-    $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
-    $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
-    #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
-    #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
-    ++$i;
+    if ($p->get_rank($which) > Demeter->co->default('pathfinder', 'postcrit')) {
+      my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
+      $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
+      $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
+      #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
+      #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
+      ++$i;
+    };
   };
   my $which = 6;
   if (Demeter->po->space eq 'k') {
@@ -519,7 +570,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

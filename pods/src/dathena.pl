@@ -49,7 +49,7 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -62,14 +62,6 @@ Athena is a graphical interface to Ifeffit for XAS data processing.
 =item C<-#>
 
 Immediately import the #-th item from the MRU list
-
-=item C<-l>
-
-Turn on Larch support (requires a running larch server)
-
-=item C<-v>
-
-Set Demeter's devflag to a true value (used for development)
 
 =back
 

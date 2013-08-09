@@ -26,7 +26,8 @@ sub new {
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate([qw(athena bft bkg clamp convolution dispersive
 			edgestep fft file fit gnuplot indicator interpolation
-			lcf marker merge operations pca peakfit plot rebin smooth xanes)]);
+			lcf marker merge operations pca peakfit plot rebin
+			smooth whiteline xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
   $config->{params}->Expand($config->{params}->GetRootItem);
 
@@ -62,6 +63,8 @@ sub target {
     };
   };
 
+  $value = Demeter->truefalse($value) if Demeter->co->Type($parent, $param) eq 'boolean';
+
   ($save)
     ? $::app->{main}->status("Now using $value for $parent-->$param and an ini file was saved")
       : $::app->{main}->status("Now using $value for $parent-->$param");
@@ -91,7 +94,7 @@ Demeter::UI::Athena::Prefs - A preferences tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

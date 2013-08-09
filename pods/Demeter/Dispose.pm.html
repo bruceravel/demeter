@@ -77,12 +77,12 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.17.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <pre>  my $data_object = Demeter::Data -&gt; new();
-  $data_object -&gt; set_mode(ifeffit=&gt;1, buffer=&gt;\@buffer, screen=&gt;1);
+  $data_object -&gt; set_mode(backend=&gt;1, buffer=&gt;\@buffer, screen=&gt;1);
   $data_object -&gt; dispose($ifeffit_command);
 
 
@@ -141,7 +141,7 @@ dispose of plotting commands to a gnuplot process, you must have the
 
 <p>Use the <code>set_mode</code> class method to establish the disposal channels.</p>
 
-<pre>   Demeter-&gt;set_mode(ifeffit=&gt;1, screen=&gt;1, file=&gt;0, buffer=&gt;0);
+<pre>   Demeter-&gt;set_mode(backend=&gt;1, screen=&gt;1, file=&gt;0, buffer=&gt;0);
    $dataobject -&gt; dispose($commands);
 
 </pre><p>When explicitly disposing a plotting command, use the plotting flag:</p>

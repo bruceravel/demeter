@@ -105,9 +105,9 @@ sub _prj {
       };
     };
     ## clean up a few straggler arrays in Ifeffit/Larch and the spare Data object
-    $data->dispense('process', 'erase', {items=>"\@group $toss"});
-    $toss = Demeter->mo->fetch('Data', $toss);
-    $toss->DESTROY;
+    #$data->dispense('process', 'erase', {items=>"\@group $toss"});
+    #$toss = Demeter->mo->fetch('Data', $toss);
+    #$toss->DESTROY;
   };
 
   ## refuse to move forward for actinides above Am
@@ -129,7 +129,7 @@ sub _prj {
   $data->plot('k');
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
-  (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};;
+  (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};
   $rframes->{main}->{$dnum}->SetLabel($lab);
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
@@ -657,7 +657,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

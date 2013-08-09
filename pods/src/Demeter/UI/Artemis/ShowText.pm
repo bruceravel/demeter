@@ -82,7 +82,7 @@ sub OnLeftDclick {
     ## (ok, lots of other lines will start with a dash, but few will
     ## actually return something from fetch)
     ($line[0] eq '-') and do {
-      foreach my $type (qw(GDS Data Path Feff VPath)) {
+      foreach my $type (qw(GDS Data Path Feff VPath LineShape)) {
 	$kind = $type;
 	$object = Demeter->mo->fetch($type, $line[1]);
 	last SWITCH if $object;
@@ -141,7 +141,7 @@ Demeter::UI::Artemis::ShowText - A text display dialog for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

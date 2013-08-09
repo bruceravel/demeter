@@ -174,7 +174,7 @@ The meaning of a &ldquo;raw&rdquo; <span class=program>FEFF</span> calculation
 is that it is displayed as &chi;(k) with S&sup2;&#8320; set to 1.0 and each
 of E&#8320;, &Delta;R, and &sigma;&sup2; set to 0.  A plot of &chi;(R) for
 the &ldquo;raw&rdquo; <span class=program>FEFF</span> calculation, then,
-displays the Foruier transform of &chi;(k) parameterized with those
+displays the Fourier transform of &chi;(k) parameterized with those
 values.
 </p>
 
@@ -187,10 +187,18 @@ window is used to make the plot of paths.
 </p>
 
 <p>
-Right clicking on an entry in the paths list will open a dialog window
-with more details about the geomtery of the scattering path.  In the
-following figure, the selected path (0006) was right-clicked on,
-opening the dialog depicted below.
+Right clicking on an entry in the paths list will post a menu.  The
+first item on the menu opens a dialog window with more details about
+the geomtery of the selected scattering path.  In the following
+figure, the selected path (0006) was right-clicked on, opening the
+dialog depicted below.
+</p>
+
+<p>
+The other context menu options are used to set the path select on the
+basis of distance, ranking, or scattering geometry.  These options are
+useful for selecting groups of paths to drag and drop onto the Data
+window.
 </p>
 
 <div class=figure style="max-width: 548px; min-width: 7em;">
@@ -201,6 +209,16 @@ opening the dialog depicted below.
 Information about the geometry of a scattering path.
 </p>
 </div>
+
+<p>
+The contents of the path interpretation can be filtered after running
+the <span class=program>FEFF</span> calculation by setting the 
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;postcrit</span>
+parameter.  By default, it is set to 3, which means that only paths
+with a ranking above 3 will be displayed in the path interpretation.
+Resetting this parameter allows you tune how many paths get displayed
+after the calculation.
+</p>
 
 </div>
 

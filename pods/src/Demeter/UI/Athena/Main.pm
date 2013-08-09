@@ -88,6 +88,7 @@ sub group {
   $hbox -> Add(1,1,1);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
+  $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
@@ -568,7 +569,7 @@ sub mode {
 
   foreach my $w (qw(group_group_label background_group_label fft_group_label
 		    bft_group_label plot_group_label)) {
-    $this->{$w} -> SetForegroundColour( Wx::Colour->new(wxNullColour) );
+    $this->{$w} -> SetForegroundColour( wxNullColour );
   };
   if ($::app) {
     $this->Refresh;
@@ -1043,6 +1044,7 @@ const my $E0_PEAK            => Wx::NewId();
 const my $STEP_ALL           => Wx::NewId();
 const my $STEP_MARKED        => Wx::NewId();
 const my $STEP_ERROR         => Wx::NewId();
+const my $ESHIFT_THIS        => Wx::NewId();
 const my $ESHIFT_ALL         => Wx::NewId();
 const my $ESHIFT_MARKED      => Wx::NewId();
 
@@ -1081,6 +1083,7 @@ sub ContextMenu {
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
     $menu->AppendSeparator;
+    $menu->Append($ESHIFT_THIS,    "Show energy shift of this group");
     $menu->Append($ESHIFT_ALL,     "Show energy shifts of all groups");
     $menu->Append($ESHIFT_MARKED,  "Show energy shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
@@ -1089,7 +1092,7 @@ sub ContextMenu {
     $menu->Append($E0_TABULATED, "Set E0 to the tabulated value");
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
-    #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
+    $menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
   } elsif ($which eq 'bkg_step') {
     $menu->AppendSeparator;
     $menu->Append($STEP_ALL,     "Show edge steps of all groups");
@@ -1229,6 +1232,11 @@ sub DoContextMenu {
       $main->edgestep_error($app);
       last SWITCH;
     };
+    ($id == $ESHIFT_THIS) and do {
+      $app->{main}->status(sprintf("%s: energy shift = %.5f +/- %.5f",
+				   $data->name, $data->bkg_eshift, $data->bkg_delta_eshift));
+      last SWITCH;
+    };
     ($id == $ESHIFT_ALL) and do {
       $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
       last SWITCH;
@@ -1243,28 +1251,55 @@ sub DoContextMenu {
 sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
-  my $stat = Statistics::Descriptive::Full->new();
+  my $stat  = Statistics::Descriptive::Full->new();
+  my $error = Statistics::Descriptive::Full->new();
 
-  my $text = "  group                    $description\n" . "=" x 40 . "\n";
+  my $text = "  group              $description\n" . "=" x 40 . "\n";
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
   };
-  my $format = ' "%-'.$max.'s"  %.5f'."\n";
+
+  my $with_uncertainty = ($which eq 'bkg_eshift') ? 1 : 0;
+  my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
+
+  $max+=2;
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f +/- %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    my $val = $d->$which;
-    $text .= sprintf($format, $d->name, $val);
-    $stat -> add_data($val) if looks_like_number($val);
+    my $val   = $d->$which;
+    my $uncer = $uncertainty{$which};
+    $text .= ($with_uncertainty) ? sprintf($format, '"'.$d->name.'"', $val, $d->$uncer)
+      : sprintf($format, '"'.$d->name.'"', $val);
+    $stat  -> add_data($val)       if looks_like_number($val);
+    $error -> add_data($d->$uncer) if ($with_uncertainty);
   };
-  $text .= sprintf("\n\nAverage = %.5f  Standard deviation = %.5f\n", $stat->mean, $stat->standard_deviation)
+  $text .= sprintf("\n\nAverage = %9.5f  Standard deviation = %9.5f\n", $stat->mean, $stat->standard_deviation)
     if $stat->count > 1;
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;
+
+  if ($with_uncertainty) {
+    Demeter->po->start_plot;
+    my $tempfile = Demeter->po->tempfile;
+    open my $T, '>'.$tempfile;
+    my $i = -1;
+    my @y = $stat->get_data;
+    my @z = $error->get_data;
+    foreach my $i (0 .. $#y) {
+      printf $T "%d  %.5f  %.5f\n", $i, $y[$i], $z[$i];
+    };
+    close $T;
+    (my $p = $which) =~ s{_}{\\_}g;
+    (my $t = $which) =~ s{_}{\\\\_}g;
+    Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>-0.2, xmax=>$#y+0.2,
+					 xlabel=>'data set', title=>$t,
+					 param=>$p, showy=>0});
+  };
 };
 
 
@@ -1272,6 +1307,7 @@ sub edgestep_error {
   my ($main, $app) = @_;
   my $data = $app->current_data;
   my $busy = Wx::BusyCursor->new();
+  my $start = DateTime->now( time_zone => 'floating' );
 
   $data->sentinal(sub{$app->{main}->status(sprintf("Sample #%d of %d", $_[0]+1, $_[1]+1), 'wait|nobuffer')});
   my ($mean, $stddev, $report) = $data->edgestep_error(1);
@@ -1281,8 +1317,10 @@ sub edgestep_error {
       -> Show if Demeter->co->default('edgestep', 'fullreport');
 
   $data->sentinal(sub{1});
+  my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
-  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f", $data->name, $data->bkg_step, $stddev));
+  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
+			       $data->name, $data->bkg_step, $stddev, $finishtext));
   undef $busy;
 };
 
@@ -1385,7 +1423,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

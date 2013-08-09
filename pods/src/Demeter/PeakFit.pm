@@ -29,7 +29,8 @@ use Demeter::StrTypes qw( Empty );
 
 use File::Spec;
 use List::Util qw(min max);
-use List::MoreUtils qw(any none);
+use List::MoreUtils qw(any none uniq);
+use Spreadsheet::WriteExcel;
 use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -40,26 +41,33 @@ if ($Demeter::mode->ui eq 'screen') {
 use vars qw($Fityk_exists);
 $Fityk_exists       = eval "require fityk";
 
-has '+plottable'   => (default => 1);
-has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
-has '+name'        => (default => 'PeakFit' );
-has 'screen'       => (is => 'rw', isa => 'Bool', default => 0);
-has 'buffer'       => (is => 'rw', isa => 'ArrayRef | ScalarRef');
-has 'engine'       => (is => 'rw', isa => 'Bool', default => 1);
+has '+plottable'      => (default => 1);
+has '+data'	      => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+name'	      => (default => 'PeakFit' );
+has 'screen'	      => (is => 'rw', isa => 'Bool', default => 0);
+has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'engine'	      => (is => 'rw', isa => 'Bool', default => 1);
 
-has 'xaxis'        => (is => 'rw', isa => 'Str',  default => q{energy});
-has 'yaxis'        => (is => 'rw', isa => 'Str',  default => q{flat});
-has 'sigma'        => (is => 'rw', isa => 'Str',  default => q{});
+has 'xaxis'	      => (is => 'rw', isa => 'Str',  default => q{energy});
+has 'yaxis'	      => (is => 'rw', isa => 'Str',  default => q{flat});
+has 'sigma'	      => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'xmin'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
-has 'xmax'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
+has 'xmin'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
+has 'xmax'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
 
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
-has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
-has 'ntitles'      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ninfo'	      => (is => 'rw', isa => 'Num',  default => 0);
+has 'epsilon'	      => (is => 'rw', isa => 'Num',  default => 0);
+has 'nparam'	      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ndata'	      => (is => 'rw', isa => 'Int',  default => 0);
+has 'ntitles'	      => (is => 'rw', isa => 'Int',  default => 0);
+
+has 'rfactor'	      => (is => 'rw', isa => 'Num', default => 0);
+has 'chisqr'	      => (is => 'rw', isa => 'Num', default => 0);
+has 'chinu'	      => (is => 'rw', isa => 'Num', default => 0);
+
 has 'lineshapes'   => (
 		       traits    => ['Array'],
 		       is        => 'rw',
@@ -99,7 +107,26 @@ has 'tempfiles' => (
 				 }
 		   );
 
-enum 'PeakFitBackends' => ['ifeffit', 'fityk'];
+
+has 'doing_seq' => (is => 'rw', isa => 'Bool', default => 0);
+has 'include_caller' => (is => 'rw', isa => 'Bool', default => 1);
+has 'seq_count' => (is => 'rw', isa => 'Int',  default => 0);
+has 'seq_results'=> (
+		     traits    => ['Array'],
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     handles   => {
+				   'push_seq_results'    => 'push',
+				   'pop_seq_results'     => 'pop',
+				   'shift_seq_results'   => 'shift',
+				   'unshift_seq_results' => 'unshift',
+				   'clear_seq_results'   => 'clear',
+				  },
+		    );
+
+
+enum 'PeakFitBackends' => ['ifeffit', 'larch', 'fityk'];
 coerce 'PeakFitBackends',
   from 'Str',
   via { lc($_) };
@@ -111,12 +138,17 @@ has backend => (is => 'rw', isa => 'PeakFitBackends', coerce => 1, alias => 'md'
 			       };
 			       if ($new eq 'ifeffit') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Ifeffit')};
-				 print $@;
+				 #print $@;
 				 $@ and die("PeakFit backend Demeter::PeakFit::Ifeffit could not be loaded");
+				 $self->initialize;
+			       } elsif ($new eq 'larch') {
+				 eval {apply_all_roles($self, 'Demeter::PeakFit::Larch')};
+				 #print $@;
+				 $@ and die("PeakFit backend Demeter::PeakFit::Larch does not exist");
 				 $self->initialize;
 			       } elsif ($new eq 'fityk') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Fityk')};
-				 print $@;
+				 #print $@;
 				 $@ and die("PeakFit backend Demeter::PeakFit::Fityk does not exist");
 				 $self->initialize;
 			       } else {
@@ -156,15 +188,15 @@ sub add {
   croak("$function is not a valid lineshape") if not $self->valid($function);
 
   my %args = @args;
-  $args{a0} ||= $args{height} || $args{yint}  || 0.3;
-  $args{a1} ||= $args{center} || $args{slope} || 0;
-  $args{a2} ||= $args{hwhm}   || $args{sigma} || $args{width} || $self->defwidth;
-  $args{a3} ||= $args{eta}    || 0;
-  $args{a4} ||= 0;
-  $args{a5} ||= 0;
-  $args{a6} ||= 0;
-  $args{a7} ||= 0;
-  $args{a8} ||= 0;
+  $args{a0}   ||= $args{height} || $args{yint}  || 0.3;
+  $args{a1}   ||= $args{center} || $args{slope} || 0;
+  $args{a2}   ||= $args{hwhm}   || $args{sigma} || $args{width} || $self->defwidth;
+  $args{a3}   ||= $args{eta}    || 0;
+  $args{a4}   ||= 0;
+  $args{a5}   ||= 0;
+  $args{a6}   ||= 0;
+  $args{a7}   ||= 0;
+  $args{a8}   ||= 0;
   $args{fix0} ||= $args{fixheight} || $args{fixyint}  || 0;
   $args{fix1} ||= $args{fixcenter} || $args{fixslope} || 0;
   $args{fix2} ||= $args{fixhwhm}   || $args{fixsigma} || $args{fixwidth} || 0;
@@ -203,13 +235,26 @@ sub add {
   return $this;
 };
 
+sub compute_ninfo {
+  my ($self) = @_;
+  my $ni = 0;
+  ## for XANES divide the data range by the core-hole lifetime
+  $ni =($self->xmax - $self->xmin) / Xray::Absorption->get_gamma($self->data->bkg_z, $self->data->fft_edge);
+  $self->ninfo(sprintf("%.3f",$ni));
+  return $ni;
+};
+
 
 sub fit {
   my ($self, $nofit) = @_;
   $nofit ||= 0;
-  $self->start_spinner("Demeter is performing a peak fit") if ($self->mo->ui eq 'screen');
+  $self->start_spinner("Demeter is performing a peak fit")
+    if (($self->mo->ui eq 'screen') and not $self->doing_seq and not $nofit);
 
+  $self->data->_update('fft');
   ## this does the right stuff for XES/Data
+  $self->compute_ninfo;# if not $self->ninfo;
+  #my @save = $self->get(qw(xmin xmax));
   my ($emin, $emax) = $self->data->prep_peakfit($self->xmin, $self->xmax);
   $self->xmin($emin);
   $self->xmax($emax);
@@ -254,9 +299,186 @@ sub fit {
   $self->post_fit(\@all);
 
   $self->fetch_statistics;
+  #$self -> xmin($save[0]);
+  #$self -> xmax($save[1]);
 
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  $self->stop_spinner
+    if (($self->mo->ui eq 'screen') and not $self->doing_seq and not $nofit);
   return $self;
+};
+
+
+sub sequence {
+  my ($self, @groups) = @_;
+  my $first = $self->data;
+  my @data = ($self->include_caller) ? uniq($first, @groups) : uniq(@groups);
+  my $nfits = $#data+1;
+
+  $self->doing_seq(1);
+  $self->start_counter("Performing a sequence of Peak fits", $nfits) if ($self->mo->ui eq 'screen');
+  my @results = ();
+  my $count = 1;
+  my @save = $self->get(qw(xmin xmax));
+
+  foreach my $d (@data) {
+    $self->seq_count($count);
+    $self->count if ($self->mo->ui eq 'screen');
+    $self->call_sentinal;
+    $self->xmin($save[0]);
+    $self->xmax($save[1]);
+    $self->data($d);
+
+    $self->fit;
+    $self->plot if $self->co->default('peakfit', 'plot_during');
+
+    my %fit = (
+	       Rfactor => $self->rfactor,
+	       Chinu   => $self->chinu,
+	       Chisqr  => $self->chisqr,
+	       Nparam  => $self->nparam,
+	       Ninfo   => $self->ninfo,
+	       Ndata   => $self->ndata,
+	       Data    => $d->group,
+	       Xmin    => $save[0],
+	       Xmax    => $save[1],
+	      );
+    foreach my $ls (@{$self->lineshapes}) { # use of capitalized keys above avoid key collision
+      $fit{$ls->group} = [$ls->get(qw(function name a0 e0 fix0 a1 e1 fix1 a2 e2 fix2 a3 e3 fix3))];
+    };
+    ##Demeter->Dump(\%fit);
+    push @results, \%fit;
+    ++$count;
+  };
+
+
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->data($first);
+  my $which = "lcf_prep";
+  $self->dispense("analysis", 'peak_prep');
+  $self->set(doing_seq=>0, seq_results=>\@results);
+  $self->restore($results[1]);
+  ##Demeter->Dump($self->seq_results);
+  $self->plot_fit if $self->co->default('lcf', 'plot_during');
+  return $self;
+};
+
+
+
+
+sub restore {
+  my ($self, $rhash) = @_;
+  $self->rfactor($rhash->{Rfactor});
+  $self->chinu($rhash->{Chinu});
+  $self->chisqr($rhash->{Chisqr});
+  $self->nparam($rhash->{Nparam});
+  $self->ninfo($rhash->{Ninfo});
+  $self->ndata($rhash->{Ndata});
+  $self->xmin($rhash->{Xmin});
+  $self->xmax($rhash->{Xmax});
+  $self->data(Demeter->mo->fetch("Data", $rhash->{Data}));
+  my @data_x = $self->fetch_data_x;
+  foreach my $ls (@{$self->lineshapes}) { # use of capitalized keys above avoid key collision
+    my $gp = $ls->group;
+    #local $|=1;
+    #Demeter->Dump($rhash->{$gp});
+    $ls->a0  ($rhash->{$gp}->[2]);
+    $ls->e0  ($rhash->{$gp}->[3]);
+    $ls->fix0($rhash->{$gp}->[4]);
+    $ls->a1  ($rhash->{$gp}->[5]);
+    $ls->e1  ($rhash->{$gp}->[6]);
+    $ls->fix1($rhash->{$gp}->[7]);
+    $ls->a2  ($rhash->{$gp}->[8]);
+    $ls->e2  ($rhash->{$gp}->[9]);
+    $ls->fix2($rhash->{$gp}->[10]);
+    $ls->a3  ($rhash->{$gp}->[11]);
+    $ls->e3  ($rhash->{$gp}->[12]);
+    $ls->fix3($rhash->{$gp}->[13]);
+  };
+  $self->fit(1);
+};
+
+
+sub report_excel {
+  my ($self, $fname) = @_;
+  my @stats  = qw(rfactor chinu chisqr ndata nparam ninfo);
+  my @names  = map {$_->name} @{$self->lineshapes};
+
+  my $workbook;
+  {
+    ## The evals in Spreadsheet::WriteExcel::Workbook::_get_checksum_method
+    ## will set the eval error variable ($@) if any of Digest::XXX
+    ## (XXX = MD4 | PERL::MD4 | MD5) are not installed on the machine.
+    ## This is not a problem -- crypto is not needed in the exported
+    ## Excel file.  However, setting $@ will post a warning given that
+    ## $SIG{__DIE__} is defined to use Wx::Perl::Carp.  So I need to
+    ## locally undefine $SIG{__DIE__} to avoid having a completely
+    ## pointless error message posted to the screen when the S::WE
+    ## object is instantiated
+    local $SIG{__DIE__} = undef;
+    $workbook = Spreadsheet::WriteExcel->new($fname);
+  };
+  my $worksheet = $workbook->add_worksheet();
+
+  my $head = $workbook->add_format();
+  $head -> set_bold;
+  $head -> set_bg_color('grey');
+  $head -> set_align('left');
+  my $group = $workbook->add_format();
+  $group -> set_bold;
+  $group -> set_bg_color('grey');
+  $group -> set_align('left');
+
+
+  my $col = 0;
+  $worksheet->write(1, $col++, 'Data', $head);
+  foreach my $s (@stats) {
+    $worksheet->write(1, $col++, $s, $head);
+  };
+  my $k = 0;
+  foreach my $n (@{$self->lineshapes}) {
+    $worksheet->write(1, $col,   'function', $head);
+    $worksheet->write(1, $col+1, 'height',   $head);
+    $worksheet->write(1, $col+2, 'error',    $head);
+    $worksheet->write(1, $col+3, 'centroid', $head);
+    $worksheet->write(1, $col+4, 'error',    $head);
+    $worksheet->write(1, $col+5, 'width',    $head);
+    $worksheet->write(1, $col+6, 'error',    $head);
+    if ($n->nparams == 4) {
+      $worksheet->merge_range(0,  $col, 0, $col+8, $n->name, $group);
+      $worksheet->write(1, $col+7, 'gamma',    $head);
+      $worksheet->write(1, $col+8, 'error',    $head);
+      $col+=9;
+    } else {
+      $worksheet->merge_range(0,  $col, 0, $col+6, $n->name, $group);
+      $col+=7;
+    };
+    ++$k;
+  };
+
+  my $row = 2;
+  $col = 0;
+  foreach my $res (@{$self->seq_results}) {
+    $worksheet->write($row, $col++, $self->mo->fetch('Data', $res->{Data})->name);
+    foreach my $s (@stats) {
+      $worksheet->write($row, $col++, $res->{ucfirst($s)});
+    };
+    foreach my $n (@{$self->lineshapes}) {
+      $worksheet->write($row, $col++, $res->{$n->group}->[0]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[2]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[3]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[5]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[6]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[8]);
+      $worksheet->write($row, $col++, $res->{$n->group}->[9]);
+      if ($n->nparams == 4) {
+	$worksheet->write($row, $col++, $res->{$n->group}->[11]);
+	$worksheet->write($row, $col++, $res->{$n->group}->[12]);
+      };
+    };
+    ++$row;
+    $col=0;
+  };
+  $workbook->close;
 };
 
 
@@ -274,7 +496,7 @@ sub plot {
 
   $self->po->start_plot;
   $self->data->plot('E');
-  $self->chart('plot', 'overpeak');
+  $self->chart('plot', 'overpeak', {suffix=>'func', thiskey=>$self->name});
   $self->po->increment;
   if ($self->plot_residual) {
     ## prep the residual plot
@@ -285,7 +507,7 @@ sub plot {
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
-    $self->chart('plot', 'overpeak');
+    $self->chart('plot', 'overpeak', {suffix=>'resid', thiskey=>'residual'});
 
     ## restore values and increment the plot
     $self->yaxis($save);
@@ -295,7 +517,11 @@ sub plot {
   };
   if ($self->plot_components) {
     foreach my $ls (@{$self->lineshapes}) {
-      $ls->chart('plot', 'overpeak');
+      if (Demeter->mo->template_analysis eq 'larch') {
+	$self->chart('plot', 'overpeak', {suffix=>$ls->group, thiskey=>$ls->name});
+      } else {
+	$ls->chart('plot', 'overpeak', {suffix=>'func', thiskey=>$ls->name});
+      };
       $self->po->increment;
     };
   };
@@ -305,9 +531,7 @@ sub plot {
 
 sub report {
   my ($self) = @_;
-  my $string = "Fit to " . $self->data->name . "\n";
-  $string .= sprintf("   using %d data points with %d lineshapes and %d variables\n\n",
-		     $self->ndata, $#{$self->lineshapes}+1, $self->nparam);
+  my $string = $self->template("analysis", "peak_report");
   foreach my $ls (@{$self->lineshapes}) {
     $string .= $ls->report;
   };
@@ -317,14 +541,16 @@ sub report {
 
 sub clean {
   my ($self) = @_;
-  if (@{$self->linegroups}) {    # clean up from previous fit
-    $self->cleanup($self->linegroups);
-    $self->clear_linegroups;
-  };
+  # if (@{$self->linegroups}) {    # clean up from previous fit
+  #   $self->cleanup($self->linegroups);
+  #   $self->clear_linegroups;
+  # };
+  $self->cleanup($self->linegroups);
   foreach my $ls (@{$self->lineshapes}) {
     $ls->DEMOLISH;
   };
   $self->clear_lineshapes;
+  $self->clear_linegroups;
   return $self;
 };
 
@@ -349,7 +575,7 @@ Demeter::PeakFit - A peak fitting object for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -481,7 +707,7 @@ After the fit finishes, the statistics of the fit will be accumulated
 from the fitting engine and stored in this and all the LineShape
 objects.
 
-=item C<engine_objectt>
+=item C<engine_object>
 
 This returns the object for interacting with the fitting engine (if
 there is one).  This is used extensively by

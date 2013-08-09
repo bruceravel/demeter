@@ -23,6 +23,7 @@ use MooseX::Aliases;
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
+use Chemistry::Elements qw(get_symbol);
 use File::Copy;
 use File::Spec;
 use String::Random qw(random_string);
@@ -79,6 +80,14 @@ override alldone => sub {
   $self->vpath ->DEMOLISH if (ref($self->vpath)  =~ m{Demeter});
   $self->remove;
   return $self;
+};
+
+sub scatterer {
+  my ($self) = @_;
+  my $feff = $self->parent;
+  return $self if not $feff;
+  my @ipots = @{ $feff->potentials };
+  return get_symbol($ipots[$self->ipot1]->[1]);
 };
 
 override make_name => sub {
@@ -253,7 +262,7 @@ Demeter::ThreeBody - Multiple scattering from an arbitrary three-body configurat
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

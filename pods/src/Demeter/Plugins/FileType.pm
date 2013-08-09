@@ -22,7 +22,7 @@ has 'file'        => (is => 'rw', isa => 'Str',     default => q{},
 				  });
 has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
 has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
+has 'fixed'       => (is => 'rw', isa => 'Str|ArrayRef', default => q{});
 
 #has 'inifile'     => (is => 'rw', isa => 'Str',  default => q{});
 has 'conffile'    => (is => 'rw', isa => 'Str',  default => q{});
@@ -32,7 +32,7 @@ has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
 has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
 
-enum 'OutputTypes' => ['data', 'project'];
+enum 'OutputTypes' => ['data', 'list', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
 has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});
 
@@ -65,7 +65,7 @@ Demeter::Plugins::FileType - base class for file type plugins
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -130,10 +130,10 @@ methods of those roles.
 
 =head2 Plugins shipped with Demeter
 
-The following plugins come with Demeter.  Please note that these were
-written using example data files that Bruce had available to him.  He
-has not himself used all of these beamlines.  Your mileage may vary
-with your own data.
+The following plugins come with Demeter.  This is not a complete list
+of plugins.  Please note that these were written using example data
+files that Bruce had available to him.  He has not himself used all of
+these beamlines.  Your mileage may vary with your own data.
 
 =over 4
 
@@ -261,6 +261,11 @@ following:
   has '+is_binary' => (default => 1);
   has '+description' => (default => "Read binary files from NSLS beamline X15B.");
 
+The final two executable lines of the plugin must be the following:
+
+  __PACKAGE__->meta->make_immutable;
+  1;
+
 This will set up the plugin as a class derived from the
 L<Demeter::Plugins::FileType> base class and set the correct values
 for the C<is_binary> and C<description> attributes.  This boilerplate
@@ -319,22 +324,28 @@ never need to set this directly.
 
 =item C<fixed>
 
-This contains the fully resolved file name of the converted file.
-The converted file typically sits in Demeter's stash folder.
+This contains the fully resolved file name of the converted file.  The
+converted file typically sits in Demeter's stash folder.  For a
+list-returning plugin, this contains a reference to an array of fully
+resolved filenames, those files being the items extracted from the
+original file.
 
 =item C<output>
 
-This string is either "data" or "project" to indicate what kind of
-file is written to the stash area by the plugin.  Most plugins filter
-an input data file into a stash file that Ifeffit can read.  A plugin
-can also make an Athena project file, in which case this attribute
-tells Demeter to interpret it that way.
+This string is either "data", "list" or "project" to indicate what
+kind of file is written to the stash area by the plugin.  Most plugins
+filter an input data file into a stash file that Ifeffit can read.  A
+plugin can also return a reference to a list of files.  The plugin may
+or may not do some processing of each individual file in the list.
+You will need to process each returned file correctly.  A plugin can
+also make an Athena project file, in which case this attribute tells
+Demeter to interpret it that way.
 
 =item C<conffile>
 
 If the plugin requires configuration parameters, these can be
 specified in an demeter-style configuration file whise name is given
-by this attribute.  The default is an emty string, which indicates
+by this attribute.  The default is an empty string, which indicates
 that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.
@@ -358,10 +369,10 @@ the column selection attributes.
   my $mode = 'fluorescence';  # or 'transmission'
   my $data = Demeter::Data->new($plugin->data_attributes($mode));
 
-The Data's file attribute will be set to the name of the stash file,
-the C<source> attribute will be set to the raw data file, and the
-C<energy>, C<numerator>, C<denominator>, and C<ln> attributes will be
-set as suggested by the plugin.
+The Data's C<file> attribute will be set to the name of the stash
+file, the C<source> attribute will be set to the raw data file, and
+the C<energy>, C<numerator>, C<denominator>, and C<ln> attributes will
+be set as suggested by the plugin.
 
 =back
 
@@ -444,6 +455,14 @@ If the proper columns are not predictable, then this method should
 return an empty array.
 
 The return value should be an array and not an array reference.
+
+=item C<clean>
+
+A list-returning plugin, i.e. one which returns a reference to an
+array from the C<fix> method, must provide a C<clean> method.  This
+method, when invoked, will remove from disk the files listed in the
+return value of the C<fix> method.  Plugins which return a single file
+or an Athena project file need not provide this method.
 
 =back
 

@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Demeter To Do List (also Athena and Artemis)</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-01-11 19:52:33 EST"/>
+<meta name="generated" content="2013-08-09 09:11:32 EDT"/>
 <meta name="author" content="Bruce Ravel"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -77,53 +77,140 @@ lang="en" xml:lang="en">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1 things that need doing </a>
+<li><a href="#sec-1">1 larch chores </a>
 <ul>
-<li><a href="#sec-1.1">1.1 Moose issues </a></li>
-<li><a href="#sec-1.2">1.2 wx issues </a></li>
-<li><a href="#sec-1.3">1.3 installation issues [1/2] </a></li>
-<li><a href="#sec-1.4">1.4 Demeter bugs, shortcomings, missing features  [1/19] [5%] </a></li>
-<li><a href="#sec-1.5">1.5 Athena </a></li>
-<li><a href="#sec-1.6">1.6 raw data and plugins </a></li>
-<li><a href="#sec-1.7">1.7 Windows issues [7/14] [50%] </a></li>
-<li><a href="#sec-1.8">1.8 Artemis </a></li>
-<li><a href="#sec-1.9">1.9 Hephaestus </a></li>
-<li><a href="#sec-1.10">1.10 Other object types [0/3] </a></li>
+<li><a href="#sec-1.1">1.1 Larch v. Ifeffit problem areas </a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2 Atoms and Feff </a>
+<li><a href="#sec-2">2 things that need doing </a>
 <ul>
-<li><a href="#sec-2.1">2.1 CIF [0/3] [0%] </a></li>
-<li><a href="#sec-2.2">2.2 Atoms [3/6] [50%] </a></li>
-<li><a href="#sec-2.3">2.3 Feff </a></li>
+<li><a href="#sec-2.1">2.1 Moose issues </a></li>
+<li><a href="#sec-2.2">2.2 wx issues </a></li>
+<li><a href="#sec-2.3">2.3 installation issues [2/2] </a></li>
+<li><a href="#sec-2.4">2.4 Demeter bugs, shortcomings, missing features  [3/20] [15%] </a></li>
+<li><a href="#sec-2.5">2.5 Athena </a></li>
+<li><a href="#sec-2.6">2.6 raw data and plugins </a></li>
+<li><a href="#sec-2.7">2.7 Windows issues [3/9] [33%] </a></li>
+<li><a href="#sec-2.8">2.8 Artemis </a></li>
+<li><a href="#sec-2.9">2.9 Hephaestus </a></li>
+<li><a href="#sec-2.10">2.10 Other object types [0/3] </a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 Ifeffit </a></li>
-<li><a href="#sec-4">4 Weird stuff I'd prefer not to implement unless demanded </a></li>
+<li><a href="#sec-3">3 Atoms and Feff </a>
+<ul>
+<li><a href="#sec-3.1">3.1 CIF [0/3] [0%] </a></li>
+<li><a href="#sec-3.2">3.2 Atoms [3/8] [37%] </a></li>
+<li><a href="#sec-3.3">3.3 Feff </a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Ifeffit </a></li>
+<li><a href="#sec-5">5 Weird stuff I'd prefer not to implement unless demanded </a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> things that need doing </h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> larch chores </h2>
 <div class="outline-text-2" id="text-1">
 
 
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> start work on Artemis-related templates
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> kaiser vs. kaiser-bessel
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> command line in command buffer in A&amp;A
+
+</li>
+</ul>
 
 </div>
 
 <div id="outline-container-1.1" class="outline-3">
-<h3 id="sec-1.1"><span class="section-number-3">1.1</span> Moose issues </h3>
+<h3 id="sec-1.1"><span class="section-number-3">1.1</span> Larch v. Ifeffit problem areas </h3>
 <div class="outline-text-3" id="text-1.1">
 
 
+<ul>
+<li>
+Xray/Absorption/CL.pm &ndash; this needs to be refactored
+</li>
+<li>
+t/ tests need to be tested with Larch
+</li>
+<li>
+in particular, need a t/001<sub>larch</sub>.t test (with an appropriate SKIP in case of no server)
+</li>
+<li>
+"nergy": XDAC vs. Ifeffit.  Larch will see "energy".
+<ul>
+<li>
+Perhaps a larch or ifeffit configuration attribute
+</li>
+<li>
+ack-ing for '\bnergy\b' yields:
+<pre class="example">
+examples/recipes/MultiChannel/mc2prj
+54:  #my @energy    = $mc-&gt;get_array('nergy');
+
+lib/Demeter/Plugins/10BMMultiChannel.pm
+53:    my @energy = $mc-&gt;get_array('nergy');
+
+lib/Demeter/Plugins/X23A2MED.pm
+324:becomes "nergy".  Go figure.
+
+lib/Demeter/Plugins/x23a2med.demeter_conf
+10:default=nergy
+</pre>
+
+</li>
+</ul>
+</li>
+<li>
+Need to add Larch copyright statement throughout
+<pre class="example">
+##             Larch is copyright (c) 2013 Matt Newville, Tom Trainer
+##                                 http://xraypy.github.io/xraylarch/
+</pre>
+
+
+
+</li>
+</ul>
+</div>
 </div>
 
 </div>
 
-<div id="outline-container-1.2" class="outline-3">
-<h3 id="sec-1.2"><span class="section-number-3">1.2</span> wx issues </h3>
-<div class="outline-text-3" id="text-1.2">
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> things that need doing </h2>
+<div class="outline-text-2" id="text-2">
+
+
+
+</div>
+
+<div id="outline-container-2.1" class="outline-3">
+<h3 id="sec-2.1"><span class="section-number-3">2.1</span> Moose issues </h3>
+<div class="outline-text-3" id="text-2.1">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2.2" class="outline-3">
+<h3 id="sec-2.2"><span class="section-number-3">2.2</span> wx issues </h3>
+<div class="outline-text-3" id="text-2.2">
 
 <ul>
 <li>
@@ -138,9 +225,9 @@ Turns out this is a gtk problem &ndash; I can make the same thing happen with Fi
 
 </div>
 
-<div id="outline-container-1.3" class="outline-3">
-<h3 id="sec-1.3"><span class="section-number-3">1.3</span> installation issues [1/2] </h3>
-<div class="outline-text-3" id="text-1.3">
+<div id="outline-container-2.3" class="outline-3">
+<h3 id="sec-2.3"><span class="section-number-3">2.3</span> installation issues [2/2] </h3>
+<div class="outline-text-3" id="text-2.3">
 
 <ul>
 <li>
@@ -148,7 +235,7 @@ Turns out this is a gtk problem &ndash; I can make the same thing happen with Fi
 the executables can all be found,
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> also need to be able to find all of Ifeffit CL and CAPS files.
+<b>[X]</b> also need to be able to find all of Ifeffit CL and CAPS files.
 
 </li>
 </ul>
@@ -156,9 +243,9 @@ the executables can all be found,
 
 </div>
 
-<div id="outline-container-1.4" class="outline-3">
-<h3 id="sec-1.4"><span class="section-number-3">1.4</span> Demeter bugs, shortcomings, missing features  [1/19] [5%] </h3>
-<div class="outline-text-3" id="text-1.4">
+<div id="outline-container-2.4" class="outline-3">
+<h3 id="sec-2.4"><span class="section-number-3">2.4</span> Demeter bugs, shortcomings, missing features  [3/20] [15%] </h3>
+<div class="outline-text-3" id="text-2.4">
 
 <ul>
 <li>
@@ -172,9 +259,6 @@ the executables can all be found,
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> add a record to an existing Athena project file
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> set E0 to peak of white line
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> clnorm + Julia and Jingen's MBACK replacement
@@ -204,10 +288,6 @@ the executables can all be found,
 <b>[<span style="visibility:hidden;">X</span>]</b> MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> need to disable indicators during the Rk plot.  Indicators (as
-implemented) are not consistent with multiplot
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Feff8 integration
 </li>
 <li>
@@ -215,6 +295,15 @@ implemented) are not consistent with multiplot
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> background groups for AXAFS
+</li>
+<li>
+<b>[X]</b> set E0 to peak of white line
+</li>
+<li>
+<b>[X]</b> need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
 </li>
 <li>
 <b>[X]</b> Plucking from gnuplot really sucks
@@ -227,16 +316,16 @@ implemented) are not consistent with multiplot
 
 </div>
 
-<div id="outline-container-1.5" class="outline-3">
-<h3 id="sec-1.5"><span class="section-number-3">1.5</span> Athena </h3>
-<div class="outline-text-3" id="text-1.5">
+<div id="outline-container-2.5" class="outline-3">
+<h3 id="sec-2.5"><span class="section-number-3">2.5</span> Athena </h3>
+<div class="outline-text-3" id="text-2.5">
 
 
 <ul>
-<li id="sec-1.5.1">needs testing [/] <br/>
+<li id="sec-2.5.1">needs testing [/] <br/>
 
 </li>
-<li id="sec-1.5.2">Tools [19/25] [76%] <br/>
+<li id="sec-2.5.2">Tools [22/25] [88%] <br/>
 <ol>
 <li>
 <b>[X]</b> main
@@ -251,7 +340,7 @@ implemented) are not consistent with multiplot
 <b>[X]</b> deglitch
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a>; +smooth with boxcar average <a href="http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333">See this</a>+
+<b>[X]</b> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a>; +smooth with boxcar average <a href="http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333">See this</a>+
 </li>
 <li>
 <b>[X]</b> truncate
@@ -272,14 +361,14 @@ implemented) are not consistent with multiplot
 <b>[X]</b> copy series
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> data summation
+<b>[X]</b> data summation
 
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> dispersive
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> multi-electron removal
+<b>[X]</b> multi-electron removal
 
 </li>
 <li>
@@ -319,10 +408,10 @@ implemented) are not consistent with multiplot
 </li>
 </ol>
 <ul>
-<li id="sec-1.5.2.1">Requires PDL <br/>
+<li id="sec-2.5.2.1">Requires PDL <br/>
 <ol>
 <li>
-smoothing by S-G
+smoothing by S-G (done with Larch)
 </li>
 <li>
 deconvolution
@@ -331,14 +420,14 @@ deconvolution
 <del>PCA</del>
 </li>
 <li>
-boxcar average
+<del>boxcar average</del>
 
 </li>
 </ol>
 </li>
 </ul>
 </li>
-<li id="sec-1.5.3">needs doing [2/14] [14%] <br/>
+<li id="sec-2.5.3">needs doing [2/14] [14%] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> beter error handling in plugins &ndash; specifically need to do a
@@ -346,13 +435,13 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 <code>fix</code> should always be called within an <code>eval</code>?
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> report to a text dialog on values of a particular parameter for all/marked groups
+<b>[X]</b> report to a text dialog on values of a particular parameter for all/marked groups
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> implement megamerge
+<b>[<span style="visibility:hidden;">X</span>]</b> implement megamerge in Athena
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> links to documentation on each tool
+<b>[X]</b> links to documentation on each tool
 </li>
 <li>
 [-] <b>Main window</b> [2/3] [66%]
@@ -402,17 +491,17 @@ mail from Scott 7 January 2012)
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>PCA tool</b> [0/10]
+[-] <b>PCA tool</b> [2/10]
 <ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> persistance
+</li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> manual entry of component coefficients (??)
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> cluster analysis, select two components and plot the
 associations of each data with those two in a scatter plot.
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> persistance
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> worry about "def group.tt" line being to long in tt template
@@ -428,13 +517,13 @@ of components, validity of TT, etc
 <b>[<span style="visibility:hidden;">X</span>]</b> specialized file headers for reconstruction and tt save files
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> save eigenvectors to a file
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> pluck buttons for analysis range don't work
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> if the marked groups are changed after performing the PCA
+<b>[X]</b> save eigenvectors to a file
+</li>
+<li>
+<b>[X]</b> if the marked groups are changed after performing the PCA
 but before reconstructing data, the plot will fail with
 and exception.  need to save the list of data that went
 into the PCA and check against that rather than the
@@ -443,45 +532,59 @@ current list of marked groups
 </ul>
 </li>
 <li>
-[-] <b>Peakfit tool</b> [7/18]
+[-] <b>Peakfit tool</b> [7/11]
 <ul>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> implement pseudovoight
+<b>[<span style="visibility:hidden;">X</span>]</b> persistance
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> verify that all centroids are within (or near) fit range
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> verify that fit is sensible (ndata vs nparam)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <del>make group from fitted function</del>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> behavior when changing data
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> pluck fit ranges
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> ndata is full data range rather than fit range with Fityk backend
+<b>[<span style="visibility:hidden;">X</span>]</b> verify that fit is sensible (ndata/ninfo vs nparam)
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> broken using XES
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> explicitly set title of plot
+<b>[<span style="visibility:hidden;">X</span>]</b> explicitly state ninfo and epsilon
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> sequence over marked groups
+<b>[X]</b> implement pseudovoight
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> persistance
+<b>[X]</b> verify that all centroids are within (or near) fit range
+</li>
+<li>
+<b>[X]</b> behavior when changing data
+</li>
+<li>
+<b>[X]</b> pluck fit ranges
+</li>
+<li>
+<b>[X]</b> <del>ndata is full data range rather than fit range with Fityk backend</del> (igoring this)
+</li>
+<li>
+<b>[X]</b> <del>explicitly set title of plot</del> (i can live with this)
+</li>
+<li>
+<b>[X]</b> sequence over marked groups
 </li>
 </ul>
 </li>
 <li>
-<b>Data watcher</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Data watcher</b>
+</li>
+<li>
+[-] <b>MEE tool</b> [1/3]
+<ul>
+<li>
+<b>[X]</b> arctan removal
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> other algorithms from the literature
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> good guesses for parameters
+</li>
+</ul>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> <b>Plot menu</b>
@@ -492,32 +595,19 @@ zoom/unzoom/cursor for pgplot
 </ul>
 </li>
 <li>
-[-] <b>Help menu</b> [1/3]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> demos
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> document
-</li>
-</ul>
-</li>
-<li>
-<b>metadata</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>metadata tool</b>
 
 </li>
 </ul>
-</li>
-<li id="sec-1.5.4"><span class="todo TODO"> TODO</span>  <br/>
 </li>
 </ul>
 </div>
 
 </div>
 
-<div id="outline-container-1.6" class="outline-3">
-<h3 id="sec-1.6"><span class="section-number-3">1.6</span> raw data and plugins </h3>
-<div class="outline-text-3" id="text-1.6">
+<div id="outline-container-2.6" class="outline-3">
+<h3 id="sec-2.6"><span class="section-number-3">2.6</span> raw data and plugins </h3>
+<div class="outline-text-3" id="text-2.6">
 
 <ul>
 <li>
@@ -532,9 +622,9 @@ solicit help from the facility representatives
 
 </div>
 
-<div id="outline-container-1.7" class="outline-3">
-<h3 id="sec-1.7"><span class="section-number-3">1.7</span> Windows issues [7/14] [50%] </h3>
-<div class="outline-text-3" id="text-1.7">
+<div id="outline-container-2.7" class="outline-3">
+<h3 id="sec-2.7"><span class="section-number-3">2.7</span> Windows issues [3/9] [33%] </h3>
+<div class="outline-text-3" id="text-2.7">
 
 <ul>
 <li>
@@ -560,16 +650,6 @@ another aspect of StaticBox that is different on Windows? (see
 link above)
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> relocation of Strawberry leaves Ifeffit unable to find phase
-shift and CL tables (use an ENV variable?)
-</li>
-<li>
-<b>[X]</b> The Strawberry+Demeter package does not coexist at all with
-ActivePerl.  Best solution is to generate ppd for Demeter
-armed with all dependencies.  Would need to compile wrapper
-and somehow get gnuplot on the machine. <b>Solved by explicitly         calling Strawberry in the .bat files</b>
-</li>
-<li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Need to test that paths with (parens|commas|quotes) get
 followed correctly in all situations
 </li>
@@ -577,6 +657,16 @@ followed correctly in all situations
 <b>[<span style="visibility:hidden;">X</span>]</b> Initial initialization of gnuplot and feff executable
 locations in the situation where the package has been moved or
 reinstalled such that and old demeter.ini still exists
+</li>
+<li>
+<b>[X]</b> relocation of Strawberry leaves Ifeffit unable to find phase
+shift and CL tables (use an ENV variable?)
+</li>
+<li>
+<b>[X]</b> The Strawberry+Demeter package does not coexist at all with
+ActivePerl.  Best solution is to generate ppd for Demeter
+armed with all dependencies.  Would need to compile wrapper
+and somehow get gnuplot on the machine. <b>Solved by explicitly         calling Strawberry in the .bat files</b>
 
 
 </li>
@@ -585,12 +675,12 @@ reinstalled such that and old demeter.ini still exists
 
 </div>
 
-<div id="outline-container-1.8" class="outline-3">
-<h3 id="sec-1.8"><span class="section-number-3">1.8</span> Artemis </h3>
-<div class="outline-text-3" id="text-1.8">
+<div id="outline-container-2.8" class="outline-3">
+<h3 id="sec-2.8"><span class="section-number-3">2.8</span> Artemis </h3>
+<div class="outline-text-3" id="text-2.8">
 
 <ul>
-<li id="sec-1.8.1">Artemis bugs and missing features [0/6]  [0%] <br/>
+<li id="sec-2.8.1">Artemis bugs and missing features [0/6]  [0%] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Reorganize lists, move individual items up and down, move
@@ -634,13 +724,13 @@ track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
 </li>
 </ul>
 </li>
-<li id="sec-1.8.1.1">Project [0/4] <br/>
+<li id="sec-2.8.1.1">Project [0/4] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> VPaths to/from project file
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> SSPaths not saved/restored properly
+<b>[<span style="visibility:hidden;">X</span>]</b> SSPaths not saved/restored properly?
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Indicators to/from project file
@@ -652,16 +742,16 @@ they are used in fits in the history
 </li>
 </ul>
 </li>
-<li id="sec-1.8.1.2">Advanced fitting <br/>
+<li id="sec-2.8.1.2">Advanced fitting <br/>
 <ul>
-<li id="sec-1.8.1.2.1">MFC [0/1] <br/>
+<li id="sec-2.8.1.2.1">MFC [0/1] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Balance interstitial energies for MFC fits
 </li>
 </ul>
 </li>
-<li id="sec-1.8.1.2.2">MDS &amp; Fit Sequence [1/3] <br/>
+<li id="sec-2.8.1.2.2">MDS &amp; Fit Sequence [0/3] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Import mutiple data sets from an Athena project file
@@ -670,7 +760,7 @@ they are used in fits in the history
 <b>[<span style="visibility:hidden;">X</span>]</b> feffit.inp import: needs testing; MDS that is not merely MKW
 </li>
 <li>
-[-] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+<b>[<span style="visibility:hidden;">X</span>]</b> Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
 </li>
@@ -680,7 +770,7 @@ they are used in fits in the history
 </li>
 </ul>
 </li>
-<li id="sec-1.8.2">Histograms [12/14] [85%] <br/>
+<li id="sec-2.8.2">Histograms [12/14] [85%] <br/>
 <ul>
 <li>
 <b>[X]</b> Triangle object
@@ -721,9 +811,9 @@ by R and theta
 
 </div>
 
-<div id="outline-container-1.9" class="outline-3">
-<h3 id="sec-1.9"><span class="section-number-3">1.9</span> Hephaestus </h3>
-<div class="outline-text-3" id="text-1.9">
+<div id="outline-container-2.9" class="outline-3">
+<h3 id="sec-2.9"><span class="section-number-3">2.9</span> Hephaestus </h3>
+<div class="outline-text-3" id="text-2.9">
 
 <p>More standards!!
 </p>
@@ -731,9 +821,9 @@ by R and theta
 
 </div>
 
-<div id="outline-container-1.10" class="outline-3">
-<h3 id="sec-1.10"><span class="section-number-3">1.10</span> Other object types [0/3] </h3>
-<div class="outline-text-3" id="text-1.10">
+<div id="outline-container-2.10" class="outline-3">
+<h3 id="sec-2.10"><span class="section-number-3">2.10</span> Other object types [0/3] </h3>
+<div class="outline-text-3" id="text-2.10">
 
 <ul>
 <li>
@@ -780,17 +870,17 @@ This is a single object for the user to interact with which expands into 2 or 3 
 
 </div>
 
-<div id="outline-container-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> Atoms and Feff </h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Atoms and Feff </h2>
+<div class="outline-text-2" id="text-3">
 
 
 
 </div>
 
-<div id="outline-container-2.1" class="outline-3">
-<h3 id="sec-2.1"><span class="section-number-3">2.1</span> CIF [0/3] [0%] </h3>
-<div class="outline-text-3" id="text-2.1">
+<div id="outline-container-3.1" class="outline-3">
+<h3 id="sec-3.1"><span class="section-number-3">3.1</span> CIF [0/3] [0%] </h3>
+<div class="outline-text-3" id="text-3.1">
 
 <ul>
 <li>
@@ -808,9 +898,9 @@ This is a single object for the user to interact with which expands into 2 or 3 
 
 </div>
 
-<div id="outline-container-2.2" class="outline-3">
-<h3 id="sec-2.2"><span class="section-number-3">2.2</span> Atoms [3/6] [50%] </h3>
-<div class="outline-text-3" id="text-2.2">
+<div id="outline-container-3.2" class="outline-3">
+<h3 id="sec-3.2"><span class="section-number-3">3.2</span> Atoms [3/8] [37%] </h3>
+<div class="outline-text-3" id="text-3.2">
 
 <ul>
 <li>
@@ -822,6 +912,12 @@ atoms' sphere and rhomboid in a non-orthogonal group
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> very confusing error message when core is not a tag
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Why does Amam in lepidocrocite get changed to Cmcm ?
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
 </li>
 <li>
 <b>[X]</b> Shell tags in the feff.inp ATOMS list
@@ -862,31 +958,51 @@ atom
 
 </div>
 
-<div id="outline-container-2.3" class="outline-3">
-<h3 id="sec-2.3"><span class="section-number-3">2.3</span> Feff </h3>
-<div class="outline-text-3" id="text-2.3">
+<div id="outline-container-3.3" class="outline-3">
+<h3 id="sec-3.3"><span class="section-number-3">3.3</span> Feff </h3>
+<div class="outline-text-3" id="text-3.3">
 
 
 <ul>
-<li id="sec-2.3.1">To Do <br/>
+<li id="sec-3.3.1">Feff8 is unsupported except as an Atoms output type <br/>
 
-<ul>
+<p>
+<a href="https://github.com/xraypy/feff85exafs">https://github.com/xraypy/feff85exafs</a>
+</p>
+</li>
+<li id="sec-3.3.2">Polarization and ellipticity <br/>
+
+</li>
+<li id="sec-3.3.3">Five and six legged paths <br/>
+<ol>
 <li>
-<del>Need a useful error message in case where potph, for some reason, does not generate the ~phase.bin~ file.  It shoudl also *not* go ahead and do the pathfinder in that case.</del>
-
-</li>
-</ul>
-</li>
-<li id="sec-2.3.2">Feff8 is unsupported except as an Atoms output type <br/>
-
-</li>
-<li id="sec-2.3.3">Five and six legged paths <br/>
 <a href="examples/h12213.cif">This CIF file</a> is an example of a structure that has five and six
 legged nearly collinear scattering paths at around 4 Angstroms.  It
 has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
 instance <a href="http://dx.DOI.org/10.1021/ic50177a008">http://dx.DOI.org/10.1021/ic50177a008</a>)
 
+</li>
+<li>
+Another example: 1-4 dibromo benzene has Br scatterers across a
+benzene ring which can be seen at about 6 Angstroms, along with
+3s, 4s, 5s, and 6s:
+<pre class="example">
+       C-C
+      /   \
+Br - C     C - Br
+      \   /
+       C-C
+</pre>
 
+
+</li>
+<li>
+Metals out to 8 Angstroms require 5s and 6s
+
+
+
+</li>
+</ol>
 </li>
 </ul>
 </div>
@@ -894,9 +1010,9 @@ instance <a href="http://dx.DOI.org/10.1021/ic50177a008">http://dx.DOI.org/10.10
 
 </div>
 
-<div id="outline-container-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> Ifeffit </h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Ifeffit </h2>
+<div class="outline-text-2" id="text-4">
 
 
 <p>
@@ -916,16 +1032,15 @@ to
 
 
 <p>
-Also need to specify locations of CL data and phase shift tables via
-an ENV variable
+<del>Also need to specify locations of CL data and phase shift tables via an ENV variable</del>
 </p>
 </div>
 
 </div>
 
-<div id="outline-container-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Weird stuff I'd prefer not to implement unless demanded </h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Weird stuff I'd prefer not to implement unless demanded </h2>
+<div class="outline-text-2" id="text-5">
 
 <ol>
 <li>
@@ -949,8 +1064,7 @@ tie relative energy value to changes in E0 (this was something
 Jeremy requested originally)
 </li>
 <li>
-set e0 by algorithm for all and marked &ndash; also confusing and
-little used
+<del>set e0 by algorithm for all and marked &ndash; also confusing and little used</del> (implemented)
 </li>
 <li>
 <del>plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)</del>
@@ -968,7 +1082,7 @@ worth implementing)
 <p class="author"> Author: Bruce Ravel
 <a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
 </p>
-<p class="date"> Date: 2013-01-11 19:52:33 EST</p>
+<p class="date"> Date: 2013-08-09 09:11:32 EDT</p>
 <p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
 </div>
 </div>

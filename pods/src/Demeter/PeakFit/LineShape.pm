@@ -33,7 +33,9 @@ has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 has 'function' => (is => 'rw', isa => Lineshape, default => q{},
 		   trigger => sub{ my ($self, $new) = @_;
 				   $self->np($self->nparams);
-				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
+				   $self->fix2(1) if lc($new) =~ m{linear};
+				   $self->fix3(1) if lc($new) =~ m{atan|erf|gaussian|lorentzian|lognormal|students_t};
+				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|logistic|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
 				 });
 has 'peaked'   => (is => 'rw', isa => 'Bool', default => 1, alias => 'is_peak');
 has 'np'       => (is => 'rw', isa => 'Int',  default => 0);
@@ -44,10 +46,10 @@ has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{flat});
 has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
 has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(height yint) ]);
+has 'a0'       => (is => 'rw', isa => 'Num',  default => 1, alias => [ qw(height yint) ]);
 has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(center slope) ]);
-has 'a2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'hwhm');
-has 'a3'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eta');
+has 'a2'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'hwhm');
+has 'a3'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'eta');
 has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a6'       => (is => 'rw', isa => 'Num',  default => 0);
@@ -72,6 +74,21 @@ has 'fix6'     => (is => 'rw', isa => 'Bool', default => 0);
 has 'fix7'     => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'area'     => (is => 'rw', isa => 'Num',  default => 0);
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_LineShape($self);
+  return $self;
+};
+
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  foreach my $att (qw{data parent}) {
+    delete $all{$att};
+  };
+  return %all;
+};
 
 sub nparams {
   my ($self, $function) = @_;
@@ -192,7 +209,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

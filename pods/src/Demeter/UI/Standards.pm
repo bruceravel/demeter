@@ -278,7 +278,6 @@ sub filter_plot {
 	       filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
 	       filter_file     => $po->tempfile,
 	      );
-  #Demeter -> set_mode({screen=>1});
   $po -> start_plot;
   my $command = $demeter->template('plot', 'prep_filter');
   $po -> dispose($command);
@@ -511,7 +510,7 @@ Demeter::UI::Standards - Standard reference material database interaction
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

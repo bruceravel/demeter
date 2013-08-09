@@ -160,7 +160,7 @@ has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
 		   trigger => sub{shift->explain_recordtype},
 		  );
 has  $_  => (is => 'rw', isa => 'Bool',  default => 0, trigger => sub{shift->explain_recordtype},)
-  foreach (qw(is_col is_nor is_kev is_special is_fit));
+  foreach (qw(is_col is_nor is_kev is_pixel is_special is_fit));
 has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
 #foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
 
@@ -231,11 +231,13 @@ has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  alias => 'eshift',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; 
+					  #$self->fetch_delta_eshift;
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
 					  $self->shift_reference if not $self->tying;
 					  $self->tying(0); # prevent deep recursion
 					});
+has 'bkg_delta_eshift'=> (is => 'rw', isa => 'Num',   default => 0, traits => [ qw(Quenchable) ],);
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  traits => [ qw(Quenchable) ],
@@ -613,7 +615,12 @@ sub determine_data_type {
     my $f = (split(" ", $self->fetch_string('column_label')))[0];
     my @x = $self->fetch_array("deter___mine.$f");
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
-    if ($x[0] > 100) {		# seems to be energy data
+    if ($self->is_pixel) {
+      $self->datatype('xmu');
+      $self->is_kev(0);
+      $self->update_columns(0);
+      $self->update_norm(1);
+    } elsif ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
       $self->update_columns(0);
       $self->update_norm(1);
@@ -734,7 +741,7 @@ sub extraneous {
   my ($self) = @_;
   my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
 			post_edge nbkg prex theta line flat nder
-			nsec bkg flat nbkg norm fbkg));
+			nsec bkg flat nbkg norm fbkg k chi));
   my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
   #print $items, $/;
   $self->dispense('process', 'erase', {items=>$items}) if ($items !~ m{\A\s*\z});
@@ -919,9 +926,9 @@ sub rfactor {
       };
     };
   };
-  $self->fit_rfactor1($nn[1]/$dd[1]);
-  $self->fit_rfactor2($nn[2]/$dd[2]);
-  $self->fit_rfactor3($nn[3]/$dd[3]);
+  $self->fit_rfactor1($nn[1]/$dd[1]) if $dd[1]>0;
+  $self->fit_rfactor2($nn[2]/$dd[2]) if $dd[2]>0;
+  $self->fit_rfactor3($nn[3]/$dd[3]) if $dd[3]>0;
   return $self;
 };
 
@@ -1002,7 +1009,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS

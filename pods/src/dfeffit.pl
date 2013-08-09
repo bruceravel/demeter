@@ -66,7 +66,7 @@ my $inp = Demeter::Fit::Feffit->new(file=>$ARGV[0]);
 ## select proper output target
 $inp -> template_set("demeter") if  $perl;
 $inp -> template_set("ifeffit") if ($run or $ifeffit);
-$inp -> set_mode(ifeffit  => 0) if  not $run;
+$inp -> set_mode(backend  => 0) if  not $run;
 
 ## screen or file output
 if (exists $ARGV[1]) {
@@ -97,7 +97,7 @@ dfeffit - Read and use a feffit.inp file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

@@ -132,7 +132,7 @@ sub push_values {
     $this->Enable(0);
   } else {
     #$this->{rebinned} = $data->rebin;
-    $this->plot($data, 'E');
+    $this->plot($data, 'E') if not $::app->{plotting};
   };
 };
 sub mode {
@@ -237,7 +237,7 @@ Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athen
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

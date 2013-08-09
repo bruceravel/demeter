@@ -73,6 +73,7 @@ has 'grabbed'        => (is => 'rw', isa => 'Bool',   default => 0);
 has 'thawed'         => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'logcache'       => (is => 'rw', isa => 'Str',    default => q{});
+has 'keep'           => (is => 'rw', isa => 'Bool',   default => 1);
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});
@@ -84,9 +85,15 @@ has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
-has 'ignore_nidp'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
 has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
+
+## -------- flags for skipping certain sanity checks
+has 'ignore_nidp'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_rbkg'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_rmax'          => (is => 'rw', isa => 'Bool', default => 0);
+has 'ignore_datacollision' => (is => 'rw', isa => 'Bool', default => 0);
+
 
 ## -------- array attributes
 has 'gds' => (
@@ -307,10 +314,10 @@ sub _verify_fit {
   $trouble_found += $self->S_nidp unless $self->ignore_nidp;
 
   ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
-  $trouble_found += $self->S_rmin_rbkg;
+  $trouble_found += $self->S_rmin_rbkg unless $self->ignore_rbkg;
 
   ## 13. verify that Reffs of all paths are within some margin of rmax
-  $trouble_found += $self->S_reff_rmax;
+  $trouble_found += $self->S_reff_rmax unless $self->ignore_rmax;
 
   ## 14. check that Ifeffit's hard wired limits are not exceeded
   $trouble_found += $self->S_exceed_ifeffit_limits;
@@ -318,10 +325,13 @@ sub _verify_fit {
   ## 15. check that parameters do not have program variable names
   $trouble_found += $self->S_program_var_names;
 
+  ## 15.1. check that parameters do not have unallowed characters in their names
+  $trouble_found += $self->S_bad_character;
+
   ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
   $trouble_found += $self->S_path_calculation_exists;
 
-  ## 17. check that there are no unresolved merge parameetrs
+  ## 17. check that there are no unresolved merge parameters
   $trouble_found += $self->S_notice_merge;
 
   ## 18. check that no more than one path is flagged as the default path
@@ -331,7 +341,7 @@ sub _verify_fit {
   $trouble_found += $self->S_cycle_loop;
 
   ## 20. check for obvious cases of a data set used more than once
-  $trouble_found += $self->S_data_collision;
+  $trouble_found += $self->S_data_collision unless $self->ignore_datacollision;
 
   ## 21. check that each data set used in the fit has one or more paths assigned to it
   $trouble_found += $self->S_data_paths;
@@ -823,7 +833,7 @@ sub logtext {
   $footer ||= q{};
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
-  return $self->logcache if $self->logcache;
+  #return $self->logcache if $self->logcache;
   my $text = q{};
   return $text if (not @{ $self->paths });
 
@@ -1164,44 +1174,47 @@ sub grab {			# deserialize lite -- grab the yaml
     #print join("|", $self->name, $d, $self->mo->fetch('Data', $d)), $/;
 
     #print ">>>>>>> $d\n";
-    my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
-      : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
-    my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
-    delete $r_attributes->{fit_pcpath};	   # correct an early
-    delete $r_attributes->{fit_do_pcpath}; # design mistake...
-    ## correct for earlier XDI design
-    foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
-		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
-		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
-		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
-      delete $r_attributes->{$x};
-    };
-    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
-      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
-    };
-    my %hash = %$r_attributes;
-    next if not exists $hash{group};
-    #Demeter->trace;
-    #print '>>>>', $hash{group}, $/;
+    foreach my $which ('', '_standard') {
+      my $yaml = ($args{file}) ? $zip->contents("$d$which.yaml")
+	: $self->slurp(File::Spec->catfile($args{folder}, "$d$which.yaml"));
+      my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+      delete $r_attributes->{fit_pcpath};	   # correct an early
+      delete $r_attributes->{fit_do_pcpath}; # design mistake...
+      ## correct for earlier XDI design
+      foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+			xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+			xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+			xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+	delete $r_attributes->{$x};
+      };
+      if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+	$r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+      };
+      my %hash = %$r_attributes;
+      next if not exists $hash{group};
+      #Demeter->trace;
+      #print '>>>>', $hash{group}, $/;
 
-    my $savecv = $self->mo->datacount;
-    my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
-    delete $hash{group};
-    $this->set(%hash);
-    $this->cv($r_attributes->{cv}||0);
-    $self->mo->datacount($savecv);
-    #$datae{$d} = $this;
-    #$datae{$this->group} = $this;
-    if ($this->datatype eq 'xmu') {
-      $self->place_array($this->group.".energy", $r_x);
-      $self->place_array($this->group.".xmu",    $r_y);
-    } elsif  ($this->datatype eq 'chi') {
-      $self->place_array($this->group.".k",      $r_x);
-      $self->place_array($this->group.".chi",    $r_y);
+      my $savecv = $self->mo->datacount;
+      my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
+      delete $hash{group};
+      $this->set(%hash);
+      if ($which eq '') {
+	$this->cv($r_attributes->{cv}||0);
+	$self->mo->datacount($savecv);
+      };
+      #$datae{$d} = $this;
+      #$datae{$this->group} = $this;
+      if ($this->datatype eq 'xmu') {
+	$self->place_array($this->group.".energy", $r_x);
+	$self->place_array($this->group.".xmu",    $r_y);
+      } elsif  ($this->datatype eq 'chi') {
+	$self->place_array($this->group.".k",      $r_x);
+	$self->place_array($this->group.".chi",    $r_y);
+      };
+      $this -> set(update_data=>0, update_columns=>0);
+      push @data, $this;
     };
-    $this -> set(update_data=>0, update_columns=>0);
-    push @data, $this;
-
   };
   $self->data(\@data);
 
@@ -1282,6 +1295,12 @@ override 'serialize' => sub {
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
     $d -> serialization($datafile);
     $d -> serialize($datafile);
+    if ($d->bkg_stan ne 'None') {
+      my $stan = $d->mo->fetch('Data', $d->bkg_stan);
+      $datafile =  File::Spec->catfile($self->folder, $dd."_standard.yaml");
+      $stan -> serialization($datafile);
+      $stan -> serialize($datafile);
+    };
   };
 
   ## -------- save a yaml containing the paths
@@ -1394,6 +1413,7 @@ override 'deserialize' => sub {
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
+  $self->datagroups($r_data);
 
   ## -------- import the data
   my @data = ();
@@ -1711,7 +1731,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

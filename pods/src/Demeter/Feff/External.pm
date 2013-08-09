@@ -105,7 +105,8 @@ sub read_folder {
   my @feffNNNN = sort {$a cmp $b} grep {$_ =~ m{\Afeff\d{4}\.dat\z}} @files;
   my %hash;
   foreach my $f (@feffNNNN) {	# convert each feffNNNN to a ScatteringPath object
-    my $sp = Demeter::ScatteringPath->new(feff=>$self);
+    my $sp = Demeter::ScatteringPath->new(feff=>$self, pathfinding=>0);
+    $sp->mo->push_ScatteringPath($sp);
     my ($string, $nleg, $degen, $reff) = $self->parse_info_from_nnnn($f);
     $zcwif_of->{$f} ||= 0;	# handle absence of files.dat gracefully
     $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff, zcwif=>$zcwif_of->{$f});
@@ -244,7 +245,7 @@ Demeter::Feff::External - Import and manipulate external Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

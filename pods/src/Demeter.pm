@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.17');
+our $VERSION = version->new('0.9.18');
 use feature "switch";
 
 ############################
@@ -40,18 +40,21 @@ use Carp;
 ##  the main compilation phase; that can be a problem in mod_perl and
 ##  other persistent environments which use those functions to load
 ##  code at runtime."
-INIT {
+BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     eval "use Larch";
   } else {
-    eval "use Ifeffit qw(ifeffit); ifeffit(\"\$plot_device=/gw\n\") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'))";
+    eval "use Ifeffit qw(ifeffit);"
   };
 }
 ############################
 
 #use Ifeffit qw(ifeffit);
 #ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+ ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+};
 
 use Cwd;
 ##use DateTime;
@@ -86,7 +89,7 @@ Xray::Absorption->load('elam');
 
 use Moose;
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
@@ -162,8 +165,7 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists
-	    $dispersive_allowed);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -171,7 +173,6 @@ $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
-$dispersive_allowed = 0;
 ######################################################################
 
 use Demeter::Plot;
@@ -452,6 +453,10 @@ sub identify {
   #if ($full) {};
   return $string;
 };
+sub backends {
+  my ($self) = @_;
+  my $string = sprintf("using %s \& %s", $ENV{DEMETER_BACKEND}, $config->default('plot', 'plotwith'));
+};
 sub version {
   my ($self) = @_;
   return $VERSION
@@ -481,6 +486,13 @@ sub truefalse {
     ? $self->is_true($self->$attribute) # is an attribute t/f?
       : $self->is_true($attribute); # is this word t/f?
   return ($value) ? 'true' : 'false';
+};
+sub TrueFalse {
+  my ($self, $attribute) = @_;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  return ($value) ? 'True' : 'False';
 };
 sub onezero {
   my ($self, $attribute) = @_;
@@ -796,8 +808,8 @@ sub template {
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
 
   ######################################################################
-  ## devflag screen messages
-  if ($devflag) {
+  ## devflag screen messages (but not during unit tests)
+  if (($devflag) and ((caller)[1] !~ m{\.t\z})) {
     my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
     my $caller;
     if ((caller(1))[1] =~ m{Moose|MOP}) {
@@ -814,7 +826,7 @@ sub template {
 	   $file,
 	   ($isthere) ? GREEN : BOLD.RED, Demeter->yesno($isthere).RESET
 	  );
-  }
+  };
   ######################################################################
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
@@ -869,11 +881,14 @@ sub conditional_features {
   $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
   $text .= "File::Monitor::Lite:         " . $self->yesno($FML_exists);
   $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
-  $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
 
 
+Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
+		  template_analysis => $ENV{DEMETER_BACKEND},
+		  template_fit      => $ENV{DEMETER_BACKEND});
+$devflag = 1 if $ENV{DEMETER_DEVFLAG};
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -885,7 +900,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17
+This documentation refers to Demeter version 0.9.18
 
 =head1 SYNOPSIS
 
@@ -1181,7 +1196,7 @@ for complete details.
 This is the method used to set the attributes described in
 L<Demeter::Dispose>.  Any Demeter object can call this method.
 
-   $object -> set_mode(ifeffit => 1,
+   $object -> set_mode(backend => 1,
                        screen  => 1,
                        buffer  => \@buffer_array
                       );

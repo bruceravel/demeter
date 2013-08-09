@@ -385,7 +385,7 @@ sub Truncate {
 
 sub deglitch {
   my ($self, @values) = @_;
-  carp("$self is not mu(E) data\n\n"), return if ($self->datatype ne "xmu");
+  carp("$self is not mu(E) data\n\n"), return if ($self->datatype !~ m{xmu|xanes});
   $self -> _update("normalize");
   my @x = $self->get_array("energy");
   foreach my $v (@values) {
@@ -613,6 +613,51 @@ sub interpolate {
 };
 
 
+sub mee {
+  my ($self, @args) = @_;
+  my %args = @args;
+  $args{width} ||= 0;
+  $args{shift} ||= 0;
+  $args{amp}   ||= 1;
+  $args{how}   ||= 'reflect';	# reflect | arctan
+  $args{amp}   = 0    if $args{amp}   < 0;
+  $args{width} = 0.01 if $args{width} < 0.01;
+  $args{how}   = 'reflect' if $args{how} !~ m{arctan}i;
+  $self->_update('background');
+  if ($args{how} =~ m{reflect}i) {
+    $self->dispense('process', 'mee_reflect', {width=>$args{width}, amp=>$args{amp}, shift=>$args{shift}});
+
+    my @x = $self->fetch_array($self->group.'.energy');
+    my @y = $self->fetch_array('m___ee.xint');
+    my $e1 = $x[0] + $args{shift};
+    my $yoff = 0;
+    foreach my $i (0 .. $#x) {
+      if ($x[$i] < $e1) {
+	## this replaces the extrapolated part of the shifted spectrum
+	## with zeros in the pre-edge
+	$yoff = $y[$i];
+	$y[$i] = 0;
+      } else {
+	## this corrects for the pre-edge not going to the baseline
+	## after the convolution and approximately corrects the edge
+	## step of the convoluted mu(E) data
+	## $y[$i] = ($y[$i] - $yoff);# * (1 + $yoff);
+      };
+    };
+    $self->place_array("m___ee.xint", \@y);
+  } elsif ($args{how} =~ m{arctan}i) {
+    $self->dispense('process', 'mee_arctan',  {width=>$args{width}, shift=>$args{shift}});
+  };
+
+  my $new = $self->clone;
+  $new -> name($new->name . ' (MEE)');
+  $new -> standard;
+  $self->dispense('process', 'mee_do', {amp=>$args{amp}});
+  $new -> unset_standard;
+  return $new;
+};
+
+
 1;
 
 
@@ -622,7 +667,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 

@@ -120,9 +120,10 @@ has 'absorber' => (
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
 		       trigger => sub{ my ($self, $new) = @_; 
-				       return if not exists $self->potentials->[$new];
-				       return if not exists $self->potentials->[$new]->[2];
-				       my $elem = get_symbol($self->potentials->[$new]->[1]) || 'He';
+				       #return if not exists $self->sites->[$new];
+				       #return if not exists $self->sites->[$new]->[3];
+				       return if $#{ $self->potentials } == -1;
+				       my $elem = get_symbol($self->potentials->[0]->[1]) || 'He';
 				       $self->abs_species($elem);
 				     });
 has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1, alias=>'abs_element');
@@ -287,6 +288,14 @@ sub site_tag {
   return $tag;
 };
 
+sub site_species {
+  my ($self, $a) = @_;
+  my @sites  = @{ $self->sites };
+  my @ipots  = @{ $self->potentials };
+  my $i = $sites[$a]->[3];
+  return get_symbol($ipots[$i]->[1]);
+};
+
 sub rdinp {
   my ($self) = @_;
   $self->clear;
@@ -324,7 +333,7 @@ sub rdinp {
 	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
 	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
 	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
-	$self -> push_othercards($thiscard);  ## pass through all other cards
+	$self -> push_othercards($_);  ## pass through all other cards
       };
 
       #print join("|", $thiscard, @line), $/;
@@ -410,7 +419,7 @@ sub _ipot {
   my @entries = (q{}, q{}, q{});
   @entries = split(/$SEPARATOR/, $line);
   shift @entries if ($entries[0] =~ m{^\s*$}); # $
-  #print join("|", @entries[0..2]), $/;
+  ##print ">>>>>>>", join("|", @entries[0..2]), $/;
   $self->push_potentials([@entries[0..2]]);
   return @entries[0..2];
 };
@@ -535,7 +544,8 @@ sub _pathsdat_head {
   $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-  $header .= $prefix . " " . "-" x 79 . "\n";
+  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->co->default('pathfinder', 'postcrit'));
+  $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };
 sub pathsdat {
@@ -649,6 +659,10 @@ sub pathfinder {
   my @list_of_paths = $self->_collapse_heap($heap);
   undef $heap;
   ##$_->details foreach (@list_of_paths);
+  foreach my $sp (@list_of_paths) {
+    $sp->pathfinding(0);
+    $sp->mo->push_ScatteringPath($sp);
+  };
   $self->set(pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1);
   $self->stop_spinner if ((not $self->screen) and ($self->mo->ui eq 'screen'));
   return $self;
@@ -717,7 +731,7 @@ sub _populate_tree {
     $self->click('.') if not ($innercount % $freq);
     $tree->addChild(Tree::Simple->new($ind));
   };
-  if ($self->get('nlegs') == 2) {
+  if ($self->nlegs == 2) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
 			      $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
     return $tree;
@@ -736,14 +750,14 @@ sub _populate_tree {
       $self->click('+') if not ($outercount % ($freq*20));
       next if ($leglength[$cindex][$ind] > $rmax); # prune distant atoms
       next if ($thiskid == $ind); # avoid same atom twice
-      next if (($self->get('nlegs') == 3) and ($ind  == $cindex)); # exclude absorber from this generation
+      next if (($self->nlegs == 3) and ($ind  == $cindex)); # exclude absorber from this generation
       next if (_length($cindex, $thiskid, $ind, $cindex) > $rmax2);	     # prune long paths from the tree
       ++$innercount;
       $self->click('.') if not ($innercount % $freq);
       $k->addChild(Tree::Simple->new($ind));
     };
   };
-  if ($self->get('nlegs') == 3) {
+  if ($self->nlegs == 3) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
 			      $tree->size, $natoms, $rmax));
     return $tree;
@@ -852,13 +866,13 @@ sub _visit {
 
 =cut
 sub _parentage {
-  my ($tree, $this) = @_;
-  if (lc($tree->getParent) eq 'root') {
+  ##my ($tree, $this) = @_;
+  if (lc($_[0]->getParent) eq 'root') {
     return q{};
   } else {
-    return _parentage($tree->getParent, $tree->getNodeValue())
+    return _parentage($_[0]->getParent, $_[0]->getNodeValue())
       . "."
-	. $tree->getNodeValue();
+	. $_[0]->getNodeValue();
   };
 };
 
@@ -897,7 +911,8 @@ sub _collapse_heap {
       if (not $is_different) {
 	my @degen = @{ $p->degeneracies };
 	push @degen, $elem->string;
-	$p->set(n=>$#degen+1, degeneracies=>\@degen);
+	$p->n($#degen+1);
+	$p->degeneracies(\@degen);
 	my $fuzzy = $p->fuzzy + $elem->halflength;
 	$p->fuzzy($fuzzy);
 	$new_path = 0;
@@ -905,7 +920,8 @@ sub _collapse_heap {
       };
     };
     if ($new_path) {
-      $elem->set(fuzzy=>$elem->halflength, degeneracies=>[$elem->string]);
+      $elem->fuzzy($elem->halflength);
+      $elem->degeneracies([$elem->string]);
       push(@list_of_paths, $elem);
     } else {
       $elem->DEMOLISH;
@@ -913,8 +929,7 @@ sub _collapse_heap {
   };
 
   foreach my $sp (@list_of_paths) {
-    my ($fuzzy, $n) = $sp->get(qw(fuzzy n));
-    $sp->fuzzy($fuzzy/$n);
+    $sp->fuzzy($sp->fuzzy/$sp->n);
   };
   my $path_count = $#list_of_paths+1;
   $self->report("\n    (found $path_count unique paths)\n");
@@ -932,7 +947,8 @@ sub intrp_header {
   map {$markup{$_} ||= q{} } qw(comment open close 0 1 2);
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
-  my @lines = split(/\n/, $self->_pathsdat_head('#'));
+  my @miscdat = map {'# '.$_} grep {$_ =~ m{\A\s*(?:Abs|Pot|Gam|Mu)}} split(/\n/, $self->miscdat);
+  my @lines = (split(/\n/, $self->_pathsdat_head('#')), @miscdat, "# " . "-" x 70 . "\n");
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
@@ -1032,7 +1048,10 @@ sub run_feff {
 sub click {
   my ($self, $char) = @_;
   &{$self->execution_wrapper}($char) if ($self->execution_wrapper);
-  print $char if $self->screen;
+  if ($self->screen) {
+    local $|=1;
+    print $char;
+  }
 }
 
 
@@ -1044,7 +1063,10 @@ sub report {
   &{$self->execution_wrapper}($string)  if ($self->execution_wrapper);
   ## screen
   my $which = ($err) ? 'fefferr' : 'feffout';
-  print $self->_ansify($string, $which) if $self->screen;
+  if ($self->screen) {
+    local $|=1;
+    print $self->_ansify($string, $which);
+  };
   ## buffer
   if ($self->buffer) {
     my @list = split("\n", $string);
@@ -1135,7 +1157,8 @@ sub read_yaml {
   ## snarf attributes of each ScatteringPath object
   my @paths;
   foreach my $path (@refs) {
-    my $sp = Demeter::ScatteringPath->new(feff=>$self);
+    my $sp = Demeter::ScatteringPath->new(feff=>$self, pathfinding=>0);
+    $sp->mo->push_ScatteringPath($sp);
     foreach my $key ($sp->savelist) {
       next if not defined $path->{$key};
       $sp -> $key($path->{$key});
@@ -1171,7 +1194,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS

@@ -517,6 +517,19 @@ sub S_program_var_names {
   return $found;
 };
 
+sub S_bad_character {
+  my ($self) = @_;
+  my $found = 0;
+  my @gds = @{ $self->gds };
+  foreach my $g (@gds) {
+    if (lc($g->name) !~ m{\A[a-z_][a-z0-9_]*\z}) {
+      ++$found;
+      $g->add_trouble('badchar');
+    };
+  };
+  return $found;
+};
+
 ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
 sub S_path_calculation_exists {
   my ($self) = @_;
@@ -650,7 +663,7 @@ Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -925,6 +938,12 @@ The math expression for this GDS parameter has unmatched parentheses.
 =item C<progvar>
 
 The name of this GDS parameter is an Ifeffit program variable name.
+
+=item C<badchar>
+
+The name of this GDS parameter contains an unallowed character.
+Allowed characters are letters (a-z), numbers (0-9), and underscore
+(_).  The first character must not be a number.
 
 =item C<merge>
 

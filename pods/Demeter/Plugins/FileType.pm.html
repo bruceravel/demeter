@@ -74,7 +74,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.17.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -133,10 +133,10 @@ methods of those roles.</p>
 
 <h2 id="Plugins_shipped_with_Demeter">Plugins shipped with Demeter</h2>
 
-<p>The following plugins come with Demeter.  Please note that these were
-written using example data files that Bruce had available to him.  He
-has not himself used all of these beamlines.  Your mileage may vary
-with your own data.</p>
+<p>The following plugins come with Demeter.  This is not a complete list
+of plugins.  Please note that these were written using example data
+files that Bruce had available to him.  He has not himself used all of
+these beamlines.  Your mileage may vary with your own data.</p>
 
 <dl>
 	<dt><code>X10C</code></dt>
@@ -238,6 +238,11 @@ following:</p>
   has '+is_binary' =&gt; (default =&gt; 1);
   has '+description' =&gt; (default =&gt; &quot;Read binary files from NSLS beamline X15B.&quot;);
 
+</pre><p>The final two executable lines of the plugin must be the following:</p>
+
+<pre>  __PACKAGE__-&gt;meta-&gt;make_immutable;
+  1;
+
 </pre><p>This will set up the plugin as a class derived from the
 <a href="FileType.pm.html">Demeter::Plugins::FileType</a> base class and set the correct values
 for the <code>is_binary</code> and <code>description</code> attributes.  This boilerplate
@@ -280,18 +285,24 @@ output file.  You should never need to set this directly.</p></dd>
 is set by a trigger when the <code>file</code> attribute is set.  You should
 never need to set this directly.</p></dd>
 	<dt><code>fixed</code></dt>
-		<dd><p>This contains the fully resolved file name of the converted file.
-The converted file typically sits in Demeter's stash folder.</p></dd>
+		<dd><p>This contains the fully resolved file name of the converted file.  The
+converted file typically sits in Demeter's stash folder.  For a
+list-returning plugin, this contains a reference to an array of fully
+resolved filenames, those files being the items extracted from the
+original file.</p></dd>
 	<dt><code>output</code></dt>
-		<dd><p>This string is either &quot;data&quot; or &quot;project&quot; to indicate what kind of
-file is written to the stash area by the plugin.  Most plugins filter
-an input data file into a stash file that Ifeffit can read.  A plugin
-can also make an Athena project file, in which case this attribute
-tells Demeter to interpret it that way.</p></dd>
+		<dd><p>This string is either &quot;data&quot;, &quot;list&quot; or &quot;project&quot; to indicate what
+kind of file is written to the stash area by the plugin.  Most plugins
+filter an input data file into a stash file that Ifeffit can read.  A
+plugin can also return a reference to a list of files.  The plugin may
+or may not do some processing of each individual file in the list.
+You will need to process each returned file correctly.  A plugin can
+also make an Athena project file, in which case this attribute tells
+Demeter to interpret it that way.</p></dd>
 	<dt><code>conffile</code></dt>
 		<dd><p>If the plugin requires configuration parameters, these can be
 specified in an demeter-style configuration file whise name is given
-by this attribute.  The default is an emty string, which indicates
+by this attribute.  The default is an empty string, which indicates
 that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.</p></dd>
@@ -310,10 +321,10 @@ the column selection attributes.</p></dd>
   my $mode = 'fluorescence';  # or 'transmission'
   my $data = Demeter::Data-&gt;new($plugin-&gt;data_attributes($mode));
 
-</pre></dd>		<dd><p>The Data's file attribute will be set to the name of the stash file,
-the <code>source</code> attribute will be set to the raw data file, and the
-<code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes will be
-set as suggested by the plugin.</p></dd>
+</pre></dd>		<dd><p>The Data's <code>file</code> attribute will be set to the name of the stash
+file, the <code>source</code> attribute will be set to the raw data file, and
+the <code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes will
+be set as suggested by the plugin.</p></dd>
 </dl>
 <h2 id="Required_methods">Required methods</h2>
 
@@ -384,6 +395,12 @@ will make &quot;fluorescence&quot; the default.  In any case, spell carefully!+<
 		<dd><p>If the proper columns are not predictable, then this method should
 return an empty array.</p></dd>
 		<dd><p>The return value should be an array and not an array reference.</p></dd>
+	<dt><code>clean</code></dt>
+		<dd><p>A list-returning plugin, i.e. one which returns a reference to an
+array from the <code>fix</code> method, must provide a <code>clean</code> method.  This
+method, when invoked, will remove from disk the files listed in the
+return value of the <code>fix</code> method.  Plugins which return a single file
+or an Athena project file need not provide this method.</p></dd>
 </dl>
 <h2 id="Namespace_and_disk_locations">Namespace and disk locations</h2>
 

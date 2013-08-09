@@ -244,6 +244,16 @@ The I0 signals of three marked groups
   <br />
 </dd>
 
+<p class=newfeature>
+<img class=tinyfloatleft border=0 src="../../images/newfeature.png" alt="To do!">
+In version 0.9.18, there is an option for plotting the marked
+groups as normalized &mu;(E), but scaled by the size of the edge step.
+Without flattening, this is identical to plotting the &mu;(E) data
+with the pre-edge line subtracted.  Otherwise, it is different in that
+the post-edge region will be flattened and will oscillate around the
+level of the edge step size.
+</p>
+
 </dl>
 
 
@@ -353,7 +363,7 @@ Consider making the number of terminals a configuration parameter.
 <p>
 
 When the &ldquo;phase correction&rdquo; button is
-clicked on, the Foruier transform for that data group will be made by
+clicked on, the Fourier transform for that data group will be made by
 subtracting the central atom phase shift.  This is an incomplete phase
 correction &ndash; in <span class=program>ATHENA</span> we know the central atom but do not
 necessarily have any knowledge about the scattering atom.

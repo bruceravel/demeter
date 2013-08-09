@@ -43,6 +43,11 @@ has 'markersymbol' => (is => 'rw', isa =>  'Int', default => sub{ shift->co->def
 
 has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
 
+has '+datastyle' => (default => sub{ shift->co->default("gnuplot", "datastyle") || 'lines'});
+has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  || 'lines'});
+has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") || 'lines'});
+has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
+
 
 before start_plot => sub {
   my ($self) = @_;
@@ -226,7 +231,7 @@ Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

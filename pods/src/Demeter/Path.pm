@@ -20,7 +20,7 @@ use autodie qw(open close);
 use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
-use Demeter::StrTypes qw( Empty PathParam FileName );
+use Demeter::StrTypes qw( Empty PathParam FileName ElementSymbol );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
@@ -35,6 +35,7 @@ use File::Spec;
 use List::Util qw(max);
 use Regexp::Assemble;
 use Scalar::Util qw(looks_like_number);
+use Xray::BondValence qw(bvparams);
 
 has '+plottable'      => (default => 1);
 has '+pathtype'       => (default => 1);
@@ -104,6 +105,8 @@ has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Dem
 					    $self->zcwif($new->zcwif);
 					    $self->spgroup($new->group);
 					    $self->parent($new->feff) if not $self->parent;
+					    $self->bvscat($new->scatterer);
+					    $self->set_scatterer_valence;
 					    $self->make_name if not $self->name;
 					  };
 					});
@@ -138,6 +141,12 @@ has 'update_path'     => (is=>'rw', isa=>  'Bool',  default => 1,
 has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
 			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
 has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
+
+## for computing bond valence sums
+has 'bvabs'        => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
+has 'valence_abs'  => (is=>'rw', isa=>  'Int',  default =>  2);
+has 'bvscat'       => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
+has 'valence_scat' => (is=>'rw', isa=>  'Int',  default => -2);
 
 my $pp_regex = Regexp::Assemble->new()->add(qw(s02 e0 delr e0 sigma2 ei third fourth dphase))->re;
 
@@ -186,7 +195,10 @@ sub set_parent {
 };
 sub set_parent_method {
   my ($self, $feff) = @_;
-  $self->parentgroup($feff->group) if $feff;
+  if ($feff) {
+    $self->parentgroup($feff->group);
+    $self->bvabs($feff->abs_species);
+  };
 };
 
 ### ---- this will be different working from a ScatteringPath object
@@ -511,6 +523,38 @@ sub identity {
 };
 
 
+sub bv {
+  my ($self, $s02) = @_;
+  $s02 ||= 1;
+  my %hash = bvparams($self->bvabs, $self->valence_abs, $self->bvscat);
+  return 0 if not (exists $hash{r0} and exists $hash{b});
+  return ($self->n * $self->s02_value / $s02) * exp( ($hash{r0} - $self->R) / $hash{b} );
+};
+sub set_scatterer_valence {
+  my ($self) = @_;
+  my $scat = ucfirst(lc($self->bvscat));
+  my $val = ($scat eq 'As') ? -3
+          : ($scat eq 'B' ) ?  3
+          : ($scat eq 'Br') ? -1
+          : ($scat eq 'C' ) ? -4
+          : ($scat eq 'Cl') ? -1
+          : ($scat eq 'Co') ? -1
+          : ($scat eq 'F' ) ? -1
+          : ($scat eq 'Cl') ? -1
+          : ($scat eq 'H' ) ? -1
+          : ($scat eq 'Hg') ?  2
+          : ($scat eq 'I' ) ? -1
+          : ($scat eq 'Mn') ? -2
+          : ($scat eq 'N')  ? -3
+          : ($scat eq 'O')  ? -2
+          : ($scat eq 'P')  ? -3
+          : ($scat eq 'S')  ? -2
+          : ($scat eq 'Se') ? -2
+          : ($scat eq 'Te') ? -2
+	  :                   -2;
+  $self->valence_scat($val);
+};
+
 ## log file tools
 
 sub R {
@@ -566,7 +610,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS

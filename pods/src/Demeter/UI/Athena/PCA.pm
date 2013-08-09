@@ -12,6 +12,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
 use File::Basename;
 use File::Spec;
+use List::MoreUtils qw(any);
 use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
@@ -117,7 +118,7 @@ sub new {
     $clusterboxsizer    -> Add($this->{clusplot},  1, wxGROW|wxALL, 0);
 
     foreach my $w (qw(frombox stack screebox cumvar)) {
-      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 1);
     };
     $plotboxsizer -> Add($clusterboxsizer, 0, wxGROW|wxALL, 0);
     foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp cluster1 cluster2 clusvs clusplot)) {
@@ -167,12 +168,12 @@ sub new {
     $box -> Add($saveboxsizer, 0, wxGROW|wxALL, 2);
     $this->{savecomp}    = Wx::Button->new($this, -1, 'Components');
     $this->{savestack}   = Wx::Button->new($this, -1, 'Data stack');
-    $this->{saverecon}   = Wx::Button->new($this, -1, 'Data reconstruction');
+    $this->{saverecon}   = Wx::Button->new($this, -1, 'Reconstruction');
     $this->{savett}      = Wx::Button->new($this, -1, 'Target transform');
-    $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 0);
+    $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 2);
 
     EVT_BUTTON($this, $this->{savecomp},  sub{save_components(@_)});
     EVT_BUTTON($this, $this->{savestack}, sub{save_stack(@_)});
@@ -208,13 +209,15 @@ sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   return if (not exists $INC{'Demeter/PCA.pm'});
   my $enable = not $this->{PCA}->update_pca;
-  if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
+  #if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
+  if (any {$::app->current_data->group eq $_->group} (@{ $this->{PCA}->stack })) {
     $this->{$_} -> Enable($enable) foreach qw(reconstruct rectext nrecon);
     $this->{tt} -> Enable(0);
   } else {
     $this->{$_} -> Enable(0) foreach qw(reconstruct rectext nrecon);
     $this->{tt} -> Enable($enable);
   };
+  $this->{transform}->Clear;
   $this->{saverecon}->Enable(0);
   $this->{savett}->Enable(0);
 };
@@ -300,8 +303,8 @@ sub pca {
   };
   $::app->{main}->status(sprintf("Performed principle components analysis on %d data groups with %d observations",
 				 $this->{PCA}->ndata, $this->{PCA}->observations));
-  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack
-		    cluster1 cluster2 clusvs clusplot)) {
+  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack)) {
+		    ##cluster1 cluster2 clusvs clusplot)) {
     $this->{$w}->Enable(1);
   };
   $this->{$_} ->SetRange(1, $this->{PCA}->ndata) foreach qw(ncomp nrecon cluster1 cluster2);
@@ -355,9 +358,15 @@ sub reconstruct {
   my ($this, $event) = @_;
   $this->{PCA}->reconstruct($this->{nrecon}->GetValue);
   my $data_index = 0;
-  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
-    ++$data_index if $::app->{main}->{list}->IsChecked($i);
-    last if ($data_index = $::app->current_index);
+  # foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+  #   ++$data_index if $::app->{main}->{list}->IsChecked($i);
+  #   last if ($data_index = $::app->current_index);
+  # };
+  foreach my $i (0 .. $#{ $this->{PCA}->stack }) {
+    if ($::app->current_data->group eq $this->{PCA}->stack->[$i]->group) {
+      $data_index = $i;
+      last;
+    };
   };
   $this->{PCA}->plot_reconstruction($data_index);
   $this->{saverecon}->Enable(1);
@@ -405,9 +414,11 @@ sub save_reconstruction {
   my $fname = $this->get_filename('recon', $name);
   return if not $fname;
   my $data_index = 0;
-  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
-    ++$data_index if $::app->{main}->{list}->IsChecked($i);
-    last if ($data_index = $::app->current_index);
+  foreach my $i (0 .. $#{ $this->{PCA}->stack }) {
+    if ($::app->current_data->group eq $this->{PCA}->stack->[$i]->group) {
+      $data_index = $i;
+      last;
+    };
   };
   $this->{PCA}->save_reconstruction($data_index, $fname);
 };
@@ -430,7 +441,7 @@ Demeter::UI::Athena::PCA - A principle components analysis tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

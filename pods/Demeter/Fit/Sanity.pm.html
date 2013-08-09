@@ -75,7 +75,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.17.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -236,6 +236,10 @@ function unknown to Ifeffit, <code>$token</code>.</p></dd>
 		<dd><p>The math expression for this GDS parameter has unmatched parentheses.</p></dd>
 	<dt><code>progvar</code></dt>
 		<dd><p>The name of this GDS parameter is an Ifeffit program variable name.</p></dd>
+	<dt><code>badchar</code></dt>
+		<dd><p>The name of this GDS parameter contains an unallowed character.
+Allowed characters are letters (a-z), numbers (0-9), and underscore
+(_).  The first character must not be a number.</p></dd>
 	<dt><code>merge</code></dt>
 		<dd><p>This is an parameter which has been defined twice, possibly from the
 merge of fitting projects or the creation of two more similar quick

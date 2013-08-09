@@ -312,6 +312,15 @@ sub OnEnergyClick {
   my ($parent, $event, $this, $data, $i) = @_;
   $data -> energy('$'.$i);
   $data -> update_data(1);
+  $data -> _update('data');
+  my $untext = $data->guess_units;
+  my $un = ($untext eq 'eV')     ? 0
+         : ($untext eq 'keV')    ? 1
+         : ($untext eq 'lambda') ? 2
+	 :                         0;
+  $this->{units}->SetSelection($un);
+  $data->is_kev(0) if ($this->{units}->GetSelection == 0);
+  $data->is_kev(1) if ($this->{units}->GetSelection == 1);
   $this -> display_plot($data);
 };
 
@@ -523,7 +532,7 @@ Demeter::UI::Athena::ColumnSelection - Athena's column selection dialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

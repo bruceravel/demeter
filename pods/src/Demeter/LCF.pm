@@ -17,6 +17,7 @@ package Demeter::LCF;
 
 use Carp;
 #use Demeter::Carp;
+use feature "switch";
 use autodie qw(open close);
 
 use Moose;
@@ -25,11 +26,13 @@ with 'Demeter::Data::Arrays';
 
 use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
+use Demeter::Constants qw($PI);
 use Demeter::StrTypes qw( Empty );
 
 use List::Util qw(min);
 use List::MoreUtils qw(any none uniq pairwise);
 use Math::Combinatorics;
+use Scalar::Util qw(looks_like_number);
 use Spreadsheet::WriteExcel;
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -51,17 +54,22 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 			       $self->suffix(q{chi}),  $self->space_description('chi(k)')           if  (lc($new) =~ m{\Achi});
 			       $self->suffix(q{xmu}),  $self->space_description('raw mu(E)')        if  (lc($new) =~ m{\Axmu});
 			      });
-has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
-has 'noise'  => (is => 'rw', isa => 'Num',    default => 0);
+has 'suffix'    => (is => 'rw', isa => 'Str',    default => q{flat});
+has 'noise'     => (is => 'rw', isa => 'Num',    default => 0);
 has 'kweight'   => (is => 'rw', isa => 'Num',  default => 0);
+has 'slope'     => (is => 'rw', isa => 'Num',  default => 0);
+has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
+has 'delslope'  => (is => 'rw', isa => 'Num',  default => 0);
+has 'deloffset' => (is => 'rw', isa => 'Num',  default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
-has 'linear'    => (is => 'rw', isa => 'Bool', default => 0);
-has 'inclusive' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "inclusive")  || 0});
-has 'unity'     => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "unity")      || 1});
-has 'one_e0'    => (is => 'rw', isa => 'Bool', default => 0);
+has 'linear'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'inclusive'  => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "inclusive")  || 0});
+has 'unity'      => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "unity")      || 1});
+has 'one_e0'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'has_stddev' => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "components")  || 0});
 has 'plot_difference' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "difference")  || 0});
@@ -69,6 +77,8 @@ has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->
 
 has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
+has 'ninfo'     => (is => 'rw', isa => 'Num', default => 0);
+has 'epsilon'   => (is => 'rw', isa => 'Num', default => 0);
 has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
 has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
 has 'standards' => (
@@ -243,6 +253,7 @@ sub weight {
   };
   $params[2] = $value;
   $params[3] = $error || 0;
+  $params[3] = 0 if not looks_like_number($params[3]); # uncertainty will be "null" in larch if not varied
   $self->set_option($stan, \@params);
   return wantarray ? ($params[2], $params[3]) : $params[2];
 };
@@ -258,6 +269,7 @@ sub e0 {
   };
   $params[4] = $value;
   $params[5] = $error || 0;
+  $params[5] = 0 if not looks_like_number($params[5]); # uncertainty will be "null" in larch if not varied
   $self->set_option($stan, \@params);
   return wantarray ? ($params[4], $params[5]) : $params[4];
 };
@@ -320,9 +332,28 @@ sub prep_arrays {
   return $self;
 };
 
+sub compute_ninfo {
+  my ($self) = @_;
+  my $ni = 0;
+  ## for fit to chi(k), use the standard EXAFS definition with delta_k
+  ## set to the fitting range and deltaR set arbitrarily to 3
+  if ($self->space eq 'chi') {
+    my $dk = $self->xmax - $self->xmin;
+    my $dr = 3; ## let's assume 1 to 4
+    $ni = 2*$dk*$dr/$PI + 1;
+  ## for XANES (norm or deriv) divide the data range by the core-hole lifetime
+  } else {
+    $ni =($self->xmax - $self->xmin) / Xray::Absorption->get_gamma($self->data->bkg_z, $self->data->fft_edge);
+  };
+  $self->ninfo(sprintf("%.3f",$ni));
+  return $ni;
+};
+
 sub fit {
   my ($self, $quiet) = @_;
   $self->_sanity;
+  $self->compute_ninfo if not $self->ninfo;
+  $self->has_stddev( ($self->space !~ m{\Achi}) and $self->get_array('stddev') );
 
   $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
   my @all = @{ $self->standards };
@@ -331,19 +362,46 @@ sub fit {
   ## create the array to minimize and perform the fit
   $self -> dispense("analysis", "lcf_fit");
 
-  my $sumsqr = 0;
-  foreach my $st (@all) {
-    my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
-    $sumsqr += $dw**2;
-    if ($self->one_e0) {
-      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
-    } else {
-      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
+  given (Demeter->mo->template_analysis) {
+
+    when (/ifeffit|iff_columns/) {
+      my $sumsqr = 0;
+      foreach my $st (@all) {
+	my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
+	$sumsqr += $dw**2;
+	if ($self->one_e0) {
+	  $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
+	} else {
+	  $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
+	};
+      };
+      if ($self->unity) {		# propagate uncertainty for last amplitude
+	my ($w, $dw) = $self->weight($all[$#all]);
+	$self->weight($all[$#all], $w, sqrt($sumsqr));
+      };
     };
-  };
-  if ($self->unity) {		# propagate uncertainty for last amplitude
-    my ($w, $dw) = $self->weight($all[$#all]);
-    $self->weight($all[$#all], $w, sqrt($sumsqr));
+
+    when ('larch') {
+      foreach my $st (@all) {
+	$self->weight($st, $self->fetch_scalar("demlcf.".$st->group."_a"),
+	                   $self->fetch_scalar("demlcf.".$st->group."_a.stderr"));
+	if ($self->one_e0) {
+	  $self->e0($st, $self->fetch_scalar("demlcf.".$self->group),
+		         $self->fetch_scalar("demlcf.".$self->group.".stderr"));
+	} else {
+	  $self->e0($st, $self->fetch_scalar("demlcf.".$st->group.'_e'),
+		         $self->fetch_scalar("demlcf.".$st->group.'_e.stderr'));
+	};
+      };
+      $self->slope    ($self->fetch_scalar("demlcf._slope"));
+      my $del = $self->fetch_scalar("demlcf._slope.stderr");
+      $del = 0 if not looks_like_number($del);
+      $self->delslope ($del);
+      $self->offset   ($self->fetch_scalar("demlcf._offset"));
+      $del = $self->fetch_scalar("demlcf._offset.stderr");
+      $del = 0 if not looks_like_number($del);
+      $self->deloffset($del);
+    };
   };
   $self->_statistics;
 
@@ -354,36 +412,56 @@ sub fit {
 
 sub _statistics {
   my ($self) = @_;
-  my @x     = $self->get_array('x');
-  my @func  = $self->get_array('func');
-  my @resid = $self->get_array('resid');
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $self->xmin);
-    next if ($x[$i] > $self->xmax);
-    ++$count;
-    $avg += $func[$i];
-  };
-  $avg /= $count if $count != 0;
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $self->xmin);
-    next if ($x[$i] > $self->xmax);
-    $rfact  += $resid[$i]**2;
-    if ($self->space =~ m{\Anor}) {
-      $sumsqr += ($func[$i]-$avg)**2;
-    } else {
-      $sumsqr += $func[$i]**2;
+  given (Demeter->mo->template_analysis) {
+
+    when (/ifeffit|iff_columns/) {
+      my @x     = $self->get_array('x');
+      my @func  = $self->get_array('func');
+      my @resid = $self->get_array('resid');
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	++$count;
+	$avg += $func[$i];
+      };
+      $avg /= $count if $count != 0;
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	$rfact  += $resid[$i]**2;
+	if ($self->space =~ m{\Anor}) {
+	  $sumsqr += ($func[$i]-$avg)**2;
+	} else {
+	  $sumsqr += $func[$i]**2;
+	};
+      };
+      $self->npoints($count);
+      if ($self->space eq 'nor') {
+	$self->rfactor(sprintf("%.7f", $count*$rfact/$sumsqr));
+      } else {
+	$self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
+      };
+      $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+      $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+      $self->nvarys($self->fetch_scalar('n_varys'));
+    };
+
+    when ('larch') {
+      $self->rfactor(sprintf("%.7f", $self->fetch_scalar('demlcf.rfactor')));
+      $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
+      $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));
+      $self->nvarys($self->fetch_scalar('demlcf.nvarys'));
+      my @x     = $self->get_array('x');
+      foreach my $i (0 .. $#x) {
+	next if ($x[$i] < $self->xmin);
+	next if ($x[$i] > $self->xmax);
+	++$count;
+      };
+      $self->npoints($count);
+
     };
   };
-  $self->npoints($count);
-  if ($self->space eq 'nor') {
-    $self->rfactor(sprintf("%.7f", $count*$rfact/$sumsqr));
-  } else {
-    $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
-  };
-  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
-  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
-  $self->nvarys($self->fetch_scalar('n_varys'));
 
   my $sum = 0;
   foreach my $stan (@{ $self->standards }) {
@@ -526,6 +604,7 @@ sub clear {
 
 sub clean {
   my ($self) = @_;
+  $self->ninfo(0);
   $self->dispense('analysis', 'lcf_clean');
   return $self;
 };
@@ -619,9 +698,21 @@ sub restore {
     #$self->push_standards($this_data), weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
     #$self->weight($this_data->group, $w, $dw);
     #$self->e0($this_data->group, $e0, $de0);
-    $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
+    if (Demeter->mo->template_analysis eq 'larch') {
+      if ($self->space =~ m{\Achi}) {
+	$self->dispose($this_data->template('analysis', 'lcf_prep_standard_k'));
+      } else {
+	$self->dispose($this_data->template('analysis', 'lcf_prep_standard'));
+      };
+    } else {
+      $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
+    };
   };
-  $self->dispense('analysis', 'lcf_sum');
+  if (Demeter->mo->template_analysis eq 'larch') {
+    $self->dispense('analysis', 'lcf_prep_lcf');
+  } else {
+    $self->dispense('analysis', 'lcf_sum');
+  };
   $self->mo->standard(q{});
   return $self;
 };
@@ -759,7 +850,7 @@ sub sequence {
     $self->call_sentinal;
     $self->data($d);
     $self->clear_standards;
-   foreach my $st (@standards) {
+    foreach my $st (@standards) {
       $self->push_standards($st);
       $self->weight($st, 1/($#standards+1));
       $self->e0($st, 0);
@@ -898,7 +989,7 @@ Demeter::LCF - Linear combination fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.17.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
