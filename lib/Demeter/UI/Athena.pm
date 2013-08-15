@@ -302,6 +302,7 @@ const my $SAVE_NORM		=> Wx::NewId();
 const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
+const my $SAVE_COMPAT		=> Wx::NewId();
 
 const my $EACH_MUE		=> Wx::NewId();
 const my $EACH_NORM		=> Wx::NewId();
@@ -438,12 +439,15 @@ sub menubar {
   my $bar        = Wx::MenuBar->new;
   $app->{main}->{mrumenu} = Wx::Menu->new;
   my $filemenu   = Wx::Menu->new;
+  $app->{main}->{filemenu} = $filemenu;
   $filemenu->Append(wxID_OPEN,  "Import data\tCtrl+o", "Import data from a data or project file" );
   $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files", "This submenu contains a list of recently used files" );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_SAVE,    "Save project\tCtrl+s", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
   $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
+  $filemenu->AppendCheckItem($SAVE_COMPAT, "Backwards compatible project files", "Save project files so that they can be imported by Athena 0.9.17 and earlier (information WILL be lost!)");
+  $filemenu->Check($SAVE_COMPAT, Demeter->co->default('athena', 'compatibility'));
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -704,6 +708,11 @@ sub menubar {
   };
 
   return $app;
+};
+
+sub project_compatibility {
+  my ($app) = @_;
+  return $app->{main}->{filemenu}->IsChecked($SAVE_COMPAT);
 };
 
 sub set_mru {

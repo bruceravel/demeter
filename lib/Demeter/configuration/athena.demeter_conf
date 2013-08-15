@@ -223,3 +223,16 @@ type=string
 default=http://bruceravel.github.io/demeter/aug/
 description
   The URL of the Athena document.
+
+variable=compatibility
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  When true, save Athena project files so that they can be read by
+  versions of Athena from before 0.9.17.  Note that information WILL
+  be lost when saving compatible project files.  This parameter is
+  used to set the check box in Athena's File menu at startup.
+  Compatibility can be toggled non-permanently in the File menu.
