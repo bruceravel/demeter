@@ -65,6 +65,8 @@ sub _write_record {
   croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
   #print $self->group, " ", $self->name, $/;
 
+  my $compatibility = Demeter->co->get('athena_compatibility');
+
   local $Data::Dumper::Indent = 0;
   my ($string, $arraystring) = (q{}, q{});
 
@@ -119,6 +121,14 @@ sub _write_record {
   delete $hash{datatype};
 
   $hash{reference} = $hash{reference}->group if ($hash{reference});
+  # ------------------------------------------------------------
+  # -------- clean up non-pre-0.9.18 attributes ----------------
+  if ($compatibility) {
+    ## introduced in 0.9.18
+    delete $hash{bkg_delta_eshift};
+    delete $hash{bkg_nc3};
+    delete $hash{bkg_is_pixel};
+  };
   # ------------------------------------------------------------
 
   @array   = %hash;
