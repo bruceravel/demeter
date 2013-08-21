@@ -157,7 +157,18 @@ values.
 This button prompts you for a string.  All parameters with names or
 math expressions matching the string provided will be highlighted with
 a yellow background.  This feature is particularly useful in large
-fitting models with many parameters.
+fitting models with many parameters.  In the image above, you can see
+that all parameters matching [% INCLUDE font/quote a="brc1" %] have
+been highlighted.  The string to match can actually be any valid Perl
+regular expression.
+[% END %]
+[% WRAPPER html/dt dt="Evaluate" %]
+Clicking this button will evaluate all parameters and insert their
+evaluations into the fourth column of the grid.  This is used to 
+[% INCLUDE font/quote a="spell-check" %] your math expressions for
+[%def%] and other parameters.  In the image above, this button has
+been clicked and the evaluations have been inserted into the fourth
+column. 
 [% END %]
 [% WRAPPER html/dt dt="Import/export" %]
 The next two buttons are used to import or export a simple text file

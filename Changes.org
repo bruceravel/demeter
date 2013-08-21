@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.18 9  August      2013
+** 0.9.18 24 August      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
@@ -53,6 +53,7 @@
    + add tool for computing bond valence sums from marked path(s)
    + new pre-fit sanity check to make sure that GDS parameter names only have allowed characters
    + right click on cards in feff.inp to go directly to the on-line Feff documentation
+   + button to evaluate and display GDS parameter without fitting (i.e. "spell-check" your def parameters)
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
