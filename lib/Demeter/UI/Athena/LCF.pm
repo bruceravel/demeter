@@ -226,12 +226,11 @@ sub main_page {
   $this->{plotr}	 = Wx::Button->new($panel, -1, 'Plot data and sum in R');
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
 
-  $actionsboxsizer->Add($this->{spacer}, 0, wxGROW|wxBOTTOM, 5);
-  $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxBOTTOM, 10);
   foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
+  $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxTOP, 10);
   $actionsboxsizer->Add(1,1,1);
   $this->{document} -> Reparent($panel);
   $actionsboxsizer->Add($this->{document}, 0, wxGROW|wxALL, 0);
