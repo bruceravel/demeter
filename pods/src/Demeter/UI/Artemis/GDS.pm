@@ -29,11 +29,12 @@ use Const::Fast;
 const my $GRAB	      => 0;
 const my $RESET	      => 1;
 const my $HIGHLIGHT   => 2;
-const my $IMPORT      => 4;
-const my $EXPORT      => 5;
-const my $DISCARD     => 6;
-const my $ADD	      => 8;
-const my $DOC	      => 10;
+const my $EVAL        => 3;
+const my $IMPORT      => 5;
+const my $EXPORT      => 6;
+const my $DISCARD     => 7;
+const my $ADD	      => 9;
+const my $DOC	      => 11;
 const my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 
 const my $GUESS	      => Wx::NewId();
@@ -89,6 +90,7 @@ my %hints = (
 	     convert   => "Change all guess parameters to set",
 	     discard   => "Discard all parameters",
 	     highlight => "Toggle highlighting of parameters which match a regular expression",
+	     eval      => "Evaluate and display all parameters",
 	     import    => "Import parameters from a text file",
 	     export    => "Export parameters to a text file",
 	     addgds    => "Add space for one more parameter",
@@ -166,6 +168,7 @@ sub new {
   $this->{toolbar} -> AddTool(-1, " Use best fit", Demeter::UI::Artemis::icon("bestfit"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
   $this->{toolbar} -> AddTool(-1, "Reset all",     Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   $this->{toolbar} -> AddCheckTool($HIGHLIGHT, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
+  $this->{toolbar} -> AddTool(-1, "Evaluate",   Demeter::UI::Artemis::icon("eval"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{eval} );
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, " Import GDS",   Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
   $this->{toolbar} -> AddTool(-1, " Export GDS",   Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
@@ -207,7 +210,7 @@ sub initialize_row {
 
 sub OnToolClick {
   my ($parent, $toolbar, $event, $grid) = @_;
-  ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
+  ## 0:grab all  1:reset all  2:toggle highlight 3:evaluate  5:import   6:export  7:discard all  9:add one
   my $which = $toolbar->GetToolPos($event->GetId); # || $event->GetId;
  SWITCH: {
     ($which == $GRAB) and do {	     # grab best fit values
@@ -222,6 +225,11 @@ sub OnToolClick {
 
     ($which == $HIGHLIGHT) and do {  # toggle highlight
       $parent->highlight;
+      last SWITCH;
+    };
+
+    ($which == $EVAL) and do {  # evaluate and display
+      $parent->evaluate;
       last SWITCH;
     };
 
@@ -372,6 +380,23 @@ sub clear_highlight {
     map { $grid->SetCellBackgroundColour($row, $_, wxNullColour)} (0 .. 3);
   };
   $grid -> ForceRefresh;
+};
+
+sub evaluate {
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
+  my $busy = Wx::BusyCursor->new();  
+  my $r_gds = $parent->reset_all;
+  my ($command, $text) = (q{}, q{});
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    my $name = $grid->GetCellValue($row, 1);
+    next if $name =~ m{\A\s*\z};
+    my $g = $grid->{$name};
+    next if ref($g) !~ m{GDS};
+    $g->evaluate;
+    $grid -> SetCellValue($row, 3, sprintf("%.5f-", $g->bestfit));
+  };
+  undef $busy;
 };
 
 sub find_next_empty_row {

@@ -32,7 +32,7 @@ use autodie qw(open close);
 use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
-#use Demeter::NumTypes qw( PosInt Natural NonNeg );
+use Demeter::NumTypes qw( Natural );
 with "Demeter::ScatteringPath::Rank";
 
 use Chemistry::Elements qw(get_symbol);
@@ -95,6 +95,7 @@ has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
 
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -201,7 +202,7 @@ sub intrpline {
 
 sub labelline {
   my ($self) = @_;
-  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, $self->nleg, $self->n);
+  return sprintf("Reff=%5.3f, nleg=%d, degen=%-2d", $self->fuzzy, $self->nleg, $self->n);
 };
 alias interplist => 'intrplist';
 alias interpline => 'intrpline';

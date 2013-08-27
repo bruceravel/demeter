@@ -42,7 +42,7 @@ sub new {
 
   if (($w <= 0) or ($h <= 0)) {
     ($w = 520) if ($w <= 0);
-    ($h = 300) if ($h <= 0);
+    ($h = 400) if ($h <= 0);
     $self -> SetSize($w, $h);
   };
 
@@ -50,8 +50,8 @@ sub new {
   #my $box = Wx::BoxSizer->new( wxVERTICAL );
   #$self->{LEFT} -> SetSizerAndFit($box);
 
-  $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h), [ ], wxLB_SINGLE);
-  $self->{LIST}->{datalist} = []; # see modifications to CheckBookList at end of this file....
+  $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/3),$h), [ ], wxLB_SINGLE);
+  $self->{LIST}->{datalist} = []; # see modifications to CheckListBox at end of this file....
   $self->{LIST} -> SetFont( Wx::Font->new( 8, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{LIST}->{PARENT} = $self;
   EVT_LEFT_DOWN(   $self->{LIST},        sub{OnLeftDown(@_)}  );
@@ -64,7 +64,7 @@ sub new {
 
   #$box -> Add($self->{LIST}, 1, wxGROW|wxALL, 0);
 
-  $self->{PAGE}  = Wx::Panel->new($self, -1, wxDefaultPosition, Wx::Size->new($w-int($w/4),$h));
+  $self->{PAGE}  = Wx::Panel->new($self, -1, wxDefaultPosition, wxDefaultSize); #Wx::Size->new($w-int($w/4),$h));
 
   $self->SplitVertically($self->{LIST}, $self->{PAGE}, -int($w)-10);
 

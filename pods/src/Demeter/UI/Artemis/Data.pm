@@ -176,8 +176,8 @@ sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [810,520],
-				wxCAPTION|wxMINIMIZE_BOX|wxCLOSE_BOX|wxSYSTEM_MENU); #|wxRESIZE_BORDER
+				wxDefaultPosition, wxDefaultSize, #[810,520],
+				wxDEFAULT_FRAME_STYLE); #|wxRESIZE_BORDER
   $this ->{PARENT} = $parent;
   $this->make_menubar;
   $this->SetMenuBar( $this->{menubar} );
@@ -498,6 +498,7 @@ sub new {
 
   my $panel = $this->initial_page_panel;
   $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, $panel, wxBK_LEFT );
+  $this->{pathlist}->SetSize(Wx::Size->new(-1,-1));
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
 
   my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -508,6 +509,7 @@ sub new {
   EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
+  $rightpane -> SetSize(Wx::Size->new(-1, -1));
 
 
   my $accelerator = Wx::AcceleratorTable->new(
@@ -520,6 +522,7 @@ sub new {
   #$splitter -> SetSashSize(10);
 
   $this -> SetSizerAndFit( $hbox );
+  $this -> SetSize(Wx::Size->new(-1, -1));
   return $this;
 };
 
@@ -554,7 +557,7 @@ sub initial_page_panel {
 
   my $vv = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [280,-1]);
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(200);
   my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
@@ -584,6 +587,7 @@ sub initial_page_panel {
   ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
   $panel -> SetSizerAndFit($vv);
+  #$panel -> SetSize(Wx::Size->new(-1, -1));
   return $panel;
 };
 

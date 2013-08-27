@@ -125,7 +125,6 @@ sub main_page {
   $this->{unity}      = Wx::CheckBox->new($panel, -1, 'Force weights to sum to 1');
   $this->{linear}     = Wx::CheckBox->new($panel, -1, 'Add a linear term after E0');
   $this->{one_e0}     = Wx::CheckBox->new($panel, -1, 'All standards share an E0');
-  $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{reset}      = Wx::Button->new($panel, -1, 'Reset', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{spacer}     = Wx::StaticLine->new($panel, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL);
 
@@ -135,7 +134,6 @@ sub main_page {
   $::app->mouseover($this->{unity},       "Force the weights to sum to 1, otherwise allow the weight of each group to float.");
   $::app->mouseover($this->{linear},      "Include a linear component (m*E + b) in the fit which is only evaluated after E0.");
   $::app->mouseover($this->{one_e0},      "Force the standards to share a single E0 parameter.  This is equivalent (albeit with a sign change) to floating E0 for the data.");
-  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
   $::app->mouseover($this->{reset},       "Reset all LCF parameters to their default values.");
 
 
@@ -167,17 +165,18 @@ sub main_page {
 
   my $ninfobox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($ninfobox, 0, wxGROW|wxALL, 1);
-  #$ninfobox->Add(Wx::StaticText->new($panel, -1, 'Information content'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+  $ninfobox->Add(Wx::StaticText->new($panel, -1, 'Information content'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{ninfo} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{ninfo} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
-  #$ninfobox->Add($this->{ninfo}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $ninfobox->Add($this->{ninfo}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
 
   $::app->mouseover($this->{noise}, "Add randomly distributed noise, scaled by this amount, to the data before doing the fit.");
-  $::app->mouseover($this->{ninfo}, "Specify the information content of your data.  If 0, Athena will estimate the information content.");
+  if (Demeter->is_ifeffit) {
+    $::app->mouseover($this->{ninfo}, "This displays Athena's estimate of the information content, which is not currently used in the fit.");
+  } else {
+    $::app->mouseover($this->{ninfo}, "Specify the information content of your data.  If 0, Athena will estimate the information content.");
+  };
 
-
-  ## ------------- use marked button
-  $vbox->Add($this->{usemarked}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   ## ------------- combinatorics options
   my $combinbox       = Wx::StaticBox->new($panel, -1, 'Combinatorics', wxDefaultPosition, wxDefaultSize);
@@ -194,7 +193,7 @@ sub main_page {
   $::app->mouseover($this->{max}, "In a combinatorial fit, only consider combinations up to this number of standards.");
 
   ## ------------- reset button
-  $vbox->Add($this->{spacer}, 1, wxALL, 3);
+  $vbox->Add($this->{spacer}, 0, wxALL, 3);
   $vbox->Add($this->{reset}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
 
@@ -211,13 +210,14 @@ sub main_page {
   EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive      ($this->{inclusive} ->GetValue)});
   EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity          ($this->{unity}     ->GetValue)});
   EVT_CHECKBOX($this, $this->{one_e0},     sub{use_one_e0(@_)});
-  EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
   EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
   $hbox -> Add($actionsboxsizer, 1, wxGROW|wxALL, 5);
+
+  $this->{usemarked}     = Wx::Button->new($panel, -1, 'Use marked groups');
   $this->{fit}		 = Wx::Button->new($panel, -1, 'Fit this group');
   $this->{combi}	 = Wx::Button->new($panel, -1, 'Fit all combinations');
   $this->{fitmarked}	 = Wx::Button->new($panel, -1, 'Fit marked groups');
@@ -225,10 +225,12 @@ sub main_page {
   $this->{plot}		 = Wx::Button->new($panel, -1, 'Plot data and sum');
   $this->{plotr}	 = Wx::Button->new($panel, -1, 'Plot data and sum in R');
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
+
   foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
+  $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxTOP, 10);
   $actionsboxsizer->Add(1,1,1);
   $this->{document} -> Reparent($panel);
   $actionsboxsizer->Add($this->{document}, 0, wxGROW|wxALL, 0);
@@ -240,6 +242,7 @@ sub main_page {
   EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
   EVT_BUTTON($this, $this->{make},      sub{make(@_)});
   EVT_BUTTON($this, $this->{plotr},     sub{fft(@_)});
+  EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
 
   $::app->mouseover($this->{fit},       "Fit the current group using the current model.");
   $::app->mouseover($this->{plot},      "Plot the data with current sum of standards.");
@@ -249,6 +252,7 @@ sub main_page {
   $::app->mouseover($this->{make},      "Turn the current sum of standards into its own data group.");
   $::app->mouseover($this->{plotr},     "Plot the current group and the current model in R space.");
   $::app->mouseover($this->{document},  "Show the document page for LCF in a browser.");
+  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
 
 
   $panel->SetSizerAndFit($box);
@@ -590,6 +594,7 @@ sub _results {
     $this->{'weight'.$i}->SetValue($w);
     $this->{'e0'.$i}    ->SetValue($e);
   };
+  $this->{ninfo}->SetValue($this->{LCF}->ninfo);
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{LCF}->report);
 };
