@@ -202,7 +202,7 @@ sub intrpline {
 
 sub labelline {
   my ($self) = @_;
-  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, $self->nleg, $self->n);
+  return sprintf("Reff=%5.3f, nleg=%d, degen=%-2d", $self->fuzzy, $self->nleg, $self->n);
 };
 alias interplist => 'intrplist';
 alias interpline => 'intrpline';

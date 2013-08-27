@@ -63,7 +63,7 @@ use vars qw(%explanation);
 
 sub new {
   my ($class, $parent, $pathobject, $datapage) = @_;
-  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [420,300]);
+  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [300,400]);
   $this->{listbook} = $parent;
   $this->{datapage} = $datapage;
 
@@ -152,7 +152,7 @@ sub new {
     my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, [40,-1], wxNO_BORDER );
     $label->{which} = $k;
     $this->{"lab_$k"} = $label;
-    my $w = 225;
+    my $w = 245;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1], wxTE_PROCESS_ENTER);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
@@ -192,6 +192,7 @@ sub new {
 
   $this -> populate($parent, $pathobject);
   $this -> SetSizerAndFit($vbox);
+  $this -> SetSize(Wx::Size->new(-1, -1));
 
   return $this;
 };
