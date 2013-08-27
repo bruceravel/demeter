@@ -54,6 +54,7 @@
    + new pre-fit sanity check to make sure that GDS parameter names only have allowed characters
    + right click on cards in feff.inp to go directly to the on-line Feff documentation
    + button to evaluate and display GDS parameter without fitting (i.e. "spell-check" your def parameters)
+   + can now stretch the Data window and adjust the size of the path list
 
 *** Demeter
    + switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
