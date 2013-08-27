@@ -394,7 +394,7 @@ sub evaluate {
     my $g = $grid->{$name};
     next if ref($g) !~ m{GDS};
     $g->evaluate;
-    $grid -> SetCellValue($row, 3, sprintf("%.5f", $g->bestfit));
+    $grid -> SetCellValue($row, 3, sprintf("%.5f-", $g->bestfit));
   };
   undef $busy;
 };
