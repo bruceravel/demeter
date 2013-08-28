@@ -1520,11 +1520,11 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  my $dashes = 11;		# deal correctly with optional tools
+  my $dashes = 12;		# deal correctly with optional tools
   ++$dashes if Demeter->co->default(qw(athena show_dispersive));
-  ++$dashes if Demeter->co->default(qw(athena show_watcher));
   $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
   $dashes +=6;
+  ##++$dashes if Demeter->co->default(qw(athena show_watcher));
   $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
