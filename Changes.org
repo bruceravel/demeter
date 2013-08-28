@@ -5,7 +5,11 @@
 
 * Initial release
 
-** 0.9.18 24 August      2013
+** 0.9.18 28 August      2013
+*** Athena
+   + Fixed a bug involving the order of items in Athena's main menu
+
+** 0.9.18 27 August      2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
