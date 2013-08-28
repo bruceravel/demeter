@@ -66,7 +66,7 @@ sub apj2dpj {
 	my @parameter = @ {$cpt->varglob('parameter')};
 	my $me = $parameter[2];
 	## old artemis might store a best fit as "1.23 (0.45)".  This purges the uncertainty
-	if ($me =~ m{\A\s*($NUMBER)\s+\($NUMBER\)\s*\z}) {
+	if ($me =~ m{\A\s*($NUMBER)\s+\($NUMBER*\)\s*\z}) {
 	  $me = $1;
 	};
 	push @gds, Demeter::GDS->new(name    => $parameter[0],
