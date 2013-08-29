@@ -610,9 +610,10 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
+  local $|=1;
   my $rgds = $rframes->{GDS}->reset_all(1, 0);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
-  foreach my $p (@$rpaths) { $p->_update("fft") };
+  foreach my $p (@$rpaths) { next if not $p->sp; $p->_update("fft") };
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
     my $message = q{};

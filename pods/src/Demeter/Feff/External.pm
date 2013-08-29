@@ -107,7 +107,7 @@ sub read_folder {
   foreach my $f (@feffNNNN) {	# convert each feffNNNN to a ScatteringPath object
     my $sp = Demeter::ScatteringPath->new(feff=>$self, pathfinding=>0);
     $sp->mo->push_ScatteringPath($sp);
-    my ($string, $nleg, $degen, $reff) = $self->parse_info_from_nnnn($f);
+    my ($string, $nleg, $degen, $reff, $pathno) = $self->parse_info_from_nnnn($f);
     $zcwif_of->{$f} ||= 0;	# handle absence of files.dat gracefully
     $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff, zcwif=>$zcwif_of->{$f});
     my $weight = ($zcwif_of->{$f} > 20) ? 2
@@ -118,6 +118,7 @@ sub read_folder {
     $sp->evaluate;
     $sp->degeneracies([$sp->string]);
     $sp->fromnnnn(File::Spec->catfile($folder, $f));
+    $sp->orig_nnnn($pathno);
     $self->push_pathlist($sp);
     #set_nnnn($f, $sp->group);
     $hash{$f} = $sp->group;
@@ -158,11 +159,14 @@ sub parse_info_from_nnnn {
   my ($self, $f) = @_;
   my $file = File::Spec->catfile($self->folder, $f);
   my @geometry = ();
-  my ($nleg, $degen, $reff);
+  my ($nleg, $degen, $reff, $pathno);
   my $flag = 0;
   open(my $NNNN, $file);
   while (<$NNNN>) {
     last if (m{\A\s+k\s+real\[2\*phc\]});
+    if (m{\A\s+Path\s+(\d+)}) { # find line with path index
+      $pathno = sprintf("%4.4d", $1);
+    };
     if (m{nleg,\s+deg,\s+reff}) { # find line with degeneracy and Reff
       my @fields = split(" ", $_);
       ($nleg, $degen, $reff) = @fields[0..2];
@@ -193,8 +197,9 @@ sub parse_info_from_nnnn {
   };
   $string =~ s{\A0}{$CTOKEN};
   $string .= $CTOKEN;
+  $pathno ||= '0000';
 
-  return ($string, $nleg, $degen, $reff);
+  return ($string, $nleg, $degen, $reff, $pathno);
 };
 
 

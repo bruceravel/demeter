@@ -93,6 +93,7 @@ has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
+has 'orig_nnnn'    => (is => 'rw', isa => 'Str',      default => q{});
 
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);

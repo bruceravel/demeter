@@ -177,6 +177,7 @@ has 'pathlist' => (		# list of ScatteringPath objects
 				}
 		  );
 has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
+has 'postcrit'     => (is=>'rw', isa =>  NonNeg,    default => Demeter->co->default('pathfinder','postcrit'));   # positive float
 
 		       ## reporting and processing
 has 'screen'       => (is=>'rw', isa => 'Bool', default => 1);
@@ -544,7 +545,7 @@ sub _pathsdat_head {
   $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->co->default('pathfinder', 'postcrit'));
+  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->postcrit);
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };

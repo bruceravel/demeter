@@ -27,16 +27,18 @@ our @EXPORT = qw(Import prjrecord);
 
 
 sub Import {
-  my ($which, $fname) = @_;
+  my ($which, $fname, @args) = @_;
+  my %args = @args;
+  $args{postcrit} || Demeter->co->default('pathfinder', 'postcrit');
   my $retval = q{};
  SWITCH: {
-    $retval = _prj($fname),           last SWITCH if (($which eq 'prj') or ($which eq 'athena'));
-    $retval = _old($fname),           last SWITCH if  ($which eq 'old');
-    $retval = _feff($fname),          last SWITCH if  ($which eq 'feff');
-    $retval = _external_feff($fname), last SWITCH if  ($which eq 'external');
-    $retval = _chi($fname),           last SWITCH if  ($which eq 'chi');
-    $retval = _dpj($fname),           last SWITCH if  ($which eq 'dpj');
-    $retval = _feffit($fname),        last SWITCH if  ($which eq 'feffit');
+    $retval = _prj($fname),                     last SWITCH if (($which eq 'prj') or ($which eq 'athena'));
+    $retval = _old($fname),                     last SWITCH if  ($which eq 'old');
+    $retval = _feff($fname),                    last SWITCH if  ($which eq 'feff');
+    $retval = _external_feff($fname),           last SWITCH if  ($which eq 'external');
+    $retval = _chi($fname),                     last SWITCH if  ($which eq 'chi');
+    $retval = _dpj($fname, 0, $args{postcrit}), last SWITCH if  ($which eq 'dpj');
+    $retval = _feffit($fname),                  last SWITCH if  ($which eq 'feffit');
   };
   $::app->heap_check;
   return $retval;
@@ -207,7 +209,7 @@ sub _chi {
 };
 
 sub _dpj {
-  my ($fname, $nomru) = @_;
+  my ($fname, $nomru, $postcrit) = @_;
   my $file = $fname;
   $nomru ||= 0;
   if (not $fname) {
@@ -261,6 +263,7 @@ sub _dpj {
 
 	my $feffobject = Demeter::Feff->new(yaml=>File::Spec->catfile($feffdir, "$1.yaml"), group=>$1); # force group to be the same as before
 	$feffobject -> workspace($feffdir);
+	$feffobject -> postcrit($postcrit);
 	$feffobject -> make_feffinp('full');
 	my $feff = File::Spec->catfile($feffdir, "$1.inp");
 	rename(File::Spec->catfile($feffdir, "feff.inp"), $feff);
@@ -495,7 +498,7 @@ sub _old {
   };
 
   $rframes->{main}->status("Importing Demeter fit serialization", 'wait');
-  Import('dpj', $dpj);
+  Import('dpj', $dpj, postcrit=>0);
   unlink $dpj;
 
   $$rdemeter->push_mru("old_artemis", $file);

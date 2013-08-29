@@ -460,7 +460,7 @@ sub fill_intrp_page {
   $feff->rank_paths;
   my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
   foreach my $p (@{ $feff->pathlist }) {
-    if ($p->get_rank($which) > Demeter->co->default('pathfinder', 'postcrit')) {
+    if ($p->get_rank($which) > $feff->postcrit) {
       $p->pathfinder_index($i);
       my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
       $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
