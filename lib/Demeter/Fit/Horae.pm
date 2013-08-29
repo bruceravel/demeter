@@ -246,7 +246,6 @@ sub horae_path {
   my %args = @args;
   my $nnnn = substr($args{file}, 4, -4);
   my $this = firstidx {$_->orig_nnnn == $nnnn} @{$current_feff->pathlist};
-  Demeter->pjoin($nnnn, $this, $args{file});
   return 0 if $this == -1;
   $path->sp($current_feff->pathlist->[$this]);
   $path->set(name    => $args{lab},
