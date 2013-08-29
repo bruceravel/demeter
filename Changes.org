@@ -5,11 +5,19 @@
 
 * Initial release
 
-** 0.9.18 28 August      2013
+** 0.9.18.2 29 August    2013
+
+*** Artemis
+   + Fixed several bugs importing old-style artemis projects
+
+*** Acknowledgments
+   + _Mattie Peck_ for reporting these problems importing old-style Artemis projects
+
+** 0.9.18.1 28 August    2013
 *** Athena
    + Fixed a bug involving the order of items in Athena's main menu
 
-** 0.9.18 27 August      2013
+** 0.9.18   27 August    2013
 *** Athena
    + Display uncertainties in fitted E0 shifts
    + fixed an issue making plots via orange and purple buttons with certain tools displayed
@@ -149,8 +157,7 @@ With so many new features and bug fixes, I owe a big "Thank You!" to lots of peo
 I think that's everyone.  If I missed your name, it's just that I suck
 at record-keeping, not that I don't value your input.
 
-
-** 0.9.17 28 May       2013
+** 0.9.17   28 May       2013
 *** Athena
    + Fixed a bug where a column label of "xmu" would cause a definition loop
    + Fixed an issue regarding selection of energy units in column selection dialog
@@ -176,7 +183,7 @@ at record-keeping, not that I don't value your input.
    + Lots more Larch templates
    + updater.iss now includes more things, including Ifefgfit.dll
 
-** 0.9.16 28 March     2013
+** 0.9.16   28 March     2013
 *** Athena
    + fixed a couple bugs in difference spectrum tool
    + fixed an error importing data+reference when the energy column is
@@ -203,7 +210,7 @@ at record-keeping, not that I don't value your input.
    + added a new unit test file 023_miscellany
    + fixed a bug bringing data up to date before calling write_many
 
-** 0.9.15 21 February  2013
+** 0.9.15   21 February  2013
 *** Athena
    - manage update flags in a much better way, making Athena much
      snappier by reducing the number of calls to pre_edge() and
@@ -263,7 +270,7 @@ at record-keeping, not that I don't value your input.
      a specified verb on the yes button
    - configurable column numbers in X15B plugin
 
-** 0.9.14  2 January   2013
+** 0.9.14    2 January   2013
 *** Athena
    - Plot indicators when plotting from deglitch tool
    - Filename for combinatorial output spreadsheet uses group name
@@ -375,7 +382,7 @@ at record-keeping, not that I don't value your input.
    - added more information to the log files written by the GUI
      programs
 
-** 0.9.13  2 October   2012
+** 0.9.13    2 October   2012
 *** Athena
    - Updated the HXMA plugin
    - Attempt to deal better with unreadable data file by bailing out
@@ -402,7 +409,7 @@ at record-keeping, not that I don't value your input.
      entire Demeter folder under {app}\perl\site\lib\.  Also added
      Inno script updater.iss to repo
 
-** 0.9.12 26 September 2012
+** 0.9.12   26 September 2012
 *** Athena
    - Fixed a crashy bug when changing normalization order
    - Flag for setting difference group as re-normalizable
@@ -422,7 +429,7 @@ at record-keeping, not that I don't value your input.
 *** Demeter
    - Added CONTRIBUTING file to distro for use at GitHub
 
-** 0.9.11 18 September 2012
+** 0.9.11   18 September 2012
 *** Athena
    - Self absorption: plot information depth in energy and check to be
      sure that absorber is in the formula
@@ -475,7 +482,7 @@ at record-keeping, not that I don't value your input.
    - Matt Frith
    - The participants of the 2012 ASEAN Workshop on XAS
 
-** 0.9.10 17 July      2012
+** 0.9.10   17 July      2012
 *** Athena
    - Improved X23A2 and HXMA plugins
    - Add a select range button to column selection dialog to help
@@ -541,7 +548,7 @@ at record-keeping, not that I don't value your input.
    - Prefer the Co K edge to the Re L3 edge when finding the edge (is
      that the right choice?)
 
-** 0.9.9  20 April     2012
+** 0.9.9    20 April     2012
 *** Athena
    - Delay laying out most windows until needed for the first time.
      This speed up startup at the cost of a bit more time later on.
@@ -627,7 +634,7 @@ at record-keeping, not that I don't value your input.
      its normalized derivative and second derivative spectra
      calculated.
 
-** 0.9.8  30 January   2012
+** 0.9.8    30 January   2012
 *** Athena
    - Only set project name if the project name is unset and an entire
      project file is imported
@@ -658,7 +665,7 @@ at record-keeping, not that I don't value your input.
    - Scott Calvin
    - Andreas Voegelin
 
-** 0.9.7  12 January   2012
+** 0.9.7    12 January   2012
 *** Athena
    - Fixed a problem in the X23A2MED plugin -- it was getting confused
      by an incomplete set of (roi, slow, fast) columns.
@@ -714,7 +721,7 @@ at record-keeping, not that I don't value your input.
    - George Sterbinsky
    - Andreas Voegelin
 
-** 0.9.6  12 December  2011
+** 0.9.6    12 December  2011
 *** Athena
    - Fixed bug preventing import of multiple files with each channel
      as a separate group
@@ -805,11 +812,11 @@ at record-keeping, not that I don't value your input.
    - George Sterbinsky
    - Brian Mattern
 
-** 0.9.5  11 November  2011
+** 0.9.5    11 November  2011
 *** Athena
    - Fixed a crash caused by constraining all parameters
 
-** 0.9.4  10 November  2011
+** 0.9.4    10 November  2011
 *** Athena
    - Fixed a problem accessing the column selection persitance file
      for the first time
@@ -818,7 +825,7 @@ at record-keeping, not that I don't value your input.
 *** Artemis
    - Don't list excluded paths in the log file
 
-** 0.9.3   8 November  2011
+** 0.9.3     8 November  2011
 *** Athena
    - Progress messages when autoaligning marked groups (also truncating)
    - Better first guess for autoalignment ($DS->bkg_e0 - $D->bkg_e0)
@@ -833,7 +840,7 @@ at record-keeping, not that I don't value your input.
    - Added ~current~ attribute to Mode as a way of identifying data
      groups in asequence when making progress messages in a GUI
 
-** 0.9.2   7 November  2011
+** 0.9.2     7 November  2011
 *** Athena
    - Preserve source attribute when reading a project, display it as a
      mouseover for file TextCtrl
@@ -857,7 +864,7 @@ at record-keeping, not that I don't value your input.
    - Jason Gaudet
    - Eric Breynaert
 
-** 0.9.1   2 November  2011
+** 0.9.1     2 November  2011
 
 *** Artemis
    - Take care with fit_include attribute of the Data in a Fit.  Need
@@ -873,7 +880,7 @@ at record-keeping, not that I don't value your input.
 *** Thanks to
    - Jason Gaudet
 
-** 0.9.0  31 October   2011
+** 0.9.0    31 October   2011
 
 This is substantively identical to beta release 9.  This initial
 release will be announced broadly on the mailing list and will be used

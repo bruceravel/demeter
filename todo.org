@@ -2,6 +2,21 @@
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
 
+* top priorities
+** small things
+  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+  - [ ] Lepidocrocite issue (amam gets changed to cmcm)
+  - [ ] Dispersive algorithm, include in Athena
+  - [ ] S02 display issue
+  - [ ] clone data sets and path lists in Artemis
+  - [ ] Artemis history improvments
+
+** big things
+  - [ ] fuzzy over sites
+  - [ ] 5 and 6 legged paths
+  - [ ] PCA improvements
+  - [ ] feff8.5L
+
 * larch chores
 
 + [ ] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
@@ -152,11 +167,12 @@
            and exception.  need to save the list of data that went
            into the PCA and check against that rather than the
            current list of marked groups
-   - [-] *Peakfit tool* [7/11]
+   - [-] *Peakfit tool* [7/12]
      + [ ] persistance
      + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
      + [ ] broken using XES
      + [ ] explicitly state ninfo and epsilon
+     + [ ] for Larch, bounds on parameters
      + [X] implement pseudovoight
      + [X] verify that all centroids are within (or near) fit range
      + [X] behavior when changing data
@@ -205,7 +221,8 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/6]  [0%]
+*** Artemis bugs and missing features [0/8]  [0%]
+   - [ ] More work on history, see Anthony Ardizzi's issue
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
    - [ ] do SSPaths get serialized and deserialized with the pointers
@@ -218,6 +235,7 @@
    - [ ] better way of moving an empirical standard from Athena to
          Artemis -- should be able to import it directly from the
          athena project file.
+   - [ ] Display of S02 glyph on some Windows is broken, breaking S02 context menu
    - [ ] Eric says: "if u use the automatic choice of parameters for
          the paths, in combination with a few quick first shell models
          and an imported feff.inp the whole thing runs in trouble. I
@@ -238,10 +256,11 @@
 **** Advanced fitting
 ***** MFC [0/1]
    - [ ] Balance interstitial energies for MFC fits
-***** MDS & Fit Sequence [0/3]
+***** MDS & Fit Sequence [0/4]
    - [ ] Import mutiple data sets from an Athena project file
    - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
    - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+   - [ ] Clone all/marked paths between data sets
 
 
 *** Histograms [12/14] [85%]
@@ -273,18 +292,20 @@
       
 * Atoms and Feff
 
+
 ** CIF [0/3] [0%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
   - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
 
-** Atoms [3/8] [37%]
+** Atoms [3/9] [33%]
+  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+  - [ ] Lepidocrocite issue (amam gets changed to cmcm)
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
   - [ ] very confusing error message when core is not a tag
   - [ ] Why does Amam in lepidocrocite get changed to Cmcm ?
-  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
   - [X] Shell tags in the feff.inp ATOMS list
   - [X] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
          : title name:     Fe2O3  hematite
@@ -319,7 +340,7 @@ https://github.com/xraypy/feff85exafs
  1. [[file:examples/h12213.cif][This CIF file]] is an example of a structure that has five and six
     legged nearly collinear scattering paths at around 4 Angstroms.  It
     has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
-    instance [[http://dx.DOI.org/10.1021/ic50177a008]])
+    instance [[http://dx.doi.org/10.1021/ic50177a008]])
 
  2. Another example: 1-4 dibromo benzene has Br scatterers across a
     benzene ring which can be seen at about 6 Angstroms, along with
@@ -330,7 +351,15 @@ https://github.com/xraypy/feff85exafs
         :       \   /
         :        C-C
 
- 3. Metals out to 8 Angstroms require 5s and 6s
+ 3. In fact, any benzene ligand has important 5s and 6s going around
+    the ring.  There are various Abs-C-C 3s, 4s, 5s, and 6s.
+        :         C-C
+        :        /   \
+        : Abs - C     c 
+        :        \   /
+        :         c-c
+
+ 4. Metals out to 8 Angstroms require 5s and 6s
 
 
 
