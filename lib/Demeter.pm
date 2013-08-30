@@ -243,7 +243,7 @@ sub import {
   my @heph  = (qw(Data Data/Prj));
   my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
-  my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
+  my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
   my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes   = (qw(XES));
   my @plot  = (qw(Plot/Indicator Plot/Style));

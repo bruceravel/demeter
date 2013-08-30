@@ -136,7 +136,7 @@ description
 
 variable=degen_freq
 type=positive integer
-default=1000
+default=500
 description
   This is the frequency of reporting an update indicator during the
   degeneracy checking of the tree in the pathfinder.

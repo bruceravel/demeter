@@ -370,6 +370,9 @@ sub parse_line {
     my $end = (length($rest) < 10) ? length($rest) : 10;
     my $sg = substr($rest, 0, $end);
     $self->space($sg);
+    $self->alpha($self->cell->alpha);
+    $self->beta ($self->cell->beta );
+    $self->gamma($self->cell->gamma);
     $rest = substr($rest, $end, -1);
   } else {
     @words = split(/$SEPARATOR/, $rest);

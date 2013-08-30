@@ -54,6 +54,7 @@ has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 			 return if ($new =~ m{\A\s*\z});
 			 $self->given_group($new);
 			 $self->group->group($new);
+			 $self->set_hexagonal if ($self->group->class =~ m{hexagonal|trigonal});
 		       });
 has 'given_group'  => (is => 'rw', isa => 'Str',  default => q{});
 has 'no_recurse'   => (is => 'rw', isa => 'Bool', default => 0);
@@ -274,6 +275,15 @@ sub set_rhombohedral {
     $self->gamma(120);
   };
   $self -> geometry;
+  return $self;
+};
+
+sub set_hexagonal {
+  my ($self) = @_;
+  $self->b($self->a);
+  $self->alpha(90);
+  $self->beta(90);
+  $self->gamma(120);
   return $self;
 };
 

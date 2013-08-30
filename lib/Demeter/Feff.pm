@@ -85,6 +85,8 @@ has 'sites' => (
 			      'clear_sites' => 'clear',
 			     }
 	       );
+has 'nsites' => (is=>'rw', isa => 'Int', default => 0);
+
 has 'potentials' => (
 		     traits    => ['Array'],
 		     is        => 'rw',
@@ -162,9 +164,10 @@ has 'hidden'       => (is=>'rw', isa => 'Bool',     default => 0);
 
 has 'fuzz'         => (is=>'rw', isa =>  NonNeg,    default => 0);
 has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,    default => 0);
-has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => 0);
+has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => Demeter->co->default('pathfinder','eta_suppress')||0);
 
 		       ## result of pathfinder
+has 'site_fraction'=> (is => 'rw', isa => 'Num',      default => 1);
 has 'pathlist' => (		# list of ScatteringPath objects
 		   traits    => ['Array'],
 		   is        => 'rw',
@@ -262,10 +265,10 @@ sub central {
   return @{ $self->absorber };
 };
 
-sub nsites {
-  my ($self) = @_;
-  return $#{ $self->sites };
-};
+#sub nsites {
+#  my ($self) = @_;
+#  return $#{ $self->sites };
+#};
 
 =for Explanation
   site_tag
@@ -366,6 +369,7 @@ sub rdinp {
     };
   };
   close $INP;
+  $self->nsites($#{$self->sites});
   $self->feff_version(8) if any {$_ =~ m{scf|exafs|xanes|ldos}} @{$self->othercards};
   $self->feff_version(8) if $nmodules > 4;
 
@@ -542,10 +546,10 @@ sub _pathsdat_head {
   my $header = q{};
   foreach my $t (@ {$self->titles} ) { $header .= "$prefix " . $t . "\n" };
   $header .= $prefix . " This paths.dat file was written by Demeter " . $self->version . "\n";
-  $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
-  $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
-  $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->postcrit);
+  $header .= sprintf("%s Distance fuzz = %.3f A\n",         $prefix, $self->fuzz);
+  $header .= sprintf("%s Angle fuzz = %.2f degrees\n",      $prefix, $self->betafuzz);
+  $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno($self->eta_suppress));
+  $header .= sprintf("%s Post criterion = %.2f\n",          $prefix, $self->postcrit);
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };
@@ -847,8 +851,8 @@ sub _visit {
   return 0 if ($middle =~ m{\.$ai\z}); # the traversal will leave visitations ending in the
   # central atom on the tree
   my $string =  $CTOKEN . $middle . ".$CTOKEN";
-  my $sp     = Demeter::ScatteringPath->new(feff=>$feff, string=>$string);
-  $sp   -> evaluate;
+  my $sp     = Demeter::ScatteringPath->new(feff=>$feff, string=>$string, site_fraction=>$feff->site_fraction);
+  $sp       -> evaluate;
   ## prune branches that involve non-0 eta angles (if desired)
   if ($feff->eta_suppress and $sp->etanonzero) {
     $sp->DEMOLISH;
@@ -891,37 +895,44 @@ sub prep_fuzz {
 sub _collapse_heap {
   my ($self, $heap) = @_;
   $self->prep_fuzz;
+  if (ref($self) =~ m{Aggregate}) {
+    foreach my $p (@{$self->parts}) {
+      $p->set(fuzz=>$self->fuzz, betafuzz=>$self->betafuzz);
+    };
+  };
 
   my $bigcount = 0;
-  my $freq     = $self->co->default("pathfinder", "degen_freq");;
+  my $freq     = $self->co->default("pathfinder", "degen_freq");
   my $pattern  = "(%12d examined)";
   $self->report("=== Collapsing Heap to a degenerate list (. = $freq heap elements compared)\n    ");
 
   my @list_of_paths = ();
   while (my $elem = $heap->extract_top) {
-    # print $elem->string, $/;
+    #print $elem->intrpline2, $/;
     my $new_path = 1;
     ++$bigcount;
     $self->click('.') if not ($bigcount % $freq);
 
+    my $i = 0;
   LOP: foreach my $p (reverse @list_of_paths) {
       my $is_different = $elem->compare($p);
+      #print $is_different, $/;
       last LOP if ($is_different eq 'lengths different');
-      ++$bigcount;
-      $self->click('.') if not ($bigcount % $freq);
       if (not $is_different) {
 	my @degen = @{ $p->degeneracies };
 	push @degen, $elem->string;
-	$p->n($#degen+1);
+	$p->n( $p->n + $elem->site_fraction );
+	#$p->n($#degen+1);
 	$p->degeneracies(\@degen);
-	my $fuzzy = $p->fuzzy + $elem->halflength;
+	my $fuzzy = $p->fuzzy + $elem->halflength*$elem->site_fraction;
 	$p->fuzzy($fuzzy);
 	$new_path = 0;
 	last LOP;
       };
     };
     if ($new_path) {
-      $elem->fuzzy($elem->halflength);
+      $elem->n($elem->site_fraction);
+      $elem->fuzzy($elem->halflength*$elem->site_fraction);
       $elem->degeneracies([$elem->string]);
       push(@list_of_paths, $elem);
     } else {
@@ -947,16 +958,18 @@ sub intrp_header {
   my ($self, %markup) = @_;
   map {$markup{$_} ||= q{} } qw(comment open close 0 1 2);
   my $text = q{};
+  my $about = (ref($self) =~ m{Aggregate}) ? q{~} : q{};
   my @list_of_paths = @{ $self-> pathlist };
   my @miscdat = map {'# '.$_} grep {$_ =~ m{\A\s*(?:Abs|Pot|Gam|Mu)}} split(/\n/, $self->miscdat);
   my @lines = (split(/\n/, $self->_pathsdat_head('#')), @miscdat, "# " . "-" x 70 . "\n");
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
   $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
-  $text .= sprintf "%s# Cluster size = %.5f Angstroms, containing %s atoms%s\n", $markup{comment}, $self->rmax, $self->nsites,                         $markup{close};
-  $text .= sprintf "%s# %d paths were found%s\n",                                $markup{comment}, $#list_of_paths+1,                                  $markup{close};
+  $text .= sprintf "%s# Cluster size = %.2f A, containing %s%s atoms%s\n", $markup{comment}, $self->rmax, $about, $self->nsites,                         $markup{close};
+  $text .= sprintf "%s# %d paths were found within %.3f A%s\n",                                $markup{comment}, $#list_of_paths+1, $self->rmax,                     $markup{close};
   $text .= sprintf "%s# Forward scattering cutoff %.2f%s\n",                     $markup{comment}, $self->co->default("pathfinder", "fs_angle"),       $markup{close};
-  foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n" };
+  foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n"};
+  chomp $text;
   return $text;
 };
 
@@ -979,7 +992,7 @@ sub intrp {
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
   $text .= $self->intrp_header(%markup);
-  $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I   Rank  legs   type" .  $markup{close} . "\n";
+  $text .=  $markup{comment} . "#       degen     Reff       scattering path                      I    Rank  legs   type" .  $markup{close} . "\n";
   my $i = 0;
   foreach my $sp (@list_of_paths) {
     last if ($rmax and ($sp->halflength > $rmax));

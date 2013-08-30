@@ -82,7 +82,7 @@ has 'halflength'   => (is => 'rw', isa => 'Num',      default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
-has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
+has 'n'		   => (is => 'rw', isa => 'Num',      default => 1);
 has 'zcwif'        => (is => 'rw', isa => 'Num',      default => -1);
 
 has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -94,6 +94,7 @@ has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 has 'orig_nnnn'    => (is => 'rw', isa => 'Str',      default => q{});
+has 'site_fraction'=> (is => 'rw', isa => 'Num',      default => 1);
 
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
@@ -195,8 +196,16 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
-  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %6.2f  %d  %s",
+  return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
+      $self->get_rank('zcwif') || 0,
+	$self->nleg, $self->Type;
+};
+sub intrpline2 {
+  my ($self, $i) = @_;
+  $i ||= 9999;
+  return sprintf " %4.4d  %2d   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
+    $i, $self->n, $self->halflength, $self->intrplist, $self->weight,
       $self->get_rank('zcwif') || 0,
 	$self->nleg, $self->Type;
 };
@@ -442,7 +451,7 @@ sub compute_beta {
 ## degeneracy checking
 sub compare {
   my ($self, $other) = @_;
-  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
+#  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
   my $feff = $self->feff;
 
   ## compare path lengths

@@ -5,6 +5,22 @@
 
 * Initial release
 
+** 0.9.19   ?? September 2013
+*** Athena
+
+*** Artemis
+
+*** Atoms
+   - fixed a bug processing hexagonal and trigonal groups with the
+     command line atoms.  oddly, these were handled correctly by the
+     Wx version
+
+*** Demeter
+   - Made the Demeter::Feff::Aggregate object for performing the
+     pathfinder fuzzily over multiple crystallographic sites.
+
+*** Acknowledgments
+
 ** 0.9.18.2 29 August    2013
 
 *** Artemis
