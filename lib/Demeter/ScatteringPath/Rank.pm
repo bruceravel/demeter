@@ -29,18 +29,31 @@ has 'xmax'   => (is => 'rw', isa => 'Num',     default => 10);
 
 sub rank {
   my ($self, $plot) = @_;
+  my $ranksave = Demeter->co->default('pathfinder', 'rank');
+  if (ref($self) =~ m{Aggregate}) {
+    Demeter->co->set_default('pathfinder', 'rank', 'kw2') if $ranksave == 'feff';
+  };
+
+  my $isave = $self->mo->pathindex;
+  my $tempfilesave = $self->randstring;
+  $self->randstring("__ranking.sp");
+
   my $path = $self->temppath;
   my $save = $path->po->kweight;
 
   ## area and peak height/position for each of kw=1,2,3
   my @weights = ($self->co->default('pathfinder', 'rank') eq 'all') ? (1..3) : (2);
+  my (@k, @m, @x, @y);
+  $path->_update('fft');
+  @k = $path->get_array('k');
+  @m = $path->get_array('chi_mag');
   foreach my $i (@weights) {
     $path->po->kweight($i);
     $path->update_fft(1);
     $path->_update('bft');
 
-    my @x = $path->get_array('r');
-    my @y = $path->get_array('chir_mag');
+    @x = $path->get_array('r') if $#x == -1;
+    @y = $path->get_array('chir_mag');
 
     $self->set_rank('area'.$i, $self->rank_area($path, \@x, \@y));
 
@@ -48,22 +61,24 @@ sub rank {
     $self->set_rank('peakpos'.$i, $c);
     $self->set_rank('height'.$i,  $h);
 
-    my @k = $path->get_array('k');
-    my @m = $path->get_array('chi_mag');
-    @m = pairwise {$a * $b**$i} @m, @k;
-    my $mag = $self->rank_chimag($path, \@k, \@m);
+    my @mm = pairwise {$a * $b**$i} @m, @k;
+    my $mag = $self->rank_chimag($path, \@k, \@mm);
     $self->set_rank('chimag'.$i, $mag);
   };
 
   $path->plot('r') if $plot;
   $path->po->kweight($save);
+  $path->rm; # clean up __ranking.sp
   $path->DEMOLISH;
+  $self->randstring($tempfilesave);
+  $self->mo->pathindex($isave);
+  Demeter->co->set_default('pathfinder', 'rank', $ranksave);
 };
 
 sub temppath {
   my ($self) = @_;
   my $path = Demeter::Path->new(sp=>$self, data=>Demeter->dd, parent=>$self->feff,
-				group=>$self->group_name, save_mag=>1,
+				group=>'t__mp', save_mag=>1,
 				s02=>1, sigma2=>0.003, delr=>0, e0=>0, );
   return $path;
 };

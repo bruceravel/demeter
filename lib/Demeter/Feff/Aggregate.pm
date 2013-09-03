@@ -127,7 +127,14 @@ override 'pathfinder' => sub {
   return $self;
 };
 
-
+override 'fetch_zcwifs' => sub {
+  my ($self) = @_;
+  my @z = ();
+  foreach my $i (0 .. $#{$self->pathlist}) {
+    $z[$i] = 0;
+  };
+  return @z;
+};
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -244,8 +251,6 @@ F<Bundle/DemeterBundle.pm> file.
 =over 4
 
 =item * Serialization and persistence
-
-=item * Path ranking
 
 =back
 

@@ -112,7 +112,8 @@ sub BUILD {
   #$self->mo->push_ScatteringPath($self);
   return $_[0];
 };
-override remove => sub {	# a bit of optimization, skipping the "($self) = @_" step
+# a bit of optimization, skipping the "($self) = @_" step
+override remove => sub {
   return $_[0] if $_[0]->pathfinding;
   $_[0]->mo->remove($_[0]) if (defined($_[0]) and ref($_[0]) =~ m{Demeter} and defined($_[0]->mo));
   return $_[0];
@@ -196,18 +197,12 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
+  my $rank = (Demeter->co->default('pathfinder', 'rank') eq 'feff')
+    ? $self->get_rank('zcwif') : $self->get_rank('area2_n');
+  $rank ||= 0;
   return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
-      $self->get_rank('zcwif') || 0,
-	$self->nleg, $self->Type;
-};
-sub intrpline2 {
-  my ($self, $i) = @_;
-  $i ||= 9999;
-  return sprintf " %4.4d  %2d   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
-    $i, $self->n, $self->halflength, $self->intrplist, $self->weight,
-      $self->get_rank('zcwif') || 0,
-	$self->nleg, $self->Type;
+      $rank, $self->nleg, $self->Type;
 };
 
 sub labelline {

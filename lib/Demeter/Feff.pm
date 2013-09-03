@@ -625,22 +625,32 @@ sub fetch_zcwifs {
 };
 
 sub rank_paths {
-  my ($self) = @_;
+  my ($self, $how) = @_;
+  $how ||= 'zcwifs';
   my @z = $self->fetch_zcwifs;
   my $i = 0;
+  my $screen = (($self->screen) and ($self->mo->ui eq 'screen'));
+  $self->start_counter("Demeter is ranking paths", $#{$self->pathlist}+1) if $screen;
   foreach my $sp (@{ $self->pathlist }) {
+    $self->count if $screen;
+    my $save = $sp->feff->screen;
+    $sp->feff->screen(0);
     $sp->rank if ($self->co->default('pathfinder', 'rank') ne 'feff');
     $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]||0));
-    if ($sp->get_rank('zcwif') >= $self->co->default('pathfinder', 'rank_high')) {
+    $i++;
+    $sp->feff->screen($save);
+  };
+  $self->pathlist->[0]->normalize(@{ $self->pathlist });
+  foreach my $sp (@{ $self->pathlist }) {
+    if ($sp->get_rank($how) >= $self->co->default('pathfinder', 'rank_high')) {
       $sp->weight(2);
-    } elsif ($sp->get_rank('zcwif') <= $self->co->default('pathfinder', 'rank_low')) {
+    } elsif ($sp->get_rank($how) <= $self->co->default('pathfinder', 'rank_low')) {
       $sp->weight(0);
     } else {
       $sp->weight(1);
     }
-    $i++;
   };
-  $self->pathlist->[0]->normalize(@{ $self->pathlist });
+  $self->stop_counter if $screen;
   return $self;
 };
 
