@@ -8,11 +8,12 @@ use Demeter qw(:atoms :ui=screen :p=gnuplot);
 my $atoms = Demeter::Atoms->new(file=>'BaFe12O19.inp');
 $atoms->set(rmax=>8, rpath=>5, ipot_style=>'tags');
 my $bigfeff = Demeter::Feff::Aggregate->new(screen=>1);
-$bigfeff->setup($atoms, 'Fe');
+my $ret = $bigfeff->setup($atoms, 'Fe');
 $bigfeff->run;
+#print ">>>>>>", $bigfeff->workspace, $/;
 
-Demeter->co->set_default('pathfinder', 'rank', 'kw2');
-$bigfeff->rank_paths('area2_n');
+#Demeter->co->set_default('pathfinder', 'rank', 'kw2');
+$bigfeff->rank_paths; #('area2_n');
 
 
 use Term::ANSIColor qw(:constants);
@@ -29,14 +30,12 @@ Demeter->set_mode(screen=>0);
 foreach my $sp (@{ $bigfeff->pathlist }) {
   $sp->feff->screen(0);
   ++$i;
-  my $path = Demeter::Path -> new(parent=>$sp->feff, s02=>1, name=>"path $i", sp=>$sp)
-    ->plot("r");
+  my $path = Demeter::Path -> new(parent=>$sp->feff, s02=>1, name=>"path $i", sp=>$sp);
+  $path->plot("r");
+  ##print $path->paragraph;
   last if $i == 10;
 };
 
 $bigfeff->pause;
 
-$_->clean_workspace foreach (@{$bigfeff->parts});
-
-
-
+$bigfeff->clean_workspace;

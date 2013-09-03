@@ -9,11 +9,13 @@
 *** Athena
 
 *** Artemis
+   - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
      command line atoms.  oddly, these were handled correctly by the
      Wx version
+   - Implemented Aggregate Feff calculation on Atoms Xtal tab
 
 *** Demeter
    - Made the Demeter::Feff::Aggregate object for performing the

@@ -61,7 +61,7 @@ use Demeter::UI::Wx::VerbDialog;
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use File::Basename;
-use List::MoreUtils qw(firstidx);
+use List::MoreUtils qw(firstidx true);
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
@@ -97,6 +97,7 @@ my %hints = (
 	     open      => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
 	     save      => "Save an atoms input file from these crystallographic data",
 	     exec      => "Generate input data for Feff from these crystallographic data",
+	     aggregate => "Aggregate Feff calculations over all sites occupied by the same element",
 	     doc       => "Show the Atoms documentation in a browser",
 	     clear     => "Clear this crystal structure",
 	     output    => "Write a feff.inp file or some other format",
@@ -137,11 +138,14 @@ sub new {
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
+  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
+  my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
+  $self->{aggid} = $agg->GetId;
+  $self->{toolbar}->EnableTool($self->{aggid},0);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
@@ -436,7 +440,7 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms);
+  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms aggregate);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -460,12 +464,22 @@ sub OnToolRightClick {
 ## grid is passed through
 sub OnGridClick {
   my ($self, $event) = @_;
-  $event->Skip(1), return if ($event->GetCol != 0);
-  my $row = $event->GetRow;
+  $event->Skip(1), return if ((ref($event) =~ m{Event}) and ($event->GetCol != 0));
+  my $row = (ref($event) =~ m{Event}) ? $event->GetRow : $event;
+  my @el;
   foreach my $rr (0 .. $self->GetNumberRows) {
-    $self->SetCellValue($rr, 0, 0)
+    $self->SetCellValue($rr, 0, 0);
+    push @el, $self->GetCellValue($rr, 1) if ($self->GetCellValue($rr, 1) !~ m{\A\s*\z});
   };
-  $self->SetCellValue($row, 0, 1)
+  $self->SetCellValue($row, 0, 1);
+  my $nsites = true {$_ eq $self->GetCellValue($row, 1)} @el;
+  if ($nsites > 1) {
+    ## enable aggregate Feff calculation
+    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},1);
+  } else {
+    ## disable aggregate Feff calculation
+    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+  };
 };
 
 sub PostGridMenu {
@@ -598,7 +612,8 @@ sub open_file {
   $self->{shift_y}->SetValue($shift[1]||0);
   $self->{shift_z}->SetValue($shift[2]||0);
 
-  my $i= 0;
+  my $i = 0;
+  my $corerow = 0;
   my $cell = $atoms->cell;
   my $message = "Imported crystal data from \"$file\".";
   foreach my $s (@{ $atoms->sites }) {
@@ -613,6 +628,7 @@ sub open_file {
     $self->{sitesgrid}->SetCellValue($i, 5, $this[4]);
     if (lc($this[4]) eq lc($atoms->core)) {
       $self->{sitesgrid}->SetCellValue($i, 0, 1);
+      $corerow = $i;
       if (not $atoms->edge) {
 	my $z = ($sym =~ m{\ANu}) ? 0 : get_Z( $sym );
 	($z > 57) ? $atoms->edge('l3') : $atoms->edge('k');
@@ -620,6 +636,7 @@ sub open_file {
     };
     ++$i;
   };
+  OnGridClick($self->{sitesgrid}, $corerow);
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
   $ie = 0 if ($ie == -1);
   $self->{edge}->SetSelection($ie);
@@ -892,6 +909,21 @@ sub run_atoms {
     $self->unusable_data();
   };
 };
+
+sub aggregate {
+  my ($self) = @_;
+  print "run aggregate calculation: $self\n";
+
+  ## 0. warn about length of calculation, check rpath value
+  ## 1. set up Feff::Aggregate object, use folder created when atoms imported, feff_* folders for parts
+  ## 2. Check return value of setup method, clean and bail if there is a problem
+  ## 3. run aggregate calculation, streaming updates to console
+  ## 4. Fill and disable Feff tab
+  ## 5. Fill Paths tab
+  ## 6. clean up and display
+
+};
+
 
 sub document {
   $::app->document('feff');

@@ -619,6 +619,7 @@ sub fetch_zcwifs {
   };
   close $FD;
   unlink File::Spec->catfile($self->workspace, 'files.dat');
+  unlink File::Spec->catfile($self->workspace, 'nstar.dat');
   unlink File::Spec->catfile($self->workspace, 'paths.dat');
 
   return @zcwifs;
@@ -626,7 +627,7 @@ sub fetch_zcwifs {
 
 sub rank_paths {
   my ($self, $how) = @_;
-  $how ||= 'zcwifs';
+  $how ||= 'zcwif';
   my @z = $self->fetch_zcwifs;
   my $i = 0;
   my $screen = (($self->screen) and ($self->mo->ui eq 'screen'));

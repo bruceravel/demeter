@@ -17,7 +17,7 @@ package Demeter::SSPath;
 
 use Moose;
 extends 'Demeter::Path';
-use Demeter::NumTypes qw( Ipot PosNum PosInt );
+use Demeter::NumTypes qw( Ipot PosNum PosInt Natural );
 use Demeter::StrTypes qw( Empty );
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -37,6 +37,7 @@ has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 has 'rattle'     => (is => 'rw', isa => 'Bool',   default => 0,
 		     trigger => sub{ my ($self, $new) = @_; $self->set_rattle($new); $self->update_path(1)});
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 9999);
 
 ## the sp attribute must be set to this SSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
