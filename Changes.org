@@ -10,6 +10,7 @@
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
+   - Add a site button now working on Atoms page
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
