@@ -79,7 +79,7 @@ sub new {
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
   $self->{paths}->SetColumnWidth( 0,  50 );
-  $self->{paths}->SetColumnWidth( 1,  50 );
+  $self->{paths}->SetColumnWidth( 1,  55 );
   $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
   $self->{paths}->SetColumnWidth( 4,  50 );

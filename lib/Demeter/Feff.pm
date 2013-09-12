@@ -104,9 +104,10 @@ has 'titles' => (
 		 isa       => 'ArrayRef',
 		 default   => sub { [] },
 		 handles   => {
-			       'push_titles'  => 'push',
-			       'pop_titles'   => 'pop',
-			       'clear_titles' => 'clear',
+			       'unshift_titles' => 'unshift',
+			       'push_titles'    => 'push',
+			       'pop_titles'     => 'pop',
+			       'clear_titles'   => 'clear',
 			      }
 		);
 has 'absorber' => (

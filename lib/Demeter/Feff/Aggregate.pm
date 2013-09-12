@@ -159,7 +159,11 @@ after 'run' => sub {
 override 'potph' => sub {
   my ($self) = @_;
   my @rmt;
+  my $i = 0;
   foreach my $p (@{$self->parts}) {
+    $p->unshift_titles("TITLE Aggregate Feff calculation, Site ". ++$i);
+    $p->execution_wrapper($self->execution_wrapper);
+    $p->screen($self->screen);
     $p->potph;
     push @rmt, $self->fetch_rmt($p);
   };

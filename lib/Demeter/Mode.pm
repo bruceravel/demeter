@@ -484,6 +484,8 @@ sub remove {
     $type = 'Plot';
   } elsif ($type eq 'External') {
     $type = 'Feff';
+  } elsif ($type eq 'Aggregate') {
+    $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
   };

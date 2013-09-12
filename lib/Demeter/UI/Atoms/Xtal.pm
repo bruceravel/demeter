@@ -881,7 +881,8 @@ sub save_file {
 };
 
 sub run_atoms {
-  my ($self) = @_;
+  my ($self, $is_aggregate) = @_;
+  $is_aggregate = 0;
   my $seems_ok = $self->get_crystal_data;
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
   my ($template, $style) = split(/ - /, $this);
@@ -894,6 +895,7 @@ sub run_atoms {
       my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
       if ($yesno->ShowModal == wxID_NO) {
 	$self->{parent}->status("Aborting calculation.");
+	undef $busy;
 	return;
       };
     };
@@ -904,7 +906,7 @@ sub run_atoms {
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
     undef $busy;
-    $self->{parent}->{notebook}->ChangeSelection(1);
+    $self->{parent}->{notebook}->ChangeSelection(1) if not $is_aggregate;
   } else {
     $self->unusable_data();
   };
@@ -912,16 +914,61 @@ sub run_atoms {
 
 sub aggregate {
   my ($self) = @_;
-  print "run aggregate calculation: $self\n";
 
   ## 0. warn about length of calculation, check rpath value
+  my $text = "The aggregate Feff calculation can be quite time consuming, particularly if Rpath is large.\n\n";
+  $text   .= "This calculation requires that Rmax be large enough that each Feff calculation inlcudes an example of each unique potential.\n\n";
+  $text   .= sprintf("Rmax = %.3f    Rpath = %.3f\n\n", $self->{rmax}->GetValue, $self->{rpath}->GetValue);
+  $text   .= "Continue with the calculation?";
+  my $message = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 $text,
+						 "Perform aggregate Feff calculation?",
+						 "Continue");
+  #my $message = Wx::MessageDialog->new($self, $text, "Perform aggregate Feff calculation?", wxYES_NO);
+  #$message->ShowModal;
+  if ($message->ShowModal == wxID_NO) {
+    $self->{parent}->status("Not performing aggrgate Feff calculation.");
+    return;
+  };
+
+
   ## 1. set up Feff::Aggregate object, use folder created when atoms imported, feff_* folders for parts
+  $self->run_atoms(1);
+  my $bigfeff = Demeter::Feff::Aggregate->new(screen=>0);
+
+  $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
+  $self->{parent}->{Console}->{console}->AppendText($self->{parent}->{Feff}->now("Aggregate Feff calculation beginning at ", $bigfeff));
+  my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
+  $self->{parent}->{notebook}->ChangeSelection($n);
+  $self->{parent}->{Console}->{console}->Update;
+  my $start = DateTime->now( time_zone => 'floating' );
+  my $busy = Wx::BusyCursor->new();
+  $bigfeff->execution_wrapper(sub{$self->{parent}->{Feff}->run_and_gather(@_)});
+  my ($central, $xcenter, $ycenter, $zcenter) = $atoms -> cell -> central($atoms->core);
+
   ## 2. Check return value of setup method, clean and bail if there is a problem
+  my $ret = $bigfeff->setup($atoms, $central->element);
+  if (not $ret->is_ok) {
+    my $message = Wx::MessageDialog->new($self, $ret->message, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
+    $bigfeff->clean_workspace;
+    $bigfeff->DEMOLISH;
+    $self->{parent}->{notebook}->ChangeSelection(0);
+    $self->{rmax}->SetFocus;
+    return;
+  };
+
   ## 3. run aggregate calculation, streaming updates to console
+  $bigfeff->run;
+
   ## 4. Fill and disable Feff tab
   ## 5. Fill Paths tab
-  ## 6. clean up and display
+  $self->{parent}->{Feff}->fill_intrp_page($bigfeff);
+  $self->{parent}->{Feff}->fill_ss_page($bigfeff);
+  $self->{parent}->{notebook}->ChangeSelection(2);
 
+  ## 6. clean up and display
+  #$bigfeff->clean_workspace;
+  undef $busy;
 };
 
 
