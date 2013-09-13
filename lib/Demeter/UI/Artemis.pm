@@ -15,6 +15,7 @@ use Demeter::UI::Wx::VerbDialog;
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+$Archive::Zip::UNICODE = 1;
 use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
