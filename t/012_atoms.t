@@ -52,9 +52,10 @@ ok( (
      ($this->sg('number') == 194 ) and
      ($this->sg('shorthand') eq 'hex, hcp' )
     ), "spacegroup database consulted correctly");
-$this -> rmax(6);
+$this -> rmax(9);
+$this -> rpath(6);
 $string = $this->Write;
-ok( (($string =~ m{contains (\d+) atoms}) and ($1 eq '77')), "feff atoms list expanded to correct number"); 
+ok( (($string =~ m{contains (\d+) atoms}) and ($1 eq '281')), "feff atoms list expanded to correct number");
 
 $this->co->set_default("atoms", "precision", "10.6f");
 ok( $this->out('a') eq '  5.873000',                          "setting output precision works: >".$this->out('a')."<");
@@ -67,7 +68,7 @@ ok( $this->out('a') eq '   5.87300',                          "setting output pr
 my @list;
 $this->ipot_style("tags");
 @list = split("\n", $this->potentials_list);
-ok( $#list == 6,  "ipot style tags works");
+ok( $#list == 7,  "ipot style tags works");
 
 $this->ipot_style("elements");
 @list = split("\n", $this->potentials_list);
@@ -77,4 +78,4 @@ ok( $#list == 3,  "ipot style elements works");
 $this->ipot_style("sites");
 open(STDERR, ">/dev/null");
 @list = split("\n", $this->potentials_list);
-ok( $#list == 10,  "ipot style sites works");
+ok( $#list == 11,  "ipot style sites works");
