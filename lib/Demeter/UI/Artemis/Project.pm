@@ -462,10 +462,14 @@ sub read_project {
 sub restore_fit {
   my ($rframes, $fit, $lastfit) = @_;
   $lastfit ||= $fit;
+  if (not defined($fit)) {
+    return q{It seems that you have not actually performed a fit in this fitting project.};
+  };
   my $import_problems = q{};
   $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
 
   ## -------- load up the GDS parameters
+  my $fom = 0;
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
   $rframes->{main}->status("Restoring GDS parameters", 'wait|nobuffer');
@@ -499,10 +503,13 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
-  $fit->mo->currentfit($fit->fom+1);
-  my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $fom = $fit->fom+1;
+  Demeter->mo->currentfit($fom);
+  my ($name, $description) = (q{}, q{});
+  $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $description = $fit->description;
   $rframes->{main}->{name}->SetValue($name);
-  $rframes->{main}->{description}->SetValue($fit->description);
+  $rframes->{main}->{description}->SetValue($description);
 
   ## -------- Data and Paths
   my $count = 0;

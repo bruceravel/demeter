@@ -11,6 +11,8 @@
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
    - Add a site button now working on Atoms page
+   - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
+   - Deal better with a project file saved before performing a fit
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
@@ -21,8 +23,15 @@
 *** Demeter
    - Made the Demeter::Feff::Aggregate object for performing the
      pathfinder fuzzily over multiple crystallographic sites.
+   - Addressed some failed tests in 012_atoms
 
 *** Acknowledgments
+   - _Fred Mosselmans_ noticed that the add a site button didn't work
+     in Atoms and that a project file saved before a fit is performed
+     will crash Artemis
+   - _Andrei Shiryaev_ noticed that unicode in Artemis project files
+     was problematic and _Matt Newville_ suggested a solution
+   - _Denis Testamale_ noticed that test 012_atoms was failing
 
 ** 0.9.18.2 29 August    2013
 

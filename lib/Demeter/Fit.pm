@@ -1413,6 +1413,7 @@ override 'deserialize' => sub {
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
+  $r_data = [] if not defined($r_data);
   $self->datagroups($r_data);
 
   ## -------- import the data
@@ -1643,7 +1644,7 @@ override 'deserialize' => sub {
 #  Demeter->trace;
 #  print $args{file}, "  ", $args{folder}, $/;
 #  print $yaml, $/;
-  my $rhash = YAML::Tiny::Load($yaml);
+  my $rhash = YAML::Tiny::Load($yaml) || {};
   my @array = %$rhash;
   $self -> set(@array);
   $self -> fit_performed(0);

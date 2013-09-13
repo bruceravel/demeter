@@ -61,6 +61,7 @@ use Demeter::UI::Wx::VerbDialog;
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use File::Basename;
+use File::Copy;
 use List::MoreUtils qw(firstidx true);
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
@@ -900,6 +901,10 @@ sub run_atoms {
 	return;
       };
     };
+    ## these can be disabled by an aggregate calculation
+    $self->{parent}->{Feff}->{toolbar}->Enable(1);
+    $self->{parent}->{Feff}->{name}->Enable(1);
+    $self->{parent}->{Feff}->{feff}->Enable(1);
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
     $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
@@ -935,7 +940,14 @@ sub aggregate {
 
   ## 1. set up Feff::Aggregate object, use folder created when atoms imported, feff_* folders for parts
   $self->run_atoms(1);
-  my $bigfeff = Demeter::Feff::Aggregate->new(screen=>0);
+  my $gp = $self->{parent}->{Feff}->{feffobject}->group;
+  my $ws = $self->{parent}->{Feff}->{feffobject}->workspace;
+  $self->{parent}->{Feff}->{feffobject}->DEMOLISH;
+  my $bigfeff = Demeter::Feff::Aggregate->new(group=>$gp, screen=>0);
+  $self->{parent}->{Feff}->{feffobject} = $bigfeff;
+  my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);
+  $bigfeff -> workspace($workspace);
+  $bigfeff -> make_workspace;
 
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->{parent}->{Feff}->now("Aggregate Feff calculation beginning at ", $bigfeff));
@@ -962,7 +974,19 @@ sub aggregate {
   $bigfeff->run;
 
   ## 4. Fill and disable Feff tab
-  ## 5. Fill Paths tab
+  $self->{parent}->{Feff}->{toolbar}->Enable(0);
+  $self->{parent}->{Feff}->{name}->Enable(0);
+  $self->{parent}->{Feff}->{feff}->Enable(0);
+
+  ## 5. Labels & Fill Paths tab
+  $bigfeff->name(q{agg-}.$self->{name}->GetValue);
+  my $yaml = File::Spec->catfile($bigfeff->workspace, $bigfeff->group.".yaml");
+  $bigfeff->freeze($yaml);
+
+  $::app->{main}->{$self->{parent}->{fnum}}->SetLabel('Hide "' . $bigfeff->name . '"');
+  $self->{name}->SetValue($bigfeff->name);
+  $self->{parent}->{Feff}->{name}->SetValue($bigfeff->name);
+  $self->{parent}->{Feff}->{feffobject} = $bigfeff;
   $self->{parent}->{Feff}->fill_intrp_page($bigfeff);
   $self->{parent}->{Feff}->fill_ss_page($bigfeff);
   $self->{parent}->{notebook}->ChangeSelection(2);
