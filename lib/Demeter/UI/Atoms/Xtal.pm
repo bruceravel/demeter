@@ -902,12 +902,12 @@ sub run_atoms {
       };
     };
     ## these can be disabled by an aggregate calculation
-    $self->{parent}->{Feff}->{toolbar}->Enable(1);
-    $self->{parent}->{Feff}->{name}->Enable(1);
-    $self->{parent}->{Feff}->{feff}->Enable(1);
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
     $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
+    $self->{parent}->{Feff}->{toolbar}->Enable(1);
+    $self->{parent}->{Feff}->{name}->Enable(1);
+    $self->{parent}->{Feff}->{feff}->Enable(1);
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
@@ -937,12 +937,16 @@ sub aggregate {
     return;
   };
 
-
+  ## 0.5. Write an atoms.inp and pass it along to the parts
   ## 1. set up Feff::Aggregate object, use folder created when atoms imported, feff_* folders for parts
   $self->run_atoms(1);
-  my $gp = $self->{parent}->{Feff}->{feffobject}->group;
-  my $ws = $self->{parent}->{Feff}->{feffobject}->workspace;
-  $self->{parent}->{Feff}->{feffobject}->DEMOLISH;
+  my $feffobject = $self->{parent}->{Feff}->{feffobject};
+  my $atomsfile = File::Spec->catfile($self->{parent}->{Feff}->{feffobject}->workspace, "atoms.inp");
+  $self->save_file($atomsfile);
+  #$atoms->file($atomsfile);
+  my $gp = $feffobject->group;
+  my $ws = $feffobject->workspace;
+  $feffobject->DEMOLISH;
   my $bigfeff = Demeter::Feff::Aggregate->new(group=>$gp, screen=>0);
   $self->{parent}->{Feff}->{feffobject} = $bigfeff;
   my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);
@@ -983,7 +987,7 @@ sub aggregate {
   my $yaml = File::Spec->catfile($bigfeff->workspace, $bigfeff->group.".yaml");
   $bigfeff->freeze($yaml);
 
-  $::app->{main}->{$self->{parent}->{fnum}}->SetLabel('Hide "' . $bigfeff->name . '"');
+  $::app->{main}->{$self->{parent}->{fnum}}->SetLabel('Hide "' . $bigfeff->name . '"') if $self->{parent}->{component};
   $self->{name}->SetValue($bigfeff->name);
   $self->{parent}->{Feff}->{name}->SetValue($bigfeff->name);
   $self->{parent}->{Feff}->{feffobject} = $bigfeff;

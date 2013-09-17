@@ -1,0 +1,73 @@
+#------------------------------------------------------------------------------
+#$Date: 2013-05-05 14:21:46 +0000 (Sun, 05 May 2013) $
+#$Revision: 85285 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/92/9009220.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/. The original data for this entry
+# were provided the American Mineralogist Crystal Structure Database,
+# http://rruff.geo.arizona.edu/AMS/amcsd.php
+#
+# The file may be used within the scientific community so long as
+# proper attribution is given to the journal article from which the
+# data were obtained.
+#
+data_9009220
+loop_
+_publ_author_name
+'Rossell, H. J.'
+_publ_section_title
+;
+ Zirconolite - a fluorite-related superstructure
+ Locality: Synthetic
+ Note polytype Zirconolite-2M
+;
+_journal_name_full               Nature
+_journal_page_first              282
+_journal_page_last               283
+_journal_volume                  283
+_journal_year                    1980
+_chemical_formula_sum            'Ca2 O14 Ti4 Zr2'
+_chemical_name_mineral           Zirconolite
+_space_group_IT_number           15
+_symmetry_space_group_name_Hall  '-C 2yc'
+_symmetry_space_group_name_H-M   'C 1 2/c 1'
+_cell_angle_alpha                90
+_cell_angle_beta                 100.533
+_cell_angle_gamma                90
+_cell_length_a                   12.4458
+_cell_length_b                   7.2734
+_cell_length_c                   11.3942
+_cell_volume                     1014.060
+_exptl_crystal_density_diffrn    4.442
+_[local]_cod_chemical_formula_sum_orig 'Ca2 Zr2 Ti4 O14'
+_cod_database_code               9009220
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+1/2+x,1/2+y,z
+x,-y,1/2+z
+1/2+x,1/2-y,1/2+z
+-x,y,1/2-z
+1/2-x,1/2+y,1/2-z
+-x,-y,-z
+1/2-x,1/2-y,-z
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+CaM1 0.37180 0.12450 0.49520 1.00000
+ZrM2 0.12250 0.12220 -0.02580 1.00000
+TiM3 0.24980 0.12230 0.74650 1.00000
+TiM4 0.50000 0.05500 0.25000 1.00000
+TiM5 0.00000 0.12700 0.25000 1.00000
+O1 0.31000 0.13300 0.27500 1.00000
+O2 0.47000 0.14600 0.10200 1.00000
+O3 0.19700 0.08300 0.57300 1.00000
+O4 0.40300 0.17400 0.71900 1.00000
+O5 0.70200 0.16900 0.59000 1.00000
+O6 -0.00100 0.11100 0.41400 1.00000
+O7 0.11900 0.05500 0.78800 1.00000

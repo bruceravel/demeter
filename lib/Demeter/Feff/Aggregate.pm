@@ -53,7 +53,13 @@ sub setup {
   my @sites;
   my @ipots;
   foreach my $site (keys(%frac)) {
-    my $this = Demeter::Atoms->new(file=>$atoms->file);
+    my $this = Demeter::Atoms->new;
+    if ($atoms->file) {
+      $this->file($atoms->file);
+    } elsif ($atoms->cif) {
+      $this->cif($atoms->cif);
+      $this->record($atoms->record);
+    };
     $this->set(rmax=>$atoms->rmax, rpath=>$atoms->rpath);
     $this->core($site);
     $this->build_cluster;
