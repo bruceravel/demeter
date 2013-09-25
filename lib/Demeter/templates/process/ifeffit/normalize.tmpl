@@ -2,8 +2,13 @@
   # pre-edge template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $fixed = q{};
+  if ($D->bkg_fixstep) {
+     $fixed = sprintf(", edge_step=%.7g", $D->bkg_step);
+  };
+  q{}
 }
 
 pre_edge("{$D->group}.energy+{$D->bkg_eshift}", {$D->group}.xmu, e0={$D->bkg_e0},
          pre1={$D->bkg_pre1}, pre2={$D->bkg_pre2}, norm_order={$D->bkg_nnorm},
-	 norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2})
+	 norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2}{$fixed})

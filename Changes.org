@@ -24,6 +24,7 @@
    - Made the Demeter::Feff::Aggregate object for performing the
      pathfinder fuzzily over multiple crystallographic sites.
    - Addressed some failed tests in 012_atoms
+   - Fixed a problem with fixed edge step value and XANES data
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work
@@ -32,6 +33,8 @@
    - _Andrei Shiryaev_ noticed that unicode in Artemis project files
      was problematic and _Matt Newville_ suggested a solution
    - _Denis Testamale_ noticed that test 012_atoms was failing
+   - _George Sterbinsky_ for noting that a fixed edge step value was
+     not respected for XANES data
 
 ** 0.9.18.2 29 August    2013
 
