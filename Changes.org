@@ -13,6 +13,8 @@
    - Add a site button now working on Atoms page
    - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
    - Deal better with a project file saved before performing a fit
+   - A bit more control over labels in path list with artemis->feffpathlist config parameter
+   - Athena file MRU list now remembers record number and defaults to that record when selected
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the

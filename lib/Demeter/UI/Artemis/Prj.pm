@@ -28,7 +28,7 @@ use List::MoreUtils qw{firstidx minmax};
 use Scalar::Util qw(looks_like_number);
 
 sub new {
-  my ($class, $parent, $file, $style) = @_;
+  my ($class, $parent, $file, $style, $choice) = @_;
 
   my $gui = ($style eq 'single') ? 'Artemis' : 'Athena';
   my $this = $class->SUPER::new($parent, -1, "$gui: Import from Athena project file",
@@ -128,8 +128,9 @@ sub new {
   $this -> SetSizerAndFit( $hbox );
 
   if ($style eq 'single') {
-    $this->{grouplist}->SetSelection(0);
-    $this->do_plot($prj,$positions->[0]+1);
+    $this->{grouplist}->SetSelection($choice-1);
+    #$this->do_plot($prj,$positions->[0]+1);
+    $this->do_plot($prj,$choice); # this works because choice was set AFTER non-chi data was weeded out
   };
   return $this;
 };

@@ -928,7 +928,7 @@ sub _collapse_heap {
     my $i = 0;
   LOP: foreach my $p (reverse @list_of_paths) {
       my $is_different = $elem->compare($p);
-      #print $is_different, $/;
+      #Demeter->pjoin($elem->string, $p->string, $is_different);
       last LOP if ($is_different eq 'lengths different');
       if (not $is_different) {
 	my @degen = @{ $p->degeneracies };

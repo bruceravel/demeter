@@ -579,7 +579,12 @@ sub Rename {
   if (ref($self->{path}) =~ m{FPath}) {
     $self->{path}->label($newname);
   } else {
-    $self->{path}->label(sprintf("[%s] %s", ($self->{path}->parent) ? $self->{path}->parent->name : q{}, $newname));
+    my $feffname = ($self->{path}->parent) ? $self->{path}->parent->name : q{};
+    my $n = Demeter->co->default('artemis', 'feffpathname');
+    if ($n > 0) {
+      $feffname = substr($feffname, 0, $n) if length($feffname) > $n;
+    };
+    $self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
   };
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;

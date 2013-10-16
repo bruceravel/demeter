@@ -946,7 +946,7 @@ sub aggregate {
   #$atoms->file($atomsfile);
   my $gp = $feffobject->group;
   my $ws = $feffobject->workspace;
-  $feffobject->DEMOLISH;
+  #$feffobject->DEMOLISH;
   my $bigfeff = Demeter::Feff::Aggregate->new(group=>$gp, screen=>0);
   $self->{parent}->{Feff}->{feffobject} = $bigfeff;
   my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);

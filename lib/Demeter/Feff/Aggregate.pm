@@ -147,6 +147,8 @@ after 'run' => sub {
     $sp->folder($self->workspace);
   };
   ## copy over various things from master Feff object
+  $self->absorber($feff_to_use->absorber);
+  $self->abs_index($feff_to_use->abs_index);
   copy($feff_to_use->atoms->file,
        File::Spec->catfile($self->workspace, 'atoms.inp'));
   copy(File::Spec->catfile($feff_to_use->workspace, 'feff.inp'),
@@ -218,7 +220,8 @@ override 'pathfinder' => sub {
     my $this_heap = $f->_traverse_tree($this_tree);
     undef $this_tree;
     while (my $elem = $this_heap->extract_top) {
-      #$elem->feff($self);
+      $elem->ipot([$elem->fetch_ipots]);
+      $elem->feff($self);
       $bigheap->add($elem);
       $bigcount += 1;
     };
@@ -234,9 +237,32 @@ override 'pathfinder' => sub {
     $sp->pathfinding(0);
     $sp->mo->push_ScatteringPath($sp);
   };
+  Demeter->FDump("/home/bruce/foo", \@list_of_paths);
   $self->set(pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1);
   return $self;
 };
+
+
+sub make_path {
+  my ($self, $sp) = @_;
+  my $path;
+  if ($sp->nleg == 2) {
+    $path = Demeter::SSPath -> new(parent => $sp->feff,
+				   reff   => $sp->halflength,
+				   ipot   => $sp->ipot->[1],
+				   degen  => $sp->n,
+				   n      => $sp->n,
+				  );
+    $path->make_name;
+    $path->bvabs($sp->feff->abs_species);
+    $path->bvscat(get_symbol($sp->feff->potentials->[$sp->ipot->[1]]->[1]));
+    ## don't forget to set data attribute!
+  } else {
+    warn("Not yet doing MS paths from aggregate Feff calculation");
+  };
+  return $path;
+};
+
 
 
 __PACKAGE__->meta->make_immutable;

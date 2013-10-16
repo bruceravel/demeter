@@ -148,3 +148,14 @@ type=string
 default=http://bruceravel.github.io/demeter/artug/
 description
   The URL of the Artemis document.
+
+variable=feffpathname
+type=positive integer
+minint=0
+maxint=100
+default=8
+description
+  This integer is used to truncate the name of the Feff calculation
+  when constructing the path label used in the path list.  This is the
+  part that goes inside of square brackets, as in "[feffcalc] path name".
+  Set this to 0 if you want not to truncate the Feff name.

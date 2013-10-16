@@ -68,6 +68,12 @@ my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff', alias => 'parent');
 has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
+## this is used only by paths coming from an aggregate Feff
+## calculation, which *has* to resolve details of the paths
+## relatively early since the Feff calcualtion of origin will
+## eventually be thrown away
+has 'ipot'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
 has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
 
 has 'rleg'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -185,11 +191,25 @@ sub intrplist {
   my @atoms  = split(/\./, $self->string);
   my @intrp = ($token);
   my @sites  = @{ $feff->sites };
-  foreach my $a (@atoms[1 .. $#atoms-1]) {
-    my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
-    $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
-    push @intrp, sprintf("%-6s", $this);
-  };
+  if ($#{$self->ipot} > -1) { ## this is an aggregate feff calc
+    foreach my $i (1 .. $#{$self->ipot}-1) {
+      my $this;
+      my $a = $self->ipot->[$i];
+      if ($a == 0) {
+	$this = $token;
+      } else {
+	$this = $self->feff->potentials->[$a]->[2] || get_symbol($self->feff->potentials->[$a]->[1]);
+      };
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  } else {		      ## this is a normal feff calc
+    foreach my $a (@atoms[1 .. $#atoms-1]) {
+      my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  }
   push @intrp, $token;
   return join(" ", @intrp);
 };
@@ -218,6 +238,18 @@ sub ssipot {
   my $this_site = $hits[1];
   my $ipot = $self->feff->sites->[$this_site]->[3];
   return $ipot;
+};
+sub fetch_ipots {
+  my ($self) = @_;
+  my @hits = split(/\./, $self->string);
+  my @these;
+  foreach my $h (@hits) {
+    my $this_site = $h;
+    my $ipot = ($this_site eq '+') ? 0 : $self->feff->sites->[$this_site]->[3];
+    #$ipot = 0 if ($ipot eq Demeter->co->default('pathfinder', 'token');
+    push @these, $ipot;
+  };
+  return @these;
 };
 
 ## set halflength and beta list for this path
@@ -463,15 +495,26 @@ sub compare {
   ## number of legs
   return "nlegs different" if ($#this != $#that);
 
-  ## ipots
-  my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
-  my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
-  my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-  if (notall {$_} @ipot_compare) { # time reversal
-    ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
-    @that_ipot = reverse @that_ipot;
-    @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-    return "ipots different" if (notall {$_} @ipot_compare);
+  if ($#{$self->ipot} > -1) {  ## this is an Aggregate calculation
+    #print $/, '>> ', join("|", @{$self->ipot}, $self->halflength), $/;
+    #print '<< ', join("|", @{$other->ipot}), $/;
+    my @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @{$other->ipot};
+    if (notall {$_} @ipot_compare) { # time reversal
+      my @that = reverse(@{$other->ipot});
+      @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @that;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
+  } else { ## this is a normal Feff calculation
+    ## ipots
+    my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
+    my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
+    my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+    if (notall {$_} @ipot_compare) { # time reversal
+      ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
+      @that_ipot = reverse @that_ipot;
+      @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
   };
 
   ## beta angles

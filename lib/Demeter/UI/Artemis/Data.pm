@@ -2468,16 +2468,27 @@ sub OnData {
   } else {			#  this is a normal path
     my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
     foreach my $sp ( @sparray ) {
-      my $thispath = Demeter::Path->new(
-					parent => $sp->feff,
-					data   => $this->{PARENT}->{data},
-					sp     => $sp,
-					degen  => $sp->n,
-					n      => $sp->n,
-				       );
+      my $thispath;
+      if (ref($sp->feff) =~ m{Aggregate}) {
+	$thispath = $sp->feff->make_path($sp); # returns a SSPath or MSPath
+	$thispath-> data($this->{PARENT}->{data});
+	$thispath->name(sprintf("%s %.3f", $thispath->name, $sp->halflength));
+      } else {
+	$thispath = Demeter::Path->new(
+				       parent => $sp->feff,
+				       data   => $this->{PARENT}->{data},
+				       sp     => $sp,
+				       degen  => $sp->n,
+				       n      => $sp->n,
+				      );
+      };
       my $label = $thispath->label;
+      $thispath->_update('all');
+      #local $|=1;
+      #print $thispath->parent, $/;
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
       $book->AddPage($page, $label, 1, 0);
+      $page->{pp_n}->SetValue($sp->n) if (ref($sp->feff) =~ m{Aggregate});
       $page->include_label;
       $book->Update;
     };

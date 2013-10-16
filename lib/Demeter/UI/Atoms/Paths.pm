@@ -2,6 +2,7 @@ package Demeter::UI::Atoms::Paths;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
+use Demeter::UI::Artemis::ShowText;
 
 use Const::Fast;
 use Cwd;

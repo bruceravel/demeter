@@ -428,6 +428,19 @@ sub clear_ifeffit_titles {
 
 
 
+sub FDump {
+  my ($self, $fname, $ref, $name) = @_;
+  open(my $O, '>', $fname);
+  if ($DataDump_exists) {
+    print $O Data::Dump->pp($ref);
+  } elsif ($name) {
+    print $0 Data::Dumper->Dump([$ref], [$name]);
+    return 1;
+  } else {
+    print $0 Dumper($ref);
+  };
+  close $O;
+};
 sub Dump {
   my ($self, $ref, $name) = @_;
   if ($DataDumpColor_exists) {

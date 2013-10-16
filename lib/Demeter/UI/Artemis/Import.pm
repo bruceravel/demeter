@@ -46,7 +46,7 @@ sub Import {
 
 
 sub prjrecord {
-  my ($fname) = @_;
+  my ($fname, $choice) = @_;
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Athena project", cwd, q{},
@@ -66,7 +66,7 @@ sub prjrecord {
   };
   ##
   my $selection = 0;
-  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single');
+  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single', $choice);
   my $result = $rframes->{prj} -> ShowModal;
 
   if (
@@ -85,7 +85,12 @@ sub prjrecord {
 
 sub _prj {
   my ($fname) = @_;
-  my ($file, $prj, $record) = prjrecord($fname);
+  my $choice = 1;
+  if ($fname =~ m{(\s+<(\d?)>)\z}) {
+    $choice = $2;
+    $fname =~ s{$1}{};
+  };
+  my ($file, $prj, $record) = prjrecord($fname, $choice);
 
   if (defined($record) and ($record < 0)) {
     return;
@@ -136,7 +141,7 @@ sub _prj {
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
   delete $rframes->{prj};
-  $$rdemeter->push_mru("athena", $file);
+  $$rdemeter->push_mru("athena", $file, $record);
   autosave();
   chdir dirname($file);
   $rframes->{main}->status("Importing data \"" . $data->name . "\" from $file.");
