@@ -43,6 +43,7 @@ sub Rename {
   my $prefix = ($is_ref) ? "  Ref " : q{};
   $data->name($prefix.$newname);
   $app->{main}->{list}->SetString($app->current_index, $prefix.$newname);
+  $realname = quotemeta($realname);
   if (($data->reference) and ($data->reference->name =~ m{\A\s*(?:Ref\s+)?$realname\s*\z})) {
     my $prefix = ($is_ref) ? q{} : "  Ref ";
     $data->reference->name($prefix.$newname);

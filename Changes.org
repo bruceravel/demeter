@@ -7,6 +7,7 @@
 
 ** 0.9.19   ?? September 2013
 *** Athena
+   - escape group names when renaming, i.e. treat metacharacters in group names as normal characters
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
@@ -36,7 +37,8 @@
      was problematic and _Matt Newville_ suggested a solution
    - _Denis Testamale_ noticed that test 012_atoms was failing
    - _George Sterbinsky_ for noting that a fixed edge step value was
-     not respected for XANES data
+     not respected for XANES data and for noticing the problem
+     renaming Athena group names
 
 ** 0.9.18.2 29 August    2013
 
