@@ -854,7 +854,7 @@ sub populate {
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);
   $self->{datasource}->SetValue($data->prjrecord || $data->file);
-  #$self->{datasource}->ShowPosition($self->{datasource}->GetLastPosition);
+  $self->{datasource}->SetInsertionPointEnd;
   $self->{titles}->SetValue(join("\n", @{ $data->titles }));
   $self->{kmin}->SetValue($data->fft_kmin);
   $self->{kmax}->SetValue($data->fft_kmax);

@@ -128,6 +128,7 @@ sub new {
   $this -> SetSizerAndFit( $hbox );
 
   if ($style eq 'single') {
+    $choice ||= 1;
     $this->{grouplist}->SetSelection($choice-1);
     #$this->do_plot($prj,$positions->[0]+1);
     $this->do_plot($prj,$choice); # this works because choice was set AFTER non-chi data was weeded out
