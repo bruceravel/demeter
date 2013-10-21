@@ -263,6 +263,7 @@ sub make {
   $diff->datatype('xanes');
   $diff->datatype('xmu') if ($this->{form}->GetSelection == 0);
   my $data = $diff->make_group;
+  $data->update_norm(1);
   my $index = $::app->current_index;
   if ($at_end) {
     $::app->{main}->{list}->AddData($data->name, $data);
