@@ -18,6 +18,7 @@
    - Athena file MRU list now remembers record number and defaults to that record when selected
    - fixed a bug resulting in repetitious display of parameter values in log file
    - save VPaths to and restore from Artemis project files
+   - adde "transfer all" button to VPaths tab in Plot window
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the

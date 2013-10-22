@@ -35,6 +35,9 @@ sub new {
   EVT_RIGHT_DOWN($this->{vpathlist}, sub{OnRightDown(@_)});
   EVT_MENU($this->{vpathlist}, -1, sub{ $this->OnMenu(@_)    });
 
+  $this->{transferall} = Wx::Button->new($this, -1, 'Transfer all');
+  $box -> Add($this->{transferall}, 0, wxGROW|wxBOTTOM|wxLEFT|wxRIGHT, 5);
+  EVT_BUTTON($this, $this->{transferall}, sub{TransferAll(@_)});
 
   $this -> SetSizer($box);
   return $this;
@@ -193,6 +196,15 @@ sub fetch_vpaths {
   my @list = ();
   foreach my $i (0 .. $self->{vpathlist}->GetCount - 1) {
      push @list, $self->{vpathlist}->GetClientData($i);
+  };
+  return @list;
+};
+
+sub TransferAll {
+  my ($self) = @_;
+  my @list = ();
+  foreach my $i (0 .. $self->{vpathlist}->GetCount - 1) {
+     $self->transfer($i);
   };
   return @list;
 };
