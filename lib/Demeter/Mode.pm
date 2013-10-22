@@ -12,7 +12,7 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(zip none);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
@@ -402,7 +402,8 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},);
+				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},
+	       );
 
 has 'Plugins' => (
 		traits    => ['Array'],
@@ -455,9 +456,13 @@ sub reset_path_index {
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
-  return q{} if ($type !~ m{(?:$re)});
-  my $list = $self->$type;
-  my @objects = grep {defined($_)} @$list;
+  my @thesetypes = (ref($type) eq 'ARRAY') ? @$type : ($type);
+  return q{} if (none {$_ =~ m{(?:$re)}} @thesetypes);
+  my @objects = ();
+  foreach my $t (@thesetypes) {
+    my $list = $self->$t;
+    push @objects, grep {defined($_)} @$list;
+  }
   foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };

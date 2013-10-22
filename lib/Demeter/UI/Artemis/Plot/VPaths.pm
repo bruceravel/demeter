@@ -188,6 +188,16 @@ sub transfer {
   $Demeter::UI::Artemis::frames{main}->status("Transfered VPath \"$name\" to the plotting list.");
 };
 
+sub fetch_vpaths {
+  my ($self) = @_;
+  my @list = ();
+  foreach my $i (0 .. $self->{vpathlist}->GetCount - 1) {
+     push @list, $self->{vpathlist}->GetClientData($i);
+  };
+  return @list;
+};
+
+
 1;
 
 =head1 NAME

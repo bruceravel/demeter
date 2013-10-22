@@ -36,7 +36,7 @@ has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');
 has 'paths' => (
 		traits    => ['Array'],
 		is        => 'rw',
-		isa       => 'ArrayRef[Demeter::Path]',
+		isa       => 'ArrayRef[Demeter::Path|Demeter::SSPath]',
 		default   => sub { [] },
 		handles   => {
 			      'push_paths'    => 'push',

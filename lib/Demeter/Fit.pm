@@ -995,6 +995,7 @@ sub happiness_report {
 
 sub fetch_parameters {
   my ($self) = @_;
+  $self->clear_parameters;
   foreach my $g (@ {$self->gds}) {
     $self->push_parameters([$g->name, $g->gds, $g->mathexp, $g->bestfit, $g->error, $g->Use]);
   };
@@ -1137,6 +1138,19 @@ sub has_data {
   return 0;
 };
 
+sub repair_parameters {
+  my ($self) = @_;
+  my @params = @{$self->parameters};
+  my @repaired = ();
+  my %seen = ();
+  foreach my $p (@params) {
+    push @repaired, $p if not $seen{$p->[0]};
+    ++$seen{$p->[0]};
+  };
+  $self->parameters(\@repaired);
+  return $self;
+};
+
 sub grab {			# deserialize lite -- grab the yaml
   my ($self, @args) = @_;	# without importing any data or paths
   my %args = @args;
@@ -1217,6 +1231,7 @@ sub grab {			# deserialize lite -- grab the yaml
     };
   };
   $self->data(\@data);
+  $self->repair_parameters;
 
   $self->grabbed(1);
   $self->thawed(0);
@@ -1535,7 +1550,7 @@ override 'deserialize' => sub {
       $this = Demeter::SSPath->new(parent=>$feff);
       $this -> set(%hash);
       $this -> sp($this);
-      #print $this, "  ", $this->sp, $/;
+      ##print $this->group, "  ", $this->name, "  ", $this->parent->group, $/;
 
     } elsif (exists $pathlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
@@ -1592,10 +1607,10 @@ override 'deserialize' => sub {
     $self->call_sentinal("Importing VPaths");
     @list = YAML::Tiny::Load($yaml);
     foreach my $vp (@list) {
+      next if Demeter->mo->fetch('VPath', $vp->{group});
       delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
       my $dg = $vp->{datagroup};
       $vp->{data} = $datae{$dg};
-
       my @pathgroups = @{ $vp->{pathgroups} };
 
       my @array = %{ $vp };
@@ -1603,7 +1618,10 @@ override 'deserialize' => sub {
       $this -> set(@array);
       $this -> update_path(1);
       foreach my $pg (@pathgroups) {
-	$this->push_paths($this -> mo -> fetch('Path', $pg));
+	my $path = $this -> mo -> fetch(['Path','SSPath'], $pg);
+	$path->parent(Demeter->mo->fetch("Feff", $path->parentgroup)) if not $path->parent;
+	##print $path->name, "|", $path->group, "|", $path->parent, $/;
+	$this->push_paths($path);
       };
       push @vpaths, $this;
     };
@@ -1635,8 +1653,9 @@ override 'deserialize' => sub {
   $self -> set(gds    => \@gds,
 	       data   => \@data,
 	       paths  => \@paths,
-	       vpaths => \@vpaths,
 	      );
+  $self->vpaths(\@vpaths) if ($#vpaths > -1);
+  #$self->repair_parameters;
 
   ## -------- import the fit properties, statistics, correlations
   $yaml = ($args{file}) ? $zip->contents("fit.yaml")

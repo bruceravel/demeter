@@ -64,9 +64,8 @@
         the executables can all be found,
   - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [3/20] [15%]
+** Demeter bugs, shortcomings, missing features  [4/20] [20%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
-  - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
   - [ ] clnorm + Julia and Jingen's MBACK replacement
@@ -82,6 +81,7 @@
   - [ ] Use PDL in pathfinder
   - [ ] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
   - [ ] background groups for AXAFS
+  - [X] serialize VPath, put VPath into dpj and fpj files
   - [X] set E0 to peak of white line
   - [X] need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
   - [X] Plucking from gnuplot really sucks
@@ -246,9 +246,9 @@
         - [ ] DND of FPath also broken
         - [ ] DND of selection (currently only one at a time)
 
-**** Project [0/4]
-   - [ ] VPaths to/from project file
-   - [ ] SSPaths not saved/restored properly?
+**** Project [2/4]
+   - [X] VPaths to/from project file
+   - [X] SSPaths not saved/restored properly?
    - [ ] Indicators to/from project file
    - [ ] GDS objects get created with same groupname over and over as
 	 they are used in fits in the history
@@ -279,12 +279,14 @@
 
 ** Other object types [0/3]
   - [ ] Structural Units
-      + Extension of VPath.  
+      + Extension of VPath
       + Store GDS, feff, and path objects in a zip file.
       + On import, mark GDS parameters as merge if in conflict
   - [ ] MSPaths
       + Much like SSPath, make an arbitrary n-legged path
-  - [ ] Nearly collinear paths
+  - [ ] Nearly collinear paths, ThreeBody
+      + Extension of VPath
+      + need to worry about load order in Demeter.pm
       + Define a three body configuration, generate its 4-legged path and a sequence of three-legged paths along with a mixing parameter.
       + It will take a single set of path parameters that are pushed onto the generated Path objects, except for the amplitude, which will be computed from the mixing parameter.
       + This is a single object for the user to interact with which expands into 2 or 3 3-legged paths and a single 4-legged path

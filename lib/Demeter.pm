@@ -241,7 +241,7 @@ sub import {
   my @load  = ();
   my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph  = (qw(Data Data/Prj));
-  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
+  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
   my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));

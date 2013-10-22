@@ -50,16 +50,17 @@ sub save_project {
   ## make sure we are fully up to date and serialised
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all(1,0);
-  my @data  = @$rdata;
-  my @paths = @$rpaths;
-  my @gds   = @$rgds;
+  my @data   = @$rdata;
+  my @paths  = @$rpaths;
+  my @gds    = @$rgds;
+  my @vpaths = $rframes->{Plot}->{VPaths}->fetch_vpaths;
   ## get name, fom, and description + other properties
 
   $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
     if (not $rframes->{main} -> {currentfit});
   Demeter::UI::Artemis::update_order_file();
 
-  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds, vpaths => \@vpaths);
   #my $save = $rframes->{main} -> {currentfit} -> fitted;
   #$rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
@@ -292,11 +293,20 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    if (not -e $yaml) {
+    my $source;
+    if (-e $yaml) {
+      my $gz = gzopen($yaml, 'rb');
+      my ($yy, $buffer);
+      $yy .= $buffer while $gz->gzreadline($buffer) > 0 ;
+      my @refs = YAML::Tiny::Load($yy);
+      $source = $refs[0]->{source};
+    } else {
       rmtree(File::Spec->catfile($projfolder, 'feff', $d));
       next;
     };
-    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
+    my $feffobject = ($source eq 'aggregate') ?
+      Demeter::Feff::Aggregate->new(group=>$d) :
+	  Demeter::Feff->new(group=>$d); # force group to be the same as before.
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -549,6 +559,12 @@ sub restore_fit {
       $rframes->{main}->{$dnum}->SetLabel($lab);
     };
     ++$count;
+  };
+
+  ## -------- VPaths from currentfit
+  $rframes->{main}->status("Restoring VPaths", 'wait|nobuffer') if ($#{$lastfit->vpaths} > -1);
+  foreach my $vp (@{$lastfit->vpaths}) {
+    $rframes->{Plot}->{VPaths}->{vpathlist}->Append($vp->name, $vp);
   };
 
   ## -------- labels and suchlike

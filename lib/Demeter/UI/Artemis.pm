@@ -382,7 +382,7 @@ sub OnInit {
   $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
   $vbox -> Add($frames{main}->{savehist}, 0, wxALL, 2);
   $frames{main}->{savehist}->SetValue(1);
-  mouseover($frames{main}->{savehist}, "If clicked on, the next fit will be saved in the fit hstory of this project.");
+  mouseover($frames{main}->{savehist}, "When toggled on, the next fit will be saved in the fit hstory of this project.");
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);

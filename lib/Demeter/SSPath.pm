@@ -69,7 +69,7 @@ sub set_tag {
   my $feff = $self->parent;
   return $self if not $feff;
   my @ipots = @{ $feff->potentials };
-  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
+  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]) || q{};
   $self->tag($tag);
   $self->make_name  if not $self->name;
   return $self;

@@ -2470,9 +2470,10 @@ sub OnData {
     foreach my $sp ( @sparray ) {
       my $thispath;
       if (ref($sp->feff) =~ m{Aggregate}) {
-	$thispath = $sp->feff->make_path($sp); # returns a SSPath or MSPath
-	$thispath-> data($this->{PARENT}->{data});
-	$thispath->name(sprintf("%s %.3f", $thispath->name, $sp->halflength));
+	$thispath  = $sp->feff->make_path($sp); # returns a SSPath or MSPath
+	$thispath -> data($this->{PARENT}->{data});
+	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->halflength));
+	$thispath -> label($thispath->name);
       } else {
 	$thispath = Demeter::Path->new(
 				       parent => $sp->feff,

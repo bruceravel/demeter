@@ -16,6 +16,8 @@
    - Deal better with a project file saved before performing a fit
    - A bit more control over labels in path list with artemis->feffpathlist config parameter
    - Athena file MRU list now remembers record number and defaults to that record when selected
+   - fixed a bug resulting in repetitious display of parameter values in log file
+   - save VPaths to and restore from Artemis project files
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
