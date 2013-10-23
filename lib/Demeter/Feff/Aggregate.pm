@@ -248,7 +248,7 @@ sub make_path {
   my $path;
   if ($sp->nleg == 2) {
     $path = Demeter::SSPath -> new(parent => $sp->feff,
-				   reff   => $sp->halflength,
+				   reff   => $sp->fuzzy,
 				   ipot   => $sp->ipot->[1],
 				   degen  => $sp->n,
 				   n      => $sp->n,

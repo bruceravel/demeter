@@ -2472,7 +2472,7 @@ sub OnData {
       if (ref($sp->feff) =~ m{Aggregate}) {
 	$thispath  = $sp->feff->make_path($sp); # returns a SSPath or MSPath
 	$thispath -> data($this->{PARENT}->{data});
-	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->halflength));
+	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->fuzzy));
 	$thispath -> label($thispath->name);
       } else {
 	$thispath = Demeter::Path->new(
