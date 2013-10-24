@@ -31,6 +31,7 @@
      pathfinder fuzzily over multiple crystallographic sites.
    - Addressed some failed tests in 012_atoms
    - Fixed a problem with fixed edge step value and XANES data
+   - Added plus/minus sign to Demeter::UI::Wx::SpecialCharacters
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work

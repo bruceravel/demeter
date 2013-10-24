@@ -32,6 +32,9 @@ use Safe;
 
 use Wx qw(:everything);
 use Demeter::UI::Wx::AutoSave;
+use Const::Fast;
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
+const my $PM => $PLUSMN2;       # see GDS.pm, line ~61
 
 require Exporter;
 
@@ -502,7 +505,7 @@ sub restore_fit {
     my $text = q{};
     if ($g->bestfit or $g->error) {
       if ($g->gds eq 'guess') {
-	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+	$text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
       } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
 	$text = sprintf("%.5f", $g->bestfit);
       } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {

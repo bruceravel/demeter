@@ -10,6 +10,9 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_K
 		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Wx::Perl::TextValidator;
+use Const::Fast;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+const my $PM => $PLUSMN2;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
@@ -18,7 +21,6 @@ use List::Util qw(max);
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
-use Const::Fast;
 use DateTime;
 use Statistics::Descriptive;
 
@@ -1233,8 +1235,8 @@ sub DoContextMenu {
       last SWITCH;
     };
     ($id == $ESHIFT_THIS) and do {
-      $app->{main}->status(sprintf("%s: energy shift = %.5f +/- %.5f",
-				   $data->name, $data->bkg_eshift, $data->bkg_delta_eshift));
+      $app->{main}->status(sprintf("%s: energy shift = %.5f %s %.5f",
+				   $data->name, $data->bkg_eshift, $PM, $data->bkg_delta_eshift));
       last SWITCH;
     };
     ($id == $ESHIFT_ALL) and do {
@@ -1265,7 +1267,7 @@ sub parameter_table {
   my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
 
   $max+=2;
-  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f +/- %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f '.$PM.' %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
@@ -1319,8 +1321,8 @@ sub edgestep_error {
   $data->sentinal(sub{1});
   my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
-  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
-			       $data->name, $data->bkg_step, $stddev, $finishtext));
+  $app->{main}->status(sprintf("%s: edge step = %.5f %s %.5f   %s",
+			       $data->name, $data->bkg_step, $PM, $stddev, $finishtext));
   undef $busy;
 };
 

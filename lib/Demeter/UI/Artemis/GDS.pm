@@ -58,7 +58,9 @@ use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::StrTypes qw( GDS );
-
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
+const my $PM => $PLUSMN2;	# see Project.pm line ~36
+const my $PMRE => quotemeta($PM) . '\s*.*';
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -276,7 +278,7 @@ sub use_best_fit {
     next unless ($type eq 'guess');
     my $evaluated = $grid->GetCellValue($row, 3);
     next unless ($evaluated !~ m{\A\s*\z});
-    $evaluated =~ s{\+/-\s*.*}{};
+    $evaluated =~ s{$PMRE}{};
     $grid->SetCellValue($row, 2, $parent->display_value($evaluated));
     $grid->SetCellValue($row, 3, q{});
     ++$count;
@@ -769,7 +771,7 @@ sub paste {
     $parent->{grid} -> SetCellValue($this, 2, $parent->display_value($g->mathexp));
     my $text = q{};
     if ($g->gds eq 'guess') {
-      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+      $text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
     } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
       $text = sprintf("%.5f", $g->bestfit);
     } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
@@ -808,7 +810,7 @@ sub grab {
   $parent->status("Grab aborted -- $name is not a guess parameter."), return if ($type ne 'guess');
   my $bestfit = $parent->{grid}->GetCellValue($row,3);
   $parent->status("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
-  $bestfit =~ s{\+/-\s*.*}{};
+  $bestfit =~ s{$PMRE}{};
   $parent->{grid}->SetCellValue($row, 2, $parent->display_value($bestfit));
   $parent->{grid}->SetCellValue($row, 3, q{});
   $parent->{grid}->ClearSelection;
@@ -1018,7 +1020,7 @@ sub fill_results {
       next if (lc($g->name) ne lc($grid->GetCellValue($row, 1)));
       my $text;
       if ($g->gds eq 'guess') {
-	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+	$text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
       } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
 	$text = sprintf("%.5f", $g->bestfit);
       } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
