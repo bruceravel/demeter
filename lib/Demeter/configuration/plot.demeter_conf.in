@@ -56,6 +56,9 @@ description
   This tells Demeter UIs which plotting backend to use.  This is
   currently used by Athena, Artemis, and Hephaestus but is not
   used by default in a common Demeter script.
+  .
+  Changing this parameter will immediately change the plotting backend
+  but the Plot menu will not be changed until you restart the program.
 
 variable=showcopyright
 type=boolean
