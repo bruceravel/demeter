@@ -41,7 +41,7 @@ has '+col8'	=> (default => '9');
 has '+col9'	=> (default => '10');
 has 'markersymbol' => (is => 'rw', isa =>  'Int', default => sub{ shift->co->default("gnuplot", "markersymbol") || 305});
 
-has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
+has '+terminal_number' => (default => 1);
 
 has '+datastyle' => (default => sub{ shift->co->default("gnuplot", "datastyle") || 'lines'});
 has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  || 'lines'});

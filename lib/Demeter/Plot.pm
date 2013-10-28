@@ -99,6 +99,7 @@ has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 ## -------- default plotting space
 has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
 has 'single'    => (is => 'rw', isa =>  'Bool',   default => 0);
+has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
