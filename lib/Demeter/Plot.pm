@@ -99,7 +99,6 @@ has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 ## -------- default plotting space
 has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
 has 'single'    => (is => 'rw', isa =>  'Bool',   default => 0);
-has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
@@ -196,6 +195,12 @@ has 'lastplot'  => (is => 'rw', isa => 'Any',        default => q{});
 
 		       ## interpolation parameters
 has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "interp"});
+
+## -------- facilitating other back-ends
+##          Gnuplot:
+has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
+has 'error_log' => (is => 'ro', isa => 'Str',  default => q{});
+has 'markersymbol' => (is => 'rw', isa =>  'Int', default => 305);
 
 
 sub BUILD {
