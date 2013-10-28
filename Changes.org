@@ -32,6 +32,12 @@
    - Addressed some failed tests in 012_atoms
    - Fixed a problem with fixed edge step value and XANES data
    - Added plus/minus sign to Demeter::UI::Wx::SpecialCharacters
+   - Moose now has a much more strict definition of Num in a type
+     constraint.  I would prefer not to add MooseX::Types::LaxNum as a
+     new dependence, so modified Config.pm to clean up numbers that
+     pass Scalar::Util's looks_like_number but not the new meaning of
+     Num in Moose.
+   - Fixed an issue surrounding Plot object's terminal_number parameter and pgplot
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work
@@ -41,8 +47,9 @@
      was problematic and _Matt Newville_ suggested a solution
    - _Denis Testamale_ noticed that test 012_atoms was failing
    - _George Sterbinsky_ for noting that a fixed edge step value was
-     not respected for XANES data and for noticing the problem
-     renaming Athena group names
+     not respected for XANES data, for noticing the problem renaming
+     Athena group names, and for noticing numeric type constraint
+     issue with Moose>=2.0900.
 
 ** 0.9.18.2 29 August    2013
 
