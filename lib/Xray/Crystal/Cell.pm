@@ -168,13 +168,13 @@ sub geometry {
 				# careful for the sqrt!
   my $sinxx = ($cosxx**2 < 1) ? sqrt(1-$cosxx**2) : 0;
   my $sinyy = ($cosyy**2 < 1) ? sqrt(1-$cosyy**2) : 0;
-  $self->txx(sprintf "%11.7f", $sinyy*sin($beta));
-  $self->tyx(sprintf "%11.7f", -( ($cosyy/($sinyy*sin($alpha)) )
+  $self->txx(sprintf "%.7f", $sinyy*sin($beta));
+  $self->tyx(sprintf "%.7f", -( ($cosyy/($sinyy*sin($alpha)) )
 				  + (cos($alpha)*$cosxx)/($sinxx*sin($alpha)))
 	                       * ($sinyy*sin($beta)) );
-  $self->tyz(sprintf "%11.7f", cos($alpha));
-  $self->tzx(sprintf "%11.7f", -( $cosxx*$sinyy*sin($beta) ) / $sinxx);
-  $self->tzz(sprintf "%11.7f", sin($alpha));
+  $self->tyz(sprintf "%.7f", cos($alpha));
+  $self->tzx(sprintf "%.7f", -( $cosxx*$sinyy*sin($beta) ) / $sinxx);
+  $self->tzz(sprintf "%.7f", sin($alpha));
 
   return $v;
 };
