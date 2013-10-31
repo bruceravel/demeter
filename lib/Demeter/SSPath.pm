@@ -26,9 +26,9 @@ use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
 has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
 		     trigger  => \&set_tag);
-has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
+has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum', default => 0.1);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scattering');

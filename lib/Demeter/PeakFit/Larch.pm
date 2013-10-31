@@ -4,9 +4,9 @@ use Moose::Role;
 use Demeter::StrTypes qw( LarchLineshape );
 use Scalar::Util qw(looks_like_number);
 
-has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Larch.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
+has 'defwidth'    => (is => 'ro', isa => 'LaxNum', default => 1);
+has 'my_file'     => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Larch.pm');
+has 'sigil'       => (is => 'ro', isa => 'Str',    default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {

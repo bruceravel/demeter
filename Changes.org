@@ -32,11 +32,8 @@
    - Addressed some failed tests in 012_atoms
    - Fixed a problem with fixed edge step value and XANES data
    - Added plus/minus sign to Demeter::UI::Wx::SpecialCharacters
-   - Moose now has a much more strict definition of Num in a type
-     constraint.  I would prefer not to add MooseX::Types::LaxNum as a
-     new dependence, so modified Config.pm to clean up numbers that
-     pass Scalar::Util's looks_like_number but not the new meaning of
-     Num in Moose.
+   - Require MooseX::Types::LaxNum since Moose now has a much more
+     strict definition of Num in a type constraint.
    - Fixed an issue surrounding Plot object's terminal_number parameter and pgplot
 
 *** Acknowledgments

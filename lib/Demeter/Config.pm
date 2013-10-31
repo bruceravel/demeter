@@ -289,9 +289,9 @@ sub set_this_param {
     $hash{offvalue} ||= 0;
   };
   if ($hash{type} eq 'real') {
-    $hash{default} = (looks_like_number($hash{default})) ? fix_number($hash{default}) : 0;
+    $hash{default} = (looks_like_number($hash{default})) ? $hash{default} : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? fix_number($hash{windows}) : 0;
+    $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
   } elsif ($hash{type} eq 'positive integer') {
     $hash{default} = (looks_like_number($hash{default})) ? int($hash{default}) : 0;
     $hash{demeter} = $hash{default};
@@ -326,8 +326,9 @@ sub set_default {
   if ($rhash->{type} eq 'boolean') {
     $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
   } elsif ($rhash->{type} eq 'real') {
-    $rhash->{default} = 0 if (not looks_like_number($value));
-    $rhash->{default} = fix_number($value);
+    #$rhash->{default} = 0 if (not looks_like_number($value));
+    #$rhash->{default} = fix_number($value);
+    $rhash->{default} = (looks_like_number($value)) ? $value : 0;
   } elsif ($rhash->{type} eq 'positive integer') {
     $rhash->{default} = 0 if (not looks_like_number($value));
     $rhash->{default} = int($value);

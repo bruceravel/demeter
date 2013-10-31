@@ -54,7 +54,7 @@ $Text::Wrap::columns = 65;
 
 ## -------- properties
 has 'description'    => (is => 'rw', isa => 'Str',    default => q{});
-has 'fom'            => (is => 'rw', isa => 'Num',    default => 0);
+has 'fom'            => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'fitenvironment' => (is => 'rw', isa => 'Str',    default => sub{ shift->environment });
 has 'interface'      => (is => 'rw', isa => 'Str',    default => 'Demeter-based perl script'); # should be sensitive to :ui "pragma"
 has 'started'        => (is => 'rw', isa => 'Str',    default => q{});  # should be a Date/Time object
@@ -63,7 +63,7 @@ has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'fitted'         => (is => 'rw', isa => 'Bool',   default => 0);
 has 'update_gds'     => (is => 'rw', isa => 'Bool',   default => 1);
-has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
+has 'number'         => (is => 'rw', isa => 'LaxNum', default => 0);
 
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},

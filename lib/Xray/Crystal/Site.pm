@@ -26,6 +26,7 @@ use Demeter::Constants qw($EPSILON5 $FEFFNOTOK);
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 
@@ -53,7 +54,7 @@ sub _canonicalize_coordinate {
 };
 
 subtype 'ZeroToOne'
-  => as 'Num'
+  => as 'LaxNum'
   => where { ($_ >= 0) and ($_ <= 1) };
 
 # coerce 'ZeroToOne'
@@ -69,21 +70,21 @@ has 'element'	  => (is => 'rw', isa => 'Elem',  default => q{},
 subtype 'Tag'
   => as 'Str'
   => where { sub{ (my $foo = $_) =~ s{$FEFFNOTOK}{}g; return $foo} };
-has 'tag'	  => (is => 'rw', isa => 'Tag',  default => q{});
-has 'utag'	  => (is => 'rw', isa => 'Str',  default => q{});
-has 'x'		  => (is => 'rw', isa => 'Num',  default => 0);
-has 'y'		  => (is => 'rw', isa => 'Num',  default => 0);
-has 'z'		  => (is => 'rw', isa => 'Num',  default => 0);
+has 'tag'	  => (is => 'rw', isa => 'Tag',    default => q{});
+has 'utag'	  => (is => 'rw', isa => 'Str',    default => q{});
+has 'x'		  => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'y'		  => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'z'		  => (is => 'rw', isa => 'LaxNum', default => 0);
 # has 'x'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
 # has 'y'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
 # has 'z'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
-has 'b'		  => (is => 'rw', isa => 'Num',  default => 0);
-has 'bx'	  => (is => 'rw', isa => 'Num',  default => 0);
-has 'by'	  => (is => 'rw', isa => 'Num',  default => 0);
-has 'bz'	  => (is => 'rw', isa => 'Num',  default => 0);
-has 'valence'	  => (is => 'rw', isa => 'Str',  default => 0);	## -- check valence against Cromer-Mann tables
-has 'occupancy'	  => (is => 'rw', isa => 'ZeroToOne',  default => 1);
-has 'host'	  => (is => 'rw', isa => 'Bool', default => 1);
+has 'b'		  => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'bx'	  => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'by'	  => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'bz'	  => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'valence'	  => (is => 'rw', isa => 'Str',       default => 0);	## -- check valence against Cromer-Mann tables
+has 'occupancy'	  => (is => 'rw', isa => 'ZeroToOne', default => 1);
+has 'host'	  => (is => 'rw', isa => 'Bool',      default => 1);
 has 'positions'	  => (
 		      traits    => ['Array'],
 		      is        => 'rw',
@@ -106,14 +107,14 @@ has 'formulas'	  => (
 				    'clear_formulas' => 'clear',
 				   }
 		     );
-has 'file'	  => (is => 'rw', isa => 'Str',  default => q{});
-has 'isite'	  => (is => 'rw', isa => 'Int',  default => 0);
-has 'in_cell'	  => (is => 'rw', isa => 'Int' , default => 0);
-has 'stoi'	  => (is => 'rw', isa => 'Num',  default => 0);
-has 'in_cluster'  => (is => 'rw', isa => 'Bool', default => 0);
-#has 'id'	  => (is => 'ro', isa => 'Int',  default => 0);
-has 'ipot'	  => (is => 'rw', isa => 'Int',  default => 0);
-has 'color'	  => (is => 'rw', isa => 'Str',  default => q{});
+has 'file'	  => (is => 'rw', isa => 'Str',    default => q{});
+has 'isite'	  => (is => 'rw', isa => 'Int',    default => 0);
+has 'in_cell'	  => (is => 'rw', isa => 'Int' ,   default => 0);
+has 'stoi'	  => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'in_cluster'  => (is => 'rw', isa => 'Bool',   default => 0);
+#has 'id'	  => (is => 'ro', isa => 'Int',    default => 0);
+has 'ipot'	  => (is => 'rw', isa => 'Int',    default => 0);
+has 'color'	  => (is => 'rw', isa => 'Str',    default => q{});
 
 my %seen = ();
 

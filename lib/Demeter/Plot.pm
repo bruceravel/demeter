@@ -101,8 +101,8 @@ has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
 has 'single'    => (is => 'rw', isa =>  'Bool',   default => 0);
 
 ## -------- energy plot parameters
-has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
-has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emax")	  || 800});
+has 'emin'	=> (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "emin")	  || -200});
+has 'emax'	=> (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "emax")	  || 800});
 has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_mu")	  || 1});
 has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_bkg")	  || 0});
 has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_pre")	  || 0});
@@ -117,29 +117,29 @@ has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
 has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 
-has 'e_margin'	 => (is => 'rw', isa =>  'Bool',  default => 0);
-has 'margin'     => (is => 'rw', isa =>  'Num',   default => 0);
-has 'margin_min' => (is => 'rw', isa =>  'Num',   default => 0);
-has 'margin_max' => (is => 'rw', isa =>  'Num',   default => 0);
+has 'e_margin'	 => (is => 'rw', isa =>  'Bool',   default => 0);
+has 'margin'     => (is => 'rw', isa =>  'LaxNum', default => 0);
+has 'margin_min' => (is => 'rw', isa =>  'LaxNum', default => 0);
+has 'margin_max' => (is => 'rw', isa =>  'LaxNum', default => 0);
 
 ## -------- k, R, and q plot parameters
-has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
-has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
+has 'kmin'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "kmin") || 0});
+has 'kmax'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "kmax") || 15});
 has 'chie'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 
-has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
-has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
+has 'rmin'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "rmin") || 0});
+has 'rmax'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "rmax") || 6});
 has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
 has 'dphase'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'smag'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 
-has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
-has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
+has 'qmin'	=> (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "qmin") || 0});
+has 'qmax'	=> (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "qmax") || 15});
 has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
 
-has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1",
+has 'kweight'		=> (is => 'rw', isa =>  'LaxNum',      default => "1",
 			    trigger => sub{my ($self) = @_; $self->propagate_kweight});
-has 'window_multiplier' => (is => 'rw', isa =>  'Num',      default => 1.05);
+has 'window_multiplier' => (is => 'rw', isa =>  'LaxNum',      default => 1.05);
 
 has 'plot_data'	        => (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
@@ -150,7 +150,7 @@ has 'plot_run'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
-has 'plot_pause'        => (is => 'rw', isa =>  'Num',      default => 0);
+has 'plot_pause'        => (is => 'rw', isa =>  'LaxNum',      default => 0);
 
 ## -------- ornaments
 #has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
@@ -158,14 +158,14 @@ has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ sh
 has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "line")  || "solid"});
 has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "show")     || 1});
 has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ shift->co->default("marker", "type")     || 9});    # number 1 to 29, 9 is a dotted circle
-has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->co->default("marker", "size")     || 2});
+has 'markersize'     => (is => 'rw', isa =>  'LaxNum',        default => sub{ shift->co->default("marker", "size")     || 2});
 has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "color")    || "orange"});
 
-has 'stackjump'      => (is => 'rw', isa =>  'Num',           default => 0);
-has 'stackstart'     => (is => 'rw', isa =>  'Num',           default => 0);
-has 'stackinc'       => (is => 'rw', isa =>  'Num',           default => 0);
+has 'stackjump'      => (is => 'rw', isa =>  'LaxNum',        default => 0);
+has 'stackstart'     => (is => 'rw', isa =>  'LaxNum',        default => 0);
+has 'stackinc'       => (is => 'rw', isa =>  'LaxNum',        default => 0);
 has 'stackdo'        => (is => 'rw', isa =>  'Bool',          default => 0);
-has 'stackdata'      => (is => 'rw', isa =>  'Num',           default => 0);
+has 'stackdata'      => (is => 'rw', isa =>  'LaxNum',        default => 0);
 has 'invert_paths'   => (is => 'rw', isa =>  'Int',           default => 0);
 
 ## -------- miscellaneous plotting parameters

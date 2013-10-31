@@ -16,6 +16,7 @@ package Xray::Crystal::SpaceGroup;
 =cut
 
 use Moose;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 

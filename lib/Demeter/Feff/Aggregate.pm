@@ -259,6 +259,7 @@ sub make_path {
     ## don't forget to set data attribute!
   } else {
     warn("Not yet doing MS paths from aggregate Feff calculation");
+    return 0;
   };
   return $path;
 };

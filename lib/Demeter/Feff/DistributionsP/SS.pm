@@ -13,12 +13,12 @@ use PDL::NiceSlice;
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
-		      isa	    => 'Num',
+		      isa	    => 'LaxNum',
 		      default	    => 0.0,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The lower bound of the SS histogram to be extracted from the cluster");
 has 'rmax'        => (is	    => 'rw',
-		      isa	    => 'Num',
+		      isa	    => 'LaxNum',
 		      default	    => 5.6,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
@@ -27,7 +27,7 @@ has 'ipot'        => (is => 'rw', isa => Ipot, default => 1,
 		      alias => 'ipot1',
 		      trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'bin'         => (is            => 'rw',
-		      isa           => 'Num',
+		      isa           => 'LaxNum',
 		      default       => 0.005,
 		      trigger => sub{my ($self, $new) = @_; $self->update_bins(1)   if $new},);
 has 'ssrdf'       => (is	    => 'rw',

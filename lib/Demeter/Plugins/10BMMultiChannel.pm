@@ -17,7 +17,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the APS 10BM multi-channel detector');
 has '+version'     => (default => 0.2);
 has '+output'      => (default => 'project');
-has 'edge_energy'  => (is => 'rw', isa => 'Num', default => 0);
+has 'edge_energy'  => (is => 'rw', isa => 'LaxNum', default => 0);
 has '+time_consuming'  => (default => 1);
 has '+working_message' => (default => 'Converting multicolumn data file to an Athena project file');
 

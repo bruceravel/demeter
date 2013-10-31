@@ -2471,6 +2471,7 @@ sub OnData {
       my $thispath;
       if (ref($sp->feff) =~ m{Aggregate}) {
 	$thispath  = $sp->feff->make_path($sp); # returns a SSPath or MSPath
+	return $def if not $thispath;
 	$thispath -> data($this->{PARENT}->{data});
 	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->fuzzy));
 	$thispath -> label($thispath->name);

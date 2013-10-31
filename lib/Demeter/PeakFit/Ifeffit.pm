@@ -3,9 +3,9 @@ package Demeter::PeakFit::Ifeffit;
 use Moose::Role;
 use Demeter::StrTypes qw( IfeffitLineshape );
 
-has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Ifeffit.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
+has 'defwidth'    => (is => 'ro', isa => 'LaxNum', default => 1);
+has 'my_file'     => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Ifeffit.pm');
+has 'sigil'       => (is => 'ro', isa => 'Str',    default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {

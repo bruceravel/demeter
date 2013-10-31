@@ -45,8 +45,8 @@ has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
 has '+name'       => (default => 'PCA' );
 
-has 'xmin'    => (is => 'rw', isa => 'Num',    default => 0);
-has 'xmax'    => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmin'    => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'xmax'    => (is => 'rw', isa => 'LaxNum',    default => 0);
 has 'ntitles' => (is => 'rw', isa => 'Int', default => 0);
 
 enum 'PCASpaces' => [qw(e x d c k)];
@@ -71,7 +71,7 @@ has space => (is => 'rw', isa => 'PCASpaces', coerce => 1,
 			   }
 	     );
 
-has 'e0' => (is => 'rw', isa => 'Num', default => 0);
+has 'e0' => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
