@@ -197,7 +197,7 @@ sub change_datatype {
       if ($app->{main}->{list}->IsChecked($j)) {
 	$app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
 	$app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
-	$app->{main}->{list}->update_norm(1) if ($cdt->{to}->GetSelection != 3);
+	$app->{main}->{list}->GetIndexedData($j)->update_norm(1) if ($cdt->{to}->GetSelection != 3);
       };
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
@@ -205,7 +205,7 @@ sub change_datatype {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       $app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
       $app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
-      $app->{main}->{list}->update_norm(1) if ($cdt->{to}->GetSelection != 3);
+      $app->{main}->{list}->GetIndexedData($j)->update_norm(1) if ($cdt->{to}->GetSelection != 3);
     };
     $app->{main}->status("Changed all groups to data type $newtype");
   };
