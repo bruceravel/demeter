@@ -180,25 +180,32 @@ sub change_datatype {
     return;
   };
 
+  my $is_nor  = ($cdt->{to}->GetSelection == 2) ? 1 : 0;
   my $newtype = ($cdt->{to}->GetSelection == 0) ? 'xmu'
               : ($cdt->{to}->GetSelection == 1) ? 'xanes'
-              : ($cdt->{to}->GetSelection == 2) ? 'norm'
+              : ($cdt->{to}->GetSelection == 2) ? 'xmu'
               : ($cdt->{to}->GetSelection == 3) ? 'chi'
               : ($cdt->{to}->GetSelection == 4) ? 'xmudat'
 	      :                                   'xmu';
   if ($cdt->{how}->GetSelection == 0) {
     $app->current_data->datatype($newtype);
+    $app->current_data->is_nor($is_nor);
+    $app->current_data->update_norm(1) if ($cdt->{to}->GetSelection != 3);
     $app->{main}->status("Changed current group's data type to $newtype");
   } elsif ($cdt->{how}->GetSelection == 1) {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       if ($app->{main}->{list}->IsChecked($j)) {
 	$app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
+	$app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
+	$app->{main}->{list}->update_norm(1) if ($cdt->{to}->GetSelection != 3);
       };
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
   } else {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       $app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
+      $app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
+      $app->{main}->{list}->update_norm(1) if ($cdt->{to}->GetSelection != 3);
     };
     $app->{main}->status("Changed all groups to data type $newtype");
   };

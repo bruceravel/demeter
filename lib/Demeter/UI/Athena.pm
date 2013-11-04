@@ -1900,7 +1900,16 @@ sub plot {
   if (lc($space) =~ m{(?:e|k|kq)}) {
     my $first_z = $data[0]->bkg_z;
     my $different = 0;
+    if (($how eq 'single') and ($data[0]->datatype eq 'xanes') and (lc($space) =~ m{k})) {
+	$::app->{main}->status("xanes data cannot be plotted in k.", 'alert');
+    };
+    if (($how eq 'single') and ($data[0]->datatype eq 'chi')   and (lc($space) eq m{e})) {
+	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
+    };
+
     foreach my $d (@data) {
+      next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
+      next if (($d->datatype eq 'chi')   and (lc($space) eq m{e}));
       $d->plot($space);
       ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
@@ -1921,17 +1930,22 @@ sub plot {
   ## R
   } elsif (lc($space) eq 'r') {
     if ($how eq 'single') {
-      $data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotR}->{$which}->GetValue) {
-	  $data[0]->po->r_pl(substr($which, 0, 1));
-	  $data[0]->plot('r');
+      if ($data[0]->datatype ne 'xanes') {
+	$data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotR}->{$which}->GetValue) {
+	    $data[0]->po->r_pl(substr($which, 0, 1));
+	    $data[0]->plot('r');
+	  };
 	};
+	$data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in R.", 'alert');
       };
-      $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
       $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
@@ -1941,15 +1955,20 @@ sub plot {
   ## q
   } elsif (lc($space) eq 'q') {
     if ($how eq 'single') {
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotQ}->{$which}->GetValue) {
-	  $data[0]->po->q_pl(substr($which, 0, 1));
-	  $data[0]->plot('q');
+      if ($data[0]->datatype ne 'xanes') {
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotQ}->{$which}->GetValue) {
+	    $data[0]->po->q_pl(substr($which, 0, 1));
+	    $data[0]->plot('q');
+	  };
 	};
+	$data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in q.", 'alert');
       };
-      $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
     } else {
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
