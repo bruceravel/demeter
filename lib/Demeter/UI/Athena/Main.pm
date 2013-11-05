@@ -8,7 +8,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
 		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN EVT_LEFT_DOWN
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
 use Const::Fast;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -87,7 +87,8 @@ sub group {
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
-  $this->{type} = Wx::StaticText -> new($this, -1, q{Datatype:          });
+  $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
+					   wxDefaultPosition, [90,12], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
@@ -95,10 +96,15 @@ sub group {
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
-  $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.");
+
+  $this->{type} -> SetNormalColour(wxNullColour);
+  $this->{type} -> SetHoverColour(wxNullColour);
+  $this->{type} -> SetVisitedColour(wxNullColour);
+  $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
-  EVT_LEFT_DOWN($this->{type}, sub{quick_change_type(@_)});
+  EVT_HYPERLINK($this, $this->{group_group_label}, sub{$_[1]->Skip(0)});
+  EVT_LEFT_DOWN($this->{type}, sub{quick_change_type(@_); $_[1]->Skip(0)});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
@@ -803,7 +809,8 @@ sub zero_values {
   $this->{'bkg_nnorm_2'} -> SetValue(0);
   $this->{'bkg_nnorm_3'} -> SetValue(1);
   $this->{group_group_label} -> SetLabel('Current group');
-  $this->{type}          -> SetLabel('Datatype:         ');
+  $this->{type}          -> SetLabel('');
+
 };
 
 sub window_name {

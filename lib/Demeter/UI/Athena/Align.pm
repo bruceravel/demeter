@@ -183,6 +183,8 @@ sub add {
   my ($this, $data, $amount) = @_;
   my $shift = $this->{shift}->GetValue;
   $this->{shift}->SetValue($shift+$amount);
+  $this->{error}->SetValue(0);
+  $data->bkg_delta_eshift(0);
   $this->plot($data);
   $::app->modified(1);
 };

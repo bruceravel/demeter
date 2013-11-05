@@ -8,6 +8,9 @@
 ** 0.9.19   ?? September 2013
 *** Athena
    - escape group names when renaming, i.e. treat metacharacters in group names as normal characters
+   - fixed a bug which disabled the Plot->Merge groups menu
+   - Added datatype display on main window, Ctrl-Alt-Left click to
+     toggle between xmu and xanes, abuse a HyperlinkCtrl to get a mouseover hint
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
@@ -35,6 +38,7 @@
    - Require MooseX::Types::LaxNum since Moose now has a much more
      strict definition of Num in a type constraint.
    - Fixed an issue surrounding Plot object's terminal_number parameter and pgplot
+   - Fixed a bug in the filetype plugin for the Lytle database
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work

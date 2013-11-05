@@ -1723,6 +1723,7 @@ sub OnGroupSelect {
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
   foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
+  $app->set_mergedplot($app->current_data->is_merge);
 
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
@@ -1896,20 +1897,23 @@ sub plot {
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
   $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
 
+
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
     my $first_z = $data[0]->bkg_z;
     my $different = 0;
     if (($how eq 'single') and ($data[0]->datatype eq 'xanes') and (lc($space) =~ m{k})) {
 	$::app->{main}->status("xanes data cannot be plotted in k.", 'alert');
+	return;
     };
-    if (($how eq 'single') and ($data[0]->datatype eq 'chi')   and (lc($space) eq m{e})) {
+    if (($how eq 'single') and ($data[0]->datatype eq 'chi')   and (lc($space) eq q{e})) {
 	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
+	return;
     };
 
     foreach my $d (@data) {
       next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
-      next if (($d->datatype eq 'chi')   and (lc($space) eq m{e}));
+      next if (($d->datatype eq 'chi')   and (lc($space) =~ m{e}));
       $d->plot($space);
       ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
