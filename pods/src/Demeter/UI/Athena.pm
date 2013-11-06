@@ -1902,6 +1902,7 @@ sub plot {
   if (lc($space) =~ m{(?:e|k|kq)}) {
     my $first_z = $data[0]->bkg_z;
     my $different = 0;
+<<<<<<< HEAD
     if (($how eq 'single') and ($data[0]->datatype eq 'xanes') and (lc($space) =~ m{k})) {
 	$::app->{main}->status("xanes data cannot be plotted in k.", 'alert');
 	return;
@@ -1911,6 +1912,8 @@ sub plot {
 	return;
     };
 
+=======
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
     foreach my $d (@data) {
       next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
       next if (($d->datatype eq 'chi')   and (lc($space) =~ m{e}));

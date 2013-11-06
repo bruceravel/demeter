@@ -46,7 +46,11 @@ has 'space'         => (is => 'rw', isa => 'Str',     default => 'norm',
 has 'dataspace'     => (is => 'rw', isa => 'Str',     default => 'norm',);
 has 'standardspace' => (is => 'rw', isa => 'Str',     default => 'norm',);
 
+<<<<<<< HEAD
 has 'multiplier'    => (is => 'rw', isa => 'LaxNum',  default => 1);
+=======
+has 'multiplier'    => (is => 'rw', isa => 'Num',     default => 1);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 has 'invert'        => (is => 'rw', isa => 'Bool',    default => 0);
 has 'xmin'          => (is => 'rw', isa => 'LaxNum',  default => -20);
 has 'xmax'          => (is => 'rw', isa => 'LaxNum',  default =>  30);

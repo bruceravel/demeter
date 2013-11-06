@@ -4,9 +4,15 @@ use Moose::Role;
 use Demeter::StrTypes qw( LarchLineshape );
 use Scalar::Util qw(looks_like_number);
 
+<<<<<<< HEAD
 has 'defwidth'    => (is => 'ro', isa => 'LaxNum', default => 1);
 has 'my_file'     => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Larch.pm');
 has 'sigil'       => (is => 'ro', isa => 'Str',    default => q{});
+=======
+has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
+has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Larch.pm');
+has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
@@ -275,8 +281,12 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =back
 
+<<<<<<< HEAD
 Please report problems to the Ifeffit Mailing List
 (http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+=======
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 Patches are welcome.
 

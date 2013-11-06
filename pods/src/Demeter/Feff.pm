@@ -547,10 +547,17 @@ sub _pathsdat_head {
   my $header = q{};
   foreach my $t (@ {$self->titles} ) { $header .= "$prefix " . $t . "\n" };
   $header .= $prefix . " This paths.dat file was written by Demeter " . $self->version . "\n";
+<<<<<<< HEAD
   $header .= sprintf("%s Distance fuzz = %.3f A\n",         $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.2f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno($self->eta_suppress));
   $header .= sprintf("%s Post criterion = %.2f\n",          $prefix, $self->postcrit);
+=======
+  $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
+  $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
+  $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
+  $header .= sprintf("%s Post criterion = %.4f\n",          $prefix, $self->postcrit);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
 };
@@ -933,18 +940,28 @@ sub _collapse_heap {
       if (not $is_different) {
 	my @degen = @{ $p->degeneracies };
 	push @degen, $elem->string;
+<<<<<<< HEAD
 	$p->n( $p->n + $elem->site_fraction );
 	#$p->n($#degen+1);
 	$p->degeneracies(\@degen);
 	my $fuzzy = $p->fuzzy + $elem->halflength*$elem->site_fraction;
+=======
+	$p->n($#degen+1);
+	$p->degeneracies(\@degen);
+	my $fuzzy = $p->fuzzy + $elem->halflength;
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 	$p->fuzzy($fuzzy);
 	$new_path = 0;
 	last LOP;
       };
     };
     if ($new_path) {
+<<<<<<< HEAD
       $elem->n($elem->site_fraction);
       $elem->fuzzy($elem->halflength*$elem->site_fraction);
+=======
+      $elem->fuzzy($elem->halflength);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
       $elem->degeneracies([$elem->string]);
       push(@list_of_paths, $elem);
     } else {

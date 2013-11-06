@@ -63,7 +63,11 @@ sub save_project {
     if (not $rframes->{main} -> {currentfit});
   Demeter::UI::Artemis::update_order_file();
 
+<<<<<<< HEAD
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds, vpaths => \@vpaths);
+=======
+  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   #my $save = $rframes->{main} -> {currentfit} -> fitted;
   #$rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
@@ -296,6 +300,7 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
+<<<<<<< HEAD
     my $source;
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -310,6 +315,13 @@ sub read_project {
     my $feffobject = ($source eq 'aggregate') ?
       Demeter::Feff::Aggregate->new(group=>$d) :
 	  Demeter::Feff->new(group=>$d); # force group to be the same as before.
+=======
+    if (not -e $yaml) {
+      rmtree(File::Spec->catfile($projfolder, 'feff', $d));
+      next;
+    };
+    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');

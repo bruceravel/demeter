@@ -48,6 +48,11 @@ has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  
 has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") || 'lines'});
 has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
 
+has '+datastyle' => (default => sub{ shift->co->default("gnuplot", "datastyle") || 'lines'});
+has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  || 'lines'});
+has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") || 'lines'});
+has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
+
 
 before start_plot => sub {
   my ($self) = @_;

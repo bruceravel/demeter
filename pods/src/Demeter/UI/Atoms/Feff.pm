@@ -466,7 +466,11 @@ sub fill_intrp_page {
       $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
       $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
       #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
+<<<<<<< HEAD
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, sprintf("%.3f", $p->n));
+=======
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
       #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);

@@ -98,7 +98,10 @@ my %hints = (
 	     open      => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
 	     save      => "Save an atoms input file from these crystallographic data",
 	     exec      => "Generate input data for Feff from these crystallographic data",
+<<<<<<< HEAD
 	     aggregate => "Aggregate Feff calculations over all sites occupied by the same element",
+=======
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 	     doc       => "Show the Atoms documentation in a browser",
 	     clear     => "Clear this crystal structure",
 	     output    => "Write a feff.inp file or some other format",
@@ -139,8 +142,12 @@ sub new {
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $self->{toolbar} -> AddSeparator;
+<<<<<<< HEAD
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
   my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
+=======
+  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
@@ -442,7 +449,11 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
+<<<<<<< HEAD
   my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms aggregate);
+=======
+  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms);
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -918,6 +929,7 @@ sub run_atoms {
   };
 };
 
+<<<<<<< HEAD
 sub aggregate {
   my ($self) = @_;
 
@@ -1001,6 +1013,8 @@ sub aggregate {
 };
 
 
+=======
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 sub document {
   $::app->document('feff');
 };

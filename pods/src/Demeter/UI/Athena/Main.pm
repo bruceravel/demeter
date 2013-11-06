@@ -96,11 +96,14 @@ sub group {
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
+<<<<<<< HEAD
 
   $this->{type} -> SetNormalColour(wxNullColour);
   $this->{type} -> SetHoverColour(wxNullColour);
   $this->{type} -> SetVisitedColour(wxNullColour);
   $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
+=======
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
   EVT_HYPERLINK($this, $this->{group_group_label}, sub{$_[1]->Skip(0)});
@@ -1258,8 +1261,13 @@ sub DoContextMenu {
       last SWITCH;
     };
     ($id == $ESHIFT_THIS) and do {
+<<<<<<< HEAD
       $app->{main}->status(sprintf("%s: energy shift = %.5f %s %.5f",
 				   $data->name, $data->bkg_eshift, $PM, $data->bkg_delta_eshift));
+=======
+      $app->{main}->status(sprintf("%s: energy shift = %.5f +/- %.5f",
+				   $data->name, $data->bkg_eshift, $data->bkg_delta_eshift));
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
       last SWITCH;
     };
     ($id == $ESHIFT_ALL) and do {
@@ -1290,7 +1298,11 @@ sub parameter_table {
   my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
 
   $max+=2;
+<<<<<<< HEAD
   my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f '.$PM.' %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
+=======
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f +/- %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
@@ -1344,8 +1356,13 @@ sub edgestep_error {
   $data->sentinal(sub{1});
   my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
+<<<<<<< HEAD
   $app->{main}->status(sprintf("%s: edge step = %.5f %s %.5f   %s",
 			       $data->name, $data->bkg_step, $PM, $stddev, $finishtext));
+=======
+  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
+			       $data->name, $data->bkg_step, $stddev, $finishtext));
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   undef $busy;
 };
 

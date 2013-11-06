@@ -90,7 +90,10 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
+<<<<<<< HEAD
 use MooseX::Types::LaxNum;
+=======
+>>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
