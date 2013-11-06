@@ -249,7 +249,8 @@ F<Bundle/DemeterBundle.pm> file.
 
 All tests are fragile.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

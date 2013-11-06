@@ -294,7 +294,8 @@ Need to check that generated values won't fail attribute type checking
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
