@@ -28,7 +28,7 @@ use File::Path;
 use File::Spec;
 
 use Demeter::StrTypes qw(FileName);
-use Demeter::Constants qw($CTOKEN);
+use Demeter::Constants qw($CTOKEN $EPSILON4);
 
 has '+source'   => (default => 'external');
 has 'file'      => (is => 'rw', isa => FileName,  default => q{},
@@ -105,8 +105,9 @@ sub read_folder {
   my @feffNNNN = sort {$a cmp $b} grep {$_ =~ m{\Afeff\d{4}\.dat\z}} @files;
   my %hash;
   foreach my $f (@feffNNNN) {	# convert each feffNNNN to a ScatteringPath object
-    my $sp = Demeter::ScatteringPath->new(feff=>$self);
-    my ($string, $nleg, $degen, $reff) = $self->parse_info_from_nnnn($f);
+    my $sp = Demeter::ScatteringPath->new(feff=>$self, pathfinding=>0);
+    $sp->mo->push_ScatteringPath($sp);
+    my ($string, $nleg, $degen, $reff, $pathno) = $self->parse_info_from_nnnn($f);
     $zcwif_of->{$f} ||= 0;	# handle absence of files.dat gracefully
     $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff, zcwif=>$zcwif_of->{$f});
     my $weight = ($zcwif_of->{$f} > 20) ? 2
@@ -117,6 +118,7 @@ sub read_folder {
     $sp->evaluate;
     $sp->degeneracies([$sp->string]);
     $sp->fromnnnn(File::Spec->catfile($folder, $f));
+    $sp->orig_nnnn($pathno);
     $self->push_pathlist($sp);
     #set_nnnn($f, $sp->group);
     $hash{$f} = $sp->group;
@@ -157,11 +159,14 @@ sub parse_info_from_nnnn {
   my ($self, $f) = @_;
   my $file = File::Spec->catfile($self->folder, $f);
   my @geometry = ();
-  my ($nleg, $degen, $reff);
+  my ($nleg, $degen, $reff, $pathno);
   my $flag = 0;
   open(my $NNNN, $file);
   while (<$NNNN>) {
     last if (m{\A\s+k\s+real\[2\*phc\]});
+    if (m{\A\s+Path\s+(\d+)}) { # find line with path index
+      $pathno = sprintf("%4.4d", $1);
+    };
     if (m{nleg,\s+deg,\s+reff}) { # find line with degeneracy and Reff
       my @fields = split(" ", $_);
       ($nleg, $degen, $reff) = @fields[0..2];
@@ -170,22 +175,31 @@ sub parse_info_from_nnnn {
     next unless $flag;
     ## make a simple id string out of the coordinates of the scatterers in this path
     my @fields = split(" ", $_);
-    push @geometry, join("", @fields[0..2]);
+    push @geometry, [@fields[0..2]];
   };
   close $NNNN;
 
   ## make a ScatteringPath string out of this scattering geometry
   ## see _visit and _parentage in Demeter::Feff
-  my @sitestrings = map { sprintf("%.4f%.4f%.4f", $_->[0], $_->[1], $_->[2]) } @{$self->sites};
   my $string = q{};
   foreach my $atom (@geometry) {
-    my $this = firstidx {$_ eq $atom} @sitestrings;
-    $string .= "$this.";
+    my $i = 0;
+    foreach my $s (@{$self->sites}) { # identify atoms in the feffNNNN geometry by index in the feff.inp ATOMS list
+      if ( (abs($atom->[0] - $s->[0]) < $EPSILON4) and
+	   (abs($atom->[1] - $s->[1]) < $EPSILON4) and
+	   (abs($atom->[2] - $s->[2]) < $EPSILON4) ) {
+	$string .= "$i.";
+	last;
+      } else {
+	++$i;
+      };
+    };
   };
   $string =~ s{\A0}{$CTOKEN};
   $string .= $CTOKEN;
+  $pathno ||= '0000';
 
-  return ($string, $nleg, $degen, $reff);
+  return ($string, $nleg, $degen, $reff, $pathno);
 };
 
 
@@ -236,7 +250,7 @@ Demeter::Feff::External - Import and manipulate external Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -381,7 +395,8 @@ Let pathfinder method actually run Feff's pathfinder.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -389,7 +404,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

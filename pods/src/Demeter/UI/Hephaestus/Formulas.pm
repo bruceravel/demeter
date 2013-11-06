@@ -272,7 +272,7 @@ sub get_formula_data {
 	## 1 amu = 1.6605389 x 10^-24 gm
 	push @abovebelow, $bpfu / $apfu / 1.6605389;
       };
-      if (not $density) {
+      if ($density) {
 	my $xabove = $abovebelow[1] * $density;
 	my $xbelow = $abovebelow[0] * $density;
 	my $step   = 10000 / ($xabove - $xbelow);
@@ -330,7 +330,7 @@ Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -378,7 +378,8 @@ Add and delete user materials using an ini file.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -386,7 +387,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

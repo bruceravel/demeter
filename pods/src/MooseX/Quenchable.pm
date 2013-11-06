@@ -1,7 +1,7 @@
 package MooseX::Quenchable;
 
 {
-  $MooseX::Quenchable::VERSION = '0.9.14';
+  $MooseX::Quenchable::VERSION = '0.9.18';
 }
 use Moose::Role 0.90;
 use MooseX::Aliases;
@@ -11,7 +11,7 @@ has 'quenched'    => (is => 'rw', isa => 'Bool',   default => 0, alias=>'frozen'
 
 package MooseX::Quenchable::Attribute;
 {
-  $MooseX::Quenchable::Attribute::VERSION = '0.9.14';
+  $MooseX::Quenchable::Attribute::VERSION = '0.9.18';
 }
 use Moose::Role 0.90;
 
@@ -53,7 +53,7 @@ around accessor_metaclass => sub {
 
 package MooseX::Quenchable::Accessor;
 {
-  $MooseX::Quenchable::Accessor::VERSION = '0.9.14';
+  $MooseX::Quenchable::Accessor::VERSION = '0.9.18';
 }
 use Moose::Role 0.90;
 
@@ -72,7 +72,7 @@ around _inline_store => sub {
 
 package Moose::Meta::Attribute::Custom::Trait::Quenchable;
 {
-  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.14';
+  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.18';
 }
 sub register_implementation { 'MooseX::Quenchable::Attribute' }
 
@@ -87,7 +87,7 @@ MooseX::Quenchable - silently freeze attribute values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -127,7 +127,8 @@ defeat the intent of quenching the object.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -135,7 +136,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 

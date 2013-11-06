@@ -111,37 +111,49 @@ sub main_page {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($hbox, 2, wxLEFT|wxRIGHT|wxGROW, 5);
 
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox -> Add($vbox, 1, wxGROW|wxALL, 5);
+
+
+  ## ------------- fitting options
   my $optionsbox       = Wx::StaticBox->new($panel, -1, 'Options', wxDefaultPosition, wxDefaultSize);
   my $optionsboxsizer  = Wx::StaticBoxSizer->new( $optionsbox, wxVERTICAL );
-  $hbox -> Add($optionsboxsizer, 1, wxGROW|wxALL, 5);
+  $vbox -> Add($optionsboxsizer, 0, wxGROW|wxALL, 5);
   $this->{components} = Wx::CheckBox->new($panel, -1, 'Plot weighted components');
   $this->{residual}   = Wx::CheckBox->new($panel, -1, 'Plot residual');
   $this->{inclusive}  = Wx::CheckBox->new($panel, -1, 'All weights between 0 and 1');
   $this->{unity}      = Wx::CheckBox->new($panel, -1, 'Force weights to sum to 1');
   $this->{linear}     = Wx::CheckBox->new($panel, -1, 'Add a linear term after E0');
   $this->{one_e0}     = Wx::CheckBox->new($panel, -1, 'All standards share an E0');
-  $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{reset}      = Wx::Button->new($panel, -1, 'Reset', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{spacer}     = Wx::StaticLine->new($panel, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL);
+
+  $::app->mouseover($this->{components},  "Include the weighted components in the plot.");
+  $::app->mouseover($this->{residual},    "Include the residual from the fit in the plot.");
+  $::app->mouseover($this->{inclusive},   "Force all weights to evaluate to values between 0 and 1.");
+  $::app->mouseover($this->{unity},       "Force the weights to sum to 1, otherwise allow the weight of each group to float.");
+  $::app->mouseover($this->{linear},      "Include a linear component (m*E + b) in the fit which is only evaluated after E0.");
+  $::app->mouseover($this->{one_e0},      "Force the standards to share a single E0 parameter.  This is equivalent (albeit with a sign change) to floating E0 for the data.");
+  $::app->mouseover($this->{reset},       "Reset all LCF parameters to their default values.");
+
+
   #$optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
   #  foreach (qw(components residual spacer inclusive unity spacer linear one_e0 usemarked reset));
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(components residual));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  #$optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(inclusive unity));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  #$optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
     foreach (qw(linear one_e0));
-  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
-  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
-    foreach (qw(usemarked reset));
   $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
 
   $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
   $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
   $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
   $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+  $this->{linear}->Enable(0) if (Demeter->mo->template_analysis ne 'larch');
 
   my $noisebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($noisebox, 0, wxGROW|wxALL, 1);
@@ -150,12 +162,39 @@ sub main_page {
   $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $noisebox->Add($this->{noise}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'to data'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
+  my $ninfobox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $optionsboxsizer->Add($ninfobox, 0, wxGROW|wxALL, 1);
+  $ninfobox->Add(Wx::StaticText->new($panel, -1, 'Information content'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{ninfo} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{ninfo} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $ninfobox->Add($this->{ninfo}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+
+  $::app->mouseover($this->{noise}, "Add randomly distributed noise, scaled by this amount, to the data before doing the fit.");
+  if (Demeter->is_ifeffit) {
+    $::app->mouseover($this->{ninfo}, "This displays Athena's estimate of the information content, which is not currently used in the fit.");
+  } else {
+    $::app->mouseover($this->{ninfo}, "Specify the information content of your data.  If 0, Athena will estimate the information content.");
+  };
+
+
+  ## ------------- combinatorics options
+  my $combinbox       = Wx::StaticBox->new($panel, -1, 'Combinatorics', wxDefaultPosition, wxDefaultSize);
+  my $combinboxsizer  = Wx::StaticBoxSizer->new( $combinbox, wxVERTICAL );
+  $vbox -> Add($combinboxsizer, 0, wxGROW|wxALL, 5);
+
   my $maxbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $optionsboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
+  $combinboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'Use at most'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{max} = Wx::SpinCtrl->new($panel, -1, 4, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 2, 100);
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
+  $::app->mouseover($this->{max}, "In a combinatorial fit, only consider combinations up to this number of standards.");
+
+  ## ------------- reset button
+  $vbox->Add($this->{spacer}, 0, wxALL, 3);
+  $vbox->Add($this->{reset}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
 
   $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
@@ -170,15 +209,15 @@ sub main_page {
   EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear         ($this->{linear}    ->GetValue)});
   EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive      ($this->{inclusive} ->GetValue)});
   EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity          ($this->{unity}     ->GetValue)});
-  EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0         ($this->{one_e0}    ->GetValue)});
-  EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
+  EVT_CHECKBOX($this, $this->{one_e0},     sub{use_one_e0(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
   EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
-
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
   $hbox -> Add($actionsboxsizer, 1, wxGROW|wxALL, 5);
+
+  $this->{usemarked}     = Wx::Button->new($panel, -1, 'Use marked groups');
   $this->{fit}		 = Wx::Button->new($panel, -1, 'Fit this group');
   $this->{combi}	 = Wx::Button->new($panel, -1, 'Fit all combinations');
   $this->{fitmarked}	 = Wx::Button->new($panel, -1, 'Fit marked groups');
@@ -186,10 +225,12 @@ sub main_page {
   $this->{plot}		 = Wx::Button->new($panel, -1, 'Plot data and sum');
   $this->{plotr}	 = Wx::Button->new($panel, -1, 'Plot data and sum in R');
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
+
   foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
+  $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxTOP, 10);
   $actionsboxsizer->Add(1,1,1);
   $this->{document} -> Reparent($panel);
   $actionsboxsizer->Add($this->{document}, 0, wxGROW|wxALL, 0);
@@ -201,6 +242,18 @@ sub main_page {
   EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
   EVT_BUTTON($this, $this->{make},      sub{make(@_)});
   EVT_BUTTON($this, $this->{plotr},     sub{fft(@_)});
+  EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
+
+  $::app->mouseover($this->{fit},       "Fit the current group using the current model.");
+  $::app->mouseover($this->{plot},      "Plot the data with current sum of standards.");
+  $::app->mouseover($this->{report},    "Save a column data file containing the current fit and its components.");
+  $::app->mouseover($this->{combi},     "Perform a combinatorial fitting sequence using all possible combinations from the standards list.");
+  $::app->mouseover($this->{fitmarked}, "Fit all marked groups using the current fitting model.");
+  $::app->mouseover($this->{make},      "Turn the current sum of standards into its own data group.");
+  $::app->mouseover($this->{plotr},     "Plot the current group and the current model in R space.");
+  $::app->mouseover($this->{document},  "Show the document page for LCF in a browser.");
+  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
+
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -244,7 +297,7 @@ sub combi_page {
 
   $this->{fitresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
   $this->{fitresults}->InsertColumn( 0, "#",        wxLIST_FORMAT_LEFT, 20 );
-  $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 100 );
+  $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 150 );
   $this->{fitresults}->InsertColumn( 2, "Weight",   wxLIST_FORMAT_LEFT, 130 );
   $this->{fitresults}->InsertColumn( 3, "E0",       wxLIST_FORMAT_LEFT, 130 );
   $box->Add($this->{fitresults}, 1, wxALL|wxGROW, 3);
@@ -312,6 +365,8 @@ sub add_standard {
   $this->{'standard'.$i}->SetSelection(0);
   EVT_TEXT_ENTER($this, $this->{'weight'.$i}, sub{1});
   EVT_TEXT_ENTER($this, $this->{'e0'.$i}, sub{1});
+  EVT_CHECKBOX($this, $this->{'fite0'.$i}, sub{use_individual_e0(@_, $i)});
+
   $this->{'standard'.$i}->{callback} = sub{$this->OnSelect};
   $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
@@ -397,6 +452,26 @@ sub Pluck {
   $::app->{main}->status($text);
 }
 
+sub use_one_e0 {
+  my ($this, $event) = @_;
+  my $val = $this->{one_e0}->GetValue;
+  $this->{LCF}->one_e0($val);
+  if ($val) {
+    foreach my $i (0 .. $this->{nstan}-1) {
+      $this->{'e0'.$i}->SetValue(0);
+      $this->{'fite0'.$i}->SetValue(0);
+    };
+  };
+};
+
+sub use_individual_e0 {
+  my ($this, $event, $i) = @_;
+  my $val = $this->{'fite0'.$i}->GetValue;
+  if ($val) {
+    $this->{one_e0}->SetValue(0);
+    $this->{LCF}->one_e0(0);
+  };
+};
 
 sub use_marked {
   my ($this, $event) = @_;
@@ -453,11 +528,11 @@ sub OnSpace {
 
 sub fetch {
   my ($this) = @_;
-
   my $max = $this->{max}->GetValue;
   $max = 2 if ($max < 2);
   $this->{LCF}->max_standards($max);
   my $noise = $this->{noise}->GetValue;
+  #$noise =~ s{\.{2,}}{.}g;
   $noise = 0 if (not looks_like_number($noise));
   $noise = 0 if ($noise < 0);
   $this->{LCF}->noise($noise);
@@ -519,6 +594,7 @@ sub _results {
     $this->{'weight'.$i}->SetValue($w);
     $this->{'e0'.$i}    ->SetValue($e);
   };
+  $this->{ninfo}->SetValue($this->{LCF}->ninfo);
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{LCF}->report);
 };
@@ -560,10 +636,10 @@ sub combi {
   };
   my $size = $this->{LCF}->combi_size;
   if ($size > 70) {
-    my $yesno = Wx::MessageDialog->new($::app->{main},
-				       "Really perform $size fits?",
-				       "Perform $size fits?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+						 "You have asked to do $size fits!  Really perform this many fits?",
+						 "Perform $size fits?",
+						 "Perform fits");
     my $result = $yesno->ShowModal;
     if ($result == wxID_NO) {
       $::app->{main}->status("Not doing combinatorial sequence of $size fits.");
@@ -602,9 +678,7 @@ sub combi {
   $this->{stats}->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   $this->{notebook}->ChangeSelection(2);
 
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "Did %d combinatorial fits in %d minutes, %d seconds.", $size, $dur->minutes, $dur->seconds;
+  my $finishtext = Demeter->howlong($start, sprintf("%d combinatorial fits",$size));
   $::app->{main}->status($finishtext);
 
   undef $busy;
@@ -739,15 +813,13 @@ sub sequence {
 
   $this->seq_results(@groups);
   $this->{markedresults} -> SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
-  $this->{plotmarked}    -> Enable(1);
-  $this->{markedreport}  -> Enable(1);
   $this->seq_select($i);
   $this->{markedresults} -> SetItemState(0, 0, wxLIST_STATE_SELECTED);
   $this->{markedresults} -> SetItemState($i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "Fit %d groups %d minutes, %d seconds.", $#groups+1, $dur->minutes, $dur->seconds;
+  my $finishtext = Demeter->howlong($start, sprintf("Fitting %d groups",$#groups+1));
+  $this->{plotmarked}    -> Enable(1);
+  $this->{markedreport}  -> Enable(1);
   $::app->{main}->status($finishtext);
 
   undef $busy;
@@ -838,9 +910,9 @@ sub seq_select {
 
 sub seq_report {
   my ($this, $event) = @_;
-  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'sequence' : $::app->{main}->{project}->GetLabel.'_sequence';
+  my $init = ($::app->{main}->{project}->GetLabel eq '<untitled>') ? 'lcf_sequence' : $::app->{main}->{project}->GetLabel.'_lcf_sequence';
   $init .= '.xls';
-  my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, $init,
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit sequence results", cwd, $init,
 				"Excel (*.xls)|*.xls|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
@@ -851,7 +923,7 @@ sub seq_report {
   my $fname = $fd->GetPath;
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->sequence_report($fname);
-  $::app->{main}->status("Wrote fit sequence report as an Excel spreadsheet to $fname");
+  $::app->{main}->status("Wrote LCF fit sequence report as an Excel spreadsheet to $fname");
 };
 
 sub seq_plot {
@@ -951,7 +1023,7 @@ Demeter::UI::Athena::LCF - A linear combination fitting tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -974,7 +1046,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -982,7 +1055,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

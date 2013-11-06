@@ -8,7 +8,7 @@ use Demeter::StrTypes qw( PlotSpace );
 
 has '+name'  => (default => q{indicator});
 has 'space'  => (is => 'rw', isa => PlotSpace,  default => 'e', coerce => 1);
-has 'x'      => (is => 'rw', isa => 'Num',      default =>  0,
+has 'x'      => (is => 'rw', isa => 'LaxNum',      default =>  0,
 		 trigger => sub{my ($self, $new) = @_;
 				if ($self->space eq 'e') {
 				  $self->x2($self->e2k($new));
@@ -18,11 +18,11 @@ has 'x'      => (is => 'rw', isa => 'Num',      default =>  0,
 				  $self->x2($self->k2e($new));
 				};
 			      });
-has 'x2'     => (is => 'rw', isa => 'Num',  default =>  0);
+has 'x2'     => (is => 'rw', isa => 'LaxNum',  default =>  0);
 has 'active' => (is => 'rw', isa => 'Bool', default =>  1);
 has 'i'      => (is => 'rw', isa => 'Int',  default => -1);
 
-has 'ymin'   => (is => 'rw', isa => 'Num',  default =>  0,
+has 'ymin'   => (is => 'rw', isa => 'LaxNum',  default =>  0,
 		trigger => sub{my ($self, $new) = @_;
 			       if ($new < 0) {
 				 $self->y1($new * $self->co->default('indicator','margin'));
@@ -30,7 +30,7 @@ has 'ymin'   => (is => 'rw', isa => 'Num',  default =>  0,
 				 $self->y1($new / $self->co->default('indicator','margin'));
 			       };
 			     });
-has 'ymax'   => (is => 'rw', isa => 'Num',  default =>  0,
+has 'ymax'   => (is => 'rw', isa => 'LaxNum',  default =>  0,
 		trigger => sub{my ($self, $new) = @_;
 			       if ($new < 0) {
 				 $self->y2($new / $self->co->default('indicator','margin'));
@@ -38,8 +38,8 @@ has 'ymax'   => (is => 'rw', isa => 'Num',  default =>  0,
 				 $self->y2($new * $self->co->default('indicator','margin'));
 			       };
 			     });
-has 'y1'     => (is => 'rw', isa => 'Num',  default =>  0);
-has 'y2'     => (is => 'rw', isa => 'Num',  default =>  0);
+has 'y1'     => (is => 'rw', isa => 'LaxNum',  default =>  0);
+has 'y2'     => (is => 'rw', isa => 'LaxNum',  default =>  0);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -141,7 +141,7 @@ Demeter::Plot::Indicator - Vertical lines marking points on a plot
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -302,7 +302,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -310,7 +311,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

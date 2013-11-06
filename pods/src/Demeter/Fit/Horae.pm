@@ -24,6 +24,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::MoreUtils qw(firstidx);
 use Safe;
 use Scalar::Util qw(looks_like_number);
 
@@ -36,8 +37,14 @@ sub apj2dpj {
   my $unzip = File::Spec->catfile($self->stash_folder, '_old_'.basename($apj, '.apj'));
   rmtree $unzip if (-d $unzip);
   my $zip = Archive::Zip->new();
-  confess("File $apj does not appear to be a zip file\n"), return 0 unless ($zip->read($apj) == AZ_OK);
-  confess("File $apj does not appear to be an old-style Artemis project file\n"), return 0 unless $zip->memberNamed('HORAE');
+  if ($zip->read($apj) != AZ_OK) {
+    confess("File $apj does not appear to be a zip file\n");
+    return 0;
+  };
+  if (not $zip->memberNamed('HORAE')) {
+    confess("File $apj does not appear to be an old-style Artemis project file\n");
+    return 0;
+  };
   mkpath $unzip;
   $zip->extractTree("", $unzip.'/');
   undef $zip;
@@ -66,7 +73,7 @@ sub apj2dpj {
 	my @parameter = @ {$cpt->varglob('parameter')};
 	my $me = $parameter[2];
 	## old artemis might store a best fit as "1.23 (0.45)".  This purges the uncertainty
-	if ($me =~ m{\A\s*($NUMBER)\s+\($NUMBER\)\s*\z}) {
+	if ($me =~ m{\A\s*($NUMBER)\s+\($NUMBER*\)\s*\z}) {
 	  $me = $1;
 	};
 	push @gds, Demeter::GDS->new(name    => $parameter[0],
@@ -114,8 +121,8 @@ sub apj2dpj {
 	} elsif ($#list == 2) {
 	  my $args = <$DESC>;
 	  my $strings = <$DESC>;
-	  push @paths, $self->horae_path($unzip, \%map, $old_path, $current_feff,
-					 $args, $strings);
+	  my $this = $self->horae_path($unzip, \%map, $old_path, $current_feff, $args, $strings);
+	  push @paths, $this if $this;
 	};
 	last SWITCH;
       };
@@ -213,7 +220,9 @@ sub horae_feff {
   my @args = @ {$cpt->varglob('args')};
   my %args = @args;
 
+  ## the pathfinder's postcrit filter MUST be set to 0 for importing an old-style Artemis project
   $feff -> name($args{lab});
+  $feff -> postcrit(0);
   $feff -> set(workspace=>File::Spec->catfile($unzip, $old_path), screen=>0);
   $feff -> file(File::Spec->catfile($unzip, $old_path, 'feff.inp'));
 
@@ -235,8 +244,10 @@ sub horae_path {
   @ {$cpt->varglob('args')} = $cpt->reval( $args_line );
   my @args = @ {$cpt->varglob('args')};
   my %args = @args;
-  my $nnnn = substr($args{file}, 4, -4) - 1;
-  $path->sp($current_feff->pathlist->[$nnnn]);
+  my $nnnn = substr($args{file}, 4, -4);
+  my $this = firstidx {$_->orig_nnnn == $nnnn} @{$current_feff->pathlist};
+  return 0 if $this == -1;
+  $path->sp($current_feff->pathlist->[$this]);
   $path->set(name    => $args{lab},
 	     s02     => $args{s02},
 	     e0      => $args{e0},
@@ -269,7 +280,7 @@ Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter f
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -328,7 +339,8 @@ blah blah
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -336,7 +348,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

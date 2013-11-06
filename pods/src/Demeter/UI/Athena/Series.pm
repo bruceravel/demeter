@@ -8,6 +8,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN);
 
 use Scalar::Util qw(looks_like_number);
 use List::MoreUtils qw(any);
@@ -182,8 +183,10 @@ sub make {
     return;
   };
   if ($n > 10) {
-    my $yesno = Wx::MessageDialog->new($this, "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
-				       "Continue?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
+						 "$n seems like an awfully large number of copies.  Are you sure you want to continue?",
+						 "Continue?",
+						 "Continue");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -242,7 +245,7 @@ sub step {
     next if not $clb->IsChecked($i);
     $stat->add_data($clb->GetIndexedData($i)->bkg_step);
   };
-  my $text = sprintf("%.5f +/- %.5f", $stat->mean, $stat->standard_deviation);
+  my $text = sprintf("%.5f %s %.5f", $stat->mean, $PLUSMN, $stat->standard_deviation);
   $this->{stepvalue}-> SetValue($text);
   $::app->{main}->status("Average edge step value: ".$text);
   undef $stat;
@@ -264,7 +267,7 @@ Demeter::UI::Athena::Series - A tool for copying series of groups in Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -291,7 +294,8 @@ Need to check that generated values won't fail attribute type checking
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -299,7 +303,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

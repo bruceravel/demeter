@@ -50,6 +50,7 @@ sub Export {
 
   my $busy = Wx::BusyCursor->new();
   #$app->{main}->{Main}->pull_values($app->current_data);
+  Demeter->co->set("athena_compatibility" => $app->project_compatibility);
   $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
@@ -77,7 +78,7 @@ sub Import {
 
   $app->{main}->{views}->SetSelection(0) if not $args{no_main};
 
-  my @files = ($fname);
+  my @files = (ref($fname) eq 'ARRAY') ? @$fname : ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
 				  "All files |*.*;*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
@@ -127,6 +128,7 @@ sub Import {
 	$stashfile = ($plugin) ? $plugin->fixed : $file;
 	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
 	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+	      : ($plugin and ($plugin->output eq 'list'))                ? 'list'
               : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
               :                                                            '???';
       };
@@ -145,6 +147,14 @@ sub Import {
       $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
+      ($type eq 'list') and do {
+	$app->Import($plugin->fixed);
+	Demeter->push_mru("xasdata", $plugin->file);
+	chdir(dirname($plugin->file));
+	$plugin->clean;
+	$retval = 0;
+	last SWITCH;
+      };
     };
     undef $xdi;
     if ($plugin) {
@@ -249,7 +259,7 @@ sub _data {
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
   if ($data->unreadable) {
-    $app->{main}->status($data->file." could not be read as data.", 'alert');
+    $app->{main}->status($data->file." could not be read as data. (Do you need to enable a plugin?)", 'alert');
     $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
     $data->DEMOLISH;
     return 0;
@@ -287,13 +297,15 @@ sub _data {
     $do_guess = 1;
   };
   $yaml->{energy} = $data->energy;
-  my $untext = $data->guess_units;
-  my $un = ($untext eq 'eV')     ? 0
-         : ($untext eq 'keV')    ? 1
-         : ($untext eq 'lambda') ? 2
-	 :                         0;
-  $yaml->{units} = $un;
-  if ($untext eq 'keV') {
+  if ($do_guess) {
+    my $untext = $data->guess_units;
+    my $un = ($untext eq 'eV')     ? 0
+           : ($untext eq 'keV')    ? 1
+	   : ($untext eq 'lambda') ? 2
+	   :                         0;
+    $yaml->{units} = $un;
+  };
+  if ($yaml->{units} == 1) {	# keV units
     $data->is_kev(1);
     $data->update_data(1);
     $data->_update('data');
@@ -453,6 +465,8 @@ sub _data {
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 
+  $data->extraneous;
+
   $app->{main}->status("Imported $message from $displayfile");
 
   ## -------- save persistance file
@@ -532,10 +546,16 @@ sub _group {
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
+    my %hash;
+    foreach my $w (qw(emin emax pre xanes exafs)) {
+      my $key = 'rebin_'.$w;
+      $hash{$w} = $yaml->{$key};
+      Demeter->co->set_default('rebin', $w, $yaml->{$key});
+    };
     my $ret = $data->rebin_is_sensible;
     if ($ret->is_ok) {
       $app->{main}->status("Rebinning ". $data->name);
-      my $rebin  = $data->rebin;
+      my $rebin  = $data->rebin(\%hash);
       foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($data->$att);
       };
@@ -563,6 +583,7 @@ sub _group {
   };
 
   $app->{main}->{list}->AddData($data->name, $data);
+
 
   if (not $repeated) {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
@@ -608,30 +629,34 @@ sub _group {
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
     };
-    if ($repeated) {
-      my $foo = $ref->clone;
-      $ref = $foo;
-    };
+
+## what was this for?
+#    if ($repeated) {
+#      my $foo = $ref->clone;
+#      $ref = $foo;
+#    };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
     $yaml -> {ref_ln}    = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue : $yaml->{ref_ln};
 
+    $ref -> is_col(1);
     $ref -> set(name        => "  Ref " . $data->name,
-		energy      => $yaml->{energy},
+		energy      => $data->energy,
 		numerator   => '$'.$yaml->{ref_numer},
 		denominator => ($yaml->{ref_denom}) ? '$'.$yaml->{ref_denom} : 1,
 		ln          => $yaml->{ref_ln},
-		is_col      => 1,
 		is_kev      => $data->is_kev,
-		display     => 1,
-		datatype    => $data->datatype);
-    $ref->display(0);
+		display     => 0,
+		datatype    => $data->datatype,
+		update_data => 1,
+	       );
     my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
     if ($same_edge) {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
     $ref -> _update('normalize');
+
     ## need to fix the e0 of the reference in two situations
     if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
       if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
@@ -641,10 +666,16 @@ sub _group {
       $ref -> e0('dmax');
     };
     if ($do_rebin) {
+      my %hash;
+      foreach my $w (qw(emin emax pre xanes exafs)) {
+	my $key = 'rebin_'.$w;
+	Demeter->co->set_default('rebin', $w, $yaml->{$key});
+	$hash{$w} = $yaml->{$key};
+      };
       my $ret = $data->rebin_is_sensible;
       if ($ret->is_ok) {
 	$app->{main}->status("Rebinning reference for ". $data->name);
-	my $rebin  = $ref->rebin;
+	my $rebin  = $ref->rebin(\%hash);
 	foreach my $att (qw(energy numerator denominator ln name)) {
 	  $rebin->$att($ref->$att);
 	};
@@ -659,12 +690,15 @@ sub _group {
     $app->{main}->{list}->AddData($ref->name, $ref);
     $app->{most_recent} = $save;
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
+    $ref -> extraneous;
     $ref->reference($data);
   };
 
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
     #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    my $save = $data->po->e_smooth;
+    $data->po->set(e_smooth=>3);
     if ($data->reference and $stan->reference) {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name . " using references");
       $stan->align_with_reference($data);
@@ -672,6 +706,7 @@ sub _group {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name);
       $stan->align($data);
     };
+    $data->po->set(e_smooth=>$save);
     $app->OnGroupSelect(0,0,0);
   };
 
@@ -957,7 +992,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -969,7 +1004,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

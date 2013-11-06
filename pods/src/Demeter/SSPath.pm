@@ -17,7 +17,7 @@ package Demeter::SSPath;
 
 use Moose;
 extends 'Demeter::Path';
-use Demeter::NumTypes qw( Ipot PosNum PosInt );
+use Demeter::NumTypes qw( Ipot PosNum PosInt Natural );
 use Demeter::StrTypes qw( Empty );
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -26,9 +26,9 @@ use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
 has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
 		     trigger  => \&set_tag);
-has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
+has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum', default => 0.1);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scattering');
@@ -37,6 +37,7 @@ has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 has 'rattle'     => (is => 'rw', isa => 'Bool',   default => 0,
 		     trigger => sub{ my ($self, $new) = @_; $self->set_rattle($new); $self->update_path(1)});
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 9999);
 
 ## the sp attribute must be set to this SSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
@@ -68,7 +69,7 @@ sub set_tag {
   my $feff = $self->parent;
   return $self if not $feff;
   my @ipots = @{ $feff->potentials };
-  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
+  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]) || q{};
   $self->tag($tag);
   $self->make_name  if not $self->name;
   return $self;
@@ -84,6 +85,13 @@ sub set_rattle {
   return $self;
 };
 
+sub scatterer {
+  my ($self) = @_;
+  my $feff = $self->parent;
+  return $self if not $feff;
+  my @ipots = @{ $feff->potentials };
+  return get_symbol($ipots[$self->ipot]->[1]);
+};
 
 override make_name => sub {
   my ($self) = @_;
@@ -166,7 +174,7 @@ Demeter::SSPath - Arbitrary single scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -280,7 +288,8 @@ Think about serialization by itself and in a fit.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -288,7 +297,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

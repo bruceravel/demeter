@@ -16,21 +16,21 @@ use PDL::NiceSlice;
 #		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'nconfig' => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
 has 'rmin'    => (is	        => 'rw',
-		  isa	        => 'Num',
+		  isa	        => 'LaxNum',
 		  default       => 0.0,
 		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
 		  alias         => 'r1',
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		  documentation => "The lower bound of the through-absorber histogram to be extracted from the cluster");
 has 'rmax'    => (is 	        => 'rw',
-		  isa 	        => 'Num',
+		  isa 	        => 'LaxNum',
 		  default       => 5.6,
 		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
 		  alias         => 'r2',
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		  documentation => "The upper bound of the through-absorber histogram to be extracted from the cluster");
 
-has 'beta'    => (is => 'rw', isa => 'Num', default => 20,
+has 'beta'    => (is => 'rw', isa => 'LaxNum', default => 20,
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'ipot'    => (is => 'rw', isa => Ipot, default => 1,
 		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
@@ -41,11 +41,11 @@ has 'ipot2'   => (is => 'rw', isa => Ipot, default => 1,
 has 'nearcl'  => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 has 'rbin'    => (is            => 'rw',
-		  isa           => 'Num',
+		  isa           => 'LaxNum',
 		  default       => 0.02,
 		  trigger	=> sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 has 'betabin' => (is            => 'rw',
-		  isa           => 'Num',
+		  isa           => 'LaxNum',
 		  default       => 0.5,
 		  trigger	=> sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 
@@ -386,7 +386,7 @@ Demeter::Feff::DistributionsP::Thru - Histograms for MS paths through the absorb
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -492,7 +492,8 @@ Triangles and nearly colinear paths
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -500,7 +501,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -93,7 +93,7 @@ page.
 
 <p>
 This is document version 0.2 for <span class=program>DEMETER</span>
-version 0.9.14.
+version 0.9.18.
 </p>
 
 
@@ -311,6 +311,67 @@ library, including tools for date and time manipulation; heap and tree
 data structures; tools for formal graph theory; tools for manipulating
 zip, INI, and yaml files; and many others.  These tools from CPAN are
 extensively tested and highly reliable.
+</p>
+
+
+<hr class=hide />
+<a name="foldersandlogfiles">
+
+<h2>  Folders and log files</h2>
+</a>
+
+<p>
+
+On occasion, it is helpful to know something about how <span class=program>ARTEMIS</span>
+writes information to disk during its operations.
+</p>
+
+
+<dl>
+  
+<dt>
+  working folder
+</dt>
+<dd>
+Many of <span class=program>ARTEMIS</span>' chores involve writing temporary files.
+Project files are unpacked in temporary folders.  <span class=program>GNUPLOT</span> writes temporary
+files as part of its plot creation.  These files are stored in the 
+&ldquo;stash folder&rdquo;.  On linux (and other
+unixes) this is <span class=file>/.horae/stash/</span>.  On
+Windows this is <span class=file>%APPDATA%\demeter\stash</span>.
+  <br />
+  <br />
+</dd> 
+<dt>
+  log files
+</dt>
+<dd>
+When <span class=program>ARTEMIS</span> runs into problems, it attempts to write enough
+information to the screen that the problem can be addressed.  This
+screen information is what Bruce needs to troubleshoot bugs.  On a
+linux (or other unix) machine, simply run <span class=program>ARTEMIS</span> from the command
+line and the informative screen messages will be written to the
+screen.
+
+On a Windows machine, it is uncommon to run the software from the
+command line, so <span class=program>ARTEMIS</span> has been instrumented to write a run-time
+log file.  This log file is called 
+<span class=file>dartemis.log</span> and can be found in the 
+<span class=file>%APPDATA%\demeter</span> folder.  
+  <br />
+  <br />
+</dd> 
+</dl>
+
+<p>
+
+&ldquo;%APPDATA%&rdquo;
+is <span class=file>C:\Users\&lt;username&gt;\AppDataRoaming\</span>
+on Windows 7 and 
+<span class=file>C:\Documents&nbsp;and&nbsp;Settings\&lt;username&gt;\Application&nbsp;Data\</span>
+on Windows XP and Vista.  In either case, 
+&ldquo;username&rdquo;
+is your log-in name.
 </p>
 
 </div>

@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.14.
+## This pod document is for Demeter version 0.9.18.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Installing Demeter from source
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 OVERVIEW
 
@@ -455,7 +455,8 @@ I recorded my notes at L<http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw>
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

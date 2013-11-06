@@ -72,9 +72,12 @@ sub new {
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
 
+  ## --- document button
+  $this->{doc} = Wx::Button->new($this, -1, q{Docmentation: QFS}, wxDefaultPosition, wxDefaultSize, 0, );
+  $vbox -> Add($this->{doc}, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('extended.qfs')});
   $this->{cancel} = Wx::Button->new($this, wxID_CANCEL, q{}, wxDefaultPosition, wxDefaultSize);
   $vbox -> Add($this->{cancel}, 0, wxGROW|wxALL, 5);
-
 
   $this -> SetSizerAndFit( $vbox );
   return $this;
@@ -110,7 +113,7 @@ Demeter::UI::Artemis::Data::Quickfs - Dialog to set up a quick first shell fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -125,7 +128,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -133,7 +137,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

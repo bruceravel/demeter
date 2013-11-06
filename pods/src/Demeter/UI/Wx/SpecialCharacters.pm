@@ -8,13 +8,13 @@ our @EXPORT_OK = qw(emph
 		    $ALPHA $BETA $GAMMA $ETA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $ONE $TWO $THR
-		    $ARING $MACRON $APPROX
+		    $ARING $MACRON $APPROX $PLUSMN $PLUSMN2
 		  );
 our %EXPORT_TAGS = (all   => [qw(emph
 				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 				 $ALPHA $BETA $GAMMA
 				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
-				 $ONE $TWO $THR $MACRON $APPROX)],
+				 $ONE $TWO $THR $MACRON $APPROX $PLUSMN $PLUSMN2)],
 		    super => [qw($ONE $TWO $THR $MACRON)],
 		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 				 $ALPHA $BETA $GAMMA $ETA)],
@@ -50,7 +50,9 @@ our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
 our $ARING     = chr(197);  # 'Å'
 our $MACRON    = chr(175);  # ''
-our $APPOX     = chr(2248);  # ''
+our $APPROX    = chr(2248); # ''
+our $PLUSMN    = chr(177);  # q{+/-};  # q{±}; #chr(177);  # 
+our $PLUSMN2   = q{+/-};  # q{±}; #chr(177);  # 
 
 sub emph {
   my ($string) = @_;
@@ -67,7 +69,7 @@ Demeter::UI::Wx::SpecialCharacters - A library of special characters for use in 
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -185,7 +187,8 @@ To convert a hex number in decimal:
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -193,7 +196,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

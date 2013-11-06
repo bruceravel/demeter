@@ -24,19 +24,28 @@ use Carp;
 use Regexp::Assemble;
 use Fcntl qw(:flock);
 use List::Util qw(sum);
+use List::MoreUtils qw(any);
 use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
 use Text::Wrap;
+use File::Touch;
 #use Memoize;
 #memoize('distance');
 
 
+use Demeter::StrTypes qw( Feff6Card Feff9Card );
 use Demeter::Constants qw($NULLFILE);
 use Const::Fast;
 const my $FRAC => 100000;
 
+use vars qw($DataDump_exists $DataDumpColor_exists);
+$DataDump_exists = eval "require Data::Dump" || 0;
+if ($DataDump_exists) {
+  $Data::Dump::INDENT = '| ';
+};
+$DataDumpColor_exists = eval "require Data::Dump::Color" || 0;
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
 # require Exporter;
@@ -56,12 +65,40 @@ sub now {
   return sprintf("%s", DateTime->now(time_zone => $tz));
 };
 
+sub howlong {
+  my ($self, $start, $id) = @_;
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->delta_ms($start);
+  $id ||= 'That';
+  my $text;
+  if ($dur->minutes) {
+    $text = sprintf "%s took %d minutes and %d seconds.", $id, $dur->minutes, $dur->seconds;
+  } else {
+    $text = sprintf "%s took %d seconds.", $id, $dur->seconds;
+  };
+  return $text;
+};
+
+sub attribute_exists {
+  my ($self, $att) = @_;
+  return any {$_ eq $att} (map {$_->name} $self->meta->get_all_attributes);
+}
+
+sub is_larch {
+  return (Demeter->mo->template_process eq 'larch');
+};
+sub is_ifeffit {
+  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+};
+
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
-  return "Demeter " . $Demeter::VERSION . " with perl $] on $os";
+  my $string .= "using " . $self->backend_name . " " . $self->backend_version;
+  return "Demeter " . $Demeter::VERSION . " with perl $] and $string on $os";
 };
 
+#		     MooseX::StrictConstructor
 sub module_environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
@@ -73,7 +110,6 @@ sub module_environment {
 		     Ifeffit
 		     Moose
 		     MooseX::Aliases
-		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types
 		     Archive::Zip
@@ -131,6 +167,9 @@ sub wx_environment {
 ##     Windows Vista          2      6       0
 ##     Windows Server 2008    2      6       0  note this overlap .. not a huge issue for this app...
 ##     Windows 7              2      6       1
+##     Windows Server 2008 R2 2      6       1
+##     Windows 8              2      6       2
+##     Windows Server 2012    2      6       2
 sub windows_version {
   my @os = eval "Win32::GetOSVersion()";
   my $os = "Some Windows thing";
@@ -147,6 +186,7 @@ sub windows_version {
     $os = "Windows Vista",       last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
     $os = "Windows Server 2008", last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
     $os = "Windows 7",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 1));
+    $os = "Windows 8",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 2));
   };
   return $os;
 };
@@ -192,6 +232,14 @@ sub slurp {
   my $text = <$FH>;
   close $FH;
   return $text;
+};
+
+sub write_file {
+  my ($file, $string) = @_;
+  open(my $OUT, '>', $file);
+  print $OUT $string;
+  close $OUT;
+  return $file;
 };
 
 sub readable {
@@ -355,7 +403,8 @@ sub ifeffit_heap {
 my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
-  @titles_text = ();
+  return $self if $self->is_larch; # this functionality is simply not necessary with Larch
+  @titles_text = ();		   # in Larch, _main will not be littered with these strings
   $group ||= $self->group;
   my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),
@@ -379,10 +428,31 @@ sub clear_ifeffit_titles {
 
 
 
+sub FDump {
+  my ($self, $fname, $ref, $name) = @_;
+  open(my $O, '>', $fname);
+  if ($DataDump_exists) {
+    print $O Data::Dump->pp($ref);
+  } elsif ($name) {
+    print $0 Data::Dumper->Dump([$ref], [$name]);
+    return 1;
+  } else {
+    print $0 Dumper($ref);
+  };
+  close $O;
+};
 sub Dump {
   my ($self, $ref, $name) = @_;
-  return Data::Dumper->Dump([$ref], [$name]) if $name;
-  return Dumper($ref);
+  if ($DataDumpColor_exists) {
+    Data::Dump::Color->dd($ref);
+  } elsif ($DataDump_exists) {
+    Data::Dump->dd($ref);
+  } elsif ($name) {
+    print Data::Dumper->Dump([$ref], [$name]);
+    return 1;
+  } else {
+    print Dumper($ref);
+  };
 };
 
 
@@ -424,6 +494,11 @@ sub pjoin {
   return join("|", @stuff) . $/;
 };
 
+sub Touch {
+  my ($self, $fname) = @_;
+  File::Touch::touch($fname);
+};
+
 
 ## this will fail if on linux or Mac and importing a shortcut from a
 ## network mounted folder
@@ -438,6 +513,43 @@ sub follow_link {
   return $file;
 };
 
+sub feffdocversion {
+  my ($self, $version) = @_;
+  my $current = ($self->co->default('feff', 'executable') =~ m{6}) ? 6 : 9;
+  $version = 9 if $current == 8;
+  $version ||= 6;
+  return $version;
+};
+sub feffdoc {
+  my ($self, $version) = @_;
+  $version ||= $self->feffdocversion;
+  return Demeter->co->default('feff', 'doc9_url') if $version == 9;
+  return Demeter->co->default('feff', 'doc6_url');
+};
+
+sub feffcardpage {
+  my ($self, $card, $version) = @_;
+  $version ||= $self->feffdocversion;
+
+  if ($version == 6) {
+    my $base = Demeter->co->default('feff', 'doc6_url');
+    $base =~ s{feff6\.html\z}{feff6-4.html#};
+    if (is_Feff6Card(uc($card))) {
+      return $base . substr(lc($card), 0, 3);
+    } elsif (is_Feff9Card(uc($card))) {
+      return Demeter->co->default('feff', 'doc9_url').'?title=' . uc($card);
+    } else {
+      return $self->feffdoc(6);
+    };
+  } else {
+    my $base = Demeter->co->default('feff', 'doc9_url').'?title=';
+    if (is_Feff9Card(uc($card))) {
+      return $base . uc($card);
+    } else {
+      return $self->feffdoc(9);
+    };
+  };
+};
 1;
 
 =head1 NAME
@@ -446,7 +558,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -490,6 +602,32 @@ This returns a string with the current date and time in a convenient,
 human-readable format.
 
    print "The time is: ", $demeter_object -> now, $/;
+
+=item C<howlong>
+
+This returns a string used for indicating an amount of elapsed time.
+The argument is a DataTime object made at the beginning of the event
+whose elapsed time is being measured.
+
+   my $start = DateTime->now( time_zone => 'floating' );
+   #  ... do something
+   my $text = Demeter->howlong($start);
+
+returns
+
+   That took NN seconds.
+
+It can be customized:
+
+   my $text = Demeter->howlong($start, "Your fit");
+
+returns
+
+   Your fit took NN seconds.
+
+For something longer than a minute, it would return
+
+   Your fit took MM minutes and NN seconds.
 
 =item C<environment>
 
@@ -560,10 +698,32 @@ significant digits beyond the decimal.
   my $frac = $demeter_object -> fract(0.5);
   ## will print as "1/2"
 
+=item C<slurp>
+
+Slurp a file into a scalar.
+
+  my $string = $demeter_object -> slurp('/path/to/file');
+
+=item C<write_file>
+
+Dump a string into a file.
+
+  $demeter_object -> write_file($file, $string);
+
+=item C<randomstring>
+
+Return a rendom character string using  C<random_string> from L<String::Random>.
+
+  $string = Demeter->randomstring($length);
+
+The resulting string will be C<$length> characters long.  If not
+specified, it will be 6 characters long.
+
 =item C<Dump>
 
-This is just a wrapper around L<Data::Dumper>.  Pass it a reference
-and it will be pretty-printed;
+This is just a wrapper around L<Data::Dump::Color>, L<Data::Dump> or
+L<Data::Dumper>, whichever is installed.  Pass it a reference and it
+will be pretty-printed;
 
   print $any_object -> Dump(\@some_array);
 
@@ -573,7 +733,49 @@ Print an ANSI-colorized stack trace to STDOUT from any location.
 
   $any_object -> trace;
 
+=item C<pjoin>
+
+Write stuff to the screen in an ugly but easy to read manner.
+
+  Demeter->pjoin($this, $that, @and_the_other);
+
+=item C<Touch>
+
+This is a wrapper around the C<touch> method from L<File::Touch>.
+
+  Demeter->Touch($some_file);
+
+=item C<feffdocversion>
+
+This method attempts to determine the appropriate version of the Feff
+document to show.  If the version is not specified, it will be
+determined from the value of the C<feff-E<gt>feff-executable>
+configuration parameter.
+
+  $version = Demeter->feffdocversion;
+
+The only two options currently supported are 6 and 9.
+
+=item C<feffdoc>
+
+This returns the URL of the main page of the Feff documentation for
+either version 6 or 9, depending on which is requested or determined
+via the C<feffdocversion> method.
+
+  $url = Demeter->feffdoc;
+
+=item C<feffcardpage>
+
+This returns the URL for the page documenting a specific card in the
+Feff6 or Feff9 input file.
+
+  $url = Demeter->feffcardpage($card, $version);
+
+Specifying the Feff version is optional.  If not specified, it will
+use the value returned by the C<feffdocversion> method.
+
 =back
+
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -599,7 +801,8 @@ decimal representation when the ratio is not of small numbers.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -610,7 +813,7 @@ and is Copyright (C) 2007 and is licensed like Perl itself.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

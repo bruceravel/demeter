@@ -6,6 +6,7 @@ use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::VerbDialog;
 use Demeter::UI::Athena::IO;
 use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::TextBuffer;
@@ -25,7 +26,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use List::Util qw(min);
+use List::Util qw(min max);
 use List::MoreUtils qw(any);
 use Time::HiRes qw(usleep);
 use Const::Fast;
@@ -67,11 +68,12 @@ sub OnInit {
   local $|=1;
   #print DateTime->now, "  Initializing Demeter ...\n";
   $demeter = Demeter->new;
-  $demeter->set_mode(ifeffit=>1, screen=>0);
+  $demeter->set_mode(backend=>1, screen=>0);
   $demeter->mo->silently_ignore_unplottable(1);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
+
 
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
@@ -104,10 +106,10 @@ sub OnInit {
   $app -> side_bar($hbox);
 
   my $accelerator = Wx::AcceleratorTable->new(
-   					      [wxACCEL_CTRL, 106, $FOCUS_UP],
-   					      [wxACCEL_CTRL, 107, $FOCUS_DOWN],
-   					      [wxACCEL_ALT,  106, $MOVE_UP],
-   					      [wxACCEL_ALT,  107, $MOVE_DOWN],
+   					      [wxACCEL_CTRL, 107, $FOCUS_UP],
+   					      [wxACCEL_CTRL, 106, $FOCUS_DOWN],
+   					      [wxACCEL_ALT,  107, $MOVE_UP],
+   					      [wxACCEL_ALT,  106, $MOVE_DOWN],
    					     );
   $app->{main}->SetAcceleratorTable( $accelerator );
 
@@ -116,6 +118,7 @@ sub OnInit {
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
   $app->{lastplot} = [q{}, q{single}];
+  $app->{plotting} = 0;
   $app->{selected} = -1;
   $app->{modified} = 0;
   $app->{most_recent} = 0;
@@ -123,6 +126,7 @@ sub OnInit {
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
   $app->{selecting_data_group}=0;
+  $app->{update_kweights}=1;
 
   ## -------- text buffers for various TextEntryDialogs
   $app->{rename_buffer}  = [];
@@ -149,7 +153,7 @@ sub OnInit {
   $app->{main} -> Show( 1 );
   $app->{main} -> Refresh;
   $app->{main} -> Update;
-  $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
+  $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
   1;
@@ -158,10 +162,10 @@ sub OnInit {
 sub process_argv {
   my ($app, @args) = @_;
   if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
-    my $yesno = Wx::MessageDialog->new($app->{main},
-  				       "Athena found an autosave file.  Would you like to import it?",
-  				       "Import autosave?",
-  				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Athena found an autosave file.  Would you like to import it?",
+						 "Import autosave?",
+						 "Import");
     my $result = $yesno->ShowModal;
     if ($result == wxID_YES) {
       $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
@@ -188,6 +192,7 @@ sub process_argv {
     }; # switches?
   };
 };
+
 
 sub ifeffit_buffer {
   my ($text) = @_;
@@ -232,10 +237,10 @@ sub on_close {
   my ($app, $event) = @_;
   if ($app->{modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($app->{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "Save this project before exiting?",
+						 "Save project?",
+						 "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Not exiting Athena after all.");
@@ -297,6 +302,7 @@ const my $SAVE_NORM		=> Wx::NewId();
 const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
+const my $SAVE_COMPAT		=> Wx::NewId();
 
 const my $EACH_MUE		=> Wx::NewId();
 const my $EACH_NORM		=> Wx::NewId();
@@ -331,6 +337,7 @@ const my $COPY			=> Wx::NewId();
 #const my $COPY_SERIES		=> Wx::NewId();
 const my $REMOVE		=> Wx::NewId();
 const my $REMOVE_MARKED		=> Wx::NewId();
+const my $DATA_ABOUT		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
@@ -354,6 +361,10 @@ const my $E0_ZERO_MARKED        => Wx::NewId();
 const my $E0_DMAX_MARKED        => Wx::NewId();
 const my $E0_PEAK_MARKED        => Wx::NewId();
 
+const my $WL_THIS               => Wx::NewId();
+const my $WL_MARKED             => Wx::NewId();
+const my $WL_ALL                => Wx::NewId();
+
 const my $FREEZE_TOGGLE		=> Wx::NewId();
 const my $FREEZE_ALL		=> Wx::NewId();
 const my $UNFREEZE_ALL		=> Wx::NewId();
@@ -374,6 +385,7 @@ const my $PLOT_K123		=> Wx::NewId();
 const my $PLOT_R123		=> Wx::NewId();
 const my $PLOT_E00		=> Wx::NewId();
 const my $PLOT_I0MARKED		=> Wx::NewId();
+const my $PLOT_NORMSCALED       => Wx::NewId();
 const my $PLOT_STDDEV		=> Wx::NewId();
 const my $PLOT_VARIENCE		=> Wx::NewId();
 const my $TERM_1		=> Wx::NewId();
@@ -427,12 +439,15 @@ sub menubar {
   my $bar        = Wx::MenuBar->new;
   $app->{main}->{mrumenu} = Wx::Menu->new;
   my $filemenu   = Wx::Menu->new;
+  $app->{main}->{filemenu} = $filemenu;
   $filemenu->Append(wxID_OPEN,  "Import data\tCtrl+o", "Import data from a data or project file" );
   $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files", "This submenu contains a list of recently used files" );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_SAVE,    "Save project\tCtrl+s", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
   $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
+  $filemenu->AppendCheckItem($SAVE_COMPAT, "Backwards compatible project files", "Save project files so that they can be imported by Athena 0.9.17 and earlier (information WILL be lost!)");
+  $filemenu->Check($SAVE_COMPAT, Demeter->co->default('athena', 'compatibility'));
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -440,7 +455,7 @@ sub menubar {
   $exportmenu->Append($REPORT_MARKED, "Excel report on marked groups", "Write an Excel report on the parameter values of the marked data groups" );
   $exportmenu->AppendSeparator;
   $exportmenu->Append($FPATH,         "Empirical standard",            "Write a file containing an empirical standard derived from this group which Artemis can import as a fitting standard" );
-  $exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
+  ##$exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
 
   my $savecurrentmenu = Wx::Menu->new;
   $savecurrentmenu->Append($SAVE_MUE,    "$MU(E)",  "Save $MU(E) from the current group" );
@@ -491,7 +506,10 @@ sub menubar {
   $filemenu->Append(wxID_EXIT,  "E&xit\tCtrl+q" );
 
   my $monitormenu = Wx::Menu->new;
+  #print ">>>>", Demeter->is_larch, $/;
   my $ifeffitmenu = Wx::Menu->new;
+  $app->{main}->{monitormenu} = $monitormenu;
+  $app->{main}->{ifeffitmenu} = $ifeffitmenu;
   #my $yamlmenu    = Wx::Menu->new;
 
   my $debugmenu   = Wx::Menu->new;
@@ -510,13 +528,16 @@ sub menubar {
 
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
-  $monitormenu->AppendSeparator;
+  my $thing1 = $monitormenu->AppendSeparator;
   $ifeffitmenu->Append($IFEFFIT_STRINGS, "strings",      "Examine all the strings currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_SCALARS, "scalars",      "Examine all the scalars currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
-  $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
+  my $thing2 = $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
+  my $thing3 = $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  $app->{main}->{ifeffititems} = [$thing1, $thing2, $thing3]; # clean up Ifeffit menu entries for larch backend
+                                                              # see line 192
+
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
@@ -528,14 +549,19 @@ sub menubar {
   $e0allmenu->Append($E0_FRACTION_ALL,  "a fraction of the edge step", "Set E0 for all groups to a fraction of the edge step");
   $e0allmenu->Append($E0_ZERO_ALL,      "the zero of the second derivative", "Set E0 for all groups to the zero of the second derivative");
   #$e0allmenu->Append($E0_DMAX_ALL,      "the peak of the first derivative", "Set E0 for all groups to the peak of the first derivative");
-  #$e0allmenu->Append($E0_PEAK_ALL,      "the peak of the white line", "Set E0 for all groups to the peak of the white line");
+  $e0allmenu->Append($E0_PEAK_ALL,      "the peak of the white line", "Set E0 for all groups to the peak of the white line");
   my $e0markedmenu   = Wx::Menu->new;
   $e0markedmenu->Append($E0_IFEFFIT_ALL,      "Ifeffit's default", "Set E0 for marked groups to Ifeffit's default");
   $e0markedmenu->Append($E0_TABULATED_MARKED, "the tabulated value", "Set E0 for marked groups to the tabulated value");
   $e0markedmenu->Append($E0_FRACTION_MARKED,  "a fraction of the edge step", "Set E0 for marked groups to a fraction of the edge step");
   $e0markedmenu->Append($E0_ZERO_MARKED,      "the zero of the second derivative", "Set E0 for marked groups to the zero of the second derivative");
   #$e0markedmenu->Append($E0_DMAX_MARKED,      "the peak of the first derivative", "Set E0 for marked groups to the peak of the first derivative");
-  #$e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
+  $e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
+
+  my $wlmenu = Wx::Menu->new;
+  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
+  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
+  $wlmenu->Append($WL_ALL,    "for all groups",    "Find the white line position for all groups");
 
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
@@ -546,21 +572,28 @@ sub menubar {
   $groupmenu->Append($VALUES_ALL,    "Set all groups' values to the current",    "Push this groups parameter values onto all other groups.");
   $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
   $groupmenu->AppendSeparator;
-  $groupmenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
-  $groupmenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
-  $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
-  $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
+  $groupmenu->Append($DATA_YAML,      "Show YAML for current group", "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
-  $groupmenu->AppendSeparator;
-  $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
-  $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
   $groupmenu->Append(wxID_CLOSE,       "&Close\tCtrl+w" );
   $app->{main}->{groupmenu} = $groupmenu;
+
+
+  my $energymenu  = Wx::Menu->new;
+  $energymenu->AppendSubMenu($e0allmenu, "Set E0 for all groups to...", "Set E0 for all groups using one of four algorithms");
+  $energymenu->AppendSubMenu($e0markedmenu, "Set E0 for marked groups to...", "Set E0 for marked groups using one of four algorithms");
+  $energymenu->AppendSeparator;
+  $energymenu->AppendSubMenu($wlmenu, "Find white line position...", "Find white line positions");
+  $energymenu->AppendSeparator;
+  $energymenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
+  $energymenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $app->{main}->{energymenu} = $energymenu;
+
 
   my $freezemenu  = Wx::Menu->new;
   $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group\tShift+Ctrl+f", "Toggle the frozen state of this group");
@@ -590,6 +623,7 @@ sub menubar {
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
   $markedplotmenu ->Append($PLOT_E00,        "Plot with E0 at E=0",   "Plot each of the marked groups with its edge energy at E=0" );
   $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",               "Plot I0 for each of the marked groups" );
+  $markedplotmenu ->Append($PLOT_NORMSCALED, "Plot norm(E) scaled by edge step", "Plot normalized data for all marked groups, scaled by the size of the edge step" );
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
 
@@ -646,13 +680,14 @@ sub menubar {
 
 
   my $helpmenu   = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "Document",     "Open the Athena document" );
-  $helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
+  #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
   $bar->Append( $filemenu,    "&File" );
   $bar->Append( $groupmenu,   "&Group" );
+  $bar->Append( $energymenu,  "&Energy" );
   $bar->Append( $markmenu,    "&Mark" );
   $bar->Append( $plotmenu,    "&Plot" );
   $bar->Append( $freezemenu,  "Free&ze" );
@@ -661,13 +696,23 @@ sub menubar {
   $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
 
-  $exportmenu     -> Enable($_,0) foreach ($XFIT);
+  ##$exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $helpmenu       -> Enable($_,0) foreach ($DEMO);
+  #$helpmenu       -> Enable($_,0) foreach ($DEMO);
+  $exportmenu     -> Enable($FPATH, 0) if ($ENV{DEMETER_BACKEND} eq 'larch');
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
+  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+    $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
+  };
+
   return $app;
+};
+
+sub project_compatibility {
+  my ($app) = @_;
+  return $app->{main}->{filemenu}->IsChecked($SAVE_COMPAT);
 };
 
 sub set_mru {
@@ -838,6 +883,13 @@ sub OnMenuClick {
       $app->Remove('marked');
       last SWITCH;
     };
+    ($id == $DATA_ABOUT) and do {
+      last SWITCH if $app->is_empty;
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->current_data->about, 'About current group')
+	  -> Show;
+      last SWITCH;
+    };
     ($id == $DATA_YAML) and do {
       last SWITCH if $app->is_empty;
       my $dialog = Demeter::UI::Artemis::ShowText
@@ -922,6 +974,35 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- white line positions
+    ($id == $WL_THIS) and do {
+      my $data = $app->current_data;
+      my ($val, $err) = $data->find_white_line;
+      $app->{main}->{'PlotE'}->pull_single_values;
+      $data->po->set(emin=>-40, emax=>60, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, 
+		     e_sec=>0, e_mu=>1, e_i0=>0, e_signal=>0);
+      #$app->plot(0, 0, 'E', 'single');
+      return if not $app->preplot('e', $data);
+      $data->po->start_plot;
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
+      $data->plot('E');
+      $data->standard;
+      my $indic = Demeter::Plot::Indicator->new(space=>'E', x=>$val-$data->bkg_e0);
+      $indic->plot();
+      $data->unset_standard;
+      $app->{lastplot} = ['E', 'single'];
+      $app->postplot($data, $data->bkg_fixstep);
+      $app->{main}->status(sprintf("White line position %.3f eV", $val));
+      last SWITCH;
+    };
+    ($id == $WL_MARKED) and do {
+      $app->find_wl('marked');
+      last SWITCH;
+    };
+    ($id == $WL_ALL) and do {
+      $app->find_wl('all');
+      last SWITCH;
+    };
 
     ## -------- merge menu
     ($id == $MERGE_MUE) and do {
@@ -1154,6 +1235,10 @@ sub OnMenuClick {
       $app->plot_i0_marked;
       last SWITCH;
     };
+    ($id == $PLOT_NORMSCALED) and do {
+      $app->plot_norm_scaled;
+      last SWITCH;
+    };
 
     ($id == $PLOT_PNG) and do {
       $app->image('png');
@@ -1334,7 +1419,7 @@ sub main_window {
   $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
   $app->EVT_BUTTON($app->{main}->{none},   sub{$app->mark('none')});
   $app->EVT_BUTTON($app->{main}->{invert}, sub{$app->mark('invert')});
-  $app->mouseover($app->{main}->{save},   "One-click-save your project");
+  $app->mouseover($app->{main}->{save},   "Save your project with one click");
   $app->mouseover($app->{main}->{all},    "Mark all groups");
   $app->mouseover($app->{main}->{none},   "Clear all marks");
   $app->mouseover($app->{main}->{invert}, "Invert all marks");
@@ -1349,6 +1434,7 @@ sub main_window {
 		   ConvoluteNoise   => "Convolute and add noise to data",
 		   Deconvolute	    => "Deconvolute data",
 		   SelfAbsorption   => "Self-absorption correction",
+		   MEE              => "Multi-electron excitation removal",
 		   Dispersive       => "Calibrate dispersive XAS data",
 		   Series	    => "Copy series",
 		   Summer	    => "Data summation",
@@ -1380,24 +1466,26 @@ sub main_window {
 		     'ConvoluteNoise',	  # 6
 		     'Deconvolute',	  # 7
 		     'SelfAbsorption',	  # 8
-		     'Dispersive',	  # 9
-		     'Series',            # 10
-		     'Summer',            # 11
+		     'MEE',               # 9
+		     'Dispersive',	  # 10
+		     'Series',            # 11
+		     'Summer',            # 12
 		     # -----------------------
-		     'LCF',		  # 13
-		     'PCA',		  # 14
-		     'PeakFit',		  # 15
-		     'LogRatio',	  # 16
-		     'Difference',	  # 17
+		     'LCF',		  # 14
+		     'PCA',		  # 15
+		     'PeakFit',		  # 16
+		     'LogRatio',	  # 17
+		     'Difference',	  # 18
 		     # -----------------------
-		     'XDI',               # 19
-		     'Watcher',           # 20
-		     'Journal',		  # 21
-		     'PluginRegistry',    # 22
-		     'Prefs',		  # 23
+		     'XDI',               # 20
+		     'Watcher',           # 21
+		     'Journal',		  # 22
+		     'PluginRegistry',    # 23
+		     'Prefs',		  # 24
 		    ) {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
+    next if (($which eq 'Dispersive') and (not Demeter->co->default(qw(athena show_dispersive))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
 
     my $page = Wx::Panel->new($app->{main}->{views}, -1);
@@ -1432,8 +1520,12 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage(12, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(18, $null, $Demeter::UI::Athena::Null::label, 0);
+  my $dashes = 12;		# deal correctly with optional tools
+  ++$dashes if Demeter->co->default(qw(athena show_dispersive));
+  $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
+  $dashes +=6;
+  ##++$dashes if Demeter->co->default(qw(athena show_watcher));
+  $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
@@ -1494,6 +1586,7 @@ sub side_bar {
   $app->{main}->{kweights}->SetSelection($demeter->co->default("plot", "kweight"));
   EVT_RADIOBOX($app->{main}, $app->{main}->{kweights},
 	       sub {
+		 $::app->{update_kweights} = 1;
 		 $::app->replot(@{$::app->{lastplot}}) if (lc($::app->{lastplot}->[0]) ne 'e');
 	       });
   $app->mouseover($app->{main}->{kweights}, "Select the value of k-weighting to be used in plots in k, R, and q-space.");
@@ -1619,17 +1712,18 @@ sub OnGroupSelect {
   };
 
   if ($is_index != -1) {
-    $showing->push_values($is);
+    $showing->push_values($is, $plot);
     $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
-  $app->{main}->{groupmenu} -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
-  $app->{main}->{groupmenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
-  $app->{main}->{groupmenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
+  $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
+  $app->{main}->{energymenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
 
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
   foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
+  $app->set_mergedplot($app->current_data->is_merge);
 
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
@@ -1669,24 +1763,30 @@ sub get_view {
 	       'ConvoluteNoise',	   # 6
 	       'Deconvolute',		   # 7
 	       'SelfAbsorption',	   # 8
-	       'Dispersive',	           # 9
-	       'Series',		   # 10
-	       'Summer',		   # 11
+	       'MEE',	                   # 9
+	       'Dispersive',	           # 10
+	       'Series',		   # 11
+	       'Summer',		   # 12
 	       q{}, # -----------------------
-	       'LCF',			   # 13
-	       'PCA',			   # 14
-	       'PeakFit',		   # 15
-	       'LogRatio',		   # 16
-	       'Difference',		   # 17
+	       'LCF',			   # 14
+	       'PCA',			   # 15
+	       'PeakFit',		   # 16
+	       'LogRatio',		   # 17
+	       'Difference',		   # 18
 	       q{}, # -----------------------
-	       'XDI',			   # 19
-	       'Watcher',		   # 20
-	       'Journal',		   # 21
-	       'PluginRegistry',	   # 22
-	       'Prefs',		           # 23
+	       'XDI',			   # 20
+	       'Watcher',		   # 21
+	       'Journal',		   # 22
+	       'PluginRegistry',	   # 23
+	       'Prefs',		           # 24
 	      );
+  my $watcher = 21;
+  if (not Demeter->co->default(qw(athena show_dispersive))) {
+    splice(@views, 10, 1);
+    --$watcher;
+  };
   if (not Demeter->co->default(qw(athena show_watcher))) {
-    splice(@views, 20, 1);
+    splice(@views, $watcher, 1);
   };
   return $views[$i];
 };
@@ -1716,7 +1816,9 @@ sub make_page {
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
-  my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
+  my $c = 5;
+  --$c if (not Demeter->co->default(qw(athena show_dispersive)));
+  --$c if (not Demeter->co->default(qw(athena show_watcher)));
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $nviews, $ngroups, $event->GetSelection), $/;
@@ -1795,10 +1897,25 @@ sub plot {
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
   $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
 
+
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
+    my $first_z = $data[0]->bkg_z;
+    my $different = 0;
+    if (($how eq 'single') and ($data[0]->datatype eq 'xanes') and (lc($space) =~ m{k})) {
+	$::app->{main}->status("xanes data cannot be plotted in k.", 'alert');
+	return;
+    };
+    if (($how eq 'single') and ($data[0]->datatype eq 'chi')   and (lc($space) eq q{e})) {
+	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
+	return;
+    };
+
     foreach my $d (@data) {
+      next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
+      next if (($d->datatype eq 'chi')   and (lc($space) =~ m{e}));
       $d->plot($space);
+      ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
     };
     $data[0]->plot_window('k') if (($how eq 'single') and
@@ -1810,21 +1927,29 @@ sub plot {
     } else {
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
     };
+    if ((lc($space) eq 'e') and $different) {
+      $::app->{main}->status("This marked-groups plot involved data measured on different elements.", 'alert');
+    };
 
   ## R
   } elsif (lc($space) eq 'r') {
     if ($how eq 'single') {
-      $data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotR}->{$which}->GetValue) {
-	  $data[0]->po->r_pl(substr($which, 0, 1));
-	  $data[0]->plot('r');
+      if ($data[0]->datatype ne 'xanes') {
+	$data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotR}->{$which}->GetValue) {
+	    $data[0]->po->r_pl(substr($which, 0, 1));
+	    $data[0]->plot('r');
+	  };
 	};
+	$data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in R.", 'alert');
       };
-      $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
       $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
@@ -1834,15 +1959,20 @@ sub plot {
   ## q
   } elsif (lc($space) eq 'q') {
     if ($how eq 'single') {
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotQ}->{$which}->GetValue) {
-	  $data[0]->po->q_pl(substr($which, 0, 1));
-	  $data[0]->plot('q');
+      if ($data[0]->datatype ne 'xanes') {
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotQ}->{$which}->GetValue) {
+	    $data[0]->po->q_pl(substr($which, 0, 1));
+	    $data[0]->plot('q');
+	  };
 	};
+	$data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in q.", 'alert');
       };
-      $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
     } else {
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
@@ -1852,12 +1982,19 @@ sub plot {
 
   ## I am not clear why this is necessary...
   foreach my $i (0 .. $#data) {
+    my @save = $data[0]->get(qw(update_columns update_norm update_bkg update_fft update_bft));
     $data[$i]->bkg_fixstep($is_fixed[$i]);
+    $data[$i]->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+		   update_fft     => $save[3], update_bft  => $save[4],);
   };
   $app->postplot($data[0], $is_fixed[0]);
+
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
+  my $this = $app->get_view($app->{main}->{views}->GetSelection);
+  $app->{plotting} = 1;
   $app->OnGroupSelect(0,0,0);
+  $app->{plotting} = 0;
   undef $busy;
 };
 
@@ -1936,6 +2073,7 @@ sub preplot {
 sub postplot {
   my ($app, $data) = @_;
   ##if ($demeter->mo->template_plot eq 'singlefile') {
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     $demeter->po->finish;
     $app->{main}->status("Wrote plot data to ".$demeter->po->file);
@@ -1947,12 +2085,17 @@ sub postplot {
   };
   my $is_fixed = $data->bkg_fixstep;
   if ($data eq $app->current_data) {
+    my $was = $app->{modified};
     $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
+    $data->bkg_fixstep($is_fixed);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+    $app->{plotting} = 1;
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+    $app->{modified} = $was;
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);
+  $data->set(update_fft => $save[3], update_bft => $save[4],);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -1988,11 +2131,11 @@ sub plot_e00 {
   my ($app) = @_;
 
   $app->preplot('e', $app->current_data);
-  $app->{main}->{PlotE}->pull_single_values;
+  $app->{main}->{PlotE}->pull_marked_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
-			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+			      e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0); #e_norm=>1, 
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -2008,7 +2151,7 @@ sub plot_i0_marked {
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
-  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -2017,22 +2160,53 @@ sub plot_i0_marked {
   $app->postplot($app->current_data);
 };
 
+sub plot_norm_scaled {
+  my ($app) = @_;
+
+  $app->preplot('e', $app->current_data);
+  $app->{main}->{PlotE}->pull_single_values;
+  $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
+			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  $app->current_data->po->start_plot;
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue || $app->{main}->{project}->GetLabel);
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    my $data = $app->{main}->{list}->GetIndexedData($i);
+    my $save = $data->plot_multiplier;
+    $data->plot_multiplier($data->bkg_step);
+    $data->plot('e') if $app->{main}->{list}->IsChecked($i);
+    $data->plot_multiplier($save);
+  };
+  $app->current_data->po->set(e_markers=>1);
+  $app->postplot($app->current_data);
+};
+
+## take care to update kweights only when they have changed to avoid
+## having the Plot object update everyone's update_fft attribute
 sub pull_kweight {
   my ($app, $data, $how) = @_;
   my $kw = $app->{main}->{kweights}->GetStringSelection;
   if ($kw eq 'kw') {
     #$data->po->kweight($data->fit_karb_value);
     if ($how eq 'single') {
-      $data->po->kweight($data->fit_karb_value);
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$app->{update_kweights}=0;
+      };
     } else {
       ## check to see if marked groups all have the same arbitrary k-weight
       my @kweights = map {$_->fit_karb_value} $app->marked_groups;
       my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
-      $data->po->kweight($data->fit_karb_value);
-      $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+      if ($app->{update_kweights}) {
+	$data->po->kweight($data->fit_karb_value);
+	$data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+	$app->{update_kweights}=0;
+      };
     };
   } else {
-    $data->po->kweight($kw);
+    if ($app->{update_kweights}) {
+      $data->po->kweight($kw);
+	$app->{update_kweights}=0;
+      };
   };
   return $data->po->kweight;
 };
@@ -2104,6 +2278,35 @@ sub mark {
     $text .= '/'.$regex.'/' if ($how =~ m{regexp});
     $app->{main}->status($text);
   };
+};
+
+sub find_wl {
+  my ($app, $how) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+
+  my $busy = Wx::BusyCursor->new();
+  $app->{main}->status("Finding white line positions for $how groups", 'wait');
+  my $max = 0;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
+  };
+  $max += 2;
+
+  my $format  = '  %-'.$max.'s     %9.3f'."\n";
+  my $tformat = '# %-'.$max.'s     %s'."\n";
+  my $text = sprintf($tformat, 'group', 'white line position');
+  $text .= '# ' . '=' x 50 . "\n";
+  foreach my $i (0 .. $clb->GetCount-1) {
+    next if (($how eq 'marked') and not $clb->IsChecked($i));
+    $text .= sprintf($format, '"'.$clb->GetIndexedData($i)->name.'"', $clb->GetIndexedData($i)->find_white_line);
+  };
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $text, "White line positions")
+      -> Show;
+  $app->{main}->status("Found white line positions");
+  undef $busy;
 };
 
 sub quench {
@@ -2263,7 +2466,7 @@ sub modified {
     $r = int( min ( 255, $r + (255 - $r) * 2 * $n ) );
     $g = int($g * (1-$n));
     $b = int($b * (1-$n));
-    ##print join(" ", $r, $g, $b), $/;
+    ##print join(" ", $r, $g, $b, $n, $app->{modified}, $is_modified, $j, caller), $/;
     $app->{main}->{save}->SetBackgroundColour(Wx::Colour->new($r, $g, $b));
   } else {
     $app->{main}->{save}->SetBackgroundColour($c);
@@ -2291,7 +2494,7 @@ sub Clear {
 ## in future times, check to see if Ifeffit is being used
 sub heap_check {
   my ($app, $show) = @_;
-  return if (Demeter->mo->template_process eq 'Larch');
+  return if Demeter->is_larch;
   if ($app->current_data->mo->heap_used > 0.98) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.95) {
@@ -2348,10 +2551,11 @@ sub document {
   if (-e $fname) {
     $fname  = 'file://'.$fname;
     $fname .= '#'.$target if $target;
-    $::app->{main}->status("Displaying document page: $fname");
+    $::app->{main}->status("Displaying local document page: $fname");
     Wx::LaunchDefaultBrowser($fname);
   } else {
     $url .= '#'.$target if $target;
+    $::app->{main}->status("Displaying online document page: $url");
     Wx::LaunchDefaultBrowser($url);
     ##$::app->{main}->status("Document target not found: $fname");
   };
@@ -2547,7 +2751,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -2587,7 +2791,8 @@ Many, many, many ...
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -2595,7 +2800,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

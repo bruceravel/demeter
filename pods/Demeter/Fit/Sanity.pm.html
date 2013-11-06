@@ -75,7 +75,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -203,12 +203,12 @@ mathematical function unknown to Ifeffit, <code>$token</code>.</p></dd>
 	<dt><code>namenotunique</code></dt>
 		<dd><p>The Ifeffit group name for this path is not unique.</p></dd>
 	<dt><code>pathdataname</code></dt>
-		<dd><p>This path has an Ifeffit group name which is used by a Data object.</p></dd>
+		<dd><p>This path has an Ifeffit/Larch group name which is used by a Data object.</p></dd>
 	<dt><code>parens</code> + <code>$pp</code></dt>
 		<dd><p>The math expression for the <code>$pp</code> path parameter has unmatched parentheses.</p></dd>
 	<dt><code>reffrmax</code></dt>
-		<dd><p>The R effective for this path is well beyond the <code>rmax</code> value of its
-Data object.</p></dd>
+		<dd><p>The R effective for this path is much larger than the <code>rmax</code> value
+chosen for the fit to the data.</p></dd>
 	<dt><code>nocalc</code></dt>
 		<dd><p>It seems as though the Feff calculation for this path has not been made yet.</p></dd>
 </dl>
@@ -236,6 +236,10 @@ function unknown to Ifeffit, <code>$token</code>.</p></dd>
 		<dd><p>The math expression for this GDS parameter has unmatched parentheses.</p></dd>
 	<dt><code>progvar</code></dt>
 		<dd><p>The name of this GDS parameter is an Ifeffit program variable name.</p></dd>
+	<dt><code>badchar</code></dt>
+		<dd><p>The name of this GDS parameter contains an unallowed character.
+Allowed characters are letters (a-z), numbers (0-9), and underscore
+(_).  The first character must not be a number.</p></dd>
 	<dt><code>merge</code></dt>
 		<dd><p>This is an parameter which has been defined twice, possibly from the
 merge of fitting projects or the creation of two more similar quick
@@ -291,7 +295,8 @@ expressions. This cycle is <code>$token</code>.</p></dd>
 	<li>Test that every Path points to a real path file</li>
 </ul>
 
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)</p>
 
 <p>Patches are welcome.</p>
 
@@ -299,7 +304,7 @@ expressions. This cycle is <code>$token</code>.</p></dd>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

@@ -1,0 +1,269 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Using bond valence sums in Artemis</title>
+    <link rel="stylesheet" href=../artug.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/constraints.html" class="menu">Constraints and restraints</a> &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a> &nbsp;&nbsp;
+        Next: <a class=navtable href="../extended/empirical.html" class="menu">Using empirical standards</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Artemis logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menu">Crystallography for EXAFS</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Bond valence sums</span><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Using bond valence sums in Artemis
+</h1>
+
+<p>
+The concept of a bond in inorganic or crystal chemistry is a bit
+ambiguous.  In a seminal pair of papers,
+D. Altermatt and I. D. Brown, <em>Acta Cryst. B</em>, <strong>41</strong>, 
+(1985) p.&nbsp;240-244<a href="http://dx.doi.org/10.1107/S0108768185002051"> (DOI: 10.1107/S0108768185002051)</a>
+and 
+I. D. Brown and D. Altermatt, <em>Acta Cryst. B</em>, <strong>41</strong>, 
+(1985) p.&nbsp;244-247<a href="http://dx.doi.org/10.1107/S0108768185002063"> (DOI: 10.1107/S0108768185002063)</a>
+Brown and Altermatt proposed this definition
+&ldquo;All neighbouring cation-anion distances are
+considered to be bonds although not all of equal strength.&rdquo;
+In this model, each bond between atoms i and j has a number &ndash;
+the bond valence &ndash; s<sub>ij</sub> which is inversely proportional to
+bond distance.  The bond valence is defined as
+s<sub>ij</sub>=exp((R<sub>0,ij</sub>-R<sub>ij</sub>)/B), where R<sub>ij</sub> is the contact
+distance and R<sub>0,ij</sub> and B are empirically determined parameters.
+</p>
+
+<p>
+They searched through the Inorganic Crystal Structures Database to
+determine empirical values for s<sub>ij</sub> for over 150 cation/anion
+pairs.  Other authors have supplemented this work with additional
+cation/anion pairs.  Most of these are for common anions, such as
+oxygen, nitrogen, or sulfur.  Interestingly, B is nearly constant
+across all bonds and equal to 0.37.  For some cations such as K and U,
+the value of B can be as high as about 0.6.  R<sub>0,ij</sub> depends on the
+contact pair and has been tabulated along with B in a database.
+</p>
+
+<p>
+The bond valance sum, then, is the sum of s<sub>ij</sub> over all pairs in a
+coordination shell: V=&Sigma;s<sub>ij</sub>.  The bond valence sum V should
+be equal to the formal valence of the absorber cation.  This provides
+a way of relating coordination number, bond distance, and formal
+valence in a way that is useful and directly applicable to EXAFS
+analysis.
+</p>
+
+
+<hr class=hide />
+<a name="computingabondvalencesumfromafit">
+
+<h2>  Computing a bond valence sum from a fit</h2>
+</a>
+
+<div class=smfigureright style="max-width: 279px; min-width: 7em;">
+<a name=bvs>
+<img src=../../images/bvs.png width=100%>
+</a>
+<p align=center>
+The bond valence sum dialog.
+</p>
+</div>
+
+<p>
+<span class=program>ARTEMIS</span> provides a tool for computing a bond valence sum from a
+list of paths included in a fit.  A set of paths to be included in the
+sum can be marked in a path list.  From the Actions menu, selecting
+&ldquo;Compute bond valence sum&rdquo; will display the
+dialog on the right.
+</p>
+
+<p>
+Some care is taken to verify that your selection of paths is
+sensible.  <span class=program>ARTEMIS</span> will notice if you have marked multiple
+scattering paths or have marked paths with absorber/scatterer pairs
+that are not in the bond valence database.  Although it will proceed
+with a calculation, <span class=program>ARTEMIS</span> will warn you if it seems as though
+you have included paths that do not seem to be a part of the first
+coordination shell.
+</p>
+
+<p>
+<span class=program>ARTEMIS</span> also tries to make good guesses about the formal valences
+of the absorber and scatterer, althoguh it will often guess wrongly.
+It is, therefore, essential that you set the valences correctly using
+the choice menus at the top of the bond valence dialog.  It is much
+more likely that the absorber valence will be guessed incorrectly.
+</p>
+
+<p>
+You will notice that one of the valence options for many absorber
+species is &ldquo;9&rdquo;, an obviously wrong value of
+valence.  The bond valence database says &ldquo;Bond
+valence parameters for atoms whose oxidation state is given as 9 do
+not have an oxidation state specified in the original citation.  They
+may apply to a particular, but unspecified, oxidation state or they
+may be intended to apply to all oxidation states.&rdquo;
+</p>
+
+<p>
+In order to make the bond valence summation, the degeneracy of each
+path included in the sum must be multiplied by its evaluation of
+s<sub>ij</sub> (which also uses the evaluation of R=R<sub>0</sub>+&Delta;R as the
+value of R<sub>ij</sub>).  Because path degeneracy might need to consider
+quite complicated parameterization of the S&sup2;&#8320; path parameter as
+well as the N path parameter, <span class=program>ARTEMIS</span> will multiply the
+evaluations of the N and S&sup2;&#8320; path parameters together to use as
+the evaluation of degeneracy in the summmation.  It is up to you, the
+user, to supply a value for the actual amplitude reduction factor,
+S&sup2;&#8320; to be divided out of the summation.
+</p>
+
+<p>
+Pressing the &ldquo;Compute&rdquo; button will make the
+bond valence sum, reporting its value in the box so labeled.  Any
+feedback will be written in the larger text control.  For a successful
+calculation, the values of R<sub>ij</sub> and B obtained from the database
+will be displayed.  Any warnings about the path selection will be
+printed in the feedback box in bold red text.
+</p>
+
+
+<hr class=hide />
+<a name="usingabondvalancesumasarestraint">
+
+<h2>  Using a bond valance sum as a restraint</h2>
+</a>
+
+<p>
+The bond valence sum can be used a restraint on a fit.  That is, the
+relationship between formal valence, coordination number, and bond
+distance can be used as prior knowledge guiding the fit.  If the
+absorber/scatterer pair are in the bond valence database, values for
+R<sub>0,ij</sub>, B, and the formal valence of the obsorber can be defined as
+set parameters.  The bond valence sum is expressed as a <span style="color:#008b00; background-color:white">def</span>
+parameter.  Finally, the difference between the bond valence sum and
+the formal valence are expressed as a <span style="color:#cd9b1d; background-color:white">restrain</span> parameter.  These
+are shown below for the Fe-O bond in FeO.  In FeO the iron atom is of
+valence 2+ and the oxygen is 2-.
+</p>
+
+<p>
+<a href="../../images/bvs_restrain.png" target=_blank><img class=flexy src="../../images/bvs_restrain.png" title="
+Defining a group of parameters to make a restraint based on a bond
+valence sum.
+" alt="
+Defining a group of parameters to make a restraint based on a bond
+valence sum.
+"></a>
+</p>
+
+<p>
+When the fit is evaluated, the <span style="color:#cd9b1d; background-color:white">restrain</span> parameter will be added in
+quadrature to the evaluation of &chi;&sup2;.  This sum will be
+minimized in the fit.  In a fit to FeO, the coordination number is
+fixed to 6, the value known from cyrstallography.  By using this
+restraint, the value of &Delta;R will be encouraged to assume a value
+that results in a bond valence sum of 2.  By increasing the value of
+the scale parameter, the strength of the restraint is increased.  For
+a very large value of scale, &Delta;R will constrained to a value that
+forces the bond valence sum to 2.  For a very small value of scale,
+the restraint will be weak and &Delta;R will be given more freedom to
+deviate from a value that casues a bond valence sum of 2.
+</p>
+
+<p>
+This example shows the simplest case of a single scattering path
+contributing to the bond valence sum.  The math expressions to
+establish the restraint would be more complicated for a more
+disrodered first shell, but those math expressions would follow the
+same pattern as this example.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2013 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

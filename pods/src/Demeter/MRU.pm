@@ -29,7 +29,10 @@ use Encode qw(decode);
 my $max_mru = 15;
 
 sub push_mru {
-  my ($self, $group, $file) = @_;
+  my ($self, $group, $file, $record) = @_;
+  if ($record) {
+    $file = $file . " <$record>";
+  };
   my $stash = $self->stash_folder;
   $stash =~ s{\\}{\\\\}g if $self->is_windows;	# it seems like there should be something more elegant...
   return $self if ($file =~ m{$stash});
@@ -63,7 +66,10 @@ sub push_mru {
 
 sub get_mru_list {
   my ($self, @groups) = @_;
-  my $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"));
+  #my $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"));
+  my $rmru;
+  eval {local $SIG{__DIE__}=sub {}; $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"))};
+  return () if ($@);
   my %mru = %$rmru;
   #tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
   my @list_of_files = ();
@@ -74,12 +80,21 @@ sub get_mru_list {
     #  $hash{$k} = decode('UTF-8', $hash{$k});
     #  (-e $hash{$k}) ? print "yup  ".$hash{$k}.$/ :print "nope ".$hash{$k}.$/ ;
     #};
-    push @list_of_files, map { [$hash{$_}, $g] } grep {-e $hash{$_}} sort {$a <=> $b} keys %hash;
+    push @list_of_files, map { [$hash{$_}, $g] } grep {$self->minus_e($hash{$_})} sort {$a <=> $b} keys %hash;
   };
   undef %mru;
   return @list_of_files;
 };
 
+sub minus_e {
+  my ($self, $string) = @_;
+  return 1 if -e $string;
+  if ($string =~ m{(\s+<\d?>)\z}) {
+    $string =~ s{$1}{};
+  };
+  return 1 if -e $string;
+  return 0;
+};
 
 1;
 
@@ -89,7 +104,7 @@ Demeter::MRU - Handle lists of recently used file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -165,7 +180,8 @@ List length is 16 items.  This should be configurable.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -173,7 +189,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

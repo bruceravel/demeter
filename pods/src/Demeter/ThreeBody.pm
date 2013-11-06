@@ -23,6 +23,7 @@ use MooseX::Aliases;
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
+use Chemistry::Elements qw(get_symbol);
 use File::Copy;
 use File::Spec;
 use String::Random qw(random_string);
@@ -34,20 +35,20 @@ has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'},
 		     alias => 'dsstring');
 has 'tsstring'   => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum',    default => 0.1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 
-#has 'halflength' => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the half path length of the double scattering path');
-has 'r1'         => (is => 'rw', isa => 'Num',    default => 0,
+#has 'halflength' => (is => 'rw', isa => 'LaxNum',    default => 0, documentation => 'the half path length of the double scattering path');
+has 'r1'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the length of the leg between the absorber and the nearer atom');
-has 'r2'         => (is => 'rw', isa => 'Num',    default => 0,
+has 'r2'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the length of the leg between the nearer amd more distant atom');
-has 'beta'       => (is => 'rw', isa => 'Num',    default => 0,
+has 'beta'       => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the scattering angle through the intervening atom', alias => 'angle');
-has 'r3'         => (is => 'rw', isa => 'Num',    default => 0,
+has 'r3'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     documentation => 'the length of the leg between the absorber and the distant atom in DS path');
 has 'ipot1'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the intervening atom');
 has 'ipot2'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the more distant atom');
@@ -79,6 +80,14 @@ override alldone => sub {
   $self->vpath ->DEMOLISH if (ref($self->vpath)  =~ m{Demeter});
   $self->remove;
   return $self;
+};
+
+sub scatterer {
+  my ($self) = @_;
+  my $feff = $self->parent;
+  return $self if not $feff;
+  my @ipots = @{ $feff->potentials };
+  return get_symbol($ipots[$self->ipot1]->[1]);
 };
 
 override make_name => sub {
@@ -253,7 +262,7 @@ Demeter::ThreeBody - Multiple scattering from an arbitrary three-body configurat
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -406,7 +415,8 @@ Think about serialization by itself and in a fit.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -414,7 +424,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

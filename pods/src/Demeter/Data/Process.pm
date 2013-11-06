@@ -46,6 +46,38 @@ sub rebin {
   foreach my $k (keys %$rhash) {
     $self -> co -> set_default("rebin", $k, $$rhash{$k});
   };
+
+  my @e = $self->fetch_array($self->group.".energy");
+  my ($efirst, $elast) = ($e[0]+$self->bkg_eshift, $e[$#e]+$self->bkg_eshift);
+  my @bingrid;
+
+  ## pre edge region
+  my $ee = $efirst;
+  while ($ee < $self->co->default('rebin', 'emin')+$self->bkg_e0) {
+    push @bingrid, $ee;
+    $ee += $self->co->default('rebin', 'pre');
+  };
+
+  ## xanes region
+  $ee = $self->co->default('rebin', 'emin')+$self->bkg_e0;
+  while ($ee < $self->co->default('rebin', 'emax')+$self->bkg_e0) {
+    push @bingrid, $ee;
+    $ee += $self->co->default('rebin', 'xanes');
+  };
+
+  ## exafs region
+  $ee = $self->co->default('rebin', 'emax')+$self->bkg_e0;
+  my $kk = $self->e2k($self->co->default('rebin', 'emax'), 'rel');
+  while ($ee < $elast) {
+    push @bingrid, $ee;
+    $kk += $self->co->default('rebin', 'exafs');
+    $ee = $self->k2e($kk, 'abs');
+  };
+  push @bingrid, $elast;
+
+  $self->place_array('re___bin.eee', \@bingrid);
+  ##print join("|", @bingrid), $/;
+
   my $rebinned = $self->clone;
 
   $self -> standard;		# make self the standard for rebinning
@@ -54,14 +86,14 @@ sub rebin {
   $rebinned -> update_norm(1);
   $rebinned -> name($self->name . " rebinned");
 
-  my $string = $rebinned->template("process", "rebin");
-  $rebinned->dispose($string);
-
-  $string = $rebinned->template("process", "deriv");
-  $rebinned->dispose($string);
+  $rebinned->dispense("process", "rebin");
+  $rebinned->dispense("process", "deriv");
   $rebinned->resolve_defaults;
   $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
+  $rebinned->npts($#bingrid+1);
+  $rebinned->xmin($bingrid[0]);
+  $rebinned->xmax($bingrid[$#bingrid]);
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $rebinned;
@@ -143,12 +175,13 @@ sub merge {
   $merged -> generated(1);
   $merged -> prjrecord(q{});
 
-  my $suff = ($how eq 'e') ? 'energy' : 'k';
+  my $suff = ($how eq 'k') ? 'k' : 'energy';
   my $ndat = $self->get_array($suff); # in scalar context, returns # of data points
   my @used = ($self);
   my @excluded = ();
   foreach my $d (uniq($self, @data)) {
     next if $d eq $self;
+    $d->_update('background') if ($how eq 'n');
     if ((($ndat - $d->get_array($suff)) > $d->co->default("merge", "short_data_margin")) and
 	$d->co->default("merge", "exclude_short_data")) {
       push @excluded, $d;
@@ -352,15 +385,15 @@ sub Truncate {
 
 sub deglitch {
   my ($self, @values) = @_;
-  carp("$self is not mu(E) data\n\n"), return if ($self->datatype ne "xmu");
+  carp("$self is not mu(E) data\n\n"), return if ($self->datatype !~ m{xmu|xanes});
   $self -> _update("normalize");
   my @x = $self->get_array("energy");
   foreach my $v (@values) {
     carp("$v is not within the data range of $self\n\n"), next if (($v < $x[0]) or ($v > $x[-1]));
     my $nearest = reduce { abs($a-$v) < abs($b-$v) ? $a : $b } @x;
-    if ($nearest <= $x[2]) {
+    if (($nearest <= $x[2]) and (not $self->is_larch)) {
       $self -> Truncate("before", $x[3]);
-    } elsif ($nearest >= $x[-2]) {
+    } elsif (($nearest >= $x[-2]) and (not $self->is_larch)) {
       $self -> Truncate("after", $x[-3]);
     } else {
       $self -> mo -> config -> set(degl_point => $nearest);
@@ -396,6 +429,7 @@ sub deglitch_margins {
 sub smooth {
   my ($self, $n, $how) = @_;
   ($n = 1) if ($n < 1);
+  ($n = 1) if $self->is_larch;
   $how ||= $self->datatype;
   if ($how =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");
@@ -579,6 +613,51 @@ sub interpolate {
 };
 
 
+sub mee {
+  my ($self, @args) = @_;
+  my %args = @args;
+  $args{width} ||= 0;
+  $args{shift} ||= 0;
+  $args{amp}   ||= 1;
+  $args{how}   ||= 'reflect';	# reflect | arctan
+  $args{amp}   = 0    if $args{amp}   < 0;
+  $args{width} = 0.01 if $args{width} < 0.01;
+  $args{how}   = 'reflect' if $args{how} !~ m{arctan}i;
+  $self->_update('background');
+  if ($args{how} =~ m{reflect}i) {
+    $self->dispense('process', 'mee_reflect', {width=>$args{width}, amp=>$args{amp}, shift=>$args{shift}});
+
+    my @x = $self->fetch_array($self->group.'.energy');
+    my @y = $self->fetch_array('m___ee.xint');
+    my $e1 = $x[0] + $args{shift};
+    my $yoff = 0;
+    foreach my $i (0 .. $#x) {
+      if ($x[$i] < $e1) {
+	## this replaces the extrapolated part of the shifted spectrum
+	## with zeros in the pre-edge
+	$yoff = $y[$i];
+	$y[$i] = 0;
+      } else {
+	## this corrects for the pre-edge not going to the baseline
+	## after the convolution and approximately corrects the edge
+	## step of the convoluted mu(E) data
+	## $y[$i] = ($y[$i] - $yoff);# * (1 + $yoff);
+      };
+    };
+    $self->place_array("m___ee.xint", \@y);
+  } elsif ($args{how} =~ m{arctan}i) {
+    $self->dispense('process', 'mee_arctan',  {width=>$args{width}, shift=>$args{shift}});
+  };
+
+  my $new = $self->clone;
+  $new -> name($new->name . ' (MEE)');
+  $new -> standard;
+  $self->dispense('process', 'mee_do', {amp=>$args{amp}});
+  $new -> unset_standard;
+  return $new;
+};
+
+
 1;
 
 
@@ -588,7 +667,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -769,7 +848,8 @@ mu(E) does.)
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -777,7 +857,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

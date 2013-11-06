@@ -57,6 +57,7 @@ sub put {
   my ($self, $eref, $xref, @args) = @_;
   my $data = $self->new();	# return a Data is called by Data, return a Data::Pixel if called by D::P
   $data -> set(@args);
+  $data -> dispense("process", "make_group") if $data->is_larch;
   if ($data->datatype eq 'chi') {
     $data -> put_k($eref);
     $data -> put_chi($xref);
@@ -111,17 +112,18 @@ sub get_array {
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
+
   my @array = $self->fetch_array($text);
-  if (not @array) {		# only do this error check if the specified array is not returned
-    my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
-    my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
-    my $grp = $self->group;
-    if ($suffix !~ m{\b$group_regexp\b}) {
-      #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
-      return ();
-    };
-    #$self->running if ($part eq 'run');
-  };
+  # if (not @array) {		# only do this error check if the specified array is not returned
+  #   my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
+  #   my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
+  #   my $grp = $self->group;
+  #   if ($suffix !~ m{\b$group_regexp\b}) {
+  #     #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
+  #     return ();
+  #   };
+  #   #$self->running if ($part eq 'run');
+  # };
   return @array;
 };
 sub ref_array {
@@ -151,18 +153,25 @@ sub arrays {
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my @arrays = ();
-  @arrays_text = ();		     # initialize array buffer for accumulating correlations text
-  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
-	      $self->get_mode("feedback"));
-  $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
-  $self->dispense("process", "show_group");
-  $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(feedback=>$save[1]||q{});
-  my $group = $self->group;
-  foreach my $l (@arrays_text) {
-    if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
-      push @arrays, $1;
+
+  if ($self->mo->template_process eq 'larch') {
+    $self->dispense("process", "attributes");
+    @arrays = $self->fetch_array($self->group.'.l___ist');
+  } else {
+    @arrays_text = ();		     # initialize array buffer for accumulating correlations text
+    my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+		$self->get_mode("feedback"));
+    $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
+    $self->dispense("process", "show_group");
+    $self->toggle_echo($save[0]);	# reset everything
+    $self->set_mode(feedback=>$save[1]||q{});
+    my $group = $self->group;
+    foreach my $l (@arrays_text) {
+      if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+	push @arrays, $1;
+      };
     };
+
   };
   return @arrays;
 };
@@ -223,8 +232,11 @@ sub points {
   } else {
     @y = $self->get_array($args{suffix});
   };
+  #print join("|", @y), $/;
   if (defined $args{weight}) {
     $args{weight} || 0;
+    $#y = $#k if ($#k < $#y);
+    $#k = $#y if ($#k > $#y);
     @y = pairwise {$args{scale}*$a**$args{weight}*$b + $args{yoffset}} @k, @y;
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;
@@ -251,7 +263,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 METHODS
 
@@ -353,7 +365,8 @@ organized by common functionality.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -361,7 +374,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

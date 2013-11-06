@@ -71,7 +71,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -152,10 +152,18 @@ integers.</p></dd>
 		<dd><p>This is <code>[ \t]*[ \t=,][ \t]*</code>, the regular expression defining the
 separation between keyword and value in an input file for Feff, Atoms,
 etc.</p></dd>
+	<dt><code>$ELEMENT</code></dt>
+		<dd><p>A regular expression matching a valid element symbol.</p></dd>
+	<dt><code>$FEFFNOTOK</code></dt>
+		<dd><p>A regular expression used to scrub strings which, when used as site
+tags, will cause trouble with Feff.  This currently matches a
+character that is not alphanumeric, a dot, a dash, or an underscore:
+<code>[^-a-zA-Z0-9_.]</code></p></dd>
 </dl>
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)</p>
 
 <p>Patches are welcome.</p>
 
@@ -163,7 +171,7 @@ etc.</p></dd>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 

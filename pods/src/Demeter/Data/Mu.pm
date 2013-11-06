@@ -24,8 +24,8 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use List::Util qw(max);
-use List::MoreUtils qw(any all zip);
-use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON4);
+use List::MoreUtils qw(any all zip firstidx);
+use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON3 $EPSILON4);
 
 use Text::Template;
 use Text::Wrap;
@@ -241,7 +241,9 @@ sub put_data {
 
   if (($self->display) and ($self->datatype ne 'chi')) {
     $self->dispense("process", "display");
-    return;
+    $self->update_data(1) if ($self->xmu_string =~ m{\(1\)\s*/\s*\(1\)}); ## need to reread data file to
+    $self->update_data(1) if ($self->xmu_string =~ m{\.xmu\b}); ## avoid a looping definition of the column
+    return;			                                ## labeled "xmu"
   };
 
   if ($self->datatype eq 'chi') {
@@ -275,18 +277,15 @@ sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
   return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
-  my $command = $self->template("process", "fix_chik");
-  ##print $command;
-  $self->dispose($command);
+  #my $command = 
+  $self->dispense("process", "fix_chik");
+  #print $command;
+  #$self->dispose($command);
   return $self;
 };
 
 sub initialize_e0 {
   my ($self) = @_;
-  ### entering initialize_e0
-  #my $command = $self->template("process", "find_e0");
-  #$self->dispose($command);
-  #$self->bkg_e0($self->fetch_scalar("e0"));
   $self->e0('ifeffit') if not $self->bkg_e0;
   $self->resolve_defaults;
 };
@@ -308,8 +307,9 @@ sub normalize {
     my $precmd = $self->template("process", "normalize");
     $self->dispose($precmd);
 
+    my $was = $self->bkg_e0;
     my $e0 = $self->fetch_scalar("e0");
-    $self->bkg_e0($e0);
+    $self->bkg_e0($e0) if (abs($was - $e0) > $EPSILON3); # avoid a tiny numerical "surprise" from Larch
     if (lc($self->bkg_z) eq 'h') {
       my ($elem, $edge) = $self->find_edge($e0);
       $self->bkg_z($elem);
@@ -323,6 +323,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
 
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
@@ -337,23 +338,25 @@ sub normalize {
     $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
 
-    my $command = q{};
-    $command .= $self->template("process", "post_autobk");
-    if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
-      $command .= $self->template("process", "flatten_fit");
-    } else {
-      $command .= $self->template("process", "flatten_set");
+    ## group.pre_edge *must* be set here.  does all of this need to be called at this point?
+    #my $command = q{};
+    #$command .= $self->template("process", "post_autobk");
+    if (($self->bkg_fixstep) or ($self->datatype eq 'xanes')) {
+      $self->dispense("process", "flatten_fit");
+    #} else {
+    #  $command .= $self->template("process", "flatten_set");
     };
-    $self->dispose($command);
+    #$self->dispose($command);
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
     $self->dispense("process", "is_nor");
   };
-  $self->dispense("process", "nderiv") if not $self->is_nor;
 
   $self->update_norm(0);
   return $self;
@@ -404,11 +407,11 @@ sub edgestep_error {
 		     $stat->mean, $sd, $stat->count);
 
   my @full = $stat->get_data;
-  my ($final, $m, $unchanged, $prev) = (0, 3.0, 0, 0);
+  my ($final, $m, $unchanged, $prev) = (0, $margin, 0, 0);
 
   ## weed out outliers until the original edge step value and the
   ## average are close enough
-  while (abs($init - $final) > $sd/3) {
+  while (abs($init - $final) > $sd/$margin) {
     my @list = ();
     foreach my $es (@full) {
       next if (abs($es-$init) > $m*$sd);
@@ -470,6 +473,13 @@ sub autobk {
   ## make sure that a fitted edge step actually exists...
   $self->bkg_fitted_step($self->bkg_step) if not $self->bkg_fitted_step;
 
+  $self->bkg_kwindow('kaiser')        if ($self->is_larch   and ($self->bkg_kwindow eq 'kaiser-bessel'));
+  $self->bkg_kwindow('kaiser-bessel') if ($self->is_ifeffit and ($self->bkg_kwindow eq 'kaiser'       ));
+  my $save = $self->bkg_dk;
+  if ($self->is_larch and ($self->bkg_kwindow eq 'kaiser')) {
+    $self->bkg_dk(0.1) if ($self->bkg_dk < 0.1); # fix numerical error in larch implementation of kaiser window
+  }
+
   my $command = q{};
   if (lc($self->bkg_stan) ne 'none') {
     my $stan = $self->mo->fetch("Data", $self->bkg_stan);
@@ -479,9 +489,10 @@ sub autobk {
   $fixed = $self->bkg_step if $self->bkg_fixstep;
 
   if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
+    my $was = $self->bkg_e0;
     my $e0 = $self->fetch_scalar("e0");
     my ($elem, $edge) = $self->find_edge($e0);
-    $self->bkg_e0($e0);
+    $self->bkg_e0($e0) if (abs($was - $e0) > $EPSILON3); # avoid a tiny numerical "surprise" from Larch
     $self->bkg_z($elem);
     $self->fft_edge($edge);
     $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
@@ -491,8 +502,8 @@ sub autobk {
     $self->resolve_defaults;
   };
   $self->dispose($command);
-  $self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
-
+  ##$self->bkg_step(sprintf("%.7f", $fixed || $self->fetch_scalar("edge_step")));
+  $self->bkg_dk($save);
 
 ## is it necessary to do post_autobk and flatten templates here?  they
 ## *were* done in the normalize method...
@@ -500,7 +511,7 @@ sub autobk {
   ## begin setting up all the generated arrays from the background removal
   $self->update_fft(1);
   $self->bkg_cl(0);
-  $command .= $self->template("process", "post_autobk");
+  $command = $self->template("process", "post_autobk");
   if ($self->is_nor) {
     $command .= $self->template("process", "deriv");
     $command .= $self->template("process", "nderiv");
@@ -523,6 +534,7 @@ sub autobk {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');
@@ -596,15 +608,15 @@ sub _plotE_command {
     push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
-  if ($self->po->e_pre)  { # show the preline
-    push @suffix_list, 'preline';
+  if ($self->po->e_pre)  { # show the pre_edge
+    push @suffix_list, 'pre_edge';
     my $n = ($incr+2) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
-  if ($self->po->e_post) { # show the postline
-    push @suffix_list, 'postline';
+  if ($self->po->e_post) { # show the post_edge
+    push @suffix_list, 'post_edge';
     my $n = ($incr+3) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
@@ -729,9 +741,9 @@ sub make_margins {
   };
 
   if (($self->po->margin_min > 0) and ($self->po->margin_max > 0)) {
-    $self->dispense("process", "margin", {suffix=>"postline"});
+    $self->dispense("process", "margin", {suffix=>"post_edge"});
   } else {
-    $self->dispense("process", "margin", {suffix=>"preline"});
+    $self->dispense("process", "margin", {suffix=>"pre_edge"});
   };
   return 1;
 };
@@ -852,6 +864,49 @@ sub _save_norm_command {
   return $string;
 };
 
+sub find_white_line {
+  my ($self) = @_;
+  return -999 if ($self->datatype !~ m{xmu|xanes});
+  $self->_update('fft');
+  #my $sm = $self->boxcar(11);
+  #$sm->_update('fft');
+  my @energy = $self->get_array("energy");
+  my @mu     = $self->get_array("xmu");
+  #my @flat   = $self->get_array("flat");
+  my $e0 = $self->bkg_e0;
+  my $i = firstidx {$_ > $e0} @energy;
+  my $prev = $mu[$i++];
+  my ($wl, $iwl, $err) = (0,0,0);
+  foreach my $j ($i .. $#mu) {
+    if ($mu[$j] < $prev) {
+      $wl = $energy[$j-1];
+      $iwl = $j-1;
+      last;
+    };
+    $prev = $mu[$j];
+  };
+
+  my $margin = Demeter->co->default('whiteline', 'margin');
+  my $grid   = Demeter->co->default('whiteline', 'grid');
+  my ($en, $ex) = ($energy[$iwl-$margin]+$self->bkg_eshift, $energy[$iwl+$margin]+$self->bkg_eshift);
+  $self->dispense('process', 'find_wl', {emin=>$en, emax=>$ex, suffix=>'flat'});
+  $wl = $en + $grid*($self->fetch_scalar('__wl')-1);
+  return (wantarray) ? ($wl, $err) : $wl;
+
+  # my $margin = 5;
+  # print join("|", $wl, $iwl, $energy[$iwl], $mu[$iwl]), $/;
+  # my $peak = Demeter::PeakFit->new(data=>$self,
+  # 				   xmin=>$energy[$iwl-$margin]+$self->bkg_eshift-$self->bkg_e0,
+  # 				   xmax=>$energy[$iwl+$margin]+$self->bkg_eshift-$self->bkg_e0);
+  # print join("|", $energy[$iwl-3]+$self->bkg_eshift, $energy[$iwl+3]+$self->bkg_eshift), $/;
+  # print join("|", $peak->xmin, $peak->xmax,$flat[$iwl]), $/;
+  # $peak -> backend($ENV{DEMETER_BACKEND});
+  # my $ls = $peak -> add('gaussian', center=>$energy[$iwl], fix1=>0, height=>$flat[$iwl],
+  # 			width=>($energy[$iwl+$margin]-$energy[$iwl+$margin])/2, name=>'wl');
+  # $peak -> fit;
+  # $peak -> plot;
+  # return (wantarray) ? ($ls->a1, $ls->e1) : $ls->a1;
+};
 
 
 1;
@@ -863,7 +918,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -1061,7 +1116,8 @@ and associating an object with it.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1069,7 +1125,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

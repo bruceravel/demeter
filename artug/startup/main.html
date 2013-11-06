@@ -156,7 +156,7 @@ hide a window containing the log from the most recent fit.
 <p>
 
 </td>
-<td width=220>
+<td width=224>
 <a class=floatright href="../../images/filemenu.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../../images/filemenu.png"  title="The Artemis Users' Guide"  alt="filemenu.png"></a>
 Clicking on &ldquo;File&rdquo; displays this menu,
 which is mostly used for various kinds of input and output.  Note that
@@ -170,11 +170,12 @@ shortcuts are shown in the menu.
 <li><p>
 The first option is used to import any kind of data into <span class=program>ARTEMIS</span>,
 including <span class=program>ARTEMIS</span> or <span class=program>ATHENA</span> project files, ASCII files
-containing &chi;(k) data, <span class=program>FEFF</span> or <span class=program>ATOMS</span> input files, or
+containing &chi;(k) data, <span class=program>FEFF</span> or <span class=program>ATOMS</span> input files, CIF
+files, or
 a few other things.  <span class=program>ARTEMIS</span> is usually good about properly
-identifyin the type of input file and doing the right thing with it.
-You can use the &ldquo;import&rdquo; submenu to be more
-specific. 
+identifying the type of input file and doing the right thing with it.
+In the rare situation where this doesn't work, try the
+&ldquo;import&rdquo; submenu. 
 </p></li>
 <li><p>
 The second option provides a submenu of recently imported files broken
@@ -183,7 +184,15 @@ projects, structure data for <span class=program>ATOMS</span> or <span class=pro
 other more obscure file types.
 </p></li>
 <li><p>
-The next two items are used to save <span class=program>ARTEMIS</span> project files.
+The next three items are used to save <span class=program>ARTEMIS</span> project files.  
+&ldquo;Save project&rdquo; saves the current state of
+the project to its current, prompting for a name if it does not yet
+have one.
+&ldquo;Save project as&rdquo; will prompt for the name
+to which to save the current
+state of the project.
+&ldquo;Save current fit&rdquo; will save a project file
+containing only the current fit, without any of the history.
 </p></li>
 <li><p>
 The &ldquo;import&rdquo; submenu is used to specify the
@@ -203,7 +212,7 @@ in some other way, for instance as part of a script for automated batch
 processing.
 </p></li>
 <li><p>
-The next menu item diplsays a window used to set 
+The next menu item displays a window used to set 
 <a href="../prefs.html">program preferences.</a>
 </p></li>
 <li><p>

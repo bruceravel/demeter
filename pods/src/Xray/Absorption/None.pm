@@ -1,6 +1,6 @@
 ##  This module is copyright (c) 2000-2007 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software/
+##  http://bruceravel.github.com/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
 ##
 ## -------------------------------------------------------------------
@@ -93,7 +93,7 @@ See L<Xray::Absorption::Elam>.
 
 =head1 AUTHOR
 
-  Bruce Ravel, bruce@phys.washington.edu
-  http://feff.phys.washington.edu/~ravel/
+  Bruce Ravel, bravel AT bnl DOT gov
+  http://bruceravel.github.com/demeter/
 
 =cut

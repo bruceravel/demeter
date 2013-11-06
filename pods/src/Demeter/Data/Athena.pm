@@ -65,9 +65,12 @@ sub _write_record {
   croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
   #print $self->group, " ", $self->name, $/;
 
+  my $compatibility = Demeter->co->get('athena_compatibility');
+
   local $Data::Dumper::Indent = 0;
   my ($string, $arraystring) = (q{}, q{});
 
+  $self->_update('normalize');
   my @array = ();
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
     #$self -> _update("background");
@@ -119,6 +122,14 @@ sub _write_record {
 
   $hash{reference} = $hash{reference}->group if ($hash{reference});
   # ------------------------------------------------------------
+  # -------- clean up non-pre-0.9.18 attributes ----------------
+  if ($compatibility) {
+    ## introduced in 0.9.18
+    delete $hash{bkg_delta_eshift};
+    delete $hash{bkg_nc3};
+    delete $hash{bkg_is_pixel};
+  };
+  # ------------------------------------------------------------
 
   @array   = %hash;
 
@@ -138,7 +149,7 @@ Demeter::Data::Athena - Write Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -205,7 +216,8 @@ The merge array is not currently written by C<write_record>.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -213,7 +225,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

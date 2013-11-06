@@ -12,6 +12,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
 use File::Basename;
 use File::Spec;
+use List::MoreUtils qw(any);
 use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
@@ -117,7 +118,7 @@ sub new {
     $clusterboxsizer    -> Add($this->{clusplot},  1, wxGROW|wxALL, 0);
 
     foreach my $w (qw(frombox stack screebox cumvar)) {
-      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 1);
     };
     $plotboxsizer -> Add($clusterboxsizer, 0, wxGROW|wxALL, 0);
     foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp cluster1 cluster2 clusvs clusplot)) {
@@ -137,6 +138,10 @@ sub new {
     $this->{rectext}     = Wx::StaticText->new($this, -1, "with");
     $this->{nrecon}      = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
     $this->{reconstruct} = Wx::Button->new($this, -1, 'Reconstruct data');
+
+    $this->{ttbox}       = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{tttext}      = Wx::StaticText->new($this, -1, "with");
+    $this->{ntt}         = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
     $this->{tt}          = Wx::Button->new($this, -1, 'Target transform');
 
     my $ttbox       = Wx::StaticBox->new($this, -1, 'TT coefficients', wxDefaultPosition, wxDefaultSize);
@@ -149,7 +154,12 @@ sub new {
     $this->{nrecbox} -> Add($this->{reconstruct}, 1, wxALL, 0);
     $this->{nrecbox} -> Add($this->{rectext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
     $this->{nrecbox} -> Add($this->{nrecon}, 0, wxGROW|wxALL, 0);
-    foreach my $w (qw(nrecbox tt)) {
+
+    $this->{ttbox} -> Add($this->{tt}, 1, wxALL, 0);
+    $this->{ttbox} -> Add($this->{tttext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
+    $this->{ttbox} -> Add($this->{ntt}, 0, wxGROW|wxALL, 0);
+
+    foreach my $w (qw(nrecbox ttbox)) {
       $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     };
     $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
@@ -167,12 +177,12 @@ sub new {
     $box -> Add($saveboxsizer, 0, wxGROW|wxALL, 2);
     $this->{savecomp}    = Wx::Button->new($this, -1, 'Components');
     $this->{savestack}   = Wx::Button->new($this, -1, 'Data stack');
-    $this->{saverecon}   = Wx::Button->new($this, -1, 'Data reconstruction');
+    $this->{saverecon}   = Wx::Button->new($this, -1, 'Reconstruction');
     $this->{savett}      = Wx::Button->new($this, -1, 'Target transform');
-    $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 0);
-    $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 0);
+    $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 2);
+    $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 2);
 
     EVT_BUTTON($this, $this->{savecomp},  sub{save_components(@_)});
     EVT_BUTTON($this, $this->{savestack}, sub{save_stack(@_)});
@@ -208,13 +218,15 @@ sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   return if (not exists $INC{'Demeter/PCA.pm'});
   my $enable = not $this->{PCA}->update_pca;
-  if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
+  #if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
+  if (any {$::app->current_data->group eq $_->group} (@{ $this->{PCA}->stack })) {
     $this->{$_} -> Enable($enable) foreach qw(reconstruct rectext nrecon);
-    $this->{tt} -> Enable(0);
+    $this->{$_} -> Enable(0) foreach qw(tt tttext ntt);
   } else {
     $this->{$_} -> Enable(0) foreach qw(reconstruct rectext nrecon);
-    $this->{tt} -> Enable($enable);
+    $this->{$_} -> Enable($enable) foreach qw(tt tttext ntt);
   };
+  $this->{transform}->Clear;
   $this->{saverecon}->Enable(0);
   $this->{savett}->Enable(0);
 };
@@ -300,8 +312,8 @@ sub pca {
   };
   $::app->{main}->status(sprintf("Performed principle components analysis on %d data groups with %d observations",
 				 $this->{PCA}->ndata, $this->{PCA}->observations));
-  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack
-		    cluster1 cluster2 clusvs clusplot)) {
+  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack)) {
+		    ##cluster1 cluster2 clusvs clusplot)) {
     $this->{$w}->Enable(1);
   };
   $this->{$_} ->SetRange(1, $this->{PCA}->ndata) foreach qw(ncomp nrecon cluster1 cluster2);
@@ -309,8 +321,12 @@ sub pca {
   if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
     $this->{$_} -> Enable(1) foreach qw(reconstruct rectext nrecon);
   } else {
-    $this->{tt}->Enable(1);
+    $this->{$_} -> Enable(1) foreach qw(tt tttext ntt);
   };
+  $this->{ntt}->SetRange(2, $this->{PCA}->ndata);
+  $this->{ntt}->SetValue($this->{PCA}->ndata);
+  $this->{nrecon}->SetRange(2, $this->{PCA}->ndata);
+  $this->{nrecon}->SetValue(2);
 
   $this->{result}->SetValue($this->{PCA}->report);
   $this->plot_components;
@@ -344,7 +360,7 @@ sub tt {
   my ($this, $event) = @_;
   $this->{transform}->Clear;
   my $target = $::app->current_data;
-  $this->{PCA}->tt($target, $this->{nrecon}->GetValue);
+  $this->{PCA}->tt($target, $this->{ntt}->GetValue);
   $this->{PCA}->plot_tt($target);
   $this->{transform}->SetValue($this->{PCA}->tt_report($target));
   $this->{savett}->Enable(1);
@@ -355,9 +371,15 @@ sub reconstruct {
   my ($this, $event) = @_;
   $this->{PCA}->reconstruct($this->{nrecon}->GetValue);
   my $data_index = 0;
-  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
-    ++$data_index if $::app->{main}->{list}->IsChecked($i);
-    last if ($data_index = $::app->current_index);
+  # foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+  #   ++$data_index if $::app->{main}->{list}->IsChecked($i);
+  #   last if ($data_index = $::app->current_index);
+  # };
+  foreach my $i (0 .. $#{ $this->{PCA}->stack }) {
+    if ($::app->current_data->group eq $this->{PCA}->stack->[$i]->group) {
+      $data_index = $i;
+      last;
+    };
   };
   $this->{PCA}->plot_reconstruction($data_index);
   $this->{saverecon}->Enable(1);
@@ -405,9 +427,11 @@ sub save_reconstruction {
   my $fname = $this->get_filename('recon', $name);
   return if not $fname;
   my $data_index = 0;
-  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
-    ++$data_index if $::app->{main}->{list}->IsChecked($i);
-    last if ($data_index = $::app->current_index);
+  foreach my $i (0 .. $#{ $this->{PCA}->stack }) {
+    if ($::app->current_data->group eq $this->{PCA}->stack->[$i]->group) {
+      $data_index = $i;
+      last;
+    };
   };
   $this->{PCA}->save_reconstruction($data_index, $fname);
 };
@@ -430,7 +454,7 @@ Demeter::UI::Athena::PCA - A principle components analysis tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -455,7 +479,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -463,7 +488,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

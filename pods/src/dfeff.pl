@@ -167,7 +167,7 @@ dfeff - Run Demeter's implementation of Feff6
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -270,7 +270,8 @@ There should be an option for running Feff's pathfinder for the sake
 of bug testing Demeter's pathfinder or for using paths with more than
 4 legs.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -278,7 +279,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -21,7 +21,7 @@ use Moose::Role;
 use Demeter::Constants qw($ETOK);
 use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
-use List::Util qw(min);
+use List::Util qw(max min);
 use Xray::Absorption;
 use Xray::FluorescenceEXAFS;
 
@@ -36,6 +36,7 @@ sub sa {
     carp("The fluo algorithm is applied to mu(E) data and cannot be applied to a Data object of data type chi");
     return (0, q{});
   };
+  $self->dispense("process", "sa_group");
   $hash{thickness} ||= 100000;
   $hash{in}        ||= 45;
   $hash{out}       ||= 45;
@@ -104,7 +105,6 @@ sub sa_troger {
   my @chi = $self->fetch_array('s___a.chi');
   my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
-
 };
 
 
@@ -162,8 +162,14 @@ sub sa_booth {
 					      thickness => $thickness,
 					      muf       => $muf,
 					     });
-  my $betamin = $self->fetch_scalar("s___a___x");
-  my $isneg = $self->fetch_scalar("s___a___xx");
+  my ($betamin, $isneg);
+  if ($self->is_ifeffit) {
+    $betamin = $self->fetch_scalar("s___a___x");
+    $isneg = $self->fetch_scalar("s___a___xx");
+  } else {
+    $betamin = min($self->fetch_array("s___a.beta"));
+    $isneg = min($self->fetch_array("s___a.sqrtarg"));
+  };
   my $thickcheck = ($betamin < 10e-7) || ($isneg < 0);
   my $text = "Booth and Bridges algorithm, ";
   if ($thickcheck > 0.005) {	# huh????
@@ -274,7 +280,13 @@ sub sa_fluo {
 					 mub_plus  => $barns_plus,
 					 mue_plus  => $mue_plus,
 					});
-  my $maxval = $self->fetch_scalar("s___a_x");
+  my $maxval;
+  if ($self->is_ifeffit) {
+    $maxval = $self->fetch_scalar("s___a_x");
+  } else {
+    my @arr = $self->fetch_array("s___a.sacorr");
+    $maxval = max( max(@arr), abs(min(@arr)) );
+  };
 
   my $text = "Fluo algorithm\n";
   $text .= $self->_summary($efluo, $line, \%count);
@@ -398,7 +410,7 @@ Demeter::Data::SelfAbsorption - Self-absorption corrections for mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -529,7 +541,8 @@ p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -537,7 +550,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -55,11 +55,14 @@ package  Demeter::UI::Atoms::Xtal;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::NumTypes qw( PosNum );
+use Demeter::Constants qw($FEFFNOTOK);
+use Demeter::UI::Wx::VerbDialog;
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use File::Basename;
-use List::MoreUtils qw(firstidx);
+use File::Copy;
+use List::MoreUtils qw(firstidx true);
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
@@ -69,7 +72,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
-		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -95,6 +98,8 @@ my %hints = (
 	     open      => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
 	     save      => "Save an atoms input file from these crystallographic data",
 	     exec      => "Generate input data for Feff from these crystallographic data",
+	     aggregate => "Aggregate Feff calculations over all sites occupied by the same element",
+	     doc       => "Show the Atoms documentation in a browser",
 	     clear     => "Clear this crystal structure",
 	     output    => "Write a feff.inp file or some other format",
 	     add       => "Add another entry to the list of sites",
@@ -132,11 +137,16 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Export",     $self->icon("output"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{output});
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
+  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
+  my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
+  $self->{aggid} = $agg->GetId;
+  $self->{toolbar}->EnableTool($self->{aggid},0);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
@@ -237,6 +247,7 @@ sub new {
 
   $self->{addbutton} = Wx::Button->new($self, -1, "Add a site");
   $spacebox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxALIGN_BOTTOM, 0);
+  EVT_BUTTON($self, $self->{addbutton}, sub{$self->AddSite(0, $self)});
 
   # $self->{addbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
   # EVT_MENU( $self->{addbar}, -1, sub{my ($toolbar, $event) = @_; AddSite($toolbar, $event, $self)} );
@@ -431,7 +442,7 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file write_output clear_all noop run_atoms );
+  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms aggregate);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -455,12 +466,22 @@ sub OnToolRightClick {
 ## grid is passed through
 sub OnGridClick {
   my ($self, $event) = @_;
-  $event->Skip(1), return if ($event->GetCol != 0);
-  my $row = $event->GetRow;
+  $event->Skip(1), return if ((ref($event) =~ m{Event}) and ($event->GetCol != 0));
+  my $row = (ref($event) =~ m{Event}) ? $event->GetRow : $event;
+  my @el;
   foreach my $rr (0 .. $self->GetNumberRows) {
-    $self->SetCellValue($rr, 0, 0)
+    $self->SetCellValue($rr, 0, 0);
+    push @el, $self->GetCellValue($rr, 1) if ($self->GetCellValue($rr, 1) !~ m{\A\s*\z});
   };
-  $self->SetCellValue($row, 0, 1)
+  $self->SetCellValue($row, 0, 1);
+  my $nsites = true {$_ eq $self->GetCellValue($row, 1)} @el;
+  if ($nsites > 1) {
+    ## enable aggregate Feff calculation
+    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},1);
+  } else {
+    ## disable aggregate Feff calculation
+    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+  };
 };
 
 sub PostGridMenu {
@@ -593,7 +614,8 @@ sub open_file {
   $self->{shift_y}->SetValue($shift[1]||0);
   $self->{shift_z}->SetValue($shift[2]||0);
 
-  my $i= 0;
+  my $i = 0;
+  my $corerow = 0;
   my $cell = $atoms->cell;
   my $message = "Imported crystal data from \"$file\".";
   foreach my $s (@{ $atoms->sites }) {
@@ -608,6 +630,7 @@ sub open_file {
     $self->{sitesgrid}->SetCellValue($i, 5, $this[4]);
     if (lc($this[4]) eq lc($atoms->core)) {
       $self->{sitesgrid}->SetCellValue($i, 0, 1);
+      $corerow = $i;
       if (not $atoms->edge) {
 	my $z = ($sym =~ m{\ANu}) ? 0 : get_Z( $sym );
 	($z > 57) ? $atoms->edge('l3') : $atoms->edge('k');
@@ -615,6 +638,7 @@ sub open_file {
     };
     ++$i;
   };
+  OnGridClick($self->{sitesgrid}, $corerow);
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
   $ie = 0 if ($ie == -1);
   $self->{edge}->SetSelection($ie);
@@ -692,13 +716,16 @@ sub get_crystal_data {
     #warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
-      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5) || $self->{sitesgrid}->GetCellValue($row, 1));
+      my $thistag = $self->{sitesgrid}->GetCellValue($row, 5);
+      $thistag =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      $atoms->core($thistag || $self->{sitesgrid}->GetCellValue($row, 1));
       ++$core_selected;
     };
-    my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
-    my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0; $y = $self->number($y);
-    my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0; $z = $self->number($z);
-    my $tag  = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    my $x     = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
+    my $y     = $self->{sitesgrid}->GetCellValue($row, 3) || 0; $y = $self->number($y);
+    my $z     = $self->{sitesgrid}->GetCellValue($row, 4) || 0; $z = $self->number($z);
+    my $tag   = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    $tag  =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 2) . "\" is not a valid x-coordinate value for site $rr (should be a number).\n\n" if ($x == -9999);
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 3) . "\" is not a valid y-coordinate value for site $rr (should be a number).\n\n" if ($y == -9999);
     $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 4) . "\" is not a valid z-coordinate value for site $rr (should be a number).\n\n" if ($z == -9999);
@@ -829,12 +856,11 @@ sub save_file {
       } else {
 	$file = $fd->GetPath;
 	if (-e $file) {
-	  my $yesno = Wx::MessageDialog->new($self,
-					     "Overwrite existing file \"$file\"?",
-					     "Overwrite file?",
-					     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
-					    );
-                                            ##Wx::GetMousePosition  how is this done?
+	  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						       "Overwrite existing file \"$file\"?",
+						       "Overwrite file?",
+						       "Overwrite",
+						      );
 	  my $ok = $yesno->ShowModal;
 	  if ($ok == wxID_NO) {
 	    $self->{parent}->status("Not overwriting \"$file\"");
@@ -857,7 +883,8 @@ sub save_file {
 };
 
 sub run_atoms {
-  my ($self) = @_;
+  my ($self, $is_aggregate) = @_;
+  $is_aggregate = 0;
   my $seems_ok = $self->get_crystal_data;
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
   my ($template, $style) = split(/ - /, $this);
@@ -870,27 +897,121 @@ sub run_atoms {
       my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
       if ($yesno->ShowModal == wxID_NO) {
 	$self->{parent}->status("Aborting calculation.");
+	undef $busy;
 	return;
       };
     };
+    ## these can be disabled by an aggregate calculation
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
     $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
+    $self->{parent}->{Feff}->{toolbar}->Enable(1);
+    $self->{parent}->{Feff}->{name}->Enable(1);
+    $self->{parent}->{Feff}->{feff}->Enable(1);
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
     undef $busy;
-    $self->{parent}->{notebook}->ChangeSelection(1);
+    $self->{parent}->{notebook}->ChangeSelection(1) if not $is_aggregate;
   } else {
     $self->unusable_data();
   };
 };
 
+sub aggregate {
+  my ($self) = @_;
+
+  ## 0. warn about length of calculation, check rpath value
+  my $text = "The aggregate Feff calculation can be quite time consuming, particularly if Rpath is large.\n\n";
+  $text   .= "This calculation requires that Rmax be large enough that each Feff calculation inlcudes an example of each unique potential.\n\n";
+  $text   .= sprintf("Rmax = %.3f    Rpath = %.3f\n\n", $self->{rmax}->GetValue, $self->{rpath}->GetValue);
+  $text   .= "Continue with the calculation?";
+  my $message = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 $text,
+						 "Perform aggregate Feff calculation?",
+						 "Continue");
+  #my $message = Wx::MessageDialog->new($self, $text, "Perform aggregate Feff calculation?", wxYES_NO);
+  #$message->ShowModal;
+  if ($message->ShowModal == wxID_NO) {
+    $self->{parent}->status("Not performing aggrgate Feff calculation.");
+    return;
+  };
+
+  ## 0.5. Write an atoms.inp and pass it along to the parts
+  ## 1. set up Feff::Aggregate object, use folder created when atoms imported, feff_* folders for parts
+  $self->run_atoms(1);
+  my $feffobject = $self->{parent}->{Feff}->{feffobject};
+  my $atomsfile = File::Spec->catfile($self->{parent}->{Feff}->{feffobject}->workspace, "atoms.inp");
+  $self->save_file($atomsfile);
+  #$atoms->file($atomsfile);
+  my $gp = $feffobject->group;
+  my $ws = $feffobject->workspace;
+  #$feffobject->DEMOLISH;
+  my $bigfeff = Demeter::Feff::Aggregate->new(group=>$gp, screen=>0);
+  $self->{parent}->{Feff}->{feffobject} = $bigfeff;
+  my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);
+  $bigfeff -> workspace($workspace);
+  $bigfeff -> make_workspace;
+
+  $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
+  $self->{parent}->{Console}->{console}->AppendText($self->{parent}->{Feff}->now("Aggregate Feff calculation beginning at ", $bigfeff));
+  my $n = (exists $Demeter::UI::Artemis::frames{main}) ? 4 : 3;
+  $self->{parent}->{notebook}->ChangeSelection($n);
+  $self->{parent}->{Console}->{console}->Update;
+  my $start = DateTime->now( time_zone => 'floating' );
+  my $busy = Wx::BusyCursor->new();
+  $bigfeff->execution_wrapper(sub{$self->{parent}->{Feff}->run_and_gather(@_)});
+  my ($central, $xcenter, $ycenter, $zcenter) = $atoms -> cell -> central($atoms->core);
+
+  ## 2. Check return value of setup method, clean and bail if there is a problem
+  my $ret = $bigfeff->setup($atoms, $central->element);
+  if (not $ret->is_ok) {
+    my $message = Wx::MessageDialog->new($self, $ret->message, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
+    $bigfeff->clean_workspace;
+    $bigfeff->DEMOLISH;
+    $self->{parent}->{notebook}->ChangeSelection(0);
+    $self->{rmax}->SetFocus;
+    return;
+  };
+
+  ## 3. run aggregate calculation, streaming updates to console
+  $bigfeff->run;
+
+  ## 4. Fill and disable Feff tab
+  $self->{parent}->{Feff}->{toolbar}->Enable(0);
+  $self->{parent}->{Feff}->{name}->Enable(0);
+  $self->{parent}->{Feff}->{feff}->Enable(0);
+
+  ## 5. Labels & Fill Paths tab
+  $bigfeff->name(q{agg-}.$self->{name}->GetValue);
+  my $yaml = File::Spec->catfile($bigfeff->workspace, $bigfeff->group.".yaml");
+  $bigfeff->freeze($yaml);
+
+  $::app->{main}->{$self->{parent}->{fnum}}->SetLabel('Hide "' . $bigfeff->name . '"') if $self->{parent}->{component};
+  $self->{name}->SetValue($bigfeff->name);
+  $self->{parent}->{Feff}->{name}->SetValue($bigfeff->name);
+  $self->{parent}->{Feff}->{feffobject} = $bigfeff;
+  $self->{parent}->{Feff}->fill_intrp_page($bigfeff);
+  $self->{parent}->{Feff}->fill_ss_page($bigfeff);
+  $self->{parent}->{notebook}->ChangeSelection(2);
+
+  ## 6. clean up and display
+  #$bigfeff->clean_workspace;
+  undef $busy;
+};
+
+
+sub document {
+  $::app->document('feff');
+};
+
 sub clear_all {
   my ($self, $skip_dialog) = @_;
   return $self->_do_clear_all if (not $atoms->co->default("atoms", "do_confirm"));
-  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard these crystal data?",
-				     "Discard?", wxYES_NO);
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Do you really wish to discard these crystal data?",
+					       "Discard?",
+					       "Discard");
   if ((not $skip_dialog) and ($yesno->ShowModal == wxID_NO)) {
     $self->{parent}->status("Not discarding data.");
   } else {
@@ -948,7 +1069,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -958,7 +1079,7 @@ This class is used to populate the Atoms tab in the Wx version of Atoms.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

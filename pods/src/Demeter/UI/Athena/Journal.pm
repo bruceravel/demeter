@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT);
 
 use vars qw($label $tag);
 $label = "Journal";
@@ -26,7 +26,7 @@ sub new {
   $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.journal")});
-
+  EVT_TEXT($this, $this->{journal}, \&OnEdit);
   $this->SetSizerAndFit($box);
   return $this;
 };
@@ -44,6 +44,12 @@ sub mode {
   1;
 };
 
+sub OnEdit {
+  $::app->{modified} ||= 1;
+  $::app->{main}->{save}->Enable(1);
+  $::app->{main}->{token}->SetLabel(q{*});
+};
+
 1;
 
 =head1 NAME
@@ -52,7 +58,7 @@ Demeter::UI::Athena::Journal - A journal tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -65,7 +71,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -73,7 +80,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

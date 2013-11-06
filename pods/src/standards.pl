@@ -225,7 +225,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -341,7 +341,7 @@ In this mode, the program loops over all materials in the database,
 generating an html file for each material as well as a PNG file for
 each plot type.  This collection of files can be dropped onto a web
 site or viewed locally.  L<Here is an
-example|http://cars9.uchicago.edu/~ravel/software/doc/Standards/>
+example|http://bruceravel.github.com/demeter/doc/Standards/>
 using the database that ships with Demeter.
 
 =item latex
@@ -496,7 +496,8 @@ Prettier CSS in web mode
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -504,7 +505,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

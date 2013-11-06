@@ -43,6 +43,7 @@ sub Rename {
   my $prefix = ($is_ref) ? "  Ref " : q{};
   $data->name($prefix.$newname);
   $app->{main}->{list}->SetString($app->current_index, $prefix.$newname);
+  $realname = quotemeta($realname);
   if (($data->reference) and ($data->reference->name =~ m{\A\s*(?:Ref\s+)?$realname\s*\z})) {
     my $prefix = ($is_ref) ? q{} : "  Ref ";
     $data->reference->name($prefix.$newname);
@@ -124,10 +125,10 @@ sub Remove {
     $message = "Discarded entire project";
     if ($app->{modified}) {
       ## offer to save project....
-      my $yesno = Wx::MessageDialog->new($app->{main},
-					 "Save this project before exiting?",
-					 "Save project?",
-					 wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+      my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						   "Save this project before closing?",
+						   "Save project?",
+						   'Save', 1);
       my $result = $yesno->ShowModal;
       if ($result == wxID_CANCEL) {
 	$app->{main}->status("Not exiting Athena after all.");
@@ -179,25 +180,32 @@ sub change_datatype {
     return;
   };
 
+  my $is_nor  = ($cdt->{to}->GetSelection == 2) ? 1 : 0;
   my $newtype = ($cdt->{to}->GetSelection == 0) ? 'xmu'
               : ($cdt->{to}->GetSelection == 1) ? 'xanes'
-              : ($cdt->{to}->GetSelection == 2) ? 'norm'
+              : ($cdt->{to}->GetSelection == 2) ? 'xmu'
               : ($cdt->{to}->GetSelection == 3) ? 'chi'
               : ($cdt->{to}->GetSelection == 4) ? 'xmudat'
 	      :                                   'xmu';
   if ($cdt->{how}->GetSelection == 0) {
     $app->current_data->datatype($newtype);
+    $app->current_data->is_nor($is_nor);
+    $app->current_data->update_norm(1) if ($cdt->{to}->GetSelection != 3);
     $app->{main}->status("Changed current group's data type to $newtype");
   } elsif ($cdt->{how}->GetSelection == 1) {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       if ($app->{main}->{list}->IsChecked($j)) {
 	$app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
+	$app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
+	$app->{main}->{list}->GetIndexedData($j)->update_norm(1) if ($cdt->{to}->GetSelection != 3);
       };
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
   } else {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       $app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
+      $app->{main}->{list}->GetIndexedData($j)->is_nor($is_nor);
+      $app->{main}->{list}->GetIndexedData($j)->update_norm(1) if ($cdt->{to}->GetSelection != 3);
     };
     $app->{main}->status("Changed all groups to data type $newtype");
   };
@@ -391,7 +399,7 @@ Demeter::UI::Athena::Group - data group functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -403,7 +411,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

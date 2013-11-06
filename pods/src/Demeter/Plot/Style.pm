@@ -6,8 +6,8 @@ use Demeter::StrTypes qw( MERIP );
 
 has '+name' => (default => q{style});
 
-has 'emin'      => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
-has 'emax'      => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emax")	  || 800});
+has 'emin'      => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "emin")	  || -200});
+has 'emax'      => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "emax")	  || 800});
 # has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_mu")	  || 1});
 # has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_bkg")	  || 0});
 # has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_pre")	  || 0});
@@ -21,15 +21,15 @@ has 'emax'      => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->def
 # has 'e_smooth'  => (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 # has 'e_zero'	  => (is => 'rw', isa =>  'Bool',   default => 0);
 
-has 'kmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
-has 'kmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
+has 'kmin'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "kmin") || 0});
+has 'kmax'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "kmax") || 15});
 
-has 'rmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
-has 'rmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
+has 'rmin'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "rmin") || 0});
+has 'rmax'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "rmax") || 6});
 #has 'r_pl'  => (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
 
-has 'qmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
-has 'qmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
+has 'qmin'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "qmin") || 0});
+has 'qmax'  => (is => 'rw', isa =>  'LaxNum',    default => sub{ shift->co->default("plot", "qmax") || 15});
 #has 'q_pl'  => (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
 
 my @limits = qw(emin emax kmin kmax rmin rmax qmin qmax);
@@ -66,7 +66,7 @@ Demeter::Plot::Style - Simple management of plotting parameters
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -120,7 +120,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -128,7 +129,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

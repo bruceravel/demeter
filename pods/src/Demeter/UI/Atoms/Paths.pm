@@ -2,7 +2,9 @@ package Demeter::UI::Atoms::Paths;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
+use Demeter::UI::Artemis::ShowText;
 
+use Const::Fast;
 use Cwd;
 use File::Spec;
 
@@ -12,7 +14,7 @@ use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_LIST_ITEM_RIGHT_CLICK
-		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
+		 EVT_LEFT_DOWN EVT_RIGHT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
 	     save     => "Save this Feff calculation to a Demeter save file",
@@ -21,6 +23,7 @@ my %hints = (
 	     chir_mag => "Plot paths as the magnitude of chi(R)",
 	     chir_re  => "Plot paths as the real part of chi(R)",
 	     chir_im  => "Plot paths as the imaginary part of chi(R)",
+	     doc      => "Show the path interpretation documentation in a browser",
 	    );
 
 sub new {
@@ -40,6 +43,8 @@ sub new {
   $self->{toolbar} -> AddRadioTool(6, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
   $self->{toolbar} -> AddRadioTool(7, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
   $self->{toolbar} -> AddRadioTool(8, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
   $self->{toolbar} -> ToggleTool(6, 1);
 
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -75,14 +80,16 @@ sub new {
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
   $self->{paths}->SetColumnWidth( 0,  50 );
-  $self->{paths}->SetColumnWidth( 1,  50 );
+  $self->{paths}->SetColumnWidth( 1,  55 );
   $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
   $self->{paths}->SetColumnWidth( 4,  50 );
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
-  EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, \&OnRightClick);
+  #EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, sub{OnRightClick(@_)});
+  EVT_RIGHT_DOWN($self->{paths}, sub{OnRightClick(@_, $self)});
+  EVT_MENU($self, -1, sub{ $self->OnMenu(@_) });
   EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag) if $parent->{component};
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
@@ -100,12 +107,49 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
+const my $SHOWGEOM => Wx::NewId();
+const my $SELR     => Wx::NewId();
+const my $SELA     => Wx::NewId();
+const my $SELSS    => Wx::NewId();
+const my $SELFOR   => Wx::NewId();
+
 sub OnRightClick {
+  my ($list, $event, $parent) = @_;
+  foreach my $it (0 .. $list->GetItemCount-1) {
+    $list->SetItemState($it, 0, wxLIST_STATE_SELECTED);
+  };
+  my ($item, $flags) = $list->HitTest($event->GetPosition);
+  $list->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
+  $parent->{rcselected}=$item;
+  my $menu  = Wx::Menu->new(q{});
+  $menu->Append($SHOWGEOM, "Show geometry for this path");
+  $menu->AppendSeparator;
+  $menu->Append($SELA,     "Select paths with rank above A");
+  $menu->Append($SELR,     "Select paths shorter than R");
+  $menu->Append($SELSS,    "Select single scattering paths");
+  $menu->Append($SELFOR,   "Select forward scattering paths");
+  $list->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnMenu {
+  my ($parent, $p2, $event) = @_;
+  my $id = $event->GetId;
+  if ($id == $SHOWGEOM) {
+    $parent->show_geometry($event);
+  } else {
+    $parent->Select($id);
+  };
+}
+
+sub show_geometry {
   my ($parent, $event) = @_;
   my $list = $parent->{paths};
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
-  my $which = $event->GetIndex;
-  my $i = $list->GetItemData($which);
+  ## the ItemData is the index of that path in the Feff objects
+  ## pathslist -- the counting is done correctly, even if not all
+  ## paths are displayed in the path interpretation due to the
+  ## postcrit
+  my $i = $list->GetItemData($parent->{rcselected});
   my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
   my $pd = $sp->pathsdat;
   $pd =~ s{\A\s+\d+}{};
@@ -113,6 +157,61 @@ sub OnRightClick {
   my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;
   my $dialog = Demeter::UI::Artemis::ShowText->new($parent, $text, $sp->intrplist)
     -> Show;
+};
+
+sub Select {
+  my ($parent, $id) = @_;
+  if ($id == $SELR) {
+    my $ted = Wx::TextEntryDialog->new( $self, "Select paths shorter than this path length:",
+					"Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $self->status("Path selection canceled.");
+      return;
+    };
+    my $r = $ted->GetValue;
+    if ($r !~ m{$NUMBER}) {
+      $self->status("Oops!  That wasn't a number.");
+      return;
+    };
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 2)->GetText < $r)
+      };
+
+  } elsif ($id == $SELA) {
+    my $ted = Wx::TextEntryDialog->new( $self, "Select paths which rank above:",
+					"Enter a path ranking", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $self->status("Path selection canceled.");
+      return;
+    };
+    my $a = $ted->GetValue;
+    if ($a !~ m{$NUMBER}) {
+      $self->status("Oops!  That wasn't a number.");
+      return;
+    };
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 4)->GetText > $a)
+      };
+
+  } elsif ($id == $SELSS) {
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 5)->GetText == 2)
+      };
+
+  } elsif ($id == $SELFOR) {
+    foreach my $item (0 .. $parent->{paths}->GetItemCount-1) {
+      $parent->{paths}->SetItemState($item, 0, wxLIST_STATE_SELECTED);
+      $parent->{paths}->SetItemState($item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED )
+	if ($parent->{paths}->GetItem($item, 6)->GetText =~ m{forward (?:scat|thro)})
+      };
+
+  };
 };
 
 sub OnDrag {
@@ -123,7 +222,8 @@ sub OnDrag {
   my @data;
   my $item = $list->GetFirstSelected;
   while ($item ne -1) {
-    push @data, $pathlist[$item]->group;
+    my $p = $list->GetItemData($item);
+    push @data, $pathlist[$p]->group;
     #print $pathlist[$item]->intrpline, $/;
     $item = $list->GetNextSelected($item);
   };
@@ -146,7 +246,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv---------order of toolbar on the screen------------vV
-  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot);
+  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot noop document);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure($event->GetId);
 };
@@ -154,6 +254,11 @@ sub OnToolClick {
 sub noop {
   return 1;
 };
+
+sub document {
+  $::app->document('feff.paths');
+};
+
 
 sub set_plot {
   my ($self, $id) = @_;
@@ -207,7 +312,7 @@ sub plot {
     my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
     my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
 
-    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at ", $feff));
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at "));
     $self->{parent}->{Console}->{console}->AppendText("(Feff executable: ".
 						      $feff->co->default(qw(feff executable)) .
 						      ")\n\n");
@@ -219,7 +324,7 @@ sub plot {
     $this    = $self->{paths}->GetNextSelected($this);
 
     $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
-    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
+    $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at "));
   };
   $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
@@ -228,7 +333,7 @@ sub plot {
 sub now {
   my ($self, $text, $feff) = @_;
   my $string = $/ x 2;
-  $string   .= '********** ' . $text . $feff->now;
+  $string   .= '********** ' . $text . Demeter->now;
   $string   .= $/ x 2;
   return $string;
 };
@@ -242,7 +347,7 @@ Demeter::UI::Atoms::Paths - Atoms' path organizer utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -252,7 +357,7 @@ This class is used to populate the Paths tab in the Wx version of Atoms.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

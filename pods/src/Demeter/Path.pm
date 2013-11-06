@@ -20,7 +20,7 @@ use autodie qw(open close);
 use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
-use Demeter::StrTypes qw( Empty PathParam FileName );
+use Demeter::StrTypes qw( Empty PathParam FileName ElementSymbol );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
@@ -35,61 +35,62 @@ use File::Spec;
 use List::Util qw(max);
 use Regexp::Assemble;
 use Scalar::Util qw(looks_like_number);
+use Xray::BondValence qw(bvparams);
 
 has '+plottable'      => (default => 1);
 has '+pathtype'       => (default => 1);
 has '+data'           => (isa => Empty.'|Demeter::Data');
-has 'label'	      => (is=>'rw', isa=>'Str', default => q{});
+has 'label'	      => (is=>'rw', isa=>'Str',    default => q{});
 
-has 'n'		      => (is=>'rw', isa=>'Num', default =>  0);
+has 'n'		      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 's02'	      => (is=>'rw', isa=>'Str', default => '1'); # trigger value into _stored
-has 's02_stored'      => (is=>'rw', isa=>'Str', default => '1');
-has 's02_value'	      => (is=>'rw', isa=>'Num', default =>  1);
+has 's02'	      => (is=>'rw', isa=>'Str',    default => '1'); # trigger value into _stored
+has 's02_stored'      => (is=>'rw', isa=>'Str',    default => '1');
+has 's02_value'	      => (is=>'rw', isa=>'LaxNum', default =>  1);
 
-has 'e0'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'e0_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'e0_value'	      => (is=>'rw', isa=>'Num', default =>  0);
+has 'e0'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'e0_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'e0_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'delr'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'delr_stored'     => (is=>'rw', isa=>'Str', default => '0');
-has 'delr_value'      => (is=>'rw', isa=>'Num', default =>  0);
+has 'delr'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'delr_stored'     => (is=>'rw', isa=>'Str',    default => '0');
+has 'delr_value'      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'sigma2'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'sigma2_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'sigma2_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'sigma2'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'sigma2_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'sigma2_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'ei'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'ei_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'ei_value'	      => (is=>'rw', isa=>'Num', default =>  0);
+has 'ei'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'ei_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'ei_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'third'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'third_stored'    => (is=>'rw', isa=>'Str', default => '0');
-has 'third_value'     => (is=>'rw', isa=>'Num', default =>  0);
+has 'third'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'third_stored'    => (is=>'rw', isa=>'Str',    default => '0');
+has 'third_value'     => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'fourth'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'fourth_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'fourth_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'fourth'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'fourth_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'fourth_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'dphase'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'dphase_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'dphase_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'dphase'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'dphase_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'dphase_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'id'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'k_array'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
+has 'id'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'k_array'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'amp_array'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'phase_array'     => (is=>'rw', isa=>'Str',    default => q{});
 
-has 'save_mag'        => (is=>'rw', isa=>'Bool', default => 0);
+has 'save_mag'        => (is=>'rw', isa=>'Bool',   default => 0);
 
 ## these four provide a generic way of storing cumulant information
 ## about a Path or Path-like object.  this is used, for instance, in
 ## Demeter::Feff::Distributions to store the cumulants computed from
 ## the SS distribution in an FPath object created from a histogram
-has 'c1'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed first cumulant");
-has 'c2'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed second cumulant");
-has 'c3'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed third cumulant");
-has 'c4'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed fourth cumulant");
+has 'c1'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed first cumulant");
+has 'c2'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed second cumulant");
+has 'c3'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed third cumulant");
+has 'c4'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed fourth cumulant");
 
 
 ## object relationships
@@ -104,6 +105,8 @@ has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Dem
 					    $self->zcwif($new->zcwif);
 					    $self->spgroup($new->group);
 					    $self->parent($new->feff) if not $self->parent;
+					    $self->bvscat($new->scatterer);
+					    $self->set_scatterer_valence;
 					    $self->make_name if not $self->name;
 					  };
 					});
@@ -127,8 +130,8 @@ has 'pc'              => (is=>'rw', isa=>  'Bool',  default => 0);
 ## feff interpretation parameters
 has 'degen'           => (is=>'rw', isa=>  NonNeg,  default => 0);
 has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
-has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
-has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0, alias => 'population');
+has 'reff'            => (is=>'rw', isa=> 'LaxNum', default => 0);
+has 'zcwif'           => (is=>'rw', isa=> 'LaxNum', default => 0, alias => 'population');
 has 'intrpline'       => (is=>'rw', isa=> 'Str',    default => q{});
 has 'geometry'        => (is=>'rw', isa=> 'Str',    default => q{});
 
@@ -138,6 +141,12 @@ has 'update_path'     => (is=>'rw', isa=>  'Bool',  default => 1,
 has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
 			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
 has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
+
+## for computing bond valence sums
+has 'bvabs'        => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
+has 'valence_abs'  => (is=>'rw', isa=>  'Int',  default =>  2);
+has 'bvscat'       => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
+has 'valence_scat' => (is=>'rw', isa=>  'Int',  default => -2);
 
 my $pp_regex = Regexp::Assemble->new()->add(qw(s02 e0 delr e0 sigma2 ei third fourth dphase))->re;
 
@@ -186,7 +195,10 @@ sub set_parent {
 };
 sub set_parent_method {
   my ($self, $feff) = @_;
-  $self->parentgroup($feff->group) if $feff;
+  if ($feff) {
+    $self->parentgroup($feff->group);
+    $self->bvabs($feff->abs_species);
+  };
 };
 
 ### ---- this will be different working from a ScatteringPath object
@@ -511,6 +523,38 @@ sub identity {
 };
 
 
+sub bv {
+  my ($self, $s02) = @_;
+  $s02 ||= 1;
+  my %hash = bvparams($self->bvabs, $self->valence_abs, $self->bvscat);
+  return 0 if not (exists $hash{r0} and exists $hash{b});
+  return ($self->n * $self->s02_value / $s02) * exp( ($hash{r0} - $self->R) / $hash{b} );
+};
+sub set_scatterer_valence {
+  my ($self) = @_;
+  my $scat = ucfirst(lc($self->bvscat));
+  my $val = ($scat eq 'As') ? -3
+          : ($scat eq 'B' ) ?  3
+          : ($scat eq 'Br') ? -1
+          : ($scat eq 'C' ) ? -4
+          : ($scat eq 'Cl') ? -1
+          : ($scat eq 'Co') ? -1
+          : ($scat eq 'F' ) ? -1
+          : ($scat eq 'Cl') ? -1
+          : ($scat eq 'H' ) ? -1
+          : ($scat eq 'Hg') ?  2
+          : ($scat eq 'I' ) ? -1
+          : ($scat eq 'Mn') ? -2
+          : ($scat eq 'N')  ? -3
+          : ($scat eq 'O')  ? -2
+          : ($scat eq 'P')  ? -3
+          : ($scat eq 'S')  ? -2
+          : ($scat eq 'Se') ? -2
+          : ($scat eq 'Te') ? -2
+	  :                   -2;
+  $self->valence_scat($val);
+};
+
 ## log file tools
 
 sub R {
@@ -566,7 +610,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS
@@ -1079,7 +1123,8 @@ hand.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1087,7 +1132,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

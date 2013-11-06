@@ -64,23 +64,19 @@
   Interpreting data as a sum of line shapes 
 </h2>
 
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
-Explain all the new buttons and features.  Give some disclaimers,
-particularly about varying energy.  Discuss saving results on results
-tab. 
-</p>
-
 <p>
 Peak fitting involves fitting a number of analytical line shapes to
 XANES data.  The typical approach is to simulate the XANES data using
-one or two step-like function and several Gaussians or Lorentzians for
+one or two step-like functions and several peak functions for
 the peaks in the data.  The centroids, amplitudes, and widths of the
 various line shapes are either fixed or varied to best fit the data.
 In <span class=program>ATHENA</span>'s implementation of peak fitting, a
 Levenberg-Marquardt non-linear least-squares minimization is used.
 (To be specific, <span class=program>IFEFFIT</span>'s <tt>minimize</tt>
-command is used after constructing an array with a sum of line shapes.)
+command is used after constructing an array with a sum of line shapes
+or <span class=program>LARCH</span>'s <tt>minimize</tt> function is
+using an objective function which contructs an array with a sum of the
+line shapes.)
 </p>
 
 <p>
@@ -89,18 +85,18 @@ themselves, the line shapes used have little physical meaning.  The
 utility of peak fitting is in quantifying the variation of certain
 spectral features in a sequence of data.  As an example, consider the
 small peak that appears just before the main rising part of the edge
-in a titanate perovskite.  In
-the plot below, this is
-the peak around 4968 eV.  This peak varies as a function of
-temperature as you approach then exceed the crystallographic phase
-transition.  The size of the peak can be related to the amount of
-distortion in this tetragonal structure.  Peak fitting is a useful
-tool in this temperature-dependent study as it can quantify the
-relationship between a spectral feature and an extrinsic parameter.
+in the perovskite PbTiO<sub>3</sub>.  In the plot
+below, this is the peak around 4967 eV.  This
+peak varies as a function of temperature as you approach then exceed
+the crystallographic phase transition.  The size of the peak can be
+related to the amount of displacement of the Ti atom from the near-by
+postition of centrosymmetry.  Peak fitting is a useful tool in this
+temperature-dependent study as it can quantify the relationship
+between a spectral feature and an extrinsic parameter.
 </p>
 
 
-<div class=figure style="max-width: 764px; min-width: 7em;">
+<div class=figure style="max-width: 800px; min-width: 7em;">
 <a name=peak>
 <img src=../../images/peak.png width=100%>
 </a>
@@ -111,49 +107,61 @@ The peak fitting tool.
 
 <p>
 The screenshot above
-shows the peak fitting tool.  The available line shapes include
+shows the peak fitting tool.  The available line shapes when useing
+<span class=program>IFEFFIT</span> include
 </p>
 
 
 <ul>
   
 <li><p>
-arc tangent 
+arc tangent (step-like)
 </p></li>
 <li><p>
-error function 
+error function (step-like)
 </p></li>
 <li><p>
-Gaussian 
+Gaussian (peak)
 </p></li>
 <li><p>
-Lorentzian 
+Lorentzian (peak) 
+</p></li>
+<li><p>
+pseudo-Voigt (peak)
 </p></li>
 </ul>
 
+<span class=program>LARCH</span> adds one step-like function and several peak functions:
+<ul>
+  
+<li><p>
+logistic (step-like)
+</p></li>
+<li><p>
+Voigt (step-like)
+</p></li>
+<li><p>
+Pearson7 (peak)
+</p></li>
+<li><p>
+Student's T (peak) 
+</p></li>
+</ul>
+
+
 <p>
-Two other obviously useful functions are not available in the current
-version of <span class=program>ATHENA</span>, the pseudo-Voight (typically implemented as a
-weighted sum of a Gaussian and a Lorentzian) and the Cromer-Lieberman
+An obviously useful function are not available in the current
+version of <span class=program>ATHENA</span> is a broadened Cromer-Lieberman
 calculation of the bare atomic edge step (which might better
 approximate the shape of the XANES data).
 </p>
 
 <p>
-Each line shape has an independent centroid, amplitude, and width.  By
-default, the centroids are fixed and the amplitude and width are
-varied in the fit.  Which parameters are fixed and which are varied
-are controlled by the check buttons in the columns labeled
-&ldquo;Fit&rdquo;.  The
-<a href="../ui/pluck.html">pluck button</a>
-next to the centroid can be used to grab a value from the plot.
-</p>
-
-<p>
-In my experience, the fits are fairly unstable when the centroids are
-varied, particularly with peak functions placed close together.  I
-typically leave the centroid values fixed, adjusting them by hand and
-rerunning the fits if necessary.
+Each line shape has an independent centroid, amplitude, and width.  A
+few line shapes have a fourth parameter.  For instance, the
+pseudo-Voigt function has a parameter for mixing Gaussian and
+Lorentzian content. By default, the centroids are fixed and the other
+parameters are varied in the fit.
 </p>
 
 <p>
@@ -162,20 +170,12 @@ The peak shapes are unit normalized.  This means that the amplitude
 </p>
 
 <p>
-The result of a fit can be saved as a group in the group list for
-later comparison to your data.  The log file is a column data file
-containing the fit results in the header and columns of
+Here is the result of a fit to the PbTiO<sub>3</sub> after slightly tweaking
+the centroids of the three lineshapes from the values shown above.
 </p>
 
-<ol>
-  <li><p> energy </p></li>
-<li><p> the data </p></li>
-<li><p> the fit </p></li>
-<li><p> the residual </p></li>
-<li><p> each component </p></li>
-</ol>
 
-<div class=figure style="max-width: 644px; min-width: 7em;">
+<div class=figure style="max-width: 648px; min-width: 7em;">
 <a name=peak_fit>
 <img src=../../images/peak_fit.png width=100%>
 </a>
@@ -185,7 +185,122 @@ arc-tangent, a Lorentzian, and a Gaussian.
 </p>
 </div>
 
-<div class=figure style="max-width: 764px; min-width: 7em;">
+<hr class=hide />
+<a name="fittingasingledatagroup">
+
+<h2>  Fitting a single data group</h2>
+</a>
+
+<p>
+
+<div class=smfigureright style="max-width: 276px; min-width: 7em;">
+<a name=peak_select>
+<img src=../../images/peak_select.png width=100%>
+</a>
+<p align=center>
+Choosing the lineshape to add to the model.
+</p>
+</div>
+</p>
+
+<p>
+Line shapes are added to the fitting model by clicking the buttons
+labeled &ldquo;Add step&rdquo; or &ldquo;Add peak&rdquo;.  The functional form of the lineshape is chosen by
+selection from the menu to the left of those buttons.
+</p>
+
+<p>
+Clicking one of the &ldquo;Add&rdquo; buttons inserts a
+field for that lineshape in the area below the buttons.  In the
+screenshot above, three lineshapes have been added: one arc-tangent to
+model the main edge step, a pseudo-Voigt function to model the first
+pre-edge peak, and a Gaussian to model the second pre-edge peak.
+</p>
+
+<p>
+<span class=program>ATHENA</span> cannot know what feature in the data each line shape is
+intended to model.  You <strong>must</strong> select the
+centroid of each line shape.  This can be done by typing an energy
+value into the box labeled either &ldquo;Center&rdquo;
+or E&#8320;.  Alternately, you can use the pluck button to take the
+energy value from the plot using the mouse.
+</p>
+
+<p>
+When the pluck button is used, <span class=program>ATHENA</span> will make a guess for the
+initial value of the height of the lineshape.  This is the value of
+the data at the position plucked for the centroid.  The initial guess
+for the width of the line shape is 0.5 eV for peak shapes and the
+core-hole lifetime in eV units for the absorbing element of the data
+being fitted.
+</p>
+
+<p>
+Which parameters are fixed and which are varied are controlled by the
+check buttons labeled &ldquo;Fix&rdquo; next to each
+parameter value.  By default, the centroid is fixed and the other two
+(or three) parameters are floated in the fit.  In my experience, the
+fits are fairly unstable when the centroids are varied, particularly
+with peak functions placed close together.  I typically leave the
+centroid values fixed, adjusting them by hand and rerunning the fits
+if necessary.
+</p>
+
+<p>
+The &ldquo;Reset&rdquo; button (which becomes enabled
+only after a fit is performed) is used to restore parameters for each
+lineshape to their default values.  This is handy if a fit results in
+strange values due to some numerical instability of the fitting model,
+which might happen, for example, if centroids are floated.
+</p>
+
+<p>
+If you wish to try a different lineshape at the same energy position,
+you can click on the &ldquo;change function&rdquo; hot text
+to post a menu of other choices for line shape.
+</p>
+
+
+<div class=figure style="max-width: 516px; min-width: 7em;">
+<a name=peak_change>
+<img src=../../images/peak_change.png width=100%>
+</a>
+<p align=center>
+The peak fitting results tab.
+</p>
+</div>
+
+<p>
+With <span class=program>IFEFFIT</span>, there are only two step-like shapes.  So for
+changing the shape of a step-like function, the hot text simply
+toggles between the two.
+</p>
+
+<p>
+Once you have set all the parameters of the fitting model, the fit is
+performed by clicking the &ldquo;Fit&rdquo; button in
+the &ldquo;Actions&rdquo; section at the top of the
+page.  Alternately, you can examine the current state of the model
+without running the fit by clicking the 
+&ldquo;Plot sum&rdquo; button.
+</p>
+
+
+
+<hr class=hide />
+<a name="thefitresultstab">
+
+<h2>  The fit results tab</h2>
+</a>
+
+<p>
+After a fit finishes, the remaining buttons in
+the &ldquo;Actions&rdquo; section are enabled and the
+text box on the results tab is filled in with the outcome of the fit.
+</p>
+
+
+<div class=figure style="max-width: 800px; min-width: 7em;">
 <a name=peak_results>
 <img src=../../images/peak_results.png width=100%>
 </a>
@@ -194,12 +309,117 @@ The peak fitting results tab.
 </p>
 </div>
 
-<p class=caution>
-<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">Humble confession: the peak fitting tool is one of the weaker parts
-of <span class=program>ATHENA</span>.  It is serviceable, but somewhat buggy and missing
-some important features.  One of these days it will get some more of
-my attention.
+<p>
+The &ldquo;Plot data and fit&rdquo; button at the
+bottom of the results tab makes the same plot as the 
+&ldquo;Plot sum&rdquo; button on the main tab.  The
+plot can be modified to include traces for each individual line shape
+and for the residual of the fit by toggling the checkbuttons above the
+note tabs.
 </p>
+
+<p>
+The result of the fit can be saved to a column data file by clicking
+that button at the bottom of the results tab.  (The same thing happens
+with the &ldquo;Save fit&rdquo; button on the main
+tab.)  The output file 
+contains the fit results in the header and has columns of
+<ol>
+  <li><p> energy </p></li>
+<li><p> the data </p></li>
+<li><p> the fit </p></li>
+<li><p> the residual </p></li>
+<li><p> one column for each component </p></li>
+</ol>
+</p>
+
+
+
+<hr class=hide />
+<a name="fittingmultiplegroupsandthesequencetab">
+
+<h2>  Fitting multiple groups and the sequence tab</h2>
+</a>
+
+<p>
+Once you have found a fitting model that works for a representative
+data set, <span class=program>ATHENA</span> offers soem automation for examining an ensemble
+of data.  The button on the main tab labeled 
+&ldquo;Fit marked&rdquo; will apply the current fitting
+model to every marked group in the data list in sequence.  For
+example, in the case of the temperature dependent PbTiO<sub>3</sub> data
+measured at the Ti K edge, we see the first pre-edge peak
+reduces in size in the measured data as the temperature rises.
+Consequently, we would expect to see measured height of that peak get
+smaller with temperature.
+</p>
+
+<p>
+The results of the sequence of fits using the fitting model are shown
+in the &ldquo;Sequence&rdquo; tab.  You can have each
+fit plotted during the sequence by setting the 
+<span class=pref>&diams;Peakfit&nbsp;&rarr;&nbsp;plot_during</span>
+parameter.
+</p>
+
+
+<div class=figure style="max-width: 800px; min-width: 7em;">
+<a name=peak_sequence>
+<img src=../../images/peak_sequence.png width=100%>
+</a>
+<p align=center>
+The peak fitting sequence tab.
+</p>
+</div>
+
+<p>
+The table at the top shows the R-factor and &chi;&sup2<sub>&nu;</sub> for each fit in
+the sequence.  Selecting a row of this table by clicking on it will
+display the detailed results from that fit in the text box and will
+plot the result of that fit.
+</p>
+
+<p>
+<span class=program>ATHENA</span> provides a couple of ways of examining the results of the
+fit sequence.  The list of parameters that were varied in the fit are
+loaded into the menu just below the text box.  Selecting a parameter
+then clicking on the adjacent plot button will show the evolution of
+that parameter over the ensemble of data.  
+</p>
+
+<p>
+Here we see the example of the height of the pseudo-Voigt line shape
+as a function of temperature.  As expected, the value trends downward.
+</p>
+
+
+<div class=figure style="max-width: 648px; min-width: 7em;">
+<a name=peak_height>
+<img src=../../images/peak_height.png width=100%>
+</a>
+<p align=center>
+The results for peak height for the feature 4967 eV as measureed over
+the entire data ensemble.
+</p>
+</div>
+
+<p>
+Finally, the results of the fitting sequence can be exported to a
+spreadsheet file for easy viewing and manipulation in a spreadsheet
+program, such as Excel, LibreOffice Calc, or Google Docs.  This
+spreadsheet contains the statistics for each fit along with all the
+parameter values and their uncertainties.
+</p>
+
+
+<div class=figure style="max-width: 1008px; min-width: 7em;">
+<a name=peak_excel>
+<img src=../../images/peak_excel.png width=100%>
+</a>
+<p align=center>
+The results for of a fit sequence exported as a spreadsheet.
+</p>
+</div>
 
 </div>
 

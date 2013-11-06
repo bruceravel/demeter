@@ -35,6 +35,9 @@ sub new {
   EVT_RIGHT_DOWN($this->{vpathlist}, sub{OnRightDown(@_)});
   EVT_MENU($this->{vpathlist}, -1, sub{ $this->OnMenu(@_)    });
 
+  $this->{transferall} = Wx::Button->new($this, -1, 'Transfer all');
+  $box -> Add($this->{transferall}, 0, wxGROW|wxBOTTOM|wxLEFT|wxRIGHT, 5);
+  EVT_BUTTON($this, $this->{transferall}, sub{TransferAll(@_)});
 
   $this -> SetSizer($box);
   return $this;
@@ -188,6 +191,25 @@ sub transfer {
   $Demeter::UI::Artemis::frames{main}->status("Transfered VPath \"$name\" to the plotting list.");
 };
 
+sub fetch_vpaths {
+  my ($self) = @_;
+  my @list = ();
+  foreach my $i (0 .. $self->{vpathlist}->GetCount - 1) {
+     push @list, $self->{vpathlist}->GetClientData($i);
+  };
+  return @list;
+};
+
+sub TransferAll {
+  my ($self) = @_;
+  my @list = ();
+  foreach my $i (0 .. $self->{vpathlist}->GetCount - 1) {
+     $self->transfer($i);
+  };
+  return @list;
+};
+
+
 1;
 
 =head1 NAME
@@ -196,7 +218,7 @@ Demeter::UI::Artemis::Plot::VPaths - controls for managing VPaths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -208,7 +230,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -216,7 +239,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

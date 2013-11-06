@@ -24,16 +24,38 @@ sub dispose {
   return $rpcdata;
 };
 
+# sub get_messages {
+#   $rpcdata = $client -> get_messages();
+#   use Data::Dumper;
+#   print Data::Dumper->Dump([$rpcdata]), $/;
+# };
 
-
-
+use Data::Dumper;
 sub get_larch_array {
   my ($param) = @_;
   #Demeter->trace;
-  #print '--------------', $param, $/;
+  #$rpcdata = $client -> get_data('_main.'.$param);
   $rpcdata = $client -> get_data($param);
-  my $ret = $rpcdata->result->{value};
-  return @{eval $ret};
+  return () if (not defined($rpcdata->result));
+  if (ref($rpcdata->result) eq 'HASH') {
+    my $ret = $rpcdata->result->{value};
+    return @{eval $ret};
+  } elsif ($rpcdata->result =~ m{\A\{}) {
+    ## the RPC client returns a stringification of a python
+    ## dictionary.  the following converts that to a hash
+    ## serialization, evals it into a hash, then returns it as an
+    ## array.  sigh....
+    my $hash = $rpcdata->result;
+    $hash =~ s{:}{,}g;
+    $hash = eval $hash;
+    my @ret = %$hash;
+    return @ret;
+  } else {
+    my $ret = eval $rpcdata->result;
+    return () if not $ret;
+    return @$ret;
+  };
+  #or not (defined($rpcdata->result->{value})));
 };
 
 sub put_larch_array {

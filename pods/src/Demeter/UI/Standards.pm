@@ -278,7 +278,6 @@ sub filter_plot {
 	       filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
 	       filter_file     => $po->tempfile,
 	      );
-  #Demeter -> set_mode({screen=>1});
   $po -> start_plot;
   my $command = $demeter->template('plot', 'prep_filter');
   $po -> dispose($command);
@@ -511,7 +510,7 @@ Demeter::UI::Standards - Standard reference material database interaction
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -804,7 +803,8 @@ other local data locations, other web locations
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -812,7 +812,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

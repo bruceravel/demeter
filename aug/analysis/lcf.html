@@ -247,8 +247,8 @@ appropriate to the data.
   Constrain all standards to use a single E0 shift
 </dt>
 <dd>
-You can force all standards to use a single E&#8320; parameter in the
-fit. This is equivalent (albeit with a sign change) to fixing all the
+You can force all standards to use a single E&#8320; shift parameter in the
+fit.  This is equivalent (albeit with a sign change) to fixing all the
 standards and using an E&#8320; shift on the unknown data.
   <br />
   <br />
@@ -261,16 +261,26 @@ It is sometimes useful to check the robustness of the fit against
 noisy data. This is particularly true for a data set wherein some data
 are much noisier than others. To this end, <span class=program>ATHENA</span> allows you to add
 pseudo-random noise to the data before performing the fit. This is
-done using <span class=program>IFEFFIT</span>'s <tt>random()</tt>
-function with a user-supplied value for
-sigma. No care is taken to normalize sigma relative to the data, so a
-bit of trial and error might be necessary to find a suitable level of
-noise for your test. For normalized &mu;(E), sigma has a simple
-interpretation -- it is a fraction of the edge step. For derivative
-&mu;(E) and &chi;(k) data, you will need to compare your sigma value to
-the actual values of the data. You can examine the level of noise
+done by generating an array of psuedo-random numbers and adding this
+array to the data.   Given that normalized &mu;(E) is used in lCF
+fits, &sigma; (the scale of the noise) has a simple
+interpretation -- it is a fraction of the edge step.  
+A bit of trial and error might be necessary to find a suitable level of
+noise for your test. For fits to
+&chi;(k), note that the noise is added to the data
+<strong>before</strong> k-weighting.
+You can examine the level of noise
 relative to your data before fitting by using the
-&ldquo;Plot data and sum&rdquo; from the operations list.
+&ldquo;Plot data and sum&rdquo; from the actions list.
+  <br />
+  <br />
+</dd>
+<dt>
+  Adding a linear term to the fit
+</dt>
+<dd>
+A line with a variable slope and offset can be added to a fit.  The
+line is only evaluated after the E&#8320; value of data being fit.
   <br />
   <br />
 </dd>
@@ -284,7 +294,7 @@ relative to your data before fitting by using the
 
 <p>
 To perform the fit, click &ldquo;Fit&rdquo; from the
-operations list. After the
+actions list. After the
 fit finishes, the data and the linear combination will be plotted
 along with vertical bars indicating the range over which the fit was
 evaluated. The values of all the fitting parameters are written to the
@@ -347,12 +357,12 @@ context of any external knowledge you have about the system.
 <p>
 You can replot the data and the fit using the most recent values for
 the fitted parameters by clicking &ldquo;Plot&rdquo;
-in the operations list.
+in the actions list.
 </p>
 
 <p>
 You can save the text from the fit results box to a file by clicking
-&ldquo;Write a report&rdquo; in the operations list.
+&ldquo;Write a report&rdquo; in the actions list.
 This writes a column data file with the fit results as the header
 information. The columns in the file are x-axis (either energy or k),
 the data, the best fit, the residual, and each of the weighted
@@ -361,9 +371,9 @@ components.
 
 <p>
 You can make a data group out of the linear combination by clicking
-&ldquo;Make fit group&rdquo; in the operations list or out
+&ldquo;Make fit group&rdquo; in the actions list or out
 of the residual by clicking
-&ldquo;Make difference group&rdquo; in the operations
+&ldquo;Make difference group&rdquo; in the actions
 list. This will allow you to plot and
 manipulate the fit or difference after leaving the linear combination
 tool. The data group containing the fit result will be treated as
@@ -373,7 +383,7 @@ group will be saved as a normal &mu;(E) spectrum.
 </p>
 
 <p>
-&ldquo;Reset&rdquo; in the operations list returns
+&ldquo;Reset&rdquo; in the actions list returns
 almost everything in the tool back to its original state.
 </p>
 
@@ -394,7 +404,7 @@ configurable using the <a href="../other/prefs.html">preferences tool</a>.
 The various operational parameters described above can be constrained
 between data groups in the same manner as background removal and
 Fourier transform parameters on <span class=program>ATHENA</span>'s main page. Two items in the
-operations list are &ldquo;Set params, all groups&rdquo;
+actions list are &ldquo;Set params, all groups&rdquo;
 and &ldquo;Set params, marked groups&rdquo;. These will
 export the current group's values for
 fitting range, noise, weights between 0 and 1, force weights to sum to
@@ -411,7 +421,7 @@ next section.
 </a>
 
 <p>
-One of the choices in the operations list is to
+One of the choices in the actions list is to
 &ldquo;Fit marked groups&rdquo;. All groups marked
 by having their purple buttons checked
 will be fit in the manner described above using the current selection
@@ -482,7 +492,7 @@ greatly reducing the scope of the combinatorial problem.
 </p></li>
 <li><p>
 Click &ldquo;Fit all possible combinations&rdquo;
-in the operations list and go
+in the actions list and go
 get a cup of coffee. If the number of possible standards is large,
 this series of fits could take a while. For example, with 11 standards
 and considering up to the quaternary combinations, <span class=program>ATHENA</span> will

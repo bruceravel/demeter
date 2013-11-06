@@ -2,7 +2,7 @@
 ######################################################################
 ##  This module is copyright (c) 1999-2010 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software/exafs/
+##  http://bruceravel.github.com/demeter/exafs/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -231,7 +231,7 @@ The None subclass returns the symbol itself.
 
 Bruce Ravel, bravel AT bnl DOT gov
 
-http://cars9.uchicago.edu/~ravel/software/exafs/
+http://bruceravel.github.com/demeter/exafs/
 
 =head1 LICENCE AND COPYRIGHT
 

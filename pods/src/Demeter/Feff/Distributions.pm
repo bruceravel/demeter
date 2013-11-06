@@ -132,7 +132,7 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
-has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0,
+has 'zmax'        => (is => 'rw', isa => 'LaxNum',  default => 100.0,
 		      trigger => sub {my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
@@ -229,7 +229,7 @@ Demeter::Feff::Distributions:: - Make historams from arbitrary clusters of atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -336,7 +336,8 @@ Triangles and nearly colinear paths
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -344,7 +345,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -212,6 +212,18 @@ pre {
     margin-right: 10%;
     min-height:36px;
 }
+.newfeature {
+    background: #a2c7f4;
+    border-top: solid 3px #0000cc;
+    border-left: solid 20px #0000cc;
+    border-bottom: solid 3px #0000cc;
+    border-right: solid 3px #0000cc;
+    border-radius:8px;
+    padding: 8px;
+    margin-left: 4%;
+    margin-right: 10%;
+    min-height:36px;
+}
 
 .indented {
     margin-left: 10%;

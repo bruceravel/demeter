@@ -25,8 +25,8 @@ has 'standard'      => (is => 'rw', isa => 'Any',     default => q{},
 			trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
 has 'standardgroup' => (is => 'rw', isa => 'Str',     default => q{});
 
-has 'qmin'          => (is => 'rw', isa => 'Num',    default => 4);
-has 'qmax'          => (is => 'rw', isa => 'Num',    default => 12);
+has 'qmin'          => (is => 'rw', isa => 'LaxNum', default => 4);
+has 'qmax'          => (is => 'rw', isa => 'LaxNum', default => 12);
 has 'twopi'         => (is => 'rw', isa => 'Int',    default => 0);
 
 has 'cumulants'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -53,6 +53,7 @@ sub fit {
 		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd3")),
 		   sprintf("%.8f", $self->fetch_scalar("lr___pd4")));
+  print join("|". @cumulants), $/;
   my @errorbars = (sprintf("%.5f", $self->fetch_scalar("delta_lr___pd0")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd1")),
 		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd2")),
@@ -97,7 +98,7 @@ Demeter::LogRatio - Log-ratio/phase-difference analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -214,7 +215,8 @@ Better error checking
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -222,7 +224,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

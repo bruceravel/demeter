@@ -14,6 +14,8 @@ use MooseX::Types -declare => [qw( Empty
 				   Line
 				   AtomsEdge
 				   FeffCard
+				   Feff6Card
+				   Feff9Card
 				   Clamp
 				   Config
 				   Statistic
@@ -40,6 +42,7 @@ use MooseX::Types -declare => [qw( Empty
 				   NotReserved
                                    FitykFunction
 				   IfeffitLineshape
+                                   LarchLineshape
 				   Lineshape
 				)];
 
@@ -110,7 +113,7 @@ subtype IfeffitProgramVar,
 
 ## -------- Window types
 use vars qw(@window_list $window_regexp);
-@window_list = qw(kaiser-bessel hanning welch parzen sine gaussian);
+@window_list = qw(kaiser-bessel kaiser hanning welch parzen sine gaussian);
 $window_regexp = Regexp::Assemble->new()->add(@window_list)->re;
 subtype Window,
   as Str,
@@ -212,6 +215,38 @@ subtype FeffCard,
   as Str,
   where { lc($_) =~ m{\A$feffcard_regexp\z} },
   message { "That string ($_) is not a Feff keyword" };
+
+## -------- Feff6 cards
+use vars qw(@feff6card_list $feff6card_regexp);
+@feff6card_list = qw(AFOLP ATOMS CONTROL CORRECTIONS CRITERIA DEBYE ELLIPTICITY END
+		     EXCHANGE FOLP HOLE ION NEMAX NLEG NOGEOM OVERLAP PCRITERIA
+		     POLARIZATION POTENTIALS PRINT RMAX RMULTIPLIER SIG2 SS TITLE
+		     XANES);
+$feff6card_regexp = Regexp::Assemble->new()->add(@feff6card_list)->re;
+subtype Feff6Card,
+  as Str,
+  where { uc($_) =~ m{\A$feff6card_regexp\z} },
+  message { "That string ($_) is not a Feff6 keyword" };
+
+
+## -------- Feff9 cards
+use vars qw(@feff9card_list $feff9card_regexp);
+@feff9card_list = qw(ABSOLUTE AFOLP ATOMS BANDSTRUCTURE CFAVERAGE CHBROAD CHBROAD
+		     CHSHIFT CHWIDTH CIF CONFIG CONTROL COORDINATES COREHOLE
+		     CORRECTIONS CRITERIA DANES DEBYE DEBYE DIMS EDGE EGAP EGRID
+		     ELLIPTICITY ELNES END EPS0 EQUIVALENCE EXAFS EXCHANGE EXELFS
+		     EXTPOT FMS FOLP FPRIME HOLE INTERSTITIAL ION IORDER JUMPRM KMESH
+		     LATTICE LDEC LDOS LJMAX MAGIC MBCONV MPSE MULTIPOLE NLEG NOHOLE
+		     NRIXS NSTAR NUMDENS OPCONS OVERLAP PCRITERIA PLASMON PMBSE
+		     POLARIZATION POTENTIALS PREPS PRINT RCONV REAL RECIPROCAL RESTART
+		     RGRID RMULTIPLIER RPATH RPHASES RSIGMA S02 SCF SCREEN SELF
+		     SETEDGE SFCONV SFSE SGROUP SIG2 SIG3 SPIN SS STRFACTORS SYMMETRY
+		     TARGET TDLDA TITLE UNFREEZEF XANES XES XNCD);
+$feff9card_regexp = Regexp::Assemble->new()->add(@feff9card_list)->re;
+subtype Feff9Card,
+  as Str,
+  where { uc($_) =~ m{\A$feff9card_regexp\z} },
+  message { "That string ($_) is not a Feff9 keyword" };
 
 ## -------- Clamp words
 use vars qw(@clamp_list $clamp_regexp);
@@ -379,7 +414,7 @@ subtype TemplateAnalysis,
 
 ## -------- Line types in PGPLOT
 use vars qw(@pgplotlines_list $pgplotlines_regexp);
-@pgplotlines_list = qw(solid dashed dotted dot-dash points linespoints);
+@pgplotlines_list = qw(solid dashed dotted dot-dash points lines linespoints);
 $pgplotlines_regexp = Regexp::Assemble->new()->add(@pgplotlines_list)->re;
 subtype PgplotLine,
   as Str,
@@ -430,12 +465,23 @@ coerce NotReserved,
 
 ## -------- Ifeffit lineshapes
 use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);
-@ifeffitlineshape_list = qw(linear gaussian lorentzian pseudovoight atan erf);
+@ifeffitlineshape_list = qw(linear gaussian lorentzian pvoigt atan erf);
 $ifeffitlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @ifeffitlineshape_list)->re;
 subtype IfeffitLineshape,
   as Str,
   where { lc($_) =~ m{\A$ifeffitlineshape_regexp\z} },
   message { "$_ is not a defined lineshape in Ifeffit" };
+
+## -------- Larch lineshapes  skipped: lognormal breit_wigner
+use vars qw(@larchlineshape_list $larchlineshape_regexp);
+@larchlineshape_list = qw(linear gaussian lorentzian voigt pvoigt pseudo_voigt pearson7
+			  logistic students_t
+			  atan erf);
+$larchlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @larchlineshape_list)->re;
+subtype LarchLineshape,
+  as Str,
+  where { lc($_) =~ m{\A$larchlineshape_regexp\z} },
+  message { "$_ is not a defined lineshape in Larch" };
 
 ## -------- Fityk defined functions
 use vars qw(@fitykfunction_list $fitykfunction_regexp);
@@ -454,7 +500,7 @@ subtype FitykFunction,
 
 ## -------- all lineshapes of all possible backends
 use vars qw(@lineshape_list $lineshape_regexp);
-@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list);
+@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list, @larchlineshape_list);
 $lineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @lineshape_list)->re;
 subtype Lineshape,
   as Str,
@@ -471,7 +517,7 @@ Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -488,7 +534,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -496,7 +543,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

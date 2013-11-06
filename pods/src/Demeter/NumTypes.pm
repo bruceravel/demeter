@@ -14,7 +14,10 @@ use MooseX::Types -declare => [qw( Natural
 				   FeffVersions
 				)];
 
-use MooseX::Types::Moose qw(Num Int);
+use MooseX::Types::Moose qw(Num Int Str);
+use Scalar::Util qw( looks_like_number );
+
+my $value_type = Moose::Util::TypeConstraints::find_type_constraint('Value');
 
 subtype Natural,
   as Int,
@@ -27,7 +30,7 @@ subtype NaturalC,
   message { "Int is not larger than or equal to 0" };
 
 coerce NaturalC,
-  from Num,
+  from Str,
   via sub{ int($_) };
 
 subtype PosInt,
@@ -47,7 +50,7 @@ subtype Ipot,
 
 subtype OneToTwentyNine,
   as Int,
-  where { $_ > 0 and $_ < 29 },
+  where { $_ > 0 and $_ < 30 },
   message { "Int is between 1 and 29, inclusive" };
 
 subtype NegInt,
@@ -55,24 +58,43 @@ subtype NegInt,
   where { $_ < 0 },
   message { "Int is not smaller than 0" };
 
+## this follows MooseX::Types::LaxNum.
+## while it would be lovely to just define these "as 'LaxNum'",
+## I cannot figure out how to do so without running afoul
+## of the "WARNING: String found where Type expected" warning
 subtype NonNeg,
-  as Num,
-  where { $_ >= 0 },
-  message { "Num is not larger than or equal to 0" };
+  as Str,
+  where { looks_like_number($_) and $_ >= 0 },
+  message { "Num is not larger than or equal to 0" }
+  => inline_as {
+    # the long Str tests are redundant here
+    $value_type->_inline_check($_[1])
+      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+    };
 
 subtype PosNum,
-  as Num,
-  where { $_ > 0 },
-  message { "Num is not larger than 0" };
+  as Str,
+  where { looks_like_number($_) and $_ > 0 },
+  message { "Num is not larger than 0" }
+  => inline_as {
+    # the long Str tests are redundant here
+    $value_type->_inline_check($_[1])
+      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+    };
 
 subtype NegNum,
-  as Num,
-  where { $_ < 0 },
-  message { "Num is not smaller than 0" };
+  as Str,
+  where { looks_like_number($_) and $_ < 0 },
+  message { "Num is not smaller than 0" }
+  => inline_as {
+    # the long Str tests are redundant here
+    $value_type->_inline_check($_[1])
+      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+    };
 
 subtype FeffVersions,
   as Int,
-  where { $_ == 6 or $_ == 8 },
+  where { $_ == 6 or $_ == 8 or $_ == 9 },
   message { "Int is not either 6 or 8 for FeffVersion" };
 
 1;
@@ -83,7 +105,7 @@ Demeter::NumTypes - Numerical type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -100,7 +122,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -108,7 +131,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

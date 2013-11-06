@@ -17,6 +17,7 @@ package Xray::Crystal::Cell;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 
@@ -54,10 +55,11 @@ has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 			 return if ($new =~ m{\A\s*\z});
 			 $self->given_group($new);
 			 $self->group->group($new);
+			 $self->set_hexagonal if ($self->group->class =~ m{hexagonal|trigonal});
 		       });
 has 'given_group'  => (is => 'rw', isa => 'Str',  default => q{});
 has 'no_recurse'   => (is => 'rw', isa => 'Bool', default => 0);
-has 'a'		   => (is => 'rw', isa => 'Num',  default => 0,
+has 'a'		   => (is => 'rw', isa => 'LaxNum',  default => 0,
 		       trigger => sub {
 			 my ($self, $new) = @_;
 			 return if $self->no_recurse;
@@ -67,20 +69,20 @@ has 'a'		   => (is => 'rw', isa => 'Num',  default => 0,
 			 $self->geometry;
 			 $self->no_recurse(0);
 		       });
-has 'b'		   => (is => 'rw', isa => 'Num', default => 0,
+has 'b'		   => (is => 'rw', isa => 'LaxNum', default => 0,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'c'		   => (is => 'rw', isa => 'Num', default => 0,
+has 'c'		   => (is => 'rw', isa => 'LaxNum', default => 0,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->set_rhombohedral;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'alpha'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'alpha'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub {
 			 my ($self, $new) = @_;
 			 return if $self->no_recurse;
@@ -91,14 +93,14 @@ has 'alpha'	   => (is => 'rw', isa => 'Num', default => 90,
 			 $self->geometry;
 			 $self->no_recurse(0);
 		       });
-has 'beta'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'beta'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->determine_monoclinic;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'gamma'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->determine_monoclinic;
@@ -129,13 +131,13 @@ has 'contents'	   => (
 				     'clear_contents' => 'clear',
 				    }
 		      );
-has 'volume'	   => (is => 'rw', isa => 'Num', default => 1);
-has 'txx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tyx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tyz'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tzx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tzz'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'occupancy'	   => (is => 'rw', isa => 'Num', default => 1);
+has 'volume'	   => (is => 'rw', isa => 'LaxNum', default => 1);
+has 'txx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tyx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tyz'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tzx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tzz'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'occupancy'	   => (is => 'rw', isa => 'LaxNum', default => 1);
 
 
 sub clear {
@@ -167,13 +169,13 @@ sub geometry {
 				# careful for the sqrt!
   my $sinxx = ($cosxx**2 < 1) ? sqrt(1-$cosxx**2) : 0;
   my $sinyy = ($cosyy**2 < 1) ? sqrt(1-$cosyy**2) : 0;
-  $self->txx(sprintf "%11.7f", $sinyy*sin($beta));
-  $self->tyx(sprintf "%11.7f", -( ($cosyy/($sinyy*sin($alpha)) )
+  $self->txx(sprintf "%.7f", $sinyy*sin($beta));
+  $self->tyx(sprintf "%.7f", -( ($cosyy/($sinyy*sin($alpha)) )
 				  + (cos($alpha)*$cosxx)/($sinxx*sin($alpha)))
 	                       * ($sinyy*sin($beta)) );
-  $self->tyz(sprintf "%11.7f", cos($alpha));
-  $self->tzx(sprintf "%11.7f", -( $cosxx*$sinyy*sin($beta) ) / $sinxx);
-  $self->tzz(sprintf "%11.7f", sin($alpha));
+  $self->tyz(sprintf "%.7f", cos($alpha));
+  $self->tzx(sprintf "%.7f", -( $cosxx*$sinyy*sin($beta) ) / $sinxx);
+  $self->tzz(sprintf "%.7f", sin($alpha));
 
   return $v;
 };
@@ -277,6 +279,15 @@ sub set_rhombohedral {
   return $self;
 };
 
+sub set_hexagonal {
+  my ($self) = @_;
+  $self->b($self->a);
+  $self->alpha(90);
+  $self->beta(90);
+  $self->gamma(120);
+  return $self;
+};
+
 sub verify_cell {
   my ($self) = @_;
 };
@@ -286,7 +297,7 @@ sub metric {
   my ($self, $x,$y,$z) = @_;
   my ($xp, $yp, $zp);
   my ($a, $b, $c, $txx, $tyx, $tyz, $tzx, $tzz) =
-    $self->get(qw(a b c txx tyx tyz tzx tzz));
+    ($self->a, $self->b, $self->c, $self->txx, $self->tyx, $self->tyz, $self->tzx, $self->tzz);
   $xp = $x*$a*$txx;
   $yp = $x*$a*$tyx + $y*$b + $z*$c*$tyz;
   $zp = $x*$a*$tzx +         $z*$c*$tzz;
@@ -616,7 +627,7 @@ Xray::Crystal::Cell - A crystallographic unit cell object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -861,7 +872,8 @@ set_ipots
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -869,7 +881,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

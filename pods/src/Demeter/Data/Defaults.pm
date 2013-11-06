@@ -42,6 +42,9 @@ sub resolve_defaults {
 	$pre2 -= 45;
       };
     };
+    $pre1 = $x[0]-$self->bkg_e0 if ($self->bkg_e0 + $pre1 < $x[0]);
+    $pre2 = $pre1+10 if ($self->bkg_e0 + $pre2 < $x[0]);
+    $pre2 = $pre1/2  if ($pre2 > 0);
     $self->bkg_pre1(sprintf("%.3f",$pre1));
     $self->bkg_pre2(sprintf("%.3f",$pre2));
 
@@ -70,6 +73,7 @@ sub resolve_defaults {
     $self->fft_kmin(sprintf("%.3f",$kmin));
     $self->fft_kmax(sprintf("%.3f",$kmax));
   };
+  $self->update_norm(1);
 };
 
 ## edge   Z   e0   (CheckBoxen: flatten and pc)
@@ -307,7 +311,7 @@ Demeter::Data::Defaults - Resolve default parameter values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -402,7 +406,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -410,7 +415,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

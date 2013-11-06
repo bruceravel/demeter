@@ -15,10 +15,10 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-require 5.008;
+require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.14');
+our $VERSION = version->new('0.9.18');
 use feature "switch";
 
 ############################
@@ -29,12 +29,37 @@ use feature "switch";
 use Carp;
 ############################
 
+############################
+## backend, see: http://perldoc.perl.org/perlmod.html#BEGIN%2c-UNITCHECK%2c-CHECK%2c-INIT-and-END
+##
+## "INIT blocks are run just before the Perl runtime begins execution,
+##  in "first in, first out" (FIFO) order."
+##
+## "The CHECK and INIT blocks in code compiled by require, string do,
+##  or string eval will not be executed if they occur after the end of
+##  the main compilation phase; that can be a problem in mod_perl and
+##  other persistent environments which use those functions to load
+##  code at runtime."
+BEGIN {
+  $ENV{DEMETER_BACKEND} ||= 'ifeffit';
+  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+    eval "use Larch";
+  } else {
+    eval "use Ifeffit qw(ifeffit);"
+  };
+}
+############################
+
+#use Ifeffit qw(ifeffit);
+#ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
+ ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+};
+
 use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
-use Ifeffit qw(ifeffit);
-ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -64,7 +89,8 @@ Xray::Absorption->load('elam');
 
 use Moose;
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
+use MooseX::Types::LaxNum;
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
@@ -96,6 +122,9 @@ has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
 		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
+#has 'devflag'   => (is => 'rw', isa => 'Bool',    default => 0);
+use vars qw($devflag);
+$devflag = 0;
 
 use Demeter::Mode;
 use vars qw($mode);
@@ -137,8 +166,7 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists
-	    $dispersive_allowed);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -146,7 +174,6 @@ $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
-$dispersive_allowed = 0;
 ######################################################################
 
 use Demeter::Plot;
@@ -215,9 +242,9 @@ sub import {
   my @load  = ();
   my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph  = (qw(Data Data/Prj));
-  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
+  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
-  my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
+  my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
   my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes   = (qw(XES));
   my @plot  = (qw(Plot/Indicator Plot/Style));
@@ -227,20 +254,23 @@ sub import {
 
  PRAG: foreach my $p (@pragmata) {
     given ($p) {
-      when (m{:plotwith=(\w+)}) { # choose between pgplot and gnuplot
+      when (m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
 	$plot -> plot_with($1);
       }
-      when (m{:ui=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
+      when (m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
 	$mode -> ui($1);
 	#import Demeter::Carp if ($1 eq 'screen');
       }
-      when (m{:template=(\w+)}) { # change template sets
+      when (m{:t(?:emplate)?=(\w+)}) { # change template sets
 	my $which = $1;
 	$mode -> template_process($which);
 	$mode -> template_fit($which);
 	#$mode -> template_analysis($which);
       }
-
+      when (m{:d(?:evflag)?=(\w+)}) {
+	$devflag = $1;
+	eval {use Term::ANSIColor qw(:constants)} if $devflag;
+      };
       ## all the rest of the "pragmata" control what parts of Demeter get imported
 
       when (':data') {
@@ -424,6 +454,10 @@ sub identify {
   #if ($full) {};
   return $string;
 };
+sub backends {
+  my ($self) = @_;
+  my $string = sprintf("using %s \& %s", $ENV{DEMETER_BACKEND}, $config->default('plot', 'plotwith'));
+};
 sub version {
   my ($self) = @_;
   return $VERSION
@@ -453,6 +487,13 @@ sub truefalse {
     ? $self->is_true($self->$attribute) # is an attribute t/f?
       : $self->is_true($attribute); # is this word t/f?
   return ($value) ? 'true' : 'false';
+};
+sub TrueFalse {
+  my ($self, $attribute) = @_;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  return ($value) ? 'True' : 'False';
 };
 sub onezero {
   my ($self, $attribute) = @_;
@@ -506,6 +547,14 @@ sub set_mode {
   foreach my $k (keys %which) {
     next if not $mode->meta->has_method($k);
     #print ">>>>>>> $k   $which{$k}\n";
+
+    if ((any {$k eq $_} qw(template_process template_analysis template_fit))
+	and ($which{$k} eq 'larch')
+	and (not $Larch::larch_is_go)) {
+      die "\nDemeter says:\n\tUh oh!\n\tYou have requested using Larch, but there is no Larch server running!\n\n";
+    };
+
+
     $mode -> $k($which{$k});
   };
   1;
@@ -594,7 +643,7 @@ sub what_isa {
 ## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal|progress|rate|thingy)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal|progress|rate|thingy|devflag)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -719,6 +768,7 @@ alias thaw   => 'deserialize';
 
 
 ## common supplied hash elements: filename, kweight, titles, plot_object
+#eval {use Term::ANSIColor qw(:constants)} if ($devflag);
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
@@ -731,6 +781,7 @@ sub template {
   my $theory   = $mo->theory;
   my $path     = $mo->path;
 
+  my $isthere = 1;
   # try personal templates first
   my $tmpl = File::Spec->catfile($self->dot_folder,
 				 "templates",
@@ -753,8 +804,31 @@ sub template {
                                         "ifeffit";
     $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
+    $isthere = 0;
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
+
+  ######################################################################
+  ## devflag screen messages (but not during unit tests)
+  if (($devflag) and ((caller)[1] !~ m{\.t\z})) {
+    my $path = dirname($INC{"Demeter.pm"}) . '/Demeter/';
+    my $caller;
+    if ((caller(1))[1] =~ m{Moose|MOP}) {
+      ($caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    } elsif (caller[1] =~ m{Dispose}) { # called by dispense() or chart(), need to look 1 frame back
+      ($caller = join("|", (caller(1))[1,2])) =~ s{$path}{};
+    } else {			   # called by template(), look at current frame
+      ($caller = join("|", (caller)[1,2])) =~ s{$path}{};
+    };
+    printf("(%s) %s (%s) %s (%s%s)\n",
+	   YELLOW.$caller.RESET,
+	   $category,
+	   CYAN.$self->get_mode("template_$category").RESET,
+	   $file,
+	   ($isthere) ? GREEN : BOLD.RED, Demeter->yesno($isthere).RESET
+	  );
+  };
+  ######################################################################
 
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
     or die "Couldn't construct template: $Text::Template::ERROR";
@@ -808,9 +882,14 @@ sub conditional_features {
   $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
   $text .= "File::Monitor::Lite:         " . $self->yesno($FML_exists);
   $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
-  $text .= "Dispersive data calibration: " . $self->yesno($dispersive_allowed) . "\n";
   return $text;
 };
+
+
+Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
+		  template_analysis => $ENV{DEMETER_BACKEND},
+		  template_fit      => $ENV{DEMETER_BACKEND});
+$devflag = 1 if $ENV{DEMETER_DEVFLAG};
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -822,7 +901,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14
+This documentation refers to Demeter version 0.9.18
 
 =head1 SYNOPSIS
 
@@ -919,7 +998,7 @@ Demeter program by specfying that behavior at compile-time.
 
 =over 4
 
-=item C<:plotwith=XX>
+=item C<:p=XX> or C<:plotwith=XX>
 
 Specify the plotting backend.  The default is C<pgplot>.  The other
 option is C<gnuplot>.  A C<demeter> option will be available soon for
@@ -969,7 +1048,7 @@ this dependeny to be relaxed from a requirement to a suggestion.
 
 Future UI options might include C<tk>, C<wx>, or C<rpc>.
 
-=item C<:template=XX>
+=item C<:t=XX> or C<:template=XX>
 
 Specify the template set to use for data processing and fitting
 chores.  See L<Demeter::templates>.
@@ -1118,7 +1197,7 @@ for complete details.
 This is the method used to set the attributes described in
 L<Demeter::Dispose>.  Any Demeter object can call this method.
 
-   $object -> set_mode(ifeffit => 1,
+   $object -> set_mode(backend => 1,
                        screen  => 1,
                        buffer  => \@buffer_array
                       );
@@ -1301,7 +1380,8 @@ Serialization is incompletely implemented at this time.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1359,7 +1439,7 @@ example in C<harness>.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

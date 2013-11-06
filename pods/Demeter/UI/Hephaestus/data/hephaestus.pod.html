@@ -79,7 +79,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
 
@@ -108,11 +108,15 @@ energy will display that energy in wavelength units in the status
 bar.  In the Standards tool, some information about the plotted data
 is displayed in the status bar.</p>
 
-<p>The &quot;Tools&quot; menu in the menu bar provides another way of navigating
-between the tools.  The mouse can be used, as can the keyboard.
-&quot;Alt-t&quot; posts the &quot;Tools&quot; menu and  the arrow keys can be used to
-navigate among the entries.  &quot;Alt-e&quot; and &quot;Alt-h&quot; post the &quot;Hephaestus&quot;
-and &quot;Help&quot; menus.</p>
+<p>The &quot;Hephaestus&quot; menu in the menu bar provides another way of
+navigating between the tools.  The mouse can be used, as can the
+keyboard.  &quot;Alt-e&quot; and &quot;Alt-h&quot; post the &quot;Hephaestus&quot; and &quot;Help&quot; menus.
+&quot;Ctrl-1&quot; through &quot;Ctrl-9&quot; change the display the various tools.
+&quot;Ctrl-m&quot; changes the display to the document, while &quot;Ctrl-c&quot; changes
+the display to the configuration tool.</p>
+
+
+
 
 <h1 id="TOOLS">TOOLS <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
 
@@ -214,14 +218,13 @@ from the number of close parentheses.</p></dd>
 		<dd><p>An error will be flagged if any unusual symbols are found in the string.</p></dd>
 </dl>
 <p>The density is entered in units of specific gravity or grams per
-cubic centimeter.  Alternately units of molarity can be used by
+cubic centimeter.  Alternately, units of molarity can be used by
 selecting that from the choice menu.</p>
 
-<p>Finally, the calculation requires an energy in eV at which to make t
-the calculation.</p>
+<p>Finally, an energy in eV is required at which to make the calculation.</p>
 
-<p>Here is an example of the results printed for BN, with a density of
-2.29 and at energy of 9000 eV:</p>
+<p>Here is an example of the results printed for BN, with a specific
+gravity of 2.29 and at energy of 7800 eV:</p>
 
 <pre>
 
@@ -233,19 +236,138 @@ the calculation.</p>
 
     This weighs 24.819 amu.
 
-    Absorption length = 0.117 cm at 9000 eV.
+    Absorption length = 0.077 cm at 7800 eV.
 
     A sample of 1 absorption length with area of 1 square
-    cm requires 268.486 milligrams of sample at 9000.00 eV.
+    cm requires 175.278 milligrams of sample at 7800.00 eV.
 
     The Elam database and the full cross-sections were
     used in the calculation.
 
-</pre><p>This tells us that 9000 eV photons will be e-fold attenuated (about
-67%) in just over 1 millimeter of packed BN.  To make a sample with an
-area of 1 square centimeter facing the beam and which has an
-absorption length of 1, one must weigh out about 270 milligrams of BN.</p>
+</pre><p>This reports on an important physical parameter, the <i>absorption
+length</i>.  This is defined as the length of sample over which the
+intensity of the incident beam will be attenuated by 1/e, or about
+63%, at the specified energy.  Note that absorption length is an
+energy dependent parameter and that it changes significantly across an
+absorption edge.</p>
 
+<p>Here we see that 9000 eV photons will be e-fold attenuated in just
+over 1 millimeter of packed BN.  To make a sample with an area of 1
+square centimeter facing the beam and which has an absorption length
+of 1, one must weigh out about 175 milligrams of BN.  In practice,
+this is quite a lot of BN and will make a rather thick pellet.  One
+might weigh out a fraction of the 175 milligrams for a real sample,
+giving the matrix that much less than 1 absorption length.</p>
+
+<p>As another example, here is the calculation on cobalt ferrite,
+CoFe2O4, which has a specific gravity of about 5.  Computing the cross
+section at 7800 eV will trigger a calculation of the sample depth
+corresponding to a unit edge step at the Co K edge.  This additional
+calculation is triggered because the calculation energy, 7800 eV, is
+within 100 eV of the Co K edge energy of 7709 eV.</p>
+
+<pre>
+
+
+      element   number   barns/atom     cm^2/gm
+     --------- ----------------------------------
+        Co	     1.000   33808.991	    345.519
+        Fe	     2.000   30183.487	    325.464
+        O	     4.000     333.532	     12.553
+
+    This weighs 234.633 amu.
+
+    Absorption length = 8.2 micron at 7800 eV.
+
+    A sample of 1 absorption length with area of 1 square
+    cm requires 4.079 milligrams of sample at 7800.00 eV.
+
+    Unit edge step length at Co K edge (7709.0 eV) is 28.3
+    microns
+
+    The Elam database and the full cross-sections were
+    used in the calculation.
+
+</pre><p>Here we introduce a second important physical parameter, the <i>unit
+edge step length</i>.  This is defined as the length over which the total
+absorption will change by a factor of 1/e as  the incident beam energy
+is scanned over the absorption edge.  To say that another way, the
+absorption will be e-fold greater just above the edge than just below
+the edge.  With that length of sample, the edge step of a transmission
+XAS scan will be 1.</p>
+
+<p>Suppose you wanted to mix some cobalt ferrite with 35 milligrams
+(i.e. an amount that will contribute 0.2 to the total absorption of
+the sample) of boron nitride measured above in order to make a good
+transmission XAS sample.  That amount of BN contributes 0.2 absorption
+lengths to the total thickness of the sample at this energy.  Weighing
+out 4 milligrams of ferrite, then, gives the sample a total absorption
+of 1.2.  That is, the beam passing through the sample will attenuate
+to the level of exp(-1.2), or about 30%, of the intensity of the
+incident beam.</p>
+
+<p>Note that this sample has more Fe than Co and that the calculation
+energy is above the Fe K edge energy.  The Fe part of the sample is
+rather absorbing at this energy.  As a result, a relatively small
+mass of sample constitutes an absorption length.</p>
+
+<p>The 4 milligrams of sample required for one absorption length is
+distributed over 8.2 microns.  The unit edge step calculation tells us
+that the edge step will be one with 28.3 microns of sample.  Thus, the
+sample with one absorption length of ferrite will have an edge step of
+8.2/28.3 = 0.34.</p>
+
+<p>A sample with an edge step of 1 is made by mixing 28.3 milligrams of
+ferrite with the BN.  This sample, however, will be rather thick
+around the Co K edge.  28.3 milligrams represents 2.9 (= 1/0.34)
+absorption lengths of ferrite.  The ferrite in BN will, therefore,
+attenuate the beam passing through the sample to the level of
+exp(-3.1), or about 4.5%.</p>
+
+<p>In an early XAS paper -- E. A. Stern and K. Kim, <i>Physical Review</i>
+<strong>23</strong>:8 (1981) (<a href="http://dx.doi.org/10.1103/PhysRevB.23.3781">http://dx.doi.org/10.1103/PhysRevB.23.3781</a>) -- it
+was shown that the edge step of a sample should not exceed 1.5.  Using
+a simple statistical argument that presumes that measurement
+uncertainty is dominated by shot noise, the authors show that a sample
+is optimized when the total absorption is 2.6.  In this case, the
+sample of ferrite in BN can be made such that both total absorption
+and edge step are close to optimal.  For instance, making the sample
+with 2 absorption lengths (i.e. 8 milligrams or 16.4 microns) of
+ferrite will result in an edge step of 0.68 -- an excellent sample!
+Not all materials -- particularly those for which a minority dopant is
+the target of the XAS experiment -- work out so well.  In practice,
+sample preparation is an exercise in compromise between total
+absorption and size of edge step.</p>
+
+<p>Two final notes:</p>
+
+<dl>
+	<dt>1</dt>
+		<dd><p>The calculation of absorption length in units of length, in this case
+8.2 microns, is another useful metric for high quality sample
+preparation.  To mix ferrite powder with BN to obtain a nicely
+homogeneous sample, it is necessary that the ferrite powder be
+composed of grains that are small compared to the absorption length.
+In this, you would want micron-sized or smaller grains.  Note that a
+stack of laboratory metal meshes are not adequate for separating out
+powders for this sample.  A #400 mesh -- usually the finest one in a
+common stack of sieves -- has openings of 37 microns.  That is vastly
+too large for your ferrite XAS samples!</p></dd>
+	<dt>2</dt>
+		<dd><p>Transmission XAS samples are often made with 10s of milligrams of
+material.  That is true for the example given above and, indeed, for
+many materials science problems.  10s of milligrams of sample is a
+very small quantity.  That material must be distributed in the beam
+uniformly and packaged in a manner that can be readily handled.
+What's more, the sample may need to survive placement in a cryostat, a
+furnace, or some other <i>in situ</i> environment.  In the example given
+above, reference is made to boron nitride.  BN is often used a sample
+matrix by mixing the sample thoroughly in the BN and pressing the
+mixed powders into a pellet using a hydrolic press.  This results in a
+sample which is thick enough to manage by hand and sturdy enough for a
+cryostat or furnace.  Other materials are commonly used for this
+purpose, such as graphite, polyethylene glycol, and sucrose.</p></dd>
+</dl>
 <h2 id="Ion_Chambers">Ion Chambers</h2>
 
 <p>This tool is used to determine appropriate contents of ion chambers at
@@ -278,7 +400,7 @@ It, this leaves enough photons passing through to the reference
 chamber to allow for a reasonable measurement on Ir.</p>
 
 <p>If you know the amplifier gain and voltage signal coming from your
-current-to-voltage amplifier (such as a Keithley 527 or 528),
+current-to-voltage amplifier (such as a Keithley 427 or 428),
 specifying these will compute a crude calculation of photon flux
 incident upon the chamber.</p>
 
@@ -368,7 +490,7 @@ and f&quot; values are plotted.</p>
 with other elements.  You can also select to plot either f', f&quot;, or
 both.</p>
 
-<p>The f' and f&quot; data can be save to a file.</p>
+<p>The f' and f&quot; data can be saved to a file.</p>
 
 <h2 id="Preferences">Preferences</h2>
 
@@ -395,7 +517,7 @@ changes the mode of the main part of the program -- was inspired by
 the personal information management program I use on my KDE systems,
 Kontact. I found it effective so I swiped it for this program.</li>
 	<li>The pictures used on the buttons were cropped from images I found
-using Google The picture of the ion chamber is from the Advanced
+using Google. The picture of the ion chamber is from the Advanced
 Designed Consulting web site.  Their ion chambers are quite nice.  The
 edge finder icon was swiped from the <cite>find.png</cite> icon in the kid's
 icon theme for KDE.  The line finder icon is from a web page by the
@@ -405,7 +527,7 @@ license at <code>http://battellemedia.com/archives/001952.php</code></li>
 	<li>The formulas utility owes much to Gerry Roe, who pointed out a bug,
 and Erik Gullikson, whose similar utility on the web set me straight.</li>
 	<li>The information used in the chemical data utility is from the
-kalziumrc file, which was swiped from the Kalzium package.  See
+<cite>kalziumrc</cite> file, which was swiped from the Kalzium package.  See
 <code>http://edu.kde.org/kalzium/</code> for more details.  The data for
 Mossbauer active isotopes was taken from <code>http://www.mossbauer.org</code></li>
 	<li>The ion chamber and edge finder utilities were inspired by the similar
@@ -464,7 +586,8 @@ the data is highly likely to have an effect.</p>
 the periodic table utilities and providing the Berger/Hubble XCOM
 tables and Feff's optical calculations as data resources.</p>
 
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)</p>
 
 <p>Patches are welcome.</p>
 

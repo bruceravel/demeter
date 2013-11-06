@@ -102,7 +102,7 @@ parameter types can be chosen.
 </p>
 
 
-<div class=figure style="max-width: 845px; min-width: 7em;">
+<div class=figure style="max-width: 849px; min-width: 7em;">
 <a name=gds>
 <img src=../images/gds.png width=100%>
 </a>
@@ -306,7 +306,23 @@ values.
 This button prompts you for a string.  All parameters with names or
 math expressions matching the string provided will be highlighted with
 a yellow background.  This feature is particularly useful in large
-fitting models with many parameters.
+fitting models with many parameters.  In the image above, you can see
+that all parameters matching &ldquo;brc1&rdquo; have
+been highlighted.  The string to match can actually be any valid Perl
+regular expression.
+  <br />
+  <br />
+</dd>
+<dt>
+  Evaluate
+</dt>
+<dd>
+Clicking this button will evaluate all parameters and insert their
+evaluations into the fourth column of the grid.  This is used to 
+&ldquo;spell-check&rdquo; your math expressions for
+<span style="color:#008b00; background-color:white">def</span> and other parameters.  In the image above, this button has
+been clicked and the evaluations have been inserted into the fourth
+column. 
   <br />
   <br />
 </dd>

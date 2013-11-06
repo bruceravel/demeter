@@ -88,9 +88,13 @@ sub new {
   EVT_BUTTON($this, $this->{regexp}, sub{mark(@_, 'regexp')});
   $this-> mouseover('regexp', "Mark by regular expression.");
 
+  $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
+  $left -> Add($this->{doc}, 0, wxGROW|wxLEFT, 1);
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $left -> Add($this->{close}, 0, wxGROW|wxLEFT, 1);
+  EVT_BUTTON($this, $this->{doc}, sub{$::app->document('history')});
   EVT_BUTTON($this, $this->{close}, \&on_close);
+  $this-> mouseover('doc', "Show document page for history window.");
   $this-> mouseover('close', "Hide the history window.");
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -706,7 +710,7 @@ Demeter::UI::Artemis::History - A fit history interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -740,7 +744,8 @@ Calculations on the report tab: average, Einstein
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -748,7 +753,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

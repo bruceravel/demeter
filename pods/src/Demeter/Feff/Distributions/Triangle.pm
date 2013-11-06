@@ -10,24 +10,24 @@ use Demeter::NumTypes qw( Ipot );
 ## DS triangle histogram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
 has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of triangle configurations found at each time step");
-has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,
+has 'r1'        => (is => 'rw', isa => 'LaxNum', default => 0.0,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,
+has 'r2'        => (is => 'rw', isa => 'LaxNum', default => 3.5,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,
+has 'r3'        => (is => 'rw', isa => 'LaxNum', default => 5.2,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,
+has 'r4'        => (is => 'rw', isa => 'LaxNum', default => 5.7,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'angle'     => (is => 'rw', isa => 'Num', default => 90,
+has 'angle'     => (is => 'rw', isa => 'LaxNum', default => 90,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'margin'    => (is => 'rw', isa => 'Num', default => 10,
+has 'margin'    => (is => 'rw', isa => 'LaxNum', default => 10,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'rbin'      => (is            => 'rw',
-		    isa           => 'Num',
+		    isa           => 'LaxNum',
 		    default       => 0.02,
 		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 has 'betabin'   => (is            => 'rw',
-		    isa           => 'Num',
+		    isa           => 'LaxNum',
 		    default       => 0.5,
 		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 
@@ -226,7 +226,7 @@ Demeter::Feff::Distributions::Triangle - Histograms for short triangular paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -308,7 +308,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -316,7 +317,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

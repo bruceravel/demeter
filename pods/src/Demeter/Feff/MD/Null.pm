@@ -20,7 +20,7 @@ Demeter::Feff::MD::DL_POLY - Fallback role for Demeter's histogram subsystem
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -45,7 +45,7 @@ Both of these die with a warning about specifying a backend.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

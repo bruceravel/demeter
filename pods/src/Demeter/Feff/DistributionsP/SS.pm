@@ -13,12 +13,12 @@ use PDL::NiceSlice;
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
-		      isa	    => 'Num',
+		      isa	    => 'LaxNum',
 		      default	    => 0.0,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The lower bound of the SS histogram to be extracted from the cluster");
 has 'rmax'        => (is	    => 'rw',
-		      isa	    => 'Num',
+		      isa	    => 'LaxNum',
 		      default	    => 5.6,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
@@ -27,7 +27,7 @@ has 'ipot'        => (is => 'rw', isa => Ipot, default => 1,
 		      alias => 'ipot1',
 		      trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'bin'         => (is            => 'rw',
-		      isa           => 'Num',
+		      isa           => 'LaxNum',
 		      default       => 0.005,
 		      trigger => sub{my ($self, $new) = @_; $self->update_bins(1)   if $new},);
 has 'ssrdf'       => (is	    => 'rw',
@@ -320,7 +320,7 @@ Demeter::Feff::DistributionsP::SS - Histograms for single scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -426,7 +426,8 @@ This currently only works for a monoatomic cluster.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -434,7 +435,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

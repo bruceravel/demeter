@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.14.
+## This pod document is for Demeter version 0.9.18.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Seeking help about XAS or about the software
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 OVERVIEW
 
@@ -157,7 +157,8 @@ L<http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentati
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

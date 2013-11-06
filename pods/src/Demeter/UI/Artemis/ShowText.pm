@@ -47,7 +47,7 @@ sub new {
   $vbox -> Add($text, 1, wxGROW|wxALL, 5);
   my $save = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($save, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
+  my $button = Wx::Button->new($this, wxID_OK, q{Close}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   EVT_BUTTON($this, $save, sub{OnSave(@_)});
@@ -82,7 +82,7 @@ sub OnLeftDclick {
     ## (ok, lots of other lines will start with a dash, but few will
     ## actually return something from fetch)
     ($line[0] eq '-') and do {
-      foreach my $type (qw(GDS Data Path Feff VPath)) {
+      foreach my $type (qw(GDS Data Path Feff VPath LineShape)) {
 	$kind = $type;
 	$object = Demeter->mo->fetch($type, $line[1]);
 	last SWITCH if $object;
@@ -141,7 +141,7 @@ Demeter::UI::Artemis::ShowText - A text display dialog for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -155,7 +155,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

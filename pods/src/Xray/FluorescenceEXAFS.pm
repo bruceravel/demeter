@@ -1,7 +1,7 @@
 package Xray::FluorescenceEXAFS;
 ##  This module is copyright (c) 1998-2009, 2013 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software/
+##  http://bruceravel.github.com/demeter/
 
 require Exporter;
 
@@ -287,7 +287,8 @@ Geometry and thickness effects are not included in the self absorption calculati
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -295,7 +296,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

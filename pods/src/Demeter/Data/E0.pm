@@ -15,6 +15,7 @@ package Demeter::Data::E0;
 
 =cut
 
+use feature "switch";
 use autodie qw(open close);
 
 use Moose::Role;
@@ -31,7 +32,7 @@ use Xray::Absorption;
 sub e0 {
   my ($self, $how) = @_;
   ($how = "ifeffit") if (!$how);
-  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
+  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|peak|$NUMBER)\z}) and (ref($how) !~ m{Data}));
   $self->_update('normalize');
   my $e0;
  MODE: {
@@ -40,6 +41,7 @@ sub e0 {
     $e0 = $self->e0_fraction,       last MODE if ($how eq "fraction");
     $e0 = $self->e0_atomic,         last MODE if ($how eq "atomic");
     $e0 = $self->e0_dmax,           last MODE if ($how eq "dmax");
+    $e0 = $self->e0_wl,             last MODE if ($how eq "peak");
     $e0 = $how->bkg_e0,             last MODE if (ref($how) =~ m{Data});
     ($how =~ m{\A$NUMBER\z}) and do {
       $self->bkg_e0($how);
@@ -59,10 +61,15 @@ sub e0 {
 
 sub e0_ifeffit {
   my ($self) = @_;
-  $self->bkg_e0(-9999999);	# force ifeffit to find e0
-  $self->normalize;		# fft_edge and bkg_z get set therein
-  my $e0 = $self->bkg_e0;
-  return $e0;
+  $self->dispense('process', 'find_e0');
+  my $was = $self->bkg_e0;
+  my $e0 = $self->fetch_scalar('e0');
+  if (abs($was - $e0) > $EPSILON3) {
+    $self->bkg_e0(sprintf("%.5f", $e0));
+    return $e0;
+  } else {
+    return $was;		# avoid a tiny numerical "surprise" from Larch
+  };
 };
 
 
@@ -146,6 +153,12 @@ sub e0_dmax {
   return $x[$i];
 };
 
+sub e0_wl {
+  my ($self) = @_;
+  my $e0 = $self->find_white_line;
+  return $e0;
+};
+
 sub calibrate {
   my ($self, $ref, $e0) = @_;
   $self -> _update("background");
@@ -182,8 +195,13 @@ sub align {
     $d -> dispense("process", "align");
     $shift = sprintf("%.3f", $d->fetch_scalar("aa___esh"));
     #print ">>>>>>", $shift, $/;
+    $d -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
+    if ($d->reference) {
+      $d -> reference -> bkg_delta_eshift($d -> bkg_delta_eshift);
+      $d -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -211,10 +229,13 @@ sub align_with_reference {
     $this -> _update("background");
     $this -> dispense("process", "align");
     $shift = sprintf("%.3f", $self->fetch_scalar("aa___esh"));
+    $this -> bkg_delta_eshift(sprintf("%.3f", $self->fetch_scalar('delta_aa___esh')));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
-    $this -> reference -> update_bkg(1) if $this->reference;
-
+    if ($this->reference) {
+      $this -> reference -> bkg_delta_eshift($this -> bkg_delta_eshift);
+      $this -> reference -> update_bkg(1);
+    };
   };
   $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
@@ -290,9 +311,6 @@ sub _postline_marker_command {
   return $command;
 };
 
-
-
-
 1;
 
 
@@ -302,7 +320,7 @@ Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -434,7 +452,8 @@ Need a white line peak option to the C<e0> method
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -442,7 +461,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

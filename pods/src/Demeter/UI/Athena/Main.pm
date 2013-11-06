@@ -7,9 +7,12 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN EVT_LEFT_DOWN
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
+use Const::Fast;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+const my $PM => $PLUSMN2;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
@@ -18,7 +21,6 @@ use List::Util qw(max);
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
-use Const::Fast;
 use DateTime;
 use Statistics::Descriptive;
 
@@ -84,12 +86,25 @@ sub group {
   $this->{group_group_label} = Wx::StaticText->new($this, -1, 'Current group');
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+  my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+  $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
+					   wxDefaultPosition, [90,12], wxNO_BORDER);
+  $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
+  $hbox -> Add($this->{type}, 0, wxBOTTOM|wxTOP, 4);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
+  $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
+
+  $this->{type} -> SetNormalColour(wxNullColour);
+  $this->{type} -> SetHoverColour(wxNullColour);
+  $this->{type} -> SetVisitedColour(wxNullColour);
+  $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
+  EVT_HYPERLINK($this, $this->{group_group_label}, sub{$_[1]->Skip(0)});
+  EVT_LEFT_DOWN($this->{type}, sub{quick_change_type(@_); $_[1]->Skip(0)});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
@@ -124,7 +139,7 @@ sub group {
   $gbs -> Add($this->{importance_label}, Wx::GBPosition->new(1,6));
   $gbs -> Add($this->{importance},       Wx::GBPosition->new(1,7));
 
-  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance freeze);
+  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance freeze type);
   foreach my $x (qw(bkg_eshift importance)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
@@ -568,7 +583,7 @@ sub mode {
 
   foreach my $w (qw(group_group_label background_group_label fft_group_label
 		    bft_group_label plot_group_label)) {
-    $this->{$w} -> SetForegroundColour( Wx::Colour->new(wxNullColour) );
+    $this->{$w} -> SetForegroundColour( wxNullColour );
   };
   if ($::app) {
     $this->Refresh;
@@ -638,12 +653,16 @@ sub mode {
   };
 
   my $is_merge = ($group) ? $group->is_merge : 0;
-  $this->{app}->set_mergedplot($is_merge);
 
   if ($group and ($group->reference)) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($group->co->default("athena", "tied")) );
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+  };
+
+  if ($group) {
+    my $type = (($group->datatype eq 'xmu') and $group->is_nor) ? 'norm' : $group->datatype;
+    $this->{type}->SetLabel('Dataype: ' . $type . '    ') ;
   };
 
   return $this;
@@ -659,6 +678,7 @@ sub set_widget_state {
 
 sub push_values {
   my ($this, $data) = @_;
+  my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   my $is_fixed = $data->bkg_fixstep;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck|file)\z});
@@ -705,12 +725,12 @@ sub push_values {
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
-  if ($data->bkg_e0 < 150) {
+  if (($data->bkg_e0 < 150) and ($data->datatype ne 'chi')) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
     $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
   };
-  if (get_Z($data->bkg_z) < 5) {
+  if ((get_Z($data->bkg_z) < 5) and ($data->datatype ne 'chi')) {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
     $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
   } else {
@@ -720,12 +740,18 @@ sub push_values {
   $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;
   my $n = length($truncated_name);
-  if ($n > 40) {
-    $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-17);
+  if ($n > 28) {
+    $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-5);
   };
   $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
 
+  $data->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+	     update_fft     => $save[3], update_bft  => $save[4],);
   $this->{freeze}->SetValue($data->quenched);
+
+  my $type = (($data->datatype eq 'xmu') and $data->is_nor) ? 'norm' : $data->datatype;
+  $this->{type}->SetLabel('Dataype: ' . $type . '    ');
+
   return $data;
 };
 
@@ -783,6 +809,8 @@ sub zero_values {
   $this->{'bkg_nnorm_2'} -> SetValue(0);
   $this->{'bkg_nnorm_3'} -> SetValue(1);
   $this->{group_group_label} -> SetLabel('Current group');
+  $this->{type}          -> SetLabel('');
+
 };
 
 sub window_name {
@@ -1041,6 +1069,7 @@ const my $E0_PEAK            => Wx::NewId();
 const my $STEP_ALL           => Wx::NewId();
 const my $STEP_MARKED        => Wx::NewId();
 const my $STEP_ERROR         => Wx::NewId();
+const my $ESHIFT_THIS        => Wx::NewId();
 const my $ESHIFT_ALL         => Wx::NewId();
 const my $ESHIFT_MARKED      => Wx::NewId();
 
@@ -1079,15 +1108,16 @@ sub ContextMenu {
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
     $menu->AppendSeparator;
-    $menu->Append($ESHIFT_ALL,     "Show e0 shifts of all groups");
-    $menu->Append($ESHIFT_MARKED,  "Show e0 shifts of marked groups");
+    $menu->Append($ESHIFT_THIS,    "Show energy shift of this group");
+    $menu->Append($ESHIFT_ALL,     "Show energy shifts of all groups");
+    $menu->Append($ESHIFT_MARKED,  "Show energy shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
     $menu->Append($E0_IFEFFIT,   "Set E0 to ".Demeter->backend_name."'s default");
     $menu->Append($E0_TABULATED, "Set E0 to the tabulated value");
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
-    #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
+    $menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
   } elsif ($which eq 'bkg_step') {
     $menu->AppendSeparator;
     $menu->Append($STEP_ALL,     "Show edge steps of all groups");
@@ -1227,6 +1257,11 @@ sub DoContextMenu {
       $main->edgestep_error($app);
       last SWITCH;
     };
+    ($id == $ESHIFT_THIS) and do {
+      $app->{main}->status(sprintf("%s: energy shift = %.5f %s %.5f",
+				   $data->name, $data->bkg_eshift, $PM, $data->bkg_delta_eshift));
+      last SWITCH;
+    };
     ($id == $ESHIFT_ALL) and do {
       $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
       last SWITCH;
@@ -1241,22 +1276,55 @@ sub DoContextMenu {
 sub parameter_table {
   my ($main, $app, $which, $how, $description) = @_;
 
-  my $text = "  group                    $description\n" . "=" x 40 . "\n";
+  my $stat  = Statistics::Descriptive::Full->new();
+  my $error = Statistics::Descriptive::Full->new();
+
+  my $text = "  group              $description\n" . "=" x 40 . "\n";
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     $max = max($max, length($app->{main}->{list}->GetIndexedData($i)->name));
   };
-  my $format = ' "%-'.$max.'s"  %.5f'."\n";
+
+  my $with_uncertainty = ($which eq 'bkg_eshift') ? 1 : 0;
+  my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
+
+  $max+=2;
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f '.$PM.' %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
     $d -> _update('bkg');
-    $text .= sprintf($format, $d->name, $d->$which);
+    my $val   = $d->$which;
+    my $uncer = $uncertainty{$which};
+    $text .= ($with_uncertainty) ? sprintf($format, '"'.$d->name.'"', $val, $d->$uncer)
+      : sprintf($format, '"'.$d->name.'"', $val);
+    $stat  -> add_data($val)       if looks_like_number($val);
+    $error -> add_data($d->$uncer) if ($with_uncertainty);
   };
+  $text .= sprintf("\n\nAverage = %9.5f  Standard deviation = %9.5f\n", $stat->mean, $stat->standard_deviation)
+    if $stat->count > 1;
   my $dialog = Demeter::UI::Artemis::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;
+
+  if ($with_uncertainty) {
+    Demeter->po->start_plot;
+    my $tempfile = Demeter->po->tempfile;
+    open my $T, '>'.$tempfile;
+    my $i = -1;
+    my @y = $stat->get_data;
+    my @z = $error->get_data;
+    foreach my $i (0 .. $#y) {
+      printf $T "%d  %.5f  %.5f\n", $i, $y[$i], $z[$i];
+    };
+    close $T;
+    (my $p = $which) =~ s{_}{\\_}g;
+    (my $t = $which) =~ s{_}{\\\\_}g;
+    Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>-0.2, xmax=>$#y+0.2,
+					 xlabel=>'data set', title=>$t,
+					 param=>$p, showy=>0});
+  };
 };
 
 
@@ -1264,6 +1332,7 @@ sub edgestep_error {
   my ($main, $app) = @_;
   my $data = $app->current_data;
   my $busy = Wx::BusyCursor->new();
+  my $start = DateTime->now( time_zone => 'floating' );
 
   $data->sentinal(sub{$app->{main}->status(sprintf("Sample #%d of %d", $_[0]+1, $_[1]+1), 'wait|nobuffer')});
   my ($mean, $stddev, $report) = $data->edgestep_error(1);
@@ -1273,8 +1342,10 @@ sub edgestep_error {
       -> Show if Demeter->co->default('edgestep', 'fullreport');
 
   $data->sentinal(sub{1});
+  my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
-  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f", $data->name, $data->bkg_step, $stddev));
+  $app->{main}->status(sprintf("%s: edge step = %.5f %s %.5f   %s",
+			       $data->name, $data->bkg_step, $PM, $stddev, $finishtext));
   undef $busy;
 };
 
@@ -1368,6 +1439,19 @@ sub importance_to_1 {
   $app->OnGroupSelect(0,0,0);
 };
 
+sub quick_change_type {
+  my ($text, $event) = @_;
+  return if not ($event->AltDown and $event->ControlDown);
+  return if not (($::app->current_data->datatype eq 'xmu') or ($::app->current_data->datatype eq 'xanes'));
+  if ($::app->current_data->datatype eq 'xmu') {
+    $::app->current_data->datatype('xanes');
+  } else {
+    $::app->current_data->datatype('xmu');
+  };
+  $::app->{main}->{Main}->mode($::app->current_data, 1, 0);
+  $event->Skip;
+};
+
 1;
 
 
@@ -1377,7 +1461,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -1391,7 +1475,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1399,7 +1484,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

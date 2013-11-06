@@ -77,12 +77,12 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <pre>  my $data_object = Demeter::Data -&gt; new();
-  $data_object -&gt; set_mode(ifeffit=&gt;1, buffer=&gt;\@buffer, screen=&gt;1);
+  $data_object -&gt; set_mode(backend=&gt;1, buffer=&gt;\@buffer, screen=&gt;1);
   $data_object -&gt; dispose($ifeffit_command);
 
 
@@ -141,7 +141,7 @@ dispose of plotting commands to a gnuplot process, you must have the
 
 <p>Use the <code>set_mode</code> class method to establish the disposal channels.</p>
 
-<pre>   Demeter-&gt;set_mode(ifeffit=&gt;1, screen=&gt;1, file=&gt;0, buffer=&gt;0);
+<pre>   Demeter-&gt;set_mode(backend=&gt;1, screen=&gt;1, file=&gt;0, buffer=&gt;0);
    $dataobject -&gt; dispose($commands);
 
 </pre><p>When explicitly disposing a plotting command, use the plotting flag:</p>
@@ -312,7 +312,8 @@ useful to have the option of specifying a filehandle for this channel.</li>
 	<li>Will reprocessed commands be needed with Larch?</li>
 </ul>
 
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)</p>
 
 <p>Patches are welcome.</p>
 
@@ -320,7 +321,7 @@ useful to have the option of specifying a filehandle for this channel.</li>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
 
 
 

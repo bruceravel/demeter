@@ -77,7 +77,7 @@ sub _mcmaster {
   my $central  = $absorber->element;
   my $edge     = $self->edge;
   my $mcmsig   = Xray::FluorescenceEXAFS->mcmaster($central, $edge);
-  $self->set(mcmaster => sprintf("%8.5f", $mcmsig),
+  $self->set(mcmaster => sprintf("%.5f", $mcmsig),
 	     mcmaster_done => 1);
   return $self->mcmaster;
 };
@@ -95,7 +95,7 @@ sub _i0 {
   my %gases = ();
   map {$gases{$_} = $self->$_ } qw(nitrogen argon krypton);
   my $i0sig   = Xray::FluorescenceEXAFS->i0($central, $edge, \%gases);
-  $self->set(i0 => sprintf("%8.5f", $i0sig),
+  $self->set(i0 => sprintf("%.5f", $i0sig),
 	     i0_done => 1);
 
   return $self->i0;
@@ -116,8 +116,8 @@ sub _self {
   };
   my @answer = Xray::FluorescenceEXAFS->self($central, $edge, \%count);
 
-  $self->set(selfamp   => sprintf("%6.3f", $answer[0]),
-	     selfsig   => sprintf("%8.5f", $answer[1]),
+  $self->set(selfamp   => sprintf("%.3f", $answer[0]),
+	     selfsig   => sprintf("%.5f", $answer[1]),
 	     self_done => 1
 	    );
 };
@@ -130,7 +130,7 @@ Demeter::Atoms::Absorption - Interaction with tables of absorption coefficients
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -149,7 +149,8 @@ of absorption coefficients.
 
 Fourth cumulant corrections are not calculated.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -157,7 +158,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -17,7 +17,6 @@ package Demeter::Get;
 
 use feature "switch";
 use Moose::Role;
-use Ifeffit qw(ifeffit get_echo get_scalar get_array get_string put_scalar put_array put_string);
 
 my $mode = Demeter->mo;
 
@@ -41,7 +40,7 @@ sub backend_id {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return "Ifeffit " . get_string('&build')
+      return "Ifeffit " . Ifeffit::get_string('&build')
     };
 
     when ('larch') {
@@ -56,7 +55,7 @@ sub backend_version {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return (split(" ", get_string('&build')))[0];
+      return (split(" ", Ifeffit::get_string('&build')))[0];
     };
 
     when ('larch') {
@@ -71,11 +70,56 @@ sub fetch_scalar {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_scalar($param);
+      return Ifeffit::get_scalar($param);
     };
 
     when ('larch') {
-      return 1;
+      given ($param) {
+	my $gp = $self->group || Demeter->mo->throwaway_group;
+	when (/norm_c\d/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/epsilon_([kr])/) {
+	  $param = $gp.'.epsilon_'.$1;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(?:e0|edge_step|kmax_suggest)\z/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	};
+	when (/pre_(?:offset|slope)/) {
+	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/(aa__)_(esh|scale)\b/) {
+	  $param = $1.'.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(aa__)_(esh|scale)/) {
+	  $param = $1.'.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/\A(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[024])/) {
+	  $param = $1.'e.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(lr_)__(pd[13])/) {
+	  $param = $1.'o.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
+	default {
+	  return Larch::get_larch_scalar($param);
+	};
+      }
     };
 
   };
@@ -83,14 +127,26 @@ sub fetch_scalar {
 
 sub fetch_string {
   my ($self, $param) = @_;
+  $param =~ s{\A\$}{};
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_string($param);
+      return Ifeffit::get_string($param);
     };
 
     when ('larch') {
-      return 1;
+      given ($param) {
+	when ('column_label') {
+	  my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
+	  $param = $gp.'.column_labels';
+	  my $list = eval(Larch::get_larch_scalar($param));
+	  return q{} if not $list;
+	  return join(" ", @$list);
+	}
+	default {
+	  return Larch::get_larch_scalar($param);
+	};
+      };
     };
 
   };
@@ -101,11 +157,11 @@ sub fetch_array {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      return get_array($param);
+      return Ifeffit::get_array($param);
     };
 
     when ('larch') {
-      return 1;
+      return Larch::get_larch_array($param);
     };
 
   };
@@ -144,7 +200,7 @@ sub echo_lines {
       my $lines = $self->fetch_scalar('&echo_lines');
       $self->dispose("\&screen_echo = $save\n"), return () if not $lines;
       foreach my $l (1 .. $lines) {
-	push @lines, get_echo();
+	push @lines, Ifeffit::get_echo();
       };
       $self->dispose("\&screen_echo = $save\n") if $save;
       return @lines;
@@ -163,11 +219,11 @@ sub place_scalar {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_scalar($param, $value);
+      Ifeffit::put_scalar($param, $value);
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_scalar($param, $value);
     };
 
   };
@@ -179,11 +235,11 @@ sub place_string {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_string($param, $value);
+      Ifeffit::put_string($param, $value);
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_scalar($param, $value);
     };
 
   };
@@ -195,11 +251,11 @@ sub place_array {
   given ($mode->template_process) {
 
     when (/ifeffit|iff_columns/) {
-      put_array($param, $arrayref);
+      Ifeffit::put_array($param, $arrayref);
     };
 
     when ('larch') {
-      1;
+      Larch::put_larch_array($param, $arrayref);
     };
 
   };
@@ -217,7 +273,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -299,7 +355,8 @@ Larch backend not written....
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -307,7 +364,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

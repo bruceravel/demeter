@@ -52,7 +52,7 @@ sub AddColour {
 sub Find {
   my $self = shift;
   my $name = shift;
-  my $colour = Wx::Colour->new(wxNullColour);
+  my $colour = wxNullColour;
 
   $name = uc($name) if (not exists( $self->{__colours}->{$name} ));
   if (exists( $self->{__colours}->{$name} )) {
@@ -200,7 +200,7 @@ Demeter::UI::Wx::ColourDatabase - An objective interface to Wx::ColourDatabase
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -239,7 +239,8 @@ properly installed Demeter distribution.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -247,7 +248,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

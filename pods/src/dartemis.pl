@@ -29,7 +29,7 @@ BEGIN {
 };
 use Wx;
 use Demeter::UI::Artemis;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 use vars qw($app);
 $app = Demeter::UI::Artemis->new;
 $app -> process_argv(@ARGV);
@@ -41,7 +41,7 @@ artemis - EXAFS data analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -51,7 +51,7 @@ Artemis is a graphical interface to Feff and Ifeffit.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

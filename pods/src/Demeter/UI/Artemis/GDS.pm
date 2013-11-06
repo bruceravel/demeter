@@ -29,10 +29,12 @@ use Const::Fast;
 const my $GRAB	      => 0;
 const my $RESET	      => 1;
 const my $HIGHLIGHT   => 2;
-const my $IMPORT      => 4;
-const my $EXPORT      => 5;
-const my $DISCARD     => 6;
-const my $ADD	      => 8;
+const my $EVAL        => 3;
+const my $IMPORT      => 5;
+const my $EXPORT      => 6;
+const my $DISCARD     => 7;
+const my $ADD	      => 9;
+const my $DOC	      => 11;
 const my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 
 const my $GUESS	      => Wx::NewId();
@@ -56,7 +58,9 @@ use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::StrTypes qw( GDS );
-
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
+const my $PM => $PLUSMN2;	# see Project.pm line ~36
+const my $PMRE => quotemeta($PM) . '\s*.*';
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -88,9 +92,12 @@ my %hints = (
 	     convert   => "Change all guess parameters to set",
 	     discard   => "Discard all parameters",
 	     highlight => "Toggle highlighting of parameters which match a regular expression",
+	     eval      => "Evaluate and display all parameters",
 	     import    => "Import parameters from a text file",
 	     export    => "Export parameters to a text file",
 	     addgds    => "Add space for one more parameter",
+	     doc       => "Show documentation for the GDS window in a browser",
+	     close     => "Close GDS window",
 	    );
 
 
@@ -163,12 +170,15 @@ sub new {
   $this->{toolbar} -> AddTool(-1, " Use best fit", Demeter::UI::Artemis::icon("bestfit"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
   $this->{toolbar} -> AddTool(-1, "Reset all",     Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   $this->{toolbar} -> AddCheckTool($HIGHLIGHT, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
+  $this->{toolbar} -> AddTool(-1, "Evaluate",   Demeter::UI::Artemis::icon("eval"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{eval} );
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, " Import GDS",   Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
   $this->{toolbar} -> AddTool(-1, " Export GDS",   Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
   $this->{toolbar} -> AddTool(-1, "Discard all",   Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, "Add GDS",       Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
+  $this->{toolbar} -> AddSeparator;
+  $this->{toolbar} -> AddTool(-1, "About: GDS", Demeter::UI::Artemis::icon("doc"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $this->{toolbar} -> Realize;
   $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
 
@@ -176,8 +186,9 @@ sub new {
 
   $this -> SetSizerAndFit( $hbox );
   my ($xx, $yy) = $this->GetSizeWH;
-  $this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
-  $this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
+  $this -> SetSizeHints($xx, 1.1*$yy, $xx, -1);
+  #$this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
+  #$this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
   return $this;
 };
 
@@ -201,7 +212,7 @@ sub initialize_row {
 
 sub OnToolClick {
   my ($parent, $toolbar, $event, $grid) = @_;
-  ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
+  ## 0:grab all  1:reset all  2:toggle highlight 3:evaluate  5:import   6:export  7:discard all  9:add one
   my $which = $toolbar->GetToolPos($event->GetId); # || $event->GetId;
  SWITCH: {
     ($which == $GRAB) and do {	     # grab best fit values
@@ -216,6 +227,11 @@ sub OnToolClick {
 
     ($which == $HIGHLIGHT) and do {  # toggle highlight
       $parent->highlight;
+      last SWITCH;
+    };
+
+    ($which == $EVAL) and do {  # evaluate and display
+      $parent->evaluate;
       last SWITCH;
     };
 
@@ -240,6 +256,9 @@ sub OnToolClick {
       $parent->{grid}->ClearSelection;
       last SWITCH;
     };
+    ($which == $DOC) and do {	     # add a line
+      $::app->document('gds');
+    };
   };
 };
 
@@ -259,7 +278,7 @@ sub use_best_fit {
     next unless ($type eq 'guess');
     my $evaluated = $grid->GetCellValue($row, 3);
     next unless ($evaluated !~ m{\A\s*\z});
-    $evaluated =~ s{\+/-\s*.*}{};
+    $evaluated =~ s{$PMRE}{};
     $grid->SetCellValue($row, 2, $parent->display_value($evaluated));
     $grid->SetCellValue($row, 3, q{});
     ++$count;
@@ -363,6 +382,23 @@ sub clear_highlight {
     map { $grid->SetCellBackgroundColour($row, $_, wxNullColour)} (0 .. 3);
   };
   $grid -> ForceRefresh;
+};
+
+sub evaluate {
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
+  my $busy = Wx::BusyCursor->new();  
+  my $r_gds = $parent->reset_all;
+  my ($command, $text) = (q{}, q{});
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    my $name = $grid->GetCellValue($row, 1);
+    next if $name =~ m{\A\s*\z};
+    my $g = $grid->{$name};
+    next if ref($g) !~ m{GDS};
+    $g->evaluate;
+    $grid -> SetCellValue($row, 3, sprintf("%.5f-", $g->bestfit));
+  };
+  undef $busy;
 };
 
 sub find_next_empty_row {
@@ -511,10 +547,10 @@ sub discard_all {
   my ($parent, $force) = @_;
   my $grid = $parent->{grid};
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       "Really throw away all parameters?",
-				       "Verify action",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 "Really throw away all parameters?",
+						 "Verify action",
+						 "Throw them away");
     if ($yesno->ShowModal == wxID_NO) {
       $parent->status("Not discarding parameters.");
       return 0;
@@ -735,7 +771,7 @@ sub paste {
     $parent->{grid} -> SetCellValue($this, 2, $parent->display_value($g->mathexp));
     my $text = q{};
     if ($g->gds eq 'guess') {
-      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+      $text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
     } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
       $text = sprintf("%.5f", $g->bestfit);
     } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
@@ -774,7 +810,7 @@ sub grab {
   $parent->status("Grab aborted -- $name is not a guess parameter."), return if ($type ne 'guess');
   my $bestfit = $parent->{grid}->GetCellValue($row,3);
   $parent->status("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
-  $bestfit =~ s{\+/-\s*.*}{};
+  $bestfit =~ s{$PMRE}{};
   $parent->{grid}->SetCellValue($row, 2, $parent->display_value($bestfit));
   $parent->{grid}->SetCellValue($row, 3, q{});
   $parent->{grid}->ClearSelection;
@@ -868,8 +904,12 @@ sub find {
 	my $pp = $page->{"pp_$k"}->GetValue;
 	if ($pp =~ m{\b$this\b}) {
 	  ++$count;
-	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s'\n", 
-			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel);
+	  my $lab = $page->{idlabel}->GetLabel;
+	  $lab =~ s{\A\(\(\(\s}{};
+	  $lab =~ s{\s+(\)\)\))?\z}{};
+	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s' in data set '%s'\n",
+			   $count, $k, $page->{fefflabel}->GetLabel, $lab,
+			   $Demeter::UI::Artemis::frames{$f}->{name}->GetLabel);
 	};
       };
     };
@@ -888,12 +928,16 @@ sub rename_global {
   my $count = 0;
 
   ## -------- get new name
-  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this to", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     $parent->status("Parameter renaming canceled.");
     return;
   };
   my $newname = $ted->GetValue;
+  if ($newname =~ m{\A\s*\z}) {
+    $parent->status("Parameter renaming canceled.");
+    return
+  };
 
   ## -------- change this parameter's name
   $parent->{grid}->SetCellValue($thisrow,1,$newname);
@@ -976,7 +1020,7 @@ sub fill_results {
       next if (lc($g->name) ne lc($grid->GetCellValue($row, 1)));
       my $text;
       if ($g->gds eq 'guess') {
-	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+	$text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
       } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
 	$text = sprintf("%.5f", $g->bestfit);
       } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
@@ -1058,10 +1102,10 @@ sub OnDropText {
 
   ## row already has a parameter in it
   } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
-    my $yesno = Wx::MessageDialog->new($parent,
-				       sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
-				       "Replace parameter?",
-				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+						 sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
+						 "Replace parameter?",
+						 "Replace");
     if ($yesno->ShowModal == wxID_NO) {
       return 0;
     } else {
@@ -1092,7 +1136,7 @@ Demeter::UI::Artemis::GDS - A Guess/Def/Set interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -1119,7 +1163,8 @@ and globally changing parameters.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1127,7 +1172,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

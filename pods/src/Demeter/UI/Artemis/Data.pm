@@ -34,6 +34,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Quickfs;
+use Demeter::UI::Artemis::Data::BondValence;
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
@@ -44,6 +45,7 @@ use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(firstidx any);
 use YAML::Tiny;
+use Xray::BondValence;
 
 my $windows  = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter  = $Demeter::UI::Artemis::demeter;
@@ -150,6 +152,7 @@ const my $ACTION_VPATH	      => Wx::NewId();
 const my $ACTION_TRANSFER     => Wx::NewId();
 const my $ACTION_AFTER	      => Wx::NewId();
 const my $ACTION_NONEAFTER    => Wx::NewId();
+const my $ACTION_BVS          => Wx::NewId();
 
 const my $INCLUDE_MARKED      => Wx::NewId();
 const my $EXCLUDE_MARKED      => Wx::NewId();
@@ -173,8 +176,8 @@ sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [810,520],
-				wxCAPTION|wxMINIMIZE_BOX|wxCLOSE_BOX|wxSYSTEM_MENU); #|wxRESIZE_BORDER
+				wxDefaultPosition, wxDefaultSize, #[810,520],
+				wxDEFAULT_FRAME_STYLE); #|wxRESIZE_BORDER
   $this ->{PARENT} = $parent;
   $this->make_menubar;
   $this->SetMenuBar( $this->{menubar} );
@@ -426,7 +429,7 @@ sub new {
   $togglebox -> Add($this->{plot_after}, 0, wxLEFT|wxRIGHT, 5);
   $togglebox -> Add($this->{fit_bkg},    0, wxLEFT|wxRIGHT, 5);
   $this->{include}    -> SetValue(1);
-  $this->{plot_after} -> SetValue(1);
+  $this->{plot_after} -> SetValue(not $nset);
 
   $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
   $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
@@ -443,17 +446,30 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
-  $this->{pcplot}->Enable(0);
+  #$this->{pcplot}->Enable(0);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
-		 if ($self->{data}->fft_pcpath) {
-		   $self->{data}->update_fft(1);
+		 if ($self->{pcplot}->GetValue) {
+		   $self->{data}->fft_pcpath(q{});
 		   foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
-		     $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     if ($self->{pathlist}->GetPage($n)->{useforpc}->GetValue) {
+		       $self->{data}->fft_pcpath($self->{pathlist}->GetPage($n)->{path});
+		       last;
+		     };
 		   };
-		   $self->{data}->fft_pcpath->_update('fft');
-		 }
+
+		   if ($self->{data}->fft_pcpath) {
+		     $self->{data}->update_fft(1);
+		     foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
+		       $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		     };
+		     $self->{data}->fft_pcpath->_update('fft');
+		   } else {
+		     $self->status("You have not selected a path to use for phase corrected Fourier transforms", "alert");
+		     $self->{pcplot}->SetValue(0);
+		   };
+		 };
 	       });
 
   EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
@@ -482,6 +498,7 @@ sub new {
 
   my $panel = $this->initial_page_panel;
   $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, $panel, wxBK_LEFT );
+  $this->{pathlist}->SetSize(Wx::Size->new(-1,-1));
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
 
   my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -492,6 +509,7 @@ sub new {
   EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
+  $rightpane -> SetSize(Wx::Size->new(-1, -1));
 
 
   my $accelerator = Wx::AcceleratorTable->new(
@@ -504,6 +522,7 @@ sub new {
   #$splitter -> SetSashSize(10);
 
   $this -> SetSizerAndFit( $hbox );
+  $this -> SetSize(Wx::Size->new(-1, -1));
   return $this;
 };
 
@@ -538,7 +557,7 @@ sub initial_page_panel {
 
   my $vv = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [280,-1]);
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(200);
   my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
@@ -568,6 +587,7 @@ sub initial_page_panel {
   ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
   $panel -> SetSizerAndFit($vv);
+  #$panel -> SetSize(Wx::Size->new(-1, -1));
   return $panel;
 };
 
@@ -799,6 +819,7 @@ sub make_menubar {
   $self->{actionsmenu} = Wx::Menu->new;
   $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tAlt+Shift+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_BVS,       "Compute bond valence sum\tAlt+Shift+b", "Compute bond valence summ from marked paths",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tAlt+Shift+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tAlt+Shift+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
@@ -828,11 +849,12 @@ sub make_menubar {
 
 sub populate {
   my ($self, $data) = @_;
+  $data->frozen(0);
   $self->{data} = $data;
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);
   $self->{datasource}->SetValue($data->prjrecord || $data->file);
-  #$self->{datasource}->ShowPosition($self->{datasource}->GetLastPosition);
+  $self->{datasource}->SetInsertionPointEnd;
   $self->{titles}->SetValue(join("\n", @{ $data->titles }));
   $self->{kmin}->SetValue($data->fft_kmin);
   $self->{kmax}->SetValue($data->fft_kmax);
@@ -978,7 +1000,7 @@ sub plot {
   };
   $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
-  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
+  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data}) if ($how ne 'rk');
   $Demeter::UI::Artemis::frames{Plot}->{last} = ($how eq 'rmr')   ? 'r'
                                               : ($how eq 'r123')  ? 'r'
                                               : ($how eq 'k123')  ? 'k'
@@ -1085,7 +1107,9 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->serialization, 'YAML of '.$pathobject->label)
+      my $text = "# Path index = " . $pathobject->Index . $/;
+      $text .= $pathobject->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $text, 'YAML of '.$pathobject->label)
 	-> Show;
       last SWITCH;
     };
@@ -1193,6 +1217,11 @@ sub OnMenuClick {
 
     ($id == $ACTION_VPATH) and do {
       $datapage->OnMakeVPathButton;
+      last SWITCH;
+    };
+
+    ($id == $ACTION_BVS) and do {
+      $datapage->bond_valence_sum;
       last SWITCH;
     };
 
@@ -1897,8 +1926,10 @@ sub discard_data {
   my $dataobject = $self->{data};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this data set?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
@@ -2198,19 +2229,18 @@ sub quickfs {
   };
 
   my $firstshell = Demeter::FSPath->new();
-  $firstshell -> set(make_gds  => $make,
-		     edge      => $edge,
+  $firstshell -> set(edge      => $edge,
 		     abs       => $abs,
 		     scat      => $scat,
 		     distance  => $distance,
 		     data      => $datapage->{data},
 		    );
   if ($firstshell->error) {
-    my $okcancel = Wx::MessageDialog->new($datapage,
-					  $firstshell->error . "\n\nDo you want to carry on?",
-					  "Warning!",
-					  wxOK|wxCANCEL|wxICON_ERROR);
-    if ($okcancel->ShowModal == wxID_CANCEL) {
+    my $okcancel = Demeter::UI::Wx::VerbDialog->new($datapage, -1,
+						    $firstshell->error . "\n\nDo you want to continue?",
+						    "warning!",
+						    "Continue");
+    if ($okcancel->ShowModal != wxID_YES) {
       $datapage->status("Making quick first shell path canceled.");
       $firstshell -> DEMOLISH;
       return;
@@ -2219,6 +2249,7 @@ sub quickfs {
   $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
+  $firstshell -> make_gds($make);
   $firstshell -> _update('bft');
   $firstshell -> save_feff_yaml;
   $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};
@@ -2258,6 +2289,56 @@ sub empirical {
   $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
   $page->include_label;
   $datapage->status("Imported \"$file\" as an empirical standard.");
+};
+
+sub bond_valence_sum {
+  my ($datapage) = @_;
+  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+  my @paths = ();
+  foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+    $datapage->{pathlist}->GetPage($p)->{path}->valence_abs(3);
+    if ($datapage->{pathlist}->IsChecked($p)) {
+      push @paths, $datapage->{pathlist}->GetPage($p)->{path};
+    };
+  };
+
+  ## ------ sanity checks -----------------------------------------------
+  if ($#paths == -1) {
+    $datapage->status("Bond valence sum canceled -- no marked paths", 'alert');
+    return;
+  };
+  my @valences = Xray::BondValence::valences($paths[0]->bvabs);
+  if ($#valences == -1) {
+    $datapage->status(sprintf("Bond valence parameters do not exist for the %s absorber", $paths[0]->bvabs), 'alert');
+    return;
+  };
+  foreach my $p (@paths) {
+    if ($p->nleg > 2) {
+      $datapage->status("You cannot include multiple scattering paths in a bond valence sum.", 'alert');
+      return;
+    };
+  };
+  foreach my $p (@paths) {
+    my @available = Xray::BondValence::available($p->bvabs, '.', $p->bvscat);
+    if ($#available == -1 ) {
+      $datapage->status(sprintf("Bond valence parameters do not exist for the %s scatterer", $p->bvscat), 'alert');
+      return;
+    };
+  };
+  ## --------------------------------------------------------------------
+
+  my $dialog = Demeter::UI::Artemis::Data::BondValence->new($datapage, @paths);
+  my $result = $dialog -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $datapage->status("Canceled quick first shell model creation.");
+    return;
+  };
+
+#  my $sum = 0;
+#  $sum += $_->bv foreach (@paths);
+#  my $text = Xray::BondValence::bvdescribe($paths[0]);
+#  $datapage->status(sprintf("Bond valence sum = %.3f (%s)", $sum, $text));
 };
 
 sub histogram_sentinal_rdf {
@@ -2387,16 +2468,29 @@ sub OnData {
   } else {			#  this is a normal path
     my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
     foreach my $sp ( @sparray ) {
-      my $thispath = Demeter::Path->new(
-					parent => $sp->feff,
-					data   => $this->{PARENT}->{data},
-					sp     => $sp,
-					degen  => $sp->n,
-					n      => $sp->n,
-				       );
+      my $thispath;
+      if (ref($sp->feff) =~ m{Aggregate}) {
+	$thispath  = $sp->feff->make_path($sp); # returns a SSPath or MSPath
+	return $def if not $thispath;
+	$thispath -> data($this->{PARENT}->{data});
+	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->fuzzy));
+	$thispath -> label($thispath->name);
+      } else {
+	$thispath = Demeter::Path->new(
+				       parent => $sp->feff,
+				       data   => $this->{PARENT}->{data},
+				       sp     => $sp,
+				       degen  => $sp->n,
+				       n      => $sp->n,
+				      );
+      };
       my $label = $thispath->label;
+      $thispath->_update('all');
+      #local $|=1;
+      #print $thispath->parent, $/;
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
       $book->AddPage($page, $label, 1, 0);
+      $page->{pp_n}->SetValue($sp->n) if (ref($sp->feff) =~ m{Aggregate});
       $page->include_label;
       $book->Update;
     };
@@ -2669,7 +2763,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -2694,7 +2788,8 @@ Many things still missing from the menus
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

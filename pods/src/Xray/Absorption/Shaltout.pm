@@ -1,6 +1,6 @@
 ##  This module is copyright (c) 2007, 2008 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://cars9.uchicago.edu/~ravel/software/
+##  http://bruceravel.github.com/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
 ##
 ## -------------------------------------------------------------------
@@ -423,7 +423,7 @@ This module has not be tested sufficiently.
 =head1 AUTHOR
 
   Bruce Ravel, bravel@bnl.gov
-  http://cars9.uchicago.edu/~ravel/software/Absorption/
+  http://bruceravel.github.com/demeter/Absorption/
 
 =cut
 

@@ -3,18 +3,18 @@ package Demeter::PeakFit::Ifeffit;
 use Moose::Role;
 use Demeter::StrTypes qw( IfeffitLineshape );
 
-has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Ifeffit.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
+has 'defwidth'    => (is => 'ro', isa => 'LaxNum', default => 1);
+has 'my_file'     => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Ifeffit.pm');
+has 'sigil'       => (is => 'ro', isa => 'Str',    default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
-			    linear	     => 2,
-			    gaussian	     => 3,
-			    lorentzian	     => 3,
-			    pseudovoight     => 4,
-			    atan	     => 3,
-			    erf  	     => 3,
+			    linear     => 2,
+			    gaussian   => 3,
+			    lorentzian => 3,
+			    pvoigt     => 4,
+			    atan       => 3,
+			    erf        => 3,
 			  }});
 
 sub DEMOLISH {
@@ -108,6 +108,31 @@ sub post_fit {
 
 sub fetch_statistics {
   my ($self) = @_;
+
+  my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
+  my @x     = $self->get_array('energy');
+  my @func  = $self->get_array('func');
+  my @resid = $self->get_array('resid');
+  #foreach my $i (0 .. $#x) {
+  #  next if ($x[$i] < $self->xmin);
+  #  next if ($x[$i] > $self->xmax);
+  #  ++$count;
+  #  $avg += $func[$i];
+  #};
+  #$avg /= $count if $count != 0;
+  foreach my $i (0 .. $#x) {
+    next if ($x[$i] < $self->xmin);
+    next if ($x[$i] > $self->xmax);
+    $rfact  += $resid[$i]**2;
+    $sumsqr += $func[$i]**2;
+  };
+  #$self->npoints($count);
+  $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
+  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+  #$self->nvarys($self->fetch_scalar('n_varys'));
+
+
   foreach my $ls (@{$self->lineshapes}) {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
@@ -138,7 +163,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -166,17 +191,17 @@ document section is parsed by the reporting methods of this object.
 
  (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
 
-=item pseudovoigt(height, center, hwhm, eta)
+=item pvoigt(height, center, hwhm, eta)
 
  eta*loren + (1-eta)*gauss
 
 =item atan(step, e0, width)
 
-  step*[atan((x-E0)/width)/pi + 0.5]
+ step*[atan((x-E0)/width)/pi + 0.5]
 
 =item erf(step, e0, width)
 
-  step*(erf((x-e0)/width) + 1)
+ step*(erf((x-e0)/width) + 1)
 
 
 =back
@@ -199,7 +224,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -207,7 +233,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

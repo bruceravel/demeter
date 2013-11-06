@@ -86,12 +86,12 @@ sub new {
   $this->{plotk}  = Wx::Button->new($this, -1, 'Plot data and rebinned data in k',  wxDefaultPosition, $tcsize);
   $this->{make}   = Wx::Button->new($this, -1, 'Make rebinned data group',          wxDefaultPosition, $tcsize);
   $this->{marked} = Wx::Button->new($this, -1, 'Rebin marked data and make groups', wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 5) foreach (qw(replot plotk make marked));
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(replot plotk make marked));
 
   EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data, 'E')});
   EVT_BUTTON($this, $this->{plotk},  sub{$this->plot($app->current_data, 'k')});
   EVT_BUTTON($this, $this->{make},   sub{$this->make($app)});
-  EVT_BUTTON($this, $this->{marked}, sub{$this->make_marked($app)});
+  EVT_BUTTON($this, $this->{marked}, sub{$this->marked($app)});
 
   my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
   my $textboxsizer   = Wx::StaticBoxSizer->new( $textbox, wxVERTICAL );
@@ -132,7 +132,7 @@ sub push_values {
     $this->Enable(0);
   } else {
     #$this->{rebinned} = $data->rebin;
-    $this->plot($data);
+    $this->plot($data, 'E') if not $::app->{plotting};
   };
 };
 sub mode {
@@ -170,6 +170,7 @@ sub plot {
 sub make {
   my ($this, $app) = @_;
 
+  my %hash;
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -177,9 +178,10 @@ sub make {
       $app->{main}->status("Not rebinning -- your value for $w is not a number!", 'error|nobuffer');
       return;
     };
+    $hash{$w} = $value;
     $app->current_data->co->set_default('rebin', $w, $value);
   };
-  $this->{rebinned} = $app->current_data->rebin;
+  $this->{rebinned} = $app->current_data->rebin(\%hash);
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
@@ -195,6 +197,7 @@ sub marked {
   my ($this, $app) = @_;
   my $busy = Wx::BusyCursor->new();
 
+  my %hash;
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -202,6 +205,7 @@ sub marked {
       $app->{main}->status("Not rebinning marked groups -- your value for $w is not a number!", 'error|nobuffer');
       return;
     };
+    $hash{$w} = $value;
     $app->current_data->co->set_default('rebin', $w, $value);
   };
 
@@ -209,14 +213,16 @@ sub marked {
   my $index = $app->current_index;
   foreach my $j (reverse (0 .. $app->{main}->{list}->GetCount-1)) {
     if ($app->{main}->{list}->IsChecked($j)) {
+      $this->{rebinned} = $app->{main}->{list}->GetIndexedData($j)->rebin(\%hash);
       if ($index == $app->{main}->{list}->GetCount-1) {
 	$app->{main}->{list}->AddData($this->{rebinned}->name, $this->{rebinned});
       } else {
-	$app->{main}->{list}->InsertData($this->{rebinned}->name, $index+1, $this->{rebinned});
+	$app->{main}->{list}->InsertData($this->{rebinned}->name, $j+1, $this->{rebinned});
       };
       ++$count;
     };
   };
+  $this->{rebinned} = $app->current_data->rebin;
   undef $busy;
   return if not $count;
   $app->modified(1);
@@ -231,7 +237,7 @@ Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athen
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -255,7 +261,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -263,7 +270,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

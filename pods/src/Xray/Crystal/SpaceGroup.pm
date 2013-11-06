@@ -16,6 +16,7 @@ package Xray::Crystal::SpaceGroup;
 =cut
 
 use Moose;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 
@@ -34,7 +35,7 @@ const my $EPSILON  => 0.00001;
 
 use vars qw($VERSION);
 use version;
-$VERSION = version->new("0.9.14");
+$VERSION = version->new("0.9.18");
 
 has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal/SpaceGroup.pm"}),
 										   'share',
@@ -523,7 +524,7 @@ Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crysta
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -723,7 +724,8 @@ L<version>
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -731,7 +733,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

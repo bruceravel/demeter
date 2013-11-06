@@ -257,6 +257,68 @@ of the program have a button which will take you directly to the part
 of the document that describes that part of the program.
 </p>
 
+
+<hr class=hide />
+<a name="foldersandlogfiles">
+
+<h2>  Folders and log files</h2>
+</a>
+
+<p>
+
+On occasion, it is helpful to know something about how <span class=program>ATHENA</span>
+writes information to disk during its operations.
+</p>
+
+
+<dl>
+  
+<dt>
+  working folder
+</dt>
+<dd>
+Many of <span class=program>ATHENA</span>'s chores involve writing temporary files.
+Many file type plugins write temporary files after performing some
+transformation on the original data.  <span class=program>GNUPLOT</span> writes temporary
+files as part of its plot creation.  These files are stored in the 
+&ldquo;stash folder&rdquo;.  On linux (and other
+unixes) this is <span class=file>/.horae/stash/</span>.  On
+Windows this is <span class=file>%APPDATA%\demeter\stash</span>.
+  <br />
+  <br />
+</dd> 
+<dt>
+  log files
+</dt>
+<dd>
+When <span class=program>ATHENA</span> runs into problems, it attempts to write enough
+information to the screen that the problem can be addressed.  This
+screen information is what Bruce needs to troubleshoot bugs.  On a
+linux (or other unix) machine, simply run <span class=program>ATHENA</span> from the command
+line and the informative screen messages will be written to the
+screen.
+
+On a Windows machine, it is uncommon to run the software from the
+command line, so <span class=program>ATHENA</span> has been instrumented to write a run-time
+log file.  This log file is called 
+<span class=file>dathena.log</span> and can be found in the 
+<span class=file>%APPDATA%\demeter</span> folder.  
+  <br />
+  <br />
+</dd> 
+</dl>
+
+<p>
+
+&ldquo;%APPDATA%&rdquo;
+is <span class=file>C:\Users\&lt;username&gt;\AppDataRoaming\</span>
+on Windows 7 and 
+<span class=file>C:\Documents&nbsp;and&nbsp;Settings\&lt;username&gt;\Application&nbsp;Data\</span>
+on Windows XP and Vista.  In either case, 
+&ldquo;username&rdquo;
+is your log-in name.
+</p>
+
 </div>
 
 <br />

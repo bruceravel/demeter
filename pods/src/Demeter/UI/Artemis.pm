@@ -1,5 +1,7 @@
 package Demeter::UI::Artemis;
 
+use feature qw(switch);
+
 use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
@@ -9,8 +11,11 @@ use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
 
+use Demeter::UI::Wx::VerbDialog;
+
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+$Archive::Zip::UNICODE = 1;
 use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
@@ -35,6 +40,8 @@ use base 'Wx::App';
 
 use Const::Fast;
 const my $BLANK           => q{___.BLANK.___};
+const my $SAVENOHIST      => Wx::NewId();
+const my $SAVETHIS        => Wx::NewId();
 const my $MRU	          => Wx::NewId();
 const my $SHOW_BUFFER     => Wx::NewId();
 const my $CONFIG          => Wx::NewId();
@@ -67,12 +74,17 @@ const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
 const my $PLOT_PDF	  => Wx::NewId();
+const my $PLOT_ALL_DATA	  => Wx::NewId();
+const my $PLOT_NO_DATA	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
 const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
 const my $TERM_4          => Wx::NewId();
 const my $IFEFFIT_MEMORY  => Wx::NewId();
 const my $IGNORE_NIDP     => Wx::NewId();
+const my $IGNORE_RBKG     => Wx::NewId();
+const my $IGNORE_RMAX     => Wx::NewId();
+const my $IGNORE_DATACOLL => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -101,7 +113,7 @@ my %hints = (
 sub OnInit {
   my ($app) = @_;
   $demeter = Demeter->new;
-  $demeter -> set_mode(ifeffit=>1, screen=>0);
+  $demeter -> set_mode(backend=>1, screen=>0);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
@@ -141,7 +153,7 @@ sub OnInit {
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
   $importmenu->Append($IMPORT_DPJ,      "Demeter fit serialization",     "Import a Demeter fit serialization (.dpj) file");
   $importmenu->AppendSeparator;
-  $importmenu->Append($IMPORT_FEFF,     "a Feff calculation",            "Import a Feff input file and the results of a calculation made with that file");
+  $importmenu->Append($IMPORT_FEFF,     "an external Feff calculation",  "Import a Feff input file and the results of a calculation already made with that file");
   $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
@@ -156,6 +168,7 @@ sub OnInit {
   $filemenu->AppendSubMenu($mrumenu, "Recent files",    "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
+  $filemenu->Append($SAVETHIS,       "Save current fit", "Save current fit without history to a project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
   $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
@@ -189,17 +202,26 @@ sub OnInit {
   $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
-  #$debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
+  $debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
+  my $sanitymenu = Wx::Menu->new;
+  $sanitymenu->AppendCheckItem($IGNORE_NIDP, "Skip Nidp check", "Skip test verifying that the number of guesses is less than Nidp (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_NIDP, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_RBKG, "Skip Rmin>Rbkg check", "Skip test verifying that Rmin is equal to or greater than Rbkg (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_RBKG, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_RMAX, "Skip paths within Rmax check", "Skip test verifying that no paths are much larger than Rmax (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_RMAX, 0);
+  $sanitymenu->AppendCheckItem($IGNORE_DATACOLL, "Skip data collision check", "Skip test that no data group is used more than once in the fit (this is STRONGLY discouraged!)");
+  $sanitymenu->Check($IGNORE_DATACOLL, 0);
+
   my $fitmenu = Wx::Menu->new;
   $frames{main}->{fitmenu} = $fitmenu;
-  $fitmenu->AppendCheckItem($IGNORE_NIDP, "Skip Nidp check", "Skip test verifying that the number of guesses is less than Nidp (this is STRONGLY discouraged!)");
-  $fitmenu->Check($IGNORE_NIDP, 0);
+  $fitmenu->AppendSubMenu($sanitymenu, 'Disable sanity checks', 'Disable selected sanity checks that are performed on a fit.');
 
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer');
@@ -207,7 +229,7 @@ sub OnInit {
   $feedbackmenu->AppendSubMenu($showmenu,  "Show ".Demeter->backend_name." ...",  'Show variables from '.Demeter->backend_name);
   $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools');
     ##if ($demeter->co->default("artemis", "debug_menus"));
-  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (Demeter->mo->template_process ne 'Larch');
+  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (not Demeter->is_larch);
 
   #my $settingsmenu = Wx::Menu->new;
 
@@ -219,6 +241,9 @@ sub OnInit {
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
   $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
   $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
+  $plotmenu->AppendSeparator;
+  $plotmenu->Append($PLOT_ALL_DATA, "Plot all data sets after fit", "Set all data sets to be plotted after a fit finishes");
+  $plotmenu->Append($PLOT_NO_DATA,  "Plot no data sets after fit", "Set all data sets NOT to be plotted after a fit finishes");
 
 
   my $helpmenu = Wx::Menu->new;
@@ -314,6 +339,7 @@ sub OnInit {
   $hname -> Add($frames{main}->{name}, 1, wxALL, 2);
   mouseover($frames{main}->{name}, "Provide a short description of this fitting model.");
 
+  $hname  -> Add(Wx::StaticLine->new($frames{main}, -1, wxDefaultPosition, [4,-1], wxLI_VERTICAL),   0, wxGROW|wxLEFT|wxRIGHT, 7);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
 		  Wx::RadioButton->new($frames{main}, -1, 'R', wxDefaultPosition, wxDefaultSize),
@@ -322,6 +348,7 @@ sub OnInit {
   $frames{main}->{fitspace} = \@fitspace;
   my $savebutton = Wx::Button->new($frames{main}, wxID_SAVE, q{});
   EVT_BUTTON($savebutton, -1, sub{save_project(\%frames, $frames{main}->{projectpath})});
+  mouseover($savebutton, "One-click save this project");
 
   $hname  -> Add($label,   0, wxALL, 3);
   map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
@@ -351,6 +378,11 @@ sub OnInit {
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
   mouseover($frames{main}->{fitbutton}, "Start the fit.");
+
+  $frames{main}->{savehist} = Wx::CheckBox->new($frames{main}, -1, "History");
+  $vbox -> Add($frames{main}->{savehist}, 0, wxALL, 2);
+  $frames{main}->{savehist}->SetValue(1);
+  mouseover($frames{main}->{savehist}, "When toggled on, the next fit will be saved in the fit hstory of this project.");
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
@@ -411,7 +443,7 @@ sub OnInit {
   mkpath($frames{main}->{plot_folder}, 0);
 
   $frames{main}->{autosave_file} = File::Spec->catfile($demeter->stash_folder, $this.'.autosave');
-  #touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
+  #Demeter->Touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
@@ -421,7 +453,7 @@ sub OnInit {
 		     feedback     => \&feedback,
 		    );
 
-  $frames{main}->status("Welcome to Artemis (" . $demeter->identify . ")");
+  $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   1;
 }
 
@@ -449,10 +481,10 @@ sub on_close {
 
   if ($frames{main} -> {modified}) {
     ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($frames{main},
-				       "Save this project before exiting?",
-				       "Save project?",
-				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+				    "Save this project before exiting?",
+				    "Save project?",
+				    "Save", 1);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $frames{main}->status("Not exiting Artemis.");
@@ -513,7 +545,7 @@ EOH
 
 sub heap_check {
   my ($app, $show) = @_;
-  return if (Demeter->mo->template_process eq 'Larch');
+  return if Demeter->is_larch;
   if ($demeter->mo->heap_used > 0.99) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($demeter->mo->heap_used > 0.95) {
@@ -579,9 +611,10 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
+  local $|=1;
   my $rgds = $rframes->{GDS}->reset_all(1, 0);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
-  foreach my $p (@$rpaths) { $p->_update("fft") };
+  foreach my $p (@$rpaths) { next if not $p->sp; $p->_update("fft") };
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
     my $message = q{};
@@ -606,6 +639,8 @@ sub fit {
 
 
   ## get name, fom, and description + other properties
+  $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
+    if (not $rframes->{main} -> {currentfit});
   my $fit = $rframes->{main} -> {currentfit};
   $fit -> set(data => \@data, paths => \@paths, gds => \@gds);
   my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
@@ -613,8 +648,12 @@ sub fit {
   $fit->name($name);
   $fit->description($rframes->{main}->{description}->GetValue);
   $fit->fom($fit->mo->currentfit);
+  $fit->keep($frames{main}->{savehist}->GetValue);
   #$fit->ignore_errors(1);
   $fit->ignore_nidp($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP));
+  $fit->ignore_rbkg($frames{main}->{fitmenu}->IsChecked($IGNORE_RBKG));
+  $fit->ignore_rmax($frames{main}->{fitmenu}->IsChecked($IGNORE_RMAX));
+  $fit->ignore_datacollision($frames{main}->{fitmenu}->IsChecked($IGNORE_DATACOLL));
   $rframes->{main} -> {currentfit} = $fit;
 
   ## get fitting space
@@ -630,9 +669,10 @@ sub fit {
     };
   };
 
-  $fit->set_mode(ifeffit=>1, screen=>0);
+  $fit->set_mode(backend=>1, screen=>0);
   ##autosave($name);
   my $result = $fit->fit;
+
   my $finishtext = q{};
   my $code = "normal";
   if ($result eq $fit) {
@@ -644,11 +684,16 @@ sub fit {
     update_order_file();
 
     $rframes->{Log}->{name} = $fit->name;
-    $rframes->{Log}->Show(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
+    $rframes->{Log}->Show(1) if ( ($fit->co->default("artemis", "show_after_fit") eq 'log') or
+				  (($fit->co->default("artemis", "show_after_fit") eq 'history') and
+				   not $frames{main}->{savehist}->GetValue) );
     $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Refresh;
-    $rframes->{main}->{log_toggle}->SetValue(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
+    $rframes->{main}->{log_toggle}->SetValue(1) if ( ($fit->co->default("artemis", "show_after_fit") eq 'log') or
+						     (($fit->co->default("artemis", "show_after_fit") eq 'history') and
+						      not $frames{main}->{savehist}->GetValue) );
+    Demeter->Touch(File::Spec->catfile($frames{main}->{project_folder}, 'fits', $fit->group, 'keep')) if $fit->keep;
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
@@ -681,19 +726,17 @@ sub fit {
       $rframes->{Plot}->plot(q{}, $how);
     };
     $rframes->{GDS}->fill_results(@gds);
-    my $finish = DateTime->now( time_zone => 'floating' );
-    my $dur = $finish->delta_ms($start);
-    $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
-    $rframes->{History}->{list}->AddData($fit->name, $fit);
-    $rframes->{History}->add_plottool($fit);
-    if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
-      $rframes->{History}->Show(1);
-      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-      $rframes->{History}->put_log($fit);
-      $rframes->{History}->set_params($fit);
+    $finishtext = Demeter->howlong($start, 'Your fit');
+    if ($frames{main}->{savehist}->GetValue) {
+      $rframes->{History}->{list}->AddData($fit->name, $fit);
+      $rframes->{History}->add_plottool($fit);
+      if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
+	$rframes->{History}->Show(1);
+	$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+	$rframes->{History}->put_log($fit);
+	$rframes->{History}->set_params($fit);
+      };
     };
-    undef $dur;
-    undef $finish;
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
     $rframes->{Log}->Show(1);
@@ -879,6 +922,14 @@ sub OnMenuClick {
       save_project(\%frames);
       last SWITCH;
     };
+    ($id == $SAVETHIS) and do {
+      if ($frames{History}->{list}->GetCount) {
+	$frames{History}->export($frames{History}->{list}->GetCount-1);
+      } else {
+	$frames{main}->status("You haven't made a fit yet!")
+      };
+      last SWITCH;
+    };
     ($id == $SHOW_BUFFER) and do {
       $frames{Buffer}->Show(1);
       last SWITCH;
@@ -910,7 +961,7 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $IMPORT_FEFF) and do {
-      Import('feff', q{});
+      Import('external', q{});
       last SWITCH;
     };
     ($id == $IMPORT_FEFFIT) and do {
@@ -992,6 +1043,21 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PLOT_ALL_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(1);
+      };
+      last SWITCH;
+    };
+    ($id == $PLOT_NO_DATA) and do {
+      foreach my $k (sort (keys (%frames))) {
+	next if ($k !~ m{data});
+	$frames{$k}->{plot_after}->SetValue(0);
+      };
+      last SWITCH;
+    };
+
     ## -------- help menu
     ($id == $STATUS) and do {
       $frames{Status} -> Show(1);
@@ -1001,10 +1067,24 @@ sub OnMenuClick {
     ## -------- fit menu
     ($id == $IGNORE_NIDP) and do {
       if ($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP)) {
-	my $yesno = Wx::MessageDialog->new($frames{main}, "Are you SURE you want to skip the Nidp test?",
-					   "Skip Nidp test?", wxYES_NO|wxSTAY_ON_TOP|wxNO_DEFAULT);
+	my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						     "Are you SURE you want to skip the Nidp test?",
+						     "Skip Nidp test?",
+						     'Skip test');
 	if ($yesno->ShowModal == wxID_NO) {
 	  $frames{main}->{fitmenu}->Check($IGNORE_NIDP, 0);
+	  return;
+	};
+      };
+    };
+    ($id == $IGNORE_RBKG) and do {
+      if ($frames{main}->{fitmenu}->IsChecked($IGNORE_RBKG)) {
+	my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						     "Are you SURE you want to skip the Rmin>Rbkg test?",
+						     "Skip Rbkg test?",
+						     'Skip test');
+	if ($yesno->ShowModal == wxID_NO) {
+	  $frames{main}->{fitmenu}->Check($IGNORE_RBKG, 0);
 	  return;
 	};
       };
@@ -1050,8 +1130,32 @@ sub OnDataRightClick {
 };
 
 
+sub OnDataButtonRightClick {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename ".$data->name);
+  $menu->Append(1, "Discard ".$data->name);
+  $self->PopupMenu($menu, $event->GetPosition);
+};
 
+sub OnDataMenu {
+  my ($self, $event) = @_;
+  my $dnum = $self->{dnum};
+  my $data = $frames{$dnum}->{data};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$dnum}->Rename;
+      modified(1);
+    };
 
+    when (1) {
+      $frames{$dnum}->discard_data;
+      modified(1);
+    };
+  };
+};
 
 sub make_data_frame {
   my ($self, $data) = @_;
@@ -1061,11 +1165,12 @@ sub make_data_frame {
   my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".emph($data->name));
   #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
-  mouseover($new, "Display/hide " . $data->name . ".");
+  mouseover($self, "Display/hide this data group.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $idata = $new->GetId;
   my $dnum = sprintf("data%s", $idata);
+  $new->{dnum} = $dnum;
   $self->{$dnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$dnum}->Show($_[0]->GetValue);
@@ -1078,6 +1183,8 @@ sub make_data_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnDataMenu);
+  EVT_RIGHT_UP($new, \&OnDataButtonRightClick);
 
   ++$frames{main}->{cvcount};
   $data->cv($frames{main}->{cvcount});
@@ -1133,6 +1240,30 @@ sub OnFeffRightClick {
   };
 };
 
+sub OnFeffButtonRightClick {
+  my ($self, $event) = @_;
+  #my $fnum = $self->{fnum};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(0, "Rename this Feff object");
+  $menu->Append(1, "Discard this Feff object");
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnFeffMenu {
+  my ($self, $event) = @_;
+  my $fnum = $self->{fnum};
+  given ($event->GetId) {
+    when (0) {
+      $frames{$fnum}->on_rename;
+      modified(1);
+    };
+
+    when (1) {
+      $frames{$fnum}->on_discard;
+      modified(1);
+    };
+  };
+};
 
 ## name for empty feff frame...
 sub make_feff_frame {
@@ -1145,10 +1276,11 @@ sub make_feff_frame {
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   my $ifeff = $new->GetId;
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
-  mouseover($new, "Display/hide $name.");
+  mouseover($new, "Display/hide this Feff calculation.  Right click for a menu of options.");
 
   do_the_size_dance($self);
   my $fnum = sprintf("feff%s", $ifeff);
+  $new->{fnum} = $fnum;
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$fnum}->Show($_[0]->GetValue);
@@ -1161,6 +1293,8 @@ sub make_feff_frame {
 		     };
 		     $_[0]->SetLabel($label);
 		   });
+  EVT_MENU($new, -1, \&OnFeffMenu);
+  EVT_RIGHT_UP($new, \&OnFeffButtonRightClick);
 
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);
@@ -1246,24 +1380,42 @@ sub discard_feff {
   ##my $atomsobject = $frames{$which}->{Atoms}
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($frames{main}, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($frames{main}, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
     return if ($yesno->ShowModal == wxID_NO);
   };
 
   ## remove the button from the data tool bar
   my $fnum = $frames{$which}->{fnum};
   (my $id = $fnum) =~ s{feff}{};
-  $frames{main}->{$fnum}->Destroy;
 
   ## remove the frame with the feff calculation
   $frames{$fnum}->Hide;
   $frames{$fnum}->Destroy;
   delete $frames{$fnum};
 
+  ## remove the button from the feff tool bar
+  $frames{main}->{feffbox}->Hide($frames{main}->{$fnum});
+  $frames{main}->{feffbox}->Detach($frames{main}->{$fnum});
+  $frames{main}->{feffbox}->Layout;
+  #$frames{main}->{$fnum}->Destroy;
+
+
+
   ## destroy the ScatteringPath object
   ## destroy the feff object
-  $feffobject->DESTROY if (defined($feffobject) and (ref($feffobject) =~ m{Demeter}));
+  if (defined($feffobject) and (ref($feffobject) =~ m{Demeter})) {
+    rmtree($feffobject->workspace);
+    $feffobject->DEMOLISH;
+  };
+  foreach my $obj (@{Demeter->mo->Atoms}, @{Demeter->mo->Feff},   @{Demeter->mo->External},
+		   @{Demeter->mo->GDS},   @{Demeter->mo->ScatteringPath},
+		   @{Demeter->mo->VPath}, @{Demeter->mo->SSPath}, @{Demeter->mo->FPath},
+		   @{Demeter->mo->FSPath}) {
+    $obj->remove;
+  };
 }
 
 sub export {
@@ -1326,18 +1478,25 @@ sub document {
     push @path, $doc;
     $file = 'index';
     $url .= $doc . '/index.html';
+  } elsif ($doc =~ m{\A\w+\.\w+\z}) {
+    my ($dir, $fname) = split(/\./, $doc);
+    push @path, $dir;
+    $file = $fname;
+    $url .= $dir . '/' . $fname . '.html';
   } else {
     $file = $doc;
     $url .= $doc . '.html';
   };
-  my $fname = 'file://'.File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, $file.'.html');
   if (-e $fname) {
+    $fname  = 'file://'.$fname;
     $fname .= '#'.$target if $target;
     $::app->{main}->status("Displaying document page: $fname");
     Wx::LaunchDefaultBrowser($fname);
   } else {
     $url .= '#'.$target if $target;
     #$::app->{main}->status("Document target not found: $fname");
+    $::app->{main}->status("Displaying document page: $url");
     Wx::LaunchDefaultBrowser($url);
   };
 };
@@ -1474,7 +1633,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -1514,7 +1673,8 @@ Many, many, many ...
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1522,7 +1682,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

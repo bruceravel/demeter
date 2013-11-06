@@ -92,7 +92,10 @@ sub new {
   $buttons -> Add($this->{ok}, 1, wxGROW|wxALL, 5);
   $this->{cancel} = Wx::Button->new($leftpane, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $buttons -> Add($this->{cancel}, 1, wxGROW|wxALL, 5);
+  $this->{about} = Wx::Button->new($leftpane, wxID_ABOUT, "About", wxDefaultPosition, wxDefaultSize);
+  $buttons -> Add($this->{about}, 1, wxGROW|wxALL, 5);
   $left -> Add($buttons, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{about}, sub{  $app->document("import.columns")});
 
   my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [-1,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -309,6 +312,15 @@ sub OnEnergyClick {
   my ($parent, $event, $this, $data, $i) = @_;
   $data -> energy('$'.$i);
   $data -> update_data(1);
+  $data -> _update('data');
+  my $untext = $data->guess_units;
+  my $un = ($untext eq 'eV')     ? 0
+         : ($untext eq 'keV')    ? 1
+         : ($untext eq 'lambda') ? 2
+	 :                         0;
+  $this->{units}->SetSelection($un);
+  $data->is_kev(0) if ($this->{units}->GetSelection == 0);
+  $data->is_kev(1) if ($this->{units}->GetSelection == 1);
   $this -> display_plot($data);
 };
 
@@ -487,6 +499,8 @@ sub display_plot {
     $this->{energy} -> SetValue($data->energy_string);
     $this->{mue}    -> SetValue($data->xmu_string);
     return if $this->{pauseplot}->GetValue;
+    return if ($this->{energy}->GetValue !~ $data->group);
+    return if ($this->{mue}->GetValue    !~ $data->group);
     my @energy = $data->get_array('energy');
     my ($emin, $emax) = minmax(@energy);
     $data -> po -> set(emin=>$emin, emax=>$emax);
@@ -502,6 +516,7 @@ sub display_plot {
     $data -> po -> set(kmin=>0, kmax=>$kmax);
     $data -> po -> start_plot;
     $data -> plot('k') if ($data->chi_string ne '1');
+    $data -> update_data(1) if ($data->chi_string eq '1');
   };
 };
 
@@ -517,7 +532,7 @@ Demeter::UI::Athena::ColumnSelection - Athena's column selection dialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -529,7 +544,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 

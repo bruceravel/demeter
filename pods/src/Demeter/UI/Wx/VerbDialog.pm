@@ -18,6 +18,7 @@ package Demeter::UI::Wx::VerbDialog;
 use strict;
 use warnings;
 use Carp;
+use Text::Wrap;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON);
 use base 'Wx::Dialog';
@@ -37,7 +38,8 @@ our $image = Wx::Bitmap->newFromXPM(\@icon);
 sub new {
   my ($class, $parent, $id, $message, $title, $verb, $cancel) = @_;
 
-  my $this = $class->SUPER::new($parent, $id, $title, Wx::GetMousePosition, wxDefaultSize,
+  ##Wx::GetMousePosition
+  my $this = $class->SUPER::new($parent, $id, $title, wxDefaultPosition, wxDefaultSize,
 				wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
 			       );
 
@@ -47,8 +49,10 @@ sub new {
 
 #my $lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.";
 
+  local $Text::Wrap::columns = 60;
+
   $hbox->Add(Wx::StaticBitmap->new($this, -1, $image, wxDefaultPosition, wxDefaultSize), 0, wxALL, 2);
-  $hbox->Add(Wx::StaticText->new($this, -1, $message, wxDefaultPosition, [200,10]), 0, wxALL|wxGROW, 20);
+  $hbox->Add(Wx::StaticText->new($this, -1, wrap(q{}, q{}, $message), wxDefaultPosition, [-1,-1]), 0, wxALL|wxGROW, 20);
   $vbox->Add($hbox, 0, wxALL|wxGROW, 2);
   $vbox->Add(Wx::StaticLine->new($this, -1, [-1,-1], [1,1], wxLI_HORIZONTAL), 0, wxALL|wxGROW, 2);
 

@@ -4,19 +4,19 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $HBAR $R2D
-		    $NUMBER $INTEGER $SEPARATOR $ELEMENT
+		    $NUMBER $INTEGER $SEPARATOR $ELEMENT $FEFFNOTOK
 		    $NULLFILE $ENDOFLINE $CTOKEN $STATS
 		    $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 		  );
 our %EXPORT_TAGS = (all     => [qw($PI $ETOK $HBARC $HC $HBAR $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
-				   $NUMBER $INTEGER $SEPARATOR $ELEMENT
+				   $NUMBER $INTEGER $SEPARATOR $ELEMENT $FEFFNOTOK
 				   $NULLFILE $ENDOFLINE $CTOKEN $STATS
 				 )],
 		    numbers => [qw($PI $ETOK $HBARC $HC $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 				 )],
-		    regexps => [qw($NUMBER $INTEGER $SEPARATOR $ELEMENT)],
+		    regexps => [qw($NUMBER $INTEGER $SEPARATOR $ELEMENT $FEFFNOTOK)],
 		    strings => [qw($NULLFILE $ENDOFLINE $CTOKEN $STATS)],
 		   );
 
@@ -35,6 +35,7 @@ const our $NUMBER    => $RE{num}{real};
 const our $INTEGER   => $RE{num}{int};
 const our $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
 const our $ELEMENT   => qr/\b([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmorsu]|dy|e[rsu]|f[emr]|g[ade]|h[aefgos]|i[nr]|kr|l[airu]|m[dgnot]|n[abdeiop]|os|p[abdmortu]|r[abefhnu]|s[bcegimnr]|t[abcehilm]|xe|yb|z[nr])\b/;
+const our $FEFFNOTOK => qr{[^-a-zA-Z0-9_.]};
 
 
 const our $NULLFILE  => '@&^^null^^&@';
@@ -59,7 +60,7 @@ Demeter::Constants - A library of constants
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -172,11 +173,23 @@ This is C<[ \t]*[ \t=,][ \t]*>, the regular expression defining the
 separation between keyword and value in an input file for Feff, Atoms,
 etc.
 
+=item C<$ELEMENT>
+
+A regular expression matching a valid element symbol.
+
+=item C<$FEFFNOTOK>
+
+A regular expression used to scrub strings which, when used as site
+tags, will cause trouble with Feff.  This currently matches a
+character that is not alphanumeric, a dot, a dash, or an underscore:
+C<[^-a-zA-Z0-9_.]>
+
 =back
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -184,7 +197,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

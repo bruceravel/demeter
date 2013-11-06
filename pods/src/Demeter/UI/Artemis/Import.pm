@@ -27,16 +27,18 @@ our @EXPORT = qw(Import prjrecord);
 
 
 sub Import {
-  my ($which, $fname) = @_;
+  my ($which, $fname, @args) = @_;
+  my %args = @args;
+  $args{postcrit} || Demeter->co->default('pathfinder', 'postcrit');
   my $retval = q{};
  SWITCH: {
-    $retval = _prj($fname),           last SWITCH if (($which eq 'prj') or ($which eq 'athena'));
-    $retval = _old($fname),           last SWITCH if  ($which eq 'old');
-    $retval = _feff($fname),          last SWITCH if  ($which eq 'feff');
-    $retval = _external_feff($fname), last SWITCH if  ($which eq 'external');
-    $retval = _chi($fname),           last SWITCH if  ($which eq 'chi');
-    $retval = _dpj($fname),           last SWITCH if  ($which eq 'dpj');
-    $retval = _feffit($fname),        last SWITCH if  ($which eq 'feffit');
+    $retval = _prj($fname),                     last SWITCH if (($which eq 'prj') or ($which eq 'athena'));
+    $retval = _old($fname),                     last SWITCH if  ($which eq 'old');
+    $retval = _feff($fname),                    last SWITCH if  ($which eq 'feff');
+    $retval = _external_feff($fname),           last SWITCH if  ($which eq 'external');
+    $retval = _chi($fname),                     last SWITCH if  ($which eq 'chi');
+    $retval = _dpj($fname, 0, $args{postcrit}), last SWITCH if  ($which eq 'dpj');
+    $retval = _feffit($fname),                  last SWITCH if  ($which eq 'feffit');
   };
   $::app->heap_check;
   return $retval;
@@ -44,7 +46,7 @@ sub Import {
 
 
 sub prjrecord {
-  my ($fname) = @_;
+  my ($fname, $choice) = @_;
   my $file = $fname;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Athena project", cwd, q{},
@@ -64,7 +66,7 @@ sub prjrecord {
   };
   ##
   my $selection = 0;
-  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single');
+  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single', $choice);
   my $result = $rframes->{prj} -> ShowModal;
 
   if (
@@ -83,7 +85,12 @@ sub prjrecord {
 
 sub _prj {
   my ($fname) = @_;
-  my ($file, $prj, $record) = prjrecord($fname);
+  my $choice = 1;
+  if ($fname =~ m{(\s+<(\d?)>)\z}) {
+    $choice = $2;
+    $fname =~ s{$1}{};
+  };
+  my ($file, $prj, $record) = prjrecord($fname, $choice);
 
   if (defined($record) and ($record < 0)) {
     return;
@@ -94,6 +101,7 @@ sub _prj {
   };
 
   my $data = $prj->record($record);
+  $data->frozen(0);
   my $ref;
   my $toss = $data->bkg_stan;
   if ($data->bkg_stan ne 'None') {
@@ -104,9 +112,9 @@ sub _prj {
       };
     };
     ## clean up a few straggler arrays in Ifeffit/Larch and the spare Data object
-    $data->dispense('process', 'erase', {items=>"\@group $toss"});
-    $toss = Demeter->mo->fetch('Data', $toss);
-    $toss->DESTROY;
+    #$data->dispense('process', 'erase', {items=>"\@group $toss"});
+    #$toss = Demeter->mo->fetch('Data', $toss);
+    #$toss->DESTROY;
   };
 
   ## refuse to move forward for actinides above Am
@@ -128,12 +136,12 @@ sub _prj {
   $data->plot('k');
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
-  (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};;
+  (my $lab = $rframes->{main}->{$dnum}->GetLabel) =~ s{Show}{Hide};
   $rframes->{main}->{$dnum}->SetLabel($lab);
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
   delete $rframes->{prj};
-  $$rdemeter->push_mru("athena", $file);
+  $$rdemeter->push_mru("athena", $file, $record);
   autosave();
   chdir dirname($file);
   $rframes->{main}->status("Importing data \"" . $data->name . "\" from $file.");
@@ -206,7 +214,7 @@ sub _chi {
 };
 
 sub _dpj {
-  my ($fname, $nomru) = @_;
+  my ($fname, $nomru, $postcrit) = @_;
   my $file = $fname;
   $nomru ||= 0;
   if (not $fname) {
@@ -260,6 +268,7 @@ sub _dpj {
 
 	my $feffobject = Demeter::Feff->new(yaml=>File::Spec->catfile($feffdir, "$1.yaml"), group=>$1); # force group to be the same as before
 	$feffobject -> workspace($feffdir);
+	$feffobject -> postcrit($postcrit);
 	$feffobject -> make_feffinp('full');
 	my $feff = File::Spec->catfile($feffdir, "$1.inp");
 	rename(File::Spec->catfile($feffdir, "feff.inp"), $feff);
@@ -328,6 +337,37 @@ sub _external_feff {
   my ($fname, $noshow) = @_;
   my $file = $fname;
   $noshow ||= 0;
+
+  my $message = <<EOH
+Importing an external Feff calculation is usually a
+bad idea!
+
+If your external Feff calculation was made using a
+different version of Feff than that used by Artemis,
+then importing a Feff calculation is likely to fail
+in ways that may crash Artemis.
+
+If you rerun Feff after importing an external Feff
+calculation, your fits are likely to fail in surprising
+ways.
+
+Atoms or Feff input files are typically imported by
+selecting "Import project or data" from the File
+menu and the execution of Feff is managed by Artemis.
+
+Think carefully about whether you want to continue.
+EOH
+    ;
+  my $okcancel = Wx::MessageDialog->new($datapage,
+					$message,
+					"Caution!",
+					wxYES_NO);
+  if ($okcancel->ShowModal != wxID_YES) {
+    $rframes->{main}->status("Not importing an external Feff calculation.");
+    return;
+  };
+
+
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Atoms or Feff input file", cwd, q{},
 				  "Atoms/Feff input (*.inp)|*.inp|All files (*)|*",
@@ -463,7 +503,7 @@ sub _old {
   };
 
   $rframes->{main}->status("Importing Demeter fit serialization", 'wait');
-  Import('dpj', $dpj);
+  Import('dpj', $dpj, postcrit=>0);
   unlink $dpj;
 
   $$rdemeter->push_mru("old_artemis", $file);
@@ -625,7 +665,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -701,7 +741,8 @@ feffit.inp file
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -709,7 +750,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -17,7 +17,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the APS 10BM multi-channel detector');
 has '+version'     => (default => 0.2);
 has '+output'      => (default => 'project');
-has 'edge_energy'  => (is => 'rw', isa => 'Num', default => 0);
+has 'edge_energy'  => (is => 'rw', isa => 'LaxNum', default => 0);
 has '+time_consuming'  => (default => 1);
 has '+working_message' => (default => 'Converting multicolumn data file to an Athena project file');
 
@@ -122,7 +122,7 @@ Demeter::Plugins::10BMMultiChannel - filetype plugin for 10BM multi-channel data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 

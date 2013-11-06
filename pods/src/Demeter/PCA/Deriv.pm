@@ -3,8 +3,8 @@ use Moose::Role;
 
 use PDL::Lite;
 
-has 'emin'  => (is => 'rw', isa => 'Num', default => Demeter->co->default('pca', 'emin'));
-has 'emax'  => (is => 'rw', isa => 'Num', default => Demeter->co->default('pca', 'emax'));
+has 'emin'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pca', 'emin'));
+has 'emax'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pca', 'emax'));
 
 sub space_description {
   my ($self) = @_;
@@ -70,7 +70,7 @@ Demeter::PCA::Deriv - Principle components analysis on deriv(mu(E)) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -97,7 +97,8 @@ Document me!
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -105,7 +106,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -89,7 +89,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.14.</p>
+<p>This documentation refers to Demeter version 0.9.18.</p>
 
 
 
@@ -169,6 +169,12 @@ can be a bit more verbose.  It should be a single line, unlike the
 		<dd><p>This is a text string used as a temporary override to the name of Data
 object for use in a plot.  It should be reset to an empty string as
 soon as the plot requiring the name override is finished.</p></dd>
+	<dt><code>forcekey</code> (string)</dt>
+		<dd><p>When this is true, it forces the plotting system to use the name of
+the Data group as the legend key regardless of the type of plot.  This
+was needed to force an R123 plot to use the scaling information as the
+key rather than having the key be the part plotted, which is what
+normally happens for a single group R or q space plot.</p></dd>
 	<dt><code>cv</code> (number)</dt>
 		<dd><p>The characteristic value is a number associated with the data object.
 The cv is used to generate guess parameteres from lguess parameters
@@ -300,6 +306,9 @@ the <code>normalize</code> method.</p></dd>
 	<dt><code>bkg_nc2</code> (number)</dt>
 		<dd><p>The cubic parameter in the post-edge regression.  This is set as part of
 the <code>normalize</code> method.</p></dd>
+	<dt><code>bkg_nc3</code> (number)</dt>
+		<dd><p>The quartic parameter in the post-edge regression.  This is set as part of
+the <code>normalize</code> method.  (Larch only)</p></dd>
 	<dt><code>bkg_flatten</code> (boolean) <i>[1]</i></dt>
 		<dd><p>When true, a plot of normalized mu(E) data will be flattened.</p></dd>
 	<dt><code>bkg_fnorm</code> (boolean) <i>[0]</i></dt>
@@ -696,7 +705,8 @@ Cromer-Liberman.</li>
 	<li>Standard deviation for merged data not written to serialization.</li>
 </ul>
 
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)</p>
 
 <p>Patches are welcome.</p>
 
@@ -704,7 +714,7 @@ Cromer-Liberman.</li>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
 
 
 

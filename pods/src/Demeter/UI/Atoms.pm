@@ -22,6 +22,7 @@ use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU EVT_LEFT_DOWN);
 
 use Demeter::UI::Artemis::Close qw(on_close);
+use Demeter::UI::Wx::SpecialCharacters qw($MDASH);
 
 my $icon_dimension = 30;
 
@@ -54,7 +55,7 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
-  $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
+  $statusbar -> SetStatusText("Welcome to Atoms $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $self->{statusbar} = $statusbar;
 
   if ($component) {
@@ -63,7 +64,7 @@ sub new {
     $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
     $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
     $self->{toolbar} -> AddSeparator;
-    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
+    $self->{toolbar} -> AddTool(-1, "Feff doc", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Open Feff's on-line document in a browser" );
     $self->{toolbar} -> Realize;
     $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
     #$vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
@@ -213,10 +214,14 @@ sub on_discard {
   my $feffobject  = $self->{Feff}->{feffobject};
 
   if (not $force) {
-    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this Feff calculation?",
-				       "Discard?", wxYES_NO);
-    $self->status("Not discarding Feff calculation \"$this\".");
-    return if ($yesno->ShowModal == wxID_NO);
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+						 "Do you really wish to discard this Feff calculation?",
+						 "Discard?",
+						 "Discard");
+    if ($yesno->ShowModal == wxID_NO) {
+      $self->status("Not discarding Feff calculation \"$this\".");
+      return;
+    };
   };
 
   ## remove paths & VPaths from the plot list
@@ -253,10 +258,13 @@ sub on_discard {
 
 sub on_about {
   my ($self) = @_;
-  my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
-  $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
-  $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
-  Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
+  my $url = Demeter->feffdoc;
+  Wx::LaunchDefaultBrowser($url);
+
+  # my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
+  # $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
+  # $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
+  # Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
 };
 
 sub noop {
@@ -403,7 +411,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -561,7 +569,8 @@ How is plotting going to work when this is bolted onto Artemis?
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -569,7 +578,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

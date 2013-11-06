@@ -107,7 +107,8 @@ sub _save_chi_command {
     carp("Use file->chik_out configuration parameter for arbitrary wight chi(k) files");
   } elsif ($space eq 'r') {
     $self->_update("all");
-    $string = $self->template("process", "save_chir", {filename => $filename,
+    $string  = $self->template('process', 'dphase');
+    $string .= $self->template("process", "save_chir", {filename => $filename,
 						       titles   => "dem_data_*"});
   } elsif ($space eq 'q') {
     $self->_update("all");
@@ -311,12 +312,19 @@ sub title_glob {
   my @titles = split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
-  $self->dispense('process', 'erase',  {items=>"\$$globname\*"});
+  $self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
   my $apps = join(" ", "XDI/1.0", $self->data->xdi_applications, "Demeter/$Demeter::VERSION");
-  foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
-    ++$i;
-    my $t = sprintf("%s%2.2d", $globname, $i);
-    $self->place_string($t, $line);
+
+  my @all = ($apps, @titles, "///", @{$self->data->xdi_comments});
+  if ($self->is_ifeffit) {
+    foreach my $line (@all) {
+      ++$i;
+      my $t = sprintf("%s%2.2d", $globname, $i);
+      $self->place_string($t, $line);
+    };
+  } else {
+    $self -> co -> set(headers => \@all);
+    $self->dispense("process", "save_header");
   };
   return $self;
 };
@@ -364,7 +372,7 @@ Demeter::Data::IO - Data Input/Output methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 SYNOPSIS
 
@@ -399,8 +407,8 @@ the data and the text of the C<fit_parameter_report> method.
 
 =item C<xmu>
 
-This is a seven column file of energy, mu(E), bkg(E), preline(E),
-postline(E), first derivative of mu(E), and second derivative of
+This is a seven column file of energy, mu(E), bkg(E), pre_edge(E),
+post_edge(E), first derivative of mu(E), and second derivative of
 mu(E).
 
 =item C<norm>
@@ -508,7 +516,8 @@ organized by common functionality.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -516,7 +525,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

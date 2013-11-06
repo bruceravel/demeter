@@ -32,7 +32,7 @@ use autodie qw(open close);
 use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
-#use Demeter::NumTypes qw( PosInt Natural NonNeg );
+use Demeter::NumTypes qw( Natural );
 with "Demeter::ScatteringPath::Rank";
 
 use Chemistry::Elements qw(get_symbol);
@@ -44,7 +44,7 @@ use List::MoreUtils qw(pairwise notall all any);
 use Math::Round qw(round);
 #use Math::Trig qw(acos atan);
 use POSIX qw(acos);
-use Demeter::Constants qw($PI $EPSILON5 $EPSILON6);
+use Demeter::Constants qw($PI $EPSILON5 $EPSILON6 $FEFFNOTOK);
 use String::Random qw(random_string);
 
 
@@ -68,6 +68,12 @@ my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff', alias => 'parent');
 has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
+## this is used only by paths coming from an aggregate Feff
+## calculation, which *has* to resolve details of the paths
+## relatively early since the Feff calcualtion of origin will
+## eventually be thrown away
+has 'ipot'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
 has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
 
 has 'rleg'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -78,21 +84,26 @@ has 'etanonzero'   => (is => 'rw', isa => 'Bool',     default => 0);
 has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
-has 'halflength'   => (is => 'rw', isa => 'Num',      default => 0);
+has 'halflength'   => (is => 'rw', isa => 'LaxNum',   default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
-has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
-has 'zcwif'        => (is => 'rw', isa => 'Num',      default => -1);
+has 'n'		   => (is => 'rw', isa => 'LaxNum',   default => 1);
+has 'zcwif'        => (is => 'rw', isa => 'LaxNum',   default => -1);
 
 has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'fuzzy'	   => (is => 'rw', isa => 'LaxNum',   default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
+has 'orig_nnnn'    => (is => 'rw', isa => 'Str',      default => q{});
+has 'site_fraction'=> (is => 'rw', isa => 'LaxNum',   default => 1);
+
+has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
 
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -101,12 +112,21 @@ has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 
 
 sub BUILD {
-  my ($self, @params) = @_;
-  $self->mo->push_ScatteringPath($self);
+  #my ($self, @params) = @_;
+  ## cannot do this now, keeping track of SP objects in this while
+  ## during pathfinder is too damn inefficient
+  #$self->mo->push_ScatteringPath($self);
+  return $_[0];
+};
+# a bit of optimization, skipping the "($self) = @_" step
+override remove => sub {
+  return $_[0] if $_[0]->pathfinding;
+  $_[0]->mo->remove($_[0]) if (defined($_[0]) and ref($_[0]) =~ m{Demeter} and defined($_[0]->mo));
+  return $_[0];
 };
 sub DEMOLISH {
-  my ($self) = @_;
-  $self->alldone;
+  #my ($self) = @_;
+  $_[0]->remove;
 };
 
 # override all => sub {
@@ -154,6 +174,13 @@ override serialization => sub {
   return YAML::Tiny::Dump(\%pathinfo);
 };
 
+## identify the scatter for a single scattering path, return He (obviously silly) is MS
+sub scatterer {
+  my ($self) = @_;
+  return 'He' if $self->nleg > 2;
+  my @atoms  = split(/\./, $self->string);
+  return $self->feff->site_species($atoms[1]);
+};
 
 ## construct the intrp line by disentangling the SP string
 sub intrplist {
@@ -164,10 +191,25 @@ sub intrplist {
   my @atoms  = split(/\./, $self->string);
   my @intrp = ($token);
   my @sites  = @{ $feff->sites };
-  foreach my $a (@atoms[1 .. $#atoms-1]) {
-    my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
-    push @intrp, sprintf("%-6s", $this);
-  };
+  if ($#{$self->ipot} > -1) { ## this is an aggregate feff calc
+    foreach my $i (1 .. $#{$self->ipot}-1) {
+      my $this;
+      my $a = $self->ipot->[$i];
+      if ($a == 0) {
+	$this = $token;
+      } else {
+	$this = $self->feff->potentials->[$a]->[2] || get_symbol($self->feff->potentials->[$a]->[1]);
+      };
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  } else {		      ## this is a normal feff calc
+    foreach my $a (@atoms[1 .. $#atoms-1]) {
+      my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  }
   push @intrp, $token;
   return join(" ", @intrp);
 };
@@ -175,15 +217,17 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
-  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %6.2f  %d  %s",
+  my $rank = (Demeter->co->default('pathfinder', 'rank') eq 'feff')
+    ? $self->get_rank('zcwif') : $self->get_rank('area2_n');
+  $rank ||= 0;
+  return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
-      $self->get_rank('zcwif') || 0,
-	$self->nleg, $self->Type;
+      $rank, $self->nleg, $self->Type;
 };
 
 sub labelline {
   my ($self) = @_;
-  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, $self->nleg, $self->n);
+  return sprintf("Reff=%5.3f, nleg=%d, degen=%-2d", $self->fuzzy, $self->nleg, $self->n);
 };
 alias interplist => 'intrplist';
 alias interpline => 'intrpline';
@@ -195,17 +239,30 @@ sub ssipot {
   my $ipot = $self->feff->sites->[$this_site]->[3];
   return $ipot;
 };
+sub fetch_ipots {
+  my ($self) = @_;
+  my @hits = split(/\./, $self->string);
+  my @these;
+  foreach my $h (@hits) {
+    my $this_site = $h;
+    my $ipot = ($this_site eq '+') ? 0 : $self->feff->sites->[$this_site]->[3];
+    #$ipot = 0 if ($ipot eq Demeter->co->default('pathfinder', 'token');
+    push @these, $ipot;
+  };
+  return @these;
+};
 
 ## set halflength and beta list for this path
 sub evaluate {
   my ($self) = @_;
-  my ($feff, $string) = $self->get(qw{feff string});
+  my ($feff, $string) = ($self->feff, $self->string);
 
   ## compute nlegs
   $self -> compute_nleg_nkey($string);
   $self -> compute_halflength($feff, $string);
   $self -> compute_beta($feff, $string);
-  $self -> set(betakey=>$self->_betakey, etakey=>$self->_etakey);
+  $self -> betakey($self->_betakey);
+  $self -> etakey($self->_etakey);
   $self -> identify_path;
   $self -> randstring(random_string('ccccccccc').'.sp');
   return $self;
@@ -223,7 +280,8 @@ sub compute_nleg_nkey {
     $nkey += $cofactor * $_;
     $cofactor *= 1000;
   };
-  $self->set(nleg=>$na, nkey=>$nkey);
+  $self->nleg($na);
+  $self->nkey($nkey);
   return ($na, $nkey);
 };
 
@@ -250,7 +308,8 @@ sub compute_halflength {
   my $cindex = $feff->abs_index;
   #my $halflength = sprintf("%.5f", 0.5*$feff->_length($cindex, @atoms, $cindex));
   my $halflength = sprintf("%.5f", 0.5*Demeter::Feff::_length($cindex, @atoms, $cindex));
-  $self->set(halflength=>$halflength, heapvalue=>$halflength);
+  $self->halflength($halflength);
+  $self->heapvalue($halflength);
   return $halflength;
 };
 
@@ -325,6 +384,9 @@ sub compute_beta {
   $atoms[0]   = $ai;		#  replace central atom tokens
   $atoms[-1]  = $ai;
 
+  ## predefine variables so they do not re-instantiated during loops
+  my ($im1, $i, $ip1, @asite, @bsite, @csite, @vector, $ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $b);
+
   my (@alpha, @beta, @gamma, @eta, @aleph, @gimel, @rleg);
   $rleg[0]  = 0;
   $alpha[0] = 0;
@@ -343,29 +405,29 @@ sub compute_beta {
     #$aleph[$j] = [0,0];
     #$gimel[$j] = [0,0];
 
-    my ($im1, $i, $ip1) = ($j-1, $j, $j+1);
+    ($im1, $i, $ip1) = ($j-1, $j, $j+1);
     if ($j == $#atoms) {
       ($im1, $i, $ip1) = ($j-1, 0, 1);
     };#  elsif ($j == $#atoms+1) {
     # 	($im1, $i, $ip1) = ($#atoms-1, $#atoms, 0);
     #       };
 
-    my @asite = @{ $rsites->[$atoms[$im1]] }[0..2];
-    my @bsite = @{ $rsites->[$atoms[$i  ]] }[0..2];
-    my @csite = @{ $rsites->[$atoms[$ip1]] }[0..2];
+    @asite = @{ $rsites->[$atoms[$im1]] }[0..2];
+    @bsite = @{ $rsites->[$atoms[$i  ]] }[0..2];
+    @csite = @{ $rsites->[$atoms[$ip1]] }[0..2];
 
-    my @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
-    my ($ct, $st, $cp, $sp)     = _trig(@vector);
+    @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
+    ($ct, $st, $cp, $sp)     = _trig(@vector);
     @vector    = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
     $rleg[$j]  = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
-    my ($ctp, $stp, $cpp, $spp) = _trig(@vector);
+    ($ctp, $stp, $cpp, $spp) = _trig(@vector);
 
-    my $cppp = $cp*$cpp + $sp*$spp;
-    my $sppp = $spp*$cp - $cpp*$sp;
+    $cppp = $cp*$cpp + $sp*$spp;
+    $sppp = $spp*$cp - $cpp*$sp;
     #my $phi  = atan2($sp,  $cp);
     #my $phip = atan2($spp, $cpp);
 
-    my $b = $ct*$ctp + $st*$stp*$cppp;
+    $b = $ct*$ctp + $st*$stp*$cppp;
     if ($b < -1) {
       $beta[$j] = "180.0000";
     } elsif ($b >  1) {
@@ -384,9 +446,9 @@ sub compute_beta {
     $gimel[$j] = [-$st*$ctp*$cppp + $ct*$stp,  -$st *$sppp];
   };
 
-  my @asite = @{ $rsites->[$atoms[$#atoms]] }[0..2];
-  my @bsite = @{ $rsites->[$atoms[0      ]] }[0..2];
-  my @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
+  @asite = @{ $rsites->[$atoms[$#atoms]] }[0..2];
+  @bsite = @{ $rsites->[$atoms[0      ]] }[0..2];
+  @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
   $rleg[$#atoms+1] = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
 
   #$alpha[0] = $alpha[$#atoms];
@@ -416,7 +478,7 @@ sub compute_beta {
 ## degeneracy checking
 sub compare {
   my ($self, $other) = @_;
-  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
+#  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
   my $feff = $self->feff;
 
   ## compare path lengths
@@ -433,15 +495,26 @@ sub compare {
   ## number of legs
   return "nlegs different" if ($#this != $#that);
 
-  ## ipots
-  my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
-  my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
-  my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-  if (notall {$_} @ipot_compare) { # time reversal
-    ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
-    @that_ipot = reverse @that_ipot;
-    @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-    return "ipots different" if (notall {$_} @ipot_compare);
+  if ($#{$self->ipot} > -1) {  ## this is an Aggregate calculation
+    #print $/, '>> ', join("|", @{$self->ipot}, $self->halflength), $/;
+    #print '<< ', join("|", @{$other->ipot}), $/;
+    my @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @{$other->ipot};
+    if (notall {$_} @ipot_compare) { # time reversal
+      my @that = reverse(@{$other->ipot});
+      @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @that;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
+  } else { ## this is a normal Feff calculation
+    ## ipots
+    my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
+    my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
+    my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+    if (notall {$_} @ipot_compare) { # time reversal
+      ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
+      @that_ipot = reverse @that_ipot;
+      @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
   };
 
   ## beta angles
@@ -508,13 +581,17 @@ sub pathsdat {
   shift @atoms; pop @atoms;
   my $i=1;
   my ($rrleg, $rbeta, $reta) = $self->get(qw(rleg beta eta));
+  my @c = $feff->central;
   foreach my $a (@atoms) {
     my @coords = @{ $sites[$a] };
     ## use fuzzy length for fuzzily degenerate paths, need to scale coordinates
     my $scale = $self->fuzzy / $self->halflength;
-    @coords[0..2] = map {$scale*$_} @coords[0..2];
+    foreach my $j (0..2) {
+      $coords[$j] = $c[$j] + ($coords[$j]-$c[$j])*$scale;
+    };
     ## this bit o' yuck gets a tag from the potentials list entry if not in the sites list
     $coords[4] ||= $feff->site_tag($a);
+    $coords[4] =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
     $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", @coords);
     $pd .= sprintf("  %9.4f %9.4f %9.4f",$rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args{angles};
     $pd .= "\n";
@@ -583,7 +660,7 @@ sub all_degeneracies {
 
 sub identify_path {
   my ($self) = @_;
-  my ($nleg, $feff) = $self->get(qw(nleg feff));
+  my ($nleg, $feff) = ($self->nleg, $self->feff);
   my @beta = @{ $self->beta };
   my ($type, $weight) = (q{}, 0);
 
@@ -712,7 +789,7 @@ Demeter::ScatteringPath - Create and manipulate scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS
@@ -1071,7 +1148,8 @@ changing species of an atom in a path
 
 And testing has been limited.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1079,7 +1157,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

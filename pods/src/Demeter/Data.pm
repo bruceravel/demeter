@@ -47,6 +47,7 @@ with 'MooseX::Quenchable';
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
 use Moose::Util::TypeConstraints;
+use MooseX::Types::LaxNum;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  Clamp
@@ -71,7 +72,7 @@ has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
 has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
-has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
+has 'cv'          => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'collided'    => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
@@ -95,13 +96,14 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
+has 'forcekey'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'annotation'  => (is => 'rw', isa => 'Str',    default => q{});
-has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);
-has 'merge_weight'=> (is => 'rw', isa => 'Num',    default => 1);
+has 'importance'  => (is => 'rw', isa => 'LaxNum',    default => 1);
+has 'merge_weight'=> (is => 'rw', isa => 'LaxNum',    default => 1);
 
 
 has 'tying' => (is=>'rw', isa => 'Bool', default => 0);
@@ -141,7 +143,7 @@ has 'chi_column' => (is => 'rw', isa => 'Str',  default => q{},
 				       $self->is_col(1)
 				     }
 				   });
-has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal_scale));
+has  $_ => (is => 'rw', isa => 'LaxNum',  default => 0) foreach (qw(i0_scale signal_scale));
 
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
   foreach (qw(columns energy_string xmu_string i0_string signal_string chi_string));
@@ -149,7 +151,7 @@ has 'ln'  => (is => 'rw', isa => 'Bool', default => 0,
 	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 has 'inv' => (is => 'rw', isa => 'Bool', default => 0,
 	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
-has 'multiplier' => (is => 'rw', isa => 'Num', default => 1,
+has 'multiplier' => (is => 'rw', isa => 'LaxNum', default => 1,
 		     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 
 has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
@@ -159,7 +161,7 @@ has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
 		   trigger => sub{shift->explain_recordtype},
 		  );
 has  $_  => (is => 'rw', isa => 'Bool',  default => 0, trigger => sub{shift->explain_recordtype},)
-  foreach (qw(is_col is_nor is_kev is_special is_fit));
+  foreach (qw(is_col is_nor is_kev is_pixel is_special is_fit));
 has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
 #foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
 
@@ -185,13 +187,13 @@ has 'rebinned'  => (is => 'rw', isa => 'Bool',  default => 0,);
 has 'recordtype'       => (is => 'rw', isa => 'Str',  default => q{});
 has 'plotspaces'       => (is => 'rw', isa => 'Str',  default => q{any});
 has 'npts'             => (is => 'rw', isa => 'Int',  default => 0);
-has 'xmax'             => (is => 'rw', isa => 'Num',  default => 0);
-has 'xmin'             => (is => 'rw', isa => 'Num',  default => 0);
-has 'epsk'             => (is => 'rw', isa => 'Num',  default => 0);
-has 'epsr'             => (is => 'rw', isa => 'Num',  default => 0);
-has 'recommended_kmax' => (is => 'rw', isa => 'Num',  default => 0);
-has 'nknots'           => (is => 'rw', isa => 'Num',  default => 0);
-has 'maxk'             => (is => 'rw', isa => 'Num',  default => 0);
+has 'xmax'             => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'xmin'             => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'epsk'             => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'epsr'             => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'recommended_kmax' => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'nknots'           => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'maxk'             => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 
 ## -------- data processing status flags
@@ -212,13 +214,13 @@ has 'update_fft'     => (is => 'rw', isa => 'Bool',  default => 1,
 
 has 'update_bft'     => (is => 'rw', isa => 'Bool',  default => 1);
 
-has 'nidp'           => (is => 'rw', isa => 'Num', default => 0);
+has 'nidp'           => (is => 'rw', isa => 'LaxNum', default => 0);
 
 ## -------- background removal parameters
 has 'bkg_algorithm'   => (is => 'rw', isa => 'Str',   default => 'autobk',
 			  traits => [ qw(Quenchable) ],
 			 );
-has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
+has 'bkg_e0'          => (is => 'rw', isa => 'LaxNum',   default => 0,
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
@@ -226,15 +228,17 @@ has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co-
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
+has 'bkg_eshift'      => (is => 'rw', isa => 'LaxNum',   default => 0,
 			  alias => 'eshift',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; 
+					  #$self->fetch_delta_eshift;
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
 					  $self->shift_reference if not $self->tying;
 					  $self->tying(0); # prevent deep recursion
 					});
+has 'bkg_delta_eshift'=> (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  traits => [ qw(Quenchable) ],
@@ -248,24 +252,23 @@ has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co-
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre1")        || -150},
+has 'bkg_pre1'        => (is => 'rw', isa => 'LaxNum',   default => sub{ shift->co->default("bkg", "pre1")        || -150},
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre2")        || -30},
+has 'bkg_pre2'        => (is => 'rw', isa => 'LaxNum',   default => sub{ shift->co->default("bkg", "pre2")        || -30},
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor1")        || 150},
+has 'bkg_nor1'        => (is => 'rw', isa => 'LaxNum',   default => sub{ shift->co->default("bkg", "nor1")        || 150},
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor2")        || 400},
+has 'bkg_nor2'        => (is => 'rw', isa => 'LaxNum',   default => sub{ shift->co->default("bkg", "nor2")        || 400},
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-## these need a trigger
-has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
+has 'bkg_spl1'        => (is => 'rw', isa => 'LaxNum',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
@@ -273,7 +276,7 @@ has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
 					  $self->tying(0);
 					},
 			  default => sub{ shift->co->default("bkg", "spl1")        || 0});
-has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
+has 'bkg_spl2'        => (is => 'rw', isa => 'LaxNum',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
@@ -281,7 +284,7 @@ has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
 					  $self->tying(0);
 					},
 			  default => sub{ shift->co->default("bkg", "spl2")        || 0});
-has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
+has 'bkg_spl1e'       => (is => 'rw', isa => 'LaxNum',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
@@ -289,7 +292,7 @@ has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
 					  $self->tying(0);
 					},
 			  default => 0);
-has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
+has 'bkg_spl2e'       => (is => 'rw', isa => 'LaxNum',
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
@@ -298,15 +301,16 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 					},
 			  default => 0);
 
-has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
+has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'hanning'},
 		      traits => [ qw(Quenchable) ],
-		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+		      coerce => 1,
+		      trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) });
 
-has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
+has $_ => (is => 'rw', isa => 'LaxNum',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
 
 has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
 
-has 'bkg_step'    => (is => 'rw', isa => 'Num', default => 0,
+has 'bkg_step'    => (is => 'rw', isa => 'LaxNum', default => 0,
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 has 'bkg_fixstep' => (is => 'rw', isa => 'Bool', default => 0,
@@ -321,7 +325,7 @@ has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1},
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten")},
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
@@ -350,12 +354,12 @@ has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K', coerce => 1,
 		      traits => [ qw(Quenchable) ],
 		     );
 
-has 'fft_kmin'    => (is => 'rw', isa => 'Num',
+has 'fft_kmin'    => (is => 'rw', isa => 'LaxNum',
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmin")     ||  3});
 
-has 'fft_kmax'    => (is => 'rw', isa => 'Num',
+has 'fft_kmax'    => (is => 'rw', isa => 'LaxNum',
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmax")     || -2});
@@ -413,20 +417,20 @@ has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->de
 has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "karb")       ||  0}, traits => [ qw(Quenchable) ],);
 has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0}, traits => [ qw(Quenchable) ],);
 has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1, traits => [ qw(Quenchable) ],);
-has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0, traits => [ qw(Quenchable) ],);
+has 'fit_epsilon'	  => (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
 has 'fit_cormin'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4}, traits => [ qw(Quenchable) ],);
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
 has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0, traits => [ qw(Quenchable) ],);
-has 'fit_rfactor1'	  => (is => 'rw', isa => 'Num',      default => 0, );
-has 'fit_rfactor2'	  => (is => 'rw', isa => 'Num',      default => 0, );
-has 'fit_rfactor3'	  => (is => 'rw', isa => 'Num',      default => 0, );
+has 'fit_rfactor1'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
+has 'fit_rfactor2'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
+has 'fit_rfactor3'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
 has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] }, traits => [ qw(Quenchable) ],);
 
 ## -------- plotting parameters
-has 'y_offset'	          => (is => 'rw', isa => 'Num',      default => 0, traits => [ qw(Quenchable) ],);
-has 'plot_multiplier'	  => (is => 'rw', isa => 'Num',      default => 1, traits => [ qw(Quenchable) ],);
+has 'y_offset'	          => (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
+has 'plot_multiplier'	  => (is => 'rw', isa => 'LaxNum',   default => 1, traits => [ qw(Quenchable) ],);
 
 
 sub BUILD {
@@ -444,7 +448,17 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
-  ##$self->dispense('process', 'erase', {items=>"\@group ".$self->group});
+  ## It seems as though this is getting called when I discard the
+  ## group AND when perl is doing its final clean up.  I guess I don't
+  ## quite understand how perl & Moose shut down...  Anyway, the
+  ## following is essentially a check to see if this block of code has
+  ## already been called for this Data object and avoid revivifying
+  ## it.  But I still get the chance to clean up the Larch group
+  ## before leaving, so I can leave a tidy server alive and running.
+  return if not Demeter->mo->fetch('Data', $self->group);
+  if ($self->is_larch and ($self->group ne 'default___')) {
+    $self->dispense('process', 'erase', {items=>$self->group});
+  };
   $self->alldone;
 };
 
@@ -581,6 +595,8 @@ sub unset_standard {
 sub set_windows {
   my ($self, $window) = @_;
   $window = lc($window);
+  $window='kaiser' if ($self->is_larch and ($window eq 'kaiser-bessel'));
+  $window='kaiser-bessel' if ($self->is_ifeffit and ($window eq 'kaiser'));
   return 0 if not is_Window($window);
   $self->bkg_kwindow($window);
   $self->fft_kwindow($window);
@@ -597,10 +613,15 @@ sub determine_data_type {
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
     $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine', type=>'raw'});
-    my $f = (split(" ", $self->fetch_string('$column_label')))[0];
+    my $f = (split(" ", $self->fetch_string('column_label')))[0];
     my @x = $self->fetch_array("deter___mine.$f");
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
-    if ($x[0] > 100) {		# seems to be energy data
+    if ($self->is_pixel) {
+      $self->datatype('xmu');
+      $self->is_kev(0);
+      $self->update_columns(0);
+      $self->update_norm(1);
+    } elsif ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
       $self->update_columns(0);
       $self->update_norm(1);
@@ -622,6 +643,7 @@ sub determine_data_type {
 
 sub _update {
   my ($self, $which) = @_;
+  #print join("|", $which, caller, $self->update_norm, $self->update_bkg, $self->update_fft), $/;
   $which = lc($which);
  WHICH: {
     ($which eq 'data') and do {
@@ -714,6 +736,26 @@ sub read_data {
   return $self;
 };
 
+## remove all arrays of this group that are not needed for further
+## data processing
+sub extraneous {
+  my ($self) = @_;
+  my $re = join("|", qw(energy xmu i0 ir signal der sec pre pre_edge
+			post_edge nbkg prex theta line flat nder
+			nsec bkg flat nbkg norm fbkg k chi));
+  my $items = join(", " ,map {$self->group.'.'.$_} grep {!m{$re}} split(" ", $self->columns));
+  #print $items, $/;
+  $self->dispense('process', 'erase', {items=>$items}) if ($items !~ m{\A\s*\z});
+  #$command .= $self->template("process", "post_autobk");
+  #if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+  #  $command .= $self->template("process", "flatten_fit");
+  #} else {
+  #  $command .= $self->template("process", "flatten_set");
+  #};
+  ##$self->dispose($command);
+  $self->update_norm(1);
+}
+
 sub explain_recordtype {
   my ($self) = @_;
   my $string = ($self->datatype eq 'xmu')        ? 'mu(E)'
@@ -779,7 +821,7 @@ sub sort_data {
     ## now feed columns back to ifeffit
     my $group = $self->group;
     $self->dispense('process', 'comment', {comment=>"replacing arrays for $group with sorted versions"});
-    $self->dispense('process', 'erase', {items=>"\@group $group"});
+    $self->dispense('process', 'erase', {items=>"\@group $group"}) if (not $self->is_larch);
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
@@ -794,7 +836,7 @@ sub _read_data_command {
   my ($self, $type) = @_;
   my $string = q[];
   $self->raw_check;
-  if ($type eq 'xmu') {
+  if (($type eq 'xmu') and ($self->is_ifeffit)) { # for larch better to use "read" template
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
     $self->provenance("mu(E) file ".$self->file);
@@ -835,7 +877,7 @@ sub rfactor {
   if (lc($self->fit_space) eq 'k') {
     ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
     @x  = $self -> get_array("k");
-    @di = $self -> get_array("chi");
+    @dr = $self -> get_array("chi");
     @fr = $self -> get_array("chi", "fit");
     foreach my $i (0 .. $#x) {
       next if ($x[$i] < $xmin);
@@ -885,9 +927,9 @@ sub rfactor {
       };
     };
   };
-  $self->fit_rfactor1($nn[1]/$dd[1]);
-  $self->fit_rfactor2($nn[2]/$dd[2]);
-  $self->fit_rfactor3($nn[3]/$dd[3]);
+  $self->fit_rfactor1($nn[1]/$dd[1]) if $dd[1]>0;
+  $self->fit_rfactor2($nn[2]/$dd[2]) if $dd[2]>0;
+  $self->fit_rfactor3($nn[3]/$dd[3]) if $dd[3]>0;
   return $self;
 };
 
@@ -933,6 +975,7 @@ override 'deserialize' => sub {
   $self -> update_data(0);
   $self -> update_columns(0);
   $self -> update_norm(1);
+  $self -> dispense('process','make_group');
 
   my $path = $self -> mo -> fetch('Path', $self->fft_pcpathgroup);
   $self -> fft_pcpath($path);
@@ -967,7 +1010,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 
 =head1 SYNOPSIS
@@ -1062,6 +1105,14 @@ C<title> attibute.
 This is a text string used as a temporary override to the name of Data
 object for use in a plot.  It should be reset to an empty string as
 soon as the plot requiring the name override is finished.
+
+=item C<forcekey> (string)
+
+When this is true, it forces the plotting system to use the name of
+the Data group as the legend key regardless of the type of plot.  This
+was needed to force an R123 plot to use the scaling information as the
+key rather than having the key be the part plotted, which is what
+normally happens for a single group R or q space plot.
 
 =item C<cv> (number)
 
@@ -1265,6 +1316,11 @@ the C<normalize> method.
 
 The cubic parameter in the post-edge regression.  This is set as part of
 the C<normalize> method.
+
+=item C<bkg_nc3> (number)
+
+The quartic parameter in the post-edge regression.  This is set as part of
+the C<normalize> method.  (Larch only)
 
 =item C<bkg_flatten> (boolean) I<[1]>
 
@@ -1825,7 +1881,8 @@ Standard deviation for merged data not written to serialization.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -1833,7 +1890,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

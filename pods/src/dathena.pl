@@ -36,7 +36,7 @@ BEGIN {
   };
 };
 use Wx;
-Wx::InitAllImageHandlers();
+#Wx::InitAllImageHandlers();
 use Demeter::UI::Athena;
 use vars qw($app);
 $app  = Demeter::UI::Athena->new;
@@ -49,7 +49,7 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.15.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -63,21 +63,13 @@ Athena is a graphical interface to Ifeffit for XAS data processing.
 
 Immediately import the #-th item from the MRU list
 
-=item C<-l>
-
-Turn on Larch support (requires a running larch server)
-
-=item C<-d>
-
-Set Demeter's devflag to a true value (used for development)
-
 =back
 
 =head1 AUTHOR
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://bruceravel.github.com/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

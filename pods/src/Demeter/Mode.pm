@@ -1,6 +1,9 @@
 package Demeter::Mode;
 
 use Moose; #X::Singleton;
+use MooseX::Aliases;
+use MooseX::Types::LaxNum;
+
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -11,15 +14,15 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(zip none);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
-has 'group'     => (is => 'rw', isa => 'Str',     default => q{Mode});
-has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
+has 'group'      => (is => 'rw', isa => 'Str', default => q{Mode});
+has 'name'       => (is => 'rw', isa => 'Str', default => q{Mode});
 
-has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
-has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
+has 'backend'    => (is => 'rw', isa => 'Bool', default => 1, alias=>['ifeffit', 'larch']);
+has $_           => (is => 'rw', isa => 'Bool', default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
 has 'buffer'     => (is => 'rw', isa => Empty.'|ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
@@ -44,6 +47,7 @@ has 'template_analysis' => (is => 'rw', isa => 'Str', default => 'ifeffit');
 has 'template_plot'     => (is => 'rw', isa => 'Str', default => 'pgplot');
 has 'template_feff'     => (is => 'rw', isa => 'Str', default => 'feff6');
 has 'template_report'   => (is => 'rw', isa => 'Str', default => 'standard');
+has 'template_plugin'   => (is => 'rw', isa => 'Str', default => 'ifeffit');
 # has 'template_process'  => (is => 'rw', isa => 'TemplateProcess',  default => 'ifeffit');
 # has 'template_fit'      => (is => 'rw', isa => 'TemplateFit',      default => 'ifeffit');
 # has 'template_analysis' => (is => 'rw', isa => 'TemplateAnalysis', default => 'ifeffit');
@@ -400,7 +404,8 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},);
+				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},
+	       );
 
 has 'Plugins' => (
 		traits    => ['Array'],
@@ -432,10 +437,11 @@ has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
+has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
-has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
-has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
-has 'heap_used'	   => (is => 'rw', isa => 'Num',  default => 0);
+has 'check_heap'   => (is => 'rw', isa => 'Bool',   default => 0);
+has 'heap_free'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'heap_used'	   => (is => 'rw', isa => 'LaxNum', default => 0);
 
 sub increment_fit {
   my ($self) = @_;
@@ -452,9 +458,14 @@ sub reset_path_index {
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
-  return q{} if ($type !~ m{(?:$re)});
-  my $list = $self->$type;
-  foreach my $o (@$list) {
+  my @thesetypes = (ref($type) eq 'ARRAY') ? @$type : ($type);
+  return q{} if (none {$_ =~ m{(?:$re)}} @thesetypes);
+  my @objects = ();
+  foreach my $t (@thesetypes) {
+    my $list = $self->$t;
+    push @objects, grep {defined($_)} @$list;
+  }
+  foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };
   return q{};
@@ -479,6 +490,8 @@ sub remove {
     $object->end_plot;
     $type = 'Plot';
   } elsif ($type eq 'External') {
+    $type = 'Feff';
+  } elsif ($type eq 'Aggregate') {
     $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
@@ -593,7 +606,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.14.
+This documentation refers to Demeter version 0.9.18.
 
 =head1 DESCRIPTION
 
@@ -629,9 +642,9 @@ object is the glue that allows things like that to happen.
 
 =over 4
 
-=item C<ifeffit>
+=item C<backend>
 
-Dispose commands to Ifeffit when true.
+Dispose commands to Larch or Ifeffit, as appropriate, when true.
 
 =item C<screen>
 
@@ -954,7 +967,8 @@ Errors should be propagated into def parameters
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
 
 Patches are welcome.
 
@@ -962,7 +976,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
