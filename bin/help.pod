@@ -14,7 +14,7 @@ This documentation refers to Demeter version 0.9.18.
 
 An excellent resource exists for anyone stumbling over the details of
 XAFS experimentation or analysis -- the  L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
+lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>>.
 This low-noise, high-quality mailing list is populated by many of the
 world's expert practitioners of XAS and it handles dozens of questions
 every month.  It should be the first place you go when you have a
@@ -147,7 +147,7 @@ Feff for XANES calculations -- remember that Bruce is but a minor
 contributor to Feff and may not in a position to answer your question
 authoritatively.  The PI of the Feff project and his team all read
 the L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> and
+lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
 often answer questions posted there.
 
 The Feff homepage is at L<http://leonardo.phys.washington.edu/feff/>.
@@ -158,7 +158,7 @@ L<http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentati
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

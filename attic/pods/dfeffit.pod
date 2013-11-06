@@ -69,7 +69,7 @@ See L<Demeter::Fit::Feffit> for bugs and limitations of the
 underlying library.
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

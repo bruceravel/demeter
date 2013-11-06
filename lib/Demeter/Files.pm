@@ -250,7 +250,7 @@ F<Bundle/DemeterBundle.pm> file.
 All tests are fragile.
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

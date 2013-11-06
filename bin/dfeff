@@ -271,7 +271,7 @@ of bug testing Demeter's pathfinder or for using paths with more than
 4 legs.
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 
