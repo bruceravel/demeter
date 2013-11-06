@@ -65,32 +65,32 @@ subtype NegInt,
 subtype NonNeg,
   as Str,
   where { looks_like_number($_) and $_ >= 0 },
-  message { "Num is not larger than or equal to 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
+  message { "Num is not larger than or equal to 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
 
 subtype PosNum,
   as Str,
-  where { looks_like_number($_) and $_ > 0 },
-  message { "Num is not larger than 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
+  where { looks_like_number($_) and eval{$_ > 0} } =>
+  message { "Num is not larger than 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
 
 subtype NegNum,
   as Str,
   where { looks_like_number($_) and $_ < 0 },
-  message { "Num is not smaller than 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
+  message { "Num is not smaller than 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
 
 subtype FeffVersions,
   as Int,
