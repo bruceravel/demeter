@@ -1428,10 +1428,7 @@ override 'deserialize' => sub {
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
-<<<<<<< HEAD
   $r_data = [] if not defined($r_data);
-=======
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   $self->datagroups($r_data);
 
   ## -------- import the data
@@ -2109,7 +2106,7 @@ set_all method not implemented
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

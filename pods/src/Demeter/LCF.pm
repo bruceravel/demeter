@@ -55,7 +55,6 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 			       $self->suffix(q{xmu}),  $self->space_description('raw mu(E)')        if  (lc($new) =~ m{\Axmu});
 			      });
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
-<<<<<<< HEAD
 has 'suffix'    => (is => 'rw', isa => 'Str',     default => q{flat});
 has 'noise'     => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'kweight'   => (is => 'rw', isa => 'LaxNum',  default => 0);
@@ -63,15 +62,6 @@ has 'slope'     => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'offset'    => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'delslope'  => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'deloffset' => (is => 'rw', isa => 'LaxNum',  default => 0);
-=======
-has 'suffix'    => (is => 'rw', isa => 'Str',    default => q{flat});
-has 'noise'     => (is => 'rw', isa => 'Num',    default => 0);
-has 'kweight'   => (is => 'rw', isa => 'Num',  default => 0);
-has 'slope'     => (is => 'rw', isa => 'Num',  default => 0);
-has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
-has 'delslope'  => (is => 'rw', isa => 'Num',  default => 0);
-has 'deloffset' => (is => 'rw', isa => 'Num',  default => 0);
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
@@ -85,21 +75,12 @@ has 'plot_components' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->
 has 'plot_difference' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "difference")  || 0});
 has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "indicators")  || 1});
 
-<<<<<<< HEAD
 has 'nstan'     => (is => 'rw', isa => 'Int',    default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int',    default => 0);
 has 'ninfo'     => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'epsilon'   => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'nvarys'    => (is => 'rw', isa => 'Int',    default => 0);
 has 'ntitles'   => (is => 'rw', isa => 'Int',    default => 0);
-=======
-has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
-has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
-has 'ninfo'     => (is => 'rw', isa => 'Num', default => 0);
-has 'epsilon'   => (is => 'rw', isa => 'Num', default => 0);
-has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
-has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 has 'standards' => (
 		    traits    => ['Array'],
 		    is        => 'rw',
@@ -1655,7 +1636,7 @@ better than converting the fit into a normal Data object
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

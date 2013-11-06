@@ -90,10 +90,7 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
-<<<<<<< HEAD
 use MooseX::Types::LaxNum;
-=======
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
@@ -1384,7 +1381,7 @@ Serialization is incompletely implemented at this time.
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

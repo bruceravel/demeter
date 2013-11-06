@@ -48,11 +48,6 @@ has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  
 has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") || 'lines'});
 has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
 
-has '+datastyle' => (default => sub{ shift->co->default("gnuplot", "datastyle") || 'lines'});
-has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  || 'lines'});
-has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") || 'lines'});
-has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
-
 
 before start_plot => sub {
   my ($self) = @_;
@@ -317,7 +312,7 @@ of replot not being consistent with multiplot
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

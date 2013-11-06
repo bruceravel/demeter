@@ -2,11 +2,8 @@ package Demeter::Mode;
 
 use Moose; #X::Singleton;
 use MooseX::Aliases;
-<<<<<<< HEAD
 use MooseX::Types::LaxNum;
 
-=======
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -461,7 +458,6 @@ sub reset_path_index {
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
-<<<<<<< HEAD
   my @thesetypes = (ref($type) eq 'ARRAY') ? @$type : ($type);
   return q{} if (none {$_ =~ m{(?:$re)}} @thesetypes);
   my @objects = ();
@@ -469,11 +465,6 @@ sub fetch {
     my $list = $self->$t;
     push @objects, grep {defined($_)} @$list;
   }
-=======
-  return q{} if ($type !~ m{(?:$re)});
-  my $list = $self->$type;
-  my @objects = grep {defined($_)} @$list;
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };
@@ -977,7 +968,7 @@ Errors should be propagated into def parameters
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

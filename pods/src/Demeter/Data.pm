@@ -238,11 +238,7 @@ has 'bkg_eshift'      => (is => 'rw', isa => 'LaxNum',   default => 0,
 					  $self->shift_reference if not $self->tying;
 					  $self->tying(0); # prevent deep recursion
 					});
-<<<<<<< HEAD
 has 'bkg_delta_eshift'=> (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
-=======
-has 'bkg_delta_eshift'=> (is => 'rw', isa => 'Num',   default => 0, traits => [ qw(Quenchable) ],);
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  traits => [ qw(Quenchable) ],
@@ -272,11 +268,7 @@ has 'bkg_nor2'        => (is => 'rw', isa => 'LaxNum',   default => sub{ shift->
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-<<<<<<< HEAD
 has 'bkg_spl1'        => (is => 'rw', isa => 'LaxNum',
-=======
-has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
@@ -314,11 +306,7 @@ has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->d
 		      coerce => 1,
 		      trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) });
 
-<<<<<<< HEAD
 has $_ => (is => 'rw', isa => 'LaxNum',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
-=======
-has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_nc3 bkg_former_e0));
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
 
@@ -1894,7 +1882,7 @@ Standard deviation for merged data not written to serialization.
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -170,12 +170,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-<<<<<<< HEAD
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
-=======
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

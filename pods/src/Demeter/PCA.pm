@@ -200,9 +200,9 @@ sub reconstruct {
   $ncomp ||= 2;
   $self->do_pca if $self->update_pca;
   $self->ncompused($ncomp);
-  my $nc = $ncomp-1;
-  my $slice = $self->eigenvectors->slice(":,0:$nc");
-  my $reproduced = $slice->transpose x $slice x $self->data_matrix; # 3.74
+  $ncomp = $ncomp-1;
+  my $slice = $self->eigenvectors->slice(":,0:$ncomp");
+  my $reproduced = $slice->transpose x $slice x $self->data_matrix;
   $self->reconstructed($reproduced);
   return $self;
 };
@@ -210,24 +210,15 @@ sub reconstruct {
 sub tt {
   my ($self, $target, $ncomp) = @_;
   #$ncomp ||= $self->ndata;
-<<<<<<< HEAD
   $ncomp ||= $self->ncompused;
   #$ncomp ||= 2;
-=======
-  $self->reconstruct($ncomp);
-  $ncomp ||= $self->ncompused;
-  $ncomp ||= 2;
-  $self->do_pca if $self->update_pca;
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   $self->ncompused($ncomp);
   my $nc = $ncomp-1;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
-
   # #$self->toggle_echo(1);
   # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
-<<<<<<< HEAD
   $self->data($target);
   $self->dispense('analysis', 'save_pca_tt', {ncomp=>$ncomp});
   my @coef = ();
@@ -250,53 +241,6 @@ sub tt {
 #   $self->put_array("tt", \@array);
 #   $self->data($target);
 #   $self->dispense('analysis', 'pca_tt');
-=======
-  # $self->data($target);
-  # $self->dispense('analysis', 'save_pca_tt', {ncomp=>$ncomp});
-  # my @coef = ();
-  # foreach my $i (0 .. $self->ndata-1) {
-  #   push @coef, $self->fetch_scalar("_p$i");
-  # };
-  # $self->ttcoefficients(\@coef);
-
-  ## numbers in comments refer to equations in Malinowski, Chapter 3
-
-  #print join(", ", $self->data_matrix->dims), $/;
-  #print join(", ", $self->reconstructed->dims), $/;
-
-  my $decomposed = $self->eigenvectors x $self->data_matrix;
-  my $u = $self->data_matrix / $self->eigenvalues->transpose;
-  my $e = $u->slice(":,0:$nc")->transpose x $u->slice(":,0:$nc");
-  my $tt = $e x $tarpdl->transpose;
-
-
-#   my $row_matrix =  $self->eigenvectors x $self->data_matrix; # 3.66
-
-#   #print $self->eigenvectors / sqrt($self->eigenvalues->transpose);
-#   #print $self->eigenvectors;
-# #  print $row_matrix x $row_matrix->transpose, $/;
-
-#   # my $data_dagger = $self->eigenvectors->slice("0:$nc,:") x $row_matrix->slice(":,0:$nc"); # 3.71
-#   # my $row_dagger  = $self->eigenvectors->transpose->slice(":,0:$nc") x $data_dagger;
-#   my $row_dagger = $row_matrix->slice(":,0:$nc");
-
-#   my $slice      = $self->eigenvectors->slice(":,0:$nc");
-#   #my $row_dagger = $slice x $self->data_matrix;
-#   #my $row_dagger = $slice x $self->reconstructed;
-#   print $slice x $slice->transpose, $/;
-
-
-#   my $lambda     = stretcher($self->eigenvalues->slice("0:$nc")); # matrix of eigenvalues on the diagonal
-#   my $transform  = $tarpdl x $row_dagger->transpose x $lambda->inv; # 3.97
-#   my $tt         = $transform x $row_dagger; # 3.84
-
-#  print $lambda, $/;
-
-  my @array      = $tt->list;
-  $self->put_array("tt", \@array);
-  $self->data($target);
-  $self->dispense('analysis', 'pca_tt');
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   return $self;
 };
 
@@ -534,11 +478,7 @@ Demeter::PCA - Principle components analysis
 
 =head1 VERSION
 
-<<<<<<< HEAD
 This documentation refers to Demeter version 0.9.16.
-=======
-This documentation refers to Demeter version 0.9.18.
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 =head1 SYNOPSIS
 
@@ -566,7 +506,7 @@ Document me!
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

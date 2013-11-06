@@ -84,7 +84,7 @@ C<&lt;notbenh at cpan.org&gt;>.  C<get> was based closely upon C<set>.
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

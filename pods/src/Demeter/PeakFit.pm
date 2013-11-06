@@ -44,7 +44,6 @@ $Fityk_exists       = eval "require fityk";
 has '+plottable'      => (default => 1);
 has '+data'	      => (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'	      => (default => 'PeakFit' );
-<<<<<<< HEAD
 has 'screen'	      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 has 'engine'	      => (is => 'rw', isa => 'Bool',   default => 1);
@@ -55,18 +54,6 @@ has 'sigma'	      => (is => 'rw', isa => 'Str',    default => q{});
 
 has 'xmin'	      => (is => 'rw', isa => 'LaxNum', default => 0, alias => 'emin');
 has 'xmax'	      => (is => 'rw', isa => 'LaxNum', default => 0, alias => 'emax');
-=======
-has 'screen'	      => (is => 'rw', isa => 'Bool', default => 0);
-has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
-has 'engine'	      => (is => 'rw', isa => 'Bool', default => 1);
-
-has 'xaxis'	      => (is => 'rw', isa => 'Str',  default => q{energy});
-has 'yaxis'	      => (is => 'rw', isa => 'Str',  default => q{flat});
-has 'sigma'	      => (is => 'rw', isa => 'Str',  default => q{});
-
-has 'xmin'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
-has 'xmax'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 has 'plot_components' => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool',   default => 0);
@@ -81,19 +68,6 @@ has 'rfactor'	      => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'chisqr'	      => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'chinu'	      => (is => 'rw', isa => 'LaxNum', default => 0);
 
-<<<<<<< HEAD
-=======
-has 'ninfo'	      => (is => 'rw', isa => 'Num',  default => 0);
-has 'epsilon'	      => (is => 'rw', isa => 'Num',  default => 0);
-has 'nparam'	      => (is => 'rw', isa => 'Int',  default => 0);
-has 'ndata'	      => (is => 'rw', isa => 'Int',  default => 0);
-has 'ntitles'	      => (is => 'rw', isa => 'Int',  default => 0);
-
-has 'rfactor'	      => (is => 'rw', isa => 'Num', default => 0);
-has 'chisqr'	      => (is => 'rw', isa => 'Num', default => 0);
-has 'chinu'	      => (is => 'rw', isa => 'Num', default => 0);
-
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 has 'lineshapes'   => (
 		       traits    => ['Array'],
 		       is        => 'rw',
@@ -814,7 +788,7 @@ need to test more functions
 =back
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

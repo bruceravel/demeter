@@ -592,7 +592,7 @@ the periodic table utilities and providing the Berger/Hubble XCOM
 tables and Feff's optical calculations as data resources.
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

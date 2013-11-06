@@ -100,10 +100,7 @@ has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 has 'orig_nnnn'    => (is => 'rw', isa => 'Str',      default => q{});
-<<<<<<< HEAD
 has 'site_fraction'=> (is => 'rw', isa => 'LaxNum',   default => 1);
-=======
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
@@ -121,12 +118,8 @@ sub BUILD {
   #$self->mo->push_ScatteringPath($self);
   return $_[0];
 };
-<<<<<<< HEAD
 # a bit of optimization, skipping the "($self) = @_" step
 override remove => sub {
-=======
-override remove => sub {	# a bit of optimization, skipping the "($self) = @_" step
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   return $_[0] if $_[0]->pathfinding;
   $_[0]->mo->remove($_[0]) if (defined($_[0]) and ref($_[0]) =~ m{Demeter} and defined($_[0]->mo));
   return $_[0];
@@ -198,7 +191,6 @@ sub intrplist {
   my @atoms  = split(/\./, $self->string);
   my @intrp = ($token);
   my @sites  = @{ $feff->sites };
-<<<<<<< HEAD
   if ($#{$self->ipot} > -1) { ## this is an aggregate feff calc
     foreach my $i (1 .. $#{$self->ipot}-1) {
       my $this;
@@ -218,13 +210,6 @@ sub intrplist {
       push @intrp, sprintf("%-6s", $this);
     };
   }
-=======
-  foreach my $a (@atoms[1 .. $#atoms-1]) {
-    my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
-    $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
-    push @intrp, sprintf("%-6s", $this);
-  };
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
   push @intrp, $token;
   return join(" ", @intrp);
 };
@@ -1164,7 +1149,7 @@ changing species of an atom in a path
 And testing has been limited.
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

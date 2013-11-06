@@ -188,7 +188,7 @@ To convert a hex number in decimal:
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -70,19 +70,11 @@ has 'element'	  => (is => 'rw', isa => 'Elem',  default => q{},
 subtype 'Tag'
   => as 'Str'
   => where { sub{ (my $foo = $_) =~ s{$FEFFNOTOK}{}g; return $foo} };
-<<<<<<< HEAD
 has 'tag'	  => (is => 'rw', isa => 'Tag',    default => q{});
 has 'utag'	  => (is => 'rw', isa => 'Str',    default => q{});
 has 'x'		  => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'y'		  => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'z'		  => (is => 'rw', isa => 'LaxNum', default => 0);
-=======
-has 'tag'	  => (is => 'rw', isa => 'Tag',  default => q{});
-has 'utag'	  => (is => 'rw', isa => 'Str',  default => q{});
-has 'x'		  => (is => 'rw', isa => 'Num',  default => 0);
-has 'y'		  => (is => 'rw', isa => 'Num',  default => 0);
-has 'z'		  => (is => 'rw', isa => 'Num',  default => 0);
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
 # has 'x'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
 # has 'y'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
 # has 'z'		  => (is => 'rw', isa => 'ZeroToOne',  default => 0, -coerce => 1);
@@ -472,7 +464,7 @@ There is nothing configurable and no environment variables are used.
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

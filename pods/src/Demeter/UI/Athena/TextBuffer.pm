@@ -103,7 +103,7 @@ recover the text strings from prior uses of a TextEntryDialog.
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List
-(http://cars9.uchicago.edu/mailman/listinfo/ifeffit/)
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 
