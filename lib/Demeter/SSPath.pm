@@ -31,7 +31,7 @@ has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
 has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum', default => 0.1);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
-has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scattering');
+has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'SSPath');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});

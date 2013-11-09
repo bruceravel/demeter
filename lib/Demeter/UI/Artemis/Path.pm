@@ -251,7 +251,9 @@ sub populate {
   };
 
 
-  my $imp = sprintf(" (%4.4d) %s, %s%s\n", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
+  my $imp = sprintf(" (%4.4d) %s, %s%s", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
+  $imp = substr($imp, 7, -6) if ($pathobject->sp->pathfinder_index == 9999);
+  $imp .= "\n";
   $this->{geometry} -> WriteText($imp);
   $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
   $this->{geometry} -> WriteText($geometry);

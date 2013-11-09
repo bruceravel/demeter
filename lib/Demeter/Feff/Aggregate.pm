@@ -265,6 +265,24 @@ sub make_path {
 };
 
 
+sub path_geom {
+  my ($self, $sp) = @_;
+  my @central = $self->central;
+  my @ipots = @{ $self->potentials };
+  my $tag   = $ipots[$sp->ipot->[1]]->[2];
+
+  my $pd = q{};
+
+  $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
+		 0, $sp->nleg, $sp->n, $sp->fuzzy );
+  $pd .= "      x           y           z     ipot  label";
+  $pd .= "\n";
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $central[0], $central[1], $central[2]+$sp->fuzzy, $sp->ipot->[1], $tag);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $self->central, 0, 'abs');
+  return $pd;
+
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;
