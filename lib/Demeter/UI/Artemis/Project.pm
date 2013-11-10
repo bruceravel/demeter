@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Compress::Zlib;
 use Cwd;
 use File::Basename;

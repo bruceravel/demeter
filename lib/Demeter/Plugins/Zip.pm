@@ -5,6 +5,7 @@ extends 'Demeter::Plugins::FileType';
 
 ## use the standard CPAN module for opening/reading from zip files
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use File::Path qw(remove_tree);
 use Scalar::Util qw(looks_like_number);
 use String::Random qw(random_string);

@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );;
+local $Archive::Zip::UNICODE = 1;
 use Carp;
 use File::Path;
 use File::Spec;

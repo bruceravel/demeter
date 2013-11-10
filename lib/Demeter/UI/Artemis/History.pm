@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Cwd;
 use DateTime;
 use File::Basename;

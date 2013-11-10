@@ -10,6 +10,7 @@ use URI::file                         qw();
 use English                           qw( -no_match_vars );
 use File::Spec::Functions             qw( catfile catdir );
 use Archive::Zip;
+local $Archive::Zip::UNICODE = 1;
 use File::Path;
 use Cwd                               qw( cwd );
 use parent                            qw( Perl::Dist::Strawberry );

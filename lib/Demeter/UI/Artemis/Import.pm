@@ -12,6 +12,7 @@ my $make_data_frame = \&Demeter::UI::Artemis::make_data_frame;
 my $make_feff_frame = \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Carp;
 use Chemistry::Elements qw(get_Z);
 use Cwd;

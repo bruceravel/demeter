@@ -39,6 +39,9 @@
      strict definition of Num in a type constraint.
    - Fixed an issue surrounding Plot object's terminal_number parameter and pgplot
    - Fixed a bug in the filetype plugin for the Lytle database
+   - Require Archive::Zip >= 1.31 to get the option of
+     Archive::Zip::UNICODE=1 which should help computers with unicode
+     language settings
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work

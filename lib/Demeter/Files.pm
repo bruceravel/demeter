@@ -23,6 +23,7 @@ use MooseX::Aliases;
 use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Compress::Zlib;
 use File::Basename;
 use Xray::Crystal;

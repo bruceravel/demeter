@@ -39,7 +39,7 @@ my $build = DemeterBuilder
 				'MooseX::Types'		    => '0.31',
 				'MooseX::Types::LaxNum'	    => '0',
 
-				'Archive::Zip'		    => '0',
+				'Archive::Zip'		    => '1.31',
 
 				'Capture::Tiny'	            => '0.07',
 				'Chemistry::Elements'	    => '0',

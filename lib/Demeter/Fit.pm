@@ -36,6 +36,7 @@ if ($Demeter::mode->ui eq 'screen') {
 use Demeter::NumTypes qw( NonNeg Natural NaturalC );
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Carp;
 use Cwd;
 use File::Basename;
