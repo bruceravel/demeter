@@ -133,6 +133,7 @@ sub pull_marked_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->chie($this->{mchie}-> GetValue);
+  $po->bkgk(0);
 
   my $kmin = $this->{kmin}-> GetValue;
   my $kmax = $this->{kmax}-> GetValue;
