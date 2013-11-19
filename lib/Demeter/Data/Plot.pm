@@ -2,7 +2,7 @@ package Demeter::Data::Plot;
 use Moose::Role;
 
 use Carp;
-use Demeter::Constants qw($NUMBER);
+use Demeter::Constants qw($NUMBER $ETOK $EPSILON3);
 use List::Util qw(max);
 use List::MoreUtils qw(uniq zip);
 
@@ -167,7 +167,12 @@ sub _plotk_command {
   my $newold = ($pf->New)  ? 'new'  : 'over';
   my $ke     = ($pf->chie) ? 'chie' : 'k';
   my $template = $newold . $ke;
-  $string = $self->template("plot", $template);
+  $string  = $self->template("plot", $template, {dobkgk=>0});
+  if ($pf->bkgk) {
+    $pf -> increment;
+    $self->make_bkgk;
+    $string .= $self->template("plot", 'overk', {dobkgk=>1});
+  };
   ## reinitialize the local plot parameters
   $pf -> reinitialize($xlorig, $ylorig);
   return $string;
@@ -837,6 +842,14 @@ sub suffix {
   };
   return $suff;
 };
+
+sub make_bkgk {
+  my ($self) = @_;
+  $self->_update('fft');
+  $self->dispense('process', 'bkgk');
+};
+
+
 
 1;
 

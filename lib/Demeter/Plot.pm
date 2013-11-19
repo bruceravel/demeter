@@ -126,6 +126,7 @@ has 'margin_max' => (is => 'rw', isa =>  'LaxNum', default => 0);
 has 'kmin'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "kmax") || 15});
 has 'chie'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+has 'bkgk'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 
 has 'rmin'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "rmin") || 0});
 has 'rmax'	=> (is => 'rw', isa =>  'LaxNum', default => sub{ shift->co->default("plot", "rmax") || 6});

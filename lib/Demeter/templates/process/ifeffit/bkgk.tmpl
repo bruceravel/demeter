@@ -1,0 +1,4 @@
+set {$S->group}.ke   = etok * ({$S->group}.energy + {$S->bkg_eshift} - {$S->bkg_e0})
+set {$S->group}.ke   = sign({$S->group}.ke) * sqrt(abs({$S->group}.ke))
+set {$S->group}.fbm1 = {$S->group}.fbkg-1
+set {$S->group}.bkgk = interp({$S->group}.ke, {$S->group}.fbm1, {$S->group}.k)
