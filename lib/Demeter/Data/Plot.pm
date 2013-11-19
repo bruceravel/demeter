@@ -280,6 +280,8 @@ sub _plotkq_command {
   };
   my $string = q{};
   my $save = $self->name;
+  my $save_bkgk = $self->po->bkgk;
+  $self->po->bkgk(0);
   $self->name($save . " in k space");
   $pf -> title("$save in k and q space");
   $string .= $self->_plotk_command;
@@ -287,6 +289,7 @@ sub _plotkq_command {
   $self->name($save . " in q space");
   $string .= $self->_plotq_command;
   $self->name($save);
+  $self->po->bkgk($save_bkgk);
   return $string;
 };
 
@@ -442,6 +445,9 @@ sub plot_kqfit {
     $down = $max[$k-1];
   };
 
+  my $save_bkgk = $self->po->bkgk;
+  $self->po->bkgk(0);
+
   $self->po->title($self->name . " in k and q space");
 
   ## plot magnitude part
@@ -459,6 +465,7 @@ sub plot_kqfit {
   $self->po->plot_win($winsave);
   $self -> name($lab);
   $self -> po -> q_pl($qpart);
+  $self->po->bkgk($save_bkgk);
   return $self;
 };
 
