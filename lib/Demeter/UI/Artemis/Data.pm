@@ -655,7 +655,7 @@ sub Pluck {
   };
 
   my ($ok, $x, $y) = $::app->cursor($self);
-  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $self->status("Failed to pluck a value for $which", 'alert'), return if not $ok->status;
   $on_screen = 'k' if ($on_screen eq 'q');
   my $plucked = sprintf("%.3f", $x);
   $self->{$which}->SetValue($plucked);
