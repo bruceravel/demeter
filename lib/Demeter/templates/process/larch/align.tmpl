@@ -5,7 +5,6 @@
   #   {$DS} returns the ifeffit group name for the data standard
   #   {$DS->get("parameter")} returns the value of that parameter for the
   #         data standard
-  #   {$P->get("interp")} gives the type of interpolation to do
   #
   # need to allow for fitting smoothed data to standard
   # --->  larch access to stats on esh parameter: aa__.esh.stderr  aa__.esh.correl
@@ -20,28 +19,37 @@
   q()
 }
 ##| auto-aligning {$D->group} to {$DS->group}
-i1, i2 = index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emin}), index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emax})
+aa__ = group(esh     = param({$DS->bkg_e0 - $D->bkg_e0}, vary = True),
+             scale   = param(1, vary = True),
+             __name__='aa__')
 
-aa__ = group(esh   = param({$DS->bkg_e0 - $D->bkg_e0}, vary = True),
-             scale = param(1, vary = True), __name__='aa__')
 
-aa__data = group(x={$D->group}.energy[i1:i2], y={$D->group}.xmu[i1:i2], __name__='aa__data')
-aa__stan = group(x={$DS->group}.energy[i1:i2]+{$DS->bkg_eshift}, y={$DS->group}.xmu[i1:i2], __name__='aa__stan')
+aa__data = group(x={$D->group}.energy, y={$D->group}.xmu, 
+                 i1 = index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emin}),
+                 i2 = index_of({$DS->group}.energy+{$DS->bkg_eshift}, {$emax}),
+                 __name__='aa__data')
+aa__stan = group(x={$DS->group}.energy+{$DS->bkg_eshift}, y={$DS->group}.xmu, __name__='aa__stan')
 
 def alignment(par, da, st):
-    xmui  = interp(st.x, da.x+par.esh, da.y)
+    xmui  = interp(da.x+par.esh, da.y, st.x)
+    for _i in range(xmui.size-1):
+        if math.isnan(xmui[_i]):
+           xmui[_i] = 0
+        endif
+    endfor
+    
     if {$P->e_smooth}:
        resid = savitzky_golay(deriv(st.y)/deriv(st.x), window_size={$s}, order={$o}) - par.scale*savitzky_golay((deriv(xmui)/deriv(da.x)), window_size={$s}, order={$o})
     else:
        resid = deriv(st.y)/deriv(st.x) - par.scale*(deriv(xmui)/deriv(da.x))
     endif
-    return resid
-#enddef
+    return resid[da.i1:da.i2]
+enddef
 
 minimize(alignment, aa__, args=(aa__data, aa__stan))
 _sys.paramGroup = None
 
 ##print fit_report(aa__)
 
-del i1, i2, aa__data, aa__stan
+del aa__data, aa__stan
 <<nl>>

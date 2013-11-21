@@ -44,6 +44,7 @@ BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     eval "use Larch";
+    Larch::dispose('import larch');
   } else {
     eval "use Ifeffit qw(ifeffit);"
   };

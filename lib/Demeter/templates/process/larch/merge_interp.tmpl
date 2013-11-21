@@ -10,4 +10,4 @@
 }
 <<nl>>
 ##| interpolate {$D->group} onto merge grid
-m___erge.{$D->group} = interp(m___erge.{$C->get("merge_space")}, {$D->group}.{$C->get("merge_space")}+{$shift}, {$D->group}.{$C->get("merge_data")})
+m___erge.{$D->group} = interp({$D->group}.{$C->get("merge_space")}+{$shift}, {$D->group}.{$C->get("merge_data")}, m___erge.{$C->get("merge_space")})

@@ -1,0 +1,4 @@
+{$S->group}.ke   = ({$S->group}.energy + {$S->bkg_eshift} - {$S->bkg_e0}) / ktoe(1)
+{$S->group}.ke   = sign({$S->group}.ke) * sqrt(abs({$S->group}.ke))
+{$S->group}.fbm1 = {$S->group}.fbkg-1
+{$S->group}.bkgk = interp({$S->group}.ke, {$S->group}.fbm1, {$S->group}.k)

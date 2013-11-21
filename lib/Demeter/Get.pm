@@ -44,7 +44,7 @@ sub backend_id {
     };
 
     when ('larch') {
-      return 1;
+      return "Larch " . Larch::get_larch_scalar('larch.__version__');
     };
 
   };
@@ -59,7 +59,7 @@ sub backend_version {
     };
 
     when ('larch') {
-      return 1;
+      return Larch::get_larch_scalar('larch.__version__');
     };
 
   };
@@ -90,6 +90,10 @@ sub fetch_scalar {
 	};
 	when (/pre_(?:offset|slope)/) {
 	  $param = $gp.'.'.$param;
+	  return Larch::get_larch_scalar($param);
+	}
+	when (/delta_(aa__)_(esh|scale)/) {
+	  $param = $1.'.'.$2.'.stderr';
 	  return Larch::get_larch_scalar($param);
 	}
 	when (/(aa__)_(esh|scale)\b/) {

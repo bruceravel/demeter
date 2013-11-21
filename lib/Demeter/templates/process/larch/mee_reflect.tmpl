@@ -1,0 +1,13 @@
+##| performing multi-electron excitation removal using a reflection of the Edge
+m___ee        = group(__name__='m___ee')
+m___ee.energy = {$S->group}.energy + {$shift}
+m___ee.nn     = smooth({$S->group}.energy, {$S->group}.norm, sigma={$width}, form='lorentzian')
+m___ee.xint   = interp(m___ee.energy, m___ee.nn, {$S->group}.energy)
+
+## the energy shift results in a long extrapolated bit, which can return some NaNs, so need to weed them out
+for _i in range(m___ee.xint.size-1):
+    if math.isnan(m___ee.xint[_i]):
+       m___ee.xint[_i] = 0
+    endif
+endfor
+##| use perl to pad zeros at the beginning of the shifted array
