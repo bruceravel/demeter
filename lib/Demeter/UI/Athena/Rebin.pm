@@ -182,6 +182,7 @@ sub make {
     $app->current_data->co->set_default('rebin', $w, $value);
   };
   $this->{rebinned} = $app->current_data->rebin(\%hash);
+  $this->{rebinned}->_update('all');
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {

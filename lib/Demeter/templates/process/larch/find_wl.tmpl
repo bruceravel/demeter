@@ -3,7 +3,7 @@
   # {$D->parameter} for the current Data group
 }
 __intarr = linspace({$emin}, {$emax}, {1+int(($emax-$emin)/$C->default('whiteline', 'grid'))})
-{$D->group}.int = interp(__intarr, {$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$suffix})
+{$D->group}.int = interp({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$suffix}, __intarr)
 __wl = index_nearest({$D->group}.int, max({$D->group}.int))
 del __intarr
 del {$D->group}.int

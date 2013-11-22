@@ -22,13 +22,13 @@
 
 =cut
 
-use Demeter;
+use Demeter qw(:p=gnuplot :ui=screen);
 
 
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 my @attributes = (file	      => "$where/data/uhup.101",
 		  name	      => 'HUP',
-		  fft_kmax    => 3, fft_kmin	=> 14,
+		  fft_kmax    => 3, fft_kmin	=> 14, bkg_spl2 => 14.7,
 		  ## how to interpret the file as data
 		  energy      => '$1',    # column 1 is energy
 		  numerator   => '$2', # column 2 is I0
@@ -38,9 +38,10 @@ my @attributes = (file	      => "$where/data/uhup.101",
 		 );
 
 my $d0 = Demeter::Data -> new(@attributes);
+$d0 -> datatype('xmu');
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
+$plot->set(emin=>-200, emax=>800, e_norm=>0, e_markers=>1, kweight=>2);
 
 
 print "reading data and plotting\n";
@@ -55,6 +56,7 @@ print "--> original data is ", $d0->group, "\n--> rebinned data is ", $rebinned-
 $d0->dispense('process', 'show', {items=>$d0->group . ".energy " . $rebinned->group . ".energy"});
 $d0->toggle_echo(0);
 
+#$d0->pause;
 print "all done!\n";
 
 1;

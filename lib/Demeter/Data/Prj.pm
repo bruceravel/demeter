@@ -196,7 +196,6 @@ sub record {
     my @this = @{ $entries_ref->[$gg] };
     my $rec = $self->_record( @this );
     $rec->prjrecord(join(", ", $self->file, $g));
-    #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
 
     my $array = ($rec->datatype =~ m{(?:xmu|xanes)}) ? 'energy'

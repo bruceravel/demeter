@@ -1,0 +1,4 @@
+## performing multi-electron excitation removal using an arctangent
+m___ee        = group(__name__='m___ee')
+m___ee.energy = {$D->group}.energy
+m___ee.xint   = atan((m___ee.energy-{$D->bkg_e0}-{$shift})/{$width})/pi + 0.5 

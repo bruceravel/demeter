@@ -1,0 +1,102 @@
+# Ifeffit                          Larch                         notes
+# -------------------------------------------------------------------------
+  about.tmpl                                                     not analysis, ok as fallback
+  addto_vpath.tmpl                                               ** artemis **
+  align.tmpl                       align.tmpl                    
+                                   attributes.tmpl               not called by Ifeffit
+  autobk.tmpl                      autobk.tmpl                   
+  bft.tmpl                         bft.tmpl                      
+  bkgk.tmpl                        bkgk.tmpl                     
+  chi_column.tmpl                  chi_column.tmpl               
+  chi_noise.tmpl                   chi_noise.tmpl                
+  chikn.tmpl                       chikn.tmpl                    
+  clone.tmpl                       clone.tmpl                    
+  columns.tmpl                     columns.tmpl                  
+  columns_qm.tmpl                  columns_qm.tmpl               
+  comment.tmpl                     comment.tmpl                  
+  convolve.tmpl                    convolve.tmpl                 
+  deglitch.tmpl                    deglitch.tmpl                 
+  deriv.tmpl                       deriv.tmpl                    
+  deriv_qm.tmpl                    deriv_qm.tmpl                 
+  display.tmpl                     display.tmpl                  
+  dphase.tmpl                      dphase.tmpl                   
+  erase.tmpl                       erase.tmpl                    
+  erase_chikn.tmpl                 erase_chikn.tmpl              
+  erase_group.tmpl                 erase_group.tmpl              ** not used **
+  fft.tmpl                         fft.tmpl                      
+  filtered_filter.tmpl             filtered_filter.tmpl          
+  filtered_head.tmpl                                             not analysis, ok as fallback
+  find_e0.tmpl                     find_e0.tmpl                  
+  find_wl.tmpl                     find_wl.tmpl                  
+  fix_chik.tmpl                    fix_chik.tmpl                 
+  flatten_fit.tmpl                 flatten_fit.tmpl              
+  flatten_set.tmpl                 flatten_set.tmpl              
+  gds_out.tmpl                                                   ** artemis **
+  histogram_add.tmpl                                             ** artemis **
+  histogram_clean.tmpl                                           ** artemis **
+  histogram_first.tmpl                                           ** artemis **
+  interpolate.tmpl                 interpolate.tmpl              
+  is_nor.tmpl                      is_nor.tmpl                   
+  k123.tmpl                        k123.tmpl                     
+  kev.tmpl                         kev.tmpl                      
+  make_group.tmpl                  make_group.tmpl               
+  margin.tmpl                      margin.tmpl                   
+  mee_arctan.tmpl                  mee_arctan.tmpl               
+  mee_do.tmpl                      mee_do.tmpl                   
+  mee_reflect.tmpl                 mee_reflect.tmpl              
+  merge.tmpl                       merge.tmpl                    
+  merge_end.tmpl                   merge_end.tmpl                
+  merge_interp.tmpl                merge_interp.tmpl             
+  merge_norm.tmpl                  merge_norm.tmpl               
+  merge_start.tmpl                 merge_start.tmpl              
+  merge_stddev.tmpl                merge_stddev.tmpl             
+  merge_stddev_end.tmpl            merge_stddev_end.tmpl         
+  merge_subarray.tmpl              merge_subarray.tmpl           
+  muave.tmpl                       muave.tmpl                    
+
+  musum.tmpl                       musum.tmpl                    
+  nderiv.tmpl                      nderiv.tmpl                   
+  noise.tmpl                       noise.tmpl                    
+  normalize.tmpl                   normalize.tmpl                
+  pixel_fit.tmpl                                                 ** not implemented **
+  pixel_fit.tmpl.save                                            ** not implemented **
+  pixel_set.tmpl                                                 ** not implemented **
+  pixel_setup.tmpl                                               ** not implemented **
+  post_autobk.tmpl                 post_autobk.tmpl              
+  prep_kwindow.tmpl                prep_kwindow.tmpl             
+  prep_rwindow.tmpl                prep_rwindow.tmpl             
+  prep_vpath.tmpl                                                ** artemis **
+  read.tmpl                        read.tmpl                     
+  read_chi.tmpl                    read_chi.tmpl                 
+  read_group.tmpl                  read_group.tmpl               
+  read_xmu.tmpl                    read_xmu.tmpl                 
+  rebin.tmpl                       rebin.tmpl                    
+  rebin_prep.tmpl                  rebin_prep.tmpl               
+  replicate.tmpl                   replicate.tmpl                
+  sa_atoms.tmpl                    sa_atoms.tmpl                 
+  sa_atoms_text.tmpl                                             not analysis, ok as fallback
+  sa_booth_pre.tmpl                sa_booth_pre.tmpl             
+  sa_booth_thick.tmpl              sa_booth_thick.tmpl           
+  sa_booth_thin.tmpl               sa_booth_thin.tmpl            
+  sa_fluo.tmpl                     sa_fluo.tmpl                  
+  sa_group.tmpl                    sa_group.tmpl                 
+  sa_info_depth.tmpl               sa_info_depth.tmpl            
+  sa_troger.tmpl                   sa_troger.tmpl                
+  save_chik.tmpl                   save_chik.tmpl                
+  save_chikw.tmpl                  save_chikw.tmpl               
+  save_chiq.tmpl                   save_chiq.tmpl                
+  save_chir.tmpl                   save_chir.tmpl                
+  save_header.tmpl                 save_header.tmpl              
+  save_many.tmpl                   save_many.tmpl                
+  save_many_header.tmpl            save_many_header.tmpl         
+  save_norm.tmpl                   save_norm.tmpl                
+  save_xmu.tmpl                    save_xmu.tmpl                 
+  show.tmpl                                                      
+  show_group.tmpl                                                never called by Larch
+  show_strings.tmpl                                              never called by Larch
+  smooth.tmpl                      smooth.tmpl                   
+  smoothed.tmpl                    smoothed.tmpl                 
+  trun_signal_after.tmpl           trun_signal_after.tmpl        
+  trun_signal_before.tmpl          trun_signal_before.tmpl       
+  truncate_after.tmpl              truncate_after.tmpl           
+  truncate_before.tmpl             truncate_before.tmpl          

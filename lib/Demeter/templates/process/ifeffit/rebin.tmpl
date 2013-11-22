@@ -6,14 +6,14 @@
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
 }
-##| rebinning {$DS->group} onto a standard EXAFS grid and saving as group {$D->group}
+##| rebinning onto a standard EXAFS grid and saving as group {$D->group}
 ##| the standard grid was created in perl and pushed into ifeffit
 
 set {$D->group}.energy = re___bin.eee
-set {$D->group}.xmu    = rebin({$DS->group}.energy, {$DS->group}.xmu, re___bin.eee)
+set {$D->group}.xmu = interp(re___bin.energy, re___bin.xmu, re___bin.eee)
 { if ($DS->is_col) {
-     "set " . $D->group . ".i0      = rebin(" . $DS->group . ".energy, " . $DS->group . ".i0, re___bin.eee)\n" .
-     "set " . $D->group . ".signal  = rebin(" . $DS->group . ".energy, " . $DS->group . ".signal, re___bin.eee)\n";
+     "set " . $D->group . ".i0      = interp(" . $DS->group . ".energy, " . $DS->group . ".i0, re___bin.eee)\n" .
+     "set " . $D->group . ".signal  = interp(" . $DS->group . ".energy, " . $DS->group . ".signal, re___bin.eee)\n";
   }
 }
-erase re___bin.eee
+erase \@group re___bin
