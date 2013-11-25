@@ -20,3 +20,7 @@ demlcf   = group({$S->group} = param(0, vary={$S->TrueFalse($S->one_e0)}),
                  _offset     = param(0, vary={$S->TrueFalse($S->linear)}),
                  __name__='demlcf')
 demlcfsh = group(__name__='demlcfsh')
+demlcfconst = group(__name__='demlcfconst')
+demlcfconst.i0 = index_of({$S->group}.x, {$S->data->bkg_e0})
+demlcfconst.i1 = index_of({$S->group}.x, {$S->xmin})
+demlcfconst.i2 = index_of({$S->group}.x, {$S->xmax})

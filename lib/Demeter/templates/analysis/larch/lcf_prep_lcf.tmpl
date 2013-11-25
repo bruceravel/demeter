@@ -21,13 +21,13 @@ for g in ({$string}):
         __kgri = getattr(_main.get_group(g), 'k')
         __data = getattr(_main.get_group(g), 'chi')
 	## the k-grids are not guaranteed to be of the same length (may be off by one or a few)
-        __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
+        __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid)
     else:
         ## arrays for interpolation
         __ener = getattr(_main.get_group(g), 'energy')
         __data = getattr(_main.get_group(g), '{$S->suffix}')
         ## this standard, weighted, interpolated onto data grid
-        __new  = __a * interp(__grid, __ener+__e+__sh, __data)
+        __new  = __a * interp(__ener+__e+__sh, __data, __grid)
     endif
     setattr({$S->group}, g, __new)
 endfor
@@ -36,7 +36,7 @@ if '{$S->space}' == 'chi':
    {$S->group}.line = zeros(len({$S->group}.x))
 else:
    {$S->group}.line = demlcf._slope * {$S->group}.x + demlcf._offset
-   {$S->group}.line[:i0] = 0
+   {$S->group}.line[:demlcfconst.i0] = 0
 endif
 
 {$S->group}.lcf = {$mix} + {$S->group}.line

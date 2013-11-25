@@ -1,2 +1,2 @@
 {$D->group}.eee   = {$D->group}.energy+{$D->bkg_eshift}
-{$S->group}.{$D->group} = interp({$S->group}.x, {$D->group}.eee, {$D->group}.{$suff})
+{$S->group}.{$D->group} = interp({$D->group}.eee, {$D->group}.{$suff}, {$S->group}.x)

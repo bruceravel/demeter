@@ -11,9 +11,6 @@
   q{};
 }
 ##| set up the LCF objective function
-i0 = index_of({$S->group}.x, {$S->data->bkg_e0})
-i1 = index_of({$S->group}.x, {$S->xmin})
-i2 = index_of({$S->group}.x, {$S->xmax})
 demlcf.ninfo = {$S->ninfo}
 
 def lcf_fit(par, par_sh, lcf):
@@ -27,15 +24,15 @@ def lcf_fit(par, par_sh, lcf):
             __kgri = getattr(_main.get_group(g), 'k')
             __data = getattr(_main.get_group(g), 'chi')
             __line = zeros(len({$S->group}.g))
-            __new  = __a * interp(__grid, __kgri, __data*__kgri**{$P->kweight})
+            __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid)
         else:
             ## arrays for interpolation
             __ener = getattr(_main.get_group(g), 'energy')
             __data = getattr(_main.get_group(g), '{$S->suffix}')
             __line = par._slope * __grid + par._offset
-            __line[:i0] = 0            
+            __line[:demlcfconst.i0] = 0            
             ## this standard, weighted, interpolated onto data grid
-            __new  = __a * interp(__grid, __ener+__e+__sh, __data) + __line
+            __new  = __a * interp(__ener+__e+__sh, __data, __grid) + __line
         endif
         setattr(lcf, g, __new)
     endfor
@@ -43,15 +40,15 @@ def lcf_fit(par, par_sh, lcf):
        lcf.line = zeros(len(lcf.x))
     else:
        lcf.line = par._slope * lcf.x + par._offset
-       lcf.line[:i0] = 0            
+       lcf.line[:demlcfconst.i0] = 0            
     endif
 
     lcf.lcf = {$mix} + lcf.line
     lcf.resid = (lcf.lcf - lcf.func) / lcf.epsilon
-    return lcf.resid[i1:i2]
+    return lcf.resid[demlcfconst.i1:demlcfconst.i2]
 enddef
 
 ##| perform the LCF fit
 minimize(lcf_fit, demlcf, args=(demlcfsh, {$S->group}))
 _sys.paramGroup = None
-demlcf.rfactor = sum({$S->group}.resid[i1:i2]**2) / sum({$S->group}.func[i1:i2]**2)
+demlcf.rfactor = sum({$S->group}.resid[demlcfconst.i1:demlcfconst.i2]**2) / sum({$S->group}.func[demlcfconst.i1:demlcfconst.i2]**2)

@@ -11,6 +11,6 @@
 }
 ##| Compute difference  {$DS->name} - {$D->name} as {$S->space}
 {$S->group} = group(__name__='{$S->group}')
-{$D->group}.int    = interp({$DS->group}.{$S->xsuff}+{$ess}, {$D->group}.{$S->xsuff}+{$esd}, {$D->group}.{$S->dataspace})
+{$D->group}.int    = interp({$D->group}.{$S->xsuff}+{$esd}, {$D->group}.{$S->dataspace}, {$DS->group}.{$S->xsuff}+{$ess})
 {$S->group}.energy = {$DS->group}.{$S->xsuff}+{$ess}-{$esd}
 {$S->group}.diff   = {$prefactor} * ({$D->group}.int - {$S->multiplier}*{$DS->group}.{$S->standardspace})
