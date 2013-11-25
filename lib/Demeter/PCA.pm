@@ -220,7 +220,7 @@ sub tt {
   # #$self->dispense('process', 'show', {items=> "\@group ".$self->group});
 
   $self->data($target);
-  $self->dispense('analysis', 'save_pca_tt', {ncomp=>$ncomp});
+  $self->dispense('analysis', 'pca_tt', {ncomp=>$ncomp});
   my @coef = ();
   foreach my $i (0 .. $self->ndata-1) {
     push @coef, $self->fetch_scalar("_p$i");

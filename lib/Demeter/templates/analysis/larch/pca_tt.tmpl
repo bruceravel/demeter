@@ -1,0 +1,24 @@
+dempcatt = group(__name__ = 'dempcatt')
+{
+  foreach my $i (0 .. $S->ncompused-1) {
+    $OUT .= 'dempcatt._p' . $i . ' = param(' . $S->refeig->[$i] . ", vary=True)\n"
+  };
+}
+{
+  $mix = q{};
+  foreach my $i (0 .. $S->ncompused-1) {
+    $mix .= 'dempcatt._p' . $i . '*' . $S->group . '.ev' . $i . '+'
+  };
+  $mix =~ s{\s*\+\s*\z}{};
+  q{}
+}
+def dempcattfit(par, pca, data):
+    pca.tt = {$mix}
+    pca.resid = pca.tt - data
+    return pca.resid
+enddef
+
+##| perform the PCA target transform
+minimize(dempcattfit, dempcatt, args=({$S->group}, {$S->group}.{$D->group}))
+_sys.paramGroup = None
+

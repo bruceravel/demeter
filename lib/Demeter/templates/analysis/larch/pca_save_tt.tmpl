@@ -1,0 +1,7 @@
+{
+  ($name = $D->name) =~ s{\s+}{_}g;
+  q{}
+}
+write_ascii("{$filename}", {$S->group}.x,
+           {$S->group}.{$D->group}, {$S->group}.tt{$index}, {$S->group}.resid,
+           label="x {$name} tt residual", header={$S->group}.myheader)

@@ -31,12 +31,8 @@ aa__data = group(x={$D->group}.energy, y={$D->group}.xmu,
 aa__stan = group(x={$DS->group}.energy+{$DS->bkg_eshift}, y={$DS->group}.xmu, __name__='aa__stan')
 
 def alignment(par, da, st):
-    xmui  = interp(da.x+par.esh, da.y, st.x)
-    for _i in range(xmui.size-1):
-        if math.isnan(xmui[_i]):
-           xmui[_i] = 0
-        endif
-    endfor
+    xmui = interp(da.x+par.esh, da.y, st.x)
+    xmui = array(map(demeter__denan, xmui))
     
     if {$P->e_smooth}:
        resid = savitzky_golay(deriv(st.y)/deriv(st.x), window_size={$s}, order={$o}) - par.scale*savitzky_golay((deriv(xmui)/deriv(da.x)), window_size={$s}, order={$o})

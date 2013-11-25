@@ -26,7 +26,7 @@ use List::MoreUtils qw(uniq);
 
 my @ifeffit_buffer = ();
 my $pointer = -1;
-my $prompttext = "  Ifeffit [%4d]> ";
+my $prompttext = sprintf("  %s [%%4d]> ", (Demeter->is_larch) ? 'Larch' : 'Ifeffit');
 my $aleft = Wx::TextAttr->new();
 $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 

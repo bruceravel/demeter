@@ -44,7 +44,6 @@ BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     eval "use Larch";
-    Larch::dispose('import larch');
   } else {
     eval "use Ifeffit qw(ifeffit);"
   };
@@ -891,6 +890,7 @@ Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
 		  template_analysis => $ENV{DEMETER_BACKEND},
 		  template_fit      => $ENV{DEMETER_BACKEND});
 $devflag = 1 if $ENV{DEMETER_DEVFLAG};
+Demeter->dispense('process', 'init') if Demeter->is_larch;
 
 __PACKAGE__->meta->make_immutable;
 1;

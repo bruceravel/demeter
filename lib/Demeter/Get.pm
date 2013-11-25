@@ -120,6 +120,10 @@ sub fetch_scalar {
 	  $param = $1.'o.'.$2.'.stderr';
 	  return Larch::get_larch_scalar($param);
 	}
+	when (/_p(\d+)\z/) {
+	  $param = 'dempcatt._p'.$1;
+	  return Larch::get_larch_scalar($param);
+	};
 	default {
 	  return Larch::get_larch_scalar($param);
 	};

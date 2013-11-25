@@ -29,7 +29,8 @@ for g in ({$string}):
         ## this standard, weighted, interpolated onto data grid
         __new  = __a * interp(__ener+__e+__sh, __data, __grid)
     endif
-    setattr({$S->group}, g, __new)
+    __part = array(map(demeter__denan, __new))
+    setattr({$S->group}, g, __part)
 endfor
 
 if '{$S->space}' == 'chi':
