@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Feff::Aggregate</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Feff-Aggregate
+</div>
+<div>
+<a href="../../src/Demeter/Feff/Aggregate.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Feff::Aggregate - Perform the pathfinder fuzzily over inequivalent sites</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.18.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>   my $atoms = Demeter::Atoms-&gt;new(file=&gt;'BaFe12O19.inp');
+   my $bigfeff = Demeter::Feff::Aggregate-&gt;new;
+   $bigfeff-&gt;setup($atoms, 'Fe');
+   $bigfeff-&gt;run;
+
+</pre><p>The <code>run</code> method calls overridden <code>potph</code> and <code>pathfinder</code> methods
+which iterate over all inequivalent sites in the unit cell.  The
+degeneracies of the paths are weighted by the number of each site in
+the fully populated unit cell.</p>
+
+<p>See the file <cite>examples/recipes/FuzzyOverSites/pfo.pl</cite> in the Demeter
+distribution for an example.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This organizes a sequence of partial Feff calculations, one for each
+inequivalent site in the unit cell containing the absorber species.
+The <code>potph</code> method is run on each Feff object.  Then, for each, Feff
+object the first few steps of the <code>pathfinder</code> method are run.  For
+each Feff, the tree of scattering geometries is constructed and the
+heap of paths is filled.</p>
+
+<p>Each heap is then unloaded onto a master heap.  This master heap is
+collapsed in the nomral manner so that fuzzy degeneracies are found
+over all the inequivalent sites in the aggregate.</p>
+
+<p>Care is taken to compute the degeneracies and fuzzy half lengths
+considering the fractional representation of each site in the unit
+cell.  As a result, degeneracies are unlikely to be integer valued.</p>
+
+<p>This object extends the normal Feff object.  At the end, therefore,
+the <code>pathlist</code> attribute is filled with fuzzily degenerate path list
+computed in the aggregate over all sites.  In that sense, the
+Aggregate object can be used just like a normal Feff object when it
+comes time to build a fitting model or do something else with the Feff
+claculation.</p>
+
+<p>Each individual Feff calculation is retained and used when it comes
+time to compute the actual paths.  A few attributes of the Aggregate
+object may be a bit surprising.  The <code>miscdat</code> attribute is filled
+with that value from the Feff object from first site in the list of
+inequivalent sites.  The <code>nsites</code> attribute is filled with average of
+the nsites of the constituent Feff objects, rounded to the nearest
+integer.</p>
+
+<p>Many parameters are made common to all the Feff objects, included
+<code>rmax</code>, <code>fuzz</code>, and <code>betafuzz</code>.</p>
+
+<p>Note that this runs Feff and Demeter's pathfinder once for each
+inequivalent site.  It, therefore, takes exactly N times longer to run
+than a normal Feff calculation.  Set <code>rmax</code> sensibly!</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This is a reference to an array containing the Feff objects from each
+inequivalent site.</p>
+
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>setup</code></dt>
+		<dd><p>Load up the Feff::Aggregate object with its consitutent Feff objects.</p></dd>
+<dd><pre>   my $atoms = Demeter::Atoms-&gt;new(file=&gt;'BaFe12O19.inp');
+   my $bigfeff = Demeter::Feff::Aggregate-&gt;new;
+   my $ret = $bigfeff-&gt;setup($atoms, 'Fe');
+
+</pre></dd>		<dd><p>The arguments are an atoms object containing the crystal data and the
+symbol of the absorbing element.  The Aggregate object will then
+contain one Feff object for each inequivalent site in the unit cell.</p></dd>
+		<dd><p>The clusters computed for each site will be examined to verify that
+they contain the same number of unique potentials which are listed in
+the ipot list in the same order.</p></dd>
+		<dd><p>This method returns a <a href="../Return.pm.html">Demeter::Return</a> object.  This will be loaded
+with a <code>message</code> containin any problem discovered in the analysis of
+the ipot lists from the constituent atoms calculations.</p></dd>
+	<dt><code>fractions</code></dt>
+		<dd><p>This populates a unit cell and counts how many of each inequivalent
+site is present.  It then sets the <code>site_fraction</code> attribute of each
+Feff object in the Aggregate so that path degeneracies and fuzzy
+halflengths are corectly calculated.</p></dd>
+</dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>See <a href="../../Demeter.pm.html">Demeter</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report problems to the Ifeffit Mailing List
+(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

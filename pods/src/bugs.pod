@@ -22,7 +22,12 @@ to fix it promptly.
 
 =item *
 
+<<<<<<< HEAD
 Use the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
+=======
+Use the L<Ifeffit mailing
+lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  Th>e
+>>>>>>> 28c2e88497f8fc6bd90851ba92ddd70a66ae16b9
 mailing list is always the appropriate place to report problems with
 the software.  There are good reasons for this:
 
