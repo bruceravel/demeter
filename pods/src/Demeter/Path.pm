@@ -40,57 +40,57 @@ use Xray::BondValence qw(bvparams);
 has '+plottable'      => (default => 1);
 has '+pathtype'       => (default => 1);
 has '+data'           => (isa => Empty.'|Demeter::Data');
-has 'label'	      => (is=>'rw', isa=>'Str', default => q{});
+has 'label'	      => (is=>'rw', isa=>'Str',    default => q{});
 
-has 'n'		      => (is=>'rw', isa=>'Num', default =>  0);
+has 'n'		      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 's02'	      => (is=>'rw', isa=>'Str', default => '1'); # trigger value into _stored
-has 's02_stored'      => (is=>'rw', isa=>'Str', default => '1');
-has 's02_value'	      => (is=>'rw', isa=>'Num', default =>  1);
+has 's02'	      => (is=>'rw', isa=>'Str',    default => '1'); # trigger value into _stored
+has 's02_stored'      => (is=>'rw', isa=>'Str',    default => '1');
+has 's02_value'	      => (is=>'rw', isa=>'LaxNum', default =>  1);
 
-has 'e0'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'e0_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'e0_value'	      => (is=>'rw', isa=>'Num', default =>  0);
+has 'e0'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'e0_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'e0_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'delr'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'delr_stored'     => (is=>'rw', isa=>'Str', default => '0');
-has 'delr_value'      => (is=>'rw', isa=>'Num', default =>  0);
+has 'delr'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'delr_stored'     => (is=>'rw', isa=>'Str',    default => '0');
+has 'delr_value'      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'sigma2'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'sigma2_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'sigma2_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'sigma2'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'sigma2_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'sigma2_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'ei'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'ei_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'ei_value'	      => (is=>'rw', isa=>'Num', default =>  0);
+has 'ei'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'ei_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'ei_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'third'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'third_stored'    => (is=>'rw', isa=>'Str', default => '0');
-has 'third_value'     => (is=>'rw', isa=>'Num', default =>  0);
+has 'third'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'third_stored'    => (is=>'rw', isa=>'Str',    default => '0');
+has 'third_value'     => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'fourth'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'fourth_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'fourth_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'fourth'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'fourth_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'fourth_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'dphase'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'dphase_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'dphase_value'    => (is=>'rw', isa=>'Num', default =>  0);
+has 'dphase'	      => (is=>'rw', isa=>'Str',    default => '0');
+has 'dphase_stored'   => (is=>'rw', isa=>'Str',    default => '0');
+has 'dphase_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'id'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'k_array'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
-has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
+has 'id'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'k_array'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'amp_array'	      => (is=>'rw', isa=>'Str',    default => q{});
+has 'phase_array'     => (is=>'rw', isa=>'Str',    default => q{});
 
-has 'save_mag'        => (is=>'rw', isa=>'Bool', default => 0);
+has 'save_mag'        => (is=>'rw', isa=>'Bool',   default => 0);
 
 ## these four provide a generic way of storing cumulant information
 ## about a Path or Path-like object.  this is used, for instance, in
 ## Demeter::Feff::Distributions to store the cumulants computed from
 ## the SS distribution in an FPath object created from a histogram
-has 'c1'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed first cumulant");
-has 'c2'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed second cumulant");
-has 'c3'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed third cumulant");
-has 'c4'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed fourth cumulant");
+has 'c1'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed first cumulant");
+has 'c2'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed second cumulant");
+has 'c3'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed third cumulant");
+has 'c4'              => (is=>'rw', isa=>'LaxNum', default =>  0, documentation => "the computed fourth cumulant");
 
 
 ## object relationships
@@ -130,8 +130,8 @@ has 'pc'              => (is=>'rw', isa=>  'Bool',  default => 0);
 ## feff interpretation parameters
 has 'degen'           => (is=>'rw', isa=>  NonNeg,  default => 0);
 has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
-has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
-has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0, alias => 'population');
+has 'reff'            => (is=>'rw', isa=> 'LaxNum', default => 0);
+has 'zcwif'           => (is=>'rw', isa=> 'LaxNum', default => 0, alias => 'population');
 has 'intrpline'       => (is=>'rw', isa=> 'Str',    default => q{});
 has 'geometry'        => (is=>'rw', isa=> 'Str',    default => q{});
 
@@ -1123,7 +1123,8 @@ hand.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

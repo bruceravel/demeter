@@ -655,7 +655,7 @@ sub Pluck {
   };
 
   my ($ok, $x, $y) = $::app->cursor($self);
-  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $self->status("Failed to pluck a value for $which", 'alert'), return if not $ok->status;
   $on_screen = 'k' if ($on_screen eq 'q');
   my $plucked = sprintf("%.3f", $x);
   $self->{$which}->SetValue($plucked);
@@ -854,7 +854,7 @@ sub populate {
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);
   $self->{datasource}->SetValue($data->prjrecord || $data->file);
-  #$self->{datasource}->ShowPosition($self->{datasource}->GetLastPosition);
+  $self->{datasource}->SetInsertionPointEnd;
   $self->{titles}->SetValue(join("\n", @{ $data->titles }));
   $self->{kmin}->SetValue($data->fft_kmin);
   $self->{kmax}->SetValue($data->fft_kmax);
@@ -2468,16 +2468,29 @@ sub OnData {
   } else {			#  this is a normal path
     my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
     foreach my $sp ( @sparray ) {
-      my $thispath = Demeter::Path->new(
-					parent => $sp->feff,
-					data   => $this->{PARENT}->{data},
-					sp     => $sp,
-					degen  => $sp->n,
-					n      => $sp->n,
-				       );
+      my $thispath;
+      if (ref($sp->feff) =~ m{Aggregate}) {
+	$thispath  = $sp->feff->make_path($sp); # returns a SSPath or MSPath
+	return $def if not $thispath;
+	$thispath -> data($this->{PARENT}->{data});
+	$thispath -> name(sprintf("%s %.3f", $thispath->name, $sp->fuzzy));
+	$thispath -> label($thispath->name);
+      } else {
+	$thispath = Demeter::Path->new(
+				       parent => $sp->feff,
+				       data   => $this->{PARENT}->{data},
+				       sp     => $sp,
+				       degen  => $sp->n,
+				       n      => $sp->n,
+				      );
+      };
       my $label = $thispath->label;
+      $thispath->_update('all');
+      #local $|=1;
+      #print $thispath->parent, $/;
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
       $book->AddPage($page, $label, 1, 0);
+      $page->{pp_n}->SetValue($sp->n) if (ref($sp->feff) =~ m{Aggregate});
       $page->include_label;
       $book->Update;
     };
@@ -2775,7 +2788,8 @@ Many things still missing from the menus
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -182,6 +182,7 @@ sub make {
     $app->current_data->co->set_default('rebin', $w, $value);
   };
   $this->{rebinned} = $app->current_data->rebin(\%hash);
+  $this->{rebinned}->_update('all');
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
@@ -261,7 +262,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

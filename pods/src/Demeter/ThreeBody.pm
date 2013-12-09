@@ -35,20 +35,20 @@ has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'},
 		     alias => 'dsstring');
 has 'tsstring'   => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum',    default => 0.1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 
-#has 'halflength' => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the half path length of the double scattering path');
-has 'r1'         => (is => 'rw', isa => 'Num',    default => 0,
+#has 'halflength' => (is => 'rw', isa => 'LaxNum',    default => 0, documentation => 'the half path length of the double scattering path');
+has 'r1'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the length of the leg between the absorber and the nearer atom');
-has 'r2'         => (is => 'rw', isa => 'Num',    default => 0,
+has 'r2'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the length of the leg between the nearer amd more distant atom');
-has 'beta'       => (is => 'rw', isa => 'Num',    default => 0,
+has 'beta'       => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
 		     documentation => 'the scattering angle through the intervening atom', alias => 'angle');
-has 'r3'         => (is => 'rw', isa => 'Num',    default => 0,
+has 'r3'         => (is => 'rw', isa => 'LaxNum',    default => 0,
 		     documentation => 'the length of the leg between the absorber and the distant atom in DS path');
 has 'ipot1'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the intervening atom');
 has 'ipot2'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the more distant atom');
@@ -415,7 +415,8 @@ Think about serialization by itself and in a fit.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

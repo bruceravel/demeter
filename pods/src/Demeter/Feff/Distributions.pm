@@ -132,7 +132,7 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
-has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0,
+has 'zmax'        => (is => 'rw', isa => 'LaxNum',  default => 100.0,
 		      trigger => sub {my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
@@ -336,7 +336,8 @@ Triangles and nearly colinear paths
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

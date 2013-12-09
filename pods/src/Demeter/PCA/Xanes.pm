@@ -3,8 +3,8 @@ use Moose::Role;
 
 use PDL::Lite;
 
-has 'emin'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emin'));
-has 'emax'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emax'));
+has 'emin'  => (is => 'rw', isa => 'LaxNum',    default => Demeter->co->default('pca', 'emin'));
+has 'emax'  => (is => 'rw', isa => 'LaxNum',    default => Demeter->co->default('pca', 'emax'));
 
 sub space_description {
   my ($self) = @_;
@@ -97,7 +97,8 @@ Document me!
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -591,7 +591,8 @@ My wish list includes auger/fluorescence branching ratios in one of
 the periodic table utilities and providing the Berger/Hubble XCOM
 tables and Feff's optical calculations as data resources.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

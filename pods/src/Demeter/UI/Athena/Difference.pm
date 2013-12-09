@@ -274,6 +274,7 @@ sub make {
   $::app->{main}->status("Made new difference group, ".$data->name);
   $::app->modified(1);
   $::app->heap_check(0);
+  $data->update_norm(1);
 };
 
 sub Pluck {
@@ -396,7 +397,8 @@ Marked groups functionality
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -322,7 +322,7 @@ sub sa_group {
   };
   if ($datatype eq 'xmu') {
     foreach my $att (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_rbkg bkg_kw
-			bkg_clamp1 bkg_clamp2 bkg_nnorm)) {
+			bkg_clamp1 bkg_clamp2 bkg_nnorm bkg_e0)) {
       $sadata->$att($self->$att);
     };
   };
@@ -541,7 +541,8 @@ p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

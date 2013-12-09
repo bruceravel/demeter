@@ -1723,6 +1723,7 @@ sub OnGroupSelect {
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
   foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
+  $app->set_mergedplot($app->current_data->is_merge);
 
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
@@ -1896,11 +1897,23 @@ sub plot {
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
   $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
 
+
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
     my $first_z = $data[0]->bkg_z;
     my $different = 0;
+    if (($how eq 'single') and ($data[0]->datatype eq 'xanes') and (lc($space) =~ m{k})) {
+	$::app->{main}->status("xanes data cannot be plotted in k.", 'alert');
+	return;
+    };
+    if (($how eq 'single') and ($data[0]->datatype eq 'chi')   and (lc($space) eq q{e})) {
+	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
+	return;
+    };
+
     foreach my $d (@data) {
+      next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
+      next if (($d->datatype eq 'chi')   and (lc($space) =~ m{e}));
       $d->plot($space);
       ++$different if ($d->bkg_z ne $first_z);
       usleep($pause) if $pause;
@@ -1921,17 +1934,22 @@ sub plot {
   ## R
   } elsif (lc($space) eq 'r') {
     if ($how eq 'single') {
-      $data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotR}->{$which}->GetValue) {
-	  $data[0]->po->r_pl(substr($which, 0, 1));
-	  $data[0]->plot('r');
+      if ($data[0]->datatype ne 'xanes') {
+	$data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotR}->{$which}->GetValue) {
+	    $data[0]->po->r_pl(substr($which, 0, 1));
+	    $data[0]->plot('r');
+	  };
 	};
+	$data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in R.", 'alert');
       };
-      $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
       $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
@@ -1941,15 +1959,20 @@ sub plot {
   ## q
   } elsif (lc($space) eq 'q') {
     if ($how eq 'single') {
-      foreach my $which (qw(mag env re im pha)) {
-	if ($app->{main}->{PlotQ}->{$which}->GetValue) {
-	  $data[0]->po->q_pl(substr($which, 0, 1));
-	  $data[0]->plot('q');
+      if ($data[0]->datatype ne 'xanes') {
+	foreach my $which (qw(mag env re im pha)) {
+	  if ($app->{main}->{PlotQ}->{$which}->GetValue) {
+	    $data[0]->po->q_pl(substr($which, 0, 1));
+	    $data[0]->plot('q');
+	  };
 	};
+	$data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
+      } else {
+	$::app->{main}->status("xanes data cannot be plotted in q.", 'alert');
       };
-      $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
     } else {
       foreach my $d (@data) {
+	next if ($d->datatype eq 'xanes');
 	$d->plot($space);
 	usleep($pause) if $pause;
       };
@@ -2768,7 +2791,8 @@ Many, many, many ...
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

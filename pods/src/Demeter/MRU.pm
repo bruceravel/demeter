@@ -29,7 +29,10 @@ use Encode qw(decode);
 my $max_mru = 15;
 
 sub push_mru {
-  my ($self, $group, $file) = @_;
+  my ($self, $group, $file, $record) = @_;
+  if ($record) {
+    $file = $file . " <$record>";
+  };
   my $stash = $self->stash_folder;
   $stash =~ s{\\}{\\\\}g if $self->is_windows;	# it seems like there should be something more elegant...
   return $self if ($file =~ m{$stash});
@@ -77,12 +80,21 @@ sub get_mru_list {
     #  $hash{$k} = decode('UTF-8', $hash{$k});
     #  (-e $hash{$k}) ? print "yup  ".$hash{$k}.$/ :print "nope ".$hash{$k}.$/ ;
     #};
-    push @list_of_files, map { [$hash{$_}, $g] } grep {-e $hash{$_}} sort {$a <=> $b} keys %hash;
+    push @list_of_files, map { [$hash{$_}, $g] } grep {$self->minus_e($hash{$_})} sort {$a <=> $b} keys %hash;
   };
   undef %mru;
   return @list_of_files;
 };
 
+sub minus_e {
+  my ($self, $string) = @_;
+  return 1 if -e $string;
+  if ($string =~ m{(\s+<\d?>)\z}) {
+    $string =~ s{$1}{};
+  };
+  return 1 if -e $string;
+  return 0;
+};
 
 1;
 
@@ -168,7 +180,8 @@ List length is 16 items.  This should be configurable.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );;
+local $Archive::Zip::UNICODE = 1;
 use Carp;
 use File::Path;
 use File::Spec;
@@ -120,7 +121,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

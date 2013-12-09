@@ -2,6 +2,7 @@ package Demeter::UI::Atoms::Paths;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
+use Demeter::UI::Artemis::ShowText;
 
 use Const::Fast;
 use Cwd;
@@ -79,7 +80,7 @@ sub new {
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
   $self->{paths}->SetColumnWidth( 0,  50 );
-  $self->{paths}->SetColumnWidth( 1,  50 );
+  $self->{paths}->SetColumnWidth( 1,  55 );
   $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
   $self->{paths}->SetColumnWidth( 4,  50 );
@@ -150,7 +151,10 @@ sub show_geometry {
   ## postcrit
   my $i = $list->GetItemData($parent->{rcselected});
   my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
-  my $pd = $sp->pathsdat;
+  my $feff = $parent->{parent}->{Feff}->{feffobject};
+  my $pd = (($feff->source eq 'aggregate') and ($sp->nleg == 2)) ? $feff->path_geom($sp) : $sp->pathsdat;
+  ##                                       ^^^^^^^^^^^^^^^^^^^^
+  ##                                  fix this once MSPath is working
   $pd =~ s{\A\s+\d+}{};
   $pd =~ s{index,}{};
   my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;

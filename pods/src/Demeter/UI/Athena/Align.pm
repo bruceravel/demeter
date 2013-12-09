@@ -183,6 +183,8 @@ sub add {
   my ($this, $data, $amount) = @_;
   my $shift = $this->{shift}->GetValue;
   $this->{shift}->SetValue($shift+$amount);
+  $this->{error}->SetValue(0);
+  $data->bkg_delta_eshift(0);
   $this->plot($data);
   $::app->modified(1);
 };
@@ -296,7 +298,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

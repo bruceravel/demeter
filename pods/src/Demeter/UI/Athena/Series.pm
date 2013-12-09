@@ -8,6 +8,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN);
 
 use Scalar::Util qw(looks_like_number);
 use List::MoreUtils qw(any);
@@ -244,7 +245,7 @@ sub step {
     next if not $clb->IsChecked($i);
     $stat->add_data($clb->GetIndexedData($i)->bkg_step);
   };
-  my $text = sprintf("%.5f +/- %.5f", $stat->mean, $stat->standard_deviation);
+  my $text = sprintf("%.5f %s %.5f", $stat->mean, $PLUSMN, $stat->standard_deviation);
   $this->{stepvalue}-> SetValue($text);
   $::app->{main}->status("Average edge step value: ".$text);
   undef $stat;
@@ -293,7 +294,8 @@ Need to check that generated values won't fail attribute type checking
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

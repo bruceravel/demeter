@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => 'Photon Factory and SPring8 XAS Beamlines');
+has '+description' => (default => 'Photon Factory, SPring8, SAGA, and Aichi XAS Beamlines');
 has '+version'     => (default => 0.3);
 
 use Demeter::Constants qw($PI);
@@ -16,10 +16,10 @@ const my $HC      => 12398.52;	# slightly different than in D::C
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (Photon Factory/SPring8)\n");
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (Photon Factory/SPring8/SAGA/Aichi)\n");
   my $line = <D>;
   close D;
-  return 1 if ($line =~ m{9809\s+(?:KEK-PF|SPring-8)\s+(?:(BL\d+)|(NW\d+)|(\d+\w+\d*))});
+  return 1 if ($line =~ m{9809\s+(?:KEK-PF|SPring-8|SAGA-LS|AichiSR)\s+(?:(BL\d+)|(NW\d+)|(\d+\w+\d*))});
   return 0;
 };
 

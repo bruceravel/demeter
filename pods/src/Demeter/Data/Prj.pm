@@ -196,7 +196,6 @@ sub record {
     my @this = @{ $entries_ref->[$gg] };
     my $rec = $self->_record( @this );
     $rec->prjrecord(join(", ", $self->file, $g));
-    #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
 
     my $array = ($rec->datatype =~ m{(?:xmu|xanes)}) ? 'energy'
@@ -615,7 +614,8 @@ Some information available from Ctrl-b in Athena is thrown away
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

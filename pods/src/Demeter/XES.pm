@@ -60,21 +60,21 @@ has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 has 'energy'   => (is => 'rw', isa => PosInt,   default => 2,);
 has 'emission' => (is => 'rw', isa => PosInt,   default => 3,);
 has 'sigma'    => (is => 'rw', isa => PosInt,   default => 4,);
-has 'e1'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e2'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e3'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e4'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'slope'    => (is => 'rw', isa => 'Num',    default => 0,);
-has 'yint'     => (is => 'rw', isa => 'Num',    default => 0,);
-has 'norm'     => (is => 'rw', isa => 'Num',    default => 0,);
-has 'peak'     => (is => 'rw', isa => 'Num',    default => 0,);
+has 'e1'       => (is => 'rw', isa => 'LaxNum',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e2'       => (is => 'rw', isa => 'LaxNum',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e3'       => (is => 'rw', isa => 'LaxNum',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e4'       => (is => 'rw', isa => 'LaxNum',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'slope'    => (is => 'rw', isa => 'LaxNum',    default => 0,);
+has 'yint'     => (is => 'rw', isa => 'LaxNum',    default => 0,);
+has 'norm'     => (is => 'rw', isa => 'LaxNum',    default => 0,);
+has 'peak'     => (is => 'rw', isa => 'LaxNum',    default => 0,);
 
 has 'z'        => (is => 'rw', isa =>  Element, default => 'H');
 has 'line'     => (is => 'rw', isa =>  Line,    default => 'Ka1');
 
-has 'eshift'            => (is => 'rw', isa => 'Num',  default => 0, alias => 'bkg_eshift');
-has 'plot_multiplier'   => (is => 'rw', isa => 'Num',  default => 1,);
-has 'y_offset'          => (is => 'rw', isa => 'Num',  default => 0,);
+has 'eshift'            => (is => 'rw', isa => 'LaxNum',  default => 0, alias => 'bkg_eshift');
+has 'plot_multiplier'   => (is => 'rw', isa => 'LaxNum',  default => 1,);
+has 'y_offset'          => (is => 'rw', isa => 'LaxNum',  default => 0,);
 has 'update_file'       => (is => 'rw', isa => 'Bool', default => 1, trigger=>sub{my ($self, $new) = @_; $self->update_background(1) if $new});
 has 'update_background' => (is => 'rw', isa => 'Bool', default => 1);
 
@@ -423,7 +423,8 @@ Peak fitting is currently broken for XES data
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

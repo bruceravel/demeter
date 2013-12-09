@@ -46,13 +46,13 @@ has 'space'         => (is => 'rw', isa => 'Str',     default => 'norm',
 has 'dataspace'     => (is => 'rw', isa => 'Str',     default => 'norm',);
 has 'standardspace' => (is => 'rw', isa => 'Str',     default => 'norm',);
 
-has 'multiplier'    => (is => 'rw', isa => 'Num',     default => 1);
+has 'multiplier'    => (is => 'rw', isa => 'LaxNum',  default => 1);
 has 'invert'        => (is => 'rw', isa => 'Bool',    default => 0);
-has 'xmin'          => (is => 'rw', isa => 'Num',     default => -20);
-has 'xmax'          => (is => 'rw', isa => 'Num',     default =>  30);
-has 'epsilon'       => (is => 'rw', isa => 'Num',     default =>  1e-5);
+has 'xmin'          => (is => 'rw', isa => 'LaxNum',  default => -20);
+has 'xmax'          => (is => 'rw', isa => 'LaxNum',  default =>  30);
+has 'epsilon'       => (is => 'rw', isa => 'LaxNum',  default =>  1e-5);
 has 'steps'         => (is => 'rw', isa => 'Int',     default =>  6);
-has 'area'          => (is => 'rw', isa => 'Num',     default =>  0);
+has 'area'          => (is => 'rw', isa => 'LaxNum',  default =>  0);
 has 'xsuff'         => (is => 'rw', isa => 'Str',     default => 'energy');
 
 has 'plotspectra'    => (is => 'rw', isa => 'Bool',    default => 0);
@@ -370,7 +370,8 @@ Difference spectra of things other than norm(E); C<space> attribute
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

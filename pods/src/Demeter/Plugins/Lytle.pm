@@ -48,12 +48,12 @@ sub fix {
       print N "# ", $_, $/;
 
     } elsif (all {looks_like_number($_)} @list) {
-      my $line   = <D>;
-      $line      =~ s{(E[-+]\d+)-}{$1 -}gi;
-      my @fields = split(" ", $line);
-      my $steps  = shift @fields;
+      #my $line   = <D>;
+      #$line      =~ s{(E[-+]\d+)-}{$1 -}gi;
+      #my @fields = split(" ", $line);
+      my $steps  = shift @list;
       my $energy = $HC / (2 * $dspacing) / sin( $steps / ($R2D * $stpdeg));
-      print N join(" ", sprintf("%12.5E", $energy), @fields) . $/;
+      print N join(" ", sprintf("%12.5E", $energy), @list) . $/;
 
     } else { #($_ =~ m{\d{1,2}-\d{1,2}\-\d{1,2}\s*\z}) { # comment line with date at end
       #print "found it!\n";

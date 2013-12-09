@@ -90,6 +90,7 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
+use MooseX::Types::LaxNum;
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
@@ -241,9 +242,9 @@ sub import {
   my @load  = ();
   my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph  = (qw(Data Data/Prj));
-  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
+  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
-  my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
+  my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
   my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes   = (qw(XES));
   my @plot  = (qw(Plot/Indicator Plot/Style));
@@ -889,6 +890,7 @@ Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
 		  template_analysis => $ENV{DEMETER_BACKEND},
 		  template_fit      => $ENV{DEMETER_BACKEND});
 $devflag = 1 if $ENV{DEMETER_DEVFLAG};
+Demeter->dispense('process', 'init') if Demeter->is_larch;
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -1379,7 +1381,8 @@ Serialization is incompletely implemented at this time.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

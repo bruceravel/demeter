@@ -7,9 +7,12 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN EVT_LEFT_DOWN
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
+use Const::Fast;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+const my $PM => $PLUSMN2;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
@@ -18,7 +21,6 @@ use List::Util qw(max);
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
-use Const::Fast;
 use DateTime;
 use Statistics::Descriptive;
 
@@ -84,13 +86,25 @@ sub group {
   $this->{group_group_label} = Wx::StaticText->new($this, -1, 'Current group');
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+  my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+  $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
+					   wxDefaultPosition, [90,12], wxNO_BORDER);
+  $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
+  $hbox -> Add($this->{type}, 0, wxBOTTOM|wxTOP, 4);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
+  $this->{type} -> SetNormalColour(wxNullColour);
+  $this->{type} -> SetHoverColour(wxNullColour);
+  $this->{type} -> SetVisitedColour(wxNullColour);
+  $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
+
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
+  EVT_HYPERLINK($this, $this->{group_group_label}, sub{$_[1]->Skip(0)});
+  EVT_LEFT_DOWN($this->{type}, sub{quick_change_type(@_); $_[1]->Skip(0)});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
@@ -125,7 +139,7 @@ sub group {
   $gbs -> Add($this->{importance_label}, Wx::GBPosition->new(1,6));
   $gbs -> Add($this->{importance},       Wx::GBPosition->new(1,7));
 
-  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance freeze);
+  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance freeze type);
   foreach my $x (qw(bkg_eshift importance)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
@@ -646,6 +660,11 @@ sub mode {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
 
+  if ($group) {
+    my $type = (($group->datatype eq 'xmu') and $group->is_nor) ? 'norm' : $group->datatype;
+    $this->{type}->SetLabel('Dataype: ' . $type . '    ') ;
+  };
+
   return $this;
 };
 
@@ -721,14 +740,18 @@ sub push_values {
   $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;
   my $n = length($truncated_name);
-  if ($n > 40) {
-    $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-17);
+  if ($n > 28) {
+    $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-5);
   };
   $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
 
   $data->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
 	     update_fft     => $save[3], update_bft  => $save[4],);
   $this->{freeze}->SetValue($data->quenched);
+
+  my $type = (($data->datatype eq 'xmu') and $data->is_nor) ? 'norm' : $data->datatype;
+  $this->{type}->SetLabel('Dataype: ' . $type . '    ');
+
   return $data;
 };
 
@@ -786,6 +809,8 @@ sub zero_values {
   $this->{'bkg_nnorm_2'} -> SetValue(0);
   $this->{'bkg_nnorm_3'} -> SetValue(1);
   $this->{group_group_label} -> SetLabel('Current group');
+  $this->{type}          -> SetLabel('');
+
 };
 
 sub window_name {
@@ -1233,8 +1258,8 @@ sub DoContextMenu {
       last SWITCH;
     };
     ($id == $ESHIFT_THIS) and do {
-      $app->{main}->status(sprintf("%s: energy shift = %.5f +/- %.5f",
-				   $data->name, $data->bkg_eshift, $data->bkg_delta_eshift));
+      $app->{main}->status(sprintf("%s: energy shift = %.5f %s %.5f",
+				   $data->name, $data->bkg_eshift, $PM, $data->bkg_delta_eshift));
       last SWITCH;
     };
     ($id == $ESHIFT_ALL) and do {
@@ -1265,7 +1290,7 @@ sub parameter_table {
   my %uncertainty = (bkg_eshift => 'bkg_delta_eshift');
 
   $max+=2;
-  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f +/- %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
+  my $format = ($with_uncertainty) ? ' %-'.$max.'s  %9.5f '.$PM.' %9.5f'."\n" : ' %-'.$max.'s  %9.5f'."\n";
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $d = $app->{main}->{list}->GetIndexedData($i);
@@ -1319,8 +1344,8 @@ sub edgestep_error {
   $data->sentinal(sub{1});
   my $finishtext = '('.Demeter->howlong($start).')';
   $app->OnGroupSelect(0,0,0);
-  $app->{main}->status(sprintf("%s: edge step = %.5f +/- %.5f   %s",
-			       $data->name, $data->bkg_step, $stddev, $finishtext));
+  $app->{main}->status(sprintf("%s: edge step = %.5f %s %.5f   %s",
+			       $data->name, $data->bkg_step, $PM, $stddev, $finishtext));
   undef $busy;
 };
 
@@ -1414,6 +1439,19 @@ sub importance_to_1 {
   $app->OnGroupSelect(0,0,0);
 };
 
+sub quick_change_type {
+  my ($text, $event) = @_;
+  return if not ($event->AltDown and $event->ControlDown);
+  return if not (($::app->current_data->datatype eq 'xmu') or ($::app->current_data->datatype eq 'xanes'));
+  if ($::app->current_data->datatype eq 'xmu') {
+    $::app->current_data->datatype('xanes');
+  } else {
+    $::app->current_data->datatype('xmu');
+  };
+  $::app->{main}->{Main}->mode($::app->current_data, 1, 0);
+  $event->Skip;
+};
+
 1;
 
 
@@ -1437,7 +1475,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

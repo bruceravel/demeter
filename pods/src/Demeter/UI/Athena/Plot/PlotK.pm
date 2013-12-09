@@ -23,7 +23,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
   $box -> Add($hbox, 0, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
-  my $slots = Wx::GridSizer->new( 2, 2, 0, 1 );
+  my $slots = Wx::GridSizer->new( 3, 2, 0, 1 );
   $hbox -> Add($slots, 1, wxGROW|wxALL, 0);
 
   $this->{chie} = Wx::CheckBox->new($this, -1, $CHI.'(E)', wxDefaultPosition, wxDefaultSize);
@@ -33,6 +33,7 @@ sub new {
   EVT_CHECKBOX($this, $this->{chie},
 	       sub{my ($this, $event) = @_;
 		   if ($this->{chie}->GetValue) {
+		     $this->{bkgk}->SetValue(0);
 		     $this->{win}->SetValue(0);
 		   };
 		   $this->replot(qw(k single));
@@ -40,6 +41,18 @@ sub new {
   EVT_CHECKBOX($this, $this->{mchie}, sub{$_[0]->replot(qw(k marked))});
   $app->mouseover($this->{chie},  "Plot $CHI(E) when ploting the current group in k-space.");
   $app->mouseover($this->{mchie}, "Plot $CHI(E) when ploting the marked groups in k-space.");
+
+  $this->{bkgk} = Wx::CheckBox->new($this, -1, 'Background', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{bkgk}, 1, wxGROW|wxALL, 1);
+  $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 1);
+  EVT_CHECKBOX($this, $this->{bkgk},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{bkgk}->GetValue) {
+		     $this->{chie}->SetValue(0);
+		   };
+		   $this->replot(qw(k single));
+		 });
+  $app->mouseover($this->{bkgk}, "Plot the flattened background function in k-space.");
 
   $this->{win} = Wx::CheckBox->new($this, -1, 'Window', wxDefaultPosition, wxDefaultSize);
   $slots -> Add($this->{win}, 1, wxGROW|wxALL, 1);
@@ -54,7 +67,7 @@ sub new {
 
 
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
-    foreach (qw(chie win));
+    foreach (qw(chie bkgk win));
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
     foreach (qw(mchie));
 
@@ -105,6 +118,7 @@ sub pull_single_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->chie($this->{chie} -> GetValue);
+  $po->bkgk($this->{bkgk} -> GetValue);
 
   my $kmin = $this->{kmin}-> GetValue;
   my $kmax = $this->{kmax}-> GetValue;
@@ -119,6 +133,7 @@ sub pull_marked_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->chie($this->{mchie}-> GetValue);
+  $po->bkgk(0);
 
   my $kmin = $this->{kmin}-> GetValue;
   my $kmax = $this->{kmax}-> GetValue;
@@ -150,7 +165,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

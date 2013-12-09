@@ -45,10 +45,10 @@ has 'standard' => (is => 'rw', isa => Empty.'|Demeter::Data',  default => q{},
 				 });
 has 'standardgroup' => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
-has 'linear'    => (is => 'rw', isa => 'Num',  default => 0.4);
-has 'quadratic' => (is => 'rw', isa => 'Num',  default => sub{ shift->co->default("dispersive", "quadratic")  || 0});
-has 'quartic'   => (is => 'rw', isa => 'Num',  default => 0);
+has 'offset'    => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'linear'    => (is => 'rw', isa => 'LaxNum',  default => 0.4);
+has 'quadratic' => (is => 'rw', isa => 'LaxNum',  default => sub{ shift->co->default("dispersive", "quadratic")  || 0});
+has 'quartic'   => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 sub BUILD {
   my ($self, @params) = @_;

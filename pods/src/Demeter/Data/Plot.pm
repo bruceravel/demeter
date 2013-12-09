@@ -2,7 +2,7 @@ package Demeter::Data::Plot;
 use Moose::Role;
 
 use Carp;
-use Demeter::Constants qw($NUMBER);
+use Demeter::Constants qw($NUMBER $ETOK $EPSILON3);
 use List::Util qw(max);
 use List::MoreUtils qw(uniq zip);
 
@@ -167,7 +167,12 @@ sub _plotk_command {
   my $newold = ($pf->New)  ? 'new'  : 'over';
   my $ke     = ($pf->chie) ? 'chie' : 'k';
   my $template = $newold . $ke;
-  $string = $self->template("plot", $template);
+  $string  = $self->template("plot", $template, {dobkgk=>0});
+  if ($pf->bkgk) {
+    $pf -> increment;
+    $self->make_bkgk;
+    $string .= $self->template("plot", 'overk', {dobkgk=>1});
+  };
   ## reinitialize the local plot parameters
   $pf -> reinitialize($xlorig, $ylorig);
   return $string;
@@ -275,6 +280,8 @@ sub _plotkq_command {
   };
   my $string = q{};
   my $save = $self->name;
+  my $save_bkgk = $self->po->bkgk;
+  $self->po->bkgk(0);
   $self->name($save . " in k space");
   $pf -> title("$save in k and q space");
   $string .= $self->_plotk_command;
@@ -282,6 +289,7 @@ sub _plotkq_command {
   $self->name($save . " in q space");
   $string .= $self->_plotq_command;
   $self->name($save);
+  $self->po->bkgk($save_bkgk);
   return $string;
 };
 
@@ -437,6 +445,9 @@ sub plot_kqfit {
     $down = $max[$k-1];
   };
 
+  my $save_bkgk = $self->po->bkgk;
+  $self->po->bkgk(0);
+
   $self->po->title($self->name . " in k and q space");
 
   ## plot magnitude part
@@ -454,6 +465,7 @@ sub plot_kqfit {
   $self->po->plot_win($winsave);
   $self -> name($lab);
   $self -> po -> q_pl($qpart);
+  $self->po->bkgk($save_bkgk);
   return $self;
 };
 
@@ -838,6 +850,14 @@ sub suffix {
   return $suff;
 };
 
+sub make_bkgk {
+  my ($self) = @_;
+  $self->_update('fft');
+  $self->dispense('process', 'bkgk');
+};
+
+
+
 1;
 
 =head1 NAME
@@ -1044,7 +1064,8 @@ organized by common functionality.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

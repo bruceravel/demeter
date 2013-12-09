@@ -251,7 +251,9 @@ sub populate {
   };
 
 
-  my $imp = sprintf(" (%4.4d) %s, %s%s\n", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
+  my $imp = sprintf(" (%4.4d) %s, %s%s", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
+  $imp = substr($imp, 7, -6) if ($pathobject->sp->pathfinder_index == 9999);
+  $imp .= "\n";
   $this->{geometry} -> WriteText($imp);
   $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
   $this->{geometry} -> WriteText($geometry);
@@ -579,7 +581,12 @@ sub Rename {
   if (ref($self->{path}) =~ m{FPath}) {
     $self->{path}->label($newname);
   } else {
-    $self->{path}->label(sprintf("[%s] %s", ($self->{path}->parent) ? $self->{path}->parent->name : q{}, $newname));
+    my $feffname = ($self->{path}->parent) ? $self->{path}->parent->name : q{};
+    my $n = Demeter->co->default('artemis', 'feffpathname');
+    if ($n > 0) {
+      $feffname = substr($feffname, 0, $n) if length($feffname) > $n;
+    };
+    $self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
   };
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;
@@ -645,7 +652,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

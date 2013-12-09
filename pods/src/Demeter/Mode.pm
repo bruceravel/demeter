@@ -2,6 +2,8 @@ package Demeter::Mode;
 
 use Moose; #X::Singleton;
 use MooseX::Aliases;
+use MooseX::Types::LaxNum;
+
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -12,7 +14,7 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(zip none);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
@@ -402,7 +404,8 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},);
+				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},
+	       );
 
 has 'Plugins' => (
 		traits    => ['Array'],
@@ -436,9 +439,9 @@ has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
-has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
-has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
-has 'heap_used'	   => (is => 'rw', isa => 'Num',  default => 0);
+has 'check_heap'   => (is => 'rw', isa => 'Bool',   default => 0);
+has 'heap_free'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'heap_used'	   => (is => 'rw', isa => 'LaxNum', default => 0);
 
 sub increment_fit {
   my ($self) = @_;
@@ -455,9 +458,13 @@ sub reset_path_index {
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
-  return q{} if ($type !~ m{(?:$re)});
-  my $list = $self->$type;
-  my @objects = grep {defined($_)} @$list;
+  my @thesetypes = (ref($type) eq 'ARRAY') ? @$type : ($type);
+  return q{} if (none {$_ =~ m{(?:$re)}} @thesetypes);
+  my @objects = ();
+  foreach my $t (@thesetypes) {
+    my $list = $self->$t;
+    push @objects, grep {defined($_)} @$list;
+  }
   foreach my $o (@objects) {
     return $o if ($o->group eq $group);
   };
@@ -483,6 +490,8 @@ sub remove {
     $object->end_plot;
     $type = 'Plot';
   } elsif ($type eq 'External') {
+    $type = 'Feff';
+  } elsif ($type eq 'Aggregate') {
     $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
@@ -958,7 +967,8 @@ Errors should be propagated into def parameters
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

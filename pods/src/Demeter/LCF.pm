@@ -44,8 +44,8 @@ has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
 has '+name'       => (default => 'LCF' );
 
-has 'xmin'  => (is => 'rw', isa => 'Num',    default => 0);
-has 'xmax'  => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmin'  => (is => 'rw', isa => 'LaxNum',    default => 0);
+has 'xmax'  => (is => 'rw', isa => 'LaxNum',    default => 0);
 has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 		trigger => sub{my ($self, $new) = @_;
 			       $self->suffix(q{norm}), $self->space_description('normalized mu(E)') if ((lc($new) =~ m{\Anor}) and $self->data and (not $self->data->bkg_flatten));
@@ -55,13 +55,13 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 			       $self->suffix(q{xmu}),  $self->space_description('raw mu(E)')        if  (lc($new) =~ m{\Axmu});
 			      });
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
-has 'suffix'    => (is => 'rw', isa => 'Str',    default => q{flat});
-has 'noise'     => (is => 'rw', isa => 'Num',    default => 0);
-has 'kweight'   => (is => 'rw', isa => 'Num',  default => 0);
-has 'slope'     => (is => 'rw', isa => 'Num',  default => 0);
-has 'offset'    => (is => 'rw', isa => 'Num',  default => 0);
-has 'delslope'  => (is => 'rw', isa => 'Num',  default => 0);
-has 'deloffset' => (is => 'rw', isa => 'Num',  default => 0);
+has 'suffix'    => (is => 'rw', isa => 'Str',     default => q{flat});
+has 'noise'     => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'kweight'   => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'slope'     => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'offset'    => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'delslope'  => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'deloffset' => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
@@ -75,12 +75,12 @@ has 'plot_components' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->
 has 'plot_difference' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "difference")  || 0});
 has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "indicators")  || 1});
 
-has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
-has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
-has 'ninfo'     => (is => 'rw', isa => 'Num', default => 0);
-has 'epsilon'   => (is => 'rw', isa => 'Num', default => 0);
-has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
-has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
+has 'nstan'     => (is => 'rw', isa => 'Int',    default => 0);
+has 'npoints'   => (is => 'rw', isa => 'Int',    default => 0);
+has 'ninfo'     => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'epsilon'   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'nvarys'    => (is => 'rw', isa => 'Int',    default => 0);
+has 'ntitles'   => (is => 'rw', isa => 'Int',    default => 0);
 has 'standards' => (
 		    traits    => ['Array'],
 		    is        => 'rw',
@@ -140,10 +140,10 @@ has 'options' => (
 				'option_exists'   => 'exists',
 			       },
 		 );
-has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
-has 'chisqr'  => (is => 'rw', isa => 'Num', default => 0);
-has 'chinu'   => (is => 'rw', isa => 'Num', default => 0);
-has 'scaleby' => (is => 'rw', isa => 'Num', default => 0);
+has 'rfactor' => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'chisqr'  => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'chinu'   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'scaleby' => (is => 'rw', isa => 'LaxNum', default => 0);
 
 has 'standardsgroups' => (
 			  traits    => ['Array'],
@@ -1635,7 +1635,8 @@ better than converting the fit into a normal Data object
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -11,11 +11,11 @@ use vars qw($FITYK $RESPONSE);
 $FITYK = fityk::Fityk->new;
 my $fityk_initialized = 0;
 
-has 'feedback'      => (is => 'rw', isa => 'Str',  default => q{});
-has 'my_file'       => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');
-has 'sigil'         => (is => 'ro', isa => 'Str',  default => '%');
-has 'init_data'     => (is => 'ro', isa => 'Str',  default => '@0.F=0');
-has 'defwidth'      => (is => 'ro', isa => 'Num',  default => 0);
+has 'feedback'      => (is => 'rw', isa => 'Str',    default => q{});
+has 'my_file'       => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Fityk.pm');
+has 'sigil'         => (is => 'ro', isa => 'Str',    default => '%');
+has 'init_data'     => (is => 'ro', isa => 'Str',    default => '@0.F=0');
+has 'defwidth'      => (is => 'ro', isa => 'LaxNum', default => 0);
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
@@ -483,7 +483,8 @@ Need better aliasing of parameter names for add and reporting.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

@@ -44,7 +44,7 @@ sub backend_id {
     };
 
     when ('larch') {
-      return 1;
+      return "Larch " . Larch::get_larch_scalar('larch.__version__');
     };
 
   };
@@ -59,7 +59,7 @@ sub backend_version {
     };
 
     when ('larch') {
-      return 1;
+      return Larch::get_larch_scalar('larch.__version__');
     };
 
   };
@@ -92,6 +92,10 @@ sub fetch_scalar {
 	  $param = $gp.'.'.$param;
 	  return Larch::get_larch_scalar($param);
 	}
+	when (/delta_(aa__)_(esh|scale)/) {
+	  $param = $1.'.'.$2.'.stderr';
+	  return Larch::get_larch_scalar($param);
+	}
 	when (/(aa__)_(esh|scale)\b/) {
 	  $param = $1.'.'.$2;
 	  return Larch::get_larch_scalar($param);
@@ -116,6 +120,10 @@ sub fetch_scalar {
 	  $param = $1.'o.'.$2.'.stderr';
 	  return Larch::get_larch_scalar($param);
 	}
+	when (/_p(\d+)\z/) {
+	  $param = 'dempcatt._p'.$1;
+	  return Larch::get_larch_scalar($param);
+	};
 	default {
 	  return Larch::get_larch_scalar($param);
 	};
@@ -355,7 +363,8 @@ Larch backend not written....
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

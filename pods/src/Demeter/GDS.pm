@@ -25,22 +25,22 @@ use Carp;
 use Demeter::Constants qw($NUMBER);
 
 has '+name'	  => (isa => NotReserved);
-has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');
-has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
-has 'initial'	  => (is => 'rw', isa => 'Str',   default => q{});
-has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
-has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
+has 'gds'	  => (is => 'rw', isa =>  GDS,     default => 'guess');
+has 'mathexp'	  => (is => 'rw', isa => 'Str',    default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
+has 'initial'	  => (is => 'rw', isa => 'Str',    default => q{});
+has 'stored'	  => (is => 'rw', isa => 'Str',    default => q{});
+has 'bestfit'	  => (is => 'rw', isa => 'LaxNum', default => 0,
 		      trigger => sub{my ($self, $new) = @_; $self->modified(1) if $new} );
-has 'error'	  => (is => 'rw', isa => 'Num',   default => 0);
-has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
-has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
+has 'error'	  => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'modified'	  => (is => 'rw', isa => 'Bool',   default => 1);
+has 'note'	  => (is => 'rw', isa => 'Str',    default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
-has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
-has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
-has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
-has 'is_merge'	  => (is => 'rw', isa => 'Bool',  default => 0);
+has 'autonote'	  => (is => 'rw', isa => 'Bool',   default => 1);
+has 'highlighted' => (is => 'rw', isa => 'Bool',   default => 0);
+has 'Use'	  => (is => 'rw', isa => 'Bool',   default => 1);
+has 'is_merge'	  => (is => 'rw', isa => 'Bool',   default => 0);
 
-has 'expandsto'	  => (is => 'rw', isa => 'Str',   default => q{});
+has 'expandsto'	  => (is => 'rw', isa => 'Str',    default => q{});
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -436,7 +436,8 @@ Errors should be propagated into def parameters
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

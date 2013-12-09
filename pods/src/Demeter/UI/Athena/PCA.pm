@@ -138,6 +138,10 @@ sub new {
     $this->{rectext}     = Wx::StaticText->new($this, -1, "with");
     $this->{nrecon}      = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
     $this->{reconstruct} = Wx::Button->new($this, -1, 'Reconstruct data');
+
+    $this->{ttbox}       = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{tttext}      = Wx::StaticText->new($this, -1, "with");
+    $this->{ntt}         = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
     $this->{tt}          = Wx::Button->new($this, -1, 'Target transform');
 
     my $ttbox       = Wx::StaticBox->new($this, -1, 'TT coefficients', wxDefaultPosition, wxDefaultSize);
@@ -150,7 +154,12 @@ sub new {
     $this->{nrecbox} -> Add($this->{reconstruct}, 1, wxALL, 0);
     $this->{nrecbox} -> Add($this->{rectext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
     $this->{nrecbox} -> Add($this->{nrecon}, 0, wxGROW|wxALL, 0);
-    foreach my $w (qw(nrecbox tt)) {
+
+    $this->{ttbox} -> Add($this->{tt}, 1, wxALL, 0);
+    $this->{ttbox} -> Add($this->{tttext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
+    $this->{ttbox} -> Add($this->{ntt}, 0, wxGROW|wxALL, 0);
+
+    foreach my $w (qw(nrecbox ttbox)) {
       $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     };
     $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
@@ -212,10 +221,10 @@ sub mode {
   #if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
   if (any {$::app->current_data->group eq $_->group} (@{ $this->{PCA}->stack })) {
     $this->{$_} -> Enable($enable) foreach qw(reconstruct rectext nrecon);
-    $this->{tt} -> Enable(0);
+    $this->{$_} -> Enable(0) foreach qw(tt tttext ntt);
   } else {
     $this->{$_} -> Enable(0) foreach qw(reconstruct rectext nrecon);
-    $this->{tt} -> Enable($enable);
+    $this->{$_} -> Enable($enable) foreach qw(tt tttext ntt);
   };
   $this->{transform}->Clear;
   $this->{saverecon}->Enable(0);
@@ -312,8 +321,12 @@ sub pca {
   if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
     $this->{$_} -> Enable(1) foreach qw(reconstruct rectext nrecon);
   } else {
-    $this->{tt}->Enable(1);
+    $this->{$_} -> Enable(1) foreach qw(tt tttext ntt);
   };
+  $this->{ntt}->SetRange(2, $this->{PCA}->ndata);
+  $this->{ntt}->SetValue($this->{PCA}->ndata);
+  $this->{nrecon}->SetRange(2, $this->{PCA}->ndata);
+  $this->{nrecon}->SetValue(2);
 
   $this->{result}->SetValue($this->{PCA}->report);
   $this->plot_components;
@@ -347,7 +360,7 @@ sub tt {
   my ($this, $event) = @_;
   $this->{transform}->Clear;
   my $target = $::app->current_data;
-  $this->{PCA}->tt($target, $this->{nrecon}->GetValue);
+  $this->{PCA}->tt($target, $this->{ntt}->GetValue);
   $this->{PCA}->plot_tt($target);
   $this->{transform}->SetValue($this->{PCA}->tt_report($target));
   $this->{savett}->Enable(1);
@@ -466,7 +479,8 @@ This 'n' that
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

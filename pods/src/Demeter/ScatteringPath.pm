@@ -68,6 +68,12 @@ my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff', alias => 'parent');
 has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
+## this is used only by paths coming from an aggregate Feff
+## calculation, which *has* to resolve details of the paths
+## relatively early since the Feff calcualtion of origin will
+## eventually be thrown away
+has 'ipot'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
 has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
 
 has 'rleg'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -78,15 +84,15 @@ has 'etanonzero'   => (is => 'rw', isa => 'Bool',     default => 0);
 has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
-has 'halflength'   => (is => 'rw', isa => 'Num',      default => 0);
+has 'halflength'   => (is => 'rw', isa => 'LaxNum',   default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
-has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
-has 'zcwif'        => (is => 'rw', isa => 'Num',      default => -1);
+has 'n'		   => (is => 'rw', isa => 'LaxNum',   default => 1);
+has 'zcwif'        => (is => 'rw', isa => 'LaxNum',   default => -1);
 
 has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'fuzzy'	   => (is => 'rw', isa => 'LaxNum',   default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
@@ -94,6 +100,7 @@ has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 has 'orig_nnnn'    => (is => 'rw', isa => 'Str',      default => q{});
+has 'site_fraction'=> (is => 'rw', isa => 'LaxNum',   default => 1);
 
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
@@ -111,7 +118,8 @@ sub BUILD {
   #$self->mo->push_ScatteringPath($self);
   return $_[0];
 };
-override remove => sub {	# a bit of optimization, skipping the "($self) = @_" step
+# a bit of optimization, skipping the "($self) = @_" step
+override remove => sub {
   return $_[0] if $_[0]->pathfinding;
   $_[0]->mo->remove($_[0]) if (defined($_[0]) and ref($_[0]) =~ m{Demeter} and defined($_[0]->mo));
   return $_[0];
@@ -183,11 +191,25 @@ sub intrplist {
   my @atoms  = split(/\./, $self->string);
   my @intrp = ($token);
   my @sites  = @{ $feff->sites };
-  foreach my $a (@atoms[1 .. $#atoms-1]) {
-    my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
-    $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
-    push @intrp, sprintf("%-6s", $this);
-  };
+  if ($#{$self->ipot} > -1) { ## this is an aggregate feff calc
+    foreach my $i (1 .. $#{$self->ipot}-1) {
+      my $this;
+      my $a = $self->ipot->[$i];
+      if ($a == 0) {
+	$this = $token;
+      } else {
+	$this = $self->feff->potentials->[$a]->[2] || get_symbol($self->feff->potentials->[$a]->[1]);
+      };
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  } else {		      ## this is a normal feff calc
+    foreach my $a (@atoms[1 .. $#atoms-1]) {
+      my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      push @intrp, sprintf("%-6s", $this);
+    };
+  }
   push @intrp, $token;
   return join(" ", @intrp);
 };
@@ -195,10 +217,12 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
-  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %6.2f  %d  %s",
+  my $rank = (Demeter->co->default('pathfinder', 'rank') eq 'feff')
+    ? $self->get_rank('zcwif') : $self->get_rank('area2_n');
+  $rank ||= 0;
+  return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
-      $self->get_rank('zcwif') || 0,
-	$self->nleg, $self->Type;
+      $rank, $self->nleg, $self->Type;
 };
 
 sub labelline {
@@ -214,6 +238,18 @@ sub ssipot {
   my $this_site = $hits[1];
   my $ipot = $self->feff->sites->[$this_site]->[3];
   return $ipot;
+};
+sub fetch_ipots {
+  my ($self) = @_;
+  my @hits = split(/\./, $self->string);
+  my @these;
+  foreach my $h (@hits) {
+    my $this_site = $h;
+    my $ipot = ($this_site eq '+') ? 0 : $self->feff->sites->[$this_site]->[3];
+    #$ipot = 0 if ($ipot eq Demeter->co->default('pathfinder', 'token');
+    push @these, $ipot;
+  };
+  return @these;
 };
 
 ## set halflength and beta list for this path
@@ -442,7 +478,7 @@ sub compute_beta {
 ## degeneracy checking
 sub compare {
   my ($self, $other) = @_;
-  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
+#  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
   my $feff = $self->feff;
 
   ## compare path lengths
@@ -459,15 +495,26 @@ sub compare {
   ## number of legs
   return "nlegs different" if ($#this != $#that);
 
-  ## ipots
-  my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
-  my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
-  my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-  if (notall {$_} @ipot_compare) { # time reversal
-    ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
-    @that_ipot = reverse @that_ipot;
-    @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-    return "ipots different" if (notall {$_} @ipot_compare);
+  if ($#{$self->ipot} > -1) {  ## this is an Aggregate calculation
+    #print $/, '>> ', join("|", @{$self->ipot}, $self->halflength), $/;
+    #print '<< ', join("|", @{$other->ipot}), $/;
+    my @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @{$other->ipot};
+    if (notall {$_} @ipot_compare) { # time reversal
+      my @that = reverse(@{$other->ipot});
+      @ipot_compare = pairwise {$a == $b} @{$self->ipot}, @that;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
+  } else { ## this is a normal Feff calculation
+    ## ipots
+    my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
+    my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
+    my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+    if (notall {$_} @ipot_compare) { # time reversal
+      ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
+      @that_ipot = reverse @that_ipot;
+      @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+      return "ipots different" if (notall {$_} @ipot_compare);
+    };
   };
 
   ## beta angles
@@ -1101,7 +1148,8 @@ changing species of an atom in a path
 
 And testing has been limited.
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

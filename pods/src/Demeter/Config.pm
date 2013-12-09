@@ -32,6 +32,7 @@ use Config::INI::Writer;
 use File::Basename;
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
+use Scalar::Util qw(looks_like_number);
 use Text::Wrap;
 #use Data::Dumper;
 
@@ -287,9 +288,26 @@ sub set_this_param {
     $hash{onvalue}  ||= 1;
     $hash{offvalue} ||= 0;
   };
+  if ($hash{type} eq 'real') {
+    $hash{default} = (looks_like_number($hash{default})) ? $hash{default} : 0;
+    $hash{demeter} = $hash{default};
+    $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+  } elsif ($hash{type} eq 'positive integer') {
+    $hash{default} = (looks_like_number($hash{default})) ? int($hash{default}) : 0;
+    $hash{demeter} = $hash{default};
+    $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+  };
   $self -> set($key=>\%hash);
   $ini{$group}{$param} = (($self->is_windows) and (exists $hash{windows})) ? $hash{windows} : $hash{default};
   return $self;
+};
+
+sub fix_number {
+  my ($val) = @_;
+  $val =~ s{,}{.} if ($val =~ m{,});
+  $val .= '0' if ($val =~ m{\.\z});
+  $val =~ s{\s+}{} if ($val =~ m{\s+});
+  return $val;
 };
 
 ## override a default value, for instance when reading an ini file
@@ -307,7 +325,13 @@ sub set_default {
   $rhash->{default} = $value;
   if ($rhash->{type} eq 'boolean') {
     $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
+  } elsif ($rhash->{type} eq 'real') {
+    #$rhash->{default} = 0 if (not looks_like_number($value));
+    #$rhash->{default} = fix_number($value);
+    $rhash->{default} = (looks_like_number($value)) ? $value : 0;
   } elsif ($rhash->{type} eq 'positive integer') {
+    $rhash->{default} = 0 if (not looks_like_number($value));
+    $rhash->{default} = int($value);
     ($rhash->{default} = $rhash->{maxint}) if ($value > $rhash->{maxint});
     ($rhash->{default} = $rhash->{minint}) if ($value < $rhash->{minint});
   };
@@ -893,7 +917,8 @@ When (how often) should ini files be written out?
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

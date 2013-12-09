@@ -36,7 +36,7 @@ has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');
 has 'paths' => (
 		traits    => ['Array'],
 		is        => 'rw',
-		isa       => 'ArrayRef[Demeter::Path]',
+		isa       => 'ArrayRef[Demeter::Path|Demeter::SSPath]',
 		default   => sub { [] },
 		handles   => {
 			      'push_paths'    => 'push',
@@ -318,7 +318,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

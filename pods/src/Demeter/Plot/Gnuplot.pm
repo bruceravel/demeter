@@ -25,8 +25,8 @@ use File::Spec;
 use Demeter::Constants qw($NUMBER);
 use String::Random qw(random_string);
 
-has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
-									      $Demeter::mode->external_plot_object->{__error_log}));
+has '+error_log' => (default => File::Spec->catfile($Demeter::mode->iwd,
+						    $Demeter::mode->external_plot_object->{__error_log}));
 has '+backend'  => (default => q{gnuplot});
 
 has '+col0'	=> (default => '1');
@@ -39,9 +39,9 @@ has '+col6'	=> (default => '7');
 has '+col7'	=> (default => '8');
 has '+col8'	=> (default => '9');
 has '+col9'	=> (default => '10');
-has 'markersymbol' => (is => 'rw', isa =>  'Int', default => sub{ shift->co->default("gnuplot", "markersymbol") || 305});
+has '+markersymbol' => (default => sub{ shift->co->default("gnuplot", "markersymbol") || 305});
 
-has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
+has '+terminal_number' => (default => 1);
 
 has '+datastyle' => (default => sub{ shift->co->default("gnuplot", "datastyle") || 'lines'});
 has '+fitstyle'  => (default => sub{ shift->co->default("gnuplot", "fitstyle")  || 'lines'});
@@ -311,7 +311,8 @@ of replot not being consistent with multiplot
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

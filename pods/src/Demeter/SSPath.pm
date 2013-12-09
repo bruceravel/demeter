@@ -17,7 +17,7 @@ package Demeter::SSPath;
 
 use Moose;
 extends 'Demeter::Path';
-use Demeter::NumTypes qw( Ipot PosNum PosInt );
+use Demeter::NumTypes qw( Ipot PosNum PosInt Natural );
 use Demeter::StrTypes qw( Empty );
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -26,17 +26,18 @@ use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
 has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
 		     trigger  => \&set_tag);
-has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
+has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum', default => 0.1);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
-has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scattering');
+has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'SSPath');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 has 'rattle'     => (is => 'rw', isa => 'Bool',   default => 0,
 		     trigger => sub{ my ($self, $new) = @_; $self->set_rattle($new); $self->update_path(1)});
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 9999);
 
 ## the sp attribute must be set to this SSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
@@ -68,7 +69,7 @@ sub set_tag {
   my $feff = $self->parent;
   return $self if not $feff;
   my @ipots = @{ $feff->potentials };
-  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
+  my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]) || q{};
   $self->tag($tag);
   $self->make_name  if not $self->name;
   return $self;
@@ -287,7 +288,8 @@ Think about serialization by itself and in a fit.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

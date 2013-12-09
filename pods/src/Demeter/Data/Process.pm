@@ -75,27 +75,62 @@ sub rebin {
   };
   push @bingrid, $elast;
 
+  $self->dispense("process", "rebin_prep");
   $self->place_array('re___bin.eee', \@bingrid);
   ##print join("|", @bingrid), $/;
 
-  my $rebinned = $self->clone;
+  my @x = $self->fetch_array($self->group.".xmu");
+  my (@i,@s);
+  my $pdl = PDL->new(\@x);
+  my $n = 3;
+  my $kernel = PDL::Core::ones($n) / $n;
+  my $sm = $pdl->conv1d($kernel);
+  my @z = $sm->list;
+  if ($self->is_col) {
+    ## i0 spectrum
+    @i = $self->fetch_array($self->group.".i0");
+    $pdl = PDL->new(\@i);
+    $sm = $pdl->conv1d($kernel);
+    my @ii = $sm->list;
+    @ii = splice(@ii,1,-1);
+    $self->place_array('re___bin.i0', \@ii);
 
+    ## signal spectrum
+    @s = $self->fetch_array($self->group.".signal");
+    $pdl = PDL->new(\@s);
+    $sm = $pdl->conv1d($kernel);
+    my @ss = $sm->list;
+    @ss = splice(@ss,1,-1);
+    $self->place_array('re___bin.signal', \@ss);
+  };
+
+  @e = splice(@e,1,-1);
+  @z = splice(@z,1,-1);
+  $self->place_array('re___bin.energy', \@e);
+  $self->place_array('re___bin.xmu', \@z);
+
+  my $rebinned = $self->clone;
   $self -> standard;		# make self the standard for rebinning
+  $rebinned -> dispense("process", "rebin");
+  $rebinned -> bkg_e0(0);
+
   ##$rebinned -> generated(1);
   $rebinned -> rebinned(1);
   $rebinned -> update_norm(1);
   $rebinned -> name($self->name . " rebinned");
 
-  $rebinned->dispense("process", "rebin");
   $rebinned->dispense("process", "deriv");
   $rebinned->resolve_defaults;
   $rebinned->datatype($self->datatype);
   $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
+  $rebinned->bkg_pre1($self->bkg_pre1);
+  $rebinned->bkg_pre2($self->bkg_pre2);
   $rebinned->npts($#bingrid+1);
   $rebinned->xmin($bingrid[0]);
   $rebinned->xmax($bingrid[$#bingrid]);
 
-  (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
+  ##(ref($standard) =~ m{Data}) ? $standard->standard :
+  $self->unset_standard;
   return $rebinned;
 };
 
@@ -848,7 +883,8 @@ mu(E) does.)
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 

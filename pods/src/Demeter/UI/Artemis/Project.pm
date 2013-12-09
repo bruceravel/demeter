@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+local $Archive::Zip::UNICODE = 1;
 use Compress::Zlib;
 use Cwd;
 use File::Basename;
@@ -32,6 +33,9 @@ use Safe;
 
 use Wx qw(:everything);
 use Demeter::UI::Wx::AutoSave;
+use Const::Fast;
+use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
+const my $PM => $PLUSMN2;       # see GDS.pm, line ~61
 
 require Exporter;
 
@@ -50,16 +54,17 @@ sub save_project {
   ## make sure we are fully up to date and serialised
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all(1,0);
-  my @data  = @$rdata;
-  my @paths = @$rpaths;
-  my @gds   = @$rgds;
+  my @data   = @$rdata;
+  my @paths  = @$rpaths;
+  my @gds    = @$rgds;
+  my @vpaths = $rframes->{Plot}->{VPaths}->fetch_vpaths;
   ## get name, fom, and description + other properties
 
   $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
     if (not $rframes->{main} -> {currentfit});
   Demeter::UI::Artemis::update_order_file();
 
-  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds, vpaths => \@vpaths);
   #my $save = $rframes->{main} -> {currentfit} -> fitted;
   #$rframes->{main} -> {currentfit} -> fitted(1);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
@@ -292,11 +297,20 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    if (not -e $yaml) {
+    my $source;
+    if (-e $yaml) {
+      my $gz = gzopen($yaml, 'rb');
+      my ($yy, $buffer);
+      $yy .= $buffer while $gz->gzreadline($buffer) > 0 ;
+      my @refs = YAML::Tiny::Load($yy);
+      $source = $refs[0]->{source};
+    } else {
       rmtree(File::Spec->catfile($projfolder, 'feff', $d));
       next;
     };
-    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
+    my $feffobject = ($source eq 'aggregate') ?
+      Demeter::Feff::Aggregate->new(group=>$d) :
+	  Demeter::Feff->new(group=>$d); # force group to be the same as before.
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -462,10 +476,14 @@ sub read_project {
 sub restore_fit {
   my ($rframes, $fit, $lastfit) = @_;
   $lastfit ||= $fit;
+  if (not defined($fit)) {
+    return q{It seems that you have not actually performed a fit in this fitting project.};
+  };
   my $import_problems = q{};
   $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
 
   ## -------- load up the GDS parameters
+  my $fom = 0;
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
   $rframes->{main}->status("Restoring GDS parameters", 'wait|nobuffer');
@@ -488,7 +506,7 @@ sub restore_fit {
     my $text = q{};
     if ($g->bestfit or $g->error) {
       if ($g->gds eq 'guess') {
-	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+	$text = sprintf("%.5f %s %.5f", $g->bestfit, $PM, $g->error);
       } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
 	$text = sprintf("%.5f", $g->bestfit);
       } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
@@ -499,10 +517,13 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
-  $fit->mo->currentfit($fit->fom+1);
-  my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $fom = $fit->fom+1;
+  Demeter->mo->currentfit($fom);
+  my ($name, $description) = (q{}, q{});
+  $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $description = $fit->description;
   $rframes->{main}->{name}->SetValue($name);
-  $rframes->{main}->{description}->SetValue($fit->description);
+  $rframes->{main}->{description}->SetValue($description);
 
   ## -------- Data and Paths
   my $count = 0;
@@ -542,6 +563,12 @@ sub restore_fit {
       $rframes->{main}->{$dnum}->SetLabel($lab);
     };
     ++$count;
+  };
+
+  ## -------- VPaths from currentfit
+  $rframes->{main}->status("Restoring VPaths", 'wait|nobuffer') if ($#{$lastfit->vpaths} > -1);
+  foreach my $vp (@{$lastfit->vpaths}) {
+    $rframes->{Plot}->{VPaths}->{vpathlist}->Append($vp->name, $vp);
   };
 
   ## -------- labels and suchlike
@@ -730,7 +757,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 
