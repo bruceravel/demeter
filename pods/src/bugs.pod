@@ -22,8 +22,7 @@ to fix it promptly.
 
 =item *
 
-Use the L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
+Use the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
 mailing list is always the appropriate place to report problems with
 the software.  There are good reasons for this:
 
@@ -137,7 +136,7 @@ problem may already be solved.
 =item *
 
 B<DO> subscribe to the L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> and
+lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
 B<DO> try asking your question there.  Your problem may have been
 discussed there or it may be of interest to other users.
 
@@ -246,7 +245,8 @@ Feff run, you will be asked for them in a follow-up email.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
 
