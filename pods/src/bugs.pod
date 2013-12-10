@@ -136,8 +136,7 @@ problem may already be solved.
 
 =item *
 
-B<DO> subscribe to the L<Ifeffit mailing
-lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
+B<DO> subscribe to the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> and
 B<DO> try asking your question there.  Your problem may have been
 discussed there or it may be of interest to other users.
 
