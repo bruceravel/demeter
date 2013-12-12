@@ -1386,56 +1386,6 @@ Please report problems to the Ifeffit Mailing List
 
 Patches are welcome.
 
-=head1 VERSIONS
-
-=over 4
-
-=item 0.5.4
-
-New numbering scheme: 0.5 is the beta version with a windows
-installer, the third number corresponds to the release number.  So
-Windows installer release 4 contains the code from version 0.5.4 and
-so on.
-
-=item 0.4.7
-
-Things mostly working on Windows.
-
-=item 0.4.6
-
-We now have a mostly functional Athena.
-
-=item 0.4.5
-
-Fit history in Artemis is mostly functional.  Reordering of Plot list
-in Artemis now possible by mouse.  Added rudimentary XES support.
-
-=item 0.4.4
-
-Added fit history to Artemis
-
-=item 0.4.3
-
-Added LCF fitting
-
-=item 0.4.2
-
-Cloning a Feff object now deeply copies the array references in an
-overridden clone method.
-
-Added showlegend attribute to Plot object
-
-=item 0.4.1
-
-Now supplying the C<bootstrap> script in an attempt to ease initial
-installation.  Also building the DPG with a PL_file at build time.
-
-Fixed a bug setting the Plot object space attribute in quad, stddev,
-and variance plots.  Added stddev and variance plots to the merge
-example in C<harness>.
-
-=back
-
 =head1 AUTHOR
 
 Bruce Ravel (bravel AT bnl DOT gov)

@@ -12,11 +12,11 @@ use Const::Fast;
 const my $INIFILE => 'x23a2med.demeter_conf';
 use List::MoreUtils qw(any);
 
-has '+is_binary'   => (default => 0);
-has '+description' => (default => "the NSLS X23A2 Vortex");
-has '+version'     => (default => 0.1);
+has '+is_binary'    => (default => 0);
+has '+description'  => (default => "the NSLS X23A2 Vortex");
+has '+version'      => (default => 0.2);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
-has 'nelements'    => (is => 'rw', isa => 'Int', default => 4);
+has 'nelements'     => (is => 'rw', isa => 'Int', default => 4);
 
 my $demeter = Demeter->new();
 has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
@@ -74,24 +74,9 @@ sub fix {
     $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$i")) } @labels;
 
     push @represented, $i if $is_ok;
-
-# any {(lc($_) eq Demeter->co->default("x23a2med", "roi$i"))
-# 				    and
-# 				   lc($_) eq Demeter->co->default("x23a2med", "slow$i")
-# 				    and
-# 				   lc($_) eq Demeter->co->default("x23a2med", "fast$i")
-# 				} @labels;
   };
   return 0 if ($#represented == -1);
   $self->nelements($#represented+1);
-
-  # my $is_ok = 1;
-  # foreach my $ch (@represented) {
-  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$ch") ) } @labels;
-  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$ch")) } @labels;
-  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$ch")) } @labels;
-  # };
-  # return 0 if not $is_ok;
 
   my @options = ();
   foreach my $l (@labels) {
@@ -136,15 +121,6 @@ sub fix {
 
   my $command = $demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
 							  dts=>$dts, maxints=>$maxints});
-
-  # my $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
-  # $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
-  # $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
-  # $command .= "write_data(file=\"$new\", \$title*, \$".Demeter->mo->throwaway_group."_title_*, ".Demeter->mo->throwaway_group."." . join(", ".Demeter->mo->throwaway_group.".", @labs) . ")\n";
-  # $command .= "erase \@group ".Demeter->mo->throwaway_group."\n";
-  # $command .= "erase \$title1 \$".Demeter->mo->throwaway_group."_title_*\n";
-  #print $command;
-
   unlink $new if (-e $new);
   $demeter->dispose($command);
 
