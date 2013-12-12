@@ -45,8 +45,8 @@ sub ACTION_copy_aug {
   $self->dispatch("ttree_aug");
   chdir $here;
   mkdir 'blib/lib/Demeter/UI/Athena/share/aug';
-  dircopy('doc/aug/html', 'blib/lib/Demeter/UI/Athena/share/aug/html') or die "symlink failed: $!";
-  dircopy('doc/aug/images', 'blib/lib/Demeter/UI/Athena/share/aug/images') or die "symlink failed: $!";
+  dircopy('doc/aug/html', 'blib/lib/Demeter/UI/Athena/share/aug/html') or die "dircopy failed: $!";
+  dircopy('doc/aug/images', 'blib/lib/Demeter/UI/Athena/share/aug/images') or die "dircopy failed: $!";
 };
 
 

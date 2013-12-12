@@ -353,7 +353,7 @@ than a normal Feff calculation.  Set C<rmax> sensibly!
 
 =over 4
 
-=items C<parts>
+=item C<parts>
 
 This is a reference to an array containing the Feff objects from each
 inequivalent site.

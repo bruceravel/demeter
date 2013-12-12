@@ -131,6 +131,14 @@ data which is a function of pixel index, requires special treatment.
 
 [% END %]
 
+[% WRAPPER html/newfeature %]
+There is now a label on the main page right next to the 
+[% INCLUDE font/quote a="Freeze" %] button which identifies the file
+type of the data.  You can toggle between xanes and xmu data by
+Control-Alt-Left clicking on that label.
+[% END %]
+
+
 [% PROCESS section label="Multi-element detector data" %]
 
 [% FILTER html_para %]

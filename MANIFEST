@@ -1221,7 +1221,6 @@ lib/Demeter/templates/analysis/ifeffit/peak_put.tmpl
 lib/Demeter/templates/analysis/ifeffit/peak_pvoigt.tmpl
 lib/Demeter/templates/analysis/ifeffit/peak_report.tmpl
 lib/Demeter/templates/analysis/ifeffit/peak_save.tmpl
-lib/Demeter/templates/analysis/ifeffit/save_pca_tt.tmpl
 lib/Demeter/templates/analysis/ifeffit/xes_background.tmpl
 lib/Demeter/templates/analysis/ifeffit/xes_read.tmpl
 lib/Demeter/templates/analysis/larch/diff_diff.tmpl
@@ -1248,11 +1247,8 @@ lib/Demeter/templates/analysis/larch/pca_prep_k.tmpl
 lib/Demeter/templates/analysis/larch/pca_save.tmpl
 lib/Demeter/templates/analysis/larch/pca_save_reconstruction.tmpl
 lib/Demeter/templates/analysis/larch/pca_save_stack.tmpl
-lib/Demeter/templates/analysis/larch/peak_atan.tmpl
 lib/Demeter/templates/analysis/larch/peak_fit.tmpl
-lib/Demeter/templates/analysis/larch/peak_gaussian.tmpl
 lib/Demeter/templates/analysis/larch/peak_header.tmpl
-lib/Demeter/templates/analysis/larch/peak_lorentzian.tmpl
 lib/Demeter/templates/analysis/larch/peak_param.tmpl
 lib/Demeter/templates/analysis/larch/peak_prep.tmpl
 lib/Demeter/templates/analysis/larch/peak_put.tmpl
@@ -1535,10 +1531,8 @@ lib/Demeter/templates/process/ifeffit/prep_vpath.tmpl
 lib/Demeter/templates/process/ifeffit/read.tmpl
 lib/Demeter/templates/process/ifeffit/read_chi.tmpl
 lib/Demeter/templates/process/ifeffit/read_group.tmpl
-lib/Demeter/templates/process/ifeffit/read_prj.tmpl
 lib/Demeter/templates/process/ifeffit/read_xmu.tmpl
 lib/Demeter/templates/process/ifeffit/rebin.tmpl
-lib/Demeter/templates/process/ifeffit/rebin_save.tmpl
 lib/Demeter/templates/process/ifeffit/replicate.tmpl
 lib/Demeter/templates/process/ifeffit/sa_atoms.tmpl
 lib/Demeter/templates/process/ifeffit/sa_atoms_text.tmpl

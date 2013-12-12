@@ -106,11 +106,16 @@ sub fix {
   my $time    = Demeter->co->default("x23a2med", "time");
   my $inttime = Demeter->co->default("x23a2med", "inttime");
   my @intcol  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "intcol")));
+  my $nosignal = 0;
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
     my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
     my @slow = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "slow$ch")));
     my @fast = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "fast$ch")));
+    if (any {$_ == 0} @slow) {
+      ++$nosignal;
+      next;
+    };
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
     $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
@@ -118,6 +123,8 @@ sub fix {
     $maxints .= " $max";
     $dts .= " $deadtime";
   };
+  return 0 if ($nosignal == $#represented+1);
+  $self->nelements($#represented+1-$nosignal);
 
   push @labs, 'diamond' if any {lc($_) eq 'diamond'}   @labels;
   push @labs, 'it'      if any {lc($_) eq 'it'}        @labels;

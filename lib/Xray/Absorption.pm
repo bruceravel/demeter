@@ -202,7 +202,6 @@ use vars qw($resource $verbose $data_dir);
 $resource = "elam";
 $verbose = 0;
 
-my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 sub identify_self {
   my @caller = caller;
   use File::Basename qw(dirname);

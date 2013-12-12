@@ -239,7 +239,7 @@ sub on_discard {
   my $fnum = $self->{fnum};
 
   ## destroy Atoms and Feff objects
-  $atomsobject->DEMOLISH if (ref($atomsobject) =~ m{Atoms});
+  $atomsobject->clear if (ref($atomsobject) =~ m{Atoms});
   $feffobject->DEMOLISH  if (ref($feffobject)  =~ m{Feff});
 
   ## remove the frame with the datapage
@@ -252,6 +252,7 @@ sub on_discard {
   $Demeter::UI::Artemis::frames{main}->{feffbox}->Detach($Demeter::UI::Artemis::frames{main}->{$fnum});
   $Demeter::UI::Artemis::frames{main}->{feffbox}->Layout;
   #$Demeter::UI::Artemis::frames{main}->{$fnum}->Destroy; ## this causes a segfaul .. why?
+  delete $::app->{$fnum};
 
   $Demeter::UI::Artemis::frames{main}->status("Discarded Feff calculation.  Note that unused GDS parameters may remain.");
 };

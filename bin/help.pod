@@ -13,9 +13,9 @@ This documentation refers to Demeter version 0.9.18.
 =head2 Asking questions, soliciting help
 
 An excellent resource exists for anyone stumbling over the details of
-XAFS experimentation or analysis -- the  L<Ifeffit mailing
-lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>>.
-This low-noise, high-quality mailing list is populated by many of the
+XAFS experimentation or analysis -- the L<Ifeffit mailing
+list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  This
+low-noise, high-quality mailing list is populated by many of the
 world's expert practitioners of XAS and it handles dozens of questions
 every month.  It should be the first place you go when you have a
 question about the software or about any other topic in XAS.
@@ -146,8 +146,7 @@ If your question pertains to Feff -- specifically in the area of using
 Feff for XANES calculations -- remember that Bruce is but a minor
 contributor to Feff and may not in a position to answer your question
 authoritatively.  The PI of the Feff project and his team all read
-the L<Ifeffit mailing
-lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
+the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
 often answer questions posted there.
 
 The Feff homepage is at L<http://leonardo.phys.washington.edu/feff/>.

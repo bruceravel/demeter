@@ -377,7 +377,6 @@ Should we continue?',
     $self->{parent}->{notebook}->Enable(1);
   };
 
-
   #$self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;

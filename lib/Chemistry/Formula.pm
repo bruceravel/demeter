@@ -37,8 +37,6 @@ $install_dir = &identify_self;
 
 const my $NUMBER => $RE{num}{real};
 
-my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-
 my $elem_match = '([BCFHIKNOPSUVWY]|A[cglrstu]|B[aeir]|C[adelorsu]|Dy|E[ru]|F[er]|G[ade]|H[efgo]|I[nr]|Kr|L[aiu]|M[gno]|N[abdeip]|Os|P[abdmortu]|R[abehnu]|S[bceimnr]|T[abcehilm]|Xe|Yb|Z[nr])';
 #my $num_match  = '\d+\.?\d*|\.\d+';
 

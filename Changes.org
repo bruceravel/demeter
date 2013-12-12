@@ -15,6 +15,8 @@
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
    - Add a site button now working on Atoms page
+   - Graceful failure and useful warning message if crystal data results in 0 scatterers
+   - Fixed a crashy bug running feff resulting a missed step after discarding a feff cal;culation
    - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
    - Deal better with a project file saved before performing a fit
    - A bit more control over labels in path list with artemis->feffpathlist config parameter
@@ -54,6 +56,10 @@
      not respected for XANES data, for noticing the problem renaming
      Athena group names, and for noticing numeric type constraint
      issue with Moose>=2.0900.
+   - _Eric Breynaert_ for noticing a crash after discarding a Feff
+     calculation
+   - _Julius Campecino_ for noticing an inelegant handling of a
+     situation where running atoms results in 0 scatterers
 
 ** 0.9.18.2 29 August    2013
 

@@ -912,6 +912,7 @@ sub run_atoms {
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
     undef $busy;
+    return if ($#{$atoms->cluster} <= 0);
     $self->{parent}->{notebook}->ChangeSelection(1) if not $is_aggregate;
   } else {
     $self->unusable_data();
