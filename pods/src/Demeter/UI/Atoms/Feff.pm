@@ -377,7 +377,6 @@ Should we continue?',
     $self->{parent}->{notebook}->Enable(1);
   };
 
-
   #$self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;
@@ -466,15 +465,7 @@ sub fill_intrp_page {
       $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
       $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
       #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
-<<<<<<< HEAD
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, sprintf("%.3f", $p->n));
-=======
-<<<<<<< HEAD
-      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, sprintf("%.3f", $p->n));
-=======
-      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
->>>>>>> 7589658fabc806edfe3e825bee5a5916d0985012
->>>>>>> 28c2e88497f8fc6bd90851ba92ddd70a66ae16b9
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
       #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);

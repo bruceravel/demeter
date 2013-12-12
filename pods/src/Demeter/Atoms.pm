@@ -531,7 +531,19 @@ sub build_cluster {
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
   } @cluster;
   if ($#cluster > 499) {
-    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.  You might want to reduce the value of Rmax.\n");
+    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.  You might want to reduce the value of the cluster size (Rmax).\n");
+  };
+  if ($#cluster == 0) {
+    warn 'You have specified crystal data resulting in 0 scattering atoms.
+
+Possible reasons include:
+
+  * One or more lattice constant is very large
+  * The cluster size (Rmax) is too small
+  * You have used cartesian coordinates for sites rather
+    than fractional coordinates
+';
+    return $self;
   };
   $self->set(cluster => \@cluster,
 	     nclus   => $#cluster+1,
@@ -566,6 +578,10 @@ sub build_cluster {
 sub set_ipots {
   my ($self) = @_;
   $self->build_cluster if (not $self->is_expanded);
+  if ($#{$self->cluster} == 0) {
+    carp("You have no scattering atoms in the cluster.\n\n");
+    return -1;
+  };
   my ($cell, $how) = $self->get("cell", "ipot_style");
   my @sites = @{ $cell->sites };
   my $i = 1;
@@ -867,6 +883,8 @@ sub Write {
 sub Write_feff {
   my ($self, $type) = @_;
   $self->build_cluster if (not $self->is_expanded);
+  return q{} if ($#{$self->cluster} == -1);
+  return q{} if ($#{$self->cluster} == 0);
   my $string = q{};
   $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
   if ($self->co->default("atoms", "atoms_in_feff")) {
@@ -881,6 +899,7 @@ sub Write_feff {
     $string .= $self->template('mcmaster', {prefix => ' * '});
   };
   $string .= $self->template($type);
+  return $string;
 };
 
 sub atoms_file {
