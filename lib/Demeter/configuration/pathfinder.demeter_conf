@@ -198,16 +198,32 @@ description
 
 variable=rank
 type=list
-options=feff kw2 all
+options=feff akc sqkc mkc aknc sqknc mknc mft sft
 default=feff
 description
   This tells Demeter how to perform path rankings after a Feff
-  caluclation.  The feff option means to only fetch Feff's curved wave
-  importance factors.  The kw2 option adds computation of various
-  ranking computed with k-weight of 2.  The all option add computation
-  of all the rankings at k-weight of 1, 2, and 3 and also computes the
-  average normalized ranking for the three k-weights.  These options
-  are in order of how time-consuming the ranking is.
+  calculation.  All ranking in k are performed over the range of the
+  Fourier transform of the data to which the path is assigned.  All
+  rankings in R are performed over the fitting range of the data.
+  The currently selected value for the plotting k-weight is used for
+  k-weighted criteria.
+  . 
+  . feff  = Feff's curved wave amp. ratio
+  . akc   = sum( abs(k * chi(k)) )
+  . sqkc  = sum( (k * chi(k))^2 )
+  . mknc  = sum( (k * mag(chi(k)) )
+  . aknc  = sum( abs(k^n * chi(k)) )
+  . sqknc = sum( (k^n * chi(k))^2 )
+  . mknc  = sum( (k^n * mag(chi(k)) )
+  . mft   = max( |chi(R)| ) w/ k^n weight
+  . sft   = sum( |chi(R)| ) w/ k^n weight
+  .
+  .
+  Note that "feff" is the fastest algorithm as it does not require
+  additional computation, however it may not be as reliable.  The
+  computed rankings all consider the range over which the data are
+  Fourier transformed or fit.  That is, they consider only the part of
+  the path that will be used in the evaluation of the fit.
 
 variable=rank_high
 type=real

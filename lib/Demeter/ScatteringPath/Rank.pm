@@ -1,10 +1,14 @@
 package Demeter::ScatteringPath::Rank;
 
+use feature qw(switch);
+
 use Moose::Role;
 
 use Demeter::Constants qw($EPSILON5);
+use Demeter::StrTypes qw( Rankings );
+
 use List::Util qw(max sum);
-use List::MoreUtils qw(firstidx uniq pairwise);
+use List::MoreUtils qw(firstidx uniq pairwise any);
 use Math::Spline;
 
 has 'group_name' => (is => 'rw', isa => 'Str', default => q{_rankpath},);
@@ -22,48 +26,103 @@ has 'rankings' => (
 				 'rank_exists'   => 'exists',
 				},
 		  );
-has 'steps'  => (is => 'rw', isa => 'Int',    default => 6); # more precision?
-has 'spline' => (is => 'rw', isa => 'Any',    default => 0);
-has 'xmin'   => (is => 'rw', isa => 'LaxNum', default => 1);
-has 'xmax'   => (is => 'rw', isa => 'LaxNum', default => 10);
+has 'steps'      => (is => 'rw', isa => 'Int',    default => 6); # more precision?
+has 'spline'     => (is => 'rw', isa => 'Any',    default => 0);
+
+has 'rank_kmin'  => (is => 'rw', isa => 'LaxNum', default => 3);
+has 'rank_kmax'  => (is => 'rw', isa => 'LaxNum', default => 12);
+has 'rank_kmini' => (is => 'rw', isa => 'Int',    default => 0);
+has 'rank_kmaxi' => (is => 'rw', isa => 'Int',    default => 1);
+has 'rank_rmin'  => (is => 'rw', isa => 'LaxNum', default => 1);
+has 'rank_rmax'  => (is => 'rw', isa => 'LaxNum', default => 4);
+has 'rank_rmini' => (is => 'rw', isa => 'Int',    default => 0);
+has 'rank_rmaxi' => (is => 'rw', isa => 'Int',    default => 1);
 
 sub rank {
-  my ($self, $plot) = @_;
-  my $ranksave = Demeter->co->default('pathfinder', 'rank');
-  if (ref($self) =~ m{Aggregate}) {
-    Demeter->co->set_default('pathfinder', 'rank', 'kw2') if $ranksave == 'feff';
+  my ($self, $how, $plot) = @_;
+  my @how;
+  if (ref($how) eq 'ARRAY') {
+    @how = @$how;
+  } else {
+    @how = ($how);
   };
 
-  my $isave = $self->mo->pathindex;
+  my $path         = $self->temppath;
+  my $save         = $path->po->kweight;
+  my $isave        = $self->mo->pathindex;
+  my $ranksave     = Demeter->co->default('pathfinder', 'rank');
   my $tempfilesave = $self->randstring;
   $self->randstring("__ranking.sp");
 
-  my $path = $self->temppath;
-  my $save = $path->po->kweight;
+  my $do_k    = any {$_ =~ m{(?:a|sq)kn?c}i} @how;
+  my $do_kmag = any {$_ =~ m{mkn?c}i       } @how;
+  my $do_r    = any {$_ =~ m{[ms]ft}i      } @how;
 
-  ## area and peak height/position for each of kw=1,2,3
-  my @weights = ($self->co->default('pathfinder', 'rank') eq 'all') ? (1..3) : (2);
-  my (@k, @m, @x, @y);
-  $path->_update('fft');
-  @k = $path->get_array('k');
-  @m = $path->get_array('chi_mag');
-  foreach my $i (@weights) {
-    $path->po->kweight($i);
-    $path->update_fft(1);
+  my (@k, @m, @x, @y, @r, @c);
+  if ($do_k or $do_kmag) {
+    $path->_update('fft');
+    @k = $path->get_array('k');
+    $self->rank_kmini(firstidx {$_ >= $self->rank_kmin} @k);
+    $self->rank_kmaxi(firstidx {$_ >  $self->rank_kmax} @k);
+    $self->rank_kmaxi($self->rank_kmaxi - 1);
+  };
+  if ($do_k) {
+    @y = $path->get_array('chi');
+  };
+  if ($do_kmag) {
+    @m = $path->get_array('chi');
+  };
+  if ($do_r) {
     $path->_update('bft');
+    @r = $path->get_array('r');
+    $self->rank_rmini(firstidx {$_ >= $self->rank_rmin} @r);
+    $self->rank_rmaxi(firstidx {$_ >  $self->rank_rmax} @r);
+    $self->rank_rmaxi($self->rank_rmaxi - 1);
+    @c = $path->get_array('chir_mag');
+  };
 
-    @x = $path->get_array('r') if $#x == -1;
-    @y = $path->get_array('chir_mag');
+  foreach my $h (@how) {
 
-    $self->set_rank('area'.$i, $self->rank_area($path, \@x, \@y));
+    next if not is_Rankings($h);
+    next if $h eq 'feff';
+    next if $h eq 'peakpos';
+    if (ref($self) =~ m{Aggregate}) {
+      $h = 'akc' if lc($h) eq 'feff';
+    };
 
-    my ($c, $h) = $self->rank_height($path, \@x, \@y);
-    $self->set_rank('peakpos'.$i, $c);
-    $self->set_rank('height'.$i,  $h);
+    given (lc($h)) {
 
-    my @mm = pairwise {$a * $b**$i} @m, @k;
-    my $mag = $self->rank_chimag($path, \@k, \@mm);
-    $self->set_rank('chimag'.$i, $mag);
+      when ('akc') {
+	$self->set_rank('akc',   $self->rank_aknc(\@k, \@y, 1));
+      };
+      when ('aknc') {
+	$self->set_rank('aknc',  $self->rank_aknc(\@k, \@y, Demeter->po->kweight));
+      };
+      when ('sqkc') {
+	$self->set_rank('sqkc',  $self->rank_sqknc(\@k, \@y, 1));
+      };
+      when ('sqknc') {
+	$self->set_rank('sqknc', $self->rank_sqknc(\@k, \@y, Demeter->po->kweight));
+      };
+      when ('mkc') {
+	$self->set_rank('mkc',   $self->rank_mknc(\@k, \@m, 1));
+      };
+      when ('mknc') {
+	$self->set_rank('mknc',  $self->rank_mknc(\@k, \@m, Demeter->po->kweight));
+      };
+
+      when ('mft') {
+	$path->update_fft(1);
+	$path->_update('bft');
+	my ($c, $h) = $self->rank_height(\@r, \@c);
+	$self->set_rank('peakpos', $c);
+	$self->set_rank('mft',     $h);
+      };
+      when ('sft') {
+	$self->set_rank('sft', $self->rank_sft(\@c));
+      };
+
+    };
   };
 
   $path->plot('r') if $plot;
@@ -87,35 +146,22 @@ sub temppath {
 sub normalize {
   my ($self, @list) = @_;
   @list = uniq($self, @list);
+  #return $self if ($self->co->default('pathfinder', 'rank') =~ m{peakpos});
+  #return $self if ($self->co->default('pathfinder', 'rank') eq 'feff');
+
   foreach my $test ($self->get_rank_list) {
-    next if ($test =~ m{peakpos});
-    next if ($test eq 'zcwif');
+    next if $test eq 'peakpos';
+    next if $test eq 'feff';
     my @values = map {$_->get_rank($test)} @list;
     my $scale = max(@values);
     foreach my $sp (@list) {
-      $sp->set_rank($test."_n", sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
+      $sp->set_rank($test, sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
     };
   };
-  if ($self->co->default('pathfinder', 'rank') eq 'all') {
-    foreach my $type (qw(area height chimag)) {
-      foreach my $sp (@list) {
-	my $sum = $sp->get_rank($type.'1_n') +
-	          $sp->get_rank($type.'2_n') +
-	          $sp->get_rank($type.'3_n');
-	$sp->set_rank($type, sprintf("%.2f", $sum/3));
-      };
-    };
-  };
-};
-
-sub rank_area {
-  my ($self, $path, $x, $y) = @_;
-  $self->spline(Math::Spline->new($x,$y));
-  return $self->_integrate;
 };
 
 sub rank_height {
-  my ($self, $path, $x, $y) = @_;
+  my ($self, $x, $y) = @_;
   my $max = max(@$y);
   my $i = firstidx {$_ == $max} @$y;
   my $centroid = $x->[$i];
@@ -123,8 +169,52 @@ sub rank_height {
 };
 
 sub rank_chimag {
-  my ($self, $path, $x, $y) = @_;
+  my ($self, $x, $y) = @_;
   return sum @$y;
+};
+
+## sum_i abs(k_i * chi(k_i)), i=[kmin:kmax], ref to chi(k) passed as y
+## akc criterion is this with $n=1
+sub rank_aknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {abs($a**$n*$b)} @k, @c;
+  return sum @func;
+}
+
+## sum_i (k_i * chi(k_i))^2, i=[kmin:kmax], ref to chi(k) passed as y
+## sqkc criterion is this with $n=1
+sub rank_sqknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {($a**$n*$b)**2} @k, @c;
+  return sqrt(sum @func);
+}
+
+## sum_i k_i * mag(chi(k_i)), i=[kmin:kmax], ref to mag(chi) is passed as $y
+## mkc criterion is this with $n=1
+sub rank_mknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {$a**$n*$b} @k, @c;
+  return sum @func;
+}
+
+
+sub rank_sft {
+  my ($self, $y) = @_;
+  return sum @$y[$self->rank_rmini .. $self->rank_rmaxi];
+}
+
+
+
+sub rank_area {
+  my ($self, $x, $y) = @_;
+  $self->spline(Math::Spline->new($x,$y));
+  return $self->_integrate;
 };
 
 # adapted from Mastering Algorithms with Perl by Orwant, Hietaniemi,

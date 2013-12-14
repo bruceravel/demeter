@@ -23,7 +23,7 @@ extends 'Demeter';
 
 use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
-use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName);
+use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName Rankings);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Histogram';
 with 'Demeter::Feff::Paths';
@@ -541,6 +541,21 @@ sub genfmt {
   };
   return $self;
 };
+
+sub explain_ranking {
+  my ($self, $which) = @_;
+  my %hints = ('feff'  => 'feff\'s curved wave amplitude ratio',
+	       'akc'   => 'sum( abs(k * chi) )',
+	       'aknc'  => 'sum( abs(k^n * chi) )',
+	       'sqkc'  => 'sqrt( sum( (k * chi)^2 ) )',
+	       'sqknc' => 'sqrt( sum( (k^n * chi)^2 ) )',
+	       'mkc'   => 'sum( k * mag(chi))',
+	       'mknc'  => 'sum( k^n * mag(chi))',
+	       'sft'   => 'sum( mag(chi(R)) )',
+	       'mft'   => 'max( mag(chi(R)) )');
+  return $hints{$which};
+};
+
 sub _pathsdat_head {
   my ($self, $prefix) = @_;
   $prefix ||= q{};
@@ -550,6 +565,8 @@ sub _pathsdat_head {
   $header .= sprintf("%s Distance fuzz = %.3f A\n",         $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.2f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno($self->eta_suppress));
+  $header .= sprintf("%s Ranking criterion = %s   --   %s\n", $prefix, $self->co->default('pathfinder','rank'),
+		                              $self->explain_ranking($self->co->default('pathfinder','rank')));
   $header .= sprintf("%s Post criterion = %.2f\n",          $prefix, $self->postcrit);
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
@@ -627,32 +644,54 @@ sub fetch_zcwifs {
 };
 
 sub rank_paths {
-  my ($self, $how) = @_;
-  $how ||= 'zcwif';
+  my ($self, $how, $hash) = @_;
+  $how ||= Demeter->co->default('pathfinder', 'rank');
+
+  $hash->{kmin} ||= 1;
+  $hash->{kmax} ||= 15;
+  $hash->{rmin} ||= 1;
+  $hash->{rmax} ||= 4;
+  my $then = DateTime->now;
   my @z = $self->fetch_zcwifs;
   my $i = 0;
-  my $screen = (($self->screen) and ($self->mo->ui eq 'screen'));
+  my $screen = ($self->mo->ui eq 'screen');
+  my $ranksave = Demeter->co->default('pathfinder', 'rank');
+  #my $save = $self->screen;
+  #$self->screen(0);
   $self->start_counter("Demeter is ranking paths", $#{$self->pathlist}+1) if $screen;
+
+  my @how = (ref($how) eq 'ARRAY') ? @$how : ($how);
+  Demeter->co->set_default('pathfinder', 'rank', $how[0]);
   foreach my $sp (@{ $self->pathlist }) {
+    $sp->set_rank('feff', sprintf("%.2f", $z[$i]||0));
+    $sp->rank_kmin($hash->{kmin});
+    $sp->rank_kmax($hash->{kmax});
+    $sp->rank_rmin($hash->{rmin});
+    $sp->rank_rmax($hash->{rmax});
     $self->count if $screen;
-    my $save = $sp->feff->screen;
-    $sp->feff->screen(0);
-    $sp->rank if ($self->co->default('pathfinder', 'rank') ne 'feff');
-    $sp->set_rank('zcwif', sprintf("%.2f", $z[$i]||0));
+    $sp->rank($how);
     $i++;
-    $sp->feff->screen($save);
   };
-  $self->pathlist->[0]->normalize(@{ $self->pathlist });
-  foreach my $sp (@{ $self->pathlist }) {
-    if ($sp->get_rank($how) >= $self->co->default('pathfinder', 'rank_high')) {
-      $sp->weight(2);
-    } elsif ($sp->get_rank($how) <= $self->co->default('pathfinder', 'rank_low')) {
-      $sp->weight(0);
-    } else {
-      $sp->weight(1);
-    }
+  foreach my $h (@how) {
+    #$self->screen($save);
+    $self->pathlist->[0]->normalize(@{ $self->pathlist });
+    next if not is_Rankings($h);
+    next if ($h eq 'peakpos');
+    foreach my $sp (@{ $self->pathlist }) {
+      if ($sp->get_rank($h) >= $self->co->default('pathfinder', 'rank_high')) {
+	$sp->weight(2);
+      } elsif ($sp->get_rank($h) <= $self->co->default('pathfinder', 'rank_low')) {
+	$sp->weight(0);
+      } else {
+	$sp->weight(1);
+      }
+    };
   };
   $self->stop_counter if $screen;
+
+  my $now  = DateTime->now;
+  my $duration = $now->subtract_datetime($then);
+  printf("Ranking (" . join("+", @how) . ") took around %s seconds\n", $duration->seconds) if $screen;
   return $self;
 };
 

@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::Simple tests => 571;
+use Test::Simple tests => 580;
 
 use Demeter qw(:none);
 use Demeter::StrTypes qw( Empty
@@ -52,6 +52,7 @@ use Demeter::StrTypes qw( Empty
 			  PlotSpace
 			  PlotType
 			  FitykFunction
+			  Rankings
 		       );
 
 use Demeter::NumTypes qw( Natural
@@ -194,6 +195,11 @@ foreach my $f (@Demeter::StrTypes::plottype_list) {
 foreach my $f (@Demeter::StrTypes::fitykfunction_list) {
   my $ff = scramble_case($f);
   ok( is_FitykFunction($ff), "fityk function $ff recognized" );
+};
+
+foreach my $f (@Demeter::StrTypes::rankings_list) {
+  my $ff = scramble_case($f);
+  ok( is_Rankings($ff), "ranking $ff recognized" );
 };
 
 

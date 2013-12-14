@@ -217,8 +217,7 @@ sub intrplist {
 sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
-  my $rank = (Demeter->co->default('pathfinder', 'rank') eq 'feff')
-    ? $self->get_rank('zcwif') : $self->get_rank('area2_n');
+  my $rank = $self->get_rank(Demeter->co->default('pathfinder', 'rank'));
   $rank ||= 0;
   return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
