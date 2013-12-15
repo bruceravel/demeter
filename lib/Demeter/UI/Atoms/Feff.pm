@@ -488,6 +488,7 @@ sub fill_intrp_page {
     $which = 8;
   };
   $self->{parent}->{Paths}->{toolbar} -> ToggleTool($which, 1);
+  $self->{parent}->{Paths}->{toolbar}->EnableTool($self->{parent}->{Paths}->{rankid},1);
 };
 
 sub fill_ss_page {

@@ -24,6 +24,7 @@ my %hints = (
 	     chir_re  => "Plot paths as the real part of chi(R)",
 	     chir_im  => "Plot paths as the imaginary part of chi(R)",
 	     doc      => "Show the path interpretation documentation in a browser",
+	     rank     => "Compare path rankings by the various ranking criteria",
 	    );
 
 sub new {
@@ -35,17 +36,21 @@ sub new {
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-  $self->{toolbar} -> AddTool(1, "Save calc.",      $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
+  #$self->{toolbar} -> AddTool(1, "Save calc.",      $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
+  #$self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(1, "Plot selection",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(3, "Plot selection",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
+  $self->{toolbar} -> AddRadioTool(3, 'chi(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
+  $self->{toolbar} -> AddRadioTool(4, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
+  $self->{toolbar} -> AddRadioTool(5, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
+  $self->{toolbar} -> AddRadioTool(6, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddRadioTool(5, 'chi(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
-  $self->{toolbar} -> AddRadioTool(6, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
-  $self->{toolbar} -> AddRadioTool(7, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
-  $self->{toolbar} -> AddRadioTool(8, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
-  $self->{toolbar} -> AddSeparator;
+  my $rank = $self->{toolbar} -> AddTool(8, "Rank", $self->icon("rank"),     wxNullBitmap, wxITEM_NORMAL, q{}, $hints{rank});
   $self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
-  $self->{toolbar} -> ToggleTool(6, 1);
+  $self->{toolbar} -> ToggleTool(2, 1);
+
+  $self->{rankid} = $rank->GetId;
+  $self->{toolbar}->EnableTool($self->{rankid},0);
 
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
@@ -112,6 +117,8 @@ const my $SELR     => Wx::NewId();
 const my $SELA     => Wx::NewId();
 const my $SELSS    => Wx::NewId();
 const my $SELFOR   => Wx::NewId();
+const my $RANKSEL  => Wx::NewId();
+const my $RANKALL  => Wx::NewId();
 
 sub OnRightClick {
   my ($list, $event, $parent) = @_;
@@ -249,7 +256,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv---------order of toolbar on the screen------------vV
-  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot noop document);
+  my @callbacks = qw(plot noop set_plot set_plot set_plot set_plot noop rank document); # save noop 
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure($event->GetId);
 };
@@ -260,6 +267,40 @@ sub noop {
 
 sub document {
   $::app->document('feff.paths');
+};
+
+sub rank {
+  my ($self) = @_;
+  return if not $self->{paths}->GetItemCount;
+
+  $self->{parent}->status("Beginning path rank comparison ...");
+  my $busy   = Wx::BusyCursor->new();
+  my $text = "# Path rankings\n# ------------------------------\n";
+  my $feff = $self->{parent}->{Feff}->{feffobject};
+  my $hash = {kmin=>3, kmax=>12, rmin=>1, rmax=>4,
+	      update=>sub{$self->{parent}->status($_[0], 'nobuffer'); $self->{parent}->Update}};
+  $feff->rank_paths(\@Demeter::StrTypes::rankings_list, $hash);
+
+  $text .= "# index   " . sprintf('   %-7s' x ($#Demeter::StrTypes::rankings_list+1), @Demeter::StrTypes::rankings_list) . "\n";
+  #my $n = $#Demeter::StrTypes::rankings_list x 10 + 21;
+  #my $dashes = '-' x $n;
+  #$text .= "# $dashes\n";
+  my $i=1;
+  my $format = '   %7.2f' x ($#Demeter::StrTypes::rankings_list+1);
+  #foreach my $sp (@{ $feff->pathlist }) {
+  foreach my $item (0 .. $self->{paths}->GetItemCount-1) {
+
+    my $data = $self->{paths}->GetItemData($item);
+    my $sp   = $feff->pathlist->[$data]; # the ScatteringPath associated with this selected item
+
+
+    $text .= sprintf("  %s  " . $format . "\n",
+      $self->{paths}->GetItem($item,0)->GetText, map {$sp->get_rank($_)} @Demeter::StrTypes::rankings_list);
+  };
+
+  $self->{parent}->status("Path rank comparison ... done!");
+  undef $busy;
+  my $dialog = Demeter::UI::Artemis::ShowText->new($self->{parent}, $text, 'Path rankings') -> Show;
 };
 
 

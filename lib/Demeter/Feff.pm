@@ -651,6 +651,7 @@ sub rank_paths {
   $hash->{kmax} ||= 15;
   $hash->{rmin} ||= 1;
   $hash->{rmax} ||= 4;
+  $hash->{update} ||= q{};
   my $then = DateTime->now;
   my @z = $self->fetch_zcwifs;
   my $i = 0;
@@ -663,6 +664,7 @@ sub rank_paths {
   my @how = (ref($how) eq 'ARRAY') ? @$how : ($how);
   Demeter->co->set_default('pathfinder', 'rank', $how[0]);
   foreach my $sp (@{ $self->pathlist }) {
+    &{$hash->{update}}("Ranking path $i") if ((not $i % 3) and $hash->{update});
     $sp->set_rank('feff', sprintf("%.2f", $z[$i]||0));
     $sp->rank_kmin($hash->{kmin});
     $sp->rank_kmax($hash->{kmax});

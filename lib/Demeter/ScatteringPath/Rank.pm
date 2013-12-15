@@ -90,6 +90,10 @@ sub rank {
       $h = 'akc' if lc($h) eq 'feff';
     };
 
+    ## to add a new ranking criterion, add a clause below, add the
+    ## acronym to StrTypes, write the method below, modify
+    ## explain_ranking in Demeter::Feff, edit rank in
+    ## pathfinder.demeter_conf
     given (lc($h)) {
 
       when ('akc') {

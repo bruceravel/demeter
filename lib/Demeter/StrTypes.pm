@@ -510,7 +510,7 @@ subtype Lineshape,
 
 ## -------- all ranking criterion names
 use vars qw(@rankings_list $rankings_regexp);
-@rankings_list = qw(feff akc aknc sqkc sqknc mkc mknc mft sft);
+@rankings_list = qw(feff akc aknc sqkc sqknc mft sft); #  mkc mknc
 $rankings_regexp = Regexp::Assemble->new()->add(map {lc($_)} @rankings_list)->re;
 subtype Rankings,
   as Str,
