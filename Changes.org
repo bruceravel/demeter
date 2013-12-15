@@ -26,7 +26,8 @@
    - Athena file MRU list now remembers record number and defaults to that record when selected
    - fixed a bug resulting in repetitious display of parameter values in log file
    - save VPaths to and restore from Artemis project files
-   - adde "transfer all" button to VPaths tab in Plot window
+   - added "transfer all" button to VPaths tab in Plot window
+   - use path ranking choice to make intrp and display ll rankings from intrp page
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
@@ -47,6 +48,7 @@
    - Require Archive::Zip >= 1.31 to get the option of
      Archive::Zip::UNICODE=1 which should help computers with unicode
      language settings
+   - Implement Karine Provost's path ranking criteria
 
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work
