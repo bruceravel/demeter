@@ -237,25 +237,25 @@ default=7
 description
   A ranking above this value is considered a low importance path.
 
-variable rank_kmin
+variable=rank_kmin
 type=real
 default=3
 description
   The defaul value for kmin for use in path ranking.
 
-variable rank_kmax
+variable=rank_kmax
 type=real
 default=12
 description
   The defaul value for kmax for use in path ranking.
 
-variable rank_rmin
+variable=rank_rmin
 type=real
 default=1
 description
   The defaul value for Rmin for use in path ranking.
 
-variable rank_rmax
+variable=rank_rmax
 type=real
 default=4
 description

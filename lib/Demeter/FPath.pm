@@ -18,7 +18,7 @@ package Demeter::FPath;
 use Moose;
 extends 'Demeter::Path';
 use Moose::Util::TypeConstraints;
-use Demeter::NumTypes qw( Ipot PosNum PosInt );
+use Demeter::NumTypes qw( Ipot PosNum PosInt Natural );
 use Demeter::StrTypes qw( Empty ElementSymbol );
 
 with 'Demeter::Data::Arrays';
@@ -78,6 +78,9 @@ has 'rmax'	 => (is => 'rw', isa => 'LaxNum', default => 31.0);
 
 has 'nnnntext'   => (is => 'rw', isa => 'Str',    default => q{});
 has 'workspace'  => (is => 'rw', isa => 'Str',    default => q{}); # valid directory
+
+
+has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 9999);
 
 ## the sp attribute must be set to this FPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
