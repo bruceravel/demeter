@@ -33,6 +33,7 @@
 [% MACRO mu0e0   BLOCK -%]$\mu_0(E_0)$[%- END -%]
 [% MACRO chie    BLOCK -%]$\chi(E)$[%- END -%]
 [% MACRO chi     BLOCK -%]$\chi(k)$[%- END -%]
+[% MACRO chi_mag BLOCK -%]$|\chi(k)|$[%- END -%]
 [% MACRO chik    BLOCK -%]$\chi(k)$[%- END -%]
 [% MACRO chir    BLOCK -%]$\chi(R)$[%- END -%]
 [% MACRO chir_mag BLOCK -%]$|\chi(R)|$[%- END -%]

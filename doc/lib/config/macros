@@ -36,6 +36,7 @@
 [% MACRO chie    BLOCK -%]&chi;(E)[%- END -%]
 [% MACRO chi     BLOCK -%]&chi;(k)[%- END -%]
 [% MACRO chik    BLOCK -%]&chi;(k)[%- END -%]
+[% MACRO chik_mag BLOCK -%]|&chi;(k)|[%- END -%]
 [% MACRO chir    BLOCK -%]&chi;(R)[%- END -%]
 [% MACRO chir_mag BLOCK -%]|&chi;(R)|[%- END -%]
 [% MACRO chir_re BLOCK -%]Re[&chi;(R)][%- END -%]

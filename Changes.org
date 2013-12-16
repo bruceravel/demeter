@@ -19,7 +19,7 @@
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
    - Add a site button now working on Atoms page
    - Graceful failure and useful warning message if crystal data results in 0 scatterers
-   - Fixed a crashy bug running feff resulting a missed step after discarding a feff cal;culation
+   - Fixed a crashy bug running feff resulting a missed step after discarding a Feff cal;culation
    - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
    - Deal better with a project file saved before performing a fit
    - A bit more control over labels in path list with artemis->feffpathlist config parameter
@@ -27,13 +27,13 @@
    - fixed a bug resulting in repetitious display of parameter values in log file
    - save VPaths to and restore from Artemis project files
    - added "transfer all" button to VPaths tab in Plot window
-   - use path ranking choice to make intrp and display ll rankings from intrp page
 
 *** Atoms
    - fixed a bug processing hexagonal and trigonal groups with the
      command line atoms.  oddly, these were handled correctly by the
      Wx version
    - Implemented Aggregate Feff calculation on Atoms Xtal tab
+   - use path ranking choice to make intrp and display all rankings from button on intrp page
 
 *** Demeter
    - Made the Demeter::Feff::Aggregate object for performing the
@@ -54,8 +54,9 @@
    - _Fred Mosselmans_ noticed that the add a site button didn't work
      in Atoms and that a project file saved before a fit is performed
      will crash Artemis
-   - _Andrei Shiryaev_ noticed that unicode in Artemis project files
-     was problematic and _Matt Newville_ suggested a solution
+   - _Andrei Shiryaev_ and _Fen Fen Zhu_ noticed that unicode in
+     Artemis project files was problematic and _Matt Newville_
+     suggested a solution
    - _Denis Testamale_ noticed that test 012_atoms was failing
    - _George Sterbinsky_ for noting that a fixed edge step value was
      not respected for XANES data, for noticing the problem renaming
@@ -65,6 +66,7 @@
      calculation
    - _Julius Campecino_ for noticing an inelegant handling of a
      situation where running atoms results in 0 scatterers
+   - _Karin Provost_ for the idea of path ranking
 
 ** 0.9.18.2 29 August    2013
 

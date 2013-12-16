@@ -119,3 +119,102 @@ with a ranking above 3 will be displayed in the path interpretation.
 Resetting this parameter allows you tune how many paths get displayed
 after the calculation.
 [% END %]
+
+[% PROCESS section label="Path ranking" %]
+
+[% FILTER html_para -%]
+[%feff%] provides a crude evaluation of the importance of each path
+called the [% INCLUDE font/quote a="curved wave importance factor"%].
+This is computed as a very sparse [%ndash%] computed at four points
+between 0 [%iAA%] and 20 [%iAA%] [%ndash%] trapezoidal integration of
+the [%chi_mag%].  This amplitude is then expressed as a percentage
+with the largest path having an amplitude of 100.  
+
+There are a few shortcomings of [%feff%]'s[%#'%] amplitude factor.  
+First, the percentages are computed serially.  So the frist path is
+always given as 100%.  If a subsequent path is larger than the first
+path, it, so, will be given as 100%.  All following paths will be
+scaled to size of the later path.  This is somewhat confusing.
+
+Second, the integration is very sparse.  This made sense back in the
+mid-90s, when computers were slower and had less memory.  But it is
+means the amplitude is not very accurate.
+
+Finally, the integration is over a much wider range in k-space than is
+typically measured in a real experiment.  It would make more sense to
+evaluate a measure of the importance of a path over a range in k that
+is expressed in a real measurement or, at least, a range that is more
+typical of a normal experiment.
+
+To this end, [%artemis%] offers a variety of new ways to rank the
+importance of a path.  Some use [%chik%] and some use [%chir%] of the
+paths.  All are evaluated over a restricted range in k or R.  By
+default, the range in k is 3 [%iAA%] and 12 [%iAA%] and in R it is 1
+[%AA%] and 4 [%AA%].  All are evaluated using the full k or R grid
+which is used internally.  Some consider k-weighting.
+
+They all have funny acronyms:
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="akc" %]
+This is the sum over the k-range of the absolute value of k times [%chik%].
+[% END %]
+[% WRAPPER html/dt dt="aknc" %]
+This is the sum over the k-range of the absolute value of k-weighted
+times [%chik%] where the plotting k-weight is used.
+[% END %]
+[% WRAPPER html/dt dt="sqkc" %]
+This is the square root of the sum over the k-range of the square of k times [%chik%].
+[% END %]
+[% WRAPPER html/dt dt="sqknc" %]
+This is the square root of the sum over the k-range of the square of k times [%chik%]
+where the plotting k-weight is used.
+[% END %]
+[% WRAPPER html/dt dt="mkc" %]
+This is the sum over the k-range of k times [%chi_mag%].
+[% END %]
+[% WRAPPER html/dt dt="mknc" %]
+This is the sum over the k-range of k-weighted [%chi_mag%]
+where the plotting k-weight is used.
+[% END %]
+[% WRAPPER html/dt dt="mft" %]
+This is the maximum value of [%chir_mag%] within the R-range.
+[% END %]
+[% WRAPPER html/dt dt="sft" %]
+This is the sum over the R-range of [%chir_mag%].
+[% END %]
+[% END %]
+
+These new ranking criteria tend to do a better job of correctly
+predicting which paths are important to a fit.  That's[%#'%] a good
+thing.  The bad thing is that they take quite a bit longer to compute
+than simply relying on [%feff%]'s[%#'%] amplitude ratios.
+
+You can select which criterion to use on the interpretation page by
+setting the
+[% INCLUDE preference group="pathfinder" option="rank" %]
+configuration parameter to [% INCLUDE font/quote a="feff"%] or to one
+of the acronyms above.
+
+You can compare the evaluations of the ranking criteria by pressing
+the [% INCLUDE font/quote a="Rank"%] button in the toolbar.  This
+calculation takes about a third of a second per path.  If there are a
+lot of paths in the interpretation, this can be a bit time consuming.
+At the end, a text dialog with the various rankings for each path is
+displayed.
+
+[% WRAPPER figure file="feff-rank.png" %]
+The report on the path ranking calculation.
+[% END %]
+
+This improvement upon [%feff%]'s[%#'%] path selection tool is
+described in 
+[% INCLUDE citation 
+author="K. Provost et al."
+journal="J. Synchrotron Radiat."  
+year=2014
+%], to be submitted.
+[%# volume="78:10"  pages="S75-S79"  doi="10.1016/j.radphyschem.2009.05.024" %]
+
+None of the path ranking criteria currently use [%sigsqr%] when they
+are being evaluated, but that would be an interesting consideration.
+[% END %]

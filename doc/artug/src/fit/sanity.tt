@@ -68,7 +68,7 @@ Verify that [%rmin%][%ge%][%rbkg%] for data imported from an
 [% WRAPPER html/li %]
 Verify that [%reff%] for each path is not well beyond [%rmax%].  The
 margin beyond [%rmax%] that a value of [%reff%] is acceptable is set
-by [% INCLUDE preference group="warnings" option="reff_margin" %].
+by [%rmax%]+0.2 plus the val[% INCLUDE preference group="warnings" option="reff_margin" %].
 [% END %]
 
 [% WRAPPER html/li %]

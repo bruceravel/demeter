@@ -13,6 +13,8 @@ $feff -> run;
 
 my $hash = {kmin=>3, kmax=>12, rmin=>1, rmax=>4};
 
+Demeter->set_mode(screen=>0);
+
 $feff->rank_paths($ARGV[0]||'feff', $hash);
 use Term::ANSIColor qw(:constants);
 print $feff->intrp({comment => BOLD.RED,

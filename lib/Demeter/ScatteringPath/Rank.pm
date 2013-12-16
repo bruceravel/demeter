@@ -29,12 +29,12 @@ has 'rankings' => (
 has 'steps'      => (is => 'rw', isa => 'Int',    default => 6); # more precision?
 has 'spline'     => (is => 'rw', isa => 'Any',    default => 0);
 
-has 'rank_kmin'  => (is => 'rw', isa => 'LaxNum', default => 3);
-has 'rank_kmax'  => (is => 'rw', isa => 'LaxNum', default => 12);
+has 'rank_kmin'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_kmin'));
+has 'rank_kmax'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_kmax'));
 has 'rank_kmini' => (is => 'rw', isa => 'Int',    default => 0);
 has 'rank_kmaxi' => (is => 'rw', isa => 'Int',    default => 1);
-has 'rank_rmin'  => (is => 'rw', isa => 'LaxNum', default => 1);
-has 'rank_rmax'  => (is => 'rw', isa => 'LaxNum', default => 4);
+has 'rank_rmin'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_rmin'));
+has 'rank_rmax'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_rmax'));
 has 'rank_rmini' => (is => 'rw', isa => 'Int',    default => 0);
 has 'rank_rmaxi' => (is => 'rw', isa => 'Int',    default => 1);
 
@@ -70,7 +70,7 @@ sub rank {
     @y = $path->get_array('chi');
   };
   if ($do_kmag) {
-    @m = $path->get_array('chi');
+    @m = $path->get_array('chi_mag');
   };
   if ($do_r) {
     $path->_update('bft');
@@ -299,48 +299,53 @@ of a path.  Paths with large importance factors should, presumably, be
 included in a fit.  Unfortunately, the formula Feff uses to compute
 this number is not very reliable when applied to real world fits.
 
-This module, then, provides a framework for applying a sequence of
-alternative importance calculation.  This gives the user much more
-information about the list of paths from a Feff calculation and
-hopefully provides much better guidance for creating fitting models.
+This module, then, provides a framework for applying alternative
+importance calculations.  This gives the user more information about
+the list of paths from a Feff calculation and hopefully provides
+better guidance for creating fitting models.
 
-=head1 TESTS
+=head1 CRITERIA
 
 =over 4
 
-=item C<chimagW>
+=item C<feff>
 
-The sum of the magnitude of chi(k) is computed after k-weighting by
-W=(1,2,3).  The magnitude is obtained by running Ifeffit's C<ff2chi>
-function with the flag set for saving the magnitude of chi.  This is
-controlled by the C<save_mag> attribute of the Path object which is
-used to compute the various tests.
+This is Feff's curve wave amplitude ratio.
 
-=item C<areaW>
+=item C<akc>
 
-Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.
+This is the sum of the k-range of C<|k*chi(k)|>.
 
-=item C<areaW_n>
+=item C<aknc>
 
-The value of C<areaW> normalized over a list by the C<normalize>
-method.  The largest ranking in the list will be 100.
+This is the sum of the k-range of C<|k^n*chi(k)|>.
 
-=item C<heightW>
+=item C<sqkc>
 
-Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Return the maximum value of the magnitude of chi(R).
+This is the square root of the sum of the k-range of C<(k*chi(k))^2>.
 
-=item C<heightW_n>
+=item C<sqknc>
 
-The value of C<heightW> normalized over a list by the C<normalize>
-method.  The largest ranking in the list will be 100.
+This is the square root of the sum of the k-range of C<(k2*chi(k))^2>.
 
-=item C<peakposW>
+=item C<mkc>
 
-Return the position of the maximum value from the C<heightW> test.
+This is the sum of the k-range of C<|k*mag(chi(k))|>.
+
+=item C<mknc>
+
+This is the sum of the k-range of C<|k^n*mag(chi(k))|>.
+
+=item C<mft>
+
+This is the maximum value of C<|chi(R)|> within the R range with the
+Fourier transform performed using the current value of the plotting
+k-weight.
+
+=item C<sft>
+
+This is the sum of the R-range of C<|chi(R)|> with the Fourier
+transform performed using the current value of the plotting k-weight.
 
 =back
 
@@ -354,9 +359,11 @@ Run the sequence of path ranking tests on a ScatteringPath object and
 store the results in the C<rankings> attribute, which is a hash
 reference.  The keys of the referenced hash are given above.
 
-  $sp -> rank($plot);
+  $sp -> rank($how, $plot);
 
-If C<$plot> is true, the path will be plotted in R.
+C<$how> specifies the ranking criterion.  The configuration default
+will be used if not specified.  If C<$plot> is true, the path will be
+plotted in R.
 
 =item C<normalize>
 
@@ -372,7 +379,7 @@ include it twice.
 
 Return a path's value for a given test.
 
-  $x = $sp->get_rank('area2');
+  $x = $sp->get_rank('akc');
 
 =item C<get_rank_list>
 
@@ -388,27 +395,17 @@ Return a list of identifying names for all the tests.
 =head1 CONFIGURATION
 
 The C<pathfinder -&gt; rank> parameter is used to determine which
-tests are run.  If set to C<all>, the tests will be evaluated at all
-three k-weights.  If set to C<kw2>, the tests will only be evaluated
-with k-weight of 2.
+criterion is used in the path interpretation.  Other configuration
+parameters set the default k- and R-ranges for the evaluations.
+Finally, C<pathfinder -&gt; rank_high> and C<pathfinder -&gt;
+rank_low> set the cutoff between high, nid, and low importance paths
+in the path interpretation.
 
 =head1 DEPENDENCIES
 
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Need to create useful tests.
-
-=item *
-
-Need to integrate into Artemis.
-
-=back
 
 Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
