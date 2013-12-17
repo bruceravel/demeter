@@ -28,6 +28,7 @@
 [% MACRO Delta   BLOCK -%]&Delta;[%- END -%]
 [% MACRO sigsqr  BLOCK -%]&sigma;&sup2;[%- END -%]
 [% MACRO sigma2  BLOCK -%]&sigma;&sup2;[%- END -%]
+[% MACRO kn      BLOCK -%]k<sup>n</sup>[%- END -%]
 [% MACRO epsilon BLOCK -%] &epsilon;[%- END -%]
 [% MACRO mu      BLOCK -%]&mu;(E)[%- END -%]
 [% MACRO mue     BLOCK -%]&mu;(E)[%- END -%]

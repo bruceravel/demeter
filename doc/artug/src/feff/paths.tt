@@ -14,25 +14,36 @@ The Paths tab.
 Some statistics about the [%feff%] calculation are shown in the
 Description text box.  Below that is the summary of the paths found in
 the [%feff%] calculation.  This summary is presented in the form of a
-table.  Each row describes a scattering path.
+table.  Each row describes a scattering path.  The columns contain the
+following information:
 
-The first column shows the degeneracy of the path.  The second column
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+The first column shows a path index, similar to the index that
+[%feff%] uses when run by hand from the command line.
+[%END%]
+[% WRAPPER html/li %]
+The second column shows the degeneracy of the path.  
+[%END%]
+[% WRAPPER html/li %]
+The third column
 shows its nominal path length, [%reff%].  That is value that will be
 used in any 
 [% INCLUDE html/link link="../path/mathexp.html" text="path parameter math expression"%]
 containing the 
 [% INCLUDE font/mono a="reff" %] token.
-
-The third column shows a simple view of the scattering path.  The 
+[%END%]
+[% WRAPPER html/li %]
+The fourth column shows a simple view of the scattering path.  The 
 [% INCLUDE font/mono a="@" %] token represents the absorber, thus
 appears as  the first and last token in each description.  The tokens
 representing the scattering atoms are taken from the tags on the
 [%feff%] tab.  You can change the absorber token by setting the
 [% INCLUDE preference group="pathfinder" option="token" %]
 configuration parameter.
-
-
-The fourth column contains the rank of the path.  This is an attempt
+[%END%]
+[% WRAPPER html/li %]
+The fifth column contains the rank of the path.  This is an attempt
 to predict how important of each path will be to your fitting model.
 Paths with large spectral weight have a large rank and paths with
 little spectral weight have small rank.  Highly ranked paths are
@@ -40,20 +51,19 @@ colored [%INCLUDE font/color color="046a15" text="green"%], mid-rank
 paths are colored [%INCLUDE font/color color="78670e" text="yellow"%],
 and low-rank paths are [%INCLUDE font/color color="787878"
 text="grey"%].
-
 Don't [%#'%] put too much faith in this assessment of importance.  You
 should explicitly check all paths to decide if they should be included
 in a fit.
-
-Currently, there is only one scheme for assigning path ranks.  The
-curved-wave importance factors from [%feff6%] are used.  These are
-rather unreliable as they are computed using a very crude algorithm.
-Future versions of [%artemis%] will offer several path ranking schemes
-to improve upon [%feff%]'s[%#'%] simple algorithm.
-
-The fifth column gives the number of legs in each path.  The final
+[%END%]
+[% WRAPPER html/li %]
+The sixth column gives the number of legs in each path.  
+[%END%]
+[% WRAPPER html/li %]
+The final
 column is a simple explanation of the shape of the scattering
 geometry.
+[%END%]
+[%END%]
 
 The rows in this table are selectable by mouse click.  Left clicking
 on a row selects that row.  Control clicking on another row adds it to
@@ -65,21 +75,31 @@ paths.  Most importantly, selecting paths is the first step to using
 paths in a fitting model.  This will be explained in the 
 [% INCLUDE html/link link="../path/index.html" text="next chapter"%].
 
-At the top of the Paths tab are a series of buttons.  The 
-[% INCLUDE font/quote a="Save" %] button will write the entire
-[%feff%] calculation to a form that can be reimported into [%artemis%]
-or used in some other context in a [%demeter%] script.  The remaining
-buttons are related to making plots of the selected paths.
+[%# At the top of the Paths tab are a series of buttons.  The   %]
+[%# [% INCLUDE font/quote a="Save"  button will write the entire  %]
+[%# [%feff calculation to a form that can be reimported into [%artemis  %]
+[%# or used in some other context in a [%demeter script.  %]
+
+At the top of the page is a bar of buttons used to perform tasks
+specific to the path list.  The [% INCLUDE font/quote a="Doc" %]
+button will open a browser displaying this documentation for the
+interpretation page.  The [%INCLUDE font/quote a="Rank" %] button is
+described below.  The remaining buttons are related to making plots of
+the selected paths.
 [% END %]
 
+[% PROCESS section label="Path plotting and path geometry" %]
+
+
 [% WRAPPER floatleft this="feff-plot.png" %]
-A plot of paths from the raw [%feff%] calculation.  In this example, the
-first three single scattering paths from the sodium uranyl triacetate
-calculation were selected along with a low-rank multiple scattering
-path.  Then the [% INCLUDE font/quote a="Plot selection" %] button was
-pressed.  In this plot, we see that the three single scattering
-paths are, indeed, quite large.  The multiple scattering path can
-barely be seen on this scale.  It truly is a low importance path.
+This is a plot of paths from the raw [%feff%] calculation.  In this
+example, the first three single scattering paths from the sodium
+uranyl triacetate calculation were selected along with a low-rank
+multiple scattering path.  Then the [% INCLUDE font/quote a="Plot
+selection" %] button was pressed.  In this plot, we see that the three
+single scattering paths are, indeed, quite large.  The multiple
+scattering path can barely be seen on this scale.  It truly is a low
+importance path.
 
 The meaning of a [% INCLUDE font/quote a="raw" %] [%feff%] calculation
 is that it is displayed as [%chik%] with [%s02%] set to 1.0 and each
@@ -127,7 +147,7 @@ after the calculation.
 called the [% INCLUDE font/quote a="curved wave importance factor"%].
 This is computed as a very sparse [%ndash%] computed at four points
 between 0 [%iAA%] and 20 [%iAA%] [%ndash%] trapezoidal integration of
-the [%chi_mag%].  This amplitude is then expressed as a percentage
+[%chik_mag%].  This amplitude is then expressed as a percentage
 with the largest path having an amplitude of 100.  
 
 There are a few shortcomings of [%feff%]'s[%#'%] amplitude factor.  
@@ -137,8 +157,8 @@ path, it, so, will be given as 100%.  All following paths will be
 scaled to size of the later path.  This is somewhat confusing.
 
 Second, the integration is very sparse.  This made sense back in the
-mid-90s, when computers were slower and had less memory.  But it is
-means the amplitude is not very accurate.
+mid-90s, when computers were slower and had less memory.  But it means
+the amplitude is not very accurate.
 
 Finally, the integration is over a much wider range in k-space than is
 typically measured in a real experiment.  It would make more sense to
@@ -156,31 +176,33 @@ which is used internally.  Some consider k-weighting.
 They all have funny acronyms:
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="akc" %]
-This is the sum over the k-range of the absolute value of k times [%chik%].
+This is the sum over the k-range of the absolute value of k[%cdot%][%chik%].
 [% END %]
 [% WRAPPER html/dt dt="aknc" %]
-This is the sum over the k-range of the absolute value of k-weighted
-times [%chik%] where the plotting k-weight is used.
+This is the sum over the k-range of the absolute value of
+[%kn%][%cdot%][%chik%] where the plotting k-weight is used for n.
 [% END %]
 [% WRAPPER html/dt dt="sqkc" %]
-This is the square root of the sum over the k-range of the square of k times [%chik%].
+This is the square root of the sum over the k-range of the square of k[%cdot%][%chik%].
 [% END %]
 [% WRAPPER html/dt dt="sqknc" %]
-This is the square root of the sum over the k-range of the square of k times [%chik%]
-where the plotting k-weight is used.
+This is the square root of the sum over the k-range of the square of [%kn%][%cdot%][%chik%]
+where the plotting k-weight is used for n.
 [% END %]
 [% WRAPPER html/dt dt="mkc" %]
-This is the sum over the k-range of k times [%chi_mag%].
+This is the sum over the k-range of k[%cdot%][%chik_mag%].
 [% END %]
 [% WRAPPER html/dt dt="mknc" %]
-This is the sum over the k-range of k-weighted [%chi_mag%]
-where the plotting k-weight is used.
+This is the sum over the k-range of [%kn%][%cdot%][%chik_mag%]
+where the plotting k-weight is used for n.
 [% END %]
 [% WRAPPER html/dt dt="mft" %]
-This is the maximum value of [%chir_mag%] within the R-range.
+This is the maximum value of [%chir_mag%] within the R-range
+where the plotting k-weight is used for the Fourier transform.
 [% END %]
 [% WRAPPER html/dt dt="sft" %]
-This is the sum over the R-range of [%chir_mag%].
+This is the sum over the R-range of [%chir_mag%]
+where the plotting k-weight is used for the Fourier transform.
 [% END %]
 [% END %]
 
@@ -188,6 +210,11 @@ These new ranking criteria tend to do a better job of correctly
 predicting which paths are important to a fit.  That's[%#'%] a good
 thing.  The bad thing is that they take quite a bit longer to compute
 than simply relying on [%feff%]'s[%#'%] amplitude ratios.
+
+The full suite of options are provided in order to replicate the
+analysis shown in the paper by K. Provost, et al.  The 
+[% INCLUDE font/quote a="akc"%] and [% INCLUDE font/quote a="aknc"%]
+choices tend to be reliable.
 
 You can select which criterion to use on the interpretation page by
 setting the
@@ -200,19 +227,21 @@ the [% INCLUDE font/quote a="Rank"%] button in the toolbar.  This
 calculation takes about a third of a second per path.  If there are a
 lot of paths in the interpretation, this can be a bit time consuming.
 At the end, a text dialog with the various rankings for each path is
-displayed.
+displayed.  As can be seen in the figure below, there is some
+variation between the criteria, but all of them differ substantially
+from [%feff%]'s[%#'%] importance factors.
 
 [% WRAPPER figure file="feff-rank.png" %]
 The report on the path ranking calculation.
 [% END %]
 
 This improvement upon [%feff%]'s[%#'%] path selection tool is
-described in 
+adapted from 
 [% INCLUDE citation 
 author="K. Provost et al."
 journal="J. Synchrotron Radiat."  
 year=2014
-%], to be submitted.
+%], [% INCLUDE font/em a="submitted"%].
 [%# volume="78:10"  pages="S75-S79"  doi="10.1016/j.radphyschem.2009.05.024" %]
 
 None of the path ranking criteria currently use [%sigsqr%] when they

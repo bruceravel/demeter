@@ -297,7 +297,8 @@ Feff has long had a strange little feature called the "curved wave
 importance factor" that purports to be an assessment of the importance
 of a path.  Paths with large importance factors should, presumably, be
 included in a fit.  Unfortunately, the formula Feff uses to compute
-this number is not very reliable when applied to real world fits.
+this number is not very reliable when applied to real world fitting
+problems.
 
 This module, then, provides a framework for applying alternative
 importance calculations.  This gives the user more information about
@@ -314,27 +315,27 @@ This is Feff's curve wave amplitude ratio.
 
 =item C<akc>
 
-This is the sum of the k-range of C<|k*chi(k)|>.
+This is the sum over the k-range of C<|k*chi(k)|>.
 
 =item C<aknc>
 
-This is the sum of the k-range of C<|k^n*chi(k)|>.
+This is the sum over the k-range of C<|k^n*chi(k)|>.
 
 =item C<sqkc>
 
-This is the square root of the sum of the k-range of C<(k*chi(k))^2>.
+This is the square root of the sum over the k-range of C<(k*chi(k))^2>.
 
 =item C<sqknc>
 
-This is the square root of the sum of the k-range of C<(k2*chi(k))^2>.
+This is the square root of the sum over the k-range of C<(k^n*chi(k))^2>.
 
 =item C<mkc>
 
-This is the sum of the k-range of C<|k*mag(chi(k))|>.
+This is the sum over the k-range of C<|k*mag(chi(k))|>.
 
 =item C<mknc>
 
-This is the sum of the k-range of C<|k^n*mag(chi(k))|>.
+This is the sum over the k-range of C<|k^n*mag(chi(k))|>.
 
 =item C<mft>
 
@@ -344,7 +345,7 @@ k-weight.
 
 =item C<sft>
 
-This is the sum of the R-range of C<|chi(R)|> with the Fourier
+This is the sum over the R-range of C<|chi(R)|> with the Fourier
 transform performed using the current value of the plotting k-weight.
 
 =back
@@ -355,8 +356,8 @@ transform performed using the current value of the plotting k-weight.
 
 =item C<rank>
 
-Run the sequence of path ranking tests on a ScatteringPath object and
-store the results in the C<rankings> attribute, which is a hash
+Run the selected path ranking calculations on a ScatteringPath object
+and store the results in the C<rankings> attribute, which is a hash
 reference.  The keys of the referenced hash are given above.
 
   $sp -> rank($how, $plot);
@@ -394,12 +395,12 @@ Return a list of identifying names for all the tests.
 
 =head1 CONFIGURATION
 
-The C<pathfinder -&gt; rank> parameter is used to determine which
-criterion is used in the path interpretation.  Other configuration
-parameters set the default k- and R-ranges for the evaluations.
-Finally, C<pathfinder -&gt; rank_high> and C<pathfinder -&gt;
-rank_low> set the cutoff between high, nid, and low importance paths
-in the path interpretation.
+The C<pathfinder-E<gt>rank> parameter is used to determine which
+criterion is used in the path interpretation.  Other parameters in the
+C<pathfinder> configuration group set the default k- and R-ranges for
+the evaluations.  Finally, C<pathfinder-E<gt>rank_high> and
+C<pathfinder-E<gt>rank_low> set the cutoff between high, mid, and low
+importance paths in the path interpretation.
 
 =head1 DEPENDENCIES
 

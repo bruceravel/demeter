@@ -41,13 +41,14 @@ sub new {
   $self->{toolbar} -> AddTool(1, "Plot selection",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
   $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddRadioTool(3, 'chi(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
-  $self->{toolbar} -> AddRadioTool(4, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
+  my $this = $self->{toolbar} -> AddRadioTool(4, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
   $self->{toolbar} -> AddRadioTool(5, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
   $self->{toolbar} -> AddRadioTool(6, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
   $self->{toolbar} -> AddSeparator;
   my $rank = $self->{toolbar} -> AddTool(8, "Rank", $self->icon("rank"),     wxNullBitmap, wxITEM_NORMAL, q{}, $hints{rank});
   $self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
-  $self->{toolbar} -> ToggleTool(2, 1);
+  $self->{toolbar} -> ToggleTool(6, 0);
+  $self->{toolbar} -> ToggleTool(4, 1);
 
   $self->{rankid} = $rank->GetId;
   $self->{toolbar}->EnableTool($self->{rankid},0);
@@ -307,13 +308,13 @@ sub rank {
 sub set_plot {
   my ($self, $id) = @_;
   ## set plotting space
-  my $space = ($id == 5) ? 'k' : 'r';
+  my $space = ($id == 3) ? 'k' : 'r';
   $self->{parent}->{Feff}->{feffobject}->po->space($space);
   # set part of R space plot
-  my %pl = (5 => q{}, 6 => 'm', 7 => 'r', 8 => 'i');
+  my %pl = (3 => q{}, 4 => 'm', 5 => 'r', 6 => 'i');
   $self->{parent}->{Feff}->{feffobject}->po->r_pl($pl{$id}) if $pl{$id};
   # sensible status bar message
-  my %as = (5 => 'chi(k)', 6 => 'the magnitude of chi(R)', 7 => 'the real part of chi(R)', 8 => 'the imaginary part of chi(R)');
+  my %as = (3 => 'chi(k)', 4 => 'the magnitude of chi(R)', 5 => 'the real part of chi(R)', 6 => 'the imaginary part of chi(R)');
   $self->{parent}->status("Plotting as $as{$id}");
   return $self;
 };
