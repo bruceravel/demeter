@@ -456,8 +456,8 @@ sub fill_intrp_page {
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText("\n\n********** Ranking paths...\n");
   $self->{parent}->status("Ranking paths...");
-  $feff->rank_paths;
-  my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
+  my $which = Demeter->co->default('pathfinder', 'rank');
+  $feff->rank_paths($which);
   foreach my $p (@{ $feff->pathlist }) {
     if ($p->get_rank($which) > $feff->postcrit) {
       $p->pathfinder_index($i);
@@ -475,7 +475,7 @@ sub fill_intrp_page {
     };
     ++$i;
   };
-  my $which = 6;
+  $which = 6;
   if (Demeter->po->space eq 'k') {
     $which = 5;
   } elsif (Demeter->po->space eq 'q') {
@@ -488,6 +488,7 @@ sub fill_intrp_page {
     $which = 8;
   };
   $self->{parent}->{Paths}->{toolbar} -> ToggleTool($which, 1);
+  $self->{parent}->{Paths}->{toolbar}->EnableTool($self->{parent}->{Paths}->{rankid},1);
 };
 
 sub fill_ss_page {

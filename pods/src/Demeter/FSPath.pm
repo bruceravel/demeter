@@ -110,7 +110,6 @@ has 'gds' => (
 	       );
 has 'error' => (is => 'rw', isa => 'Str',    default => q{});
 
-
 ## the sp attribute must be set to this FSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
 ## feffNNNN.dat file.  an ugly but functional bit of voodoo

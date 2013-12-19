@@ -1,10 +1,14 @@
 package Demeter::ScatteringPath::Rank;
 
+use feature qw(switch);
+
 use Moose::Role;
 
 use Demeter::Constants qw($EPSILON5);
+use Demeter::StrTypes qw( Rankings );
+
 use List::Util qw(max sum);
-use List::MoreUtils qw(firstidx uniq pairwise);
+use List::MoreUtils qw(firstidx uniq pairwise any);
 use Math::Spline;
 
 has 'group_name' => (is => 'rw', isa => 'Str', default => q{_rankpath},);
@@ -22,48 +26,107 @@ has 'rankings' => (
 				 'rank_exists'   => 'exists',
 				},
 		  );
-has 'steps'  => (is => 'rw', isa => 'Int',    default => 6); # more precision?
-has 'spline' => (is => 'rw', isa => 'Any',    default => 0);
-has 'xmin'   => (is => 'rw', isa => 'LaxNum', default => 1);
-has 'xmax'   => (is => 'rw', isa => 'LaxNum', default => 10);
+has 'steps'      => (is => 'rw', isa => 'Int',    default => 6); # more precision?
+has 'spline'     => (is => 'rw', isa => 'Any',    default => 0);
+
+has 'rank_kmin'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_kmin'));
+has 'rank_kmax'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_kmax'));
+has 'rank_kmini' => (is => 'rw', isa => 'Int',    default => 0);
+has 'rank_kmaxi' => (is => 'rw', isa => 'Int',    default => 1);
+has 'rank_rmin'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_rmin'));
+has 'rank_rmax'  => (is => 'rw', isa => 'LaxNum', default => Demeter->co->default('pathfinder', 'rank_rmax'));
+has 'rank_rmini' => (is => 'rw', isa => 'Int',    default => 0);
+has 'rank_rmaxi' => (is => 'rw', isa => 'Int',    default => 1);
 
 sub rank {
-  my ($self, $plot) = @_;
-  my $ranksave = Demeter->co->default('pathfinder', 'rank');
-  if (ref($self) =~ m{Aggregate}) {
-    Demeter->co->set_default('pathfinder', 'rank', 'kw2') if $ranksave == 'feff';
+  my ($self, $how, $plot) = @_;
+  my @how;
+  if (ref($how) eq 'ARRAY') {
+    @how = @$how;
+  } else {
+    @how = ($how);
   };
 
-  my $isave = $self->mo->pathindex;
+  my $path         = $self->temppath;
+  my $save         = $path->po->kweight;
+  my $isave        = $self->mo->pathindex;
+  my $ranksave     = Demeter->co->default('pathfinder', 'rank');
   my $tempfilesave = $self->randstring;
   $self->randstring("__ranking.sp");
 
-  my $path = $self->temppath;
-  my $save = $path->po->kweight;
+  my $do_k    = any {$_ =~ m{(?:a|sq)kn?c}i} @how;
+  my $do_kmag = any {$_ =~ m{mkn?c}i       } @how;
+  my $do_r    = any {$_ =~ m{[ms]ft}i      } @how;
 
-  ## area and peak height/position for each of kw=1,2,3
-  my @weights = ($self->co->default('pathfinder', 'rank') eq 'all') ? (1..3) : (2);
-  my (@k, @m, @x, @y);
-  $path->_update('fft');
-  @k = $path->get_array('k');
-  @m = $path->get_array('chi_mag');
-  foreach my $i (@weights) {
-    $path->po->kweight($i);
-    $path->update_fft(1);
+  my (@k, @m, @x, @y, @r, @c);
+  if ($do_k or $do_kmag) {
+    $path->_update('fft');
+    @k = $path->get_array('k');
+    $self->rank_kmini(firstidx {$_ >= $self->rank_kmin} @k);
+    $self->rank_kmaxi(firstidx {$_ >  $self->rank_kmax} @k);
+    $self->rank_kmaxi($self->rank_kmaxi - 1);
+  };
+  if ($do_k) {
+    @y = $path->get_array('chi');
+  };
+  if ($do_kmag) {
+    @m = $path->get_array('chi_mag');
+  };
+  if ($do_r) {
     $path->_update('bft');
+    @r = $path->get_array('r');
+    $self->rank_rmini(firstidx {$_ >= $self->rank_rmin} @r);
+    $self->rank_rmaxi(firstidx {$_ >  $self->rank_rmax} @r);
+    $self->rank_rmaxi($self->rank_rmaxi - 1);
+    @c = $path->get_array('chir_mag');
+  };
 
-    @x = $path->get_array('r') if $#x == -1;
-    @y = $path->get_array('chir_mag');
+  foreach my $h (@how) {
 
-    $self->set_rank('area'.$i, $self->rank_area($path, \@x, \@y));
+    next if not is_Rankings($h);
+    next if $h eq 'feff';
+    next if $h eq 'peakpos';
+    if (ref($self) =~ m{Aggregate}) {
+      $h = 'akc' if lc($h) eq 'feff';
+    };
 
-    my ($c, $h) = $self->rank_height($path, \@x, \@y);
-    $self->set_rank('peakpos'.$i, $c);
-    $self->set_rank('height'.$i,  $h);
+    ## to add a new ranking criterion, add a clause below, add the
+    ## acronym to StrTypes, write the method below, modify
+    ## explain_ranking in Demeter::Feff, edit rank in
+    ## pathfinder.demeter_conf
+    given (lc($h)) {
 
-    my @mm = pairwise {$a * $b**$i} @m, @k;
-    my $mag = $self->rank_chimag($path, \@k, \@mm);
-    $self->set_rank('chimag'.$i, $mag);
+      when ('akc') {
+	$self->set_rank('akc',   $self->rank_aknc(\@k, \@y, 1));
+      };
+      when ('aknc') {
+	$self->set_rank('aknc',  $self->rank_aknc(\@k, \@y, Demeter->po->kweight));
+      };
+      when ('sqkc') {
+	$self->set_rank('sqkc',  $self->rank_sqknc(\@k, \@y, 1));
+      };
+      when ('sqknc') {
+	$self->set_rank('sqknc', $self->rank_sqknc(\@k, \@y, Demeter->po->kweight));
+      };
+      when ('mkc') {
+	$self->set_rank('mkc',   $self->rank_mknc(\@k, \@m, 1));
+      };
+      when ('mknc') {
+	$self->set_rank('mknc',  $self->rank_mknc(\@k, \@m, Demeter->po->kweight));
+      };
+
+      when ('mft') {
+	$path->update_fft(1);
+	$path->_update('bft');
+	my ($c, $h) = $self->rank_height(\@r, \@c);
+	$self->set_rank('peakpos', $c);
+	$self->set_rank('mft',     $h);
+      };
+      when ('sft') {
+	$self->set_rank('sft', $self->rank_sft(\@c));
+      };
+
+    };
   };
 
   $path->plot('r') if $plot;
@@ -87,35 +150,22 @@ sub temppath {
 sub normalize {
   my ($self, @list) = @_;
   @list = uniq($self, @list);
+  #return $self if ($self->co->default('pathfinder', 'rank') =~ m{peakpos});
+  #return $self if ($self->co->default('pathfinder', 'rank') eq 'feff');
+
   foreach my $test ($self->get_rank_list) {
-    next if ($test =~ m{peakpos});
-    next if ($test eq 'zcwif');
+    next if $test eq 'peakpos';
+    next if $test eq 'feff';
     my @values = map {$_->get_rank($test)} @list;
     my $scale = max(@values);
     foreach my $sp (@list) {
-      $sp->set_rank($test."_n", sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
+      $sp->set_rank($test, sprintf("%.2f", 100*$sp->get_rank($test)/$scale));
     };
   };
-  if ($self->co->default('pathfinder', 'rank') eq 'all') {
-    foreach my $type (qw(area height chimag)) {
-      foreach my $sp (@list) {
-	my $sum = $sp->get_rank($type.'1_n') +
-	          $sp->get_rank($type.'2_n') +
-	          $sp->get_rank($type.'3_n');
-	$sp->set_rank($type, sprintf("%.2f", $sum/3));
-      };
-    };
-  };
-};
-
-sub rank_area {
-  my ($self, $path, $x, $y) = @_;
-  $self->spline(Math::Spline->new($x,$y));
-  return $self->_integrate;
 };
 
 sub rank_height {
-  my ($self, $path, $x, $y) = @_;
+  my ($self, $x, $y) = @_;
   my $max = max(@$y);
   my $i = firstidx {$_ == $max} @$y;
   my $centroid = $x->[$i];
@@ -123,8 +173,52 @@ sub rank_height {
 };
 
 sub rank_chimag {
-  my ($self, $path, $x, $y) = @_;
+  my ($self, $x, $y) = @_;
   return sum @$y;
+};
+
+## sum_i abs(k_i * chi(k_i)), i=[kmin:kmax], ref to chi(k) passed as y
+## akc criterion is this with $n=1
+sub rank_aknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {abs($a**$n*$b)} @k, @c;
+  return sum @func;
+}
+
+## sum_i (k_i * chi(k_i))^2, i=[kmin:kmax], ref to chi(k) passed as y
+## sqkc criterion is this with $n=1
+sub rank_sqknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {($a**$n*$b)**2} @k, @c;
+  return sqrt(sum @func);
+}
+
+## sum_i k_i * mag(chi(k_i)), i=[kmin:kmax], ref to mag(chi) is passed as $y
+## mkc criterion is this with $n=1
+sub rank_mknc {
+  my ($self, $x, $y, $n) = @_;
+  my @k = @$x[$self->rank_kmini .. $self->rank_kmaxi];
+  my @c = @$y[$self->rank_kmini .. $self->rank_kmaxi];
+  my @func   = pairwise {$a**$n*$b} @k, @c;
+  return sum @func;
+}
+
+
+sub rank_sft {
+  my ($self, $y) = @_;
+  return sum @$y[$self->rank_rmini .. $self->rank_rmaxi];
+}
+
+
+
+sub rank_area {
+  my ($self, $x, $y) = @_;
+  $self->spline(Math::Spline->new($x,$y));
+  return $self->_integrate;
 };
 
 # adapted from Mastering Algorithms with Perl by Orwant, Hietaniemi,
@@ -203,50 +297,56 @@ Feff has long had a strange little feature called the "curved wave
 importance factor" that purports to be an assessment of the importance
 of a path.  Paths with large importance factors should, presumably, be
 included in a fit.  Unfortunately, the formula Feff uses to compute
-this number is not very reliable when applied to real world fits.
+this number is not very reliable when applied to real world fitting
+problems.
 
-This module, then, provides a framework for applying a sequence of
-alternative importance calculation.  This gives the user much more
-information about the list of paths from a Feff calculation and
-hopefully provides much better guidance for creating fitting models.
+This module, then, provides a framework for applying alternative
+importance calculations.  This gives the user more information about
+the list of paths from a Feff calculation and hopefully provides
+better guidance for creating fitting models.
 
-=head1 TESTS
+=head1 CRITERIA
 
 =over 4
 
-=item C<chimagW>
+=item C<feff>
 
-The sum of the magnitude of chi(k) is computed after k-weighting by
-W=(1,2,3).  The magnitude is obtained by running Ifeffit's C<ff2chi>
-function with the flag set for saving the magnitude of chi.  This is
-controlled by the C<save_mag> attribute of the Path object which is
-used to compute the various tests.
+This is Feff's curve wave amplitude ratio.
 
-=item C<areaW>
+=item C<akc>
 
-Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.
+This is the sum over the k-range of C<|k*chi(k)|>.
 
-=item C<areaW_n>
+=item C<aknc>
 
-The value of C<areaW> normalized over a list by the C<normalize>
-method.  The largest ranking in the list will be 100.
+This is the sum over the k-range of C<|k^n*chi(k)|>.
 
-=item C<heightW>
+=item C<sqkc>
 
-Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Return the maximum value of the magnitude of chi(R).
+This is the square root of the sum over the k-range of C<(k*chi(k))^2>.
 
-=item C<heightW_n>
+=item C<sqknc>
 
-The value of C<heightW> normalized over a list by the C<normalize>
-method.  The largest ranking in the list will be 100.
+This is the square root of the sum over the k-range of C<(k^n*chi(k))^2>.
 
-=item C<peakposW>
+=item C<mkc>
 
-Return the position of the maximum value from the C<heightW> test.
+This is the sum over the k-range of C<|k*mag(chi(k))|>.
+
+=item C<mknc>
+
+This is the sum over the k-range of C<|k^n*mag(chi(k))|>.
+
+=item C<mft>
+
+This is the maximum value of C<|chi(R)|> within the R range with the
+Fourier transform performed using the current value of the plotting
+k-weight.
+
+=item C<sft>
+
+This is the sum over the R-range of C<|chi(R)|> with the Fourier
+transform performed using the current value of the plotting k-weight.
 
 =back
 
@@ -256,13 +356,15 @@ Return the position of the maximum value from the C<heightW> test.
 
 =item C<rank>
 
-Run the sequence of path ranking tests on a ScatteringPath object and
-store the results in the C<rankings> attribute, which is a hash
+Run the selected path ranking calculations on a ScatteringPath object
+and store the results in the C<rankings> attribute, which is a hash
 reference.  The keys of the referenced hash are given above.
 
-  $sp -> rank($plot);
+  $sp -> rank($how, $plot);
 
-If C<$plot> is true, the path will be plotted in R.
+C<$how> specifies the ranking criterion.  The configuration default
+will be used if not specified.  If C<$plot> is true, the path will be
+plotted in R.
 
 =item C<normalize>
 
@@ -278,7 +380,7 @@ include it twice.
 
 Return a path's value for a given test.
 
-  $x = $sp->get_rank('area2');
+  $x = $sp->get_rank('akc');
 
 =item C<get_rank_list>
 
@@ -293,28 +395,18 @@ Return a list of identifying names for all the tests.
 
 =head1 CONFIGURATION
 
-The C<pathfinder -&gt; rank> parameter is used to determine which
-tests are run.  If set to C<all>, the tests will be evaluated at all
-three k-weights.  If set to C<kw2>, the tests will only be evaluated
-with k-weight of 2.
+The C<pathfinder-E<gt>rank> parameter is used to determine which
+criterion is used in the path interpretation.  Other parameters in the
+C<pathfinder> configuration group set the default k- and R-ranges for
+the evaluations.  Finally, C<pathfinder-E<gt>rank_high> and
+C<pathfinder-E<gt>rank_low> set the cutoff between high, mid, and low
+importance paths in the path interpretation.
 
 =head1 DEPENDENCIES
 
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Need to create useful tests.
-
-=item *
-
-Need to integrate into Artemis.
-
-=back
 
 Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)

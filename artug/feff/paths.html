@@ -70,7 +70,7 @@ succinct summary of the calculation is displayed on the Paths tab.
 </p>
 
 
-<div class=figure style="max-width: 526px; min-width: 7em;">
+<div class=figure style="max-width: 597px; min-width: 7em;">
 <a name=feff-paths>
 <img src=../../images/feff-paths.png width=100%>
 </a>
@@ -83,56 +83,58 @@ The Paths tab.
 Some statistics about the <span class=program>FEFF</span> calculation are shown in the
 Description text box.  Below that is the summary of the paths found in
 the <span class=program>FEFF</span> calculation.  This summary is presented in the form of a
-table.  Each row describes a scattering path.
+table.  Each row describes a scattering path.  The columns contain the
+following information:
 </p>
 
 <p>
-The first column shows the degeneracy of the path.  The second column
+<ol>
+  
+<li><p>
+The first column shows a path index, similar to the index that
+<span class=program>FEFF</span> uses when run by hand from the command line.
+</p></li>
+<li><p>
+The second column shows the degeneracy of the path.  
+</p></li>
+<li><p>
+The third column
 shows its nominal path length, R<sub>eff</sub>.  That is value that will be
 used in any 
 <a href="../path/mathexp.html">path parameter math expression</a>
 containing the 
 <tt>reff</tt> token.
-</p>
-
-<p>
-The third column shows a simple view of the scattering path.  The 
+</p></li>
+<li><p>
+The fourth column shows a simple view of the scattering path.  The 
 <tt>@</tt> token represents the absorber, thus
 appears as  the first and last token in each description.  The tokens
 representing the scattering atoms are taken from the tags on the
 <span class=program>FEFF</span> tab.  You can change the absorber token by setting the
 <span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;token</span>
 configuration parameter.
-</p>
-
-<p>
-The fourth column contains the rank of the path.  This is an attempt
+</p></li>
+<li><p>
+The fifth column contains the rank of the path.  This is an attempt
 to predict how important of each path will be to your fitting model.
 Paths with large spectral weight have a large rank and paths with
 little spectral weight have small rank.  Highly ranked paths are
 colored <span style="color:#046a15; background-color:white">green</span>, mid-rank
 paths are colored <span style="color:#78670e; background-color:white">yellow</span>,
 and low-rank paths are <span style="color:#787878; background-color:white">grey</span>.
-</p>
-
-<p>
 Don't  put too much faith in this assessment of importance.  You
 should explicitly check all paths to decide if they should be included
 in a fit.
-</p>
-
-<p>
-Currently, there is only one scheme for assigning path ranks.  The
-curved-wave importance factors from <span class=program>FEFF6</span> are used.  These are
-rather unreliable as they are computed using a very crude algorithm.
-Future versions of <span class=program>ARTEMIS</span> will offer several path ranking schemes
-to improve upon <span class=program>FEFF</span>'s simple algorithm.
-</p>
-
-<p>
-The fifth column gives the number of legs in each path.  The final
+</p></li>
+<li><p>
+The sixth column gives the number of legs in each path.  
+</p></li>
+<li><p>
+The final
 column is a simple explanation of the shape of the scattering
 geometry.
+</p></li>
+</ol>
 </p>
 
 <p>
@@ -150,23 +152,32 @@ paths in a fitting model.  This will be explained in the
 </p>
 
 <p>
-At the top of the Paths tab are a series of buttons.  The 
-&ldquo;Save&rdquo; button will write the entire
-<span class=program>FEFF</span> calculation to a form that can be reimported into <span class=program>ARTEMIS</span>
-or used in some other context in a <span class=program>DEMETER</span> script.  The remaining
-buttons are related to making plots of the selected paths.
+At the top of the page is a bar of buttons used to perform tasks
+specific to the path list.  The &ldquo;Doc&rdquo;
+button will open a browser displaying this documentation for the
+interpretation page.  The &ldquo;Rank&rdquo; button is
+described below.  The remaining buttons are related to making plots of
+the selected paths.
 </p>
+
+
+<hr class=hide />
+<a name="pathplottingandpathgeometry">
+
+<h2>  Path plotting and path geometry</h2>
+</a>
 
 
 <p>
 <a class=floatleft href="../../images/feff-plot.png" target=_blank><img border=0 src="../../images/feff-plot.png"   alt="feff-plot.png"></a>
-A plot of paths from the raw <span class=program>FEFF</span> calculation.  In this example, the
-first three single scattering paths from the sodium uranyl triacetate
-calculation were selected along with a low-rank multiple scattering
-path.  Then the &ldquo;Plot selection&rdquo; button was
-pressed.  In this plot, we see that the three single scattering
-paths are, indeed, quite large.  The multiple scattering path can
-barely be seen on this scale.  It truly is a low importance path.
+This is a plot of paths from the raw <span class=program>FEFF</span> calculation.  In this
+example, the first three single scattering paths from the sodium
+uranyl triacetate calculation were selected along with a low-rank
+multiple scattering path.  Then the &ldquo;Plot
+selection&rdquo; button was pressed.  In this plot, we see that the three
+single scattering paths are, indeed, quite large.  The multiple
+scattering path can barely be seen on this scale.  It truly is a low
+importance path.
 </p>
 
 <p>
@@ -218,6 +229,185 @@ parameter.  By default, it is set to 3, which means that only paths
 with a ranking above 3 will be displayed in the path interpretation.
 Resetting this parameter allows you tune how many paths get displayed
 after the calculation.
+</p>
+
+
+<hr class=hide />
+<a name="pathranking">
+
+<h2>  Path ranking</h2>
+</a>
+
+<p>
+<span class=program>FEFF</span> provides a crude evaluation of the importance of each path
+called the &ldquo;curved wave importance factor&rdquo;.
+This is computed as a very sparse &ndash; computed at four points
+between 0 &Aring;&#8315;&sup1; and 20 &Aring;&#8315;&sup1; &ndash; trapezoidal integration of
+|&chi;(k)|.  This amplitude is then expressed as a percentage
+with the largest path having an amplitude of 100.  
+</p>
+
+<p>
+There are a few shortcomings of <span class=program>FEFF</span>'s amplitude factor.  
+First, the percentages are computed serially.  So the frist path is
+always given as 100%.  If a subsequent path is larger than the first
+path, it, so, will be given as 100%.  All following paths will be
+scaled to size of the later path.  This is somewhat confusing.
+</p>
+
+<p>
+Second, the integration is very sparse.  This made sense back in the
+mid-90s, when computers were slower and had less memory.  But it means
+the amplitude is not very accurate.
+</p>
+
+<p>
+Finally, the integration is over a much wider range in k-space than is
+typically measured in a real experiment.  It would make more sense to
+evaluate a measure of the importance of a path over a range in k that
+is expressed in a real measurement or, at least, a range that is more
+typical of a normal experiment.
+</p>
+
+<p>
+To this end, <span class=program>ARTEMIS</span> offers a variety of new ways to rank the
+importance of a path.  Some use &chi;(k) and some use &chi;(R) of the
+paths.  All are evaluated over a restricted range in k or R.  By
+default, the range in k is 3 &Aring;&#8315;&sup1; and 12 &Aring;&#8315;&sup1; and in R it is 1
+&Aring; and 4 &Aring;.  All are evaluated using the full k or R grid
+which is used internally.  Some consider k-weighting.
+</p>
+
+<p>
+They all have funny acronyms:
+<dl>
+  
+<dt>
+  akc
+</dt>
+<dd>
+This is the sum over the k-range of the absolute value of k&middot;&chi;(k).
+  <br />
+  <br />
+</dd>
+<dt>
+  aknc
+</dt>
+<dd>
+This is the sum over the k-range of the absolute value of
+k<sup>n</sup>&middot;&chi;(k) where the plotting k-weight is used for n.
+  <br />
+  <br />
+</dd>
+<dt>
+  sqkc
+</dt>
+<dd>
+This is the square root of the sum over the k-range of the square of k&middot;&chi;(k).
+  <br />
+  <br />
+</dd>
+<dt>
+  sqknc
+</dt>
+<dd>
+This is the square root of the sum over the k-range of the square of k<sup>n</sup>&middot;&chi;(k)
+where the plotting k-weight is used for n.
+  <br />
+  <br />
+</dd>
+<dt>
+  mkc
+</dt>
+<dd>
+This is the sum over the k-range of k&middot;|&chi;(k)|.
+  <br />
+  <br />
+</dd>
+<dt>
+  mknc
+</dt>
+<dd>
+This is the sum over the k-range of k<sup>n</sup>&middot;|&chi;(k)|
+where the plotting k-weight is used for n.
+  <br />
+  <br />
+</dd>
+<dt>
+  mft
+</dt>
+<dd>
+This is the maximum value of |&chi;(R)| within the R-range
+where the plotting k-weight is used for the Fourier transform.
+  <br />
+  <br />
+</dd>
+<dt>
+  sft
+</dt>
+<dd>
+This is the sum over the R-range of |&chi;(R)|
+where the plotting k-weight is used for the Fourier transform.
+  <br />
+  <br />
+</dd>
+</dl>
+</p>
+
+<p>
+These new ranking criteria tend to do a better job of correctly
+predicting which paths are important to a fit.  That's a good
+thing.  The bad thing is that they take quite a bit longer to compute
+than simply relying on <span class=program>FEFF</span>'s amplitude ratios.
+</p>
+
+<p>
+The full suite of options are provided in order to replicate the
+analysis shown in the paper by K. Provost, et al.  The 
+&ldquo;akc&rdquo; and &ldquo;aknc&rdquo;
+choices tend to be reliable.
+</p>
+
+<p>
+You can select which criterion to use on the interpretation page by
+setting the
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;rank</span>
+configuration parameter to &ldquo;feff&rdquo; or to one
+of the acronyms above.
+</p>
+
+<p>
+You can compare the evaluations of the ranking criteria by pressing
+the &ldquo;Rank&rdquo; button in the toolbar.  This
+calculation takes about a third of a second per path.  If there are a
+lot of paths in the interpretation, this can be a bit time consuming.
+At the end, a text dialog with the various rankings for each path is
+displayed.  As can be seen in the figure below, there is some
+variation between the criteria, but all of them differ substantially
+from <span class=program>FEFF</span>'s importance factors.
+</p>
+
+<p>
+<div class=figure style="max-width: 481px; min-width: 7em;">
+<a name=feff-rank>
+<img src=../../images/feff-rank.png width=100%>
+</a>
+<p align=center>
+The report on the path ranking calculation.
+</p>
+</div>
+</p>
+
+<p>
+This improvement upon <span class=program>FEFF</span>'s path selection tool is
+adapted from 
+K. Provost et al., <em>J. Synchrotron Radiat.</em>, <strong></strong>
+(2014), <em>submitted</em>.
+</p>
+
+<p>
+None of the path ranking criteria currently use &sigma;&sup2; when they
+are being evaluated, but that would be an interesting consideration.
 </p>
 
 </div>

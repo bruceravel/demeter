@@ -44,6 +44,7 @@ use MooseX::Types -declare => [qw( Empty
 				   IfeffitLineshape
                                    LarchLineshape
 				   Lineshape
+				   Rankings
 				)];
 
 ## to do: modes
@@ -506,6 +507,15 @@ subtype Lineshape,
   as Str,
   where { lc($_) =~ m{\A$lineshape_regexp\z} },
   message { "$_ is not a defined lineshape" };
+
+## -------- all ranking criterion names
+use vars qw(@rankings_list $rankings_regexp);
+@rankings_list = qw(feff akc aknc sqkc sqknc mkc mknc mft sft); # 
+$rankings_regexp = Regexp::Assemble->new()->add(map {lc($_)} @rankings_list)->re;
+subtype Rankings,
+  as Str,
+  where { lc($_) =~ m{\A$rankings_regexp\z} },
+  message { "$_ is not a defined ranking criterion" };
 
 
 

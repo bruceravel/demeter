@@ -52,7 +52,7 @@
 	<li><a href="#VERSION">VERSION</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
-	<li><a href="#TESTS">TESTS</a></li>
+	<li><a href="#CRITERIA">CRITERIA</a></li>
 	<li><a href="#METHODS">METHODS</a></li>
 	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
 	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
@@ -88,49 +88,51 @@ de Chimie et des Materiaux Paris-Est.</p>
 importance factor&quot; that purports to be an assessment of the importance
 of a path.  Paths with large importance factors should, presumably, be
 included in a fit.  Unfortunately, the formula Feff uses to compute
-this number is not very reliable when applied to real world fits.</p>
+this number is not very reliable when applied to real world fitting
+problems.</p>
 
-<p>This module, then, provides a framework for applying a sequence of
-alternative importance calculation.  This gives the user much more
-information about the list of paths from a Feff calculation and
-hopefully provides much better guidance for creating fitting models.</p>
+<p>This module, then, provides a framework for applying alternative
+importance calculations.  This gives the user more information about
+the list of paths from a Feff calculation and hopefully provides
+better guidance for creating fitting models.</p>
 
-<h1 id="TESTS">TESTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="CRITERIA">CRITERIA <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <dl>
-	<dt><code>chimagW</code></dt>
-		<dd><p>The sum of the magnitude of chi(k) is computed after k-weighting by
-W=(1,2,3).  The magnitude is obtained by running Ifeffit's <code>ff2chi</code>
-function with the flag set for saving the magnitude of chi.  This is
-controlled by the <code>save_mag</code> attribute of the Path object which is
-used to compute the various tests.</p></dd>
-	<dt><code>areaW</code></dt>
-		<dd><p>Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Integrate under the magnitude of chi(R) between 1 and 10 Angstroms.</p></dd>
-	<dt><code>areaW_n</code></dt>
-		<dd><p>The value of <code>areaW</code> normalized over a list by the <code>normalize</code>
-method.  The largest ranking in the list will be 100.</p></dd>
-	<dt><code>heightW</code></dt>
-		<dd><p>Using S02=1, sigma^2=0.003, and all other path parameters set to 0,
-perform a Fourier transform on the path using k-weight of W=(1,2,3).
-Return the maximum value of the magnitude of chi(R).</p></dd>
-	<dt><code>heightW_n</code></dt>
-		<dd><p>The value of <code>heightW</code> normalized over a list by the <code>normalize</code>
-method.  The largest ranking in the list will be 100.</p></dd>
-	<dt><code>peakposW</code></dt>
-		<dd><p>Return the position of the maximum value from the <code>heightW</code> test.</p></dd>
+	<dt><code>feff</code></dt>
+		<dd><p>This is Feff's curve wave amplitude ratio.</p></dd>
+	<dt><code>akc</code></dt>
+		<dd><p>This is the sum over the k-range of <code>|k*chi(k)|</code>.</p></dd>
+	<dt><code>aknc</code></dt>
+		<dd><p>This is the sum over the k-range of <code>|k^n*chi(k)|</code>.</p></dd>
+	<dt><code>sqkc</code></dt>
+		<dd><p>This is the square root of the sum over the k-range of <code>(k*chi(k))^2</code>.</p></dd>
+	<dt><code>sqknc</code></dt>
+		<dd><p>This is the square root of the sum over the k-range of <code>(k^n*chi(k))^2</code>.</p></dd>
+	<dt><code>mkc</code></dt>
+		<dd><p>This is the sum over the k-range of <code>|k*mag(chi(k))|</code>.</p></dd>
+	<dt><code>mknc</code></dt>
+		<dd><p>This is the sum over the k-range of <code>|k^n*mag(chi(k))|</code>.</p></dd>
+	<dt><code>mft</code></dt>
+		<dd><p>This is the maximum value of <code>|chi(R)|</code> within the R range with the
+Fourier transform performed using the current value of the plotting
+k-weight.</p></dd>
+	<dt><code>sft</code></dt>
+		<dd><p>This is the sum over the R-range of <code>|chi(R)|</code> with the Fourier
+transform performed using the current value of the plotting k-weight.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <dl>
 	<dt><code>rank</code></dt>
-		<dd><p>Run the sequence of path ranking tests on a ScatteringPath object and
-store the results in the <code>rankings</code> attribute, which is a hash
+		<dd><p>Run the selected path ranking calculations on a ScatteringPath object
+and store the results in the <code>rankings</code> attribute, which is a hash
 reference.  The keys of the referenced hash are given above.</p></dd>
-<dd><pre>  $sp -&gt; rank($plot);
+<dd><pre>  $sp -&gt; rank($how, $plot);
 
-</pre></dd>		<dd><p>If <code>$plot</code> is true, the path will be plotted in R.</p></dd>
+</pre></dd>		<dd><p><code>$how</code> specifies the ranking criterion.  The configuration default
+will be used if not specified.  If <code>$plot</code> is true, the path will be
+plotted in R.</p></dd>
 	<dt><code>normalize</code></dt>
 		<dd><p>For amplitude-valued rankings, scale each path in a list such that the
 largest path in the input list has a value of 100.</p></dd>
@@ -140,7 +142,7 @@ largest path in the input list has a value of 100.</p></dd>
 include it twice.</p></dd>
 	<dt><code>get_rank</code></dt>
 		<dd><p>Return a path's value for a given test.</p></dd>
-<dd><pre>  $x = $sp-&gt;get_rank('area2');
+<dd><pre>  $x = $sp-&gt;get_rank('akc');
 
 </pre></dd>	<dt><code>get_rank_list</code></dt>
 		<dd><p>Return a list of identifying names for all the tests.</p></dd>
@@ -152,21 +154,18 @@ include it twice.</p></dd>
 </pre></dd></dl>
 <h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>The <code>pathfinder -&gt; rank</code> parameter is used to determine which
-tests are run.  If set to <code>all</code>, the tests will be evaluated at all
-three k-weights.  If set to <code>kw2</code>, the tests will only be evaluated
-with k-weight of 2.</p>
+<p>The <code>pathfinder-&gt;rank</code> parameter is used to determine which
+criterion is used in the path interpretation.  Other parameters in the
+<code>pathfinder</code> configuration group set the default k- and R-ranges for
+the evaluations.  Finally, <code>pathfinder-&gt;rank_high</code> and
+<code>pathfinder-&gt;rank_low</code> set the cutoff between high, mid, and low
+importance paths in the path interpretation.</p>
 
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
-
-<ul>
-	<li>Need to create useful tests.</li>
-	<li>Need to integrate into Artemis.</li>
-</ul>
 
 <p>Please report problems to the Ifeffit Mailing List
 (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
