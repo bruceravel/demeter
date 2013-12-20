@@ -1,6 +1,6 @@
 ## Time-stamp: <2011-03-10 17:24:36 bruce>
 ######################################################################
-##  This module is copyright (c) 1999-2013 Bruce Ravel
+##  This module is copyright (c) 1999-2014 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
 ##  http://bruceravel.github.com/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/

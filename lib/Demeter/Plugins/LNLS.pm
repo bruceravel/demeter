@@ -137,4 +137,4 @@ This module was written by Eric Breynaert and touched up by Bruce.
 
   Bruce Ravel <bravel AT bnl DOTgov>
   http://xafs.org/BruceRavel/
-  Athena copyright (c) 2001-2013
+  Athena copyright (c) 2001-2014

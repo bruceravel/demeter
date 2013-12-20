@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Path;
 
 =for Copyright
  .
- Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -663,7 +663,7 @@ Bruce Ravel (bravel AT bnl DOT gov)
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
