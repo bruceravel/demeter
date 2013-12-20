@@ -106,7 +106,9 @@ project file you saved before closing [%athena%].  (You
 [% INCLUDE font/b a="did" %] save your work, didn't[%#'%] you?!)
 The k- and R-ranges will be imported as they were set in [%athena%].
 To begin the analysis using the empirical standard, click on the hot
-text indicated in the figrue below.
+text indicated in the figure below.  You can also import this sort of
+standard from the 
+[% INCLUDE font/quote a="Data->Other fitting standards..."%] menu.
 [% END %]
 
 [% WRAPPER figure file="emp_importdata.png" %]

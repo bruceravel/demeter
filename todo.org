@@ -9,21 +9,21 @@
   - [ ] Dispersive algorithm, include in Athena
   - [ ] S02 display issue
   - [ ] clone data sets and path lists in Artemis
-  - [ ] Artemis history improvments
+  - [X] Artemis history improvments
 
 ** big things
-  - [ ] fuzzy over sites
+  - [X] fuzzy over sites
   - [ ] 5 and 6 legged paths
   - [ ] PCA improvements
   - [ ] feff8.5L
 
 * larch chores
 
-+ [ ] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
++ [X] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 + [ ] start work on Artemis-related templates
 + [ ] kaiser vs. kaiser-bessel
 + [ ] use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
-+ [ ] command line in command buffer in A&A
++ [X] command line in command buffer in A&A
 
 ** Larch v. Ifeffit problem areas
 
@@ -64,7 +64,7 @@
         the executables can all be found,
   - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [4/20] [20%]
+** Demeter bugs, shortcomings, missing features  [5/20] [25%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
@@ -79,7 +79,7 @@
   - [ ] MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
   - [ ] Feff8 integration
   - [ ] Use PDL in pathfinder
-  - [ ] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
+  - [X] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
   - [ ] background groups for AXAFS
   - [X] serialize VPath, put VPath into dpj and fpj files
   - [X] set E0 to peak of white line
@@ -357,9 +357,9 @@ https://github.com/xraypy/feff85exafs
     the ring.  There are various Abs-C-C 3s, 4s, 5s, and 6s.
         :         C-C
         :        /   \
-        : Abs - C     c 
+        : Abs - C     C 
         :        \   /
-        :         c-c
+        :         C-C
 
  4. Metals out to 8 Angstroms require 5s and 6s
 

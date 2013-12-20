@@ -228,8 +228,9 @@ decision outlined above must be worked through.  In this case, the fit
 benefits by including this triangle path, but it does not merit having
 its own floating parameter.  I assert that value of [%sigsqr%] that is 
 [% INCLUDE font/quote a="a bit more than the first shell" %] is reasonable.
-[% END %]
 
-[% WRAPPER html/todo %]
-This will be discussed in more detail in Scott Calvin's[%#'%] upcoming book.
+This is discussed in more detail in Scott Calvin's[%#'%] book, 
+[% INCLUDE html/link
+link='http://www.amazon.com/XAFS-Everyone-Scott-Calvin-ebook/dp/B00CUNBZA4'
+text='XAFS for Everyone'%].
 [% END %]

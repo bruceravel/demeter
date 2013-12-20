@@ -1,11 +1,10 @@
-
 =head1 NAME
 
-Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
+Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9
+This documentation refers to Demeter version 0.9.19
 
 =head1 SYNOPSIS
 
@@ -19,22 +18,22 @@ Using Demeter automatically turns on L<strict> and L<warnings>.
 =head1 DESCRIPTION
 
 This module provides an object oriented interface to the EXAFS data
-analysis capabilities of the popular and powerful Ifeffit package.
-Mindful that the Ifeffit API involves streams of text commands, this
-package is, at heart, a code generator.  Many methods of this package
-return text.  All actual interaction with Ifeffit is handled through a
-single method, C<dispose>, which is described below.  The internal
-structure of this package involves accumulating text in a scalar
-variable through successive calls to the various code generating
-methods.  This text is then disposed to Ifeffit, to a file, or
-elsewhere.  The outward looking methods, as shown in the example
-above, organize all of the complicated interactions of your data with
-Ifeffit.
+analysis capabilities of the popular and powerful Ifeffit package and
+its successor Larch.  Mindful that the Ifeffit and Larch APIs involve
+streams of text commands, this package is, at heart, a code generator.
+Many methods of this package return text.  All actual interaction with
+Ifeffit or Larch is handled through a single method, C<dispose>, which
+is described below.  The internal structure of this package involves
+accumulating text in a scalar variable through successive calls to the
+various code generating methods.  This text is then disposed to
+Ifeffit, to Larch, to a file, or elsewhere.  The outward looking
+methods organize all of the complicated interactions of your data with
+Ifeffit or Larch.
 
 This package is aimed at many targets.  It can be the back-end of a
 graphical data analysis program, providing the glue between the
 on-screen representation of the fit and the actual command executed by
-Ifeffit.  It can be used for one-off data analysis chores -- indeed
+Ifeffit or Larch.  It can be used for one-off data analysis chores -- indeed
 most of the examples that come with the package can be reworked into
 useful one-off scripts.  It can also be the back-end to sophisticated
 data analysis chores such as high-throughout data processing and
@@ -49,7 +48,7 @@ L<http://www.iinteractive.com/moose> for more information.
 
 =head1 IMPORT
 
-Subsets of Demeter can be imported to shorted loading time.
+Subsets of Demeter can be imported to shorten loading time.
 
 =over 4
 
@@ -91,7 +90,7 @@ Import everything needed to do data analysis with Feff.
 
 =head1 PRAGMATA
 
-Demeter pragmata are ways of affecting the run-time behavior of a
+Demeter "pragmata" are ways of affecting the run-time behavior of a
 Demeter program by specfying that behavior at compile-time.
 
      use Demeter qw(:plotwith=gnuplot)
@@ -102,7 +101,7 @@ Demeter program by specfying that behavior at compile-time.
 
 =over 4
 
-=item C<:plotwith=XX>
+=item C<:p=XX> or C<:plotwith=XX>
 
 Specify the plotting backend.  The default is C<pgplot>.  The other
 option is C<gnuplot>.  A C<demeter> option will be available soon for
@@ -120,7 +119,7 @@ Setting the UI to screen does four things:
 
 =item 1.
 
-Provides C<Demeter::UI::Screen::Interview> as a role for the Fit
+Provides L<Demeter::UI::Screen::Interview> as a role for the Fit
 object.  This imports the C<interview> method for use with the Fit
 object, offering a CLI interface to the results of a fit.
 
@@ -131,7 +130,7 @@ on the screen while something time consuming is happening.
 
 =item 3.
 
-Makes the CLI prompting tool from C<Demeter::UI::Screen::Pause>
+Makes the CLI prompting tool from L<Demeter::UI::Screen::Pause>
 available.
 
 =item 4.
@@ -152,16 +151,13 @@ this dependeny to be relaxed from a requirement to a suggestion.
 
 Future UI options might include C<tk>, C<wx>, or C<rpc>.
 
-=item C<:template=XX>
+=item C<:t=XX> or C<:template=XX>
 
 Specify the template set to use for data processing and fitting
-chores.  See C<Demeter::templates>.
+chores.  See L<Demeter::templates>.
 
-In the future, a template set will be written for L<Ifeffit
-2|http://cars9.uchicago.edu/ifeffit/tdl> when it becomes available.
-
-These can also be set during run-time using the C<set_mode> method -- see
-C<Demeter::Mode>.
+These can also be set during run-time using the C<set_mode> method --
+see L<Demeter::Mode>.
 
 =back
 
@@ -227,14 +223,15 @@ C<set> an undefined attribute for every subclass except for the Config
 subclass.
 
 The argument are simply a list (remember that the =E<gt> symbol is
-sytactically equivalent to a comma). The following are equivalent:
+sytactically equivalent to a comma in this context).  The following
+are equivalent:
 
     $data_object -> set(file => "my.data", kmin => 2.5);
   and
     @atts = (file => "my.data", kmin => 2.5);
     $data_object -> set(@atts);
 
-The sense in which this is a convenience wrapper is in that the
+The sense in which this is a convenience wrapper is that the
 following are equivalent:
 
     $data_object -> set(fft_kmin=>3.1, fft_kmax=>12.7);
@@ -279,7 +276,7 @@ Returns the YAML serialization string for the object as text.
 
 This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
-supplied regular expression again the C<name> attribute.
+supplied regular expression against the C<name> attribute.
 
   $is_match = $object->matches($regexp);
 
@@ -292,13 +289,13 @@ regular expression:
 =item C<dispose>
 
 This method sends data processing and plotting commands off to their
-eventual destinations.  See the document page for C<Demeter::Dispose>
+eventual destinations.  See the document page for L<Demeter::Dispose>
 for complete details.
 
 =item C<set_mode>
 
 This is the method used to set the attributes described in
-C<Demeter::Dispose>.  Any Demeter object can call this method.
+L<Demeter::Dispose>.  Any Demeter object can call this method.
 
    $object -> set_mode(backend => 1,
                        screen  => 1,
@@ -315,7 +312,7 @@ call this method.
    %hash = $object -> get_mode;
    $value = $object -> get_mode("screen");
 
-See C<Demeter:Dispose> for more details.
+See L<Demeter:Dispose> for more details.
 
 =back
 
@@ -329,12 +326,12 @@ This returns the Config object.  This is a wrapper around C<get_mode>
 and is intended to be used in a method call chain with any Demeter
 object.  The following are equivalent:
 
-  my $config = $data->get_mode("params");
+  my $config = Demeter->get_mode("params");
   $config -> set_default("clamp", "medium", 20);
 
 and
 
-  $data -> co -> set_default("clamp", "medium", 20);
+  Demeter -> co -> set_default("clamp", "medium", 20);
 
 The latter involves much less typing!
 
@@ -344,14 +341,14 @@ This returns the Plot object.  Like the C<co> method, this is a
 wrapper around C<get_mode> and is intended to be used in a method call
 chain with any Demeter object.
 
-  $data -> po -> set("c9", 'yellowchiffon3');
+  Demeter -> po -> set("c9", 'yellowchiffon3');
 
 =item C<mo>
 
 This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.
 
-  print "on screen!" if ($data -> mo -> ui eq 'screen');
+  print "on screen!" if (Demeter -> mo -> ui eq 'screen');
 
 =item C<dd>
 
@@ -366,7 +363,7 @@ and processing parameters.  So every Path object B<must> have an
 associated Data object.  If the C<data> attribute is not specified by
 the user, the default Data object will be used.
 
-  print ref($object->dd);
+  print ref(Demeter->dd);
        ===prints===> Demeter::Data
 
 =back
@@ -381,11 +378,11 @@ for your use.
 =item C<hashes>
 
 This returns a string which can be used as a comment character in
-Ifeffit.  The idea is that every comment included in the commands
-generated by methods of this class use this string.  That provides a
-way of distinguishing comments generated by the methods of this class
-from other comment lines sent to Ifeffit.  This is a user interface
-convenience.
+Ifeffit or Larch.  The idea is that every comment included in the
+commands generated by methods of this class use this string.  That
+provides a way of distinguishing comments generated by the methods of
+this class from other comment lines sent to Ifeffit or Larch.  This is
+a user interface convenience.
 
    print $object->hashes, "\n";
        ===prints===> ###___
@@ -393,30 +390,35 @@ convenience.
 =item C<group>
 
 This returns a unique five-character string for the object.  For Data
-and Path objects, this is used as the Ifeffit group name for this
-object.
+and Path objects, this is used as the Ifeffit or Larch group name for
+this object.
 
 =item C<name>
 
-This returns a short, user-supplied, string identifying the object.
-For a GDS object, this is the parameter name.  For Data, Path,
-Path-like objects, and other plottable objects this is the string that
-will be put in a plot legend.
+(This is actually an attribute accessor, but is so widely used and
+useful that it merits an explanation here.)  This returns a short,
+user-supplied, string identifying the object.  For a GDS object, this
+is the parameter name.  For Data, Path, Path-like objects, and other
+plottable objects this is the string that will be put in a plot
+legend.
 
 =item C<data>
 
-Path and Path-like objects are associated with Data objects for chores
-like Fourier transforming.  That is, the Path or Path-like object will
-use the processing parameters of the associated Data object.  This
-method returns the reference to the associated Data object.  For Data
+(This is actually an attribute accessor, but is so widely used and
+useful that it merits an explanation here.)  Path and Path-like
+objects are associated with Data objects for chores like Fourier
+transforming.  That is, the Path or Path-like object will use the
+processing parameters of the associated Data object.  This method
+returns the reference to the associated Data object.  For Data
 objects, this returns a reference to itself.  For other object types
 this returns a false value.
 
 =item C<plottable>
 
 This returns a true value if the object is one that can be plotted.
-Currently, Data, Path, VPath, and SSPath objects return a true value.
-All others return false.
+Currently, Data, Path, the various Path-like objects, and objects
+associated with various analysis chores (peak fitting, difference
+spectra, etc) return a true value.  All others return false.
 
    $can_plot = $object -> plottable;
 
@@ -425,11 +427,12 @@ All others return false.
 This attribute is inherited by all Demeter objects and provides a
 completely generic way for interactivity to be built into any process
 that a Demeter program undertakes.  It is used, for example, in the
-C<Demeter::LCF> C<combi> method and in several of the histogram
+L<Demeter::LCF> C<combi> method and in several of the histogram
 processing methods.  This attribute takes a code reference.  At the
 beginning of each fit in the combinatorial sequence, this is
 dereference and called.  This allows a GUI to provide status updates
-during a potentially long-running process.
+during a potentially long-running process and in a manner that does
+not require Demeter to know what kind of UI is in use.
 
 The dereferencing and calling of the sentinal is handled by C<call>
 
@@ -449,17 +452,17 @@ C<add_trouble> method is used to fill the C<trouble> attribute, which
 is inherited by all Demeter objects.  In the default, untroubled
 state, an object will have the C<trouble> attribute set to an empty
 string (i.e. something logically false).  As problems are found in the
-fitting model (see C<Demeter::Fit::Sanity>), the C<trouble> attribute
+fitting model (see L<Demeter::Fit::Sanity>), the C<trouble> attribute
 gets short text strings appended to it.  The list of problems an
 object has are separated by pipe characters (C<|>).
 
-See C<Demeter::Fit::Sanity> for a complete description of these
+See L<Demeter::Fit::Sanity> for a complete description of these
 problem codes.  The Fit, Data, Path, and GDS objects each have their
 own set of problem codes.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See C<Demeter::Config> for details about the configuration
+See L<Demeter::Config> for details about the configuration
 system.
 
 =head1 DEPENDENCIES
@@ -487,56 +490,6 @@ Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
 
 Patches are welcome.
-
-=head1 VERSIONS
-
-=over 4
-
-=item 0.5.4
-
-New numbering scheme: 0.5 is the beta version with a windows
-installer, the third number corresponds to the release number.  So
-Windows installer release 4 contains the code from version 0.5.4 and
-so on.
-
-=item 0.4.7
-
-Things mostly working on Windows.
-
-=item 0.4.6
-
-We now have a mostly functional Athena.
-
-=item 0.4.5
-
-Fit history in Artemis is mostly functional.  Reordering of Plot list
-in Artemis now possible by mouse.  Added rudimentary XES support.
-
-=item 0.4.4
-
-Added fit history to Artemis
-
-=item 0.4.3
-
-Added LCF fitting
-
-=item 0.4.2
-
-Cloning a Feff object now deeply copies the array references in an
-overridden clone method.
-
-Added showlegend attribute to Plot object
-
-=item 0.4.1
-
-Now supplying the C<bootstrap> script in an attempt to ease initial
-installation.  Also building the DPG with a PL_file at build time.
-
-Fixed a bug setting the Plot object space attribute in quad, stddev,
-and variance plots.  Added stddev and variance plots to the merge
-example in C<harness>.
-
-=back
 
 =head1 AUTHOR
 

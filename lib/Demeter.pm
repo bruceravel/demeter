@@ -925,8 +925,8 @@ is described below.  The internal structure of this package involves
 accumulating text in a scalar variable through successive calls to the
 various code generating methods.  This text is then disposed to
 Ifeffit, to Larch, to a file, or elsewhere.  The outward looking
-methods, as shown in the example above, organize all of the
-complicated interactions of your data with Ifeffit or Larch.
+methods organize all of the complicated interactions of your data with
+Ifeffit or Larch.
 
 This package is aimed at many targets.  It can be the back-end of a
 graphical data analysis program, providing the glue between the
@@ -946,7 +946,7 @@ L<http://www.iinteractive.com/moose> for more information.
 
 =head1 IMPORT
 
-Subsets of Demeter can be imported to shorted loading time.
+Subsets of Demeter can be imported to shorten loading time.
 
 =over 4
 
@@ -988,7 +988,7 @@ Import everything needed to do data analysis with Feff.
 
 =head1 PRAGMATA
 
-Demeter pragmata are ways of affecting the run-time behavior of a
+Demeter "pragmata" are ways of affecting the run-time behavior of a
 Demeter program by specfying that behavior at compile-time.
 
      use Demeter qw(:plotwith=gnuplot)
@@ -1054,12 +1054,8 @@ Future UI options might include C<tk>, C<wx>, or C<rpc>.
 Specify the template set to use for data processing and fitting
 chores.  See L<Demeter::templates>.
 
-In the future, a template set will be written for
-L<Larch|http://cars9.uchicago.edu/ifeffit/Larch> when it becomes
-available.
-
-These can also be set during run-time using the C<set_mode> method -- see
-L<Demeter::Mode>.
+These can also be set during run-time using the C<set_mode> method --
+see L<Demeter::Mode>.
 
 =back
 
@@ -1125,14 +1121,15 @@ C<set> an undefined attribute for every subclass except for the Config
 subclass.
 
 The argument are simply a list (remember that the =E<gt> symbol is
-sytactically equivalent to a comma). The following are equivalent:
+sytactically equivalent to a comma in this context).  The following
+are equivalent:
 
     $data_object -> set(file => "my.data", kmin => 2.5);
   and
     @atts = (file => "my.data", kmin => 2.5);
     $data_object -> set(@atts);
 
-The sense in which this is a convenience wrapper is in that the
+The sense in which this is a convenience wrapper is that the
 following are equivalent:
 
     $data_object -> set(fft_kmin=>3.1, fft_kmax=>12.7);
@@ -1177,7 +1174,7 @@ Returns the YAML serialization string for the object as text.
 
 This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
-supplied regular expression again the C<name> attribute.
+supplied regular expression against the C<name> attribute.
 
   $is_match = $object->matches($regexp);
 
@@ -1227,12 +1224,12 @@ This returns the Config object.  This is a wrapper around C<get_mode>
 and is intended to be used in a method call chain with any Demeter
 object.  The following are equivalent:
 
-  my $config = $data->get_mode("params");
+  my $config = Demeter->get_mode("params");
   $config -> set_default("clamp", "medium", 20);
 
 and
 
-  $data -> co -> set_default("clamp", "medium", 20);
+  Demeter -> co -> set_default("clamp", "medium", 20);
 
 The latter involves much less typing!
 
@@ -1242,14 +1239,14 @@ This returns the Plot object.  Like the C<co> method, this is a
 wrapper around C<get_mode> and is intended to be used in a method call
 chain with any Demeter object.
 
-  $data -> po -> set("c9", 'yellowchiffon3');
+  Demeter -> po -> set("c9", 'yellowchiffon3');
 
 =item C<mo>
 
 This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.
 
-  print "on screen!" if ($data -> mo -> ui eq 'screen');
+  print "on screen!" if (Demeter -> mo -> ui eq 'screen');
 
 =item C<dd>
 
@@ -1264,7 +1261,7 @@ and processing parameters.  So every Path object B<must> have an
 associated Data object.  If the C<data> attribute is not specified by
 the user, the default Data object will be used.
 
-  print ref($object->dd);
+  print ref(Demeter->dd);
        ===prints===> Demeter::Data
 
 =back
@@ -1296,25 +1293,30 @@ this object.
 
 =item C<name>
 
-This returns a short, user-supplied, string identifying the object.
-For a GDS object, this is the parameter name.  For Data, Path,
-Path-like objects, and other plottable objects this is the string that
-will be put in a plot legend.
+(This is actually an attribute accessor, but is so widely used and
+useful that it merits an explanation here.)  This returns a short,
+user-supplied, string identifying the object.  For a GDS object, this
+is the parameter name.  For Data, Path, Path-like objects, and other
+plottable objects this is the string that will be put in a plot
+legend.
 
 =item C<data>
 
-Path and Path-like objects are associated with Data objects for chores
-like Fourier transforming.  That is, the Path or Path-like object will
-use the processing parameters of the associated Data object.  This
-method returns the reference to the associated Data object.  For Data
+(This is actually an attribute accessor, but is so widely used and
+useful that it merits an explanation here.)  Path and Path-like
+objects are associated with Data objects for chores like Fourier
+transforming.  That is, the Path or Path-like object will use the
+processing parameters of the associated Data object.  This method
+returns the reference to the associated Data object.  For Data
 objects, this returns a reference to itself.  For other object types
 this returns a false value.
 
 =item C<plottable>
 
 This returns a true value if the object is one that can be plotted.
-Currently, Data, Path, VPath, and SSPath objects return a true value.
-All others return false.
+Currently, Data, Path, the various Path-like objects, and objects
+associated with various analysis chores (peak fitting, difference
+spectra, etc) return a true value.  All others return false.
 
    $can_plot = $object -> plottable;
 
@@ -1327,7 +1329,8 @@ L<Demeter::LCF> C<combi> method and in several of the histogram
 processing methods.  This attribute takes a code reference.  At the
 beginning of each fit in the combinatorial sequence, this is
 dereference and called.  This allows a GUI to provide status updates
-during a potentially long-running process.
+during a potentially long-running process and in a manner that does
+not require Demeter to know what kind of UI is in use.
 
 The dereferencing and calling of the sentinal is handled by C<call>
 
