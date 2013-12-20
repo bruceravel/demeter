@@ -386,7 +386,7 @@ Demeter::Feff::DistributionsP::Thru - Histograms for MS paths through the absorb
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 

@@ -130,7 +130,7 @@ Demeter::Atoms::Absorption - Interaction with tables of absorption coefficients
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 DESCRIPTION
 

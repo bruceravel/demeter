@@ -122,7 +122,7 @@ Demeter::Plugins::10BMMultiChannel - filetype plugin for 10BM multi-channel data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 

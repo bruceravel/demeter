@@ -41,6 +41,7 @@ doc/artug/images/bend.png
 doc/artug/images/bvs.png
 doc/artug/images/bvs_restrain.png
 doc/artug/images/collinear.png
+doc/artug/images/collinear.svg
 doc/artug/images/command_buffer.png
 doc/artug/images/data-actionsmenu.png
 doc/artug/images/data-datamenu.png
@@ -72,6 +73,7 @@ doc/artug/images/feff-paths.png
 doc/artug/images/feff-pathsinfo.png
 doc/artug/images/feff-plot.png
 doc/artug/images/feff-plotss.png
+doc/artug/images/feff-rank.png
 doc/artug/images/feff-siteserror.png
 doc/artug/images/feff-siteserror2.png
 doc/artug/images/feff-template.png
@@ -873,6 +875,9 @@ examples/recipes/Filetypes/SSRLB/IN_540_001.003
 examples/recipes/Filetypes/SSRLB/ssrlb.pl
 examples/recipes/FuzzyOverSites/BaFe12O19.inp
 examples/recipes/FuzzyOverSites/febaa.300
+examples/recipes/FuzzyOverSites/pfo.pl
+examples/recipes/FuzzyOverSites/Zirconolite/zirconolite.cif
+examples/recipes/FuzzyOverSites/Zirconolite/zirconolite.prj
 examples/recipes/Histogram/Au.inp
 examples/recipes/Histogram/Au_feff.inp
 examples/recipes/Histogram/Au_feff.yaml
@@ -1037,6 +1042,7 @@ lib/Demeter/Data/XDI.pm
 lib/Demeter/Diff.pm
 lib/Demeter/Dispose.pm
 lib/Demeter/Feff.pm
+lib/Demeter/Feff/Aggregate.pm
 lib/Demeter/Feff/Distributions.pm
 lib/Demeter/Feff/Distributions/NCL.pm
 lib/Demeter/Feff/Distributions/SS.pm
@@ -1247,6 +1253,8 @@ lib/Demeter/templates/analysis/larch/pca_prep_k.tmpl
 lib/Demeter/templates/analysis/larch/pca_save.tmpl
 lib/Demeter/templates/analysis/larch/pca_save_reconstruction.tmpl
 lib/Demeter/templates/analysis/larch/pca_save_stack.tmpl
+lib/Demeter/templates/analysis/larch/pca_save_tt.tmpl
+lib/Demeter/templates/analysis/larch/pca_tt.tmpl
 lib/Demeter/templates/analysis/larch/peak_fit.tmpl
 lib/Demeter/templates/analysis/larch/peak_header.tmpl
 lib/Demeter/templates/analysis/larch/peak_param.tmpl
@@ -1471,6 +1479,7 @@ lib/Demeter/templates/process/ifeffit/addto_vpath.tmpl
 lib/Demeter/templates/process/ifeffit/align.tmpl
 lib/Demeter/templates/process/ifeffit/autobk.tmpl
 lib/Demeter/templates/process/ifeffit/bft.tmpl
+lib/Demeter/templates/process/ifeffit/bkgk.tmpl
 lib/Demeter/templates/process/ifeffit/chi_column.tmpl
 lib/Demeter/templates/process/ifeffit/chi_noise.tmpl
 lib/Demeter/templates/process/ifeffit/chikn.tmpl
@@ -1533,6 +1542,7 @@ lib/Demeter/templates/process/ifeffit/read_chi.tmpl
 lib/Demeter/templates/process/ifeffit/read_group.tmpl
 lib/Demeter/templates/process/ifeffit/read_xmu.tmpl
 lib/Demeter/templates/process/ifeffit/rebin.tmpl
+lib/Demeter/templates/process/ifeffit/rebin_prep.tmpl
 lib/Demeter/templates/process/ifeffit/replicate.tmpl
 lib/Demeter/templates/process/ifeffit/sa_atoms.tmpl
 lib/Demeter/templates/process/ifeffit/sa_atoms_text.tmpl
@@ -1579,6 +1589,7 @@ lib/Demeter/templates/process/larch/align.tmpl
 lib/Demeter/templates/process/larch/attributes.tmpl
 lib/Demeter/templates/process/larch/autobk.tmpl
 lib/Demeter/templates/process/larch/bft.tmpl
+lib/Demeter/templates/process/larch/bkgk.tmpl
 lib/Demeter/templates/process/larch/chi_column.tmpl
 lib/Demeter/templates/process/larch/chi_noise.tmpl
 lib/Demeter/templates/process/larch/chikn.tmpl
@@ -1594,6 +1605,7 @@ lib/Demeter/templates/process/larch/display.tmpl
 lib/Demeter/templates/process/larch/dphase.tmpl
 lib/Demeter/templates/process/larch/erase.tmpl
 lib/Demeter/templates/process/larch/erase_chikn.tmpl
+lib/Demeter/templates/process/larch/erase_group.tmpl
 lib/Demeter/templates/process/larch/fft.tmpl
 lib/Demeter/templates/process/larch/filtered_filter.tmpl
 lib/Demeter/templates/process/larch/find_e0.tmpl
@@ -1601,12 +1613,16 @@ lib/Demeter/templates/process/larch/find_wl.tmpl
 lib/Demeter/templates/process/larch/fix_chik.tmpl
 lib/Demeter/templates/process/larch/flatten_fit.tmpl
 lib/Demeter/templates/process/larch/flatten_set.tmpl
+lib/Demeter/templates/process/larch/init.tmpl
 lib/Demeter/templates/process/larch/interpolate.tmpl
 lib/Demeter/templates/process/larch/is_nor.tmpl
 lib/Demeter/templates/process/larch/k123.tmpl
 lib/Demeter/templates/process/larch/kev.tmpl
 lib/Demeter/templates/process/larch/make_group.tmpl
 lib/Demeter/templates/process/larch/margin.tmpl
+lib/Demeter/templates/process/larch/mee_arctan.tmpl
+lib/Demeter/templates/process/larch/mee_do.tmpl
+lib/Demeter/templates/process/larch/mee_reflect.tmpl
 lib/Demeter/templates/process/larch/merge.tmpl
 lib/Demeter/templates/process/larch/merge_end.tmpl
 lib/Demeter/templates/process/larch/merge_interp.tmpl
@@ -1627,6 +1643,8 @@ lib/Demeter/templates/process/larch/read.tmpl
 lib/Demeter/templates/process/larch/read_chi.tmpl
 lib/Demeter/templates/process/larch/read_group.tmpl
 lib/Demeter/templates/process/larch/read_xmu.tmpl
+lib/Demeter/templates/process/larch/rebin.tmpl
+lib/Demeter/templates/process/larch/rebin_prep.tmpl
 lib/Demeter/templates/process/larch/replicate.tmpl
 lib/Demeter/templates/process/larch/sa_atoms.tmpl
 lib/Demeter/templates/process/larch/sa_booth_pre.tmpl
@@ -1704,6 +1722,7 @@ lib/Demeter/UI/Artemis/icons/bestfit.png
 lib/Demeter/UI/Artemis/icons/convert.png
 lib/Demeter/UI/Artemis/icons/discard.png
 lib/Demeter/UI/Artemis/icons/doc.png
+lib/Demeter/UI/Artemis/icons/eval.png
 lib/Demeter/UI/Artemis/icons/export.png
 lib/Demeter/UI/Artemis/icons/fit.png
 lib/Demeter/UI/Artemis/icons/gds.png
@@ -1801,6 +1820,7 @@ lib/Demeter/UI/Atoms/data/GPL.dem
 lib/Demeter/UI/Atoms/Doc.pm
 lib/Demeter/UI/Atoms/Feff.pm
 lib/Demeter/UI/Atoms/icons/add.png
+lib/Demeter/UI/Atoms/icons/aggregate.png
 lib/Demeter/UI/Atoms/icons/atoms.ico
 lib/Demeter/UI/Atoms/icons/atoms.png
 lib/Demeter/UI/Atoms/icons/atoms.xcf
@@ -1827,6 +1847,7 @@ lib/Demeter/UI/Atoms/icons/open.png
 lib/Demeter/UI/Atoms/icons/output.png
 lib/Demeter/UI/Atoms/icons/paths.png
 lib/Demeter/UI/Atoms/icons/plot.png
+lib/Demeter/UI/Atoms/icons/rank.png
 lib/Demeter/UI/Atoms/icons/reset.png
 lib/Demeter/UI/Atoms/icons/save.png
 lib/Demeter/UI/Atoms/icons/ss.png
@@ -2429,10 +2450,13 @@ t/withHg.inp
 t/ybco.inp
 todo.org
 tools/config-mode.el
+tools/copyright.sh
 tools/cumulant_order.zip
 tools/demeter-skeletons.el
 tools/ifeffit-mode.el
 tools/README
+tools/templates.process
+tools/tmpl.pl
 videos.org
 win/Demeter_icon.ico
 win/deps/fetch.pl
