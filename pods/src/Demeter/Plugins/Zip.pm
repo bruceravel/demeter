@@ -84,7 +84,7 @@ Demeter::Plugin::Zip - Open a zip file of data file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
@@ -133,7 +133,7 @@ up the temporary files when you are done.
 
 =item C<is>
 
-The is method is used to identify the file type, typically by some
+The C<is> method is used to identify the file type, typically by some
 information contained within the file.  In the case of a zip file, a
 very simple check is made to determine whether the file is actually a
 zip file and can be opened.  Absolutely no tests are made on the file

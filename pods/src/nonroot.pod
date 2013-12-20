@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.18.
+## This pod document is for Demeter version 0.9.19.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Non-root installation of Demeter on an Ubuntu system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 Demeter Installation
 
@@ -127,7 +127,7 @@ system, looked like this:
     Run 'Build installdeps' to install missing prerequisites.
 
     Created MYMETA.yml and MYMETA.json
-    Creating new 'Build' script for 'Demeter' version 'v0.9.18'
+    Creating new 'Build' script for 'Demeter' version 'v0.9.19'
 
 The list of the all the C<not installed> items is the list of
 dependencies we need to install. We use the generated Build script to
@@ -189,7 +189,7 @@ first go round so I got this:
     Run 'Build installdeps' to install missing prerequisites.
 
     Created MYMETA.yml and MYMETA.json
-    Creating new 'Build' script for 'Demeter' version 'v0.9.18'
+    Creating new 'Build' script for 'Demeter' version 'v0.9.19'
 
 Simply re-running the installdeps process fixed this for me (skip this step if
 you don't see any C<not installed> items above):
@@ -204,7 +204,7 @@ Eventually you should get the following when running Build.PL:
     Please inform the author.
 
     Created MYMETA.yml and MYMETA.json
-    Creating new 'Build' script for 'Demeter' version 'v0.9.18'
+    Creating new 'Build' script for 'Demeter' version 'v0.9.19'
 
 At this point you're finally ready to build and install Demeter itself which
 is done as follows:

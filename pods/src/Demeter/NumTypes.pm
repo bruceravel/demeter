@@ -65,7 +65,6 @@ subtype NegInt,
 subtype NonNeg,
   as Str,
   where { looks_like_number($_) and $_ >= 0 },
-<<<<<<< HEAD
   message { "Num is not larger than or equal to 0" };
   # => inline_as {
   #   # the long Str tests are redundant here
@@ -82,43 +81,16 @@ subtype PosNum,
   #   $value_type->_inline_check($_[1])
   #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
   #   };
-=======
-  message { "Num is not larger than or equal to 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
-
-subtype PosNum,
-  as Str,
-  where { looks_like_number($_) and $_ > 0 },
-  message { "Num is not larger than 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
->>>>>>> 28c2e88497f8fc6bd90851ba92ddd70a66ae16b9
 
 subtype NegNum,
   as Str,
   where { looks_like_number($_) and $_ < 0 },
-<<<<<<< HEAD
   message { "Num is not smaller than 0" };
   # => inline_as {
   #   # the long Str tests are redundant here
   #   $value_type->_inline_check($_[1])
   #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
   #   };
-=======
-  message { "Num is not smaller than 0" }
-  => inline_as {
-    # the long Str tests are redundant here
-    $value_type->_inline_check($_[1])
-      . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
-    };
->>>>>>> 28c2e88497f8fc6bd90851ba92ddd70a66ae16b9
 
 subtype FeffVersions,
   as Int,
@@ -133,7 +105,7 @@ Demeter::NumTypes - Numerical type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 DESCRIPTION
 
@@ -163,7 +135,7 @@ L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

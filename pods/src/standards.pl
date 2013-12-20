@@ -13,7 +13,7 @@
 =cut
 
 =begin Copyright
- Copyright (c) 2008-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+ Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
  .
  This example is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See L<perlgpl>.
@@ -225,7 +225,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
@@ -510,7 +510,7 @@ http://bruceravel.github.com/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

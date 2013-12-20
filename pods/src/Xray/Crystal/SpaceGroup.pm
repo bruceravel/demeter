@@ -2,7 +2,7 @@ package Xray::Crystal::SpaceGroup;
 
 =for Copyright
  .
- Copyright (c) 1999-2013 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 1999-2014 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ const my $EPSILON  => 0.00001;
 
 use vars qw($VERSION);
 use version;
-$VERSION = version->new("0.9.18");
+$VERSION = version->new("0.9.19");
 
 has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal/SpaceGroup.pm"}),
 										   'share',
@@ -524,7 +524,7 @@ Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crysta
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
@@ -738,7 +738,7 @@ http://bruceravel.github.com/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

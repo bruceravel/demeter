@@ -268,7 +268,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify . "\nusing " . $demeter->backend_id );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2013 Matt Newville"
+  #			 "Ifeffit is copyright $COPYRIGHT 1992-2014 Matt Newville"
   #			] );
   $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
@@ -2751,7 +2751,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
@@ -2804,7 +2804,7 @@ L<http://bruceravel.github.com/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

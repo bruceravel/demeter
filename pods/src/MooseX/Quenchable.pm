@@ -1,7 +1,7 @@
 package MooseX::Quenchable;
 
 {
-  $MooseX::Quenchable::VERSION = '0.9.18';
+  $MooseX::Quenchable::VERSION = '0.9.19';
 }
 use Moose::Role 0.90;
 use MooseX::Aliases;
@@ -11,7 +11,7 @@ has 'quenched'    => (is => 'rw', isa => 'Bool',   default => 0, alias=>'frozen'
 
 package MooseX::Quenchable::Attribute;
 {
-  $MooseX::Quenchable::Attribute::VERSION = '0.9.18';
+  $MooseX::Quenchable::Attribute::VERSION = '0.9.19';
 }
 use Moose::Role 0.90;
 
@@ -53,7 +53,7 @@ around accessor_metaclass => sub {
 
 package MooseX::Quenchable::Accessor;
 {
-  $MooseX::Quenchable::Accessor::VERSION = '0.9.18';
+  $MooseX::Quenchable::Accessor::VERSION = '0.9.19';
 }
 use Moose::Role 0.90;
 
@@ -72,7 +72,7 @@ around _inline_store => sub {
 
 package Moose::Meta::Attribute::Custom::Trait::Quenchable;
 {
-  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.18';
+  $Moose::Meta::Attribute::Custom::Trait::Quenchable::VERSION = '0.9.19';
 }
 sub register_implementation { 'MooseX::Quenchable::Attribute' }
 
@@ -87,7 +87,7 @@ MooseX::Quenchable - silently freeze attribute values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.18.
+This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
@@ -148,7 +148,7 @@ L<MooseX::SetOnce> carries this copyright notice:
   under the same terms as the Perl 5 programming language system
   itself.
 
-Copyright (c) 2013 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
