@@ -2,4 +2,4 @@
 #
 #  This is how to link to pgplot for use with Demeter and Strawberry Perl.
 #
-echo "-L/c/strawberry/c/lib/pgplot -lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c"
+echo "-L/c/strawberry/c/lib/pgplot -lcpgplot -lpgplot -lGrWin -lgdi32 -lgfortran"

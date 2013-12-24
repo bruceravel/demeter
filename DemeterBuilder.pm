@@ -113,7 +113,7 @@ sub ACTION_compile_ifeffit_wrapper {
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
 		       q{-L}.$windows{pgplot},
-		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c},
+		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lgfortran},
 		      ];
       #    $compile_flags = $linker_flags;
     } elsif ($platform eq 'darwin') {
