@@ -1,7 +1,5 @@
 package Demeter::UI::Artemis;
 
-use feature qw(switch);
-
 use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
@@ -1144,16 +1142,12 @@ sub OnDataMenu {
   my ($self, $event) = @_;
   my $dnum = $self->{dnum};
   my $data = $frames{$dnum}->{data};
-  given ($event->GetId) {
-    when (0) {
-      $frames{$dnum}->Rename;
-      modified(1);
-    };
-
-    when (1) {
-      $frames{$dnum}->discard_data;
-      modified(1);
-    };
+  if ($event->GetId == 0) {
+    $frames{$dnum}->Rename;
+    modified(1);
+  } elsif ($event->GetId == 1) {
+    $frames{$dnum}->discard_data;
+    modified(1);
   };
 };
 
@@ -1252,16 +1246,12 @@ sub OnFeffButtonRightClick {
 sub OnFeffMenu {
   my ($self, $event) = @_;
   my $fnum = $self->{fnum};
-  given ($event->GetId) {
-    when (0) {
-      $frames{$fnum}->on_rename;
-      modified(1);
-    };
-
-    when (1) {
-      $frames{$fnum}->on_discard;
-      modified(1);
-    };
+  if ($event->GetId == 0) {
+    $frames{$fnum}->on_rename;
+    modified(1);
+  } elsif ($event->GetId == 1) {
+    $frames{$fnum}->on_discard;
+    modified(1);
   };
 };
 

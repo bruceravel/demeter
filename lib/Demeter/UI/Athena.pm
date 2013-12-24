@@ -1,7 +1,5 @@
 package Demeter::UI::Athena;
 
-use feature "switch";
-
 use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
@@ -2316,54 +2314,48 @@ sub quench {
 
   my $regex = q{};
 
-  given ($how) {
-    when ('toggle') {
-      $app->current_data->quenched(not $app->current_data->quenched);
+  if ($how eq 'toggle') {
+    $app->current_data->quenched(not $app->current_data->quenched);
+
+  } elsif ($how =~ m{all|invert|none}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      my $val = ($how eq 'all')    ? 1
+	      : ($how eq 'none')   ? 0
+	      : ($how eq 'invert') ? not $clb->GetIndexedData($i)->quenched
+	      :                      $clb->GetIndexedData($i)->quenched;
+      $clb->GetIndexedData($i)->quenched($val);
     };
 
-    when (m{all|none|invert}) {
-      foreach my $i (0 .. $clb->GetCount-1) {
-	my $val = ($how eq 'all')    ? 1
-	        : ($how eq 'none')   ? 0
-	        : ($how eq 'invert') ? not $clb->GetIndexedData($i)->quenched
-	        :                      $clb->GetIndexedData($i)->quenched;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
+  } elsif ($how =~ m{marked}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      next if not $clb->IsChecked($i);
+      my $val = ($how eq 'marked') ? 1 : 0;
+      $clb->GetIndexedData($i)->quenched($val);
     };
 
-    when (m{marked}) {
-      foreach my $i (0 .. $clb->GetCount-1) {
-	next if not $clb->IsChecked($i);
-	my $val = ($how eq 'marked') ? 1 : 0;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
+  } elsif ($how =~ m{regex}) {
+    my $word = ($how eq 'regex') ? 'Freeze' : 'Unfreeze';
+    my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    $app->set_text_buffer($ted, "regexp");
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $app->{main}->status(chomp($word)."ing by regular expression canceled.");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
+      return;
     };
+    $regex = $ted->GetValue;
+    my $re;
+    my $is_ok = eval '$re = qr/$regex/';
+    if (not $is_ok) {
+      $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
+      return;
+    };
+    $app->update_text_buffer("regexp", $regex, 1);
 
-    when (m{regex}) {
-      my $word = ($how eq 'regex') ? 'Freeze' : 'Unfreeze';
-      my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
-      $app->set_text_buffer($ted, "regexp");
-      if ($ted->ShowModal == wxID_CANCEL) {
-	$app->{main}->status(chomp($word)."ing by regular expression canceled.");
-	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
-	return;
-      };
-      $regex = $ted->GetValue;
-      my $re;
-      my $is_ok = eval '$re = qr/$regex/';
-      if (not $is_ok) {
-	$app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
-	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
-	return;
-      };
-      $app->update_text_buffer("regexp", $regex, 1);
-
-      foreach my $i (0 .. $clb->GetCount-1) {
-	next if ($clb->GetIndexedData($i)->name !~ m{$re});
-	my $val = ($how eq 'regex') ? 1 : 0;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
-
+    foreach my $i (0 .. $clb->GetCount-1) {
+      next if ($clb->GetIndexedData($i)->name !~ m{$re});
+      my $val = ($how eq 'regex') ? 1 : 0;
+      $clb->GetIndexedData($i)->quenched($val);
     };
   };
   $app->OnGroupSelect(0,0,0);

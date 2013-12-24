@@ -15,7 +15,6 @@ package Demeter::Feff;
 
 =cut
 
-#use feature 'switch';
 use autodie qw(open close);
 
 use Moose;

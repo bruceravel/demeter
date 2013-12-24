@@ -19,7 +19,6 @@ require v5.10;
 
 use version;
 our $VERSION = version->new('0.9.19');
-use feature "switch";
 
 ############################
 ## Carp
@@ -253,64 +252,50 @@ sub import {
   my $none          = 0;
 
  PRAG: foreach my $p (@pragmata) {
-    given ($p) {
-      when (m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
-	$plot -> plot_with($1);
-      }
-      when (m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
-	$mode -> ui($1);
-	#import Demeter::Carp if ($1 eq 'screen');
-      }
-      when (m{:t(?:emplate)?=(\w+)}) { # change template sets
-	my $which = $1;
-	$mode -> template_process($which);
-	$mode -> template_fit($which);
-	#$mode -> template_analysis($which);
-      }
-      when (m{:d(?:evflag)?=(\w+)}) {
-	$devflag = $1;
-	eval {use Term::ANSIColor qw(:constants)} if $devflag;
-      };
-      ## all the rest of the "pragmata" control what parts of Demeter get imported
+    if ($p =~ m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
+      $plot -> plot_with($1);
+    } elsif ($p =~ m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
+      $mode -> ui($1);
+      #import Demeter::Carp if ($1 eq 'screen');
+    } elsif ($p =~ m{:t(?:emplate)?=(\w+)}) { # change template sets
+      my $which = $1;
+      $mode -> template_process($which);
+      $mode -> template_fit($which);
+      #$mode -> template_analysis($which);
+    } elsif ($p =~ m{:d(?:evflag)?=(\w+)}) {
+      $devflag = $1;
+      eval {use Term::ANSIColor qw(:constants)} if $devflag;
 
-      when (':data') {
-	@load = @data;
-	$doplugins = 1;
-      }
-      when (':hephaestus') {
-	@load = @heph;
-	$doplugins = 0;
-      }
-      when (':fit') {
-	@load = (@data, @fit);
-      }
-      when (':analysis') {
-	@load = (@data, @anal);
-	$doplugins     = 1;
-	$colonanalysis = 1;	# verify PDL before loading PCA
-      }
-      when (':athena') {
-	@load = (@data, @anal, @plot);
-	$doplugins     = 0;     # delay registering plugins until after start-up
-	$colonanalysis = 1;	# verify PDL before loading PCA
-      }
-      when (':artemis') {
-	@load = (@heph, @fit, 'Plot/Indicator');
-      }
-      when (':atoms') {
-	@load = @atoms;
-      }
-      when (':all') {
-	@load = (@data, @fit, @anal, @xes, @plot);
-	$doplugins     = 1;
-	$colonanalysis = 1;
-      }
-      when (':none') {
-	@load = ();
-	$doplugins     = 0;
-	$colonanalysis = 0;
-	$none          = 1;
-      }
+    ## all the rest of the "pragmata" control what parts of Demeter get imported
+    } elsif ($p eq ':data') {
+      @load = @data;
+      $doplugins = 1;
+    } elsif ($p eq ':hephaestus') {
+      @load = @heph;
+      $doplugins = 0;
+    } elsif ($p eq ':fit') {
+      @load = (@data, @fit);
+    } elsif ($p eq ':analysis') {
+      @load = (@data, @anal);
+      $doplugins     = 1;
+      $colonanalysis = 1;	# verify PDL before loading PCA
+    } elsif ($p eq ':athena') {
+      @load = (@data, @anal, @plot);
+      $doplugins     = 0;     # delay registering plugins until after start-up
+      $colonanalysis = 1;	# verify PDL before loading PCA
+    } elsif ($p eq ':artemis') {
+      @load = (@heph, @fit, 'Plot/Indicator');
+    } elsif ($p eq ':atoms') {
+      @load = @atoms;
+    } elsif ($p eq ':all') {
+      @load = (@data, @fit, @anal, @xes, @plot);
+      $doplugins     = 1;
+      $colonanalysis = 1;
+    } elsif ($p eq ':none') {
+      @load = ();
+      $doplugins     = 0;
+      $colonanalysis = 0;
+      $none          = 1;
     };
   };
   @load = (@data, @fit, @anal, @xes, @plot) if not @load;

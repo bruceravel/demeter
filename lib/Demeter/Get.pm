@@ -15,163 +15,113 @@ package Demeter::Get;
 
 =cut
 
-use feature "switch";
 use Moose::Role;
 
 my $mode = Demeter->mo;
 
 sub backend_name {
   my ($self) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      return 'Ifeffit';
-    };
-
-    when ('larch') {
-      return 'Larch';
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return 'Ifeffit';
+  } elsif ($mode->template_process eq 'larch') {
+    return 'Larch';
   };
 };
 
 sub backend_id {
   my ($self) = @_;
-  given ($mode->template_process) {
 
-    when (/ifeffit|iff_columns/) {
-      return "Ifeffit " . Ifeffit::get_string('&build')
-    };
-
-    when ('larch') {
-      return "Larch " . Larch::get_larch_scalar('larch.__version__');
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return "Ifeffit " . Ifeffit::get_string('&build')
+  } elsif ($mode->template_process eq 'larch') {
+    return "Larch " . Larch::get_larch_scalar('larch.__version__');
   };
 };
 
 sub backend_version {
   my ($self) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      return (split(" ", Ifeffit::get_string('&build')))[0];
-    };
-
-    when ('larch') {
-      return Larch::get_larch_scalar('larch.__version__');
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return (split(" ", Ifeffit::get_string('&build')))[0];
+  } elsif ($mode->template_process eq 'larch') {
+    return Larch::get_larch_scalar('larch.__version__');
   };
 };
 
 sub fetch_scalar {
   my ($self, $param) = @_;
-  given ($mode->template_process) {
 
-    when (/ifeffit|iff_columns/) {
-      return Ifeffit::get_scalar($param);
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return Ifeffit::get_scalar($param);
+
+  } elsif ($mode->template_process eq 'larch') {
+    my $gp = $self->group || Demeter->mo->throwaway_group;
+    if ($param =~ m{norm_c\d}) {
+      $param = $gp.'.'.$param;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{epsilon_([kr])}) {
+      $param = $gp.'.epsilon_'.$1;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{\A(?:e0|edge_step|kmax_suggest)\z}) {
+      $param = $gp.'.'.$param;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{pre_(?:offset|slope)}) {
+      $param = $gp.'.'.$param;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
+      $param = $1.'.'.$2.'.stderr';
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{(aa__)_(esh|scale)\b}) {
+      $param = $1.'.'.$2;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
+      $param = $1.'.'.$2.'.stderr';
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{\A(lr_)__(pd[024])}) {
+      $param = $1.'e.'.$2;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{\A(lr_)__(pd[13])}) {
+      $param = $1.'o.'.$2;
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{delta_(lr_)__(pd[024])}) {
+      $param = $1.'e.'.$2.'.stderr';
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{delta_(lr_)__(pd[13])}) {
+      $param = $1.'o.'.$2.'.stderr';
+      return Larch::get_larch_scalar($param);
+    } elsif ($param =~ m{_p(\d+)\z}) {
+      $param = 'dempcatt._p'.$1;
+      return Larch::get_larch_scalar($param);
+    } else {
+      return Larch::get_larch_scalar($param);
     };
-
-    when ('larch') {
-      given ($param) {
-	my $gp = $self->group || Demeter->mo->throwaway_group;
-	when (/norm_c\d/) {
-	  $param = $gp.'.'.$param;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/epsilon_([kr])/) {
-	  $param = $gp.'.epsilon_'.$1;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/\A(?:e0|edge_step|kmax_suggest)\z/) {
-	  $param = $gp.'.'.$param;
-	  return Larch::get_larch_scalar($param);
-	};
-	when (/pre_(?:offset|slope)/) {
-	  $param = $gp.'.'.$param;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/delta_(aa__)_(esh|scale)/) {
-	  $param = $1.'.'.$2.'.stderr';
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/(aa__)_(esh|scale)\b/) {
-	  $param = $1.'.'.$2;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/delta_(aa__)_(esh|scale)/) {
-	  $param = $1.'.'.$2.'.stderr';
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/\A(lr_)__(pd[024])/) {
-	  $param = $1.'e.'.$2;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/\A(lr_)__(pd[13])/) {
-	  $param = $1.'o.'.$2;
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/delta_(lr_)__(pd[024])/) {
-	  $param = $1.'e.'.$2.'.stderr';
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/delta_(lr_)__(pd[13])/) {
-	  $param = $1.'o.'.$2.'.stderr';
-	  return Larch::get_larch_scalar($param);
-	}
-	when (/_p(\d+)\z/) {
-	  $param = 'dempcatt._p'.$1;
-	  return Larch::get_larch_scalar($param);
-	};
-	default {
-	  return Larch::get_larch_scalar($param);
-	};
-      }
-    };
-
   };
 };
 
 sub fetch_string {
   my ($self, $param) = @_;
   $param =~ s{\A\$}{};
-  given ($mode->template_process) {
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return Ifeffit::get_string($param);
 
-    when (/ifeffit|iff_columns/) {
-      return Ifeffit::get_string($param);
+  } elsif ($mode->template_process eq 'larch') {
+    if ($param eq'column_label') {
+      my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
+      $param = $gp.'.column_labels';
+      my $list = eval(Larch::get_larch_scalar($param));
+      return q{} if not $list;
+      return join(" ", @$list);
+    } else {
+      return Larch::get_larch_scalar($param);
     };
-
-    when ('larch') {
-      given ($param) {
-	when ('column_label') {
-	  my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
-	  $param = $gp.'.column_labels';
-	  my $list = eval(Larch::get_larch_scalar($param));
-	  return q{} if not $list;
-	  return join(" ", @$list);
-	}
-	default {
-	  return Larch::get_larch_scalar($param);
-	};
-      };
-    };
-
   };
 };
 
 sub fetch_array {
   my ($self, $param) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      return Ifeffit::get_array($param);
-    };
-
-    when ('larch') {
-      return Larch::get_larch_array($param);
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    return Ifeffit::get_array($param);
+  } elsif ($mode->template_process eq 'larch') {
+    return Larch::get_larch_array($param);
   };
 };
 
@@ -180,18 +130,12 @@ sub fetch_array {
 sub toggle_echo {
   my ($self, $onoff) = @_;
   my $prior = 1;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      $prior = $self->fetch_scalar("\&screen_echo");
-      $self->dispose("set \&screen_echo = $onoff\n");
-      return $prior;
-    };
-
-    when ('larch') {
-      return $prior;
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    $prior = $self->fetch_scalar("\&screen_echo");
+    $self->dispose("set \&screen_echo = $onoff\n");
+    return $prior;
+  } elsif ($mode->template_process eq 'larch') {
+    return $prior;
   };
 };
 
@@ -199,73 +143,48 @@ sub toggle_echo {
 sub echo_lines {
   my ($self, $param) = @_;
   my @lines = ();
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-
-      my $save = $self->fetch_scalar("\&screen_echo");
-      $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
-      my $lines = $self->fetch_scalar('&echo_lines');
-      $self->dispose("\&screen_echo = $save\n"), return () if not $lines;
-      foreach my $l (1 .. $lines) {
-	push @lines, Ifeffit::get_echo();
-      };
-      $self->dispose("\&screen_echo = $save\n") if $save;
-      return @lines;
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    my $save = $self->fetch_scalar("\&screen_echo");
+    $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
+    my $lines = $self->fetch_scalar('&echo_lines');
+    $self->dispose("\&screen_echo = $save\n"), return () if not $lines;
+    foreach my $l (1 .. $lines) {
+      push @lines, Ifeffit::get_echo();
     };
-
-    when ('larch') {
-      return 1;
-    };
-
+    $self->dispose("\&screen_echo = $save\n") if $save;
+    return @lines;
+  } elsif ($mode->template_process eq 'larch') {
+    return 1;
   };
 };
 
 
 sub place_scalar {
   my ($self, $param, $value) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      Ifeffit::put_scalar($param, $value);
-    };
-
-    when ('larch') {
-      Larch::put_larch_scalar($param, $value);
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    Ifeffit::put_scalar($param, $value);
+  } elsif ($mode->template_process eq 'larch') {
+    Larch::put_larch_scalar($param, $value);
   };
   return 1;
 };
 
 sub place_string {
   my ($self, $param, $value) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      Ifeffit::put_string($param, $value);
-    };
-
-    when ('larch') {
-      Larch::put_larch_scalar($param, $value);
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    Ifeffit::put_string($param, $value);
+  } elsif ($mode->template_process eq 'larch') {
+    Larch::put_larch_scalar($param, $value);
   };
   return 1;
 };
 
 sub place_array {
   my ($self, $param, $arrayref) = @_;
-  given ($mode->template_process) {
-
-    when (/ifeffit|iff_columns/) {
-      Ifeffit::put_array($param, $arrayref);
-    };
-
-    when ('larch') {
-      Larch::put_larch_array($param, $arrayref);
-    };
-
+  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+    Ifeffit::put_array($param, $arrayref);
+  } elsif ($mode->template_process eq 'larch') {
+    Larch::put_larch_array($param, $arrayref);
   };
   return 1;
 };

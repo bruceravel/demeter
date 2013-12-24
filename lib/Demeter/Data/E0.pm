@@ -15,7 +15,6 @@ package Demeter::Data::E0;
 
 =cut
 
-#use feature "switch";
 use autodie qw(open close);
 
 use Moose::Role;

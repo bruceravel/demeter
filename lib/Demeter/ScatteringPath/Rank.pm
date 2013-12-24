@@ -1,7 +1,5 @@
 package Demeter::ScatteringPath::Rank;
 
-use feature qw(switch);
-
 use Moose::Role;
 
 use Demeter::Constants qw($EPSILON5);
@@ -94,38 +92,28 @@ sub rank {
     ## acronym to StrTypes, write the method below, modify
     ## explain_ranking in Demeter::Feff, edit rank in
     ## pathfinder.demeter_conf
-    given (lc($h)) {
+    my $hh = lc($h);
+    if ($hh eq 'akc') {
+      $self->set_rank('akc',   $self->rank_aknc(\@k, \@y, 1));
+    } elsif ($hh eq 'aknc') {
+      $self->set_rank('aknc',  $self->rank_aknc(\@k, \@y, Demeter->po->kweight));
+    } elsif ($hh eq 'sqkc') {
+      $self->set_rank('sqkc',  $self->rank_sqknc(\@k, \@y, 1));
+    } elsif ($hh eq 'sqknc') {
+      $self->set_rank('sqknc', $self->rank_sqknc(\@k, \@y, Demeter->po->kweight));
+    } elsif ($hh eq 'mkc') {
+      $self->set_rank('mkc',   $self->rank_mknc(\@k, \@m, 1));
+    } elsif ($hh eq 'mknc') {
+      $self->set_rank('mknc',  $self->rank_mknc(\@k, \@m, Demeter->po->kweight));
 
-      when ('akc') {
-	$self->set_rank('akc',   $self->rank_aknc(\@k, \@y, 1));
-      };
-      when ('aknc') {
-	$self->set_rank('aknc',  $self->rank_aknc(\@k, \@y, Demeter->po->kweight));
-      };
-      when ('sqkc') {
-	$self->set_rank('sqkc',  $self->rank_sqknc(\@k, \@y, 1));
-      };
-      when ('sqknc') {
-	$self->set_rank('sqknc', $self->rank_sqknc(\@k, \@y, Demeter->po->kweight));
-      };
-      when ('mkc') {
-	$self->set_rank('mkc',   $self->rank_mknc(\@k, \@m, 1));
-      };
-      when ('mknc') {
-	$self->set_rank('mknc',  $self->rank_mknc(\@k, \@m, Demeter->po->kweight));
-      };
-
-      when ('mft') {
-	$path->update_fft(1);
-	$path->_update('bft');
-	my ($c, $h) = $self->rank_height(\@r, \@c);
-	$self->set_rank('peakpos', $c);
-	$self->set_rank('mft',     $h);
-      };
-      when ('sft') {
-	$self->set_rank('sft', $self->rank_sft(\@c));
-      };
-
+    } elsif ($hh eq 'mft') {
+      $path->update_fft(1);
+      $path->_update('bft');
+      my ($c, $h) = $self->rank_height(\@r, \@c);
+      $self->set_rank('peakpos', $c);
+      $self->set_rank('mft',     $h);
+    } elsif ($hh eq 'sft') {
+      $self->set_rank('sft', $self->rank_sft(\@c));
     };
   };
 

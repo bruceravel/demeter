@@ -2,7 +2,6 @@ package Demeter::UI::Athena::Difference;
 
 use strict;
 use warnings;
-use feature qw(switch);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -212,26 +211,19 @@ sub setup {
   $diff->diff;
   Demeter->po->set(emin=>$diff->xmin-20, emax=>$diff->xmax+30, space=>'E');
   Demeter->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
-  given ($this->{form}->GetSelection) {
-    when (0) {			# mu(E)
-      Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>0,);
-    };
-    when (1) {			# norm(E)
-      Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>0,);
-    };
-    when (2) {			# deriv(E)
-      Demeter->po->set(e_norm=>0, e_der=>1, e_sec=>0,);
-    };
-    when (3) {			# deriv(norm(E))
-      Demeter->po->set(e_norm=>1, e_der=>1, e_sec=>0,);
-    };
-    when (4) {			# sec(E)
-      Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>1,);
-    };
-    when (5) {			# sec(norm(E))
-      Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>1,);
-    };
-  }
+  if ($this->{form}->GetSelection == 0) {			# mu(E)
+    Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>0,);
+  } elsif ($this->{form}->GetSelection == 1) {			# norm(E)
+    Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>0,);
+  } elsif ($this->{form}->GetSelection == 2) {			# deriv(E)
+    Demeter->po->set(e_norm=>0, e_der=>1, e_sec=>0,);
+  } elsif ($this->{form}->GetSelection == 3) {			# deriv(norm(E))
+    Demeter->po->set(e_norm=>1, e_der=>1, e_sec=>0,);
+  } elsif ($this->{form}->GetSelection == 4) {			# sec(E)
+    Demeter->po->set(e_norm=>0, e_der=>0, e_sec=>1,);
+  } elsif ($this->{form}->GetSelection == 5) {			# sec(norm(E))
+    Demeter->po->set(e_norm=>1, e_der=>0, e_sec=>1,);
+  };
 };
 
 sub plot {
