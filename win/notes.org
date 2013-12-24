@@ -1,0 +1,151 @@
+
+These are notes on building a Demeter build environment from scratch.
+
+* Strawberry
+
+Start by grabbing the latest and greatest from
+http://strwaberryperl.com.  This has a decent selection of MinGW
+cooked right in, so many things will be buildable immediately.
+
+* mingw
+
+ + start from scratch to avoid conflict with what's in Strawberry.
+   download from http://www.mingw.org
+ + install mingw32-base and msys-base
+ + do not install fortran -- it comes with Strawberry
+
+* pgplot
+
+ + from http://spdg1.sci.shizuoka.ac.jp/grwinlib/english/ download the
+   GrWinC toolkit.  unpack it.  Do not install one of the "prebuilt"
+   packages.  I have no idea what they are for.
+ + at the top of the toolkit, unpack the pgplot package from
+   http://www.astro.caltech.edu/~tjp/pgplot/.  This will make a folder
+   called ~pgplot~ at top of the toolkit.
+ + Move the stuff from the PATCH folder into the appropriate places in
+   ~pgplot~. 
+ + cd to ~build/MinGw-gfortran~.  The Makefile should just run at this
+   point. 
+ + make a folder in ~C:\strawberry\c\lib\~ called ~pgplot~.  Move the
+   following there
+    1. grfont.dat  
+    2. libCalcomp.a
+    3. libGrWin.a
+    4. libGrWin0.a
+    5. libcpgplot.a
+    6. libpgplot.a
+    7. rgb.txt
+ + You can now compile ifeffit
+   
+Are any of the executable from GrWin needed?
+
+* GnuWin32
+
+ + from http://gnuwin32.sourceforge.net/packages.html install the
+   packages for PdCurses and Readline.  These will be installed into
+   ~C:\GnuWin32~
+
+ + grab all file from ~C:\GnuWin32\lib~ with "curses", "readline", or
+   "history" in the file name.  Copy them to ~C:\strawberry\c\lib~ 
+
+ + from ~C:\GnuWin32\bin~, copy ~readline5.dll~ and ~curses2.dll~ to
+   ~C:\strawberry\c\bin~   
+
+
+* compiling Ifeffit
+
+ + Replace ~iconf_pgplot~, ~iconf_term~, and ~iconf_iff~ with the
+   versions from ~win/~ in the Demeter distribution 
+
+ + Modify line 85 of the main Makefile.in to read 
+   :  SUBDIRS = src
+   (i.e. remove ~readline~ so it does not get compiled.)
+
+ + Modify line 90 in ~src/cmdline/Makefile.in~ to read 
+   :  readline_LIB =   $(TERMCAP_LIB)
+
+ + ~./configure --prefix='/c/strawberry/c~  (Note: this should be done
+   in the MinGW window and *not* in the Windows command prompt.) 
+
+ + Edit ~src/lib/sys.h~, changing the ~sysdir~ and ~pgdev~ lines like so:
+   :  c{sys.h  -*-fortran-*- 
+   :  c system and build specific stuff goes here
+   :  c to be included in iff_config.f
+   :         sysdir = 'C:\strawberry\c\share\ifeffit'
+   :         pgdev  = '/gw'
+   :         inifile= 'startup.iff  .ifeffit'
+   :         build = '1.2.11d'//
+   :       $   ' Copyright (c) 2008 Matt Newville, Univ of Chicago'
+   :  c}
+   Note that this somewhat changes how the Ifeffit build procedure
+   works.  By setting the prefix at configuration time to be different
+   from the ~sysdir~, Ifeffit will get installed into Strawberry.
+
+ + Edit ~iconf_pgplot~ to change ~-lg2c~ to ~-lgfortran~
+
+ + Do 
+   : ./configure --prefix='/c/strawberry/c'
+   note the unix style delimiters.
+
+ + Now ~make~ and ~make install~ 
+
+ + The demeter installer sets a couple of environment variables, which
+   may need to be set by hand to test while building
+    1. PGPLOT_DIR to ~C:\strawberry\c\lib\pgplot~
+    2. FONTCONFIG_FILE to ~C:\strawberry\c\bin\etc\fonts\fonts.conf~
+
+
+* Gnuplot
+
+ + grab the gnuplot installer from the gnuplot download site
+ + install to C:\strawberry\c\bin\gnuplot
+ + the executables are in C:\strawberry\c\bin\gnuplot\bin (*this is
+   different from previous versions of the installer!*)
+ + for 0.9.19,
+   * reset default windows executable to
+     ~__PERL_BASE__\c\bin\gnuplot\bin\gnuplot.exe~
+   * need to write some code to check for this and reset config value
+     as needed
+
+
+* using CPAN
+
+ + o conf http_proxy http://192.168.1.130:3128
+ + o conf ftp_proxy http://192.168.1.130:3128
+ + o conf prerequisites_policy follow
+ + o conf commit
+
+At this point ~Build installdeps~ should run.
+
+Is MooseX::Singleton necessary?  Nope!  Removed it from the
+dependency list!
+
+* Demeter, prerequisites
+
+ + clone or pull latest
+ + perl Build.PL
+ + perl Build installdeps
+ + wait...
+ + wait...
+ + wait...
+ + on the first pass through, the following 4 (not bad!) did not
+   install cleanly
+    1. Archive::Zip >= 1.31 (Strawberry comes with 1.30)
+    2. PDL::Stats
+    3. Syntax::Highlight::Perl
+    4. File::Monitor::Lite
+ + from the DOS command line, run cpan.bat
+    1. A::Z failed a test having someting to do with writing to a place
+       without adequate permission.  seems safe to ~force install Archive::Zip~
+    2. P::S does not fail, it's unclear to me why it did not install
+       earlier.  installed simply with ~install PDL::Stats~
+    3. S::H::P (build) failed to unarchive cleanly.  Need to
+       investigate.  This is a very simple module.  Can easily install
+       by hand, if need be.
+    4. F::M::L (recommended) failed tests all involve incorrect
+       handling of path delimiters on Windows.  seems safe to ~force
+       install File ::Monitor::Lite~
+
+* Demeter, build
+
+ +
