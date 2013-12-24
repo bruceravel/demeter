@@ -15,7 +15,7 @@ package Demeter::Feff;
 
 =cut
 
-use feature 'switch';
+#use feature 'switch';
 use autodie qw(open close);
 
 use Moose;
@@ -343,19 +343,60 @@ sub rdinp {
 
       #print join("|", $thiscard, @line), $/;
       ## dispatch the card values
-      given ($thiscard) {
-	when (m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) { $self->$thiscard($line[1])               };
-	when (m{(?:atoms|potentials)})	            { $mode = $thiscard                                };
-	when ('hole')			            { $self->set(edge  => $line[1], s02   => $line[2]) };
-	when ('criteria')		            { $self->set(pcrit => $line[1], ccrit => $line[2]) };
-	when ('titles')			            { $self->_title(join(" ", @line))                  };
-	when (m{ (?:control|print)})                { $nmodules = $#line                               };
-
-	when ('scf')                                { $self->feff_version(8); $self->scf  ([@line[1..$#line]]) };
-	when ('fms')                                { $self->feff_version(8); $self->fms  ([@line[1..$#line]]) };
-	when ('xanes')                              { $self->feff_version(8); $self->xanes([@line[1..$#line]]) };
-	when ('ldos')                               { $self->feff_version(8); $self->ldos ([@line[1..$#line]]) };
+    DOCARD: {
+	($thiscard =~ m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) and do {
+	  $self->$thiscard($line[1]);
+	  last DOCARD;
+	};
+	($thiscard =~ m{(?:atoms|potentials)}) and do {
+	  $mode = $thiscard;
+	  last DOCARD;
+	};
+	($thiscard eq 'hole') and do {
+	  $self->set(edge  => $line[1], s02   => $line[2]);
+	  last DOCARD;
+	};
+	($thiscard eq 'criteria') and do {
+	  $self->set(pcrit => $line[1], ccrit => $line[2]);
+	  last DOCARD;
+	};
+	($thiscard eq 'titles') and do {
+	  $self->_title(join(" ", @line));
+	  last DOCARD;
+	};
+	($thiscard =~ m{ (?:control|print)}) and do {
+	  $nmodules = $#line;
+	  last DOCARD;
+	};
+	($thiscard eq 'scf')   and do {
+	  $self->feff_version(8); $self->scf([@line[1..$#line]]);
+	  last DOCARD;
+	};
+	($thiscard eq 'fms')   and do {
+	  $self->feff_version(8); $self->fms([@line[1..$#line]]);
+	  last DOCARD;
+	};
+	($thiscard eq 'xanes') and do {
+	  $self->feff_version(8); $self->xanes([@line[1..$#line]]);
+	  last DOCARD;
+	};
+	($thiscard eq 'ldos')  and do {
+	  $self->feff_version(8); $self->ldos([@line[1..$#line]]);
+	  last DOCARD;
+	};
       };
+      # given ($thiscard) {
+      # 	when (m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) { $self->$thiscard($line[1])  };
+      # 	when (m{(?:atoms|potentials)}) { $mode = $thiscard                                };
+      # 	when ('hole')		       { $self->set(edge  => $line[1], s02   => $line[2]) };
+      # 	when ('criteria')	       { $self->set(pcrit => $line[1], ccrit => $line[2]) };
+      # 	when ('titles')		       { $self->_title(join(" ", @line))                  };
+      # 	when (m{ (?:control|print)})   { $nmodules = $#line                               };
+      # 	when ('scf')   { $self->feff_version(8); $self->scf  ([@line[1..$#line]]) };
+      # 	when ('fms')   { $self->feff_version(8); $self->fms  ([@line[1..$#line]]) };
+      # 	when ('xanes') { $self->feff_version(8); $self->xanes([@line[1..$#line]]) };
+      # 	when ('ldos')  { $self->feff_version(8); $self->ldos ([@line[1..$#line]]) };
+      # };
 
     } elsif ($mode eq 'atoms') {
       #print "atoms: $_\n";
