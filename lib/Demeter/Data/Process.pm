@@ -557,7 +557,7 @@ sub gaussian_filter {
   splice(@x, 0, ($n-1)/2);
   @x = splice(@x, 0, $#x-($n-1)/2);
   #splice(@z, 0, ($n-1)/2);
-  #@z = splice(@z, 0, $#z-($n-1)/2);
+  @z = splice(@z, 0, $#z);
 
   my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd");
   $smoothed->e0($self);
