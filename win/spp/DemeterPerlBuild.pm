@@ -231,7 +231,6 @@ sub install_demeter_prereq_modules {
 				    namespace::autoclean
 
 				    MooseX::StrictConstructor
-				    MooseX::Singleton
 
 				    Carp::Clan
 

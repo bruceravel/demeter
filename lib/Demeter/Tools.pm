@@ -110,7 +110,6 @@ sub module_environment {
 		     Ifeffit
 		     Moose
 		     MooseX::Aliases
-		     MooseX::Singleton
 		     MooseX::Types
 		     Archive::Zip
 		     Capture::Tiny

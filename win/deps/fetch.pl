@@ -66,7 +66,6 @@ Moose
 MooseX::Aliases
 MooseX::AttributeHelpers
 MooseX::StrictConstructor
-MooseX::Singleton
 MooseX::Types
 PPI
 PPI::HTML
