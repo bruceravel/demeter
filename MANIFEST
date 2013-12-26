@@ -800,6 +800,7 @@ examples/data/mn3o4.201
 examples/data/mn3o4.202
 examples/data/uhup.003
 examples/data/uhup.101
+examples/Fayalite.cif
 examples/fe.060
 examples/fe.inp
 examples/FeS2.apj
@@ -2348,9 +2349,8 @@ notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem
 notes/copyright.block
 notes/H16PW12O46.cif
-notes/how_to_freeze
 notes/how_to_tie
-notes/increment_version
+notes/howto_build.org
 notes/sgolay.m
 notes/sgolayfilt.m
 notes/tree.pl
@@ -2467,6 +2467,7 @@ win/ifeffit/iconf_term
 win/inno/modify_path.pl
 win/inno/strawberry.iss
 win/inno/updater.iss
+win/notes.org
 win/spp/build_perl.pl
 win/spp/DemeterPerlBuild.pm
 'win/start_menu/Demeter Website.url'
