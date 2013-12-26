@@ -362,6 +362,6 @@ Patches are welcome.
 
   Joe Woicik <woicik AT bnl DOT gov> (algorithm)
   Bruce Ravel <bravel AT bnl DOT gov> (implementation)
-  http://xafs.org/BruceRavel
+  http://bruceravel.github.io/demeter
 
 =cut

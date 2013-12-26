@@ -196,7 +196,7 @@ L<git|http://git-scm.com/>, which is a version control system used to
 manage the Demeter source code, installed on your computer. On Ubuntu
 machines, the package is called "git-core".  At the command line, do:
 
-   git clone git://github.com/bruceravel/demeter.git
+   git clone https://github.com/bruceravel/demeter.git
 
 then follow along with developments by doing
 
@@ -214,7 +214,7 @@ F<tar.gz> or F<.zip> archive file containing the entire source code.
 =back
 
 Cloning a copy with git is far more convenient as it allows you to
-easily more easily as Demeter evolves.
+keep up more easily as Demeter evolves.
 
 =head2 Step 3: Download and install the dependencies
 
@@ -449,7 +449,7 @@ fixed in SL 6?
 
 =item Building Ifeffit on Windows with MinGW and Strawberry
 
-I recorded my notes at L<http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw>
+I recorded my notes at L<https://github.com/bruceravel/demeter/blob/master/win/notes.org>.
 
 =back
 

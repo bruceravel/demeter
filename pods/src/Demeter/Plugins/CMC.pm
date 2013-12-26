@@ -149,6 +149,6 @@ ill-conceived logi0i1 column, but...) and strip out any blank lines.
 =head1 AUTHOR
 
   Bruce Ravel <bravel@bnl.gov>
-  http://xafs.org/BruceRavel/
+  http://bruceravel.github.io/demeter
 
 =cut
