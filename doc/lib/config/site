@@ -2,9 +2,9 @@
 [% site = {
 	   artemis_name = 'Artemis Users Guide'
 	   athena_name  = 'Athena Users Guide'
-	   server    = 'https://bruceravel.github.io/demeter' 
+	   server    = 'http://bruceravel.github.io/demeter' 
 	   admin     = 'bravel@bnl.gov'
-	   copyright = '2007-2013 Bruce Ravel'
+	   copyright = '2007-2014 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };
 -%]

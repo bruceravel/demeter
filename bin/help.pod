@@ -130,12 +130,12 @@ link)|http://www.amazon.com/Introduction-XAFS-Practical-Absorption-Spectroscopy/
 
 You can download Ifeffit from
 L<http://cars9.uchicago.edu/iffwiki/Downloads>.  The Demeter installer
-for Windows is at L<https://bruceravel.github.io/demeter>.
+for Windows is at L<http://bruceravel.github.io/demeter>.
 General information about Athena, Artemis, and Hephaestus can be found
 at L<http://bruceravel.github.io/demeter>, including documentation.
 
 The lectures the Bruce gives at XAS training courses can be found at
-L<https://bruceravel.github.io/XAS-Education>.  Those are
+L<http://bruceravel.github.io/XAS-Education>.  Those are
 all under a L<Creative
 Commons|http://creativecommons.org/licenses/by-sa/3.0/> license, so
 feel free to download, share, and use ant of the materials found there.
@@ -165,7 +165,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<https://bruceravel.github.io/demeter>
+L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 

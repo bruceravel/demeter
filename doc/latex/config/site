@@ -1,8 +1,8 @@
 
 [% site = {
 	   name      = 'Athena Book'
-	   server    = 'http://cars9.uchicago.edu' 
+	   server    = 'http://bruceravel.github.io/demeter' 
 	   admin     = 'bravel\@anl.gov'
-	   copyright = '2007 Bruce Ravel'
+	   copyright = '2014 Bruce Ravel'
 	  };
 -%]
