@@ -54,7 +54,7 @@ perform an XAS experiment.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -69,7 +69,7 @@ Immediately import the #-th item from the MRU list
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT

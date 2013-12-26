@@ -153,7 +153,7 @@ configuration system.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -169,7 +169,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
