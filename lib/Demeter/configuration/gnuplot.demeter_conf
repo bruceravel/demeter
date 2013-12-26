@@ -58,7 +58,7 @@ description
   Plus Demeter package, the default windows value should not be
   changed.  On other windows installations, the installation location
   might be something like C:\gnuplot\binary.  A gnuplot executable
-  with pipes support is certainly the one that you want to use.
+  with pipes support is likely the one that you want to use.
 
 variable=persist
 type=boolean

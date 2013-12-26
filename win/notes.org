@@ -1,5 +1,6 @@
 
-These are notes on building a Demeter build environment from scratch.
+These are notes on building a Demeter build environment from scratch
+on a Windows machine.
 
 * Strawberry
 
@@ -7,12 +8,18 @@ Start by grabbing the latest and greatest from
 http://strwaberryperl.com.  This has a decent selection of MinGW
 cooked right in, so many things will be buildable immediately.
 
+This document is being written for Strawberry using some version of
+perl 5.18.  This required excising all uses of given/when from the
+source tree to avoid the ubiquitous warning about smart matching being
+an experimental feature.
+
 * mingw
 
- + start from scratch to avoid conflict with what's in Strawberry.
-   download from http://www.mingw.org
+ + start from scratch (i.e. uninstall and reinstall) to avoid conflict
+   with what's in Strawberry.  download from http://www.mingw.org
  + install mingw32-base and msys-base
- + do not install fortran -- it comes with Strawberry
+ + do not install fortran or any other compilation tools -- usable
+   packages come with Strawberry
 
 * pgplot
 
@@ -37,7 +44,7 @@ cooked right in, so many things will be buildable immediately.
     7. rgb.txt
  + You can now compile ifeffit
    
-Are any of the executable from GrWin needed?
+Are any of the executables from GrWin needed?
 
 * GnuWin32
 
@@ -81,16 +88,18 @@ Are any of the executable from GrWin needed?
    works.  By setting the prefix at configuration time to be different
    from the ~sysdir~, Ifeffit will get installed into Strawberry.
 
- + Edit ~iconf_pgplot~ to change ~-lg2c~ to ~-lgfortran~
+ + +Edit iconf_pgplot to change -lg2c to -lgfortran+ (Fixed for 0.9.19)
 
- + Do 
+ + In a MinGW terminal, do 
    : ./configure --prefix='/c/strawberry/c'
    note the unix style delimiters.
 
  + Now ~make~ and ~make install~ 
 
+ + Where did the \etc\fonts\ folder come from???
+
  + The demeter installer sets a couple of environment variables, which
-   may need to be set by hand to test while building
+   may need to be set by hand for testing while building
     1. PGPLOT_DIR to ~C:\strawberry\c\lib\pgplot~
     2. FONTCONFIG_FILE to ~C:\strawberry\c\bin\etc\fonts\fonts.conf~
 
@@ -101,51 +110,58 @@ Are any of the executable from GrWin needed?
  + install to C:\strawberry\c\bin\gnuplot
  + the executables are in C:\strawberry\c\bin\gnuplot\bin (*this is
    different from previous versions of the installer!*)
- + for 0.9.19,
-   * reset default windows executable to
-     ~__PERL_BASE__\c\bin\gnuplot\bin\gnuplot.exe~
-   * need to write some code to check for this and reset config value
-     as needed
+ + changes for 0.9.19,
+   * reset default windows executable to ~__PERL_BASE__\c\bin\gnuplot\bin\gnuplot.exe~
+   * +need to write some code to check for this and reset config value
+     as needed+ (check_exe in Demeter::Tools should work)
 
 
 * using CPAN
 
- + o conf http_proxy http://192.168.1.130:3128
- + o conf ftp_proxy http://192.168.1.130:3128
- + o conf prerequisites_policy follow
+ + at brookhaven, configuring for the proxy is required:
+   * o conf http_proxy http://192.168.1.130:3128
+   * o conf ftp_proxy http://192.168.1.130:3128
+ + this allows you to walk away during the build:
+   * o conf build_requires_install_policy yes
+   * o conf prerequisites_policy follow
  + o conf commit
 
 At this point ~Build installdeps~ should run.
 
-Is MooseX::Singleton necessary?  Nope!  Removed it from the
-dependency list!
++Is MooseX::Singleton necessary?  Nope!+ (Removed MX::S from the
+dependency list in 0.9.19)
 
 * Demeter, prerequisites
 
- + clone or pull latest
- + perl Build.PL
- + perl Build installdeps
+clone or pull latest version of [[https://github.com/bruceravel/demeter][Demeter]]
+
+ : perl Build.PL
+ : perl Build installdeps
+
  + wait...
  + wait...
  + wait...
  + on the first pass through, the following 4 (not bad!) did not
-   install cleanly
-    1. Archive::Zip >= 1.31 (Strawberry comes with 1.30)
-    2. PDL::Stats
-    3. Syntax::Highlight::Perl
-    4. File::Monitor::Lite
+   install cleanly on my WinXP build system
+    1. ~Archive::Zip~ >= 1.31 (Strawberry comes with 1.30)
+    2. ~PDL::Stats~
+    3. ~Syntax::Highlight::Perl~
+    4. ~File::Monitor::Lite~
  + from the DOS command line, run cpan.bat
     1. A::Z failed a test having someting to do with writing to a place
        without adequate permission.  seems safe to ~force install Archive::Zip~
     2. P::S does not fail, it's unclear to me why it did not install
        earlier.  installed simply with ~install PDL::Stats~
-    3. S::H::P (build) failed to unarchive cleanly.  Need to
-       investigate.  This is a very simple module.  Can easily install
-       by hand, if need be.
+    3. S::H::P (build) failed to unarchive cleanly.  This is a fairly
+       simple module.  Can easily install by hand.
     4. F::M::L (recommended) failed tests all involve incorrect
        handling of path delimiters on Windows.  seems safe to ~force
        install File ::Monitor::Lite~
 
 * Demeter, build
 
- +
+  : perl Build.PL  # (once more, to verify that all dependencies are now met)
+  : perl Build
+  : perl Build test
+  : perl Build install
+

@@ -4,18 +4,25 @@ package DemeterBuilder;
 #
 
 use base 'Module::Build';
-use DocBuilder::Artemis;
-use DocBuilder::Athena;
 
 use warnings;
 use strict;
 use Carp;
 use Cwd;
 use File::Copy;
-use File::Copy::Recursive qw(dircopy);
 use File::Path qw(mkpath rmtree);
 use File::Spec;
 #use File::Touch;
+
+## this eval is required so that the build scripts can be made even if
+## F::C::R is not yet installed.  A "Build installdeps" is required to
+## actually install F::C::R.  Once that is done, the build will
+## proceed correctly.
+eval "
+use File::Copy::Recursive qw(dircopy);
+use DocBuilder::Artemis;
+use DocBuilder::Athena;
+";
 
 ######################################################################
 ## Configuration

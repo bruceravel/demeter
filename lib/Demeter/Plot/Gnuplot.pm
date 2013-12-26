@@ -60,15 +60,20 @@ before start_plot => sub {
 override end_plot => sub {
   my ($self) = @_;
   $self->cleantemp;
-  $self -> mo -> external_plot_object->gnuplot_cmd("quit")
-    if ($self->mo
+  Demeter -> mo -> external_plot_object->gnuplot_cmd("quit")
+    if (Demeter->mo
 	and
-	$self->mo->external_plot_object
+	Demeter->mo->external_plot_object
 	and
-	($self->mo->external_plot_object =~ m{Gnuplot}));
+	(Demeter->mo->external_plot_object =~ m{Gnuplot}));
   unlink $self->error_log;
   #unlink $self->mode->external_plot_object->{__error_log}; # WTF is this for, anyway?
-  $self -> mo -> external_plot_object( q{} );
+  Demeter -> mo -> external_plot_object( q{} )
+    if (Demeter->mo
+	and
+	Demeter->mo->external_plot_object
+	and
+	(Demeter->mo->external_plot_object =~ m{Gnuplot}));
   return $self;
 };
 

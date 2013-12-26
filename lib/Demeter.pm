@@ -339,7 +339,6 @@ sub register_plugins {
       $mode->push_Plugins($this);
     };
   };
-
 };
 
 
@@ -457,6 +456,24 @@ sub hashes {
   my $hashes = "###__";
   return $hashes;
 };
+
+
+=for LiteratureReference (is_true and friends)
+  O Attic shape! fair attitude! with brede
+    Of marble men and maidens overwrought,
+  With forest branches and the trodden weed;
+    Thou, silent form! dost tease us out of thought
+  As doth eternity: Cold Pastoral!
+    When old age shall this generation waste,
+      Thou shalt remain, in midst of other woe
+    Than ours, a friend to man, to whom thou say'st,
+  'Beauty is truth, truth beauty,—that is all
+      Ye know on earth, and all ye need to know.'
+
+                                John Keats
+                                Ode on a Grecian Urn
+
+=cut
 
 sub yesno {
   my ($self, $attribute) = @_;

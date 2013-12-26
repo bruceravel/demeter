@@ -15,11 +15,19 @@
 
 =cut
 
+# BEGIN {
+#   eval 'use File::Copy::Recursive';
+#   if ($@) {
+#     eval "use DocBuilder::FCR;"
+#   };
+# };
+
 use strict;
 use warnings;
 use Cwd;
 use File::Spec;
 use Module::Build;
+##use DocBuilder::FCR;
 use DemeterBuilder; # subclass of Module::Build defining some Demeter specific installation instructions
 
 my $build = DemeterBuilder
