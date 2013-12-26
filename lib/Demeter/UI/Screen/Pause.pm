@@ -140,7 +140,7 @@ with a question.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 This module uses L<Term::ANSIColor> if it is available.
 
 =head1 BUGS AND LIMITATIONS

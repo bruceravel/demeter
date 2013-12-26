@@ -783,7 +783,7 @@ See L<Demeter::Config> for a description of the configuration system.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are listed in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

@@ -33,7 +33,7 @@ This documentation refers to Demeter version 0.9.19.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 AUTHOR
 

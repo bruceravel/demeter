@@ -377,7 +377,7 @@ sub fd {
   return shift->mo->feffdefault;
 };
 alias config       => 'co';
-alias plot_object  => 'po';
+alias plot_object  => 'po';Q
 alias mode_object  => 'mo';
 alias data_default => 'dd';
 alias feff_default => 'fd';
@@ -919,7 +919,7 @@ Using Demeter automatically turns on L<strict> and L<warnings>.
 
 This module provides an object oriented interface to the EXAFS data
 analysis capabilities of the popular and powerful Ifeffit package and
-its successor Larch.  Mindful that the Ifeffit and Larch APIs involve
+its successor Larch.  Given that the Ifeffit and Larch APIs involve
 streams of text commands, this package is, at heart, a code generator.
 Many methods of this package return text.  All actual interaction with
 Ifeffit or Larch is handled through a single method, C<dispose>, which
@@ -1186,11 +1186,11 @@ regular expression:
 
   $group_matches = $object->matches($regexp, 'group');
 
-=item C<dispose>
+=item C<template>, C<dispose>, C<dispatch>, C<chart>
 
-This method sends data processing and plotting commands off to their
-eventual destinations.  See the document page for L<Demeter::Dispose>
-for complete details.
+These methods generate data processing and plotting commands and send
+them off to their eventual destinations.  See the document page for
+L<Demeter::Dispose> for complete details.
 
 =item C<set_mode>
 
@@ -1220,7 +1220,7 @@ See L<Demeter:Dispose> for more details.
 
 =over
 
-=item C<co>
+=item C<co>, C<config>
 
 This returns the Config object.  This is a wrapper around C<get_mode>
 and is intended to be used in a method call chain with any Demeter
@@ -1235,7 +1235,7 @@ and
 
 The latter involves much less typing!
 
-=item C<po>
+=item C<po>, C<plot_object>
 
 This returns the Plot object.  Like the C<co> method, this is a
 wrapper around C<get_mode> and is intended to be used in a method call
@@ -1243,14 +1243,14 @@ chain with any Demeter object.
 
   Demeter -> po -> set("c9", 'yellowchiffon3');
 
-=item C<mo>
+=item C<mo>, C<mode_object>
 
 This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.
 
   print "on screen!" if (Demeter -> mo -> ui eq 'screen');
 
-=item C<dd>
+=item C<dd>, C<data_default>
 
 This returns the default Data object.  When a Path object is created,
 if it is created without having its C<data> attribute set to an
@@ -1266,9 +1266,13 @@ the user, the default Data object will be used.
   print ref(Demeter->dd);
        ===prints===> Demeter::Data
 
+=item C<fd>, C<feff_default>
+
+This returns the default Feff object.
+
 =back
 
-=head2 Utility methods
+=head2 Utility methods and common attribute accessors
 
 Here are a number of methods used internally, but which are available
 for your use.
@@ -1295,21 +1299,17 @@ this object.
 
 =item C<name>
 
-(This is actually an attribute accessor, but is so widely used and
-useful that it merits an explanation here.)  This returns a short,
-user-supplied, string identifying the object.  For a GDS object, this
-is the parameter name.  For Data, Path, Path-like objects, and other
-plottable objects this is the string that will be put in a plot
-legend.
+This returns a short, user-supplied, string identifying the object.
+For a GDS object, this is the parameter name.  For Data, Path,
+Path-like objects, and other plottable objects this is the string that
+will be put in a plot legend.
 
 =item C<data>
 
-(This is actually an attribute accessor, but is so widely used and
-useful that it merits an explanation here.)  Path and Path-like
-objects are associated with Data objects for chores like Fourier
-transforming.  That is, the Path or Path-like object will use the
-processing parameters of the associated Data object.  This method
-returns the reference to the associated Data object.  For Data
+Path and Path-like objects are associated with Data objects for chores
+like Fourier transforming.  That is, the Path or Path-like object will
+use the processing parameters of the associated Data object.  This
+method returns the reference to the associated Data object.  For Data
 objects, this returns a reference to itself.  For other object types
 this returns a false value.
 
@@ -1368,7 +1368,7 @@ system.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

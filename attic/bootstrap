@@ -83,7 +83,7 @@ my $result = GetOptions(
 pod2usage(0) if $help;
 
 my $target = Cwd::realpath(File::Spec->catdir($basedir,$affix));
-my $bundle = Cwd::realpath('Bundle/DemeterBundle.pm');
+my $bundle = Cwd::realpath('Build.PL');
 print $bundle, $/;
 
 print "Deploying local::lib to $target\n";

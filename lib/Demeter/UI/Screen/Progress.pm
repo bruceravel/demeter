@@ -198,7 +198,7 @@ completed.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 This module uses L<Term::Twiddle> to generate the indicator and
 L<Term::Sk> for the counter.
 

@@ -1,0 +1,40 @@
+
+* getting started
+
+installed perl 5.18.1 via perlbrew
+
+~perl Build.pl~ immediately fails for missing File::Copy::Recursive,
+which is used in DemeterBuilder.pm
+
+Clarified use of F::C::R in build scripts.  It is now identified as a
+build requirement.  It'll get installed at ~./Build installdeps~ time
+so that it can be used at ~./Build~ time.
+
+* Build installdeps
+
+this proceeds.
+
+wait a while....
+
+XMLRPC::Lite fails to install.  forcing an install seems to work.
+Do one of these:
+
+  : cpanp i --force XMLRPC::Lite
+
+or
+
+  : ~> cpan
+  : cpan> force install XMLRPC::Lite
+
+or
+
+  : cpanm -f XMLRPC::Lite
+
+* when switching perl versions with perlbrew
+
+ :  Build touch_wrapper
+
+then
+
+ :  cp /home/bruce/git/demeter/blib/arch/auto/Ifeffit/Ifeffit.so /home/bruce/perl/auto/Ifeffit/Ifeffit.so
+

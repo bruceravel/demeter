@@ -295,7 +295,7 @@ F<paths.dat>, like earlier incarnations and will B<not> do an
 interpretation of your non-Demeter Feff calculations.
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

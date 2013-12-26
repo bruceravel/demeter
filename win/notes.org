@@ -1,6 +1,5 @@
 
-These are notes on building a Demeter build environment from scratch
-on a Windows machine.
+These are notes on building a Demeter build environment from scratch on a Windows machine.
 
 * Strawberry
 
@@ -88,7 +87,7 @@ Are any of the executables from GrWin needed?
    works.  By setting the prefix at configuration time to be different
    from the ~sysdir~, Ifeffit will get installed into Strawberry.
 
- + +Edit iconf_pgplot to change -lg2c to -lgfortran+ (Fixed for 0.9.19)
+ + +Edit iconf pgplot to change -lg2c to -lgfortran+ (Fixed for 0.9.19)
 
  + In a MinGW terminal, do 
    : ./configure --prefix='/c/strawberry/c'
@@ -100,8 +99,8 @@ Are any of the executables from GrWin needed?
 
  + The demeter installer sets a couple of environment variables, which
    may need to be set by hand for testing while building
-    1. PGPLOT_DIR to ~C:\strawberry\c\lib\pgplot~
-    2. FONTCONFIG_FILE to ~C:\strawberry\c\bin\etc\fonts\fonts.conf~
+    1. ~PGPLOT_DIR~ to ~C:\strawberry\c\lib\pgplot~
+    2. ~FONTCONFIG_FILE~ to ~C:\strawberry\c\bin\etc\fonts\fonts.conf~
 
 
 * Gnuplot

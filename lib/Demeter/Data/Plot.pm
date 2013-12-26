@@ -1054,7 +1054,7 @@ used in templates.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 L<Moose> is the basis of Demeter.  This module is implemented as a
 role and used by the L<Demeter::Data> object.  I feel obloged to admit

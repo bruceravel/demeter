@@ -545,7 +545,7 @@ Configuration tab in the Wx application.
 =head1 DEPENDENCIES
 
 This is a Wx application.  Demeter's dependencies are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

@@ -1326,7 +1326,7 @@ Atoms uses the C<atoms> configuration group.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
