@@ -4,7 +4,7 @@
 ######################################################################
 ##  This program is copyright (c) 2005-2006, 2011 Bruce Ravel
 ##  <bravel@anl.gov>
-##  http://bruceravel.github.com/demeter/exafs/
+##  http://bruceravel.github.io/demeter/exafs/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can

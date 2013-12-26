@@ -2,7 +2,7 @@
 ######################################################################
 ##  This program is copyright (c) 1999, 2011-2014 Bruce Ravel
 ##  bravel AT bnl DOT gov
-##  http://bruceravel.github.com/demeter/
+##  http://bruceravel.github.io/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can

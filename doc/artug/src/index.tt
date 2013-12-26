@@ -8,7 +8,7 @@
 [% FILTER html_para -%]
 This document explains the operation of [%artemis%], a program for
 analysis of EXAFS data using [%feff%] and [%ifeffit%].  It is built
-using [% INCLUDE html/link link="http://bruceravel.github.com/demeter/" text="Demeter" %].
+using [% INCLUDE html/link link="http://bruceravel.github.io/demeter/" text="Demeter" %].
 
 [%demeter%] is:
 [% END %]
@@ -71,17 +71,17 @@ in use by hundreds of scientists world-wide
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
 [% INCLUDE html/link
-link="http://bruceravel.github.com/demeter/pods/installation.pod.html"
+link="http://bruceravel.github.io/demeter/pods/installation.pod.html"
 text="Installation instructions"%]
 [% END %]
 [% WRAPPER html/li %]
 [% INCLUDE html/link
-link="http://bruceravel.github.com/demeter/pods/bugs.pod.html"
+link="http://bruceravel.github.io/demeter/pods/bugs.pod.html"
 text="Hints on submitting a helpful bug report"%]
 [% END %]
 [% WRAPPER html/li %]
 [% INCLUDE html/link
-link="http://bruceravel.github.com/demeter/pods/help.pod.html"
+link="http://bruceravel.github.io/demeter/pods/help.pod.html"
 text="Hints on how to ask questions on the Ifeffit mailing list"%]
 [% END %]
 [% END %]

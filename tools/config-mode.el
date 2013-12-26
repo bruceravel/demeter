@@ -4,7 +4,7 @@
 (defconst config-version          "0.01")
 (defconst config-author           "Bruce Ravel")
 (defconst config-maintainer-email "bravel@bnl.gov")
-(defconst config-url              "http://bruceravel.github.com/demeter/exafs/")
+(defconst config-url              "http://bruceravel.github.io/demeter")
 
 (defgroup config nil
   "Ifeffit macro editing mode for Emacs."

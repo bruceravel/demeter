@@ -16,7 +16,7 @@ is set to its
 This example, like many of the examples in this Users'[%#'%] Guide,
 can be found at 
 [% INCLUDE html/link
-link="http://bruceravel.github.com/XAS-Education/"
+link="http://bruceravel.github.io/XAS-Education/"
 text="among the examples at my XAS-Education site" %].
 
 Among these example files is one called [% PROCESS font/file

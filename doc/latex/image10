@@ -1,0 +1,19 @@
+[%# image: insert an in-line image, the width in cm is computed from
+  #        the image width in pixels with a conversion factor tuned
+  #        for the Athena document
+  # ARGS:
+  #     file  : path to image file, including extension
+-%]
+[% parts = file.split('\.');
+   label = parts.first;
+%]
+[% USE image "${site.url.images}/${file}" %]
+[% ww = image.width / 80 %]
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics*[width=[% ww %]cm]{[% image.name %]}
+    \caption{[%content%]}
+    \label{[% label %]}
+  \end{center}
+\end{figure}
+

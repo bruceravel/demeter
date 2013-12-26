@@ -50,7 +50,7 @@ sub new {
 			   app_name          => 'Strawberry Perl plus Demeter',
 			   app_ver_name      => 'Strawberry Perl 5.12.2 plus Demeter 0.4',
 			   app_publisher     => 'Demeter',
-			   app_publisher_url => 'http://bruceravel.github.com/demeter/',
+			   app_publisher_url => 'http://bruceravel.github.io/demeter/',
 			   image_dir         => $root,
 			   temp_dir          => $tempdir,
 

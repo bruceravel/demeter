@@ -296,7 +296,7 @@ and can be found at
 [% WRAPPER html/dt dt="Linux, BSD, and other unixes" %]
 It is not especially hard to build [%athena%] from source code.  The procedure
 is explained in detail on this web page: 
-[% INCLUDE html/link link="http://bruceravel.github.com/demeter/pods/installation.pod.html" %].
+[% INCLUDE html/link link="http://bruceravel.github.io/demeter/pods/installation.pod.html" %].
 An excellent addendum to those instructions is at
 [% INCLUDE html/link link="https://gist.github.com/3959252" %].
 
@@ -307,7 +307,7 @@ Coming soon....
 [% WRAPPER html/dt dt="Windows" %]
 [% FILTER html_para %]
 Follow the links on
-[% INCLUDE html/link link="http://bruceravel.github.com/demeter/"
+[% INCLUDE html/link link="http://bruceravel.github.io/demeter/"
 text="the Demeter homepage" %] to download the installer and updater
 packages.  Just download, double-click, and answer the questions.
 [% END %]
@@ -447,6 +447,6 @@ installed at the time that [%demeter%] is installed (and they can be
 installed on a Windows machine by downloading and installing the
 documentation package).  If the html pages cannot be found,
 [%athena%] will try to use your internet connection to fetch them from 
-[% INCLUDE html/link link="http://bruceravel.github.com/demeter/"
+[% INCLUDE html/link link="http://bruceravel.github.io/demeter/"
 text="the Demeter homepage" %].
 [% END %]

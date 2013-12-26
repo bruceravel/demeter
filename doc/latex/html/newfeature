@@ -1,0 +1,9 @@
+[% dots  = template.nosubpages ? "../images" : "../images";
+   file  = "images/newfeature.png";
+%]
+[% USE image "${file}" %]
+[% ww = image.width / 80 %]
+\begin{newfeaure}
+   \includegraphics*[width=[% ww %]cm]{[%dots%]/todo.png}  \textbf{To Do:}
+[%- content | indent(3) -%]
+\end{newfeature}

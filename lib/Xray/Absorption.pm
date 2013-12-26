@@ -2,7 +2,7 @@
 ######################################################################
 ##  This module is copyright (c) 1999-2014 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://bruceravel.github.com/demeter/
+##  http://bruceravel.github.io/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
 ##
 ## -------------------------------------------------------------------
@@ -985,7 +985,7 @@ C<previous_energy> method would be trivial.
 
 Bruce Ravel <bravel@bnl.gov>
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -1,5 +1,26 @@
 package Demeter::UI::Athena;
 
+
+=for LiteratureReference
+   I begin to sing of Pallas Athene, the glorious goddess,
+   bright-eyed, inventive, unbending of heart, pure virgin, saviour of
+   cities, courageous, Tritogeneia. From his awful head wise Zeus
+   himself bare her arrayed in warlike arms of flashing gold, and awe
+   seized all the gods as they gazed. But Athena sprang quickly from
+   the immortal head and stood before Zeus who holds the aegis,
+   shaking a sharp spear: great Olympus began to reel horribly at the
+   might of the bright-eyed goddess, and earth round about cried
+   fearfully, and the sea was moved and tossed with dark waves, while
+   foam burst forth suddenly: the bright Son of Hyperion stopped his
+   swift-footed horses a long while, until the maiden Pallas Athene
+   had stripped the heavenly armour from her immortal shoulders. And
+   wise Zeus was glad. And so hail to you, daughter of Zeus who holds
+   the aegis! Now I will remember you and another song as well.
+                                  Homeric Hymns XXVIII
+                                  Translated by H. G. EVELYN-WHITE
+
+=cut
+
 use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
@@ -2757,16 +2778,16 @@ This short program launches Athena:
 
 =head1 DESCRIPTION
 
-Athena is ...
+Athena is a program for XAS data processing and analysis of XANES data.
 
 =head1 USE
 
-Using ...
+See the Athena Users' Guide.
 
 =head1 CONFIGURATION
 
 Many aspects of Athena and its UI are configurable using the
-configuration ...
+configuration tool built into Athena.
 
 =head1 DEPENDENCIES
 
@@ -2774,14 +2795,6 @@ This is a Wx application.  Demeter's dependencies are in the
 F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Many, many, many ...
-
-=back
 
 Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
@@ -2792,7 +2805,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

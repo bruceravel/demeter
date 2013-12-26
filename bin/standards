@@ -341,7 +341,7 @@ In this mode, the program loops over all materials in the database,
 generating an html file for each material as well as a PNG file for
 each plot type.  This collection of files can be dropped onto a web
 site or viewed locally.  L<Here is an
-example|http://bruceravel.github.com/demeter/doc/Standards/>
+example|http://bruceravel.github.io/demeter/doc/Standards/>
 using the database that ships with Demeter.
 
 =item latex
@@ -505,7 +505,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
