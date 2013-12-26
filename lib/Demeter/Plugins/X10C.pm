@@ -98,5 +98,5 @@ space is corrected.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@anl.gov>
-  http://xafs.org/BruceRavel
+  Bruce Ravel <bravel@bnl.gov>
+  http://bruceravel.github.io/demeter

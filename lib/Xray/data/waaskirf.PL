@@ -3,8 +3,8 @@
 ## Time-stamp: <2011-10-05 16:07:27 bruce>
 ######################################################################
 ##  This program is copyright (c) 2005-2006, 2011 Bruce Ravel
-##  <bravel@anl.gov>
-##  http://bruceravel.github.io/demeter/exafs/
+##  <bravel@bnl.gov>
+##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can

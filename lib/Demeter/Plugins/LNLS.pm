@@ -135,6 +135,6 @@ This module was written by Eric Breynaert and touched up by Bruce.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel AT bnl DOTgov>
-  http://xafs.org/BruceRavel/
+  Bruce Ravel <bravel AT bnl DOT gov>
+  http://bruceravel.github.com/demeter
   Athena copyright (c) 2001-2014

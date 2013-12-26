@@ -31,7 +31,7 @@ text="git server"%]
 actively developed and maintained
 [% END %]
 [% WRAPPER html/li %]
-in use by [% INCLUDE html/link link="http://xafs.org/BruceRavel"
+in use by [% INCLUDE html/link link="http://bruceravel.github.io/demeter"
 text="its author"%] for real data analysis problems
 [% END %]
 [% WRAPPER html/li %]

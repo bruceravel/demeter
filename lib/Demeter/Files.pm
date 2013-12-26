@@ -258,7 +258,7 @@ Patches are welcome.
 =head1 AUTHOR
 
   Bruce Ravel (bravel AT bnl DOT gov)
-  http://xafs.org/BruceRavel
+  http://bruceravel.github.io/demeter
 
 =head1 LICENCE AND COPYRIGHT
 

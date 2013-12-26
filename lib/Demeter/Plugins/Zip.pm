@@ -159,5 +159,5 @@ Removes the temporary folder to which the data were written.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@anl.gov>
-  http://xafs.org/BruceRavel
+  Bruce Ravel <bravel@bnl.gov>
+  http://bruceravel.github.io/demeter
