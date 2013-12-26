@@ -20,7 +20,7 @@ Most people will want to install pre-built, ready-to-run packages.
 
 Most people installing Demeter on a Windows machine will want to use
 the installer and updater packages.  The latest packages can be found
-at L<https://github.com/bruceravel/demeter/downloads>.
+at L<http://bruceravel.github.io/demeter>.
 
 There you will (usually) find two packages.  One is called I<Demeter
 Installer for Windows>, the other is called I<Demeter Updater for
@@ -207,7 +207,7 @@ to download future modifications to the code.
 =item *
 
 Grab the most recent archive file containing the Demeter source code.
-Go to L<https://github.com/bruceravel/demeter/downloads> and click on
+Go to L<https://github.com/bruceravel/demeter> and click on
 one of the download buttons near the top of the page to get either the
 F<tar.gz> or F<.zip> archive file containing the entire source code.
 
@@ -400,7 +400,7 @@ source code on a Windows machine.
 =item *
 
 Install the most recent Windows installer package from
-L<https://github.com/bruceravel/demeter/downloads>.
+L<http://bruceravel.github.io/demeter>.
 
 =item *
 
@@ -465,7 +465,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<https://github.com/bruceravel/demeter>
+L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 
