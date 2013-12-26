@@ -238,6 +238,6 @@ this sort of data -- the one I have does not appear to be XAS data.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel AT bnl DOTgov>
+  Bruce Ravel <bravel AT bnl DOT gov>
   http://bruceravel.github.com/demeter
   Athena copyright (c) 2001-2014

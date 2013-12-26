@@ -1,8 +1,8 @@
 ## Time-stamp: <16-Nov-2009 08:17:52 bruce>
 ######################################################################
 ##  This module is copyright (c) 2005-2008 Bruce Ravel
-##  <bravel AT bnl DOTgov>
-##  http://bruceravel.github.com/demeter/exafs/
+##  <bravel AT bnl DOT gov>
+##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -104,6 +104,6 @@ Always returns the symbol itself.
 =head1 AUTHOR
 
   Bruce Ravel, bravel AT bnl DOT gov
-  http://bruceravel.github.com/demeter/exafs/
+  http://bruceravel.github.io/demeter
 
 =cut
