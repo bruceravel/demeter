@@ -377,7 +377,7 @@ sub fd {
   return shift->mo->feffdefault;
 };
 alias config       => 'co';
-alias plot_object  => 'po';Q
+alias plot_object  => 'po';
 alias mode_object  => 'mo';
 alias data_default => 'dd';
 alias feff_default => 'fd';
