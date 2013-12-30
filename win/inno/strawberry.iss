@@ -1,6 +1,6 @@
 ; -- demeter_and_strawberry_perl.iss --
 
-#define MyInstName "Demeter Installer for Windows"
+#define MyInstName "Demeter_Installer_for_Windows"
 #define MyAppVersion "0.9.19"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
@@ -28,7 +28,7 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output\{#MyAppVersion}
-OutputBaseFilename={#MyInstName}
+OutputBaseFilename={#MyInstName}_{#MyAppVersion}
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
@@ -190,6 +190,70 @@ begin
         MsgBox('You cannot install to a path containing spaces. Please select a different path.', mbError, mb_Ok);
         Result := False;
       end;
+    end;
+  end;
+end;
+
+
+
+
+
+// see http://stackoverflow.com/questions/2000296/innosetup-how-to-automatically-uninstall-previous-installed-version
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\Strawberry_Perl_with_Demeter_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+/////////////////////////////////////////////////////////////////////
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
     end;
   end;
 end;

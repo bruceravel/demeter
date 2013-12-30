@@ -25,6 +25,27 @@ use List::Util qw(max min);
 use Xray::Absorption;
 use Xray::FluorescenceEXAFS;
 
+=for LiteratureReference (sa)
+   "In your country I'm told there is an act of will called 'absorbing.'
+  What is that?"
+    She held her red, dripping hands away from her draperies, and
+  uttered a delicious, clashing laugh. "You think I am half a man?"
+    "Answer my question."
+    "I'm a woman through and through, Maskull -- to the marrowbone. But
+  that's not to say I have never absorbed males."
+    "And that means..."
+    "New strings for my harp, Maskull.  A wider range of passions, a
+  stormier heart..."
+    "For you, yes -- But for them?..."
+    "I don't know. The victims don't describe their experiences. Probably
+  unhappiness of some sort—if they still know anything."
+    "This is a fearful business!" he exclaimed, regarding her
+  gloomily. "One would think Ifdawn a land of devils."
+                             Voyage to Arcturus
+                             David Lindsay
+
+=cut
+
 sub sa {
   my ($self, $how, @array) = @_;
   my %hash = @array;

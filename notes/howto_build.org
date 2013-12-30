@@ -16,7 +16,9 @@ this proceeds.
 
 wait a while....
 
-XMLRPC::Lite fails to install.  forcing an install seems to work.
+** XMLRPC::Lite
+
+~XMLRPC::Lite~ fails to install.  forcing an install seems to work.
 Do one of these:
 
   : cpanp i --force XMLRPC::Lite
@@ -29,6 +31,16 @@ or
 or
 
   : cpanm -f XMLRPC::Lite
+
+** Crypt::SSLeay
+
+~Crypt::SSLeay~ is a toughie to build.  It was easier to use apt-get
+to install ~libcrypt-ssleay-perl~.  Ubuntu 13.04 is at 0.58 on that
+library, well behind CPAN's 0.64.  But that's OK.
+
+This gets pulled in with Net::SSLeay, which gets pulled in with
+~XMLRPC::Lite~, which is essential to using Larch.  So I'm stuck with
+it.
 
 * when switching perl versions with perlbrew
 

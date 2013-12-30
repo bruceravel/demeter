@@ -57,7 +57,6 @@ Are any of the executables from GrWin needed?
  + from ~C:\GnuWin32\bin~, copy ~readline5.dll~ and ~curses2.dll~ to
    ~C:\strawberry\c\bin~   
 
-
 * compiling Ifeffit
 
  + Replace ~iconf_pgplot~, ~iconf_term~, and ~iconf_iff~ with the
@@ -102,7 +101,6 @@ Are any of the executables from GrWin needed?
     1. ~PGPLOT_DIR~ to ~C:\strawberry\c\lib\pgplot~
     2. ~FONTCONFIG_FILE~ to ~C:\strawberry\c\bin\etc\fonts\fonts.conf~
 
-
 * Gnuplot
 
  + grab the gnuplot installer from the gnuplot download site
@@ -113,7 +111,6 @@ Are any of the executables from GrWin needed?
    * reset default windows executable to ~__PERL_BASE__\c\bin\gnuplot\bin\gnuplot.exe~
    * +need to write some code to check for this and reset config value
      as needed+ (check_exe in Demeter::Tools should work)
-
 
 * using CPAN
 
@@ -150,7 +147,7 @@ clone or pull latest version of [[https://github.com/bruceravel/demeter][Demeter
     1. A::Z failed a test having someting to do with writing to a place
        without adequate permission.  seems safe to ~force install Archive::Zip~
     2. P::S does not fail, it's unclear to me why it did not install
-       earlier.  installed simply with ~install PDL::Stats~
+       earlier.  installed from cpan with ~install PDL::Stats~
     3. S::H::P (build) failed to unarchive cleanly.  This is a fairly
        simple module.  It's easily installed by hand.
     4. F::M::L (recommended) failed tests all involve incorrect
@@ -168,7 +165,7 @@ for some reason, the wrapper did not get compiled (need to look into that), so h
 
 Then the tests were failing because the gnuplot executable could not
 be found in the build environment.  This should not be a problem in an
-installation (need to test, though).  To fix, I edited
+installation (tested: indeed not!).  To fix, I edited
 ~%APPDATA%\demeter\demeter.ini~ to point at
 ~C:\strawberry\c\bin\gnuplot\bin\gnuplot.exe~
 
@@ -176,7 +173,6 @@ Then tests passed!
 
   : perl Build test
   : perl Build install
-
 
 * Inno build
 
@@ -195,3 +191,6 @@ Add the following to the root of the installer package
 
 Need to uninstall an earlier package.  Installing over lead to the
 gxx_personality issue.  Uninstall followed by install worked perfectly.
+
+This was solved by swiping the code from here http://stackoverflow.com/a/2099805
+This uninstalls before installing.  Seems to work just fine.

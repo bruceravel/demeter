@@ -1,5 +1,18 @@
 package Demeter::StrTypes;
 
+=for LiteratureReference
+  --Jealousy is when you don't want someone else to have what you
+  have.  Envy is when you want something that someone else does
+  have.  So it sounds like you're feeling envious rather than
+  jealous.  Because Sage is not yours.
+  --It doesn't matter what you call it, Loon muttered unhappily.
+  --Yes it does.  You'd best know all the words and what they
+  mean, or else your thinking will just be mush.
+                                Shaman
+                                Kim Stanley Robinson
+
+=cut
+
 # predeclare our own types
 use MooseX::Types -declare => [qw( Empty
 				   FileName

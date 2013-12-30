@@ -23,6 +23,9 @@ src/*.dll
 src/*.so
 src/*.o
 
+athena.prj
+artemis.fpj
+
 t/feff
 _build
 blib
