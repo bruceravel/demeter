@@ -152,7 +152,7 @@ clone or pull latest version of [[https://github.com/bruceravel/demeter][Demeter
     2. P::S does not fail, it's unclear to me why it did not install
        earlier.  installed simply with ~install PDL::Stats~
     3. S::H::P (build) failed to unarchive cleanly.  This is a fairly
-       simple module.  Can easily install by hand.
+       simple module.  It's easily installed by hand.
     4. F::M::L (recommended) failed tests all involve incorrect
        handling of path delimiters on Windows.  seems safe to ~force
        install File ::Monitor::Lite~
@@ -161,6 +161,37 @@ clone or pull latest version of [[https://github.com/bruceravel/demeter][Demeter
 
   : perl Build.PL  # (once more, to verify that all dependencies are now met)
   : perl Build
+
+for some reason, the wrapper did not get compiled (need to look into that), so had to do
+
+  : perl Build touch_wrapper
+
+Then the tests were failing because the gnuplot executable could not
+be found in the build environment.  This should not be a problem in an
+installation (need to test, though).  To fix, I edited
+~%APPDATA%\demeter\demeter.ini~ to point at
+~C:\strawberry\c\bin\gnuplot\bin\gnuplot.exe~
+
+Then tests passed!
+
   : perl Build test
   : perl Build install
 
+
+* Inno build
+
+Add the following to the root of the installer package
+
+ 1. Demeter.ico
+ 2. Demeter.license.txt
+ 3. Demeter.readme.txt
+ 4. Demeter_installer.bmp
+ 5. modify_path.pl.bat
+ 6. munge_pathenv.pl.bat
+ 7. post_update.txt
+ 8. pre_update.txt
+ 9. relocation.pl.bat
+ 10. update_env.pl.bat
+
+Need to uninstall an earlier package.  Installing over lead to the
+gxx_personality issue.  Uninstall followed by install worked perfectly.

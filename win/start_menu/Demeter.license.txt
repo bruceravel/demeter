@@ -2,17 +2,9 @@
 The Demeter code, which is copyright (c) 2006-2012, Bruce Ravel is
 licensed under the Perl Artistic License.
 
-This package is composed of components which are licensed under a
-variety of open source and free software licenses, including:
-
-   * The Perl programming language
-   * Ifeffit
-   * Feff6l
-   * Gnuplot
-   * The MinGW compilers
-   * Perl modules from CPAN
-
-and more.
+This distribution is an aggregate of several different projects,
+licensed under various OSI-compatible Open Source licenses, or
+given to the public domain.
 
 None of these licenses restrict your freedom to use, modify, or share
 the software in this package.

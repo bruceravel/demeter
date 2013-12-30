@@ -1,9 +1,9 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter Installer for Windows"
-#define MyAppVersion "0.9.14"
+#define MyAppVersion "0.9.19"
 #define MyAppPublisher "Bruce Ravel"
-#define MyAppURL "http://bruceravel.github.com/demeter"
+#define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
@@ -95,6 +95,7 @@ Name: "{group}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: 
 Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"
 Name: "{group}\Stand-alone Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Comment: "Crystallography for the absorption spectroscopist"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
 Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe";
+Name: "{group}\Gnuplot shell"; Filename: "{app}\c\bin\gnuplot\bin\wgnuplot.exe"; Comment: "Stand-alone gnuplot plotting shell"; WorkingDir: "{app}"; IconFilename: "{app}\c\bin\gnuplot\bin\gnuplot.ico"
 ;;; Demeter URLs
 Name: "{group}\Website - Demeter"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
 Name: "{group}\Website - Ifeffit Wiki"; Filename: "{app}\win32\Ifeffit Wiki.url"; IconFilename: "{app}\win32\Ifeffit.ico"
@@ -119,7 +120,6 @@ Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; Wor
 Name: "{commondesktop}\(D)Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
 Name: "{commondesktop}\(D)Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
 Name: "{commondesktop}\(D)Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
-Name: "{commondesktop}\(D)Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Parameters: "-wx"; Comment: "Crystallography for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"; Tasks: desktopicon
 
 [Code]
 function getPath(Param: String): string;
