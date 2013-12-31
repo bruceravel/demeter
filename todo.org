@@ -7,7 +7,7 @@
   - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
   - [ ] Lepidocrocite issue (amam gets changed to cmcm)
   - [ ] Dispersive algorithm, include in Athena
-  - [ ] S02 display issue
+  - [X] S02 display issue
   - [ ] clone data sets and path lists in Artemis
   - [X] Artemis history improvments
 
@@ -16,6 +16,7 @@
   - [ ] 5 and 6 legged paths
   - [ ] PCA improvements
   - [ ] feff8.5L
+  - [ ] persistance of analysis methods in Athena
 
 * larch chores
 
@@ -128,16 +129,16 @@
     3. +PCA+
     4. +boxcar average+
 
-*** needs doing [2/14] [14%]
+*** needs doing [3/14] [21%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
    - [X] report to a text dialog on values of a particular parameter for all/marked groups
    - [ ] implement megamerge in Athena
    - [X] links to documentation on each tool
-   - [-] *Main window* [2/3] [66%]
+   - [X] *Main window* [3/3] [100%]
      + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
-     + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
+     + [X] +SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)+ (not implemented)
      + [X] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [ ] *Convolve/noise tool*
      + add noise to chi data
@@ -155,7 +156,7 @@
      + [ ] manual entry of component coefficients (??)
      + [ ] cluster analysis, select two components and plot the
            associations of each data with those two in a scatter plot.
-     + [ ] worry about "def group.tt" line being to long in tt template
+     + [ ] worry about "def group.tt" line being too long in tt template
      + [ ] plotting in pgplot
      + [ ] error analysis, RET, SPOIL, etc, determination of number
            of components, validity of TT, etc
@@ -193,7 +194,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [3/9] [33%]
+** Windows issues [4/9] [44%]
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain open and locked
@@ -208,7 +209,7 @@
 	link above)
   - [ ] Need to test that paths with (parens|commas|quotes) get
 	followed correctly in all situations
-  - [ ] Initial initialization of gnuplot and feff executable
+  - [X] Initial initialization of gnuplot and feff executable
         locations in the situation where the package has been moved or
         reinstalled such that and old demeter.ini still exists
   - [X] relocation of Strawberry leaves Ifeffit unable to find phase
