@@ -1,5 +1,4 @@
 ##|
-##| Self absorption correction: Booth and Bridges algorithm, thin limit
-set s___a.k = {$D->group}.k
-set(s___a.chi    = (-1 * s___a.term1 + sqrt(s___a.sqrtarg)) / (2*s___a.beta))
-
+##| Self absorption correction: Booth and Bridges algorithm
+set s___a.k   = {$D->group}.k
+set s___a.chi = (-1 * s___a.term1 + sqrt(s___a.term1**2 + s___a.term2)) / (2*s___a.beta)

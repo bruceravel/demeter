@@ -18,7 +18,7 @@ package Demeter::Data::SelfAbsorption;
 
 use Moose::Role;
 
-use Demeter::Constants qw($ETOK);
+use Demeter::Constants qw($ETOK $PI);
 use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
 use List::Util qw(max min);
@@ -61,8 +61,9 @@ sub sa {
   $hash{thickness} ||= 100000;
   $hash{in}        ||= 45;
   $hash{out}       ||= 45;
+  $hash{density}   ||= 1;
   my $method = 'sa_' . lc($how);
-  return $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{thickness});
+  return $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
 };
 
 sub sa_troger {
@@ -130,10 +131,11 @@ sub sa_troger {
 
 
 sub sa_booth {
-  my ($self, $formula, $angle_in, $angle_out, $thickness) = @_;
+  my ($self, $formula, $angle_in, $angle_out, $density, $thickness) = @_;
   $thickness ||= 100000;
   $angle_in  ||= 45;
   $angle_out ||= 45;
+  $density   ||= 1;
 
   my %count;
   my $ok = parse_formula($formula, \%count);
@@ -149,7 +151,7 @@ sub sa_booth {
     $barns += Xray::Absorption -> cross_section($el, $efluo) * $count{$el};
     $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
   };
-  my $muf = sprintf("%.6f", $barns / $amu / 1.6607143);
+  my $muf = sprintf("%.6f", $density * $barns / $amu / 1.6607143);
 
   if ($muf <= 0) {
     carp("Unable to compute cross section of absorber at the fluorescence energy");
@@ -170,35 +172,24 @@ sub sa_booth {
       $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
     };
     ## 1 amu = 1.6607143 x 10^-24 gm
-    push @mua, $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
-    push @mut, $barns / $amu / 1.6607143;
+    push @mua, $density * $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
+    push @mut, $density * $barns / $amu / 1.6607143;
   };
   $self->place_array("s___a.mut", \@mut);
   $self->place_array("s___a.mua", \@mua);
 
-  $thickness *= 10e-4;
-
   $self->dispense("process", "sa_booth_pre", {angle_in  => $angle_in,
 					      angle_out => $angle_out,
-					      thickness => $thickness,
+					      thickness => 1e-4*$thickness,
 					      muf       => $muf,
 					     });
-  my ($betamin, $isneg);
-  if ($self->is_ifeffit) {
-    $betamin = $self->fetch_scalar("s___a___x");
-    $isneg = $self->fetch_scalar("s___a___xx");
-  } else {
-    $betamin = min($self->fetch_array("s___a.beta"));
-    $isneg = min($self->fetch_array("s___a.sqrtarg"));
-  };
-  my $thickcheck = ($betamin < 10e-7) || ($isneg < 0);
-  my $text = "Booth and Bridges algorithm, ";
-  if ($thickcheck > 0.005) {	# huh????
-    $self->dispense("process", "sa_booth_thick");
-    $text .= "thick sample limit\n";
-  } else {
+  my $text = "Booth and Bridges algorithm, thickness = $thickness microns\n";
+  if ($thickness/sin($PI*$angle_in/180) < Demeter->co->default('absorption', 'thick_limit')) {
     $self->dispense("process", "sa_booth_thin");
-    $text .= "thin sample limit\n";
+    $text .= "thin sample formula\n\n";
+  } else {
+    $self->dispense("process", "sa_booth_thick");
+    $text .= "thick sample formula\n\n";
   };
   $text .= $self->_summary($efluo, $line, \%count);
 
@@ -244,9 +235,10 @@ sub sa_atoms {
 
 
 sub sa_fluo {
-  my ($self, $formula, $angle_in, $angle_out) = @_;
+  my ($self, $formula, $angle_in, $angle_out, $density) = @_;
   $angle_in  ||= 45;
   $angle_out ||= 45;
+  $density   ||= 1;
 
   my %count;
   my $ok = parse_formula($formula, \%count);
@@ -410,7 +402,9 @@ sub _efluo {
 
 sub _summary {
   my ($self, $efluo, $line, $rcount) = @_;
-  my $text = sprintf "%s %s edge, edge energy = %.1f\n", ucfirst($self->bkg_z), ucfirst($self->fft_edge), $self->bkg_e0;
+  my $ee = $self->bkg_e0;
+  $ee = Xray::Absorption->get_energy($self->bkg_z, $self->fft_edge) if $ee < 10; # chi data...
+  my $text = sprintf "%s %s edge, edge energy = %.1f\n", ucfirst($self->bkg_z), ucfirst($self->fft_edge), $ee;
   $text .= sprintf "Dominent fluorescence line is %s (%s), energy = %.2f\n\n",
     Xray::Absorption->get_Siegbahn_full($line), Xray::Absorption->get_IUPAC($line), $efluo;
   $text .= "  Element   number\n";
@@ -418,6 +412,8 @@ sub _summary {
   foreach my $el (sort(keys(%$rcount))) {
     $text .= sprintf("    %2s      %.3f\n", $el, $rcount->{$el});
   };
+  (my $which = Xray::Absorption->current_resource) =~ s{(\..*\z)}{};
+  $text .= "\n(using the $which tables)\n";
   return $text;
 };
 
@@ -462,8 +458,9 @@ This is a correction to chi(k) that applies only in the thick sample limit.
 =item B<Booth>
 
 This improvement on the Troger algorithm was developed by Corwin Booth
-and Bud Bridges and can applied to a sample of any thickness.  In the
-thick sample limit, it is identical to the Troger correction.
+and Bud Bridges and can applied to a sample of any thickness, although
+the density of the sample must be supplied.  In the thick sample
+limit, it is identical to the Troger correction.
 
 =item B<atoms>
 

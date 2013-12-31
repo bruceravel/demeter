@@ -58,6 +58,7 @@ use MooseX::Types -declare => [qw( Empty
                                    LarchLineshape
 				   Lineshape
 				   Rankings
+				   AbsorptionTables
 				)];
 
 ## to do: modes
@@ -529,6 +530,15 @@ subtype Rankings,
   as Str,
   where { lc($_) =~ m{\A$rankings_regexp\z} },
   message { "$_ is not a defined ranking criterion" };
+
+## -------- all absorption table names
+use vars qw(@absorptiontables_list $absorptiontables_regexp);
+@absorptiontables_list = qw(Elam McMaster Henke Chantler CL Shaltout); # 
+$absorptiontables_regexp = Regexp::Assemble->new()->add(map {lc($_)} @absorptiontables_list)->re;
+subtype AbsorptionTables,
+  as Str,
+  where { lc($_) =~ m{\A$absorptiontables_regexp\z} },
+  message { "$_ is not a defined absorption table name" };
 
 
 

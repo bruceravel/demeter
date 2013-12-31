@@ -211,3 +211,29 @@ description
   line position.  The choices are to interpolate the data onto a fine grid
   or to fit a peak shape to the white line.  This parameter is not currently
   used.
+
+######################################################################
+section=absorption
+section_description
+  This parameter group defined how Demeter interacts with tables of X-ray
+  absorption coefficients.
+
+variable=tables
+type=list
+options=elam mcmaster cl chantler henke shaltout
+default=elam
+description
+  This selects the tables to use for calculations involving tables of
+  X-ray absorption corefficients.
+
+variable=thick_limit
+type=real
+default=90
+units=microns
+description
+  For self-absorption correction algorithms that consider sample
+  thickness, this is the limit for what is considered a thin or thick
+  sample.  For example, in the Booth algorithm, the thin sample
+  formula (as implemented in Demeter) becomes numerically unstable for
+  thick samples.  When thickness (subtended over the entrance angle)
+  exceeds this length, the thick sample formula is used.

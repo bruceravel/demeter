@@ -14,12 +14,14 @@
    - improved X23A2MED plugin to deal with situation where tranmission
      is measured with the cap on the detector, resulting in some 0s in
      the slow column
+   - X-ray absorption tables now easily configurable in "absorption" group
+   - fixed a bunch of problems with the Booth self-absorption algorithm
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
    - Add a site button now working on Atoms page
    - Graceful failure and useful warning message if crystal data results in 0 scatterers
-   - Fixed a crashy bug running feff resulting a missed step after discarding a Feff cal;culation
+   - Fixed a crashy bug running feff resulting a missed step after discarding a Feff calculation
    - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
    - Deal better with a project file saved before performing a fit
    - A bit more control over labels in path list with artemis->feffpathlist config parameter
@@ -67,6 +69,8 @@
    - _Julius Campecino_ for noticing an inelegant handling of a
      situation where running atoms results in 0 scatterers
    - _Karin Provost_ for the idea of path ranking
+   - _Daniel Olive_ and _Corwin Booth_ for pointing out that the Booth
+     self-absorption implementation was horribly flawed
 
 ** 0.9.18.2 29 August    2013
 
