@@ -25,7 +25,7 @@ background removal is still up-to-date.
 [% END %]
 
 [% WRAPPER html/todo %]
-Write document page for title, legends, single file tab
+Write document page for title, legends, single file tab.
 [% END %]
 
 
@@ -97,5 +97,46 @@ The controls used to determine how the plots are displayed are described in
   background removal, Fourier transform, and backwards transform up to
   date for all marked groups and plots their [% chiq %] data.
 [% END %]
+[% END %]
+
+[% INCLUDE section label="Right clicking on plot buttons" %]
+[% FILTER html_para %]
+Several of the plot buttons will respond to a right click by making 
+one of
+[% INCLUDE html/link text="the special plots"
+link="../plot/etc.html#specialplotsforthecurrentgroup" %]
+from the Plot menu.
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+Right click [% INCLUDE plotbutton class="red" letter='E' %] button: 
+plot [%mue%] with [%i0%] and the signal.
+[% END %]
+[% WRAPPER html/li %]
+Right click [% INCLUDE plotbutton class="red" letter='k' %] button: 
+display the k123 plot.
+[% END %]
+[% WRAPPER html/li %]
+Right click [% INCLUDE plotbutton class="red" letter='R' %] button: 
+display the R123 plot.
+[% END %]
+[% WRAPPER html/li %]
+Right click [% INCLUDE plotbutton class="red" letter='kq' %] button: 
+display the quad plot.
+[% END %]
+[% WRAPPER html/li %]
+Right click [% INCLUDE plotbutton class="purple" letter='E' %] button: 
+plot [%i0%] for each marked group.
+[% END %]
+[% END %]
+
+All other plot keys respond normally when right-clicked.
+
+The responses of 
+[% INCLUDE plotbutton class="red" letter='E' %] and
+[% INCLUDE plotbutton class="purple" letter='E' %]
+can be configured with the 
+[% INCLUDE preference group="athena" option="right_single_e" %] and
+[% INCLUDE preference group="athena" option="right_marked_e" %] preferences.
 [% END %]
 

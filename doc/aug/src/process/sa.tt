@@ -163,6 +163,12 @@ angles, and the thickness.  Try changing all those things to see how
 they effect the correction.
 [% END %]
 
+[% WRAPPER html/newfeature %]
+The Booth algorithm has been updated and corrected.  It now requires
+that the density of the material be provided.
+[% END %]
+
+
 [% PROCESS section label="Information depth" %]
 
 [% FILTER html_para %]

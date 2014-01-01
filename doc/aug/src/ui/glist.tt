@@ -134,6 +134,11 @@ can change it by selecting
 You can only change between the various record types in energy,
 though.  If you import a [% chik %] file as [% mu %] by accident, you will have to
 remove the group and re-import it.
+
+As of version 0.9.19, there is a label on the main window displaying
+the data type.  You can toggle between [%mu%] and XANES data by
+[% INCLUDE modkey key="control" letter="Shift" %] left clicking on
+that label.
 [% END %]
 
 [% INCLUDE section label="Using the mouse in the group list" %]
@@ -160,3 +165,20 @@ context menu.
 As mentioned above, double clicking on a group list item will post the
 dialog for renaming that group.
 [% END %]
+
+[% INCLUDE section label="Shrinking and expanding the group list" %]
+
+[% FILTER html_para %]
+The last item in the plotting options tabs, labeled [% INCLUDE
+font/quote a="Shrink" %], causes the plot options tabs to be hidden,
+causing the group list to expand, and allowing the display of more
+data groups.  When the plot options tabs is shrunk, it is replaced by
+a button labeled [% INCLUDE font/quote a="Restore plot options" %].
+Clicking this will return the group list and the plot options tabs to
+their original sizes.
+[% END %]
+
+[% WRAPPER figure file="ui_shrink.png" %]
+Restore the shrunken plot options tabs.
+[% END %]
+

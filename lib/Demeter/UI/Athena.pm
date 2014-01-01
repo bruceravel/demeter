@@ -684,9 +684,9 @@ sub menubar {
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
-  $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)",  "Merge marked data at $MU(E)" );
-  $mergemenu->Append($MERGE_NORM, "Merge norm(E)", "Merge marked data at normalized $MU(E)" );
-  $mergemenu->Append($MERGE_CHI,  "Merge $CHI(k)", "Merge marked data at $CHI(k)" );
+  $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)\tShift+Ctrl+m",  "Merge marked data at $MU(E)" );
+  $mergemenu->Append($MERGE_NORM, "Merge norm(E)\tShift+Ctrl+n", "Merge marked data at normalized $MU(E)" );
+  $mergemenu->Append($MERGE_CHI,  "Merge $CHI(k)\tShift+Ctrl+c", "Merge marked data at $CHI(k)" );
   $mergemenu->AppendSeparator;
   $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
   $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
@@ -721,7 +721,7 @@ sub menubar {
   #$helpmenu       -> Enable($_,0) foreach ($DEMO);
   $exportmenu     -> Enable($FPATH, 0) if ($ENV{DEMETER_BACKEND} eq 'larch');
 
-  EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
+  EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame, $event, $app)} );
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
   };
@@ -755,7 +755,7 @@ sub set_mergedplot {
 
 sub OnMenuClick {
   my ($self, $event, $app) = @_;
-  my $id = $event->GetId;
+  my $id = (looks_like_number($event)) ? $event : $event->GetId;
   my $mru = $app->{main}->{mrumenu}->GetLabel($id);
   $mru =~ s{__}{_}g; 		# wtf!?!?!?
 
@@ -1562,6 +1562,7 @@ sub side_bar {
   my $toolpanel = Wx::Panel    -> new($app->{main}, -1);
   my $toolbox   = Wx::BoxSizer -> new( wxVERTICAL );
   $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 0);
+  $app->{main}->{toolbox} = $toolbox;
 
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
@@ -1579,6 +1580,10 @@ sub side_bar {
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox -> Add($singlebox, 0, wxGROW|wxALL, 0);
   $toolbox -> Add($markedbox, 0, wxGROW|wxALL, 0);
+  my %right_click_hint = (E  => 'plot mu+I0+signal',
+			  k  => 'plot k123',
+			  R  => 'plot R123',
+			  kq => 'quad plot');
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
@@ -1586,8 +1591,11 @@ sub side_bar {
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, sprintf("%2.2s",$which), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "single")) );
     $singlebox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
-    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single')});
-    $app->mouseover($app->{main}->{$key}, "Plot the current group in $which");
+    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 0)});
+    EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 1)});
+    my $mouseover_text = "Plot the current group in $which   ";
+    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{$which} if ($which ne 'q');
+    $app->mouseover($app->{main}->{$key}, $mouseover_text);
     next if ($which eq 'kq');
 
     ## marked plot buttons
@@ -1595,8 +1603,11 @@ sub side_bar {
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "marked")) );
     $markedbox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
-    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked')});
-    $app->mouseover($app->{main}->{$key}, "Plot the marked groups in $which");
+    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
+    EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
+    $mouseover_text = "Plot the marked groups in $which";
+    $mouseover_text .= $MDASH . '   Right click: plot I0 for all marked groups' if ($which eq 'E');
+    $app->mouseover($app->{main}->{$key}, $mouseover_text);
   };
 
   $app->{main}->{kweights} = Wx::RadioBox->new($toolpanel, -1, 'Plotting k-weights', wxDefaultPosition, wxDefaultSize,
@@ -1613,7 +1624,7 @@ sub side_bar {
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
-  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style)) {
+  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style Shrink)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
@@ -1622,16 +1633,43 @@ sub side_bar {
 					($m eq 'PlotE'));
   };
   $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
-
+  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
 #   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
 #   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
 #   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
 #   $app->{main}->{Style}->{list}->Append('xanes', $xanes);
 #   print $exafs->serialization, $xanes->serialization;
 
+  $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');
+  EVT_BUTTON($app->{main}, $app->{main}->{showoptions}, sub{$app->restore_options});
+  $toolbox -> Add($app->{main}->{showoptions}, 0, wxGROW|wxALL, 0);
+  $app->{main}->{showoptions}->Hide;
+
   $toolpanel -> SetSizerAndFit($toolbox);
 
   return $app;
+};
+
+sub OnPlotOptions {
+  local $|=1;
+  my ($app, $frame, $event) = @_;
+  if ($event->GetSelection == 8) { ## 8 = Shrink
+    $app->{main}->{toolbox}->Detach($app->{main}->{plottabs});
+    $app->{main}->{plottabs}->Hide;
+    $app->{main}->{showoptions}->Show;
+    $app->{main}->{toolbox}->Add($app->{main}->{showoptions}, 0, wxEXPAND|wxALL, 2);
+    $app->{main}->{toolbox}->Layout;
+    $event->Veto;
+  };
+};
+
+sub restore_options {
+  my ($app) = @_;
+  $app->{main}->{toolbox}->Detach($app->{main}->{showoptions});
+  $app->{main}->{showoptions}->Hide;
+  $app->{main}->{plottabs}->Show;
+  $app->{main}->{toolbox}->Add($app->{main}->{plottabs});
+  $app->{main}->{toolbox}->Layout;
 };
 
 sub OnRightDown {
@@ -1878,12 +1916,58 @@ sub marked_groups {
 };
 
 sub plot {
-  my ($app, $frame, $event, $space, $how) = @_;
+  my ($app, $frame, $event, $space, $how, $right) = @_;
   return if $app->is_empty;
   return if not ($space);
   return if not ($how);
+  $right ||= 0;
 
   my $busy = Wx::BusyCursor->new();
+
+  ## process a right click on a plot button
+  if ($right) {
+    my $continue = 0;
+    ## current group buttons
+    if ((lc($space) eq 'e') and ($how eq 'single')) {
+      if (Demeter->co->default('athena', 'right_single_e') eq 'i0sig') {
+	OnMenuClick($app->{main}, $PLOT_IOSIG, $app);
+      } elsif (Demeter->co->default('athena', 'right_single_e') eq 'normderiv') {
+	OnMenuClick($app->{main}, $PLOT_ED, $app);
+      } else {
+	$continue = 1;
+      };
+    } elsif ((lc($space) eq 'k') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_K123, $app);
+    } elsif ((lc($space) eq 'r') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_R123, $app);
+    } elsif ((lc($space) eq 'q') and ($how eq 'single')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'kq') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_QUAD, $app);
+    ## marked group buttons
+    } elsif ((lc($space) eq 'e') and ($how eq 'marked')) {
+      if (Demeter->co->default('athena', 'right_marked_e') eq 'i0') {
+	$app->plot_i0_marked;
+      } elsif (Demeter->co->default('athena', 'right_marked_e') eq 'e00') {
+	$app->plot_e00;
+      } elsif (Demeter->co->default('athena', 'right_marked_e') eq 'norm') {
+	$app->plot_norm_scaled;
+      } else {
+	$continue = 1;
+      };
+    } elsif ((lc($space) eq 'k') and ($how eq 'marked')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'r') and ($how eq 'marked')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'q') and ($how eq 'marked')) {
+      $continue = 1;
+    ## pass through if no special plot
+    };
+    if (not $continue) {
+      undef $busy;
+      return;
+    };
+  };
 
   my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
   my @is_fixed = map {$_->bkg_fixstep} @data;
@@ -1915,7 +1999,6 @@ sub plot {
   $app->{main}->{'Plot'.$sp}->pull_marked_values if ($how eq 'marked');
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
   $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
-
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
@@ -2017,12 +2100,14 @@ sub plot {
   undef $busy;
 };
 
+
+
 sub image {
   my ($self, $terminal) = @_;
 
   my $on_screen = lc($::app->{lastplot}->[0]);
   if ($on_screen eq 'quad') {
-    $::app->{main}->status("Cannot save a quad plot to an image file.", 'alert');
+    $::app->{main}->status("Cannot save a quad plot to an image file.  Sorry :(", 'alert');
     return;
   };
 

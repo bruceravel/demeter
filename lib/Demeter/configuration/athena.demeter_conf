@@ -176,6 +176,30 @@ description
   final option is to plot the marge along with all the data that went
   into the merge in the same space as the merge.
 
+variable=right_single_e
+type=list
+options=i0sig normderiv
+default=i0sig
+description 
+  This determines the behavior when the button for plotting the
+  current group in energy (orange E button) is right clicked.  The
+  choices are two of the options from the "Plot->Current group" menu.
+  i0sig means to plot mu(E) along with the I0 and signal spectra.
+  normderiv means to plot norm(E) along with the derivative of
+  norm(E).
+
+variable=right_marked_e
+type=list
+options=e00 i0 norm
+default=i0
+description 
+  This determines the behavior when the button for plotting marked
+  groups in energy (purple E button) is right clicked.  The choices
+  are the options from the "Plot->Marked groups" menu.  e00 means to
+  plot marked groups with E0 shifted to E=0.  i0 (the default) means
+  to plot the I0 spectra for the marked groups.  norm means to plot
+  norm(E) scaled by the size of the edge step.
+
 variable=show_watcher
 type=boolean
 onvalue=1

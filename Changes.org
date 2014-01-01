@@ -7,26 +7,43 @@
 
 ** 0.9.19   ?? September 2013
 *** Athena
-   - escape group names when renaming, i.e. treat metacharacters in group names as normal characters
+   - escape group names when renaming, i.e. treat metacharacters in
+     group names as normal characters
    - fixed a bug which disabled the Plot->Merge groups menu
    - Added datatype display on main window, Ctrl-Alt-Left click to
-     toggle between xmu and xanes, abuse a HyperlinkCtrl to get a mouseover hint
+     toggle between xmu and xanes, abuse a HyperlinkCtrl to get a
+     mouseover hint
    - improved X23A2MED plugin to deal with situation where tranmission
      is measured with the cap on the detector, resulting in some 0s in
      the slow column
-   - X-ray absorption tables now easily configurable in "absorption" group
-   - fixed a bunch of problems with the Booth self-absorption algorithm
+   - choice of X-ray absorption tables now easily configurable in
+     "absorption" group
+   - fixed a bunch of problems with the Booth self-absorption
+     algorithm
+   - keyboard shortcuts for merging (C-S-m, C-S-n, C-S-c for merging
+     in mu, norm, chi)
+   - right click on several plot buttons makes a special plot from the
+     Plot menu + status bar hints
+   - added "Shrink" to plot options.  this hides the plot options
+     tabs, allowing more room for the group list.  also shows a button
+     for restoring the plot options tabs
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
    - Add a site button now working on Atoms page
-   - Graceful failure and useful warning message if crystal data results in 0 scatterers
-   - Fixed a crashy bug running feff resulting a missed step after discarding a Feff calculation
-   - Merged fix for unicode filenames in Artemis project file (see https://github.com/bruceravel/demeter/pull/13)
+   - Graceful failure and useful warning message if crystal data
+     results in 0 scatterers
+   - Fixed a crashy bug running feff resulting a missed step after
+     discarding a Feff calculation
+   - Merged fix for unicode filenames in Artemis project file (see
+     https://github.com/bruceravel/demeter/pull/13)
    - Deal better with a project file saved before performing a fit
-   - A bit more control over labels in path list with artemis->feffpathlist config parameter
-   - Athena file MRU list now remembers record number and defaults to that record when selected
-   - fixed a bug resulting in repetitious display of parameter values in log file
+   - A bit more control over labels in path list with
+     artemis->feffpathlist config parameter
+   - Athena file MRU list now remembers record number and defaults to
+     that record when selected
+   - fixed a bug resulting in repetitious display of parameter values
+     in log file
    - save VPaths to and restore from Artemis project files
    - added "transfer all" button to VPaths tab in Plot window
 
@@ -35,7 +52,8 @@
      command line atoms.  oddly, these were handled correctly by the
      Wx version
    - Implemented Aggregate Feff calculation on Atoms Xtal tab
-   - use path ranking choice to make intrp and display all rankings from button on intrp page
+   - use path ranking choice to make intrp and display all rankings
+     from button on intrp page
 
 *** Demeter
    - Made the Demeter::Feff::Aggregate object for performing the
@@ -45,7 +63,8 @@
    - Added plus/minus sign to Demeter::UI::Wx::SpecialCharacters
    - Require MooseX::Types::LaxNum since Moose now has a much more
      strict definition of Num in a type constraint.
-   - Fixed an issue surrounding Plot object's terminal_number parameter and pgplot
+   - Fixed an issue surrounding Plot object's terminal_number
+     parameter and pgplot
    - Fixed a bug in the filetype plugin for the Lytle database
    - Require Archive::Zip >= 1.31 to get the option of
      Archive::Zip::UNICODE=1 which should help computers with unicode
