@@ -1580,10 +1580,15 @@ sub side_bar {
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox -> Add($singlebox, 0, wxGROW|wxALL, 0);
   $toolbox -> Add($markedbox, 0, wxGROW|wxALL, 0);
-  my %right_click_hint = (E  => 'plot mu+I0+signal',
-			  k  => 'plot k123',
-			  R  => 'plot R123',
-			  kq => 'quad plot');
+  my %right_click_hint = (Ei0sig     => 'plot mu+I0+signal',
+			  Enormderiv => 'plot norm(E)+deriv(E)',
+			  k	     => 'plot k123',
+			  R	     => 'plot R123',
+			  kq	     => 'quad plot',
+			  i0	     => 'plot I0 for all marked groups',
+			  e00	     => 'plot marked groups with E0 at 0',
+			  norm	     => 'plot norm(E) scaled by edge step',
+			 );
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
@@ -1594,7 +1599,9 @@ sub side_bar {
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 1)});
     my $mouseover_text = "Plot the current group in $which   ";
-    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{$which} if ($which ne 'q');
+    my $whichhint = $which;
+    $whichhint .= Demeter->co->default('athena', 'right_single_e') if $which eq 'E';
+    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{$whichhint} if ($which ne 'q');
     $app->mouseover($app->{main}->{$key}, $mouseover_text);
     next if ($which eq 'kq');
 
@@ -1606,7 +1613,7 @@ sub side_bar {
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
     $mouseover_text = "Plot the marked groups in $which";
-    $mouseover_text .= $MDASH . '   Right click: plot I0 for all marked groups' if ($which eq 'E');
+    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')} if ($which eq 'E');
     $app->mouseover($app->{main}->{$key}, $mouseover_text);
   };
 

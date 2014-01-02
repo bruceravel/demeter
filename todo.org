@@ -50,6 +50,11 @@
         : ##                                 http://xraypy.github.io/xraylarch/
 
 
+* perl modules to evaluate
+
+ + Path:Tiny to replace File::Spec
+ + Test::Class and Test::Class::Moose
+
 * things that need doing
   
 ** Moose issues

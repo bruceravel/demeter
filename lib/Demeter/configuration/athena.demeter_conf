@@ -186,7 +186,8 @@ description
   choices are two of the options from the "Plot->Current group" menu.
   i0sig means to plot mu(E) along with the I0 and signal spectra.
   normderiv means to plot norm(E) along with the derivative of
-  norm(E).
+  norm(E).  Note that the status bar hint when mousing over the orange
+  E button will be updated until you restart Athena.
 
 variable=right_marked_e
 type=list
@@ -198,7 +199,9 @@ description
   are the options from the "Plot->Marked groups" menu.  e00 means to
   plot marked groups with E0 shifted to E=0.  i0 (the default) means
   to plot the I0 spectra for the marked groups.  norm means to plot
-  norm(E) scaled by the size of the edge step.
+  norm(E) scaled by the size of the edge step.  Note that the status
+  bar hint when mousing over the purple E button will be updated until
+  you restart Athena.
 
 variable=show_watcher
 type=boolean

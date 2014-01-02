@@ -476,8 +476,9 @@ sub OnGridClick {
   $self->SetCellValue($row, 0, 1);
   my $nsites = true {$_ eq $self->GetCellValue($row, 1)} @el;
   if ($nsites > 1) {
-    ## enable aggregate Feff calculation
-    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},1);
+    ## enable aggregate Feff calculation, currently soft-disabled for 0.9.19
+    ## change the call to co->default to 1 once the paper is published
+    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},Demeter->co->default('artemis','show_aggregate'));
   } else {
     ## disable aggregate Feff calculation
     $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
