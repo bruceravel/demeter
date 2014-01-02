@@ -1,6 +1,6 @@
 [% dots  = template.nosubpages ? ".." : "../.." -%]
 [%break%]
 <a name="[% label | remove(" ") | lower %]">
-[% USE image "${site.url.images}/LightningBolt.png" %]
-<h2> [%- IF expert -%][% image.tag(align="bottom") | replace("$rooturl", "$dots") -%][%- END -%] [% label %]</h2>
+[% USE image("${site.url.images}/LightningBolt.png", width=60) %]
+<h2> [%- IF expert -%][% image.tag(align="bottom", title="Essential topic", alt="[Essential topic]") | replace("$rooturl", "$dots") -%][%- END -%] [% label %]</h2>
 </a>

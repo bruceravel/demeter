@@ -39,7 +39,7 @@ in certain presentation media.
 
 [% WRAPPER html/list type="ul" %]
 [% WRAPPER html/li %]
-Filenames look [% INCLUDE font/file a='C:like\\this' %].
+File names look [% INCLUDE font/file a='C:\\like\\this' %].
 [% END %]
 [% WRAPPER html/li %]
 The names of parameters for data processing look [% INCLUDE font/param a="like_this" %].
@@ -79,9 +79,13 @@ Points that require special attention are written inside of
 attention-grabbing boxes.[%br%][%br%]
 [% END %]
 
+[% WRAPPER html/todo %]
+Notes about features missing from the document are indicated like this.[%br%][%br%]
+[% END %]
+
 [% WRAPPER html/newfeature %]
 Features that have been recently added to [%athena%] are indicated
-like this if they have not yet been fully documented.
+like this if they have not yet been properly documented.
 [% END %]
 
 
@@ -97,8 +101,8 @@ marked with this text:
 [% END %]
 [% CASE %]
 [% FILTER html_para %]
-[% WRAPPER image10 file="LightningBolt.png" %] 
-Lightning symbol
+[% WRAPPER image file="LightningBolt.png" %] 
+Essential topic
 [% END %]
 This symbol indicates a
 section describing one of [%athena%]'s[%#'%] features that I consider
@@ -115,8 +119,8 @@ over on their first reading of this document is marked with this text:
 [% END %]
 [% CASE %]
 [% FILTER html_para %]
-[% WRAPPER image10 file="bend.png" %] 
-Bend symbol
+[% WRAPPER image file="bend.png" %] 
+Advanced topic
 [% END %]
 This symbol indicates a section
 with difficult information that newcomers to [%athena%] might pass
@@ -148,11 +152,12 @@ article by Shelly Kelly and Dean Hesterberg
       volume = Part 5
       pages = "387-483"
       year = 2008
-   %]) which I had the
-pleasure of editing (and, apparently, swiping from). I have a huge
+   %]), the first draft of which I had the
+pleasure of editing and the final draft of which I ended up on the
+author list.  I have a huge 
 debt of gratitude to all the folks on the [%ifeffit%] mailing list.
 Without the incredible support and wonderful feedback that I've[%#'%]
-received in the last six years [%athena%] would be a shadow of what
+received over the years, [%athena%] would be a shadow of what
 it is today.
 
 The following great software tools were used to create this document:

@@ -170,15 +170,16 @@ dialog for renaming that group.
 
 [% FILTER html_para %]
 The last item in the plotting options tabs, labeled [% INCLUDE
-font/quote a="Shrink" %], causes the plot options tabs to be hidden,
-causing the group list to expand, and allowing the display of more
-data groups.  When the plot options tabs is shrunk, it is replaced by
-a button labeled [% INCLUDE font/quote a="Restore plot options" %].
-Clicking this will return the group list and the plot options tabs to
-their original sizes.
+font/quote a="Shrink" %], causes the k-weight buttons and plot options
+tabs to be hidden, causing the group list to expand, and allowing the
+display of more data groups.  When the plot options tabs is shrunk, it
+is replaced by a button labeled [% INCLUDE font/quote a="Restore plot
+options" %].  Clicking this will return the k-weight buttons and the
+group list to their original places and the group list to its original
+original size.
 [% END %]
 
 [% WRAPPER figure file="ui_shrink.png" %]
-Restore the shrunken plot options tabs.
+Restore the shrunken k-weight buttons and plot options tabs.
 [% END %]
 

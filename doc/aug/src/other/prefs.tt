@@ -44,9 +44,10 @@ The text area below these controls displays an explanation of the
 function served by that preference.  Underneath that are buttons for
 setting or saving the parameters.
 
-The data about the preferences is contained in ...
+Various configuration files, including the master configuration file 
+[% INCLUDE font/file a="demeter.ini" %] and others, are stored in user
+space.  On linux (and other
+unixes) this is [% INCLUDE font/file a="\$HOME/.horae/" %].  On
+Windows this is [% INCLUDE font/file a="%APPDATA%\\demeter"%].
 [% END %]
 
-[% WRAPPER html/todo %]
-Explain where to find demeter configuration files
-[% END %]

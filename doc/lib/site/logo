@@ -2,11 +2,11 @@
 <h1>
 [% IF template.difficult -%]
   [% USE image "${site.url.images}/bend.png" %]
-  [%- image.tag(align="center") | replace("$rooturl", "$dots") -%]
+  [%- image.tag(align="center", title="Advanced topic", alt="[Advanced topic]") | replace("$rooturl", "$dots") -%]
 [% END -%]
 [% IF template.expert -%]
   [% USE image "${site.url.images}/LightningBolt.png" %]
-  [%- image.tag(align="center") | replace("$rooturl", "$dots") -%]
+  [%- image.tag(align="center", title="Essential topic", alt="[Essential topic]") | replace("$rooturl", "$dots") -%]
 [% END -%]
   [% page.title %]
 </h1>

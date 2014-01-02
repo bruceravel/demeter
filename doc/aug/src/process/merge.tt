@@ -56,8 +56,8 @@ sample, merge them, then further work with the merged data in
 
 [% WRAPPER html/caution %]
 It is [% INCLUDE font/b a="essential"%] that your data be well-aligned before merging.
-Merging poorly aligned data has the effect of significant attenuating
-the fine structure.
+Merging poorly aligned data has the effect of significantly attenuating
+the fine structure. 
 [% END %]
 
 [% FILTER html_para %]
@@ -117,3 +117,21 @@ above.
 [% END %]
 [% END %]
 
+[% PROCESS section label="Keyboard shortcuts" %]
+
+[% FILTER html_para %]
+There are keyboard shortcuts for merging:
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+[% INCLUDE modkey key="control-shift" letter="m" %] : merge as [%mu%]
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE modkey key="control-shift" letter="n" %] : merge as
+normalized [%mu%]
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE modkey key="control-shift" letter="c" %] : merge as [%chik%]
+[% END %]
+[% END %]

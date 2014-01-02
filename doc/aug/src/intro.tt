@@ -174,7 +174,7 @@ Many file type plugins write temporary files after performing some
 transformation on the original data.  [%gnuplot%] writes temporary
 files as part of its plot creation.  These files are stored in the 
 [% INCLUDE font/quote a="stash folder" %].  On linux (and other
-unixes) this is [% INCLUDE font/file a="$HOME/.horae/stash/" %].  On
+unixes) this is [% INCLUDE font/file a="\$HOME/.horae/stash/" %].  On
 Windows this is [% INCLUDE font/file a="%APPDATA%\\demeter\\stash"%].
 [% END %] 
 [% WRAPPER html/dt dt="log files" %]
@@ -183,8 +183,11 @@ information to the screen that the problem can be addressed.  This
 screen information is what Bruce needs to troubleshoot bugs.  On a
 linux (or other unix) machine, simply run [%athena%] from the command
 line and the informative screen messages will be written to the
-screen.
-
+screen.  You can cut-n-paste that text or capture the output by
+running [%athena%] through 
+[% INCLUDE html/link link="http://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html" text="tee" %]:
+[% INCLUDE font/mono a="~> dathena | tee capture.log"%]
+[%br%][%br%]
 On a Windows machine, it is uncommon to run the software from the
 command line, so [%athena%] has been instrumented to write a run-time
 log file.  This log file is called 
@@ -196,7 +199,7 @@ log file.  This log file is called
 [% FILTER html_para %]
 [% INCLUDE font/quote a="%APPDATA%"%]
 is [% INCLUDE font/file a="C:\\Users\\<username>\\AppData\Roaming\\" %]
-on Windows 7 and 
+on Windows 7 and 8.  It is
 [% INCLUDE font/file a="C:\\Documents and Settings\\<username>\\Application Data\\" %]
 on Windows XP and Vista.  In either case, 
 [% INCLUDE font/quote a="username" %]

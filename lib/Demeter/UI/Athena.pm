@@ -1630,7 +1630,7 @@ sub side_bar {
 
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-  $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
+  #$app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
   foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style Shrink)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
@@ -1651,6 +1651,7 @@ sub side_bar {
   EVT_BUTTON($app->{main}, $app->{main}->{showoptions}, sub{$app->restore_options});
   $toolbox -> Add($app->{main}->{showoptions}, 0, wxGROW|wxALL, 0);
   $app->{main}->{showoptions}->Hide;
+  $app->mouseover($app->{main}->{showoptions}, "Restore the k-weight and plot options controls");
 
   $toolpanel -> SetSizerAndFit($toolbox);
 
@@ -1661,6 +1662,8 @@ sub OnPlotOptions {
   local $|=1;
   my ($app, $frame, $event) = @_;
   if ($event->GetSelection == 8) { ## 8 = Shrink
+    $app->{main}->{toolbox}->Detach($app->{main}->{kweights});
+    $app->{main}->{kweights}->Hide;
     $app->{main}->{toolbox}->Detach($app->{main}->{plottabs});
     $app->{main}->{plottabs}->Hide;
     $app->{main}->{showoptions}->Show;
@@ -1674,8 +1677,10 @@ sub restore_options {
   my ($app) = @_;
   $app->{main}->{toolbox}->Detach($app->{main}->{showoptions});
   $app->{main}->{showoptions}->Hide;
+  $app->{main}->{kweights}->Show(1);
+  $app->{main}->{toolbox}->Add($app->{main}->{kweights}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
   $app->{main}->{plottabs}->Show;
-  $app->{main}->{toolbox}->Add($app->{main}->{plottabs});
+  $app->{main}->{toolbox}->Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
   $app->{main}->{toolbox}->Layout;
 };
 

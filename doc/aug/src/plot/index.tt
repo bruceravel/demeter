@@ -137,6 +137,7 @@ The responses of
 [% INCLUDE plotbutton class="purple" letter='E' %]
 can be configured with the 
 [% INCLUDE preference group="athena" option="right_single_e" %] and
-[% INCLUDE preference group="athena" option="right_marked_e" %] preferences.
+[% INCLUDE preference group="athena" option="right_marked_e" %] 
+[% INCLUDE html/link text="configuration parameters" link="../other/prefs.html" %].
 [% END %]
 

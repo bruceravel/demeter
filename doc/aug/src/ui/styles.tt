@@ -15,6 +15,5 @@ You can discard a plot style by double clicking on it.
 [% END %]
 
 [% WRAPPER figure file="ui_plotstyles.png" %]
-Clicking the right mouse button on the "Plot options" label pops up
-the plot styles menu.
+Plot styles controls displayed from the [% INCLUDE font/quote a="Plot options" %] tabs.
 [% END %]
