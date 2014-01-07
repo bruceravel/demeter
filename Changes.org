@@ -27,6 +27,8 @@
    - added "Shrink" to plot options.  this hides the plot options
      tabs, allowing more room for the group list.  also shows a button
      for restoring the plot options tabs
+   - added "Show measurement uncertainties" submenu to Group menu with
+     options for this, marked, and all
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
