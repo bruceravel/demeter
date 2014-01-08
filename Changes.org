@@ -74,6 +74,11 @@
      language settings
    - Implement Karine Provost's path ranking criteria
 
+*** Windows
+   - New installer package with perl 5.18.1 and most recent versions
+     of all dependencies
+   - New installer removes old installation before installing
+
 *** Acknowledgments
    - _Fred Mosselmans_ noticed that the add a site button didn't work
      in Atoms and that a project file saved before a fit is performed
