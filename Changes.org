@@ -28,6 +28,8 @@
      options controls, allowing more room for the group list.  also
      shows a button for restoring the k-weight and plot options
      controls
+   - added "Show measurement uncertainties" submenu to Group menu with
+     options for this, marked, and all
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab

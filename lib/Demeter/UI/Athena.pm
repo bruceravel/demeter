@@ -360,7 +360,9 @@ const my $DATA_ABOUT		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
+const my $EPSILON_THIS    	=> Wx::NewId();
 const my $EPSILON_MARKED	=> Wx::NewId();
+const my $EPSILON_ALL   	=> Wx::NewId();
 
 const my $VALUES_ALL		=> Wx::NewId();
 const my $VALUES_MARKED		=> Wx::NewId();
@@ -536,13 +538,13 @@ sub menubar {
   $debugmenu->Append($PERL_MODULES, "Show perl modules",         "Show perl module versions" );
   $debugmenu->Append($CONDITIONAL,  "Show conditional features", "Show which conditional Demeter features are present" );
   $debugmenu->AppendSeparator;
-  $debugmenu->Append($PLOT_YAML,    "Plot object YAML",          "Show YAML dialog for Plot object" );
-  $debugmenu->Append($STYLE_YAML,   "plot style objects YAML",   "Show YAML dialog for plot style objects" );
-  $debugmenu->Append($INDIC_YAML,   "Indicator objects YAML",    "Show YAML dialog for Indicator objects" );
+  $debugmenu->Append($PLOT_YAML,    "Plot object yaml",          "Show yaml dialog for Plot object" );
+  $debugmenu->Append($STYLE_YAML,   "plot style objects yaml",   "Show yaml dialog for plot style objects" );
+  $debugmenu->Append($INDIC_YAML,   "Indicator objects yaml",    "Show yaml dialog for Indicator objects" );
   $debugmenu->AppendSeparator;
-  $debugmenu->Append($LCF_YAML,     "LCF object YAML",           "Show YAML dialog for LCF object" );
-  $debugmenu->Append($PCA_YAML,     "PCA object YAML",           "Show YAML dialog for PCA object" );
-  $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
+  $debugmenu->Append($LCF_YAML,     "LCF object yaml",           "Show yaml dialog for LCF object" );
+  $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
+  $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
 
 
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
@@ -578,9 +580,14 @@ sub menubar {
   $e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
 
   my $wlmenu = Wx::Menu->new;
-  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
-  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
   $wlmenu->Append($WL_ALL,    "for all groups",    "Find the white line position for all groups");
+  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
+  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
+
+  my $epsmenu = Wx::Menu->new;
+  $epsmenu->Append($EPSILON_ALL,    "for all groups", "Show the measurement uncertainties of all groups." );
+  $epsmenu->Append($EPSILON_MARKED, "for marked groups", "Show the measurement uncertainties of the marked groups." );
+  $epsmenu->Append($EPSILON_THIS,   "for this group", "Show the measurement uncertainty of this groups." );
 
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
@@ -593,9 +600,9 @@ sub menubar {
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
-  $groupmenu->Append($DATA_YAML,      "Show YAML for current group", "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_YAML,      "Show yaml for current group", "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
-  $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
+  $groupmenu->AppendSubMenu($epsmenu, "Show measurement uncertainties...", "Show measurement uncertainties");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
@@ -927,9 +934,24 @@ sub OnMenuClick {
       };
       last SWITCH;
     };
+    ($id == $EPSILON_THIS) and do {
+      $app->current_data -> _update('bft');
+      my $text = sprintf("%s : Nidp=%7.3f   %s(k)=%9.3e   %s(R)=%9.3e",
+			 $app->current_data->name,
+			 $app->current_data->nidp,
+			 $EPSILON, $app->current_data->epsk,
+			 $EPSILON, $app->current_data->epsr);
+      $app->{main}->status($text);
+      last SWITCH;
+    };
     ($id == $EPSILON_MARKED) and do {
       last SWITCH if $app->is_empty;
-      $app->show_epsilon;
+      $app->show_epsilon('marked');
+      last SWITCH;
+    };
+    ($id == $EPSILON_ALL) and do {
+      last SWITCH if $app->is_empty;
+      $app->show_epsilon('all');
       last SWITCH;
     };
 
@@ -2620,14 +2642,14 @@ sub heap_check {
 };
 
 sub show_epsilon {
-  my ($app) = @_;
+  my ($app, $how) = @_;
+  my $busy = Wx::BusyCursor->new();
   my $clb = $app->{main}->{list};
   return if not $clb->GetCount;
-  my $busy = Wx::BusyCursor->new();
   my $text = sprintf("\n%-25s : %9s  %9s\n", qw(group epsilon_k epsilon_r));
   $text .= '=' x 48 . "\n";
   foreach my $i (0 .. $clb->GetCount-1) {
-    next if not $clb->IsChecked($i);
+    next if (($how eq 'marked') and not $clb->IsChecked($i));
     my $d = $clb->GetIndexedData($i);
     $d -> _update('bft');
     $text .= sprintf("%-25s : %9.3e  %9.3e\n", $d->name, $d->epsk, $d->epsr);
