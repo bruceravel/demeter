@@ -230,7 +230,7 @@ sub ACTION_doctree {
 				 libroot => [$LIB, $BIN],
 				 title   => 'Demeter',
 				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
-				 except  => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new)],
+				 except  => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline)],
 				);
   $pd->gen();
   foreach my $d (@list) {

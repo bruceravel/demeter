@@ -15,6 +15,99 @@ package Demeter::UI::Wx::VerbDialog;
 
 =cut
 
+
+=head1 NAME
+
+Demeter::UI::Wx::Verbdialog - A Wx yes/no action dialog
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.19.
+
+=head1 SYNOPSIS
+
+This allows asking a user a yes/no question but with the design
+principle that a question should be specific to the situation.
+
+  use Demeter::UI::Wx::VerbDialog;
+  my $dialog = Demeter::UI::Wx::VerbDialog->new($parent, -1,
+                          "Do you really want to discard the feff.inp file?",
+                          "Discard?",
+                          "Discard",
+                          );
+
+This results in a window like this:
+
+   +---------------------------------------+
+   |             Discard?                  |
+   +---------------------------------------+
+   |  Do you really want to discard the    |
+   |  feff.inp file?                       |
+   |                                       |
+   |  +---------+       +---------------+  |
+   |  | Discard |       | Don't discard |  |
+   |  +---------+       +---------------+  |
+   |                                       |
+   +---------------------------------------+
+
+which is less ambiguous than a generic yes/no dialog.
+
+=head1 DESCRIPTION
+
+The arguments of the constructor are
+
+=over 4
+
+=item 1.
+
+The parent widget
+
+=item 2.
+
+The ID
+
+=item 3.
+
+The text for the body of the dialog
+
+=item 4.
+
+The text for the title of the dialog
+
+=item 5.
+
+The verb for the positive and negated buttons
+
+=item 6.
+
+An optional boolean for which true means to include a "Cancel" button.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://bruceravel.github.io/demeter/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;

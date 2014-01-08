@@ -198,3 +198,55 @@ $parameters = read_database;
 # Se -1|4
 # Se -2|78
 # Te -2|70
+
+
+=head1 NAME
+
+Xray::BondValence - A perl interface to David Brown's tabulation of bond valence parameters
+
+=head1 SYNOPSIS
+
+   use Xray::BondValence qw(bvdescribe valences available);
+   ...
+
+=head1 DESCRIPTION
+
+This provides an interface to the tabulation of bond valence parameters
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+The tabulation of bond valence parameters carried the following
+copyright notice and disclaimer:
+
+  #***************************************************************
+  # COPYRIGHT NOTICE
+  # This table may be used and distributed without fee for
+  # non-profit purposes providing
+  # 1) that this copyright notice is included and
+  # 2) no fee is charged for the table and
+  # 3) details any changes made in this list by anyone other than
+  # the copyright owner are suitably noted in the _audit_update record
+  # Please consult the copyright owner regarding any other uses.
+  #
+  # The copyright is owned by I. David Brown, Brockhouse Institute for
+  # Materials Research, McMaster University, Hamilton, Ontario Canada.
+  # idbrown@mcmaster.ca
+  #
+  #*****************************DISCLAIMER************************
+  #
+  # The values reported here are taken from the literature and
+  # other sources and the author does not warrant their correctness
+  # nor accept any responsibility for errors.  Users are advised to
+  # consult the primary sources.
+  #
+  #***************************************************************
+
