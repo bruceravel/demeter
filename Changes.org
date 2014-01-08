@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.19   ?? September 2013
+** 0.9.19    8 January 2014
 *** Athena
    - escape group names when renaming, i.e. treat metacharacters in
      group names as normal characters
@@ -24,9 +24,10 @@
      in mu, norm, chi)
    - right click on several plot buttons makes a special plot from the
      Plot menu + status bar hints
-   - added "Shrink" to plot options.  this hides the plot options
-     tabs, allowing more room for the group list.  also shows a button
-     for restoring the plot options tabs
+   - added "Shrink" to plot options.  this hides the k-weight and plot
+     options controls, allowing more room for the group list.  also
+     shows a button for restoring the k-weight and plot options
+     controls
 
 *** Artemis
    - Fixed a bug in SSPath creation by drag-n-drop from pathlike tab
