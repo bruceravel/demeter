@@ -265,7 +265,7 @@ contents of an Athena project file.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -287,7 +287,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

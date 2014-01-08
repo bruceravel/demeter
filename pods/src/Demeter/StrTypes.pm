@@ -1,5 +1,18 @@
 package Demeter::StrTypes;
 
+=for LiteratureReference
+  --Jealousy is when you don't want someone else to have what you
+  have.  Envy is when you want something that someone else does
+  have.  So it sounds like you're feeling envious rather than
+  jealous.  Because Sage is not yours.
+  --It doesn't matter what you call it, Loon muttered unhappily.
+  --Yes it does.  You'd best know all the words and what they
+  mean, or else your thinking will just be mush.
+                                Shaman
+                                Kim Stanley Robinson
+
+=cut
+
 # predeclare our own types
 use MooseX::Types -declare => [qw( Empty
 				   FileName
@@ -45,6 +58,7 @@ use MooseX::Types -declare => [qw( Empty
                                    LarchLineshape
 				   Lineshape
 				   Rankings
+				   AbsorptionTables
 				)];
 
 ## to do: modes
@@ -517,6 +531,15 @@ subtype Rankings,
   where { lc($_) =~ m{\A$rankings_regexp\z} },
   message { "$_ is not a defined ranking criterion" };
 
+## -------- all absorption table names
+use vars qw(@absorptiontables_list $absorptiontables_regexp);
+@absorptiontables_list = qw(Elam McMaster Henke Chantler CL Shaltout); # 
+$absorptiontables_regexp = Regexp::Assemble->new()->add(map {lc($_)} @absorptiontables_list)->re;
+subtype AbsorptionTables,
+  as Str,
+  where { lc($_) =~ m{\A$absorptiontables_regexp\z} },
+  message { "$_ is not a defined absorption table name" };
+
 
 
 1;
@@ -540,7 +563,7 @@ See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -553,7 +576,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

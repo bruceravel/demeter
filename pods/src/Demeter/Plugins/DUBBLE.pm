@@ -205,6 +205,6 @@ true value be the number of subsequent lines which contain MED data.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel AT bnl DOTgov>
-  http://xafs.org/BruceRavel/
+  Bruce Ravel <bravel AT bnl DOT gov>
+  http://bruceravel.github.io/demeter
   Athena copyright (c) 2001-2014

@@ -1,6 +1,25 @@
 package Demeter::UI::Athena;
 
-use feature "switch";
+
+=for LiteratureReference
+   I begin to sing of Pallas Athene, the glorious goddess,
+   bright-eyed, inventive, unbending of heart, pure virgin, saviour of
+   cities, courageous, Tritogeneia. From his awful head wise Zeus
+   himself bare her arrayed in warlike arms of flashing gold, and awe
+   seized all the gods as they gazed. But Athena sprang quickly from
+   the immortal head and stood before Zeus who holds the aegis,
+   shaking a sharp spear: great Olympus began to reel horribly at the
+   might of the bright-eyed goddess, and earth round about cried
+   fearfully, and the sea was moved and tossed with dark waves, while
+   foam burst forth suddenly: the bright Son of Hyperion stopped his
+   swift-footed horses a long while, until the maiden Pallas Athene
+   had stripped the heavenly armour from her immortal shoulders. And
+   wise Zeus was glad. And so hail to you, daughter of Zeus who holds
+   the aegis! Now I will remember you and another song as well.
+                                  Homeric Hymns XXVIII
+                                  Translated by H. G. EVELYN-WHITE
+
+=cut
 
 use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
@@ -341,7 +360,9 @@ const my $DATA_ABOUT		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
+const my $EPSILON_THIS    	=> Wx::NewId();
 const my $EPSILON_MARKED	=> Wx::NewId();
+const my $EPSILON_ALL   	=> Wx::NewId();
 
 const my $VALUES_ALL		=> Wx::NewId();
 const my $VALUES_MARKED		=> Wx::NewId();
@@ -517,13 +538,13 @@ sub menubar {
   $debugmenu->Append($PERL_MODULES, "Show perl modules",         "Show perl module versions" );
   $debugmenu->Append($CONDITIONAL,  "Show conditional features", "Show which conditional Demeter features are present" );
   $debugmenu->AppendSeparator;
-  $debugmenu->Append($PLOT_YAML,    "Plot object YAML",          "Show YAML dialog for Plot object" );
-  $debugmenu->Append($STYLE_YAML,   "plot style objects YAML",   "Show YAML dialog for plot style objects" );
-  $debugmenu->Append($INDIC_YAML,   "Indicator objects YAML",    "Show YAML dialog for Indicator objects" );
+  $debugmenu->Append($PLOT_YAML,    "Plot object yaml",          "Show yaml dialog for Plot object" );
+  $debugmenu->Append($STYLE_YAML,   "plot style objects yaml",   "Show yaml dialog for plot style objects" );
+  $debugmenu->Append($INDIC_YAML,   "Indicator objects yaml",    "Show yaml dialog for Indicator objects" );
   $debugmenu->AppendSeparator;
-  $debugmenu->Append($LCF_YAML,     "LCF object YAML",           "Show YAML dialog for LCF object" );
-  $debugmenu->Append($PCA_YAML,     "PCA object YAML",           "Show YAML dialog for PCA object" );
-  $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
+  $debugmenu->Append($LCF_YAML,     "LCF object yaml",           "Show yaml dialog for LCF object" );
+  $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
+  $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
 
 
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
@@ -559,9 +580,14 @@ sub menubar {
   $e0markedmenu->Append($E0_PEAK_MARKED,      "the peak of the white line", "Set E0 for marked groups to the peak of the white line");
 
   my $wlmenu = Wx::Menu->new;
-  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
-  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
   $wlmenu->Append($WL_ALL,    "for all groups",    "Find the white line position for all groups");
+  $wlmenu->Append($WL_MARKED, "for marked groups", "Find the white line position for marked groups");
+  $wlmenu->Append($WL_THIS,   "for this group",    "Find the white line position for this group");
+
+  my $epsmenu = Wx::Menu->new;
+  $epsmenu->Append($EPSILON_ALL,    "for all groups", "Show the measurement uncertainties of all groups." );
+  $epsmenu->Append($EPSILON_MARKED, "for marked groups", "Show the measurement uncertainties of the marked groups." );
+  $epsmenu->Append($EPSILON_THIS,   "for this group", "Show the measurement uncertainty of this groups." );
 
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
@@ -574,9 +600,9 @@ sub menubar {
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_ABOUT,     "About current group", "Describe current data group");
-  $groupmenu->Append($DATA_YAML,      "Show YAML for current group", "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_YAML,      "Show yaml for current group", "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
-  $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
+  $groupmenu->AppendSubMenu($epsmenu, "Show measurement uncertainties...", "Show measurement uncertainties");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
@@ -665,9 +691,9 @@ sub menubar {
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
-  $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)",  "Merge marked data at $MU(E)" );
-  $mergemenu->Append($MERGE_NORM, "Merge norm(E)", "Merge marked data at normalized $MU(E)" );
-  $mergemenu->Append($MERGE_CHI,  "Merge $CHI(k)", "Merge marked data at $CHI(k)" );
+  $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)\tShift+Ctrl+m",  "Merge marked data at $MU(E)" );
+  $mergemenu->Append($MERGE_NORM, "Merge norm(E)\tShift+Ctrl+n", "Merge marked data at normalized $MU(E)" );
+  $mergemenu->Append($MERGE_CHI,  "Merge $CHI(k)\tShift+Ctrl+c", "Merge marked data at $CHI(k)" );
   $mergemenu->AppendSeparator;
   $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
   $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
@@ -702,7 +728,7 @@ sub menubar {
   #$helpmenu       -> Enable($_,0) foreach ($DEMO);
   $exportmenu     -> Enable($FPATH, 0) if ($ENV{DEMETER_BACKEND} eq 'larch');
 
-  EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
+  EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame, $event, $app)} );
   if ($ENV{DEMETER_BACKEND} eq 'larch') {
     $app->{main}->{monitormenu}->Remove($_) foreach (@{$app->{main}->{ifeffititems}});
   };
@@ -736,7 +762,7 @@ sub set_mergedplot {
 
 sub OnMenuClick {
   my ($self, $event, $app) = @_;
-  my $id = $event->GetId;
+  my $id = (looks_like_number($event)) ? $event : $event->GetId;
   my $mru = $app->{main}->{mrumenu}->GetLabel($id);
   $mru =~ s{__}{_}g; 		# wtf!?!?!?
 
@@ -908,9 +934,24 @@ sub OnMenuClick {
       };
       last SWITCH;
     };
+    ($id == $EPSILON_THIS) and do {
+      $app->current_data -> _update('bft');
+      my $text = sprintf("%s : Nidp=%7.3f   %s(k)=%9.3e   %s(R)=%9.3e",
+			 $app->current_data->name,
+			 $app->current_data->nidp,
+			 $EPSILON, $app->current_data->epsk,
+			 $EPSILON, $app->current_data->epsr);
+      $app->{main}->status($text);
+      last SWITCH;
+    };
     ($id == $EPSILON_MARKED) and do {
       last SWITCH if $app->is_empty;
-      $app->show_epsilon;
+      $app->show_epsilon('marked');
+      last SWITCH;
+    };
+    ($id == $EPSILON_ALL) and do {
+      last SWITCH if $app->is_empty;
+      $app->show_epsilon('all');
       last SWITCH;
     };
 
@@ -1543,6 +1584,7 @@ sub side_bar {
   my $toolpanel = Wx::Panel    -> new($app->{main}, -1);
   my $toolbox   = Wx::BoxSizer -> new( wxVERTICAL );
   $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 0);
+  $app->{main}->{toolbox} = $toolbox;
 
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
@@ -1560,6 +1602,15 @@ sub side_bar {
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox -> Add($singlebox, 0, wxGROW|wxALL, 0);
   $toolbox -> Add($markedbox, 0, wxGROW|wxALL, 0);
+  my %right_click_hint = (Ei0sig     => 'plot mu+I0+signal',
+			  Enormderiv => 'plot norm(E)+deriv(E)',
+			  k	     => 'plot k123',
+			  R	     => 'plot R123',
+			  kq	     => 'quad plot',
+			  i0	     => 'plot I0 for all marked groups',
+			  e00	     => 'plot marked groups with E0 at 0',
+			  norm	     => 'plot norm(E) scaled by edge step',
+			 );
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
@@ -1567,8 +1618,13 @@ sub side_bar {
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, sprintf("%2.2s",$which), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "single")) );
     $singlebox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
-    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single')});
-    $app->mouseover($app->{main}->{$key}, "Plot the current group in $which");
+    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 0)});
+    EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 1)});
+    my $mouseover_text = "Plot the current group in $which   ";
+    my $whichhint = $which;
+    $whichhint .= Demeter->co->default('athena', 'right_single_e') if $which eq 'E';
+    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{$whichhint} if ($which ne 'q');
+    $app->mouseover($app->{main}->{$key}, $mouseover_text);
     next if ($which eq 'kq');
 
     ## marked plot buttons
@@ -1576,8 +1632,11 @@ sub side_bar {
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "marked")) );
     $markedbox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
-    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked')});
-    $app->mouseover($app->{main}->{$key}, "Plot the marked groups in $which");
+    EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
+    EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
+    $mouseover_text = "Plot the marked groups in $which";
+    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')} if ($which eq 'E');
+    $app->mouseover($app->{main}->{$key}, $mouseover_text);
   };
 
   $app->{main}->{kweights} = Wx::RadioBox->new($toolpanel, -1, 'Plotting k-weights', wxDefaultPosition, wxDefaultSize,
@@ -1593,8 +1652,8 @@ sub side_bar {
 
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-  $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
-  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style)) {
+  #$app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
+  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style Shrink)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
@@ -1603,16 +1662,48 @@ sub side_bar {
 					($m eq 'PlotE'));
   };
   $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
-
+  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
 #   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
 #   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
 #   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
 #   $app->{main}->{Style}->{list}->Append('xanes', $xanes);
 #   print $exafs->serialization, $xanes->serialization;
 
+  $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');
+  EVT_BUTTON($app->{main}, $app->{main}->{showoptions}, sub{$app->restore_options});
+  $toolbox -> Add($app->{main}->{showoptions}, 0, wxGROW|wxALL, 0);
+  $app->{main}->{showoptions}->Hide;
+  $app->mouseover($app->{main}->{showoptions}, "Restore the k-weight and plot options controls");
+
   $toolpanel -> SetSizerAndFit($toolbox);
 
   return $app;
+};
+
+sub OnPlotOptions {
+  local $|=1;
+  my ($app, $frame, $event) = @_;
+  if ($event->GetSelection == 8) { ## 8 = Shrink
+    $app->{main}->{toolbox}->Detach($app->{main}->{kweights});
+    $app->{main}->{kweights}->Hide;
+    $app->{main}->{toolbox}->Detach($app->{main}->{plottabs});
+    $app->{main}->{plottabs}->Hide;
+    $app->{main}->{showoptions}->Show;
+    $app->{main}->{toolbox}->Add($app->{main}->{showoptions}, 0, wxEXPAND|wxALL, 2);
+    $app->{main}->{toolbox}->Layout;
+    $event->Veto;
+  };
+};
+
+sub restore_options {
+  my ($app) = @_;
+  $app->{main}->{toolbox}->Detach($app->{main}->{showoptions});
+  $app->{main}->{showoptions}->Hide;
+  $app->{main}->{kweights}->Show(1);
+  $app->{main}->{toolbox}->Add($app->{main}->{kweights}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $app->{main}->{plottabs}->Show;
+  $app->{main}->{toolbox}->Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $app->{main}->{toolbox}->Layout;
 };
 
 sub OnRightDown {
@@ -1859,12 +1950,58 @@ sub marked_groups {
 };
 
 sub plot {
-  my ($app, $frame, $event, $space, $how) = @_;
+  my ($app, $frame, $event, $space, $how, $right) = @_;
   return if $app->is_empty;
   return if not ($space);
   return if not ($how);
+  $right ||= 0;
 
   my $busy = Wx::BusyCursor->new();
+
+  ## process a right click on a plot button
+  if ($right) {
+    my $continue = 0;
+    ## current group buttons
+    if ((lc($space) eq 'e') and ($how eq 'single')) {
+      if (Demeter->co->default('athena', 'right_single_e') eq 'i0sig') {
+	OnMenuClick($app->{main}, $PLOT_IOSIG, $app);
+      } elsif (Demeter->co->default('athena', 'right_single_e') eq 'normderiv') {
+	OnMenuClick($app->{main}, $PLOT_ED, $app);
+      } else {
+	$continue = 1;
+      };
+    } elsif ((lc($space) eq 'k') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_K123, $app);
+    } elsif ((lc($space) eq 'r') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_R123, $app);
+    } elsif ((lc($space) eq 'q') and ($how eq 'single')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'kq') and ($how eq 'single')) {
+      OnMenuClick($app->{main}, $PLOT_QUAD, $app);
+    ## marked group buttons
+    } elsif ((lc($space) eq 'e') and ($how eq 'marked')) {
+      if (Demeter->co->default('athena', 'right_marked_e') eq 'i0') {
+	$app->plot_i0_marked;
+      } elsif (Demeter->co->default('athena', 'right_marked_e') eq 'e00') {
+	$app->plot_e00;
+      } elsif (Demeter->co->default('athena', 'right_marked_e') eq 'norm') {
+	$app->plot_norm_scaled;
+      } else {
+	$continue = 1;
+      };
+    } elsif ((lc($space) eq 'k') and ($how eq 'marked')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'r') and ($how eq 'marked')) {
+      $continue = 1;
+    } elsif ((lc($space) eq 'q') and ($how eq 'marked')) {
+      $continue = 1;
+    ## pass through if no special plot
+    };
+    if (not $continue) {
+      undef $busy;
+      return;
+    };
+  };
 
   my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
   my @is_fixed = map {$_->bkg_fixstep} @data;
@@ -1896,7 +2033,6 @@ sub plot {
   $app->{main}->{'Plot'.$sp}->pull_marked_values if ($how eq 'marked');
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
   $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
-
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
@@ -1998,12 +2134,14 @@ sub plot {
   undef $busy;
 };
 
+
+
 sub image {
   my ($self, $terminal) = @_;
 
   my $on_screen = lc($::app->{lastplot}->[0]);
   if ($on_screen eq 'quad') {
-    $::app->{main}->status("Cannot save a quad plot to an image file.", 'alert');
+    $::app->{main}->status("Cannot save a quad plot to an image file.  Sorry :(", 'alert');
     return;
   };
 
@@ -2316,54 +2454,48 @@ sub quench {
 
   my $regex = q{};
 
-  given ($how) {
-    when ('toggle') {
-      $app->current_data->quenched(not $app->current_data->quenched);
+  if ($how eq 'toggle') {
+    $app->current_data->quenched(not $app->current_data->quenched);
+
+  } elsif ($how =~ m{all|invert|none}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      my $val = ($how eq 'all')    ? 1
+	      : ($how eq 'none')   ? 0
+	      : ($how eq 'invert') ? not $clb->GetIndexedData($i)->quenched
+	      :                      $clb->GetIndexedData($i)->quenched;
+      $clb->GetIndexedData($i)->quenched($val);
     };
 
-    when (m{all|none|invert}) {
-      foreach my $i (0 .. $clb->GetCount-1) {
-	my $val = ($how eq 'all')    ? 1
-	        : ($how eq 'none')   ? 0
-	        : ($how eq 'invert') ? not $clb->GetIndexedData($i)->quenched
-	        :                      $clb->GetIndexedData($i)->quenched;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
+  } elsif ($how =~ m{marked}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      next if not $clb->IsChecked($i);
+      my $val = ($how eq 'marked') ? 1 : 0;
+      $clb->GetIndexedData($i)->quenched($val);
     };
 
-    when (m{marked}) {
-      foreach my $i (0 .. $clb->GetCount-1) {
-	next if not $clb->IsChecked($i);
-	my $val = ($how eq 'marked') ? 1 : 0;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
+  } elsif ($how =~ m{regex}) {
+    my $word = ($how eq 'regex') ? 'Freeze' : 'Unfreeze';
+    my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    $app->set_text_buffer($ted, "regexp");
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $app->{main}->status(chomp($word)."ing by regular expression canceled.");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
+      return;
     };
+    $regex = $ted->GetValue;
+    my $re;
+    my $is_ok = eval '$re = qr/$regex/';
+    if (not $is_ok) {
+      $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
+      return;
+    };
+    $app->update_text_buffer("regexp", $regex, 1);
 
-    when (m{regex}) {
-      my $word = ($how eq 'regex') ? 'Freeze' : 'Unfreeze';
-      my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
-      $app->set_text_buffer($ted, "regexp");
-      if ($ted->ShowModal == wxID_CANCEL) {
-	$app->{main}->status(chomp($word)."ing by regular expression canceled.");
-	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
-	return;
-      };
-      $regex = $ted->GetValue;
-      my $re;
-      my $is_ok = eval '$re = qr/$regex/';
-      if (not $is_ok) {
-	$app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
-	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
-	return;
-      };
-      $app->update_text_buffer("regexp", $regex, 1);
-
-      foreach my $i (0 .. $clb->GetCount-1) {
-	next if ($clb->GetIndexedData($i)->name !~ m{$re});
-	my $val = ($how eq 'regex') ? 1 : 0;
-	$clb->GetIndexedData($i)->quenched($val);
-      };
-
+    foreach my $i (0 .. $clb->GetCount-1) {
+      next if ($clb->GetIndexedData($i)->name !~ m{$re});
+      my $val = ($how eq 'regex') ? 1 : 0;
+      $clb->GetIndexedData($i)->quenched($val);
     };
   };
   $app->OnGroupSelect(0,0,0);
@@ -2510,14 +2642,14 @@ sub heap_check {
 };
 
 sub show_epsilon {
-  my ($app) = @_;
+  my ($app, $how) = @_;
+  my $busy = Wx::BusyCursor->new();
   my $clb = $app->{main}->{list};
   return if not $clb->GetCount;
-  my $busy = Wx::BusyCursor->new();
   my $text = sprintf("\n%-25s : %9s  %9s\n", qw(group epsilon_k epsilon_r));
   $text .= '=' x 48 . "\n";
   foreach my $i (0 .. $clb->GetCount-1) {
-    next if not $clb->IsChecked($i);
+    next if (($how eq 'marked') and not $clb->IsChecked($i));
     my $d = $clb->GetIndexedData($i);
     $d -> _update('bft');
     $text .= sprintf("%-25s : %9.3e  %9.3e\n", $d->name, $d->epsk, $d->epsr);
@@ -2765,31 +2897,23 @@ This short program launches Athena:
 
 =head1 DESCRIPTION
 
-Athena is ...
+Athena is a program for XAS data processing and analysis of XANES data.
 
 =head1 USE
 
-Using ...
+See the Athena Users' Guide.
 
 =head1 CONFIGURATION
 
 Many aspects of Athena and its UI are configurable using the
-configuration ...
+configuration tool built into Athena.
 
 =head1 DEPENDENCIES
 
 This is a Wx application.  Demeter's dependencies are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Many, many, many ...
-
-=back
 
 Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
@@ -2800,7 +2924,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

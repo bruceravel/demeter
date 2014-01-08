@@ -355,7 +355,7 @@ those plotting templates for examples of how this is used.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 L<Moose> is the basis of Demeter.  This module is implemented as a
 role and used by the L<Demeter::Data> object.  I feel obliged to admit
@@ -374,7 +374,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

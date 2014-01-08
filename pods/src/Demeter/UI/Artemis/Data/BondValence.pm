@@ -180,3 +180,76 @@ sub sanity_ms_paths {
 };
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Artemis::Data::BondValence - Dialog to perform a simple bond valence sum calculation
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.19.
+
+=head1 SYNOPSIS
+
+This module provides a dialog for computing a bond valence sum using a
+set of marked paths and table of bond valence parameters maintained by
+I. David Brown of McMaster University.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Build.PL> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to the Ifeffit Mailing List
+(L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://bruceravel.github.io/demeter/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+The tabulation of bond valence parameters carried the following
+copyright notice and disclaimer:
+
+  #***************************************************************
+  # COPYRIGHT NOTICE
+  # This table may be used and distributed without fee for
+  # non-profit purposes providing
+  # 1) that this copyright notice is included and
+  # 2) no fee is charged for the table and
+  # 3) details any changes made in this list by anyone other than
+  # the copyright owner are suitably noted in the _audit_update record
+  # Please consult the copyright owner regarding any other uses.
+  #
+  # The copyright is owned by I. David Brown, Brockhouse Institute for
+  # Materials Research, McMaster University, Hamilton, Ontario Canada.
+  # idbrown@mcmaster.ca
+  #
+  #*****************************DISCLAIMER************************
+  #
+  # The values reported here are taken from the literature and
+  # other sources and the author does not warrant their correctness
+  # nor accept any responsibility for errors.  Users are advised to
+  # consult the primary sources.
+  #
+  #***************************************************************
+
+
+
+=cut

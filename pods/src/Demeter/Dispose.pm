@@ -330,9 +330,9 @@ This documentation refers to Demeter version 0.9.19.
 =head1 DESCRIPTION
 
 This module contains contains the dispose method, which is used to
-dispatch Ifeffit or Larch command strings to various places.  This is
-part of the base of all other objects in the Demeter system, thus any
-object can dispose text.
+dispatch Ifeffit, Larch, and Gunplot command strings.  This is part of
+the base of all other objects in the Demeter system, thus any object
+can dispose text.
 
 The command strings which are handled by the C<dispose> method are
 typically generated using the command templating system, which is
@@ -372,18 +372,19 @@ are specifically plotting commands.
 
 Demeter is very careful to segregate plotting commands from data
 processing commands and to dispose of them separately.  This allows
-transparent use of different plotting backends.  The C<ifeffit>
+transparent use of different plotting backends.  The C<backend>
 disposal channel is used to indicate disposal of commands either to
 ifeffit or to another plotting backend.  That is, if you want to
 dispose of plotting commands to a gnuplot process, you must have the
-C<ifeffit> disposal channel enabled.
+C<backend> disposal channel enabled.  C<ifeffit> and C<larch> are
+aliases for C<backend>.
 
 Use the C<set_mode> class method to establish the disposal channels.
 
    Demeter->set_mode(backend=>1, screen=>1, file=>0, buffer=>0);
    $dataobject -> dispose($commands);
 
-When explicitly disposing a plotting command, use the plotting flag:
+When disposing a plotting command, use the plotting flag:
 
    $dataobject -> dispose($commands, "plotting");
 
@@ -391,7 +392,7 @@ There are several disposal channels:
 
 =over 6
 
-=item ifeffit
+=item backend (ifeffit or larch are aliases)
 
 This channel sends reprocessed command strings to ifeffit for
 processing.  This is a boolean.  By default, this channel is on and
@@ -417,7 +418,7 @@ These colors are configurable in the screen group.
 
 =item file
 
-This channel send command strings to a file.  If the value of file
+This channel writes command strings to a file.  If the value of file
 evaluates false, then this channel is not used.  If it is true, the
 value is taken to be the name of the output file.  At this time, IO
 control is extremely simple.  If you want to append command strings to
@@ -535,7 +536,7 @@ is the same as
 
   $self->dispose($self->template('process', 'deriv'));
 
-which is a common idiom in Demeter.
+which was such a common idiom in Demeter that it merited this method.
 
 =item C<chart>
 
@@ -548,7 +549,7 @@ is the same as
 
   $self->dispose($self->template('process', 'deriv'), 'plotting');
 
-which is a common plotting idiom in Demeter.
+which was such a common idiom in Demeter that it merited this method.
 
 =item C<Reset>
 
@@ -577,7 +578,7 @@ See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -604,10 +605,6 @@ The screen, plotscreen, and repscreen disposal channels currently
 write to STDOUT.  The user can direct STDOUT elsewhere.  It may be
 useful to have the option of specifying a filehandle for this channel.
 
-=item *
-
-Will reprocessed commands be needed with Larch?
-
 =back
 
 Please report problems to the Ifeffit Mailing List
@@ -619,7 +616,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

@@ -90,3 +90,43 @@ sub put_larch_scalar {
 
 1;
 
+__END__
+
+=head1 NAME
+
+Larch - Perl interface to Larch
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This provides a perl interface to accessing data structures in Larch
+and sending command strings to Larch via an XML-RPC framework.
+
+=over 4
+
+=item C<dispose>
+
+=item C<get_larch_scalar>
+
+=item C<put_larch_scalar>
+
+=item C<get_larch_array>
+
+=item C<put_larch_array>
+
+=back
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://bruceravel.github.io/demeter/>
+
+Larch is the work of Matt Newville and Tom Trainor
+
+=head1 SEE ALSO
+
+L<Demeter::Get>, L<Ifeffit>
+
+=cut

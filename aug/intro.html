@@ -15,7 +15,7 @@
   <table class=navtable>
     <tr>
       <td align=left>
-        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
         &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
         <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
         &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
@@ -282,7 +282,7 @@ Many file type plugins write temporary files after performing some
 transformation on the original data.  <span class=program>GNUPLOT</span> writes temporary
 files as part of its plot creation.  These files are stored in the 
 &ldquo;stash folder&rdquo;.  On linux (and other
-unixes) this is <span class=file>/.horae/stash/</span>.  On
+unixes) this is <span class=file>$HOME/.horae/stash/</span>.  On
 Windows this is <span class=file>%APPDATA%\demeter\stash</span>.
   <br />
   <br />
@@ -296,8 +296,11 @@ information to the screen that the problem can be addressed.  This
 screen information is what Bruce needs to troubleshoot bugs.  On a
 linux (or other unix) machine, simply run <span class=program>ATHENA</span> from the command
 line and the informative screen messages will be written to the
-screen.
-
+screen.  You can cut-n-paste that text or capture the output by
+running <span class=program>ATHENA</span> through 
+<a href="http://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html">tee</a>:
+<tt>~> dathena | tee capture.log</tt>
+<br /><br />
 On a Windows machine, it is uncommon to run the software from the
 command line, so <span class=program>ATHENA</span> has been instrumented to write a run-time
 log file.  This log file is called 
@@ -312,7 +315,7 @@ log file.  This log file is called
 
 &ldquo;%APPDATA%&rdquo;
 is <span class=file>C:\Users\&lt;username&gt;\AppDataRoaming\</span>
-on Windows 7 and 
+on Windows 7 and 8.  It is
 <span class=file>C:\Documents&nbsp;and&nbsp;Settings\&lt;username&gt;\Application&nbsp;Data\</span>
 on Windows XP and Vista.  In either case, 
 &ldquo;username&rdquo;
@@ -330,9 +333,9 @@ is your log-in name.
   <table>
     <tr>
       <td colspan=2>
-        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2014 Bruce Ravel
         &mdash;
-        This document is copyright &copy; 2013 Bruce Ravel
+        This document is copyright &copy; 2014 Bruce Ravel
         <br />
       </td>
     </tr>

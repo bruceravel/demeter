@@ -340,7 +340,7 @@ clear idea how to do so...
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

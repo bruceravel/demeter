@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Demeter::UI::Wx::Config;
+use Demeter::StrTypes qw(AbsorptionTables);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -24,7 +25,7 @@ sub new {
   $this->{parent} = $parent;
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate([qw(athena bft bkg clamp convolution dispersive
+  $config->populate([qw(absorption athena bft bkg clamp convolution dispersive
 			edgestep fft file fit gnuplot indicator interpolation
 			lcf marker merge operations pca peakfit plot rebin
 			smooth whiteline xanes)]);
@@ -59,6 +60,10 @@ sub target {
 	my $this = $::app->{main}->{list}->GetIndexedData($i);
 	$this->rmax_out($value);
       };
+      last SWITCH;
+    };
+    (($parent eq 'absorption') and ($param eq 'tables')) and do {
+      Xray::Absorption->load($value) if is_AbsorptionTables($value);
       last SWITCH;
     };
   };
@@ -102,7 +107,7 @@ This module wraps up L<Demeter::UI::Wx::Config> for use in Athena.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -115,7 +120,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

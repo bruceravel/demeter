@@ -17,7 +17,6 @@ package  Demeter::UI::Artemis::Path;
 
 use strict;
 use warnings;
-use feature 'switch';
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
@@ -234,20 +233,14 @@ sub populate {
   #$geometry =~ s{\d+\s* }{};
   #$geometry =~ s{index, }{};
   $this->{geometry} -> SetValue(q{});
-  my $which = (Demeter->co->default('pathfinder', 'rank') eq 'feff') ? 'zcwif' : 'chimag2';
-
-  my $rank;
-  given ($pathobject) {
-    when (ref($_) =~ m{FSPath}) {
-      $rank = q{};
-    };
-    when (ref($_->sp) =~ m{ScatteringPath}) {
-      $rank = sprintf(" (%.2f)", $pathobject->sp->get_rank($which));
-    };
-    default {
-      $rank = q{};
-    };
-
+  my $rank = q{};
+  my $which = Demeter->co->default('pathfinder', 'rank');
+  if (ref($pathobject) =~ m{FSPath}) {
+    $rank = q{};
+  } elsif (ref($pathobject->sp) =~ m{ScatteringPath}) {
+    $rank = sprintf(" (%.2f)", $pathobject->sp->get_rank($which));
+  } else {
+    $rank = q{};
   };
 
 
@@ -648,7 +641,7 @@ This module provides a window for displaying Demeter's path interface.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

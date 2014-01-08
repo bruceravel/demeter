@@ -1,6 +1,27 @@
 package Demeter::UI::Artemis;
 
-use feature qw(switch);
+=for LiteratureReference
+   I sing of Artemis, whose shafts are of gold, who cheers on the hounds,
+   the pure maiden, shooter of stags, who delights in archery, own sister
+   to Apollo with the golden sword. Over the shadowy hills and windy
+   peaks she draws her golden bow, rejoicing in the chase, and sends out
+   grievous shafts. The tops of the high mountains tremble and the
+   tangled wood echoes awesomely with the outcry of beasts: earthquakes
+   and the sea also where fishes shoal. But the goddess with a bold heart
+   turns every way destroying the race of wild beasts: and when she is
+   satisfied and has cheered her heart, this huntress who delights in
+   arrows slackens her supple bow and goes to the great house of her dear
+   brother Phoebus Apollo, to the rich land of Delphi, there to order the
+   lovely dance of the Muses and Graces. There she hangs up her curved
+   bow and her arrows, and heads and leads the dances, gracefully
+   arrayed, while all they utter their heavenly voice, singing how
+   neat-ankled Leto bare children supreme among the immortals both in
+   thought and in deed. Hail to you, children of Zeus and rich-haired
+   Leto! And now I will remember you and another song also.
+                                  Homeric Hymns XXVII
+                                  Translated by H. G. EVELYN-WHITE
+
+=cut
 
 use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
@@ -1144,16 +1165,12 @@ sub OnDataMenu {
   my ($self, $event) = @_;
   my $dnum = $self->{dnum};
   my $data = $frames{$dnum}->{data};
-  given ($event->GetId) {
-    when (0) {
-      $frames{$dnum}->Rename;
-      modified(1);
-    };
-
-    when (1) {
-      $frames{$dnum}->discard_data;
-      modified(1);
-    };
+  if ($event->GetId == 0) {
+    $frames{$dnum}->Rename;
+    modified(1);
+  } elsif ($event->GetId == 1) {
+    $frames{$dnum}->discard_data;
+    modified(1);
   };
 };
 
@@ -1252,16 +1269,12 @@ sub OnFeffButtonRightClick {
 sub OnFeffMenu {
   my ($self, $event) = @_;
   my $fnum = $self->{fnum};
-  given ($event->GetId) {
-    when (0) {
-      $frames{$fnum}->on_rename;
-      modified(1);
-    };
-
-    when (1) {
-      $frames{$fnum}->on_discard;
-      modified(1);
-    };
+  if ($event->GetId == 0) {
+    $frames{$fnum}->on_rename;
+    modified(1);
+  } elsif ($event->GetId == 1) {
+    $frames{$fnum}->on_discard;
+    modified(1);
   };
 };
 
@@ -1647,31 +1660,23 @@ This short program launches Artemis:
 
 =head1 DESCRIPTION
 
-Artemis...
+Artemis is a program for EXAFS data analysis using Feff.
 
 =head1 USE
 
-Using ...
+See the Artemis Users' Guide.
 
 =head1 CONFIGURATION
 
 Many aspects of Artemis and its UI are configurable using the
-configuration ...
+configuration tool built into Athena.
 
 =head1 DEPENDENCIES
 
 This is a Wx application.  Demeter's dependencies are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Many, many, many ...
-
-=back
 
 Please report problems to the Ifeffit Mailing List
 (L<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>)
@@ -1682,7 +1687,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

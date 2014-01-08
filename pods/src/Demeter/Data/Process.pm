@@ -557,7 +557,7 @@ sub gaussian_filter {
   splice(@x, 0, ($n-1)/2);
   @x = splice(@x, 0, $#x-($n-1)/2);
   #splice(@z, 0, ($n-1)/2);
-  #@z = splice(@z, 0, $#z-($n-1)/2);
+  @z = splice(@z, 0, $#z);
 
   my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd");
   $smoothed->e0($self);
@@ -866,7 +866,7 @@ See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -892,7 +892,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

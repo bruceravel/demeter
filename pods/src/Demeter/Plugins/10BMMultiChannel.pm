@@ -322,6 +322,6 @@ Initial version
 =head1 AUTHOR
 
   Bruce Ravel <bravel@bnl.gov>
-  http://xafs.org/BruceRavel
+  http://bruceravel.github.io/demeter
 
 =cut

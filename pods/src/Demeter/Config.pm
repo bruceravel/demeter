@@ -878,7 +878,7 @@ The mode is tiny.  You can byte-compile or not -- as you wish.
 
 =head1 DEPENDENCIES
 
-See the F<Bundle/DemeterBundle.pm> file for a list of dependencies.
+See the F<Build.PL> file for a list of dependencies.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -926,7 +926,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -19,7 +19,6 @@ require v5.10;
 
 use version;
 our $VERSION = version->new('0.9.19');
-use feature "switch";
 
 ############################
 ## Carp
@@ -253,64 +252,50 @@ sub import {
   my $none          = 0;
 
  PRAG: foreach my $p (@pragmata) {
-    given ($p) {
-      when (m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
-	$plot -> plot_with($1);
-      }
-      when (m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
-	$mode -> ui($1);
-	#import Demeter::Carp if ($1 eq 'screen');
-      }
-      when (m{:t(?:emplate)?=(\w+)}) { # change template sets
-	my $which = $1;
-	$mode -> template_process($which);
-	$mode -> template_fit($which);
-	#$mode -> template_analysis($which);
-      }
-      when (m{:d(?:evflag)?=(\w+)}) {
-	$devflag = $1;
-	eval {use Term::ANSIColor qw(:constants)} if $devflag;
-      };
-      ## all the rest of the "pragmata" control what parts of Demeter get imported
+    if ($p =~ m{:p(?:lotwith)?=(\w+)}) { # choose between pgplot and gnuplot
+      $plot -> plot_with($1);
+    } elsif ($p =~ m{:ui?=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
+      $mode -> ui($1);
+      #import Demeter::Carp if ($1 eq 'screen');
+    } elsif ($p =~ m{:t(?:emplate)?=(\w+)}) { # change template sets
+      my $which = $1;
+      $mode -> template_process($which);
+      $mode -> template_fit($which);
+      #$mode -> template_analysis($which);
+    } elsif ($p =~ m{:d(?:evflag)?=(\w+)}) {
+      $devflag = $1;
+      eval {use Term::ANSIColor qw(:constants)} if $devflag;
 
-      when (':data') {
-	@load = @data;
-	$doplugins = 1;
-      }
-      when (':hephaestus') {
-	@load = @heph;
-	$doplugins = 0;
-      }
-      when (':fit') {
-	@load = (@data, @fit);
-      }
-      when (':analysis') {
-	@load = (@data, @anal);
-	$doplugins     = 1;
-	$colonanalysis = 1;	# verify PDL before loading PCA
-      }
-      when (':athena') {
-	@load = (@data, @anal, @plot);
-	$doplugins     = 0;     # delay registering plugins until after start-up
-	$colonanalysis = 1;	# verify PDL before loading PCA
-      }
-      when (':artemis') {
-	@load = (@heph, @fit, 'Plot/Indicator');
-      }
-      when (':atoms') {
-	@load = @atoms;
-      }
-      when (':all') {
-	@load = (@data, @fit, @anal, @xes, @plot);
-	$doplugins     = 1;
-	$colonanalysis = 1;
-      }
-      when (':none') {
-	@load = ();
-	$doplugins     = 0;
-	$colonanalysis = 0;
-	$none          = 1;
-      }
+    ## all the rest of the "pragmata" control what parts of Demeter get imported
+    } elsif ($p eq ':data') {
+      @load = @data;
+      $doplugins = 1;
+    } elsif ($p eq ':hephaestus') {
+      @load = @heph;
+      $doplugins = 0;
+    } elsif ($p eq ':fit') {
+      @load = (@data, @fit);
+    } elsif ($p eq ':analysis') {
+      @load = (@data, @anal);
+      $doplugins     = 1;
+      $colonanalysis = 1;	# verify PDL before loading PCA
+    } elsif ($p eq ':athena') {
+      @load = (@data, @anal, @plot);
+      $doplugins     = 0;     # delay registering plugins until after start-up
+      $colonanalysis = 1;	# verify PDL before loading PCA
+    } elsif ($p eq ':artemis') {
+      @load = (@heph, @fit, 'Plot/Indicator');
+    } elsif ($p eq ':atoms') {
+      @load = @atoms;
+    } elsif ($p eq ':all') {
+      @load = (@data, @fit, @anal, @xes, @plot);
+      $doplugins     = 1;
+      $colonanalysis = 1;
+    } elsif ($p eq ':none') {
+      @load = ();
+      $doplugins     = 0;
+      $colonanalysis = 0;
+      $none          = 1;
     };
   };
   @load = (@data, @fit, @anal, @xes, @plot) if not @load;
@@ -354,7 +339,6 @@ sub register_plugins {
       $mode->push_Plugins($this);
     };
   };
-
 };
 
 
@@ -472,6 +456,24 @@ sub hashes {
   my $hashes = "###__";
   return $hashes;
 };
+
+
+=for LiteratureReference (is_true and friends)
+  O Attic shape! fair attitude! with brede
+    Of marble men and maidens overwrought,
+  With forest branches and the trodden weed;
+    Thou, silent form! dost tease us out of thought
+  As doth eternity: Cold Pastoral!
+    When old age shall this generation waste,
+      Thou shalt remain, in midst of other woe
+    Than ours, a friend to man, to whom thou say'st,
+  'Beauty is truth, truth beauty,—that is all
+      Ye know on earth, and all ye need to know.'
+
+                                John Keats
+                                Ode on a Grecian Urn
+
+=cut
 
 sub yesno {
   my ($self, $attribute) = @_;
@@ -917,7 +919,7 @@ Using Demeter automatically turns on L<strict> and L<warnings>.
 
 This module provides an object oriented interface to the EXAFS data
 analysis capabilities of the popular and powerful Ifeffit package and
-its successor Larch.  Mindful that the Ifeffit and Larch APIs involve
+its successor Larch.  Given that the Ifeffit and Larch APIs involve
 streams of text commands, this package is, at heart, a code generator.
 Many methods of this package return text.  All actual interaction with
 Ifeffit or Larch is handled through a single method, C<dispose>, which
@@ -925,8 +927,8 @@ is described below.  The internal structure of this package involves
 accumulating text in a scalar variable through successive calls to the
 various code generating methods.  This text is then disposed to
 Ifeffit, to Larch, to a file, or elsewhere.  The outward looking
-methods, as shown in the example above, organize all of the
-complicated interactions of your data with Ifeffit or Larch.
+methods organize all of the complicated interactions of your data with
+Ifeffit or Larch.
 
 This package is aimed at many targets.  It can be the back-end of a
 graphical data analysis program, providing the glue between the
@@ -946,7 +948,7 @@ L<http://www.iinteractive.com/moose> for more information.
 
 =head1 IMPORT
 
-Subsets of Demeter can be imported to shorted loading time.
+Subsets of Demeter can be imported to shorten loading time.
 
 =over 4
 
@@ -988,7 +990,7 @@ Import everything needed to do data analysis with Feff.
 
 =head1 PRAGMATA
 
-Demeter pragmata are ways of affecting the run-time behavior of a
+Demeter "pragmata" are ways of affecting the run-time behavior of a
 Demeter program by specfying that behavior at compile-time.
 
      use Demeter qw(:plotwith=gnuplot)
@@ -1054,12 +1056,8 @@ Future UI options might include C<tk>, C<wx>, or C<rpc>.
 Specify the template set to use for data processing and fitting
 chores.  See L<Demeter::templates>.
 
-In the future, a template set will be written for
-L<Larch|http://cars9.uchicago.edu/ifeffit/Larch> when it becomes
-available.
-
-These can also be set during run-time using the C<set_mode> method -- see
-L<Demeter::Mode>.
+These can also be set during run-time using the C<set_mode> method --
+see L<Demeter::Mode>.
 
 =back
 
@@ -1125,14 +1123,15 @@ C<set> an undefined attribute for every subclass except for the Config
 subclass.
 
 The argument are simply a list (remember that the =E<gt> symbol is
-sytactically equivalent to a comma). The following are equivalent:
+sytactically equivalent to a comma in this context).  The following
+are equivalent:
 
     $data_object -> set(file => "my.data", kmin => 2.5);
   and
     @atts = (file => "my.data", kmin => 2.5);
     $data_object -> set(@atts);
 
-The sense in which this is a convenience wrapper is in that the
+The sense in which this is a convenience wrapper is that the
 following are equivalent:
 
     $data_object -> set(fft_kmin=>3.1, fft_kmax=>12.7);
@@ -1177,7 +1176,7 @@ Returns the YAML serialization string for the object as text.
 
 This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
-supplied regular expression again the C<name> attribute.
+supplied regular expression against the C<name> attribute.
 
   $is_match = $object->matches($regexp);
 
@@ -1187,11 +1186,11 @@ regular expression:
 
   $group_matches = $object->matches($regexp, 'group');
 
-=item C<dispose>
+=item C<template>, C<dispose>, C<dispatch>, C<chart>
 
-This method sends data processing and plotting commands off to their
-eventual destinations.  See the document page for L<Demeter::Dispose>
-for complete details.
+These methods generate data processing and plotting commands and send
+them off to their eventual destinations.  See the document page for
+L<Demeter::Dispose> for complete details.
 
 =item C<set_mode>
 
@@ -1221,37 +1220,37 @@ See L<Demeter:Dispose> for more details.
 
 =over
 
-=item C<co>
+=item C<co>, C<config>
 
 This returns the Config object.  This is a wrapper around C<get_mode>
 and is intended to be used in a method call chain with any Demeter
 object.  The following are equivalent:
 
-  my $config = $data->get_mode("params");
+  my $config = Demeter->get_mode("params");
   $config -> set_default("clamp", "medium", 20);
 
 and
 
-  $data -> co -> set_default("clamp", "medium", 20);
+  Demeter -> co -> set_default("clamp", "medium", 20);
 
 The latter involves much less typing!
 
-=item C<po>
+=item C<po>, C<plot_object>
 
 This returns the Plot object.  Like the C<co> method, this is a
 wrapper around C<get_mode> and is intended to be used in a method call
 chain with any Demeter object.
 
-  $data -> po -> set("c9", 'yellowchiffon3');
+  Demeter -> po -> set("c9", 'yellowchiffon3');
 
-=item C<mo>
+=item C<mo>, C<mode_object>
 
 This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.
 
-  print "on screen!" if ($data -> mo -> ui eq 'screen');
+  print "on screen!" if (Demeter -> mo -> ui eq 'screen');
 
-=item C<dd>
+=item C<dd>, C<data_default>
 
 This returns the default Data object.  When a Path object is created,
 if it is created without having its C<data> attribute set to an
@@ -1264,12 +1263,16 @@ and processing parameters.  So every Path object B<must> have an
 associated Data object.  If the C<data> attribute is not specified by
 the user, the default Data object will be used.
 
-  print ref($object->dd);
+  print ref(Demeter->dd);
        ===prints===> Demeter::Data
+
+=item C<fd>, C<feff_default>
+
+This returns the default Feff object.
 
 =back
 
-=head2 Utility methods
+=head2 Utility methods and common attribute accessors
 
 Here are a number of methods used internally, but which are available
 for your use.
@@ -1313,8 +1316,9 @@ this returns a false value.
 =item C<plottable>
 
 This returns a true value if the object is one that can be plotted.
-Currently, Data, Path, VPath, and SSPath objects return a true value.
-All others return false.
+Currently, Data, Path, the various Path-like objects, and objects
+associated with various analysis chores (peak fitting, difference
+spectra, etc) return a true value.  All others return false.
 
    $can_plot = $object -> plottable;
 
@@ -1327,7 +1331,8 @@ L<Demeter::LCF> C<combi> method and in several of the histogram
 processing methods.  This attribute takes a code reference.  At the
 beginning of each fit in the combinatorial sequence, this is
 dereference and called.  This allows a GUI to provide status updates
-during a potentially long-running process.
+during a potentially long-running process and in a manner that does
+not require Demeter to know what kind of UI is in use.
 
 The dereferencing and calling of the sentinal is handled by C<call>
 
@@ -1363,7 +1368,7 @@ system.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -1390,7 +1395,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://bruceravel.github.com/demeter/
+L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT

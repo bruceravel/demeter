@@ -2,7 +2,6 @@ package Demeter::UI::Athena::Smooth;
 
 use strict;
 use warnings;
-use feature qw(switch);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -86,39 +85,34 @@ sub mode {
 
 sub OnChoice {
   my ($this, $event) = @_;
-  given ($this->{choice}->GetStringSelection) {
-    when ('Three-point smoothing') {
-      $this->{widthlabel}->SetLabel("Repetitions");
-      $this->{widthlabel}->Enable(1);
-      $this->{width}->Enable(1);
-      $this->{devlabel}->Enable(0);
-      $this->{dev}->Enable(0);
-      #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
-    };
-    when ('Savitzky-Golay') {
-      $this->{widthlabel}->SetLabel("Size");
-      $this->{widthlabel}->Enable(0);
-      $this->{width}->Enable(0);
-      $this->{devlabel}->Enable(0);
-      $this->{dev}->Enable(0);
-      #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
-    };
-    when ('Boxcar average') {
-      $this->{widthlabel}->SetLabel("Kernel size");
-      $this->{widthlabel}->Enable(1);
-      $this->{width}->Enable(1);
-      $this->{devlabel}->Enable(0);
-      $this->{dev}->Enable(0);
-      #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
-    };
-    when ('Gaussian Filter') {
-      $this->{widthlabel}->SetLabel("Kernel size");
-      $this->{widthlabel}->Enable(1);
-      $this->{width}->Enable(1);
-      $this->{devlabel}->Enable(1);
-      $this->{dev}->Enable(1);
-      #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
-    };
+  if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
+    $this->{widthlabel}->SetLabel("Repetitions");
+    $this->{widthlabel}->Enable(1);
+    $this->{width}->Enable(1);
+    $this->{devlabel}->Enable(0);
+    $this->{dev}->Enable(0);
+    #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
+  } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
+    $this->{widthlabel}->SetLabel("Size");
+    $this->{widthlabel}->Enable(0);
+    $this->{width}->Enable(0);
+    $this->{devlabel}->Enable(0);
+    $this->{dev}->Enable(0);
+    #$::app->mouseover($this->{width}, "The number of repititions of the the three-point smoothing");
+  } elsif ($this->{choice}->GetStringSelection eq 'Boxcar average') {
+    $this->{widthlabel}->SetLabel("Kernel size");
+    $this->{widthlabel}->Enable(1);
+    $this->{width}->Enable(1);
+    $this->{devlabel}->Enable(0);
+    $this->{dev}->Enable(0);
+    #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
+  } elsif ($this->{choice}->GetStringSelection eq 'Gaussian Filter') {
+    $this->{widthlabel}->SetLabel("Kernel size");
+    $this->{widthlabel}->Enable(1);
+    $this->{width}->Enable(1);
+    $this->{devlabel}->Enable(1);
+    $this->{dev}->Enable(1);
+    #$::app->mouseover($this->{width}, "The kernel size must be odd -- if you choose an even number, one will be added to it");
   };
   $this->{save}->Enable(0);
 };
@@ -128,26 +122,21 @@ sub plot {
   my $width = $this->{width}->GetValue;
   my $text = "Plotted \"".$data->name."\" with its ";
   $data->standard;
-  given ($this->{choice}->GetStringSelection) {
-    when ('Three-point smoothing') {
-      $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
-      $this->{data} -> smooth($width);
-      $text .= "smoothed data, three-point smoothed $width times";
-    };
-    when ('Savitzky-Golay') {
-      $this->{data}  = $data->clone(name=>$data->name." Savitzky-Golay");
-      $this->{data} -> smooth(1);
-      $text .= "smoothed data, Savitzky-Golay";
-    };
-    when ('Boxcar average') {
-      $this->{data} = $data->boxcar($width);
-      $text .= "boxcar averaged data, kernel size $width";
-    };
-    when ('Gaussian Filter') {
-      my $sd        = $this->{dev}->GetValue;
-      $this->{data} = $data->gaussian_filter($width, $sd);
-      $text .= "Gaussian filtered data, size $width width $sd";
-    };
+  if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
+    $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
+    $this->{data} -> smooth($width);
+    $text .= "smoothed data, three-point smoothed $width times";
+  } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
+    $this->{data}  = $data->clone(name=>$data->name." Savitzky-Golay");
+    $this->{data} -> smooth(1);
+    $text .= "smoothed data, Savitzky-Golay";
+  } elsif ($this->{choice}->GetStringSelection eq 'Boxcar average') {
+    $this->{data} = $data->boxcar($width);
+    $text .= "boxcar averaged data, kernel size $width";
+  } elsif ($this->{choice}->GetStringSelection eq 'Gaussian Filter') {
+    my $sd        = $this->{dev}->GetValue;
+    $this->{data} = $data->gaussian_filter($width, $sd);
+    $text .= "Gaussian filtered data, size $width width $sd";
   };
   $::app->{main}->{PlotE}->pull_single_values;
   Demeter->po->set(e_norm=>0, e_bkg=>0, e_markers=>0, e_der=>0, e_sec=>0, e_pre=>0, e_post=>0);
@@ -165,30 +154,25 @@ sub save {
   my $width = $this->{width}->GetValue;
   my $text = " \"" . $app->current_data->name."\" and made a new data group";
   $app->current_data->standard;
-  given ($this->{choice}->GetStringSelection) {
-    when ('Three-point smoothing') {
-      $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
-      $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
-      $this->{data} -> smooth($width);
-      $text = "Smoothed" . $text;
-    };
-    when ('Savitzky-Golay') {
-      $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." Savitzky-Golay");
-      $this->{data} -> source("Smoothed ".$app->current_data->name.", Savitzky-Golay");
-      $this->{data} -> smooth(1);
-      $text = "SG" . $text;
-    };
-    when ('Boxcar average') {
-      $this->{data} = $app->current_data->boxcar($width);
-      $this->{data} -> source("Boxcar average of ".$app->current_data->name.", kernel size $width");
-      $text = "Boxcar averaged" . $text;
-    };
-    when ('Gaussian Filter') {
-      my $sd = $this->{dev}->GetValue;
-      $this->{data} = $app->current_data->gaussian_filter($width, $sd);
-      $this->{data} -> source("Gaussian filter of ".$app->current_data->name.", $width, $sd");
-      $text = "Gaussian filter of" . $text;
-    };
+  if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
+    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
+    $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
+    $this->{data} -> smooth($width);
+    $text = "Smoothed" . $text;
+  } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
+    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." Savitzky-Golay");
+    $this->{data} -> source("Smoothed ".$app->current_data->name.", Savitzky-Golay");
+    $this->{data} -> smooth(1);
+    $text = "SG" . $text;
+  } elsif ($this->{choice}->GetStringSelection eq 'Boxcar average') {
+    $this->{data} = $app->current_data->boxcar($width);
+    $this->{data} -> source("Boxcar average of ".$app->current_data->name.", kernel size $width");
+    $text = "Boxcar averaged" . $text;
+  } elsif ($this->{choice}->GetStringSelection eq 'Gaussian Filter') {
+    my $sd = $this->{dev}->GetValue;
+    $this->{data} = $app->current_data->gaussian_filter($width, $sd);
+    $this->{data} -> source("Gaussian filter of ".$app->current_data->name.", $width, $sd");
+    $text = "Gaussian filter of" . $text;
   };
   $app->current_data->unset_standard;
   $this->{data} ->_update('fft');
@@ -224,7 +208,7 @@ This module provides a
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -245,7 +229,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

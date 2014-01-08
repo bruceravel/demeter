@@ -600,7 +600,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-C<https://github.com/bruceravel/demeter>
+C<http://bruceravel.github.io/demeter>
 
 =head1 LICENSE AND COPYRIGHT
 

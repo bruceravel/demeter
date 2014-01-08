@@ -15,7 +15,7 @@
   <table class=navtable>
     <tr>
       <td align=left>
-        &laquo;<a class=navtable href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
         &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
         <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
         &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
@@ -109,7 +109,9 @@ types described below are all available from the Plot menu.
 The quad plot is the default plot that gets made when data are first
 imported.  Using the current set of processing parameters, the data
 are displayed in energy, k, R, and back-transform k all in the same
-plot window.<br />
+plot window.  This plot can also be made by right-clicking on
+the <span class=red>q</span> button.
+<br /><br />
 <a href="../../images/plot_quad.png" target=_blank><img class=flexy src="../../images/plot_quad.png" title="
 Quad plot of Fe foil.
 " alt="
@@ -125,7 +127,7 @@ Quad plot of Fe foil.
 <dd>
 This plot type shows the normalized &mu;(E) spectrum along with its
 derivative.  The derivative spectrum is scaled by an amount that makes
-it display nicely along with the normalized data.<br />
+it display nicely along with the normalized data.<br /><br />
 <a href="../../images/plot_nd.png" target=_blank><img class=flexy src="../../images/plot_nd.png" title="
 Norm and deriv of Fe foil
 " alt="
@@ -144,7 +146,12 @@ along with &mu;(E) and the signal as shown below.
 The I&#8320; and signal channel is among the data saved in
 <a href="../output/project.html">a project file</a>.
 This example shows &mu;(E) of Au chloride along with the signal and
-I&#8320; channels.<br />
+I&#8320; channels.This plot can also be made by right-clicking on
+the <span class=red>E</span> button.  (The norm+deriv
+plot can be configured for right-click use with 
+the <span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;right_single_e</span>
+<a href="../other/prefs.html">configuration parameter</a>.)
+<br /><br />
 <a href="../../images/plot_mui0.png" target=_blank><img class=flexy src="../../images/plot_mui0.png" title="
 mu(E) of Au chloride along with the signal and I0 channels.
 " alt="
@@ -162,7 +169,9 @@ A k123 plot is a way of visualizing the effect of k-weighting on the
 &chi;(k) spectrum.  The k&sup1;-weighted spectrum is scaled up to be
 about the same size as the k&sup2;-weighted spectrum.  Similarly, the
 k&sup3;-weighted spectrum is scaled down.
-<br />
+This plot can also be made by right-clicking on
+the <span class=red>k</span> button.
+<br /><br />
 <a href="../../images/plot_k123.png" target=_blank><img class=flexy src="../../images/plot_k123.png" title="
 k123 plot of Fe foil
 " alt="
@@ -184,7 +193,9 @@ FT of the k&sup3;-weighted spectrum is scaled down.  The current
 setting in the 
 <a href="tabs.html#plottinginr-space">R tab</a>
 is used to make this plot.  For this figure, the magnitude setting was selected.
-<br />
+This plot can also be made by right-clicking on
+the <span class=red>R</span> button.
+<br /><br />
 <a href="../../images/plot_r123.png" target=_blank><img class=flexy src="../../images/plot_r123.png" title="
 R123 plot of Fe foil
 " alt="
@@ -219,7 +230,7 @@ that have been <a href="../ui/mark.html">marked</a>.
 This special plot is used to visualize &mu;(E) spectra measured at
 different edges.  Each spectrum, Cu and Fe in this example, is shifted
 so that its point of E&#8320; is displayed at 0 on the energy axis.
-<br />
+<br /><br />
 <a href="../../images/plot_e0_0.png" target=_blank><img class=flexy src="../../images/plot_e0_0.png" title="
 Plot of Fe and Cu foils with E0 at 0.
 " alt="
@@ -233,8 +244,13 @@ Plot of Fe and Cu foils with E0 at 0.
   Plot I0 of marked groups
 </dt>
 <dd>
-This plot allows eamination of the I&#8320; signals of a set of marked groups. 
-<br />
+This plot allows examination of the I&#8320; signals of a set of marked groups. 
+This plot can also be made by right-clicking on
+the <span class=purple>E</span> button.  (The other two
+special marked groups plots can be configured for right-click use with
+the <span class=pref>&diams;Artemis&nbsp;&rarr;&nbsp;right_marked_e</span>
+<a href="../other/prefs.html">configuration parameter</a>.)
+<br /><br />
 <a href="../../images/plot_marked_i0.png" target=_blank><img class=flexy src="../../images/plot_marked_i0.png" title="
 The I0 signals of three marked groups
 " alt="
@@ -286,7 +302,7 @@ from the merged data.  This is the plot that is displayed by default
 when a merge is made.  This behavior is controled by the 
 <span class=pref>&diams;Athena&nbsp;&rarr;&nbsp;merge_plot</span>
 <a href="../other/prefs.html">configuration parameter</a>.
-<br />
+<br /><br />
 <a href="../../images/merge_stddev.png" target=_blank><img class=flexy src="../../images/merge_stddev.png" title="
 A plot of merged data +/- the standard deviation for Au hydroxide data
 " alt="
@@ -304,7 +320,7 @@ In this plot, the standard deviation spectrum is plotted directly.  It
 is scaled to plot nicely with the merged data.  The point of this plot
 is to see how the variability in the data included in the merge
 is distributed in energy.
-<br />
+<br /><br />
 <a href="../../images/merge_variance.png" target=_blank><img class=flexy src="../../images/merge_variance.png" title="
 A plot of merged data and the variance for Fe foil data
 " alt="
@@ -330,7 +346,7 @@ displayed.  The &ldquo;Save last plot as&rdquo; submenu
 allows you to send the most recent plot to a PNG or PDF file.  You
 will be prompted for a filename, then the most recent plot will be
 written to that file in the format specified.  Currently, only PNG and
-PDF are supported.  Saving to a file does not currently work for quad
+PDF are supported.  Saving to a file does not work for quad
 plots &ndash; you'll have to rely on a screen-capture tool
 for that.
 </p>
@@ -394,9 +410,9 @@ on the original &chi;(k) data.
   <table>
     <tr>
       <td colspan=2>
-        <span class=program>DEMETER</span> is copyright &copy; 2009-2013 Bruce Ravel
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2014 Bruce Ravel
         &mdash;
-        This document is copyright &copy; 2013 Bruce Ravel
+        This document is copyright &copy; 2014 Bruce Ravel
         <br />
       </td>
     </tr>

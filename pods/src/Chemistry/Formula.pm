@@ -1,7 +1,7 @@
 ######################################################################
 ##  This module is copyright (c) 2001-2014 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://bruceravel.github.com/demeter/
+##  http://bruceravel.github.io/demeter/
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -316,7 +316,7 @@ can be found on CPAN.  C::Scan is maintained by Hugo van der Sanden.
 
 Bruce Ravel <bravel AT bnl DOT gov>
 
-http://bruceravel.github.com/demeter/
+http://bruceravel.github.io/demeter/
 
 SVN repository: http://cars9.uchicago.edu/svn/libperlxray/
 
@@ -334,7 +334,7 @@ __DATA__
 ##  contribute your additions back to the author:
 ##    Bruce Ravel
 ##    bravel AT bnl DOT gov
-##    http://bruceravel.github.com/demeter/
+##    http://bruceravel.github.io/demeter/
 ##
 ######################################################################
 ##

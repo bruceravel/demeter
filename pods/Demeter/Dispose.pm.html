@@ -91,9 +91,9 @@
 </pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>This module contains contains the dispose method, which is used to
-dispatch Ifeffit or Larch command strings to various places.  This is
-part of the base of all other objects in the Demeter system, thus any
-object can dispose text.</p>
+dispatch Ifeffit, Larch, and Gunplot command strings.  This is part of
+the base of all other objects in the Demeter system, thus any object
+can dispose text.</p>
 
 <p>The command strings which are handled by the <code>dispose</code> method are
 typically generated using the command templating system, which is
@@ -133,25 +133,26 @@ are specifically plotting commands.</p>
 
 <p>Demeter is very careful to segregate plotting commands from data
 processing commands and to dispose of them separately.  This allows
-transparent use of different plotting backends.  The <code>ifeffit</code>
+transparent use of different plotting backends.  The <code>backend</code>
 disposal channel is used to indicate disposal of commands either to
 ifeffit or to another plotting backend.  That is, if you want to
 dispose of plotting commands to a gnuplot process, you must have the
-<code>ifeffit</code> disposal channel enabled.</p>
+<code>backend</code> disposal channel enabled.  <code>ifeffit</code> and <code>larch</code> are
+aliases for <code>backend</code>.</p>
 
 <p>Use the <code>set_mode</code> class method to establish the disposal channels.</p>
 
 <pre>   Demeter-&gt;set_mode(backend=&gt;1, screen=&gt;1, file=&gt;0, buffer=&gt;0);
    $dataobject -&gt; dispose($commands);
 
-</pre><p>When explicitly disposing a plotting command, use the plotting flag:</p>
+</pre><p>When disposing a plotting command, use the plotting flag:</p>
 
 <pre>   $dataobject -&gt; dispose($commands, &quot;plotting&quot;);
 
 </pre><p>There are several disposal channels:</p>
 
 <dl>
-	<dt>ifeffit</dt>
+	<dt>backend (ifeffit or larch are aliases)</dt>
 		<dd><p>This channel sends reprocessed command strings to ifeffit for
 processing.  This is a boolean.  By default, this channel is on and
 all the rest are off.</p></dd>
@@ -170,7 +171,7 @@ character.</p></dd>
 
 </pre></dd>		<dd><p>These colors are configurable in the screen group.</p></dd>
 	<dt>file</dt>
-		<dd><p>This channel send command strings to a file.  If the value of file
+		<dd><p>This channel writes command strings to a file.  If the value of file
 evaluates false, then this channel is not used.  If it is true, the
 value is taken to be the name of the output file.  At this time, IO
 control is extremely simple.  If you want to append command strings to
@@ -261,7 +262,7 @@ value.</p>
 </pre></dd>		<dd><p>is the same as</p></dd>
 <dd><pre>  $self-&gt;dispose($self-&gt;template('process', 'deriv'));
 
-</pre></dd>		<dd><p>which is a common idiom in Demeter.</p></dd>
+</pre></dd>		<dd><p>which was such a common idiom in Demeter that it merited this method.</p></dd>
 	<dt><code>chart</code></dt>
 		<dd><p>This wraps calls to <code>template</code> and to <code>dispose</code> with the <code>plotting</code>
 argument.  This:</p></dd>
@@ -270,7 +271,7 @@ argument.  This:</p></dd>
 </pre></dd>		<dd><p>is the same as</p></dd>
 <dd><pre>  $self-&gt;dispose($self-&gt;template('process', 'deriv'), 'plotting');
 
-</pre></dd>		<dd><p>which is a common plotting idiom in Demeter.</p></dd>
+</pre></dd>		<dd><p>which was such a common idiom in Demeter that it merited this method.</p></dd>
 	<dt><code>Reset</code></dt>
 		<dd><p>This method sends the <code>reset</code> command to ifeffit.  The method name is
 capitalized to avoid confusion with the perl built-in function.</p></dd>
@@ -292,7 +293,7 @@ see <a href="Mode.pm.html">Demeter::Mode</a>.</p>
 
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -309,7 +310,6 @@ will be dealt with should it ever come up.</li>
 	<li>The screen, plotscreen, and repscreen disposal channels currently
 write to STDOUT.  The user can direct STDOUT elsewhere.  It may be
 useful to have the option of specifying a filehandle for this channel.</li>
-	<li>Will reprocessed commands be needed with Larch?</li>
 </ul>
 
 <p>Please report problems to the Ifeffit Mailing List
@@ -321,7 +321,7 @@ useful to have the option of specifying a filehandle for this channel.</li>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p><a href="http://bruceravel.github.com/demeter/">http://bruceravel.github.com/demeter/</a></p>
+<p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
 
 

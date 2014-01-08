@@ -43,9 +43,11 @@ sub new {
   $this->{in_label}        = Wx::StaticText->new($this, -1, 'Angle in');
   $this->{out_label}       = Wx::StaticText->new($this, -1, 'Angle out');
   $this->{thickness_label} = Wx::StaticText->new($this, -1, 'Thickness');
+  $this->{density_label}   = Wx::StaticText->new($this, -1, 'Density');
   $gbs->Add($this->{in_label},        Wx::GBPosition->new(3,0));
   $gbs->Add($this->{out_label},       Wx::GBPosition->new(3,2));
   $gbs->Add($this->{thickness_label}, Wx::GBPosition->new(4,0));
+  $gbs->Add($this->{density_label},   Wx::GBPosition->new(4,2));
 
   $this->{group}     = Wx::StaticText->new($this, -1, q{});
   $this->{element}   = Wx::StaticText->new($this, -1, q{});
@@ -54,10 +56,12 @@ sub new {
   $this->{in}        = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, 0, 90);
   $this->{out}       = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, 0, 90);
   $this->{thickness} = Wx::TextCtrl->new($this, -1, 1000, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{density}   = Wx::TextCtrl->new($this, -1, 1,    wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
 
-  foreach my $x (qw(formula in out thickness)) {
+  foreach my $x (qw(formula in out thickness density)) {
     EVT_TEXT_ENTER($this, $this->{$x}, sub{$this->plot($app->current_data)});
   };
+  $this->{density} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{thickness} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{thickness_label}->Enable(0);
   $this->{thickness}->Enable(0);
@@ -69,6 +73,7 @@ sub new {
   $gbs->Add($this->{in},        Wx::GBPosition->new(3,1));
   $gbs->Add($this->{out},       Wx::GBPosition->new(3,3));
   $gbs->Add($this->{thickness}, Wx::GBPosition->new(4,1));
+  $gbs->Add($this->{density},   Wx::GBPosition->new(4,3));
   $top -> Add($gbs, 0, wxLEFT|wxRIGHT, 25);
 
 
@@ -124,9 +129,9 @@ sub mode {
 sub OnAlgorithm {
   my ($this, $event, $app) = @_;
   if ($this->{algorithm}->GetSelection == 1) {
-    $this->{$_}->Enable(1) foreach (qw(thickness thickness_label));
+    $this->{$_}->Enable(1) foreach (qw(thickness thickness_label density density_label));
   } else {
-    $this->{$_}->Enable(0) foreach (qw(thickness thickness_label));
+    $this->{$_}->Enable(0) foreach (qw(thickness thickness_label density density_label));
   };
   if ($this->{algorithm}->GetSelection == 3) {
     $this->{$_}->Enable(0) foreach (qw(in in_label out out_label));
@@ -145,8 +150,13 @@ sub plot {
   my $in        = $this->{in}        -> GetValue;
   my $out       = $this->{out}       -> GetValue;
   my $thickness = $this->{thickness} -> GetValue;
+  my $density   = $this->{density}   -> GetValue;
   if (not looks_like_number($thickness)) {
     $::app->{main}->status("Not doing self absorption correction -- your value for thickness is not a number!", 'error|nobuffer');
+    return;
+  };
+  if (not looks_like_number($density)) {
+    $::app->{main}->status("Not doing self absorption correction -- your value for density is not a number!", 'error|nobuffer');
     return;
   };
 
@@ -174,7 +184,8 @@ sub plot {
   $data->plot($space);
 
   my $text = q{};
-  ($this->{sadata}, $text) = $data->sa($algorithm, formula=>$formula, in=>$in, out=>$out, thickness=>$thickness);
+  ($this->{sadata}, $text) = $data->sa($algorithm, formula=>$formula, in=>$in, out=>$out,
+				       thickness=>$thickness, density=>$density);
   $this->{feedback}->Clear;
   $this->{feedback}->SetValue($text);
   $this->{sadata}->plot($space);
@@ -263,7 +274,7 @@ L<Data::Demeter::SelfAbsorption>.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -276,7 +287,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

@@ -1,6 +1,6 @@
 ##  This module is copyright (c) 1999-2007 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
-##  http://bruceravel.github.com/demeter/
+##  http://bruceravel.github.io/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
 ##
 ## -------------------------------------------------------------------
@@ -630,6 +630,6 @@ lines from the edge directly below the chosen energy.
 =head1 AUTHOR
 
   Bruce Ravel, bravel AT bnl DOT gov
-  http://bruceravel.github.com/demeter/
+  http://bruceravel.github.io/demeter/
 
 =cut

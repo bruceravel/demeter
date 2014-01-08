@@ -88,11 +88,11 @@ sub group {
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
   $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
-					   wxDefaultPosition, [90,12], wxNO_BORDER);
+					   wxDefaultPosition, [95,12], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
-  $hbox -> Add($this->{type}, 0, wxBOTTOM|wxTOP, 4);
+  $hbox -> Add($this->{type}, 0, wxTOP, 6);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
@@ -407,7 +407,7 @@ sub fft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [48,-1]);
+  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [60,-1]);
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
@@ -483,7 +483,7 @@ sub bft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [48,-1]);
+  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [60,-1]);
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
@@ -662,7 +662,7 @@ sub mode {
 
   if ($group) {
     my $type = (($group->datatype eq 'xmu') and $group->is_nor) ? 'norm' : $group->datatype;
-    $this->{type}->SetLabel('Dataype: ' . $type . '    ') ;
+    $this->{type}->SetLabel('Datatype: ' . $type . '    ') ;
   };
 
   return $this;
@@ -750,7 +750,7 @@ sub push_values {
   $this->{freeze}->SetValue($data->quenched);
 
   my $type = (($data->datatype eq 'xmu') and $data->is_nor) ? 'norm' : $data->datatype;
-  $this->{type}->SetLabel('Dataype: ' . $type . '    ');
+  $this->{type}->SetLabel('Datatype: ' . $type . '    ');
 
   return $data;
 };
@@ -1471,7 +1471,7 @@ transforms, and group-specific plotting parameters.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -1484,7 +1484,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/>
+L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 

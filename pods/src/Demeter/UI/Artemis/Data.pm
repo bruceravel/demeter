@@ -17,7 +17,6 @@ package  Demeter::UI::Artemis::Data;
 
 use strict;
 use warnings;
-use feature 'switch';
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
@@ -184,22 +183,17 @@ sub new {
   EVT_MENU($this, -1, sub{OnMenuClick(@_);} );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
-  given (Demeter->co->default('artemis', 'window_function')) {
-    when ('hanning') {
-      $this->{menubar}->Check($WINDOW_HANNING, 1);
-    };
-    when ('kaiser-bessel') {
-      $this->{menubar}->Check($WINDOW_KB, 1);
-    };
-    when ('welch') {
-      $this->{menubar}->Check($WINDOW_WELCH, 1);
-    };
-    when ('parzen') {
-      $this->{menubar}->Check($WINDOW_PARZEN, 1);
-    };
-    when ('sine') {
-      $this->{menubar}->Check($WINDOW_SINE, 1);
-    };
+  my $winfun = Demeter->co->default('artemis', 'window_function');
+  if ($winfun eq 'hanning') {
+    $this->{menubar}->Check($WINDOW_HANNING, 1);
+  } elsif ($winfun eq 'kaiser-bessel') {
+    $this->{menubar}->Check($WINDOW_KB, 1);
+  } elsif ($winfun eq 'welch') {
+    $this->{menubar}->Check($WINDOW_WELCH, 1);
+  } elsif ($winfun eq 'parzen') {
+    $this->{menubar}->Check($WINDOW_PARZEN, 1);
+  } elsif ($winfun eq 'sine') {
+    $this->{menubar}->Check($WINDOW_SINE, 1);
   };
 
   $this->{statusbar} = $this->CreateStatusBar;
@@ -2776,7 +2770,7 @@ paths associated with the data group.
 
 =head1 DEPENDENCIES
 
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+Demeter's dependencies are in the F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 

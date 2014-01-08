@@ -58,7 +58,7 @@
 <ul>
 	<li><a href="#Main_methods">Main methods</a></li>
 	<li><a href="#Convenience_methods">Convenience methods</a></li>
-	<li><a href="#Utility_methods">Utility methods</a></li>
+	<li><a href="#Utility_methods_and_common_attribute">Utility methods and common attribute accessors</a></li>
 </ul>
 </li>
 	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
@@ -70,7 +70,10 @@
 <hr />
 <!-- INDEX END -->
 
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<pre>                                John Keats
+                                Ode on a Grecian Urn
+
+</pre><h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <p>Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch</p>
 
@@ -91,7 +94,7 @@ Using Demeter automatically turns on <a href="http://search.cpan.org/perldoc?str
 
 <p>This module provides an object oriented interface to the EXAFS data
 analysis capabilities of the popular and powerful Ifeffit package and
-its successor Larch.  Mindful that the Ifeffit and Larch APIs involve
+its successor Larch.  Given that the Ifeffit and Larch APIs involve
 streams of text commands, this package is, at heart, a code generator.
 Many methods of this package return text.  All actual interaction with
 Ifeffit or Larch is handled through a single method, <code>dispose</code>, which
@@ -99,8 +102,8 @@ is described below.  The internal structure of this package involves
 accumulating text in a scalar variable through successive calls to the
 various code generating methods.  This text is then disposed to
 Ifeffit, to Larch, to a file, or elsewhere.  The outward looking
-methods, as shown in the example above, organize all of the
-complicated interactions of your data with Ifeffit or Larch.</p>
+methods organize all of the complicated interactions of your data with
+Ifeffit or Larch.</p>
 
 <p>This package is aimed at many targets.  It can be the back-end of a
 graphical data analysis program, providing the glue between the
@@ -120,7 +123,7 @@ using Demeter, its benefits are legion.  See <a href="http://search.cpan.org/per
 
 <h1 id="IMPORT">IMPORT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<p>Subsets of Demeter can be imported to shorted loading time.</p>
+<p>Subsets of Demeter can be imported to shorten loading time.</p>
 
 <dl>
 	<dt><code>:data</code></dt>
@@ -150,7 +153,7 @@ allow much more than the plotting of mu(E) data.</p></dd>
 </pre></dd></dl>
 <h1 id="PRAGMATA">PRAGMATA <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<p>Demeter pragmata are ways of affecting the run-time behavior of a
+<p>Demeter &quot;pragmata&quot; are ways of affecting the run-time behavior of a
 Demeter program by specfying that behavior at compile-time.</p>
 
 <pre>     use Demeter qw(:plotwith=gnuplot)
@@ -196,11 +199,8 @@ this dependeny to be relaxed from a requirement to a suggestion.</p></dd>
 	<dt><code>:t=XX</code> or <code>:template=XX</code></dt>
 		<dd><p>Specify the template set to use for data processing and fitting
 chores.  See <a href="http://search.cpan.org/perldoc?Demeter%3A%3Atemplates">Demeter::templates</a>.</p></dd>
-		<dd><p>In the future, a template set will be written for
-<a href="http://cars9.uchicago.edu/ifeffit/Larch">Larch</a> when it becomes
-available.</p></dd>
-		<dd><p>These can also be set during run-time using the <code>set_mode</code> method -- see
-<a href="Demeter/Mode.pm.html">Demeter::Mode</a>.</p></dd>
+		<dd><p>These can also be set during run-time using the <code>set_mode</code> method --
+see <a href="Demeter/Mode.pm.html">Demeter::Mode</a>.</p></dd>
 </dl>
 
 
@@ -256,13 +256,14 @@ argument, as shown above.  An exception is thrown is you attempt to
 <code>set</code> an undefined attribute for every subclass except for the Config
 subclass.</p></dd>
 		<dd><p>The argument are simply a list (remember that the =&gt; symbol is
-sytactically equivalent to a comma). The following are equivalent:</p></dd>
+sytactically equivalent to a comma in this context).  The following
+are equivalent:</p></dd>
 <dd><pre>    $data_object -&gt; set(file =&gt; &quot;my.data&quot;, kmin =&gt; 2.5);
   and
     @atts = (file =&gt; &quot;my.data&quot;, kmin =&gt; 2.5);
     $data_object -&gt; set(@atts);
 
-</pre></dd>		<dd><p>The sense in which this is a convenience wrapper is in that the
+</pre></dd>		<dd><p>The sense in which this is a convenience wrapper is that the
 following are equivalent:</p></dd>
 <dd><pre>    $data_object -&gt; set(fft_kmin=&gt;3.1, fft_kmax=&gt;12.7);
   and
@@ -299,7 +300,7 @@ serialization of a fitting model.</p></dd>
 	<dt><code>matches</code></dt>
 		<dd><p>This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
-supplied regular expression again the <code>name</code> attribute.</p></dd>
+supplied regular expression against the <code>name</code> attribute.</p></dd>
 <dd><pre>  $is_match = $object-&gt;matches($regexp);
 
 </pre></dd>		<dd><p>You can supply a second argument to match against some other
@@ -307,10 +308,10 @@ attribute.  For instance, to match the <code>group</code> attribute against a
 regular expression:</p></dd>
 <dd><pre>  $group_matches = $object-&gt;matches($regexp, 'group');
 
-</pre></dd>	<dt><code>dispose</code></dt>
-		<dd><p>This method sends data processing and plotting commands off to their
-eventual destinations.  See the document page for <a href="Demeter/Dispose.pm.html">Demeter::Dispose</a>
-for complete details.</p></dd>
+</pre></dd>	<dt><code>template</code>, <code>dispose</code>, <code>dispatch</code>, <code>chart</code></dt>
+		<dd><p>These methods generate data processing and plotting commands and send
+them off to their eventual destinations.  See the document page for
+<a href="Demeter/Dispose.pm.html">Demeter::Dispose</a> for complete details.</p></dd>
 	<dt><code>set_mode</code></dt>
 		<dd><p>This is the method used to set the attributes described in
 <a href="Demeter/Dispose.pm.html">Demeter::Dispose</a>.  Any Demeter object can call this method.</p></dd>
@@ -332,29 +333,29 @@ call this method.</p></dd>
 <h2 id="Convenience_methods">Convenience methods</h2>
 
 <dl>
-	<dt><code>co</code></dt>
+	<dt><code>co</code>, <code>config</code></dt>
 		<dd><p>This returns the Config object.  This is a wrapper around <code>get_mode</code>
 and is intended to be used in a method call chain with any Demeter
 object.  The following are equivalent:</p></dd>
-<dd><pre>  my $config = $data-&gt;get_mode(&quot;params&quot;);
+<dd><pre>  my $config = Demeter-&gt;get_mode(&quot;params&quot;);
   $config -&gt; set_default(&quot;clamp&quot;, &quot;medium&quot;, 20);
 
 </pre></dd>		<dd><p>and</p></dd>
-<dd><pre>  $data -&gt; co -&gt; set_default(&quot;clamp&quot;, &quot;medium&quot;, 20);
+<dd><pre>  Demeter -&gt; co -&gt; set_default(&quot;clamp&quot;, &quot;medium&quot;, 20);
 
 </pre></dd>		<dd><p>The latter involves much less typing!</p></dd>
-	<dt><code>po</code></dt>
+	<dt><code>po</code>, <code>plot_object</code></dt>
 		<dd><p>This returns the Plot object.  Like the <code>co</code> method, this is a
 wrapper around <code>get_mode</code> and is intended to be used in a method call
 chain with any Demeter object.</p></dd>
-<dd><pre>  $data -&gt; po -&gt; set(&quot;c9&quot;, 'yellowchiffon3');
+<dd><pre>  Demeter -&gt; po -&gt; set(&quot;c9&quot;, 'yellowchiffon3');
 
-</pre></dd>	<dt><code>mo</code></dt>
+</pre></dd>	<dt><code>mo</code>, <code>mode_object</code></dt>
 		<dd><p>This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.</p></dd>
-<dd><pre>  print &quot;on screen!&quot; if ($data -&gt; mo -&gt; ui eq 'screen');
+<dd><pre>  print &quot;on screen!&quot; if (Demeter -&gt; mo -&gt; ui eq 'screen');
 
-</pre></dd>	<dt><code>dd</code></dt>
+</pre></dd>	<dt><code>dd</code>, <code>data_default</code></dt>
 		<dd><p>This returns the default Data object.  When a Path object is created,
 if it is created without having its <code>data</code> attribute set to an
 existing Data object, a new Data object with sensible default values
@@ -364,11 +365,13 @@ attribute of the Mode object.</p></dd>
 and processing parameters.  So every Path object <strong>must</strong> have an
 associated Data object.  If the <code>data</code> attribute is not specified by
 the user, the default Data object will be used.</p></dd>
-<dd><pre>  print ref($object-&gt;dd);
+<dd><pre>  print ref(Demeter-&gt;dd);
        ===prints===&gt; Demeter::Data
 
-</pre></dd></dl>
-<h2 id="Utility_methods">Utility methods</h2>
+</pre></dd>	<dt><code>fd</code>, <code>feff_default</code></dt>
+		<dd><p>This returns the default Feff object.</p></dd>
+</dl>
+<h2 id="Utility_methods_and_common_attribute">Utility methods and common attribute accessors</h2>
 
 <p>Here are a number of methods used internally, but which are available
 for your use.</p>
@@ -402,8 +405,9 @@ objects, this returns a reference to itself.  For other object types
 this returns a false value.</p></dd>
 	<dt><code>plottable</code></dt>
 		<dd><p>This returns a true value if the object is one that can be plotted.
-Currently, Data, Path, VPath, and SSPath objects return a true value.
-All others return false.</p></dd>
+Currently, Data, Path, the various Path-like objects, and objects
+associated with various analysis chores (peak fitting, difference
+spectra, etc) return a true value.  All others return false.</p></dd>
 <dd><pre>   $can_plot = $object -&gt; plottable;
 
 </pre></dd>	<dt><code>sentinal</code></dt>
@@ -414,7 +418,8 @@ that a Demeter program undertakes.  It is used, for example, in the
 processing methods.  This attribute takes a code reference.  At the
 beginning of each fit in the combinatorial sequence, this is
 dereference and called.  This allows a GUI to provide status updates
-during a potentially long-running process.</p></dd>
+during a potentially long-running process and in a manner that does
+not require Demeter to know what kind of UI is in use.</p></dd>
 		<dd><p>The dereferencing and calling of the sentinal is handled by <code>call</code></p></dd>
 <dd><pre>  $object -&gt; call_sentinal;
 
@@ -449,7 +454,7 @@ system.</p>
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <p>The dependencies of the Demeter system are in the
-<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+<cite>Build.PL</cite> file.</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
@@ -469,7 +474,7 @@ templates.  <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Te
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p>http://bruceravel.github.com/demeter/</p>
+<p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
 
 

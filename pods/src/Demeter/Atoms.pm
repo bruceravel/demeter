@@ -1326,7 +1326,7 @@ Atoms uses the C<atoms> configuration group.
 =head1 DEPENDENCIES
 
 The dependencies of the Demeter system are in the
-F<Bundle/DemeterBundle.pm> file.
+F<Build.PL> file.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -1364,7 +1364,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://bruceravel.github.com/demeter/exafs/>
+L<http://bruceravel.github.io/demeter>
 
 
 =head1 LICENCE AND COPYRIGHT

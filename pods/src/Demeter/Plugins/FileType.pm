@@ -507,7 +507,7 @@ malformed compared to the expectations of C<fix>.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://xafs.org/BruceRavel
+http://bruceravel.github.io/demeter/
 
 =head1 LICENSE AND COPYRIGHT
 
