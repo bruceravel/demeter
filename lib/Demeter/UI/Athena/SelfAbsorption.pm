@@ -63,6 +63,8 @@ sub new {
   };
   $this->{density} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{thickness} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->{density_label}->Enable(0);
+  $this->{density}->Enable(0);
   $this->{thickness_label}->Enable(0);
   $this->{thickness}->Enable(0);
 
@@ -78,12 +80,25 @@ sub new {
 
 
   $this->{plot}  = Wx::Button->new($this, -1, 'Plot data and correction',         wxDefaultPosition, $tcsize);
-  $this->{infoe} = Wx::Button->new($this, -1, 'Plot information depth in energy', wxDefaultPosition, $tcsize);
-  $this->{info}  = Wx::Button->new($this, -1, 'Plot information depth in k',      wxDefaultPosition, $tcsize);
+  $this->{plotr} = Wx::Button->new($this, -1, 'Plot data and correction in R',    wxDefaultPosition, $tcsize);
+  $this->{infoe} = Wx::Button->new($this, -1, 'Info depth in energy', wxDefaultPosition, $tcsize);
+  $this->{info}  = Wx::Button->new($this, -1, 'Info depth in k',      wxDefaultPosition, $tcsize);
   $this->{make}  = Wx::Button->new($this, -1, 'Make corrected data group',        wxDefaultPosition, $tcsize);
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot infoe info make));
+
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $box -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $hbox -> Add($this->{$_}, 1, wxGROW|wxALL, 2) foreach (qw(plot plotr));
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
+  $box -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $hbox -> Add($this->{$_}, 1, wxGROW|wxALL, 2) foreach (qw(infoe info));
+
+  $box -> Add($this->{make}, 0, wxGROW|wxALL, 2);
+
   $this->{make}->Enable(0);
-  EVT_BUTTON($this, $this->{plot},    sub{$this->plot($app->current_data)});
+  $this->{plotr}->Enable(0);
+  EVT_BUTTON($this, $this->{plot},    sub{$this->plot($app->current_data, 'k')});
+  EVT_BUTTON($this, $this->{plotr},   sub{$this->plot($app->current_data, 'r')});
   EVT_BUTTON($this, $this->{infoe},   sub{$this->info($app->current_data, 'E')});
   EVT_BUTTON($this, $this->{info},    sub{$this->info($app->current_data, 'k')});
   EVT_BUTTON($this, $this->{make},    sub{$this->make($app)});
@@ -133,6 +148,11 @@ sub OnAlgorithm {
   } else {
     $this->{$_}->Enable(0) foreach (qw(thickness thickness_label density density_label));
   };
+  if ($this->{algorithm}->GetSelection == 0) {
+    $this->{plotr}->Enable(0);
+  } else {
+    $this->{plotr}->Enable(1);
+  };
   if ($this->{algorithm}->GetSelection == 3) {
     $this->{$_}->Enable(0) foreach (qw(in in_label out out_label));
   } else {
@@ -141,11 +161,12 @@ sub OnAlgorithm {
 };
 
 sub plot {
-  my ($this, $data) = @_;
+  my ($this, $data, $sp) = @_;
   my $busy = Wx::BusyCursor->new();
   my @algs = (qw(fluo booth troger atoms));
   my $algorithm = $algs[$this->{algorithm}->GetSelection];
   my $space = ($algorithm eq 'fluo') ? 'E' : 'k';
+  $space = 'R' if lc($sp) eq 'r';
   my $formula   = $this->{formula}   -> GetValue;
   my $in        = $this->{in}        -> GetValue;
   my $out       = $this->{out}       -> GetValue;
@@ -201,6 +222,8 @@ sub make {
   my ($this, $app) = @_;
 
   my $index = $app->current_index;
+  $this->{sadata}->source('Self absorption correction of '.$app->current_data->name);
+  $this->{sadata}->update_fft(1);
   if ($index == $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->AddData($this->{sadata}->name, $this->{sadata});
   } else {
