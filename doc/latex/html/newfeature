@@ -3,7 +3,7 @@
 %]
 [% USE image "${file}" %]
 [% ww = image.width / 80 %]
-\begin{newfeaure}
+\begin{newfeature}
    \includegraphics*[width=[% ww %]cm]{[%dots%]/todo.png}  \textbf{To Do:}
 [%- content | indent(3) -%]
 \end{newfeature}
