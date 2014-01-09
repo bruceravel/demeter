@@ -1,1 +1,1 @@
-\texttt{[%- a | replace("\\\\", '$\backslash$') | replace('_', '\_') | replace('\$', '\$') -%]}
+\texttt{[%- a | replace("\\\\", '$\backslash$') | replace('_', '\_') | replace('\$', '\$') | replace("\%",    '\%') -%]}

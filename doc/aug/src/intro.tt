@@ -197,11 +197,15 @@ log file.  This log file is called
 [% END %]
 
 [% FILTER html_para %]
-[% INCLUDE font/quote a="%APPDATA%"%]
+[% INCLUDE font/file a="%APPDATA%"%]
 is [% INCLUDE font/file a="C:\\Users\\<username>\\AppData\Roaming\\" %]
-on Windows 7 and 8.  It is
+on Windows 7 and 8.  
+
+It is
 [% INCLUDE font/file a="C:\\Documents and Settings\\<username>\\Application Data\\" %]
-on Windows XP and Vista.  In either case, 
-[% INCLUDE font/quote a="username" %]
+on Windows XP and Vista.  
+
+In either case, 
+[% INCLUDE font/file a="<username>" %]
 is your log-in name.
 [% END %]

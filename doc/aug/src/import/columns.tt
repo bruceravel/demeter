@@ -128,7 +128,16 @@ case [% athena %] gets it wrong, you can specify the energy unit with
 the [% INCLUDE font/quote a="Energy units" %] menu.  [% INCLUDE html/link
 link="../process/pixel.html" text="Dispersive XAS" %], i.e.
 data which is a function of pixel index, requires special treatment.
+[% END %]
 
+[%# This is a by-hand fix for a layout problem in the latex/PDF output %]
+[% SWITCH document_style %]
+[% CASE 'latex' %]
+~\hfill\break
+
+\vspace{3cm}
+
+~
 [% END %]
 
 [% WRAPPER html/newfeature %]

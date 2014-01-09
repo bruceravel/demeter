@@ -9,6 +9,7 @@
 \usepackage{alltt}
 %\usepackage{colortbl}
 \usepackage{varioref}
+\usepackage{titlesec}
 
 %% see http://intertwingly.net/blog/3141.html
 %% for the deal with floatflt, ubuntu, and texlive
@@ -49,6 +50,10 @@
 \setlength{\parskip}{7pt}
 
 \setlength{\fboxsep}{2mm}
+
+\titlespacing{\section}{0pt}{\parskip}{-\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% character decorations
@@ -125,7 +130,7 @@
   {\end{Boxedminipage}\hfill\break\break}
 
 \newenvironment{todo}%
-{\noindent\bigskip\color{green4}\begin{Boxedminipage}[h]{\linewidth}\color{black}~\\
+{\qquad\bigskip\color{green4}\begin{Boxedminipage}[h]{0.92\linewidth}\color{black}~\\
     \large}%
   {\end{Boxedminipage}\hfill\break\break}
 

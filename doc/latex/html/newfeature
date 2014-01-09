@@ -4,6 +4,6 @@
 [% USE image "${file}" %]
 [% ww = image.width / 80 %]
 \begin{newfeature}
-   \includegraphics*[width=[% ww %]cm]{[%dots%]/todo.png}  \textbf{To Do:}
+   \includegraphics*[width=[% ww %]cm]{[%dots%]/newfeature.png}  \textbf{New feature:}
 [%- content | indent(3) -%]
 \end{newfeature}

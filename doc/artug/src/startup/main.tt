@@ -149,7 +149,7 @@ your fitting option if you have not recently done so.
 This menu provides several options for monitoring the state of 
 [% artemis %], [% ifeffit %], and the plotting backend (usually
 [% gnuplot %]).
-[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/list type="ul"%]
 [% WRAPPER html/li %]
 The command buffer contains a record of every data processing command
 sent to [% ifeffit %] and every plotting command sent to the plotting
@@ -235,16 +235,14 @@ recorded in the buffer.
 
 [% PROCESS section label="The Data list" %]
 
-[% FILTER html_para %]
+[% WRAPPER floatright this="datalist.png" %]
 The data list starts off with a single control, which is used to
 import data into your fitting project.  Clicking the 
 [% INCLUDE font/quote a="Add" %] button will open the standard file selection
 dialog for your platform.  That is, on Windows, the standard Windows
 file selection dialog is used; on Linux, the standard Gnome file
 selection dialog is used; and so on.
-[% END %]
 
-[% WRAPPER floatright this="datalist.png" %]
 The standard manner of importing data into [% artemis %] is to use an
 [% athena %] project file.  Thus the file selection dialog will, by
 default, look for files with the [% INCLUDE font/file a=".prj" %]

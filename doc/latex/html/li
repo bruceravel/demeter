@@ -1,1 +1,5 @@
+[% IF float %]
+\fltitem{[% content %]}
+[% ELSE %]
 \item [% content | indent(3) -%]
+[% END %]

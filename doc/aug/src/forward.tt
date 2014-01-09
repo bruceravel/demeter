@@ -310,12 +310,10 @@ An excellent addendum to those instructions is at
 Coming soon....
 [% END %]
 [% WRAPPER html/dt dt="Windows" %]
-[% FILTER html_para %]
 Follow the links on
 [% INCLUDE html/link link="http://bruceravel.github.io/demeter/"
 text="the Demeter homepage" %] to download the installer and updater
 packages.  Just download, double-click, and answer the questions.
-[% END %]
 [% END %]
 [% WRAPPER html/dt dt="Macintosh" %]
 Coming soon....
@@ -338,7 +336,7 @@ command checks a copy of the source out and downloads it onto your
 computer:
 [% END %]
 [% WRAPPER html/pre %]
-    git clone git://github.com/bruceravel/demeter.git
+    git clone https://github.com/bruceravel/demeter.git
 [% END %]
 
 [% FILTER html_para %]
