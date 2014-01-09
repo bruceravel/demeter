@@ -42,8 +42,11 @@ h1, h2, h3, h4, h5, h6 {
   margin:36px 0 10px;
 }
 
-p, ul, ol, table, dl {
+p, ul, ol, dl {
   margin:0 0 22px;
+}
+table {
+  margin:0 0 6px;
 }
 
 h1, h2, h3 {
@@ -176,9 +179,9 @@ table {
 }
 
 table {
-  border: 1px solid #ccc;
+  border: 1px solid #FBFAF7;
   margin-bottom: 32px;
-  text-align: left;
+  text-align: center;
  }
 
 th {
@@ -192,7 +195,7 @@ th {
 
 td {
   padding: 10px;
-	background: #ccc;
+	background: #FBFAF7;
  }
 
 
@@ -205,21 +208,21 @@ td {
 /* Header */
 
 header {
-	background-color: #171717;
-	color: #FDFDFB;
-  width:170px;
-  float:left;
-  position:fixed;
-	border: 1px solid #000;
-	-webkit-border-top-right-radius: 4px;
-	-webkit-border-bottom-right-radius: 4px;
-	-moz-border-radius-topright: 4px;
-	-moz-border-radius-bottomright: 4px;
-	border-top-right-radius: 4px;
-	border-bottom-right-radius: 4px;
-	padding: 34px 25px 12px 50px;
-	margin: 10px 25px 0 0;
-	-webkit-font-smoothing: antialiased;
+    background-color: #171717;
+    color: #FDFDFB;
+    width:170px;
+    float:left;
+    position:fixed;
+    border: 1px solid #000;
+    -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding: 34px 25px 12px 50px;
+    margin: 10px 25px 0 0;
+    -webkit-font-smoothing: antialiased;
 }
 
 p.header {
