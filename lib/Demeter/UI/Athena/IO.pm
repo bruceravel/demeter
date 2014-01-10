@@ -556,7 +556,7 @@ sub _group {
     if ($ret->is_ok) {
       $app->{main}->status("Rebinning ". $data->name);
       my $rebin  = $data->rebin(\%hash);
-      foreach my $att (qw(energy numerator denominator ln name)) {
+      foreach my $att (qw(energy numerator denominator ln name columns)) {
 	$rebin->$att($data->$att);
       };
       $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
