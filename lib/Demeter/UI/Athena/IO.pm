@@ -530,7 +530,7 @@ sub _data {
 # 2: $colsel, Pointer to the column selection frame
 # 3: $data, Pointer to the main Data object (as opposed to the refernece)
 # 4: $yaml: the yaml containing the column selection persistence
-# 5: $file: the actual file being read, stashfile for a pluhgin, original file otherwise
+# 5: $file: the actual file being read, stashfile for a plugin, original file otherwise
 # 6: $orig: the fully resolved original file
 # 7: $repeated: oddly, 1 if this is the first pass through, 0 for subsequent files in multiple file import
 # 8: $noalign: doesn't seem to be used

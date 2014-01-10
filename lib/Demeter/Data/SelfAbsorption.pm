@@ -97,6 +97,9 @@ sub sa_troger {
   my @mua = ();
   my $abs = ucfirst( lc(get_symbol($self->bkg_z)) );
   my $amuabs = Xray::Absorption -> get_atomic_weight($abs);
+  ## @mua contains the array of absorption due to the excitation
+  ## process of the absorber, $muabelow subtracts off an estimate of
+  ## the absorption due to lower energy processes
   my $ebelow = Xray::Absorption -> get_energy($abs, $self->fft_edge) - 200;
   my $muabelow = Xray::Absorption -> cross_section($abs, $ebelow);
   foreach my $kk (@k) {
