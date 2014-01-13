@@ -2,6 +2,8 @@
   # import column data template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $file = Demeter->winpath($D->file);
+  q{};
 }
 ##| Reading raw data "{$D->file}" as group {$D->group}
-{$D->group} = read_ascii('{$D->file}')
+{$D->group} = read_ascii('{$file}')

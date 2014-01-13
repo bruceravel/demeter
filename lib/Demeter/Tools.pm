@@ -312,6 +312,12 @@ sub slash {
   return (Demeter->is_windows) ? '\\' : '/';
 };
 
+sub winpath {
+  my ($class, $string) = @_;
+  $string =~ s{\\}{\\\\}g if Demeter->is_windows;
+  return $string;
+};
+
 ## this is an exported function
 sub distance {
   my $self = shift;

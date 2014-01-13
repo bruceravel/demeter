@@ -2,6 +2,8 @@
   # import xmu template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $file = Demeter->winpath($D->file);
+  q{};
 }
 ##| Reading mu data "{$D->file}" as group {$D->group}
-{$group} = read_ascii('{$D->file}')
+{$group} = read_ascii('{$file}')

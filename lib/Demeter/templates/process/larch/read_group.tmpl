@@ -4,4 +4,8 @@
   #   {$D->parameter} returns the value of that parameter
 }
 ##| Reading raw data "{$file}" as temporary group {$group}
+{
+  $file = Demeter->winpath($D->file);
+  q{}
+}
 {$group} = read_ascii('{$file}')
