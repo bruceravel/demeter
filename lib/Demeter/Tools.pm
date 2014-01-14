@@ -386,11 +386,17 @@ sub fract {
   return $string;
 };
 
+use Math::Random;
 sub randomstring {
   my ($self, $length) = @_;
   $length ||= 6;
-  return random_string('c' x $length);
+  my $rs = q{};
+  foreach (1..$length) {
+    $rs .= chr(int(26*random_uniform)+97);
+  };
+  return $rs;
 };
+##random_string('c' x $length);
 
 sub ifeffit_heap {
   my ($self, $length) = @_;

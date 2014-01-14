@@ -106,6 +106,7 @@ sub BUILD {
   $self -> read_config;
   $self -> read_ini;
   $self -> fix;
+  $self -> write_ini;
   $self -> mo -> config($self);
   $self -> mo -> merge($self->default("merge", "weightby"));
   my @groups = $self->groups;
@@ -479,6 +480,18 @@ sub fix {
   $keyparams =~ s{left|right|top|bottom|center}{}g;
   $keyparams =~ s{\A\s+}{};
   $self->set_default("gnuplot", "keyparams", $keyparams);
+
+  ## somehow, it may happen that a users ini file will have
+  ## zero-length plotting ranges -- very confusing, so reset to
+  ## demeter defaults
+  foreach my $p (qw(kmax rmax qmax emin emax)) {
+    my $val = $self->default("plot", $p);
+    $self->set_default("plot", $p, $self->demeter("plot", $p));
+  };
+
+  $self->set_default("athena", "autosave_frequency", $self->demeter("athena", "autosave_frequency"))
+    if $self->default("athena", "autosave_frequency") < 2;
+
   return $self;
 };
 

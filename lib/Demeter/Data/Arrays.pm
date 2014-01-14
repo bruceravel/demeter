@@ -232,7 +232,7 @@ sub points {
   } else {
     @y = $self->get_array($args{suffix});
   };
-  #print join("|", @y), $/;
+  #print join("|", %args), $/;
   if (defined $args{weight}) {
     $args{weight} || 0;
     $#y = $#k if ($#k < $#y);

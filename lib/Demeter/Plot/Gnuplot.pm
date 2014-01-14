@@ -77,9 +77,14 @@ override end_plot => sub {
   return $self;
 };
 
+#use Time::HiRes qw(usleep);
+use Math::Random;
 override tempfile => sub {
   my ($self) = @_;
-  my $this = File::Spec->catfile($self->stash_folder, 'gp_'.random_string('cccccccc'));
+  #usleep(250000);
+  my $rs = Demeter->randomstring(8);
+  print $rs, $/;
+  my $this = File::Spec->catfile($self->stash_folder, 'gp_'.$rs);
   $self->add_tempfile($this);
   return $this;
 };

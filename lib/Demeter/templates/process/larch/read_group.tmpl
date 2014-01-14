@@ -5,7 +5,7 @@
 }
 ##| Reading raw data "{$file}" as temporary group {$group}
 {
-  $file = Demeter->winpath($D->file);
+  $file = Demeter->winpath($file);
   q{}
 }
 {$group} = read_ascii('{$file}')
