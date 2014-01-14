@@ -23,7 +23,7 @@ use Demeter::StrTypes qw( Empty );
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 use Chemistry::Elements qw(get_symbol);
-use String::Random qw(random_string);
+
 has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
 		     trigger  => \&set_tag);
 has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
@@ -34,7 +34,7 @@ has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'SSPath');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
-has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
+has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{Demeter->randomstring(9).'.sp'});
 has 'rattle'     => (is => 'rw', isa => 'Bool',   default => 0,
 		     trigger => sub{ my ($self, $new) = @_; $self->set_rattle($new); $self->update_path(1)});
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 9999);
@@ -134,7 +134,7 @@ sub pathsdat {
   my ($self, @arguments) = @_;
   my %args = @arguments;
   $args{index}  ||= 1;
-  #$self -> randstring(random_string('ccccccccc').'.sp') if ($self->randstring =~ m{\A\s*\z});
+  #$self -> randstring(Demeter->randomstring(9).'.sp') if ($self->randstring =~ m{\A\s*\z});
 
   $self->set_rattle;
   my $feff = $self->parent;

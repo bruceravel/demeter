@@ -29,7 +29,6 @@ use File::Path;
 use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(minmax);
-use String::Random qw(random_string);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
@@ -569,7 +568,7 @@ sub export {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
 
-  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . random_string('cccccccc'));
+  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . Demeter->randomstring(8));
   my $fit = $self->{list}->GetIndexedData($position);
   my $name = $fit->name;
 

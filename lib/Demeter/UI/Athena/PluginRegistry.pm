@@ -12,7 +12,6 @@ use File::Basename;
 use File::Spec;
 use Pod::Text;
 use Const::Fast;
-use String::Random qw(random_string);
 
 use Demeter::UI::Athena::PluginConfig;
 
@@ -164,7 +163,7 @@ sub Document {
   my $parser = Pod::Text->new (sentence => 0, width => 78);
   my $podroot = dirname($INC{'Demeter.pm'});
   (my $module = $pl) =~ s{::}{/}g;
-  my $tempfile = File::Spec->catfile(Demeter->stash_folder, random_string('cccccccc').'.txt');
+  my $tempfile = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8).'.txt');
   $parser->parse_from_file (File::Spec->catfile($podroot, $module).'.pm', $tempfile);
 
   my $dialog = Demeter::UI::Artemis::ShowText

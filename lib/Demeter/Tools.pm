@@ -25,7 +25,7 @@ use Regexp::Assemble;
 use Fcntl qw(:flock);
 use List::Util qw(sum);
 use List::MoreUtils qw(any);
-use String::Random qw(random_string);
+use Math::Random;
 use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
@@ -386,7 +386,6 @@ sub fract {
   return $string;
 };
 
-use Math::Random;
 sub randomstring {
   my ($self, $length) = @_;
   $length ||= 6;
@@ -396,6 +395,7 @@ sub randomstring {
   };
   return $rs;
 };
+##use String::Random
 ##random_string('c' x $length);
 
 sub ifeffit_heap {
@@ -723,7 +723,7 @@ Dump a string into a file.
 
 =item C<randomstring>
 
-Return a rendom character string using  C<random_string> from L<String::Random>.
+Return a rendom character string using random numbers from L<Math::Random>
 
   $string = Demeter->randomstring($length);
 

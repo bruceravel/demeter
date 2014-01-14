@@ -46,7 +46,6 @@ use File::Spec;
 use List::MoreUtils qw(any zip);
 use Scalar::Util qw(blessed);
 
-use String::Random qw(random_string);
 use YAML::Tiny;
 
 use Wx qw(:everything);
@@ -442,7 +441,7 @@ sub OnInit {
 		   });
 
   ## -------- disk space to hold this project
-  my $this = '_dem_' . random_string('cccccccc');
+  my $this = '_dem_' . Demeter->randomstring(8);
   my $project_folder = File::Spec->catfile($demeter->stash_folder, $this);
   $frames{main}->{project_folder} = $project_folder;
   mkpath($project_folder,0);

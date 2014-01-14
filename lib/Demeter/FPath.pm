@@ -25,7 +25,6 @@ with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 use Chemistry::Elements qw(get_symbol get_Z);
-use String::Random qw(random_string);
 
 has 'reff'	 => (is => 'rw', isa => 'LaxNum', default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
@@ -40,7 +39,7 @@ has 'Type'	 => (is => 'rw', isa => 'Str',    default => 'filtered scattering pat
 has 'pdtext'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
-has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
+has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{Demeter->randomstring(8).'.sp'});
 
 has 'kgrid'      => (is => 'ro', isa => 'ArrayRef',
 		     default => sub{

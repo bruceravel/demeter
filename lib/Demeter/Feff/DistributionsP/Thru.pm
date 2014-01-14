@@ -7,7 +7,6 @@ use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
-use String::Random qw(random_string);
 
 use PDL::Lite;
 use PDL::NiceSlice;
@@ -236,7 +235,7 @@ sub chi {
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
   my @paths = ();
-  my $randstr = random_string('ccccccccc').'.sp';
+  my $randstr = Demeter->randomstring(8).'.sp';
   #my $total = 0;
   foreach my $c (@{$self->populations}) {
     ## we are going to assume that this shallow triangle is isosceles,

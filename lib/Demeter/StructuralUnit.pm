@@ -19,13 +19,10 @@ use Moose;
 extends 'Demeter::VPath';
 use Demeter::StrTypes qw( Empty );
 
-use String::Random qw(random_string);
-
-
 has '+name'      => (default => 'structural unit',);
 		     #trigger => sub{my($self, $new) = @_; $self->vpath->name($new)} );
 has '+id'        => (default => 'virtual path');
-has 'tag'        => (is => 'rw', isa => 'Str', default => sub{random_string('ccc')});
+has 'tag'        => (is => 'rw', isa => 'Str', default => sub{Demeter->randomstring(3)});
 
 has 'feffs' => (
 		traits    => ['Array'],

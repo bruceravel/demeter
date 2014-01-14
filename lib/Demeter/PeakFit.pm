@@ -31,7 +31,6 @@ use File::Spec;
 use List::Util qw(min max);
 use List::MoreUtils qw(any none uniq);
 use Spreadsheet::WriteExcel;
-use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';

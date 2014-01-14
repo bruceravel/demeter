@@ -23,7 +23,6 @@ extends 'Demeter::Plot';
 use Carp;
 use File::Spec;
 use Demeter::Constants qw($NUMBER);
-use String::Random qw(random_string);
 
 has '+error_log' => (default => File::Spec->catfile($Demeter::mode->iwd,
 						    $Demeter::mode->external_plot_object->{__error_log}));
@@ -77,13 +76,9 @@ override end_plot => sub {
   return $self;
 };
 
-#use Time::HiRes qw(usleep);
-use Math::Random;
 override tempfile => sub {
   my ($self) = @_;
-  #usleep(250000);
   my $rs = Demeter->randomstring(8);
-  print $rs, $/;
   my $this = File::Spec->catfile($self->stash_folder, 'gp_'.$rs);
   $self->add_tempfile($this);
   return $this;

@@ -45,7 +45,6 @@ use File::Temp qw(tempfile);
 use Heap::Fibonacci;
 use List::MoreUtils qw(any false notall);
 use List::Util qw(sum);
-use String::Random qw(random_string);
 use Tree::Simple;
 
 
@@ -157,7 +156,7 @@ has 'othercards' => (
 				  }
 		    );
 has 'workspace'    => (is=>'rw', isa => 'Str',
-		       default => sub{File::Spec->catfile(Demeter->stash_folder, 'feff_'.random_string('ccccccccc'))} );
+		       default => sub{File::Spec->catfile(Demeter->stash_folder, 'feff_'.Demeter->randomstring(9))} );
 has 'miscdat'      => (is=>'rw', isa => 'Str',    default => q{});
 has 'vint'         => (is=>'rw', isa => 'LaxNum', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',   default => 0);
