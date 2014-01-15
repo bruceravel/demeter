@@ -101,13 +101,16 @@ strong {
 }
 
 ul li {
-  list-style: inside;
-  padding-left: 25px;
+  list-style: outside square;
+  padding-left: 0px;
+  margin-left: 20px;
+  margin-bottom: 10px;
 }
 
 ol li {
-  list-style: decimal inside;
-  padding-left: 20px;
+  list-style: decimal outside;
+  padding-left: 0px;
+  margin-left: 20px;
 }
 
 blockquote {
@@ -231,7 +234,7 @@ p.header {
 }
 p.headersm {
     font-size: 9px;
-    margin:0 0 7px;
+   margin:0 0 7px;
 }
 
 h1.header {
@@ -308,6 +311,7 @@ a.buttons {
 a.github {
 	background: url(../images/octocat-small.png) no-repeat 1px;
 }
+
 
 a.buttons:hover {
 	color: #fff;
