@@ -101,16 +101,20 @@ strong {
 }
 
 ul li {
-  list-style: outside square;
+  list-style: outside;
   padding-left: 0px;
   margin-left: 20px;
-  margin-bottom: 10px;
 }
 
 ol li {
   list-style: decimal outside;
   padding-left: 0px;
   margin-left: 20px;
+}
+
+li.doc {
+  list-style: outside square;
+  margin-bottom: 10px;
 }
 
 blockquote {
