@@ -94,32 +94,32 @@ sub new {
   EVT_CHECKBOX($this, $this->{mdphase}, sub{$_[0]->replot(qw(r marked))});
   $app->mouseover($this->{dphase}, "Plot the the derivative of the phase of $CHI(R) for the current group.");
   $app->mouseover($this->{mdphase}, "Plot the the derivative of the phase of $CHI(R) for all marked groups.");
-  if (not $Demeter::UI::Athena::demeter->co->default("athena", "show_dphase")) {
+  if (not Demeter->co->default("athena", "show_dphase")) {
     $this->{dphase}->Hide;
     $this->{mdphase}->Hide;
   };
 
   SWITCH: {
-      ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'm') and do {
+      (Demeter->co->default("plot", "r_pl") eq 'm') and do {
 	$this->{mag} ->SetValue(1);
 	$this->{mmag}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'e') and do {
+      (Demeter->co->default("plot", "r_pl") eq 'e') and do {
 	$this->{env} ->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'r') and do {
+      (Demeter->co->default("plot", "r_pl") eq 'r') and do {
 	$this->{re} ->SetValue(1);
 	$this->{mre}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'i') and do {
+      (Demeter->co->default("plot", "r_pl") eq 'i') and do {
 	$this->{im} ->SetValue(1);
 	$this->{mim}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'p') and do {
+      (Demeter->co->default("plot", "r_pl") eq 'p') and do {
 	$this->{pha} ->SetValue(1);
 	$this->{mpha}->SetValue(1);
 	last SWITCH;
@@ -136,19 +136,19 @@ sub new {
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   my $label = Wx::StaticText->new($this, -1, "Rmin", wxDefaultPosition, [35,-1]);
-  $this->{rmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmin"),
+  $this->{rmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "rmin"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "Rmax", wxDefaultPosition, [35,-1]);
-  $this->{rmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmax"),
+  $this->{rmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "rmax"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmax}, 1, wxRIGHT, 10);
 
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) )
     foreach (qw(mag env re im pha win dphase));
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "marked")) )
     foreach (qw(mmag mre mim mpha mdphase));
 
   foreach my $x (qw(rmin rmax)) {
@@ -173,7 +173,7 @@ sub label {
 
 sub pull_single_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   my $rmin = $this->{rmin}-> GetValue;
   my $rmax = $this->{rmax}-> GetValue;
   $::app->{main}->status(q{}, 'nobuffer');
@@ -191,7 +191,7 @@ sub pull_single_values {
 
 sub pull_marked_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   my $val = ($this->{mmag} -> GetValue) ? 'm'
           : ($this->{mre}  -> GetValue) ? 'r'
           : ($this->{mim}  -> GetValue) ? 'i'

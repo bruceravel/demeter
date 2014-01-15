@@ -377,9 +377,9 @@ sub write_report {
   my $param = $self->{params}->GetStringSelection;
   (my $pp = $param) =~ s{_}{\\_}g;
   if ($param eq 'Statistcal parameters') {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_stats'));
+    $self->{report}->AppendText(Demeter->template('report', 'report_head_stats'));
   } else {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_param', {param=>$param}));
+    $self->{report}->AppendText(Demeter->template('report', 'report_head_param', {param=>$param}));
   };
   my @x = ();
   foreach my $i (0 .. $self->{list}->GetCount-1) {
@@ -408,16 +408,16 @@ sub write_report {
   my ($xmin, $xmax) = minmax(@x);
   my $delta = ($xmax-$xmin)/5;
   ($xmin, $xmax) = ($xmin-$delta, $xmax+$delta);
-  $Demeter::UI::Artemis::demeter->po->start_plot;
-  my $tempfile = $Demeter::UI::Artemis::demeter->po->tempfile;
+  Demeter->po->start_plot;
+  my $tempfile = Demeter->po->tempfile;
   open my $T, '>'.$tempfile;
   print $T $self->{report}->GetValue;
   close $T;
   if ($param eq 'Statistcal parameters') {
     my $col = $self->{plotas}->GetSelection + 2;
-    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue});
+    Demeter->chart('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue});
   } else {
-    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue});
+    Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue});
   };
   $self->status("Reported on $param");
 };
@@ -624,7 +624,7 @@ sub export {
 
   rmtree($newfolder,0);
 
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  Demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
 
   $self->status("exported $name as $fname");

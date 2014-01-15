@@ -113,7 +113,7 @@ sub Import {
       ## this fall through to the plugin
     };
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
-    if ($Demeter::UI::Athena::demeter->is_prj($file,$verbose)) {
+    if (Demeter->is_prj($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
     } else {
@@ -126,11 +126,11 @@ sub Import {
 	  return;
 	};
 	$stashfile = ($plugin) ? $plugin->fixed : $file;
-	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
-	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
-	      : ($plugin and ($plugin->output eq 'list'))                ? 'list'
-              : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
-              :                                                            '???';
+	$type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
+	      : ($plugin and ($plugin->output eq 'project')) ? 'prj'
+	      : ($plugin and ($plugin->output eq 'list'))    ? 'list'
+              : (Demeter->is_data($file,$verbose))           ? 'raw'
+              :                                                '???';
       };
     };
     if ($type eq '???') {

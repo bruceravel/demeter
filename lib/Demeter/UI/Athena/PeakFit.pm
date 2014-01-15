@@ -44,7 +44,6 @@ const my %SWAPHASH => (Gaussian	    => Wx::NewId(),
 
 
 my $tcsize = [60,-1];
-my $demeter  = $Demeter::UI::Athena::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
@@ -60,8 +59,8 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   $this->{PEAK}   = Demeter::PeakFit->new(backend=>$ENV{DEMETER_BACKEND});
-  $this->{emin}   = -15; #$demeter->co->default('peakfit', 'emin');
-  $this->{emax}   =  15; #$demeter->co->default('peakfit', 'emax');
+  $this->{emin}   = -15; #Demeter->co->default('peakfit', 'emin');
+  $this->{emax}   =  15; #Demeter->co->default('peakfit', 'emax');
   $this->{count}  =  0;
   $this->{fitted} =  0;
 

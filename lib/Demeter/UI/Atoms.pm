@@ -277,8 +277,6 @@ sub noop {
 package Demeter::UI::Atoms;
 
 use Demeter qw(:atoms);
-use vars qw($demeter);
-$demeter = Demeter->new;
 
 use File::Basename;
 
@@ -294,7 +292,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($atoms_base $demeter $frame);
+use vars qw($atoms_base $frame);
 $atoms_base = identify_self();
 
 use Const::Fast;
@@ -306,9 +304,9 @@ const my $DOC     => Wx::NewId();
 const my $CONFIG  => Wx::NewId();
 
 sub OnInit {
-  $demeter -> mo -> ui('Wx');
-  $demeter -> mo -> identity('Atoms');
-  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  Demeter -> mo -> ui('Wx');
+  Demeter -> mo -> identity('Atoms');
+  Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;
@@ -369,13 +367,13 @@ sub on_about {
   my $info = Wx::AboutDialogInfo->new;
 
   $info->SetName( 'Atoms' );
-  #$info->SetVersion( $demeter->version );
+  #$info->SetVersion( Demeter->version );
   $info->SetDescription( "Crystallography for the X-ray absorption spectroscopist" );
-  $info->SetCopyright( $demeter->identify );
+  $info->SetCopyright( Demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
 			] );
-  $info->SetLicense( $demeter->slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
+  $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The Atoms logo is a perovskite as rendered by a
 ball-and-stick molecule viewer.

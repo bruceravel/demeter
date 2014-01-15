@@ -66,9 +66,9 @@ sub new {
   $app->mouseover($this->{win}, "Plot the window function when ploting the current group in k-space.");
 
 
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) )
     foreach (qw(chie bkgk win));
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "marked")) )
     foreach (qw(mchie));
 
 
@@ -83,12 +83,12 @@ sub new {
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   #$box -> Add($range, 0, wxBOTTOM, 7);
   my $label = Wx::StaticText->new($this, -1, "kmin", wxDefaultPosition, [35,-1]);
-  $this->{kmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmin"),
+  $this->{kmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "kmin"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "kmax", wxDefaultPosition, [35,-1]);
-  $this->{kmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmax"),
+  $this->{kmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "kmax"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmax}, 1, wxRIGHT, 10);
@@ -116,7 +116,7 @@ sub label {
 
 sub pull_single_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   $po->chie($this->{chie} -> GetValue);
   $po->bkgk($this->{bkgk} -> GetValue);
 
@@ -137,7 +137,7 @@ sub pull_single_values {
 
 sub pull_marked_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   $po->chie($this->{mchie}-> GetValue);
   $po->bkgk(0);
 

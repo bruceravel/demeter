@@ -58,7 +58,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Artemis::demeter->plot_with($value);
+      Demeter->plot_with($value);
       last SWITCH;
     };
     ($param eq 'rmax_out') and do {

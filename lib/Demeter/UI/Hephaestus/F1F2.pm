@@ -164,8 +164,6 @@ sub f1f2_get_data {
   Demeter->dispense("plot", 'prep_f1f2');
   Demeter->chart("plot", $which);
 
-  #$demeter->po->cleantemp;
-  #undef $demeter;
   $self->{echo}->SetStatusText(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",
 			      get_name($el), 'Cromer-Liberman'));
   undef $busy;

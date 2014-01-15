@@ -61,7 +61,7 @@ sub prjrecord {
     $file = $fd->GetPath;
   }
   $file = Demeter->follow_link($file);
-  if (not $$rdemeter->is_prj($file)) {
+  if (not Demeter->is_prj($file)) {
     $rframes->{main}->status("$file is not an Athena project file.", 'error');
     return (q{}, q{}, -1);
   };
@@ -142,7 +142,7 @@ sub _prj {
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
   delete $rframes->{prj};
-  $$rdemeter->push_mru("athena", $file, $record);
+  Demeter->push_mru("athena", $file, $record);
   autosave();
   chdir dirname($file);
   $rframes->{main}->status("Importing data \"" . $data->name . "\" from $file.");
@@ -168,7 +168,7 @@ sub _feff {
     $rframes->{main}->status("$file does not exist.");
     return;
   };
-  if (not ($$rdemeter->is_feff($file) or $$rdemeter->is_atoms($file) or $$rdemeter->is_cif($file))) {
+  if (not (Demeter->is_feff($file) or Demeter->is_atoms($file) or Demeter->is_cif($file))) {
     $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file", 'error');
     return;
   };
@@ -196,7 +196,7 @@ sub _chi {
     };
     $file = $fd->GetPath;
   };
-  if (not $$rdemeter->is_data($file)) {
+  if (not Demeter->is_data($file)) {
     $rframes->{main}->status("$file is not a column data file.", 'error');
     return;
   };
@@ -208,7 +208,7 @@ sub _chi {
   $data->plot_window('k') if $data->po->plot_win;
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
-  $$rdemeter->push_mru("chik", $file);
+  Demeter->push_mru("chik", $file);
   autosave();
   chdir dirname($file);
   $rframes->{main}->status("Imported $file as $CHI(k) data.");
@@ -230,7 +230,7 @@ sub _dpj {
     $file = $fd->GetPath;
   };
   $file = Demeter->follow_link($file);
-  if (not $$rdemeter->is_zipproj($file,0, 'dpj')) {
+  if (not Demeter->is_zipproj($file,0, 'dpj')) {
     $rframes->{main}->status("$file is not a demeter fit serialization.", 'error');
     return;
   };
@@ -382,8 +382,8 @@ EOH
   };
 
   my ($atoms_file, $feff_file) = (q{}, q{});
-  ($atoms_file, $feff_file) = ($file, File::Spec->catfile(dirname($file), 'feff.inp')) if ($$rdemeter->is_atoms($file));
-  ($atoms_file, $feff_file) = (q{}, $file)                                             if ($$rdemeter->is_feff($file));
+  ($atoms_file, $feff_file) = ($file, File::Spec->catfile(dirname($file), 'feff.inp')) if (Demeter->is_atoms($file));
+  ($atoms_file, $feff_file) = (q{}, $file)                                             if (Demeter->is_feff($file));
   ($atoms_file = File::Spec->catfile(dirname($file), 'atoms.inp')) if ((not $atoms_file) and (-e File::Spec->catfile(dirname($file), 'atoms.inp')));
 
   if (not -e $feff_file) {
@@ -458,7 +458,7 @@ EOH
 
   ## disable atoms tab is not $atoms_file (how?)
 
-  $$rdemeter->push_mru("externalfeff", $file);
+  Demeter->push_mru("externalfeff", $file);
   autosave();
   chdir dirname($file);
   modified(1);
@@ -483,7 +483,7 @@ sub _old {
   };
   $file = Demeter->follow_link($file);
 
-  if (not $$rdemeter->is_zipproj($file,0, 'apj')) {
+  if (not Demeter->is_zipproj($file,0, 'apj')) {
     $rframes->{main}->status("$file is not an old style fitting project file.", 'error');
     return;
   };
@@ -507,7 +507,7 @@ sub _old {
   Import('dpj', $dpj, postcrit=>0);
   unlink $dpj;
 
-  $$rdemeter->push_mru("old_artemis", $file);
+  Demeter->push_mru("old_artemis", $file);
   $rframes->{main}->{projectpath} = $file;
   $rframes->{main}->{projectname} = basename($file, '.apj');
   $rframes->{Journal}->{journal} -> SetValue($journal);
@@ -621,7 +621,7 @@ sub _feffit {
     };
     $p -> set(file=>q{}, folder=>q{});
     $p -> parent($feffs{$folder});
-    foreach my $sp (@{ $$rdemeter->mo->ScatteringPath }) {
+    foreach my $sp (@{ Demeter->mo->ScatteringPath }) {
       if ($sp->fromnnnn eq File::Spec->catfile($folder, $file)) {
 	$p->sp($sp);
 	last;
@@ -649,7 +649,7 @@ sub _feffit {
   $fit->DESTROY;
   $Demeter::UI::Artemis::noautosave = 0;
   autosave;
-  $$rdemeter->push_mru("feffit", $file);
+  Demeter->push_mru("feffit", $file);
   chdir dirname($file);
   my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
   $rframes->{main} -> {currentfit} = $newfit;

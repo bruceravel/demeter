@@ -22,9 +22,8 @@ unlink("hgfit.dpj") if (-e "hgfit.dpj");
 
 ## I like to have a dummy object around for things like set_mode and
 ## simpleGDS, although you can use any object for those purposes...
-my $demeter = Demeter->new;
-$demeter -> set_mode(screen  => 0, backend => 1, file => ">hgfit.iff");
-$demeter -> po -> set(kweight => 2, rmax => 6);
+Demeter -> set_mode(screen  => 0, backend => 1, file => ">hgfit.iff");
+Demeter -> po -> set(kweight => 2, rmax => 6);
 
 
 ## -------- import data and set up the FT and fit parameters
@@ -40,35 +39,35 @@ $data -> set(name       => 'Hg with DNA',
 
 ## -------- create all the guess, set, def, and after parameters
 my @gds = (
-	   $demeter->simpleGDS("set angle1   = 115.9 * pi / 180"),
-	   $demeter->simpleGDS("set angle2   = 116.6 * pi / 180"),
-	   $demeter->simpleGDS("set b1       = 1.373"),
-	   $demeter->simpleGDS("set b2       = 1.384"),
-	   $demeter->simpleGDS("set m        = 1.43"), # crude scaling factor for MS paths
+	   Demeter->simpleGDS("set angle1   = 115.9 * pi / 180"),
+	   Demeter->simpleGDS("set angle2   = 116.6 * pi / 180"),
+	   Demeter->simpleGDS("set b1       = 1.373"),
+	   Demeter->simpleGDS("set b2       = 1.384"),
+	   Demeter->simpleGDS("set m        = 1.43"), # crude scaling factor for MS paths
 
-	   $demeter->simpleGDS("guess amp    = 1"),
-	   $demeter->simpleGDS("guess enot   = 0"),
+	   Demeter->simpleGDS("guess amp    = 1"),
+	   Demeter->simpleGDS("guess enot   = 0"),
 
 	   ## geometry for location equidistant from two 2NN atoms in a 6-member ring
-	   $demeter->simpleGDS("set anot     = 2.04"),
-	   $demeter->simpleGDS("guess deltaa = 0"),
-	   $demeter->simpleGDS("def a        = anot + deltaa"),       # net Hg - N distance
-	   $demeter->simpleGDS("def angle    = (angle1 + angle2)/2"), # average Hg-N-C angle
-	   $demeter->simpleGDS("def b        = (b1+b2)/2"),           # average N-C distance
+	   Demeter->simpleGDS("set anot     = 2.04"),
+	   Demeter->simpleGDS("guess deltaa = 0"),
+	   Demeter->simpleGDS("def a        = anot + deltaa"),       # net Hg - N distance
+	   Demeter->simpleGDS("def angle    = (angle1 + angle2)/2"), # average Hg-N-C angle
+	   Demeter->simpleGDS("def b        = (b1+b2)/2"),           # average N-C distance
 
 	   ## some fun trigonometry follows
-	   $demeter->simpleGDS("def tanth    = (a + b) * tan(angle/2) / (a - b)"),
-	   $demeter->simpleGDS("def theta    = atan(tanth)"),
-	   $demeter->simpleGDS("def c        = (a-b) * cos(angle/2) / cos(theta)"),
+	   Demeter->simpleGDS("def tanth    = (a + b) * tan(angle/2) / (a - b)"),
+	   Demeter->simpleGDS("def theta    = atan(tanth)"),
+	   Demeter->simpleGDS("def c        = (a-b) * cos(angle/2) / cos(theta)"),
 
 	   ## the rest of my fitting parameters, all MS paths will be approximated in terms of these
-	   $demeter->simpleGDS("guess dro    = 0"),
-	   $demeter->simpleGDS("guess ssn    = 0.003"),
-	   $demeter->simpleGDS("def   ssc    = m*ssn"),
-	   $demeter->simpleGDS("guess sso    = 0.003"),
+	   Demeter->simpleGDS("guess dro    = 0"),
+	   Demeter->simpleGDS("guess ssn    = 0.003"),
+	   Demeter->simpleGDS("def   ssc    = m*ssn"),
+	   Demeter->simpleGDS("guess sso    = 0.003"),
 
-	   $demeter->simpleGDS("set   szs    = 0.82"),    # s02 determined from fit to HgO data
-	   $demeter->simpleGDS("after cn     = amp/szs"), # compute coordination number for log file
+	   Demeter->simpleGDS("set   szs    = 0.82"),    # s02 determined from fit to HgO data
+	   Demeter->simpleGDS("after cn     = amp/szs"), # compute coordination number for log file
 	  );
 
 

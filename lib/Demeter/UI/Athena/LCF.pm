@@ -17,7 +17,6 @@ use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize   = [60,-1];
-my $demeter  = $Demeter::UI::Athena::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
@@ -29,10 +28,10 @@ sub new {
   $this->{sizer}  = $box;
 
   $this->{LCF} = Demeter::LCF->new(include_caller=>0);
-  $this->{emin} = $demeter->co->default('lcf', 'emin');
-  $this->{emax} = $demeter->co->default('lcf', 'emax');
-  $this->{kmin} = $demeter->co->default('lcf', 'kmin');
-  $this->{kmax} = $demeter->co->default('lcf', 'kmax');
+  $this->{emin} = Demeter->co->default('lcf', 'emin');
+  $this->{emax} = Demeter->co->default('lcf', 'emax');
+  $this->{kmin} = Demeter->co->default('lcf', 'kmin');
+  $this->{kmax} = Demeter->co->default('lcf', 'kmax');
   $this->{pastspace} = 0;
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -102,7 +101,7 @@ sub main_page {
   $this->{window} -> SetSizer($winbox);
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
-  $this->{nstan} = $demeter->co->default('lcf', 'nstan');
+  $this->{nstan} = Demeter->co->default('lcf', 'nstan');
   foreach my $i (0 .. $this->{nstan}-1) {
     $this->add_standard($this->{window}, $winbox, $i);
   };
@@ -149,10 +148,10 @@ sub main_page {
     foreach (qw(linear one_e0));
   $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
 
-  $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
-  $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
+  $this->{components} -> SetValue(Demeter->co->default('lcf', 'components'));
+  $this->{residual}   -> SetValue(Demeter->co->default('lcf', 'difference'));
   $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
-  $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+  $this->{$_} -> SetValue(Demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
   $this->{linear}->Enable(0) if (Demeter->mo->template_analysis ne 'larch');
 
   my $noisebox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -197,11 +196,11 @@ sub main_page {
   $vbox->Add($this->{reset}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
 
-  $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
-  $this->{LCF}->plot_difference($demeter->co->default('lcf', 'difference'));
+  $this->{LCF}->plot_components(Demeter->co->default('lcf', 'components'));
+  $this->{LCF}->plot_difference(Demeter->co->default('lcf', 'difference'));
   $this->{LCF}->linear   (0);
-  $this->{LCF}->inclusive($demeter->co->default('lcf', 'inclusive'));
-  $this->{LCF}->unity    ($demeter->co->default('lcf', 'unity'));
+  $this->{LCF}->inclusive(Demeter->co->default('lcf', 'inclusive'));
+  $this->{LCF}->unity    (Demeter->co->default('lcf', 'unity'));
   $this->{LCF}->one_e0   (0);
 
   EVT_CHECKBOX($this, $this->{components}, sub{$this->{LCF}->plot_components($this->{components}->GetValue)});
@@ -496,7 +495,7 @@ sub Reset {
     $this->{'require'.$i}->SetValue(0);
   };
   $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
-  $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+  $this->{$_} -> SetValue(Demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
 };
 
 sub OnSpace {

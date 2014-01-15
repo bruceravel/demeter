@@ -33,10 +33,10 @@ sub new {
   $this->{window} -> SetSizer($winbox);
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
-  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
-  my $state = (-e $persist) ? YAML::Tiny::Load($Demeter::UI::Athena::demeter->slurp($persist)) : {};
+  my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.plugin_registry");
+  my $state = (-e $persist) ? YAML::Tiny::Load(Demeter->slurp($persist)) : {};
 
-  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  foreach my $pl (sort @{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
     my $obj = $pl->new;
     my $label = sprintf("%s :  %s", (split(/::/, $pl))[2], $obj->description);
@@ -79,9 +79,9 @@ sub mode {
 
 sub OnCheck {
   my ($this, $event, $app) = @_;
-  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
+  my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.plugin_registry");
   my %state = ();
-  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  foreach my $pl (sort @{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
     $state{$pl} = $this->{$pl}->GetValue;
   };

@@ -47,7 +47,6 @@ use YAML::Tiny;
 use Xray::BondValence;
 
 my $windows  = [qw(hanning kaiser-bessel welch parzen sine)];
-my $demeter  = $Demeter::UI::Artemis::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
@@ -241,7 +240,7 @@ sub new {
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".Demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
   $this->{plot_rk}   = Wx::Button->new($leftpane, -1, "Rk",    wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
   $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R&123", wxDefaultPosition, [70,-1]);
@@ -249,7 +248,7 @@ sub new {
   foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_rk plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
-    $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
+    $this->{$b} -> SetBackgroundColour(Wx::Colour->new(Demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   };
   EVT_BUTTON($this, $this->{plot_rmr},  sub{plot(@_, 'rmr')});
@@ -283,7 +282,7 @@ sub new {
   my $gbs = Wx::GridBagSizer->new( 5, 10 );
 
   my $label     = Wx::StaticText->new($leftpane, -1, "kmin");
-  $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmin"),
+  $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("fft", "kmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $this->{kmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
   $gbs     -> Add($label,              Wx::GBPosition->new(0,1));
@@ -291,7 +290,7 @@ sub new {
   $gbs     -> Add($this->{kmin_pluck}, Wx::GBPosition->new(0,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "kmax");
-  $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmax"),
+  $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("fft", "kmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $this->{kmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
   $gbs     -> Add($label,              Wx::GBPosition->new(0,4));
@@ -299,13 +298,13 @@ sub new {
   $gbs     -> Add($this->{kmax_pluck}, Wx::GBPosition->new(0,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dk");
-  $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "dk"),
+  $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("fft", "dk"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,7));
   $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,8));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmin");
-  $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmin"),
+  $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("bft", "rmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $this->{rmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
   $gbs -> Add($label,              Wx::GBPosition->new(1,1));
@@ -313,7 +312,7 @@ sub new {
   $gbs -> Add($this->{rmin_pluck}, Wx::GBPosition->new(1,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmax");
-  $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmax"),
+  $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("bft", "rmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $this->{rmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
   $gbs -> Add($label,              Wx::GBPosition->new(1,4));
@@ -321,7 +320,7 @@ sub new {
   $gbs -> Add($this->{rmax_pluck}, Wx::GBPosition->new(1,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dr");
-  $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "dr"),
+  $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, Demeter->co->default("bft", "dr"),
 				    wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(1,7));
   $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,8));
@@ -366,13 +365,13 @@ sub new {
     $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
     $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
     $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
-    $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
+    $this->{kwindow}->SetSelection(firstidx {$_ eq Demeter->co->default("fft", "kwindow")} @$windows);
 
     $label     = Wx::StaticText->new($leftpane, -1, "R window");
     $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
     $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
     $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
-    $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
+    $this->{rwindow}->SetSelection(firstidx {$_ eq Demeter->co->default("bft", "rwindow")} @$windows);
 
     $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
     $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
@@ -388,16 +387,16 @@ sub new {
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
   $this->{k3}   = Wx::CheckBox->new($leftpane, -1, "3",     wxDefaultPosition, wxDefaultSize);
   $this->{karb} = Wx::CheckBox->new($leftpane, -1, "other", wxDefaultPosition, wxDefaultSize);
-  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, Demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $kwboxsizer -> Add($this->{k1}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k2}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k3}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{karb}, 0, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{karb_value}, 0, wxLEFT|wxRIGHT, 5);
-  $this->{k1}   -> SetValue($demeter->co->default('fit', 'k1'));
-  $this->{k2}   -> SetValue($demeter->co->default('fit', 'k2'));
-  $this->{k3}   -> SetValue($demeter->co->default('fit', 'k3'));
-  $this->{karb} -> SetValue($demeter->co->default('fit', 'karb'));
+  $this->{k1}   -> SetValue(Demeter->co->default('fit', 'k1'));
+  $this->{k2}   -> SetValue(Demeter->co->default('fit', 'k2'));
+  $this->{k3}   -> SetValue(Demeter->co->default('fit', 'k3'));
+  $this->{karb} -> SetValue(Demeter->co->default('fit', 'karb'));
   $this->{karb_value} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
   $this->mouseover("k1", "Use a k-weight of 1 when evaluating the fit.  You may choose any or all k-weights for fitting.");
@@ -832,7 +831,7 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "&Marks" );
   $self->{menubar}->Append( $self->{actionsmenu}, "&Actions" );
-  $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
+  $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if (Demeter->co->default("artemis", "debug_menus"));
   $self->{menubar}->Append( $self->{helpmenu},    "&Help" );
 
   map { $self->{datamenu}  ->Enable($_,0) } ($DATA_BALANCE, $DATA_EXPORT);
@@ -953,7 +952,7 @@ sub plot {
   $self->fetch_parameters;
   my $pf = $Demeter::UI::Artemis::frames{Plot};
   $pf->fetch_parameters('data');
-  my $saveplot = $demeter->co->default(qw(plot plotwith));
+  my $saveplot = Demeter->co->default(qw(plot plotwith));
 
   if ($pf->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
@@ -988,7 +987,7 @@ sub plot {
   ## restore plotting backend if this was a plot to a file
   if ($pf->{fileout}->GetValue) {
     $self->{data}->po->finish;
-    $self->status("Saved plot to file \"" . $demeter->po->file . "\".");
+    $self->status("Saved plot to file \"" . Demeter->po->file . "\".");
     $self->{data}->plot_with($saveplot);
     $pf->{fileout}->SetValue(0);
   };
@@ -2427,7 +2426,7 @@ sub OnData {
   if (ref($spref) eq 'SCALAR') {
     $this->make_path($spref);
   } elsif ($spref->[0] eq 'SSPath') {
-    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
+    my $feff = Demeter->mo->fetch("Feff", $spref->[1]);
     my $name = $spref->[2];
     my $reff = $spref->[3];
     my $ipot = $spref->[4];
@@ -2460,7 +2459,7 @@ sub OnData {
     $this->make_HistogramThru($spref);
 
   } else {			#  this is a normal path
-    my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
+    my @sparray = map { Demeter->mo->fetch("ScatteringPath", $_) } @$spref;
     foreach my $sp ( @sparray ) {
       my $thispath;
       if (ref($sp->feff) =~ m{Aggregate}) {
@@ -2548,7 +2547,7 @@ sub make_HistogramSS {
   my ($this, $spref) = @_;
   my $book  = $this->{BOOK};
 
-  my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+  my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
   my $do_rattle = $spref->[8];
   my $histogram;
   my $read_file = 1;
@@ -2643,7 +2642,7 @@ sub make_HistogramNCL {
   my ($this, $spref) = @_;
   my $book  = $this->{BOOK};
 
-  my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+  my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
   my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
@@ -2696,7 +2695,7 @@ sub make_HistogramThru {
   my ($this, $spref) = @_;
   my $book  = $this->{BOOK};
 
-  my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+  my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
   my $histogram = Demeter::Feff::Distributions->new(type=>'thru');
   $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5],
 		    rbin => $spref->[6], betabin => $spref->[7],

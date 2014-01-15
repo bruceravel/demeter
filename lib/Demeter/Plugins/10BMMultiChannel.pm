@@ -10,8 +10,7 @@ const my $INIFILE => '10bmmultichannel.demeter_conf';
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-my $demeter = Demeter->new();
-has '+conffile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
+has '+conffile'     => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the APS 10BM multi-channel detector');

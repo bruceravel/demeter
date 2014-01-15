@@ -109,13 +109,10 @@ sub standards_get_data {
 sub make_standards_plot {
   my ($self, $event, $parent) = @_;
   my $busy    = Wx::BusyCursor->new();
-  #my $demeter = Demeter->new;
-  #$demeter  -> plot_with('gnuplot');
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
   my $result  = $standards -> plot($choice, $which, 'plot');
   undef $busy;
-  #undef $demeter;
   return 0 if ($result =~ m{Demeter});
   return 0 if (looks_like_number($result) and ($result == 0));
   $self->{echo}->SetStatusText($result);

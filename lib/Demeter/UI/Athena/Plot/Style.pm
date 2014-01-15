@@ -32,7 +32,7 @@ sub new {
 
   $this->SetSizerAndFit($box);
 
-  my $yaml = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, 'athena.styles');
+  my $yaml = File::Spec->catfile(Demeter->dot_folder, 'athena.styles');
   if (not -e $yaml) {
     copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles.ini'), $yaml);
   };
@@ -157,7 +157,7 @@ sub persist {
   foreach my $i (0 .. $this->{list}->GetCount-1) {
     $text .= $this->{list}->GetClientData($i)->serialization;
   };
-  open(my $YAML, '>', File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, 'athena.styles'));
+  open(my $YAML, '>', File::Spec->catfile(Demeter->dot_folder, 'athena.styles'));
   print $YAML $text;
   close $YAML;
 };

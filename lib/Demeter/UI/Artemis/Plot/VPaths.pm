@@ -88,7 +88,7 @@ sub OnRightDown {
   $menu->Append($VPATH_TRANSFER, "Transfer $name to plotting list");
   $menu->Append($VPATH_DESCRIBE, "Show contents of $name");
   $menu->Append($VPATH_RENAME,   "Rename $name");
-  $menu->Append($VPATH_YAML,     "Show yaml for VPath $name") if ($Demeter::UI::Artemis::demeter->co->default("artemis", "debug_menus"));
+  $menu->Append($VPATH_YAML,     "Show yaml for VPath $name") if (Demeter->co->default("artemis", "debug_menus"));
   $menu->AppendSeparator;
   $menu->Append($VPATH_DISCARD,  "Discard $name");
   $self->PopupMenu($menu, $event->GetPosition);

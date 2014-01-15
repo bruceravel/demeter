@@ -25,10 +25,10 @@ sub new {
   my $slots = Wx::GridSizer->new( 7, 2, 0, 1 );
   $hbox -> Add($slots, 0, wxGROW|wxALL, 0);
   $this->{mu} = Wx::CheckBox->new($this, -1, $MU.'(E)', wxDefaultPosition, wxDefaultSize);
-  $this->{mu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
+  $this->{mu} -> SetValue(Demeter->co->default("plot", "e_mu"));
   $slots -> Add($this->{mu}, 1, wxGROW|wxALL, 0);
   $this->{mmu} = Wx::RadioButton->new($this, -1, $MU.'(E)', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
-  $this->{mmu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
+  $this->{mmu} -> SetValue(Demeter->co->default("plot", "e_mu"));
   $slots -> Add($this->{mmu}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{mu}, sub{$_[0]->replot(qw(E single))});
   EVT_RADIOBUTTON($this, $this->{mmu}, sub{$_[0]->replot(qw(E marked))});
@@ -36,7 +36,7 @@ sub new {
   $app->mouseover($this->{mmu}, "Plot $MU(E) when ploting the marked groups in energy.");
 
   $this->{bkg} = Wx::CheckBox->new($this, -1, 'Background', wxDefaultPosition, wxDefaultSize);
-  $this->{bkg} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_bkg"));
+  $this->{bkg} -> SetValue(Demeter->co->default("plot", "e_bkg"));
   $slots -> Add($this->{bkg}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{bkg},
 	       sub{my ($this, $event) = @_;
@@ -51,7 +51,7 @@ sub new {
   $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 0);
 
   $this->{pre} = Wx::CheckBox->new($this, -1, 'pre-edge line', wxDefaultPosition, wxDefaultSize);
-  $this->{pre} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_pre"));
+  $this->{pre} -> SetValue(Demeter->co->default("plot", "e_pre"));
   $slots -> Add($this->{pre}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{pre},
 	       sub{my ($this, $event) = @_;
@@ -66,7 +66,7 @@ sub new {
   $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 0);
 
   $this->{post} = Wx::CheckBox->new($this, -1, 'post-edge line', wxDefaultPosition, wxDefaultSize);
-  $this->{post} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_post"));
+  $this->{post} -> SetValue(Demeter->co->default("plot", "e_post"));
   $slots -> Add($this->{post}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{post},
 	       sub{my ($this, $event) = @_;
@@ -81,10 +81,10 @@ sub new {
   $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 0);
 
   $this->{norm} = Wx::CheckBox->new($this, -1, 'Normalized', wxDefaultPosition, wxDefaultSize);
-  $this->{norm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
+  $this->{norm} -> SetValue(Demeter->co->default("plot", "e_norm"));
   $slots -> Add($this->{norm}, 1, wxGROW|wxALL, 0);
   $this->{mnorm} = Wx::RadioButton->new($this, -1, 'Normalized', wxDefaultPosition, wxDefaultSize);
-  $this->{mnorm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
+  $this->{mnorm} -> SetValue(Demeter->co->default("plot", "e_norm"));
   $slots -> Add($this->{mnorm}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{norm},
 	       sub{my ($this, $event) = @_;
@@ -99,10 +99,10 @@ sub new {
   $app->mouseover($this->{mnorm}, "Plot normalized data when ploting the marked groups in energy.");
 
   $this->{der} = Wx::CheckBox->new($this, -1, 'Derivative', wxDefaultPosition, wxDefaultSize);
-  $this->{der} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_der"));
+  $this->{der} -> SetValue(Demeter->co->default("plot", "e_der"));
   $slots -> Add($this->{der}, 1, wxGROW|wxALL, 0);
   $this->{mder} = Wx::CheckBox->new($this, -1, 'Derivative', wxDefaultPosition, wxDefaultSize);
-  $this->{mder} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_der"));
+  $this->{mder} -> SetValue(Demeter->co->default("plot", "e_der"));
   $slots -> Add($this->{mder}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{der},
 	       sub{my ($this, $event) = @_;
@@ -125,10 +125,10 @@ sub new {
   $app->mouseover($this->{mder}, "Plot first derivative data when ploting the marked groups in energy.");
 
   $this->{sec} = Wx::CheckBox->new($this, -1, '2nd derivative', wxDefaultPosition, wxDefaultSize);
-  $this->{sec} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_sec"));
+  $this->{sec} -> SetValue(Demeter->co->default("plot", "e_sec"));
   $slots -> Add($this->{sec}, 1, wxGROW|wxALL, 0);
   $this->{msec} = Wx::CheckBox->new($this, -1, '2nd derivative', wxDefaultPosition, wxDefaultSize);
-  $this->{msec} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_sec"));
+  $this->{msec} -> SetValue(Demeter->co->default("plot", "e_sec"));
   $slots -> Add($this->{msec}, 1, wxGROW|wxALL, 0);
   EVT_CHECKBOX($this, $this->{sec},
 	       sub{my ($this, $event) = @_;
@@ -152,9 +152,9 @@ sub new {
 
   $this->{mnorm}->SetValue(1);
 
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) )
     foreach (qw(mu bkg pre post norm der sec));
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "marked")) )
     foreach (qw(mmu mnorm mder msec));
 
 #  my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -165,12 +165,12 @@ sub new {
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   my $label = Wx::StaticText->new($this, -1, "Emin", wxDefaultPosition, [35,-1]);
-  $this->{emin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emin"),
+  $this->{emin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "emin"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{emin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "Emax", wxDefaultPosition, [35,-1]);
-  $this->{emax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emax"),
+  $this->{emax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "emax"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{emax}, 1, wxRIGHT, 10);
@@ -198,7 +198,7 @@ sub label {
 
 sub pull_single_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   $po->e_mu  ($this->{mu}  -> GetValue);
   $po->e_bkg ($this->{bkg} -> GetValue);
   $po->e_pre ($this->{pre} -> GetValue);
@@ -226,7 +226,7 @@ sub pull_single_values {
 
 sub pull_marked_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   $po->e_mu  ($this->{mmu}  -> GetValue);
   $po->e_bkg (0);
   $po->e_pre (0);

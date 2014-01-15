@@ -23,7 +23,6 @@ use base qw(Wx::SingleChoiceDialog);
 
 use Demeter qw(:none);
 
-#my $demeter = Demeter->new();
 sub new {
   my ($class, $parent, $text, $title) = @_;
 

@@ -93,7 +93,7 @@ sub mouseover {
 sub fetch {
   my ($self) = @_;
   foreach my $j (1..$nind) {
-    my $indic = ($self->{'group'.$j}) ? $Demeter::UI::Artemis::demeter->mo->fetch("Indicator", $self->{'group'.$j})
+    my $indic = ($self->{'group'.$j}) ? Demeter->mo->fetch("Indicator", $self->{'group'.$j})
       : Demeter::Plot::Indicator->new;
     $self->{'group'.$j} = $indic->group;
     $indic->space ($self->{'space'.$j}->GetStringSelection || 'k');
@@ -129,7 +129,7 @@ sub plot {
   $self->fetch;
   foreach my $j (1..5) {
     my $this = $self->{'group'.$j};
-    my $indic = $Demeter::UI::Artemis::demeter->mo->fetch("Indicator", $this);
+    my $indic = Demeter->mo->fetch("Indicator", $this);
     $indic->plot;
   };
   $ds->unset_standard;

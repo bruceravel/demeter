@@ -19,7 +19,6 @@ use vars qw($label);
 $label = "Principle components analysis";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize   = [50,-1];
-my $demeter  = $Demeter::UI::Athena::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
@@ -36,8 +35,8 @@ sub new {
   } else {
 
     $this->{PCA} = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
-    $this->{xmin} = $demeter->co->default('pca', 'emin');
-    $this->{xmax} = $demeter->co->default('pca', 'emax');
+    $this->{xmin} = Demeter->co->default('pca', 'emin');
+    $this->{xmax} = Demeter->co->default('pca', 'emax');
 
     ## -------- analysis range and space
     my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
