@@ -293,11 +293,15 @@ sub set_this_param {
     #$self->_report($group, $param, $hash{default});
     $hash{default} = (looks_like_number($hash{default})) ? $hash{default} : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+    if (exists $hash{windows}) {
+      $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+    };
   } elsif ($hash{type} eq 'positive integer') {
     $hash{default} = (looks_like_number($hash{default})) ? int($hash{default}) : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+    if (exists $hash{windows}) {
+      $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+    };
   };
   $self -> set($key=>\%hash);
   $ini{$group}{$param} = (($self->is_windows) and (exists $hash{windows})) ? $hash{windows} : $hash{default};
