@@ -11,3 +11,4 @@
 <<nl>>
 ##| interpolate {$D->group} onto merge grid
 m___erge.{$D->group} = interp({$D->group}.{$C->get("merge_space")}+{$shift}, {$D->group}.{$C->get("merge_data")}, m___erge.{$C->get("merge_space")})
+m___erge.{$D->group} = array(map(demeter__denan, m___erge.{$D->group}))
