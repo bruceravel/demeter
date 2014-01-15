@@ -75,6 +75,10 @@ sub new {
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
+  my @list = ('hephaestus', 'plot');
+  push @list, 'gnuplot' if (Demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
+  $self->{prefgroups} = \@list;
+
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
     my $icon = File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'icons', "$utility.png");

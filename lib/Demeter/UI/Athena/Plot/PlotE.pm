@@ -210,8 +210,14 @@ sub pull_single_values {
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
   $::app->{main}->status(q{}, 'nobuffer');
-  $emin = 0, $::app->{main}->status("Emin is not a number", 'error|nobuffer') if not looks_like_number($emin);
-  $emax = 0, $::app->{main}->status("Emax is not a number", 'error|nobuffer') if not looks_like_number($emax);
+  if (not looks_like_number($emin)) {
+    $emin = Demeter->co->default('plot','emin');
+    $::app->{main}->status("Emin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($emax)) {
+    $emax = Demeter->co->default('plot','emax');
+    $::app->{main}->status("Emax is not a number", 'error|nobuffer');
+  };
   $po->emin($emin);
   $po->emax($emax);
 
@@ -232,8 +238,14 @@ sub pull_marked_values {
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
   $::app->{main}->status(q{}, 'nobuffer');
-  $emin = 0, $::app->{main}->status("Emin is not a number", 'error|nobuffer') if not looks_like_number($emin);
-  $emax = 0, $::app->{main}->status("Emax is not a number", 'error|nobuffer') if not looks_like_number($emax);
+  if (not looks_like_number($emin)) {
+    $emin = Demeter->co->default('plot','emin');
+    $::app->{main}->status("Emin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($emax)) {
+    $emax = Demeter->co->default('plot','emax');
+    $::app->{main}->status("Emax is not a number", 'error|nobuffer');
+  };
   $po->emin($emin);
   $po->emax($emax);
 

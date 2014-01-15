@@ -289,18 +289,26 @@ sub set_this_param {
     $hash{onvalue}  ||= 1;
     $hash{offvalue} ||= 0;
   };
+  my ($def, $win) = ($hash{default}, $hash{windows});
+  $win ||= q{a};
   if ($hash{type} eq 'real') {
-    $hash{default} = (looks_like_number($hash{default})) ? $hash{default} : 0;
+    #$self->_report($group, $param, $hash{default});
+    $hash{default} = (looks_like_number("$def")) ? $hash{default} : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+    $hash{windows} = (looks_like_number("$win")) ? $hash{windows} : 0;
   } elsif ($hash{type} eq 'positive integer') {
-    $hash{default} = (looks_like_number($hash{default})) ? int($hash{default}) : 0;
+    $hash{default} = (looks_like_number("$def")) ? int($hash{default}) : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+    $hash{windows} = (looks_like_number("$win")) ? int($hash{windows}) : 0;
   };
   $self -> set($key=>\%hash);
   $ini{$group}{$param} = (($self->is_windows) and (exists $hash{windows})) ? $hash{windows} : $hash{default};
   return $self;
+};
+
+sub _report {
+  my ($self, $g, $p, $val) = @_;
+  Demeter->pjoin($g,$p,$val,looks_like_number($val), '<');
 };
 
 sub fix_number {
@@ -470,6 +478,18 @@ sub read_ini {
       $self->set_default($g, $p, $personal_ini->{$g}{$p});
     };
   };
+  return $self;
+};
+
+
+sub reset_all {
+  my ($self) = @_;
+  foreach my $g (Demeter->co->groups) {
+    foreach my $p (Demeter->co->parameters($g)) {
+      Demeter->co->set_default($g, $p, Demeter->co->demeter($g, $p));
+    };
+  };
+  Demeter->co->write_ini;
   return $self;
 };
 

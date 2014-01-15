@@ -123,8 +123,14 @@ sub pull_single_values {
   my $kmin = $this->{kmin}-> GetValue;
   my $kmax = $this->{kmax}-> GetValue;
   $::app->{main}->status(q{}, 'nobuffer');
-  $kmin = 0,  $::app->{main}->status("kmin is not a number", 'error|nobuffer') if not looks_like_number($kmin);
-  $kmax = 15, $::app->{main}->status("kmax is not a number", 'error|nobuffer') if not looks_like_number($kmax);
+  if (not looks_like_number($kmin)) {
+    $kmin = Demeter->co->default('plot','kmin');
+    $::app->{main}->status("kmin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($kmax)) {
+    $kmax = Demeter->co->default('plot','kmax');
+    $::app->{main}->status("kmax is not a number", 'error|nobuffer');
+  };
   $po->kmin($kmin);
   $po->kmax($kmax);
 };
@@ -138,8 +144,14 @@ sub pull_marked_values {
   my $kmin = $this->{kmin}-> GetValue;
   my $kmax = $this->{kmax}-> GetValue;
   $::app->{main}->status(q{}, 'nobuffer');
-  $kmin = 0,  $::app->{main}->status("kmin is not a number", 'error|nobuffer') if not looks_like_number($kmin);
-  $kmax = 15, $::app->{main}->status("kmax is not a number", 'error|nobuffer') if not looks_like_number($kmax);
+  if (not looks_like_number($kmin)) {
+    $kmin = Demeter->co->default('plot','kmin');
+    $::app->{main}->status("kmin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($kmax)) {
+    $kmax = Demeter->co->default('plot','kmax');
+    $::app->{main}->status("kmax is not a number", 'error|nobuffer');
+  };
   $po->kmin($kmin);
   $po->kmax($kmax);
 };

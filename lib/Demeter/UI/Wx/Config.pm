@@ -26,6 +26,7 @@ use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER);
 
 use Demeter qw(:none);
 
+use Demeter::UI::Wx::VerbDialog;
 use Demeter::UI::Wx::ColourDatabase;
 my $cdb = Demeter::UI::Wx::ColourDatabase->new;
 my $aleft = Wx::TextAttr->new();
@@ -34,8 +35,9 @@ $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 use base 'Wx::Panel';
 
 sub new {
-  my ($class, $parent, $callback) = @_;
+  my ($class, $parent, $callback, $main) = @_;
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+  $self->{parent}=$parent;
 
   my $mainsizer = Wx::BoxSizer->new( wxHORIZONTAL );
   $self -> SetSizer($mainsizer);
@@ -105,7 +107,7 @@ sub new {
   $self -> set_stub;
 
   $right -> Add($self->{grid}, 0, wxEXPAND|wxALL, 10);
-  
+
   ## -------- Description text
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{descboxsizer} = Wx::StaticBoxSizer->new( $self->{descbox}, wxVERTICAL );
@@ -122,10 +124,15 @@ sub new {
   $buttonbox -> Add($self->{apply}, 1, wxEXPAND|wxALL, 5);
   $self->{save} = Wx::Button->new( $self, -1, 'Apply and Save', wxDefaultPosition, wxDefaultSize );
   $buttonbox -> Add($self->{save}, 1, wxEXPAND|wxALL, 5);
-  $right -> Add($buttonbox, 0, wxEXPAND|wxALL, 5);
+  $right -> Add($buttonbox, 0, wxEXPAND|wxALL, 0);
+
+  $self->{reset_all} = Wx::Button->new( $self, -1, 'Reset all parameters to Demeter\'s defaults', wxDefaultPosition, wxDefaultSize );
+  $right -> Add($self->{reset_all}, 0, wxEXPAND|wxALL, 5);
+
 
   EVT_BUTTON( $self, $self->{apply}, sub{my($self, $event) = @_; $self->apply($callback, 0)} );
   EVT_BUTTON( $self, $self->{save},  sub{my($self, $event) = @_; $self->apply($callback, 1)} );
+  EVT_BUTTON( $self, $self->{reset_all},  sub{my($self, $event) = @_; $self->reset_all($main)} );
 
   return $self;
 };
@@ -316,6 +323,24 @@ sub set_stub {
   my ($self) = @_;
   $self->{Set} = Wx::StaticText->new( $self, -1, q{});
   return $self->{Set};
+};
+
+sub reset_all {
+  my ($self, $main) = @_;
+  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+					       "Do you really wish to reset all parameters to their default values?  This will reset all parameters for Athena, Artemis, and Hephaestus.",
+					       "Realy reset all parameters?",
+					       "Reset");
+  if ($yesno->ShowModal == wxID_NO) {
+    $main->status("Not resetting Demeter's configuration paremeters.") if (ref($main) !~ m{Hephaestus});
+    return;
+  };
+  Demeter->co->reset_all;
+  $self->{params}->DeleteAllItems;
+  $self->populate($main->{prefgroups});
+  $self->{params}->Expand($self->{params}->GetRootItem);
+  $main->status("All configuration parameters have been reset to Demeter's defaults.") if (ref($main) !~ m{Hephaestus});
+  return;
 };
 
 ## x  string                Entry

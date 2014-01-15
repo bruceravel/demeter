@@ -93,7 +93,6 @@ sub OnInit {
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
 
-
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
@@ -108,6 +107,11 @@ sub OnInit {
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
   EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
+  $app->{main}->{prefgroups} = [qw(absorption athena bft bkg clamp convolution dispersive
+				   edgestep fft file fit gnuplot indicator interpolation
+				   lcf marker merge operations pca peakfit plot rebin
+				   smooth whiteline xanes)];
+
 
   ## -------- Set up menubar
   #print DateTime->now,  "  Making menubar and status bar...\n";

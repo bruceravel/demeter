@@ -34,11 +34,15 @@ use Data::Dumper;
 sub get_larch_array {
   my ($param) = @_;
   #Demeter->trace;
+  print ">>>>>> ", $param, $/;
   #$rpcdata = $client -> get_data('_main.'.$param);
   $rpcdata = $client -> get_data($param);
+  print $rpcdata->result, $/;
+
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {
     my $ret = $rpcdata->result->{value};
+    print $rpcdata->result->{value}, $/, $/;
     return @{eval $ret};
   } elsif ($rpcdata->result =~ m{\A\{}) {
     ## the RPC client returns a stringification of a python
