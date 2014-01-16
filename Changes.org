@@ -3,9 +3,45 @@
 #+EMAIL: bravel AT bnl DOT gov
 
 
-* Initial release
+* 0.9 series
 
-** 0.9.19    8 January 2014
+** 0.9.20   XX January 2014
+
+*** Athena
+   - Drop box for file DnD from the system file manager
+   - Booth self-absorption algorithm now completely correct
+
+*** Artemis
+
+*** Larch
+   - Athena w/Larch now mostly works on Windows
+   - use fill_value=0.0 with interp() to avoid issues with NaN values
+     in arrays
+   - escape backslashes in filenames before sending them to Larch
+
+*** Demeter
+   - lots of code clean-up
+   - improved methodology for populating Config pages in the GUIs
+   - improvements to the PDF versions of the users' guides
+
+*** Windows
+   - Athena w/Larch now mostly works on Windows
+   - Fixed a problem with real and integer configuration parameters
+     being unset upon first time running Demeter.
+
+*** Acknowledgements
+   - Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad
+     all helped me address the problems with the 0.9.19 release on
+     Windows
+   - Frank Schima made yeoman's progress on a MacPorts version of
+     Demeter.  He also suggested file drag-n-drop.
+
+** 0.9.19    8 January 2014 (withdrawn)
+
+The windows installer for this release had too many problems and was
+withdrawn a couple of days after its release.  One of the goals of
+0.9.20 is to correct those problems.
+
 *** Athena
    - escape group names when renaming, i.e. treat metacharacters in
      group names as normal characters

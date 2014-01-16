@@ -31,6 +31,7 @@ use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::TextBuffer;
 use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
+use Demeter::UI::Athena::FileDropTarget;
 
 use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
@@ -1589,6 +1590,13 @@ sub side_bar {
   $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 0);
   $app->{main}->{toolbox} = $toolbox;
 
+  $app->{main}->{dropbox} = Wx::TextCtrl->new($toolpanel, -1, "File drop box", wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxTE_CENTRE);
+  $toolbox            -> Add($app->{main}->{dropbox}, 0, wxGROW|wxALL, 0);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize-1;
+  $app->{main}->{dropbox}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $app->{main}->{dropbox}->SetDropTarget(Demeter::UI::Athena::FileDropTarget->new($app->{main}->{dropbox}));
+  $app->mouseover($app->{main}->{dropbox}, "Drag data or project files into Athena by dropping them on this box");
+
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
@@ -1600,6 +1608,10 @@ sub side_bar {
   $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new(Demeter->co->default("athena", "single")));
+
+  #$app->{main}->{dropbox} = 
+  #Demeter::UI::Wx::FileDropTarget->new($app->{main}->{list}->{datalist});
+  #$toolbox -> Add($app->{main}->{dropbox}, 1, wxGROW|wxALL, 0);
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
