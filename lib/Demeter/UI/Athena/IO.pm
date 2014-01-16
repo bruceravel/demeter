@@ -129,7 +129,7 @@ sub Import {
 	$type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
 	      : ($plugin and ($plugin->output eq 'project')) ? 'prj'
 	      : ($plugin and ($plugin->output eq 'list'))    ? 'list'
-              : (Demeter->is_data($file,$verbose))           ? 'raw'
+              : (Demeter->dd->is_data($file,$verbose))           ? 'raw'
               :                                                '???';
       };
     };

@@ -119,10 +119,10 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;  ## $self is a misnomer, this is a class method
-  ##my $gp = $self->group || Demeter->mo->throwaway_group;
-  my $gp = Demeter->mo->throwaway_group;
+  my $gp = $self->group || Demeter->mo->throwaway_group;
+  ##my $gp = Demeter->mo->throwaway_group;
   Demeter->dispense('process', 'read_group', {file=>$a, group=>$gp, type=>'raw'});
-  my $col_string = Demeter->fetch_string('$column_label');
+  my $col_string = $self->fetch_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
@@ -137,7 +137,7 @@ sub is_data {
   my $tooshort = 0;
   foreach my $l (split(" ", $col_string)) {
     my $scalar = "a_".$l;
-    if (Demeter->fetch_scalar($scalar)) {
+    if ($self->fetch_scalar($scalar)) {
       $onepoint = 1;
       Demeter->dispense('process', 'erase', {items=>$scalar});
     };

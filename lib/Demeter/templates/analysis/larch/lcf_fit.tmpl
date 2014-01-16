@@ -24,7 +24,7 @@ def lcf_fit(par, par_sh, lcf):
             __kgri = getattr(_main.get_group(g), 'k')
             __data = getattr(_main.get_group(g), 'chi')
             __line = zeros(len({$S->group}.g))
-            __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid)
+            __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid, fill_value=0.0)
         else:
             ## arrays for interpolation
             __ener = getattr(_main.get_group(g), 'energy')
@@ -32,9 +32,9 @@ def lcf_fit(par, par_sh, lcf):
             __line = par._slope * __grid + par._offset
             __line[:demlcfconst.i0] = 0            
             ## this standard, weighted, interpolated onto data grid
-            __new  = __a * interp(__ener+__e+__sh, __data, __grid) + __line
+            __new  = __a * interp(__ener+__e+__sh, __data, __grid, fill_value=0.0) + __line
         endif
-        __part = array(map(demeter__denan, __new))
+        __part = array(__new)
         setattr(lcf, g, __part)
     endfor
     if '{$S->space}' == 'chi':

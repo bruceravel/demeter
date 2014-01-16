@@ -21,15 +21,15 @@ for g in ({$string}):
         __kgri = getattr(_main.get_group(g), 'k')
         __data = getattr(_main.get_group(g), 'chi')
 	## the k-grids are not guaranteed to be of the same length (may be off by one or a few)
-        __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid)
+        __new  = __a * interp(__kgri, __data*__kgri**{$P->kweight}, __grid, fill_value=0.0)
     else:
         ## arrays for interpolation
         __ener = getattr(_main.get_group(g), 'energy')
         __data = getattr(_main.get_group(g), '{$S->suffix}')
         ## this standard, weighted, interpolated onto data grid
-        __new  = __a * interp(__ener+__e+__sh, __data, __grid)
+        __new  = __a * interp(__ener+__e+__sh, __data, __grid, fill_value=0.0)
     endif
-    __part = array(map(demeter__denan, __new))
+    __part = array(__new)
     setattr({$S->group}, g, __part)
 endfor
 

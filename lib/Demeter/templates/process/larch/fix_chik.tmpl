@@ -2,7 +2,7 @@ fi___x     = group(__name__='fi___x')
 fi___x.k   = linspace(min({$D->group}.k), max({$D->group}.k), int((max({$D->group}.k)-min({$D->group}.k))/0.05+1))
 fi___x.kk  = linspace(0, min({$D->group}.k)-0.05, int(min({$D->group}.k)/0.05))
 fi___x.yy  = zeros(int(min({$D->group}.k)/0.05))
-fi___x.chi = interp({$D->group}.k, {$D->group}.chi, fi___x.k)
+fi___x.chi = interp({$D->group}.k, {$D->group}.chi, fi___x.k, fill_value=0.0)
 {$D->group}.k    = concatenate((fi___x.kk, fi___x.k))
 {$D->group}.chi  = concatenate((fi___x.yy, fi___x.chi))
 del fi___x
