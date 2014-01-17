@@ -62,7 +62,7 @@ Keyboard shortcuts look like this:
 means to hit the q key while holding the Control (or Ctrl) key.
 [% END %]
 [% WRAPPER html/li %]
-Program names from the [% ifeffit %] family look like this: [%athena%].
+Program names from the [%demeter%]'s[%#'%] extended family look like this: [%athena%].
 [% END %]
 [% WRAPPER html/li %]
 References to [%athena%]'s[%#'%] preferences are written like this:

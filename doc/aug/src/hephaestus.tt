@@ -40,9 +40,9 @@ letter='e'%] and [% INCLUDE modkey key="Alt" letter='h' %] post the
 a="Help"%] menus.  [% INCLUDE modkey key="Control" letter='1' %]
 through [%INCLUDE modkey key="Control" letter='9' %] change the
 display the various tools.  [% INCLUDE modkey key="Control"
-letter='m'%] displays the document, while [% INCLUDE modkey
-key="Control" letter='c' %] changes the display to the configuration
-tool.
+letter='m'%] displays the document in a web browser, while [% INCLUDE
+modkey key="Control" letter='c' %] changes the display to the
+configuration tool.
 [% END %]
 
 
@@ -291,9 +291,9 @@ absorption lengths of ferrite.  The ferrite in BN will, therefore,
 attenuate the beam passing through the sample to the level of
 exp(-3.1), or about 4.5%.
 
-In an early XAS paper -- E. A. Stern and K. Kim, [% INCLUDE font/em a="Physical Review"%]
-[% INCLUDE font/b a="23"%]:8 (1981) 
-([% INCLUDE html/link link="http://dx.doi.org/10.1103/PhysRevB.23.3781"%]) -- it
+In an early XAS paper -- E. A. Stern and K. Kim, [% INCLUDE font/em
+a="Physical Review"%] [% INCLUDE font/b a="23"%]:8 (1981) ([% INCLUDE
+html/link link="http://dx.doi.org/10.1103/PhysRevB.23.3781" text="DOI link"%]) -- it
 was shown that the edge step of a sample should not exceed 1.5.  Using
 a simple statistical argument that presumes that measurement
 uncertainty is dominated by shot noise, the authors show that a sample
@@ -319,7 +319,7 @@ homogeneous sample, it is necessary that the ferrite powder be
 composed of grains that are small compared to the absorption length.
 In this, you would want micron-sized or smaller grains.  Note that a
 stack of laboratory metal meshes are not adequate for separating out
-powders for this sample.  A #400 mesh -- usually the finest one in a
+powders for this sample.  A 400 mesh -- usually the finest one in a
 common stack of sieves -- has openings of 37 microns.  That is vastly
 too large for your ferrite XAS samples!
 [% END %]
@@ -367,17 +367,18 @@ pressure is 760 Torr.
 
 [% FILTER html_para %]
 The percentage absorbed by the ion chamber will usually auto-update as
-you change the parameters.  Clicking the [% INCLUDE font/quote a="Compute"%] button forces an
-update.  Clicking the [% INCLUDE font/quote a="Reset"%] button returns all the parameters to
-their initial values.
+you change the parameters.  Clicking the [% INCLUDE font/quote
+a="Compute"%] button forces an update.  Clicking the [% INCLUDE
+font/quote a="Reset"%] button returns all the parameters to their
+initial values.
 
 As a rule of thumb, 10% is a good amount of absorption for the I0
 chamber.  This will allow for a good measurement of incidence flux
-while leaving most photons for the rest of the measurement.  66% is a
-good amount for the It, Ir, and If chambers.  This distributes the
-absorption over the entire length of the ion chamber.  In the case of
-It, this leaves enough photons passing through to the reference
-chamber to allow for a reasonable measurement on Ir.
+while leaving most photons for the rest of the measurement.  66
+percent is a good amount for the It, Ir, and If chambers.  This
+distributes the absorption over the entire length of the ion chamber.
+In the case of It, this leaves enough photons passing through to the
+reference chamber to allow for a reasonable measurement on Ir.
 
 If you know the amplifier gain and voltage signal coming from your
 current-to-voltage amplifier (such as a Keithley 427 or 428),
@@ -487,12 +488,13 @@ The XANES data can be plotted as normalized mu(E) or as the derivative
 of mu(E).  The data present have all been annotated so that
 interesting points are marked on the plots.
 
-The [% INCLUDE font/quote a="Save"%] button will prompt for a file name and save the mu(E) data
-to a file.
+The [% INCLUDE font/quote a="Save"%] button will prompt for a file
+name and save the mu(E) data to a file.
 
-One point of this tool is to make obsolete the [% INCLUDE font/quote a="Reference Spectra"%]
-printout from EXAFS Materials that is found at many beamlines.
-[% INCLUDE html/link link="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf"%]
+One point of this tool is to make obsolete the [% INCLUDE font/quote
+a="Reference Spectra"%] printout from EXAFS Materials that is found at
+many beamlines.  [% INCLUDE html/link
+link="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf"%]
 
 [% WRAPPER figure file="Hephaestus_standards.png" %]
 The standards tool.
@@ -527,11 +529,9 @@ An f'[%#'%] and f"[%#"%] plot for vanadium.
 [% END %]
 
 
-[% INCLUDE section label="Preference" %]
+[% INCLUDE section label="Preferences" %]
 
 [% FILTER html_para %]
-=head2 Preferences
-
 The behavior of [%hephaestus%] can be configured via the preferences
 tool.  This uses the same preferences tool as Athena and Artemis,
 although only those preference groups relevant to [%hephaestus%] and to

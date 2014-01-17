@@ -250,22 +250,18 @@ sub OnInit {
   $file->Append( $STAN,     "&Standards\tCtrl+8" );
   $file->Append( $FPPP,     "&F' and F\"\tCtrl+9" );
   $file->Append( $CONFIG,   "&Configure\tCtrl+c" );
-  $file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
+  ##$file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
   $file->AppendSeparator;
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
-  $help->Append( $CONFIG,    "&Configure" );
-  $help->Append( $DOCUMENT,  "Docu&ment" );
+  $help->Append( $CONFIG,    "&Configure\tCtrl+c" );
+  $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
-  #$bar->Append( $tool, "&Tools" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
-
-  #$tool->Enable($DOCUMENT,0);
-  #$help->Enable($DOCUMENT,0);
 
   EVT_MENU( $frame, $ABS,      sub{shift->{book}->SetSelection(0)});
   EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
@@ -302,14 +298,15 @@ sub on_close {
 sub document {
   my ($self) = @_;
   my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my $url = Demeter->co->default('athena', 'doc_url') . '/hephaestus.html';
   my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, 'hephaestus.html');
   if (-e $fname) {
     $fname  = 'file://'.$fname;
-    print $fname, $/;
-    #Wx::LaunchDefaultBrowser($fname);
+    #print $fname, $/;
+    Wx::LaunchDefaultBrowser($fname);
   } else {
-    print $fname, $/;
-    #Wx::LaunchDefaultBrowser($url);
+    #print $fname, $/;
+    Wx::LaunchDefaultBrowser($url);
   };
 };
 
