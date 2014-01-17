@@ -57,8 +57,8 @@ my $icon_dimension = 30;
 
 use vars qw($periodic_table);
 
-#my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
-my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
+my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
+#my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
 
 sub new {
   my $ref    = shift;
@@ -277,7 +277,8 @@ sub OnInit {
   EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(7)});
   EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(8)});
   EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
-  EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
+  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
+  EVT_MENU( $frame, $DOCUMENT, \&document);
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
@@ -296,6 +297,20 @@ sub multiplex {
 sub on_close {
   my ($self) = @_;
   $self->Destroy;
+};
+
+sub document {
+  my ($self) = @_;
+  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, 'hephaestus.html');
+  if (-e $fname) {
+    $fname  = 'file://'.$fname;
+    print $fname, $/;
+    #Wx::LaunchDefaultBrowser($fname);
+  } else {
+    print $fname, $/;
+    #Wx::LaunchDefaultBrowser($url);
+  };
 };
 
 sub on_about {
