@@ -44,10 +44,12 @@ use vars qw($buffer $plotbuffer);
 use Cwd;
 use File::Basename;
 use File::Copy;
+use File::CountLines qw(count_lines);
 use File::Path;
 use File::Spec;
 use List::Util qw(min max);
 use List::MoreUtils qw(any);
+use Math::Random;
 use Time::HiRes qw(usleep);
 use Const::Fast;
 const my $FOCUS_UP	       => Wx::NewId();
@@ -136,8 +138,6 @@ sub OnInit {
    					     );
   $app->{main}->SetAcceleratorTable( $accelerator );
 
-
-
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
   $app->{lastplot} = [q{}, q{single}];
@@ -179,6 +179,11 @@ sub OnInit {
   $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
+
+  my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
+  my $i = int(count_lines($tip_file) * random_uniform);
+  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_file, $i );
+  $app->show_tip if Demeter->co->default('athena', 'tips');
   1;
 };
 
@@ -457,6 +462,7 @@ const my $MERGE_STEP		=> Wx::NewId();
 const my $MERGE_DOC		=> Wx::NewId();
 
 const my $DOCUMENT		=> Wx::NewId();
+const my $TIP 		        => Wx::NewId();
 const my $DEMO			=> Wx::NewId();
 
 sub menubar {
@@ -711,6 +717,7 @@ sub menubar {
 
   my $helpmenu   = Wx::Menu->new;
   $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
+  $helpmenu->Append($TIP,       "Show tip",             "Show a tip" );
   #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
@@ -1414,6 +1421,10 @@ sub OnMenuClick {
 
     ($id == $DOCUMENT) and do {
       $app->document('index');
+      return;
+    };
+    ($id == $TIP) and do {
+      $app->show_tip;
       return;
     };
 
@@ -2705,6 +2716,14 @@ sub document {
     ##$::app->{main}->status("Document target not found: $fname");
   };
 };
+
+sub show_tip {
+  my ($self) = @_;
+  my $show_again = Wx::ShowTip( $self->{main}, $self->{tip_provider}, Demeter->co->default('athena','tips') );
+  Demeter->co->set_default('athena', 'tips', $show_again);
+  Demeter->co->write_ini;
+};
+
 
 
 =for Explain

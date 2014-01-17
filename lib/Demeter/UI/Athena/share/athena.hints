@@ -1,0 +1,33 @@
+Alt-k and Alt-j can be used to move the current group up and down in the group list
+Crtl-k and Ctrl-j can be used to select the group above or below the current group
+Many commonly used functions have keyboard shortcuts, they are listed in the menus
+Right click on parameter labels to constrain parameters between groups
+Right click on section headers in the main window to constrain parameters between groups
+Auto-alignment works by minimizing the difference between derivative spectra
+Data can be merged as mu(E), norm(E), or chi(k)
+Data should always be aligned BEFORE merging
+Data can be displayed as k-weighted chi(E), i.e. chi(k) with the x-axis in energy
+See Physical Review B47:21 (1993) p. 14126 for details of the AUTOBK algorithm (DOI:10.1103/PhysRevB.47.14126) 
+See J. Synchrotron Rad. 8 (2001) p. 322 for details about Ifeffit (DOI: 10.1107/S0909049500016964)
+Demeter's homepage is http://bruceravel.github.io/demeter
+Right clicking on a data group pops up a menu for plotting and group actions.
+Files can be dragged from a file manager and dropped on the group list
+Back-transformed k-space is called "q-space" in Athena
+A "kq" plot over-plots chi(k) and the real part of chi(q)
+The plot multiplier is a multiplicative scaling factor used in many plots
+The y-axis offset is a vertical displacement when the group is plotted
+Vertical displacements for plots can be set for marked groups using the Stack tab
+The Indicators plot options tab sets plot indicators -- indicators are vertical bars which can be places in any plot
+Plot indicators in k are also plotted in E and q, and vice versa
+The project journal will be saved in the project file -- use it to record notes about your data analysis
+Athena is highly configurable -- see the Preferences tool
+Report bugs to the Ifeffit mailing list
+The Ifeffit mailing list is at http://cars9.uchicago.edu/mailman/listinfo/ifeffit/
+Right click on the "kq" button to display the quad plot for the current group
+Right click on the orange "E" button to display the current group + I0 + the signal
+You can quickly configure the title and legend of the plot using the "Title, legend, single file" plot options tab
+Larch's homepage is http://xraypy.github.io/xraylarch/
+Right click on the "edge step" label to approximate the uncertainty in edge step, which is calculated as the standard deviation of 20 normalizations with the pre- and post-edge line boundaries randomized
+Right click on the orange "k" or "R" buttons to show the "k123" or "R123" plots
+The save button at the top of the page slowly turns red as you work -- when it is bright red, saving your work is overdue!
+Finding the white line position works by locating the first peak -- i.e. a point with zero derivative -- after the E0 value

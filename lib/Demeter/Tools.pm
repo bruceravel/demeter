@@ -126,7 +126,7 @@ sub module_environment {
 		     Regexp::Assemble
 		     Regexp::Common
 		     Heap::Fibonacci
-		     String::Random
+		     Math::Random
 		     Text::Template
 		     Tree::Simple
 		     YAML::Tiny

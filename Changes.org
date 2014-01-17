@@ -12,10 +12,15 @@
    - Control-left-click for reorganzing group list items disabled in
      favor of file drag-n-drop
    - Booth self-absorption algorithm now completely correct
+   - Added Hephaestus doc to the Athena Users' Guide
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
    - Drag and drop CIF, Atoms, Feff input files onto the Feff list
+
+*** Hephaestus
+   - Document now displayed in the system web browser (Wx::Html was
+     not working on the Mac)
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
