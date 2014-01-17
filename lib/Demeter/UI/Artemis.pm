@@ -31,6 +31,8 @@ use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
+use Demeter::UI::Artemis::DataDropTarget;
+use Demeter::UI::Artemis::FeffDropTarget;
 
 use Demeter::UI::Wx::VerbDialog;
 
@@ -314,7 +316,7 @@ sub OnInit {
 
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.");
+  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.  Drag and drop Athena or Artemis project files.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
   $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -324,6 +326,8 @@ sub OnInit {
   $frames{main}->{datalist} = $datalist;
   $frames{main}->{databox}  = $datavbox;
   EVT_RIGHT_UP($frames{main}->{newdata}, \&OnDataRightClick);
+
+  $databox->SetDropTarget( Demeter::UI::Artemis::DataDropTarget->new( $databox ) );
 
 
   ## -------- Feff box
@@ -339,7 +343,7 @@ sub OnInit {
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.");
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.  Drag and drop Feff/Atoms/CIF files.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -349,6 +353,9 @@ sub OnInit {
   $frames{main}->{fefflist} = $fefflist;
   $frames{main}->{feffbox}  = $feffvbox;
   EVT_RIGHT_UP($frames{main}->{newfeff}, \&OnFeffRightClick);
+
+  $feffbox->SetDropTarget( Demeter::UI::Artemis::FeffDropTarget->new( $feffbox ) );
+
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);

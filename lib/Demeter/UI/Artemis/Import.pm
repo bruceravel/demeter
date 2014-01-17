@@ -33,6 +33,7 @@ sub Import {
   $args{postcrit} || Demeter->co->default('pathfinder', 'postcrit');
   my $retval = q{};
  SWITCH: {
+    read_project($rframes, $fname),             last SWITCH if  ($which eq 'fpj');
     $retval = _prj($fname),                     last SWITCH if (($which eq 'prj') or ($which eq 'athena'));
     $retval = _old($fname),                     last SWITCH if  ($which eq 'old');
     $retval = _feff($fname),                    last SWITCH if  ($which eq 'feff');

@@ -3,10 +3,12 @@
 %]
 
 [% FILTER html_para %]
-To import a data file, select Open file from the File menu or type
-[% INCLUDE modkey key="control" letter='o' %].  A file selection
-dialog opens.  On my Linux computer, it looks like
-[% INCLUDE imageref text="this:" label="import_filedialog" %]
+To import a data file, select Open file from the File menu or type [%
+INCLUDE modkey key="control" letter='o' %].  Alternately, you can drag
+one or more data files from your computer's[%#'%] file manager and
+drop them onto the group list.  A file selection dialog opens.  On my
+Linux computer, it looks like [% INCLUDE imageref text="this:"
+label="import_filedialog" %]
 [% END %]
 
 [% WRAPPER figure file="import_filedialog.png" %]

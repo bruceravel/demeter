@@ -8,10 +8,14 @@
 ** 0.9.20   XX January 2014
 
 *** Athena
-   - Drop box for file DnD from the system file manager
+   - File drag-n-drop onto the group list from the system file manager
+   - Control-left-click for reorganzing group list items disabled in
+     favor of file drag-n-drop
    - Booth self-absorption algorithm now completely correct
 
 *** Artemis
+   - Drag and drop Athena or Artemis project files onto the Data list
+   - Drag and drop CIF, Atoms, Feff input files onto the Feff list
 
 *** Larch
    - Athena w/Larch now mostly works on Windows

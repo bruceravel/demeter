@@ -25,6 +25,13 @@ detail [% INCLUDE html/link text="in the next section"
 is one of the fundamental user interface features in [% athena %].
 Any feature of [% athena %] that involves more than one group uses the
 mark buttons.
+
+File can be dragged from your computers file manager (e.g. Windows
+File Explorer, KDE Dolphin, or GNOME Nautilus) and dropped onto the
+group list.  These files, which can be [% INCLUDE html/link
+text="data" link="../import/columns.html"%] or [% INCLUDE html/link
+text="project" link="../import/projsel.html"%] files will be appended
+to the group list.  You cannot drop folders onto the group list.
 [% END %]
 
 [% PROCESS section label="Copying groups" %]
@@ -91,12 +98,19 @@ Hitting
 [% INCLUDE modkey key="control" letter='j' %] changes the current
 group to the one above or below.
 
-[% INCLUDE modkey key="control"%]-drag-and-drop (i.e. holding the 
-[% INCLUDE modkey key="control"%] key while clicking and dragging) can
-be used to move groups around in the group list.  The dragged group
-will be placed above the group on which it is dropped.  Dropping a
-group in the white space below the last group will place it at the end
-of the list.
+[%# INCLUDE modkey key="control"-drag-and-drop (i.e. holding the %]
+[%# INCLUDE modkey key="control" key while clicking and dragging) can %]
+[%# be used to move groups around in the group list.  The dragged group %]
+[%# will be placed above the group on which it is dropped.  Dropping a %]
+[%# group in the white space below the last group will place it at the end %]
+[%# of the list. %]
+
+[% WRAPPER html/caution %]
+As of version 0.9.20, [% INCLUDE modkey key="control" %]-drag-and-drop
+is no longer available for reorganizing group list items.  That
+feature has been discontinued in favor of file drag and drop.
+[% END %]
+
 
 Items can be removed from the list.  The current group or the marked
 groups can be removed from the project by selecting
