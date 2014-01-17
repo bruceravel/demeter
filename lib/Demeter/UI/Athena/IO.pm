@@ -7,6 +7,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
+use Demeter::UI::Wx::VerbDialog;
 #use Xray::XDI;
 
 use Cwd;
@@ -134,9 +135,16 @@ sub Import {
       };
     };
     if ($type eq '???') {
-      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
-      my $response = $md -> ShowModal;
-      return if $response == wxID_CANCEL;
+
+      my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						   "Could not read \"$file\" as either data or a project file.\n\nDo you need to enable a plugin?",
+						   "Import warning",
+						   "Continue importing");
+
+
+#      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $yesno -> ShowModal;
+      return if $response == wxID_NO;
       next;
     };
     if ($plugin) {
