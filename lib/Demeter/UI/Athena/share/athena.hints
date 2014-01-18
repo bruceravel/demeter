@@ -1,33 +1,54 @@
-Alt-k and Alt-j can be used to move the current group up and down in the group list
-Crtl-k and Ctrl-j can be used to select the group above or below the current group
-Many commonly used functions have keyboard shortcuts, they are listed in the menus
-Right click on parameter labels to constrain parameters between groups
-Right click on section headers in the main window to constrain parameters between groups
-Auto-alignment works by minimizing the difference between derivative spectra
-Data can be merged as mu(E), norm(E), or chi(k)
-Data should always be aligned BEFORE merging
-Data can be displayed as k-weighted chi(E), i.e. chi(k) with the x-axis in energy
-See Physical Review B47:21 (1993) p. 14126 for details of the AUTOBK algorithm (DOI:10.1103/PhysRevB.47.14126) 
-See J. Synchrotron Rad. 8 (2001) p. 322 for details about Ifeffit (DOI: 10.1107/S0909049500016964)
-Demeter's homepage is http://bruceravel.github.io/demeter
+Alt-k and Alt-j can be used to move the current group up and down in the group list.
+Crtl-k and Ctrl-j can be used to select the group above or below the current group.
+Many commonly used functions have keyboard shortcuts, they are listed in the menus.
+Right click on parameter labels to constrain parameters between groups.
+Right click on section headers in the main window to constrain parameters between groups.
+The automated alignment algorithm works by fitting an energy shift and a scaling factor to minimize the difference between derivative spectra.
+Data can be merged as mu(E), norm(E), or chi(k).
+Data should always be aligned BEFORE merging.
+Data can be displayed as k-weighted chi(E), i.e. chi(k) with the x-axis in energy.  See the "Plot in k" tab.
+See Physical Review B47:21 (1993) p. 14126 for details of the AUTOBK algorithm (DOI:10.1103/PhysRevB.47.14126).
+See J. Synchrotron Rad. 8 (2001) p. 322 for details about Ifeffit (DOI: 10.1107/S0909049500016964).
+Demeter's homepage is http://bruceravel.github.io/demeter.
 Right clicking on a data group pops up a menu for plotting and group actions.
-Files can be dragged from a file manager and dropped on the group list
-Back-transformed k-space is called "q-space" in Athena
-A "kq" plot over-plots chi(k) and the real part of chi(q)
-The plot multiplier is a multiplicative scaling factor used in many plots
-The y-axis offset is a vertical displacement when the group is plotted
-Vertical displacements for plots can be set for marked groups using the Stack tab
-The Indicators plot options tab sets plot indicators -- indicators are vertical bars which can be places in any plot
-Plot indicators in k are also plotted in E and q, and vice versa
-The project journal will be saved in the project file -- use it to record notes about your data analysis
-Athena is highly configurable -- see the Preferences tool
-Report bugs to the Ifeffit mailing list
-The Ifeffit mailing list is at http://cars9.uchicago.edu/mailman/listinfo/ifeffit/
-Right click on the "kq" button to display the quad plot for the current group
-Right click on the orange "E" button to display the current group + I0 + the signal
-You can quickly configure the title and legend of the plot using the "Title, legend, single file" plot options tab
-Larch's homepage is http://xraypy.github.io/xraylarch/
-Right click on the "edge step" label to approximate the uncertainty in edge step, which is calculated as the standard deviation of 20 normalizations with the pre- and post-edge line boundaries randomized
-Right click on the orange "k" or "R" buttons to show the "k123" or "R123" plots
-The save button at the top of the page slowly turns red as you work -- when it is bright red, saving your work is overdue!
-Finding the white line position works by locating the first peak -- i.e. a point with zero derivative -- after the E0 value
+Files can be dragged from a file manager and dropped on the group list.
+Back-transformed k-space is called "q-space" in Athena.
+A "kq" plot over-plots chi(k) and the real part of chi(q).
+The plot multiplier is a multiplicative scaling factor used in many plots.
+The y-axis offset is a vertical displacement when the group is plotted.
+Vertical displacements for plots can be set for marked groups using the Stack tab.
+The Indicators plot options tab sets plot indicators -- indicators are vertical bars which can be places in any plot.
+Plot indicators in k are also plotted in E and q, and vice versa.
+The project journal will be saved in the project file -- use it to record notes about your data analysis.
+Athena is highly configurable -- see the Preferences tool.
+Report bugs and make suggestions to the Ifeffit mailing list.
+The Ifeffit mailing list is at http://cars9.uchicago.edu/mailman/listinfo/ifeffit/.
+Right click on the "kq" button to display the quad plot for the current group.
+Right click on the orange "E" button to display the current group + I0 + the signal.
+You can quickly configure the title and legend of the plot using the "Title, legend, single file" plot options tab.
+Larch's homepage is http://xraypy.github.io/xraylarch/.
+Right click on the "edge step" label to approximate the uncertainty in edge step, which is calculated as the standard deviation of 20 normalizations with the pre- and post-edge line boundaries randomized.
+Right click on the orange "k" or "R" buttons to show the "k123" or "R123" plots.
+The save button at the top of the page slowly turns red as you work -- when it is bright red, saving your work is overdue!.
+Finding the white line position works by locating the first peak -- i.e. a point with zero derivative -- after the E0 value.
+In the File menu there is a way to export data processing parameters for groups in the form of an Excel spreadsheet.
+Do you want to make beautiful plots for publication? Use the various Save options in the File menu to save column data which can be imported into your favorite plotting program.
+Marking groups by regular expression -- Shift-Ctrl-R -- is a powerful way of selecting data groups.  A couple examples: "Ref" will select all reference groups, "\A\d" will select all groups that start with a number.
+Freezing groups is a way of avoiding changing, perhaps by accident, your carefully selected values of data processing parameters.
+Select "Shrink" from the plot options tabs to hide the k-weight and plot options controls, allowing more room for the groups list.
+Plotting styles are collections of plot ranges and other plotting parameters that can be quickly changed.
+Saving the next plot to a file (see the "Title, legend, single file" tab) will save the contents of the most recent plot to a column data file so that it can easily be recreated in another plotting program.
+You can introduce a short pause between the plotting of traces in a marked groups plot (see the "Title, legend, single file" tab) to better see the evolution of trends in your data.
+Would you like to see the effect of changing a paremeter's value on your data?  Use the "Copy series" tool.
+Would you like to a summation of spectra that is not quite a merge and not quite a linear combination fitting result?  Use the "Data summation" tool to make arbitrary sums of spectra.
+Calibration of data means to apply an energy shift AND select a value for E0.
+The data alignment tool only applies an energy shift value.  It does not also constrain the value of E0 -- you may need to do so by hand.
+If you have carefully aligned your data then fitting E0 in a linear combination analysis should not be necessary.
+Click the "Required" button to force all fits in a combinatorial sequence to include that standard.
+Test the robustness of your linear combination analysis by adding artifical noise to the data.
+Clicking the "kw" button in the plotting k-weights controls uses the value of arbitrary k-weight for the data set.  This provides a way of making a marked groups plot with different k-weights for different data groups.
+If you import chi(k) data into Athena, you might want to set the element and edge by hand. Some features of Athena need to know that.
+"Flattened" data means that the difference in slope and curvature between the pre- and post-edge lines are subtracted from the normalized data after E0.  This makes the fine structure oscillate about y=1 in a plot.
+Right click on the purple "E" button to plot I0 for all marked groups.
+Read the fine manual!  Choosing Document from the Help menu will open the Athena Users' Guide in a web browser.
+Athena's citation is B. Ravel and M. Newville, J. Synchrotron Rad. (2005). 12, 537-541 (DOI: 10.1107/S0909049505012719)

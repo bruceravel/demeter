@@ -44,12 +44,12 @@ use vars qw($buffer $plotbuffer);
 use Cwd;
 use File::Basename;
 use File::Copy;
-use File::CountLines qw(count_lines);
+#use File::CountLines qw(count_lines);
 use File::Path;
 use File::Spec;
-use List::Util qw(min max);
+use List::Util qw(min max shuffle);
 use List::MoreUtils qw(any);
-use Math::Random;
+#use Math::Random;
 use Time::HiRes qw(usleep);
 use Const::Fast;
 const my $FOCUS_UP	       => Wx::NewId();
@@ -180,10 +180,20 @@ sub OnInit {
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
 
+  ## ----- randomize the order of tips
   my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
-  my $i = int(count_lines($tip_file) * random_uniform);
-  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_file, $i );
+  open(my $T, '<', $tip_file);
+  my @tips = <$T>;
+  close $T;
+  @tips = shuffle(@tips);
+  my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
+  open(my $R, '>', $tip_temp);
+  print($R  $_) foreach @tips;
+  close $R;
+  ##my $i = int(count_lines($tip_file) * random_uniform);
+  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
   $app->show_tip if Demeter->co->default('athena', 'tips');
+  unlink $tip_temp;
   1;
 };
 
