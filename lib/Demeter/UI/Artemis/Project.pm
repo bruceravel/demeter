@@ -85,13 +85,13 @@ sub save_project {
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
 				  "Artemis project (*.fpj)|*.fpj|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT);
     if ($fd->ShowModal == wxID_CANCEL) {
       $rframes->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath;
-    return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $po = $rframes->{main} -> {currentfit}->po;

@@ -393,14 +393,14 @@ sub get_filename {
   my $name = $given || basename($::app->{main}->{currentproject}, '.prj') || $defname{$suff};
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save PCA $descr{$suff} to a file", cwd, join(".", $name, $suff),
 				uc($suff)." (*.$suff)|*.$suff|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving PCA $descr{$suff} to a file has been canceled.");
     return 0;
   };
   my $fname = $fd->GetPath;
-  return 0 if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return 0 if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $::app->{main}->status("Wrote PCA $descr{$suff} to $fname");
   return $fname;
 };

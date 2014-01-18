@@ -1459,14 +1459,14 @@ sub export {
 
   my $fd = Wx::FileDialog->new( $::app->{main}, "Export this fitting model", cwd, "artemis.$suffix",
 				"fitting scripts (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Exporting fitting model canceled.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   unlink $fname;
 
   ## save mode settings
@@ -1544,7 +1544,7 @@ and the log buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
-use Demeter::UI::Wx::OverwritePrompt;
+#use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");

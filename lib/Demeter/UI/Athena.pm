@@ -2186,14 +2186,14 @@ sub image {
   $terminal = 'pngcairo' if $terminal eq 'png';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
 				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxFD_OVERWRITE_PROMPT|wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving image canceled.");
     return;
   };
   my $file = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $terminal);
   $::app->plot(q{}, q{}, @{$::app->{lastplot}});
   $::app->{main}->status("Saved $suffix image to \"$file\".");
@@ -2211,7 +2211,7 @@ sub preplot {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving plot to a file has been canceled.");
@@ -2220,8 +2220,8 @@ sub preplot {
     };
     ## set up for SingleFile backend
     my $file = $fd->GetPath;
-    $app->{main}->{Other}->{singlefile}->SetValue(0), return
-      if $app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #$app->{main}->{Other}->{singlefile}->SetValue(0), return
+    #  if $app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
     if (not $data) {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -2756,7 +2756,7 @@ message, but not push it into the buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
-use Demeter::UI::Wx::OverwritePrompt;
+#use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $alert  = Wx::Colour->new("#FCDD9F");
@@ -2856,68 +2856,7 @@ sub ClearAll {
   $clb->Clear;
 };
 
-
-package Demeter::UI::Athena::DropTarget;
-
-use Wx qw( :everything);
-use base qw(Wx::DropTarget);
-use Demeter::UI::Artemis::DND::PlotListDrag;
-
-use Scalar::Util qw(looks_like_number);
-
-sub new {
-  my $class = shift;
-  my $this = $class->SUPER::new;
-
-  my $data = Demeter::UI::Artemis::DND::PlotListDrag->new();
-  $this->SetDataObject( $data );
-  $this->{DATA} = $data;
-  return $this;
-};
-
-sub OnData {
-  my ($this, $x, $y, $def) = @_;
-
-  my $list = $::app->{main}->{list};
-  return 0 if not $list->GetCount;
-  $this->GetData;		# this line is what transfers the data from the Source to the Target
-
-  my $from = ${ $this->{DATA}->{Data} };
-  my $from_object  = $list->GetIndexedData($from);
-  my $from_label   = $list->GetString($from);
-  my $from_checked = $list->IsChecked($from);
-  my $point = Wx::Point->new($x, $y);
-  my $to = $list->HitTest($point);
-  my $to_label   = $list->GetString($to);
-
-  return 0 if ($to == $from);	# either of these two would leave the list in the same state
-#  return 0 if ($to == $from+1);
-
-  my $message;
-  $list -> DeleteData($from);
-  if ($to == -1) {
-    $list -> AddData($from_label, $from_object);
-    $list -> Check($list->GetCount-1, $from_checked);
-    $::app->{main}->{list}->SetSelection($from);
-    $message = sprintf("Moved '%s' to the last position.", $from_label);
-  } else {
-    $message = sprintf("Moved '%s' above %s.", $from_label, $to_label);
-    --$to if ($from < $to);
-    $list -> InsertData($from_label, $to, $from_object);
-    #$list -> SetClientData($to, $from_object);
-    $list -> Check($to, $from_checked);
-    $::app->{main}->{list}->SetSelection($to);
-  };
-  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
-  $::app->modified(1);
-  $::app->{main}->status($message);
-
-  return $def;
-};
-
 1;
-
-
 
 =head1 NAME
 

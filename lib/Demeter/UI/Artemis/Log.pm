@@ -96,14 +96,14 @@ sub on_save {
   (my $pref = $self->{name}) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Not saving log file.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_log($fname);
 };
 

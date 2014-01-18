@@ -21,8 +21,7 @@ The Indicators plot options tab sets plot indicators -- indicators are vertical 
 Plot indicators in k are also plotted in E and q, and vice versa.
 The project journal will be saved in the project file -- use it to record notes about your data analysis.
 Athena is highly configurable -- see the Preferences tool.
-Report bugs and make suggestions to the Ifeffit mailing list.
-The Ifeffit mailing list is at http://cars9.uchicago.edu/mailman/listinfo/ifeffit/.
+To report bugs or make suggestions, use the Ifeffit mailing list, http://cars9.uchicago.edu/mailman/listinfo/ifeffit/.
 Right click on the "kq" button to display the quad plot for the current group.
 Right click on the orange "E" button to display the current group + I0 + the signal.
 You can quickly configure the title and legend of the plot using the "Title, legend, single file" plot options tab.
@@ -40,10 +39,10 @@ Plotting styles are collections of plot ranges and other plotting parameters tha
 Saving the next plot to a file (see the "Title, legend, single file" tab) will save the contents of the most recent plot to a column data file so that it can easily be recreated in another plotting program.
 You can introduce a short pause between the plotting of traces in a marked groups plot (see the "Title, legend, single file" tab) to better see the evolution of trends in your data.
 Would you like to see the effect of changing a paremeter's value on your data?  Use the "Copy series" tool.
-Would you like to a summation of spectra that is not quite a merge and not quite a linear combination fitting result?  Use the "Data summation" tool to make arbitrary sums of spectra.
+Would you like to examine a summation of spectra that is not quite a merge and not quite a linear combination fitting result?  Use the "Data summation" tool to make arbitrary sums of spectra.
 Calibration of data means to apply an energy shift AND select a value for E0.
 The data alignment tool only applies an energy shift value.  It does not also constrain the value of E0 -- you may need to do so by hand.
-If you have carefully aligned your data then fitting E0 in a linear combination analysis should not be necessary.
+If you have carefully aligned your data, fitting E0 in a linear combination analysis should not be necessary.
 Click the "Required" button to force all fits in a combinatorial sequence to include that standard.
 Test the robustness of your linear combination analysis by adding artifical noise to the data.
 Clicking the "kw" button in the plotting k-weights controls uses the value of arbitrary k-weight for the data set.  This provides a way of making a marked groups plot with different k-weights for different data groups.

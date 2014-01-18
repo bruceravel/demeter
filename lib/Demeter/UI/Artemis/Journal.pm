@@ -83,14 +83,14 @@ sub on_save {
   my $fd = Wx::FileDialog->new( $self, "Save journal", cwd,
 				$::app->{main}->{projectname}.q{.txt},
 				"Text files (*.txt)|*.txt",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Not saving journal.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_journal($fname);
 };
 

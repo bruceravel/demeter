@@ -505,6 +505,15 @@ sub pjoin {
   return join("|", @stuff) . $/;
 };
 
+sub unistrip {
+  my ($self, $string) = @_;
+  my $noutf = q{};		# remove coloration characters
+  foreach (split(//, $string)) {
+    $noutf .= $_ if ord($_) < 257;
+  };
+  return $noutf;
+};
+
 sub Touch {
   my ($self, $fname) = @_;
   File::Touch::touch($fname);
@@ -749,6 +758,14 @@ Print an ANSI-colorized stack trace to STDOUT from any location.
 Write stuff to the screen in an ugly but easy to read manner.
 
   Demeter->pjoin($this, $that, @and_the_other);
+
+=item C<unistrip>
+
+Remove non-ASCII characters from a string.  This simple, blunt hammer
+is used to save just the text without the coloration from Athena's
+status bar buffer.
+
+  my $no_utf = Demeter->unistrip($text);
 
 =item C<Touch>
 

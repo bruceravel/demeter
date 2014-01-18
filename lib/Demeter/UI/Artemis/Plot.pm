@@ -271,7 +271,7 @@ sub plot {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $::app->{main}->status("Saving plot to a file has been canceled.");
@@ -280,8 +280,8 @@ sub plot {
     };
     ## set up for SingleFile backend
     my $file = $fd->GetPath;
-    $self->{fileout}->SetValue(0), return
-      if $self->overwrite_prompt($file, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #$self->{fileout}->SetValue(0), return
+    #  if $self->overwrite_prompt($file, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
     Demeter->plot_with('singlefile');
     Demeter->po->file($file);
   };
@@ -421,14 +421,14 @@ sub image {
   $format = 'pngcairo' if $format eq 'png';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
 				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxFD_OVERWRITE_PROMPT|wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving image canceled.");
     return;
   };
   my $file = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $format);
 
   if ($self->{lastplot} =~ m{\A[krq]\z}i) {

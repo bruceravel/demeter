@@ -13,6 +13,9 @@
      favor of file drag-n-drop
    - Booth self-absorption algorithm now completely correct
    - Added Hephaestus doc to the Athena Users' Guide
+   - remove coloration characters when saving the contents of the
+     status bar buffer so as not to trigger perl's wide character
+     warning
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
@@ -32,6 +35,9 @@
    - lots of code clean-up
    - improved methodology for populating Config pages in the GUIs
    - improvements to the PDF versions of the users' guides
+   - return to using wxFD_OVERWRITE_PROMPT with Wx::FileDialog rather
+     than Demeter::UI::Wx::OverwritePrompt, which was fixing a problem
+     in GTK 2.20
 
 *** Windows
    - Athena w/Larch now mostly works on Windows

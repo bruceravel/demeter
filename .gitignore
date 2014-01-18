@@ -11,6 +11,8 @@
 *.patch
 *.directory
 
+*~
+
 _Inline/*
 
 lib/Xray/Absorption/*.db

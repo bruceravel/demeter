@@ -447,14 +447,14 @@ sub savereport {
   my ($self, $event) = @_;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, "report.txt",
 				"Text files (*.txt)|*.txt",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Not saving report.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   open my $R, '>', $fname;
   print $R $self->{report}->GetValue;
   close $R;
@@ -552,14 +552,14 @@ sub savelog {
   (my $pref = $fit->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Not saving log file.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $fit->logfile($fname);
   $self->status("Wrote log file to '$fname'.");
 };
@@ -576,13 +576,13 @@ sub export {
   $fname =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save $name project file", cwd, $fname,
 				"Artemis project (*.fpj)|*.fpj|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Saving project canceled.");
     return;
   };
   $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
   mkpath($newfolder,0);
 

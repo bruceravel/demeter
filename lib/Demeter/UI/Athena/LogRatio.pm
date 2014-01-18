@@ -179,14 +179,14 @@ sub save {
   (my $name = $this->{LR}->data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save log-ratio fit to a file", cwd, $name.".lrpd",
 				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving log-ratio results to a file has been canceled.");
     return 0;
   };
   my $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LR}->save($fname);
   $::app->{main}->status("Saved log-ratio/phase-difference results to $fname");
 };

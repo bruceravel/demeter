@@ -126,20 +126,20 @@ sub save_standard {
   my $default = join('.', $choice, 'xmu');
   my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
 				"data (*.dat,*.xmu)|*.data,*.xmu|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   return if ($fd->ShowModal == wxID_CANCEL);
   my $file = $fd->GetPath;
-  if (-e $file) {
-    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						 "Overwrite existing file \"$file\"?",
-						 "Overwrite file?",
-						 "Overwrite"
-						);
-                                      ##Wx::GetMousePosition  how is this done?
-    my $ok = $yesno->ShowModal;
-    return if $ok == wxID_NO;
-  };
+  # if (-e $file) {
+  #   my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+  # 						 "Overwrite existing file \"$file\"?",
+  # 						 "Overwrite file?",
+  # 						 "Overwrite"
+  # 						);
+  #                                     ##Wx::GetMousePosition  how is this done?
+  #   my $ok = $yesno->ShowModal;
+  #   return if $ok == wxID_NO;
+  # };
   $standards->save($choice, $file);
   $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
 };

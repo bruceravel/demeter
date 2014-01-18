@@ -176,20 +176,20 @@ sub save_f1f2_data {
   my $default = join('.', get_name($parent->{element}), 'f1f2');
   my $fd = Wx::FileDialog->new( $self, "Output File", cwd, $default,
 				"f1f2 files (*.f1f2)|*.f1f2|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   return if ($fd->ShowModal == wxID_CANCEL);
   my $file = $fd->GetPath;
-  if (-e $file) {
-    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						 "Overwrite existing file \"$file\"?",
-						 "Overwrite file?",
-						 "Overwrite",
-						);
-                                      ##Wx::GetMousePosition  how is this done?
-    my $ok = $yesno->ShowModal;
-    return if $ok == wxID_NO;
-  };
+  # if (-e $file) {
+  #   my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+  # 						 "Overwrite existing file \"$file\"?",
+  # 						 "Overwrite file?",
+  # 						 "Overwrite",
+  # 						);
+  #                                     ##Wx::GetMousePosition  how is this done?
+  #   my $ok = $yesno->ShowModal;
+  #   return if $ok == wxID_NO;
+  # };
   Demeter -> co -> set(
 		       f1f2_save => $file,
 		      );
