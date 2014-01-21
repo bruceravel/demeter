@@ -87,6 +87,7 @@ sub group {
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+  $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1 if Demeter->is_windows;
   $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
 					   wxDefaultPosition, [95,12], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
