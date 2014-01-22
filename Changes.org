@@ -16,6 +16,8 @@
    - remove coloration characters when saving the contents of the
      status bar buffer so as not to trigger perl's wide character
      warning
+   - error messages for zero plotting range, excessive columns in save
+     marked groups with Ifeffit, and lots of groups with Ifeffit
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list

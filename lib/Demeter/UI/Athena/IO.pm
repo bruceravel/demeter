@@ -92,6 +92,15 @@ sub Import {
     @files = $fd->GetPaths;
   };
 
+  if (Demeter->is_ifeffit and ($#files > 49)) {
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "That number of files may overextened Ifeffit's statically allocated memory.  It may be wise to make projects of fewer than 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.",
+						 "Lots of files!",
+						 "Continue importing");
+    my $response = $yesno -> ShowModal;
+    return if $response == wxID_NO;
+  };
+
   my $verbose = 0;
   ## also xmu.dat
   ## evkev?
@@ -189,6 +198,12 @@ sub Import {
   };
   #$app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->OnGroupSelect($app->{main}->{list}->GetSelection, 0, 0);
+  if (Demeter->is_ifeffit and
+      (Demeter->co->default('athena', 'save_alert') > 0) and
+      ($app->{main}->{list}->GetCount > Demeter->co->default('athena', 'too_many_groups'))) {
+    $app->{main}->{save}->SetBackgroundColour(Wx::Colour->new(255, 0, 0));
+    $app->{main}->status("With so much data, you run a risk of exceeding Ifeffit's static memory.  Consider starting a new project.", "alert");
+  };
   return;
 };
 
@@ -856,6 +871,10 @@ sub save_marked {
   };
   if (not @data) {
     $app->{main}->status("Saving marked canceled. There are no marked groups.");
+    return;
+  };
+  if (Demeter->is_ifeffit and ($#data > 90)) {
+    $app->{main}->status("Saving marked canceled. You have marked too many groups for Ifeffit.");
     return;
   };
 

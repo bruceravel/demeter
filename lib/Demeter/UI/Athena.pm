@@ -52,12 +52,13 @@ use List::MoreUtils qw(any);
 #use Math::Random;
 use Time::HiRes qw(usleep);
 use Const::Fast;
-const my $FOCUS_UP	       => Wx::NewId();
-const my $FOCUS_DOWN	       => Wx::NewId();
-const my $MOVE_UP	       => Wx::NewId();
-const my $MOVE_DOWN	       => Wx::NewId();
-const my $AUTOSAVE_FILE     => 'Athena.autosave';
-use Demeter::Constants qw($EPSILON2);
+const my $FOCUS_UP	=> Wx::NewId();
+const my $FOCUS_DOWN	=> Wx::NewId();
+const my $MOVE_UP	=> Wx::NewId();
+const my $MOVE_DOWN	=> Wx::NewId();
+const my $AUTOSAVE_FILE	=> 'Athena.autosave';
+use Demeter::Constants qw($EPSILON2 $EPSILON3);
+const my $PLOTRANGE0    => $EPSILON3;
 
 use Scalar::Util qw{looks_like_number};
 
@@ -1221,6 +1222,10 @@ sub OnMenuClick {
       my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
       return if not $app->preplot('e', $data);
@@ -1238,6 +1243,10 @@ sub OnMenuClick {
       my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
+      if (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. kmin is equal to kmax.", 'alert');
+	return;
+      };
       return if not $app->preplot('k', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
@@ -1252,6 +1261,10 @@ sub OnMenuClick {
       my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
+      if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Rmin is equal to Rmax.", 'alert');
+	return;
+      };
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
@@ -1269,6 +1282,10 @@ sub OnMenuClick {
       #return if not $app->preplot($sp, $data);
       my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
       $app->{main}->{$which}->pull_marked_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('stddev');
       #$app->postplot($data);
@@ -1283,6 +1300,10 @@ sub OnMenuClick {
       $sp = 'E' if ($sp eq 'n');
       my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
       $app->{main}->{$which}->pull_marked_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('variance');
       #$app->postplot($data);
@@ -1983,6 +2004,7 @@ sub marked_groups {
   return @list;
 };
 
+
 sub plot {
   my ($app, $frame, $event, $space, $how, $right) = @_;
   return if $app->is_empty;
@@ -2080,6 +2102,14 @@ sub plot {
 	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
 	return;
     };
+    if ((lc($space) eq 'e') and (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0)) {
+      $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+      return;
+    };
+    if ((lc($space) =~ m{k}) and (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0)) {
+      $::app->{main}->status("Plot canceled. kmin is equal to kmax.", 'alert');
+      return;
+    };
 
     foreach my $d (@data) {
       next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
@@ -2103,6 +2133,10 @@ sub plot {
 
   ## R
   } elsif (lc($space) eq 'r') {
+    if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+      $::app->{main}->status("Plot canceled. Rmin is equal to Rmax.", 'alert');
+      return;
+    };
     if ($how eq 'single') {
       if ($data[0]->datatype ne 'xanes') {
 	$data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
@@ -2128,6 +2162,10 @@ sub plot {
 
   ## q
   } elsif (lc($space) eq 'q') {
+    if (abs(Demeter->po->qmax - Demeter->po->qmin) < $PLOTRANGE0) {
+      $::app->{main}->status("Plot canceled. qmin is equal to qmax.", 'alert');
+      return;
+    };
     if ($how eq 'single') {
       if ($data[0]->datatype ne 'xanes') {
 	foreach my $which (qw(mag env re im pha)) {
@@ -2289,6 +2327,27 @@ sub quadplot {
     $app->{main}->{PlotR}->pull_marked_values;
     $app->{main}->{PlotQ}->pull_marked_values;
     $app->pull_kweight($data, 'single');
+    if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. Emin is equal to Emax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(1);
+      return;
+    };
+    if (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. kmin is equal to kmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(2);
+      return;
+    };
+    if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. Rmin is equal to Rmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(3);
+      return;
+    };
+    if (abs(Demeter->po->qmax - Demeter->po->qmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. qmin is equal to qmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(4);
+      return;
+    };
+
     $data->plot('quad');
 
     $data->po->showlegend($showkey);
@@ -2304,6 +2363,10 @@ sub plot_e00 {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_marked_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0); #e_norm=>1, 
   $app->current_data->po->start_plot;
@@ -2320,6 +2383,10 @@ sub plot_i0_marked {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
@@ -2337,6 +2404,10 @@ sub plot_norm_scaled {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $app->current_data->po->start_plot;

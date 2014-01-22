@@ -176,6 +176,7 @@ sub pull_single_values {
   my $po = Demeter->po;
   my $rmin = $this->{rmin}-> GetValue;
   my $rmax = $this->{rmax}-> GetValue;
+  ($rmin,$rmax) = sort {$a <=> $b} ($rmin,$rmax);
   $::app->{main}->status(q{}, 'nobuffer');
   if (not looks_like_number($rmin)) {
     $rmin = Demeter->co->default('plot','rmin');
@@ -201,6 +202,7 @@ sub pull_marked_values {
   $::app->{main}->status(q{}, 'nobuffer');
   my $rmin = $this->{rmin}-> GetValue;
   my $rmax = $this->{rmax}-> GetValue;
+  ($rmin,$rmax) = sort {$a <=> $b} ($rmin,$rmax);
   if (not looks_like_number($rmin)) {
     $rmin = Demeter->co->default('plot','rmin');
     $::app->{main}->status("Rmin is not a number", 'error|nobuffer');

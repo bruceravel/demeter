@@ -209,6 +209,7 @@ sub pull_single_values {
 
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
+  ($emin,$emax) = sort {$a <=> $b} ($emin,$emax);
   $::app->{main}->status(q{}, 'nobuffer');
   if (not looks_like_number($emin)) {
     $emin = Demeter->co->default('plot','emin');
@@ -237,6 +238,7 @@ sub pull_marked_values {
 
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
+  ($emin,$emax) = sort {$a <=> $b} ($emin,$emax);
   $::app->{main}->status(q{}, 'nobuffer');
   if (not looks_like_number($emin)) {
     $emin = Demeter->co->default('plot','emin');
