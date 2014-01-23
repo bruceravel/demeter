@@ -172,6 +172,7 @@ $build->add_build_element('htm');
 $build->add_build_element('html');
 $build->add_build_element('css');
 $build->add_build_element('ini');
+$build->add_build_element('hints');
 $build->add_build_element('png');
 $build->add_build_element('ico');
 $build->add_build_element('jpg');
