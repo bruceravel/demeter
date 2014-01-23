@@ -332,7 +332,7 @@ sub current_data {
 
 const my $REPORT_ALL		=> Wx::NewId();
 const my $REPORT_MARKED		=> Wx::NewId();
-const my $XFIT			=> Wx::NewId();
+##const my $XFIT			=> Wx::NewId();
 const my $FPATH			=> Wx::NewId();
 
 const my $SAVE_MARKED		=> Wx::NewId();
@@ -373,7 +373,6 @@ const my $CLEAR_PROJECT		=> Wx::NewId();
 
 const my $RENAME		=> Wx::NewId();
 const my $COPY			=> Wx::NewId();
-#const my $COPY_SERIES		=> Wx::NewId();
 const my $REMOVE		=> Wx::NewId();
 const my $REMOVE_MARKED		=> Wx::NewId();
 const my $DATA_ABOUT		=> Wx::NewId();
@@ -548,11 +547,9 @@ sub menubar {
   $filemenu->Append(wxID_EXIT,  "E&xit\tCtrl+q" );
 
   my $monitormenu = Wx::Menu->new;
-  #print ">>>>", Demeter->is_larch, $/;
   my $ifeffitmenu = Wx::Menu->new;
   $app->{main}->{monitormenu} = $monitormenu;
   $app->{main}->{ifeffitmenu} = $ifeffitmenu;
-  #my $yamlmenu    = Wx::Menu->new;
 
   my $debugmenu   = Wx::Menu->new;
   $debugmenu->Append($MODE_STATUS,  "Show mode status",          "Show mode status dialog" );
@@ -765,14 +762,11 @@ sub project_compatibility {
 
 sub set_mru {
   my ($app) = @_;
-
   foreach my $i (0 .. $app->{main}->{mrumenu}->GetMenuItemCount-1) {
     $app->{main}->{mrumenu}->Delete($app->{main}->{mrumenu}->FindItemByPosition(0));
   };
-
   my @list = Demeter->get_mru_list('xasdata');
   foreach my $f (@list) {
-    ##print ">> ", join("|", @$f),  "  \n";
     $app->{main}->{mrumenu}->Append(-1, $f->[0]);
   };
 };
@@ -1212,7 +1206,6 @@ sub OnMenuClick {
 	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
 	return;
       };
-      #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $data->plot('ed');
       last SWITCH;
@@ -1220,7 +1213,6 @@ sub OnMenuClick {
     ($id == $PLOT_IOSIG) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
       if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
 	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
@@ -1241,7 +1233,6 @@ sub OnMenuClick {
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
       if (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0) {
 	$::app->{main}->status("Plot canceled. kmin is equal to kmax.", 'alert');
@@ -1259,7 +1250,6 @@ sub OnMenuClick {
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
       if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
 	$::app->{main}->status("Plot canceled. Rmin is equal to Rmax.", 'alert');
@@ -1540,7 +1530,6 @@ sub main_window {
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
   $viewbox -> Add($app->{main}->{views}, 1, wxLEFT|wxRIGHT, 5);
-  #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
   my $pagesize;
@@ -1651,6 +1640,7 @@ sub side_bar {
   EVT_CHECKLISTBOX($toolpanel, $app->{main}->{list}, sub{OnMark(@_, $app->{main}->{list})});
   #$app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
   $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::FileDropTarget->new( $app->{main}->{list} ) );
+  $app->mouseover($app->{main}->{list}, "Click to select. Right click to post a menu. Drag and drop to add data.");
 
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -1718,11 +1708,6 @@ sub side_bar {
   };
   $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
-#   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
-#   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
-#   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
-#   $app->{main}->{Style}->{list}->Append('xanes', $xanes);
-#   print $exafs->serialization, $xanes->serialization;
 
   $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');
   EVT_BUTTON($app->{main}, $app->{main}->{showoptions}, sub{$app->restore_options});
@@ -1949,14 +1934,7 @@ sub make_page {
   my $hh   = Wx::BoxSizer->new( wxVERTICAL );
   $hh  -> Add($app->{main}->{$view}, 1, wxGROW|wxEXPAND|wxALL, 0);
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
-
-  #next if (not exists $app->{main}->{$which}->{document});
-  #$app->{main}->{$view}->{document} -> Enable(0);
-
-  #$hh -> Fit($app->{main}->{$view});
   $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
-
-
   undef $busy;
 };
 
