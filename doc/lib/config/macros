@@ -101,6 +101,8 @@
 [% MACRO fes2   BLOCK -%]FeS<sub>2</sub>[%- END -%]
 [% MACRO la2cuo4 BLOCK -%]La<sub>2</sub>CuO<sub>4</sub>[%- END -%]
 [% MACRO mn3o4 BLOCK -%]Mn<sub>3</sub>O<sub>4</sub>[%- END -%]
+[% MACRO zirconolite BLOCK -%]CaZrTi<sub>2</sub>O<sub>7</sub>[%- END -%]
+
 
 [% MACRO k1     BLOCK -%]k&sup1;[%- END -%]
 [% MACRO k2     BLOCK -%]k&sup2;[%- END -%]

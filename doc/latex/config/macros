@@ -98,6 +98,7 @@
 [% MACRO fes3   BLOCK -%]FeS$_2$[%- END -%]
 [% MACRO la2cuo4 BLOCK -%]La$_2$CuO$_4$[%- END -%]
 [% MACRO mn3o4  BLOCK -%]Mn$_3$O$_4$[%- END -%]
+[% MACRO zirconolite  BLOCK -%]CaZrTi$_2$O$_7$[%- END -%]
 
 [% MACRO k1     BLOCK -%]k$^1$[%- END -%]
 [% MACRO k2     BLOCK -%]k$^2$[%- END -%]

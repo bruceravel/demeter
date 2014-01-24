@@ -42,7 +42,7 @@ Note that CIF files can also be used as the input to [%atoms%] and
 will, in many cases, work just fine.  The code that reads the CIF
 files is rather incomplete and a bit buggy, though.  Also, [%demeter%]
 will refuse to attempt to import data from a CIF file that contains
-multiple occupancy for a crystallographic cite.
+multiple occupancy for a crystallographic site.
 [% END %]
 
 [% PROCESS subsection label="The Feff input file" %]

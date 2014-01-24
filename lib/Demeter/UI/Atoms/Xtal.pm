@@ -585,7 +585,7 @@ sub open_file {
     $atoms->file($file);
   };
   if ($atoms->partial_occupancy) {
-    my $message = Wx::MessageDialog->new($self, "Atoms is currently unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
+    my $message = Wx::MessageDialog->new($self, "Atoms is unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
     $message->ShowModal;
     return 0;
   };
