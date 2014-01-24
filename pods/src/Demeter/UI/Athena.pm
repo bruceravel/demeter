@@ -31,6 +31,7 @@ use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::TextBuffer;
 use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
+use Demeter::UI::Athena::FileDropTarget;
 
 use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
@@ -38,23 +39,26 @@ use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Athena::Status;
 use Demeter::UI::Artemis::DND::PlotListDrag;
 
-use vars qw($demeter $buffer $plotbuffer);
+use vars qw($buffer $plotbuffer);
 
 use Cwd;
 use File::Basename;
 use File::Copy;
+#use File::CountLines qw(count_lines);
 use File::Path;
 use File::Spec;
-use List::Util qw(min max);
+use List::Util qw(min max shuffle);
 use List::MoreUtils qw(any);
+#use Math::Random;
 use Time::HiRes qw(usleep);
 use Const::Fast;
-const my $FOCUS_UP	       => Wx::NewId();
-const my $FOCUS_DOWN	       => Wx::NewId();
-const my $MOVE_UP	       => Wx::NewId();
-const my $MOVE_DOWN	       => Wx::NewId();
-const my $AUTOSAVE_FILE     => 'Athena.autosave';
-use Demeter::Constants qw($EPSILON2);
+const my $FOCUS_UP	=> Wx::NewId();
+const my $FOCUS_DOWN	=> Wx::NewId();
+const my $MOVE_UP	=> Wx::NewId();
+const my $MOVE_DOWN	=> Wx::NewId();
+const my $AUTOSAVE_FILE	=> 'Athena.autosave';
+use Demeter::Constants qw($EPSILON2 $EPSILON3);
+const my $PLOTRANGE0    => $EPSILON3;
 
 use Scalar::Util qw{looks_like_number};
 
@@ -86,16 +90,14 @@ sub OnInit {
   my ($app) = @_;
   local $|=1;
   #print DateTime->now, "  Initializing Demeter ...\n";
-  $demeter = Demeter->new;
-  $demeter->set_mode(backend=>1, screen=>0);
-  $demeter->mo->silently_ignore_unplottable(1);
-  $demeter -> mo -> ui('Wx');
-  $demeter -> mo -> identity('Athena');
-  $demeter -> mo -> iwd(cwd);
+  Demeter->set_mode(backend=>1, screen=>0);
+  Demeter->mo->silently_ignore_unplottable(1);
+  Demeter -> mo -> ui('Wx');
+  Demeter -> mo -> identity('Athena');
+  Demeter -> mo -> iwd(cwd);
 
-
-  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
-  my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+  Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
+  my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
     my $yaml = YAML::Tiny::LoadFile($old_cwd);
     chdir($yaml->{cwd});
@@ -108,6 +110,11 @@ sub OnInit {
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
   EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
+  $app->{main}->{prefgroups} = [qw(absorption athena bft bkg clamp convolution dispersive
+				   edgestep fft file fit gnuplot indicator interpolation
+				   lcf marker merge operations pca peakfit plot rebin
+				   smooth whiteline xanes)];
+
 
   ## -------- Set up menubar
   #print DateTime->now,  "  Making menubar and status bar...\n";
@@ -131,8 +138,6 @@ sub OnInit {
    					      [wxACCEL_ALT,  106, $MOVE_DOWN],
    					     );
   $app->{main}->SetAcceleratorTable( $accelerator );
-
-
 
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
@@ -161,8 +166,8 @@ sub OnInit {
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
   $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
-  $demeter->set_mode(callback     => \&ifeffit_buffer,
-		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+  Demeter->set_mode(callback     => \&ifeffit_buffer,
+		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
 		     feedback     => \&feedback,
 		    );
 
@@ -175,23 +180,38 @@ sub OnInit {
   $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
+
+  ## ----- randomize the order of tips
+  my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
+  open(my $T, '<', $tip_file);
+  my @tips = <$T>;
+  close $T;
+  @tips = shuffle(@tips);
+  my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
+  open(my $R, '>', $tip_temp);
+  print($R  $_) foreach @tips;
+  close $R;
+  ##my $i = int(count_lines($tip_file) * random_uniform);
+  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
+  $app->show_tip if Demeter->co->default('athena', 'tips');
+  unlink $tip_temp;
   1;
 };
 
 sub process_argv {
   my ($app, @args) = @_;
-  if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
+  if (-r File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE)) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
 						 "Athena found an autosave file.  Would you like to import it?",
 						 "Import autosave?",
 						 "Import");
     my $result = $yesno->ShowModal;
     if ($result == wxID_YES) {
-      $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+      $app->Import(File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE));
     };
     $app->Clear;
-    #unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
-    my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+    #unlink File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE);
+    my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
     if (-r $old_cwd) {
       my $yaml = YAML::Tiny::LoadFile($old_cwd);
       chdir($yaml->{cwd});
@@ -200,14 +220,14 @@ sub process_argv {
   };
   foreach my $a (@args) {
     if ($a =~ m{\A-(\d+)\z}) {
-      my @list = $demeter->get_mru_list('xasdata');
+      my @list = Demeter->get_mru_list('xasdata');
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
     } elsif (-r $a) {
       $app -> Import($a);
-    } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
-      $app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
+    } elsif (-r File::Spec->catfile(Demeter->mo->iwd, $a)) {
+      $app->Import(File::Spec->catfile(Demeter->mo->iwd, $a));
     }; # switches?
   };
 };
@@ -228,7 +248,7 @@ sub plot_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $::app->{Buffer}->insert('plot', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment'
-      : ($demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
+      : (Demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
 	:'normal';
 
     $::app->{Buffer}->color('plot', $was, $is, $color);
@@ -245,7 +265,7 @@ sub feedback {
 
 sub mouseover {
   my ($app, $widget, $text) = @_;
-  return if not $demeter->co->default("athena", "hints");
+  return if not Demeter->co->default("athena", "hints");
   my $sb = $app->{main}->GetStatusBar;
   EVT_ENTER_WINDOW($widget, sub{$sb->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
@@ -269,10 +289,10 @@ sub on_close {
     $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
   };
 
-  unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
-  my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+  unlink File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE);
+  my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
   YAML::Tiny::DumpFile($persist, {cwd=>cwd . Demeter->slash});
-  $demeter->mo->destroy_all;
+  Demeter->mo->destroy_all;
   $event->Skip(1) if defined $event;
   return 1;
 };
@@ -282,14 +302,14 @@ sub on_about {
   my $info = Wx::AboutDialogInfo->new;
 
   $info->SetName( 'Athena' );
-  #$info->SetVersion( $demeter->version );
+  #$info->SetVersion( Demeter->version );
   $info->SetDescription( "XAS Data Processing" );
-  $info->SetCopyright( $demeter->identify . "\nusing " . $demeter->backend_id );
+  $info->SetCopyright( Demeter->identify . "\nusing " . Demeter->backend_id );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
   #			 "Ifeffit is copyright $COPYRIGHT 1992-2014 Matt Newville"
   #			] );
-  $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
+  $info->SetLicense( Demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
   Wx::AboutBox( $info );
 }
@@ -305,14 +325,14 @@ sub current_index {
 };
 sub current_data {
   my ($app) = @_;
-  return $demeter->dd if not defined $app->{main}->{list};
-  return $demeter->dd if not $app->{main}->{list}->GetCount;
+  return Demeter->dd if not defined $app->{main}->{list};
+  return Demeter->dd if not $app->{main}->{list}->GetCount;
   return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
 };
 
 const my $REPORT_ALL		=> Wx::NewId();
 const my $REPORT_MARKED		=> Wx::NewId();
-const my $XFIT			=> Wx::NewId();
+##const my $XFIT			=> Wx::NewId();
 const my $FPATH			=> Wx::NewId();
 
 const my $SAVE_MARKED		=> Wx::NewId();
@@ -353,7 +373,6 @@ const my $CLEAR_PROJECT		=> Wx::NewId();
 
 const my $RENAME		=> Wx::NewId();
 const my $COPY			=> Wx::NewId();
-#const my $COPY_SERIES		=> Wx::NewId();
 const my $REMOVE		=> Wx::NewId();
 const my $REMOVE_MARKED		=> Wx::NewId();
 const my $DATA_ABOUT		=> Wx::NewId();
@@ -453,6 +472,7 @@ const my $MERGE_STEP		=> Wx::NewId();
 const my $MERGE_DOC		=> Wx::NewId();
 
 const my $DOCUMENT		=> Wx::NewId();
+const my $TIP 		        => Wx::NewId();
 const my $DEMO			=> Wx::NewId();
 
 sub menubar {
@@ -502,7 +522,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_RRE,   "Re[$CHI(R)]",     "Save marked groups as Re[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RIM,   "Im[$CHI(R)]",     "Save marked groups as Im[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RPHA,  "Pha[$CHI(R)]",    "Save marked groups as Pha[$CHI(R)] to a column data file");
-  $savemarkedmenu->Append($MARKED_RDPHA, "Deriv(Pha[$CHI(R)])", "Save marked groups as the derivative of Pha[$CHI(R)] to a column data file") if ($Demeter::UI::Athena::demeter->co->default("athena", "show_dphase"));
+  $savemarkedmenu->Append($MARKED_RDPHA, "Deriv(Pha[$CHI(R)])", "Save marked groups as the derivative of Pha[$CHI(R)] to a column data file") if (Demeter->co->default("athena", "show_dphase"));
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_QMAG,  "|$CHI(q)|",       "Save marked groups as |$CHI(q)| to a column data file");
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
@@ -527,11 +547,9 @@ sub menubar {
   $filemenu->Append(wxID_EXIT,  "E&xit\tCtrl+q" );
 
   my $monitormenu = Wx::Menu->new;
-  #print ">>>>", Demeter->is_larch, $/;
   my $ifeffitmenu = Wx::Menu->new;
   $app->{main}->{monitormenu} = $monitormenu;
   $app->{main}->{ifeffitmenu} = $ifeffitmenu;
-  #my $yamlmenu    = Wx::Menu->new;
 
   my $debugmenu   = Wx::Menu->new;
   $debugmenu->Append($MODE_STATUS,  "Show mode status",          "Show mode status dialog" );
@@ -559,7 +577,7 @@ sub menubar {
   $app->{main}->{ifeffititems} = [$thing1, $thing2, $thing3]; # clean up Ifeffit menu entries for larch backend
                                                               # see line 192
 
-  #if ($demeter->co->default("athena", "debug_menus")) {
+  #if (Demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
   #};
@@ -653,7 +671,7 @@ sub menubar {
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
 
-  if ($demeter->co->default('plot', 'plotwith') eq 'pgplot') {
+  if (Demeter->co->default('plot', 'plotwith') eq 'pgplot') {
     $plotmenu->Append($ZOOM,   'Zoom\tCtrl++',   'Zoom in on the latest plot');
     $plotmenu->Append($UNZOOM, 'Unzoom\tCtrl+-', 'Unzoom');
     $plotmenu->Append($CURSOR, 'Cursor\tCtrl+.', 'Show the coordinates of a point on the plot');
@@ -662,7 +680,7 @@ sub menubar {
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group", "Special plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
-  if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+  if (Demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
     my $imagemenu = Wx::Menu->new;
     $imagemenu->Append($PLOT_PNG, "PNG", "Send the last plot to a PNG file");
     $imagemenu->Append($PLOT_PDF, "PDF", "Send the last plot to a PDF file");
@@ -698,15 +716,16 @@ sub menubar {
   $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
   $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
   $mergemenu->AppendRadioItem($MERGE_STEP,  "Weight by $MU(E) edge step", "Weight the marked groups the size of the edge step in $MU(E) when merging" );
-  $mergemenu->Check($MERGE_IMP,   1) if ($demeter->co->default('merge', 'weightby') eq 'importance');
-  $mergemenu->Check($MERGE_NOISE, 1) if ($demeter->co->default('merge', 'weightby') eq 'noise');
-  $mergemenu->Check($MERGE_STEP,  1) if ($demeter->co->default('merge', 'weightby') eq 'step');
+  $mergemenu->Check($MERGE_IMP,   1) if (Demeter->co->default('merge', 'weightby') eq 'importance');
+  $mergemenu->Check($MERGE_NOISE, 1) if (Demeter->co->default('merge', 'weightby') eq 'noise');
+  $mergemenu->Check($MERGE_STEP,  1) if (Demeter->co->default('merge', 'weightby') eq 'step');
   $mergemenu->AppendSeparator;
   $mergemenu->Append($MERGE_DOC,  "Document section: merging data", "Open the document page on merging data" );
 
 
   my $helpmenu   = Wx::Menu->new;
   $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
+  $helpmenu->Append($TIP,       "Show tip",             "Show a tip" );
   #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
@@ -743,14 +762,11 @@ sub project_compatibility {
 
 sub set_mru {
   my ($app) = @_;
-
   foreach my $i (0 .. $app->{main}->{mrumenu}->GetMenuItemCount-1) {
     $app->{main}->{mrumenu}->Delete($app->{main}->{mrumenu}->FindItemByPosition(0));
   };
-
-  my @list = $demeter->get_mru_list('xasdata');
+  my @list = Demeter->get_mru_list('xasdata');
   foreach my $f (@list) {
-    ##print ">> ", join("|", @$f),  "  \n";
     $app->{main}->{mrumenu}->Append(-1, $f->[0]);
   };
 };
@@ -927,7 +943,7 @@ sub OnMenuClick {
       last SWITCH if $app->is_empty;
       if (-e $app->current_data->file) {
 	my $dialog = Demeter::UI::Artemis::ShowText
-	  -> new($app->{main}, $demeter->slurp($app->current_data->file), 'Text of data file')
+	  -> new($app->{main}, Demeter->slurp($app->current_data->file), 'Text of data file')
 	    -> Show;
       } else {
 	$app->{main}->status("The current group's data file cannot be found.");
@@ -1059,18 +1075,18 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $MERGE_IMP) and do {
-      $demeter->mo->merge('importance');
-      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
+      Demeter->mo->merge('importance');
+      $app->{main}->status("Weighting merges by " . Demeter->mo->merge);
       last SWITCH;
     };
     ($id == $MERGE_NOISE) and do {
-      $demeter->mo->merge('noise');
-      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
+      Demeter->mo->merge('noise');
+      $app->{main}->status("Weighting merges by " . Demeter->mo->merge);
       last SWITCH;
     };
     ($id == $MERGE_STEP) and do {
-      $demeter->mo->merge('step');
-      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
+      Demeter->mo->merge('step');
+      $app->{main}->status("Weighting merges by " . Demeter->mo->merge);
       last SWITCH;
     };
     ($id == $MERGE_DOC) and do {
@@ -1110,7 +1126,7 @@ sub OnMenuClick {
       $app->{main}->{PlotR}->pull_marked_values;
       $app->{main}->{PlotQ}->pull_marked_values;
       my $dialog = Demeter::UI::Artemis::ShowText
-	-> new($app->{main}, $demeter->po->serialization, 'YAML of Plot object')
+	-> new($app->{main}, Demeter->po->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };
@@ -1155,16 +1171,16 @@ sub OnMenuClick {
     };
 
     ($id == $PERL_MODULES) and do {
-      my $text   = $demeter->module_environment . $demeter -> wx_environment;
+      my $text   = Demeter->module_environment . Demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
     ($id == $MODE_STATUS) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
     ($id == $CONDITIONAL) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, Demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
       last SWITCH;
     };
 
@@ -1190,7 +1206,6 @@ sub OnMenuClick {
 	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
 	return;
       };
-      #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $data->plot('ed');
       last SWITCH;
@@ -1198,8 +1213,11 @@ sub OnMenuClick {
     ($id == $PLOT_IOSIG) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
       return if not $app->preplot('e', $data);
@@ -1215,8 +1233,11 @@ sub OnMenuClick {
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
+      if (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. kmin is equal to kmax.", 'alert');
+	return;
+      };
       return if not $app->preplot('k', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
@@ -1229,8 +1250,11 @@ sub OnMenuClick {
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
       my $is_fixed = $data->bkg_fixstep;
-      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
+      if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Rmin is equal to Rmax.", 'alert');
+	return;
+      };
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
@@ -1248,6 +1272,10 @@ sub OnMenuClick {
       #return if not $app->preplot($sp, $data);
       my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
       $app->{main}->{$which}->pull_marked_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('stddev');
       #$app->postplot($data);
@@ -1262,6 +1290,10 @@ sub OnMenuClick {
       $sp = 'E' if ($sp eq 'n');
       my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
       $app->{main}->{$which}->pull_marked_values;
+      if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+	$::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+	return;
+      };
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('variance');
       #$app->postplot($data);
@@ -1304,19 +1336,19 @@ sub OnMenuClick {
     };
 
     ($id == $TERM_1) and do {
-      $demeter->po->terminal_number(1);
+      Demeter->po->terminal_number(1);
       last SWITCH;
     };
     ($id == $TERM_2) and do {
-      $demeter->po->terminal_number(2);
+      Demeter->po->terminal_number(2);
       last SWITCH;
     };
     ($id == $TERM_3) and do {
-      $demeter->po->terminal_number(3);
+      Demeter->po->terminal_number(3);
       last SWITCH;
     };
     ($id == $TERM_4) and do {
-      $demeter->po->terminal_number(4);
+      Demeter->po->terminal_number(4);
       last SWITCH;
     };
 
@@ -1412,6 +1444,10 @@ sub OnMenuClick {
       $app->document('index');
       return;
     };
+    ($id == $TIP) and do {
+      $app->show_tip;
+      return;
+    };
 
 
   };
@@ -1420,7 +1456,7 @@ sub OnMenuClick {
 
 sub show_ifeffit {
   my ($app, $which) = @_;
-  $demeter->dispense('process', 'show', {items=>'@'.$which});
+  Demeter->dispense('process', 'show', {items=>'@'.$which});
   $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
   $app->{Buffer}->Show(1);
 };
@@ -1494,7 +1530,6 @@ sub main_window {
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
   $viewbox -> Add($app->{main}->{views}, 1, wxLEFT|wxRIGHT, 5);
-  #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
   my $pagesize;
@@ -1586,17 +1621,27 @@ sub side_bar {
   $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 0);
   $app->{main}->{toolbox} = $toolbox;
 
+  ## ---- File drop box
+  # $app->{main}->{dropbox} = Wx::TextCtrl->new($toolpanel, -1, "File drop box", wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxTE_CENTRE);
+  # $toolbox            -> Add($app->{main}->{dropbox}, 0, wxGROW|wxALL, 0);
+  # my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize-1;
+  # $app->{main}->{dropbox}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  # $app->{main}->{dropbox}->SetDropTarget(Demeter::UI::Athena::FileDropTarget->new($app->{main}->{dropbox}));
+  # $app->mouseover($app->{main}->{dropbox}, "Drag data or project files into Athena by dropping them on this box");
+
+  ## ---- Group list
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_,1)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
   EVT_RIGHT_DOWN($app->{main}->{list}, sub{OnRightDown(@_)});
-  EVT_LEFT_DOWN($app->{main}->{list}, \&OnDrag);
+  #EVT_LEFT_DOWN($app->{main}->{list}, \&OnDrag);
   EVT_CHECKLISTBOX($toolpanel, $app->{main}->{list}, sub{OnMark(@_, $app->{main}->{list})});
-  $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
-  #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
-  #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
+  #$app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
+  $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::FileDropTarget->new( $app->{main}->{list} ) );
+  $app->mouseover($app->{main}->{list}, "Click to select. Right click to post a menu. Drag and drop to add data.");
+
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -1616,7 +1661,7 @@ sub side_bar {
     ## single plot button
     my $key = 'plot_single_'.$which;
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, sprintf("%2.2s",$which), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "single")) );
+    $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) );
     $singlebox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'single', 1)});
@@ -1630,7 +1675,7 @@ sub side_bar {
     ## marked plot buttons
     $key    = 'plot_marked_'.$which;
     $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "marked")) );
+    $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "marked")) );
     $markedbox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
@@ -1642,7 +1687,7 @@ sub side_bar {
   $app->{main}->{kweights} = Wx::RadioBox->new($toolpanel, -1, 'Plotting k-weights', wxDefaultPosition, wxDefaultSize,
 					       [qw(0 1 2 3 kw)], 1, wxRA_SPECIFY_ROWS);
   $toolbox -> Add($app->{main}->{kweights}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
-  $app->{main}->{kweights}->SetSelection($demeter->co->default("plot", "kweight"));
+  $app->{main}->{kweights}->SetSelection(Demeter->co->default("plot", "kweight"));
   EVT_RADIOBOX($app->{main}, $app->{main}->{kweights},
 	       sub {
 		 $::app->{update_kweights} = 1;
@@ -1663,11 +1708,6 @@ sub side_bar {
   };
   $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
-#   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
-#   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
-#   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
-#   $app->{main}->{Style}->{list}->Append('xanes', $xanes);
-#   print $exafs->serialization, $xanes->serialization;
 
   $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');
   EVT_BUTTON($app->{main}, $app->{main}->{showoptions}, sub{$app->restore_options});
@@ -1894,14 +1934,7 @@ sub make_page {
   my $hh   = Wx::BoxSizer->new( wxVERTICAL );
   $hh  -> Add($app->{main}->{$view}, 1, wxGROW|wxEXPAND|wxALL, 0);
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
-
-  #next if (not exists $app->{main}->{$which}->{document});
-  #$app->{main}->{$view}->{document} -> Enable(0);
-
-  #$hh -> Fit($app->{main}->{$view});
   $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
-
-
   undef $busy;
 };
 
@@ -1948,6 +1981,7 @@ sub marked_groups {
   };
   return @list;
 };
+
 
 sub plot {
   my ($app, $frame, $event, $space, $how, $right) = @_;
@@ -2046,6 +2080,14 @@ sub plot {
 	$::app->{main}->status("chi data cannot be plotted in energy.", 'alert');
 	return;
     };
+    if ((lc($space) eq 'e') and (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0)) {
+      $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+      return;
+    };
+    if ((lc($space) =~ m{k}) and (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0)) {
+      $::app->{main}->status("Plot canceled. kmin is equal to kmax.", 'alert');
+      return;
+    };
 
     foreach my $d (@data) {
       next if (($d->datatype eq 'xanes') and (lc($space) =~ m{k}));
@@ -2069,6 +2111,10 @@ sub plot {
 
   ## R
   } elsif (lc($space) eq 'r') {
+    if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+      $::app->{main}->status("Plot canceled. Rmin is equal to Rmax.", 'alert');
+      return;
+    };
     if ($how eq 'single') {
       if ($data[0]->datatype ne 'xanes') {
 	$data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
@@ -2094,6 +2140,10 @@ sub plot {
 
   ## q
   } elsif (lc($space) eq 'q') {
+    if (abs(Demeter->po->qmax - Demeter->po->qmin) < $PLOTRANGE0) {
+      $::app->{main}->status("Plot canceled. qmin is equal to qmax.", 'alert');
+      return;
+    };
     if ($how eq 'single') {
       if ($data[0]->datatype ne 'xanes') {
 	foreach my $which (qw(mag env re im pha)) {
@@ -2152,14 +2202,14 @@ sub image {
   $terminal = 'pngcairo' if $terminal eq 'png';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
 				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxFD_OVERWRITE_PROMPT|wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving image canceled.");
     return;
   };
   my $file = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $terminal);
   $::app->plot(q{}, q{}, @{$::app->{lastplot}});
   $::app->{main}->status("Saved $suffix image to \"$file\".");
@@ -2177,7 +2227,7 @@ sub preplot {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving plot to a file has been canceled.");
@@ -2186,8 +2236,8 @@ sub preplot {
     };
     ## set up for SingleFile backend
     my $file = $fd->GetPath;
-    $app->{main}->{Other}->{singlefile}->SetValue(0), return
-      if $app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #$app->{main}->{Other}->{singlefile}->SetValue(0), return
+    #  if $app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
     if (not $data) {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -2197,25 +2247,25 @@ sub preplot {
 	};
       };
     };
-    $demeter->plot_with('singlefile');
+    Demeter->plot_with('singlefile');
     $data->po->prep(file     => $file,
 		    standard => $data,
 		    space    => $space);
     #$data->standard;
     #$data->po->space($space);
-    #$demeter->po->file($fd->GetPath));
+    #Demeter->po->file($fd->GetPath));
   };
   $data->po->plot_pause($app->{main}->{Other}->{pause}->GetValue);
   return 1;
 };
 sub postplot {
   my ($app, $data) = @_;
-  ##if ($demeter->mo->template_plot eq 'singlefile') {
+  ##if (Demeter->mo->template_plot eq 'singlefile') {
   my @save = $data->get(qw(update_columns update_norm update_bkg update_fft update_bft));
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
-    $demeter->po->finish;
-    $app->{main}->status("Wrote plot data to ".$demeter->po->file);
-    $demeter->plot_with($demeter->co->default(qw(plot plotwith)));
+    Demeter->po->finish;
+    $app->{main}->status("Wrote plot data to ".Demeter->po->file);
+    Demeter->plot_with(Demeter->co->default(qw(plot plotwith)));
   } else {
     $data->standard;
     $app->{main}->{Indicators}->plot;
@@ -2255,6 +2305,27 @@ sub quadplot {
     $app->{main}->{PlotR}->pull_marked_values;
     $app->{main}->{PlotQ}->pull_marked_values;
     $app->pull_kweight($data, 'single');
+    if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. Emin is equal to Emax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(1);
+      return;
+    };
+    if (abs(Demeter->po->kmax - Demeter->po->kmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. kmin is equal to kmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(2);
+      return;
+    };
+    if (abs(Demeter->po->rmax - Demeter->po->rmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. Rmin is equal to Rmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(3);
+      return;
+    };
+    if (abs(Demeter->po->qmax - Demeter->po->qmin) < $PLOTRANGE0) {
+      $app->{main}->status("Quad plot canceled. qmin is equal to qmax.", 'alert');
+      $app->{main}->{plottabs}->SetSelection(4);
+      return;
+    };
+
     $data->plot('quad');
 
     $data->po->showlegend($showkey);
@@ -2270,6 +2341,10 @@ sub plot_e00 {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_marked_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0); #e_norm=>1, 
   $app->current_data->po->start_plot;
@@ -2286,6 +2361,10 @@ sub plot_i0_marked {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
@@ -2303,6 +2382,10 @@ sub plot_norm_scaled {
 
   $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
+  if (abs(Demeter->po->emax - Demeter->po->emin) < $PLOTRANGE0) {
+    $::app->{main}->status("Plot canceled. Emin is equal to Emax.", 'alert');
+    return;
+  };
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $app->current_data->po->start_plot;
@@ -2589,8 +2672,8 @@ sub modified {
 
   my $c = $app->{main}->{save_start_color};
   $app->{main}->{save}->SetBackgroundColour($c) if not $is_modified;
-  my $j = $demeter->co->default('athena', 'save_alert');
-  $app->autosave if ($app->{modified} % $demeter->co->default('athena', 'autosave_frequency') == 0);
+  my $j = Demeter->co->default('athena', 'save_alert');
+  $app->autosave if ($app->{modified} % Demeter->co->default('athena', 'autosave_frequency') == 0);
   return if ($j <= 0);
   my $n = min( 1, $app->{modified}/$j );
   if ($app->{modified}) {
@@ -2608,10 +2691,10 @@ sub modified {
 sub autosave {
   my ($app, $j) = @_;
   return if ($app->{modified} == 0);
-  return if not $demeter->co->default('athena', 'autosave');
-  return if ($demeter->co->default('athena', 'autosave_frequency') < 1);
+  return if not Demeter->co->default('athena', 'autosave');
+  return if (Demeter->co->default('athena', 'autosave_frequency') < 1);
   $app->{main}->status("Performing autosave ...", "wait|nobuffer");
-  $app -> Export('all', File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+  $app -> Export('all', File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE));
   $app->{main}->status("Successfully performed autosave.");
 };
 
@@ -2693,6 +2776,14 @@ sub document {
   };
 };
 
+sub show_tip {
+  my ($self) = @_;
+  my $show_again = Wx::ShowTip( $self->{main}, $self->{tip_provider}, Demeter->co->default('athena','tips') );
+  Demeter->co->set_default('athena', 'tips', $show_again);
+  Demeter->co->write_ini;
+};
+
+
 
 =for Explain
 
@@ -2714,7 +2805,7 @@ message, but not push it into the buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
-use Demeter::UI::Wx::OverwritePrompt;
+#use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $alert  = Wx::Colour->new("#FCDD9F");
@@ -2814,68 +2905,7 @@ sub ClearAll {
   $clb->Clear;
 };
 
-
-package Demeter::UI::Athena::DropTarget;
-
-use Wx qw( :everything);
-use base qw(Wx::DropTarget);
-use Demeter::UI::Artemis::DND::PlotListDrag;
-
-use Scalar::Util qw(looks_like_number);
-
-sub new {
-  my $class = shift;
-  my $this = $class->SUPER::new;
-
-  my $data = Demeter::UI::Artemis::DND::PlotListDrag->new();
-  $this->SetDataObject( $data );
-  $this->{DATA} = $data;
-  return $this;
-};
-
-sub OnData {
-  my ($this, $x, $y, $def) = @_;
-
-  my $list = $::app->{main}->{list};
-  return 0 if not $list->GetCount;
-  $this->GetData;		# this line is what transfers the data from the Source to the Target
-
-  my $from = ${ $this->{DATA}->{Data} };
-  my $from_object  = $list->GetIndexedData($from);
-  my $from_label   = $list->GetString($from);
-  my $from_checked = $list->IsChecked($from);
-  my $point = Wx::Point->new($x, $y);
-  my $to = $list->HitTest($point);
-  my $to_label   = $list->GetString($to);
-
-  return 0 if ($to == $from);	# either of these two would leave the list in the same state
-#  return 0 if ($to == $from+1);
-
-  my $message;
-  $list -> DeleteData($from);
-  if ($to == -1) {
-    $list -> AddData($from_label, $from_object);
-    $list -> Check($list->GetCount-1, $from_checked);
-    $::app->{main}->{list}->SetSelection($from);
-    $message = sprintf("Moved '%s' to the last position.", $from_label);
-  } else {
-    $message = sprintf("Moved '%s' above %s.", $from_label, $to_label);
-    --$to if ($from < $to);
-    $list -> InsertData($from_label, $to, $from_object);
-    #$list -> SetClientData($to, $from_object);
-    $list -> Check($to, $from_checked);
-    $::app->{main}->{list}->SetSelection($to);
-  };
-  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
-  $::app->modified(1);
-  $::app->{main}->status($message);
-
-  return $def;
-};
-
 1;
-
-
 
 =head1 NAME
 

@@ -18,7 +18,6 @@ has '+version'      => (default => 0.2);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 has 'nelements'     => (is => 'rw', isa => 'Int', default => 4);
 
-my $demeter = Demeter->new();
 has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
 Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
@@ -58,9 +57,9 @@ sub fix {
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
   ## read the raw data file
-  $demeter->dispense('process', 'read_group', {file=>$file, group=>Demeter->mo->throwaway_group, type=>'data'});
+  Demeter->dispense('process', 'read_group', {file=>$file, group=>Demeter->mo->throwaway_group, type=>'data'});
   #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
-  #$demeter->dispose($command);
+  #Demeter->dispose($command);
 
   #my $labels = $self->fetch_string('$column_label');
   my @labels = split(" ", $self->fetch_string('$column_label'));
@@ -119,10 +118,10 @@ sub fix {
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
   my $columns = join(", ".Demeter->mo->throwaway_group.".", @labs);
 
-  my $command = $demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
+  my $command = Demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
 							  dts=>$dts, maxints=>$maxints});
   unlink $new if (-e $new);
-  $demeter->dispose($command);
+  Demeter->dispose($command);
 
   $self->fixed($new);
   return $new;

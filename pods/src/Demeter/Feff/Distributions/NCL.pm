@@ -7,7 +7,6 @@ use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
-use String::Random qw(random_string);
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -261,7 +260,7 @@ sub chi {
   $self->start_counter("Making FPath from radial/angle distribution", $#{$self->populations}+1) if ($self->mo->ui eq 'screen');
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
-  my $randstr = random_string('ccccccccc').'.sp';
+  my $randstr = Demeter->randomstring(8).'.sp';
   my @paths = ();
   foreach my $c (@{$self->populations}) {
     #print join(" \ ", $c->[2], $c->[3]), $/;

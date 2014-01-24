@@ -12,7 +12,6 @@ use File::Basename;
 use File::Spec;
 use Pod::Text;
 use Const::Fast;
-use String::Random qw(random_string);
 
 use Demeter::UI::Athena::PluginConfig;
 
@@ -34,10 +33,10 @@ sub new {
   $this->{window} -> SetSizer($winbox);
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
-  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
-  my $state = (-e $persist) ? YAML::Tiny::Load($Demeter::UI::Athena::demeter->slurp($persist)) : {};
+  my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.plugin_registry");
+  my $state = (-e $persist) ? YAML::Tiny::Load(Demeter->slurp($persist)) : {};
 
-  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  foreach my $pl (sort @{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
     my $obj = $pl->new;
     my $label = sprintf("%s :  %s", (split(/::/, $pl))[2], $obj->description);
@@ -80,9 +79,9 @@ sub mode {
 
 sub OnCheck {
   my ($this, $event, $app) = @_;
-  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
+  my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.plugin_registry");
   my %state = ();
-  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  foreach my $pl (sort @{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
     $state{$pl} = $this->{$pl}->GetValue;
   };
@@ -164,7 +163,7 @@ sub Document {
   my $parser = Pod::Text->new (sentence => 0, width => 78);
   my $podroot = dirname($INC{'Demeter.pm'});
   (my $module = $pl) =~ s{::}{/}g;
-  my $tempfile = File::Spec->catfile(Demeter->stash_folder, random_string('cccccccc').'.txt');
+  my $tempfile = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8).'.txt');
   $parser->parse_from_file (File::Spec->catfile($podroot, $module).'.pm', $tempfile);
 
   my $dialog = Demeter::UI::Artemis::ShowText

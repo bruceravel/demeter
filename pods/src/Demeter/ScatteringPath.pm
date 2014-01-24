@@ -45,9 +45,6 @@ use Math::Round qw(round);
 #use Math::Trig qw(acos atan);
 use POSIX qw(acos);
 use Demeter::Constants qw($PI $EPSILON5 $EPSILON6 $FEFFNOTOK);
-use String::Random qw(random_string);
-
-
 
 # used in compute_beta and identify_path; made global as a speed
 # optimization I am trying to avoid directly calling variables of
@@ -263,7 +260,7 @@ sub evaluate {
   $self -> betakey($self->_betakey);
   $self -> etakey($self->_etakey);
   $self -> identify_path;
-  $self -> randstring(random_string('ccccccccc').'.sp');
+  $self -> randstring(Demeter->randomstring(9).'.sp');
   return $self;
 };
 
@@ -565,7 +562,7 @@ sub pathsdat {
   $args{index}  ||= 1;
   $args{angles}   = 1 if (not defined($args{angles}));
   $args{string} ||= $self -> string;
-  $self -> randstring(random_string('ccccccccc').'.sp') if ($self->randstring =~ m{\A\s*\z});
+  $self -> randstring(Demeter->randomstring(9).'.sp') if ($self->randstring =~ m{\A\s*\z});
 
   my $feff = $self->feff;
   my @sites = @{ $feff->sites };
@@ -896,15 +893,6 @@ This is the fuzzy path length.  It is set to the average of the
 lengths of the nearly degenerate paths.  For truly degenerate paths,
 the half length and the fuzzy length will be the same.
 
-=item C<random_string>
-
-A 12-character string generated each time the C<pathsdat> method is
-called.  The first 9 characters are random, the last three are F<.sp>.
-This is used to name F<feffNNNN.dat> files which are generated from a
-ScatteringPath object and assures that filename collisions will never
-happen, even when rerunning feff calculations or combining results
-from two or more feff calculations.
-
 =back
 
 
@@ -924,7 +912,7 @@ This returns a list of all ScatteringPath object attributes.
   print join(" ", $sp -> attributes), $/;
     ==prints==>
        nleg string heapvalue group nkey weight etanonzero rleg fs
-       degeneracies n random_string beta eta feff halflength fuzzy type
+       degeneracies n randstring beta eta feff halflength fuzzy type
 
 =item C<savelist>
 
@@ -934,7 +922,7 @@ attributes that need to be saved when a Feff calculation is serialized.
   print join(" ", $sp -> savelist), $/;
     ==prints==>
        nleg string group nkey weight etanonzero rleg fs degeneracies
-       n random_string beta eta halflength fuzzy type
+       n randstring beta eta halflength fuzzy type
 
 =back
 

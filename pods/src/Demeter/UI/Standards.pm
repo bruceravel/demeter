@@ -30,7 +30,6 @@ $Text::Wrap::columns = 75;
 
 use Xray::Absorption;
 use Demeter qw(:hephaestus);
-my $demeter = Demeter->new;
 
 use Demeter::IniReader;
 use Regexp::Assemble;
@@ -130,7 +129,7 @@ sub resolve_file {
     $ua->env_proxy;
     my $response = $ua->get($file);
     if ($response->is_success) {
-      my $dlfile = File::Spec->catfile($demeter->stash_folder, basename($file));
+      my $dlfile = File::Spec->catfile(Demeter->stash_folder, basename($file));
       open my $DAT, ">$dlfile";
       print $DAT $response->content;
       close $DAT;
@@ -141,7 +140,7 @@ sub resolve_file {
     };
   } else {
     my ($token, $location) = (qw{%share%},
-			      File::Spec->catfile($demeter->location, "Demeter", "share")
+			      File::Spec->catfile(Demeter->location, "Demeter", "share")
 			     );
     $file =~ s{$token}{$location};
   };
@@ -260,8 +259,8 @@ sub plot {
 
 sub filter_plot {
   my ($self, $elem) = @_;
-  my $po     = $demeter->po;
-  my $config = $demeter->co;
+  my $po     = Demeter->po;
+  my $config = Demeter->co;
 
   my $z      = get_Z($elem);
   my $filter = Xray::Absorption -> recommended_filter($z);
@@ -279,10 +278,10 @@ sub filter_plot {
 	       filter_file     => $po->tempfile,
 	      );
   $po -> start_plot;
-  my $command = $demeter->template('plot', 'prep_filter');
+  my $command = Demeter->template('plot', 'prep_filter');
   $po -> dispose($command);
 
-  $command = $demeter->template('plot', 'filter');
+  $command = Demeter->template('plot', 'filter');
   $po -> legend(x => 0.15, y => 0.85, );
   $po -> dispose($command, "plotting");
   #Demeter -> set_mode(screen=>0);
@@ -321,7 +320,7 @@ sub screen {
   my $MARKED = ($light) ? REVERSE : CYAN;
 
   $text .= $clear;
-  $text .= RED . BOLD . "Standard reference materials (Demeter " . $demeter->version . ")\n\n" . RESET;
+  $text .= RED . BOLD . "Standard reference materials (Demeter " . Demeter->version . ")\n\n" . RESET;
 
   my $count = 0;
   foreach my $row (@periodic_table) {
@@ -398,7 +397,7 @@ sub screen {
 sub html_index {
   my ($self, $indexfile) = @_;
   $indexfile ||= "index.html";
-  my $tmpl = File::Spec->catfile($demeter->location,
+  my $tmpl = File::Spec->catfile(Demeter->location,
 				 "Demeter",
 				 "share",
 				 "standards",
@@ -421,7 +420,7 @@ sub html {
   my $outfile = File::Spec->catfile($args->{folder}, "$which.html");
   my $filterimage = File::Spec->catfile($args->{folder}, $elem."_filter.png");
   return $self if ($args->{skip} and (-e $outfile));
-  my $share = File::Spec->catfile($demeter->location,
+  my $share = File::Spec->catfile(Demeter->location,
 				  "Demeter",
 				  "share"
 				 );
@@ -433,17 +432,17 @@ sub html {
   print $which, " ";
 
   if (not $args->{noimage}) {
-    $demeter -> po -> start_plot;
+    Demeter -> po -> start_plot;
     print "XANES ..." if $args->{verbose};
     $self -> plot($which, "mu",         File::Spec->catfile($args->{folder}, $which."_mu.png" ));
-    $demeter -> po -> start_plot;
+    Demeter -> po -> start_plot;
     print " derivative ..." if $args->{verbose};
     $self -> plot($which, "derivative", File::Spec->catfile($args->{folder}, $which."_der.png"));
 
     if (not -e $filterimage) {
       print " filter ..." if $args->{verbose};
       $self -> filter_plot($elem);
-      $demeter -> po -> file("png", $filterimage);
+      Demeter -> po -> file("png", $filterimage);
     };
   };
 

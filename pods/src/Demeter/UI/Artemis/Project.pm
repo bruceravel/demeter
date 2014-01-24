@@ -85,13 +85,13 @@ sub save_project {
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
 				  "Artemis project (*.fpj)|*.fpj|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT);
     if ($fd->ShowModal == wxID_CANCEL) {
       $rframes->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath;
-    return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $po = $rframes->{main} -> {currentfit}->po;
@@ -99,7 +99,7 @@ sub save_project {
   open(my $IN, '>'.File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml'));
   foreach my $j (1..5) {
     my $this = $rframes->{Plot}->{indicators}->{'group'.$j};
-    my $found = $Demeter::UI::Artemis::demeter->mo->fetch('Indicator', $this);
+    my $found = Demeter->mo->fetch('Indicator', $this);
     print($IN $found -> serialization) if $found;
   };
   close $IN;
@@ -124,7 +124,7 @@ sub save_project {
 
   if ($fname !~ m{autosave\z}) {
     clear_autosave();
-    $Demeter::UI::Artemis::demeter->push_mru("artemis", File::Spec->rel2abs($fname));
+    Demeter->push_mru("artemis", File::Spec->rel2abs($fname));
     &Demeter::UI::Artemis::set_mru;
     $rframes->{main}->{projectname} = basename($fname, '.fpj');
     $rframes->{main}->{projectpath} = File::Spec->rel2abs($fname);
@@ -135,25 +135,25 @@ sub save_project {
 
 sub autosave {
   return if $Demeter::UI::Artemis::noautosave;
-  return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
+  return if not Demeter->co->default("artemis", "autosave");
   my $main = $Demeter::UI::Artemis::frames{main};
   $main->status("Performing autosave ...", 'wait');
   unlink $main->{autosave_file};
   my $name = $_[0] || $main->{name}->GetValue;
   $name =~ s{\s+}{_}g;
   $name ||= "artemis";
-  $main->{autosave_file} = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $name.'.autosave');
+  $main->{autosave_file} = File::Spec->catfile(Demeter->stash_folder, $name.'.autosave');
   save_project(\%Demeter::UI::Artemis::frames, $main->{autosave_file});
   $main->status("Autosave done!");
 };
 sub clear_autosave {
-  return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
+  return if not Demeter->co->default("artemis", "autosave");
   my $main = $Demeter::UI::Artemis::frames{main};
   unlink $main->{autosave_file};
   $main->status("Removed autosave file.");
 };
 sub autosave_exists {
-  opendir(my $stash, $Demeter::UI::Artemis::demeter->stash_folder);
+  opendir(my $stash, Demeter->stash_folder);
   my @list = readdir $stash;
   closedir $stash;
   return any {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} @list;
@@ -170,7 +170,7 @@ sub import_autosave {
     closedir $stash;
     foreach my $as (@list) { unlink File::Spec->catfile(Demeter->stash_folder, $as) };
   } else {
-    my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
+    my $this = File::Spec->catfile(Demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);
     unlink $this;
     ## need to clean up the corresponding folder, if it has been left behind
@@ -270,7 +270,7 @@ sub read_project {
   if (-e $py) {
     my %hash = %{YAML::Tiny::LoadFile($py)};
     delete $hash{nindicators};
-    $Demeter::UI::Artemis::demeter->po->set(%hash);
+    Demeter->po->set(%hash);
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
@@ -459,7 +459,7 @@ sub read_project {
     Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
 
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  Demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectpath} = $fname;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
@@ -634,7 +634,7 @@ sub close_project {
     save_project($rframes) if $result == wxID_YES;
   };
 
-  Demeter::UI::Artemis::set_happiness_color($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color"))
+  Demeter::UI::Artemis::set_happiness_color(Demeter->co->default("happiness", "average_color"))
       if (exists $rframes->{main} -> {currentfit});
 
   ## -------- clear GDS
@@ -670,14 +670,14 @@ sub close_project {
   };
 
   ## -------- clear all Paths
-  my @list = @{$Demeter::UI::Artemis::demeter->mo->Path};
+  my @list = @{Demeter->mo->Path};
   foreach my $p (@list) {
     $p->DEMOLISH;
   };
-  $Demeter::UI::Artemis::demeter->mo->reset_path_index;
+  Demeter->mo->reset_path_index;
 
   ## -------- clear all Fits
-  @list = @{$Demeter::UI::Artemis::demeter->mo->Fit};
+  @list = @{Demeter->mo->Fit};
   foreach my $f (@list) {
     $f->DEMOLISH;
   };

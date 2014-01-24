@@ -6,7 +6,6 @@ use Demeter::NumTypes qw( NonNeg Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
 use List::MoreUtils qw(pairwise);
-use String::Random qw(random_string);
 
 use PDL::Lite;
 use PDL::NiceSlice;
@@ -183,7 +182,7 @@ sub chi {
   my $kind = ($self->rattle) ? "rattle" : "SS";
   $self->start_spinner("Making FPath from $kind histogram") if ($self->mo->ui eq 'screen');
 
-  my $randstr = random_string('ccccccccc').'.sp';
+  my $randstr = Demeter->randomstring(8).'.sp';
   my $index = $self->mo->pathindex;
   my $first = $paths->[0];
   #$first->update_path(1);

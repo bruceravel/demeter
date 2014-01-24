@@ -8,7 +8,6 @@ use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 local $Archive::Zip::UNICODE = 1;
 use File::Path qw(remove_tree);
 use Scalar::Util qw(looks_like_number);
-use String::Random qw(random_string);
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "a zip file of data files");
@@ -45,7 +44,7 @@ sub fix {
   ## make a folder below the stash folder to hold the contents of the zip file
   ## here I have chosen to use a random, six-character string for the folder name
   ## this MUST be a place that can be safely discarded
-  $self->folder(File::Spec->catfile($self->stash_folder, 'zip_'.random_string('cccccc')));
+  $self->folder(File::Spec->catfile($self->stash_folder, 'zip_'.Demeter->randomstring(6)));
 
   my $zip = Archive::Zip->new();
   $zip -> read($self->file);

@@ -109,13 +109,10 @@ sub standards_get_data {
 sub make_standards_plot {
   my ($self, $event, $parent) = @_;
   my $busy    = Wx::BusyCursor->new();
-  #my $demeter = Demeter->new;
-  #$demeter  -> plot_with('gnuplot');
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
   my $result  = $standards -> plot($choice, $which, 'plot');
   undef $busy;
-  #undef $demeter;
   return 0 if ($result =~ m{Demeter});
   return 0 if (looks_like_number($result) and ($result == 0));
   $self->{echo}->SetStatusText($result);
@@ -129,20 +126,20 @@ sub save_standard {
   my $default = join('.', $choice, 'xmu');
   my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
 				"data (*.dat,*.xmu)|*.data,*.xmu|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   return if ($fd->ShowModal == wxID_CANCEL);
   my $file = $fd->GetPath;
-  if (-e $file) {
-    my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						 "Overwrite existing file \"$file\"?",
-						 "Overwrite file?",
-						 "Overwrite"
-						);
-                                      ##Wx::GetMousePosition  how is this done?
-    my $ok = $yesno->ShowModal;
-    return if $ok == wxID_NO;
-  };
+  # if (-e $file) {
+  #   my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+  # 						 "Overwrite existing file \"$file\"?",
+  # 						 "Overwrite file?",
+  # 						 "Overwrite"
+  # 						);
+  #                                     ##Wx::GetMousePosition  how is this done?
+  #   my $ok = $yesno->ShowModal;
+  #   return if $ok == wxID_NO;
+  # };
   $standards->save($choice, $file);
   $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
 };

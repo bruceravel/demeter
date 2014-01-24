@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Demeter To Do List (also Athena and Artemis)</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Demeter To Do List (also Athena and Artemis)"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-12-09 13:35:44 EST"/>
+<meta name="generated" content="2014-01-24T16:07-0500"/>
 <meta name="author" content="Bruce Ravel"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -21,6 +21,9 @@ lang="en" xml:lang="en">
   .target { }
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
   p.verse { margin-left: 3% }
   pre {
 	border: 1pt solid #AEBDCC;
@@ -31,10 +34,23 @@ lang="en" xml:lang="en">
         overflow:auto;
   }
   table { border-collapse: collapse; }
-  td, th { vertical-align: top; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
   dt { font-weight: bold; }
   div.figure { padding: 0.5em; }
   div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
   .linenr { font-size:smaller }
   .code-highlighted {background-color:#ffff00;}
   .org-info-js_info-navigation { border-style:none; }
@@ -45,6 +61,30 @@ lang="en" xml:lang="en">
   /*]]>*/-->
 </style>
 <script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
  {
@@ -66,10 +106,15 @@ lang="en" xml:lang="en">
  }
 /*]]>*///-->
 </script>
+
 </head>
 <body>
-<div id="content">
 
+<div id="preamble">
+
+</div>
+
+<div id="content">
 <h1 class="title">Demeter To Do List (also Athena and Artemis)</h1>
 
 
@@ -77,153 +122,138 @@ lang="en" xml:lang="en">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1 top priorities </a>
+<li><a href="#sec-1">1 top priorities</a>
 <ul>
-<li><a href="#sec-1.1">1.1 small things </a></li>
-<li><a href="#sec-1.2">1.2 big things </a></li>
+<li><a href="#sec-1-1">1.1 small things</a></li>
+<li><a href="#sec-1-2">1.2 big things</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2 larch chores </a>
+<li><a href="#sec-2">2 larch chores</a>
 <ul>
-<li><a href="#sec-2.1">2.1 Larch v. Ifeffit problem areas </a></li>
+<li><a href="#sec-2-1">2.1 Larch v. Ifeffit problem areas</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 things that need doing </a>
+<li><a href="#sec-3">3 perl modules to evaluate</a></li>
+<li><a href="#sec-4">4 things that need doing</a>
 <ul>
-<li><a href="#sec-3.1">3.1 Moose issues </a></li>
-<li><a href="#sec-3.2">3.2 wx issues </a></li>
-<li><a href="#sec-3.3">3.3 installation issues [2/2] </a></li>
-<li><a href="#sec-3.4">3.4 Demeter bugs, shortcomings, missing features  [4/20] [20%] </a></li>
-<li><a href="#sec-3.5">3.5 Athena </a></li>
-<li><a href="#sec-3.6">3.6 raw data and plugins </a></li>
-<li><a href="#sec-3.7">3.7 Windows issues [3/9] [33%] </a></li>
-<li><a href="#sec-3.8">3.8 Artemis </a></li>
-<li><a href="#sec-3.9">3.9 Hephaestus </a></li>
-<li><a href="#sec-3.10">3.10 Other object types [0/3] </a></li>
+<li><a href="#sec-4-1">4.1 Moose issues</a></li>
+<li><a href="#sec-4-2">4.2 wx issues</a></li>
+<li><a href="#sec-4-3">4.3 installation issues [2/2]</a></li>
+<li><a href="#sec-4-4">4.4 Demeter bugs, shortcomings, missing features  [5/20] [25%]</a></li>
+<li><a href="#sec-4-5">4.5 Athena</a></li>
+<li><a href="#sec-4-6">4.6 raw data and plugins</a></li>
+<li><a href="#sec-4-7">4.7 Windows issues [4/9] [44%]</a></li>
+<li><a href="#sec-4-8">4.8 Artemis</a></li>
+<li><a href="#sec-4-9">4.9 Hephaestus</a></li>
+<li><a href="#sec-4-10">4.10 Other object types [0/3]</a></li>
 </ul>
 </li>
-<li><a href="#sec-4">4 Atoms and Feff </a>
+<li><a href="#sec-5">5 Atoms and Feff</a>
 <ul>
-<li><a href="#sec-4.1">4.1 CIF [0/3] [0%] </a></li>
-<li><a href="#sec-4.2">4.2 Atoms [3/9] [33%] </a></li>
-<li><a href="#sec-4.3">4.3 Feff </a></li>
+<li><a href="#sec-5-1">5.1 CIF [0/3] [0%]</a></li>
+<li><a href="#sec-5-2">5.2 Atoms [3/9] [33%]</a></li>
+<li><a href="#sec-5-3">5.3 Feff</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">5 Ifeffit </a></li>
-<li><a href="#sec-6">6 Weird stuff I'd prefer not to implement unless demanded </a></li>
+<li><a href="#sec-6">6 Ifeffit</a></li>
+<li><a href="#sec-7">7 Weird stuff I'd prefer not to implement unless demanded</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> top priorities </h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> top priorities</h2>
 <div class="outline-text-2" id="text-1">
 
 
 </div>
 
-<div id="outline-container-1.1" class="outline-3">
-<h3 id="sec-1.1"><span class="section-number-3">1.1</span> small things </h3>
-<div class="outline-text-3" id="text-1.1">
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> small things</h3>
+<div class="outline-text-3" id="text-1-1">
 
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+<li><code>[&nbsp;]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Lepidocrocite issue (amam gets changed to cmcm)
+<li><code>[&nbsp;]</code> Lepidocrocite issue (amam gets changed to cmcm)
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Dispersive algorithm, include in Athena
+<li><code>[&nbsp;]</code> Dispersive algorithm, include in Athena
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> S02 display issue
+<li><code>[X]</code> S02 display issue
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> clone data sets and path lists in Artemis
+<li><code>[&nbsp;]</code> clone data sets and path lists in Artemis
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Artemis history improvments
-
+<li><code>[X]</code> Artemis history improvments
 </li>
 </ul>
+
+
 </div>
 
 </div>
 
-<div id="outline-container-1.2" class="outline-3">
-<h3 id="sec-1.2"><span class="section-number-3">1.2</span> big things </h3>
-<div class="outline-text-3" id="text-1.2">
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> big things</h3>
+<div class="outline-text-3" id="text-1-2">
 
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> fuzzy over sites
+<li><code>[X]</code> fuzzy over sites
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> 5 and 6 legged paths
+<li><code>[&nbsp;]</code> 5 and 6 legged paths
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> PCA improvements
+<li><code>[&nbsp;]</code> PCA improvements
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> feff8.5L
-
+<li><code>[&nbsp;]</code> feff8.5L
+</li>
+<li><code>[&nbsp;]</code> persistance of analysis methods in Athena
 </li>
 </ul>
+
+
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> larch chores </h2>
+<h2 id="sec-2"><span class="section-number-2">2</span> larch chores</h2>
 <div class="outline-text-2" id="text-2">
 
 
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
+<li><code>[X]</code> finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> start work on Artemis-related templates
+<li><code>[&nbsp;]</code> start work on Artemis-related templates
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> kaiser vs. kaiser-bessel
+<li><code>[&nbsp;]</code> kaiser vs. kaiser-bessel
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
+<li><code>[&nbsp;]</code> use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> command line in command buffer in A&amp;A
-
+<li><code>[X]</code> command line in command buffer in A&amp;A
 </li>
 </ul>
 
+
+
 </div>
 
-<div id="outline-container-2.1" class="outline-3">
-<h3 id="sec-2.1"><span class="section-number-3">2.1</span> Larch v. Ifeffit problem areas </h3>
-<div class="outline-text-3" id="text-2.1">
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Larch v. Ifeffit problem areas</h3>
+<div class="outline-text-3" id="text-2-1">
 
 
 <ul>
-<li>
-Xray/Absorption/CL.pm &ndash; this needs to be refactored
+<li>Xray/Absorption/CL.pm &ndash; this needs to be refactored
 </li>
-<li>
-t/ tests need to be tested with Larch
+<li>t/ tests need to be tested with Larch
 </li>
-<li>
-in particular, need a t/001<sub>larch</sub>.t test (with an appropriate SKIP in case of no server)
+<li>in particular, need a t/001<sub>larch</sub>.t test (with an appropriate SKIP in case of no server)
 </li>
-<li>
-"nergy": XDAC vs. Ifeffit.  Larch will see "energy".
+<li>"nergy": XDAC vs. Ifeffit.  Larch will see "energy".
 <ul>
-<li>
-Perhaps a larch or ifeffit configuration attribute
+<li>Perhaps a larch or ifeffit configuration attribute
 </li>
-<li>
-ack-ing for '\bnergy\b' yields:
+<li>ack-ing for '\bnergy\b' yields:
 <pre class="example">
 examples/recipes/MultiChannel/mc2prj
 54:  #my @energy    = $mc-&gt;get_array('nergy');
@@ -240,742 +270,369 @@ lib/Demeter/Plugins/x23a2med.demeter_conf
 
 </li>
 </ul>
+
 </li>
-<li>
-Need to add Larch copyright statement throughout
+<li>Need to add Larch copyright statement throughout
 <pre class="example">
 ##             Larch is copyright (c) 2013 Matt Newville, Tom Trainer
 ##                                 http://xraypy.github.io/xraylarch/
 </pre>
 
-
-
 </li>
 </ul>
+
+
+
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> things that need doing </h2>
+<h2 id="sec-3"><span class="section-number-2">3</span> perl modules to evaluate</h2>
 <div class="outline-text-2" id="text-3">
 
 
-
-</div>
-
-<div id="outline-container-3.1" class="outline-3">
-<h3 id="sec-3.1"><span class="section-number-3">3.1</span> Moose issues </h3>
-<div class="outline-text-3" id="text-3.1">
-
-
-</div>
-
-</div>
-
-<div id="outline-container-3.2" class="outline-3">
-<h3 id="sec-3.2"><span class="section-number-3">3.2</span> wx issues </h3>
-<div class="outline-text-3" id="text-3.2">
-
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> why does Wx::FileDialog with <code>wxFD_OVERWRITE_PROMPT</code> style not work correctly?
-see <a href="https://bugzilla.gnome.org/show_bug.cgi?id=631908">https://bugzilla.gnome.org/show_bug.cgi?id=631908</a> and 
-<a href="https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674">https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674</a> for more info
-Turns out this is a gtk problem &ndash; I can make the same thing happen with Firefox!
-
+<li>Path:Tiny to replace <a href="#File-Spec">File::Spec</a>
+</li>
+<li>Test::Class and Test::Class::Moose
 </li>
 </ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.3" class="outline-3">
-<h3 id="sec-3.3"><span class="section-number-3">3.3</span> installation issues [2/2] </h3>
-<div class="outline-text-3" id="text-3.3">
-
-<ul>
-<li>
-<b>[X]</b> Relocation needs testing on Windows, need to make sure that
-the executables can all be found,
-</li>
-<li>
-<b>[X]</b> also need to be able to find all of Ifeffit CL and CAPS files.
-
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.4" class="outline-3">
-<h3 id="sec-3.4"><span class="section-number-3">3.4</span> Demeter bugs, shortcomings, missing features  [4/20] [20%] </h3>
-<div class="outline-text-3" id="text-3.4">
-
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> in <code>Demeter::Data::IO::save_many</code>, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> tie multiple groups together (e.g. MED data with reference)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> add a record to an existing Athena project file
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> clnorm + Julia and Jingen's MBACK replacement
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> cannot specify title for stddev and variance plots
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Demeter command backend needs lots of polishing
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> 3rd derivative
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> SDK: better documentation for freeze/thaw//serialize/deserialize
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> OpenBabel interface, tied into Feff
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Feff8 integration
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Use PDL in pathfinder
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> background groups for AXAFS
-</li>
-<li>
-<b>[X]</b> serialize VPath, put VPath into dpj and fpj files
-</li>
-<li>
-<b>[X]</b> set E0 to peak of white line
-</li>
-<li>
-<b>[X]</b> need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
-</li>
-<li>
-<b>[X]</b> Plucking from gnuplot really sucks
 
 
-
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.5" class="outline-3">
-<h3 id="sec-3.5"><span class="section-number-3">3.5</span> Athena </h3>
-<div class="outline-text-3" id="text-3.5">
-
-
-<ul>
-<li id="sec-3.5.1">needs testing [/] <br/>
-
-</li>
-<li id="sec-3.5.2">Tools [22/25] [88%] <br/>
-<ol>
-<li>
-<b>[X]</b> main
-</li>
-<li>
-<b>[X]</b> calibrate
-</li>
-<li>
-<b>[X]</b> align
-</li>
-<li>
-<b>[X]</b> deglitch
-</li>
-<li>
-<b>[X]</b> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a>; +smooth with boxcar average <a href="http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333">See this</a>+
-</li>
-<li>
-<b>[X]</b> truncate
-</li>
-<li>
-<b>[X]</b> rebin
-</li>
-<li>
-<b>[X]</b> convolution and noise
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <i>deconvolution</i>
-</li>
-<li>
-<b>[X]</b> self absorption
-</li>
-<li>
-<b>[X]</b> copy series
-</li>
-<li>
-<b>[X]</b> data summation
-
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> dispersive
-</li>
-<li>
-<b>[X]</b> multi-electron removal
-
-</li>
-<li>
-<b>[X]</b> LCF
-</li>
-<li>
-<b>[X]</b> <i>PCA</i> <a href="http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html">PCA from PDL mail archives</a>
-</li>
-<li>
-<b>[X]</b> Peak fit
-</li>
-<li>
-<b>[X]</b> log ratio
-</li>
-<li>
-<b>[X]</b> difference
-
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> explain FT
-</li>
-<li>
-<b>[X]</b> disk watcher
-</li>
-<li>
-<b>[X]</b> XDI
-</li>
-<li>
-<b>[X]</b> journal
-</li>
-<li>
-<b>[X]</b> plugins
-</li>
-<li>
-<b>[X]</b> preference 
-
-</li>
-</ol>
-<ul>
-<li id="sec-3.5.2.1">Requires PDL <br/>
-<ol>
-<li>
-smoothing by S-G (done with Larch)
-</li>
-<li>
-deconvolution
-</li>
-<li>
-<del>PCA</del>
-</li>
-<li>
-<del>boxcar average</del>
-
-</li>
-</ol>
-</li>
-</ul>
-</li>
-<li id="sec-3.5.3">needs doing [2/14] [14%] <br/>
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> beter error handling in plugins &ndash; specifically need to do a
-better job of trapping errors in the <code>fix</code> method.  Perhaps
-<code>fix</code> should always be called within an <code>eval</code>?
-</li>
-<li>
-<b>[X]</b> report to a text dialog on values of a particular parameter for all/marked groups
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> implement megamerge in Athena
-</li>
-<li>
-<b>[X]</b> links to documentation on each tool
-</li>
-<li>
-[-] <b>Main window</b> [2/3] [66%]
-<ul>
-<li>
-<b>[X]</b> <del>SpinCtrl for use with Rbkg</del>, event handler triggered twice on first use (found work-around)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> SpinCtrl for use with bkg<sub>spl1</sub>/2 (I find this to be a much worse idea)
-</li>
-<li>
-<b>[X]</b> push bkg<sub>e0</sub> <i>algorithm</i> onto marked/all groups and recalculate
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Convolve/noise tool</b>
-<ul>
-<li>
-add noise to chi data
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b> [0/1]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> difference in k
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>LCF tool</b> [0/3]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> persistance of LCF results
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> satisfying both inclusive and unity can be trouble for
-poorly normalized data and/or poor standard selection
-(see email from Jack Hitch)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> compute R-factor in k or R using fit from energy.  (see
-mail from Scott 7 January 2012)
-</li>
-</ul>
-</li>
-<li>
-[-] <b>PCA tool</b> [2/10]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> persistance
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> manual entry of component coefficients (??)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> cluster analysis, select two components and plot the
-associations of each data with those two in a scatter plot.
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> worry about "def group.tt" line being to long in tt template
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> plotting in pgplot
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> error analysis, RET, SPOIL, etc, determination of number
-of components, validity of TT, etc
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> specialized file headers for reconstruction and tt save files
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> pluck buttons for analysis range don't work
-</li>
-<li>
-<b>[X]</b> save eigenvectors to a file
-</li>
-<li>
-<b>[X]</b> if the marked groups are changed after performing the PCA
-but before reconstructing data, the plot will fail with
-and exception.  need to save the list of data that went
-into the PCA and check against that rather than the
-current list of marked groups
-</li>
-</ul>
-</li>
-<li>
-[-] <b>Peakfit tool</b> [7/12]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> persistance
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> verify that fit is sensible (ndata/ninfo vs nparam)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> broken using XES
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> explicitly state ninfo and epsilon
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> for Larch, bounds on parameters
-</li>
-<li>
-<b>[X]</b> implement pseudovoight
-</li>
-<li>
-<b>[X]</b> verify that all centroids are within (or near) fit range
-</li>
-<li>
-<b>[X]</b> behavior when changing data
-</li>
-<li>
-<b>[X]</b> pluck fit ranges
-</li>
-<li>
-<b>[X]</b> <del>ndata is full data range rather than fit range with Fityk backend</del> (igoring this)
-</li>
-<li>
-<b>[X]</b> <del>explicitly set title of plot</del> (i can live with this)
-</li>
-<li>
-<b>[X]</b> sequence over marked groups
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Data watcher</b>
-</li>
-<li>
-[-] <b>MEE tool</b> [1/3]
-<ul>
-<li>
-<b>[X]</b> arctan removal
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> other algorithms from the literature
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> good guesses for parameters
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Plot menu</b>
-<ul>
-<li>
-zoom/unzoom/cursor for pgplot
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>metadata tool</b>
-
-</li>
-</ul>
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.6" class="outline-3">
-<h3 id="sec-3.6"><span class="section-number-3">3.6</span> raw data and plugins </h3>
-<div class="outline-text-3" id="text-3.6">
-
-<ul>
-<li>
-Need to expand the filetype system by examining data from <b>all</b> the XAS beamlines in the world.  Yes &hellip; all of them.
-</li>
-<li>
-solicit help from the facility representatives
-
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.7" class="outline-3">
-<h3 id="sec-3.7"><span class="section-number-3">3.7</span> Windows issues [3/9] [33%] </h3>
-<div class="outline-text-3" id="text-3.7">
-
-<ul>
-<li>
-<b>[X]</b> parameter group context menus don't get posted (see
-<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html</a>)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> the frickin' Gnuplot error logs seem to remain open and locked
-on Windows when a crash happens
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> status bar does not get color for wait or error messages
-<i>this may be unfixable, see</i>
-<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html</a>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> The atoms panel background color is too light.  Which window
-needs its BackgroundColour set to wxNullColour?
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> clampbox does not get enabled/disabled explicitly, is this
-another aspect of StaticBox that is different on Windows? (see
-link above)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Need to test that paths with (parens|commas|quotes) get
-followed correctly in all situations
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Initial initialization of gnuplot and feff executable
-locations in the situation where the package has been moved or
-reinstalled such that and old demeter.ini still exists
-</li>
-<li>
-<b>[X]</b> relocation of Strawberry leaves Ifeffit unable to find phase
-shift and CL tables (use an ENV variable?)
-</li>
-<li>
-<b>[X]</b> The Strawberry+Demeter package does not coexist at all with
-ActivePerl.  Best solution is to generate ppd for Demeter
-armed with all dependencies.  Would need to compile wrapper
-and somehow get gnuplot on the machine. <b>Solved by explicitly         calling Strawberry in the .bat files</b>
-
-
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.8" class="outline-3">
-<h3 id="sec-3.8"><span class="section-number-3">3.8</span> Artemis </h3>
-<div class="outline-text-3" id="text-3.8">
-
-<ul>
-<li id="sec-3.8.1">Artemis bugs and missing features [0/8]  [0%] <br/>
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> More work on history, see Anthony Ardizzi's issue
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Reorganize lists, move individual items up and down, move
-blocks up and down, Path list, <del>Plot list</del>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> do SSPaths get serialized and deserialized with the pointers
-to the feff calculation set correctly and no additional
-folders being created in stash (as was the case for FSPath)?
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> implementing derivative of phase plotting would require
-proper handling of this signal in the bkg, residual, and
-running R-factor plots.  Also probably want to disallow it
-for R123 plots.
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> better way of moving an empirical standard from Athena to
-Artemis &ndash; should be able to import it directly from the
-athena project file.
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Display of S02 glyph on some Windows is broken, breaking S02 context menu
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Eric says: "if u use the automatic choice of parameters for
-the paths, in combination with a few quick first shell models
-and an imported feff.inp the whole thing runs in trouble. I
-don't really expect name collisions, but it seems to loose
-track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Path drag and drop [0/3]
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> DND of an SSPath does not work correctly
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> DND of FPath also broken
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> DND of selection (currently only one at a time)
-
-</li>
-</ul>
-</li>
-<li id="sec-3.8.1.1">Project [2/4] <br/>
-<ul>
-<li>
-<b>[X]</b> VPaths to/from project file
-</li>
-<li>
-<b>[X]</b> SSPaths not saved/restored properly?
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Indicators to/from project file
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> GDS objects get created with same groupname over and over as
-they are used in fits in the history
-
-</li>
-</ul>
-</li>
-<li id="sec-3.8.1.2">Advanced fitting <br/>
-<ul>
-<li id="sec-3.8.1.2.1">MFC [0/1] <br/>
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Balance interstitial energies for MFC fits
-</li>
-</ul>
-</li>
-<li id="sec-3.8.1.2.2">MDS &amp; Fit Sequence [0/4] <br/>
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Import mutiple data sets from an Athena project file
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> feffit.inp import: needs testing; MDS that is not merely MKW
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Clone all/marked paths between data sets
-
-
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li id="sec-3.8.2">Histograms [12/14] [85%] <br/>
-<ul>
-<li>
-<b>[X]</b> Triangle object
-<ul>
-<li>
-yields a DS path and a TS path
-</li>
-<li>
-by R and theta
-</li>
-<li>
-<del>by a trio of Cartesian coordinates</del>
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> triangle histogram
-</li>
-<li>
-[-] <b>Error checking</b> in Artemis, e.g. check that there is at least one bin in the supplied range(s)
-<ul>
-<li>
-<b>[X]</b> SS
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> ncl
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> thru
-
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3.9" class="outline-3">
-<h3 id="sec-3.9"><span class="section-number-3">3.9</span> Hephaestus </h3>
-<div class="outline-text-3" id="text-3.9">
-
-<p>More standards!!
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-3.10" class="outline-3">
-<h3 id="sec-3.10"><span class="section-number-3">3.10</span> Other object types [0/3] </h3>
-<div class="outline-text-3" id="text-3.10">
-
-<ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Structural Units
-<ul>
-<li>
-Extension of VPath
-</li>
-<li>
-Store GDS, feff, and path objects in a zip file.
-</li>
-<li>
-On import, mark GDS parameters as merge if in conflict
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> MSPaths
-<ul>
-<li>
-Much like SSPath, make an arbitrary n-legged path
-</li>
-</ul>
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Nearly collinear paths, ThreeBody
-<ul>
-<li>
-Extension of VPath
-</li>
-<li>
-need to worry about load order in Demeter.pm
-</li>
-<li>
-Define a three body configuration, generate its 4-legged path and a sequence of three-legged paths along with a mixing parameter.
-</li>
-<li>
-It will take a single set of path parameters that are pushed onto the generated Path objects, except for the amplitude, which will be computed from the mixing parameter.
-</li>
-<li>
-This is a single object for the user to interact with which expands into 2 or 3 3-legged paths and a single 4-legged path
-
-
-</li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Atoms and Feff </h2>
+<h2 id="sec-4"><span class="section-number-2">4</span> things that need doing</h2>
 <div class="outline-text-2" id="text-4">
+
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Moose issues</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> wx issues</h3>
+<div class="outline-text-3" id="text-4-2">
+
+<ul>
+<li><code>[&nbsp;]</code> why does Wx::FileDialog with <code>wxFD_OVERWRITE_PROMPT</code> style not work correctly?
+        see <a href="https://bugzilla.gnome.org/show_bug.cgi?id=631908">https://bugzilla.gnome.org/show_bug.cgi?id=631908</a> and 
+        <a href="https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674">https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674</a> for more info
+        Turns out this is a gtk problem &ndash; I can make the same thing happen with Firefox!
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> installation issues [2/2]</h3>
+<div class="outline-text-3" id="text-4-3">
+
+<ul>
+<li><code>[X]</code> Relocation needs testing on Windows, need to make sure that
+        the executables can all be found,
+</li>
+<li><code>[X]</code> also need to be able to find all of Ifeffit CL and CAPS files.
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> Demeter bugs, shortcomings, missing features  [5/20] [25%]</h3>
+<div class="outline-text-3" id="text-4-4">
+
+<ul>
+<li><code>[&nbsp;]</code> in <code>Demeter::Data::IO::save_many</code>, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
+</li>
+<li><code>[&nbsp;]</code> tie multiple groups together (e.g. MED data with reference)
+</li>
+<li><code>[&nbsp;]</code> add a record to an existing Athena project file
+</li>
+<li><code>[&nbsp;]</code> clnorm + Julia and Jingen's MBACK replacement
+</li>
+<li><code>[&nbsp;]</code> Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
+</li>
+<li><code>[&nbsp;]</code> cannot specify title for stddev and variance plots
+</li>
+<li><code>[&nbsp;]</code> Demeter command backend needs lots of polishing
+</li>
+<li><code>[&nbsp;]</code> 3rd derivative
+</li>
+<li><code>[&nbsp;]</code> SDK: better documentation for freeze/thaw//serialize/deserialize
+</li>
+<li><code>[&nbsp;]</code> error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
+</li>
+<li><code>[&nbsp;]</code> OpenBabel interface, tied into Feff
+</li>
+<li><code>[&nbsp;]</code> MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
+</li>
+<li><code>[&nbsp;]</code> Feff8 integration
+</li>
+<li><code>[&nbsp;]</code> Use PDL in pathfinder
+</li>
+<li><code>[X]</code> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
+</li>
+<li><code>[&nbsp;]</code> background groups for AXAFS
+</li>
+<li><code>[X]</code> serialize VPath, put VPath into dpj and fpj files
+</li>
+<li><code>[X]</code> set E0 to peak of white line
+</li>
+<li><code>[X]</code> need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
+</li>
+<li><code>[X]</code> Plucking from gnuplot really sucks
+</li>
+</ul>
 
 
 
 
 </div>
 
-<div id="outline-container-4.1" class="outline-3">
-<h3 id="sec-4.1"><span class="section-number-3">4.1</span> CIF [0/3] [0%] </h3>
-<div class="outline-text-3" id="text-4.1">
+</div>
+
+<div id="outline-container-4-5" class="outline-3">
+<h3 id="sec-4-5"><span class="section-number-3">4.5</span> Athena</h3>
+<div class="outline-text-3" id="text-4-5">
+
 
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> CIF issue: CIF file with "<sub>eof</sub>" token at end of file, as in <a href="notes/H16PW12O46.cif">this cif file</a>
+<li id="sec-4-5-1">needs testing [/]<br/>
+
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
+</ul>
+<ul>
+<li id="sec-4-5-2">Tools [22/25] [88%]<br/>
+<ol>
+<li><code>[X]</code> main
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> CIF errors are not handled gracefully (e.g. multiple occupancy)
+<li><code>[X]</code> calibrate
+</li>
+<li><code>[X]</code> align
+</li>
+<li><code>[X]</code> deglitch
+</li>
+<li><code>[X]</code> <i>smooth with Savitsky-Golay filter</i> <a href="notes/sgolay.m">Matlab routine for SG filter</a>; +smooth with boxcar average <a href="http://comments.gmane.org/gmane.comp.lang.perl.pdl.general/6333">See this</a>+
+</li>
+<li><code>[X]</code> truncate
+</li>
+<li><code>[X]</code> rebin
+</li>
+<li><code>[X]</code> convolution and noise
+</li>
+<li><code>[&nbsp;]</code> <i>deconvolution</i>
+</li>
+<li><code>[X]</code> self absorption
+</li>
+<li><code>[X]</code> copy series
+</li>
+<li><code>[X]</code> data summation
+
+</li>
+<li><code>[&nbsp;]</code> dispersive
+</li>
+<li><code>[X]</code> multi-electron removal
+
+</li>
+<li><code>[X]</code> LCF
+</li>
+<li><code>[X]</code> <i>PCA</i> <a href="http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html">PCA from PDL mail archives</a>
+</li>
+<li><code>[X]</code> Peak fit
+</li>
+<li><code>[X]</code> log ratio
+</li>
+<li><code>[X]</code> difference
+
+</li>
+<li><code>[&nbsp;]</code> explain FT
+</li>
+<li><code>[X]</code> disk watcher
+</li>
+<li><code>[X]</code> XDI
+</li>
+<li><code>[X]</code> journal
+</li>
+<li><code>[X]</code> plugins
+</li>
+<li><code>[X]</code> preference 
+</li>
+</ol>
+
+
+<ul>
+<li id="sec-4-5-2-1">Requires PDL<br/>
+<ol>
+<li>smoothing by S-G (done with Larch)
+</li>
+<li>deconvolution
+</li>
+<li><del>PCA</del>
+</li>
+<li><del>boxcar average</del>
+</li>
+</ol>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-4-5-3">needs doing [3/14] [21%]<br/>
+<ul>
+<li><code>[&nbsp;]</code> beter error handling in plugins &ndash; specifically need to do a
+         better job of trapping errors in the <code>fix</code> method.  Perhaps
+         <code>fix</code> should always be called within an <code>eval</code>?
+</li>
+<li><code>[X]</code> report to a text dialog on values of a particular parameter for all/marked groups
+</li>
+<li><code>[&nbsp;]</code> implement megamerge in Athena
+</li>
+<li><code>[X]</code> links to documentation on each tool
+</li>
+<li><code>[X]</code> <b>Main window</b> [3/3] [100%]
+<ul>
+<li><code>[X]</code> <del>SpinCtrl for use with Rbkg</del>, event handler triggered twice on first use (found work-around)
+</li>
+<li><code>[X]</code> <del>SpinCtrl for use with bkg<sub>spl1</sub>/2 (I find this to be a much worse idea)</del> (not implemented)
+</li>
+<li><code>[X]</code> push bkg<sub>e0</sub> <i>algorithm</i> onto marked/all groups and recalculate
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>Convolve/noise tool</b>
+<ul>
+<li>add noise to chi data
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>Difference tool</b> [0/1]
+<ul>
+<li><code>[&nbsp;]</code> difference in k
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>LCF tool</b> [0/3]
+<ul>
+<li><code>[&nbsp;]</code> persistance of LCF results
+</li>
+<li><code>[&nbsp;]</code> satisfying both inclusive and unity can be trouble for
+           poorly normalized data and/or poor standard selection
+           (see email from Jack Hitch)
+</li>
+<li><code>[&nbsp;]</code> compute R-factor in k or R using fit from energy.  (see
+           mail from Scott 7 January 2012)
+</li>
+</ul>
+
+</li>
+<li><code>[-]</code> <b>PCA tool</b> [2/10]
+<ul>
+<li><code>[&nbsp;]</code> persistance
+</li>
+<li><code>[&nbsp;]</code> manual entry of component coefficients (??)
+</li>
+<li><code>[&nbsp;]</code> cluster analysis, select two components and plot the
+           associations of each data with those two in a scatter plot.
+</li>
+<li><code>[&nbsp;]</code> worry about "def group.tt" line being too long in tt template
+</li>
+<li><code>[&nbsp;]</code> plotting in pgplot
+</li>
+<li><code>[&nbsp;]</code> error analysis, RET, SPOIL, etc, determination of number
+           of components, validity of TT, etc
+</li>
+<li><code>[&nbsp;]</code> specialized file headers for reconstruction and tt save files
+</li>
+<li><code>[&nbsp;]</code> pluck buttons for analysis range don't work
+</li>
+<li><code>[X]</code> save eigenvectors to a file
+</li>
+<li><code>[X]</code> if the marked groups are changed after performing the PCA
+           but before reconstructing data, the plot will fail with
+           and exception.  need to save the list of data that went
+           into the PCA and check against that rather than the
+           current list of marked groups
+</li>
+</ul>
+
+</li>
+<li><code>[-]</code> <b>Peakfit tool</b> [7/12]
+<ul>
+<li><code>[&nbsp;]</code> persistance
+</li>
+<li><code>[&nbsp;]</code> verify that fit is sensible (ndata/ninfo vs nparam)
+</li>
+<li><code>[&nbsp;]</code> broken using XES
+</li>
+<li><code>[&nbsp;]</code> explicitly state ninfo and epsilon
+</li>
+<li><code>[&nbsp;]</code> for Larch, bounds on parameters
+</li>
+<li><code>[X]</code> implement pseudovoight
+</li>
+<li><code>[X]</code> verify that all centroids are within (or near) fit range
+</li>
+<li><code>[X]</code> behavior when changing data
+</li>
+<li><code>[X]</code> pluck fit ranges
+</li>
+<li><code>[X]</code> <del>ndata is full data range rather than fit range with Fityk backend</del> (igoring this)
+</li>
+<li><code>[X]</code> <del>explicitly set title of plot</del> (i can live with this)
+</li>
+<li><code>[X]</code> sequence over marked groups
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>Data watcher</b>
+</li>
+<li><code>[-]</code> <b>MEE tool</b> [1/3]
+<ul>
+<li><code>[X]</code> arctan removal
+</li>
+<li><code>[&nbsp;]</code> other algorithms from the literature
+</li>
+<li><code>[&nbsp;]</code> good guesses for parameters
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>Plot menu</b>
+<ul>
+<li>zoom/unzoom/cursor for pgplot
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> <b>metadata tool</b>
+</li>
+</ul>
+
 
 </li>
 </ul>
@@ -983,35 +640,304 @@ This is a single object for the user to interact with which expands into 2 or 3 
 
 </div>
 
-<div id="outline-container-4.2" class="outline-3">
-<h3 id="sec-4.2"><span class="section-number-3">4.2</span> Atoms [3/9] [33%] </h3>
-<div class="outline-text-3" id="text-4.2">
+<div id="outline-container-4-6" class="outline-3">
+<h3 id="sec-4-6"><span class="section-number-3">4.6</span> raw data and plugins</h3>
+<div class="outline-text-3" id="text-4-6">
 
 <ul>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+<li>Need to expand the filetype system by examining data from <b>all</b> the XAS beamlines in the world.  Yes &hellip; all of them.
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Lepidocrocite issue (amam gets changed to cmcm)
+<li>solicit help from the facility representatives
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> 2 sites at the same position with occupancies &lt;1.  see file above for an example
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-7" class="outline-3">
+<h3 id="sec-4-7"><span class="section-number-3">4.7</span> Windows issues [4/9] [44%]</h3>
+<div class="outline-text-3" id="text-4-7">
+
+<ul>
+<li><code>[X]</code> parameter group context menus don't get posted (see
+        <a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html</a>)
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> George Sterbinsky's recent mailing list post that turned out to be about 
-atoms' sphere and rhomboid in a non-orthogonal group
+<li><code>[&nbsp;]</code> the frickin' Gnuplot error logs seem to remain open and locked
+        on Windows when a crash happens
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> very confusing error message when core is not a tag
+<li><code>[&nbsp;]</code> status bar does not get color for wait or error messages
+        <i>this may be unfixable, see</i>
+        <a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html</a>
 </li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> Why does Amam in lepidocrocite get changed to Cmcm ?
+<li><code>[&nbsp;]</code> The atoms panel background color is too light.  Which window
+        needs its BackgroundColour set to wxNullColour?
 </li>
-<li>
-<b>[X]</b> Shell tags in the feff.inp ATOMS list
+<li><code>[&nbsp;]</code> clampbox does not get enabled/disabled explicitly, is this
+        another aspect of StaticBox that is different on Windows? (see
+        link above)
 </li>
-<li>
-<b>[X]</b> Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
+<li><code>[&nbsp;]</code> Need to test that paths with (parens|commas|quotes) get
+        followed correctly in all situations
+</li>
+<li><code>[X]</code> Initial initialization of gnuplot and feff executable
+        locations in the situation where the package has been moved or
+        reinstalled such that and old demeter.ini still exists
+</li>
+<li><code>[X]</code> relocation of Strawberry leaves Ifeffit unable to find phase
+        shift and CL tables (use an ENV variable?)
+</li>
+<li><code>[X]</code> The Strawberry+Demeter package does not coexist at all with
+        ActivePerl.  Best solution is to generate ppd for Demeter
+        armed with all dependencies.  Would need to compile wrapper
+        and somehow get gnuplot on the machine. <b>Solved by explicitly         calling Strawberry in the .bat files</b>
+</li>
+</ul>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-8" class="outline-3">
+<h3 id="sec-4-8"><span class="section-number-3">4.8</span> Artemis</h3>
+<div class="outline-text-3" id="text-4-8">
+
+<ul>
+<li id="sec-4-8-1">Artemis bugs and missing features [0/8]  [0%]<br/>
+<ul>
+<li><code>[&nbsp;]</code> More work on history, see Anthony Ardizzi's issue
+</li>
+<li><code>[&nbsp;]</code> Reorganize lists, move individual items up and down, move
+         blocks up and down, Path list, <del>Plot list</del>
+</li>
+<li><code>[&nbsp;]</code> do SSPaths get serialized and deserialized with the pointers
+         to the feff calculation set correctly and no additional
+         folders being created in stash (as was the case for FSPath)?
+</li>
+<li><code>[&nbsp;]</code> implementing derivative of phase plotting would require
+         proper handling of this signal in the bkg, residual, and
+         running R-factor plots.  Also probably want to disallow it
+         for R123 plots.
+</li>
+<li><code>[&nbsp;]</code> better way of moving an empirical standard from Athena to
+         Artemis &ndash; should be able to import it directly from the
+         athena project file.
+</li>
+<li><code>[&nbsp;]</code> Display of S02 glyph on some Windows is broken, breaking S02 context menu
+</li>
+<li><code>[&nbsp;]</code> Eric says: "if u use the automatic choice of parameters for
+         the paths, in combination with a few quick first shell models
+         and an imported feff.inp the whole thing runs in trouble. I
+         don't really expect name collisions, but it seems to loose
+         track between all the feff runs."  <i>This is a bit unclear&hellip;</i>
+</li>
+<li><code>[&nbsp;]</code> Path drag and drop [0/3]
+<ul>
+<li><code>[&nbsp;]</code> DND of an SSPath does not work correctly
+</li>
+<li><code>[&nbsp;]</code> DND of FPath also broken
+</li>
+<li><code>[&nbsp;]</code> DND of selection (currently only one at a time)
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+<ul>
+<li id="sec-4-8-1-1">Project [2/4]<br/>
+<ul>
+<li><code>[X]</code> VPaths to/from project file
+</li>
+<li><code>[X]</code> SSPaths not saved/restored properly?
+</li>
+<li><code>[&nbsp;]</code> Indicators to/from project file
+</li>
+<li><code>[&nbsp;]</code> GDS objects get created with same groupname over and over as
+         they are used in fits in the history
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-4-8-1-2">Advanced fitting<br/>
+<ul>
+<li id="sec-4-8-1-2-1">MFC [0/1]<br/>
+<ul>
+<li><code>[&nbsp;]</code> Balance interstitial energies for MFC fits
+</li>
+</ul>
+
+</li>
+</ul>
+<ul>
+<li id="sec-4-8-1-2-2">MDS &amp; Fit Sequence [0/4]<br/>
+<ul>
+<li><code>[&nbsp;]</code> Import mutiple data sets from an Athena project file
+</li>
+<li><code>[&nbsp;]</code> feffit.inp import: needs testing; MDS that is not merely MKW
+</li>
+<li><code>[&nbsp;]</code> Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+</li>
+<li><code>[&nbsp;]</code> Clone all/marked paths between data sets
+</li>
+</ul>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-4-8-2">Histograms [12/14] [85%]<br/>
+<ul>
+<li><code>[X]</code> Triangle object
+<ul>
+<li>yields a DS path and a TS path
+</li>
+<li>by R and theta
+</li>
+<li><del>by a trio of Cartesian coordinates</del>
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> triangle histogram
+</li>
+<li><code>[-]</code> <b>Error checking</b> in Artemis, e.g. check that there is at least one bin in the supplied range(s)
+<ul>
+<li><code>[X]</code> SS
+</li>
+<li><code>[&nbsp;]</code> ncl
+</li>
+<li><code>[&nbsp;]</code> thru
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-4-9" class="outline-3">
+<h3 id="sec-4-9"><span class="section-number-3">4.9</span> Hephaestus</h3>
+<div class="outline-text-3" id="text-4-9">
+
+<p>  More standards!!
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-10" class="outline-3">
+<h3 id="sec-4-10"><span class="section-number-3">4.10</span> Other object types [0/3]</h3>
+<div class="outline-text-3" id="text-4-10">
+
+<ul>
+<li><code>[&nbsp;]</code> Structural Units
+<ul>
+<li>Extension of VPath
+</li>
+<li>Store GDS, feff, and path objects in a zip file.
+</li>
+<li>On import, mark GDS parameters as merge if in conflict
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> MSPaths
+<ul>
+<li>Much like SSPath, make an arbitrary n-legged path
+</li>
+</ul>
+
+</li>
+<li><code>[&nbsp;]</code> Nearly collinear paths, ThreeBody
+<ul>
+<li>Extension of VPath
+</li>
+<li>need to worry about load order in Demeter.pm
+</li>
+<li>Define a three body configuration, generate its 4-legged path and a sequence of three-legged paths along with a mixing parameter.
+</li>
+<li>It will take a single set of path parameters that are pushed onto the generated Path objects, except for the amplitude, which will be computed from the mixing parameter.
+</li>
+<li>This is a single object for the user to interact with which expands into 2 or 3 3-legged paths and a single 4-legged path
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Atoms and Feff</h2>
+<div class="outline-text-2" id="text-5">
+
+
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> CIF [0/3] [0%]</h3>
+<div class="outline-text-3" id="text-5-1">
+
+<ul>
+<li><code>[&nbsp;]</code> CIF issue: CIF file with "<sub>eof</sub>" token at end of file, as in <a href="notes/H16PW12O46.cif">this cif file</a>
+</li>
+<li><code>[&nbsp;]</code> Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
+</li>
+<li><code>[&nbsp;]</code> CIF errors are not handled gracefully (e.g. multiple occupancy)
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Atoms [3/9] [33%]</h3>
+<div class="outline-text-3" id="text-5-2">
+
+<ul>
+<li><code>[&nbsp;]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+</li>
+<li><code>[&nbsp;]</code> Lepidocrocite issue (amam gets changed to cmcm)
+</li>
+<li><code>[&nbsp;]</code> 2 sites at the same position with occupancies &lt;1.  see file above for an example
+</li>
+<li><code>[&nbsp;]</code> George Sterbinsky's recent mailing list post that turned out to be about 
+        atoms' sphere and rhomboid in a non-orthogonal group
+</li>
+<li><code>[&nbsp;]</code> very confusing error message when core is not a tag
+</li>
+<li><code>[&nbsp;]</code> Why does Amam in lepidocrocite get changed to Cmcm ?
+</li>
+<li><code>[X]</code> Shell tags in the feff.inp ATOMS list
+</li>
+<li><code>[X]</code> Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
 <pre class="example">
 title name:     Fe2O3  hematite
 space  R -3 c
@@ -1023,8 +949,7 @@ atom
 </pre>
 
 </li>
-<li>
-<b>[X]</b> This input data fails
+<li><code>[X]</code> This input data fails
 <pre class="example">
 title formula:  LaCoO3
 title refer1:  PRB V. 66 P. 094408 (2002)
@@ -1038,42 +963,45 @@ atom
   O      0.55032   0.00000   0.25000  O1
 </pre>
 
-
-
 </li>
 </ul>
-</div>
+
+
 
 </div>
 
-<div id="outline-container-4.3" class="outline-3">
-<h3 id="sec-4.3"><span class="section-number-3">4.3</span> Feff </h3>
-<div class="outline-text-3" id="text-4.3">
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Feff</h3>
+<div class="outline-text-3" id="text-5-3">
 
 
 <ul>
-<li id="sec-4.3.1">Feff8 is unsupported except as an Atoms output type <br/>
+<li id="sec-5-3-1">Feff8 is unsupported except as an Atoms output type<br/>
 
 <p>
 <a href="https://github.com/xraypy/feff85exafs">https://github.com/xraypy/feff85exafs</a>
 </p>
 </li>
-<li id="sec-4.3.2">Polarization and ellipticity <br/>
+</ul>
+<ul>
+<li id="sec-5-3-2">Polarization and ellipticity<br/>
 
 </li>
-<li id="sec-4.3.3">Five and six legged paths <br/>
+</ul>
+<ul>
+<li id="sec-5-3-3">Five and six legged paths<br/>
 <ol>
-<li>
-<a href="examples/h12213.cif">This CIF file</a> is an example of a structure that has five and six
-legged nearly collinear scattering paths at around 4 Angstroms.  It
-has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
-instance <a href="http://dx.doi.org/10.1021/ic50177a008">http://dx.doi.org/10.1021/ic50177a008</a>)
+<li><a href="examples/h12213.cif">This CIF file</a> is an example of a structure that has five and six
+    legged nearly collinear scattering paths at around 4 Angstroms.  It
+    has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
+    instance <a href="http://dx.doi.org/10.1021/ic50177a008">http://dx.doi.org/10.1021/ic50177a008</a>)
 
 </li>
-<li>
-Another example: 1-4 dibromo benzene has Br scatterers across a
-benzene ring which can be seen at about 6 Angstroms, along with
-3s, 4s, 5s, and 6s:
+<li>Another example: 1-4 dibromo benzene has Br scatterers across a
+    benzene ring which can be seen at about 6 Angstroms, along with
+    3s, 4s, 5s, and 6s:
 <pre class="example">
        C-C
       /   \
@@ -1084,26 +1012,25 @@ Br - C     C - Br
 
 
 </li>
-<li>
-In fact, any benzene ligand has important 5s and 6s going around
-the ring.  There are various Abs-C-C 3s, 4s, 5s, and 6s.
+<li>In fact, any benzene ligand has important 5s and 6s going around
+    the ring.  There are various Abs-C-C 3s, 4s, 5s, and 6s.
 <pre class="example">
         C-C
        /   \
-Abs - C     c 
+Abs - C     C 
        \   /
-        c-c
+        C-C
 </pre>
 
 
 </li>
-<li>
-Metals out to 8 Angstroms require 5s and 6s
-
-
-
+<li>Metals out to 8 Angstroms require 5s and 6s
 </li>
 </ol>
+
+
+
+
 </li>
 </ul>
 </div>
@@ -1111,9 +1038,9 @@ Metals out to 8 Angstroms require 5s and 6s
 
 </div>
 
-<div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Ifeffit </h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Ifeffit</h2>
+<div class="outline-text-2" id="text-6">
 
 
 <p>
@@ -1139,53 +1066,46 @@ to
 
 </div>
 
-<div id="outline-container-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Weird stuff I'd prefer not to implement unless demanded </h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Weird stuff I'd prefer not to implement unless demanded</h2>
+<div class="outline-text-2" id="text-7">
 
 <ol>
-<li>
-xfit output (only used by women who glow and men who plunder)
+<li>xfit output (only used by women who glow and men who plunder)
 </li>
-<li>
-csv and text report (excel <b>is</b> implemented)
+<li>csv and text report (excel <b>is</b> implemented)
 </li>
-<li>
-point finder (this was Shelly's request)
+<li>point finder (this was Shelly's request)
 </li>
-<li>
-session defaults (did anyone but me actually use these?)
+<li>session defaults (did anyone but me actually use these?)
 </li>
-<li>
-set to standard (i.e. the one that is marked) &ndash; confusing and
-little used
+<li>set to standard (i.e. the one that is marked) &ndash; confusing and
+    little used
 </li>
-<li>
-tie relative energy value to changes in E0 (this was something
-Jeremy requested originally)
+<li>tie relative energy value to changes in E0 (this was something
+    Jeremy requested originally)
 </li>
-<li>
-<del>set e0 by algorithm for all and marked &ndash; also confusing and little used</del> (implemented)
+<li><del>set e0 by algorithm for all and marked &ndash; also confusing and little used</del> (implemented)
 </li>
-<li>
-<del>plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)</del>
-(implemented)
+<li><del>plot margin lines for deglitching, deglitch many points (this was something that was most useful for a timing problem at 10ID that no longer exists)</del>
+    (implemented)
 </li>
-<li>
-preprocessing truncation and deglitching (truncation might be
-worth implementing)
-
+<li>preprocessing truncation and deglitching (truncation might be
+    worth implementing)
 </li>
 </ol>
+
+
 </div>
 </div>
+</div>
+
 <div id="postamble">
-<p class="author"> Author: Bruce Ravel
-<a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
-</p>
-<p class="date"> Date: 2013-12-09 13:35:44 EST</p>
-<p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
-</div>
+<p class="date">Date: 2014-01-24T16:07-0500</p>
+<p class="author">Author: Bruce Ravel</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.2 with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
 </div>
 </body>
 </html>

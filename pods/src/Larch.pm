@@ -36,6 +36,7 @@ sub get_larch_array {
   #Demeter->trace;
   #$rpcdata = $client -> get_data('_main.'.$param);
   $rpcdata = $client -> get_data($param);
+
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {
     my $ret = $rpcdata->result->{value};

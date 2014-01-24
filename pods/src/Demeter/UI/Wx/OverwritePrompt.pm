@@ -92,6 +92,9 @@ L<https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674>.
 Until this bug is fixed at the level of gtk, the
 C<wxFD_OVERWRITE_PROMPT> style cannot be safely used.
 
+This is unused in 0.9.20.  I am assuming that no one is still using
+gtk 2.20.  Fingers crossed....
+
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List

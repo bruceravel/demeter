@@ -24,11 +24,8 @@ sub new {
   $this->{sizer}  = $box;
   $this->{parent} = $parent;
 
-  my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate([qw(absorption athena bft bkg clamp convolution dispersive
-			edgestep fft file fit gnuplot indicator interpolation
-			lcf marker merge operations pca peakfit plot rebin
-			smooth whiteline xanes)]);
+  my $config = Demeter::UI::Wx::Config->new($this, \&target, $::app->{main});
+  $config->populate($app->{main}->{prefgroups});
   $box->Add($config, 1, wxGROW|wxALL, 5);
   $config->{params}->Expand($config->{params}->GetRootItem);
 
@@ -52,7 +49,7 @@ sub target {
       last SWITCH;
     };
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Athena::demeter->plot_with($value);
+      Demeter->plot_with($value);
       last SWITCH;
     };
     ($param eq 'rmax_out') and do {

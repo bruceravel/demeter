@@ -36,8 +36,6 @@ use File::Spec;
 use List::Util qw(first sum);
 use Demeter::Constants qw($EPSILON2);
 
-my $demeter = $Demeter::UI::Artemis::demeter;
-
 sub new {
   my ($class, $parent) = @_;
   my ($w, $h) = $parent->GetSizeWH;
@@ -52,7 +50,7 @@ sub new {
   #my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
 
   my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
-				[$x+$Demeter::UI::Artemis::demeter->co->default("artemis", "plot_frame_x"),$yy], wxDefaultSize,
+				[$x+Demeter->co->default("artemis", "plot_frame_x"),$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   #$this -> SetBackgroundColour( Wx::Colour->new(0,255,0,0));
   #$this -> SetBackgroundColour( Wx::SystemSettings::GetColour(wxSYS_COLOUR_WINDOW) );
@@ -78,7 +76,7 @@ sub new {
   foreach my $b ('k_button', 'r_button', 'q_button') {
     $buttonbox -> Add($this->{$b}, 1, wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
-    $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
+    $this->{$b} -> SetBackgroundColour(Wx::Colour->new(Demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
   EVT_BUTTON($this, $this->{k_button},   sub{plot(@_, 'k')});
@@ -93,10 +91,10 @@ sub new {
 				       [0, 1, 2, 3, 'kw'],
 				       1, wxRA_SPECIFY_ROWS);
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
-  $this->{kweight}->SetSelection($demeter->co->default('plot', 'kweight'));
+  $this->{kweight}->SetSelection(Demeter->co->default('plot', 'kweight'));
   $this->mouseover("kweight", "Select a value of k-weight to use when plotting data.");
   #$this->{kweight}->Enable(4, 0);
-  $demeter->po->kweight($demeter->co->default('plot', 'kweight'));
+  Demeter->po->kweight(Demeter->co->default('plot', 'kweight'));
   EVT_RADIOBOX($this, $this->{kweight},
 	       sub{
 		 my ($self, $event) = @_;
@@ -206,10 +204,10 @@ sub set_kweight {
     };
     ## check to see if plotted items all have the same arbitrary k-weight
     my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
-    $demeter->po->kweight($kweights[0]);
-    $demeter->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+    Demeter->po->kweight($kweights[0]);
+    Demeter->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
   } else {
-    $demeter->po->kweight($kw);
+    Demeter->po->kweight($kw);
   };
 };
 
@@ -218,62 +216,62 @@ sub fetch_parameters {
 
   $self->set_kweight($how);
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
-    $demeter->po->$p($self->{limits}->{$p}->GetValue || 0);
+    Demeter->po->$p($self->{limits}->{$p}->GetValue || 0);
   };
 
-  #   $demeter->po->plot_fit($self->{limits}->{fit}       ->GetValue);
-  #   $demeter->po->plot_bkg($self->{limits}->{background}->GetValue);
-  #   $demeter->po->plot_win($self->{limits}->{window}    ->GetValue);
-  #   $demeter->po->plot_res($self->{limits}->{residual}  ->GetValue);
-  #   $demeter->po->plot_run($self->{limits}->{running}   ->GetValue);
+  #   Demeter->po->plot_fit($self->{limits}->{fit}       ->GetValue);
+  #   Demeter->po->plot_bkg($self->{limits}->{background}->GetValue);
+  #   Demeter->po->plot_win($self->{limits}->{window}    ->GetValue);
+  #   Demeter->po->plot_res($self->{limits}->{residual}  ->GetValue);
+  #   Demeter->po->plot_run($self->{limits}->{running}   ->GetValue);
 
-  $demeter->po->stackdo   ($self->{stack}->{dostack}  ->GetValue);
-  $demeter->po->stackstart($self->{stack}->{start}    ->GetValue || 0);
-  $demeter->po->stackinc  ($self->{stack}->{increment}->GetValue || 0);
-  $demeter->po->stackdata ($self->{stack}->{offset}   ->GetValue || 0);
+  Demeter->po->stackdo   ($self->{stack}->{dostack}  ->GetValue);
+  Demeter->po->stackstart($self->{stack}->{start}    ->GetValue || 0);
+  Demeter->po->stackinc  ($self->{stack}->{increment}->GetValue || 0);
+  Demeter->po->stackdata ($self->{stack}->{offset}   ->GetValue || 0);
   my $val = ($self->{stack}->{invert}->GetStringSelection eq 'Never')  ? 0
           : ($self->{stack}->{invert}->GetStringSelection =~ m{Only})  ? 2
           :                                                              1;
-  $demeter->po->invert_paths($val);
+  Demeter->po->invert_paths($val);
 };
 
 sub populate {
   my ($self) = @_;
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
-    $self->{limits}->{$p}->SetValue($demeter->po->$p);
+    $self->{limits}->{$p}->SetValue(Demeter->po->$p);
   };
-  $self->{kweight}->SetSelection($demeter->po->kweight);
-  my $val = ($demeter->po->r_pl eq 'm') ? 0
-          : ($demeter->po->r_pl eq 'r') ? 1
+  $self->{kweight}->SetSelection(Demeter->po->kweight);
+  my $val = (Demeter->po->r_pl eq 'm') ? 0
+          : (Demeter->po->r_pl eq 'r') ? 1
 	  :                               2;
   $self->{limits}->{rpart}      -> SetSelection($val);
-  $val    = ($demeter->po->q_pl eq 'm') ? 0
-          : ($demeter->po->q_pl eq 'r') ? 1
+  $val    = (Demeter->po->q_pl eq 'm') ? 0
+          : (Demeter->po->q_pl eq 'r') ? 1
 	  :                               2;
   $self->{limits}->{qpart}      -> SetSelection($val);
-  $self->{limits}->{fit}        -> SetValue($demeter->po->plot_fit);
-  $self->{limits}->{background} -> SetValue($demeter->po->plot_bkg);
-  $self->{limits}->{window}     -> SetValue($demeter->po->plot_win);
-  $self->{limits}->{residual}   -> SetValue($demeter->po->plot_res);
-  $self->{limits}->{running}    -> SetValue($demeter->po->plot_run);
+  $self->{limits}->{fit}        -> SetValue(Demeter->po->plot_fit);
+  $self->{limits}->{background} -> SetValue(Demeter->po->plot_bkg);
+  $self->{limits}->{window}     -> SetValue(Demeter->po->plot_win);
+  $self->{limits}->{residual}   -> SetValue(Demeter->po->plot_res);
+  $self->{limits}->{running}    -> SetValue(Demeter->po->plot_run);
 
-  $self->{stack} ->{dostack}    -> SetValue($demeter->po->stackdo);
-  $self->{stack} ->{start}      -> SetValue($demeter->po->stackstart);
-  $self->{stack} ->{increment}  -> SetValue($demeter->po->stackinc);
-  $self->{stack} ->{offset}     -> SetValue($demeter->po->stackdata);
-  $self->{stack} ->{invert}     -> SetSelection($demeter->po->invert_paths);
+  $self->{stack} ->{dostack}    -> SetValue(Demeter->po->stackdo);
+  $self->{stack} ->{start}      -> SetValue(Demeter->po->stackstart);
+  $self->{stack} ->{increment}  -> SetValue(Demeter->po->stackinc);
+  $self->{stack} ->{offset}     -> SetValue(Demeter->po->stackdata);
+  $self->{stack} ->{invert}     -> SetSelection(Demeter->po->invert_paths);
 };
 
 sub plot {
   my ($self, $event, $space) = @_;
   return if ($space !~ m{[krq]}i);
   my $busy = Wx::BusyCursor->new();
-  my $saveplot = $demeter->co->default(qw(plot plotwith));
+  my $saveplot = Demeter->co->default(qw(plot plotwith));
   if ($self->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $::app->{main}->status("Saving plot to a file has been canceled.");
@@ -282,10 +280,10 @@ sub plot {
     };
     ## set up for SingleFile backend
     my $file = $fd->GetPath;
-    $self->{fileout}->SetValue(0), return
-      if $self->overwrite_prompt($file, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
-    $demeter->plot_with('singlefile');
-    $demeter->po->file($file);
+    #$self->{fileout}->SetValue(0), return
+    #  if $self->overwrite_prompt($file, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    Demeter->plot_with('singlefile');
+    Demeter->po->file($file);
   };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $Demeter::UI::Artemis::frames{GDS}->reset_all if (not $Demeter::UI::Artemis::frames{GDS}->{uptodate});
@@ -302,8 +300,8 @@ sub plot {
   };
 
   $list[0]->data->standard if $self->{fileout}->GetValue;
-  $demeter->po->space($space);
-  $demeter->po->start_plot;
+  Demeter->po->space($space);
+  Demeter->po->start_plot;
 
   my $invert_r = (    (lc($space) eq 'r')
 		  and ($self->{stack}->{invert}->GetStringSelection !~ m{Never})
@@ -378,9 +376,9 @@ sub plot {
   $Demeter::UI::Artemis::frames{main}->status("Plotted in $space");
   ## restore plotting backend if this was a plot to a file
   if ($self->{fileout}->GetValue) {
-    $demeter->po->finish;
-    $Demeter::UI::Artemis::frames{main}->status("Saved plot to file \"" . $demeter->po->file . "\".");
-    $demeter->plot_with($saveplot);
+    Demeter->po->finish;
+    $Demeter::UI::Artemis::frames{main}->status("Saved plot to file \"" . Demeter->po->file . "\".");
+    Demeter->plot_with($saveplot);
     $self->{fileout}->SetValue(0);
   };
   $self->{last} = $space;
@@ -423,14 +421,14 @@ sub image {
   $format = 'pngcairo' if $format eq 'png';
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save image file", cwd, join('.', $name, $suffix),
 				"$suffix (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				wxFD_OVERWRITE_PROMPT|wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving image canceled.");
     return;
   };
   my $file = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   Demeter->po->image($file, $format);
 
   if ($self->{lastplot} =~ m{\A[krq]\z}i) {

@@ -25,7 +25,7 @@ use Regexp::Assemble;
 use Fcntl qw(:flock);
 use List::Util qw(sum);
 use List::MoreUtils qw(any);
-use String::Random qw(random_string);
+use Math::Random;
 use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
@@ -126,7 +126,7 @@ sub module_environment {
 		     Regexp::Assemble
 		     Regexp::Common
 		     Heap::Fibonacci
-		     String::Random
+		     Math::Random
 		     Text::Template
 		     Tree::Simple
 		     YAML::Tiny
@@ -312,6 +312,12 @@ sub slash {
   return (Demeter->is_windows) ? '\\' : '/';
 };
 
+sub winpath {
+  my ($class, $string) = @_;
+  $string =~ s{\\}{\\\\}g if Demeter->is_windows;
+  return $string;
+};
+
 ## this is an exported function
 sub distance {
   my $self = shift;
@@ -383,8 +389,14 @@ sub fract {
 sub randomstring {
   my ($self, $length) = @_;
   $length ||= 6;
-  return random_string('c' x $length);
+  my $rs = q{};
+  foreach (1..$length) {
+    $rs .= chr(int(26*random_uniform)+97);
+  };
+  return $rs;
 };
+##use String::Random
+##random_string('c' x $length);
 
 sub ifeffit_heap {
   my ($self, $length) = @_;
@@ -491,6 +503,15 @@ sub pjoin {
   local $|=1;
   print join("|", @stuff) . $/;
   return join("|", @stuff) . $/;
+};
+
+sub unistrip {
+  my ($self, $string) = @_;
+  my $noutf = q{};		# remove coloration characters
+  foreach (split(//, $string)) {
+    $noutf .= $_ if ord($_) < 257;
+  };
+  return $noutf;
 };
 
 sub Touch {
@@ -711,7 +732,7 @@ Dump a string into a file.
 
 =item C<randomstring>
 
-Return a rendom character string using  C<random_string> from L<String::Random>.
+Return a rendom character string using random numbers from L<Math::Random>
 
   $string = Demeter->randomstring($length);
 
@@ -737,6 +758,14 @@ Print an ANSI-colorized stack trace to STDOUT from any location.
 Write stuff to the screen in an ugly but easy to read manner.
 
   Demeter->pjoin($this, $that, @and_the_other);
+
+=item C<unistrip>
+
+Remove non-ASCII characters from a string.  This simple, blunt hammer
+is used to save just the text without the coloration from Athena's
+status bar buffer.
+
+  my $no_utf = Demeter->unistrip($text);
 
 =item C<Touch>
 

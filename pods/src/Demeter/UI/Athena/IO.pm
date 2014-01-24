@@ -7,6 +7,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
+use Demeter::UI::Wx::VerbDialog;
 #use Xray::XDI;
 
 use Cwd;
@@ -38,14 +39,14 @@ sub Export {
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save project file", cwd, q{athena.prj},
 				  "Athena project (*.prj)|*.prj|All files (*)|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
+				  wxFD_OVERWRITE_PROMPT|wxFD_SAVE|wxFD_CHANGE_DIR, # 
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving project canceled.");
       return;
     };
     $fname = $fd->GetPath;
-    return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $busy = Wx::BusyCursor->new();
@@ -91,6 +92,15 @@ sub Import {
     @files = $fd->GetPaths;
   };
 
+  if (Demeter->is_ifeffit and ($#files > 49)) {
+    my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						 "That number of files may overextened Ifeffit's statically allocated memory.  It may be wise to make projects of fewer than 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.",
+						 "Lots of files!",
+						 "Continue importing");
+    my $response = $yesno -> ShowModal;
+    return if $response == wxID_NO;
+  };
+
   my $verbose = 0;
   ## also xmu.dat
   ## evkev?
@@ -113,7 +123,7 @@ sub Import {
       ## this fall through to the plugin
     };
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
-    if ($Demeter::UI::Athena::demeter->is_prj($file,$verbose)) {
+    if (Demeter->is_prj($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
     } else {
@@ -126,17 +136,24 @@ sub Import {
 	  return;
 	};
 	$stashfile = ($plugin) ? $plugin->fixed : $file;
-	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
-	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
-	      : ($plugin and ($plugin->output eq 'list'))                ? 'list'
-              : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
-              :                                                            '???';
+	$type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
+	      : ($plugin and ($plugin->output eq 'project')) ? 'prj'
+	      : ($plugin and ($plugin->output eq 'list'))    ? 'list'
+              : (Demeter->dd->is_data($file,$verbose))           ? 'raw'
+              :                                                '???';
       };
     };
     if ($type eq '???') {
-      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
-      my $response = $md -> ShowModal;
-      return if $response == wxID_CANCEL;
+
+      my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
+						   "Could not read \"$file\" as either data or a project file.\n\nDo you need to enable a plugin?",
+						   "Import warning",
+						   "Continue importing");
+
+
+#      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $yesno -> ShowModal;
+      return if $response == wxID_NO;
       next;
     };
     if ($plugin) {
@@ -181,6 +198,12 @@ sub Import {
   };
   #$app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->OnGroupSelect($app->{main}->{list}->GetSelection, 0, 0);
+  if (Demeter->is_ifeffit and
+      (Demeter->co->default('athena', 'save_alert') > 0) and
+      ($app->{main}->{list}->GetCount > Demeter->co->default('athena', 'too_many_groups'))) {
+    $app->{main}->{save}->SetBackgroundColour(Wx::Colour->new(255, 0, 0));
+    $app->{main}->status("With so much data, you run a risk of exceeding Ifeffit's static memory.  Consider starting a new project.", "alert");
+  };
   return;
 };
 
@@ -530,7 +553,7 @@ sub _data {
 # 2: $colsel, Pointer to the column selection frame
 # 3: $data, Pointer to the main Data object (as opposed to the refernece)
 # 4: $yaml: the yaml containing the column selection persistence
-# 5: $file: the actual file being read, stashfile for a pluhgin, original file otherwise
+# 5: $file: the actual file being read, stashfile for a plugin, original file otherwise
 # 6: $orig: the fully resolved original file
 # 7: $repeated: oddly, 1 if this is the first pass through, 0 for subsequent files in multiple file import
 # 8: $noalign: doesn't seem to be used
@@ -556,7 +579,7 @@ sub _group {
     if ($ret->is_ok) {
       $app->{main}->status("Rebinning ". $data->name);
       my $rebin  = $data->rebin(\%hash);
-      foreach my $att (qw(energy numerator denominator ln name)) {
+      foreach my $att (qw(energy numerator denominator ln name columns)) {
 	$rebin->$att($data->$att);
       };
       $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
@@ -826,14 +849,14 @@ sub save_column {
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data", cwd, $base.$suff,
 				"$desc data (*$suff)|*$suff|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving column data canceled.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data->save($out, $fname);
   $app->{main}->status("Saved $desc data to $fname");
 };
@@ -848,6 +871,10 @@ sub save_marked {
   };
   if (not @data) {
     $app->{main}->status("Saving marked canceled. There are no marked groups.");
+    return;
+  };
+  if (Demeter->is_ifeffit and ($#data > 90)) {
+    $app->{main}->status("Saving marked canceled. You have marked too many groups for Ifeffit.");
     return;
   };
 
@@ -874,14 +901,14 @@ sub save_marked {
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
 				"$desc data (*$suff)|*$suff|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving column data for marked groups canceled.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data[0]->save_many($fname, $how, @data);
   $app->{main}->status("Saved $desc data for marked groups to $fname");
 };
@@ -933,14 +960,14 @@ sub FPath {
   (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
   my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.es',
 				"epirical standards (*.es)|*.es|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving empirical standard from current group canceled.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
   my $scatterer = q{};
   $app->{main}->{popup}  = Demeter::UI::Wx::PeriodicTableDialog->new($app->{main}, -1, "Select scattering element", sub{$scatterer = $_[0]; $app->{main}->{popup}->Destroy;});

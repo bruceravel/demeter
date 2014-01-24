@@ -165,13 +165,6 @@ ScatteringPath object that was collapsed into this one.</p></dd>
 		<dd><p>This is the fuzzy path length.  It is set to the average of the
 lengths of the nearly degenerate paths.  For truly degenerate paths,
 the half length and the fuzzy length will be the same.</p></dd>
-	<dt><code>random_string</code></dt>
-		<dd><p>A 12-character string generated each time the <code>pathsdat</code> method is
-called.  The first 9 characters are random, the last three are <cite>.sp</cite>.
-This is used to name <cite>feffNNNN.dat</cite> files which are generated from a
-ScatteringPath object and assures that filename collisions will never
-happen, even when rerunning feff calculations or combining results
-from two or more feff calculations.</p></dd>
 </dl>
 
 
@@ -189,7 +182,7 @@ my this class.</p>
 <dd><pre>  print join(&quot; &quot;, $sp -&gt; attributes), $/;
     ==prints==&gt;
        nleg string heapvalue group nkey weight etanonzero rleg fs
-       degeneracies n random_string beta eta feff halflength fuzzy type
+       degeneracies n randstring beta eta feff halflength fuzzy type
 
 </pre></dd>	<dt><code>savelist</code></dt>
 		<dd><p>This returns a list containing the subset of all ScatteringPath object
@@ -197,7 +190,7 @@ attributes that need to be saved when a Feff calculation is serialized.</p></dd>
 <dd><pre>  print join(&quot; &quot;, $sp -&gt; savelist), $/;
     ==prints==&gt;
        nleg string group nkey weight etanonzero rleg fs degeneracies
-       n random_string beta eta halflength fuzzy type
+       n randstring beta eta halflength fuzzy type
 
 </pre></dd></dl>
 <h2 id="Evaluation_methods">Evaluation methods</h2>

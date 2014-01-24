@@ -63,7 +63,6 @@ use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
 use Regexp::Assemble;
-use String::Random qw(random_string);
 use Text::Template;
 use Xray::Absorption;
 Xray::Absorption->load('elam');
@@ -519,9 +518,9 @@ sub is_true {
 ## surely this could be more efficient than a plunder search!
 sub _get_group {
   my ($self) = @_;
-  my $propose = random_string('ccccc');
+  my $propose = Demeter->randomstring(5);
   while ($seen_group{$propose}) {
-    $propose = random_string('ccccc');
+    $propose = Demeter->randomstring(5);
   };
   ++$seen_group{$propose};
   return $propose;

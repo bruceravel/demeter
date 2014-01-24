@@ -59,7 +59,7 @@ sub make_text {
               : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'
               : ($line =~ m{\A\s+\.\.\.})                                                                ? 'header'
 	      :                                                                                            'normal';
-    $color = 'normal' if ((not $Demeter::UI::Artemis::demeter->co->default("artemis", "happiness"))
+    $color = 'normal' if ((not Demeter->co->default("artemis", "happiness"))
 			  and ($color eq 'stats'));
     #local $|=1;
     #print join("|", $was, $is, $color), $/;

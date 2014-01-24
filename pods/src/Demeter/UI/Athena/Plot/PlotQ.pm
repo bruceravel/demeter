@@ -86,35 +86,35 @@ sub new {
   $app->mouseover($this->{win}, "Plot the k-space window function when ploting the current group in filtered k-space.");
 
   SWITCH: {
-      ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'm') and do {
+      (Demeter->co->default("plot", "q_pl") eq 'm') and do {
 	$this->{mag} ->SetValue(1);
 	$this->{mmag}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'e') and do {
+      (Demeter->co->default("plot", "q_pl") eq 'e') and do {
 	$this->{env} ->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'r') and do {
+      (Demeter->co->default("plot", "q_pl") eq 'r') and do {
 	$this->{re} ->SetValue(1);
 	$this->{mre}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'i') and do {
+      (Demeter->co->default("plot", "q_pl") eq 'i') and do {
 	$this->{im} ->SetValue(1);
 	$this->{mim}->SetValue(1);
 	last SWITCH;
       };
-      ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'p') and do {
+      (Demeter->co->default("plot", "q_pl") eq 'p') and do {
 	$this->{pha} ->SetValue(1);
 	$this->{mpha}->SetValue(1);
 	last SWITCH;
       };
     };
 
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) )
     foreach (qw(mag env re im pha win));
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "marked")) )
     foreach (qw(mmag mre mim mpha));
 
   #$hbox -> Add(0, 0, 1);
@@ -127,12 +127,12 @@ sub new {
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, [35,-1]);
-  $this->{qmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmin"),
+  $this->{qmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "qmin"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{qmin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, [35,-1]);
-  $this->{qmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmax"),
+  $this->{qmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "qmax"),
 				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{qmax}, 1, wxRIGHT, 10);
@@ -161,20 +161,27 @@ sub label {
 
 sub pull_single_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
 
   my $qmin = $this->{qmin}-> GetValue;
   my $qmax = $this->{qmax}-> GetValue;
+  ($qmin,$qmax) = sort {$a <=> $b} ($qmin,$qmax);
   $::app->{main}->status(q{}, 'nobuffer');
-  $qmin = 0,  $::app->{main}->status("qmin is not a number", 'error|nobuffer') if not looks_like_number($qmin);
-  $qmax = 15, $::app->{main}->status("qmax is not a number", 'error|nobuffer') if not looks_like_number($qmax);
+  if (not looks_like_number($qmin)) {
+    $qmin = Demeter->co->default('plot','qmin');
+    $::app->{main}->status("qmin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($qmax)) {
+    $qmax = Demeter->co->default('plot','qmax');
+    $::app->{main}->status("qmax is not a number", 'error|nobuffer');
+  };
   $po->qmin($qmin);
   $po->qmax($qmax);
 };
 
 sub pull_marked_values {
   my ($this) = @_;
-  my $po = $Demeter::UI::Athena::demeter->po;
+  my $po = Demeter->po;
   my $val = ($this->{mmag} -> GetValue) ? 'm'
           : ($this->{mre}  -> GetValue) ? 'r'
           : ($this->{mim}  -> GetValue) ? 'i'
@@ -184,9 +191,16 @@ sub pull_marked_values {
 
   my $qmin = $this->{qmin}-> GetValue;
   my $qmax = $this->{qmax}-> GetValue;
+  ($qmin,$qmax) = sort {$a <=> $b} ($qmin,$qmax);
   $::app->{main}->status(q{}, 'nobuffer');
-  $qmin = 0,  $::app->{main}->status("qmin is not a number", 'error|nobuffer') if not looks_like_number($qmin);
-  $qmax = 15, $::app->{main}->status("qmax is not a number", 'error|nobuffer') if not looks_like_number($qmax);
+  if (not looks_like_number($qmin)) {
+    $qmin = Demeter->co->default('plot','qmin');
+    $::app->{main}->status("qmin is not a number", 'error|nobuffer');
+  };
+  if (not looks_like_number($qmax)) {
+    $qmax = Demeter->co->default('plot','qmax');
+    $::app->{main}->status("qmax is not a number", 'error|nobuffer');
+  };
   $po->qmin($qmin);
   $po->qmax($qmax);
 };

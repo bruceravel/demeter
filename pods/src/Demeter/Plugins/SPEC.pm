@@ -12,9 +12,6 @@ use Carp;
 use Scalar::Util qw(looks_like_number);
 use File::Path qw(remove_tree);
 
-use String::Random qw(random_string);
-
-
 sub is {
   my ($self) = @_;
   open D, $self->file or $self->Croak("could not open " . $self->file . " as data (SPEC)\n"); 
@@ -33,7 +30,7 @@ sub fix {
 	## make a folder below the stash folder to hold the different scans in the SNBL file
 	## here I have chosen to use a random, six-character string for the folder name
 	## this MUST be a place that can be safely discarded
-  $self->folder(File::Spec->catfile($self->stash_folder, 'SPEC'.random_string('cccccc')));
+  $self->folder(File::Spec->catfile($self->stash_folder, 'SPEC'.Demeter->randomstring(6)));
   unless( mkdir $self->folder ) {
        die "Unable to create $self->folder\n";
   }
@@ -46,7 +43,7 @@ sub fix {
   open D, $file or die "could not open $file as data (fix in SPEC)\n";
   
   my $new = File::Spec->catfile($self->folder, $self->filename.'.'.1);
-  ($new = File::Spec->catfile($self->folder, random_string('cccccc').'.'.'dat')) if (length($new) > 127);
+  ($new = File::Spec->catfile($self->folder, Demeter->randomstring(6).'.'.'dat')) if (length($new) > 127);
   open N, ">".$new or die "could not write to $new (fix in SPEC)\n";
 
   my @list = ();
@@ -65,7 +62,7 @@ sub fix {
 	close N;
 	push @list, $new;
 	$new = File::Spec->catfile($self->folder, $self->filename.'.'.$scan_no);
-	 ($new = File::Spec->catfile($self->folder, random_string('cccccc').'.'.'dat')) if (length($new) > 127);
+	 ($new = File::Spec->catfile($self->folder, Demeter->randomstring(6).'.'.'dat')) if (length($new) > 127);
 	open N, ">".$new or die "could not write to $new (fix in SPEC)\n";
 	$header=1;
 	print N $orig_fileline, $/;

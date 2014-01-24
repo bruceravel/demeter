@@ -316,7 +316,7 @@ sub _update_from_ScatteringPath {
   $self -> make_name if not $self->name;
 
   my $tempfile = "feff" . $self->co->default('pathfinder', 'one_off_index') . ".dat";
-  $fname ||= $sp->random_string;
+  $fname ||= $sp->randstring;
   move(File::Spec->catfile($workspace, $tempfile),
        File::Spec->catfile($workspace, $fname));
   $self->set(folder => $workspace,

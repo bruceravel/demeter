@@ -27,11 +27,10 @@ use base 'Demeter::UI::Wx::Config';
 
 sub new {
   my ($class, $page, $echoarea) = @_;
-  my $self = $class->SUPER::new($page, \&target);
+  my $top = $page->GetParent->GetParent; ## (really!)
+  my $self = $class->SUPER::new($page, \&target, $top);
   $self->{echo} = $echoarea;
-  my @list = ('hephaestus', 'plot');
-  push @list, 'gnuplot' if (Demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
-  $self->populate(\@list);
+  $self->populate($top->{prefgroups});
   $self->{params}->Expand($self->{params}->GetRootItem);
 
   return $self;

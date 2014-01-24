@@ -1,0 +1,636 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Handling dopants in Feff</title>
+    <link rel="stylesheet" href=../artug.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/fuzzy.html" class="menu">Fuzzy degeneracy</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Artemis logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menu">Crystallography for EXAFS</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/bvs.html"  class="menu">Bond valence sums</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Handling dopants</span><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Handling dopants in Feff
+</h1>
+
+<hr class=hide />
+<a name="overview">
+
+<h2>  Overview</h2>
+</a>
+
+<p>
+
+This section is adapted from the answer to  a <a href="http://cars9.uchicago.edu/ifeffit/FAQ/FeffitModeling#How_do_I_handle_doped_materials.3F_Why_doesn.27t_Atoms_handle_doped_materials.3F">Frequently Asked Question</a>
+at the Ifeffit Wiki.
+</p>
+
+<p>
+<span class=program>ATOMS</span> is, except in extremely contrived situations, not capable of
+writing a proper <span class=file>feff.inp</span> file for a doped
+material.  This is not a programming shortcoming of <span class=program>ATOMS</span> (or its
+author!), but a number theoretic limitation imposed by the physical
+model used by <span class=program>FEFF</span>.
+</p>
+
+<p>
+In the <span class=file>feff.inp</span> file, there is a big list of
+atomic coordinates. The reason that people like using <span class=program>ATOMS</span> is
+because, without <span class=program>ATOMS</span>, it is a pain in the ass to generate that
+list. The virtue of <span class=program>ATOMS</span> is that it automates that annoying task for
+a certain class of matter, i.e. crystals.
+</p>
+
+<p>
+<span class=program>FEFF</span> expects a point in space to be either unoccupied or occupied by a
+specific atom. A given point may be occupied neither by a fraction of
+an atom nor by two different kinds of atoms.
+</p>
+
+<p>
+Let's use a very simple example -- gold doped into FCC
+copper. In FCC copper, there are 12 atoms in the first shell. If the
+level of doping was, say, 25 percent , then <span class=program>ATOMS</span> could reasonably
+select 3 of the 12 nearest neighbors at random and replace them with
+gold atoms. However, what should <span class=program>ATOMS</span> do with the second shell,
+which contains 6 atoms? 25 percent of 6 is 1.5. <span class=program>FEFF</span> does not
+allow a site to be half occupied by an atomic species, thus <span class=program>ATOMS</span>
+would have to decide either to over-dope or under-dope the second
+shell.
+</p>
+
+<p>
+This problem only gets worse if the doping fraction is not a rational
+fraction, if the material is non-isotropic, or if the material has
+multiple sites that the dopant might want to go to.
+</p>
+
+<p>
+Because <span class=program>ATOMS</span> cannot solve this problem correctly except in the
+most contrived of situations, its author decided that <span class=program>ATOMS</span> would
+not attempt to solve it in any situation. If you specify dopants in
+<span class=program>ATOMS</span>' input data, the list in the <span class=file>feff.inp</span> file will be be made as if there are no dopants.
+</p>
+
+<p>
+This leads to two big questions:
+</p>
+
+
+<ol>
+  
+<li><p>
+Why would dopants be allowed in <span class=program>ATOMS</span> in any capacity?
+</p></li>
+<li><p>
+How does one deal with XAS of a doped sample? 
+</p></li>
+</ol>
+
+<p>
+
+The first question is the easy one. At the programming level in
+<span class=program>DEMETER</span>, <span class=program>ATOMS</span> can do other things besides generating
+<span class=file>feff.inp</span> files.  Calculations involving
+tables of absorption coefficients, simulations of powder diffraction,
+and simulations of DAFS spectra could all effectively use of the
+dopant information.  In <span class=program>ARTEMIS</span> you will notice that there is not
+even a column for specifying occupancy -- in <span class=program>ARTEMIS</span> occupancy can
+only be 1.
+</p>
+
+<p>
+The second question is the tricky one and the answer is somewhat
+different for EXAFS as for XANES.  The bottom line is that you need to
+be creative and willing to run <span class=program>FEFF</span> more than once.
+</p>
+
+<p>
+The best approach to simulating a XANES spectrum on a doped material
+that I am aware of also involves running <span class=program>FEFF</span> many times.  One
+problem a colleague of mine asked me about some time ago was the
+situation of oxygen vacancies in Au2O3. After some discussion, the
+solution we came up with was to use <span class=program>ATOMS</span> to generate the
+<span class=file>feff.inp</span> for the pure material.  This fellow
+then wrote a little computer program that would read in the <span class=file>feff.inp</span> file, randomly remove oxygen atoms from the
+list, write the <span class=file>feff.inp</span> file back out with
+the missing oxygens, and run <span class=program>FEFF</span>. He would do this repeatedly,
+each time replacing a different set of randomly selected atoms and
+each time saving the result.  This set of computed spectra was then
+averaged.  New calculations were made and added to the running average
+until the result stopped changing.  If I remember, it took about 10
+calculations to converge.
+</p>
+
+<p>
+This random substitution approach would work just as well for dopants
+as for vacancies. 
+</p>
+
+
+<hr class=hide />
+<a name="crystaldatawithpartialoccupancy">
+
+<h2>  Crystal data with partial occupancy</h2>
+</a>
+
+<p>
+
+A structure for the mineral zirconolite, CaZrTi<sub>2</sub>O<sub>7</sub>, was
+published as
+H. J. Rossell, <em>Nature</em>, <strong>283</strong>, 
+(1980) p.&nbsp;282--283<a href="http://dx.doi.org/10.1038/283282a0"> (DOI: 10.1038/283282a0)</a>.  In that paper, significant site swapping was found between the
+site occupied by Zr and one of the Ti sites.  Consequently, the CIF
+file is published with partial occupancies for those tow sites. 
+<a href="http://www.crystallography.net/9009220.html">Here is the CIF file</a>.
+</p>
+
+<p>
+When this CIF file is imported into <span class=program>ARTEMIS</span>, you see this error
+message:
+</p>
+
+
+<div class=figure style="max-width: 599px; min-width: 7em;">
+<a name=feff_atoms_partical_occupancy>
+<img src=../../images/feff_atoms_partical_occupancy.png width=100%>
+</a>
+<p align=center>
+<span class=program>ATOMS</span> responds with an error message for crystal data with partial occupancy.
+</p>
+</div>
+
+<p>
+
+To use this crystal data in <span class=program>ARTEMIS</span>, you need to edit the CIF file
+before importing it to remove the examples of partial occupancy.
+Change the last loop from this:
+</p>
+
+
+<pre>
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+CaM1 0.37180 0.12450 0.49520 1.00000
+ZrM2 0.12250 0.12220 -0.02580 0.93000
+TiM2 0.12250 0.12220 -0.02580 0.07000
+TiM3 0.24980 0.12230 0.74650 1.00000
+TiM4 0.50000 0.05500 0.25000 0.86000
+ZrM4 0.50000 0.05500 0.25000 0.14000
+TiM5 0.00000 0.12700 0.25000 1.00000
+O1 0.31000 0.13300 0.27500 1.00000
+O2 0.47000 0.14600 0.10200 1.00000
+O3 0.19700 0.08300 0.57300 1.00000
+O4 0.40300 0.17400 0.71900 1.00000
+O5 0.70200 0.16900 0.59000 1.00000
+O6 -0.00100 0.11100 0.41400 1.00000
+O7 0.11900 0.05500 0.78800 1.00000
+</pre>
+
+<p>
+
+to this:
+</p>
+
+
+<pre>
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+CaM1 0.37180 0.12450 0.49520 1.00000
+ZrM2 0.12250 0.12220 -0.02580 1.00000
+TiM3 0.24980 0.12230 0.74650 1.00000
+TiM4 0.50000 0.05500 0.25000 1.00000
+TiM5 0.00000 0.12700 0.25000 1.00000
+O1 0.31000 0.13300 0.27500 1.00000
+O2 0.47000 0.14600 0.10200 1.00000
+O3 0.19700 0.08300 0.57300 1.00000
+O4 0.40300 0.17400 0.71900 1.00000
+O5 0.70200 0.16900 0.59000 1.00000
+O6 -0.00100 0.11100 0.41400 1.00000
+O7 0.11900 0.05500 0.78800 1.00000
+</pre>
+
+<p>
+
+To analyze your data while considering the partical occupancy, try one
+of the techniques discussed in the following section.
+</p>
+
+
+
+<hr class=hide />
+<a name="dopedcrystalandalloys">
+
+<h2>  Doped crystal and alloys</h2>
+</a>
+
+<p>
+ 
+This section is adapted from text <a href="http://cars9.uchicago.edu/ifeffit/Doped">posted by Scott
+Calvin</a> to the Ifeffit Wiki and retains his voice.
+</p>
+
+<p>
+For samples which are doped crystals, there are a couple of methods
+people have used. For purposes of this article, I'll consider
+cases where the dopant is substitutional as opposed to interstitial
+(maybe someone could edit this article to include that case?).
+</p>
+
+<p>
+As an example of two methods, let's consider FeS<sub>2</sub>
+substitutionally doped with molybdenum. (I have no idea if such a
+material is possible...I'm using it because FeS<sub>2</sub> is included
+as an example in the <span class=program>DEMETER</span> distrribution.)
+</p>
+
+
+<hr class=hide />
+<a name="method1">
+
+<h4>  Method 1</h4>
+</a>
+
+
+<p>
+ 
+Run atoms for FeS<sub>2</sub>.
+</p>
+
+<p>
+Now look at the <span class=file>feff.inp</span> file that is
+generated.  Under &ldquo;Potentials&rdquo;, it says the
+following:
+</p>
+
+
+<pre>
+ POTENTIALS
+ *    ipot   Z  element
+        0   26   Fe        
+        1   26   Fe        
+        2   16   S  
+</pre>
+
+<p>
+ 
+Add another line for the Mo, which is atomic number 42 (the atomic
+number is <strong>required</strong>): 
+</p>
+
+
+<pre>
+ POTENTIALS
+ *    ipot   Z  element
+        0   26   Fe        
+        1   26   Fe        
+        2   16   S     
+        3   42   Mo
+</pre>
+
+
+<p>
+ 
+<strong>Important</strong>: Do not skip numbers in the &ldquo;ipot&rdquo; column, and make sure &ldquo;0&rdquo; is the absorber!
+</p>
+
+<p>
+Next, take the list following the word &ldquo;ATOMS&rdquo; in the <span class=file>feff.inp</span> file,
+and arbitrarily change roughly the right number of iron atoms to moly
+atoms. Make sure to change the &ldquo;ipot&rdquo; column to match...it's the part
+feff will actually use:
+</p>
+
+
+
+
+<pre>
+ ATOMS                          * this list contains 71 atoms
+ *   x          y          z      ipot  tag              distance
+    0.00000    0.00000    0.00000  0    Fe1              0.00000
+    2.07514    0.62686    0.62686  2    S1_1             2.25657
+    0.62686   -2.07514    0.62686  2    S1_1             2.25657
+   -0.62686    0.62686    2.07514  2    S1_1             2.25657
+   -0.62686    2.07514   -0.62686  2    S1_1             2.25657
+   -2.07514   -0.62686   -0.62686  2    S1_1             2.25657
+    0.62686   -0.62686   -2.07514  2    S1_1             2.25657
+   -3.32886    0.62686    0.62686  2    S1_2             3.44488
+    0.62686    3.32886    0.62686  2    S1_2             3.44488
+    0.62686   -0.62686    3.32886  2    S1_2             3.44488
+    3.32886   -0.62686   -0.62686  2    S1_2             3.44488
+   -0.62686   -3.32886   -0.62686  2    S1_2             3.44488
+   -0.62686    0.62686   -3.32886  2    S1_2             3.44488
+   -2.07514   -2.07514    2.07514  2    S1_3             3.59425
+    2.07514    2.07514   -2.07514  2    S1_3             3.59425
+    2.70200    2.70200    0.00000  1    Fe1_1            3.82121
+   -2.70200    2.70200    0.00000  3    Mo1_1            3.82121
+    2.70200   -2.70200    0.00000  1    Fe1_1            3.82121
+   -2.70200   -2.70200    0.00000  1    Fe1_1            3.82121
+    2.70200    0.00000    2.70200  1    Fe1_1            3.82121
+   -2.70200    0.00000    2.70200  3    Mo1_1            3.82121
+    0.00000    2.70200    2.70200  1    Fe1_1            3.82121
+    0.00000   -2.70200    2.70200  1    Fe1_1            3.82121
+    2.70200    0.00000   -2.70200  1    Fe1_1            3.82121
+   -2.70200    0.00000   -2.70200  3    Mo1_1            3.82121
+    0.00000    2.70200   -2.70200  1    Fe1_1            3.82121
+    0.00000   -2.70200   -2.70200  1    Fe1_1            3.82121
+   -2.07514    3.32886    2.07514  2    S1_4             4.43776
+</pre>
+
+
+<p>
+ 
+In this case, I changed 3 of the 12 nearest iron neighbors into
+moly...reasonable if I have about 25 percent doping. 
+</p>
+
+<p>
+If you are doing a <span class=program>FEFF</span> calculation for the moly <em>edge</em>, then also change the very first iron to moly, and change
+potential 0 in the ipot list to moly with ipot 0.  
+</p>
+
+
+<pre>
+ POTENTIALS
+ *    ipot   Z  element
+        0   42   Mo        
+        1   26   Fe        
+        2   16   S
+        3   43   Mo        
+
+ ATOMS                          * this list contains 71 atoms
+ *   x          y          z      ipot  tag              distance
+    0.00000    0.00000    0.00000  0    Mo1              0.00000
+    2.07514    0.62686    0.62686  2    S1_1             2.25657
+    0.62686   -2.07514    0.62686  2    S1_1             2.25657
+   -0.62686    0.62686    2.07514  2    S1_1             2.25657
+   -0.62686    2.07514   -0.62686  2    S1_1             2.25657
+</pre>
+
+<p>
+ 
+If you are doing the calculation for the iron edge, leave the first
+iron alone, since it is still the absorber. 
+</p>
+
+<p>
+Now run <span class=program>FEFF</span>, and you'll get the iron scattering paths
+listed separately from the moly scattering paths.
+</p>
+
+<p>
+One more step ... correcting for the actual doping fraction. Suppose
+there is actual 20 percent moly and not 25 percent, as we implied. We
+couldn't have handled that just through feff, because we
+can't change exactly 20 percent of 12 atoms...we have to change
+2, which is 17 percent, or 3, which is 25 percent.
+</p>
+
+<p>
+The fix for this is to change the S&sup2;&#8320; in the moly and sulfur
+scattering paths to account for this. You could, for example, use the
+following GDS parameters:  
+</p>
+
+
+
+<pre>
+set: MolyPercent = 0.20
+def: IronPercent = 1-MolyPercent
+</pre>
+
+<p>
+ 
+Then go to the individual path representing the scattering off of
+nearest neighbor moly, and assign it an S&sup2;&#8320; of  
+</p>
+
+
+<pre>
+amp*MolyPercent/(3/12)
+</pre>
+
+<p>
+ 
+That way, if the MolyPercent is 20 percent, it will reduce the
+amplitude of those paths by 20/25 percent, as is proper.
+</p>
+
+<p>
+Of course, the iron scatterer would get an S&sup2;&#8320; of 
+</p>
+
+
+<pre>
+amp*IronPercent/(9/12)
+</pre>
+
+<p>
+ 
+That's more or less it!
+</p>
+
+<p>
+You could, of course, guess the <tt>MolyPercent</tt> instead of setting it, if
+for some reason it was unknown in your sample.  
+</p>
+
+
+
+<hr class=hide />
+<a name="method2">
+
+<h4>  Method 2</h4>
+</a>
+
+
+<p>
+ 
+Suppose we want to analyze the iron edge.
+</p>
+
+<p>
+Run atoms for FeS<sub>2</sub> and then run <span class=program>FEFF</span>.
+</p>
+
+<p>
+Then make a new <span class=program>ATOMS</span> page, type or read in the FeS<sub>2</sub> file, and
+just change the Fe to Mo. Run <span class=program>ATOMS</span> again.
+</p>
+
+<p>
+If you're doing the iron edge, then change the absorber to iron
+in the <span class=file>feff.inp</span> file (this requires changing
+the potential list; see the description under "Method 1" for how to do
+this.) Run <span class=program>FEFF</span>.
+</p>
+
+<p>
+(If you want to analyze the moly edge, then of course you change the
+<span class=file>feff.inp</span> file in the first calculation to
+moly and leave it as moly in the second.)
+</p>
+
+<p>
+You now have <strong>two</strong> sets of <span class=program>FEFF</span> files
+associated with one data set.
+</p>
+
+<p>
+Make GDS parameters:
+</p>
+
+
+<pre>
+set: MolyPercent = 0.20
+def: IronPercent = 1-MolyPercent
+</pre>
+
+<p>
+ 
+Now make the S&sup2;&#8320; for all paths calculated with the original <span class=program>ATOMS</span> file:
+</p>
+
+
+<pre>
+amp*IronPercent
+</pre>
+
+<p>
+ 
+and for all paths calculatged with the new <span class=program>ATOMS</span> file:
+</p>
+
+
+<pre>
+amp*MolyPercent
+</pre>
+
+<p>
+ 
+Again, you can guess the <tt>MolyPercent</tt> if it's unknown. 
+</p>
+
+
+<hr class=hide />
+<a name="discussionofthesetwomethods">
+
+<h4>  Discussion of these two methods</h4>
+</a>
+
+<p>
+ 
+Which method you use is largely a matter of taste. The first method is
+easier to screw up, since there's a lot of counting involved. On the
+other hand, it generates many fewer paths, and thus makes for smaller
+files and may fit faster (you're not wasting time and effort counting
+sulfur paths twice, for example). The first method also gives you the
+potential of finding a few multiple scattering paths that involve both
+iron and moly (in this example) that you can't probe at all by the
+second method. This is most likely to be true when the dopant is in
+low concentrations but is high-Z...it's possible that there may be a
+moly-iron multiple-scattering path that is significant, and it's not
+going to be modeled so well by the weighted average of iron-iron and
+moly-moly paths used in method 2. But the price for this is that
+properly incorporating multiple-scattering paths via method 1 requires
+an annoying amount of counting and thinking. 
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2014 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2014 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

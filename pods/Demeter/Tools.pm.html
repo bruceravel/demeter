@@ -185,7 +185,7 @@ significant digits beyond the decimal.</p></dd>
 <dd><pre>  $demeter_object -&gt; write_file($file, $string);
 
 </pre></dd>	<dt><code>randomstring</code></dt>
-		<dd><p>Return a rendom character string using  <code>random_string</code> from <a href="http://search.cpan.org/perldoc?String%3A%3ARandom">String::Random</a>.</p></dd>
+		<dd><p>Return a rendom character string using random numbers from <a href="http://search.cpan.org/perldoc?Math%3A%3ARandom">Math::Random</a></p></dd>
 <dd><pre>  $string = Demeter-&gt;randomstring($length);
 
 </pre></dd>		<dd><p>The resulting string will be <code>$length</code> characters long.  If not
@@ -203,6 +203,12 @@ will be pretty-printed;</p></dd>
 </pre></dd>	<dt><code>pjoin</code></dt>
 		<dd><p>Write stuff to the screen in an ugly but easy to read manner.</p></dd>
 <dd><pre>  Demeter-&gt;pjoin($this, $that, @and_the_other);
+
+</pre></dd>	<dt><code>unistrip</code></dt>
+		<dd><p>Remove non-ASCII characters from a string.  This simple, blunt hammer
+is used to save just the text without the coloration from Athena's
+status bar buffer.</p></dd>
+<dd><pre>  my $no_utf = Demeter-&gt;unistrip($text);
 
 </pre></dd>	<dt><code>Touch</code></dt>
 		<dd><p>This is a wrapper around the <code>touch</code> method from <a href="http://search.cpan.org/perldoc?File%3A%3ATouch">File::Touch</a>.</p></dd>

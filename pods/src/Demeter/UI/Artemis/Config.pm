@@ -31,10 +31,9 @@ sub new {
   EVT_CLOSE($this, \&on_close);
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
-  my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate([sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
-			     file histogram bft fit interpolation bkg fspath lcf warnings gds
-			     operations)]);
+  my $config = Demeter::UI::Wx::Config->new($this, \&target, $parent);
+
+  $config->populate($parent->{prefgroups});
 
 
   $config->{params}->Expand($config->{params}->GetRootItem);
@@ -59,7 +58,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Artemis::demeter->plot_with($value);
+      Demeter->plot_with($value);
       last SWITCH;
     };
     ($param eq 'rmax_out') and do {

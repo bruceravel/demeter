@@ -78,14 +78,14 @@ sub on_save {
   (my $pref = $self->{name}) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save status buffer", cwd, q{echo.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Not saving status buffer to log file.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_log($fname);
 };
 
@@ -97,7 +97,7 @@ sub on_clear {
 sub save_log {
   my ($self, $fname) = @_;
   open (my $LOG, '>',$fname);
-  print $LOG $self->{text}->GetValue;
+  print $LOG Demeter->unistrip($self->{text}->GetValue);
   close $LOG;
   $::app->{main}->status("Wrote status log file to '$fname'.");
 };

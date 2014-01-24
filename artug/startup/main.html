@@ -140,6 +140,44 @@ hide a window containing the log from the most recent fit.
 
 </ol>
 
+<hr class=hide />
+<a name="filedraganddrop">
+
+<h3>  File drag and drop</h3>
+</a>
+
+<p>
+
+The data set and <span class=program>FEFF</span> calculation area on the main window, areas 4 and
+5 above, are drop targets for files dragged from your computer's
+file manager.
+</p>
+
+<ul>
+  
+<li><p>
+You can drop <span class=program>ATHENA</span> project files (<span class=file>.prj</span>) onto the data set area.  To import data from some other
+source, you are required to use the File menu. 
+</p></li>
+<li><p>
+You can drop CIF, <span class=program>ATOMS</span> input, or <span class=program>FEFF</span> input files onto the
+<span class=program>FEFF</span> calculation area.
+</p></li>
+<li><p>
+You can drop an <span class=program>ARTEMIS</span> project file (<span class=file>.fpj</span>)
+onto either of the data set and <span class=program>FEFF</span> calculation areas.  To import
+old-style artemis project files or <span class=program>DEMETER</span> serializations, you are
+required to use the File menu. 
+</p></li>
+</ul>
+<p>
+
+You can only drag and drop one file at a time.  If you try to drag
+more than one of any file type, a warning will be issued in the status
+bar and no import will happen.  Similarly, you may not drop a folder.
+</p>
+
+
 
 <hr class=hide />
 <a name="mainmenubar">
@@ -193,6 +231,8 @@ to which to save the current
 state of the project.
 &ldquo;Save current fit&rdquo; will save a project file
 containing only the current fit, without any of the history.
+These project files are the sort that can be dragged from your
+computer's file manager onto the data or <span class=program>FEFF</span> list.
 </p></li>
 <li><p>
 The &ldquo;import&rdquo; submenu is used to specify the
@@ -359,6 +399,9 @@ recorded in the buffer.
 
 <p>
 
+</td>
+<td width=484>
+<a class=floatright href="../../images/datalist.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../../images/datalist.png"  title="The Artemis Users' Guide"  alt="datalist.png"></a>
 The data list starts off with a single control, which is used to
 import data into your fitting project.  Clicking the 
 &ldquo;Add&rdquo; button will open the standard file selection
@@ -367,16 +410,13 @@ file selection dialog is used; on Linux, the standard Gnome file
 selection dialog is used; and so on.
 </p>
 
-
 <p>
-
-</td>
-<td width=484>
-<a class=floatright href="../../images/datalist.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../../images/datalist.png"  title="The Artemis Users' Guide"  alt="datalist.png"></a>
 The standard manner of importing data into <span class=program>ARTEMIS</span> is to use an
 <span class=program>ATHENA</span> project file.  Thus the file selection dialog will, by
 default, look for files with the <span class=file>.prj</span>
-extension. 
+extension.  You may also drag <span class=file>.prj</span> files
+from your computer's file manager and drop them onto the data
+list. 
 </p>
 
 <p>
@@ -511,6 +551,13 @@ displayed on screen.  <a href="../feff/index.html">See the Atoms/Feff chapter.</
 as for the data list.  In this case, the list will contain recetnly
 imported <span class=program>ATOMS</span>, <span class=program>FEFF</span>, or CIF files.
 </p>
+
+<p>
+You may also drag CIF, <span class=program>ATOMS</span> input, or <span class=program>FEFF</span> input files
+from your computer's file manager and drop them onto the <span class=program>FEFF</span>
+list. 
+</p>
+
 
 
 

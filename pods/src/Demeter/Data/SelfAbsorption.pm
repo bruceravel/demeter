@@ -97,6 +97,11 @@ sub sa_troger {
   my @mua = ();
   my $abs = ucfirst( lc(get_symbol($self->bkg_z)) );
   my $amuabs = Xray::Absorption -> get_atomic_weight($abs);
+  ## @mua contains the array of absorption due to the excitation
+  ## process of the absorber, $muabelow subtracts off an estimate of
+  ## the absorption due to lower energy processes
+  my $ebelow = Xray::Absorption -> get_energy($abs, $self->fft_edge) - 200;
+  my $muabelow = Xray::Absorption -> cross_section($abs, $ebelow);
   foreach my $kk (@k) {
     my ($barns, $amu) = (0,0);
     ## note that care is taken to avoid a mismatch between the edge
@@ -110,7 +115,7 @@ sub sa_troger {
       $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
     };
     ## 1 amu = 1.6607143 x 10^-24 gm
-    push @mua, $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
+    push @mua, $count{$abs} * (Xray::Absorption -> cross_section($abs, $e)-$muabelow) / $amu / 1.6607143;
     push @mut, $barns / $amu / 1.6607143;
   };
   $self->place_array("s___a.mut", \@mut);
@@ -163,6 +168,8 @@ sub sa_booth {
   my @mua = ();
   my $abs = ucfirst( lc(get_symbol($self->bkg_z)) );
   my $amuabs = Xray::Absorption -> get_atomic_weight($abs);
+  my $ebelow = Xray::Absorption -> get_energy($abs, $self->fft_edge) - 200;
+  my $muabelow = Xray::Absorption -> cross_section($abs, $ebelow);
   foreach my $kk (@k) {
     my ($barns, $amu) = (0,0);
     ## see the note in sa_troger about energy values
@@ -172,7 +179,7 @@ sub sa_booth {
       $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
     };
     ## 1 amu = 1.6607143 x 10^-24 gm
-    push @mua, $density * $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
+    push @mua, $density * $count{$abs} * (Xray::Absorption -> cross_section($abs, $e)-$muabelow) / $amu / 1.6607143;
     push @mut, $density * $barns / $amu / 1.6607143;
   };
   $self->place_array("s___a.mut", \@mut);
@@ -569,6 +576,8 @@ Patches are welcome.
 Bruce Ravel (bravel AT bnl DOT gov)
 
 L<http://bruceravel.github.io/demeter/>
+
+With help from Dan Olive and Corwin Booth
 
 =head1 LICENCE AND COPYRIGHT
 

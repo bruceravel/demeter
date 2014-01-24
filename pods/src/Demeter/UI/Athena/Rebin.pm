@@ -20,7 +20,6 @@ my $tcsize = [60,-1];
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
-  my $demeter = $Demeter::UI::Athena::demeter;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
@@ -66,7 +65,7 @@ sub new {
   $this->{abs}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   $this->{edge}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
-    my $value = $demeter->co->default('rebin', $w) || $demeter->co->demeter('rebin', $w);
+    my $value = Demeter->co->default('rebin', $w) || Demeter->co->demeter('rebin', $w);
     $this->{$w}  = Wx::TextCtrl->new($this, -1, $value, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
     my $re = ($w eq 'emin') ? qr([-0-9.]) : qr([0-9.]);
     $this->{$w} -> SetValidator( Wx::Perl::TextValidator->new( $re ) );

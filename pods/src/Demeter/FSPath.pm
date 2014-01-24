@@ -25,8 +25,6 @@ use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use File::Spec;
 use List::MoreUtils qw(uniq zip);
-use String::Random qw(random_string);
-
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
@@ -84,7 +82,7 @@ has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'quick first shell SS');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
-has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
+has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{Demeter->randomstring(8).'.sp'});
 
 has 'use_third'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'use_fourth' => (is => 'rw', isa => 'Bool',   default => 0);

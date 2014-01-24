@@ -65,15 +65,15 @@ const my $PMRE => quotemeta($PM) . '\s*.*';
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
 my %gridcolors = (
-		  guess	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','guess_color'   )),
-		  def	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','def_color'     )),
-		  set	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','set_color'     )),
-		  lguess   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','lguess_color'  )),
-		  skip	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','skip_color'    )),
-		  restrain => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','restrain_color')),
-		  after	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','after_color'   )),
-		  penalty  => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','penalty_color' )),
-		  merge	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','merge_color'   )),
+		  guess	   => Wx::Colour->new(Demeter->co->default('gds','guess_color'   )),
+		  def	   => Wx::Colour->new(Demeter->co->default('gds','def_color'     )),
+		  set	   => Wx::Colour->new(Demeter->co->default('gds','set_color'     )),
+		  lguess   => Wx::Colour->new(Demeter->co->default('gds','lguess_color'  )),
+		  skip	   => Wx::Colour->new(Demeter->co->default('gds','skip_color'    )),
+		  restrain => Wx::Colour->new(Demeter->co->default('gds','restrain_color')),
+		  after	   => Wx::Colour->new(Demeter->co->default('gds','after_color'   )),
+		  penalty  => Wx::Colour->new(Demeter->co->default('gds','penalty_color' )),
+		  merge	   => Wx::Colour->new(Demeter->co->default('gds','merge_color'   )),
 		 );
 my %explain = (#                                                                                                                V
 	       guess	 => "A parameter that is varied in the fit",
@@ -367,7 +367,7 @@ sub set_highlight {
     if (($name =~ $re) or ($mathexp =~ m{\b$re\b})) {
       ## set GDS object highlighted attribute to 1 -- do I *really* need to do this...
       foreach my $col (0 .. $grid->GetNumberCols) {
-	$grid->SetCellBackgroundColour($row, $col, Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','highlight_color')));
+	$grid->SetCellBackgroundColour($row, $col, Wx::Colour->new(Demeter->co->default('gds','highlight_color')));
       };
     };
   };
@@ -510,14 +510,14 @@ sub export {
   my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
-				"Text file|*.txt|All files (*)|*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				"Text file|*.txt|All files (*)|*", wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->status("Parameter export aborted.");
     return 0;
   } else {
     my $file = $fd->GetPath;
-    return if $parent->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+    #return if $parent->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
     open(my $PARAM, '>'.$file);
     foreach my $row (0 .. $grid->GetNumberRows-1) {
       my $thisgds = $parent->tie_GDS_to_grid($row);

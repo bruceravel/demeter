@@ -26,15 +26,14 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use Chemistry::Elements qw(get_symbol);
 use File::Copy;
 use File::Spec;
-use String::Random qw(random_string);
 use Demeter::Constants qw($PI);
 
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'three body scattering');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
-has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'},
+has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{Demeter->randomstring(9).'.sp'},
 		     alias => 'dsstring');
-has 'tsstring'   => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
+has 'tsstring'   => (is => 'rw', isa => 'Str',    default => sub{Demeter->randomstring(9).'.sp'});
 has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum',    default => 0.1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 

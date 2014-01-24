@@ -87,6 +87,7 @@ sub group {
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+  $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1 if Demeter->is_windows;
   $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
 					   wxDefaultPosition, [95,12], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
@@ -436,7 +437,7 @@ sub fft {
   $gbs -> Add($this->{fit_karb_value_label}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
   $gbs -> Add($this->{fit_karb_value},       Wx::GBPosition->new(1,2), Wx::GBSpan->new(1,3));
   $gbs -> Add($this->{fft_pc},               Wx::GBPosition->new(1,5), Wx::GBSpan->new(1,4));
-  $this->{fft_kwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("fft", "kwindow")));
+  $this->{fft_kwindow}->SetStringSelection($this->window_name(Demeter->co->default("fft", "kwindow")));
   push @fft_parameters, qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc);
 
   $fftboxsizer -> Add($gbs, 0, wxLEFT, 5);
@@ -506,7 +507,7 @@ sub bft {
   						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
   $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(0,8));
   $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(0,9), Wx::GBSpan->new(1,3));
-  $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
+  $this->{bft_rwindow}->SetStringSelection($this->window_name(Demeter->co->default("bft", "rwindow")));
 
   $bftboxsizer -> Add($gbs, 0, wxLEFT, 5);
 
@@ -795,7 +796,7 @@ sub zero_values {
     next if ($w eq 'file');
     next if ($w eq 'bkg_rbkg');
     $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{SpinCtrl});
-    $this->{$w}->SetValue($Demeter::UI::Athena::demeter->dd->$w) if (ref($this->{$w}) =~ m{TextCtrl});
+    $this->{$w}->SetValue(Demeter->dd->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{CheckBox});
   };
   $this->{bkg_z}         -> SetValue(sprintf "%-2d: %s", 1, 'Hydrogen');

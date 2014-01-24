@@ -29,7 +29,6 @@ use File::Path;
 use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(minmax);
-use String::Random qw(random_string);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
@@ -378,9 +377,9 @@ sub write_report {
   my $param = $self->{params}->GetStringSelection;
   (my $pp = $param) =~ s{_}{\\_}g;
   if ($param eq 'Statistcal parameters') {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_stats'));
+    $self->{report}->AppendText(Demeter->template('report', 'report_head_stats'));
   } else {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_param', {param=>$param}));
+    $self->{report}->AppendText(Demeter->template('report', 'report_head_param', {param=>$param}));
   };
   my @x = ();
   foreach my $i (0 .. $self->{list}->GetCount-1) {
@@ -409,16 +408,16 @@ sub write_report {
   my ($xmin, $xmax) = minmax(@x);
   my $delta = ($xmax-$xmin)/5;
   ($xmin, $xmax) = ($xmin-$delta, $xmax+$delta);
-  $Demeter::UI::Artemis::demeter->po->start_plot;
-  my $tempfile = $Demeter::UI::Artemis::demeter->po->tempfile;
+  Demeter->po->start_plot;
+  my $tempfile = Demeter->po->tempfile;
   open my $T, '>'.$tempfile;
   print $T $self->{report}->GetValue;
   close $T;
   if ($param eq 'Statistcal parameters') {
     my $col = $self->{plotas}->GetSelection + 2;
-    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue});
+    Demeter->chart('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue});
   } else {
-    $Demeter::UI::Artemis::demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue});
+    Demeter->chart('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue});
   };
   $self->status("Reported on $param");
 };
@@ -448,14 +447,14 @@ sub savereport {
   my ($self, $event) = @_;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, "report.txt",
 				"Text files (*.txt)|*.txt",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Not saving report.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   open my $R, '>', $fname;
   print $R $self->{report}->GetValue;
   close $R;
@@ -553,14 +552,14 @@ sub savelog {
   (my $pref = $fit->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Not saving log file.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $self->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $fit->logfile($fname);
   $self->status("Wrote log file to '$fname'.");
 };
@@ -569,7 +568,7 @@ sub export {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
 
-  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . random_string('cccccccc'));
+  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . Demeter->randomstring(8));
   my $fit = $self->{list}->GetIndexedData($position);
   my $name = $fit->name;
 
@@ -577,13 +576,13 @@ sub export {
   $fname =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save $name project file", cwd, $fname,
 				"Artemis project (*.fpj)|*.fpj|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT);
   if ($fd->ShowModal == wxID_CANCEL) {
     $self->status("Saving project canceled.");
     return;
   };
   $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
   mkpath($newfolder,0);
 
@@ -625,7 +624,7 @@ sub export {
 
   rmtree($newfolder,0);
 
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  Demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
 
   $self->status("exported $name as $fname");

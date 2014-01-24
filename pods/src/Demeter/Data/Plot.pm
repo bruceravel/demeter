@@ -745,8 +745,9 @@ sub quadplot {
   #$self -> po -> e_markers(0);
   #$self -> po -> e_bkg(1);
 
-  my $string = $self->template("plot", "quad");
-  $self -> dispose($string, 'plotting');
+  #my $string = $self->template("plot", "quad");
+  #$self -> dispose($string, 'plotting');
+  $self -> chart("plot", "quad");
 
 
   # $self -> po -> title('energy');

@@ -24,7 +24,6 @@ use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 my @parts = ('Magnitude', 'Real', 'Imag.');
-my $demeter = $Demeter::UI::Artemis::demeter;
 
 sub new {
   my ($class, $parent) = @_;
@@ -33,27 +32,27 @@ sub new {
   my $szr = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- plotting part for chi(R)
-  #if ($demeter->co->default('artemis', 'plot_phase')) {
+  #if (Demeter->co->default('artemis', 'plot_phase')) {
   #  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, [@parts, 'Phase', 'Der(Phase)'], 3, wxRA_SPECIFY_COLS);
   #} else {
   $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, \@parts, 1, wxRA_SPECIFY_ROWS);
   #};
   my $which = 0;
-  ($which = 1) if ($demeter->co->default("plot", "r_pl") eq 'r');
-  ($which = 2) if ($demeter->co->default("plot", "r_pl") eq 'i');
+  ($which = 1) if (Demeter->co->default("plot", "r_pl") eq 'r');
+  ($which = 2) if (Demeter->co->default("plot", "r_pl") eq 'i');
   $this->{rpart} -> SetSelection($which);
   $szr -> Add($this->{rpart}, 0, wxGROW|wxALL, 5);
 
   ## -------- plotting part for chi(q)
   $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(q)", wxDefaultPosition, wxDefaultSize, \@parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 1;
-  ($which = 0) if ($demeter->co->default("plot", "q_pl") eq 'm');
-  ($which = 2) if ($demeter->co->default("plot", "q_pl") eq 'i');
+  ($which = 0) if (Demeter->co->default("plot", "q_pl") eq 'm');
+  ($which = 2) if (Demeter->co->default("plot", "q_pl") eq 'i');
   $this->{qpart} -> SetSelection($which);
   $szr -> Add($this->{qpart}, 0, wxGROW|wxALL, 5);
 
-  $demeter->po->r_pl($demeter->co->default("plot", "r_pl"));
-  $demeter->po->q_pl($demeter->co->default("plot", "q_pl"));
+  Demeter->po->r_pl(Demeter->co->default("plot", "r_pl"));
+  Demeter->po->q_pl(Demeter->co->default("plot", "q_pl"));
   EVT_RADIOBOX($this, $this->{rpart}, sub{OnChoice(@_, 'rpart', 'r_pl')});
   EVT_RADIOBOX($this, $this->{qpart}, sub{OnChoice(@_, 'qpart', 'q_pl')});
   $this->mouseover("rpart", "Choose the part of the complex $CHI(R) function to display when plotting the contents of the plotting list.");
@@ -66,22 +65,22 @@ sub new {
 
   $this->{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
   $gbs -> Add($this->{fit}, Wx::GBPosition->new(0,0));
-  $demeter->po->plot_fit(0);
+  Demeter->po->plot_fit(0);
   $this->{background} = Wx::CheckBox->new($this, -1, "Plot bkg");
   $gbs -> Add($this->{background}, Wx::GBPosition->new(0,1));
-  $demeter->po->plot_bkg(0);
+  Demeter->po->plot_bkg(0);
 
   $this->{window} = Wx::CheckBox->new($this, -1, "Plot window");
   $gbs -> Add($this->{window}, Wx::GBPosition->new(1,0));
   $this->{window} -> SetValue(1);
-  $demeter->po->plot_win(1);
+  Demeter->po->plot_win(1);
   $this->{residual} = Wx::CheckBox->new($this, -1, "Plot residual");
   $gbs -> Add($this->{residual}, Wx::GBPosition->new(1,1));
-  $demeter->po->plot_res(0);
+  Demeter->po->plot_res(0);
 
   $this->{running} = Wx::CheckBox->new($this, -1, "Plot running R-factor");
   $gbs -> Add($this->{running}, Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
-  $demeter->po->plot_run(0);
+  Demeter->po->plot_run(0);
 
   EVT_CHECKBOX($this, $this->{fit},        sub{OnPlotToggle(@_, 'fit',        'plot_fit')});
   EVT_CHECKBOX($this, $this->{background}, sub{OnPlotToggle(@_, 'background', 'plot_bkg')});
@@ -104,34 +103,34 @@ sub new {
   my %po;
 
   $label    = Wx::StaticText->new($this, -1, "kmin");
-  $this->{kmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmin"),
+  $this->{kmin} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "kmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,1));
   $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
   $label    = Wx::StaticText->new($this, -1, "kmax");
-  $this->{kmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmax"),
+  $this->{kmax} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "kmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,3));
   $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
 
   $label    = Wx::StaticText->new($this, -1, "rmin");
-  $this->{rmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmin"),
+  $this->{rmin} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "rmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,1));
   $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
   $label    = Wx::StaticText->new($this, -1, "rmax");
-  $this->{rmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmax"),
+  $this->{rmax} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "rmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,3));
   $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
 
   $label    = Wx::StaticText->new($this, -1, "qmin");
-  $this->{qmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmin"),
+  $this->{qmin} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "qmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,1));
   $gbs     -> Add($this->{qmin}, Wx::GBPosition->new(2,2));
   $label    = Wx::StaticText->new($this, -1, "qmax");
-  $this->{qmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmax"),
+  $this->{qmax} = Wx::TextCtrl  ->new($this, -1, Demeter->co->default("plot", "qmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,3));
   $gbs     -> Add($this->{qmax}, Wx::GBPosition->new(2,4));
@@ -171,19 +170,19 @@ sub mouseover {
 
 sub OnPlotToggle {
   my ($this, $event, $button, $accessor) = @_;
-  $demeter->po->$accessor($this->{$button}->GetValue);
+  Demeter->po->$accessor($this->{$button}->GetValue);
   my $plotframe = $Demeter::UI::Artemis::frames{Plot};
   $plotframe->plot($event, $plotframe->{last});
 };
 sub OnChoice {
   my ($this, $event, $choice, $accessor) = @_;
-  $demeter->po->dphase(0);
+  Demeter->po->dphase(0);
   my $part = lc(substr($this->{$choice}->GetStringSelection, 0, 1));
   if ($part eq 'd') {
-    $demeter->po->dphase(1);
+    Demeter->po->dphase(1);
     $part = 'p';
   };
-  $demeter->po->$accessor($part);
+  Demeter->po->$accessor($part);
   my $plotframe = $Demeter::UI::Artemis::frames{Plot};
   my $space = substr($choice, 0, 1);
   $plotframe->plot($event, $space);

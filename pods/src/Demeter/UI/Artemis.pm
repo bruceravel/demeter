@@ -31,6 +31,8 @@ use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
+use Demeter::UI::Artemis::DataDropTarget;
+use Demeter::UI::Artemis::FeffDropTarget;
 
 use Demeter::UI::Wx::VerbDialog;
 
@@ -46,7 +48,6 @@ use File::Spec;
 use List::MoreUtils qw(any zip);
 use Scalar::Util qw(blessed);
 
-use String::Random qw(random_string);
 use YAML::Tiny;
 
 use Wx qw(:everything);
@@ -117,7 +118,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($demeter $buffer $plotbuffer $artemis_base $icon $nset $noautosave %frames %fit_order);
+use vars qw($buffer $plotbuffer $artemis_base $icon $nset $noautosave %frames %fit_order);
 $fit_order{order}{current} = 0;
 $nset = 0;
 $artemis_base = identify_self();
@@ -133,12 +134,11 @@ my %hints = (
 
 sub OnInit {
   my ($app) = @_;
-  $demeter = Demeter->new;
-  $demeter -> set_mode(backend=>1, screen=>0);
-  $demeter -> mo -> ui('Wx');
-  $demeter -> mo -> identity('Artemis');
-  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
-  $demeter -> po -> space('R');
+  Demeter -> set_mode(backend=>1, screen=>0);
+  Demeter -> mo -> ui('Wx');
+  Demeter -> mo -> identity('Artemis');
+  Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
+  Demeter -> po -> space('R');
 
   ## -------- import all of Artemis' various parts
   foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {
@@ -164,6 +164,10 @@ sub OnInit {
   $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
   $frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
+  $app->{main}->{prefgroups} = [sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
+					file histogram bft fit interpolation bkg fspath lcf warnings gds
+					operations)];
+
 
   ## -------- Set up menubar
   my $bar      = Wx::MenuBar->new;
@@ -249,7 +253,7 @@ sub OnInit {
   $feedbackmenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $feedbackmenu->AppendSubMenu($showmenu,  "Show ".Demeter->backend_name." ...",  'Show variables from '.Demeter->backend_name);
   $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools');
-    ##if ($demeter->co->default("artemis", "debug_menus"));
+    ##if (Demeter->co->default("artemis", "debug_menus"));
   $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity") if (not Demeter->is_larch);
 
   #my $settingsmenu = Wx::Menu->new;
@@ -278,7 +282,7 @@ sub OnInit {
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $feedbackmenu,  "&Monitor" );
   $bar->Append( $fitmenu,       "Fi&t" );
-  $bar->Append( $plotmenu,      "Plot" ) if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot');
+  $bar->Append( $plotmenu,      "Plot" ) if (Demeter->co->default('plot', 'plotwith') eq 'gnuplot');
   $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
@@ -312,7 +316,7 @@ sub OnInit {
 
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.");
+  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.  Drag and drop Athena or Artemis project files.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
   $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -322,6 +326,8 @@ sub OnInit {
   $frames{main}->{datalist} = $datalist;
   $frames{main}->{databox}  = $datavbox;
   EVT_RIGHT_UP($frames{main}->{newdata}, \&OnDataRightClick);
+
+  $databox->SetDropTarget( Demeter::UI::Artemis::DataDropTarget->new( $databox ) );
 
 
   ## -------- Feff box
@@ -337,7 +343,7 @@ sub OnInit {
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.");
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.  Drag and drop Feff/Atoms/CIF files.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -347,6 +353,9 @@ sub OnInit {
   $frames{main}->{fefflist} = $fefflist;
   $frames{main}->{feffbox}  = $feffvbox;
   EVT_RIGHT_UP($frames{main}->{newfeff}, \&OnFeffRightClick);
+
+  $feffbox->SetDropTarget( Demeter::UI::Artemis::FeffDropTarget->new( $feffbox ) );
+
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -375,9 +384,9 @@ sub OnInit {
   map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
   $hname  -> Add(Wx::StaticLine->new($frames{main}, -1, wxDefaultPosition, [4,-1], wxLI_VERTICAL),   0, wxGROW|wxLEFT|wxRIGHT, 7);
   $hname  -> Add($savebutton,   0, wxLEFT|wxRIGHT, 3);
-  $fitspace[0]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'k');
-  $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
-  $fitspace[2]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'q');
+  $fitspace[0]->SetValue(1) if (Demeter->co->default("fit", "space") eq 'k');
+  $fitspace[1]->SetValue(1) if (Demeter->co->default("fit", "space") eq 'r');
+  $fitspace[2]->SetValue(1) if (Demeter->co->default("fit", "space") eq 'q');
 
   mouseover($fitspace[0], "Evaluate the fitting metric in k-space.");
   mouseover($fitspace[1], "Evaluate the fitting metric in R-space.");
@@ -395,7 +404,7 @@ sub OnInit {
 
   $frames{main}->{fitbutton}  = Wx::Button->new($frames{main}, -1, "F&it", wxDefaultPosition, wxDefaultSize);
   $frames{main}->{fitbutton} -> SetForegroundColour(Wx::Colour->new("#000000"));
-  $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
+  $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new(Demeter->co->default("happiness", "average_color")));
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
   mouseover($frames{main}->{fitbutton}, "Start the fit.");
@@ -442,15 +451,15 @@ sub OnInit {
 		   });
 
   ## -------- disk space to hold this project
-  my $this = '_dem_' . random_string('cccccccc');
-  my $project_folder = File::Spec->catfile($demeter->stash_folder, $this);
+  my $this = '_dem_' . Demeter->randomstring(8);
+  my $project_folder = File::Spec->catfile(Demeter->stash_folder, $this);
   $frames{main}->{project_folder} = $project_folder;
   mkpath($project_folder,0);
 
-  my $readme = File::Spec->catfile($demeter->share_folder, "Readme.fit_serialization");
+  my $readme = File::Spec->catfile(Demeter->share_folder, "Readme.fit_serialization");
   my $target = File::Spec->catfile($project_folder, "Readme");
   copy($readme, $target);
-  chmod(0666, $target) if $demeter->is_windows;
+  chmod(0666, $target) if Demeter->is_windows;
 
   my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
   $frames{main}->{order_file} = $orderfile;
@@ -463,14 +472,14 @@ sub OnInit {
   $frames{main}->{plot_folder} = File::Spec->catfile($frames{main}->{project_folder}, 'plot');
   mkpath($frames{main}->{plot_folder}, 0);
 
-  $frames{main}->{autosave_file} = File::Spec->catfile($demeter->stash_folder, $this.'.autosave');
+  $frames{main}->{autosave_file} = File::Spec->catfile(Demeter->stash_folder, $this.'.autosave');
   #Demeter->Touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
   ## display Ifeffit/Larch commands in the buffer window
-  $demeter->set_mode(callback     => \&ifeffit_buffer,
-		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+  Demeter->set_mode(callback     => \&ifeffit_buffer,
+		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
 		     feedback     => \&feedback,
 		    );
 
@@ -480,7 +489,7 @@ sub OnInit {
 
 sub process_argv {
   my ($app, @args) = @_;
-  if ($demeter->co->default("artemis", "autosave") and autosave_exists()) {
+  if (Demeter->co->default("artemis", "autosave") and autosave_exists()) {
     import_autosave();
   } elsif ($args[0]) { # and -e $args[0]) {
     my $file = File::Spec->rel2abs( $args[0] );
@@ -516,7 +525,7 @@ sub on_close {
   $frames{main}->{cvcount} = 0;
   rmtree($self->{project_folder}); #, {verbose=>1});
   unlink $frames{main}->{autosave_file};
-  $demeter->mo->destroy_all;
+  Demeter->mo->destroy_all;
   foreach my $f (keys(%frames)) {
     #print '>', $f, '<', $/;
     #next if ($f !~ m{Demeter});
@@ -529,7 +538,7 @@ sub on_close {
 
 #sub OnExit {
 #  my ($self, $event) = @_;
-#  $demeter->mo->destroy_all;
+#  Demeter->mo->destroy_all;
 #  $event->Skip(1);
 #};
 
@@ -539,16 +548,16 @@ sub on_about {
   my $info = Wx::AboutDialogInfo->new;
 
   $info->SetName( 'Artemis' );
-  #$info->SetVersion( $demeter->version );
-  $info->SetDescription( "EXAFS analysis using Feff and ".$demeter->backend_name );
-  $info->SetCopyright( $demeter->identify );
+  #$info->SetVersion( Demeter->version );
+  $info->SetDescription( "EXAFS analysis using Feff and ".Demeter->backend_name );
+  $info->SetCopyright( Demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n" .
-			 $demeter->backend_name." ".$demeter->backend_id."\n" .
+			 Demeter->backend_name." ".Demeter->backend_id."\n" .
 			 "Artemis is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
 			 "and Moose $Moose::VERSION"]
 		      );
-  $info->SetLicense( $demeter->slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
+  $info->SetLicense( Demeter->slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
 Design and layout of Artemis is the work of Bruce Ravel
 
@@ -567,17 +576,17 @@ EOH
 sub heap_check {
   my ($app, $show) = @_;
   return if Demeter->is_larch;
-  if ($demeter->mo->heap_used > 0.99) {
+  if (Demeter->mo->heap_used > 0.99) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
-  } elsif ($demeter->mo->heap_used > 0.95) {
+  } elsif (Demeter->mo->heap_used > 0.95) {
     $app->{main}->status("You have used more than 95% of Ifeffit's memory.  Save your work!", "error");
-  } elsif ($demeter->mo->heap_used > 0.9) {
+  } elsif (Demeter->mo->heap_used > 0.9) {
     $app->{main}->status("You have used more than 90% of Ifeffit's memory.  Save your work!", "error");
   } elsif ($show) {
-    $demeter->ifeffit_heap;
+    Demeter->ifeffit_heap;
     $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %.1f Mb of memory",
-				 100*$demeter->mo->heap_used,
-				 $demeter->mo->heap_free/(1-$demeter->mo->heap_used)/2**20));
+				 100 * Demeter->mo->heap_used,
+				 Demeter->mo->heap_free/(1-Demeter->mo->heap_used)/2**20));
   };
 };
 
@@ -822,7 +831,7 @@ sub plot_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $frames{Buffer}->insert('plot', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment'
-      : ($demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
+      : (Demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
 	:'normal';
 
     $frames{Buffer}->color('plot', $was, $is, $color);
@@ -839,8 +848,8 @@ sub feedback {
 
 
 sub set_happiness_color {
-  my $color = $_[0] || $demeter->co->default("happiness", "average_color");
-  $color = wxNullColour if (not $demeter->co->default("artemis", "happiness"));
+  my $color = $_[0] || Demeter->co->default("happiness", "average_color");
+  $color = wxNullColour if (not Demeter->co->default("artemis", "happiness"));
   $frames{main}->{fitbutton}  -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{k_button}   -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{r_button}   -> SetBackgroundColour(Wx::Colour->new($color));
@@ -885,7 +894,7 @@ sub set_mru {
       $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition($i));
     };
 
-    my @list = ($which eq 'structure') ? $demeter->get_mru_list('atoms', 'feff') : $demeter->get_mru_list($which);
+    my @list = ($which eq 'structure') ? Demeter->get_mru_list('atoms', 'feff') : Demeter->get_mru_list($which);
     foreach my $f (@list) {
       $frames{main}->{'mru'.$type}-> Append(-1, $f->[0]);
     };
@@ -1016,17 +1025,17 @@ sub OnMenuClick {
     };
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters('plot');
-      my $yaml   = $demeter->po->serialization;
+      my $yaml   = Demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;
     };
     ($id == $PERL_MODULES) and do {
-      my $text   = $demeter->module_environment . $demeter -> wx_environment;
+      my $text   = Demeter->module_environment . Demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
     ($id == $MODE_STATUS) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
     #($id == $CRASH) and do {
@@ -1048,19 +1057,19 @@ sub OnMenuClick {
     };
 
     ($id == $TERM_1) and do {
-      $demeter->po->terminal_number(1);
+      Demeter->po->terminal_number(1);
       last SWITCH;
     };
     ($id == $TERM_2) and do {
-      $demeter->po->terminal_number(2);
+      Demeter->po->terminal_number(2);
       last SWITCH;
     };
     ($id == $TERM_3) and do {
-      $demeter->po->terminal_number(3);
+      Demeter->po->terminal_number(3);
       last SWITCH;
     };
     ($id == $TERM_4) and do {
-      $demeter->po->terminal_number(4);
+      Demeter->po->terminal_number(4);
       last SWITCH;
     };
 
@@ -1126,7 +1135,7 @@ sub show_ifeffit {
            : ($id == $SHOW_FEFFPATHS) ? "\@feffpaths"
            :                            q{};
   return if not $text;
-  $demeter->dispense('process', 'show', {items=>$text});
+  Demeter->dispense('process', 'show', {items=>$text});
   $frames{Buffer}->Show(1);
 };
 
@@ -1315,7 +1324,7 @@ sub make_feff_frame {
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum} -> {atoms_disabled} = 0;
 
-  if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
+  if ($file and (-e $file) and (Demeter->is_atoms($file) or Demeter->is_cif($file))) {
     my $result = $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
     if (not $result) {
       $new -> Destroy;
@@ -1352,14 +1361,14 @@ sub make_feff_frame {
       				    });
     };
   };
-  if ($file and (-e $file) and $demeter->is_feff($file)) {
-    my $text = $demeter->slurp($file);
+  if ($file and (-e $file) and Demeter->is_feff($file)) {
+    my $text = Demeter->slurp($file);
     $frames{$fnum}->{Atoms}->{used} = 1;
     $frames{$fnum}->make_page('Feff')  if not $frames{$fnum}->{Feff};
     $frames{$fnum}->{Feff}->{feff}->SetValue($text);
     $frames{$fnum}->{Feff}->{name}->SetValue(basename($file, '.inp'));
     $frames{$fnum}->{notebook}->ChangeSelection(1);
-    $demeter -> push_mru("feff", $file)
+    Demeter -> push_mru("feff", $file)
   };
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
   $frames{$fnum} -> {fnum} = $fnum;
@@ -1450,14 +1459,14 @@ sub export {
 
   my $fd = Wx::FileDialog->new( $::app->{main}, "Export this fitting model", cwd, "artemis.$suffix",
 				"fitting scripts (*.$suffix)|*.$suffix|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Exporting fitting model canceled.");
     return;
   };
   my $fname = $fd->GetPath;
-  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  #return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   unlink $fname;
 
   ## save mode settings
@@ -1535,7 +1544,7 @@ and the log buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
-use Demeter::UI::Wx::OverwritePrompt;
+#use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");

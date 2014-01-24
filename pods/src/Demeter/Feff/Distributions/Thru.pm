@@ -7,7 +7,6 @@ use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
-use String::Random qw(random_string);
 
 has 'skip'    => (is => 'rw', isa => 'Int', default => 50,
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
@@ -258,7 +257,7 @@ sub chi {
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
   my @paths = ();
-  my $randstr = random_string('ccccccccc').'.sp';
+  my $randstr = Demeter->randomstring(8).'.sp';
   foreach my $c (@{$self->populations}) {
     push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
 					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,

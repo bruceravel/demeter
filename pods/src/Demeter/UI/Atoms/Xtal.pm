@@ -585,7 +585,7 @@ sub open_file {
     $atoms->file($file);
   };
   if ($atoms->partial_occupancy) {
-    my $message = Wx::MessageDialog->new($self, "Atoms is currently unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
+    my $message = Wx::MessageDialog->new($self, "Atoms is unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
     $message->ShowModal;
     return 0;
   };
@@ -849,25 +849,25 @@ sub save_file {
     if (not $file) {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
 				    "input file (*.inp)|*.inp|All files (*)|*",
-				    wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				    wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				    wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
 	$self->{parent}->status("Saving crystal data aborted.");
 	return 0;
       } else {
 	$file = $fd->GetPath;
-	if (-e $file) {
-	  my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						       "Overwrite existing file \"$file\"?",
-						       "Overwrite file?",
-						       "Overwrite",
-						      );
-	  my $ok = $yesno->ShowModal;
-	  if ($ok == wxID_NO) {
-	    $self->{parent}->status("Not overwriting \"$file\"");
-	    return 0;
-	  };
-	};
+	# if (-e $file) {
+	#   my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
+	# 					       "Overwrite existing file \"$file\"?",
+	# 					       "Overwrite file?",
+	# 					       "Overwrite",
+	# 					      );
+	#   my $ok = $yesno->ShowModal;
+	#   if ($ok == wxID_NO) {
+	#     $self->{parent}->status("Not overwriting \"$file\"");
+	#     return 0;
+	#   };
+	# };
       };
     };
   } else {

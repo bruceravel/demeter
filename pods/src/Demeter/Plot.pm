@@ -54,7 +54,6 @@ eval "PGPLOT->import" if $PGPLOT_exists;
   my $foo = *PGPLOT::HANDLE;
 }
 use List::MoreUtils qw(none zip);
-use String::Random qw(random_string);
 #use YAML::Tiny;
 
 ## why do these not get inherited properly?
@@ -224,7 +223,7 @@ override 'alldone' => sub {
 
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|error_log|lastplot|tempfiles|pathtype|sentinal)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|error_log|lastplot|pathtype|sentinal)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -308,7 +307,7 @@ sub after_plot_hook {
 
 sub tempfile {
   my ($self) = @_;
-  my $this = File::Spec->catfile($self->stash_folder, random_string('cccccccc'));
+  my $this = File::Spec->catfile($self->stash_folder, Demeter->randomstring(8));
   $self->add_tempfile($this);
   return $this;
 };

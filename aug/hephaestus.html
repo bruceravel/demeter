@@ -1,0 +1,984 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Hephaestus</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="./index.html">The Athena Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="./examples/index.html" class="menu">Worked examples</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="./pallas.html"><img src=./../images/pallas_athene_thumb.jpg
+    width=90% border=0 alt='[Athena logo]'></a>
+  <br />
+  <a href="./index.html"  class="menu">Home</a><br />
+<a href="./forward.html"  class="menu">Forward</a><br />
+<a href="./intro.html"  class="menu">Introduction</a><br />
+<a href="./import/index.html"  class="menu">Importing Data</a><br />
+<a href="./bkg/index.html"  class="menu">Background Removal</a><br />
+<a href="./plot/index.html"  class="menu">Plotting</a><br />
+<a href="./ui/index.html"  class="menu">User Interface</a><br />
+<a href="./params/index.html"  class="menu">Setting parameter values</a><br />
+<a href="./output/index.html"  class="menu">Output files</a><br />
+<a href="./process/index.html"  class="menu">Data processing</a><br />
+<a href="./analysis/index.html"  class="menu">Data analysis</a><br />
+<a href="./other/index.html"  class="menu">Other main window chores</a><br />
+<a href="./examples/index.html"  class="menu">Worked examples</a><br />
+<span style="font-style: italic;">Hephaestus</span><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Hephaestus
+</h1>
+<h2>
+  A Periodic Table for the X-ray Absorption Spectroscopist 
+</h2>
+
+<pre>
+    In his workshop he has handmaidens he has forged out of gold
+    who can move and who help him in his work. ...  With Athena,
+    [Hephaestus is] important in the life of the city.  The two
+    [are] the patrons of handicrafts, the arts which along with
+    agriculture are the support of civilization.
+                                 Mythology, Edith Hamilton
+</pre>
+
+<p>
+
+<span class=program>HEPHAESTUS</span> is a program for making calculations useful to the XAS
+experimentalist using a periodic table, tables of X-ray absorption
+coefficients, and other elemental data.
+</p>
+
+<p>
+On the left of the <span class=program>HEPHAESTUS</span> window is a stack of icons which are
+used to select the different tools.  Clicking on one of the icons
+enables that tool.
+</p>
+
+<p>
+At the bottom of the <span class=program>HEPHAESTUS</span> window is a status bar which
+<span class=program>HEPHAESTUS</span> uses to convey information during the course of operation.
+Along with information about the most recently completed calculation,
+the status bar shows topical information.  As the mouse passes over an
+element in the periodic table, the element name, symbol, and Z number
+are displayed.  In the Absorption tool, clicking on an edge or line
+energy will display that energy in wavelength units in the status
+bar.  In the Standards tool, some information about the plotted data
+is displayed in the status bar.
+</p>
+
+<p>
+The &ldquo;Hephaestus&rdquo; menu in the menu bar
+provides another way of navigating between the tools.  The mouse can
+be used, as can the keyboard.  <span class=key>Alt</span>-<span class=key>e</span> and <span class=key>Alt</span>-<span class=key>h</span> post the
+&ldquo;Hephaestus&rdquo; and &ldquo;Help&rdquo; menus.  <span class=key>Control</span>-<span class=key>1</span>
+through <span class=key>Control</span>-<span class=key>9</span> change the
+display the various tools.  <span class=key>Control</span>-<span class=key>m</span> displays the document in a web browser, while <span class=key>Control</span>-<span class=key>c</span> changes the display to the
+configuration tool.
+</p>
+
+
+
+<hr class=hide />
+<a name="absorption">
+
+<h2>  Absorption</h2>
+</a>
+
+<p>
+
+This is the start page for <span class=program>HEPHAESTUS</span> and is used to display
+information about edge and line energies for the elements.
+</p>
+
+<p>
+A periodic table is displayed atop three lists that will be filled in
+with data associated with an element.  Clicking on an element in the
+periodic table displays data about that element.
+</p>
+
+<p>
+The data table will be filled with some basic information about the
+element, including its name and Z number, its atomic weight, and bulk
+density under standard temperature and pressure.  Beneath this table
+are two controls for determining the appropriate Z-1 or Z-2 filter to
+use in a fluorescence experiment.  The &ldquo;Filter&rdquo; text box will be filled with the likeliest candidate for
+the element selected from the periodic table.  This can be edited by
+hand.  Clicking the &ldquo;Plot filter&rdquo; button
+will display a plot showing the relative locations of the edge energy,
+the dominant fluorescence lines, and the filter edge energy.
+</p>
+
+<p>
+The &ldquo;edges&rdquo; table shows the value in eV of
+each edge associated with the element selected from the periodic table
+and the core-hole lifetime in eV of each edge.  Clicking on a line in
+this table will display a message in the status bar giving the edge
+energy expressed in wavelength units and the core-hole lifetime
+expressed in approximate time units.  Double clicking on a line will
+highlight all fluorescence lines associated with that edge in the
+&ldquo;lines&rdquo; table.
+</p>
+
+<p>
+The &ldquo;lines&rdquo; table shows the transitions and
+emission energies in eV of every line associated with the element
+selected from the periodic table.  Also shown is the approximate
+strength, or branching ratio, of each line.  The strengths for all
+lines associated with a particular edge will sum to 1.  Clicking on a
+line in this table will display a message in the status bar giving the
+emission energy expressed in wavelength units.
+</p>
+
+<p>
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_absorption>
+<img src=../images/Hephaestus_absorption.png width=100%>
+</a>
+<p align=center>
+The absorption tool.
+</p>
+</div>
+</p>
+
+<p>
+The rules for the selection of the filter elements are:
+</p>
+
+
+<ol>
+  
+<li><p>
+For elements below Z=38, assume the K edge is being measured and use
+the Z-1 element. 
+</p></li>
+<li><p>
+For elements between Z=39 and Z=57, assume the K edge is being measured
+and use the Z-2 element.
+</p></li>
+<li><p>
+Use Br for a Rb absorber because Kr is a silly filter material.
+</p></li>
+<li><p>
+Use Rh for a Ru absorber because nobody wants a Tc filter!
+</p></li>
+<li><p>
+Use I for a Ba absorber because Xe is also a silly filter material.
+</p></li>
+<li><p>
+For elements above Z=57, assume the L3 edge is being measured.  Use the
+first element whose K edge is more than 90 eV above the Lalpha1 line
+of the absorber.
+</p></li>
+<li><p>
+Use Rb for a U or Np absorber because Kr is still a silly filter material.
+</p></li>
+<li><p>
+For elements below Z=24 (chromium), no filter choice is given.
+Filters for lower-Z elements are not used because no element exists
+with a K-edge between the line and absorption energies of the
+absorber.
+</p></li>
+</ol>
+
+<div class=figure style="max-width: 648px; min-width: 7em;">
+<a name=Hephaestus_filterplot>
+<img src=../images/Hephaestus_filterplot.png width=100%>
+</a>
+<p align=center>
+A filter plot showing why manganese is a good choice for an iron absorber.
+</p>
+</div>
+
+<hr class=hide />
+<a name="formulas">
+
+<h2>  Formulas</h2>
+</a>
+
+<p>
+
+This tool is used to compute approximate absorption lengths for common
+or user-specified materials.  To the left is a list of materials
+commonly found at synchrotron beamlines.  Clicking one of those items
+inserts its stoichiometric formula into the &ldquo;Formula&rdquo; box and the density into the &ldquo;Density&rdquo; box.
+</p>
+
+<p>
+At the top of the right hand part of this tool are controls for
+entering the parameters of the absorption length calculation.  The
+formula must be a stoichiometric formula using a few simple rules.
+</p>
+
+
+<ol>
+  
+<li><p>
+Element symbols must be first letter capitalized.
+</p></li>
+<li><p>
+White space is unimportant -- it will be removed from the string.  So
+will dollar signs, underscores, and curly braces (in an attempt to
+handle TeX).  Also a sequence like this: 
+&ldquo;/sub 3/&rdquo; will be converted
+to &ldquo;3&rdquo; (in an attempt to handle INSPEC).
+</p></li>
+<li><p>
+Numbers can be integers or floating point numbers.  Things like 5,
+0.5, 12.87, and .5 are all acceptable, as is exponential notation like
+1e-2.  Note that exponential notation must use a leading number to
+avoid confusion with element symbols.  That is, 1e-2 is OK, but e-2 is
+not.
+</p></li>
+<li><p>
+Uncapitalized symbols or unrecognized symbols will flag an error.
+</p></li>
+<li><p>
+An error will be flagged if the number of open parentheses is different
+from the number of close parentheses.
+</p></li>
+<li><p>
+An error will be flagged if any unusual symbols are found in the string.
+</p></li>
+</ol>
+
+<p>
+
+The density is entered in units of specific gravity or grams per
+cubic centimeter.  Alternately, units of molarity can be used by
+selecting that from the choice menu.
+</p>
+
+<p>
+Finally, an energy in eV is required at which to make the calculation.
+</p>
+
+<p>
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_formulas>
+<img src=../images/Hephaestus_formulas.png width=100%>
+</a>
+<p align=center>
+The formulas tool.
+</p>
+</div>
+</p>
+
+<p>
+Here is an example of the results printed for BN, with a specific
+gravity of 2.29 and at energy of 7800 eV:
+</p>
+
+
+<pre>
+      element   number   barns/atom     cm^2/gm
+     --------- ----------------------------------
+        B	     1.000	30.084	      1.676
+        N	     1.000     123.417	      5.306
+    
+    This weighs 24.819 amu.
+    
+    Absorption length = 0.077 cm at 7800 eV.
+    
+    A sample of 1 absorption length with area of 1 square
+    cm requires 175.278 milligrams of sample at 7800.00 eV.
+    
+    The Elam database and the full cross-sections were
+    used in the calculation.
+</pre>
+
+<p>
+
+This reports on an important physical parameter, the &ldquo;absorption
+length&rdquo;.  This is defined as the length of sample over which the
+intensity of the incident beam will be attenuated by 1/e, or about
+63%, at the specified energy.  Note that absorption length is an
+energy dependent parameter and that it changes significantly across an
+absorption edge.
+</p>
+
+<p>
+Here we see that 9000 eV photons will be e-fold attenuated in just
+over 1 millimeter of packed BN.  To make a sample with an area of 1
+square centimeter facing the beam and which has an absorption length
+of 1, one must weigh out about 175 milligrams of BN.  In practice,
+this is quite a lot of BN and will make a rather thick pellet.  One
+might weigh out a fraction of the 175 milligrams for a real sample,
+giving the matrix that much less than 1 absorption length.
+</p>
+
+<p>
+As another example, here is the calculation on cobalt ferrite,
+CoFe2O4, which has a specific gravity of about 5.  Computing the cross
+section at 7800 eV will trigger a calculation of the sample depth
+corresponding to a unit edge step at the Co K edge.  This additional
+calculation is triggered because the calculation energy, 7800 eV, is
+within 100 eV of the Co K edge energy of 7709 eV.
+</p>
+
+
+
+<pre>
+      element   number   barns/atom     cm^2/gm
+     --------- ----------------------------------
+        Co	     1.000   33808.991	    345.519
+        Fe	     2.000   30183.487	    325.464
+        O	     4.000     333.532	     12.553
+    
+    This weighs 234.633 amu.
+    
+    Absorption length = 8.2 micron at 7800 eV.
+    
+    A sample of 1 absorption length with area of 1 square
+    cm requires 4.079 milligrams of sample at 7800.00 eV.
+    
+    Unit edge step length at Co K edge (7709.0 eV) is 28.3
+    microns
+    
+    The Elam database and the full cross-sections were
+    used in the calculation.
+</pre>
+
+<p>
+
+Here we introduce a second important physical parameter, the &ldquo;unit
+edge step length&rdquo;.  This is defined as the length over which the total
+absorption will change by a factor of 1/e as  the incident beam energy
+is scanned over the absorption edge.  To say that another way, the
+absorption will be e-fold greater just above the edge than just below
+the edge.  With that length of sample, the edge step of a transmission
+XAS scan will be 1.
+</p>
+
+<p>
+Suppose you wanted to mix some cobalt ferrite with 35 milligrams
+(i.e. an amount that will contribute 0.2 to the total absorption of
+the sample) of boron nitride measured above in order to make a good
+transmission XAS sample.  That amount of BN contributes 0.2 absorption
+lengths to the total thickness of the sample at this energy.  Weighing
+out 4 milligrams of ferrite, then, gives the sample a total absorption
+of 1.2.  That is, the beam passing through the sample will attenuate
+to the level of exp(-1.2), or about 30%, of the intensity of the
+incident beam.
+</p>
+
+<p>
+Note that this sample has more Fe than Co and that the calculation
+energy is above the Fe K edge energy.  The Fe part of the sample is
+rather absorbing at this energy.  As a result, a relatively small
+mass of sample constitutes an absorption length.
+</p>
+
+<p>
+The 4 milligrams of sample required for one absorption length is
+distributed over 8.2 microns.  The unit edge step calculation tells us
+that the edge step will be one with 28.3 microns of sample.  Thus, the
+sample with one absorption length of ferrite will have an edge step of
+8.2/28.3 = 0.34.
+</p>
+
+<p>
+A sample with an edge step of 1 is made by mixing 28.3 milligrams of
+ferrite with the BN.  This sample, however, will be rather thick
+around the Co K edge.  28.3 milligrams represents 2.9 (= 1/0.34)
+absorption lengths of ferrite.  The ferrite in BN will, therefore,
+attenuate the beam passing through the sample to the level of
+exp(-3.1), or about 4.5%.
+</p>
+
+<p>
+In an early XAS paper -- E. A. Stern and K. Kim, <em>Physical Review</em> <strong>23</strong>:8 (1981) (<a href="http://dx.doi.org/10.1103/PhysRevB.23.3781">DOI link</a>) -- it
+was shown that the edge step of a sample should not exceed 1.5.  Using
+a simple statistical argument that presumes that measurement
+uncertainty is dominated by shot noise, the authors show that a sample
+is optimized when the total absorption is 2.6.  In this case, the
+sample of ferrite in BN can be made such that both total absorption
+and edge step are close to optimal.  For instance, making the sample
+with 2 absorption lengths (i.e. 8 milligrams or 16.4 microns) of
+ferrite will result in an edge step of 0.68 -- an excellent sample!
+Not all materials -- particularly those for which a minority dopant is
+the target of the XAS experiment -- work out so well.  In practice,
+sample preparation is an exercise in compromise between total
+absorption and size of edge step.
+</p>
+
+<p>
+Two final notes:
+</p>
+
+
+<ol>
+  
+<li><p>
+The calculation of absorption length in units of length, in this case
+8.2 microns, is another useful metric for high quality sample
+preparation.  To mix ferrite powder with BN to obtain a nicely
+homogeneous sample, it is necessary that the ferrite powder be
+composed of grains that are small compared to the absorption length.
+In this, you would want micron-sized or smaller grains.  Note that a
+stack of laboratory metal meshes are not adequate for separating out
+powders for this sample.  A 400 mesh -- usually the finest one in a
+common stack of sieves -- has openings of 37 microns.  That is vastly
+too large for your ferrite XAS samples!
+</p></li>
+<li><p>
+Transmission XAS samples are often made with 10s of milligrams of
+material.  That is true for the example given above and, indeed, for
+many materials science problems.  10s of milligrams of sample is a
+very small quantity.  That material must be distributed in the beam
+uniformly and packaged in a manner that can be readily handled.
+What's more, the sample may need to survive placement in a cryostat, a
+furnace, or some other in situ environment.  In the example given
+above, reference is made to boron nitride.  BN is often used a sample
+matrix by mixing the sample thoroughly in the BN and pressing the
+mixed powders into a pellet using a hydrolic press.  This results in a
+sample which is thick enough to manage by hand and sturdy enough for a
+cryostat or furnace.  Other materials are commonly used for this
+purpose, such as graphite, polyethylene glycol, and sucrose.
+</p></li>
+</ol>
+
+
+<hr class=hide />
+<a name="ionchambers">
+
+<h2>  Ion Chambers</h2>
+</a>
+
+<p>
+
+This tool is used to determine appropriate contents of ion chambers at
+a given energy.  The calculation requires several parameters,
+including
+</p>
+
+
+<ol>
+  
+<li><p>
+The length in centimeters of the ion chamber.  This can be selected
+from a list of common lengths or supplied by the user.
+</p></li>
+<li><p>
+The relative fractions of two gasses mixed together in the ion
+chambers.  Each can be selected from a list which includes H2, N2, Ar,
+Ne, Kr, and Xe.
+</p></li>
+<li><p>
+The pressure of the gas inside the ion chamber, in Torr.  Atmospheric
+pressure is 760 Torr.
+</p></li>
+</ol>
+
+<p>
+
+The percentage absorbed by the ion chamber will usually auto-update as
+you change the parameters.  Clicking the &ldquo;Compute&rdquo; button forces an update.  Clicking the &ldquo;Reset&rdquo; button returns all the parameters to their
+initial values.
+</p>
+
+<p>
+As a rule of thumb, 10% is a good amount of absorption for the I0
+chamber.  This will allow for a good measurement of incidence flux
+while leaving most photons for the rest of the measurement.  66
+percent is a good amount for the It, Ir, and If chambers.  This
+distributes the absorption over the entire length of the ion chamber.
+In the case of It, this leaves enough photons passing through to the
+reference chamber to allow for a reasonable measurement on Ir.
+</p>
+
+<p>
+If you know the amplifier gain and voltage signal coming from your
+current-to-voltage amplifier (such as a Keithley 427 or 428),
+specifying these will compute a crude calculation of photon flux
+incident upon the chamber.
+</p>
+
+
+<pre>
+           e * energy * flux * gain
+      V = --------------------------
+              IonizationEnergy
+</pre>
+
+<p>
+
+The ionization energy is about 32 volts for most gasses and the
+electron charge <tt>e</tt> is about 1.6E-19 Coulombs. 
+</p>
+
+
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_ionchambers>
+<img src=../images/Hephaestus_ionchambers.png width=100%>
+</a>
+<p align=center>
+The ion chambers tool.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="data">
+
+<h2>  Data</h2>
+</a>
+
+<p>
+
+This tool is used to display a number of useful physical and chemical
+properties of the elements.  Selecting an element from the periodic
+table will fill in the table with the data for that element.
+</p>
+
+
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_data>
+<img src=../images/Hephaestus_data.png width=100%>
+</a>
+<p align=center>
+The data tool.
+</p>
+</div>
+
+<hr class=hide />
+<a name="transitions">
+
+<h2>  Transitions</h2>
+</a>
+
+<p>
+
+This tool displays a non-interactive chart explaining the transitions
+for each of the emission lines.  The initial and final states for each
+named K and L transition is shown.  The chart follows Figure 1.1 in
+the Center for X-Ray Optics X-Ray Data Booklet.
+</p>
+
+
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_transitions>
+<img src=../images/Hephaestus_transitions.png width=100%>
+</a>
+<p align=center>
+The transitions tool.
+</p>
+</div>
+
+<hr class=hide />
+<a name="edgefinder">
+
+<h2>  Edge Finder</h2>
+</a>
+
+<p>
+
+This tool displays a table, ordered by increasing edge energy, of all
+edge energies on the periodic table.  The table also shows the edge
+energies in wavelength units and the core-hole lifetimes.
+</p>
+
+<p>
+The purpose of this tool is to aid in identifying edges observed during
+measurements.  To search the list, enter an energy in the text box on
+the right and click search (or hit return).  The list will be
+recentered around that energy.  Hopefully this will help you identify
+the mysterious feature in your measured data!
+</p>
+
+<p>
+You can also search for edges at the second or third harmonic of the
+energy.  This can be useful in the case of poor harmonic rejection in
+the incident beam and the excitation of a much higher energy edge.
+</p>
+
+
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_edgefinder>
+<img src=../images/Hephaestus_edgefinder.png width=100%>
+</a>
+<p align=center>
+The edge finder tool.
+</p>
+</div>
+
+<hr class=hide />
+<a name="linefinder">
+
+<h2>  Line Finder</h2>
+</a>
+
+<p>
+
+This tool displays a table, ordered by increasing emission energy, of
+all emission line energies on the periodic table.  The table also
+shows the emission energies in wavelength units and the strength (or
+branching ratio) of each line relative to the other lines arising from
+the same absorption edge.
+</p>
+
+<p>
+The purpose of this tool is to aid in identifying emission lines
+observed during measurements.  To search the list, enter an energy in
+the text box on the right and click search (or hit return).  The list
+will be recentered around that energy.  Hopefully this will help you
+identify the mysterious line in your fluorescence data!
+</p>
+
+
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_linefinder>
+<img src=../images/Hephaestus_linefinder.png width=100%>
+</a>
+<p align=center>
+The line finder tool.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="standards">
+
+<h2>  Standards</h2>
+</a>
+
+<p>
+
+Demeter is distributed with a small library of data on standard
+materials.  These XANES spectra can be access via this tool.  You will
+find that this library is quite tiny at this time.  The hope is that a
+future effort in an XAS standards library will take off.  When that
+happens, this will be <span class=program>HEPHAESTUS</span>' interface to that effort.
+</p>
+
+<p>
+Clicking on an element in the periodic table displays a list of all
+the standards in the library measured for that element.  The disabled
+elements in the periodic table are ones for which the library has no
+entries. 
+</p>
+
+<p>
+The XANES data can be plotted as normalized mu(E) or as the derivative
+of mu(E).  The data present have all been annotated so that
+interesting points are marked on the plots.
+</p>
+
+<p>
+The &ldquo;Save&rdquo; button will prompt for a file
+name and save the mu(E) data to a file.
+</p>
+
+<p>
+One point of this tool is to make obsolete the &ldquo;Reference Spectra&rdquo; printout from EXAFS Materials that is found at
+many beamlines.  <a href="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf">http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf</a>
+</p>
+
+<p>
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_standards>
+<img src=../images/Hephaestus_standards.png width=100%>
+</a>
+<p align=center>
+The standards tool.
+</p>
+</div>
+<div class=figure style="max-width: 648px; min-width: 7em;">
+<a name=Hephaestus_standards_plot>
+<img src=../images/Hephaestus_standards_plot.png width=100%>
+</a>
+<p align=center>
+An anotated standards plot for manganese oxalate.
+</p>
+</div>
+</p>
+
+
+
+<hr class=hide />
+<a name="f'andf"">
+
+<h2>  F' and F"</h2>
+</a>
+
+<p>
+
+This tool plots the complex anomalous scattering data from the
+Cromer-Liberman tables as a function of energy.  The start and end
+energies for the plot are entered, as well as the energy grid
+spacing.  When an element is selected from the periodic table, it's f'
+and f" values are plotted.
+</p>
+
+<p>
+Anomalous scattering for elements can be plotted alone or over-plotted
+with other elements.  You can also select to plot either f', f", or
+both.
+</p>
+
+<p>
+The f' and f" data can be saved to a file.
+</p>
+
+<p>
+<div class=figure style="max-width: 848px; min-width: 7em;">
+<a name=Hephaestus_f1f2>
+<img src=../images/Hephaestus_f1f2.png width=100%>
+</a>
+<p align=center>
+The f' and f" tool.
+</p>
+</div>
+<div class=figure style="max-width: 648px; min-width: 7em;">
+<a name=Hephaestus_f1f2_plot>
+<img src=../images/Hephaestus_f1f2_plot.png width=100%>
+</a>
+<p align=center>
+An f' and f" plot for vanadium.
+</p>
+</div>
+</p>
+
+
+
+<hr class=hide />
+<a name="preferences">
+
+<h2>  Preferences</h2>
+</a>
+
+<p>
+
+The behavior of <span class=program>HEPHAESTUS</span> can be configured via the preferences
+tool.  This uses the same preferences tool as Athena and Artemis,
+although only those preference groups relevant to <span class=program>HEPHAESTUS</span> and to
+plotting are presented.
+</p>
+
+<p>
+Click on a group in the &ldquo;Parameters&rdquo; list to open a group.  Click on a
+parameter to display it in the controls on the right. You will be
+given controls appropriate to each parameter's data type for setting
+the parameter value.  The &ldquo;Your value&rdquo; and 
+&ldquo;Demeter's value&rdquo; buttons
+can be used to restore a parameter's value.  A description of the
+displayed parameter will be written in the large text box.
+</p>
+
+<p>
+Parameters can be applied for the current session or applied and saved
+to your configuration file. 
+</p>
+
+
+
+<hr class=hide />
+<a name="credits">
+
+<h2>  Credits</h2>
+</a>
+
+<ul>
+  
+<li><p>
+The layout of <span class=program>HEPHAESTUS</span> -- with its button bar on the left side which
+changes the mode of the main part of the program -- was inspired by
+the personal information management program I use on my KDE systems,
+Kontact. I found it effective so I swiped it for this program.
+</p></li>
+<li><p>
+The pictures used on the buttons were cropped from images I found
+using Google. The picture of the ion chamber is from the Advanced
+Designed Consulting web site.  Their ion chambers are quite nice.  The
+edge finder icon was swiped from the <span class=file>find.png</span> icon in the kid's
+icon theme for KDE.  The line finder icon is from a web page by the
+Alberta Synchrotron Institute and depicts a fluorescence map of some
+rock.  The documentation icon was found under a Creative Commons
+license at <a href="http://battellemedia.com/archives/001952.php">http://battellemedia.com/archives/001952.php</a>
+</p></li>
+<li><p>
+The formulas utility owes much to Gerry Roe, who pointed out a bug,
+and Erik Gullikson, whose similar utility on the web set me straight.
+</p></li>
+<li><p>
+The information used in the chemical data utility is from the
+<span class=file>kalziumrc</span> file, which was swiped from the Kalzium package.  See
+<a href="http://edu.kde.org/kalzium/">http://edu.kde.org/kalzium/</a> for more details.  The data for
+Mossbauer active isotopes was taken from <a href="http://www.mossbauer.org">http://www.mossbauer.org</a>
+</p></li>
+<li><p>
+The ion chamber and edge finder utilities were inspired by the similar
+utilities in the data acquisition program by Lars Fuerenlid and Johnny
+Kirkland and in wide use at NSLS.  Lars and Johnny seem to have a
+deeper love of pastel than do I.
+</p></li>
+<li><p>
+The electronic transitions chart was created from scratch but
+slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
+Data Booklet.
+</p></li>
+<li><p>
+<span class=program>HEPHAESTUS</span> makes use of the and several things from
+<a href="http://www.cpan.org">http://www.cpan.org</a>
+</p></li>
+<li><p>
+And, of course, the users of my various software efforts deserve all
+the credit for kind praise and useful feedback over these many years.
+</p></li>
+</ul>
+
+<p>
+
+The absorption data resources all have literature references.
+</p>
+
+
+<dl>
+  
+<dt>
+  The Elam tables
+</dt>
+<dd>
+W.T. Elam, B.Ravel, and J.R. Sieber, <em>Radiat. Phys. Chem.</em> <strong>63</strong>
+(2002) pp. 121-128 This is the source of data for the edge and line
+finders and for the filter plot.
+  <br />
+  <br />
+</dd>
+<dt>
+  The McMaster tables
+</dt>
+<dd>
+W.H. McMaster et al., <em>Compilation of X-ray Cross Sections. Lawrence
+Radiation Laboratory Report</em> UCRL-50174, pub: &ldquo;National Bureau of
+Standards&rdquo; (1969).  These data were originally compiled in machine
+readable form by Pathikrit Bandyopadhyay.
+  <br />
+  <br />
+</dd>
+<dt>
+  The Henke tables
+</dt>
+<dd>
+B. L. Henke, E. M. Gullikson, and J. C. Davis, <em>Atomic Data and
+Nuclear Data Tables</em>. <strong>54</strong> (1993).  The data is available at
+<a href="http://www-cxro.lbl.gov/optical_constants">http://www-cxro.lbl.gov/optical_constants</a>.
+  <br />
+  <br />
+</dd>
+<dt>
+  The Chantler tables
+</dt>
+<dd>
+C. T. Chantler, <em>J. Phys. Chem. Ref. Data</em> <strong>24</strong>, (1995) p. 71.  The
+data files can be found at
+<a href="http://physics.nist.gov/PhysRefData/FFast/html/form.html">http://physics.nist.gov/PhysRefData/FFast/html/form.html</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  The Cromer-Liberman tables
+</dt>
+<dd>
+S. Brennan and P.L. Cowen, <em>Rev. Sci. Instrum.</em> <strong>63</strong> (1992) p. 850
+  <br />
+  <br />
+</dd>
+<dt>
+  The Shaltout tables
+</dt>
+<dd>
+A. Shaltout, H. Ebel and R. Svagera, <em>X-Ray Spectrom.</em>
+<strong>35</strong> (2006), pp. 52-56
+  <br />
+  <br />
+</dd>
+</dl>
+
+<hr class=hide />
+<a name="bugsandlimitations">
+
+<h2>  Bugs and limitations</h2>
+</a>
+
+<p>
+
+Every calculation at high energy is inaccurate in <span class=program>HEPHAESTUS</span>.
+Xray::Absorption does not correctly handle the mass-energy absorption
+coefficients at high energy, although the ion chamber utility does
+attempt a (very) crude correction.
+</p>
+
+<p>
+More types of information can be added to the chemical data utility.
+If there is something you would like to see, you should send the data
+in an easily readable format (i.e. plain text is lovely).  Merely
+suggesting new data types is unlikely to have any effect.  Supplying
+the data is highly likely to have an effect.
+</p>
+
+<p>
+My wish list includes auger/fluorescence branching ratios in one of
+the periodic table utilities and providing the Berger/Hubble XCOM
+tables and Feff's optical calculations as data resources.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2014 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2014 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

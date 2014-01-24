@@ -4,7 +4,6 @@ use Moose::Role;
 use Demeter::StrTypes qw( FitykFunction );
 
 use Scalar::Util qw(looks_like_number);
-use String::Random qw(random_string);
 use fityk;
 
 use vars qw($FITYK $RESPONSE);
@@ -113,7 +112,7 @@ sub fit_command {
 
 sub prep_data {
   my ($self) = @_;
-  my $file = File::Spec->catfile($self->stash_folder, 'data_'.random_string('cccccccc'));
+  my $file = File::Spec->catfile($self->stash_folder, 'data_'.Demeter->randomstring(8));
   $self->data->points(file    => $file,
 		      space   => 'E',
 		      suffix  => $self->yaxis,
@@ -150,7 +149,7 @@ sub cleanup {
 
 sub initialize {
   my ($self) = @_;
-  my $file = File::Spec->catfile($self->stash_folder, 'fityk_'.random_string('cccccccc'));
+  my $file = File::Spec->catfile($self->stash_folder, 'fityk_'.Demeter->randomstring(8));
   $self->feedback($file);
   open $RESPONSE, '>', $file;
   $FITYK->redir_messages($RESPONSE);

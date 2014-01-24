@@ -106,6 +106,7 @@ sub BUILD {
   $self -> read_config;
   $self -> read_ini;
   $self -> fix;
+  $self -> write_ini;
   $self -> mo -> config($self);
   $self -> mo -> merge($self->default("merge", "weightby"));
   my @groups = $self->groups;
@@ -289,17 +290,27 @@ sub set_this_param {
     $hash{offvalue} ||= 0;
   };
   if ($hash{type} eq 'real') {
+    #$self->_report($group, $param, $hash{default});
     $hash{default} = (looks_like_number($hash{default})) ? $hash{default} : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+    if (exists $hash{windows}) {
+      $hash{windows} = (looks_like_number($hash{windows})) ? $hash{windows} : 0;
+    };
   } elsif ($hash{type} eq 'positive integer') {
     $hash{default} = (looks_like_number($hash{default})) ? int($hash{default}) : 0;
     $hash{demeter} = $hash{default};
-    $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+    if (exists $hash{windows}) {
+      $hash{windows} = (looks_like_number($hash{windows})) ? int($hash{windows}) : 0;
+    };
   };
   $self -> set($key=>\%hash);
   $ini{$group}{$param} = (($self->is_windows) and (exists $hash{windows})) ? $hash{windows} : $hash{default};
   return $self;
+};
+
+sub _report {
+  my ($self, $g, $p, $val) = @_;
+  Demeter->pjoin($g,$p,$val,looks_like_number($val), '<');
 };
 
 sub fix_number {
@@ -472,6 +483,18 @@ sub read_ini {
   return $self;
 };
 
+
+sub reset_all {
+  my ($self) = @_;
+  foreach my $g (Demeter->co->groups) {
+    foreach my $p (Demeter->co->parameters($g)) {
+      Demeter->co->set_default($g, $p, Demeter->co->demeter($g, $p));
+    };
+  };
+  Demeter->co->write_ini;
+  return $self;
+};
+
 ## this method is used to fix parameters in a way that is backwards compatable
 sub fix {
   my ($self) = @_;
@@ -479,6 +502,18 @@ sub fix {
   $keyparams =~ s{left|right|top|bottom|center}{}g;
   $keyparams =~ s{\A\s+}{};
   $self->set_default("gnuplot", "keyparams", $keyparams);
+
+  ## somehow, it may happen that a users ini file will have
+  ## zero-length plotting ranges -- very confusing, so reset to
+  ## demeter defaults
+  foreach my $p (qw(kmax rmax qmax emin emax)) {
+    my $val = $self->default("plot", $p);
+    $self->set_default("plot", $p, $self->demeter("plot", $p));
+  };
+
+  $self->set_default("athena", "autosave_frequency", $self->demeter("athena", "autosave_frequency"))
+    if $self->default("athena", "autosave_frequency") < 2;
+
   return $self;
 };
 
