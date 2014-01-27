@@ -136,6 +136,8 @@ const my $MARK_MS	      => Wx::NewId();
 const my $MARK_HIGH	      => Wx::NewId();
 const my $MARK_MID	      => Wx::NewId();
 const my $MARK_LOW	      => Wx::NewId();
+const my $MARK_ABELOW	      => Wx::NewId();
+const my $MARK_AABOVE	      => Wx::NewId();
 const my $MARK_RBELOW	      => Wx::NewId();
 const my $MARK_RABOVE	      => Wx::NewId();
 const my $MARK_BEFORE	      => Wx::NewId();
@@ -800,10 +802,13 @@ sub make_menubar {
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCtrl+Shift+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCtrl+Shift+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  # $self->{markmenu}->AppendSeparator;
+  # $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCtrl+Shift+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
+  # $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCtrl+Shift+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
+  # $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCtrl+Shift+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCtrl+Shift+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCtrl+Shift+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCtrl+Shift+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ABELOW, "Mark all paths < A\tCtrl+Shift+_",    "Mark all paths below a specified ranking for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AABOVE, "Mark all paths > A\tCtrl+Shift+^",    "Mark all paths above a specified ranking for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCtrl+Shift+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCtrl+Shift+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
@@ -1183,6 +1188,7 @@ sub OnMenuClick {
 
     (($id == $MARK_ALL)    or ($id == $MARK_NONE)   or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
      ($id == $MARK_SS)     or ($id == $MARK_MS)     or ($id == $MARK_HIGH)   or ($id == $MARK_MID)    or ($id == $MARK_LOW)    or
+     ($id == $MARK_ABELOW) or ($id == $MARK_AABOVE) or
      ($id == $MARK_RBELOW) or ($id == $MARK_RABOVE) or ($id == $MARK_BEFORE) or ($id == $MARK_AFTER)  or
      ($id == $MARK_INC)    or ($id == $MARK_EXC)) and do {
       $datapage->mark($id);
@@ -1645,6 +1651,8 @@ sub mark {
           : ($mode == $MARK_HIGH)   ? 'high'
           : ($mode == $MARK_MID)    ? 'mid'
           : ($mode == $MARK_LOW)    ? 'low'
+          : ($mode == $MARK_ABELOW) ? 'lesser'
+          : ($mode == $MARK_AABOVE) ? 'greater'
           : ($mode == $MARK_RBELOW) ? 'shorter'
           : ($mode == $MARK_RABOVE) ? 'longer'
           : ($mode == $MARK_BEFORE) ? 'before'
@@ -1731,6 +1739,26 @@ sub mark {
       $self->status("Marked all low importance paths.");
       last SWITCH;
     };
+    (($how eq 'greater') or ($how eq 'lesser')) and do {
+      my $ted = Wx::TextEntryDialog->new( $self, "Mark paths with ranking $how than this value:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+      if ($ted->ShowModal == wxID_CANCEL) {
+	$self->status("Path marking canceled.");
+	return;
+      };
+      my $a = $ted->GetValue;
+      if ($a !~ m{$NUMBER}) {
+	$self->status("Oops!  That wasn't a number.");
+	return;
+      };
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	my $path = $self->{pathlist}->GetPage($i)->{path};
+	$self->{pathlist}->Check($i, 1) if (($how eq 'lesser')  and ($path->sp->get_rank(Demeter->co->default('pathfinder', 'rank')) < $a));
+	$self->{pathlist}->Check($i, 1) if (($how eq 'greater') and ($path->sp->get_rank(Demeter->co->default('pathfinder', 'rank')) > $a));
+      };
+      $self->status("Marked all paths with rank $how than $a.");
+      last SWITCH;
+    };
+
     (($how eq 'longer') or ($how eq 'shorter')) and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths $how than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {

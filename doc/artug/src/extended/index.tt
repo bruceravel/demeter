@@ -56,12 +56,17 @@ by example using crystal data.
 An [%INCLUDE html/link link="../extended/ipots.html" text="explanation" %] of
 the pathfinder and of the concept of fuzzy degeneracy. 
 [% END %]
+[% WRAPPER html/dt dt="Handling dopants in Feff calculations" %]
+How [%INCLUDE html/link link="../extended/dopants.html" text="dopants"%]
+can be introduced in to [%feff%] calulations and [%artemis%] fitting models. 
+[% END %]
 [% END %]
 
+[%hr%]
+
 [% WRAPPER html/todo %]
-Pages for 
-[%br%][%br%]* Histograms, 
-[%br%]* background co-refinement
-[%br%]* dealing with dopants 
-[%br%]* constraints and restraints
+Pages are needed explaining:
+(1) Histograms, 
+(2) background co-refinement
+(3) constraints and restraints
 [% END %]

@@ -47,5 +47,5 @@ For information about empirical standards, see Chapter XXX
 [% END %] [%# end of ordered list%]
 
 [% WRAPPER html/todo %]
-Make these links
+Make these links, flesh out this discussion
 [% END %]

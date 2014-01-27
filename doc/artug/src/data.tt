@@ -244,7 +244,8 @@ spectra.
 [% PROCESS subsection label="The Data menu" %]
 
 [% WRAPPER floatright this="data-datamenu.png" title="Data menu" %]
-Blah blah
+This menu displays functions that can act on the data set displayed in
+that window.
 [% END %] [%# end of caption %]
 
 [% WRAPPER html/list type="dl" %]
@@ -282,16 +283,13 @@ This will save the data along with each marked path to a column data
 file.  The columns will be the same as for the data+fit output.
 [% END %]
 [% WRAPPER html/dt dt="Other fitting standards" %]
-This submenu allows you to import a variety of special path types.
-These will be explained later in the document.[%br%]
-[% WRAPPER html/todo %]
-Links to those document sections
-[% END %]
+This submenu allows you to import a variety of special path types, including
+[% INCLUDE html/link link="extended/qfs.html" text="quick first shell paths"%] and
+[% INCLUDE html/link link="extended/empirical.html" text="empirical standards"%].
+[%INCLUDE font/color color="b2b2b2" text="(Structural units have not yet been implemented in Artemis.)"%]
 [% END %]
 [% WRAPPER html/dt dt="Balance interstitial energies" %]
-[% WRAPPER html/todo %]
-Not yet implemented in [%artemis%]
-[% END %]
+[%INCLUDE font/color color="b2b2b2" text="(This feature has not yet been implemented in Artemis.)"%]
 [% END %]
 [% WRAPPER html/dt dt="Set all degeneracies" %]
 These two options allow you to control the degeneracy values of all
@@ -312,10 +310,8 @@ to [% INCLUDE font/quote a="user"%].
 [% END %]
 [% WRAPPER html/dt dt="Export parameters" %]
 In a multiple data set fit, this allows you to constrain the data sets
-to have the same choice of Fourier transform parameters.[%br%]
-[% WRAPPER html/todo %]
-Not yet implemented in [%artemis%]
-[% END %]
+to have the same choice of Fourier transform parameters.
+[%INCLUDE font/color color="b2b2b2" text="(This feature has not yet been implemented in Artemis.)"%]
 [% END %]
 [% WRAPPER html/dt dt="Set kmax to Ifeffit's suggestion" %]
 Use [%ifeffit%]'s [%#'%] suggestion for an appropriate value of [%kmax%].
@@ -334,7 +330,8 @@ window status bar.
 [% PROCESS subsection label="The Path menu" %]
 
 [% WRAPPER floatright this="data-pathmenu.png" title="Path menu" %]
-Blah blah
+This menu displays various functions  that can be appied to the paths
+associated with this data set.
 [% END %] [%# end of caption %]
 
 [% WRAPPER html/list type="dl" %]
@@ -414,18 +411,22 @@ regular expression to match against the labels in the path list.  The
 pattern you provide will be used only if it can be successfully parsed
 as a valid perl regular expression.
 
+Marking either greater than or less than an A value will prompt for
+a cutoff in path ranking.
+
 Marking either greater than or less than an R value will prompt for
 that R value.
 
 Marking before or after the current path will mark those above or
 below the displayed path in the path list.  Included and excluded
 refers to whether a path is selected as being included in a fit.
-Importance refers to the heuristic importance of the path, which is
-represented by the
-[%INCLUDE font/color color="046a15" text="green (high)"%],
-[%INCLUDE font/color color="78670e" text="yellow (medium)"%], or
-[%INCLUDE font/color color="787878" text="grey (low)"%]
-color of the label at the top of the path page.
+
+[%# Importance refers to the heuristic importance of the path, which is%]
+[%# represented by the%]
+[%# INCLUDE font/color color="046a15" text="green (high)"%]
+[%# INCLUDE font/color color="78670e" text="yellow (medium)"%]
+[%# INCLUDE font/color color="787878" text="grey (low)"%]
+[%# color of the label at the top of the path page.%]
 [% END %]
 [%break%]
 [% WRAPPER html/caution %]
@@ -434,11 +435,6 @@ entire regular expression functionality.  If you know what a
 [% INCLUDE font/quote a='(?{ code })'%] extended expression is and you
 use it foolishly, you only have yourself to blame.
 [% END %]
-
-[% WRAPPER html/todo %]
-Mark by path ranking
-[% END %]
-
 
 [% PROCESS subsection label="The Actions menu" %]
 

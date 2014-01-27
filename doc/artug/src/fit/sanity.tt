@@ -39,7 +39,8 @@ Check that none of these typos [%ndash%]
 
 [% WRAPPER html/li %]
 Check that all function names used in math expression (i.e. a word
-followed by parentheses) are valid functions in [%ifeffit%].
+followed by parentheses) are valid functions in [%ifeffit%] or
+[%larch%] (as appropriate).
 [% END %]
 
 [% WRAPPER html/li %]
@@ -74,13 +75,16 @@ by [%rmax%]+0.2 plus the val[% INCLUDE preference group="warnings" option="reff_
 [% WRAPPER html/li %]
 Check that various compiled-in limits (e.g. maximum number of paths or
 maximum number of set parameters) in [%ifeffit%] are not exceeded.
+This check is ignored when using [%larch%].
 [% END %]
 
 [% WRAPPER html/li %]
 Check that parameters do not have the same names as [%ifeffit%]
 program variables.  For example, things like
 [% INCLUDE font/mono a="pi" %] or [% INCLUDE font/mono a="dr1" %]
-are not allowed since [%ifeffit%] uses those strings for other purposes.
+are not allowed since [%ifeffit%] uses those strings for other
+purposes.  Although not strictly necessary, this check is enforced by
+default when using [%larch%].
 [% END %]
 
 [% WRAPPER html/li %]

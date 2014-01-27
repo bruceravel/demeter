@@ -95,7 +95,7 @@ user, to supply a value for the actual amplitude reduction factor,
 [%s02%] to be divided out of the summation.
 
 Pressing the [% INCLUDE font/quote a="Compute"%] button will make the
-bond valence sum, reporting its value in the box so labeled.  Any
+bond valence sum, reporting its value in the text box.  Any
 feedback will be written in the larger text control.  For a successful
 calculation, the values of [%rij%] and B obtained from the database
 will be displayed.  Any warnings about the path selection will be
@@ -138,4 +138,31 @@ contributing to the bond valence sum.  The math expressions to
 establish the restraint would be more complicated for a more
 disrodered first shell, but those math expressions would follow the
 same pattern as this example.
+[% END %]
+
+[% PROCESS section label="Using a bond valance sum as an after parameter" %]
+[% FILTER html_para -%]
+The last [%artemis%] trick related to evaluations of bond valence sums
+is to use an [%INCLUDE html/link link="../gds.html#parametertypes"
+text="after parameter"%] to record the bond valence sum to the
+[%INCLUDE html/link link="../logjournal.html" text="log
+file"%].  Using the same [%setparam%] parameters as in the
+[%restrain%] example, set the BVS formula instead to an [%after%]
+parameter.
+[% END %]
+
+[% WRAPPER image file="bvs_after.png" %]
+Defining an after parameter which reports the evaluated bond valence sum
+to the log file.
+[% END %]
+
+[% FILTER html_para -%]
+At the end of the fit, the BVS will be evaluated and reported in the
+log file just below the [%guess%], [%def%], and [%setparam%]
+parameters, like so:
+[% END %]
+
+[%WRAPPER html/pre%]
+after parameters:                                                               
+  bvs                =   2.04154071    # [6*exp( (rij-(2.139+delr)) / b)]
 [% END %]

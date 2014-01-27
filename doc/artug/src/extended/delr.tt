@@ -70,7 +70,7 @@ a fitting parameter.  The [%delr%] of the path is not itself a
 variable of the fit, rather it is written in terms of [%alpha%], which
 is a variable of the fit.
 
-Second, it is an example of a constrain which uses the information
+Second, it is an example of a constraint which uses the information
 content of the data very well.  We can include any number of paths with
 introducing new parameters for their [%delr%] values.  [%alpha%] is a
 robust fitting parameter in the sense that every path is involved in
