@@ -82,7 +82,7 @@ Terminal:
    athena
 
 Note: Make sure you are in a directory you have write permission to
-(like your home directory) because it creates hidden log files at
+(like your home directory) because hidden files are created at
 launch time.
 
 =back
