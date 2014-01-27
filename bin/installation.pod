@@ -76,6 +76,11 @@ while depending on your computer and network speed.
 
 =item 3. 
 
+If this is your first time installing C<xorg-server>, log out and log
+back in.  This is needed to set the C<DISPLAY> environment variable.
+
+=back
+
 When it is done, launch Athena by typing the following in
 Terminal:
 
@@ -84,8 +89,6 @@ Terminal:
 Note: Make sure you are in a directory you have write permission to
 (like your home directory) because hidden files are created at
 launch time.
-
-=back
 
 The Windows installer can be used under emulation.  L<Here are some
 notes| http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels>
