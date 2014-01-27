@@ -122,19 +122,40 @@ download the updater and install it yourself.</p></dd>
 number of the updater but larger or equal to the version number of the
 installer, you will only need to download and apply the updater.</p></dd>
 		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater">http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater</a>.</p></dd>
-	<dt><strong>Debian, Ubuntu, and Debian-based Linux</strong></dt>
-		<dd><p>Not yet available.</p></dd>
-		<dd><p>(Information will be forthcoming)</p></dd>
 	<dt><strong>Macintosh OSX</strong></dt>
-		<dd><p>Not yet available.</p></dd>
-		<dd><p>(Information will be forthcoming)</p></dd>
+		<dd><p>Frank Schima has performed yeoman's duty by making Demeter and its
+tool chain available on Macports.  Thus far, testing has only been
+done for OS X Mavericks and Mountain Lion.</p></dd>
+		<dd><p>At this time, the Mac packages should be considered as a release
+candidate.  Some functionality may not yet be present.  If you run
+into problems, use <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">The Ifeffit mailing list</a>.  Be as
+explicit as possible about the nature of the problem and remember that
+saying <i>&quot;This is my problem and this what I've tried so far to fix it&quot;</i>
+is much more valuable than just <i>&quot;This is my problem.&quot;</i></p></dd>
+<dd><dl>
+	<dt>1. </dt>
+		<dd><p><i>Carefully</i> follow the steps to install Macports: <a href="http://www.macports.org/install.php">http://www.macports.org/install.php</a></p></dd>
+	<dt>2.</dt>
+		<dd><p>Open a new Terminal window and type the following. It will take a
+while depending on your computer and network speed.</p></dd>
+<dd><pre>   sudo port install xorg-server demeter
+
+</pre></dd>	<dt>3. </dt>
+		<dd><p>When it is done, launch Athena by typing the following in
+Terminal:</p></dd>
+<dd><pre>   athena
+
+</pre></dd>		<dd><p>Note: Make sure you are in a directory you have write permission to
+(like your home directory) because it creates hidden log files at
+launch time.</p></dd>
+</dl>
+</dd>
 		<dd><p>The Windows installer can be used under emulation.  <a href="http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels">Here are some notes</a>
 from Scott Calvin on doing so using
 <a href="http://www.parallels.com/">Parallels</a>.</p></dd>
-		<dd><p>For compiling see Wx on the Mac, see
-<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html</a>
-and similar threads from around that time.  Also, this more recent thread
-<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html">http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html</a>.</p></dd>
+	<dt><strong>Debian, Ubuntu, and Debian-based Linux</strong></dt>
+		<dd><p>Not yet available.</p></dd>
+		<dd><p>(Information will be forthcoming)</p></dd>
 </dl>
 <h2 id="Installing_source_code">Installing source code</h2>
 

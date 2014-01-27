@@ -47,27 +47,56 @@ installer, you will only need to download and apply the updater.
 
 See L<http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater>.
 
-=item B<Debian, Ubuntu, and Debian-based Linux>
-
-Not yet available.
-
-(Information will be forthcoming)
-
 =item B<Macintosh OSX>
 
-Not yet available.
+Frank Schima has performed yeoman's duty by making Demeter and its
+tool chain available on Macports.  Thus far, testing has only been
+done for OS X Mavericks and Mountain Lion.
 
-(Information will be forthcoming)
+At this time, the Mac packages should be considered as a release
+candidate.  Some functionality may not yet be present.  If you run
+into problems, use L<The Ifeffit mailing
+list|http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>.  Be as
+explicit as possible about the nature of the problem and remember that
+saying I<"This is my problem and this what I've tried so far to fix it">
+is much more valuable than just I<"This is my problem.">
+
+=over 4
+
+=item 1. 
+
+I<Carefully> follow the steps to install Macports: L<http://www.macports.org/install.php>
+
+=item 2.
+
+Open a new Terminal window and type the following. It will take a
+while depending on your computer and network speed.
+
+   sudo port install xorg-server demeter
+
+=item 3. 
+
+When it is done, launch Athena by typing the following in
+Terminal:
+
+   athena
+
+Note: Make sure you are in a directory you have write permission to
+(like your home directory) because it creates hidden log files at
+launch time.
+
+=back
 
 The Windows installer can be used under emulation.  L<Here are some
 notes| http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels>
 from Scott Calvin on doing so using
 L<Parallels|http://www.parallels.com/>.
 
-For compiling see Wx on the Mac, see
-L<http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html>
-and similar threads from around that time.  Also, this more recent thread
-L<http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html>.
+=item B<Debian, Ubuntu, and Debian-based Linux>
+
+Not yet available.
+
+(Information will be forthcoming)
 
 =back
 
