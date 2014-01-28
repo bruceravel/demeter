@@ -222,7 +222,7 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config Help)) {
+		    Standards F1F2 Config)) { # Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";

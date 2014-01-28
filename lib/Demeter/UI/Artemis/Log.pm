@@ -24,7 +24,7 @@ use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::LogText;
-use Demeter::UI::Wx::Printing;
+##use Demeter::UI::Wx::Printing;
 
 use Cwd;
 
@@ -57,15 +57,15 @@ sub new {
   EVT_BUTTON($this, $this->{save}, \&on_save);
   $this->{save}->Enable(0);
 
-  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'text')});
-  $this->{preview}->Enable(0);
+  # $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'text')});
+  # $this->{preview}->Enable(0);
 
-  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
-  $this->{print}->Enable(0);
+  # $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
+  # $this->{print}->Enable(0);
 
   $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{doc}, 1, wxGROW|wxRIGHT, 2);
@@ -83,8 +83,8 @@ sub put_log {
   my ($self, $fit) = @_;
   Demeter::UI::Artemis::LogText -> make_text($self->{text}, $fit);
   $self->{save}->Enable(1);
-  $self->{preview}->Enable(1);
-  $self->{print}->Enable(1);
+  ##$self->{preview}->Enable(1);
+  ##$self->{print}->Enable(1);
   $self->{text}->ShowPosition(1);
   $self->{text}->Refresh;
 };

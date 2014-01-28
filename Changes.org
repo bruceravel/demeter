@@ -22,10 +22,19 @@
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
    - Drag and drop CIF, Atoms, Feff input files onto the Feff list
+   - Removed dependence on Wx::Html (causes seg fault on Mac, not
+     really very important) and removed print and print preview
+     buttons from History, Log, and Journal
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
-     not working on the Mac)
+     not working on the Mac) Removed dependence on Wx::Html by not
+     loading Demeter::UI::Hephaestus::Help
+
+*** Atoms
+   - sensible error messages from CLI version when no input file
+     specified or when file does not exist
+   - added --cli flag to datoms script
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
@@ -151,6 +160,32 @@ withdrawn a couple of days after its release.  One of the goals of
    - _Karin Provost_ for the idea of path ranking
    - _Daniel Olive_ and _Corwin Booth_ for pointing out that the Booth
      self-absorption implementation was horribly flawed
+
+** 0.9.18.3 28 January   2014
+
+This is a branch created to facilitate development of the Macports
+package.  It has the following changes:
+
+  1. Remove the dependence on Wx::Html and Wx::HtmlEasyPrinting, which
+     is my suspect for the source of the seg fault
+
+  2. Backport a requirement of MooseX::Types::LaxNum from 0.9.19.
+     This solves a problem resulting from a recent change to the Moose
+     object system, which Demeter relies upon.
+
+  3. Backport from HEAD the use of Wx::LaunchDefaultBrowser in
+     Hephaestus.  This removes the need for Wx::Html and uses the
+     system browser to display the documentation, which works in
+     Athena.
+
+  4. Adds the CPAN modules MooseX::Types::LaxNum to the requirements
+     in Build.PL
+
+  5. Backports from HEAD a page in the Athena Users' Guide and
+     several image file so that Hephaestus has something to show in the
+     browser
+
+  6. Backport from HEAD the changes to the datoms script
 
 ** 0.9.18.2 29 August    2013
 
