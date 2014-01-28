@@ -14,7 +14,8 @@ use MooseX::Types -declare => [qw( Natural
 				   FeffVersions
 				)];
 
-use MooseX::Types::Moose qw(Num Int);
+use MooseX::Types::Moose qw(Num Int Str);
+use Scalar::Util qw( looks_like_number );
 
 subtype Natural,
   as Int,
@@ -55,20 +56,55 @@ subtype NegInt,
   where { $_ < 0 },
   message { "Int is not smaller than 0" };
 
+
+## this follows MooseX::Types::LaxNum.
+## while it would be lovely to just define these "as 'LaxNum'",
+## I cannot figure out how to do so without running afoul
+## of the "WARNING: String found where Type expected" warning
 subtype NonNeg,
-  as Num,
-  where { $_ >= 0 },
+  as Str,
+  where { looks_like_number($_) and $_ >= 0 },
   message { "Num is not larger than or equal to 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
 
 subtype PosNum,
-  as Num,
-  where { $_ > 0 },
+  as Str,
+  where { looks_like_number($_) and eval{$_ > 0} } =>
   message { "Num is not larger than 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
 
 subtype NegNum,
-  as Num,
-  where { $_ < 0 },
+  as Str,
+  where { looks_like_number($_) and $_ < 0 },
   message { "Num is not smaller than 0" };
+  # => inline_as {
+  #   # the long Str tests are redundant here
+  #   $value_type->_inline_check($_[1])
+  #     . ' && Scalar::Util::looks_like_number(' . $_[1] . ')'
+  #   };
+
+# subtype NonNeg,
+#   as Num,
+#   where { $_ >= 0 },
+#   message { "Num is not larger than or equal to 0" };
+
+# subtype PosNum,
+#   as Num,
+#   where { $_ > 0 },
+#   message { "Num is not larger than 0" };
+
+# subtype NegNum,
+#   as Num,
+#   where { $_ < 0 },
+#   message { "Num is not smaller than 0" };
 
 subtype FeffVersions,
   as Int,

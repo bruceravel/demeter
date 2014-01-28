@@ -2,6 +2,7 @@ package Demeter::Mode;
 
 use Moose; #X::Singleton;
 use MooseX::Aliases;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 #use Demeter::Config;
@@ -437,8 +438,8 @@ has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
 has 'check_heap'   => (is => 'rw', isa => 'Bool', default => 0);
-has 'heap_free'	   => (is => 'rw', isa => 'Num',  default => 0);
-has 'heap_used'	   => (is => 'rw', isa => 'Num',  default => 0);
+has 'heap_free'	   => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'heap_used'	   => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 sub increment_fit {
   my ($self) = @_;

@@ -25,8 +25,8 @@ has 'standard'      => (is => 'rw', isa => 'Any',     default => q{},
 			trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
 has 'standardgroup' => (is => 'rw', isa => 'Str',     default => q{});
 
-has 'qmin'          => (is => 'rw', isa => 'Num',    default => 4);
-has 'qmax'          => (is => 'rw', isa => 'Num',    default => 12);
+has 'qmin'          => (is => 'rw', isa => 'LaxNum', default => 4);
+has 'qmax'          => (is => 'rw', isa => 'LaxNum', default => 12);
 has 'twopi'         => (is => 'rw', isa => 'Int',    default => 0);
 
 has 'cumulants'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});

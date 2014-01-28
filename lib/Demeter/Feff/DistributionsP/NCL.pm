@@ -15,22 +15,22 @@ use PDL::NiceSlice;
 ## nearly collinear DS and TS historgram attributes
 #has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
 has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
-has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,
+has 'r1'        => (is => 'rw', isa => 'LaxNum', default => 0.0,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,
+has 'r2'        => (is => 'rw', isa => 'LaxNum', default => 3.5,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,
+has 'r3'        => (is => 'rw', isa => 'LaxNum', default => 5.2,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,
+has 'r4'        => (is => 'rw', isa => 'LaxNum', default => 5.7,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'beta'      => (is => 'rw', isa => 'Num', default => 20,
+has 'beta'      => (is => 'rw', isa => 'LaxNum', default => 20,
 		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'rbin'      => (is            => 'rw',
-		    isa           => 'Num',
+		    isa           => 'LaxNum',
 		    default       => 0.02,
 		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 has 'betabin'   => (is            => 'rw',
-		    isa           => 'Num',
+		    isa           => 'LaxNum',
 		    default       => 0.5,
 		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 

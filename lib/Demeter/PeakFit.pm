@@ -52,21 +52,21 @@ has 'xaxis'	      => (is => 'rw', isa => 'Str',  default => q{energy});
 has 'yaxis'	      => (is => 'rw', isa => 'Str',  default => q{flat});
 has 'sigma'	      => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'xmin'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
-has 'xmax'	      => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
+has 'xmin'	      => (is => 'rw', isa => 'LaxNum',  default => 0, alias => 'emin');
+has 'xmax'	      => (is => 'rw', isa => 'LaxNum',  default => 0, alias => 'emax');
 
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'ninfo'	      => (is => 'rw', isa => 'Num',  default => 0);
-has 'epsilon'	      => (is => 'rw', isa => 'Num',  default => 0);
+has 'ninfo'	      => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'epsilon'	      => (is => 'rw', isa => 'LaxNum',  default => 0);
 has 'nparam'	      => (is => 'rw', isa => 'Int',  default => 0);
 has 'ndata'	      => (is => 'rw', isa => 'Int',  default => 0);
 has 'ntitles'	      => (is => 'rw', isa => 'Int',  default => 0);
 
-has 'rfactor'	      => (is => 'rw', isa => 'Num', default => 0);
-has 'chisqr'	      => (is => 'rw', isa => 'Num', default => 0);
-has 'chinu'	      => (is => 'rw', isa => 'Num', default => 0);
+has 'rfactor'	      => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'chisqr'	      => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'chinu'	      => (is => 'rw', isa => 'LaxNum', default => 0);
 
 has 'lineshapes'   => (
 		       traits    => ['Array'],

@@ -43,26 +43,26 @@ has 'start'    => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'xaxis'    => (is => 'rw', isa => 'Str',  default => q{energy});
 has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{flat});
-has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
-has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
+has 'xmin'     => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'xmax'     => (is => 'rw', isa => 'LaxNum',  default => 0);
 
-has 'a0'       => (is => 'rw', isa => 'Num',  default => 1, alias => [ qw(height yint) ]);
-has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(center slope) ]);
-has 'a2'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'hwhm');
-has 'a3'       => (is => 'rw', isa => 'Num',  default => 0.5, alias => 'eta');
-has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'a6'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'a7'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a0'       => (is => 'rw', isa => 'LaxNum',  default => 1, alias => [ qw(height yint) ]);
+has 'a1'       => (is => 'rw', isa => 'LaxNum',  default => 0, alias => [ qw(center slope) ]);
+has 'a2'       => (is => 'rw', isa => 'LaxNum',  default => 0.5, alias => 'hwhm');
+has 'a3'       => (is => 'rw', isa => 'LaxNum',  default => 0.5, alias => 'eta');
+has 'a4'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'a5'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'a6'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'a7'       => (is => 'rw', isa => 'LaxNum',  default => 0);
 
-has 'e0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(eheight eyint) ]);
-has 'e1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(ecenter eslopeyint) ]);
-has 'e2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'ehwhm');
-has 'e3'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eeta');
-has 'e4'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'e5'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'e6'       => (is => 'rw', isa => 'Num',  default => 0);
-has 'e7'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e0'       => (is => 'rw', isa => 'LaxNum',  default => 0, alias => [ qw(eheight eyint) ]);
+has 'e1'       => (is => 'rw', isa => 'LaxNum',  default => 0, alias => [ qw(ecenter eslopeyint) ]);
+has 'e2'       => (is => 'rw', isa => 'LaxNum',  default => 0, alias => 'ehwhm');
+has 'e3'       => (is => 'rw', isa => 'LaxNum',  default => 0, alias => 'eeta');
+has 'e4'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'e5'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'e6'       => (is => 'rw', isa => 'LaxNum',  default => 0);
+has 'e7'       => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 has 'fix0'     => (is => 'rw', isa => 'Bool', default => 0, alias => [ qw(fixheight fixyint) ]);
 has 'fix1'     => (is => 'rw', isa => 'Bool', default => 0, alias => [ qw(fixcenter fixslope) ]);
@@ -73,7 +73,7 @@ has 'fix5'     => (is => 'rw', isa => 'Bool', default => 0);
 has 'fix6'     => (is => 'rw', isa => 'Bool', default => 0);
 has 'fix7'     => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'area'     => (is => 'rw', isa => 'Num',  default => 0);
+has 'area'     => (is => 'rw', isa => 'LaxNum',  default => 0);
 
 sub BUILD {
   my ($self, @params) = @_;

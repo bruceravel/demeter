@@ -17,6 +17,7 @@ package Xray::Crystal::Cell;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use MooseX::Types::LaxNum;
 
 with 'MooseX::SetGet';
 
@@ -57,7 +58,7 @@ has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 		       });
 has 'given_group'  => (is => 'rw', isa => 'Str',  default => q{});
 has 'no_recurse'   => (is => 'rw', isa => 'Bool', default => 0);
-has 'a'		   => (is => 'rw', isa => 'Num',  default => 0,
+has 'a'		   => (is => 'rw', isa => 'LaxNum',  default => 0,
 		       trigger => sub {
 			 my ($self, $new) = @_;
 			 return if $self->no_recurse;
@@ -67,20 +68,20 @@ has 'a'		   => (is => 'rw', isa => 'Num',  default => 0,
 			 $self->geometry;
 			 $self->no_recurse(0);
 		       });
-has 'b'		   => (is => 'rw', isa => 'Num', default => 0,
+has 'b'		   => (is => 'rw', isa => 'LaxNum', default => 0,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'c'		   => (is => 'rw', isa => 'Num', default => 0,
+has 'c'		   => (is => 'rw', isa => 'LaxNum', default => 0,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->set_rhombohedral;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'alpha'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'alpha'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub {
 			 my ($self, $new) = @_;
 			 return if $self->no_recurse;
@@ -91,14 +92,14 @@ has 'alpha'	   => (is => 'rw', isa => 'Num', default => 90,
 			 $self->geometry;
 			 $self->no_recurse(0);
 		       });
-has 'beta'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'beta'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->determine_monoclinic;
 				       $self->geometry;
 				       $self->no_recurse(0);
 				     });
-has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
+has 'gamma'	   => (is => 'rw', isa => 'LaxNum', default => 90,
 		       trigger => sub{ my ($self, $new) = @_;
 				       return if $self->no_recurse;
 				       $self->determine_monoclinic;
@@ -129,13 +130,13 @@ has 'contents'	   => (
 				     'clear_contents' => 'clear',
 				    }
 		      );
-has 'volume'	   => (is => 'rw', isa => 'Num', default => 1);
-has 'txx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tyx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tyz'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tzx'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'tzz'	   => (is => 'rw', isa => 'Num', default => 0);
-has 'occupancy'	   => (is => 'rw', isa => 'Num', default => 1);
+has 'volume'	   => (is => 'rw', isa => 'LaxNum', default => 1);
+has 'txx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tyx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tyz'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tzx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'tzz'	   => (is => 'rw', isa => 'LaxNum', default => 0);
+has 'occupancy'	   => (is => 'rw', isa => 'LaxNum', default => 1);
 
 
 sub clear {

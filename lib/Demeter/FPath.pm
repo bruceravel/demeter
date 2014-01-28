@@ -27,9 +27,9 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use Chemistry::Elements qw(get_symbol get_Z);
 use String::Random qw(random_string);
 
-has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
+has 'reff'	 => (is => 'rw', isa => 'LaxNum',    default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has 'fuzzy'	 => (is => 'rw', isa => 'LaxNum',    default => 0.1);
 has '+data'      => (isa => Empty.'|Demeter::Data');
 has '+n'	 => (default => 1);
 has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
@@ -71,10 +71,10 @@ has 'abs_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 has 'scat_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 
 has 'nofilter'	 => (is => 'rw', isa => 'Bool',   default =>  0);
-has 'kmin'	 => (is => 'rw', isa => 'Num',    default =>  0.0);
-has 'kmax'	 => (is => 'rw', isa => 'Num',    default => 20.0);
-has 'rmin'	 => (is => 'rw', isa => 'Num',    default =>  0.0);
-has 'rmax'	 => (is => 'rw', isa => 'Num',    default => 31.0);
+has 'kmin'	 => (is => 'rw', isa => 'LaxNum', default =>  0.0);
+has 'kmax'	 => (is => 'rw', isa => 'LaxNum', default => 20.0);
+has 'rmin'	 => (is => 'rw', isa => 'LaxNum', default =>  0.0);
+has 'rmax'	 => (is => 'rw', isa => 'LaxNum', default => 31.0);
 
 has 'nnnntext'   => (is => 'rw', isa => 'Str',    default => q{});
 has 'workspace'  => (is => 'rw', isa => 'Str',    default => q{}); # valid directory

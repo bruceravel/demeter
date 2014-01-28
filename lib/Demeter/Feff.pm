@@ -156,13 +156,13 @@ has 'othercards' => (
 		    );
 has 'workspace'    => (is=>'rw', isa => 'Str',
 		       default => sub{File::Spec->catfile(Demeter->stash_folder, 'feff_'.random_string('ccccccccc'))} );
-has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
-has 'vint'         => (is=>'rw', isa => 'Num', default => 0);
-has 'hidden'       => (is=>'rw', isa => 'Bool',     default => 0);
+has 'miscdat'      => (is=>'rw', isa => 'Str',    default => q{});
+has 'vint'         => (is=>'rw', isa => 'LaxNum', default => 0);
+has 'hidden'       => (is=>'rw', isa => 'Bool',   default => 0);
 
-has 'fuzz'         => (is=>'rw', isa =>  NonNeg,    default => 0);
-has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,    default => 0);
-has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => 0);
+has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => 0);
+has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => 0);
+has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => 0);
 
 		       ## result of pathfinder
 has 'pathlist' => (		# list of ScatteringPath objects

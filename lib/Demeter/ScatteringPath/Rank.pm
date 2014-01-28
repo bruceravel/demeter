@@ -22,10 +22,10 @@ has 'rankings' => (
 				 'rank_exists'   => 'exists',
 				},
 		  );
-has 'steps'  => (is => 'rw', isa => 'Int',     default => 6); # more precision?
-has 'spline' => (is => 'rw', isa => 'Any',     default => 0);
-has 'xmin'   => (is => 'rw', isa => 'Num',     default => 1);
-has 'xmax'   => (is => 'rw', isa => 'Num',     default => 10);
+has 'steps'  => (is => 'rw', isa => 'Int',    default => 6); # more precision?
+has 'spline' => (is => 'rw', isa => 'Any',    default => 0);
+has 'xmin'   => (is => 'rw', isa => 'LaxNum', default => 1);
+has 'xmax'   => (is => 'rw', isa => 'LaxNum', default => 10);
 
 sub rank {
   my ($self, $plot) = @_;

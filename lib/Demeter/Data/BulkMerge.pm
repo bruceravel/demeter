@@ -10,7 +10,7 @@ has 'smooth' => (is => 'rw', isa => 'Int',  default => 0);
 has 'plugin' => (is => 'rw', isa => 'Str',  default => q{});
 has 'max'    => (is => 'rw', isa => 'Int',  default => 1e9);
 has 'size'   => (is => 'rw', isa => 'Int',  default => 0);
-has 'margin' => (is => 'rw', isa => 'Num',  default => 0.997);
+has 'margin' => (is => 'rw', isa => 'LaxNum',  default => 0.997);
 has 'count'  => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'data' => (

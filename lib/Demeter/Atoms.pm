@@ -217,17 +217,17 @@ has 'helium'	       => (is => 'rw', isa => NonNeg, default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
 has 'gases_set'        => (is => 'rw', isa =>'Bool',  default=> 0);
 
-has 'xsec'	       => (is => 'rw', isa =>'Num', default=> 0);
-has 'deltamu'	       => (is => 'rw', isa =>'Num', default=> 0);
-has 'density'	       => (is => 'rw', isa =>'Num', default=> 0);
-has 'mcmaster'	       => (is => 'rw', isa =>'Num', default=> 0,
+has 'xsec'	       => (is => 'rw', isa =>'LaxNum', default=> 0);
+has 'deltamu'	       => (is => 'rw', isa =>'LaxNum', default=> 0);
+has 'density'	       => (is => 'rw', isa =>'LaxNum', default=> 0);
+has 'mcmaster'	       => (is => 'rw', isa =>'LaxNum', default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
-has 'i0'	       => (is => 'rw', isa =>'Num', default=> 0,
+has 'i0'	       => (is => 'rw', isa =>'LaxNum', default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
-has 'selfamp'	       => (is => 'rw', isa =>'Num', default=> 0);
-has 'selfsig'	       => (is => 'rw', isa =>'Num', default=> 0,
+has 'selfamp'	       => (is => 'rw', isa =>'LaxNum', default=> 0);
+has 'selfsig'	       => (is => 'rw', isa =>'LaxNum', default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
-has 'netsig'	       => (is => 'rw', isa =>'Num', default=> 0);
+has 'netsig'	       => (is => 'rw', isa =>'LaxNum', default=> 0);
 
 has 'is_imported'      => (is => 'rw', isa =>'Bool', default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; $self->is_populated(0) if ($new==0); });

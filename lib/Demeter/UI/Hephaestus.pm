@@ -57,8 +57,8 @@ my $icon_dimension = 30;
 
 use vars qw($periodic_table);
 
-#my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
-my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
+my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
+#my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
 
 sub new {
   my $ref    = shift;
@@ -74,6 +74,10 @@ sub new {
   $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
+
+  my @list = ('hephaestus', 'plot');
+  push @list, 'gnuplot' if (Demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
+  $self->{prefgroups} = \@list;
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -218,7 +222,7 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config Help)) {
+		    Standards F1F2 Config)) { #  Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
@@ -246,22 +250,18 @@ sub OnInit {
   $file->Append( $STAN,     "&Standards\tCtrl+8" );
   $file->Append( $FPPP,     "&F' and F\"\tCtrl+9" );
   $file->Append( $CONFIG,   "&Configure\tCtrl+c" );
-  $file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
+  ##$file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
   $file->AppendSeparator;
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
-  $help->Append( $CONFIG,    "&Configure" );
-  $help->Append( $DOCUMENT,  "Docu&ment" );
+  $help->Append( $CONFIG,    "&Configure\tCtrl+c" );
+  $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
-  #$bar->Append( $tool, "&Tools" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
-
-  #$tool->Enable($DOCUMENT,0);
-  #$help->Enable($DOCUMENT,0);
 
   EVT_MENU( $frame, $ABS,      sub{shift->{book}->SetSelection(0)});
   EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
@@ -273,7 +273,8 @@ sub OnInit {
   EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(7)});
   EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(8)});
   EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
-  EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
+  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
+  EVT_MENU( $frame, $DOCUMENT, \&document);
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
@@ -292,6 +293,21 @@ sub multiplex {
 sub on_close {
   my ($self) = @_;
   $self->Destroy;
+};
+
+sub document {
+  my ($self) = @_;
+  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my $url = Demeter->co->default('athena', 'doc_url') . '/hephaestus.html';
+  my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, 'hephaestus.html');
+  if (-e $fname) {
+    $fname  = 'file://'.$fname;
+    #print $fname, $/;
+    Wx::LaunchDefaultBrowser($fname);
+  } else {
+    #print $fname, $/;
+    Wx::LaunchDefaultBrowser($url);
+  };
 };
 
 sub on_about {

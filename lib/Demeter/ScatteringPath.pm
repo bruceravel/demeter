@@ -78,15 +78,15 @@ has 'etanonzero'   => (is => 'rw', isa => 'Bool',     default => 0);
 has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
-has 'halflength'   => (is => 'rw', isa => 'Num',      default => 0);
+has 'halflength'   => (is => 'rw', isa => 'LaxNum',   default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
 has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
-has 'zcwif'        => (is => 'rw', isa => 'Num',      default => -1);
+has 'zcwif'        => (is => 'rw', isa => 'LaxNum',   default => -1);
 
 has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'fuzzy'	   => (is => 'rw', isa => 'LaxNum',   default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
