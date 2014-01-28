@@ -46,7 +46,7 @@ use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
 use vars qw($app);
 
-my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx, $cli) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
@@ -58,14 +58,20 @@ my $result = GetOptions (
 			 "p"	    => \$p1,
 			 "atoms"    => \$atinp,
 			 "wx"       => \$wx,
+			 "cli"      => \$cli,
 			);
+
+$wx = 0 if ($cli);
 
 if ($wx) {
   wx();
   exit;
 };
 
-my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
+my $file = $ARGV[0] || "atoms.inp";
+die "Atoms terminating: $file does not exist\n" if (not -e $file);
+
+my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $file);
 my $atoms = Demeter::Atoms->new(@call);
 
 my $which = ($feff6) ? "feff6"
@@ -99,13 +105,15 @@ This documentation refers to Demeter version 0.9.19.
 
 =head1 SYNOPSIS
 
-  datoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
+  datoms [flag] [-r #] [--cif --rec=#] [--wx] [--cli] mydata.inp
 
 If no input or CIF file is specified at the command line, F<atoms.inp>
 in the current working directory will be used, if available.
 
 If the C<--wx> flag for running the GUI is given, all other command
 line arguments are ignored.
+
+The C<--cli> flag forces command line excution.
 
 =head1 DESCRIPTION
 
@@ -125,6 +133,12 @@ the F<feff.inp> file can be overridden from the command line.
 =item C<--wx>
 
 Run the wxWidgets-based GUI (ignoring all other command-line flags).
+
+=item C<--cli>
+
+Do not run the wxWidgets-based GUI.  Even if the C<--wx> flag is set
+in some other way (say by an shell alias), the program will be run as
+a command line tool and all other flags will be respected.
 
 =item C<-6>
 
