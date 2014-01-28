@@ -28,18 +28,20 @@
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
-     not working on the Mac) Removed dependence on Wx::Html by not
-     loading Demeter::UI::Hephaestus::Help
+     not working on the Mac)
+   - Removed dependence on Wx::Html by not loading
+     Demeter::UI::Hephaestus::Help
 
 *** Atoms
    - sensible error messages from CLI version when no input file
      specified or when file does not exist
    - added --cli flag to datoms script
+   - added atoms-gui script to bin folder
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
    - use fill_value=0.0 with interp() to avoid issues with NaN values
-     in arrays
+     in arrays (no longer necessary, see https://github.com/xraypy/xraylarch/issues/63)
    - escape backslashes in filenames before sending them to Larch
 
 *** Demeter
@@ -61,6 +63,8 @@
      Windows
    - Frank Schima made yeoman's progress on a MacPorts version of
      Demeter.  He also suggested file drag-n-drop.
+   - George Strbinsky_helped me track down some issues in the
+     Macports version
 
 ** 0.9.19    8 January 2014 (withdrawn)
 
