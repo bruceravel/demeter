@@ -135,16 +135,16 @@ sub new {
 
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
-  my $label = Wx::StaticText->new($this, -1, "Rmin", wxDefaultPosition, [35,-1]);
+  my $label = Wx::StaticText->new($this, -1, "Rmin", wxDefaultPosition, wxDefaultSize);
   $this->{rmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "rmin"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmin}, 1, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "Rmax", wxDefaultPosition, [35,-1]);
+  $label = Wx::StaticText->new($this, -1, "Rmax", wxDefaultPosition, wxDefaultSize);
   $this->{rmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "rmax"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{rmax}, 1, wxRIGHT, 10);
+  $range -> Add($this->{rmax}, 1, wxRIGHT, 5);
 
   $this->{$_}->SetBackgroundColour( Wx::Colour->new(Demeter->co->default("athena", "single")) )
     foreach (qw(mag env re im pha win dphase));

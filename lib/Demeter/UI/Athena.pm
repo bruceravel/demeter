@@ -1656,6 +1656,7 @@ sub side_bar {
 			  e00	     => 'plot marked groups with E0 at 0',
 			  norm	     => 'plot norm(E) scaled by edge step',
 			 );
+
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
@@ -1706,7 +1707,7 @@ sub side_bar {
 					"Demeter::UI::Athena::Plot::$m"->label,
 					($m eq 'PlotE'));
   };
-  $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 2);
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
 
   $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');

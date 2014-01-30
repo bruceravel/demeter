@@ -126,16 +126,16 @@ sub new {
 
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
-  my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, [35,-1]);
+  my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, wxDefaultSize);
   $this->{qmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "qmin"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{qmin}, 1, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, [35,-1]);
+  $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, wxDefaultSize);
   $this->{qmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "qmax"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{qmax}, 1, wxRIGHT, 10);
+  $range -> Add($this->{qmax}, 1, wxRIGHT, 5);
 
   foreach my $x (qw(qmin qmax)) {
     $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
