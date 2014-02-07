@@ -36,7 +36,8 @@ sub new {
   if (not -e $yaml) {
     copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles.ini'), $yaml);
   };
-  my @list = YAML::Tiny::LoadFile($yaml);
+  my @list;
+  eval {local $SIG{__DIE__} = sub {}; @list = YAML::Tiny::LoadFile($yaml)};
   foreach my $sty (@list) {
     my $style = Demeter::Plot::Style->new();
     foreach my $att (keys %$sty) {

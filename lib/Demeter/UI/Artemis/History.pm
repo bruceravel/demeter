@@ -526,7 +526,8 @@ sub discard {
   rmtree($folder);
 
   my $orderfile = $Demeter::UI::Artemis::frames{main}->{order_file};
-  my %order = YAML::Tiny::LoadFile($orderfile);
+  my %order = ();
+  eval {local $SIG{__DIE__} = sub {}; %order = YAML::Tiny::LoadFile($orderfile)};
   foreach my $k (keys %{$order{order}}) {
     delete $order{order}->{$k} if ($order{order}->{$k} eq $str);
   };

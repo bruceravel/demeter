@@ -99,8 +99,9 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
-    my $yaml = YAML::Tiny::LoadFile($old_cwd);
-    chdir($yaml->{cwd});
+    my $yaml;
+    eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($old_cwd)};
+    chdir($yaml->{cwd}) if (not $@);
   };
 
   ## -------- create a new frame and set icon
@@ -213,8 +214,9 @@ sub process_argv {
     #unlink File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE);
     my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
     if (-r $old_cwd) {
-      my $yaml = YAML::Tiny::LoadFile($old_cwd);
-      chdir($yaml->{cwd});
+      my $yaml;
+      eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($old_cwd)};
+      chdir($yaml->{cwd}) if (not $@);
     };
     return;
   };

@@ -316,7 +316,8 @@ sub _histo {
 
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
-    my $yaml = YAML::Tiny::LoadFile($persist);
+    my $yaml;
+    eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($persist)};
     $self->{histoyaml} = $yaml;
     $self->{histo_file}    -> SetPath($yaml->{file});
     $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');

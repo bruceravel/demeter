@@ -962,7 +962,8 @@ override 'serialization' => sub {
 
 override 'deserialize' => sub {
   my ($self, $fname) = @_;
-  my @stuff = YAML::Tiny::LoadFile($fname);
+  my @stuff;
+  eval {local $SIG{__DIE__} = sub {}; @stuff = YAML::Tiny::LoadFile($fname)};
 
   ## load the attributes
   my %args = %{ $stuff[0] };

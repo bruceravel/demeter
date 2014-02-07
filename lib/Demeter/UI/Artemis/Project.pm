@@ -260,7 +260,9 @@ sub read_project {
 
   my $import_problems = q{};
 
-  %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'));
+  %Demeter::UI::Artemis::fit_order = ();
+  eval {local $SIG{__DIE__} = sub {}; %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'))};
+
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
 
@@ -268,15 +270,17 @@ sub read_project {
   $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
-    my %hash = %{YAML::Tiny::LoadFile($py)};
-    delete $hash{nindicators};
-    Demeter->po->set(%hash);
+    my $rhash = {};
+    eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($py)};
+    delete $rhash->{nindicators};
+    Demeter->po->set(%$rhash);
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
   if (-e $iy) {
-    my @list = YAML::Tiny::LoadFile($iy);
-    $rframes->{Plot}->{indicators}->populate(@list);
+    my $rlist = [];
+    eval {local $SIG{__DIE__} = sub {}; $rlist = YAML::Tiny::LoadFile($iy)};
+    $rframes->{Plot}->{indicators}->populate(@$rlist);
   };
   my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
   if (-e $journal) {

@@ -743,7 +743,8 @@ sub serialize {
 };
 sub deserialize {
   my ($self, $fname) = @_;
-  my $r_args = YAML::Tiny::LoadFile($fname);
+  my $r_args = [];
+  eval {local $SIG{__DIE__} = sub {}; $r_args = YAML::Tiny::LoadFile($fname)};
   $self->set(@$r_args);
   return $self;
 };
