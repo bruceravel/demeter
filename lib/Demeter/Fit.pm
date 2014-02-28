@@ -1461,6 +1461,7 @@ override 'deserialize' => sub {
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
     delete $hash{group};
     $this->set(%hash);
+    $this->from_yaml(1);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$d} = $this;

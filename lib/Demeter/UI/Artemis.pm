@@ -183,6 +183,7 @@ sub OnInit {
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,   "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
+  #$importmenu->Enable($IMPORT_CHI, 0);
   $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;

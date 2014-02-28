@@ -25,6 +25,11 @@
    - Removed dependence on Wx::Html (causes seg fault on Mac, not
      really very important) and removed print and print preview
      buttons from History, Log, and Journal
+   - fixed problems handling import of chi(k) data into Artemis
+     + fixed a problem serializing data that had been imported as chi(k)
+     + take care to toggle the from_yaml attribute to true when
+       importing data from a project file.  this was needed to pass
+       the "data exists" fit sanity check
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was

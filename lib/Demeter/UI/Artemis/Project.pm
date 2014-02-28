@@ -278,9 +278,11 @@ sub read_project {
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
   if (-e $iy) {
-    my $rlist = [];
-    eval {local $SIG{__DIE__} = sub {}; $rlist = YAML::Tiny::LoadFile($iy)};
-    $rframes->{Plot}->{indicators}->populate(@$rlist);
+    my @list = YAML::Tiny::LoadFile($iy);
+    $rframes->{Plot}->{indicators}->populate(@list);
+    #my $rlist = [];
+    #eval {local $SIG{__DIE__} = sub {}; $rlist = YAML::Tiny::LoadFile($iy)};
+    #$rframes->{Plot}->{indicators}->populate(@$rlist);
   };
   my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
   if (-e $journal) {
