@@ -1,10 +1,9 @@
-
 These are notes on building a Demeter build environment from scratch on a Windows machine.
 
 * Strawberry
 
 Start by grabbing the latest and greatest from
-http://strwaberryperl.com.  This has a decent selection of MinGW
+http://strawberryperl.com.  This has a decent selection of MinGW
 cooked right in, so many things will be buildable immediately.
 
 This document is being written for Strawberry using some version of
