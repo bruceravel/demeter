@@ -160,5 +160,5 @@ offvalue=0
 default=false
 description
   If true, enable the button for performing an aggregate Feff
-  calculation.  This is disabled by defsault in 0.9.19 pending
+  calculation.  This is disabled by default in 0.9.19 pending
   publication of a paper on this topic.

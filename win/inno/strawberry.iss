@@ -1,7 +1,7 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.19"
+#define MyAppVersion "0.9.20"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
@@ -31,7 +31,7 @@ OutputDir=c:\output\{#MyAppVersion}
 OutputBaseFilename={#MyInstName}_{#MyAppVersion}
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
-AppCopyright=Demeter is copyright (c) 2006-2012 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
+AppCopyright=Demeter is copyright (c) 2006-2014 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
 ; AppMutex= TODO!
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
@@ -96,6 +96,7 @@ Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Com
 Name: "{group}\Stand-alone Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Comment: "Crystallography for the absorption spectroscopist"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
 Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe";
 Name: "{group}\Gnuplot shell"; Filename: "{app}\c\bin\gnuplot\bin\wgnuplot.exe"; Comment: "Stand-alone gnuplot plotting shell"; WorkingDir: "{app}"; IconFilename: "{app}\c\bin\gnuplot\bin\gnuplot.ico"
+Name: "{group}\Log folder"; Filename: "{userappdata}\demeter"; Comment: "Location of Demeter log files"; WorkingDir: "{userappdata}";
 ;;; Demeter URLs
 Name: "{group}\Website - Demeter"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
 Name: "{group}\Website - Ifeffit Wiki"; Filename: "{app}\win32\Ifeffit Wiki.url"; IconFilename: "{app}\win32\Ifeffit.ico"

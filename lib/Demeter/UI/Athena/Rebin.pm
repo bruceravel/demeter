@@ -237,7 +237,7 @@ Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athen
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

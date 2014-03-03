@@ -5,7 +5,7 @@
 
 * 0.9 series
 
-** 0.9.20   XX January 2014
+** 0.9.20   XX March 2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager
@@ -40,7 +40,6 @@
 *** Atoms
    - sensible error messages from CLI version when no input file
      specified or when file does not exist
-   - added --cli flag to datoms script
    - added atoms-gui script to bin folder
 
 *** Larch
@@ -60,7 +59,8 @@
 *** Windows
    - Athena w/Larch now mostly works on Windows
    - Fixed a problem with real and integer configuration parameters
-     being unset upon first time running Demeter.
+     being unset upon first time running Demeter. *This was the
+     problem requiring the withdrawal of 0.9.19*
 
 *** Acknowledgements
    - Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad
@@ -68,8 +68,10 @@
      Windows
    - Frank Schima made yeoman's progress on a MacPorts version of
      Demeter.  He also suggested file drag-n-drop.
-   - George Strbinsky_helped me track down some issues in the
+   - George Strbinsky helped me track down some issues in the
      Macports version
+   - Ian Godfrey filed a bug report that uncovered two problems with
+     importing chi(k) data directly into Artemis
 
 ** 0.9.19    8 January 2014 (withdrawn)
 
