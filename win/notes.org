@@ -68,7 +68,7 @@ Are any of the executables from GrWin needed?
  + Modify line 90 in ~src/cmdline/Makefile.in~ to read 
    :  readline_LIB =   $(TERMCAP_LIB)
 
- + ~./configure --prefix='/c/strawberry/c~  (Note: this should be done
+ + ~./configure --prefix='/c/strawberry/c'~  (Note: this should be done
    in the MinGW window and *not* in the Windows command prompt.) 
 
  + Edit ~src/lib/sys.h~, changing the ~sysdir~ and ~pgdev~ lines like so:
