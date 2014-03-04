@@ -11,7 +11,7 @@
    - File drag-n-drop onto the group list from the system file manager
    - Control-left-click for reorganzing group list items disabled in
      favor of file drag-n-drop
-   - Booth self-absorption algorithm now completely correct
+   - Booth self-absorption algorithm now implemented correctly
    - Added Hephaestus doc to the Athena Users' Guide
    - remove coloration characters when saving the contents of the
      status bar buffer so as not to trigger perl's wide character
@@ -74,6 +74,7 @@
      Macports version
    - Ian Godfrey filed a bug report that uncovered two problems with
      importing chi(k) data directly into Artemis
+   - Zack Gainsforth for additions/enhancements to standards system
 
 ** 0.9.19    8 January 2014 (withdrawn)
 

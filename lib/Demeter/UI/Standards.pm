@@ -573,7 +573,7 @@ sub athena {
 
 =head1 NAME
 
-Demeter::UI::Standards - Standard reference material database interaction
+Demeter::UI::Standards -  Interactions with standard reference data
 
 =head1 VERSION
 
@@ -818,6 +818,18 @@ four lines explain how to for mu(E) data from the columns in the file.
 The last three lines are used to calibrate the data and mark the
 interesting points in the XANES or derivative spectra.
 
+The C<comment> keyword is intended to describe the physical sample.
+The C<location>, C<people> and C<date> are intended to establish
+provenance.  The C<location> is the facility and syncherotron.  The
+C<people> are the experimenters who were present for the measurement.
+The C<date> is the date of the measurement.  The use of the
+L<ISO-8601|http://en.wikipedia.org/wiki/ISO_8601> combined date and
+time representations is encouraged, but not enforced at this time.
+
+The keywords C<coordination> and C<oxidation> can be used to specify
+the structural environment and oxidation state of the absorber.  These
+are not used at this time.
+
 Another option is to import data from an Athena project file.  Here is
 an example:
 
@@ -842,6 +854,20 @@ The first section of the F<standards.ini> file contains the
 configuration data and is used to control some aspects of the plots
 made of the reference data.
 
+This code will also look for a file called F<standards.ini> located in
+the the Demeter configuration folder, C<$HOME/.horae/> on linux,
+C<%APPDATA%\demeter> on Windows.  The system file is read first, then
+the private file is read.  Their contents are simply concatanted,
+although an entry with the same key -- the bit in [brackets] -- in the
+private file will overwrite the similarly named entry in the system
+file.
+
+There are a few more keywords not discussed above.  If C<rebin> = 1,
+then the data will be rebinned onto a conventional grid.  The
+C<calibrate> keyword is used to put data from a file onto the absolute
+energy grid.  The comma separated arguments are the energy value to
+choose as the edge and the energy value to assign to that point.
+
 The output html and latex files are formatted using L<Text::Template>
 templates, which can be found in the F<share> directory of the Demeter
 installation.  This is the same formatting system as used for
@@ -861,10 +887,6 @@ This uses Demeter and its dependencies.
 =item *
 
 latex output
-
-=item *
-
-load user ini files (i.e. ~/.horae/standards.ini)
 
 =item *
 
