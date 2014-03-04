@@ -127,6 +127,7 @@ sub screen {
     if ($standards -> element_exists (lc($_)) or
 	$standards -> material_exists(lc($_)))   {
       $choice = lc($_);
+      print $choice, $/;
       $element = $choice;
       ($element = $standards->get($choice,"element")) if $standards -> material_exists($choice);
 

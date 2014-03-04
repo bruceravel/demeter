@@ -33,6 +33,7 @@ $standards -> ini(q{});
 
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Wx::SpecialCharacters qw($MU);
+use Demeter::UI::Artemis::ShowText;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -71,13 +72,18 @@ sub new {
 
   $self->{plot} = Wx::Button->new($self, -1, 'Plot standard', wxDefaultPosition, [120,-1]);
   EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self)} );
-  $controlbox -> Add($self->{plot}, 0, wxEXPAND|wxALL, 5);
+  $controlbox -> Add($self->{plot}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self->{plot}->Disable;
 
-  $self->{save} = Wx::Button->new($self, wxID_SAVE, q{}, wxDefaultPosition, [120,-1]);
+  $self->{save} = Wx::Button->new($self, -1, q{Save to a file}, wxDefaultPosition, [120,-1]);
   EVT_BUTTON( $self, $self->{save}, sub{save_standard(@_, $self)} );
   $controlbox -> Add($self->{save}, 0, wxEXPAND|wxALL, 5);
   $self->{save}->Disable;
+
+  $self->{about} = Wx::Button->new($self, -1, q{Info about standard}, wxDefaultPosition, [120,-1]);
+  EVT_BUTTON( $self, $self->{about}, sub{about(@_, $self)} );
+  $controlbox -> Add($self->{about}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+  $self->{about}->Disable;
 
   ## finish up
   $vbox -> Add($hbox, 1, wxEXPAND|wxALL);
@@ -97,11 +103,18 @@ sub standards_get_data {
     push @choices, ucfirst($data);
   };
   return 0 unless @choices;
-  $self->{plot} -> Enable;
-  $self->{save} -> Enable;
-  $self->{data} -> Set(\@choices);
-  $self->{data} -> SetSelection(0);
-  my $comment = join(': ', $standards->get(lc($choices[0]), 'tag'), $standards->get(lc($choices[0]), 'comment'));
+  $self->{plot}  -> Enable;
+  $self->{save}  -> Enable;
+  $self->{about} -> Enable;
+  $self->{data}  -> Set(\@choices);
+  $self->{data}  -> SetSelection(0);
+  my $comment = sprintf('%s : %s, measured by %s (%s) at %s',
+			$standards->get(lc($choices[0]), 'tag'),
+			$standards->get(lc($choices[0]), 'comment'),
+			$standards->get(lc($choices[0]), 'people'),
+			$standards->get(lc($choices[0]), 'date'),
+			$standards->get(lc($choices[0]), 'location')
+		       );
   $self->{echo}->SetStatusText($comment);
   return 1;
 };
@@ -112,6 +125,15 @@ sub make_standards_plot {
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
   my $result  = $standards -> plot($choice, $which, 'plot');
+
+  my $this = lc($parent->{data}->GetString($parent->{data}->GetSelection));
+  $self->{echo}->SetStatusText(sprintf('%s : %s, measured by %s (%s) at %s',
+				       $standards->get($this, 'tag'),
+				       $standards->get($this, 'comment'),
+				       $standards->get($this, 'people'),
+				       $standards->get($this, 'date'),
+				       $standards->get($this, 'location')
+				      ));
   undef $busy;
   return 0 if ($result =~ m{Demeter});
   return 0 if (looks_like_number($result) and ($result == 0));
@@ -144,11 +166,27 @@ sub save_standard {
   $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
 };
 
+sub about {
+  my ($self, $event, $parent) = @_;
+  my $choice  = $parent->{data}->GetStringSelection;
+  my $save = $Text::Wrap::columns;
+  $Text::Wrap::columns = 60;
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($parent, $standards->report($choice), "About $choice")
+      -> Show;
+  $Text::Wrap::columns = $save;
+};
 sub echo_comment {
   my ($self, $event, $parent) = @_;
   my $which = lc($event->GetString);
   return if not $which;
-  my $comment = join(': ', $standards->get($which, 'tag'), $standards->get($which, 'comment'));
+  my $comment = sprintf('%s : %s, measured by %s (%s) at %s',
+				       $standards->get($which, 'tag'),
+				       $standards->get($which, 'comment'),
+				       $standards->get($which, 'people'),
+				       $standards->get($which, 'date'),
+				       $standards->get($which, 'location')
+				      );
   $self->{echo}->SetStatusText($comment);
   return 1;
 };

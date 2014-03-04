@@ -36,6 +36,7 @@
      not working on the Mac)
    - Removed dependence on Wx::Html by not loading
      Demeter::UI::Hephaestus::Help
+   - added some more standards and using new stanards subsystem enhancements
 
 *** Atoms
    - sensible error messages from CLI version when no input file
@@ -55,6 +56,7 @@
    - return to using wxFD_OVERWRITE_PROMPT with Wx::FileDialog rather
      than Demeter::UI::Wx::OverwritePrompt, which was fixing a problem
      in GTK 2.20
+   - several enhancements to standards subsystem
 
 *** Windows
    - Athena w/Larch now mostly works on Windows

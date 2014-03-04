@@ -24,6 +24,7 @@ use Chemistry::Elements qw(get_Z get_name);
 use File::Basename;
 use File::Copy;
 use File::Spec;
+use List::MoreUtils qw(any);
 use Text::Template;
 use Text::Wrap;
 $Text::Wrap::columns = 75;
@@ -41,9 +42,10 @@ has 'ini' => (is => 'rw', isa => 'Str',  default => q{},
 my %materials_of;
 my %elements_of;
 
-my $attribute_regex = Regexp::Assemble->new()->add(qw(tag comment crystal file element record
+my $attribute_regex = Regexp::Assemble->new()->add(qw(tag comment crystal file element record edge
 						      energy numerator denominator ln xmu from_web
 						      rebin calibrate xanes deriv
+						      location people date oxidation coordination
 						    ))->re;
 my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
@@ -51,37 +53,46 @@ my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
 sub read_ini {
   my ($self) = @_;
-  my $file = File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini");
-  my $ini = Demeter::IniReader->read_file($file);
-  #tie %ini, 'Config::IniFiles', ( -file => $file );
+  my @files = (File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini"),
+	       File::Spec->catfile(Demeter->dot_folder, "standards.ini")
+	      );
 
-  foreach my $k (keys %$ini) {
-    $ini->{$k}{element} ||= $k;
-    $ini->{$k}{element} = lc($ini->{$k}{element});
+  foreach my $file (@files) {
+    next if (not -e $file);
+    my $ini = Demeter::IniReader->read_file($file);
+    #tie %ini, 'Config::IniFiles', ( -file => $file );
 
-    $materials_of{$k} = $ini->{$k};
-    ++$elements_of{ $ini->{$k}{element} };
+    foreach my $k (keys %$ini) {
+      $ini->{$k}{element} ||= $k;
+      $ini->{$k}{element} = lc($ini->{$k}{element});
 
-    ## untabulated (generated) attributes
-    $materials_of{$k}{from_web} = 0;
+      $materials_of{$k} = $ini->{$k};
+      ++$elements_of{ $ini->{$k}{element} };
 
-    ## sensible fallbacks
-    foreach my $att (qw(xmu energy numerator denominator ln comment crystal)) {
-      $materials_of{$k}{$att} ||= q{};
-    };
+      ## untabulated (generated) attributes
+      $materials_of{$k}{from_web} = 0;
 
-    ## deal gracefully with missing callibrate, xanes, or deriv attributes
-    my $edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
-    my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
-    if ( (not exists($materials_of{$k}{calibrate})) or (not $materials_of{$k}{calibrate}) ) {
-      $materials_of{$k}{calibrate} = join(", ", $edge_energy, $edge_energy);
-    };
-    foreach my $plot (qw(xanes deriv)) {
-      if ( (not exists($materials_of{$k}{$plot})) or (not $materials_of{$k}{$plot}) ) {
-	$materials_of{$k}{$plot} = $edge_energy;
+      ## sensible fallbacks
+      foreach my $att (qw(xmu energy numerator denominator ln comment crystal location people date
+			  oxidation coordination)) {
+	$materials_of{$k}{$att} ||= q{};
+      };
+
+      ## deal gracefully with missing calibrate, xanes, or deriv attributes
+      my $edge = $ini->{$k}{element};
+      if (not $edge) {
+	$edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
+      };
+      my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
+      if ( (not exists($materials_of{$k}{calibrate})) or (not $materials_of{$k}{calibrate}) ) {
+	$materials_of{$k}{calibrate} = join(", ", $edge_energy, $edge_energy);
+      };
+      foreach my $plot (qw(xanes deriv)) {
+	if ( (not exists($materials_of{$k}{$plot})) or (not $materials_of{$k}{$plot}) ) {
+	  $materials_of{$k}{$plot} = $edge_energy;
+	};
       };
     };
-
   };
 };
 
@@ -219,6 +230,11 @@ sub plot {
   $ddd -> po -> legend(x => $self->config('key_x'),
 		       y => $self->config('key_y'),
 		      );
+  my $location_save = Demeter->co->default('gnuplot', 'keylocation');
+  if (ref(Demeter->po) =~ m{Gnuplot}) {
+    my $where = ($which =~ m{mu}) ? 'bottom right' : 'top right';
+    Demeter->co->set_default('gnuplot', 'keylocation', $where);
+  };
   $ddd -> po -> set(e_der  => ($which =~ m{deriv}) ? 1 : 0,
 		    e_bkg  => 0,
 		    e_sec  => 0,
@@ -230,11 +246,15 @@ sub plot {
 		    emin   => $self->config('emin'),
 		    emax   => $self->config('emax'),
 		    );
+  $ddd->po->start_plot;
   $ddd -> plot('E');
   my $part = ($which =~ m{deriv}) ? 'der'   : 'flat';
   my $list = ($which =~ m{deriv}) ? 'deriv' : 'xanes';
 
   my @points = split(/,\s*/, $self->get($choice, $list));
+  ## show tabulated edge energy if no annotations exist
+  $points[0] = Xray::Absorption->get_energy($self->get($choice,'element'), $self->get($choice,'edge'))
+    if ($points[0] == 0);
   $ddd -> plot_marker($part, \@points);
 
   foreach my $x (@points) {
@@ -253,9 +273,50 @@ sub plot {
     unlink $self->get($choice, 'from_web');
   };
 
+  if (ref(Demeter->po) =~ m{Gnuplot}) {
+    Demeter->co->set_default('gnuplot', 'keylocation', $location_save);
+  };
+
   ## clean up in ifeffit before returning
   return 0;
 };
+
+
+sub report {
+  my ($self, $choice) = @_;
+  my $cc = lc($choice);
+  my $text = q{};
+  $text .= sprintf("%-12s : %s\n", 'tag', $self->get($cc, 'tag'));
+  $text .= wrap("comment      : ", "               ", $self->get($cc, 'comment')) . $/;
+  my @common  = qw(element edge crystal file);
+  my @common2 = qw(location people date oxidation coordination);
+  my @list    = qw(record);
+  @list       = qw() if ($self->get($cc, 'file') =~ m{http://});
+  @list       = qw(energy numerator denominator ln calibrate) if ($self->get($cc, 'file') =~ m{stan\z});
+  foreach my $k (@common, @list, @common2) {
+    my $value = $self->get($cc, $k);
+    if ($k eq 'file') {
+      my ($token, $location) = (qw{%share%},
+				File::Spec->catfile(Demeter->location, "Demeter", "share")
+			       );
+      $value =~ s{$token}{$location};
+    } elsif (any {$k eq $_} (qw(energy denominator numerator))) {
+      $value =~ s{\$}{column };
+    } elsif ($k eq 'ln') {
+      $value = Demeter->yesno($value);
+    } elsif ($k eq 'element') {
+      $value = ucfirst($value);
+    } elsif ($k eq 'calibrate') {
+      $value =~ s{,}{ to};
+    };
+    $text .= sprintf("%-12s : %s\n", $k, $value);
+  };
+  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true') if $self->get($cc, 'rebin');
+  return $text;
+};
+#tag comment crystal file element record edge
+#  energy numerator denominator ln xmu from_web
+#  rebin calibrate xanes deriv
 
 sub filter_plot {
   my ($self, $elem) = @_;
@@ -376,13 +437,20 @@ sub screen {
 	: q{};
 
                        ## red comment line
+    my $comment = sprintf('%s, measured by %s (%s) at %s',
+			  $self->get($choice, 'comment'),
+			  $self->get($choice, 'people'),
+			  $self->get($choice, 'date'),
+			  $self->get($choice, 'location')
+			 );
     $text .= join(q{}, RED, BOLD, "Comment: ", RESET, "\n",
 		  ## file and crystal
 		  GREEN, "\tFile: ",    RESET, basename($self->get($choice, 'file')),
 		  $record,
-		  GREEN, "\tCrystal: ", RESET, $self->get($choice, 'crystal'), "\n",
+		  GREEN, "\tCrystal: ", RESET, $self->get($choice, 'crystal'),
+		  GREEN, "\tEdge: ", RESET, $self->get($choice, 'edge'), "\n",
 		  ## comment, nicely wrapped
-		  wrap("\t", "\t", $self->get($choice, 'comment')), "\n"
+		  wrap("\t", "\t", $comment), "\n"
 		 );
   };
   if ($error) {
@@ -729,8 +797,11 @@ contained in the F<standards.ini> file.  Here is an example:
 
   [fe]
   tag         = Iron foil
-  comment     = Iron foil measured at NSLS X11A 10/4/2002 by BR
+  comment     = Iron foil
   crystal     = Si(111)
+  location    = NSLS X11A
+  people      = BR
+  date        = 10/4/2002
   file        = %share%/standards/data/fe.stan
   energy      = $1
   numerator   = $2
@@ -752,7 +823,10 @@ an example:
 
   [cd]
   tag         = Cadmium foil
-  comment     = Cadmium foil, measured at APS 10ID Nov 18, 2006
+  comment     = Cadmium foil
+  location    = APS 10ID
+  people      = Saengdao Khoakaew, Ryan Tappero, and BR
+  date        = November 18, 2006
   crystal     = Si(111)
   file        = %share%/standards/data/Cd.prj
   record      = 1
