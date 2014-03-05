@@ -42,10 +42,11 @@ has 'ini' => (is => 'rw', isa => 'Str',  default => q{},
 my %materials_of;
 my %elements_of;
 
-my $attribute_regex = Regexp::Assemble->new()->add(qw(tag comment crystal file element record edge
+my $attribute_regex = Regexp::Assemble->new()->add(qw(name tag comment crystal file element record edge
 						      energy numerator denominator ln xmu from_web
 						      rebin calibrate xanes deriv
 						      location people date oxidation coordination
+						      notes doi
 						    ))->re;
 my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
@@ -57,39 +58,55 @@ sub read_ini {
 	       File::Spec->catfile(Demeter->dot_folder, "standards.ini")
 	      );
 
+  my $ini = Demeter::IniReader->read_file(File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini"));
+  my $include = $ini->{include};
+  #Demeter->Dump($include);
+  foreach my $k (sort keys %$include) {
+    my $file =  $include->{$k};
+    my ($token, $location) = (qw{%share%},
+			      File::Spec->catfile(Demeter->location, "Demeter", "share")
+			     );
+    $file =~ s{$token}{$location};
+    push @files, $file;
+  };
+  undef $ini;
+
   foreach my $file (@files) {
     next if (not -e $file);
     my $ini = Demeter::IniReader->read_file($file);
     #tie %ini, 'Config::IniFiles', ( -file => $file );
 
     foreach my $k (keys %$ini) {
+      next if ($k eq 'include');
       $ini->{$k}{element} ||= $k;
       $ini->{$k}{element} = lc($ini->{$k}{element});
+      $ini->{$k}{name} = $k;
+      my $key = lc($k);
 
-      $materials_of{$k} = $ini->{$k};
+      $materials_of{$key} = $ini->{$k};
       ++$elements_of{ $ini->{$k}{element} };
 
       ## untabulated (generated) attributes
-      $materials_of{$k}{from_web} = 0;
+      $materials_of{$key}{from_web} = 0;
 
       ## sensible fallbacks
       foreach my $att (qw(xmu energy numerator denominator ln comment crystal location people date
 			  oxidation coordination)) {
-	$materials_of{$k}{$att} ||= q{};
+	$materials_of{$key}{$att} ||= q{};
       };
 
       ## deal gracefully with missing calibrate, xanes, or deriv attributes
-      my $edge = $ini->{$k}{element};
+      my $edge = $ini->{$k}{edge};
       if (not $edge) {
 	$edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
       };
       my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
-      if ( (not exists($materials_of{$k}{calibrate})) or (not $materials_of{$k}{calibrate}) ) {
-	$materials_of{$k}{calibrate} = join(", ", $edge_energy, $edge_energy);
+      if ( (not exists($materials_of{$key}{calibrate})) or (not $materials_of{$key}{calibrate}) ) {
+	$materials_of{$key}{calibrate} = join(", ", $edge_energy, $edge_energy);
       };
       foreach my $plot (qw(xanes deriv)) {
-	if ( (not exists($materials_of{$k}{$plot})) or (not $materials_of{$k}{$plot}) ) {
-	  $materials_of{$k}{$plot} = $edge_energy;
+	if ( (not exists($materials_of{$key}{$plot})) or (not $materials_of{$key}{$plot}) ) {
+	  $materials_of{$key}{$plot} = $edge_energy;
 	};
       };
     };
@@ -311,7 +328,9 @@ sub report {
     };
     $text .= sprintf("%-12s : %s\n", $k, $value);
   };
-  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true') if $self->get($cc, 'rebin');
+  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true')                   if $self->get($cc, 'rebin');
+  $text .= sprintf("%-12s : %s\n", 'notes',    $self->get($cc, 'notes')) if $self->get($cc, 'notes');
+  $text .= sprintf("%-12s : %s\n", 'doi',      $self->get($cc, 'doi'))   if $self->get($cc, 'doi');
   return $text;
 };
 #tag comment crystal file element record edge
@@ -415,9 +434,9 @@ sub screen {
     next if ($element ne $self->get($data, 'element'));
 
     if (lc($data) eq lc($choice)) {
-      $text .= sprintf($template, BOLD, $MARKED, '*'.ucfirst(lc($data)), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $MARKED, '*'.$self->get($data, 'name'), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
     } else {
-      $text .= sprintf($template, BOLD, $INDIC,      ucfirst(lc($data)), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $INDIC,      $self->get($data, 'name'), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
     };
     $text .= ($i % 2) ? "    " : "\n";
     ++$i;

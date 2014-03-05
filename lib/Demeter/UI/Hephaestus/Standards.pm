@@ -100,7 +100,7 @@ sub standards_get_data {
   foreach my $data ($standards->material_list) {
     next if ($data eq 'config');
     next if (lc($el) ne $standards->get($data, 'element'));
-    push @choices, ucfirst($data);
+    push @choices, $standards->get($data, 'name'); #ucfirst($data);
   };
   return 0 unless @choices;
   $self->{plot}  -> Enable;
