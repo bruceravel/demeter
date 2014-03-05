@@ -60,14 +60,13 @@ sub read_ini {
 
   my $ini = Demeter::IniReader->read_file(File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini"));
   my $include = $ini->{include};
-  #Demeter->Dump($include);
   foreach my $k (sort keys %$include) {
     my $file =  $include->{$k};
     my ($token, $location) = (qw{%share%},
 			      File::Spec->catfile(Demeter->location, "Demeter", "share")
 			     );
     $file =~ s{$token}{$location};
-    push @files, $file;
+    unshift @files, $file;
   };
   undef $ini;
 
@@ -306,7 +305,7 @@ sub report {
   $text .= sprintf("%-12s : %s\n", 'tag', $self->get($cc, 'tag'));
   $text .= wrap("comment      : ", "               ", $self->get($cc, 'comment')) . $/;
   my @common  = qw(element edge crystal file);
-  my @common2 = qw(location people date oxidation coordination);
+  my @common2 = qw(location people date oxidation coordination notes doi);
   my @list    = qw(record);
   @list       = qw() if ($self->get($cc, 'file') =~ m{http://});
   @list       = qw(energy numerator denominator ln calibrate) if ($self->get($cc, 'file') =~ m{stan\z});
@@ -326,11 +325,9 @@ sub report {
     } elsif ($k eq 'calibrate') {
       $value =~ s{,}{ to};
     };
-    $text .= sprintf("%-12s : %s\n", $k, $value);
+    $text .= sprintf("%-12s : %s\n", $k, $value) if $value;
   };
-  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true')                   if $self->get($cc, 'rebin');
-  $text .= sprintf("%-12s : %s\n", 'notes',    $self->get($cc, 'notes')) if $self->get($cc, 'notes');
-  $text .= sprintf("%-12s : %s\n", 'doi',      $self->get($cc, 'doi'))   if $self->get($cc, 'doi');
+  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true') if $self->get($cc, 'rebin');
   return $text;
 };
 #tag comment crystal file element record edge
