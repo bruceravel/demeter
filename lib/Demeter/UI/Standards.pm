@@ -24,7 +24,7 @@ use Chemistry::Elements qw(get_Z get_name);
 use File::Basename;
 use File::Copy;
 use File::Spec;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any none);
 use Text::Template;
 use Text::Wrap;
 $Text::Wrap::columns = 75;
@@ -423,17 +423,21 @@ sub screen {
 
   my $stan =  ($self -> material_exists($choice))
     ? get_name($self -> get($choice, 'element')) : get_name($choice);
-  $text .= RED . BOLD . "\nAvailable $stan standard reference materials\n\n" . RESET;
-  my $i = 1;
-  my $template = " %s%s%14s%s : (%2d) %-15s";
+  $text .= RED . BOLD . "\nAvailable $stan (" . get_Z($stan) . ") standard reference materials\n\n" . RESET;
+  my ($i, $j) = (1, 1);
+  my $template = " %s%s%2d) %-16s%s : %-16s";
+  my @list = (q{});
+  my $none = none {lc($_) eq lc($choice)} $self->material_list;
   foreach my $data ($self->material_list) {
     next if ($data eq 'config');
     next if ($element ne $self->get($data, 'element'));
-
+    push @list, $data;
     if (lc($data) eq lc($choice)) {
-      $text .= sprintf($template, BOLD, $MARKED, '*'.$self->get($data, 'name'), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $MARKED, $j++, '*'.$self->get($data, 'name'), RESET, $self->get($data, 'tag'));
+    } elsif ($none and $#list == 1) {
+      $text .= sprintf($template, BOLD, $MARKED, $j++, '*'.$self->get($data, 'name'), RESET, $self->get($data, 'tag'));
     } else {
-      $text .= sprintf($template, BOLD, $INDIC,      $self->get($data, 'name'), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $INDIC,  $j++,     $self->get($data, 'name'), RESET, $self->get($data, 'tag'));
     };
     $text .= ($i % 2) ? "    " : "\n";
     ++$i;
@@ -443,9 +447,9 @@ sub screen {
   ## q to quit
   $text .= sprintf("      %s%s%s%s = %s    %s%s%s%s = %s    %s%s%s%s = %s    %s%s%s%s = %s\n\n",
 		   BOLD, $INDIC, "q", RESET, "quit",
-		   BOLD, $INDIC, "1", RESET, "plot mu(E)",
-		   BOLD, $INDIC, "2", RESET, "plot derivative",
-		   BOLD, $INDIC, "3", RESET, "plot filter",
+		   BOLD, $INDIC, "m", RESET, "plot mu(E)",
+		   BOLD, $INDIC, "d", RESET, "plot derivative",
+		   BOLD, $INDIC, "f", RESET, "plot filter",
 		  );
   if ($self->material_exists($choice)) {
     my $record = $self->get($choice, 'record')
@@ -472,7 +476,7 @@ sub screen {
   if ($error) {
     $text .= "\n\t*** " . BOLD . MAGENTA . $error . RESET . "\n";
   };
-  return $text;
+  return ($text, \@list);
 };
 
 

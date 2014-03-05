@@ -1,28 +1,14 @@
 #!/usr/bin/perl
 
-=begin Explanation
-  This is the beginning of a demeter-based tool to replace and expand
-  upon the booklet of foil reference spectra that comes with a box of
-  foils from EXAFS Materials.
-  .
-  This version will plot mu(E) and derivative spectra interactively or
-  generate html output.  Eventually latex and athena output will also
-  be available.  It is extensible in the sense that new elements and
-  new materials can be added to the list of standards.
+# Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+#
+# This example is free software; you can redistribute it and/or
+# modify it under the same terms as Perl itself. See L<perlgpl>.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-=cut
-
-=begin Copyright
- Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
- .
- This example is free software; you can redistribute it and/or
- modify it under the same terms as Perl itself. See L<perlgpl>.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-=cut
 
 BEGIN {
   ## munge the PATH env. var. under Windows, also add useful debugging
@@ -118,25 +104,29 @@ sub screen {
   my ($choice, $element, $which, $error) = ('fe', 'fe', 'mu', q{});
   #$demeter->po->start_plot; # reset the plot for the next go around
   my $term = new Term::ReadLine 'Reference spectra';
-  print $standards->screen($choice, $element, $light_background, $error);
-  my $prompt = "Enter an element or material, a number to plot, or q=quit > ",;
+  my ($text, $list) = $standards->screen($choice, $element, $light_background, $error);
+  print $text;
+  my $prompt = "Enter an element, material or number; m|d|f to plot; or q=quit > ",;
   while ( defined ($_ = $term->readline($prompt)) ) {
     $demeter->po->cleantemp, exit if ($_ =~ m{\Aq});
     $error = q{};
 
+    if (($_ =~ m{\A\d+\z}) and ($_ != 0)) {
+      $_ = $list->[$_];
+    };
+
     if ($standards -> element_exists (lc($_)) or
 	$standards -> material_exists(lc($_)))   {
       $choice = lc($_);
-      print $choice, $/;
       $element = $choice;
       ($element = $standards->get($choice,"element")) if $standards -> material_exists($choice);
 
-    } elsif ($_ =~ m{\A([123])}) {
+    } elsif ($_ =~ m{\A([mdf])}) {
       $demeter->po->start_plot; # reset the plot for the next go around
       if ($standards -> material_exists($choice)) {
-	$which  = ($1 == 1) ? 'mu'
-	        : ($1 == 2) ? 'derivative'
-                :             'filter';
+	$which  = ($1 eq 'm') ? 'mu'
+	        : ($1 eq 'd') ? 'derivative'
+                :               'filter';
 	if ($which eq 'filter') {
 	  $standards -> filter_plot($element);
 	} else {
@@ -145,7 +135,8 @@ sub screen {
       };
     };
 
-    print $standards->screen($choice, $element, $light_background, $error);
+    ($text, $list) = $standards->screen($choice, $element, $light_background, $error);
+    print $text;
   };
 };
 
@@ -218,7 +209,7 @@ EOH
   ;
   exit;
 };
-
+__END__
 
 =head1 NAME
 
@@ -304,7 +295,7 @@ In this mode, this is an interactive utility with a simple keyboard
 interface.  The user is presented with a screen that looks like this
 (albeit in color, if L<Term::ANSIColor> is available):
 
- Standard reference materials (Demeter 0.1.0)
+ Standard reference materials (Demeter 0.9.20)
  .
        H                                                                   He
        Li  Be                                          B   C   N   O   F   Ne
@@ -316,23 +307,29 @@ interface.  The user is presented with a screen that looks like this
              Ce  Pr  Nd  Pm  Sm  Eu  Gd  Tb  Dy  Ho  Er  Tm  Yb  Lu
              Th  Pa  U   Np  Pu  Am  Cm  Bk  Cf  Es  Fm  Md  No  Lr
  .
- Available Iron standard reference materials
+ Available Iron (26) standard reference materials
  .
-            *Fe : (26) Iron foil                 Goethite : (26) alpha-FeOOH
-       Hematite : (26) alpha-Fe2O3          Lepidocrocite : (26) gamma-FeOOH
+  1) Chromite       : Fe2+Cr2O4             2) Fe             : Iron foil
+  3) Ferrihydrite   : 5Fe2O3.9H2O           4) Goethite       : alpha-FeOOH
+  5) Hematite       : alpha-Fe2O3           6) Hercynite      : Fe2+Al2O4
+  7) Lepidocrocite  : gamma-FeOOH           8) Olivine (Fo0)  : Fe2+2SiO4
+  9) Olivine (Fo40) : Fe2+1.2Mg0.8SiO4     10) Olivine (Fo80) : Fe2+1.62Mg0.4SiO4
+ 11) Pentlandite    : Fe2+4.5Ni4.5S8       12) Pyrrhotite     : Fe2+0.95S
+ 13) *Troilite      : Fe2+S
  .
-      q = quit    1 = plot mu(E)    2 = plot derivative    3 = plot filter
+      q = quit    m = plot mu(E)    d = plot derivative    f = plot filter
  .
- Comment:
-        File: fe.stan   Crystal: Si(111)
-        Iron foil measured at NSLS X11A 10/4/2002 by BR
- .
- Enter an element or material, a number to plot, or q=quit >
+ Comment: 
+        File: Fe-K-ALS-10.3.2.prj       Record: 5       Crystal: Si(111)        Edge: K
+        Troilite powder on kapton tape, HxV slits = 100x30 um, measured by
+        Sirine Fakra, Matthew A. Marcus (10:57 PM 3/15/2007) at ALS 10.3.2
+ Enter an element, material or number; m|d|f to plot; or q=quit >
 
 By entering an element symbol, all standards for which that element is
 the absorber are listed below the periodic table.  By entering the
-name of a material, that one is selected for plotting.  By entering a
-number between 1 and 3, a useful plot is made of that material.
+name of a material or its number, that one is selected for plotting.
+By entering C<m>, C<d>, or C<f>, a useful plot is made of that
+material.
 
 Screen mode is the default mode.
 
