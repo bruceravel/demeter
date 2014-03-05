@@ -62,10 +62,7 @@ sub read_ini {
   my $include = $ini->{include};
   foreach my $k (sort keys %$include) {
     my $file =  $include->{$k};
-    my ($token, $location) = (qw{%share%},
-			      File::Spec->catfile(Demeter->location, "Demeter", "share")
-			     );
-    $file =~ s{$token}{$location};
+    $file = $self->resolve_token($file);
     unshift @files, $file;
   };
   undef $ini;
@@ -142,7 +139,14 @@ sub material_list {
     (get_Z($materials_of{$a}{element}) <=> get_Z($materials_of{$b}{element}))
       or
     ($a cmp $b)
-  } keys(%materials_of );
+  } keys(%materials_of);
+};
+
+sub resolve_token {
+  my ($self, $file) = @_;
+  my ($token, $location) = (qw{%share%}, File::Spec->catfile(Demeter->location, "Demeter", "share"));
+  $file =~ s{$token}{$location};
+  return $file;
 };
 
 sub resolve_file {
@@ -166,10 +170,7 @@ sub resolve_file {
       $file = '^^PLOP^^: unsuccessful';
     };
   } else {
-    my ($token, $location) = (qw{%share%},
-			      File::Spec->catfile(Demeter->location, "Demeter", "share")
-			     );
-    $file =~ s{$token}{$location};
+    $file = $self->resolve_token($file);
   };
   return $file;
 };
@@ -215,8 +216,8 @@ sub save {
   my $cc = $choice;
   $choice = lc($choice);
   my $thisfile = $self->resolve_file($choice);
-  return "The download of the remote data file for \"$cc\" failed."                    if ($thisfile eq '^^PLOP^^: unsuccessful');
-  return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
+  return "The download of the remote data file for \"$cc\" failed."                  if ($thisfile eq '^^PLOP^^: unsuccessful');
+  return "You do not have perl's libwww installed, so remote files cannot be saved." if ($thisfile eq '^^PLOP^^: nolibwww');
   my $data = $self->fetch($choice, $thisfile);
   $data->save("xmu", $fname);
   return $self;
@@ -312,10 +313,7 @@ sub report {
   foreach my $k (@common, @list, @common2) {
     my $value = $self->get($cc, $k);
     if ($k eq 'file') {
-      my ($token, $location) = (qw{%share%},
-				File::Spec->catfile(Demeter->location, "Demeter", "share")
-			       );
-      $value =~ s{$token}{$location};
+      $value = $self->resolve_token($value);
     } elsif (any {$k eq $_} (qw(energy denominator numerator))) {
       $value =~ s{\$}{column };
     } elsif ($k eq 'ln') {

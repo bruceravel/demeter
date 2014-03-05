@@ -66,14 +66,25 @@ sub new {
   my $controlbox = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($controlbox, 1, wxEXPAND|wxALL, 5);
 
-  $self->{howtoplot} = Wx::RadioBox->new( $self, -1, '', wxDefaultPosition, wxDefaultSize,
-				     ['Display XANES', 'Display derivative'], 1, wxRA_SPECIFY_COLS);
-  $controlbox -> Add($self->{howtoplot}, 0, wxEXPAND|wxALL, 5);
+  # $self->{howtoplot} = Wx::RadioBox->new( $self, -1, '', wxDefaultPosition, wxDefaultSize,
+  # 				     ['Display XANES', 'Display derivative'], 1, wxRA_SPECIFY_COLS);
+  # $controlbox -> Add($self->{howtoplot}, 0, wxEXPAND|wxALL, 5);
 
-  $self->{plot} = Wx::Button->new($self, -1, 'Plot standard', wxDefaultPosition, [120,-1]);
-  EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self)} );
-  $controlbox -> Add($self->{plot}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+  $self->{plotbox} = Wx::StaticBox->new($self, -1, 'Plot', wxDefaultPosition, wxDefaultSize);
+  $self->{plotboxsizer} = Wx::StaticBoxSizer->new( $self->{plotbox}, wxHORIZONTAL );
+  $controlbox -> Add($self->{plotboxsizer}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+
+
+  $self->{plot} = Wx::Button->new($self, -1, 'XANES', wxDefaultPosition, wxDefaultSize);
+  EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self, 'mu')} );
   $self->{plot}->Disable;
+
+  $self->{plotd} = Wx::Button->new($self, -1, 'Derivative', wxDefaultPosition, wxDefaultSize);
+  EVT_BUTTON( $self, $self->{plotd}, sub{make_standards_plot(@_, $self, 'deriv')} );
+  $self->{plotd}->Disable;
+
+  $self->{plotboxsizer}->Add($self->{plot},  1, wxEXPAND|wxALL, 2);
+  $self->{plotboxsizer}->Add($self->{plotd}, 1, wxEXPAND|wxALL, 2);
 
   $self->{save} = Wx::Button->new($self, -1, q{Save to a file}, wxDefaultPosition, [120,-1]);
   EVT_BUTTON( $self, $self->{save}, sub{save_standard(@_, $self)} );
@@ -104,6 +115,7 @@ sub standards_get_data {
   };
   return 0 unless @choices;
   $self->{plot}  -> Enable;
+  $self->{plotd} -> Enable;
   $self->{save}  -> Enable;
   $self->{about} -> Enable;
   $self->{data}  -> Set(\@choices);
@@ -120,9 +132,9 @@ sub standards_get_data {
 };
 
 sub make_standards_plot {
-  my ($self, $event, $parent) = @_;
+  my ($self, $event, $parent, $which) = @_;
   my $busy    = Wx::BusyCursor->new();
-  my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
+  #my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
   my $result  = $standards -> plot($choice, $which, 'plot');
 
@@ -144,8 +156,8 @@ sub make_standards_plot {
 sub save_standard {
   my ($self, $event, $parent) = @_;
   my $choice  = $parent->{data}->GetStringSelection;
-  $choice =~ s{\s+}{_}g;
-  my $default = join('.', $choice, 'xmu');
+  (my $cc = $choice) =~ s{\s+}{_}g;
+  my $default = join('.', $cc, 'xmu');
   my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
 				"data (*.dat,*.xmu)|*.data,*.xmu|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
@@ -162,8 +174,12 @@ sub save_standard {
   #   my $ok = $yesno->ShowModal;
   #   return if $ok == wxID_NO;
   # };
-  $standards->save($choice, $file);
-  $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
+  my $ret = $standards->save($choice, $file);
+  if ($ret =~ m{Demeter}) {
+    $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
+  } else {
+    $self->{echo}->SetStatusText($ret);
+  };
 };
 
 sub about {
