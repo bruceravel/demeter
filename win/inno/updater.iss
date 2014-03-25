@@ -51,7 +51,7 @@ Name: english; MessagesFile: compiler:Default.isl
 [Files]
 Source: perl\site\lib\Ifeffit.pm; DestDir: {app}\perl\site\lib; Flags: overwritereadonly ignoreversion replacesameversion;
 Source: perl\site\lib\Demeter.pm; DestDir: {app}\perl\site\lib; Flags: overwritereadonly ignoreversion replacesameversion;
-Source: perl\site\lib\Demeter\*; DestDir: {app}\perl\site\lib\Demeter; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: *.prj,*.stan,*~,artug\*,aug\*; 
+Source: perl\site\lib\Demeter\*; DestDir: {app}\perl\site\lib\Demeter; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: *.prj,*.stan,*~,artug\*,aug\*,UI\Metis.pm,UI\Metis\*; 
 Source: perl\site\lib\Xray\*; DestDir: {app}\perl\site\lib\Xray; Flags: recursesubdirs overwritereadonly ignoreversion replacesameversion; Excludes: BLA.pm,BLA\*; 
 Source: perl\site\lib\auto\Ifeffit\Ifeffit.bs; DestDir: {app}\perl\site\lib\auto\Ifeffit; Flags: overwritereadonly ignoreversion replacesameversion;
 Source: perl\site\lib\auto\Ifeffit\Ifeffit.dll; DestDir: {app}\perl\site\lib\auto\Ifeffit; Flags: overwritereadonly ignoreversion replacesameversion;

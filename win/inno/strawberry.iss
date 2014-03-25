@@ -5,6 +5,7 @@
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
+#define Pre "pre2"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -28,7 +29,7 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output\{#MyAppVersion}
-OutputBaseFilename={#MyInstName}_{#MyAppVersion}
+OutputBaseFilename={#MyInstName}_{#MyAppVersion}_{#Pre}
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2014 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2011, Larry Wall
@@ -83,7 +84,7 @@ Root: HKCR; Subkey: "Artemis\shell\open\command"; ValueType: string; ValueName: 
 
 
 [Files]
-Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*";
+Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*,\perl\site\lib\Xray\BLA.pm,\perl\site\lib\Xray\BLA\*,\perl\site\lib\Demeter\UI\Metis.pm,\perl\site\lib\Demeter\UI\Metis\*,\perl\site\bin\bla*,\perl\site\bin\metis*";
 
 [Tasks]
 Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Additional shortcuts:";
