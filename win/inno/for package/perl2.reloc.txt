@@ -1,0 +1,9 @@
+C:\strawberry\
+README.txt:backslash
+win32\CPAN Module Search.url:backslash
+win32\Learning Perl (tutorials, examples).url:backslash
+win32\Live Support (chat).url:backslash
+win32\MetaCPAN Search Engine.url:backslash
+win32\Perl Documentation.url:backslash
+win32\Strawberry Perl Release Notes.url:backslash
+win32\Strawberry Perl Website.url:backslash

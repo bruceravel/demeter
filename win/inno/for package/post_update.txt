@@ -1,0 +1,12 @@
+You are done updating Demeter with Strawberry Perl.
+
+To verify that the update proceeded correctly, lauch one of
+the programs and check the version number in the Help menu.
+The version number of the newly launched program should match
+the version number of this updater.
+
+If a program crashes, include the log file with your bug
+report.  Use the "Log files" item under Demeter in the Start
+Menu to find the log file.
+
+Thanks for updating Demeter!

@@ -1,0 +1,12 @@
+Demeter with Strawberry Perl
+
+You have just installed Bruce Ravel's Demeter package, which includes
+the graphical inerfaces Athena, Artemis, and Hephaestus.  Demeter is a
+tool for building XAS analysis programs using Feff and Ifeffit and is
+the tool from which Athena, Artemis, and Hephaestus are built.
+
+If this is your first time installing Demeter: 
+  *** Please be patient the first time you make a plot with one
+  *** of the programs.  The first plot made wih Gnuplot on your
+  *** computer may be quite slow, but all subsequent plots will
+  *** be speedy.

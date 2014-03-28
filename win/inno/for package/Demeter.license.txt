@@ -1,0 +1,17 @@
+
+The Demeter code, which is copyright (c) 2006-2012, Bruce Ravel is
+licensed under the Perl Artistic License.
+
+This distribution is an aggregate of several different projects,
+licensed under various OSI-compatible Open Source licenses, or
+given to the public domain.
+
+None of these licenses restrict your freedom to use, modify, or share
+the software in this package.
+
+If you or your institution cannot adibe by the terms of open source
+licenses, then you should not install this software.
+
+This package is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

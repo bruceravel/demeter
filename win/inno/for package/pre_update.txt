@@ -1,0 +1,20 @@
+You are about to update Demeter with Strawberry Perl, the package
+that provides the XAS data processing and analysis programs
+Athena, Artemis, and Hephaestus.
+
+*******************
+* IMPORTANT NOTES *
+*******************
+
+This updater DOES NOT install Demeter.  If you have not yet installed
+Demeter, quit this process, then download and install the Installer 
+package.
+
+This updater MUST be installed into the same location as the 
+Demeter Installer for Windows.  If Demeter was installed into its 
+default location
+    C:\strawberry
+this this updater must also be installed into C:\strawberry.
+
+If you installed Demeter to some other location, this updater MUST
+be installed into that location.
