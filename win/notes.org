@@ -1,3 +1,4 @@
+#+STARTUP: showall
 These are notes on building a Demeter build environment from scratch on a Windows machine.
 
 * Strawberry
@@ -11,6 +12,18 @@ perl 5.18.  This required excising all uses of given/when from the
 source tree to avoid the ubiquitous warning about smart matching being
 an experimental feature.
 
+* GnuWin32
+
+ + from http://gnuwin32.sourceforge.net/packages.html install the
+   packages for PdCurses, Readline, and Make.  These will be installed
+   into ~C:\GnuWin32~.  Make is required to build pgplot.
+
+ + grab all file from ~C:\GnuWin32\lib~ with "curses", "readline", or
+   "history" in the file name.  Copy them to ~C:\strawberry\c\lib~ 
+
+ + from ~C:\GnuWin32\bin~, copy ~readline5.dll~ and ~curses2.dll~ to
+   ~C:\strawberry\c\bin~   
+
 * mingw
 
  + start from scratch (i.e. uninstall and reinstall) to avoid conflict
@@ -18,6 +31,8 @@ an experimental feature.
  + install mingw32-base and msys-base
  + do not install fortran or any other compilation tools -- usable
    packages come with Strawberry
+ + note the batch file in ~C:\MinGW\msys\1.0\msys.bat~.  You will want
+   to use this shell in the next step when you compile pgplot.
 
 * pgplot
 
@@ -44,19 +59,18 @@ an experimental feature.
    
 Are any of the executables from GrWin needed?
 
-* GnuWin32
+* Git and GitHub
 
- + from http://gnuwin32.sourceforge.net/packages.html install the
-   packages for PdCurses and Readline.  These will be installed into
-   ~C:\GnuWin32~
+At this point, you may want to install [[http://windows.github.com/][GitHub for Windows]].  It takes a
+while....
 
- + grab all file from ~C:\GnuWin32\lib~ with "curses", "readline", or
-   "history" in the file name.  Copy them to ~C:\strawberry\c\lib~ 
+Regardless, you will need to clone a few things from GitHub.
 
- + from ~C:\GnuWin32\bin~, copy ~readline5.dll~ and ~curses2.dll~ to
-   ~C:\strawberry\c\bin~   
+Clone a copy of Demeter from https://github.com/bruceravel/demeter
 
 * compiling Ifeffit
+
+ + Clone from https://github.com/newville/ifeffit
 
  + Replace ~iconf_pgplot~, ~iconf_term~, and ~iconf_iff~ with the
    versions from ~win/~ in the Demeter distribution 
@@ -128,7 +142,7 @@ dependency list in 0.9.19)
 
 * Demeter, prerequisites
 
-clone or pull latest version of [[https://github.com/bruceravel/demeter][Demeter]]
+You have already cloned or pulled the latest version of [[https://github.com/bruceravel/demeter][Demeter]], right?
 
  : perl Build.PL
  : perl Build installdeps
