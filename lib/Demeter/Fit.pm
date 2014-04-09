@@ -1564,10 +1564,12 @@ override 'deserialize' => sub {
 
     } elsif (exists $pathlike->{absorber}) { # this is an FSPath
       #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
-      my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
-      my $ws = $feff->workspace;
-      $ws =~ s{\\}{/}g;		# path separators...
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $feff = Demeter -> mo -> fetch('Feff', $pathlike->{parentgroup});
+      $feff = Demeter -> mo -> fetch('Feff', basename($pathlike->{folder})) if (ref($feff) !~ m{Feff});
+      #my $ws = $feff->workspace;
+      #$ws =~ s{\\}{/}g;		# path separators...
+      #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($pathlike->{folder})));
       $feff->workspace($where);
       $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
       $this->feff_done(0);
@@ -1578,9 +1580,9 @@ override 'deserialize' => sub {
       delete $hash{feff_done};
       delete $hash{workspace};
       delete $hash{folder};
-      $this -> set(parent=>$feff, workspace=>$where, folder=>$where);
       $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
+      $this -> set(parent=>$feff, parentgroup=>$feff->group, workspace=>$where, folder=>$where);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };

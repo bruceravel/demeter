@@ -30,6 +30,10 @@
      + take care to toggle the from_yaml attribute to true when
        importing data from a project file.  this was needed to pass
        the "data exists" fit sanity check
+   - corrected an odd bug whereby relation between a FSPath and it's
+     Feff calculation could be lost in a project file (see thread
+     starting at
+     http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04288.html)
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
@@ -75,6 +79,7 @@
    - Ian Godfrey filed a bug report that uncovered two problems with
      importing chi(k) data directly into Artemis
    - Zack Gainsforth for additions/enhancements to standards system
+   - Mengling Stuckman for reporting on an odd FSPath bug
 
 ** 0.9.19    8 January 2014 (withdrawn)
 

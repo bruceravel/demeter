@@ -317,6 +317,7 @@ sub read_project {
     my $feffobject = ($source eq 'aggregate') ?
       Demeter::Feff::Aggregate->new(group=>$d) :
 	  Demeter::Feff->new(group=>$d); # force group to be the same as before.
+
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
