@@ -39,12 +39,13 @@ sub is {
   my @headers = split(" ", $line);
 
   #my $cfg = new Config::IniFiles( -file => $self->inifile );
-  my $enr = Demeter->co->default("x23a2med", "energy");
-  my $ch1 = Demeter->co->default("x23a2med", "roi1");
-  my $sl1 = Demeter->co->default("x23a2med", "slow1");
-  my $fa1 = Demeter->co->default("x23a2med", "fast1");
+  my $enr  = Demeter->co->default("x23a2med", "energy");
+  my $ch1  = Demeter->co->default("x23a2med", "roi1");
+  my $mere = Demeter->co->default("x23a2med", "multiedge_regexp");
+  my $sl1  = Demeter->co->default("x23a2med", "slow1");
+  my $fa1  = Demeter->co->default("x23a2med", "fast1");
   my $seems_escan = ($line =~ m{$enr\b}i);
-  my $seems_med = ($line =~ m{\b$ch1\b}i);
+  my $seems_med = (($line =~ m{\b$ch1\b}i) or ($line =~ m{\broi\d_\d\b}i));
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
   return ($is_x23a2 and $seems_escan and $seems_med and $is_med);
@@ -66,14 +67,20 @@ sub fix {
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
+  my @edges = ();
+  ## column labels like roi1.1 and roi2.3
+  my $mere = Demeter->co->default("x23a2med", "multiedge_regexp");
+  my $multiedge = any { $_ =~ m{roi\d_\d} } @labels;
   foreach my $i (1 .. 4) {
     my $is_ok = 1;
-    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$i") ) } @labels;
+    if (not $multiedge) {
+      $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$i") ) } @labels;
+    };
     $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$i")) } @labels;
     $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$i")) } @labels;
-
     push @represented, $i if $is_ok;
   };
+
   return 0 if ($#represented == -1);
   $self->nelements($#represented+1);
 
@@ -83,8 +90,8 @@ sub fix {
     push @options, [$l, $val];
   };
 
-
   my @labs    = (Demeter->co->default('x23a2med', 'energy'), lc(Demeter->co->default('x23a2med', 'i0')));
+  my (@edge1, @edge2);
   my $maxints = q{};
   my $dts     = q{};
   my $time    = Demeter->co->default("x23a2med", "time");
@@ -93,19 +100,36 @@ sub fix {
   my $nosignal = 0;
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
-    my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
     my @slow = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "slow$ch")));
     my @fast = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "fast$ch")));
     if (any {$_ == 0} @slow) {
       ++$nosignal;
       next;
     };
-    my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
-    $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
-    push @labs, "corr$ch";
-    $maxints .= " $max";
+    if (not $multiedge) {	# normal MED file
+      my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
+      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
+      push @labs, "corr$ch";
+    } else {			# multiedge MED file
+      my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi1_'.$ch);
+      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".c1_$ch", \@corr);
+      push @edge1, "c1_$ch";
+
+      @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi1_'.$ch);
+      ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".c2_$ch", \@corr);
+      push @edge2, "c2_$ch";
+
+      $maxints .= " $max";
+    };
+
     $dts .= " $deadtime";
+  };
+  if ($multiedge) {
+    push @labs, @edge1, @edge2;
   };
   return 0 if ($nosignal == $#represented+1);
   $self->nelements($#represented+1-$nosignal);
