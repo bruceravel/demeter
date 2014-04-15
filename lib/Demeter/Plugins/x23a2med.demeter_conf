@@ -134,9 +134,9 @@ description
   This is the column label for the fast channel (ICR) of the fourth
   detecter.
 
-variable=multiedge_regexp
+variable=multiedge_regex
 type=string
-default=roi\\d_\\d
+default=roi\d_\d
 description
   This is a regular expression for recognizing the column label when
   configured for measurement of multiple ROIs.
