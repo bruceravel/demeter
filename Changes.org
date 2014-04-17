@@ -5,7 +5,7 @@
 
 * 0.9 series
 
-** 0.9.20   XX March 2014
+** 0.9.20   XX April 2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager
@@ -36,6 +36,9 @@
      http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04288.html)
    - save path interpretation from Path page in Atoms window
    - reorganized some buttons in the Atoms window
+   - attempted to fix a bug wherein an incorrect argument could be
+     sent to Wx::ComboBox's SetStringSelection method in Align, LCF,
+     and a few other places
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
@@ -51,6 +54,8 @@
    - added atoms-gui script to bin folder
    - fixed a bug related to importing a feff.inp file directly onto
      the feff page in the Atoms GUI
+   - import buttons on Atoms and Feff pages respond sensibly to files
+     that are not CIF/atoms or feff files
 
 *** Larch
    - Athena w/Larch now mostly works on Windows

@@ -134,7 +134,7 @@
     3. +PCA+
     4. +boxcar average+
 
-*** needs doing [3/14] [21%]
+*** needs doing [3/15] [20%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
@@ -194,6 +194,8 @@
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
    - [ ] *metadata tool*
+   - [ ] *Data summer*
+     + push_values method needs to update menus to reflect changes in group list
 
 ** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.

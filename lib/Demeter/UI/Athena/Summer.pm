@@ -279,6 +279,10 @@ Demeter's dependencies are in the F<Build.PL> file.
 
 =item *
 
+C<push_values> does not update menus to reflect changes in groups list
+
+=item *
+
 It might be nice to allow the number of data group choice menus
 (currently 8) to be configurable.
 

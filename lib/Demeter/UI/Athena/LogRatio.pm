@@ -117,8 +117,14 @@ sub push_values {
   $this->{this}  -> SetLabel($data->name);
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
-  ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  #($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  #$this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  if ((not $was) or ($was eq 'None')) {
+    $this->{standard}->SetSelection(0);
+  } else {
+    my $ok = $this->{standard}->SetStringSelection($was);
+    $this->{standard}->SetSelection(0) if not $ok;
+  };
 
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
