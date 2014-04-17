@@ -41,8 +41,8 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),       wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddTool(-1, "Template",   $self->icon("boilerplate"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{boiler});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Doc",        $self->icon("document"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
-  $self->{toolbar} -> AddSeparator;
+  #$self->{toolbar} -> AddTool(-1, "Doc",        $self->icon("document"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
+  #$self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
@@ -98,7 +98,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(import save_file clear_all insert_boilerplate noop document noop run_feff );
+  my @callbacks = qw(import save_file clear_all insert_boilerplate noop run_feff ); #  document noop
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -170,35 +170,46 @@ sub import {
 				  "input file (*.inp)|*.inp|All files (*)|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
-    $fd -> ShowModal;
+    if ($fd -> ShowModal == wxID_CANCEL) {
+      $self->{parent}->status("Saving feff input file aborted.");
+      return 0;
+    };
     $file = $fd->GetPath;
   };
+  if (not $self->{feffobject}->is_feff($file)) {
+    warn "$file is not an Feff input file\n";
+    return 0;
+  };
   $self->{feff}->SetValue(q{});
-  local $/;
-  open(my $INP, $file);
-  my $text = <$INP>;
-  close $INP;
-  $self->{feff}->SetValue($text);
-  $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
+  {
+    local $/;
+    open(my $INP, '<', $file);
+    my $text = <$INP>;
+    close $INP;
+    $self->{feff}->SetValue($text);
+  };
+  Demeter -> push_mru("feff", $file) if ($file !~ m{_dem_});
 };
 
 
 sub save_file {
   my ($self) = @_;
+  my $file;
   my $fd = Wx::FileDialog->new( $self, "Save feff input file", cwd, q{feff.inp},
 				"input file (*.inp)|*.inp|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR,
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $self->{parent}->status("Saving feff input file aborted.")
+    $self->{parent}->status("Saving feff input file aborted.");
+    return;
   } else {
-    my $file = $fd->GetPath;
-    open my $OUT, ">".$file;
-    print $OUT $self->{feff}->GetValue;
-    close $OUT;
-    $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
-    $self->{parent}->status("Saved feff input file to $file.");
+    $file = $fd->GetPath;
   };
+  open(my $OUT, ">", $file);
+  print $OUT $self->{feff}->GetValue;
+  close $OUT;
+  Demeter -> push_mru("feff", $file);
+  $self->{parent}->status("Saved feff input file to $file.");
 };
 
 sub clear_all {

@@ -385,8 +385,12 @@ sub push_values {
     my $str = $this->{'standard'.$i}->GetStringSelection;
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
-    $this->{'standard'.$i}->SetSelection(0)
-      if not defined($this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection));
+
+    if ((not defined $this->{'standard'.$i}->GetSelection) or
+	(not $this->{'standard'.$i}->GetSelection) or
+	(not defined $this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection))) {
+      $this->{'standard'.$i}->SetSelection(0);
+    };
   };
   $this->{result}->Clear;
   $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));

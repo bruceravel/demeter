@@ -137,8 +137,8 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Export",     $self->icon("output"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{output});
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
-  $self->{toolbar} -> AddSeparator;
+  #$self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
+  #$self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
   my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
@@ -442,7 +442,7 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms aggregate);
+  my @callbacks = qw(open_file save_file write_output clear_all noop run_atoms aggregate); #  document noop
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -556,6 +556,11 @@ sub open_file {
     };
     $file = $fd->GetPath;
   };
+  if (not ($atoms->is_atoms($file) or $atoms->is_cif($file))) {
+    warn "$file is not an atoms.inp or CIF file\n";
+    return 0;
+  };
+
   $self->clear_all(1);
 
   my $is_cif = 0;

@@ -61,9 +61,10 @@ sub new {
   if ($component) {
     $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
     EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-    $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
-    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, " Rename",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, "Discard",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
     $self->{toolbar} -> AddSeparator;
+    $self->{toolbar} -> AddTool(-1, "Feff in Demeter", $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Open the Demeter's Feff document page in a browser" );
     $self->{toolbar} -> AddTool(-1, "Feff doc", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Open Feff's on-line document in a browser" );
     $self->{toolbar} -> Realize;
     $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
@@ -167,7 +168,7 @@ sub make_page {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   my $position = $toolbar->GetToolPos($event->GetId);
-  my @callbacks = qw(on_rename on_discard noop on_about);
+  my @callbacks = qw(on_rename on_discard noop on_doc on_about);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -255,6 +256,10 @@ sub on_discard {
   delete $::app->{$fnum};
 
   $Demeter::UI::Artemis::frames{main}->status("Discarded Feff calculation.  Note that unused GDS parameters may remain.");
+};
+
+sub on_doc {
+  $::app->document('feff');
 };
 
 sub on_about {

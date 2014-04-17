@@ -3,6 +3,7 @@ package Demeter::UI::Atoms::Paths;
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Const::Fast;
 use Cwd;
@@ -17,7 +18,7 @@ use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
 		 EVT_LEFT_DOWN EVT_RIGHT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
-	     save     => "Save this Feff calculation to a Demeter save file",
+	     save     => "Save this Feff interpretation to a text file",
 	     plot     => "Plot selected paths",
 	     chik     => "Plot paths in k space",
 	     chir_mag => "Plot paths as the magnitude of chi(R)",
@@ -36,18 +37,18 @@ sub new {
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-  #$self->{toolbar} -> AddTool(1, "Save calc.",      $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
-  #$self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(1, "Plot selection",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
+  $self->{toolbar} -> AddTool(1, "Save",      $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddRadioTool(3, 'chi(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
-  my $this = $self->{toolbar} -> AddRadioTool(4, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
-  $self->{toolbar} -> AddRadioTool(5, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
-  $self->{toolbar} -> AddRadioTool(6, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
+  $self->{toolbar} -> AddTool(2, "Plot paths",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddRadioTool(3, $CHI.'(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
+  my $this = $self->{toolbar} -> AddRadioTool(4, '|'.$CHI.'(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
+  $self->{toolbar} -> AddRadioTool(5, 'Re['.$CHI.'(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
+  $self->{toolbar} -> AddRadioTool(6, 'Im['.$CHI.'(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
   $self->{toolbar} -> AddSeparator;
   my $rank = $self->{toolbar} -> AddTool(8, "Rank", $self->icon("rank"),     wxNullBitmap, wxITEM_NORMAL, q{}, $hints{rank});
-  $self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
-  $self->{toolbar} -> ToggleTool(6, 0);
+  #$self->{toolbar} -> AddTool(9, "Doc",  $self->icon("document"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc});
+  $self->{toolbar} -> ToggleTool(3, 0);
   $self->{toolbar} -> ToggleTool(4, 1);
 
   $self->{rankid} = $rank->GetId;
@@ -257,7 +258,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv---------order of toolbar on the screen------------vV
-  my @callbacks = qw(plot noop set_plot set_plot set_plot set_plot noop rank document); # save noop 
+  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot noop rank); # document
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure($event->GetId);
 };
@@ -327,17 +328,18 @@ sub set_plot {
 sub save {
   my ($self) = @_;
   return if not $self->{paths}->GetItemCount;
-  my $fd = Wx::FileDialog->new( $self, "Save Feff calculation", cwd, q{feff.yaml},
-				"Feff calculations (*.yaml)|*.yaml|All files (*)|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR,
+  my $fd = Wx::FileDialog->new( $self, "Save Feff interpretation", cwd, q{feff.txt},
+				"TXT (*.txt)|*.txt|All files (*)|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $self->{parent}->status("Saving Feff calculation aborted.")
+    $self->{parent}->status("Saving Feff interpretation canceled.")
   } else {
-    my $yaml = $fd->GetPath;
-    $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
-    #$self->{parent}->{Feff}->{feffobject}->push_mru("feffcalc", $yaml);
-    $self->{parent}->status("Saved Feff calculation to $yaml.")
+    my $intrp = $fd->GetPath;
+    open(my $I, '>', $intrp);
+    print $I $self->{parent}->{Feff}->{feffobject}->intrp;
+    close $I;
+    $self->{parent}->status("Saved Feff interpetation to $intrp.")
   };
 };
 
@@ -347,10 +349,10 @@ sub plot {
   my $this = $self->{paths}->GetFirstSelected;
   $self->{parent}->status("No paths are selected!") if ($this == -1);
   my $busy   = Wx::BusyCursor->new();
-  $Demeter::UI::Atoms::demeter->po->start_plot;
-  $Demeter::UI::Atoms::demeter->reset_path_indeces;
-  my $save = $Demeter::UI::Atoms::demeter->po->title;
-  $Demeter::UI::Atoms::demeter->po->title("Feff calculation");
+  Demeter->po->start_plot;
+  Demeter->reset_path_indeces;
+  my $save = Demeter->po->title;
+  Demeter->po->title("Feff calculation");
   while ($this != -1) {
     my $i    = $self->{paths}->GetItemData($this);
     my $feff = $self->{parent}->{Feff}->{feffobject};
@@ -371,7 +373,7 @@ sub plot {
     $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
     $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at "));
   };
-  $Demeter::UI::Atoms::demeter->po->title($save);
+  Demeter->po->title($save);
   undef $busy;
 };
 

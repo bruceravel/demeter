@@ -34,18 +34,23 @@
      Feff calculation could be lost in a project file (see thread
      starting at
      http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04288.html)
+   - save path interpretation from Path page in Atoms window
+   - reorganized some buttons in the Atoms window
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
      not working on the Mac)
    - Removed dependence on Wx::Html by not loading
      Demeter::UI::Hephaestus::Help
-   - added some more standards and using new stanards subsystem enhancements
+   - added some more standards and using new standards subsystem
+     enhancements
 
 *** Atoms
    - sensible error messages from CLI version when no input file
      specified or when file does not exist
    - added atoms-gui script to bin folder
+   - fixed a bug related to importing a feff.inp file directly onto
+     the feff page in the Atoms GUI
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
@@ -80,6 +85,8 @@
      importing chi(k) data directly into Artemis
    - Zack Gainsforth for additions/enhancements to standards system
    - Mengling Stuckman for reporting on an odd FSPath bug
+   - Matt Frith for reporting a bug importing a feff.inp directly into
+     the Feff page of the Atoms GUI
 
 ** 0.9.19    8 January 2014 (withdrawn)
 

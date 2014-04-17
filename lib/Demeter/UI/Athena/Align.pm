@@ -157,8 +157,20 @@ sub push_values {
   };
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
-  ((not $was) or ($was eq 'None')) ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+
+  if ((not $was) or ($was eq 'None')) {
+    $this->{standard}->SetSelection(0);
+  } else {
+    my $ok = $this->{standard}->SetStringSelection($was);
+    $this->{standard}->SetSelection(0) if not $ok;
+  };
+
+  # ((not $was) or ($was eq 'None')) ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  # if ((not defined $this->{standard}->GetSelection) or
+  #     (not $this->{standard}->GetSelection) or
+  #     (not defined $this->{standard}->GetClientData($this->{standard}->GetSelection)) ) {
+  #   $this->{standard}->SetSelection(0);
+  # };
   return if $::app->{plotting};
   return if ($this->{standard}->GetStringSelection eq 'None');
   my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
