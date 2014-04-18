@@ -207,3 +207,11 @@ gxx_personality issue.  Uninstall followed by install worked perfectly.
 
 This was solved by swiping the code from here http://stackoverflow.com/a/2099805
 This uninstalls before installing.  Seems to work just fine.
+
+* Preparing to build Metis
+
+ 1. Install the non-PDL prereqs
+ 2. In cpan, ~force install PDL::Graphics::Simple~, leaning on the return key through the tests that fail
+ 3. In the shell, add ~C:\strawberry\c\bin\gnuplot\bin~ to the path (or ~/c/strawberry/c/bin/gnuplot/bin~)
+ 4. In cpan, ~install PDL::Graphics::Gnuplot~
+
