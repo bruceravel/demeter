@@ -264,13 +264,13 @@ Returns a list of all available data resource.
 
 #my @cl_ok = ('linux', 'irix');
 #my $cl_match = join('|', @cl_ok);
-my $ifeffit_exists = ($INC{'Ifeffit.pm'} or (eval "require Ifeffit"));
-my $make_cl = $ifeffit_exists; #($^O =~ /$cl_match/);
+#my $ifeffit_exists = ($INC{'Ifeffit.pm'} or (eval "require Ifeffit"));
+#my $make_cl = $ifeffit_exists; #($^O =~ /$cl_match/);
 
 sub available {
   shift;
-  my @list = ("Elam", "McMaster", "Henke", "Chantler", "Shaltout", "None");
-  ($make_cl) and push @list, "CL";
+  my @list = ("Elam", "McMaster", "Henke", "Chantler", "CL", "Shaltout", "None");
+  #($make_cl) and push @list, "CL";
   return @list;
 };
 
@@ -291,8 +291,8 @@ scattering functions.
 
 sub scattering {
   shift;
-  my @list = ("Henke", "Chantler", "None");
-  ($make_cl) and push @list, "CL";
+  my @list = ("Henke", "Chantler", "CL", "None");
+  #($make_cl) and push @list, "CL";
   return @list;
 };
 
