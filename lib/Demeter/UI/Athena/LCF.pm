@@ -384,8 +384,8 @@ sub push_values {
   foreach my $i (0 .. $this->{nstan}-1) {
     my $str = $this->{'standard'.$i}->GetStringSelection;
     $this->{'standard'.$i}->fill($::app, 0, 0);
-    my $ok = $this->{'standard'.$i}->SetStringSelection($str);
-    $this->{'standard'.$i}->SetSelection(0) if not $ok;
+    $this->{'standard'.$i}->SetStringSelection($str);
+    $this->{'standard'.$i}->SetSelection(0) if not $this->{'standard'.$i}->GetSelection;
 
     # if ((not defined $this->{'standard'.$i}->GetSelection) or
     # 	(not $this->{'standard'.$i}->GetSelection) or

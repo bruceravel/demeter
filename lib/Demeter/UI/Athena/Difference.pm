@@ -171,8 +171,8 @@ sub push_values {
   if ((not $was) or ($was eq 'None')) {
     $this->{standard}->SetSelection(0);
   } else {
-    my $ok = $this->{standard}->SetStringSelection($was);
-    $this->{standard}->SetSelection(0) if not $ok;
+    $this->{standard}->SetStringSelection($was);
+    $this->{standard}->SetSelection(0) if not $this->{standard}->GetSelection;
   };
   #($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
   #$this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
