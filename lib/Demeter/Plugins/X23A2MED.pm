@@ -114,7 +114,7 @@ sub fix {
       $self->place_array(Demeter->mo->throwaway_group.".c1_$ch", \@corr);
       push @edge1, "c1_$ch";
 
-      @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi1_'.$ch);
+      @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi2_'.$ch);
       ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
       $self->place_array(Demeter->mo->throwaway_group.".c2_$ch", \@corr);
       push @edge2, "c2_$ch";

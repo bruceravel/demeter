@@ -70,6 +70,7 @@ has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->de
 has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_y")    || 0.9});
 has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_dy")   || 0.075});
 has 'showlegend'=> (is => 'rw', isa =>  'Bool',    default => 1);
+has 'legendoutside'=> (is => 'rw', isa =>  'Bool',    default => 0);
 
 ## -------- colors
 ## I need a Color type

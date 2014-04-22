@@ -1,3 +1,7 @@
+{
+  $inout = ($P->legendoutside) ? 'outside' : 'inside';
+  q{}
+}
 ##
 ## ======== NEW PLOT ========
 set output
@@ -36,4 +40,4 @@ unset arrow
 ## plot formatting
 set style line 20 linecolor rgb "{$C->default("gnuplot", "gridcolor")}"
 set grid ls 20
-set key {$C->default("gnuplot", "keylocation")} {$C->default("gnuplot", "keyparams")}
+set key {$C->default("gnuplot", "keylocation")} {$inout} {$C->default("gnuplot", "keyparams")}

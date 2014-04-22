@@ -32,10 +32,14 @@ sub new {
   EVT_RADIOBOX($this, $this->{location}, sub{location(@_,$app)});
   $box               -> Add($this->{location},   0, wxGROW|wxLEFT|wxRIGHT, 2);
 
-  $this->{nokey}      = Wx::CheckBox->new($this, -1, "Suppress plot legend");
-  $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 2);
-
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box    -> Add($hbox,   0, wxGROW|wxALL, 0);
+  $this->{nokey}      = Wx::CheckBox->new($this, -1, "Suppress legend");
+  $hbox              -> Add($this->{nokey},       0, wxGROW|wxALL, 2);
+  $this->{outside}    = Wx::CheckBox->new($this, -1, "Outside");
+  $hbox              -> Add($this->{outside},     0, wxGROW|wxALL, 2);
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox   -> Add(Wx::StaticText->new($this, -1, "Marked plot pause (ms)"), 0, wxALL|wxTOP|wxRIGHT, 3);
   $this->{pause} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox   -> Add($this->{pause}, 0, wxGROW|wxALL, 0);
@@ -49,8 +53,13 @@ sub new {
 		 $app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked);
 		 $app->plot(q{}, q{}, @{$app->{lastplot}});
 	       });
+  EVT_CHECKBOX($this, $this->{outside}, sub{
+		 $app->current_data->po->legendoutside($_[0]->{outside}->IsChecked);
+		 $app->plot(q{}, q{}, @{$app->{lastplot}});
+	       });
   $app->mouseover($this->{title},      "Specify a title for a marked group plot.");
   $app->mouseover($this->{nokey},      "Turn off the legend in subsequent plots.");
+  $app->mouseover($this->{outside},    "Place the legend outside of the plot frame.");
   $app->mouseover($this->{singlefile}, "Write the next plot to a column data file.  (Does not yet work for quad, stddev, or variance plots.)");
   $app->mouseover($this->{pause},      "Specify a pause in miliseconds between groups in a marked group plot.");
 
