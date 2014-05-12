@@ -25,6 +25,7 @@ use base qw(Wx::Frame);
 use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::LogText;
 ##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 use Cwd;
 
@@ -37,7 +38,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Log]",
 				wxDefaultPosition, [550,650],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_ICONIZE($this, \&on_close);
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );

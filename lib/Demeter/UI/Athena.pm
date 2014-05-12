@@ -371,6 +371,7 @@ const my $MARKED_QRE		=> Wx::NewId();
 const my $MARKED_QIM		=> Wx::NewId();
 const my $MARKED_QPHA		=> Wx::NewId();
 
+const my $REFRESH_PROJECT	=> Wx::NewId();
 const my $CLEAR_PROJECT		=> Wx::NewId();
 
 const my $RENAME		=> Wx::NewId();
@@ -543,6 +544,7 @@ sub menubar {
   $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the marked groups, each as its own column data file" );
   $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSeparator;
+  $filemenu->Append($REFRESH_PROJECT, 'Refresh project', 'Refresh project by forcing background removal on all groups');
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close\tCtrl+w" );
@@ -793,6 +795,17 @@ sub OnMenuClick {
     };
     ($id == wxID_ABOUT) and do {
       &on_about;
+      last SWITCH;
+    };
+    ($id == $REFRESH_PROJECT) and do {
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	my $d = $app->{main}->{list}->GetIndexedData($i);
+	if ($d->datatype eq 'chi') {
+	  $d->update_fft(1);
+	} else {
+	  $d->update_bkg(1);
+	};
+      };
       last SWITCH;
     };
     ($id == $CLEAR_PROJECT) and do {
@@ -2807,9 +2820,9 @@ message, but not push it into the buffer.
 =cut
 
 package Wx::Frame;
-use Wx qw(wxNullColour);
+use Demeter::UI::Wx::Colours;
 #use Demeter::UI::Wx::OverwritePrompt;
-my $normal = wxNullColour;
+my $normal = $wxBGC;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $alert  = Wx::Colour->new("#FCDD9F");
 my $error  = Wx::Colour->new("#FD7E6F");

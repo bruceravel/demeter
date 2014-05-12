@@ -5,7 +5,7 @@
 
 * 0.9 series
 
-** 0.9.20   XX April 2014
+** 0.9.20   12 May 2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager
@@ -18,6 +18,8 @@
      warning
    - error messages for zero plotting range, excessive columns in save
      marked groups with Ifeffit, and lots of groups with Ifeffit
+   - added refresh project menu option as a fallback for occassional
+     problem of data not updating
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
@@ -72,11 +74,13 @@
      in GTK 2.20
    - several enhancements to standards subsystem
 
-*** Windows
+*** Windows / Mac
    - Athena w/Larch now mostly works on Windows
    - Fixed a problem with real and integer configuration parameters
      being unset upon first time running Demeter. *This was the
      problem requiring the withdrawal of 0.9.19*
+   - Attempt to deal with background color problem on Mac with
+     Demeter::UI::Wx:Colours
 
 *** Acknowledgements
    - Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad

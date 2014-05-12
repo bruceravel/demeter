@@ -23,6 +23,7 @@ use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU E
 
 use Demeter::UI::Artemis::Close qw(on_close);
 use Demeter::UI::Wx::SpecialCharacters qw($MDASH);
+use Demeter::UI::Wx::Colours;
 
 my $icon_dimension = 30;
 
@@ -44,10 +45,10 @@ sub new {
 				 wxDefaultPosition,
 				 [560,680],
 			       );
-  $self -> SetBackgroundColour( wxNullColour );
+  $self -> SetBackgroundColour( $wxBGC );
 
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
-  $nb -> SetBackgroundColour( wxNullColour );
+  $nb -> SetBackgroundColour( $wxBGC );
   $self->{base} = $base;
   $self->{notebook} = $nb;
   $self->{feffobject} = $feffobject;

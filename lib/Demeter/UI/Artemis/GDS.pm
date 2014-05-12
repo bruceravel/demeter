@@ -58,6 +58,7 @@ use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::StrTypes qw( GDS );
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
 const my $PM => $PLUSMN2;	# see Project.pm line ~36
 const my $PMRE => quotemeta($PM) . '\s*.*';
@@ -106,7 +107,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [GDS] Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
   $this->{uptodate}  = 1;
@@ -379,7 +380,7 @@ sub clear_highlight {
   my $grid = $parent->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
     next if ($grid -> GetCellValue($row, 0) eq 'merge');
-    map { $grid->SetCellBackgroundColour($row, $_, wxNullColour)} (0 .. 3);
+    map { $grid->SetCellBackgroundColour($row, $_, $wxBGC)} (0 .. 3);
   };
   $grid -> ForceRefresh;
 };
@@ -594,7 +595,7 @@ sub set_type {
       $grid->SetCellBackgroundColour($row, $c, $gridcolors{merge});
       $grid->SetCellTextColour($row, $c, wxWHITE);
     } else {
-      $grid->SetCellBackgroundColour($row, $c, wxNullColour);
+      $grid->SetCellBackgroundColour($row, $c, $wxBGC);
       $grid->SetCellTextColour($row, $c, $gridcolors{$newval});
     };
   };

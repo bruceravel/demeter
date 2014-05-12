@@ -26,12 +26,13 @@ use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
 ##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [Journal]",
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   #_doublewide($this);

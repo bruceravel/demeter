@@ -25,6 +25,7 @@ use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
 		 EVT_COLLAPSIBLEPANE_CHANGED EVT_TEXT EVT_TEXT_ENTER);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::Colours;
 use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 
 use Scalar::Util qw(looks_like_number);
@@ -133,11 +134,11 @@ sub new {
   #$this->{geometry}->SetSizeWH($w, 1.5*$h);
 
   $this->{geometry}->{2} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp2color') ),
-					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     $wxBGC, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
   $this->{geometry}->{1} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp1color') ),
-					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     $wxBGC, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
   $this->{geometry}->{0} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp0color') ),
-					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     $wxBGC, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
 
   $this->mouseover("geometry", "This box contains a succinct description of the geometry of this path.");
 
@@ -159,7 +160,7 @@ sub new {
     $this->{"pp_$k"}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
 
-    my $black = wxNullColour;
+    my $black = $wxBGC;
     $label -> SetNormalColour($black);
     $label -> SetHoverColour($black);
     $label -> SetVisitedColour($black);

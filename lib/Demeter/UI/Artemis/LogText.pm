@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
+use Demeter::UI::Wx::Colours;
 
 use List::Util qw(max);
 
@@ -27,10 +28,10 @@ my @bold      = (9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" );
 my @underline = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 1, "" );
 
 my %attr = (
-	    normal     => Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) ),
-	    happiness  => Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) ),
-	    parameters => Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @underline ) ),
-	    header     => Wx::TextAttr->new(Wx::Colour->new('#000055'), wxNullColour, Wx::Font->new( @bold ) ), # '#8B4726'
+	    normal     => Wx::TextAttr->new(Wx::Colour->new('#000000'), $wxBGC, Wx::Font->new( @font ) ),
+	    happiness  => Wx::TextAttr->new(Wx::Colour->new('#acacac'), $wxBGC, Wx::Font->new( @font ) ),
+	    parameters => Wx::TextAttr->new(Wx::Colour->new('#000000'), $wxBGC, Wx::Font->new( @underline ) ),
+	    header     => Wx::TextAttr->new(Wx::Colour->new('#000055'), $wxBGC, Wx::Font->new( @bold ) ), # '#8B4726'
 	    data       => Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @bold ) ),
 	   );
 

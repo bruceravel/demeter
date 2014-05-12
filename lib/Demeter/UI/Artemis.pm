@@ -30,6 +30,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Artemis::DataDropTarget;
 use Demeter::UI::Artemis::FeffDropTarget;
@@ -152,7 +153,7 @@ sub OnInit {
 				[0,0], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1] # size -- entire width of screen
 			       );
-  $frames{main} -> SetBackgroundColour( wxNullColour );
+  $frames{main} -> SetBackgroundColour( $wxBGC );
 
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -850,7 +851,7 @@ sub feedback {
 
 sub set_happiness_color {
   my $color = $_[0] || Demeter->co->default("happiness", "average_color");
-  $color = wxNullColour if (not Demeter->co->default("artemis", "happiness"));
+  $color = $wxBGC if (not Demeter->co->default("artemis", "happiness"));
   $frames{main}->{fitbutton}  -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{k_button}   -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{r_button}   -> SetBackgroundColour(Wx::Colour->new($color));
@@ -1544,9 +1545,9 @@ and the log buffer.
 =cut
 
 package Wx::Frame;
-use Wx qw(wxNullColour);
+use Demeter::UI::Wx::Colours;
 #use Demeter::UI::Wx::OverwritePrompt;
-my $normal = wxNullColour;
+my $normal = $wxBGC;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");
 my $alert  = Wx::Colour->new("#FCDD9F");

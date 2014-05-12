@@ -20,6 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
+use Demeter::UI::Wx::Colours;
 use base qw(Wx::Frame);
 
 sub new {
@@ -27,7 +28,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Preferences]",
 				wxDefaultPosition, [650,500],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );

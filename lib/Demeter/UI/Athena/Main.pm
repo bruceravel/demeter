@@ -11,6 +11,7 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_K
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
 use Const::Fast;
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 const my $PM => $PLUSMN2;
 
@@ -98,9 +99,9 @@ sub group {
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
-  $this->{type} -> SetNormalColour(wxNullColour);
-  $this->{type} -> SetHoverColour(wxNullColour);
-  $this->{type} -> SetVisitedColour(wxNullColour);
+  $this->{type} -> SetNormalColour($wxBGC);
+  $this->{type} -> SetHoverColour($wxBGC);
+  $this->{type} -> SetVisitedColour($wxBGC);
   $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
@@ -584,7 +585,7 @@ sub mode {
 
   foreach my $w (qw(group_group_label background_group_label fft_group_label
 		    bft_group_label plot_group_label)) {
-    $this->{$w} -> SetForegroundColour( wxNullColour );
+    $this->{$w} -> SetForegroundColour( $wxBGC );
   };
   if ($::app) {
     $this->Refresh;
@@ -658,7 +659,7 @@ sub mode {
   if ($group and ($group->reference)) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($group->co->default("athena", "tied")) );
   } else {
-    $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_eshift}-> SetBackgroundColour( $wxBGC );
   };
 
   if ($group) {
@@ -724,19 +725,19 @@ sub push_values {
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
   } else {
-    $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_eshift}-> SetBackgroundColour( $wxBGC );
   };
   if (($data->bkg_e0 < 150) and ($data->datatype ne 'chi')) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
-    $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_e0}-> SetBackgroundColour( $wxBGC );
   };
   if ((get_Z($data->bkg_z) < 5) and ($data->datatype ne 'chi')) {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
     $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
   } else {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
-    $this->{bkg_z_label} -> SetForegroundColour( wxNullColour );
+    $this->{bkg_z_label} -> SetForegroundColour( $wxBGC );
   };
   $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;

@@ -37,13 +37,14 @@ use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
 ##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [History]",
 				wxDefaultPosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;

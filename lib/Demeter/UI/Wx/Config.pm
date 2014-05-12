@@ -27,6 +27,7 @@ use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER);
 use Demeter qw(:none);
 
 use Demeter::UI::Wx::VerbDialog;
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::ColourDatabase;
 my $cdb = Demeter::UI::Wx::ColourDatabase->new;
 my $aleft = Wx::TextAttr->new();
@@ -220,9 +221,9 @@ sub tree_select {
       $self->{Value} -> SetLabel(Demeter->co->default($parent, $param));
       $self->{Default} -> SetLabel(Demeter->co->demeter($parent, $param));
     };
-    $self->{Value}   -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Value}   -> SetOwnBackgroundColour($wxBGC);
     $self->{Value}   -> Enable;
-    $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Default} -> SetOwnBackgroundColour($wxBGC);
     $self->{Default} -> Enable;
     $self->{apply}   -> Enable;
     $self->{save}    -> Enable;
@@ -244,10 +245,10 @@ sub tree_select {
     $self->{Name}    -> SetLabel($param);
     $self->{Type}    -> SetLabel('Parameter group');
     $self->{Value}   -> SetLabel(q{});
-    $self->{Value}   -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Value}   -> SetOwnBackgroundColour($wxBGC);
     $self->{Value}   -> Disable;
     $self->{Default} -> SetLabel(q{});
-    $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Default} -> SetOwnBackgroundColour($wxBGC);
     $self->{Default} -> Disable;
     { # this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
       local $Text::Wrap::columns = 47;

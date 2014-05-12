@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Demeter::Constants qw($NUMBER);
+use Demeter::UI::Wx::Colours;
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX
@@ -258,7 +259,7 @@ sub AdvanceSelection {
 };
 
 sub GetThemeBackgroundColour {
-  return wxNullColour;
+  return $wxBGC;
 };
 
 sub Check {
