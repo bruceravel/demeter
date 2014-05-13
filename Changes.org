@@ -75,6 +75,8 @@
    - several enhancements to standards subsystem
 
 *** Windows / Mac
+   - This is the drop-the-D addition for Windows.  The desktop icons
+     no longer have "(D)" in their names.
    - Athena w/Larch now mostly works on Windows
    - Fixed a problem with real and integer configuration parameters
      being unset upon first time running Demeter. *This was the
