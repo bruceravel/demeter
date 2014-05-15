@@ -1080,6 +1080,7 @@ sub fetch_correlations {
 
 sub fetch_pathresults {
   my ($self) = @_;
+  $self->clear_pathresults;
   foreach my $p (@ {$self->paths}) {
     $self->push_pathresults([$p->data->group,
 			     $p->get(qw(name n s02_value sigma2_value
