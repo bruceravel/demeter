@@ -20,6 +20,7 @@
      marked groups with Ifeffit, and lots of groups with Ifeffit
    - added refresh project menu option as a fallback for occassional
      problem of data not updating
+   - fixed a bug processing normalized groups
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
@@ -98,6 +99,7 @@
    - Mengling Stuckman for reporting on an odd FSPath bug
    - Matt Frith for reporting a bug importing a feff.inp directly into
      the Feff page of the Atoms GUI
+   - Dean Hesterburg pointed out a bug processing normalized groups.
 
 ** 0.9.19    8 January 2014 (withdrawn)
 

@@ -149,13 +149,14 @@
      + add noise to chi data
    - [ ] *Difference tool* [0/1]
      + [ ] difference in k
-   - [ ] *LCF tool* [0/3]
+   - [ ] *LCF tool* [0/4]
      + [ ] persistance of LCF results
      + [ ] satisfying both inclusive and unity can be trouble for
            poorly normalized data and/or poor standard selection
            (see email from Jack Hitch)
      + [ ] compute R-factor in k or R using fit from energy.  (see
            mail from Scott 7 January 2012)
+     + [ ] boundary on E0 shift.  See email from Dean Hesterburg from 30 May, 2014
    - [-] *PCA tool* [2/10]
      + [ ] persistance
      + [ ] manual entry of component coefficients (??)
