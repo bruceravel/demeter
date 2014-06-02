@@ -107,6 +107,7 @@ sub S_check_rmax {
     my $r = $self->distance(@this, @center);
     $rfarthest = $r if ($r > $rfarthest);
   };
+  $self->rmax($rfarthest) if $rmax == 0;
   #print join(" ", $rmax,$rfarthest), $/;
   #if ($rmax > $rfarthest) {
   #  $$r_problems{rmax_outside_cluster} = 1;
