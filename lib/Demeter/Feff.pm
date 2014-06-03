@@ -335,14 +335,15 @@ sub rdinp {
 	$thiscard = 'fms',          last CARDS if ($thiscard =~ m{\Afms});
 	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
 	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
-	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
+	                            last CARDS if ($thiscard =~ m{\A(?:con|pri|deb)}); ## CONTROL and PRINT are under demeter's control
+	                                                                               ## DEBYE is simply ignored by Demeter
 	$self -> push_othercards($_);  ## pass through all other cards
       };
 
       #print join("|", $thiscard, @line), $/;
       ## dispatch the card values
     DOCARD: {
-	($thiscard =~ m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) and do {
+	($thiscard =~ m{(?:exafs|r(?:max|multiplier)|s02)}) and do {
 	  $self->$thiscard($line[1]);
 	  last DOCARD;
 	};
@@ -352,6 +353,17 @@ sub rdinp {
 	};
 	($thiscard eq 'hole') and do {
 	  $self->set(edge  => $line[1], s02   => $line[2]);
+	  last DOCARD;
+	};
+	($thiscard eq 'edge') and do {
+	  if ($line[1] =~ m{\A\d}) {
+	    $self->edge($line[1]);
+	  } else {
+	    my %hash = (k=>1, l1=>2, l2=>3, l3=>4, m1=>5, m2=>6, m3=>7, m4=>8, m5=>9);
+	    my $hole = $hash{lc($line[1])};
+	    #Demeter->pjoin($thiscard, $line[1], $hole);
+	    $self->edge($hole);
+	  };
 	  last DOCARD;
 	};
 	($thiscard eq 'criteria') and do {
@@ -425,6 +437,7 @@ sub rdinp {
 		  errors               => [],
 		  warnings             => [],
 		 );
+
   ## sanity checks on input data
   $self->S_check_ipots(\%problems);
   $self->S_check_rmax(\%problems);
@@ -665,6 +678,9 @@ sub fetch_zcwifs {
 
   my @zcwifs;
   my $file = ($self->feff_version == 8) ? 'list.dat' : 'files.dat';
+  ## a feff8.inp file can be parsed for used with feff6, thus using
+  ## files.dat, but the feff object will be flagged as being for feff8, hence...
+  $file = 'files.dat' if (($self->feff_version == 8) and (not -e File::Spec->catfile($self->workspace, $file)));
   return () if (not -e File::Spec->catfile($self->workspace, $file));
   open(my $FD, '<', File::Spec->catfile($self->workspace, $file));
   my $flag = 0;
