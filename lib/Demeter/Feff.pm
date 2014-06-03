@@ -356,14 +356,7 @@ sub rdinp {
 	  last DOCARD;
 	};
 	($thiscard eq 'edge') and do {
-	  if ($line[1] =~ m{\A\d}) {
-	    $self->edge($line[1]);
-	  } else {
-	    my %hash = (k=>1, l1=>2, l2=>3, l3=>4, m1=>5, m2=>6, m3=>7, m4=>8, m5=>9);
-	    my $hole = $hash{lc($line[1])};
-	    #Demeter->pjoin($thiscard, $line[1], $hole);
-	    $self->edge($hole);
-	  };
+	  $self->edge($self->edge2hole($line[1]));
 	  last DOCARD;
 	};
 	($thiscard eq 'criteria') and do {
@@ -461,6 +454,27 @@ sub rdinp {
 	. $/) if $stop;
   $self->problems(\%problems);
   return $self;
+};
+
+
+our %edgehash = (k=>1, l1=>2, l2=>3, l3=>4, m1=>5, m2=>6, m3=>7, m4=>8, m5=>9,
+		 n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
+		 o1=>17, o2=>18, o3=>19, o4=>20, o5=>21, o6=>22, o7=>23,
+		 p1=>24, p2=>25, p3=>26 );
+sub edge2hole {
+  my ($self, $hole) = @_;
+  if ($hole !~ m{\A\d}) {
+    $hole = $edgehash{lc($hole)};
+  };
+  return $hole;
+};
+sub hole2edge {
+  my ($self, $edge) = @_;
+  if ($edge =~ m{\A\d}) {
+    my %hash = reverse %edgehash;
+    $edge = $hash{$edge};
+  };
+  return $edge;
 };
 
 sub _site {
