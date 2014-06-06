@@ -65,7 +65,7 @@ sub _ss {
   $vbox -> Add( $hbox, 0, wxGROW|wxLEFT|wxRIGHT, 20 );
 
   $self->{ss_ipot} = Wx::RadioBox->new($page, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
-				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+				       [q{_____},q{_____},q{_____},q{_____},q{_____},q{_____},q{_____}], 7, wxRA_SPECIFY_COLS);
   $self->{ss_ipot}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{ss_ipot}, sub{set_name(@_,'spath')});
 
