@@ -422,6 +422,7 @@ const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
 const my $CURSOR		=> Wx::NewId();
 const my $PLOT_QUAD		=> Wx::NewId();
+const my $PLOT_BIQUAD		=> Wx::NewId();
 const my $PLOT_ED		=> Wx::NewId();
 const my $PLOT_IOSIG		=> Wx::NewId();
 const my $PLOT_K123		=> Wx::NewId();
@@ -669,6 +670,7 @@ sub menubar {
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
+  $markedplotmenu ->Append($PLOT_BIQUAD,     "Bi-Quad plot",          "Make a quad plot from TWO marked groups" );
   $markedplotmenu ->Append($PLOT_E00,        "Plot with E0 at E=0",   "Plot each of the marked groups with its edge energy at E=0" );
   $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",               "Plot I0 for each of the marked groups" );
   $markedplotmenu ->Append($PLOT_NORMSCALED, "Plot norm(E) scaled by edge step", "Plot normalized data for all marked groups, scaled by the size of the edge step" );
@@ -1215,6 +1217,12 @@ sub OnMenuClick {
       $app->quadplot($data);
       last SWITCH;
     };
+
+    ($id == $PLOT_BIQUAD) and do {
+      $app->biquadplot;
+      last SWITCH;
+    };
+
     ($id == $PLOT_ED) and do {
       my $data = $app->current_data;
       if ($app->current_data->datatype ne 'xmu') {
@@ -2351,6 +2359,37 @@ sub quadplot {
     $app->plot(q{}, q{}, 'E', 'single')
   };
 };
+
+sub biquadplot {
+  my ($app) = @_;
+
+  my @marked = ();
+  foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
+    push(@marked, $app->{main}->{list}->GetIndexedData($j))
+      if $app->{main}->{list}->IsChecked($j);
+  };
+  if ($#marked != 1) {
+    $app->{main}->status("You must mark two and only two datagroups to make a bi-quad plot.", 'alert');
+    return;
+  };
+  if ($marked[0]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[0]->name . " is not a $MU(E) datagroup", 'alert');
+    return;
+  };
+  if ($marked[1]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[1]->name . " is not a $MU(E) datagroup", 'alert');
+    return;
+  };
+
+  my $fontsize = $marked[0]->co->default("gnuplot", "fontsize");
+  $marked[0]->co->set_default("gnuplot", "fontsize", 8);
+  $marked[0]->biquadplot($marked[1]);
+  $app->{main}->status(sprintf("Made a bi-quad plot using %s and %s", $marked[0]->name, $marked[1]->name));
+
+  $marked[0]->co->set_default("gnuplot", "fontsize", $fontsize);
+  $app->{lastplot} = ['quad', 'single'];
+};
+
 
 sub plot_e00 {
   my ($app) = @_;

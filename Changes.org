@@ -21,6 +21,7 @@
    - added refresh project menu option as a fallback for occassional
      problem of data not updating
    - fixed a bug processing normalized groups
+   - added biquad plot
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list

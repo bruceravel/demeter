@@ -103,6 +103,17 @@ that have been [% INCLUDE html/link text="marked" link="../ui/mark.html" %].
 [% END %]
 
 [% WRAPPER html/list type='dl' %]
+[% WRAPPER html/dt dt="Bi-Quad plot" %]
+This special plot is like the quad plot described above, but is used
+to compare two marked groups.  To make this plot you must have two
+[%ndash%] and only two [%ndash%] groups selected from the group list.
+It is helpful
+[%br%][%br%]
+[% WRAPPER image file="plot_biquad.png" %]
+A quad plot comparing two marked groups.
+[% END %]
+[% END %]
+
 [% WRAPPER html/dt dt="Plot with E0 at 0" %]
 This special plot is used to visualize [%mue%] spectra measured at
 different edges.  Each spectrum, Cu and Fe in this example, is shifted
@@ -126,13 +137,16 @@ The I0 signals of three marked groups
 [% END %]
 [% END %]
 
-[% WRAPPER html/newfeature %]
-In version 0.9.18, there is an option for plotting the marked
-groups as normalized [%mue%], but scaled by the size of the edge step.
-Without flattening, this is identical to plotting the [%mue%] data
-with the pre-edge line subtracted.  Otherwise, it is different in that
-the post-edge region will be flattened and will oscillate around the
-level of the edge step size.
+[% WRAPPER html/dt dt="Plot scaled by edge step" %]
+The marked groups can be plotted as normalized [%mue%], but scaled by
+the size of the edge step.  Without flattening, this is identical to
+plotting the [%mue%] data with the pre-edge line subtracted.
+Otherwise, it is different in that the post-edge region will be
+flattened and will oscillate around the level of the edge step size.
+[%br%][%br%]
+[% WRAPPER image file="plot_scaled.png" %]
+Plot of normalized data scaled by edge step.
+[% END %]
 [% END %]
 
 [% END %]
