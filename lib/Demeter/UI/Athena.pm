@@ -2381,6 +2381,10 @@ sub biquadplot {
     return;
   };
 
+  foreach my $sp (qw(E K R Q)) {
+    $app->{main}->{'Plot'.$sp}->pull_marked_values;
+  };
+
   my $fontsize = $marked[0]->co->default("gnuplot", "fontsize");
   $marked[0]->co->set_default("gnuplot", "fontsize", 8);
   $marked[0]->biquadplot($marked[1]);

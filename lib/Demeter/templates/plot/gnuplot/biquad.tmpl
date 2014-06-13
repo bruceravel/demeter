@@ -5,8 +5,10 @@
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
 
-  $emin = $D->bkg_e0 + $P->emin;
-  $emax = $D->bkg_e0 + $P->emax;
+  #$emin = $D->bkg_e0 + $P->emin;
+  #$emax = $D->bkg_e0 + $P->emax;
+  $emin = $D->bkg_e0 - 60;
+  $emax = $D->bkg_e0 + 180;
 
   ## energy quadrant: mu1 and mu2
   $emu1 = $P->tempfile;
@@ -72,7 +74,7 @@ set title "\{/*1.6 Energy\}"
 set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
 set ylabel "\{/*1.4 x\{/Symbol m\}(E)\}"
 set key bottom right
-#set xrange [ {$emin} : {$emax} ]
+set xrange [ {$emin} : {$emax} ]
 plot '{$emu1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$D->name}",\
      '{$emu2}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "{$DS->name}"
 
