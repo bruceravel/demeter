@@ -1675,6 +1675,7 @@ sub side_bar {
 			  k	     => 'plot k123',
 			  R	     => 'plot R123',
 			  kq	     => 'quad plot',
+			  q	     => 'biquad plot',
 			  i0	     => 'plot I0 for all marked groups',
 			  e00	     => 'plot marked groups with E0 at 0',
 			  norm	     => 'plot norm(E) scaled by edge step',
@@ -1703,8 +1704,12 @@ sub side_bar {
     $markedbox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
-    $mouseover_text = "Plot the marked groups in $which";
-    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')} if ($which eq 'E');
+    $mouseover_text = "Plot the marked groups in $which   ";
+    if ($which eq 'E') {
+      $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')};
+    } elsif ($which eq 'q') {
+      $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{q};
+    };
     $app->mouseover($app->{main}->{$key}, $mouseover_text);
   };
 
@@ -2052,7 +2057,7 @@ sub plot {
     } elsif ((lc($space) eq 'r') and ($how eq 'marked')) {
       $continue = 1;
     } elsif ((lc($space) eq 'q') and ($how eq 'marked')) {
-      $continue = 1;
+      OnMenuClick($app->{main}, $PLOT_BIQUAD, $app);
     ## pass through if no special plot
     };
     if (not $continue) {
