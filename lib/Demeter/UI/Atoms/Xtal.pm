@@ -141,13 +141,19 @@ sub new {
   #$self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   #$self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
-  my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
+
+  my $agg;
+  if ($self->{parent}->{component}) {
+    $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
+  }
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
-  $self->{aggid} = $agg->GetId;
-  $self->{toolbar}->EnableTool($self->{aggid},0);
+  if ($self->{parent}->{component}) {
+    $self->{aggid} = $agg->GetId;
+    $self->{toolbar}->EnableTool($self->{aggid},0);
+  };
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
@@ -199,14 +205,15 @@ sub new {
   $self->{edge}->SetSelection(0);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
-  $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
+  #$hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  #$spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
   $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   my $n = 0;
   my ($fv, $is) = (Demeter->co->default('atoms', 'feff_version'), Demeter->co->default('atoms', 'ipot_style'));
+  $fv = 6;			# enforce this for now, feff85exafs is coming soon....
   if ($fv == 6) {
     Demeter->mo->template_feff('feff6');
     if ($is == 'elements') {
@@ -229,7 +236,8 @@ sub new {
   $self->{template}->SetSelection($n);
   EVT_CHOICE($self, $self->{template}, \&OnTemplate);
 
-  my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $atoms->co->default("atoms", "ipot_style");
+  my $which = ($atoms->co->default("atoms", "ipot_style") eq 'elements') ? 'elem' : $atoms->co->default("atoms", "ipot_style");
+  my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $which;
   $self->{template}->SetSelection(firstidx {$_ eq $initial } @{ $self->templates });
 
 
@@ -244,7 +252,24 @@ sub new {
   $self->{$_}->Enable(0) foreach qw(scf scflab rscf);
   EVT_CHECKBOX($self, $self->{scf}, \&OnCheckBox);
 
-  $spacebox->Add(1,1,1);
+  if ($self->{parent}->{component}) {
+    $self->{aggbox}       = Wx::StaticBox->new($self, -1, 'Aggregate degeneracy margins', wxDefaultPosition, wxDefaultSize);
+    $self->{aggboxsizer}  = Wx::StaticBoxSizer->new( $self->{aggbox}, wxVERTICAL );
+    $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+    $self->{aggboxsizer}->Add($hh, 0, wxGROW|wxALL, 0);
+    $self->{aggfuzzlab}     = Wx::StaticText->new($self, -1, "Margin:");
+    $self->{aggfuzz}        = Wx::TextCtrl->new($self, -1, Demeter->co->default(qw(pathfinder fuzz)), wxDefaultPosition, [30,-1]);
+    $self->{aggbetafuzzlab} = Wx::StaticText->new($self, -1, "Beta:");
+    $self->{aggbetafuzz}    = Wx::TextCtrl->new($self, -1, Demeter->co->default(qw(pathfinder betafuzz)), wxDefaultPosition, [30,-1]);
+    $hh->Add($self->{aggfuzzlab},     0, wxGROW|wxALL, 5);
+    $hh->Add($self->{aggfuzz},        1, wxGROW|wxALL, 2);
+    $hh->Add($self->{aggbetafuzzlab}, 0, wxGROW|wxALL, 5);
+    $hh->Add($self->{aggbetafuzz},    1, wxGROW|wxALL, 2);
+    $spacebox->Add($self->{aggboxsizer}, 0, wxEXPAND|wxALL, 1);
+    $self->{$_}->Enable(0) foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+  };
+
+  #$spacebox->Add(1,1,1);
 
   $self->{addbutton} = Wx::Button->new($self, -1, "Add a site");
   $spacebox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxALIGN_BOTTOM, 0);
@@ -380,8 +405,8 @@ sub icon {
 
 sub templates {
   my ($self) = @_;
-  return ['Feff6 - elements', 'Feff6 - tags', 'Feff6 - sites',
-	  'Feff8 - elements', 'Feff8 - tags', 'Feff8 - sites',
+  return ['Feff6 - elem', 'Feff6 - tags', 'Feff6 - sites',
+	  #'Feff8 - elem', 'Feff8 - tags', 'Feff8 - sites',
 	 ];
 };
 
@@ -476,13 +501,18 @@ sub OnGridClick {
   };
   $self->SetCellValue($row, 0, 1);
   my $nsites = true {$_ eq $self->GetCellValue($row, 1)} @el;
-  if ($nsites > 1) {
-    ## enable aggregate Feff calculation, currently soft-disabled for 0.9.19
-    ## change the call to co->default to 1 once the paper is published
-    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},Demeter->co->default('artemis','show_aggregate'));
-  } else {
-    ## disable aggregate Feff calculation
-    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+  if ($self->GetParent->{parent}->{component}) {
+    if ($nsites > 1) {
+      ## enable aggregate Feff calculation, currently soft-disabled for 0.9.19
+      ## change the call to co->default to 1 once the paper is published
+      $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},Demeter->co->default('artemis','show_aggregate'));
+      $self->GetParent->{$_}->Enable(Demeter->co->default('artemis','show_aggregate'))
+	foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+    } else {
+      ## disable aggregate Feff calculation
+      $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+      $self->GetParent->{$_}->Enable(0) foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+    };
   };
 };
 
@@ -710,6 +740,7 @@ sub get_crystal_data {
   $problems .= "\"" . $self->{shift_x}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[0] == -9999);
   $problems .= "\"" . $self->{shift_y}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[1] == -9999);
   $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
+  $atoms->shift(\@shift);
 
   my $core_selected = 0;
   my $first_valid_row = -1;
@@ -895,6 +926,7 @@ sub run_atoms {
   my $seems_ok = $self->get_crystal_data;
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
   my ($template, $style) = split(/ - /, $this);
+  $style = 'elements' if $style eq 'elem';
   $atoms -> ipot_style($style);
   if ($seems_ok) {
     my $busy    = Wx::BusyCursor->new();
@@ -941,8 +973,18 @@ sub aggregate {
   #my $message = Wx::MessageDialog->new($self, $text, "Perform aggregate Feff calculation?", wxYES_NO);
   #$message->ShowModal;
   if ($message->ShowModal == wxID_NO) {
-    $self->{parent}->status("Not performing aggrgate Feff calculation.");
+    $self->{parent}->status("Not performing aggregate Feff calculation.");
     return;
+  };
+
+  my $ea = $self->edge_absorber;
+  if ($ea) {
+    my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
+    if ($yesno->ShowModal == wxID_NO) {
+      $self->{parent}->status("Aborting calculation.");
+      undef $busy;
+      return;
+    };
   };
 
   ## 0.5. Write an atoms.inp and pass it along to the parts
@@ -960,6 +1002,8 @@ sub aggregate {
   my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);
   $bigfeff -> workspace($workspace);
   $bigfeff -> make_workspace;
+  $bigfeff->fuzz($self->{aggfuzz}->GetValue);
+  $bigfeff->betafuzz($self->{aggbetafuzz}->GetValue);
 
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->{parent}->{Feff}->now("Aggregate Feff calculation beginning at ", $bigfeff));
@@ -989,6 +1033,10 @@ sub aggregate {
   $self->{parent}->{Feff}->{toolbar}->Enable(0);
   $self->{parent}->{Feff}->{name}->Enable(0);
   $self->{parent}->{Feff}->{feff}->Enable(0);
+  $self->{parent}->{Feff}->{margin}->SetValue($bigfeff->fuzz);
+  $self->{parent}->{Feff}->{betafuzz}->SetValue($bigfeff->betafuzz);
+  $self->{parent}->{Feff}->{margin}->Enable(0);
+  $self->{parent}->{Feff}->{betafuzz}->Enable(0);
 
   ## 5. Labels & Fill Paths tab
   $bigfeff->name(q{agg-}.$self->{name}->GetValue);

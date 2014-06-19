@@ -139,6 +139,19 @@ has 'tzx'	   => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'tzz'	   => (is => 'rw', isa => 'LaxNum', default => 0);
 has 'occupancy'	   => (is => 'rw', isa => 'LaxNum', default => 1);
 
+has 'shiftvec' => (
+		   traits    => ['Array'],
+		   is        => 'rw',
+		   isa       => 'ArrayRef',
+		   default   => sub { [0, 0, 0] },
+		   handles   => {
+				 'push_shiftvec'  => 'push',
+				 'pop_shiftvec'   => 'pop',
+				 'clear_shiftvec' => 'clear',
+				}
+		  );
+
+
 
 sub clear {
   my ($self) = @_;

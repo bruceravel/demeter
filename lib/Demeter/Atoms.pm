@@ -433,6 +433,7 @@ sub populate {
   };
   ## Group: $cell->get(qw(given_group space_group class setting))
   ## Bravais: $cell->get('bravais')
+  $self -> cell -> shiftvec($self->shift);
   $self -> cell -> populate(\@sites);
   foreach my $key (qw(a b c alpha beta gamma)) {
     $self->$key($self->cell->$key);
@@ -531,7 +532,9 @@ sub build_cluster {
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
   } @cluster;
   if ($#cluster > 499) {
-    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.  You might want to reduce the value of the cluster size (Rmax).\n");
+    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.
+Feff6L was run using only the first 500 atoms.
+You might want to reduce the value of the cluster size (Rmax).\n");
   };
   if ($#cluster == 0) {
     warn 'You have specified crystal data resulting in 0 scattering atoms.
@@ -853,6 +856,7 @@ sub update_edge {
   ##print $self->core, $/;
   ##print $central, $/;
   ##print join(" ", $central->meta->get_attribute_list), $/;
+  #Demeter->trace;
   my $z = get_Z( $central->element );
   ($z > 57) ? $self->edge('l3') : $self->edge('k');
   return $self;

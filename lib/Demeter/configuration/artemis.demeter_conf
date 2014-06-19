@@ -157,7 +157,7 @@ variable=show_aggregate
 type=boolean
 onvalue=1
 offvalue=0
-default=false
+default=true
 description
   If true, enable the button for performing an aggregate Feff
   calculation.  This is disabled by default in 0.9.19 pending

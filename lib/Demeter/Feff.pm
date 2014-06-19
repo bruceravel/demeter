@@ -161,8 +161,8 @@ has 'miscdat'      => (is=>'rw', isa => 'Str',    default => q{});
 has 'vint'         => (is=>'rw', isa => 'LaxNum', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',   default => 0);
 
-has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => 0);
-has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => 0);
+has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','fuzz')||0.03);
+has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','betafuzz')||3);
 has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => Demeter->co->default('pathfinder','eta_suppress')||0);
 
 		       ## result of pathfinder
@@ -1016,7 +1016,7 @@ sub prep_fuzz {
 
 sub _collapse_heap {
   my ($self, $heap) = @_;
-  $self->prep_fuzz;
+  #$self->prep_fuzz;
   if (ref($self) =~ m{Aggregate}) {
     foreach my $p (@{$self->parts}) {
       $p->set(fuzz=>$self->fuzz, betafuzz=>$self->betafuzz);

@@ -23,6 +23,9 @@ my %hints = (
 	     boiler   => "Insert boilerplate for a feff.inp file",
 	     clear    => "Clear all data",
 	     doc      => "Show the Feff input document page in a browser",
+	     name     => "The name given to this Feff calculation",
+	     margin   => "The width in path length of the bin used for fuzzy degeneracy",
+	     betafuzz => "The width in angle of the bin used for fuzzy degeneracy of MS paths",
 	    );
 
 sub new {
@@ -52,10 +55,20 @@ sub new {
 
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hh, 0, wxEXPAND|wxALL, 0);
-  my $label      = Wx::StaticText->new($self, -1, 'Name of this Feff calculation: ', wxDefaultPosition, [-1,-1]);
+  my $label      = Wx::StaticText->new($self, -1, 'Name: ', wxDefaultPosition, [-1,-1]);
   $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [70,-1], wxTE_READONLY);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{name}, 2, wxEXPAND|wxLEFT|wxRIGHT, 2);
+  $label           = Wx::StaticText->new($self, -1, 'Margin: ', wxDefaultPosition, [-1,-1]);
+  $self->{margin}  = Wx::TextCtrl  ->new($self, -1, Demeter->co->default(qw(pathfinder fuzz)), wxDefaultPosition, [70,-1]);
+  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{margin}, 1, wxEXPAND|wxLEFT|wxRIGHT, 2);
+  $label            = Wx::StaticText->new($self, -1, 'Beta: ', wxDefaultPosition, [-1,-1]);
+  $self->{betafuzz} = Wx::TextCtrl  ->new($self, -1, Demeter->co->default(qw(pathfinder betafuzz)), wxDefaultPosition, [70,-1]);
+  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{betafuzz}, 1, wxEXPAND|wxLEFT|wxRIGHT, 2);
+
+  $self->set_hint($_) foreach (qw(name margin betafuzz));
 
   $self->{feffbox}       = Wx::StaticBox->new($self, -1, 'Feff input file', wxDefaultPosition, wxDefaultSize);
   $self->{feffboxsizer}  = Wx::StaticBoxSizer->new( $self->{feffbox}, wxVERTICAL );
@@ -86,6 +99,14 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
+sub set_hint {
+  my ($self, $w) = @_;
+  (my $ww = $w) =~ s{\d+\z}{};
+  EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_;
+				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!})});
+  EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnWidgetLeave});
+};
+
 sub OnToolEnter {
   my ($self, $event, $which) = @_;
   if ( $event->GetSelection > -1 ) {
@@ -93,6 +114,14 @@ sub OnToolEnter {
   } else {
     $self->{statusbar}->PopStatusText;
   };
+};
+sub OnWidgetEnter {
+  my ($self, $widget, $event, $hint) = @_;
+  $self->{statusbar}->SetStatusText($hint);
+};
+sub OnWidgetLeave {
+  my ($self) = @_;
+  $self->{statusbar}->SetStatusText(q{});
 };
 
 sub OnToolClick {
@@ -247,6 +276,13 @@ sub run_feff {
   $feff -> feff_version($v);
   #$feff -> screen(1);
   #$feff -> save(1);
+
+  # Demeter->co->set_default(qw(pathfinder fuzz), $self->{margin}->GetValue);
+  # Demeter->co->set_default(qw(pathfinder betafuzz), $self->{betafuzz}->GetValue);
+  my $fuzz     = $self->{margin}->GetValue;
+  my $betafuzz = $self->{betafuzz}->GetValue;
+  $feff->fuzz($fuzz);
+  $feff->betafuzz($betafuzz);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;

@@ -61,6 +61,16 @@
      the feff page in the Atoms GUI
    - import buttons on Atoms and Feff pages respond sensibly to files
      that are not CIF/atoms or feff files
+   - enable aggregate calculation (given that paper will be accepted
+     for publication by the time this is released), but only for Atoms
+     in Artemis, bit for stand-alone
+   - put controls for degeneracy margins front and center
+   - deal sensibly with Feff's hard-wired maximum cluster size of 500
+     atoms by writing only the first 499 sites, regardless of how many
+     atoms are within Rmax
+   - somehow, the shift vector never got implemented in Demeter (even
+     though there are controls for it in the Atoms GUI).  Wow!  That
+     is now fixed.
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
@@ -78,7 +88,7 @@
    - several enhancements to standards subsystem
 
 *** Windows / Mac
-   - This is the drop-the-D addition for Windows.  The desktop icons
+   - This is the drop-the-D edition for Windows.  The desktop icons
      no longer have "(D)" in their names.
    - Athena w/Larch now mostly works on Windows
    - Fixed a problem with real and integer configuration parameters

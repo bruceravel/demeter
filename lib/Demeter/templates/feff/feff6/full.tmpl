@@ -1,6 +1,9 @@
 { # -*- ifm -*-
   # run all parts of feff6 using a simple, streamlined feff.inp file
   #   {$T->parameter} returns the value of that theory parameter
+  @sites = @ {$T->sites};
+  $#sites = 499 if $#sites>499;
+  q{};
 }
 << >>* 
  * On-the-fly feff.inp file generated from a Demeter template
@@ -28,7 +31,7 @@
 
  ATOMS
 { map {$OUT .= sprintf("    %9.5f   %9.5f   %9.5f   %d\n", @$_)} 
-      (@ {$T->sites});
+      (@sites);
 }
 
 END
