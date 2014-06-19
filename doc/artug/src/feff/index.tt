@@ -27,9 +27,9 @@ You can also import a [% INCLUDE font/file a="feff.inp" %] file
 directly.  This is discussed in the
 [% INCLUDE html/link link="../feff/feff.html" text="next section"%]
 
-This new window looks like this.  In this example, crystal data for Ni
-metal have been imported from an [% INCLUDE font/file a="atoms.inp" %]
-file.
+This new window looks like this.  In this example, crystal data for
+anatase [%tio2%] have been imported from an
+[% INCLUDE font/file a="atoms.inp" %] file.
 [% END %]
 
 [% WRAPPER figure file="feff-atoms.png" %]
@@ -37,12 +37,13 @@ The [%atoms%] and [%feff%] window in [% artemis %].
 [% END %]
 
 [% FILTER html_para -%]
-At the top of the window is a tool bar with three buttons.  The
-first of these is used to change the label for this [%feff%]
-calculation.  Among other things, this is the label used in the
-[%feff%] list on the Main window.  The second button is used to
-discard the [%feff%] calculation and this window.  The final button
-will open a web browser and take you to the [%feff%] document.
+At the top of the window is a tool bar with four buttons.  The first
+of these is used to change the name of this [%feff%] calculation.
+Among other things, this is the label used in the [%feff%] list on the
+Main window.  The second button is used to discard the [%feff%]
+calculation and this window.  The final two buttons open a web
+browser and take you either to the [%feff%] document or to this page
+in the [%artemis%] document.
 
 There are a series of tabs across the top.  These will contain
 different stages of the structural calculation.  Here we will examine
@@ -189,7 +190,10 @@ absorption coefficients.
 The clear button is used to clear all data from all controls on the
 [%atoms%] tab.
 
-Finally the run button is pressed to convert the crystal data
+The run button is pressed to convert the crystal data
 into input data for [%feff%].  Pressing this displays 
 [% INCLUDE html/link link="../feff/feff.html" text="the next tab"%].
+
+The aggregate button is discussed in detail in 
+[% INCLUDE html/link link="../feff/aggregate.html" text="a later section"%]
 [% END %]

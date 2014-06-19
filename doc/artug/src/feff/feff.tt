@@ -40,7 +40,13 @@ text from the big text box.
 [% END %]
 
 The [%feff%] calculation is started by clicking the 
-w[% INCLUDE font/quote a="Run Feff" %] button.
+[% INCLUDE font/quote a="Run Feff" %] button.
+
+Above the box containing the 
+[% INCLUDE font/file a="feff.inp" %] file are three text controls.
+The first contains the name of this [%feff%] calculation.  The other
+two set the parameters used for
+[% INCLUDE html/link link="../extended/fuzzy.html" text="fuzzy degeneracy"%].
 
 [% PROCESS section label="Feff documentation" %]
 

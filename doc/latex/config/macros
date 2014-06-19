@@ -96,6 +96,7 @@
 [% MACRO u3o8   BLOCK -%]U$_3$O$_8$[%- END -%]
 [% MACRO au3    BLOCK -%]Au$^{3+}$[%- END -%]
 [% MACRO fes3   BLOCK -%]FeS$_2$[%- END -%]
+[% MACRO tio3   BLOCK -%]TiO$_2$[%- END -%]
 [% MACRO la2cuo4 BLOCK -%]La$_2$CuO$_4$[%- END -%]
 [% MACRO mn3o4  BLOCK -%]Mn$_3$O$_4$[%- END -%]
 [% MACRO zirconolite  BLOCK -%]CaZrTi$_2$O$_7$[%- END -%]

@@ -36,12 +36,13 @@
 		data   = { name = 'The Data window'}
 		feff   = {
 			  name = 'The Atoms/Feff window'
-			  menu = [ 'feff', 'paths', 'pathlike', 'console' ]
+			  menu = [ 'feff', 'paths', 'pathlike', 'console', 'aggregate' ]
 			  page = {
 				  feff     = { name = 'The Feff tab' }
 				  paths    = { name = 'The Paths tab' }
 				  pathlike = { name = 'The Path-like tab' }
 				  console  = { name = 'The Console tab' }
+				  aggregate = { name = 'Aggregate calculation' }
 				 }
 			 }
 		path   = {

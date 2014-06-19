@@ -1,0 +1,65 @@
+[% META title = 'Aggregate Feff calculation' %]
+
+[% FILTER html_para -%]
+If crystal data has two or more inequivalent sites occupied by the
+same kind of atom, some additional functionality is enabled when one
+of the inequivalent sites is selected as the absorber.  As you can see
+in the following screenshot, the [% INCLUDE font/quote a="Aggregate"%]
+is available, as are controls for setting the 
+[% INCLUDE html/link link="../extended/fuzzy.html" text="fuzzy degeneracy"%]
+parameters.
+[%END%]
+
+[% WRAPPER figure file="feff-zirconolite.png" %]
+Crystal data for [%zirconolite%] with a Ti atom selected, enabling the
+aggregate calculation controls.
+[% END %]
+
+
+[% FILTER html_para -%]
+
+In the aggregate [%feff%] calculation, the path finder is run for each
+inequivalent position containing the same central atom.  The path
+lists are merged together, weighted by fractional population of the
+site in the unit cell, before running the check for [% INCLUDE
+html/link link="../extended/fuzzy.html" text="fuzzy degeneracy"%].
+The weighting by population fraction means that a bin of paths can be
+occupied by a non-integer number of atoms.
+
+In the example of [%zirconolite%], there are three Ti sites.  The are
+8 Ti1 atoms in the unit cell and 4 each of Ti2 and Ti3.  Thus half the
+Ti atoms are from site 1 and a quarter each from sites 2 and 3.  Each
+Ti site is surrounded by 6 oxygen atoms at a variety of distances.
+Ti1 has O atoms at 1.843 [%AA%], 1.880 [%AA%], 1.927 [%AA%], 1.987
+[%AA%], 2.0007 [%AA%], and 2.023 [%AA%].  Ti2 has 2 O atoms at each of
+1.786 [%AA%], 2.050 [%AA%], 2.498 [%AA%].  Ti3 has 2 O atoms at each
+of 1.975 [%AA%], 1.877 [%AA%], 1.975 [%AA%].  In short, the Ti K edge of
+[%zirconolite%] is a mess!
+
+Using a bin size of 0.1 [%AA%] and combining the three sites together
+weighted by their fractional populations in the unit cell, we end up
+with 4 distances.  There are 2.5 O atoms at 1.852 [%AA%], 2.5 O atoms
+at 1.984 [%AA%], 0.5 O atoms at 2.050 [%AA%], and 0.5 O atoms at 2.498
+[%AA%].
+
+Instead of having to parameterize 12 different Ti-O distances, keeping
+track of fractional populations when parameterizing the [%s02%] values
+for each path, the aggregate [%feff%] calculation requires managing
+only 4 paths.  Because the non-integer 
+
+For a complete discussion of the the aggregate [%feff%] calculation,
+see
+[% INCLUDE citation
+      author = "B. Ravel"
+      journal = "J. Synchrotron Radiat."
+      volume = XX
+      pages = "XX-XX"
+      year = 2014
+      doi = "10.1107/XXX"
+%]
+
+[% END %]
+
+[% WRAPPER html/todo %]
+Cite paper in JSR.
+[% END %]
