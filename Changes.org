@@ -44,6 +44,8 @@
      sent to Wx::ComboBox's SetStringSelection method in Align, LCF,
      and a few other places
    - parse a feff.inp file for feff8/9 correctly for use with feff6
+   - I think I've fixed the problem of the data set being lost if a
+     project is saved before a fit is made
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was

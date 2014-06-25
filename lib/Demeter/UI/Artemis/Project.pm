@@ -73,6 +73,7 @@ sub save_project {
 						copyfeff => 0,
 					       );
   #$rframes->{main} -> {currentfit} -> fitted($save);
+  Demeter->Touch(File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $rframes->{main} -> {currentfit}->group, 'keep'));
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
@@ -115,7 +116,7 @@ sub save_project {
     push @toss, $d;		# gather all fits that lack the keep file
   };				# so these can be excluded from the saved project
   closedir $FD;
-  my $toss_regexp = join("|", @toss);
+  my $toss_regexp = join("|", '_not_a_real_folder_', @toss);
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} and not m{$toss_regexp} });
