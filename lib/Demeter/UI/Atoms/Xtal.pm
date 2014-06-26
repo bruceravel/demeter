@@ -646,10 +646,10 @@ sub open_file {
   foreach my $lc (qw(space rmax rpath)) {
     $self->{$lc}->SetValue($atoms->$lc);
   };
-  my @shift = @{ $atoms->shift };
-  $self->{shift_x}->SetValue($shift[0]||0);
-  $self->{shift_y}->SetValue($shift[1]||0);
-  $self->{shift_z}->SetValue($shift[2]||0);
+  my @shiftvec = @{ $atoms->shiftvec };
+  $self->{shift_x}->SetValue($shiftvec[0]||0);
+  $self->{shift_y}->SetValue($shiftvec[1]||0);
+  $self->{shift_z}->SetValue($shiftvec[2]||0);
 
   my $i = 0;
   my $corerow = 0;
@@ -740,7 +740,7 @@ sub get_crystal_data {
   $problems .= "\"" . $self->{shift_x}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[0] == -9999);
   $problems .= "\"" . $self->{shift_y}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[1] == -9999);
   $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
-  $atoms->shift(\@shift);
+  $atoms->shiftvec(\@shift);
 
   my $core_selected = 0;
   my $first_valid_row = -1;
@@ -793,7 +793,7 @@ sub get_crystal_data {
   };
   return 0 if not $seems_ok;
 
-  $atoms->shift(\@shift);
+  $atoms->shiftvec(\@shift);
   $atoms->populate;
   $this = (qw(K L1 L2 L3))[$self->{edge}->GetCurrentSelection] || 'K';
   $atoms->edge($this);

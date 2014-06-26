@@ -153,15 +153,15 @@ has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
-has 'shift' => (
+has 'shiftvec' => (
 		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [0, 0, 0] },
 		handles   => {
-			      'push_shift'  => 'push',
-			      'pop_shift'   => 'pop',
-			      'clear_shift' => 'clear',
+			      'push_shiftvec'  => 'push',
+			      'pop_shiftvec'   => 'pop',
+			      'clear_shiftvec' => 'clear',
 			     }
 	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
@@ -297,7 +297,7 @@ sub clear {
   $self->edge(q{});
   $self->clear_sites;
   $self->clear_cluster;
-  $self->clear_shift;
+  $self->shiftvec([0,0,0]);
   $self->clear_titles;
   $self->cell->clear;
   $self->is_imported(0);
@@ -433,7 +433,7 @@ sub populate {
   };
   ## Group: $cell->get(qw(given_group space_group class setting))
   ## Bravais: $cell->get('bravais')
-  $self -> cell -> shiftvec($self->shift);
+  $self -> cell -> shiftvec($self->shiftvec);
   $self -> cell -> populate(\@sites);
   foreach my $key (qw(a b c alpha beta gamma)) {
     $self->$key($self->cell->$key);
@@ -938,7 +938,7 @@ override serialization => sub {
 
   my %cards = ();
   foreach my $key (qw(space a b c alpha beta gamma rmax rpath rss edge iedge eedge core corel partial_occupancy
-		      shift cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
+		      shiftvec cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
 		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
 		      is_ipots_set is_expanded absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
     $cards{$key} = $self->$key;
@@ -1039,7 +1039,7 @@ The edge of the absorber.
 
 The identifier of the absorber.  This should be one of the site tags.
 
-=item C<shift> (vector) [0,0,0]
+=item C<shiftvec> (vector) [0,0,0]
 
 The value of the shift vector, should one be necessary.
 
