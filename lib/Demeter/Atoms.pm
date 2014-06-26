@@ -387,8 +387,9 @@ sub parse_line {
 
     return if ($key =~ m{\#});
     $key = lc($key);
-    if (($self->meta->has_method($key)) and ($key =~ m{shi|daf|qve|ref})) {
-      $self->$key([$val, $vvv, $vvvv]);
+    my $kk = ($key =~ m{shi}) ? 'shiftvec' : $key;
+    if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref})) {
+      $self->$kk([$val, $vvv, $vvvv]);
     } elsif ($self->meta->has_method($key)) {
       $self->$key(lc($val));
     } elsif (is_AtomsObsolete($key)) {
