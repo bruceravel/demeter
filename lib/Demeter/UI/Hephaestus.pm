@@ -63,7 +63,7 @@ my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinde
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.85); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 2.2); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
@@ -117,7 +117,7 @@ sub new {
       $page -> SetSizer($box);
 
     };
-    $tb->AddPage($page, $label_of{$utility}, 0, $count);
+    $tb->AddPage($page, sprintf("%11s", $label_of{$utility}), 0, $count);
     $height = ($tb->GetSizeWH)[1];
   };
 
