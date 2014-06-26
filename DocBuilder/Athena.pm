@@ -72,14 +72,14 @@ sub ACTION_configure_aug {
   print "  configuring bin directory\n" if ($self->verbose);
   foreach my $b (qw(build)) { # tex texbw pod mobile
     unlink File::Spec->catfile('bin', $b);
-    system("tpage --define installdir=$id bin/$b.tt > bin/$b");
+    system("tpage --define installdir=\"$id\" bin/$b.tt > bin/$b");
     chmod 0755, File::Spec->catfile('bin', $b);
   };
 
   print "  configuring etc directory\n" if ($self->verbose);
   foreach my $b (qw(ttree)) { #  ttree_tex ttree_texbw ttree_pod ttree_mobile
     unlink File::Spec->catfile('etc', $b);
-    system("tpage --define installdir=$id etc/$b.tt > etc/$b.cfg");
+    system("tpage --define installdir=\"$id\" etc/$b.tt > etc/$b.cfg");
   };
 
   print "  copying map and version templates\n" if ($self->verbose);
@@ -104,7 +104,7 @@ sub ACTION_ttree_aug {
   my $id = cwd;
   my $verbose = q{};
   $verbose = "--verbose", if ($self->verbose);
-  system("ttree -f $id/etc/ttree.cfg --relative --trim $verbose");
+  system("ttree -f \"$id/etc/ttree.cfg\" --relative --trim $verbose");
   chdir $here;
 };
 

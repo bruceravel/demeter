@@ -16,7 +16,7 @@ if [ ! $1 ]; then echo "  configuring bin directory"; fi
 files="build tex" # texbw pod mobile"
 for b in $files; do
     rm -f bin/$b
-    tpage --define installdir=$id bin/$b.tt > bin/$b
+    tpage --define installdir="$id" bin/$b.tt > bin/$b
     chmod +x bin/$b
 done
 
@@ -24,7 +24,7 @@ if [ ! $1 ]; then echo "  configuring etc directory"; fi
 files="ttree ttree_tex" # ttree_texbw ttree_pod ttree_mobile"
 for b in $files; do
     rm -f etc/$b
-    tpage --define installdir=$id etc/$b.tt > etc/$b.cfg
+    tpage --define installdir="$id" etc/$b.tt > etc/$b.cfg
 done
 
 if [ ! $1 ]; then echo "  copying map and version templates"; fi
