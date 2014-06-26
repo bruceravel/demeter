@@ -41,17 +41,17 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       Help	    => 'Hephaestus Users\' Guide',
 	       Config       => 'control details of Hephaestus\' behavior',
 	     );
-my %label_of = (Absorption   => 'Absorption',
-		Formulas     => 'Formulas',
-		Data	     => 'Data',
+my %label_of = (Absorption   => ' Absorption ',
+		Formulas     => '  Formulas  ',
+		Data	     => '    Data    ',
 		Ion	     => 'Ion chambers',
-		Transitions  => 'Transitions',
-		EdgeFinder   => 'Edge finder',
-		LineFinder   => 'Line finder',
-		Standards    => 'Standards',
-		F1F2	     => "F' and F\"",
-		Help	     => 'Document',
-		Config       => 'Configure',
+		Transitions  => ' Transitions',
+		EdgeFinder   => ' Edge finder',
+		LineFinder   => ' Line finder',
+		Standards    => '  Standards ',
+		F1F2	     => " F' and F\"  ",
+		Help	     => '  Document  ',
+		Config       => '  Configure ',
 	       );
 my $icon_dimension = 30;
 
@@ -96,7 +96,10 @@ sub new {
     ##$periodic_table = Demeter::UI::Wx::PeriodicTable->new($page, sub{$self->multiplex($_[0])}, $statusbar);
 
     if ($utility eq 'Absorption') {
-      my $label = $label_of{$utility}.': '.$note_of{$utility};
+      my $l = $label_of{$utility};
+      $l =~ s{\A\s+}{};
+      $l =~ s{\s+\z}{};
+      my $label = $l.': '.$note_of{$utility};
       my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
       my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
       $header->SetForegroundColour( $header_color );
@@ -165,7 +168,11 @@ sub make_page {
   return if exists $self->{$which};
   my $busy = Wx::BusyCursor->new;
 
-  my $label = $label_of{$which}.': '.$note_of{$which};
+  my $l = $label_of{$which};
+  $l =~ s{\A\s+}{};
+  $l =~ s{\s+\z}{};
+  my $label = $l.': '.$note_of{$which};
+  #my $label = $label_of{$which}.': '.$note_of{$which};
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   my $header = Wx::StaticText->new( $self->{$which."_page"}, -1, $label, wxDefaultPosition, wxDefaultSize );
   $header->SetForegroundColour( $header_color );
