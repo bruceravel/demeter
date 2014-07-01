@@ -1,0 +1,8 @@
+title  alpha-Fe2O3, ilmenite structure
+Space  C_3I^2         ! same as R -3
+rmax = 7.00     core  = Fe    a    = 5.538    alpha = 54.6833333
+atoms
+! At.type    x        y       z
+  Fe       .358     .358    .358
+  Ti       .142     .142    .142
+  O        .555    -.04     .235

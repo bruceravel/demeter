@@ -162,7 +162,7 @@ sub push_values {
     $this->{standard}->SetSelection(0);
   } else {
     $this->{standard}->SetStringSelection($was);
-    $this->{standard}->SetSelection(0) if not $this->{standard}->GetSelection;
+    $this->{standard}->SetSelection(0) if not scalar $this->{standard}->GetSelection;
   };
 
   # ((not $was) or ($was eq 'None')) ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
@@ -173,7 +173,7 @@ sub push_values {
   # };
   return if $::app->{plotting};
   return if ($this->{standard}->GetStringSelection eq 'None');
-  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
+  my $stan = $this->{standard}->GetClientData(scalar $this->{standard}->GetSelection);
   if (not defined($stan) or ($stan->group eq $data->group)) {
     $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');
     return;
@@ -205,7 +205,7 @@ sub autoalign {
   my ($this, $data, $how) = @_;
   my $busy = Wx::BusyCursor->new();
   my $save = $data->po->e_smooth;
-  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
+  my $stan = $this->{standard}->GetClientData(scalar $this->{standard}->GetSelection);
 
   if (($how eq 'this') and ($data eq $stan)) {
     $::app->{main}->status("Not aligning -- the data and standard are the same!", 'error|nobuffer');
@@ -228,7 +228,7 @@ sub autoalign {
     $stan->sentinal(sub{$this->alignment_sentinal});
   };
   $data->po->set(e_smooth=>0);
-  $data->po->set(e_smooth=>3) if ($this->{fitas}->GetSelection == 1);
+  $data->po->set(e_smooth=>3) if (scalar $this->{fitas}->GetSelection == 1);
   $stan->align(@all);
   undef $busy;
   $this->{shift}->SetValue($data->bkg_eshift);
@@ -252,7 +252,7 @@ sub plot {
   $data->co->set_default("smooth", "sg_order", 4);
 
   my $save = $data->po->e_smooth;
-  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
+  my $stan = $this->{standard}->GetClientData(scalar $this->{standard}->GetSelection);
   if (not defined($stan) or ($stan->group eq $data->group)) {
     $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');
     return;
@@ -265,9 +265,9 @@ sub plot {
 
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
-  $data->po->e_norm(1) if ($this->{plotas}->GetSelection == 1);
-  $data->po->e_der(1)  if ($this->{plotas}->GetSelection == 2);
-  $data->po->set(e_der=>1, e_smooth=>3)  if ($this->{plotas}->GetSelection == 3);
+  $data->po->e_norm(1) if (scalar $this->{plotas}->GetSelection == 1);
+  $data->po->e_der(1)  if (scalar $this->{plotas}->GetSelection == 2);
+  $data->po->set(e_der=>1, e_smooth=>3)  if (scalar $this->{plotas}->GetSelection == 3);
   $data->po->start_plot;
   $_->plot('e') foreach ($stan, $data);
 

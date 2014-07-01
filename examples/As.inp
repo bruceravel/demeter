@@ -1,0 +1,6 @@
+title  rhombohedral arsenic
+space R -3 m
+a = 4.123   alpha = 54.16667
+atoms
+  As   0.226   0.226   0.226
+
