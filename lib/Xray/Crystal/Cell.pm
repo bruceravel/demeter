@@ -55,7 +55,7 @@ has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 			 return if ($new =~ m{\A\s*\z});
 			 $self->given_group($new);
 			 $self->group->group($new);
-			 $self->set_hexagonal if ($self->group->class =~ m{hexagonal|trigonal});
+			 $self->set_hexagonal if (($new !~ m{\Ar}i) and ($self->group->class =~ m{hexagonal|trigonal}));
 		       });
 has 'given_group'  => (is => 'rw', isa => 'Str',  default => q{});
 has 'no_recurse'   => (is => 'rw', isa => 'Bool', default => 0);
@@ -272,14 +272,19 @@ sub determine_monoclinic {
 
 sub set_rhombohedral {
   my ($self) = @_;
+  #Demeter->pjoin($self->get(qw(space_group a b c alpha beta gamma)));
   return $self if ($self->space_group !~ m{\Ar}i);
   $self->no_recurse(1);
   if (abs($self->a - $self->c) < $EPSILON) {
     ## rhombohedral setting
     $self->b($self->a);
-    $self->alpha(90);
-    $self->beta(90);
-    $self->gamma(90);
+    if (abs($self->alpha-90) > $EPSILON) {
+      $self->beta($self->alpha);
+      $self->beta($self->gamma);
+    };
+    #$self->alpha(90);
+    #$self->beta(90);
+    #$self->gamma(90);
     $self->group->set_rhombohedral;
   } else {
     ## trigonal setting
