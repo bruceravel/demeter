@@ -179,7 +179,7 @@ sub OnInit {
   $app->{main} -> Refresh;
   $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
 
   ## ----- randomize the order of tips
@@ -323,13 +323,13 @@ sub is_empty {
 
 sub current_index {
   my ($app) = @_;
-  return $app->{main}->{list}->GetSelection;
+  return scalar $app->{main}->{list}->GetSelection;
 };
 sub current_data {
   my ($app) = @_;
   return Demeter->dd if not defined $app->{main}->{list};
   return Demeter->dd if not $app->{main}->{list}->GetCount;
-  return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
+  return $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
 };
 
 const my $REPORT_ALL		=> Wx::NewId();
@@ -1627,10 +1627,12 @@ sub main_window {
   $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
-  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
-								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)
-								     });
-  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
+  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views},
+			      sub{$app->OnGroupSelect(0,0,0);
+				  $app->{main}->{return}->Show(scalar $app->{main}->{views}->GetSelection)
+				});
+  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views},
+			       sub{$app->view_changing(@_)});
 
 
   return $app;
@@ -1811,22 +1813,22 @@ sub OnMark {
 
 sub focus_up {
   my ($app) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
   return if ($i == 0);
   $app->{main}->{list}->SetSelection($i-1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 };
 sub focus_down {
   my ($app) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
   return if ($i == $app->{main}->{list}->GetCount);
   $app->{main}->{list}->SetSelection($i+1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 };
 
 sub move_group {
   my ($app, $dir) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
 
   return if (($dir eq 'up')   and ($i == 0));
   return if (($dir eq 'down') and ($i == $app->{main}->{list}->GetCount-1));
@@ -1843,7 +1845,7 @@ sub move_group {
   $app->{main}->{list} -> InsertData($from_label, $to, $from_object);
   $app->{main}->{list} -> Check($to, $from_checked);
   $app->{main}->{list} -> SetSelection($to);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 
   $app->modified(1);
   $app->{main}->status("Moved $from_label $dir");
@@ -1858,13 +1860,13 @@ sub OnGroupSelect {
     $event->Skip(0);
     return;
   };
-  my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
+  my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : scalar $app->{main}->{list}->GetSelection;
 
   my $was = ((not defined($app->{selected})) or ($app->{selected} == -1)) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
-  my $view = $app->get_view($app->{main}->{views}->GetSelection);
+  my $view = $app->get_view(scalar $app->{main}->{views}->GetSelection);
   $app->make_page($view) if (not exists $app->{main}->{$view});
   my $showing = $app->{main}->{$view};
   if ($showing =~ m{XDI}) {
@@ -1874,7 +1876,7 @@ sub OnGroupSelect {
   if ($is_index != -1) {
     $showing->push_values($is, $plot);
     $showing->mode($is, 1, 0);
-    $app->{selected} = $app->{main}->{list}->GetSelection;
+    $app->{selected} = scalar $app->{main}->{list}->GetSelection;
   };
   $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
@@ -2307,7 +2309,7 @@ sub postplot {
     $data->bkg_fixstep($is_fixed);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
     $app->{plotting} = 1;
-    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+    $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
     $app->{modified} = $was;
   };
   $data->bkg_fixstep($is_fixed);
@@ -2518,7 +2520,7 @@ sub mark {
       };
     };
   } elsif ($how eq 'toggle') {
-    $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
+    $clb->Check(scalar $clb->GetSelection, not $clb->IsChecked(scalar $clb->GetSelection));
     $clb->GetIndexedData($::app->current_index)->marked($clb->IsChecked($::app->current_index));
     return;
 
@@ -2688,7 +2690,7 @@ sub merge {
   };
 
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-$n);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-$n, 1);
   $merged->marked(1);

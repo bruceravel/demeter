@@ -385,11 +385,11 @@ sub push_values {
     my $str = $this->{'standard'.$i}->GetStringSelection;
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
-    $this->{'standard'.$i}->SetSelection(0) if not $this->{'standard'.$i}->GetSelection;
+    $this->{'standard'.$i}->SetSelection(0) if not scalar $this->{'standard'.$i}->GetSelection;
 
     # if ((not defined $this->{'standard'.$i}->GetSelection) or
-    # 	(not $this->{'standard'.$i}->GetSelection) or
-    # 	(not defined $this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection))) {
+    # 	(not scalar $this->{'standard'.$i}->GetSelection) or
+    # 	(not defined $this->{'standard'.$i}->GetClientData(scalar $this->{'standard'.$i}->GetSelection))) {
     #   $this->{'standard'.$i}->SetSelection(0);
     # };
   };
@@ -397,7 +397,7 @@ sub push_values {
   $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));
   my $count = 0;
   foreach my $i (0 .. $this->{nstan}-1) {
-    ++$count if ($this->{'standard'.$i}->GetSelection > 0);
+    ++$count if (scalar $this->{'standard'.$i}->GetSelection > 0);
   };
   $this->{fit}       -> Enable($count > 1);
   $this->{fitmarked} -> Enable($count > 1);
@@ -418,10 +418,10 @@ sub OnSelect {
   my ($this, $event) = @_;
   my $count = 0;
   foreach my $i (0 .. $this->{nstan}-1) {
-    ++$count if ($this->{'standard'.$i}->GetSelection > 0);
+    ++$count if (scalar $this->{'standard'.$i}->GetSelection > 0);
   };
   foreach my $i (0 .. $this->{nstan}-1) {
-    if ($this->{'standard'.$i}->GetSelection > 0) {
+    if (scalar $this->{'standard'.$i}->GetSelection > 0) {
       $this->{'weight'.$i}->SetValue(sprintf("%.3f", 1/$count));
     } else {
       $this->{'weight'.$i}->SetValue(0);
@@ -552,7 +552,7 @@ sub _prep {
   $this->{LCF}->clean if not $nofit;
   $this->{LCF}->data($::app->current_data);
   foreach my $i (0 .. $this->{nstan}-1) {
-    my $n = $this->{'standard'.$i}->GetSelection;
+    my $n = scalar $this->{'standard'.$i}->GetSelection;
     my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
     #print join("|", $i, $n, $this->{'weight'.$i}->GetValue), $/;
@@ -590,7 +590,7 @@ sub _prep {
 sub _results {
   my ($this) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
-    my $n = $this->{'standard'.$i}->GetSelection;
+    my $n = scalar $this->{'standard'.$i}->GetSelection;
     my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
     my $w = sprintf("%.3f", $this->{LCF}->weight($stan));

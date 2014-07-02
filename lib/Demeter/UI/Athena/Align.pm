@@ -228,7 +228,7 @@ sub autoalign {
     $stan->sentinal(sub{$this->alignment_sentinal});
   };
   $data->po->set(e_smooth=>0);
-  $data->po->set(e_smooth=>3) if (scalar $this->{fitas}->GetSelection == 1);
+  $data->po->set(e_smooth=>3) if ($this->{fitas}->GetSelection == 1);
   $stan->align(@all);
   undef $busy;
   $this->{shift}->SetValue($data->bkg_eshift);
@@ -265,9 +265,9 @@ sub plot {
 
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
-  $data->po->e_norm(1) if (scalar $this->{plotas}->GetSelection == 1);
-  $data->po->e_der(1)  if (scalar $this->{plotas}->GetSelection == 2);
-  $data->po->set(e_der=>1, e_smooth=>3)  if (scalar $this->{plotas}->GetSelection == 3);
+  $data->po->e_norm(1) if ($this->{plotas}->GetSelection == 1);
+  $data->po->e_der(1)  if ($this->{plotas}->GetSelection == 2);
+  $data->po->set(e_der=>1, e_smooth=>3)  if ($this->{plotas}->GetSelection == 3);
   $data->po->start_plot;
   $_->plot('e') foreach ($stan, $data);
 

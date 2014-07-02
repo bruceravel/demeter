@@ -143,7 +143,7 @@ sub sum {
     next if ($this->{"standard$i"}->GetStringSelection eq 'None');
     next if ($this->{"weight$i"}->GetValue == 0);
     next if not looks_like_number($this->{"weight$i"}->GetValue);
-    push @data, $this->{"standard$i"}->GetClientData($this->{"standard$i"}->GetSelection);
+    push @data, $this->{"standard$i"}->GetClientData(scalar $this->{"standard$i"}->GetSelection);
     push @weight, $this->{"weight$i"}->GetValue;
   };
   return if ($#data == -1);

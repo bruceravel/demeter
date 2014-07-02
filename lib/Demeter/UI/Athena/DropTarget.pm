@@ -49,7 +49,7 @@ sub OnData {
     $list -> Check($to, $from_checked);
     $::app->{main}->{list}->SetSelection($to);
   };
-  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
+  $::app->OnGroupSelect(q{}, scalar $::app->{main}->{list}->GetSelection, 0);
   $::app->modified(1);
   $::app->{main}->status($message);
 

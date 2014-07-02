@@ -191,13 +191,12 @@ sub Import {
     };
     $first = 0;
     if ($app->current_data->mo->heap_used > 0.95) {
-      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+      $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
       $app->{main}->status("Stopping multiple file import.  You have used more than 95% of Ifeffit's memory.", "error");
       return;
     };
   };
-  #$app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
-  $app->OnGroupSelect($app->{main}->{list}->GetSelection, 0, 0);
+  $app->OnGroupSelect(scalar $app->{main}->{list}->GetSelection, 0, 0);
   if (Demeter->is_ifeffit and
       (Demeter->co->default('athena', 'save_alert') > 0) and
       ($app->{main}->{list}->GetCount > Demeter->co->default('athena', 'too_many_groups'))) {
@@ -526,7 +525,7 @@ sub _data {
   my $stan = q{};
   if (defined($colsel)) {
     if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
-      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData(scalar $colsel->{Preprocess}->{standard}->GetSelection)->group;
     };
   } else {
     $stan = $yaml->{preproc_stgroup};
@@ -610,9 +609,8 @@ sub _group {
 
   if (not $repeated) {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
-    #$app->{selected} = $app->{main}->{list}->GetSelection;
     $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
-    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+    $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
     Import_plot($app, $data);
   };
 
@@ -629,7 +627,7 @@ sub _group {
   my $stan = q{};
   if (defined($colsel)) {
     if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
-      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData(scalar $colsel->{Preprocess}->{standard}->GetSelection)->group;
       $stan = $data->mo->fetch("Data", $stan);
     };
   } else {
@@ -637,7 +635,6 @@ sub _group {
   };
   my $do_set  = (defined $colsel) ? ($colsel->{Preprocess}->{set}->GetValue)  : $yaml->{preproc_set};
   if ($do_set) {
-    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     $app->{main}->status("Constraining parameters for ". $data->name . " to " . $stan->name);
     constrain($app, $colsel, $data, $stan);
     $app->OnGroupSelect(0,0,0);
@@ -719,7 +716,6 @@ sub _group {
 
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
-    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     my $save = $data->po->e_smooth;
     $data->po->set(e_smooth=>3);
     if ($data->reference and $stan->reference) {
@@ -794,9 +790,8 @@ sub _prj {
     $app->{main}->{list}->AddData($data->name, $data);
     if ($count == 1) {
       $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
-      #$app->{selected} = $app->{main}->{list}->GetSelection;
       $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
-      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+      $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
       my $save = $data->bkg_stan;
       $data->bkg_stan('None');
       Import_plot($app, $data);
@@ -837,7 +832,7 @@ sub save_column {
   my ($app, $how) = @_;
   return if $app->is_empty;
 
-  my $data = $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
+  my $data = $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
 
   my ($desc, $suff, $out) = ($how eq 'mue')  ? ("$MU(E)",  '.xmu',  'xmu')

@@ -832,7 +832,7 @@ sub OnParameter {
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
   my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
             : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
-            : (ref($widget) =~ m{GroupList}) ? $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
+            : (ref($widget) =~ m{GroupList}) ? scalar $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
             : ($which eq 'bkg_z')            ? interpret_bkg_z($widget->GetValue)
             : ($which =~ m{nnorm})           ? interpret_nnorm($app)
 	    :                                  $widget->GetValue;

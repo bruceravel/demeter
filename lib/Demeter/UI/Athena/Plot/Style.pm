@@ -110,7 +110,7 @@ sub make_style {
 
 sub restore_style {
   my ($this, $event, $app) = @_;
-  my $style = $this->{list}->GetClientData($this->{list}->GetSelection);
+  my $style = $this->{list}->GetClientData(scalar $this->{list}->GetSelection);
   return if not defined $style;
   $app->{main}->{PlotE}->{emin}->SetValue($style->emin);
   $app->{main}->{PlotE}->{emax}->SetValue($style->emax);
@@ -125,7 +125,7 @@ sub restore_style {
 
 sub discard_style {
   my ($this, $event, $app) = @_;
-  my $i = $this->{list}->GetSelection;
+  my $i = scalar $this->{list}->GetSelection;
   my $style = $this->{list}->GetClientData($i);
   my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
 					       "Really discard the \"".$style->name."\" plotting style?",

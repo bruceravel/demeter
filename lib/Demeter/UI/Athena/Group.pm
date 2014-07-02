@@ -37,7 +37,7 @@ sub Rename {
     $newname = $ted->GetValue;
   };
   $app->update_text_buffer("rename", $newname, 0);
-  my $sel = $app->{main}->{list}->GetSelection;
+  my $sel = scalar $app->{main}->{list}->GetSelection;
   my $is_checked = $app->{main}->{list}->IsChecked($sel);
 
   my $prefix = ($is_ref) ? "  Ref " : q{};
@@ -190,7 +190,7 @@ sub change_datatype {
   if ($cdt->{how}->GetSelection == 0) {
     $app->current_data->datatype($newtype);
     $app->current_data->is_nor($is_nor);
-    $app->current_data->update_norm(1) if ($cdt->{to}->GetSelection != 3);
+    $app->current_data->update_norm(1) if (scalar $cdt->{to}->GetSelection != 3);
     $app->{main}->status("Changed current group's data type to $newtype");
   } elsif ($cdt->{how}->GetSelection == 1) {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {

@@ -172,10 +172,10 @@ sub push_values {
     $this->{standard}->SetSelection(0);
   } else {
     $this->{standard}->SetStringSelection($was);
-    $this->{standard}->SetSelection(0) if not $this->{standard}->GetSelection;
+    $this->{standard}->SetSelection(0) if not scalar $this->{standard}->GetSelection;
   };
   #($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  #$this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  #$this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection));
   $data->po->start_plot;
   $data->po->set(emin=>$this->{Diff}->xmin-10, emax=>$this->{Diff}->xmax+20);
   $data->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
@@ -212,7 +212,7 @@ sub setup {
   my $form = $forms[$this->{form}->GetSelection];
   $diff->data($data);
   $diff->space($form);
-  $diff->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $diff->standard($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection));
   $diff->name_template($this->{template}->GetValue);
   $diff->diff;
   Demeter->po->set(emin=>$diff->xmin-20, emax=>$diff->xmax+30, space=>'E');
