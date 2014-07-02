@@ -47,6 +47,7 @@ sub new {
   EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
   EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
+  $this->{function}->SetSelection(0);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 

@@ -127,6 +127,7 @@ sub OnInit {
 
   ## -------- the business part of the window
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $app->{hbox} = $hbox;
   #print DateTime->now,  "  Making main window ...\n";
   $app -> main_window($hbox);
   #print DateTime->now,  "  Making side bar ...\n";
@@ -1629,8 +1630,9 @@ sub main_window {
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views},
 			      sub{$app->OnGroupSelect(0,0,0);
-				  $app->{main}->{return}->Show(scalar $app->{main}->{views}->GetSelection)
-				});
+				  $app->{main}->{return}->Show($app->{main}->{views}->GetSelection);
+				  $app->{main}->SetSizerAndFit($app->{hbox}); # the return button does not get shown
+				});                                           # on windows without this twiddle
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views},
 			       sub{$app->view_changing(@_)});
 

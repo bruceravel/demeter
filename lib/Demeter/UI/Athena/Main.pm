@@ -94,14 +94,14 @@ sub group {
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
-  $hbox -> Add($this->{type}, 0, wxTOP, 6);
+  $hbox -> Add($this->{type}, 0, wxTOP, (Demeter->is_windows) ? 2 : 4);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
-  $this->{type} -> SetNormalColour($wxBGC);
-  $this->{type} -> SetHoverColour($wxBGC);
-  $this->{type} -> SetVisitedColour($wxBGC);
+  $this->{type} -> SetNormalColour(wxBLACK);
+  $this->{type} -> SetHoverColour(wxBLACK);
+  $this->{type} -> SetVisitedColour(wxBLACK);
   $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
