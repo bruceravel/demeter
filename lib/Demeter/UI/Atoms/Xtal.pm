@@ -73,7 +73,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
-		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX EVT_BUTTON
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX EVT_BUTTON EVT_RIGHT_UP EVT_RIGHT_DOWN
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -92,6 +92,7 @@ my %hints = (
 	     shift_x   => "The x-coordinate of the vector for recentering this crystal",
 	     shift_y   => "The y-coordinate of the vector for recentering this crystal",
 	     shift_z   => "The z-coordinate of the vector for recentering this crystal",
+	     shift_suggest => "If your space group has a shift vector in the Int'l Tables, insert it $MDASH Right click to reset",
 	     edge      => "The absorption edge to use in the Feff calculation",
 	     template  => "Choose the output file style and the ipot selection style",
 	     sitesgrid => "Hit return or tab to finish editing a cell in the sites grid",
@@ -112,6 +113,8 @@ my %hints = (
 	     z	       => "The x-coordinate of this unique crystallographic site",
 	     tag       => "A short string identifying this unique crystallographic site",
 	     del       => "Click this button to remove this crystallographic site",
+
+	     addbutton => "Add another row to the site list",
 	    );
 
 my $atoms = Demeter::Atoms->new;
@@ -352,27 +355,21 @@ sub new {
 
   ## -------- shift constant controls
   $self->{shiftbox}       = Wx::StaticBox->new($self, -1, 'Shift vector', wxDefaultPosition, wxDefaultSize);
-  $self->{shiftboxsizer}  = Wx::StaticBoxSizer->new( $self->{shiftbox}, wxVERTICAL );
-
-  $tsz = Wx::GridBagSizer->new( 6, 10 );
-
+  $self->{shiftboxsizer}  = Wx::StaticBoxSizer->new( $self->{shiftbox}, wxHORIZONTAL );
   $width = 70;
-
-  #$label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
-  #$tsz -> Add($label,Wx::GBPosition->new(0,0));
   $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,0));
   $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,1));
   $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,2));
+  $self->{shift_suggest} = Wx::Button->new($self, -1, 'insert');
+  $self->{shiftboxsizer} -> Add($self->{$_}, 0, wxALL, 5) foreach qw(shift_x shift_y shift_z shift_suggest);
+  EVT_BUTTON($self, $self->{shift_suggest}, sub{$self->InsertShiftvec(@_)});
+  EVT_RIGHT_DOWN($self->{shift_suggest}, sub{$self->InsertShiftvec(@_)});
 
-  $self->{shiftboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 0);
+  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL);
   ## -------- end of R constant controls
 
-  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
-				  shift_x shift_y shift_z edge template));
+  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath addbutton
+				  shift_x shift_y shift_z shift_suggest edge template));
 
   foreach my $x (qw(a b c alpha beta gamma name space rmax rpath shift_x shift_y shift_z edge template)) {
     EVT_TEXT_ENTER($self, $self->{$x}, sub{1});
@@ -414,7 +411,9 @@ sub set_hint {
   my ($self, $w) = @_;
   (my $ww = $w) =~ s{\d+\z}{};
   EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_;
-				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!})});
+				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!});
+				    $event->Skip;
+				  });
   EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnWidgetLeave});
 };
 
@@ -563,6 +562,35 @@ sub OnGridMenu {
   };
 };
 
+sub InsertShiftvec {
+  #print join("|", @_), $/;
+  my ($self, $toss, $event) = @_;
+
+  my $this = $self->{space}->GetValue || q{};
+  if ((not $this) and ($self->{used})) {
+    $self->{parent}->status("You have not specified a space group.");
+    return;
+  };
+  $atoms->space($this);
+  $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
+
+  if (ref($event) =~ m{Mouse}) {
+    $self->{shift_x}->SetValue(0);
+    $self->{shift_y}->SetValue(0);
+    $self->{shift_z}->SetValue(0);
+    return;
+  };
+
+  if (not @{$atoms->cell->group->shiftvec}) {
+    $self->{parent}->status("The space group $this does not have a tabulated shift vector");
+    return;
+  };
+
+  $self->{shift_x}->SetValue($atoms->cell->group->shiftvec->[0]);
+  $self->{shift_y}->SetValue($atoms->cell->group->shiftvec->[1]);
+  $self->{shift_z}->SetValue($atoms->cell->group->shiftvec->[2]);
+};
+
 sub AddSite {
   my ($toolbar, $event, $self) = @_;
   $self->{sitesgrid} -> InsertRows($self->{sitesgrid}->GetNumberRows, 1, 1);
@@ -625,6 +653,16 @@ sub open_file {
     $message->ShowModal;
     return 0;
   };
+
+  $atoms -> cell -> space_group($atoms->space);
+  foreach my $key (qw(a b c alpha beta gamma)) {
+    my $val = $atoms->$key;
+    $atoms -> cell->$key($val) if $val;
+  };
+  ## Group: $cell->get(qw(given_group space_group class setting))
+  ## Bravais: $cell->get('bravais')
+  $atoms -> cell -> shiftvec($atoms->shiftvec);
+  $atoms->cell->set_rhombohedral;
   my $name = basename($file, '.cif', '.inp');
   $atoms -> name($name) if not $atoms->name;
   $self->{name}->SetValue($name);
@@ -730,10 +768,10 @@ sub get_crystal_data {
     };
   };
   $atoms->do_scf($self->{scf}->GetValue);
-  foreach my $param (qw(alpha beta gamma)) {
-    $self->{$param}->SetValue($self->verify_angle($param));
-    $atoms->$param($self->{$param}->GetValue);
-  };
+  #foreach my $param (qw(alpha beta gamma)) {
+  #  $self->{$param}->SetValue($self->verify_angle($param));
+  #  $atoms->$param($self->{$param}->GetValue);
+  #};
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
   @shift = map { $self->number($_) } @shift;
@@ -831,9 +869,11 @@ sub verify_angle {
   my ($self, $angle) = @_;
   my $cell    = $atoms->cell;
   my $class   = $cell->group->class;
+  my $group   = $cell->group->group;
   my $setting = $cell->group->setting;
+#  Demeter->pjoin($class, $group,$setting);
  SWITCH: {
-    (($class eq 'hexagonal') and ($setting eq 'rhombohedral')) and do {
+    (($class eq 'trigonal') and ($setting eq 'rhombohedral')) and do {
       return $atoms->alpha;
       last SWITCH;
     };
@@ -842,7 +882,7 @@ sub verify_angle {
       return 120 if ($angle eq 'gamma');
       last SWITCH;
     };
-    ($class eq 'trigonal') and do {
+    (($class eq 'trigonal') and ($setting ne 'rhombohedral')) and do { # ($group !~ m{\Ar}i)
       return 90  if ($angle =~ m{(?:alpha|beta)});
       return 120 if ($angle eq 'gamma');
       last SWITCH;

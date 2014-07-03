@@ -1,0 +1,35 @@
+title name:	Yvonite
+title formula:	
+title sites1:	As1-2, Cu1-2, O4-6,9,11-12, OH1,10, Wat2-3,7-8
+title refer1:	American Mineralogist 83 (1998) 383-389
+title schoen:	c_i^1
+title notes1:	Sarp H, Cerny R
+title notes2:	Description and crystal structure of Yvonite, Cu(AsO3OH)2H2O
+title notes3:	American Mineralogist Crystal Structure Database
+title notes4:	ftp://ftp.geo.arizona.edu/pub/xtal/data/083038300.amc
+space = P -1
+a =   7.632000
+b =  11.168000
+c =   6.020000
+alpha = 89.32000
+beta = 86.55000
+gamma = 74.43000
+core = Cu1
+atoms
+# elem.   x         y         z         tag
+  Cu     0.11410   0.80340   0.21450    Cu1       
+  Cu     0.08650   0.66310   0.72430    Cu2       
+  As     0.16630   0.07300   0.14640    As1       
+  As     0.15790   0.36760   0.67520    As2       
+  O      0.34800   0.13770   0.10200    OH1       
+  O      0.70900   0.28700   0.14700    Wat2      
+  O      0.37500   0.45190   0.15900    Wat3      
+  O      0.00300   0.66860   0.16100    O4        
+  O      0.24700   0.92710   0.24200    O5        
+  O      0.01700   0.16080   0.33500    O6        
+  O      0.63300   0.08440   0.34600    Wat7      
+  O      0.31600   0.68040   0.35500    Wat8      
+  O      0.11300   0.38040   0.40400    O9        
+  O      0.36200   0.24570   0.69000    OH10      
+  O      0.21900   0.49080   0.76600    O11       
+  O      0.09400   0.07470   0.88900    O12       

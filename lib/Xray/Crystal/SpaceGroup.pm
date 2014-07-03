@@ -332,9 +332,10 @@ sub _set_bravais {
   };
   my $setting = $self->setting;
   $self->bravais( [] );
-  #$self->bravais( $table{r}  ) if (($g eq 'r') and ($setting eq "rhombohedral"));
-  $self->bravais( $table{r}  ) if ($g eq 'r');
+  $self->bravais( $table{r}  ) if (($g eq 'r') and ($setting ne "rhombohedral"));
+  #$self->bravais( $table{r}  ) if ($g eq 'r');
   $self->bravais( $table{$g} ) if ($g =~ m{[abcfi]});
+  #print(join("|", '---', $setting, $g, @{$self->bravais}), $/);
   return $self;
 };
 
@@ -440,15 +441,24 @@ sub _determine_monoclinic {
 };
 
 sub set_rhombohedral {
-  my ($self) = @_;
+  my ($self, $which) = @_;
   my $group = $self->group;
   my $given = $self->given;
   my $class = $self->class;
   return $self if ($class ne "trigonal");
   return $self if ($group !~ m{\Ar});
-  $self->setting('rhombohedral');
+  $self->setting('rhombohedral') if $which eq 'rhombohedral';
   my $rhash = $self->data;
-  $self->positions($$rhash{rhombohedral});
+  #print ">>>",$which, $/;
+  if ($which eq 'rhombohedral') {
+    $self->setting('rhombohedral');
+    $self->positions($$rhash{rhombohedral});
+    $self->_set_bravais;
+  } else {
+    $self->setting(0);
+    $self->positions($$rhash{positions});
+    $self->_set_bravais;
+  };
   return $self;
 };
 

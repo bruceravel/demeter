@@ -467,17 +467,18 @@ sub build_cluster {
   my @sites = @{ $cell->sites };
   map { $_ -> in_cluster(0) } @sites;
 
+  #Demeter->pjoin('build_cluster',$self->get(qw(a b c alpha beta gamma)));
+  #Demeter->pjoin('build_cluster',$self->cell->get(qw(txx tyx tyz tzx tzz)));
+
   my $rmax = $self->rmax;
   my @cluster = ();
   my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($core);
-  #print join(" ", $xcenter, $ycenter, $zcenter), $/;
   my $setting	      = $cell->group->setting;
   my $crystal_class   = $cell->group->class;
   my $do_tetr	      = ($crystal_class eq "tetragonal" ) && ($setting);
 
   #### here
   my ($aa, $bb, $cc) = $cell -> get("a", "b", "c");
-  #print join(" ", $aa, $bb, $cc), $/;
   my $xup = ceil($rmax/$aa - 1 + $xcenter);
   my $xdn = ceil($rmax/$aa - $xcenter);
   my $yup = ceil($rmax/$bb - 1 + $ycenter);

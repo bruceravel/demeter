@@ -46,7 +46,7 @@ use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
 use vars qw($app);
 
-my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, Demeter->co->default("atoms", "rmax"), 0, 1, 0, 0);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
@@ -87,6 +87,7 @@ sub wx {
   require Demeter::UI::Atoms;
   Wx::InitAllImageHandlers();
   $app = Demeter::UI::Atoms->new;
+  $app -> {frame} -> {Atoms} -> open_file($ARGV[0]);
   $app -> MainLoop;
 };
 

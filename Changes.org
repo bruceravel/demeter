@@ -79,7 +79,7 @@
      that are not CIF/atoms or feff files
    - enable aggregate calculation (given that paper will be accepted
      for publication by the time this is released), but only for Atoms
-     in Artemis, nott for stand-alone.  Wrote documentation page for
+     in Artemis, not for stand-alone.  Wrote documentation page for
      aggregate calculation
    - put controls for degeneracy margins front and center
    - deal sensibly with Feff's hard-wired maximum cluster size of 500
@@ -88,6 +88,12 @@
    - somehow, the shift vector never got implemented in Demeter (even
      though there are controls for it in the Atoms GUI).  Wow!  That
      is now fixed.
+   - fixed a mistake reading space group symbols from CIF files when
+     an alternate orthorhombic setting was used in the CIF file
+   - progress on getting Atoms and the GUI to work correctly with
+     rhombohedral groups
+   - new button in GUI for inserting shift vector from Int'l tables
+   - launching GUI from command line now respects input file argument
 
 *** Larch
    - Athena w/Larch now mostly works on Windows

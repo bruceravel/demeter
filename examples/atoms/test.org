@@ -1,0 +1,15 @@
+
+These crystal structures have given Atoms trouble at one time
+
+* Trouble [6/8]
+ - [X] Ilmenite.inp, rhombohedral, rhombohedral setting, +/not read correctly by Wx/+
+ - [X] As.inp, rhombohedral. rhombohedral setting, +must specify Rmax+
+ - [ ] Ge2O3.cif, rhombohedral, rhombohedral setting, CIF
+ - [X] LaCoO3.inp, rhombohedral, trigonal setting
+ - [X] Yvonnite.inp, triclinic, +must specify Rmax+
+ - [X] hydrozincite.inp, monoclinic
+ - [X] lepidocrocite.cif, orthorhombic, space group symbol changed improperly
+ - [ ] tenorite_CuO.inp, monoclinic, +must specify Rmax+, oddly short Cu-O distance
+
+
+Rmax thing was a bug in command line atoms

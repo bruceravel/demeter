@@ -1,0 +1,22 @@
+title name:     hydrozincite
+title formula:  Zn_5(OH)_6(CO_3)_2
+title sites:    Zn1-3,C1,O1-3,OH1 -2
+title refer1:   Ghose, S.  (1964)  Acta Cryst. 17,1051
+title refer2:   Ramsdell, (1947) Am. Min. 32, 207.
+title schoen:
+title notes1:
+space  c 2/m
+a    = 13.62  b    = 6.30  c    = 5.42
+beta = 95.8333
+rmax = 6.00
+core = Zn1
+atom
+Zn     0.00000   0.00000   0.00000  Zn1
+Zn     0.00000   0.26300   0.50000  Zn2
+Zn     0.12900   0.50000   0.03800  Zn3
+C      0.32200   0.50000   0.30900  C1
+O      0.42100   0.50000   0.31800  O1
+O      0.26600   0.50000   0.06900  O2
+O      0.27500   0.50000   0.50000  O3
+O      0.41000   0.00000   0.32400  OH1
+O      0.07800   0.24500   0.19800  OH2

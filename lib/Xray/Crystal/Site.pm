@@ -149,11 +149,13 @@ sub populate {
 				# bravais vector for the //given// symbol
   ($positions = $setting) if ($class eq "monoclinic");
   ($positions = $setting ? $setting : $positions) if ($group =~ m{\Ar}i);
+  $positions = "rhombohedral" if ($setting eq 'rhombohedral');
   if (not $positions) {
     my $this = (caller(0))[3];
     croak "Invalid positions specifier in $this";
     return;
   };
+  #print join("|",$positions, $class, $setting, $group->group), $/;
 
   #-------------------------- permute to alternate settings (orthorhombic)
   #                           1..5 |--> [ ba-c, cab, -cba, bca, a-cb ]

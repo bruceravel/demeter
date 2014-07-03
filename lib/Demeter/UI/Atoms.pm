@@ -310,12 +310,14 @@ const my $DOC     => Wx::NewId();
 const my $CONFIG  => Wx::NewId();
 
 sub OnInit {
+  my ($self) = @_;
   Demeter -> mo -> ui('Wx');
   Demeter -> mo -> identity('Atoms');
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;
+  $self->{frame} = $frame;
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms_nottransparent.png");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frame -> SetIcon($icon);

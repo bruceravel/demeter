@@ -272,26 +272,28 @@ sub determine_monoclinic {
 
 sub set_rhombohedral {
   my ($self) = @_;
-  #Demeter->pjoin($self->get(qw(space_group a b c alpha beta gamma)));
-  return $self if ($self->space_group !~ m{\Ar}i);
+  #Demeter->trace;
+  return $self if not $self->group;
+  return $self if ($self->group->group !~ m{\Ar}i);
+  #Demeter->pjoin($self->group->group, $self->get(qw(space_group a b c alpha beta gamma)));
   $self->no_recurse(1);
-  if (abs($self->a - $self->c) < $EPSILON) {
+  if ((abs($self->a - $self->c) < $EPSILON) ) {
     ## rhombohedral setting
     $self->b($self->a);
     if (abs($self->alpha-90) > $EPSILON) {
       $self->beta($self->alpha);
-      $self->beta($self->gamma);
+      $self->gamma($self->alpha);
     };
-    #$self->alpha(90);
-    #$self->beta(90);
-    #$self->gamma(90);
-    $self->group->set_rhombohedral;
+    #print join("|", 'rhomb', $self->get(qw(a b c alpha beta gamma))), $/;
+    $self->group->set_rhombohedral("rhombohedral");
   } else {
     ## trigonal setting
     $self->b($self->a);
     $self->alpha(90);
     $self->beta(90);
     $self->gamma(120);
+    #print join("|", 'trig', $self->get(qw(a b c alpha beta gamma))), $/;
+    $self->group->set_rhombohedral("trigonal");
   };
   $self -> geometry;
   return $self;
@@ -481,6 +483,7 @@ sub populate {
   my @all_sites = @$r_sites;
   my @minimal   = ();
   my @unit_cell = ();
+
   $self -> determine_monoclinic;
   $self -> set_rhombohedral;
 
@@ -560,9 +563,10 @@ as multiple atoms at the same position or an unphiscially large
 value for the calculated specific gravity.
 
 Some possible solutions to this problem include:
-  * removing dopant atoms from the crystal data
-  * removing symmetry-related sites from the crystal data
-  * specifying the space group as \"P 1\" if your crystal
+  * Use the shift vector appropriate to your space group
+  * Removing dopant atoms from the crystal data
+  * Removing symmetry-related sites from the crystal data
+  * Specifying the space group as \"P 1\" if your crystal
     data include positions for a fully decorated unit cell
 
 "

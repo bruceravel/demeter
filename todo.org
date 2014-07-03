@@ -309,14 +309,17 @@
   - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
 
-** Atoms [3/9] [33%]
+** Atoms [4/10] [40%]
   - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
-  - [ ] Lepidocrocite issue (amam gets changed to cmcm)
+  - [ ] should be a way to insert tabulated shift vector, if it exists
+  - [ ] handle ": setting" notation: =:R=, =:H=, =:1=, =:2= [[http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section%3DAppendix:%2520Space%2520Groups&][(for example)]]
+    + =:1= and =:2= seem to have to do with whether the shift vector should be used, see [[file:examples/atoms/ZnFe2O4.cif][ZnFe2O4.cif]] and use the shift vector
+    + =:R=, =:H= specify rhombohedral or tri/hexagonal setting
+  - [X] Lepidocrocite issue (amam gets changed to cmcm)
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
-  - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
+  - [ ] George Sterbinsky's [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2011-May/009936.html][mailing list post]] that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
   - [ ] very confusing error message when core is not a tag
-  - [ ] Why does Amam in lepidocrocite get changed to Cmcm ?
   - [X] Shell tags in the feff.inp ATOMS list
   - [X] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
          : title name:     Fe2O3  hematite

@@ -1,0 +1,6 @@
+title monoclinic CuO (tenorite structure)
+space c 2/c         ! same as C_2h^6
+a=4.653  b=3.410  c=5.108  beta=99.4833   core = Cu
+atom
+  Cu    0.25    0.25    0.0
+  O     0.0     0.584   0.25
