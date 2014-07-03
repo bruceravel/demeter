@@ -74,6 +74,10 @@ sub new {
   $this->{emax_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox -> Add($this->{emax_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
 
+  $this->{emin_value}   = -9999;
+  $this->{emax_value}   = -9999;
+  $this->{margin_value} = -9999;
+
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $manyboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
   $this->{replot_many} = Wx::Button->new($this, -1, "Replot margins");
@@ -123,6 +127,9 @@ sub new {
   EVT_BUTTON($this, $this->{truncate},        sub{Truncate(@_, $app, 'current')});
   EVT_BUTTON($this, $this->{truncate_marked}, sub{Truncate(@_, $app, 'marked' )});
 
+  $this->{etrun_value} = -9999;
+
+
   $this->{indicator} = Demeter::Plot::Indicator->new(space=>'E');
 
   $this->{beforeafter}->SetSelection(1);
@@ -152,12 +159,12 @@ sub push_values {
   };
 
   $data->_update('background');
-  $this->{margin}->SetValue(0.1 * $data->bkg_step);
-  $this->{emin}->SetValue($data->bkg_nor1);
-  $this->{emax}->SetValue($data->bkg_nor2);
+  $this->{margin}->SetValue(0.1 * $data->bkg_step) if ($this->{margin_value} == -9999);
+  $this->{emin}->SetValue($data->bkg_nor1) if ($this->{emin_value} == -9999);
+  $this->{emax}->SetValue($data->bkg_nor2) if ($this->{emax_value} == -9999);
 
   my @y = $data->get_array('energy');
-  $this->{etrun}->SetValue($y[-1]);
+  $this->{etrun}->SetValue($y[-1]) if ($this->{etrun_value} == -9999);
 
   return if $::app->{plotting};
   $this->plot($data);
@@ -244,7 +251,10 @@ sub OnRemove {
 sub OnPlotMany {
   my ($this, $event, $app) = @_;
   my $data = $app->current_data;
-  my ($emin, $emax) = ($this->{emin}->GetValue, $this->{emax}->GetValue);
+  my ($emin, $emax)     = ($this->{emin}->GetValue, $this->{emax}->GetValue);
+  $this->{emin_value}   = $emin;
+  $this->{emax_value}   = $emax;
+  $this->{margin_value} = $this->{margin}->GetValue;
   if (($emin < 0) and ($emax > 0)) {
     $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
     return;
@@ -270,6 +280,9 @@ sub OnRemoveMany {
   my ($this, $event, $app) = @_;
   my $data = $app->current_data;
   my ($emin, $emax) = ($this->{emin}->GetValue, $this->{emax}->GetValue);
+  $this->{emin_value}   = $emin;
+  $this->{emax_value}   = $emax;
+  $this->{margin_value} = $this->{margin}->GetValue;
   if (($emin < 0) and ($emax > 0)) {
     $app->{main}->status("Emin and Emax must both be positive or both be negative", 'alert');
     return;
@@ -311,6 +324,7 @@ sub plot_truncate {
 
   $data->plot('e');
   my $e = $this->{etrun}->GetValue - $data->bkg_e0;
+  $this->{etrun_value} = $this->{etrun}->GetValue;
   if (not looks_like_number($e)) {
     $::app->{main}->status("Not plotting for truncation -- your value for the cutoff energy is not a number!", 'error|nobuffer');
     return;
@@ -339,6 +353,7 @@ sub Truncate {
   my $beforeafter = ($this->{beforeafter}->GetSelection) ? 'after' : 'before' ;
   my $text = ($how eq 'marked') ? 'all marked groups' : 'current group' ;
   my $e = $this->{etrun}->GetValue;
+  $this->{etrun_value} = $e;
   if (not looks_like_number($e)) {
     $::app->{main}->status("Not truncating -- your value for the cutoff energy is not a number!", 'error|nobuffer');
     return;

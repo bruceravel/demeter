@@ -21,7 +21,15 @@
    - added refresh project menu option as a fallback for occassional
      problem of data not updating
    - fixed a bug processing normalized groups
-   - added biquad plot
+   - added biquad plot, in Plot menu + right click on purple q button
+   - wxWidgets 3.0 changes the semantics for the GetSelection method
+     for controls that can possibly have multiple selection, including
+     the widget used to select a processing standard.  In those cases
+     GetSelection is now explicitly called with scalar so that single
+     selection is processed correctly
+   - deglitch and truncate parameters are now persistent within an
+     instance -- this facilitates efficient processing of many data
+     sets with a similar problem, such a diffraction peak
 
 *** Artemis
    - Drag and drop Athena or Artemis project files onto the Data list
@@ -46,6 +54,8 @@
    - parse a feff.inp file for feff8/9 correctly for use with feff6
    - I think I've fixed the problem of the data set being lost if a
      project is saved before a fit is made
+   - fixed a display problem with radio button label widths on SS tab
+     in Atoms
 
 *** Hephaestus
    - Document now displayed in the system web browser (Wx::Html was
@@ -54,6 +64,10 @@
      Demeter::UI::Hephaestus::Help
    - added some more standards and using new standards subsystem
      enhancements
+   - fixed a bug computing unit edge steps in materials with close
+     edges
+   - made the main window a bit bigger so that all controls are
+     properly displayed
 
 *** Atoms
    - sensible error messages from CLI version when no input file
@@ -65,7 +79,8 @@
      that are not CIF/atoms or feff files
    - enable aggregate calculation (given that paper will be accepted
      for publication by the time this is released), but only for Atoms
-     in Artemis, bit for stand-alone
+     in Artemis, nott for stand-alone.  Wrote documentation page for
+     aggregate calculation
    - put controls for degeneracy margins front and center
    - deal sensibly with Feff's hard-wired maximum cluster size of 500
      atoms by writing only the first 499 sites, regardless of how many
@@ -98,6 +113,10 @@
      problem requiring the withdrawal of 0.9.19*
    - Attempt to deal with background color problem on Mac with
      Demeter::UI::Wx:Colours
+   - Added Encoding::FixLatin::XS to the package to suppress a
+     spurious message triggered when drag-n-dropping files in Athena
+     and made it recommended in Build.PL
+   - now building 32 and 64 bit packages for Windows
 
 *** Acknowledgements
    - Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad
@@ -114,6 +133,11 @@
    - Matt Frith for reporting a bug importing a feff.inp directly into
      the Feff page of the Atoms GUI
    - Dean Hesterburg pointed out a bug processing normalized groups.
+   - Daniel Haskel noticed the Hephaestus bug for unit edges steps in
+     materials with close-by edges
+   - Madhusmita Sahoo noticed that the shift vector was unimplemented
+   - Badari Rao reported the problem with data being lost when saving
+     an Artemis project before doing a fit
 
 ** 0.9.19    8 January 2014 (withdrawn)
 

@@ -140,6 +140,9 @@ my $build = DemeterBuilder
 				## required by the data watcher
 				'File::Monitor::Lite' => '0',
 
+				## this suppresses a spurious warning on Windows with wxWidgets 3.0
+				'Encoding::FixLatin::XS' => 0,
+
 				## these are used for direct access to the pgplot terminal
 				#'ExtUtils::F77'       => '0',
 				#'PGPLOT'              => '0',
