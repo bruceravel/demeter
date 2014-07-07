@@ -1,4 +1,5 @@
 artisitic_license.txt
+bin/atoms-gui
 bin/bugs.pod
 bin/contribute.pod
 bin/dartemis
@@ -38,6 +39,7 @@ doc/artug/images/Artemis_logo.jpg
 doc/artug/images/athenaselection.png
 doc/artug/images/bend.png
 doc/artug/images/bvs.png
+doc/artug/images/bvs_after.png
 doc/artug/images/bvs_restrain.png
 doc/artug/images/collinear.png
 doc/artug/images/collinear.svg
@@ -76,6 +78,8 @@ doc/artug/images/feff-rank.png
 doc/artug/images/feff-siteserror.png
 doc/artug/images/feff-siteserror2.png
 doc/artug/images/feff-template.png
+doc/artug/images/feff-zirconolite.png
+doc/artug/images/feff_atoms_partical_occupancy.png
 doc/artug/images/fefflist.png
 doc/artug/images/fes2-1stshell.png
 doc/artug/images/fes2-firstshellfit.png
@@ -178,12 +182,14 @@ doc/artug/src/extended/bvs.tt
 doc/artug/src/extended/constraints.tt
 doc/artug/src/extended/cv.tt
 doc/artug/src/extended/delr.tt
+doc/artug/src/extended/dopants.tt
 doc/artug/src/extended/empirical.tt
 doc/artug/src/extended/fuzzy.tt
 doc/artug/src/extended/index.tt
 doc/artug/src/extended/ipots.tt
 doc/artug/src/extended/qfs.tt
 doc/artug/src/extended/ss.tt
+doc/artug/src/feff/aggregate.tt
 doc/artug/src/feff/console.tt
 doc/artug/src/feff/feff.tt
 doc/artug/src/feff/index.tt
@@ -294,6 +300,18 @@ doc/aug/images/export_project.png
 doc/aug/images/export_report.png
 doc/aug/images/export_single.png
 doc/aug/images/greek_delphi.jpg
+doc/aug/images/Hephaestus_absorption.png
+doc/aug/images/Hephaestus_data.png
+doc/aug/images/Hephaestus_edgefinder.png
+doc/aug/images/Hephaestus_f1f2.png
+doc/aug/images/Hephaestus_f1f2_plot.png
+doc/aug/images/Hephaestus_filterplot.png
+doc/aug/images/Hephaestus_formulas.png
+doc/aug/images/Hephaestus_ionchambers.png
+doc/aug/images/Hephaestus_linefinder.png
+doc/aug/images/Hephaestus_standards.png
+doc/aug/images/Hephaestus_standards_plot.png
+doc/aug/images/Hephaestus_transitions.png
 doc/aug/images/import_changetype.png
 doc/aug/images/import_colsel.png
 doc/aug/images/import_filedialog.png
@@ -344,6 +362,7 @@ doc/aug/images/peak_height.png
 doc/aug/images/peak_results.png
 doc/aug/images/peak_select.png
 doc/aug/images/peak_sequence.png
+doc/aug/images/plot_biquad.png
 doc/aug/images/plot_e0_0.png
 doc/aug/images/plot_etab.png
 doc/aug/images/plot_fe_krange.png
@@ -359,6 +378,7 @@ doc/aug/images/plot_qtab.png
 doc/aug/images/plot_quad.png
 doc/aug/images/plot_r123.png
 doc/aug/images/plot_rtab.png
+doc/aug/images/plot_scaled.png
 doc/aug/images/plot_special.png
 doc/aug/images/plot_stack.png
 doc/aug/images/plot_stacked.png
@@ -404,6 +424,7 @@ doc/aug/images/ui_plucked.png
 doc/aug/images/ui_pluckpoint.png
 doc/aug/images/ui_renamed.png
 doc/aug/images/ui_renaming.png
+doc/aug/images/ui_shrink.png
 doc/aug/images/ui_vstan.png
 doc/aug/src/ab.css
 doc/aug/src/analysis/diff.tt
@@ -424,6 +445,7 @@ doc/aug/src/examples/aucl.tt
 doc/aug/src/examples/data.tt
 doc/aug/src/examples/index.tt
 doc/aug/src/forward.tt
+doc/aug/src/hephaestus.tt
 doc/aug/src/import/columns.tt
 doc/aug/src/import/index.tt
 doc/aug/src/import/multiple.tt
@@ -652,10 +674,12 @@ doc/latex/html/indent
 doc/latex/html/li
 doc/latex/html/link
 doc/latex/html/list
+doc/latex/html/newfeature
 doc/latex/html/perlblock
 doc/latex/html/pre
 doc/latex/html/todo
 doc/latex/image
+doc/latex/image10
 doc/latex/image75
 doc/latex/imagefull
 doc/latex/imageref
@@ -756,6 +780,17 @@ doc/lib/triimage
 doc/sort.pl
 DocBuilder/Artemis.pm
 DocBuilder/Athena.pm
+examples/atoms/As.inp
+examples/atoms/Ba2Co9O14.cif
+examples/atoms/Ga2O3.cif
+examples/atoms/hydrozincite.inp
+examples/atoms/Ilmenite.inp
+examples/atoms/LaCoO3.inp
+examples/atoms/lepidocrocite.cif
+examples/atoms/tenorite_CuO.inp
+examples/atoms/test.org
+examples/atoms/Yvonnite.inp
+examples/atoms/ZnFe2O4.cif
 examples/Au.inp
 examples/AuCl.cif
 examples/aucn.0001
@@ -808,7 +843,6 @@ examples/h12213.cif
 examples/harness
 examples/hematite.inp
 examples/kev.dat
-examples/LaCoO3.inp
 examples/nonuniform.chi
 examples/notdata.0
 examples/notdata.1
@@ -1108,6 +1142,7 @@ lib/Demeter/Plugins/Lytle.pm
 lib/Demeter/Plugins/PFBL12C.pm
 lib/Demeter/Plugins/SLRIBL4.pm
 lib/Demeter/Plugins/SPEC.pm
+lib/Demeter/Plugins/SpecFileLongLine.pm
 lib/Demeter/Plugins/SRS.pm
 lib/Demeter/Plugins/SSRLA.pm
 lib/Demeter/Plugins/SSRLB.pm
@@ -1140,11 +1175,13 @@ lib/Demeter/share/standards/data/ag.stan
 lib/Demeter/share/standards/data/As.prj
 lib/Demeter/share/standards/data/Au.prj
 lib/Demeter/share/standards/data/au.stan
+lib/Demeter/share/standards/data/Br.prj
 lib/Demeter/share/standards/data/Cd.prj
 lib/Demeter/share/standards/data/Ce.prj
 lib/Demeter/share/standards/data/co.stan
 lib/Demeter/share/standards/data/cr.stan
 lib/Demeter/share/standards/data/cu.stan
+lib/Demeter/share/standards/data/Fe-K-ALS-10.3.2.prj
 lib/Demeter/share/standards/data/Fe.prj
 lib/Demeter/share/standards/data/fe.stan
 lib/Demeter/share/standards/data/Ge.prj
@@ -1163,8 +1200,10 @@ lib/Demeter/share/standards/data/u4.stan
 lib/Demeter/share/standards/data/u6.stan
 lib/Demeter/share/standards/data/v.stan
 lib/Demeter/share/standards/data/v2o5.stan
+lib/Demeter/share/standards/data/Xe.prj
 lib/Demeter/share/standards/data/zn.stan
 lib/Demeter/share/standards/data/zr.stan
+lib/Demeter/share/standards/Fe-K-ALS-10.3.2.ini
 lib/Demeter/share/standards/standards.ini
 lib/Demeter/share/standards/templates/htmlindex.tmpl
 lib/Demeter/share/standards/templates/htmlpage.tmpl
@@ -1339,6 +1378,7 @@ lib/Demeter/templates/fit/iff_columns/sum.tmpl
 lib/Demeter/templates/plot/demeter/copyright.tmpl
 lib/Demeter/templates/plot/demeter/newe.tmpl
 lib/Demeter/templates/plot/demeter/overe.tmpl
+lib/Demeter/templates/plot/gnuplot/biquad.tmpl
 lib/Demeter/templates/plot/gnuplot/copyright.tmpl
 lib/Demeter/templates/plot/gnuplot/f1.tmpl
 lib/Demeter/templates/plot/gnuplot/f1f2.tmpl
@@ -1709,8 +1749,10 @@ lib/Demeter/UI/Artemis/Data.pm
 lib/Demeter/UI/Artemis/Data/AddParameter.pm
 lib/Demeter/UI/Artemis/Data/BondValence.pm
 lib/Demeter/UI/Artemis/Data/Quickfs.pm
+lib/Demeter/UI/Artemis/DataDropTarget.pm
 lib/Demeter/UI/Artemis/DND/PathDrag.pm
 lib/Demeter/UI/Artemis/DND/PlotListDrag.pm
+lib/Demeter/UI/Artemis/FeffDropTarget.pm
 lib/Demeter/UI/Artemis/GDS.pm
 lib/Demeter/UI/Artemis/GDS/Restraint.pm
 lib/Demeter/UI/Artemis/History.pm
@@ -1769,6 +1811,8 @@ lib/Demeter/UI/Athena/Deconvolute.pm
 lib/Demeter/UI/Athena/DeglitchTruncate.pm
 lib/Demeter/UI/Athena/Difference.pm
 lib/Demeter/UI/Athena/Dispersive.pm
+lib/Demeter/UI/Athena/DropTarget.pm
+lib/Demeter/UI/Athena/FileDropTarget.pm
 lib/Demeter/UI/Athena/Group.pm
 lib/Demeter/UI/Athena/GroupList.pm
 lib/Demeter/UI/Athena/icons/athena.png
@@ -1789,6 +1833,7 @@ lib/Demeter/UI/Athena/Plot/PlotE.pm
 lib/Demeter/UI/Athena/Plot/PlotK.pm
 lib/Demeter/UI/Athena/Plot/PlotQ.pm
 lib/Demeter/UI/Athena/Plot/PlotR.pm
+lib/Demeter/UI/Athena/Plot/Shrink.pm
 lib/Demeter/UI/Athena/Plot/Stack.pm
 lib/Demeter/UI/Athena/Plot/Style.pm
 lib/Demeter/UI/Athena/PluginConfig.pm
@@ -1798,6 +1843,7 @@ lib/Demeter/UI/Athena/Rebin.pm
 lib/Demeter/UI/Athena/Replot.pm
 lib/Demeter/UI/Athena/SelfAbsorption.pm
 lib/Demeter/UI/Athena/Series.pm
+lib/Demeter/UI/Athena/share/athena.hints
 lib/Demeter/UI/Athena/share/athena_icon.ico
 lib/Demeter/UI/Athena/share/athena_icon.jpeg
 lib/Demeter/UI/Athena/share/athena_icon.png
@@ -1894,6 +1940,7 @@ lib/Demeter/UI/Standards.pm
 lib/Demeter/UI/Wx/AutoSave.pm
 lib/Demeter/UI/Wx/CheckListBook.pm
 lib/Demeter/UI/Wx/ColourDatabase.pm
+lib/Demeter/UI/Wx/Colours.pm
 lib/Demeter/UI/Wx/Config.pm
 lib/Demeter/UI/Wx/EchoArea.pm
 lib/Demeter/UI/Wx/MRU.pm
@@ -2463,8 +2510,24 @@ win/deps/parsexml.pl
 win/ifeffit/iconf_iff
 win/ifeffit/iconf_pgplot
 win/ifeffit/iconf_term
+win/inno/documentation.iss
+'win/inno/for package/Demeter.ico'
+'win/inno/for package/Demeter.license.txt'
+'win/inno/for package/Demeter.readme.txt'
+'win/inno/for package/Demeter_installer.bmp'
+'win/inno/for package/DISTRIBUTIONS.txt'
+'win/inno/for package/modify_path.pl.bat'
+'win/inno/for package/munge_pathenv.pl.bat'
+'win/inno/for package/perl1.reloc.txt'
+'win/inno/for package/perl2.reloc.txt'
+'win/inno/for package/post_update.txt'
+'win/inno/for package/pre_update.txt'
+'win/inno/for package/README.txt'
+'win/inno/for package/relocation.pl.bat'
+'win/inno/for package/update_env.pl.bat'
 win/inno/modify_path.pl
 win/inno/strawberry.iss
+win/inno/strawberry32.iss
 win/inno/updater.iss
 win/notes.org
 win/spp/build_perl.pl
