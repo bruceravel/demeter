@@ -329,20 +329,30 @@ sub set_stub {
 sub reset_all {
   my ($self, $main) = @_;
   my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-					       "Do you really wish to reset all parameters to their default values?  This will reset all parameters for Athena, Artemis, and Hephaestus.",
-					       "Realy reset all parameters?",
+					       "Do you really wish to reset all parameters to their default values?  This will reset all parameters for Athena, Artemis, and Hephaestus without regard for any parameters you yourself may have set.",
+					       "Really reset all parameters?",
 					       "Reset");
   if ($yesno->ShowModal == wxID_NO) {
-    $main->status("Not resetting Demeter's configuration paremeters.") if (ref($main) !~ m{Hephaestus});
+    $self->report($main, "Not resetting Demeter's configuration paremeters.");
     return;
   };
   Demeter->co->reset_all;
   $self->{params}->DeleteAllItems;
   $self->populate($main->{prefgroups});
   $self->{params}->Expand($self->{params}->GetRootItem);
-  $main->status("All configuration parameters have been reset to Demeter's defaults.") if (ref($main) !~ m{Hephaestus});
+  $self->report($main, "All configuration parameters have been reset to Demeter's defaults.");
   return;
 };
+
+sub report {
+  my ($self, $main, $message) = @_;
+  if (ref($main) =~ m{Hephaestus}) {
+    $main->SetStatusText($message);
+  } else {			# Atoms, Artemis, Athena
+    $main->status($message);
+  };
+};
+
 
 ## x  string                Entry
 ## x  regex                 Entry

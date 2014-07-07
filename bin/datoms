@@ -87,7 +87,7 @@ sub wx {
   require Demeter::UI::Atoms;
   Wx::InitAllImageHandlers();
   $app = Demeter::UI::Atoms->new;
-  $app -> {frame} -> {Atoms} -> open_file($ARGV[0]);
+  $app -> {frame} -> {Atoms} -> open_file($ARGV[0]) if $ARGV[0];
   $app -> MainLoop;
 };
 
