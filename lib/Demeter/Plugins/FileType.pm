@@ -130,10 +130,11 @@ methods of those roles.
 
 =head2 Plugins shipped with Demeter
 
-The following plugins come with Demeter.  This is not a complete list
-of plugins.  Please note that these were written using example data
-files that Bruce had available to him.  He has not himself used all of
-these beamlines.  Your mileage may vary with your own data.
+The following are some of the plugins that come with Demeter.  This is
+not a complete list of plugins.  Please note that these were written
+using example data files that Bruce had available to him.  He has not
+himself used all of these beamlines.  Your mileage may vary with your
+own data.
 
 =over 4
 
@@ -258,8 +259,9 @@ following:
   package Demeter::Plugins::X15B;
   use Moose;
   extends 'Demeter::Plugins::FileType';
-  has '+is_binary' => (default => 1);
+  has '+is_binary'   => (default => 1);
   has '+description' => (default => "Read binary files from NSLS beamline X15B.");
+  has '+version'     => (default => 0.1);
 
 The final two executable lines of the plugin must be the following:
 
@@ -300,7 +302,8 @@ The version number of the plugin.
 
 =item C<parent>
 
-Used by a GUI...
+A placeholder which may be needed by a GUI.  Currently not used by any
+plugin.
 
 =item C<file>
 
@@ -493,7 +496,7 @@ placing them in ...
 
 =item *
 
-Do I need the C<parent> and C<hash> attributes?
+Do I need the C<parent> attribute?
 
 =item *
 

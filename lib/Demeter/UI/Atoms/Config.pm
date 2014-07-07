@@ -27,7 +27,8 @@ use base 'Demeter::UI::Wx::Config';
 
 sub new {
   my ($class, $page, $parent) = @_;
-  my $self = $class->SUPER::new($page, \&target);
+  my $top = $page->GetParent->GetParent; ## (really!)
+  my $self = $class->SUPER::new($page, \&target, $top);
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->populate(['atoms', 'feff', 'pathfinder']);
