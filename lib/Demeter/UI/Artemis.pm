@@ -1472,7 +1472,7 @@ sub export {
   unlink $fname;
 
   ## save mode settings
-  my @modes = qw(template_process template_fit ifeffit file callback plotcallback feedback);
+  my @modes = qw(template_process template_fit backend file callback plotcallback feedback);
   my @values = $fit -> mo -> get(@modes);
 
   ## set mode settings appropriate to file output
