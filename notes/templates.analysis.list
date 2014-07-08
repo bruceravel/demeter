@@ -1,0 +1,48 @@
+# Ifeffit                          Larch                         
+# ---------------------------------------------------------
+  diff_diff.tmpl                   diff_diff.tmpl                
+  diff_make.tmpl                   diff_make.tmpl                
+  lcf_clean.tmpl                   lcf_clean.tmpl                
+  lcf_fit.tmpl                     lcf_fit.tmpl                  
+  lcf_header.tmpl                  lcf_header.tmpl               
+  lcf_prep.tmpl                    lcf_prep.tmpl                 
+  lcf_prep_k.tmpl                  lcf_prep_k.tmpl               
+  lcf_prep_last.tmpl               lcf_prep_last.tmpl            
+  lcf_prep_last_k.tmpl             lcf_prep_last_k.tmpl          
+  lcf_prep_lcf.tmpl                lcf_prep_lcf.tmpl             
+  lcf_prep_standard.tmpl           lcf_prep_standard.tmpl        
+  lcf_prep_standard_k.tmpl         lcf_prep_standard_k.tmpl      
+  lcf_report.tmpl                  lcf_report.tmpl               
+  lcf_save.tmpl                    lcf_save.tmpl                 
+  lcf_sum.tmpl                                                   
+  lcf_sum_standard.tmpl                                          
+  lr_fit.tmpl                      lr_fit.tmpl                   
+  lr_results.tmpl                                                
+  lr_save.tmpl                     lr_save.tmpl                  
+  pca_header.tmpl                  pca_header.tmpl               
+  pca_interpolate.tmpl             pca_interpolate.tmpl          
+  pca_kw.tmpl                      pca_kw.tmpl                   
+  pca_prep.tmpl                    pca_prep.tmpl                 
+  pca_prep_k.tmpl                  pca_prep_k.tmpl               
+  pca_save.tmpl                    pca_save.tmpl                 
+  pca_save_reconstruction.tmpl     pca_save_reconstruction.tmpl  
+  pca_save_stack.tmpl              pca_save_stack.tmpl           
+  pca_save_tt.tmpl                                               
+  pca_tt.tmpl                                                    
+  peak_atan.tmpl                   peak_atan.tmpl                
+  peak_erf.tmpl                                                  
+  peak_fit.tmpl                    peak_fit.tmpl                 
+  peak_gaussian.tmpl               peak_gaussian.tmpl            
+  peak_header.tmpl                 peak_header.tmpl              
+  peak_linear.tmpl                                               
+  peak_lorentzian.tmpl             peak_lorentzian.tmpl          
+                                   peak_param.tmpl               
+  peak_prep.tmpl                   peak_prep.tmpl                
+  peak_pseudovoight.tmpl                                         
+  peak_put.tmpl                    peak_put.tmpl                 
+  peak_pvoigt.tmpl                                               
+  peak_report.tmpl                                               
+  peak_save.tmpl                   peak_save.tmpl                
+  save_pca_tt.tmpl                                               
+  xes_background.tmpl                                            
+  xes_read.tmpl                                                  

@@ -94,6 +94,7 @@
      rhombohedral groups
    - new button in GUI for inserting shift vector from Int'l tables
    - launching GUI from command line now respects input file argument
+   - handle =:R=, =:H=, =:1=, and =:2= symbol modifiers
 
 *** Larch
    - Athena w/Larch now mostly works on Windows
@@ -123,6 +124,7 @@
      spurious message triggered when drag-n-dropping files in Athena
      and made it recommended in Build.PL
    - now building 32 and 64 bit packages for Windows
+   - using head of ifeffit repo at github
 
 *** Acknowledgements
    - Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad

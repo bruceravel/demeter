@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+#  display data from a feff run to STDOUT in a format suitable for gnuplot
+# uses sed
+# adapted from a script by Steve Zabinsky
+# by Bruce Ravel  Sep 27 1997
+# 
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#  
+sed "1,/@#/s/^ /# /" $1

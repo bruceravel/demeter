@@ -184,19 +184,20 @@ sub OnInit {
   $app->{main} ->{return}->Hide;
 
   ## ----- randomize the order of tips
-  my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
-  open(my $T, '<', $tip_file);
-  my @tips = <$T>;
-  close $T;
-  @tips = shuffle(@tips);
-  my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
-  open(my $R, '>', $tip_temp);
-  print($R  $_) foreach @tips;
-  close $R;
-  ##my $i = int(count_lines($tip_file) * random_uniform);
-  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
-  $app->show_tip if Demeter->co->default('athena', 'tips');
-  unlink $tip_temp;
+  # my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
+  # open(my $T, '<', $tip_file);
+  # my @tips = <$T>;
+  # close $T;
+  # @tips = shuffle(@tips);
+  # my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
+  # open(my $R, '>', $tip_temp);
+  # print($R  $_) foreach @tips;
+  # close $R;
+  # ##my $i = int(count_lines($tip_file) * random_uniform);
+  # $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
+  # $app->show_tip if Demeter->co->default('athena', 'tips');
+  # unlink $tip_temp;
+
   1;
 };
 

@@ -44,14 +44,14 @@ section=athena
 section_description
   These variables determine the behavior of Athena.
 
-variable=tips
-type=boolean
-onvalue=1
-offvalue=0
-default=true
-restart=1
-description
-  If true, show the tip dialog at startup.
+# variable=tips
+# type=boolean
+# onvalue=1
+# offvalue=0
+# default=true
+# restart=1
+# description
+#   If true, show the tip dialog at startup.
 
 variable=hints
 type=boolean

@@ -67,14 +67,18 @@ has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;}
 	      );
 has 'space'	       => (is => 'rw', isa => 'Str', default => sub{q{}},
 			   trigger => sub{ my ($self, $new) = @_;
-					  return if not $new;
-					  $self -> cell -> space_group($new);
-					  $self->is_populated(0);
-					  $self->absorption_done(0);
-					  $self->mcmaster_done(0);
-					  $self->i0_done(0);
-					  $self->self_done(0);
-					});
+					   return if not $new;
+					   $new = $self->colon_in_group($new);
+					   $self -> cell -> space_group($new);
+					   $self->is_populated(0);
+					   $self->absorption_done(0);
+					   $self->mcmaster_done(0);
+					   $self->i0_done(0);
+					   $self->self_done(0);
+					 });
+has  $_  => (is => 'rw', isa => 'Bool',  default => 0,)
+  foreach (qw(is_rhomb is_hex is_first is_second));
+
 has 'a'		       => (is => 'rw', isa => NonNeg,    default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
@@ -412,6 +416,21 @@ sub parse_atoms_line {
   my $this = join("|",$el, $x, $y, $z, $tag);
   $self->push_sites($this);
   return $self;
+};
+
+sub colon_in_group {
+  my ($self, $group) = @_;
+  if ($group =~ m{:\s*([12hHrR])\s*\z}) {
+    my $colon = $1;
+    (my $stripped = $group) =~ s{\s*:\s*[12hHrR]\s*\z}{};
+    $self->is_rhomb(1)  if (lc($colon) eq 'r');
+    $self->is_hex(1)    if (lc($colon) eq 'h');
+    $self->is_first(1)  if ($colon eq '1');
+    $self->is_second(1) if ($colon eq '2');
+    return $stripped;
+  } else {
+    return $group;
+  };
 };
 
 
@@ -942,7 +961,8 @@ override serialization => sub {
   foreach my $key (qw(space a b c alpha beta gamma rmax rpath rss edge iedge eedge core corel partial_occupancy
 		      shiftvec cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
 		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
-		      is_ipots_set is_expanded absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
+		      is_ipots_set is_expanded is_rhomb is_hex is_first is_second
+		      absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
     $cards{$key} = $self->$key;
   };
 
@@ -1119,6 +1139,34 @@ object.
 
 This is a list containing the expanded cluster.  Need to describe each
 list entry.
+
+=item C<is_rhomb>, C<is_hex>, C<is_first>, C<is_second> (boolean)
+
+Occassionally, modifiers to the space group symbol are used to
+explicitly specify the setting of the crystal.
+
+Trigonal space groups with symbols beginning with C<R> (numbers 146,
+148, 155, 160, 161, 166, and 167) can be expressed in rhombohedral or
+hexagonal settings.  While it is possible to figure out the setting
+from the specified parameters -- the rhombohedral setting has a=b=c,
+alpha!=90, and alpha=beta=gamma, while the hexagonal setting has
+a=b!=c, alpha=beta=90, and gamma=120 -- CIF file authors and others
+may modify the space group symbol with C<:R> or C<:H> to indicated the
+setting.
+
+Some orthoganal groups (numbers 48, 50, 59, 68, 70), tetragonal groups
+(85, 86, 88, 125, 126, 129, 130, 133, 134, 137, 138, 141, 142), and
+cubic groups (201, 203, 222, 224, 227, 228) are given in the
+International Tables referenced to two centers of symmetry.  In
+general, it is difficult to know which center is used before expanding
+the unit cell and examining its contents.  To remove this ambiguity
+some CIF file authors and others will modify the space group symbol
+with C<:1> or C<:2> to indicated which center has been used.  Demeter
+assumes the second setting, so if C<:1> is specified, it is likely
+that a shift vector will be needed.
+
+When a space group symbol uses one of these modifiers, the
+corresponding boolean parameter will be set to C<1>.
 
 =back
 

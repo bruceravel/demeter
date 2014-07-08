@@ -22,7 +22,7 @@ O~4~
 ;
 _space_group_IT_number           227
 _symmetry_space_group_name_Hall  'F 4d 2 3 -1d'
-_symmetry_space_group_name_H-M   'F d -3 m'
+_symmetry_space_group_name_H-M   'F d -3 m :1'
 _[local]_cod_cif_authors_sg_H-M  'F d -3 m S'
 loop_
 _publ_author_name                  'Passerini, L'

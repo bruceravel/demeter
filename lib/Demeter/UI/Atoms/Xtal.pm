@@ -718,6 +718,11 @@ sub open_file {
   $ie = 0 if ($ie == -1);
   $self->{edge}->SetSelection($ie);
 
+  if ($atoms->cell->group->is_first) {
+    my $vec = sprintf("(%s, %s, %s)", @{$atoms->cell->group->shiftvec});
+    Wx::MessageDialog->new($self, "This space group symbol identifies the first standard setting.  You may need to use a shift vector of \n\n\t$vec\n\nIf a second dialog appears warning you of multiply occupied positions, you should certainly try using that shift vector.", "Shift vector", wxOK)->ShowModal;
+  };
+
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
   $self->{parent}->status($message);

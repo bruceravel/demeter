@@ -277,7 +277,22 @@ sub set_rhombohedral {
   return $self if ($self->group->group !~ m{\Ar}i);
   #Demeter->pjoin($self->group->group, $self->get(qw(space_group a b c alpha beta gamma)));
   $self->no_recurse(1);
-  if ((abs($self->a - $self->c) < $EPSILON) ) {
+  if ($self->group->is_rhomb) {
+    ## space group symbol has :R
+    $self->b($self->a);
+    $self->beta($self->alpha);
+    $self->gamma($self->alpha);
+    $self->group->set_rhombohedral("rhombohedral");
+
+  } elsif ($self->group->is_hex) {
+    ## space group symbol has :H
+    $self->b($self->a);
+    $self->alpha(90);
+    $self->beta(90);
+    $self->gamma(120);
+    $self->group->set_rhombohedral("trigonal");
+
+  } elsif ((abs($self->a - $self->c) < $EPSILON) ) {
     ## rhombohedral setting
     $self->b($self->a);
     if (abs($self->alpha-90) > $EPSILON) {
@@ -287,6 +302,7 @@ sub set_rhombohedral {
     #print join("|", 'rhomb', $self->get(qw(a b c alpha beta gamma))), $/;
     $self->group->set_rhombohedral("rhombohedral");
   } else {
+
     ## trigonal setting
     $self->b($self->a);
     $self->alpha(90);
@@ -552,22 +568,21 @@ sub populate {
     my @list = @{$occ{$k}};
     my $val = shift @list;
     if ($val > (1+$EPSILON)) {
+      local $Carp::Verbose = 0;
       carp("These sites:\n\t" .
 	   join("  ", map {sprintf "\"%s\"", $_} @list) .
 	   "
-generate one or more common positions and their occupancies
-sum to more than 1.
+generate one or more common positions and their occupancies sum to more than 1.
 
-The Feff input data is likely to contain obvious mistakes, such
-as multiple atoms at the same position or an unphiscially large
-value for the calculated specific gravity.
+The Feff input data is likely to contain obvious mistakes, such as multiple atoms at
+the same position or an unphiscially large value for the calculated specific gravity.
 
 Some possible solutions to this problem include:
-  * Use the shift vector appropriate to your space group
+  * Use a shift vector appropriate to your space group
   * Removing dopant atoms from the crystal data
   * Removing symmetry-related sites from the crystal data
-  * Specifying the space group as \"P 1\" if your crystal
-    data include positions for a fully decorated unit cell
+  * Specifying the space group as \"P 1\" if your crystal data include positions
+     for a fully decorated unit cell
 
 "
 	  );
