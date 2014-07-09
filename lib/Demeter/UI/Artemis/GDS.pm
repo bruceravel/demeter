@@ -50,9 +50,10 @@ use Wx qw( :everything );
 use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK EVT_MENU
-		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT
-		 EVT_GRID_SELECT_CELL EVT_GRID_CELL_CHANGE);
+use Wx::Event qw(EVT_CLOSE                  EVT_ICONIZE                 EVT_GRID_CELL_CHANGE
+		 EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
+		 EVT_GRID_LABEL_LEFT_CLICK  EVT_GRID_LABEL_RIGHT_CLICK  EVT_GRID_RANGE_SELECT
+		 EVT_GRID_SELECT_CELL       EVT_GRID_CELL_CHANGE);
 
 use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
@@ -160,7 +161,7 @@ sub new {
   EVT_GRID_LABEL_LEFT_CLICK ($grid,     sub{ $this->StartDrag(@_)      });
   EVT_GRID_LABEL_RIGHT_CLICK($grid,     sub{ $this->PostGridMenu(@_, 1)});
   EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)     });
-  EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_)  });
+  #EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_)  });
   EVT_GRID_SELECT_CELL      ($grid,     sub{ $this->OnRowSelect(@_)    });
   EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnCellChange(@_)   });
 
@@ -626,7 +627,7 @@ sub OnCellChange {
 
 ######## Context menu section ############################################################
 
-sub OnRangeSelect {
+sub OnRangeSelect {		# why is this necessary
   my ($parent, $self, $event) = @_;
   return unless $event->Selecting;
   $parent->{grid}->SelectBlock($event->GetTopLeftCoords, $event->GetBottomRightCoords, 1);
