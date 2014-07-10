@@ -1084,7 +1084,9 @@ sub aggregate {
   $self->{parent}->{Feff}->{betafuzz}->Enable(0);
 
   ## 5. Labels & Fill Paths tab
-  $bigfeff->name(q{agg-}.$self->{name}->GetValue);
+  my $name = $self->{name}->GetValue;
+  $name = q{agg-}.$name if ($name !~ m{\Aagg-});
+  $bigfeff->name($name);
   my $yaml = File::Spec->catfile($bigfeff->workspace, $bigfeff->group.".yaml");
   $bigfeff->freeze($yaml);
 

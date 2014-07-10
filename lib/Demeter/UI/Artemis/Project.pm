@@ -262,10 +262,13 @@ sub read_project {
   my $import_problems = q{};
 
   %Demeter::UI::Artemis::fit_order = ();
-  eval {local $SIG{__DIE__} = sub {}; %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'))};
-
-  #use Data::Dumper;
-  #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
+  my $order_file = File::Spec->catfile($projfolder, 'order');
+  my $order = Demeter->slurp($order_file);
+  $order =~ s{\'(\d+)\':}{$1:}g; # see comment just above update_order_file in Artemis.pm
+  open(my $O, '>', $order_file);
+  print $O $order;
+  close $O;
+  eval {local $SIG{__DIE__} = sub {}; %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile($order_file)};
 
   ## -------- plot and indicator yamls, journal
   $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);

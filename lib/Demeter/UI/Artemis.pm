@@ -804,6 +804,26 @@ sub fit {
   undef $busy;
 };
 
+## YAML::Tiny will write this hash
+##   %hash = (1=>'a', 2=>'b', 3=>'c')
+## on linux as
+##   ---
+##   3: kvvai
+##   5: ushvu
+##   6: fzuzd
+## and on Windows as
+##   ---
+##   '3': kvvai
+##   '5': ushvu
+##   '6': fzuzd
+##
+## It will fail to read the latter on linux, even though it is valid YAML
+##
+## Solution #1: use YAML rather than YAML::Tiny
+## Solution #2: strinp the single quotes
+## I opted for 3 since the YAML string is never very large
+## The substitution below implements this
+
 sub update_order_file {
   my ($just_write) = @_;
   $just_write || 0;
@@ -813,6 +833,7 @@ sub update_order_file {
     $fit_order{order}{current}  = $thisfit;
   };
   my $string .= YAML::Tiny::Dump(%fit_order);
+  $string =~ s{\'(\d+)\':}{$1:}g;
   open(my $ORDER, '>'.$frames{main}->{order_file});
   print $ORDER $string;
   close $ORDER;
