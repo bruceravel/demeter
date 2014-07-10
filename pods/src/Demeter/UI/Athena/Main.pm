@@ -11,6 +11,7 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_K
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
 use Const::Fast;
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 const my $PM => $PLUSMN2;
 
@@ -93,14 +94,14 @@ sub group {
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
-  $hbox -> Add($this->{type}, 0, wxTOP, 6);
+  $hbox -> Add($this->{type}, 0, wxTOP, (Demeter->is_windows) ? 2 : 4);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
 
-  $this->{type} -> SetNormalColour(wxNullColour);
-  $this->{type} -> SetHoverColour(wxNullColour);
-  $this->{type} -> SetVisitedColour(wxNullColour);
+  $this->{type} -> SetNormalColour(wxBLACK);
+  $this->{type} -> SetHoverColour(wxBLACK);
+  $this->{type} -> SetVisitedColour(wxBLACK);
   $app->mouseover($this->{type}, "Ctrl-Alt-Left Click to toggle between xmu and xanes.  See 'Group menu, change data type' for more control over data types");
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
@@ -408,7 +409,7 @@ sub fft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [60,-1]);
+  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, wxDefaultSize);
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
@@ -484,7 +485,7 @@ sub bft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [60,-1]);
+  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, wxDefaultSize);
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
@@ -584,7 +585,7 @@ sub mode {
 
   foreach my $w (qw(group_group_label background_group_label fft_group_label
 		    bft_group_label plot_group_label)) {
-    $this->{$w} -> SetForegroundColour( wxNullColour );
+    $this->{$w} -> SetForegroundColour( $wxBGC );
   };
   if ($::app) {
     $this->Refresh;
@@ -658,7 +659,7 @@ sub mode {
   if ($group and ($group->reference)) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($group->co->default("athena", "tied")) );
   } else {
-    $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_eshift}-> SetBackgroundColour( $wxBGC );
   };
 
   if ($group) {
@@ -724,19 +725,19 @@ sub push_values {
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
   } else {
-    $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_eshift}-> SetBackgroundColour( $wxBGC );
   };
   if (($data->bkg_e0 < 150) and ($data->datatype ne 'chi')) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
-    $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
+    $this->{bkg_e0}-> SetBackgroundColour( $wxBGC );
   };
   if ((get_Z($data->bkg_z) < 5) and ($data->datatype ne 'chi')) {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
     $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
   } else {
     $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
-    $this->{bkg_z_label} -> SetForegroundColour( wxNullColour );
+    $this->{bkg_z_label} -> SetForegroundColour( $wxBGC );
   };
   $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;
@@ -831,7 +832,7 @@ sub OnParameter {
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
   my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
             : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
-            : (ref($widget) =~ m{GroupList}) ? $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
+            : (ref($widget) =~ m{GroupList}) ? scalar $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
             : ($which eq 'bkg_z')            ? interpret_bkg_z($widget->GetValue)
             : ($which =~ m{nnorm})           ? interpret_nnorm($app)
 	    :                                  $widget->GetValue;
@@ -1462,7 +1463,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

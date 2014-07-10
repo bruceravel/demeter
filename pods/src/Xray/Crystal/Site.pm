@@ -130,14 +130,16 @@ sub populate {
   my $class   = $cell->group->class;
   my $bravais = $cell->group->bravais;
 
+
   my ($x, $y, $z, $utag) = $self->get(qw(x y z utag));
   ## it would be nice to do this as a coercion up at the level of the
   ## attribute, but this certainly works...
-  $self->element(get_symbol($x));
-  $self->x(_canonicalize_coordinate($x));
-  $self->y(_canonicalize_coordinate($y));
-  $self->z(_canonicalize_coordinate($z));
+  $self->element(get_symbol($x)); # is this right?
+  $self->x(_canonicalize_coordinate($x+$cell->shiftvec->[0]));
+  $self->y(_canonicalize_coordinate($y+$cell->shiftvec->[1]));
+  $self->z(_canonicalize_coordinate($z+$cell->shiftvec->[2]));
   $utag    = "_" . $utag;
+  ($x, $y, $z) = $self->get(qw(x y z));
   my @list;
 
   #-------------------------- handle different settings as needed
@@ -147,11 +149,13 @@ sub populate {
 				# bravais vector for the //given// symbol
   ($positions = $setting) if ($class eq "monoclinic");
   ($positions = $setting ? $setting : $positions) if ($group =~ m{\Ar}i);
+  $positions = "rhombohedral" if ($setting eq 'rhombohedral');
   if (not $positions) {
     my $this = (caller(0))[3];
     croak "Invalid positions specifier in $this";
     return;
   };
+  #print join("|",$positions, $class, $setting, $group->group), $/;
 
   #-------------------------- permute to alternate settings (orthorhombic)
   #                           1..5 |--> [ ba-c, cab, -cba, bca, a-cb ]
@@ -340,7 +344,7 @@ Xray::Crystal::Site - A crystallographic site object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

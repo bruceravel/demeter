@@ -30,6 +30,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::Colours;
 use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Artemis::DataDropTarget;
 use Demeter::UI::Artemis::FeffDropTarget;
@@ -51,7 +52,7 @@ use Scalar::Util qw(blessed);
 use YAML::Tiny;
 
 use Wx qw(:everything);
-use Wx::Html;			# so we can use Wx::HtmlEasyPrinting
+##use Wx::Html;			# so we can use Wx::HtmlEasyPrinting
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOOL_RCLICKED EVT_RIGHT_UP EVT_LEFT_DOWN
@@ -152,7 +153,7 @@ sub OnInit {
 				[0,0], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1] # size -- entire width of screen
 			       );
-  $frames{main} -> SetBackgroundColour( wxNullColour );
+  $frames{main} -> SetBackgroundColour( $wxBGC );
 
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -163,7 +164,7 @@ sub OnInit {
   $frames{main} -> {modified} = 0;
   $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
-  $frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
+  ##$frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
   $app->{main}->{prefgroups} = [sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
 					file histogram bft fit interpolation bkg fspath lcf warnings gds
 					operations)];
@@ -183,6 +184,7 @@ sub OnInit {
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,   "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
+  #$importmenu->Enable($IMPORT_CHI, 0);
   $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;
@@ -802,6 +804,26 @@ sub fit {
   undef $busy;
 };
 
+## YAML::Tiny will write this hash
+##   %hash = (1=>'a', 2=>'b', 3=>'c')
+## on linux as
+##   ---
+##   3: kvvai
+##   5: ushvu
+##   6: fzuzd
+## and on Windows as
+##   ---
+##   '3': kvvai
+##   '5': ushvu
+##   '6': fzuzd
+##
+## It will fail to read the latter on linux, even though it is valid YAML
+##
+## Solution #1: use YAML rather than YAML::Tiny
+## Solution #2: strinp the single quotes
+## I opted for 3 since the YAML string is never very large
+## The substitution below implements this
+
 sub update_order_file {
   my ($just_write) = @_;
   $just_write || 0;
@@ -811,6 +833,7 @@ sub update_order_file {
     $fit_order{order}{current}  = $thisfit;
   };
   my $string .= YAML::Tiny::Dump(%fit_order);
+  $string =~ s{\'(\d+)\':}{$1:}g;
   open(my $ORDER, '>'.$frames{main}->{order_file});
   print $ORDER $string;
   close $ORDER;
@@ -849,7 +872,7 @@ sub feedback {
 
 sub set_happiness_color {
   my $color = $_[0] || Demeter->co->default("happiness", "average_color");
-  $color = wxNullColour if (not Demeter->co->default("artemis", "happiness"));
+  $color = $wxBGC if (not Demeter->co->default("artemis", "happiness"));
   $frames{main}->{fitbutton}  -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{k_button}   -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{r_button}   -> SetBackgroundColour(Wx::Colour->new($color));
@@ -1470,7 +1493,7 @@ sub export {
   unlink $fname;
 
   ## save mode settings
-  my @modes = qw(template_process template_fit ifeffit file callback plotcallback feedback);
+  my @modes = qw(template_process template_fit backend file callback plotcallback feedback);
   my @values = $fit -> mo -> get(@modes);
 
   ## set mode settings appropriate to file output
@@ -1543,9 +1566,9 @@ and the log buffer.
 =cut
 
 package Wx::Frame;
-use Wx qw(wxNullColour);
+use Demeter::UI::Wx::Colours;
 #use Demeter::UI::Wx::OverwritePrompt;
-my $normal = wxNullColour;
+my $normal = $wxBGC;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");
 my $alert  = Wx::Colour->new("#FCDD9F");
@@ -1655,7 +1678,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

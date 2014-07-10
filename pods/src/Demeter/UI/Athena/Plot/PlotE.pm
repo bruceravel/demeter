@@ -164,16 +164,16 @@ sub new {
 
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
-  my $label = Wx::StaticText->new($this, -1, "Emin", wxDefaultPosition, [35,-1]);
+  my $label = Wx::StaticText->new($this, -1, "Emin", wxDefaultPosition, wxDefaultSize);
   $this->{emin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "emin"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{emin}, 1, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "Emax", wxDefaultPosition, [35,-1]);
+  $label = Wx::StaticText->new($this, -1, "Emax", wxDefaultPosition, wxDefaultSize);
   $this->{emax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "emax"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{emax}, 1, wxRIGHT, 10);
+  $range -> Add($this->{emax}, 1, wxRIGHT, 5);
 
   foreach my $x (qw(emin emax)) {
     $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
@@ -263,7 +263,7 @@ Demeter::UI::Athena::Plot::PlotE - energy space plotting controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

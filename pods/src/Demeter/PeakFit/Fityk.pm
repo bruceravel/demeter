@@ -310,7 +310,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

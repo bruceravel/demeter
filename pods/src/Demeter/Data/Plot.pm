@@ -774,6 +774,43 @@ sub quadplot {
   return $self;
 };
 
+sub biquadplot {
+  my ($self, $other) = @_;
+  if ($self->mo->template_plot ne 'gnuplot') {
+    carp(sprintf("Sorry, the quadplot is not possible with the %s backend.", $self->mo->template_plot));
+    return $self;
+  };
+  croak(ref $self . " objects are not plottable") if not $self->plottable;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    carp("XANES data and non Data objects are not plottable as quadplots") if not $self->mo->silently_ignore_unplottable;
+    return $self;
+  };
+  if ((ref($other) =~ m{Data}) and ($other->datatype eq 'xanes')) {
+    carp("XANES data and non Data objects are not plottable as quadplots") if not $self->mo->silently_ignore_unplottable;
+    return $self;
+  };
+
+  $self->_update('all');
+  $other->_update('all');
+
+  my $save = $self->co->default("plot", "showcopyright");
+  $self->co->set_default("plot", "showcopyright", 0);
+  $self -> po -> start_plot;
+
+  my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
+  my @zeros = map {0} @e;
+  my @vals = $self->po->get(@e);
+  $self -> po -> set(zip(@e, @zeros));
+
+  $other -> standard;
+  $self -> chart("plot", "biquad");
+
+  $other -> unset_standard;
+  $self -> po -> set(zip(@e, @vals));
+  $self -> co -> set_default("plot", "showcopyright", $save);
+  return $self;
+};
+
 sub rkplot {
   my ($self) = @_;
   if ($self->mo->template_plot ne 'gnuplot') {
@@ -867,7 +904,7 @@ Demeter::Data::Plot - Data plotting methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 METHODS
 

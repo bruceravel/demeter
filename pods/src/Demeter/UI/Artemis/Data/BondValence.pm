@@ -20,6 +20,7 @@ use warnings;
 
 use Chemistry::Elements qw(get_symbol);
 use Demeter::UI::Wx::SpecialCharacters qw($S02);
+use Demeter::UI::Wx::Colours;
 use List::MoreUtils qw(any uniq);
 use Scalar::Util qw(looks_like_number);
 use Statistics::Descriptive;
@@ -110,7 +111,7 @@ sub OnCompute {
   my ($this, $event, @paths) = @_;
   my $s02 = $this->{s02}->GetValue;
   return if not looks_like_number($s02);
-  my $color = Wx::TextAttr->new(Wx::Colour->new('#550000'), wxNullColour,
+  my $color = Wx::TextAttr->new(Wx::Colour->new('#550000'), $wxBGC,
 				Wx::Font->new(9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" ) );
   my $sum = 0;
   foreach my $p (@paths) {
@@ -188,7 +189,7 @@ Demeter::UI::Artemis::Data::BondValence - Dialog to perform a simple bond valenc
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

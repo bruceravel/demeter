@@ -20,6 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_CHAR EVT_BUTTON);
+use Demeter::UI::Wx::Colours;
 use base qw(Wx::Frame);
 
 use List::MoreUtils qw(uniq);
@@ -35,7 +36,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Ifeffit \& Plot Buffer]",
 				wxDefaultPosition, [500,800],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -57,11 +58,11 @@ sub new {
   $this->{IFEFFIT} -> SetSizerAndFit($box);
 
   my @font = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
-  $this->{IFEFFIT}->{normal}     = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{comment}    = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{feedback}   = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{warning}    = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{singlefile} = Wx::TextAttr->new(Wx::Colour->new( '#F08557' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{normal}     = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{comment}    = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{feedback}   = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{warning}    = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{singlefile} = Wx::TextAttr->new(Wx::Colour->new( '#F08557' ), $wxBGC, Wx::Font->new( @font ) );
 
 
   $this->{PLOT} = Wx::Panel->new($splitter, -1, wxDefaultPosition, wxDefaultSize);
@@ -180,7 +181,7 @@ Demeter::UI::Artemis::Buffer - A command and plot command buffer for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

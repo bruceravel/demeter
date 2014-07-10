@@ -21,6 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
 use base qw(Wx::Frame);
+use Demeter::UI::Wx::Colours;
 
 use Cwd;
 use List::Util qw(max);
@@ -34,7 +35,7 @@ sub new {
 				wxDefaultPosition, [650,400],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   EVT_CLOSE($this, \&on_close);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   $this->{name} = q{};
@@ -43,10 +44,10 @@ sub new {
 				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
-  $this->{normal} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{date}   = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{wait}   = Wx::TextAttr->new(Wx::Colour->new('#008800'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{alert}  = Wx::TextAttr->new(Wx::Colour->new("#d9bf89"), wxNullColour, Wx::Font->new( @font ) );
+  $this->{normal} = Wx::TextAttr->new(Wx::Colour->new('#000000'), $wxBGC, Wx::Font->new( @font ) );
+  $this->{date}   = Wx::TextAttr->new(Wx::Colour->new('#acacac'), $wxBGC, Wx::Font->new( @font ) );
+  $this->{wait}   = Wx::TextAttr->new(Wx::Colour->new('#008800'), $wxBGC, Wx::Font->new( @font ) );
+  $this->{alert}  = Wx::TextAttr->new(Wx::Colour->new("#d9bf89"), $wxBGC, Wx::Font->new( @font ) );
   $this->{error}  = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new("#aa0000"), Wx::Font->new( @bold ) );
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);
@@ -129,7 +130,7 @@ Demeter::UI::Athena::Status - A statusbar message buffer for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

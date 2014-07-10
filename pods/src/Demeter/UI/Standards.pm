@@ -24,6 +24,7 @@ use Chemistry::Elements qw(get_Z get_name);
 use File::Basename;
 use File::Copy;
 use File::Spec;
+use List::MoreUtils qw(any none);
 use Text::Template;
 use Text::Wrap;
 $Text::Wrap::columns = 75;
@@ -41,9 +42,11 @@ has 'ini' => (is => 'rw', isa => 'Str',  default => q{},
 my %materials_of;
 my %elements_of;
 
-my $attribute_regex = Regexp::Assemble->new()->add(qw(tag comment crystal file element record
+my $attribute_regex = Regexp::Assemble->new()->add(qw(name tag comment crystal file element record edge
 						      energy numerator denominator ln xmu from_web
 						      rebin calibrate xanes deriv
+						      location people date oxidation coordination
+						      notes doi
 						    ))->re;
 my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
@@ -51,37 +54,58 @@ my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
 sub read_ini {
   my ($self) = @_;
-  my $file = File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini");
-  my $ini = Demeter::IniReader->read_file($file);
-  #tie %ini, 'Config::IniFiles', ( -file => $file );
+  my @files = (File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini"),
+	       File::Spec->catfile(Demeter->dot_folder, "standards.ini")
+	      );
 
-  foreach my $k (keys %$ini) {
-    $ini->{$k}{element} ||= $k;
-    $ini->{$k}{element} = lc($ini->{$k}{element});
+  my $ini = Demeter::IniReader->read_file(File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini"));
+  my $include = $ini->{include};
+  foreach my $k (sort keys %$include) {
+    my $file =  $include->{$k};
+    $file = $self->resolve_token($file);
+    unshift @files, $file;
+  };
+  undef $ini;
 
-    $materials_of{$k} = $ini->{$k};
-    ++$elements_of{ $ini->{$k}{element} };
+  foreach my $file (@files) {
+    next if (not -e $file);
+    my $ini = Demeter::IniReader->read_file($file);
+    #tie %ini, 'Config::IniFiles', ( -file => $file );
 
-    ## untabulated (generated) attributes
-    $materials_of{$k}{from_web} = 0;
+    foreach my $k (keys %$ini) {
+      next if ($k eq 'include');
+      $ini->{$k}{element} ||= $k;
+      $ini->{$k}{element} = lc($ini->{$k}{element});
+      $ini->{$k}{name} = $k;
+      my $key = lc($k);
 
-    ## sensible fallbacks
-    foreach my $att (qw(xmu energy numerator denominator ln comment crystal)) {
-      $materials_of{$k}{$att} ||= q{};
-    };
+      $materials_of{$key} = $ini->{$k};
+      ++$elements_of{ $ini->{$k}{element} };
 
-    ## deal gracefully with missing callibrate, xanes, or deriv attributes
-    my $edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
-    my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
-    if ( (not exists($materials_of{$k}{calibrate})) or (not $materials_of{$k}{calibrate}) ) {
-      $materials_of{$k}{calibrate} = join(", ", $edge_energy, $edge_energy);
-    };
-    foreach my $plot (qw(xanes deriv)) {
-      if ( (not exists($materials_of{$k}{$plot})) or (not $materials_of{$k}{$plot}) ) {
-	$materials_of{$k}{$plot} = $edge_energy;
+      ## untabulated (generated) attributes
+      $materials_of{$key}{from_web} = 0;
+
+      ## sensible fallbacks
+      foreach my $att (qw(xmu energy numerator denominator ln comment crystal location people date
+			  oxidation coordination)) {
+	$materials_of{$key}{$att} ||= q{};
+      };
+
+      ## deal gracefully with missing calibrate, xanes, or deriv attributes
+      my $edge = $ini->{$k}{edge};
+      if (not $edge) {
+	$edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
+      };
+      my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
+      if ( (not exists($materials_of{$key}{calibrate})) or (not $materials_of{$key}{calibrate}) ) {
+	$materials_of{$key}{calibrate} = join(", ", $edge_energy, $edge_energy);
+      };
+      foreach my $plot (qw(xanes deriv)) {
+	if ( (not exists($materials_of{$key}{$plot})) or (not $materials_of{$key}{$plot}) ) {
+	  $materials_of{$key}{$plot} = $edge_energy;
+	};
       };
     };
-
   };
 };
 
@@ -115,7 +139,14 @@ sub material_list {
     (get_Z($materials_of{$a}{element}) <=> get_Z($materials_of{$b}{element}))
       or
     ($a cmp $b)
-  } keys(%materials_of );
+  } keys(%materials_of);
+};
+
+sub resolve_token {
+  my ($self, $file) = @_;
+  my ($token, $location) = (qw{%share%}, File::Spec->catfile(Demeter->location, "Demeter", "share"));
+  $file =~ s{$token}{$location};
+  return $file;
 };
 
 sub resolve_file {
@@ -139,10 +170,7 @@ sub resolve_file {
       $file = '^^PLOP^^: unsuccessful';
     };
   } else {
-    my ($token, $location) = (qw{%share%},
-			      File::Spec->catfile(Demeter->location, "Demeter", "share")
-			     );
-    $file =~ s{$token}{$location};
+    $file = $self->resolve_token($file);
   };
   return $file;
 };
@@ -188,8 +216,8 @@ sub save {
   my $cc = $choice;
   $choice = lc($choice);
   my $thisfile = $self->resolve_file($choice);
-  return "The download of the remote data file for \"$cc\" failed."                    if ($thisfile eq '^^PLOP^^: unsuccessful');
-  return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
+  return "The download of the remote data file for \"$cc\" failed."                  if ($thisfile eq '^^PLOP^^: unsuccessful');
+  return "You do not have perl's libwww installed, so remote files cannot be saved." if ($thisfile eq '^^PLOP^^: nolibwww');
   my $data = $self->fetch($choice, $thisfile);
   $data->save("xmu", $fname);
   return $self;
@@ -219,6 +247,11 @@ sub plot {
   $ddd -> po -> legend(x => $self->config('key_x'),
 		       y => $self->config('key_y'),
 		      );
+  my $location_save = Demeter->co->default('gnuplot', 'keylocation');
+  if (ref(Demeter->po) =~ m{Gnuplot}) {
+    my $where = ($which =~ m{mu}) ? 'bottom right' : 'top right';
+    Demeter->co->set_default('gnuplot', 'keylocation', $where);
+  };
   $ddd -> po -> set(e_der  => ($which =~ m{deriv}) ? 1 : 0,
 		    e_bkg  => 0,
 		    e_sec  => 0,
@@ -230,11 +263,15 @@ sub plot {
 		    emin   => $self->config('emin'),
 		    emax   => $self->config('emax'),
 		    );
+  $ddd->po->start_plot;
   $ddd -> plot('E');
   my $part = ($which =~ m{deriv}) ? 'der'   : 'flat';
   my $list = ($which =~ m{deriv}) ? 'deriv' : 'xanes';
 
   my @points = split(/,\s*/, $self->get($choice, $list));
+  ## show tabulated edge energy if no annotations exist
+  $points[0] = Xray::Absorption->get_energy($self->get($choice,'element'), $self->get($choice,'edge'))
+    if ($points[0] == 0);
   $ddd -> plot_marker($part, \@points);
 
   foreach my $x (@points) {
@@ -253,9 +290,47 @@ sub plot {
     unlink $self->get($choice, 'from_web');
   };
 
+  if (ref(Demeter->po) =~ m{Gnuplot}) {
+    Demeter->co->set_default('gnuplot', 'keylocation', $location_save);
+  };
+
   ## clean up in ifeffit before returning
   return 0;
 };
+
+
+sub report {
+  my ($self, $choice) = @_;
+  my $cc = lc($choice);
+  my $text = q{};
+  $text .= sprintf("%-12s : %s\n", 'tag', $self->get($cc, 'tag'));
+  $text .= wrap("comment      : ", "               ", $self->get($cc, 'comment')) . $/;
+  my @common  = qw(element edge crystal file);
+  my @common2 = qw(location people date oxidation coordination notes doi);
+  my @list    = qw(record);
+  @list       = qw() if ($self->get($cc, 'file') =~ m{http://});
+  @list       = qw(energy numerator denominator ln calibrate) if ($self->get($cc, 'file') =~ m{stan\z});
+  foreach my $k (@common, @list, @common2) {
+    my $value = $self->get($cc, $k);
+    if ($k eq 'file') {
+      $value = $self->resolve_token($value);
+    } elsif (any {$k eq $_} (qw(energy denominator numerator))) {
+      $value =~ s{\$}{column };
+    } elsif ($k eq 'ln') {
+      $value = Demeter->yesno($value);
+    } elsif ($k eq 'element') {
+      $value = ucfirst($value);
+    } elsif ($k eq 'calibrate') {
+      $value =~ s{,}{ to};
+    };
+    $text .= sprintf("%-12s : %s\n", $k, $value) if $value;
+  };
+  $text .= sprintf("%-12s : %s\n", 'rebinned', 'true') if $self->get($cc, 'rebin');
+  return $text;
+};
+#tag comment crystal file element record edge
+#  energy numerator denominator ln xmu from_web
+#  rebin calibrate xanes deriv
 
 sub filter_plot {
   my ($self, $elem) = @_;
@@ -346,17 +421,21 @@ sub screen {
 
   my $stan =  ($self -> material_exists($choice))
     ? get_name($self -> get($choice, 'element')) : get_name($choice);
-  $text .= RED . BOLD . "\nAvailable $stan standard reference materials\n\n" . RESET;
-  my $i = 1;
-  my $template = " %s%s%14s%s : (%2d) %-15s";
+  $text .= RED . BOLD . "\nAvailable $stan (" . get_Z($stan) . ") standard reference materials\n\n" . RESET;
+  my ($i, $j) = (1, 1);
+  my $template = " %s%s%2d) %-16s%s : %-16s";
+  my @list = (q{});
+  my $none = none {lc($_) eq lc($choice)} $self->material_list;
   foreach my $data ($self->material_list) {
     next if ($data eq 'config');
     next if ($element ne $self->get($data, 'element'));
-
+    push @list, $data;
     if (lc($data) eq lc($choice)) {
-      $text .= sprintf($template, BOLD, $MARKED, '*'.ucfirst(lc($data)), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $MARKED, $j++, '*'.$self->get($data, 'name'), RESET, $self->get($data, 'tag'));
+    } elsif ($none and $#list == 1) {
+      $text .= sprintf($template, BOLD, $MARKED, $j++, '*'.$self->get($data, 'name'), RESET, $self->get($data, 'tag'));
     } else {
-      $text .= sprintf($template, BOLD, $INDIC,      ucfirst(lc($data)), RESET, get_Z($self->get($data, 'element')), $self->get($data, 'tag'));
+      $text .= sprintf($template, BOLD, $INDIC,  $j++,     $self->get($data, 'name'), RESET, $self->get($data, 'tag'));
     };
     $text .= ($i % 2) ? "    " : "\n";
     ++$i;
@@ -366,9 +445,9 @@ sub screen {
   ## q to quit
   $text .= sprintf("      %s%s%s%s = %s    %s%s%s%s = %s    %s%s%s%s = %s    %s%s%s%s = %s\n\n",
 		   BOLD, $INDIC, "q", RESET, "quit",
-		   BOLD, $INDIC, "1", RESET, "plot mu(E)",
-		   BOLD, $INDIC, "2", RESET, "plot derivative",
-		   BOLD, $INDIC, "3", RESET, "plot filter",
+		   BOLD, $INDIC, "m", RESET, "plot mu(E)",
+		   BOLD, $INDIC, "d", RESET, "plot derivative",
+		   BOLD, $INDIC, "f", RESET, "plot filter",
 		  );
   if ($self->material_exists($choice)) {
     my $record = $self->get($choice, 'record')
@@ -376,19 +455,26 @@ sub screen {
 	: q{};
 
                        ## red comment line
+    my $comment = sprintf('%s, measured by %s (%s) at %s',
+			  $self->get($choice, 'comment'),
+			  $self->get($choice, 'people'),
+			  $self->get($choice, 'date'),
+			  $self->get($choice, 'location')
+			 );
     $text .= join(q{}, RED, BOLD, "Comment: ", RESET, "\n",
 		  ## file and crystal
 		  GREEN, "\tFile: ",    RESET, basename($self->get($choice, 'file')),
 		  $record,
-		  GREEN, "\tCrystal: ", RESET, $self->get($choice, 'crystal'), "\n",
+		  GREEN, "\tCrystal: ", RESET, $self->get($choice, 'crystal'),
+		  GREEN, "\tEdge: ", RESET, $self->get($choice, 'edge'), "\n",
 		  ## comment, nicely wrapped
-		  wrap("\t", "\t", $self->get($choice, 'comment')), "\n"
+		  wrap("\t", "\t", $comment), "\n"
 		 );
   };
   if ($error) {
     $text .= "\n\t*** " . BOLD . MAGENTA . $error . RESET . "\n";
   };
-  return $text;
+  return ($text, \@list);
 };
 
 
@@ -505,11 +591,11 @@ sub athena {
 
 =head1 NAME
 
-Demeter::UI::Standards - Standard reference material database interaction
+Demeter::UI::Standards -  Interactions with standard reference data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -729,8 +815,11 @@ contained in the F<standards.ini> file.  Here is an example:
 
   [fe]
   tag         = Iron foil
-  comment     = Iron foil measured at NSLS X11A 10/4/2002 by BR
+  comment     = Iron foil
   crystal     = Si(111)
+  location    = NSLS X11A
+  people      = BR
+  date        = 10/4/2002
   file        = %share%/standards/data/fe.stan
   energy      = $1
   numerator   = $2
@@ -747,12 +836,27 @@ four lines explain how to for mu(E) data from the columns in the file.
 The last three lines are used to calibrate the data and mark the
 interesting points in the XANES or derivative spectra.
 
+The C<comment> keyword is intended to describe the physical sample.
+The C<location>, C<people> and C<date> are intended to establish
+provenance.  The C<location> is the facility and syncherotron.  The
+C<people> are the experimenters who were present for the measurement.
+The C<date> is the date of the measurement.  The use of the
+L<ISO-8601|http://en.wikipedia.org/wiki/ISO_8601> combined date and
+time representations is encouraged, but not enforced at this time.
+
+The keywords C<coordination> and C<oxidation> can be used to specify
+the structural environment and oxidation state of the absorber.  These
+are not used at this time.
+
 Another option is to import data from an Athena project file.  Here is
 an example:
 
   [cd]
   tag         = Cadmium foil
-  comment     = Cadmium foil, measured at APS 10ID Nov 18, 2006
+  comment     = Cadmium foil
+  location    = APS 10ID
+  people      = Saengdao Khoakaew, Ryan Tappero, and BR
+  date        = November 18, 2006
   crystal     = Si(111)
   file        = %share%/standards/data/Cd.prj
   record      = 1
@@ -767,6 +871,20 @@ steps are never performed for data from an project file.
 The first section of the F<standards.ini> file contains the
 configuration data and is used to control some aspects of the plots
 made of the reference data.
+
+This code will also look for a file called F<standards.ini> located in
+the the Demeter configuration folder, C<$HOME/.horae/> on linux,
+C<%APPDATA%\demeter> on Windows.  The system file is read first, then
+the private file is read.  Their contents are simply concatanted,
+although an entry with the same key -- the bit in [brackets] -- in the
+private file will overwrite the similarly named entry in the system
+file.
+
+There are a few more keywords not discussed above.  If C<rebin> = 1,
+then the data will be rebinned onto a conventional grid.  The
+C<calibrate> keyword is used to put data from a file onto the absolute
+energy grid.  The comma separated arguments are the energy value to
+choose as the edge and the energy value to assign to that point.
 
 The output html and latex files are formatted using L<Text::Template>
 templates, which can be found in the F<share> directory of the Demeter
@@ -787,10 +905,6 @@ This uses Demeter and its dependencies.
 =item *
 
 latex output
-
-=item *
-
-load user ini files (i.e. ~/.horae/standards.ini)
 
 =item *
 

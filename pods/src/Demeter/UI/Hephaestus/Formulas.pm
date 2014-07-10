@@ -265,9 +265,10 @@ sub get_formula_data {
 	my ($bpfu, $apfu) = (0, 0);
 	my $energy = $enot + $step;
 	foreach my $k (keys(%count)) {
+	  $apfu   += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
+	  next if (lc($k) ne lc($e->[0]));
 	  my $this = Xray::Absorption -> cross_section($k, $energy, $which);
 	  $bpfu   += $this * $count{$k};
-	  $apfu   += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
 	};
 	## 1 amu = 1.6605389 x 10^-24 gm
 	push @abovebelow, $bpfu / $apfu / 1.6605389;
@@ -330,7 +331,7 @@ Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

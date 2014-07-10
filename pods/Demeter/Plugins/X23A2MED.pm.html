@@ -60,6 +60,7 @@
 </ul>
 </li>
 	<li><a href="#THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM</a></li>
+	<li><a href="#MULTIEDGE_FILES">MULTIEDGE FILES</a></li>
 	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
 	<li><a href="#AUTHORS">AUTHORS</a></li>
 </ul>
@@ -72,7 +73,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.19.</p>
+<p>This documentation refers to Demeter version 0.9.20.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -175,7 +176,7 @@ fast channel due to deadtime:</p>
 <pre>   y = x*exp(-x*tau)
 
 </pre><p>where tau is the deadtime, x is the actual input rate on the fast
-channel, and y is the measured rate on the dast channel.  The
+channel, and y is the measured rate on the fast channel.  The
 iterative solution encoded in the <code>_correct</code> subroutine thus solves
 point-by-point for x using a value for tau and the column containing
 y.</p>
@@ -188,6 +189,47 @@ ICR/OCR) will be applied to that channel.</p>
 more accurate than the standard correction.  For details see Woicik,
 Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
 http://dx.doi:org/10.1107/S0909049510009064</p>
+
+<h1 id="MULTIEDGE_FILES">MULTIEDGE FILES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>At X23A2, we have four quad single channel analyzers, one for each
+detector element of our four-element Vortex.  Each quad SCA is
+modified to have the input channels tied together.  We use the fourth
+output channel as the slow channel, or OCR, signal.  This is done by
+setting the discriminator window over the entire energy range.  In
+principle, we could record three regions of interest for each detector
+element.  However, we only have enough scalar input channels to our
+crate to record two ROIs, along with the slow and fast (OCR and ICR)
+signals.</p>
+
+<p>Recording even two channels is useful for switching between edges as
+part of a measurement macro.  To this end, this plugin will recognize
+when the system is configured that why by recognizing channel labels
+that are different from the configured <code>roiN</code> column labels, as
+discussed above and typically <code>Ifch1</code> through <code>Ifch4</code>.  Currently,
+this is <i>hard-wired</i> to be</p>
+
+<pre>  roi1_1 roi1_2 roi1_3 roi1_4
+
+</pre><p>for the ROI corresponding to one edge, and</p>
+
+<pre>  roi2_1 roi2_2 roi2_3 roi2_4
+
+</pre><p>for the ROI corresponding to the second edge.  For example, in PbGeO3,
+the <code>roi1_N</code> might be configured to measure the Ge K alpha line while
+the <code>roi2_N</code> would then be configured for the Pb L alpha line.</p>
+
+<p>When processed and presented to the user in the column selection
+dialog, the corrected columns are then labeled</p>
+
+<pre>  c1_1 c1_2 c1_3 c1_4
+
+</pre><p>and</p>
+
+<pre>  c2_1 c2_2 c2_3 c2_4
+
+</pre><p>It is then up to the user to select the correct group of four when
+importing the data.</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

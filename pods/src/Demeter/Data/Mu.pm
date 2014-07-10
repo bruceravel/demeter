@@ -481,12 +481,14 @@ sub autobk {
   }
 
   my $command = q{};
-  if (lc($self->bkg_stan) ne 'none') {
-    my $stan = $self->mo->fetch("Data", $self->bkg_stan);
-    $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+  if (not $self->is_nor) {
+    if (lc($self->bkg_stan) ne 'none') {
+      my $stan = $self->mo->fetch("Data", $self->bkg_stan);
+      $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+    };
+    $command .= $self->template("process", "autobk");
+    $fixed = $self->bkg_step if $self->bkg_fixstep;
   };
-  $command .= $self->template("process", "autobk");
-  $fixed = $self->bkg_step if $self->bkg_fixstep;
 
   if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
     my $was = $self->bkg_e0;
@@ -520,7 +522,9 @@ sub autobk {
 
   #$self->dispose($command);
 
-  if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
+  if ($self->is_nor) {
+    1;
+  } elsif ($self->bkg_fixstep or ($self->datatype eq 'xanes')) {
     $command .= $self->template("process", "flatten_fit");
   } else {
     $command .= $self->template("process", "flatten_set");
@@ -918,7 +922,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

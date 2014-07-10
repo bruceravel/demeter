@@ -47,6 +47,7 @@ sub new {
   EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
   EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
+  $this->{function}->SetSelection(0);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -162,7 +163,7 @@ Demeter::UI::Athena::ConvoluteNoise - A convolution and artficial noise tool for
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

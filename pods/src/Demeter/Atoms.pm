@@ -67,14 +67,18 @@ has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;}
 	      );
 has 'space'	       => (is => 'rw', isa => 'Str', default => sub{q{}},
 			   trigger => sub{ my ($self, $new) = @_;
-					  return if not $new;
-					  $self -> cell -> space_group($new);
-					  $self->is_populated(0);
-					  $self->absorption_done(0);
-					  $self->mcmaster_done(0);
-					  $self->i0_done(0);
-					  $self->self_done(0);
-					});
+					   return if not $new;
+					   $new = $self->colon_in_group($new);
+					   $self -> cell -> space_group($new);
+					   $self->is_populated(0);
+					   $self->absorption_done(0);
+					   $self->mcmaster_done(0);
+					   $self->i0_done(0);
+					   $self->self_done(0);
+					 });
+has  $_  => (is => 'rw', isa => 'Bool',  default => 0,)
+  foreach (qw(is_rhomb is_hex is_first is_second));
+
 has 'a'		       => (is => 'rw', isa => NonNeg,    default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
@@ -153,15 +157,15 @@ has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
-has 'shift' => (
+has 'shiftvec' => (
 		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [0, 0, 0] },
 		handles   => {
-			      'push_shift'  => 'push',
-			      'pop_shift'   => 'pop',
-			      'clear_shift' => 'clear',
+			      'push_shiftvec'  => 'push',
+			      'pop_shiftvec'   => 'pop',
+			      'clear_shiftvec' => 'clear',
 			     }
 	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
@@ -297,7 +301,7 @@ sub clear {
   $self->edge(q{});
   $self->clear_sites;
   $self->clear_cluster;
-  $self->clear_shift;
+  $self->shiftvec([0,0,0]);
   $self->clear_titles;
   $self->cell->clear;
   $self->is_imported(0);
@@ -387,8 +391,9 @@ sub parse_line {
 
     return if ($key =~ m{\#});
     $key = lc($key);
-    if (($self->meta->has_method($key)) and ($key =~ m{shi|daf|qve|ref})) {
-      $self->$key([$val, $vvv, $vvvv]);
+    my $kk = ($key =~ m{shi}) ? 'shiftvec' : $key;
+    if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref})) {
+      $self->$kk([$val, $vvv, $vvvv]);
     } elsif ($self->meta->has_method($key)) {
       $self->$key(lc($val));
     } elsif (is_AtomsObsolete($key)) {
@@ -413,6 +418,21 @@ sub parse_atoms_line {
   return $self;
 };
 
+sub colon_in_group {
+  my ($self, $group) = @_;
+  if ($group =~ m{:\s*([12hHrR])\s*\z}) {
+    my $colon = $1;
+    (my $stripped = $group) =~ s{\s*:\s*[12hHrR]\s*\z}{};
+    $self->is_rhomb(1)  if (lc($colon) eq 'r');
+    $self->is_hex(1)    if (lc($colon) eq 'h');
+    $self->is_first(1)  if ($colon eq '1');
+    $self->is_second(1) if ($colon eq '2');
+    return $stripped;
+  } else {
+    return $group;
+  };
+};
+
 
 sub populate {
   my ($self) = @_;
@@ -433,6 +453,7 @@ sub populate {
   };
   ## Group: $cell->get(qw(given_group space_group class setting))
   ## Bravais: $cell->get('bravais')
+  $self -> cell -> shiftvec($self->shiftvec);
   $self -> cell -> populate(\@sites);
   foreach my $key (qw(a b c alpha beta gamma)) {
     $self->$key($self->cell->$key);
@@ -465,17 +486,18 @@ sub build_cluster {
   my @sites = @{ $cell->sites };
   map { $_ -> in_cluster(0) } @sites;
 
+  #Demeter->pjoin('build_cluster',$self->get(qw(a b c alpha beta gamma)));
+  #Demeter->pjoin('build_cluster',$self->cell->get(qw(txx tyx tyz tzx tzz)));
+
   my $rmax = $self->rmax;
   my @cluster = ();
   my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($core);
-  #print join(" ", $xcenter, $ycenter, $zcenter), $/;
   my $setting	      = $cell->group->setting;
   my $crystal_class   = $cell->group->class;
   my $do_tetr	      = ($crystal_class eq "tetragonal" ) && ($setting);
 
   #### here
   my ($aa, $bb, $cc) = $cell -> get("a", "b", "c");
-  #print join(" ", $aa, $bb, $cc), $/;
   my $xup = ceil($rmax/$aa - 1 + $xcenter);
   my $xdn = ceil($rmax/$aa - $xcenter);
   my $yup = ceil($rmax/$bb - 1 + $ycenter);
@@ -531,7 +553,9 @@ sub build_cluster {
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
   } @cluster;
   if ($#cluster > 499) {
-    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.  You might want to reduce the value of the cluster size (Rmax).\n");
+    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.
+Feff6L was run using only the first 500 atoms.
+You might want to reduce the value of the cluster size (Rmax).\n");
   };
   if ($#cluster == 0) {
     warn 'You have specified crystal data resulting in 0 scattering atoms.
@@ -853,6 +877,7 @@ sub update_edge {
   ##print $self->core, $/;
   ##print $central, $/;
   ##print join(" ", $central->meta->get_attribute_list), $/;
+  #Demeter->trace;
   my $z = get_Z( $central->element );
   ($z > 57) ? $self->edge('l3') : $self->edge('k');
   return $self;
@@ -934,9 +959,10 @@ override serialization => sub {
 
   my %cards = ();
   foreach my $key (qw(space a b c alpha beta gamma rmax rpath rss edge iedge eedge core corel partial_occupancy
-		      shift cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
+		      shiftvec cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
 		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
-		      is_ipots_set is_expanded absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
+		      is_ipots_set is_expanded is_rhomb is_hex is_first is_second
+		      absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
     $cards{$key} = $self->$key;
   };
 
@@ -954,7 +980,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -1035,7 +1061,7 @@ The edge of the absorber.
 
 The identifier of the absorber.  This should be one of the site tags.
 
-=item C<shift> (vector) [0,0,0]
+=item C<shiftvec> (vector) [0,0,0]
 
 The value of the shift vector, should one be necessary.
 
@@ -1113,6 +1139,34 @@ object.
 
 This is a list containing the expanded cluster.  Need to describe each
 list entry.
+
+=item C<is_rhomb>, C<is_hex>, C<is_first>, C<is_second> (boolean)
+
+Occassionally, modifiers to the space group symbol are used to
+explicitly specify the setting of the crystal.
+
+Trigonal space groups with symbols beginning with C<R> (numbers 146,
+148, 155, 160, 161, 166, and 167) can be expressed in rhombohedral or
+hexagonal settings.  While it is possible to figure out the setting
+from the specified parameters -- the rhombohedral setting has a=b=c,
+alpha!=90, and alpha=beta=gamma, while the hexagonal setting has
+a=b!=c, alpha=beta=90, and gamma=120 -- CIF file authors and others
+may modify the space group symbol with C<:R> or C<:H> to indicated the
+setting.
+
+Some orthoganal groups (numbers 48, 50, 59, 68, 70), tetragonal groups
+(85, 86, 88, 125, 126, 129, 130, 133, 134, 137, 138, 141, 142), and
+cubic groups (201, 203, 222, 224, 227, 228) are given in the
+International Tables referenced to two centers of symmetry.  In
+general, it is difficult to know which center is used before expanding
+the unit cell and examining its contents.  To remove this ambiguity
+some CIF file authors and others will modify the space group symbol
+with C<:1> or C<:2> to indicated which center has been used.  Demeter
+assumes the second setting, so if C<:1> is specified, it is likely
+that a shift vector will be needed.
+
+When a space group symbol uses one of these modifiers, the
+corresponding boolean parameter will be set to C<1>.
 
 =back
 

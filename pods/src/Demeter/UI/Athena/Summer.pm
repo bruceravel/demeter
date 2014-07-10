@@ -143,7 +143,7 @@ sub sum {
     next if ($this->{"standard$i"}->GetStringSelection eq 'None');
     next if ($this->{"weight$i"}->GetValue == 0);
     next if not looks_like_number($this->{"weight$i"}->GetValue);
-    push @data, $this->{"standard$i"}->GetClientData($this->{"standard$i"}->GetSelection);
+    push @data, $this->{"standard$i"}->GetClientData(scalar $this->{"standard$i"}->GetSelection);
     push @weight, $this->{"weight$i"}->GetValue;
   };
   return if ($#data == -1);
@@ -261,7 +261,7 @@ Demeter::UI::Athena::Summer - A data summer for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -276,6 +276,10 @@ Demeter's dependencies are in the F<Build.PL> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+C<push_values> does not update menus to reflect changes in groups list
 
 =item *
 

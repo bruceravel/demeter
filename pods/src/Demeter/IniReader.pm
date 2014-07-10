@@ -21,12 +21,12 @@ Demeter::IniReader -- Ini file parser for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
 This inherits from L<Config::INI::Reader>, changing the definition of
-a comment line to include a line begining with a hash caharacter.
+a comment line to include a line begining with a hash character.
 Also change the definition of an end-of-line comment the same way,
 taking care not to remove an RGB color value of the form C<#0000FF>.
 

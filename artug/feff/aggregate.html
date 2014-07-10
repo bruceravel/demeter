@@ -1,0 +1,170 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Aggregate Feff calculation</title>
+    <link rel="stylesheet" href=../artug.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../feff/console.html" class="menu">The Console tab</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../feff/index.html" class="menu">The Atoms/Feff window</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Artemis logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menuselect">The Atoms/Feff window</a><br />
+&nbsp;&#8618;&nbsp;<a href="../feff/feff.html"  class="menu">The Feff tab</a><br />
+&nbsp;&#8618;&nbsp;<a href="../feff/paths.html"  class="menu">The Paths tab</a><br />
+&nbsp;&#8618;&nbsp;<a href="../feff/pathlike.html"  class="menu">The Path-like tab</a><br />
+&nbsp;&#8618;&nbsp;<a href="../feff/console.html"  class="menu">The Console tab</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">Aggregate calculation</span><br /><a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menu">Crystallography for EXAFS</a><br />
+<a href="../extended/index.html"  class="menu">Extended topics</a><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  Aggregate Feff calculation
+</h1>
+
+<p>
+If crystal data has two or more inequivalent sites occupied by the
+same kind of atom, some additional functionality is enabled when one
+of the inequivalent sites is selected as the absorber.  As you can see
+in the following screenshot, the &ldquo;Aggregate&rdquo;
+is available, as are controls for setting the 
+<a href="../extended/fuzzy.html">fuzzy degeneracy</a>
+parameters.
+</p>
+
+
+<div class=figure style="max-width: 619px; min-width: 7em;">
+<a name=feff-zirconolite>
+<img src=../../images/feff-zirconolite.png width=100%>
+</a>
+<p align=center>
+Crystal data for CaZrTi<sub>2</sub>O<sub>7</sub> with a Ti atom selected, enabling the
+aggregate calculation controls.
+</p>
+</div>
+
+
+<p>
+
+In the aggregate <span class=program>FEFF</span> calculation, the path finder is run for each
+inequivalent position containing the same central atom.  The path
+lists are merged together, weighted by fractional population of the
+site in the unit cell, before running the check for <a href="../extended/fuzzy.html">fuzzy degeneracy</a>.
+The weighting by population fraction means that a bin of paths can be
+occupied by a non-integer number of atoms.
+</p>
+
+<p>
+In the example of CaZrTi<sub>2</sub>O<sub>7</sub>, there are three Ti sites.  The are
+8 Ti1 atoms in the unit cell and 4 each of Ti2 and Ti3.  Thus half the
+Ti atoms are from site 1 and a quarter each from sites 2 and 3.  Each
+Ti site is surrounded by 6 oxygen atoms at a variety of distances.
+Ti1 has O atoms at 1.843 &Aring;, 1.880 &Aring;, 1.927 &Aring;, 1.987
+&Aring;, 2.0007 &Aring;, and 2.023 &Aring;.  Ti2 has 2 O atoms at each of
+1.786 &Aring;, 2.050 &Aring;, 2.498 &Aring;.  Ti3 has 2 O atoms at each
+of 1.975 &Aring;, 1.877 &Aring;, 1.975 &Aring;.  In short, the Ti K edge of
+CaZrTi<sub>2</sub>O<sub>7</sub> is a mess!
+</p>
+
+<p>
+Using a bin size of 0.1 &Aring; and combining the three sites together
+weighted by their fractional populations in the unit cell, we end up
+with 4 distances.  There are 2.5 O atoms at 1.852 &Aring;, 2.5 O atoms
+at 1.984 &Aring;, 0.5 O atoms at 2.050 &Aring;, and 0.5 O atoms at 2.498
+&Aring;.
+</p>
+
+<p>
+Instead of having to parameterize 12 different Ti-O distances, keeping
+track of fractional populations when parameterizing the S&sup2;&#8320; values
+for each path, the aggregate <span class=program>FEFF</span> calculation requires managing
+only 4 paths.  Because the non-integer 
+</p>
+
+<p>
+For a complete discussion of the the aggregate <span class=program>FEFF</span> calculation,
+see
+B. Ravel, <em>J. Synchrotron Radiat.</em>, <strong></strong>
+(2014) p.&nbsp;XX-XX<a href="http://dx.doi.org/10.1107/XXX"> (DOI: 10.1107/XXX)</a></p>
+
+
+<p class=todo>
+<img class=tinyfloatleft border=0 src="../../images/todo.png" alt="To do!">
+Cite paper in JSR.
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2014 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2014 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -175,7 +175,7 @@ S&sup2;&#8320; to be divided out of the summation.
 
 <p>
 Pressing the &ldquo;Compute&rdquo; button will make the
-bond valence sum, reporting its value in the box so labeled.  Any
+bond valence sum, reporting its value in the text box.  Any
 feedback will be written in the larger text control.  For a successful
 calculation, the values of R<sub>ij</sub> and B obtained from the database
 will be displayed.  Any warnings about the path selection will be
@@ -233,6 +233,42 @@ establish the restraint would be more complicated for a more
 disrodered first shell, but those math expressions would follow the
 same pattern as this example.
 </p>
+
+
+<hr class=hide />
+<a name="usingabondvalancesumasanafterparameter">
+
+<h2>  Using a bond valance sum as an after parameter</h2>
+</a>
+<p>
+The last <span class=program>ARTEMIS</span> trick related to evaluations of bond valence sums
+is to use an <a href="../gds.html#parametertypes">after parameter</a> to record the bond valence sum to the
+<a href="../logjournal.html">log
+file</a>.  Using the same <span style="color:#000000; background-color:white">set</span> parameters as in the
+<span style="color:#cd9b1d; background-color:white">restrain</span> example, set the BVS formula instead to an <span style="color:#4a708b; background-color:white">after</span>
+parameter.
+</p>
+
+
+<a href="../../images/bvs_after.png" target=_blank><img class=flexy src="../../images/bvs_after.png" title="
+Defining an after parameter which reports the evaluated bond valence sum
+to the log file.
+" alt="
+Defining an after parameter which reports the evaluated bond valence sum
+to the log file.
+"></a>
+
+<p>
+At the end of the fit, the BVS will be evaluated and reported in the
+log file just below the <span style="color:#a300a3; background-color:white">guess</span>, <span style="color:#008b00; background-color:white">def</span>, and <span style="color:#000000; background-color:white">set</span>
+parameters, like so:
+</p>
+
+
+<pre>
+after parameters:                                                               
+  bvs                =   2.04154071    # [6*exp( (rij-(2.139+delr)) / b)]
+</pre>
 
 </div>
 

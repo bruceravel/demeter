@@ -36,7 +36,8 @@ sub new {
   if (not -e $yaml) {
     copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles.ini'), $yaml);
   };
-  my @list = YAML::Tiny::LoadFile($yaml);
+  my @list;
+  eval {local $SIG{__DIE__} = sub {}; @list = YAML::Tiny::LoadFile($yaml)};
   foreach my $sty (@list) {
     my $style = Demeter::Plot::Style->new();
     foreach my $att (keys %$sty) {
@@ -109,7 +110,7 @@ sub make_style {
 
 sub restore_style {
   my ($this, $event, $app) = @_;
-  my $style = $this->{list}->GetClientData($this->{list}->GetSelection);
+  my $style = $this->{list}->GetClientData(scalar $this->{list}->GetSelection);
   return if not defined $style;
   $app->{main}->{PlotE}->{emin}->SetValue($style->emin);
   $app->{main}->{PlotE}->{emax}->SetValue($style->emax);
@@ -124,7 +125,7 @@ sub restore_style {
 
 sub discard_style {
   my ($this, $event, $app) = @_;
-  my $i = $this->{list}->GetSelection;
+  my $i = scalar $this->{list}->GetSelection;
   my $style = $this->{list}->GetClientData($i);
   my $yesno = Demeter::UI::Wx::VerbDialog->new($this, -1,
 					       "Really discard the \"".$style->name."\" plotting style?",
@@ -171,7 +172,7 @@ Demeter::UI::Athena::Plot::Style - plotting style controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

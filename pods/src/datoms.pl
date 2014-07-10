@@ -46,7 +46,7 @@ use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
 use vars qw($app);
 
-my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, Demeter->co->default("atoms", "rmax"), 0, 1, 0, 0);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
@@ -65,7 +65,10 @@ if ($wx) {
   exit;
 };
 
-my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
+my $file = $ARGV[0] || "atoms.inp";
+die "Atoms terminating: $file does not exist\n" if (not -e $file);
+
+my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $file);
 my $atoms = Demeter::Atoms->new(@call);
 
 my $which = ($feff6) ? "feff6"
@@ -84,6 +87,7 @@ sub wx {
   require Demeter::UI::Atoms;
   Wx::InitAllImageHandlers();
   $app = Demeter::UI::Atoms->new;
+  $app -> {frame} -> {Atoms} -> open_file($ARGV[0]) if $ARGV[0];
   $app -> MainLoop;
 };
 
@@ -95,7 +99,7 @@ atoms - Convert crystallography data to a feff.inp file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

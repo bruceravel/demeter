@@ -35,7 +35,7 @@ const my $EPSILON  => 0.00001;
 
 use vars qw($VERSION);
 use version;
-$VERSION = version->new("0.9.19");
+$VERSION = version->new("0.9.20");
 
 has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal/SpaceGroup.pm"}),
 										   'share',
@@ -55,6 +55,8 @@ has 'group'       => (is => 'rw', isa => 'Str', default => q{},
 					$self->_set_positions;
 				      };
 				    });
+has  $_  => (is => 'rw', isa => 'Bool',  default => 0,)
+  foreach (qw(is_rhomb is_hex is_first is_second));
 has 'given'       => (is => 'rw', isa => 'Str', default => q{});
 has 'number'      => (is => 'rw', isa => 'Int', default => 0);
 has 'full'        => (is => 'rw', isa => 'Str', default => q{});
@@ -65,7 +67,7 @@ has 'class'       => (is => 'rw', isa => 'Str', default => q{});
 has 'setting'     => (is => 'rw', isa => 'Any', default => q{0});
 has 'warning'     => (is => 'rw', isa => 'Str', default => q{});
 
-has 'data'        => (is => 'rw', isa => 'HashRef',  default => sub{ {} });
+has 'data'        => (is => 'rw', isa => 'HashRef',  default => sub { {} }, );
 has 'nicknames'   => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 has 'bravais'     => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 has 'shiftvec'    => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
@@ -102,6 +104,15 @@ sub _canonicalize_group {
     $self->warning(q{Your symbol could not be recognized as a space group symbol!});
     $self->determining_group(0);
     return (q{},0);
+  };
+
+  if ($symbol =~ m{:\s*([12hHrR])\s*\z}) { # manage symbol modifiers
+    my $colon = $1;
+    $symbol =~ s{\s*:\s*[12hHrR]\s*\z}{};
+    $self->is_rhomb(1)  if (lc($colon) eq 'r');
+    $self->is_hex(1)    if (lc($colon) eq 'h');
+    $self->is_first(1)  if ($colon eq '1');
+    $self->is_second(1) if ($colon eq '2');
   };
 
   $symbol = lc($symbol);	# lower case and ...
@@ -332,9 +343,10 @@ sub _set_bravais {
   };
   my $setting = $self->setting;
   $self->bravais( [] );
-  #$self->bravais( $table{r}  ) if (($g eq 'r') and ($setting eq "rhombohedral"));
-  $self->bravais( $table{r}  ) if ($g eq 'r');
+  $self->bravais( $table{r}  ) if (($g eq 'r') and ($setting ne "rhombohedral"));
+  #$self->bravais( $table{r}  ) if ($g eq 'r');
   $self->bravais( $table{$g} ) if ($g =~ m{[abcfi]});
+  #print(join("|", '---', $setting, $g, @{$self->bravais}), $/);
   return $self;
 };
 
@@ -440,15 +452,24 @@ sub _determine_monoclinic {
 };
 
 sub set_rhombohedral {
-  my ($self) = @_;
+  my ($self, $which) = @_;
   my $group = $self->group;
   my $given = $self->given;
   my $class = $self->class;
   return $self if ($class ne "trigonal");
   return $self if ($group !~ m{\Ar});
-  $self->setting('rhombohedral');
+  $self->setting('rhombohedral') if $which eq 'rhombohedral';
   my $rhash = $self->data;
-  $self->positions($$rhash{rhombohedral});
+  #print ">>>",$which, $/;
+  if ($which eq 'rhombohedral') {
+    $self->setting('rhombohedral');
+    $self->positions($$rhash{rhombohedral});
+    $self->_set_bravais;
+  } else {
+    $self->setting(0);
+    $self->positions($$rhash{positions});
+    $self->_set_bravais;
+  };
   return $self;
 };
 
@@ -474,11 +495,6 @@ sub _set_positions {
   $self->positions($list_ref);
   return $self;
 };
-
-
-
-
-
 
 
 
@@ -520,11 +536,11 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crystallography
+Xray::Crystal::SpaceGroup - An object interface to the International Tables of Crystallography
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -547,7 +563,7 @@ shares a name with its accessor method.
 
 =item C<group>
 
-The space group symbol.  This is you point of entry into this class
+The space group symbol.  This is your point of entry into this class
 and this should be the only attribute you ever need to explicitly set.
 When you do so, the space group symbol will be canonicalized and all
 other attributes will be set with data from the sapce groups database.
@@ -630,6 +646,34 @@ for those groups this returns an empty array reference.
 This is an array reference containing array refernces to the symmetry
 positions associated with this space group.  This is the information
 used, along with the Bravais translations, to populate a unit cell.
+
+=item C<is_rhomb>, C<is_hex>, C<is_first>, C<is_second> (boolean)
+
+Occassionally, modifiers to the space group symbol are used to
+explicitly specify the setting of the crystal.
+
+Trigonal space groups with symbols beginning with C<R> (numbers 146,
+148, 155, 160, 161, 166, and 167) can be expressed in rhombohedral or
+hexagonal settings.  While it is possible to figure out the setting
+from the specified parameters -- the rhombohedral setting has a=b=c,
+alpha!=90, and alpha=beta=gamma, while the hexagonal setting has
+a=b!=c, alpha=beta=90, and gamma=120 -- CIF file authors and others
+may modify the space group symbol with C<:R> or C<:H> to indicated the
+setting.
+
+Some orthoganal groups (numbers 48, 50, 59, 68, 70), tetragonal groups
+(85, 86, 88, 125, 126, 129, 130, 133, 134, 137, 138, 141, 142), and
+cubic groups (201, 203, 222, 224, 227, 228) are given in the
+International Tables referenced to two centers of symmetry.  In
+general, it is difficult to know which center is used before expanding
+the unit cell and examining its contents.  To remove this ambiguity
+some CIF file authors and others will modify the space group symbol
+with C<:1> or C<:2> to indicated which center has been used.  Demeter
+assumes the second setting, so if C<:1> is specified, it is likely
+that a shift vector will be needed.
+
+When a space group symbol uses one of these modifiers, the
+corresponding boolean parameter will be set to C<1>.
 
 =back
 

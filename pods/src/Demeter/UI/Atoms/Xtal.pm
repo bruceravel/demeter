@@ -67,12 +67,13 @@ use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
 use Demeter::Constants qw($NUMBER $EPSILON3);
+use Demeter::UI::Wx::Colours;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
-		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX EVT_BUTTON
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER EVT_CHECKBOX EVT_BUTTON EVT_RIGHT_UP EVT_RIGHT_DOWN
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -91,6 +92,7 @@ my %hints = (
 	     shift_x   => "The x-coordinate of the vector for recentering this crystal",
 	     shift_y   => "The y-coordinate of the vector for recentering this crystal",
 	     shift_z   => "The z-coordinate of the vector for recentering this crystal",
+	     shift_suggest => "If your space group has a shift vector in the Int'l Tables, insert it $MDASH Right click to reset",
 	     edge      => "The absorption edge to use in the Feff calculation",
 	     template  => "Choose the output file style and the ipot selection style",
 	     sitesgrid => "Hit return or tab to finish editing a cell in the sites grid",
@@ -111,6 +113,8 @@ my %hints = (
 	     z	       => "The x-coordinate of this unique crystallographic site",
 	     tag       => "A short string identifying this unique crystallographic site",
 	     del       => "Click this button to remove this crystallographic site",
+
+	     addbutton => "Add another row to the site list",
 	    );
 
 my $atoms = Demeter::Atoms->new;
@@ -119,7 +123,7 @@ my $atoms = Demeter::Atoms->new;
 sub new {
   my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
-  $self -> SetBackgroundColour( wxNullColour );
+  $self -> SetBackgroundColour( $wxBGC );
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->{buffered_site} = 0;
@@ -137,16 +141,22 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Export",     $self->icon("output"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{output});
   $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
-  $self->{toolbar} -> AddSeparator;
+  #$self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
+  #$self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
-  my $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
+
+  my $agg;
+  if ($self->{parent}->{component}) {
+    $agg = $self->{toolbar} -> AddTool(-1, "Aggregate",  $self->icon("aggregate"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{aggregate} );
+  }
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
-  $self->{aggid} = $agg->GetId;
-  $self->{toolbar}->EnableTool($self->{aggid},0);
+  if ($self->{parent}->{component}) {
+    $self->{aggid} = $agg->GetId;
+    $self->{toolbar}->EnableTool($self->{aggid},0);
+  };
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
@@ -198,14 +208,15 @@ sub new {
   $self->{edge}->SetSelection(0);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
-  $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
+  #$hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  #$spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
   $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   my $n = 0;
   my ($fv, $is) = (Demeter->co->default('atoms', 'feff_version'), Demeter->co->default('atoms', 'ipot_style'));
+  $fv = 6;			# enforce this for now, feff85exafs is coming soon....
   if ($fv == 6) {
     Demeter->mo->template_feff('feff6');
     if ($is == 'elements') {
@@ -228,7 +239,8 @@ sub new {
   $self->{template}->SetSelection($n);
   EVT_CHOICE($self, $self->{template}, \&OnTemplate);
 
-  my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $atoms->co->default("atoms", "ipot_style");
+  my $which = ($atoms->co->default("atoms", "ipot_style") eq 'elements') ? 'elem' : $atoms->co->default("atoms", "ipot_style");
+  my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $which;
   $self->{template}->SetSelection(firstidx {$_ eq $initial } @{ $self->templates });
 
 
@@ -243,7 +255,24 @@ sub new {
   $self->{$_}->Enable(0) foreach qw(scf scflab rscf);
   EVT_CHECKBOX($self, $self->{scf}, \&OnCheckBox);
 
-  $spacebox->Add(1,1,1);
+  if ($self->{parent}->{component}) {
+    $self->{aggbox}       = Wx::StaticBox->new($self, -1, 'Aggregate degeneracy margins', wxDefaultPosition, wxDefaultSize);
+    $self->{aggboxsizer}  = Wx::StaticBoxSizer->new( $self->{aggbox}, wxVERTICAL );
+    $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+    $self->{aggboxsizer}->Add($hh, 0, wxGROW|wxALL, 0);
+    $self->{aggfuzzlab}     = Wx::StaticText->new($self, -1, "Margin:");
+    $self->{aggfuzz}        = Wx::TextCtrl->new($self, -1, Demeter->co->default(qw(pathfinder fuzz)), wxDefaultPosition, [30,-1]);
+    $self->{aggbetafuzzlab} = Wx::StaticText->new($self, -1, "Beta:");
+    $self->{aggbetafuzz}    = Wx::TextCtrl->new($self, -1, Demeter->co->default(qw(pathfinder betafuzz)), wxDefaultPosition, [30,-1]);
+    $hh->Add($self->{aggfuzzlab},     0, wxGROW|wxALL, 5);
+    $hh->Add($self->{aggfuzz},        1, wxGROW|wxALL, 2);
+    $hh->Add($self->{aggbetafuzzlab}, 0, wxGROW|wxALL, 5);
+    $hh->Add($self->{aggbetafuzz},    1, wxGROW|wxALL, 2);
+    $spacebox->Add($self->{aggboxsizer}, 0, wxEXPAND|wxALL, 1);
+    $self->{$_}->Enable(0) foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+  };
+
+  #$spacebox->Add(1,1,1);
 
   $self->{addbutton} = Wx::Button->new($self, -1, "Add a site");
   $spacebox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxALIGN_BOTTOM, 0);
@@ -326,27 +355,21 @@ sub new {
 
   ## -------- shift constant controls
   $self->{shiftbox}       = Wx::StaticBox->new($self, -1, 'Shift vector', wxDefaultPosition, wxDefaultSize);
-  $self->{shiftboxsizer}  = Wx::StaticBoxSizer->new( $self->{shiftbox}, wxVERTICAL );
-
-  $tsz = Wx::GridBagSizer->new( 6, 10 );
-
+  $self->{shiftboxsizer}  = Wx::StaticBoxSizer->new( $self->{shiftbox}, wxHORIZONTAL );
   $width = 70;
-
-  #$label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
-  #$tsz -> Add($label,Wx::GBPosition->new(0,0));
   $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,0));
   $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,1));
   $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,2));
+  $self->{shift_suggest} = Wx::Button->new($self, -1, 'insert');
+  $self->{shiftboxsizer} -> Add($self->{$_}, 0, wxALL, 5) foreach qw(shift_x shift_y shift_z shift_suggest);
+  EVT_BUTTON($self, $self->{shift_suggest}, sub{$self->InsertShiftvec(@_)});
+  EVT_RIGHT_DOWN($self->{shift_suggest}, sub{$self->InsertShiftvec(@_)});
 
-  $self->{shiftboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 0);
+  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL);
   ## -------- end of R constant controls
 
-  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
-				  shift_x shift_y shift_z edge template));
+  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath addbutton
+				  shift_x shift_y shift_z shift_suggest edge template));
 
   foreach my $x (qw(a b c alpha beta gamma name space rmax rpath shift_x shift_y shift_z edge template)) {
     EVT_TEXT_ENTER($self, $self->{$x}, sub{1});
@@ -379,8 +402,8 @@ sub icon {
 
 sub templates {
   my ($self) = @_;
-  return ['Feff6 - elements', 'Feff6 - tags', 'Feff6 - sites',
-	  'Feff8 - elements', 'Feff8 - tags', 'Feff8 - sites',
+  return ['Feff6 - elem', 'Feff6 - tags', 'Feff6 - sites',
+	  #'Feff8 - elem', 'Feff8 - tags', 'Feff8 - sites',
 	 ];
 };
 
@@ -388,7 +411,9 @@ sub set_hint {
   my ($self, $w) = @_;
   (my $ww = $w) =~ s{\d+\z}{};
   EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_;
-				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!})});
+				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!});
+				    $event->Skip;
+				  });
   EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnWidgetLeave});
 };
 
@@ -442,7 +467,7 @@ sub OnCheckBox {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file write_output clear_all noop document noop run_atoms aggregate);
+  my @callbacks = qw(open_file save_file write_output clear_all noop run_atoms aggregate); #  document noop
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -475,13 +500,18 @@ sub OnGridClick {
   };
   $self->SetCellValue($row, 0, 1);
   my $nsites = true {$_ eq $self->GetCellValue($row, 1)} @el;
-  if ($nsites > 1) {
-    ## enable aggregate Feff calculation, currently soft-disabled for 0.9.19
-    ## change the call to co->default to 1 once the paper is published
-    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},Demeter->co->default('artemis','show_aggregate'));
-  } else {
-    ## disable aggregate Feff calculation
-    $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+  if ($self->GetParent->{parent}->{component}) {
+    if ($nsites > 1) {
+      ## enable aggregate Feff calculation, currently soft-disabled for 0.9.19
+      ## change the call to co->default to 1 once the paper is published
+      $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},Demeter->co->default('artemis','show_aggregate'));
+      $self->GetParent->{$_}->Enable(Demeter->co->default('artemis','show_aggregate'))
+	foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+    } else {
+      ## disable aggregate Feff calculation
+      $self->GetParent->{toolbar}->EnableTool($self->GetParent->{aggid},0);
+      $self->GetParent->{$_}->Enable(0) foreach qw(aggbox aggfuzz aggfuzzlab aggbetafuzz aggbetafuzzlab);
+    };
   };
 };
 
@@ -532,6 +562,35 @@ sub OnGridMenu {
   };
 };
 
+sub InsertShiftvec {
+  #print join("|", @_), $/;
+  my ($self, $toss, $event) = @_;
+
+  my $this = $self->{space}->GetValue || q{};
+  if ((not $this) and ($self->{used})) {
+    $self->{parent}->status("You have not specified a space group.");
+    return;
+  };
+  $atoms->space($this);
+  $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
+
+  if (ref($event) =~ m{Mouse}) {
+    $self->{shift_x}->SetValue(0);
+    $self->{shift_y}->SetValue(0);
+    $self->{shift_z}->SetValue(0);
+    return;
+  };
+
+  if (not @{$atoms->cell->group->shiftvec}) {
+    $self->{parent}->status("The space group $this does not have a tabulated shift vector");
+    return;
+  };
+
+  $self->{shift_x}->SetValue($atoms->cell->group->shiftvec->[0]);
+  $self->{shift_y}->SetValue($atoms->cell->group->shiftvec->[1]);
+  $self->{shift_z}->SetValue($atoms->cell->group->shiftvec->[2]);
+};
+
 sub AddSite {
   my ($toolbar, $event, $self) = @_;
   $self->{sitesgrid} -> InsertRows($self->{sitesgrid}->GetNumberRows, 1, 1);
@@ -556,6 +615,11 @@ sub open_file {
     };
     $file = $fd->GetPath;
   };
+  if (not ($atoms->is_atoms($file) or $atoms->is_cif($file))) {
+    warn "$file is not an atoms.inp or CIF file\n";
+    return 0;
+  };
+
   $self->clear_all(1);
 
   my $is_cif = 0;
@@ -589,6 +653,16 @@ sub open_file {
     $message->ShowModal;
     return 0;
   };
+
+  $atoms -> cell -> space_group($atoms->space);
+  foreach my $key (qw(a b c alpha beta gamma)) {
+    my $val = $atoms->$key;
+    $atoms -> cell->$key($val) if $val;
+  };
+  ## Group: $cell->get(qw(given_group space_group class setting))
+  ## Bravais: $cell->get('bravais')
+  $atoms -> cell -> shiftvec($atoms->shiftvec);
+  $atoms->cell->set_rhombohedral;
   my $name = basename($file, '.cif', '.inp');
   $atoms -> name($name) if not $atoms->name;
   $self->{name}->SetValue($name);
@@ -610,10 +684,10 @@ sub open_file {
   foreach my $lc (qw(space rmax rpath)) {
     $self->{$lc}->SetValue($atoms->$lc);
   };
-  my @shift = @{ $atoms->shift };
-  $self->{shift_x}->SetValue($shift[0]||0);
-  $self->{shift_y}->SetValue($shift[1]||0);
-  $self->{shift_z}->SetValue($shift[2]||0);
+  my @shiftvec = @{ $atoms->shiftvec };
+  $self->{shift_x}->SetValue($shiftvec[0]||0);
+  $self->{shift_y}->SetValue($shiftvec[1]||0);
+  $self->{shift_z}->SetValue($shiftvec[2]||0);
 
   my $i = 0;
   my $corerow = 0;
@@ -643,6 +717,11 @@ sub open_file {
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
   $ie = 0 if ($ie == -1);
   $self->{edge}->SetSelection($ie);
+
+  if ($atoms->cell->group->is_first) {
+    my $vec = sprintf("(%s, %s, %s)", @{$atoms->cell->group->shiftvec});
+    Wx::MessageDialog->new($self, "This space group symbol identifies the first standard setting.  You may need to use a shift vector of \n\n\t$vec\n\nIf a second dialog appears warning you of multiply occupied positions, you should certainly try using that shift vector.", "Shift vector", wxOK)->ShowModal;
+  };
 
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
@@ -694,16 +773,17 @@ sub get_crystal_data {
     };
   };
   $atoms->do_scf($self->{scf}->GetValue);
-  foreach my $param (qw(alpha beta gamma)) {
-    $self->{$param}->SetValue($self->verify_angle($param));
-    $atoms->$param($self->{$param}->GetValue);
-  };
+  #foreach my $param (qw(alpha beta gamma)) {
+  #  $self->{$param}->SetValue($self->verify_angle($param));
+  #  $atoms->$param($self->{$param}->GetValue);
+  #};
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
   @shift = map { $self->number($_) } @shift;
   $problems .= "\"" . $self->{shift_x}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[0] == -9999);
   $problems .= "\"" . $self->{shift_y}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[1] == -9999);
   $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
+  $atoms->shiftvec(\@shift);
 
   my $core_selected = 0;
   my $first_valid_row = -1;
@@ -756,7 +836,7 @@ sub get_crystal_data {
   };
   return 0 if not $seems_ok;
 
-  $atoms->shift(\@shift);
+  $atoms->shiftvec(\@shift);
   $atoms->populate;
   $this = (qw(K L1 L2 L3))[$self->{edge}->GetCurrentSelection] || 'K';
   $atoms->edge($this);
@@ -794,9 +874,11 @@ sub verify_angle {
   my ($self, $angle) = @_;
   my $cell    = $atoms->cell;
   my $class   = $cell->group->class;
+  my $group   = $cell->group->group;
   my $setting = $cell->group->setting;
+#  Demeter->pjoin($class, $group,$setting);
  SWITCH: {
-    (($class eq 'hexagonal') and ($setting eq 'rhombohedral')) and do {
+    (($class eq 'trigonal') and ($setting eq 'rhombohedral')) and do {
       return $atoms->alpha;
       last SWITCH;
     };
@@ -805,7 +887,7 @@ sub verify_angle {
       return 120 if ($angle eq 'gamma');
       last SWITCH;
     };
-    ($class eq 'trigonal') and do {
+    (($class eq 'trigonal') and ($setting ne 'rhombohedral')) and do { # ($group !~ m{\Ar}i)
       return 90  if ($angle =~ m{(?:alpha|beta)});
       return 120 if ($angle eq 'gamma');
       last SWITCH;
@@ -889,6 +971,7 @@ sub run_atoms {
   my $seems_ok = $self->get_crystal_data;
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
   my ($template, $style) = split(/ - /, $this);
+  $style = 'elements' if $style eq 'elem';
   $atoms -> ipot_style($style);
   if ($seems_ok) {
     my $busy    = Wx::BusyCursor->new();
@@ -935,8 +1018,18 @@ sub aggregate {
   #my $message = Wx::MessageDialog->new($self, $text, "Perform aggregate Feff calculation?", wxYES_NO);
   #$message->ShowModal;
   if ($message->ShowModal == wxID_NO) {
-    $self->{parent}->status("Not performing aggrgate Feff calculation.");
+    $self->{parent}->status("Not performing aggregate Feff calculation.");
     return;
+  };
+
+  my $ea = $self->edge_absorber;
+  if ($ea) {
+    my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
+    if ($yesno->ShowModal == wxID_NO) {
+      $self->{parent}->status("Aborting calculation.");
+      undef $busy;
+      return;
+    };
   };
 
   ## 0.5. Write an atoms.inp and pass it along to the parts
@@ -954,6 +1047,8 @@ sub aggregate {
   my $workspace = File::Spec->catfile(dirname($ws), $bigfeff->group);
   $bigfeff -> workspace($workspace);
   $bigfeff -> make_workspace;
+  $bigfeff->fuzz($self->{aggfuzz}->GetValue);
+  $bigfeff->betafuzz($self->{aggbetafuzz}->GetValue);
 
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->{parent}->{Feff}->now("Aggregate Feff calculation beginning at ", $bigfeff));
@@ -983,9 +1078,15 @@ sub aggregate {
   $self->{parent}->{Feff}->{toolbar}->Enable(0);
   $self->{parent}->{Feff}->{name}->Enable(0);
   $self->{parent}->{Feff}->{feff}->Enable(0);
+  $self->{parent}->{Feff}->{margin}->SetValue($bigfeff->fuzz);
+  $self->{parent}->{Feff}->{betafuzz}->SetValue($bigfeff->betafuzz);
+  $self->{parent}->{Feff}->{margin}->Enable(0);
+  $self->{parent}->{Feff}->{betafuzz}->Enable(0);
 
   ## 5. Labels & Fill Paths tab
-  $bigfeff->name(q{agg-}.$self->{name}->GetValue);
+  my $name = $self->{name}->GetValue;
+  $name = q{agg-}.$name if ($name !~ m{\Aagg-});
+  $bigfeff->name($name);
   my $yaml = File::Spec->catfile($bigfeff->workspace, $bigfeff->group.".yaml");
   $bigfeff->freeze($yaml);
 
@@ -1071,7 +1172,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

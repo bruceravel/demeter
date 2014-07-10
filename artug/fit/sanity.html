@@ -104,7 +104,8 @@ Check that none of these typos &ndash;
 
 <li><p>
 Check that all function names used in math expression (i.e. a word
-followed by parentheses) are valid functions in <span class=program>IFEFFIT</span>.
+followed by parentheses) are valid functions in <span class=program>IFEFFIT</span> or
+<span class=program>LARCH</span> (as appropriate).
 </p></li>
 
 <li><p>
@@ -139,13 +140,16 @@ by R<sub>max</sub>+0.2 plus the val<span class=pref>&diams;Warnings&nbsp;&rarr;&
 <li><p>
 Check that various compiled-in limits (e.g. maximum number of paths or
 maximum number of set parameters) in <span class=program>IFEFFIT</span> are not exceeded.
+This check is ignored when using <span class=program>LARCH</span>.
 </p></li>
 
 <li><p>
 Check that parameters do not have the same names as <span class=program>IFEFFIT</span>
 program variables.  For example, things like
 <tt>pi</tt> or <tt>dr1</tt>
-are not allowed since <span class=program>IFEFFIT</span> uses those strings for other purposes.
+are not allowed since <span class=program>IFEFFIT</span> uses those strings for other
+purposes.  Although not strictly necessary, this check is enforced by
+default when using <span class=program>LARCH</span>.
 </p></li>
 
 <li><p>

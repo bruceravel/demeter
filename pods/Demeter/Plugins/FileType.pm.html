@@ -74,7 +74,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.19.</p>
+<p>This documentation refers to Demeter version 0.9.20.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -133,10 +133,11 @@ methods of those roles.</p>
 
 <h2 id="Plugins_shipped_with_Demeter">Plugins shipped with Demeter</h2>
 
-<p>The following plugins come with Demeter.  This is not a complete list
-of plugins.  Please note that these were written using example data
-files that Bruce had available to him.  He has not himself used all of
-these beamlines.  Your mileage may vary with your own data.</p>
+<p>The following are some of the plugins that come with Demeter.  This is
+not a complete list of plugins.  Please note that these were written
+using example data files that Bruce had available to him.  He has not
+himself used all of these beamlines.  Your mileage may vary with your
+own data.</p>
 
 <dl>
 	<dt><code>X10C</code></dt>
@@ -235,8 +236,9 @@ following:</p>
 <pre>  package Demeter::Plugins::X15B;
   use Moose;
   extends 'Demeter::Plugins::FileType';
-  has '+is_binary' =&gt; (default =&gt; 1);
+  has '+is_binary'   =&gt; (default =&gt; 1);
   has '+description' =&gt; (default =&gt; &quot;Read binary files from NSLS beamline X15B.&quot;);
+  has '+version'     =&gt; (default =&gt; 0.1);
 
 </pre><p>The final two executable lines of the plugin must be the following:</p>
 
@@ -269,7 +271,8 @@ from &quot;.</p></dd>
 	<dt><code>version</code></dt>
 		<dd><p>The version number of the plugin.</p></dd>
 	<dt><code>parent</code></dt>
-		<dd><p>Used by a GUI...</p></dd>
+		<dd><p>A placeholder which may be needed by a GUI.  Currently not used by any
+plugin.</p></dd>
 	<dt><code>file</code></dt>
 		<dd><p>This takes the name of the original data file and is the only
 attribute typically supplied by the caller.</p></dd>
@@ -422,7 +425,7 @@ placing them in ...</p>
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <ul>
-	<li>Do I need the <code>parent</code> and <code>hash</code> attributes?</li>
+	<li>Do I need the <code>parent</code> attribute?</li>
 	<li>None of the plugins have enough error testing.  It is certainly
 possible that <code>is</code> could return true but the rest of the file is
 malformed compared to the expectations of <code>fix</code>.</li>

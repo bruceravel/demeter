@@ -99,8 +99,9 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
-    my $yaml = YAML::Tiny::LoadFile($old_cwd);
-    chdir($yaml->{cwd});
+    my $yaml;
+    eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($old_cwd)};
+    chdir($yaml->{cwd}) if (not $@);
   };
 
   ## -------- create a new frame and set icon
@@ -126,6 +127,7 @@ sub OnInit {
 
   ## -------- the business part of the window
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $app->{hbox} = $hbox;
   #print DateTime->now,  "  Making main window ...\n";
   $app -> main_window($hbox);
   #print DateTime->now,  "  Making side bar ...\n";
@@ -178,23 +180,24 @@ sub OnInit {
   $app->{main} -> Refresh;
   $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
   $app->{main} ->{return}->Hide;
 
   ## ----- randomize the order of tips
-  my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
-  open(my $T, '<', $tip_file);
-  my @tips = <$T>;
-  close $T;
-  @tips = shuffle(@tips);
-  my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
-  open(my $R, '>', $tip_temp);
-  print($R  $_) foreach @tips;
-  close $R;
-  ##my $i = int(count_lines($tip_file) * random_uniform);
-  $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
-  $app->show_tip if Demeter->co->default('athena', 'tips');
-  unlink $tip_temp;
+  # my $tip_file = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'athena.hints');
+  # open(my $T, '<', $tip_file);
+  # my @tips = <$T>;
+  # close $T;
+  # @tips = shuffle(@tips);
+  # my $tip_temp = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8));
+  # open(my $R, '>', $tip_temp);
+  # print($R  $_) foreach @tips;
+  # close $R;
+  # ##my $i = int(count_lines($tip_file) * random_uniform);
+  # $app->{tip_provider} = Wx::CreateFileTipProvider( $tip_temp, 0 );
+  # $app->show_tip if Demeter->co->default('athena', 'tips');
+  # unlink $tip_temp;
+
   1;
 };
 
@@ -213,8 +216,9 @@ sub process_argv {
     #unlink File::Spec->catfile(Demeter->stash_folder, $AUTOSAVE_FILE);
     my $old_cwd = File::Spec->catfile(Demeter->dot_folder, "athena.cwd");
     if (-r $old_cwd) {
-      my $yaml = YAML::Tiny::LoadFile($old_cwd);
-      chdir($yaml->{cwd});
+      my $yaml;
+      eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($old_cwd)};
+      chdir($yaml->{cwd}) if (not $@);
     };
     return;
   };
@@ -321,13 +325,13 @@ sub is_empty {
 
 sub current_index {
   my ($app) = @_;
-  return $app->{main}->{list}->GetSelection;
+  return scalar $app->{main}->{list}->GetSelection;
 };
 sub current_data {
   my ($app) = @_;
   return Demeter->dd if not defined $app->{main}->{list};
   return Demeter->dd if not $app->{main}->{list}->GetCount;
-  return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
+  return $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
 };
 
 const my $REPORT_ALL		=> Wx::NewId();
@@ -369,6 +373,7 @@ const my $MARKED_QRE		=> Wx::NewId();
 const my $MARKED_QIM		=> Wx::NewId();
 const my $MARKED_QPHA		=> Wx::NewId();
 
+const my $REFRESH_PROJECT	=> Wx::NewId();
 const my $CLEAR_PROJECT		=> Wx::NewId();
 
 const my $RENAME		=> Wx::NewId();
@@ -419,6 +424,7 @@ const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
 const my $CURSOR		=> Wx::NewId();
 const my $PLOT_QUAD		=> Wx::NewId();
+const my $PLOT_BIQUAD		=> Wx::NewId();
 const my $PLOT_ED		=> Wx::NewId();
 const my $PLOT_IOSIG		=> Wx::NewId();
 const my $PLOT_K123		=> Wx::NewId();
@@ -541,6 +547,7 @@ sub menubar {
   $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the marked groups, each as its own column data file" );
   $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSeparator;
+  $filemenu->Append($REFRESH_PROJECT, 'Refresh project', 'Refresh project by forcing background removal on all groups');
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close\tCtrl+w" );
@@ -665,6 +672,7 @@ sub menubar {
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
+  $markedplotmenu ->Append($PLOT_BIQUAD,     "Bi-Quad plot",          "Make a quad plot from TWO marked groups" );
   $markedplotmenu ->Append($PLOT_E00,        "Plot with E0 at E=0",   "Plot each of the marked groups with its edge energy at E=0" );
   $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",               "Plot I0 for each of the marked groups" );
   $markedplotmenu ->Append($PLOT_NORMSCALED, "Plot norm(E) scaled by edge step", "Plot normalized data for all marked groups, scaled by the size of the edge step" );
@@ -791,6 +799,17 @@ sub OnMenuClick {
     };
     ($id == wxID_ABOUT) and do {
       &on_about;
+      last SWITCH;
+    };
+    ($id == $REFRESH_PROJECT) and do {
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	my $d = $app->{main}->{list}->GetIndexedData($i);
+	if ($d->datatype eq 'chi') {
+	  $d->update_fft(1);
+	} else {
+	  $d->update_bkg(1);
+	};
+      };
       last SWITCH;
     };
     ($id == $CLEAR_PROJECT) and do {
@@ -1200,6 +1219,12 @@ sub OnMenuClick {
       $app->quadplot($data);
       last SWITCH;
     };
+
+    ($id == $PLOT_BIQUAD) and do {
+      $app->biquadplot;
+      last SWITCH;
+    };
+
     ($id == $PLOT_ED) and do {
       my $data = $app->current_data;
       if ($app->current_data->datatype ne 'xmu') {
@@ -1604,10 +1629,13 @@ sub main_window {
   $app->{main}->{views}->InsertPage($dashes, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
-  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
-								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)
-								     });
-  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
+  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views},
+			      sub{$app->OnGroupSelect(0,0,0);
+				  $app->{main}->{return}->Show($app->{main}->{views}->GetSelection);
+				  $app->{main}->SetSizerAndFit($app->{hbox}); # the return button does not get shown
+				});                                           # on windows without this twiddle
+  EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views},
+			       sub{$app->view_changing(@_)});
 
 
   return $app;
@@ -1652,10 +1680,12 @@ sub side_bar {
 			  k	     => 'plot k123',
 			  R	     => 'plot R123',
 			  kq	     => 'quad plot',
+			  q	     => 'biquad plot',
 			  i0	     => 'plot I0 for all marked groups',
 			  e00	     => 'plot marked groups with E0 at 0',
 			  norm	     => 'plot norm(E) scaled by edge step',
 			 );
+
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
@@ -1679,8 +1709,12 @@ sub side_bar {
     $markedbox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 0)});
     EVT_RIGHT_DOWN($app->{main}->{$key}, sub{$app->plot(@_, $which, 'marked', 1)});
-    $mouseover_text = "Plot the marked groups in $which";
-    $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')} if ($which eq 'E');
+    $mouseover_text = "Plot the marked groups in $which   ";
+    if ($which eq 'E') {
+      $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{Demeter->co->default('athena', 'right_marked_e')};
+    } elsif ($which eq 'q') {
+      $mouseover_text .= $MDASH . '   Right click: ' . $right_click_hint{q};
+    };
     $app->mouseover($app->{main}->{$key}, $mouseover_text);
   };
 
@@ -1706,7 +1740,7 @@ sub side_bar {
 					"Demeter::UI::Athena::Plot::$m"->label,
 					($m eq 'PlotE'));
   };
-  $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 2);
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{plottabs}, sub{$app->OnPlotOptions(@_)});
 
   $app->{main}->{showoptions} = Wx::Button->new($toolpanel, -1, 'Restore plot options');
@@ -1782,22 +1816,22 @@ sub OnMark {
 
 sub focus_up {
   my ($app) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
   return if ($i == 0);
   $app->{main}->{list}->SetSelection($i-1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 };
 sub focus_down {
   my ($app) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
   return if ($i == $app->{main}->{list}->GetCount);
   $app->{main}->{list}->SetSelection($i+1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 };
 
 sub move_group {
   my ($app, $dir) = @_;
-  my $i = $app->{main}->{list}->GetSelection;
+  my $i = scalar $app->{main}->{list}->GetSelection;
 
   return if (($dir eq 'up')   and ($i == 0));
   return if (($dir eq 'down') and ($i == $app->{main}->{list}->GetCount-1));
@@ -1814,7 +1848,7 @@ sub move_group {
   $app->{main}->{list} -> InsertData($from_label, $to, $from_object);
   $app->{main}->{list} -> Check($to, $from_checked);
   $app->{main}->{list} -> SetSelection($to);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
 
   $app->modified(1);
   $app->{main}->status("Moved $from_label $dir");
@@ -1829,13 +1863,13 @@ sub OnGroupSelect {
     $event->Skip(0);
     return;
   };
-  my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
+  my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : scalar $app->{main}->{list}->GetSelection;
 
   my $was = ((not defined($app->{selected})) or ($app->{selected} == -1)) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
-  my $view = $app->get_view($app->{main}->{views}->GetSelection);
+  my $view = $app->get_view(scalar $app->{main}->{views}->GetSelection);
   $app->make_page($view) if (not exists $app->{main}->{$view});
   my $showing = $app->{main}->{$view};
   if ($showing =~ m{XDI}) {
@@ -1845,7 +1879,7 @@ sub OnGroupSelect {
   if ($is_index != -1) {
     $showing->push_values($is, $plot);
     $showing->mode($is, 1, 0);
-    $app->{selected} = $app->{main}->{list}->GetSelection;
+    $app->{selected} = scalar $app->{main}->{list}->GetSelection;
   };
   $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
@@ -2028,7 +2062,7 @@ sub plot {
     } elsif ((lc($space) eq 'r') and ($how eq 'marked')) {
       $continue = 1;
     } elsif ((lc($space) eq 'q') and ($how eq 'marked')) {
-      $continue = 1;
+      OnMenuClick($app->{main}, $PLOT_BIQUAD, $app);
     ## pass through if no special plot
     };
     if (not $continue) {
@@ -2278,7 +2312,7 @@ sub postplot {
     $data->bkg_fixstep($is_fixed);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
     $app->{plotting} = 1;
-    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+    $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
     $app->{modified} = $was;
   };
   $data->bkg_fixstep($is_fixed);
@@ -2335,6 +2369,41 @@ sub quadplot {
     $app->plot(q{}, q{}, 'E', 'single')
   };
 };
+
+sub biquadplot {
+  my ($app) = @_;
+
+  my @marked = ();
+  foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
+    push(@marked, $app->{main}->{list}->GetIndexedData($j))
+      if $app->{main}->{list}->IsChecked($j);
+  };
+  if ($#marked != 1) {
+    $app->{main}->status("You must mark two and only two datagroups to make a bi-quad plot.", 'alert');
+    return;
+  };
+  if ($marked[0]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[0]->name . " is not a $MU(E) datagroup", 'alert');
+    return;
+  };
+  if ($marked[1]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[1]->name . " is not a $MU(E) datagroup", 'alert');
+    return;
+  };
+
+  foreach my $sp (qw(E K R Q)) {
+    $app->{main}->{'Plot'.$sp}->pull_marked_values;
+  };
+
+  my $fontsize = $marked[0]->co->default("gnuplot", "fontsize");
+  $marked[0]->co->set_default("gnuplot", "fontsize", 8);
+  $marked[0]->biquadplot($marked[1]);
+  $app->{main}->status(sprintf("Made a bi-quad plot using %s and %s", $marked[0]->name, $marked[1]->name));
+
+  $marked[0]->co->set_default("gnuplot", "fontsize", $fontsize);
+  $app->{lastplot} = ['quad', 'single'];
+};
+
 
 sub plot_e00 {
   my ($app) = @_;
@@ -2454,7 +2523,7 @@ sub mark {
       };
     };
   } elsif ($how eq 'toggle') {
-    $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
+    $clb->Check(scalar $clb->GetSelection, not $clb->IsChecked(scalar $clb->GetSelection));
     $clb->GetIndexedData($::app->current_index)->marked($clb->IsChecked($::app->current_index));
     return;
 
@@ -2624,7 +2693,7 @@ sub merge {
   };
 
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-$n);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect(q{}, scalar $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-$n, 1);
   $merged->marked(1);
@@ -2804,9 +2873,9 @@ message, but not push it into the buffer.
 =cut
 
 package Wx::Frame;
-use Wx qw(wxNullColour);
+use Demeter::UI::Wx::Colours;
 #use Demeter::UI::Wx::OverwritePrompt;
-my $normal = wxNullColour;
+my $normal = $wxBGC;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $alert  = Wx::Colour->new("#FCDD9F");
 my $error  = Wx::Colour->new("#FD7E6F");
@@ -2913,7 +2982,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

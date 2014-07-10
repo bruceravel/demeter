@@ -23,6 +23,7 @@ use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU E
 
 use Demeter::UI::Artemis::Close qw(on_close);
 use Demeter::UI::Wx::SpecialCharacters qw($MDASH);
+use Demeter::UI::Wx::Colours;
 
 my $icon_dimension = 30;
 
@@ -44,10 +45,10 @@ sub new {
 				 wxDefaultPosition,
 				 [560,680],
 			       );
-  $self -> SetBackgroundColour( wxNullColour );
+  $self -> SetBackgroundColour( $wxBGC );
 
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
-  $nb -> SetBackgroundColour( wxNullColour );
+  $nb -> SetBackgroundColour( $wxBGC );
   $self->{base} = $base;
   $self->{notebook} = $nb;
   $self->{feffobject} = $feffobject;
@@ -61,9 +62,10 @@ sub new {
   if ($component) {
     $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
     EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-    $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
-    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, " Rename",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, "Discard",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
     $self->{toolbar} -> AddSeparator;
+    $self->{toolbar} -> AddTool(-1, "Feff in Demeter", $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Open the Demeter's Feff document page in a browser" );
     $self->{toolbar} -> AddTool(-1, "Feff doc", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Open Feff's on-line document in a browser" );
     $self->{toolbar} -> Realize;
     $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
@@ -167,7 +169,7 @@ sub make_page {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   my $position = $toolbar->GetToolPos($event->GetId);
-  my @callbacks = qw(on_rename on_discard noop on_about);
+  my @callbacks = qw(on_rename on_discard noop on_doc on_about);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -257,6 +259,10 @@ sub on_discard {
   $Demeter::UI::Artemis::frames{main}->status("Discarded Feff calculation.  Note that unused GDS parameters may remain.");
 };
 
+sub on_doc {
+  $::app->document('feff');
+};
+
 sub on_about {
   my ($self) = @_;
   my $url = Demeter->feffdoc;
@@ -304,12 +310,14 @@ const my $DOC     => Wx::NewId();
 const my $CONFIG  => Wx::NewId();
 
 sub OnInit {
+  my ($self) = @_;
   Demeter -> mo -> ui('Wx');
   Demeter -> mo -> identity('Atoms');
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;
+  $self->{frame} = $frame;
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms_nottransparent.png");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frame -> SetIcon($icon);
@@ -410,7 +418,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

@@ -36,14 +36,15 @@ use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON E
 use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
-use Demeter::UI::Wx::Printing;
+##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [History]",
 				wxDefaultPosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;
@@ -134,15 +135,15 @@ sub new {
   EVT_BUTTON($this, $this->{save}, sub{$this->savelog});
   $this-> mouseover('save', "Save this fitting log to a file.");
 
-  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview});
-  $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'log')});
-  $this-> mouseover('preview', "Preview this fitting log.");
+  # $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview});
+  # $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'log')});
+  # $this-> mouseover('preview', "Preview this fitting log.");
 
-  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log});
-  $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'log')});
-  $this-> mouseover('print', "Print this fitting log.");
+  # $this->{print} = Wx::Button->new($logpage, -1, q{Print this log});
+  # $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'log')});
+  # $this-> mouseover('print', "Print this fitting log.");
 
 
   ## -------- controls for writing reports on fits
@@ -197,15 +198,15 @@ sub new {
   EVT_BUTTON($this, $this->{savereport}, sub{$this->savereport});
   $this-> mouseover('savereport', "Save this report to a file.");
 
-  $this->{previewreport} = Wx::Button->new($reportpage, wxID_PREVIEW, q{});
-  $controls->Add($this->{previewreport}, 1, wxALL, 5);
-  EVT_BUTTON($this, $this->{previewreport}, sub{on_preview(@_, 'report')});
-  $this-> mouseover('previewreport', "Preview report");
+  # $this->{previewreport} = Wx::Button->new($reportpage, wxID_PREVIEW, q{});
+  # $controls->Add($this->{previewreport}, 1, wxALL, 5);
+  # EVT_BUTTON($this, $this->{previewreport}, sub{on_preview(@_, 'report')});
+  # $this-> mouseover('previewreport', "Preview report");
 
-  $this->{printreport} = Wx::Button->new($reportpage, wxID_PRINT, q{});
-  $controls->Add($this->{printreport}, 1, wxALL, 5);
-  EVT_BUTTON($this, $this->{printreport}, sub{on_print(@_, 'report')});
-  $this-> mouseover('printreport', "Print report");
+  # $this->{printreport} = Wx::Button->new($reportpage, wxID_PRINT, q{});
+  # $controls->Add($this->{printreport}, 1, wxALL, 5);
+  # EVT_BUTTON($this, $this->{printreport}, sub{on_print(@_, 'report')});
+  # $this-> mouseover('printreport', "Print report");
 
   ## -------- plotting tool page
   ##$plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "The history plotting tool is currently broken.\nIt currently fails to import old fits from project files.  Drat!"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -526,7 +527,8 @@ sub discard {
   rmtree($folder);
 
   my $orderfile = $Demeter::UI::Artemis::frames{main}->{order_file};
-  my %order = YAML::Tiny::LoadFile($orderfile);
+  my %order = ();
+  eval {local $SIG{__DIE__} = sub {}; %order = YAML::Tiny::LoadFile($orderfile)};
   foreach my $k (keys %{$order{order}}) {
     delete $order{order}->{$k} if ($order{order}->{$k} eq $str);
   };
@@ -710,7 +712,7 @@ Demeter::UI::Artemis::History - A fit history interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

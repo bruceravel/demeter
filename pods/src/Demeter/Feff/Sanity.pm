@@ -107,6 +107,7 @@ sub S_check_rmax {
     my $r = $self->distance(@this, @center);
     $rfarthest = $r if ($r > $rfarthest);
   };
+  $self->rmax($rfarthest) if $rmax == 0;
   #print join(" ", $rmax,$rfarthest), $/;
   #if ($rmax > $rfarthest) {
   #  $$r_problems{rmax_outside_cluster} = 1;
@@ -133,7 +134,7 @@ Demeter::Feff::Sanity - Sanity checks for feff.inp files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

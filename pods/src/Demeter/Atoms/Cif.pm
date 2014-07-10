@@ -45,11 +45,12 @@ sub read_cif {
   foreach my $i (qw(_chemical_name_mineral
 		    _chemical_name_systematic
 		    _chemical_formula_structural
-		    _chemical_formula_sum
+		    _chemical_formula_moiety
 		    _publ_author_name
 		    _citation_journal_abbrev
 		    _publ_section_title
 		  )) {
+                   #_chemical_formula_sum
     @item = $datablock->get_item_data(-item=>$i);
     $item[0] ||= "";
     $item[0] =~ s{}{}g;
@@ -63,20 +64,20 @@ sub read_cif {
 
   ## space group: try the HM symbol then the number and canonicalize it
   @item = $datablock->get_item_data(-item=>"_symmetry_space_group_name_H-M");
-  $self->cell->group->group($item[0]) if (defined $item[0]);
-  if (not $self->cell->group->group) {
+  $self->cell->space_group($item[0]) if (defined $item[0]);
+  if (not $self->cell->space_group) {
     @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number");
-    $self->cell->group->group($item[0]) if (defined $item[0]);
+    $self->cell->space_group($item[0]) if (defined $item[0]);
   };
-  if (not $self->cell->group->group) {
+  if (not $self->cell->space_group) {
     @item = $datablock->get_item_data(-item=>"_space_group_IT_number");
-    $self->cell->group->group($item[0]) if (defined $item[0]);
+    $self->cell->space_group($item[0]) if (defined $item[0]);
   };
-  if (not $self->cell->group->group) {
+  if (not $self->cell->space_group) {
     @item = $datablock->get_item_data(-item=>"_space_group_name_H-M_alt");
-    $self->cell->group->group($item[0]) if (defined $item[0]);
+    $self->cell->space_group($item[0]) if (defined $item[0]);
   };
-  $self->space($self->cell->group->group);
+  $self->space($self->cell->space_group);
 
   ## lattice parameters
   my $min = 100000;   # use lattice constants to compute default for Rmax
@@ -215,7 +216,7 @@ Demeter::Atoms::Cif - Methods for importing data from Crystallographic Informati
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

@@ -663,7 +663,7 @@ Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -800,11 +800,13 @@ Here are the explanations:
 
 =item C<-e>
 
-This data file does not exist.
+You specified an explicit data file to use in the fit (i.e. not part
+of a project file) and that file does not exist.
 
 =item C<-r>
 
-This data file cannot be read.
+You specified an explicit data file to use in the fit (i.e. not part
+of a project file) and that data file cannot be read.
 
 =item C<namenotunique>
 

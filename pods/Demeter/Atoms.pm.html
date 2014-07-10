@@ -84,7 +84,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.19.</p>
+<p>This documentation refers to Demeter version 0.9.20.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -142,7 +142,7 @@ its current form.</p></dd>
 		<dd><p>The edge of the absorber.</p></dd>
 	<dt><code>core</code> (string) [first sitin the list]</dt>
 		<dd><p>The identifier of the absorber.  This should be one of the site tags.</p></dd>
-	<dt><code>shift</code> (vector) [0,0,0]</dt>
+	<dt><code>shiftvec</code> (vector) [0,0,0]</dt>
 		<dd><p>The value of the shift vector, should one be necessary.</p></dd>
 	<dt><code>file</code> (filename)</dt>
 		<dd><p>The name of an atoms input file.</p></dd>
@@ -187,6 +187,29 @@ object.</p></dd>
 	<dt><code>cluster</code> (list)</dt>
 		<dd><p>This is a list containing the expanded cluster.  Need to describe each
 list entry.</p></dd>
+	<dt><code>is_rhomb</code>, <code>is_hex</code>, <code>is_first</code>, <code>is_second</code> (boolean)</dt>
+		<dd><p>Occassionally, modifiers to the space group symbol are used to
+explicitly specify the setting of the crystal.</p></dd>
+		<dd><p>Trigonal space groups with symbols beginning with <code>R</code> (numbers 146,
+148, 155, 160, 161, 166, and 167) can be expressed in rhombohedral or
+hexagonal settings.  While it is possible to figure out the setting
+from the specified parameters -- the rhombohedral setting has a=b=c,
+alpha!=90, and alpha=beta=gamma, while the hexagonal setting has
+a=b!=c, alpha=beta=90, and gamma=120 -- CIF file authors and others
+may modify the space group symbol with <code>:R</code> or <code>:H</code> to indicated the
+setting.</p></dd>
+		<dd><p>Some orthoganal groups (numbers 48, 50, 59, 68, 70), tetragonal groups
+(85, 86, 88, 125, 126, 129, 130, 133, 134, 137, 138, 141, 142), and
+cubic groups (201, 203, 222, 224, 227, 228) are given in the
+International Tables referenced to two centers of symmetry.  In
+general, it is difficult to know which center is used before expanding
+the unit cell and examining its contents.  To remove this ambiguity
+some CIF file authors and others will modify the space group symbol
+with <code>:1</code> or <code>:2</code> to indicated which center has been used.  Demeter
+assumes the second setting, so if <code>:1</code> is specified, it is likely
+that a shift vector will be needed.</p></dd>
+		<dd><p>When a space group symbol uses one of these modifiers, the
+corresponding boolean parameter will be set to <code>1</code>.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 

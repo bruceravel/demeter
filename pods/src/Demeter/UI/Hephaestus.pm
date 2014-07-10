@@ -41,17 +41,17 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       Help	    => 'Hephaestus Users\' Guide',
 	       Config       => 'control details of Hephaestus\' behavior',
 	     );
-my %label_of = (Absorption   => 'Absorption',
-		Formulas     => 'Formulas',
-		Data	     => 'Data',
+my %label_of = (Absorption   => ' Absorption ',
+		Formulas     => '  Formulas  ',
+		Data	     => '    Data    ',
 		Ion	     => 'Ion chambers',
-		Transitions  => 'Transitions',
-		EdgeFinder   => 'Edge finder',
-		LineFinder   => 'Line finder',
-		Standards    => 'Standards',
-		F1F2	     => "F' and F\"",
-		Help	     => 'Document',
-		Config       => 'Configure',
+		Transitions  => ' Transitions',
+		EdgeFinder   => ' Edge finder',
+		LineFinder   => ' Line finder',
+		Standards    => '  Standards ',
+		F1F2	     => " F' and F\"  ",
+		Help	     => '  Document  ',
+		Config       => '  Configure ',
 	       );
 my $icon_dimension = 30;
 
@@ -63,7 +63,7 @@ my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinde
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.85); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 2.2); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
@@ -96,7 +96,10 @@ sub new {
     ##$periodic_table = Demeter::UI::Wx::PeriodicTable->new($page, sub{$self->multiplex($_[0])}, $statusbar);
 
     if ($utility eq 'Absorption') {
-      my $label = $label_of{$utility}.': '.$note_of{$utility};
+      my $l = $label_of{$utility};
+      $l =~ s{\A\s+}{};
+      $l =~ s{\s+\z}{};
+      my $label = $l.': '.$note_of{$utility};
       my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
       my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
       $header->SetForegroundColour( $header_color );
@@ -117,7 +120,7 @@ sub new {
       $page -> SetSizer($box);
 
     };
-    $tb->AddPage($page, $label_of{$utility}, 0, $count);
+    $tb->AddPage($page, sprintf("%11s", $label_of{$utility}), 0, $count);
     $height = ($tb->GetSizeWH)[1];
   };
 
@@ -165,7 +168,11 @@ sub make_page {
   return if exists $self->{$which};
   my $busy = Wx::BusyCursor->new;
 
-  my $label = $label_of{$which}.': '.$note_of{$which};
+  my $l = $label_of{$which};
+  $l =~ s{\A\s+}{};
+  $l =~ s{\s+\z}{};
+  my $label = $l.': '.$note_of{$which};
+  #my $label = $label_of{$which}.': '.$note_of{$which};
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   my $header = Wx::StaticText->new( $self->{$which."_page"}, -1, $label, wxDefaultPosition, wxDefaultSize );
   $header->SetForegroundColour( $header_color );
@@ -222,7 +229,7 @@ sub OnInit {
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config Help)) {
+		    Standards F1F2 Config)) { # Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
@@ -371,7 +378,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

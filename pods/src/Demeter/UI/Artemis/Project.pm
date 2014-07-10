@@ -73,6 +73,7 @@ sub save_project {
 						copyfeff => 0,
 					       );
   #$rframes->{main} -> {currentfit} -> fitted($save);
+  Demeter->Touch(File::Spec->catfile($rframes->{main}->{project_folder}, 'fits', $rframes->{main} -> {currentfit}->group, 'keep'));
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
@@ -115,7 +116,7 @@ sub save_project {
     push @toss, $d;		# gather all fits that lack the keep file
   };				# so these can be excluded from the saved project
   closedir $FD;
-  my $toss_regexp = join("|", @toss);
+  my $toss_regexp = join("|", '_not_a_real_folder_', @toss);
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} and not m{$toss_regexp} });
@@ -260,23 +261,32 @@ sub read_project {
 
   my $import_problems = q{};
 
-  %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'));
-  #use Data::Dumper;
-  #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
+  %Demeter::UI::Artemis::fit_order = ();
+  my $order_file = File::Spec->catfile($projfolder, 'order');
+  my $order = Demeter->slurp($order_file);
+  $order =~ s{\'(\d+)\':}{$1:}g; # see comment just above update_order_file in Artemis.pm
+  open(my $O, '>', $order_file);
+  print $O $order;
+  close $O;
+  eval {local $SIG{__DIE__} = sub {}; %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile($order_file)};
 
   ## -------- plot and indicator yamls, journal
   $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
-    my %hash = %{YAML::Tiny::LoadFile($py)};
-    delete $hash{nindicators};
-    Demeter->po->set(%hash);
+    my $rhash = {};
+    eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($py)};
+    delete $rhash->{nindicators};
+    Demeter->po->set(%$rhash);
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
   if (-e $iy) {
     my @list = YAML::Tiny::LoadFile($iy);
     $rframes->{Plot}->{indicators}->populate(@list);
+    #my $rlist = [];
+    #eval {local $SIG{__DIE__} = sub {}; $rlist = YAML::Tiny::LoadFile($iy)};
+    #$rframes->{Plot}->{indicators}->populate(@$rlist);
   };
   my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
   if (-e $journal) {
@@ -311,6 +321,7 @@ sub read_project {
     my $feffobject = ($source eq 'aggregate') ?
       Demeter::Feff::Aggregate->new(group=>$d) :
 	  Demeter::Feff->new(group=>$d); # force group to be the same as before.
+
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -742,7 +753,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

@@ -390,7 +390,8 @@ spectra.
 </td>
 <td width=322>
 <a class=floatright href="../images/data-datamenu.png"  title=Data menu target=_blank><img border=0 src="../images/data-datamenu.png"  title="Data menu"  alt="data-datamenu.png"></a>
-Blah blah
+This menu displays functions that can act on the data set displayed in
+that window.
 </p> 
 
 <dl>
@@ -462,12 +463,10 @@ file.  The columns will be the same as for the data+fit output.
   Other fitting standards
 </dt>
 <dd>
-This submenu allows you to import a variety of special path types.
-These will be explained later in the document.<br />
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Links to those document sections
-</p>
+This submenu allows you to import a variety of special path types, including
+<a href="extended/qfs.html">quick first shell paths</a> and
+<a href="extended/empirical.html">empirical standards</a>.
+<span style="color:#b2b2b2; background-color:white">(Structural units have not yet been implemented in Artemis.)</span>
   <br />
   <br />
 </dd>
@@ -475,10 +474,7 @@ Links to those document sections
   Balance interstitial energies
 </dt>
 <dd>
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Not yet implemented in <span class=program>ARTEMIS</span>
-</p>
+<span style="color:#b2b2b2; background-color:white">(This feature has not yet been implemented in Artemis.)</span>
   <br />
   <br />
 </dd>
@@ -514,11 +510,8 @@ to &ldquo;user&rdquo;.
 </dt>
 <dd>
 In a multiple data set fit, this allows you to constrain the data sets
-to have the same choice of Fourier transform parameters.<br />
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Not yet implemented in <span class=program>ARTEMIS</span>
-</p>
+to have the same choice of Fourier transform parameters.
+<span style="color:#b2b2b2; background-color:white">(This feature has not yet been implemented in Artemis.)</span>
   <br />
   <br />
 </dd>
@@ -562,7 +555,8 @@ window status bar.
 </td>
 <td width=259>
 <a class=floatright href="../images/data-pathmenu.png"  title=Path menu target=_blank><img border=0 src="../images/data-pathmenu.png"  title="Path menu"  alt="data-pathmenu.png"></a>
-Blah blah
+This menu displays various functions  that can be appied to the paths
+associated with this data set.
 </p> 
 
 <dl>
@@ -681,7 +675,7 @@ the path list.
 <p>
 
 </td>
-<td width=261>
+<td width=265>
 <a class=floatright href="../images/data-marksmenu.png"  title=Marks menu target=_blank><img border=0 src="../images/data-marksmenu.png"  title="Marks menu"  alt="data-marksmenu.png"></a>
 Much of <span class=program>ARTEMIS</span>' functionality revolves around groups of
 marked paths.  This menu contains a number of shortcuts for marking
@@ -706,6 +700,11 @@ as a valid perl regular expression.
 </p>
 
 <p>
+Marking either greater than or less than an A value will prompt for
+a cutoff in path ranking.
+</p>
+
+<p>
 Marking either greater than or less than an R value will prompt for
 that R value.
 </p>
@@ -713,14 +712,7 @@ that R value.
 <p>
 Marking before or after the current path will mark those above or
 below the displayed path in the path list.  Included and excluded
-refers to whether a path is selected as being included in a fit.
-Importance refers to the heuristic importance of the path, which is
-represented by the
-<span style="color:#046a15; background-color:white">green (high)</span>,
-<span style="color:#78670e; background-color:white">yellow (medium)</span>, or
-<span style="color:#787878; background-color:white">grey (low)</span>
-color of the label at the top of the path page.
-</p>
+refers to whether a path is selected as being included in a fit.</p>
 <hr class=hide />
 <p class=caution>
 <img class=tinyfloatleft border=0 src="../images/alert.png" alt="Caution!">
@@ -729,12 +721,6 @@ entire regular expression functionality.  If you know what a
 &ldquo;(?{ code })&rdquo; extended expression is and you
 use it foolishly, you only have yourself to blame.
 </p>
-
-<p class=todo>
-<img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
-Mark by path ranking
-</p>
-
 
 <hr class=hide />
 <a name="theactionsmenu">

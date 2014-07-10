@@ -65,7 +65,7 @@ sub _ss {
   $vbox -> Add( $hbox, 0, wxGROW|wxLEFT|wxRIGHT, 20 );
 
   $self->{ss_ipot} = Wx::RadioBox->new($page, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
-				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+				       [q{_____},q{_____},q{_____},q{_____},q{_____},q{_____},q{_____}], 7, wxRA_SPECIFY_COLS);
   $self->{ss_ipot}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{ss_ipot}, sub{set_name(@_,'spath')});
 
@@ -316,7 +316,8 @@ sub _histo {
 
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
-    my $yaml = YAML::Tiny::LoadFile($persist);
+    my $yaml;
+    eval {local $SIG{__DIE__} = sub {}; $yaml = YAML::Tiny::LoadFile($persist)};
     $self->{histoyaml} = $yaml;
     $self->{histo_file}    -> SetPath($yaml->{file});
     $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');
@@ -1003,7 +1004,7 @@ Demeter::UI::Atoms::SS - Create SSPath objects in Atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

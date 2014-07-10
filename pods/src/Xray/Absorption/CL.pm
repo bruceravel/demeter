@@ -69,6 +69,7 @@ use version;
 use Exporter ();
 use Config;
 use Xray::Absorption;
+use Ifeffit;
 
 use vars qw($VERSION $resource $line_rule $cl_version @ISA @EXPORT @EXPORT_OK);
 

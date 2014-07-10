@@ -119,7 +119,12 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;  ## $self is a misnomer, this is a class method
-  my $gp = $self->group || Demeter->mo->throwaway_group;
+  my $gp;
+  if ($self eq 'Demeter') {
+    $gp = Demeter->mo->throwaway_group
+  } else {
+    $gp = $self->group || Demeter->mo->throwaway_group;
+  };
   ##my $gp = Demeter->mo->throwaway_group;
   Demeter->dispense('process', 'read_group', {file=>$a, group=>$gp, type=>'raw'});
   my $col_string = $self->fetch_string('$column_label');
@@ -217,7 +222,7 @@ Demeter::Files - File import tests
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.19');
+our $VERSION = version->new('0.9.20');
 
 ############################
 ## Carp
@@ -182,7 +182,7 @@ my $backend = $config->default('plot', 'plotwith');
 if ($backend eq 'gnuplot') {
   if (Demeter->is_windows) {
     my $message = Demeter->check_exe('gnuplot');
-    exit $message if ($message);
+    die $message if ($message);
   };
   $mode -> template_plot('gnuplot');
   $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
@@ -743,7 +743,8 @@ sub serialize {
 };
 sub deserialize {
   my ($self, $fname) = @_;
-  my $r_args = YAML::Tiny::LoadFile($fname);
+  my $r_args = [];
+  eval {local $SIG{__DIE__} = sub {}; $r_args = YAML::Tiny::LoadFile($fname)};
   $self->set(@$r_args);
   return $self;
 };
@@ -903,7 +904,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19
+This documentation refers to Demeter version 0.9.20
 
 =head1 SYNOPSIS
 

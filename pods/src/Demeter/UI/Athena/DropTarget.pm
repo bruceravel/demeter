@@ -49,7 +49,7 @@ sub OnData {
     $list -> Check($to, $from_checked);
     $::app->{main}->{list}->SetSelection($to);
   };
-  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
+  $::app->OnGroupSelect(q{}, scalar $::app->{main}->{list}->GetSelection, 0);
   $::app->modified(1);
   $::app->{main}->status($message);
 
@@ -64,7 +64,7 @@ Demeter::UI::Athena::DropTarget - A drop target for rearranging Athena's group l
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

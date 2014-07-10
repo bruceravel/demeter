@@ -27,7 +27,8 @@ use base 'Demeter::UI::Wx::Config';
 
 sub new {
   my ($class, $page, $parent) = @_;
-  my $self = $class->SUPER::new($page, \&target);
+  my $top = $page->GetParent->GetParent; ## (really!)
+  my $self = $class->SUPER::new($page, \&target, $top);
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->populate(['atoms', 'feff', 'pathfinder']);
@@ -41,7 +42,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Atoms::demeter->plot_with($value);
+      Demeter->plot_with($value);
       last SWITCH;
     };
   };
@@ -60,7 +61,7 @@ Demeter::UI::Atoms::Config - Atoms' configuration utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

@@ -69,11 +69,11 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Demeter::UI::Standards - Standard reference material database interaction</p>
+<p>Demeter::UI::Standards -  Interactions with standard reference data</p>
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.19.</p>
+<p>This documentation refers to Demeter version 0.9.20.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -246,8 +246,11 @@ contained in the <cite>standards.ini</cite> file.  Here is an example:</p>
 
 <pre>  [fe]
   tag         = Iron foil
-  comment     = Iron foil measured at NSLS X11A 10/4/2002 by BR
+  comment     = Iron foil
   crystal     = Si(111)
+  location    = NSLS X11A
+  people      = BR
+  date        = 10/4/2002
   file        = %share%/standards/data/fe.stan
   energy      = $1
   numerator   = $2
@@ -264,12 +267,27 @@ four lines explain how to for mu(E) data from the columns in the file.
 The last three lines are used to calibrate the data and mark the
 interesting points in the XANES or derivative spectra.</p>
 
+<p>The <code>comment</code> keyword is intended to describe the physical sample.
+The <code>location</code>, <code>people</code> and <code>date</code> are intended to establish
+provenance.  The <code>location</code> is the facility and syncherotron.  The
+<code>people</code> are the experimenters who were present for the measurement.
+The <code>date</code> is the date of the measurement.  The use of the
+<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a> combined date and
+time representations is encouraged, but not enforced at this time.</p>
+
+<p>The keywords <code>coordination</code> and <code>oxidation</code> can be used to specify
+the structural environment and oxidation state of the absorber.  These
+are not used at this time.</p>
+
 <p>Another option is to import data from an Athena project file.  Here is
 an example:</p>
 
 <pre>  [cd]
   tag         = Cadmium foil
-  comment     = Cadmium foil, measured at APS 10ID Nov 18, 2006
+  comment     = Cadmium foil
+  location    = APS 10ID
+  people      = Saengdao Khoakaew, Ryan Tappero, and BR
+  date        = November 18, 2006
   crystal     = Si(111)
   file        = %share%/standards/data/Cd.prj
   record      = 1
@@ -284,6 +302,20 @@ steps are never performed for data from an project file.</p>
 <p>The first section of the <cite>standards.ini</cite> file contains the
 configuration data and is used to control some aspects of the plots
 made of the reference data.</p>
+
+<p>This code will also look for a file called <cite>standards.ini</cite> located in
+the the Demeter configuration folder, <code>$HOME/.horae/</code> on linux,
+<code>%APPDATA%\demeter</code> on Windows.  The system file is read first, then
+the private file is read.  Their contents are simply concatanted,
+although an entry with the same key -- the bit in [brackets] -- in the
+private file will overwrite the similarly named entry in the system
+file.</p>
+
+<p>There are a few more keywords not discussed above.  If <code>rebin</code> = 1,
+then the data will be rebinned onto a conventional grid.  The
+<code>calibrate</code> keyword is used to put data from a file onto the absolute
+energy grid.  The comma separated arguments are the energy value to
+choose as the edge and the energy value to assign to that point.</p>
 
 <p>The output html and latex files are formatted using <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a>
 templates, which can be found in the <cite>share</cite> directory of the Demeter
@@ -301,7 +333,6 @@ system.</p>
 
 <ul>
 	<li>latex output</li>
-	<li>load user ini files (i.e. ~/.horae/standards.ini)</li>
 	<li>load site-specific ini files</li>
 	<li>other local data locations, other web locations</li>
 </ul>

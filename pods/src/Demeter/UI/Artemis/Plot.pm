@@ -30,6 +30,7 @@ use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
 use Demeter::UI::Artemis::Plot::VPaths;
 use Demeter::UI::Artemis::DND::PlotListDrag;
+use Demeter::UI::Wx::Colours;
 
 use Cwd;
 use File::Spec;
@@ -54,7 +55,7 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   #$this -> SetBackgroundColour( Wx::Colour->new(0,255,0,0));
   #$this -> SetBackgroundColour( Wx::SystemSettings::GetColour(wxSYS_COLOUR_WINDOW) );
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   $this->{last} = q{};
@@ -555,7 +556,7 @@ Demeter::UI::Artemis::Plot - Plot interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

@@ -952,8 +952,8 @@ override 'serialization' => sub {
       $string .= YAML::Tiny::Dump($self->ref_array("i0"));
     }
   } elsif ($self->datatype eq "chi") {
-    $string .= YAML::Tiny::Dump($self->get_array("k"));
-    $string .= YAML::Tiny::Dump($self->get_array("chi"));
+    $string .= YAML::Tiny::Dump($self->ref_array("k"));
+    $string .= YAML::Tiny::Dump($self->ref_array("chi"));
   };
   return $string;
 };
@@ -962,7 +962,8 @@ override 'serialization' => sub {
 
 override 'deserialize' => sub {
   my ($self, $fname) = @_;
-  my @stuff = YAML::Tiny::LoadFile($fname);
+  my @stuff;
+  eval {local $SIG{__DIE__} = sub {}; @stuff = YAML::Tiny::LoadFile($fname)};
 
   ## load the attributes
   my %args = %{ $stuff[0] };
@@ -976,6 +977,7 @@ override 'deserialize' => sub {
   $self -> update_data(0);
   $self -> update_columns(0);
   $self -> update_norm(1);
+  $self -> from_yaml(1);
   $self -> dispense('process','make_group');
 
   my $path = $self -> mo -> fetch('Path', $self->fft_pcpathgroup);
@@ -1011,7 +1013,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 
 =head1 SYNOPSIS

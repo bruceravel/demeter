@@ -117,8 +117,14 @@ sub push_values {
   $this->{this}  -> SetLabel($data->name);
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
-  ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  #($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  #$this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection));
+  if ((not $was) or ($was eq 'None')) {
+    $this->{standard}->SetSelection(0);
+  } else {
+    $this->{standard}->SetStringSelection($was);
+    $this->{standard}->SetSelection(0) if not scalar $this->{standard}->GetSelection;
+  };
 
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
@@ -141,7 +147,7 @@ sub mode {
 sub fit {
   my ($this, $event) = @_;
   $this->{LR}->data($::app->current_data);
-  $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $this->{LR}->standard($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection));
   $this->{LR}->twopi($this->{twopi}->GetValue);
   my ($qmin, $qmax) = sort {$a <=> $b} ($this->{qmin}->GetValue, $this->{qmax}->GetValue);
   $this->{LR}->qmin($qmin);
@@ -167,7 +173,7 @@ sub plot {
     $this->{LR}->plot_odd;
   } elsif ($how =~ m{\A[kqr]\z}i) {
     $this->{LR}->data($::app->current_data);
-    $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+    $this->{LR}->standard($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection));
     $this->{LR}->standard->plot($how);
     $this->{LR}->data->plot($how);
   };
@@ -200,7 +206,7 @@ Demeter::UI::Athena::LogRatio - A log-ratio/phase-difference analysis for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

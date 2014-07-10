@@ -25,13 +25,14 @@ use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
-use Demeter::UI::Wx::Printing;
+##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [Journal]",
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
   #_doublewide($this);
@@ -49,13 +50,13 @@ sub new {
   $hbox -> Add($this->{save}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{save}, \&on_save);
 
-  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{preview}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'journal')});
+  # $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{preview}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  # EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'journal')});
 
-  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{print}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'journal')});
+  # $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{print}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  # EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'journal')});
 
   $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{doc}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
@@ -112,7 +113,7 @@ Demeter::UI::Artemis::Journal - A fit journal interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

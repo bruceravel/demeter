@@ -25,7 +25,8 @@ Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'D
 sub is {
   my ($self) = @_;
 
-  ## the header, line of dashes, and column labels constitute 18 lines
+  ## the header, line of dashes, and column labels constitute 18
+  ## lines, multiedge gives 4 more
   return 0 if (count_lines($self->file) < 30);
 
   open(my $D, $self->file) or $self->Croak("could not open " . $self->file . " as an X23A2MED file\n");
@@ -39,12 +40,13 @@ sub is {
   my @headers = split(" ", $line);
 
   #my $cfg = new Config::IniFiles( -file => $self->inifile );
-  my $enr = Demeter->co->default("x23a2med", "energy");
-  my $ch1 = Demeter->co->default("x23a2med", "roi1");
-  my $sl1 = Demeter->co->default("x23a2med", "slow1");
-  my $fa1 = Demeter->co->default("x23a2med", "fast1");
+  my $enr  = Demeter->co->default("x23a2med", "energy");
+  my $ch1  = Demeter->co->default("x23a2med", "roi1");
+  # my $mere = Demeter->co->default("x23a2med", "multiedge_regex");
+  my $sl1  = Demeter->co->default("x23a2med", "slow1");
+  my $fa1  = Demeter->co->default("x23a2med", "fast1");
   my $seems_escan = ($line =~ m{$enr\b}i);
-  my $seems_med = ($line =~ m{\b$ch1\b}i);
+  my $seems_med = (($line =~ m{\b$ch1\b}i) or ($line =~ m{\broi\d_\d\b}i)); # hard wired multiedge labels
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
   return ($is_x23a2 and $seems_escan and $seems_med and $is_med);
@@ -58,22 +60,23 @@ sub fix {
 
   ## read the raw data file
   Demeter->dispense('process', 'read_group', {file=>$file, group=>Demeter->mo->throwaway_group, type=>'data'});
-  #my $command = "read_data(file=\"$file\", group=v___ortex)\n";
-  #Demeter->dispose($command);
-
-  #my $labels = $self->fetch_string('$column_label');
   my @labels = split(" ", $self->fetch_string('$column_label'));
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
+  my @edges = ();
+  ##my $mere = Demeter->co->default("x23a2med", "multiedge_regex");
+  my $multiedge = any { $_ =~ m{roi\d_\d} } @labels; # hard wired column labels
   foreach my $i (1 .. 4) {
     my $is_ok = 1;
-    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$i") ) } @labels;
+    if (not $multiedge) {
+      $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$i") ) } @labels;
+    };
     $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$i")) } @labels;
     $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$i")) } @labels;
-
     push @represented, $i if $is_ok;
   };
+
   return 0 if ($#represented == -1);
   $self->nelements($#represented+1);
 
@@ -83,8 +86,8 @@ sub fix {
     push @options, [$l, $val];
   };
 
-
   my @labs    = (Demeter->co->default('x23a2med', 'energy'), lc(Demeter->co->default('x23a2med', 'i0')));
+  my (@edge1, @edge2);
   my $maxints = q{};
   my $dts     = q{};
   my $time    = Demeter->co->default("x23a2med", "time");
@@ -93,19 +96,36 @@ sub fix {
   my $nosignal = 0;
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
-    my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
     my @slow = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "slow$ch")));
     my @fast = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "fast$ch")));
     if (any {$_ == 0} @slow) {
       ++$nosignal;
       next;
     };
-    my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
-    $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
-    push @labs, "corr$ch";
-    $maxints .= " $max";
+    if (not $multiedge) {	# normal MED file
+      my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
+      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
+      push @labs, "corr$ch";
+    } else {			# multiedge MED file
+      my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi1_'.$ch);
+      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".c1_$ch", \@corr);
+      push @edge1, "c1_$ch";
+
+      @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi2_'.$ch);
+      ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      $self->place_array(Demeter->mo->throwaway_group.".c2_$ch", \@corr);
+      push @edge2, "c2_$ch";
+
+      $maxints .= " $max";
+    };
+
     $dts .= " $deadtime";
+  };
+  if ($multiedge) {
+    push @labs, @edge1, @edge2;
   };
   return 0 if ($nosignal == $#represented+1);
   $self->nelements($#represented+1-$nosignal);
@@ -207,7 +227,7 @@ Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
@@ -336,7 +356,7 @@ fast channel due to deadtime:
    y = x*exp(-x*tau)
 
 where tau is the deadtime, x is the actual input rate on the fast
-channel, and y is the measured rate on the dast channel.  The
+channel, and y is the measured rate on the fast channel.  The
 iterative solution encoded in the C<_correct> subroutine thus solves
 point-by-point for x using a value for tau and the column containing
 y.
@@ -349,6 +369,47 @@ For high count rates, the proper deadtime correction is considerably
 more accurate than the standard correction.  For details see Woicik,
 Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
 http://dx.doi:org/10.1107/S0909049510009064
+
+=head1 MULTIEDGE FILES
+
+At X23A2, we have four quad single channel analyzers, one for each
+detector element of our four-element Vortex.  Each quad SCA is
+modified to have the input channels tied together.  We use the fourth
+output channel as the slow channel, or OCR, signal.  This is done by
+setting the discriminator window over the entire energy range.  In
+principle, we could record three regions of interest for each detector
+element.  However, we only have enough scalar input channels to our
+crate to record two ROIs, along with the slow and fast (OCR and ICR)
+signals.
+
+Recording even two channels is useful for switching between edges as
+part of a measurement macro.  To this end, this plugin will recognize
+when the system is configured that why by recognizing channel labels
+that are different from the configured C<roiN> column labels, as
+discussed above and typically C<Ifch1> through C<Ifch4>.  Currently,
+this is I<hard-wired> to be
+
+  roi1_1 roi1_2 roi1_3 roi1_4
+
+for the ROI corresponding to one edge, and
+
+  roi2_1 roi2_2 roi2_3 roi2_4
+
+for the ROI corresponding to the second edge.  For example, in PbGeO3,
+the C<roi1_N> might be configured to measure the Ge K alpha line while
+the C<roi2_N> would then be configured for the Pb L alpha line.
+
+When processed and presented to the user in the column selection
+dialog, the corrected columns are then labeled
+
+  c1_1 c1_2 c1_3 c1_4
+
+and
+
+  c2_1 c2_2 c2_3 c2_4
+
+It is then up to the user to select the correct group of four when
+importing the data.
 
 =head1 BUGS AND LIMITATIONS
 

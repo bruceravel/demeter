@@ -209,6 +209,8 @@ override 'pathfinder' => sub {
   my $sitecount = 0;
   $self -> eta_suppress(Demeter->co->default("pathfinder", "eta_suppress"));
   foreach my $f (@{$self->parts}) {
+    $f -> fuzz($self->fuzz);
+    $f -> betafuzz($self->betafuzz);
     $f -> report("\n" . '=' x 60 . "\n=== Site $isite\n\n");
     $f -> start_spinner("Demeter's pathfinder is running") if $screen;
     $f -> eta_suppress(Demeter->co->default("pathfinder", "eta_suppress"));
@@ -237,7 +239,7 @@ override 'pathfinder' => sub {
     $sp->pathfinding(0);
     $sp->mo->push_ScatteringPath($sp);
   };
-  Demeter->FDump("/home/bruce/foo", \@list_of_paths);
+  #Demeter->FDump("/home/bruce/foo", \@list_of_paths);
   $self->set(pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1);
   return $self;
 };
@@ -293,7 +295,7 @@ Demeter::Feff::Aggregate - Perform the pathfinder fuzzily over inequivalent site
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

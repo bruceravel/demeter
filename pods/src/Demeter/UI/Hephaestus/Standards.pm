@@ -33,6 +33,7 @@ $standards -> ini(q{});
 
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Wx::SpecialCharacters qw($MU);
+use Demeter::UI::Artemis::ShowText;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -65,19 +66,35 @@ sub new {
   my $controlbox = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($controlbox, 1, wxEXPAND|wxALL, 5);
 
-  $self->{howtoplot} = Wx::RadioBox->new( $self, -1, '', wxDefaultPosition, wxDefaultSize,
-				     ['Display XANES', 'Display derivative'], 1, wxRA_SPECIFY_COLS);
-  $controlbox -> Add($self->{howtoplot}, 0, wxEXPAND|wxALL, 5);
+  # $self->{howtoplot} = Wx::RadioBox->new( $self, -1, '', wxDefaultPosition, wxDefaultSize,
+  # 				     ['Display XANES', 'Display derivative'], 1, wxRA_SPECIFY_COLS);
+  # $controlbox -> Add($self->{howtoplot}, 0, wxEXPAND|wxALL, 5);
 
-  $self->{plot} = Wx::Button->new($self, -1, 'Plot standard', wxDefaultPosition, [120,-1]);
-  EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self)} );
-  $controlbox -> Add($self->{plot}, 0, wxEXPAND|wxALL, 5);
+  $self->{plotbox} = Wx::StaticBox->new($self, -1, 'Plot', wxDefaultPosition, wxDefaultSize);
+  $self->{plotboxsizer} = Wx::StaticBoxSizer->new( $self->{plotbox}, wxHORIZONTAL );
+  $controlbox -> Add($self->{plotboxsizer}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+
+
+  $self->{plot} = Wx::Button->new($self, -1, 'XANES', wxDefaultPosition, wxDefaultSize);
+  EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self, 'mu')} );
   $self->{plot}->Disable;
 
-  $self->{save} = Wx::Button->new($self, wxID_SAVE, q{}, wxDefaultPosition, [120,-1]);
+  $self->{plotd} = Wx::Button->new($self, -1, 'Derivative', wxDefaultPosition, wxDefaultSize);
+  EVT_BUTTON( $self, $self->{plotd}, sub{make_standards_plot(@_, $self, 'deriv')} );
+  $self->{plotd}->Disable;
+
+  $self->{plotboxsizer}->Add($self->{plot},  1, wxEXPAND|wxALL, 2);
+  $self->{plotboxsizer}->Add($self->{plotd}, 1, wxEXPAND|wxALL, 2);
+
+  $self->{save} = Wx::Button->new($self, -1, q{Save to a file}, wxDefaultPosition, [120,-1]);
   EVT_BUTTON( $self, $self->{save}, sub{save_standard(@_, $self)} );
   $controlbox -> Add($self->{save}, 0, wxEXPAND|wxALL, 5);
   $self->{save}->Disable;
+
+  $self->{about} = Wx::Button->new($self, -1, q{Info about standard}, wxDefaultPosition, [120,-1]);
+  EVT_BUTTON( $self, $self->{about}, sub{about(@_, $self)} );
+  $controlbox -> Add($self->{about}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+  $self->{about}->Disable;
 
   ## finish up
   $vbox -> Add($hbox, 1, wxEXPAND|wxALL);
@@ -94,24 +111,41 @@ sub standards_get_data {
   foreach my $data ($standards->material_list) {
     next if ($data eq 'config');
     next if (lc($el) ne $standards->get($data, 'element'));
-    push @choices, ucfirst($data);
+    push @choices, $standards->get($data, 'name'); #ucfirst($data);
   };
   return 0 unless @choices;
-  $self->{plot} -> Enable;
-  $self->{save} -> Enable;
-  $self->{data} -> Set(\@choices);
-  $self->{data} -> SetSelection(0);
-  my $comment = join(': ', $standards->get(lc($choices[0]), 'tag'), $standards->get(lc($choices[0]), 'comment'));
+  $self->{plot}  -> Enable;
+  $self->{plotd} -> Enable;
+  $self->{save}  -> Enable;
+  $self->{about} -> Enable;
+  $self->{data}  -> Set(\@choices);
+  $self->{data}  -> SetSelection(0);
+  my $comment = sprintf('%s : %s, measured by %s (%s) at %s',
+			$standards->get(lc($choices[0]), 'tag'),
+			$standards->get(lc($choices[0]), 'comment'),
+			$standards->get(lc($choices[0]), 'people'),
+			$standards->get(lc($choices[0]), 'date'),
+			$standards->get(lc($choices[0]), 'location')
+		       );
   $self->{echo}->SetStatusText($comment);
   return 1;
 };
 
 sub make_standards_plot {
-  my ($self, $event, $parent) = @_;
+  my ($self, $event, $parent, $which) = @_;
   my $busy    = Wx::BusyCursor->new();
-  my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
+  #my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
   my $result  = $standards -> plot($choice, $which, 'plot');
+
+  my $this = lc($parent->{data}->GetString($parent->{data}->GetSelection));
+  $self->{echo}->SetStatusText(sprintf('%s : %s, measured by %s (%s) at %s',
+				       $standards->get($this, 'tag'),
+				       $standards->get($this, 'comment'),
+				       $standards->get($this, 'people'),
+				       $standards->get($this, 'date'),
+				       $standards->get($this, 'location')
+				      ));
   undef $busy;
   return 0 if ($result =~ m{Demeter});
   return 0 if (looks_like_number($result) and ($result == 0));
@@ -122,8 +156,8 @@ sub make_standards_plot {
 sub save_standard {
   my ($self, $event, $parent) = @_;
   my $choice  = $parent->{data}->GetStringSelection;
-  $choice =~ s{\s+}{_}g;
-  my $default = join('.', $choice, 'xmu');
+  (my $cc = $choice) =~ s{\s+}{_}g;
+  my $default = join('.', $cc, 'xmu');
   my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
 				"data (*.dat,*.xmu)|*.data,*.xmu|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
@@ -140,15 +174,35 @@ sub save_standard {
   #   my $ok = $yesno->ShowModal;
   #   return if $ok == wxID_NO;
   # };
-  $standards->save($choice, $file);
-  $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
+  my $ret = $standards->save($choice, $file);
+  if ($ret =~ m{Demeter}) {
+    $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
+  } else {
+    $self->{echo}->SetStatusText($ret);
+  };
 };
 
+sub about {
+  my ($self, $event, $parent) = @_;
+  my $choice  = $parent->{data}->GetStringSelection;
+  my $save = $Text::Wrap::columns;
+  $Text::Wrap::columns = 60;
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($parent, $standards->report($choice), "About $choice")
+      -> Show;
+  $Text::Wrap::columns = $save;
+};
 sub echo_comment {
   my ($self, $event, $parent) = @_;
   my $which = lc($event->GetString);
   return if not $which;
-  my $comment = join(': ', $standards->get($which, 'tag'), $standards->get($which, 'comment'));
+  my $comment = sprintf('%s : %s, measured by %s (%s) at %s',
+				       $standards->get($which, 'tag'),
+				       $standards->get($which, 'comment'),
+				       $standards->get($which, 'people'),
+				       $standards->get($which, 'date'),
+				       $standards->get($which, 'location')
+				      );
   $self->{echo}->SetStatusText($comment);
   return 1;
 };
@@ -162,7 +216,7 @@ Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

@@ -24,7 +24,8 @@ use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::LogText;
-use Demeter::UI::Wx::Printing;
+##use Demeter::UI::Wx::Printing;
+use Demeter::UI::Wx::Colours;
 
 use Cwd;
 
@@ -37,7 +38,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Log]",
 				wxDefaultPosition, [550,650],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
-  $this -> SetBackgroundColour( wxNullColour );
+  $this -> SetBackgroundColour( $wxBGC );
   EVT_ICONIZE($this, \&on_close);
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -57,15 +58,15 @@ sub new {
   EVT_BUTTON($this, $this->{save}, \&on_save);
   $this->{save}->Enable(0);
 
-  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'text')});
-  $this->{preview}->Enable(0);
+  # $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'text')});
+  # $this->{preview}->Enable(0);
 
-  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
-  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
-  $this->{print}->Enable(0);
+  # $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  # $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
+  # EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
+  # $this->{print}->Enable(0);
 
   $this->{doc} = Wx::Button->new($this, wxID_ABOUT, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{doc}, 1, wxGROW|wxRIGHT, 2);
@@ -83,8 +84,8 @@ sub put_log {
   my ($self, $fit) = @_;
   Demeter::UI::Artemis::LogText -> make_text($self->{text}, $fit);
   $self->{save}->Enable(1);
-  $self->{preview}->Enable(1);
-  $self->{print}->Enable(1);
+  ##$self->{preview}->Enable(1);
+  ##$self->{print}->Enable(1);
   $self->{text}->ShowPosition(1);
   $self->{text}->Refresh;
 };
@@ -124,7 +125,7 @@ Demeter::UI::Artemis::Log - A log file display interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

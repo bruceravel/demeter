@@ -82,16 +82,16 @@ sub new {
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   #$box -> Add($range, 0, wxBOTTOM, 7);
-  my $label = Wx::StaticText->new($this, -1, "kmin", wxDefaultPosition, [35,-1]);
+  my $label = Wx::StaticText->new($this, -1, "kmin", wxDefaultPosition, wxDefaultSize);
   $this->{kmin} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "kmin"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmin}, 1, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "kmax", wxDefaultPosition, [35,-1]);
+  $label = Wx::StaticText->new($this, -1, "kmax", wxDefaultPosition, wxDefaultSize);
   $this->{kmax} = Wx::TextCtrl ->new($this, -1, Demeter->co->default("plot", "kmax"),
-				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
+				     wxDefaultPosition, [40,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{kmax}, 1, wxRIGHT, 10);
+  $range -> Add($this->{kmax}, 1, wxRIGHT, 5);
 
   foreach my $x (qw(kmin kmax)) {
     $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -167,7 +167,7 @@ Demeter::UI::Athena::Plot::PlotK - k-space plotting controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 

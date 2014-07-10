@@ -161,8 +161,8 @@ has 'miscdat'      => (is=>'rw', isa => 'Str',    default => q{});
 has 'vint'         => (is=>'rw', isa => 'LaxNum', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',   default => 0);
 
-has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => 0);
-has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => 0);
+has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','fuzz')||0.03);
+has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','betafuzz')||3);
 has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => Demeter->co->default('pathfinder','eta_suppress')||0);
 
 		       ## result of pathfinder
@@ -335,14 +335,15 @@ sub rdinp {
 	$thiscard = 'fms',          last CARDS if ($thiscard =~ m{\Afms});
 	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
 	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
-	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
+	                            last CARDS if ($thiscard =~ m{\A(?:con|pri|deb)}); ## CONTROL and PRINT are under demeter's control
+	                                                                               ## DEBYE is simply ignored by Demeter
 	$self -> push_othercards($_);  ## pass through all other cards
       };
 
       #print join("|", $thiscard, @line), $/;
       ## dispatch the card values
     DOCARD: {
-	($thiscard =~ m{(?:e(?:dge|xafs)|r(?:max|multiplier)|s02)}) and do {
+	($thiscard =~ m{(?:exafs|r(?:max|multiplier)|s02)}) and do {
 	  $self->$thiscard($line[1]);
 	  last DOCARD;
 	};
@@ -352,6 +353,10 @@ sub rdinp {
 	};
 	($thiscard eq 'hole') and do {
 	  $self->set(edge  => $line[1], s02   => $line[2]);
+	  last DOCARD;
+	};
+	($thiscard eq 'edge') and do {
+	  $self->edge($self->edge2hole($line[1]));
 	  last DOCARD;
 	};
 	($thiscard eq 'criteria') and do {
@@ -425,6 +430,7 @@ sub rdinp {
 		  errors               => [],
 		  warnings             => [],
 		 );
+
   ## sanity checks on input data
   $self->S_check_ipots(\%problems);
   $self->S_check_rmax(\%problems);
@@ -448,6 +454,27 @@ sub rdinp {
 	. $/) if $stop;
   $self->problems(\%problems);
   return $self;
+};
+
+
+our %edgehash = (k=>1, l1=>2, l2=>3, l3=>4, m1=>5, m2=>6, m3=>7, m4=>8, m5=>9,
+		 n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
+		 o1=>17, o2=>18, o3=>19, o4=>20, o5=>21, o6=>22, o7=>23,
+		 p1=>24, p2=>25, p3=>26 );
+sub edge2hole {
+  my ($self, $hole) = @_;
+  if ($hole !~ m{\A\d}) {
+    $hole = $edgehash{lc($hole)};
+  };
+  return $hole;
+};
+sub hole2edge {
+  my ($self, $edge) = @_;
+  if ($edge =~ m{\A\d}) {
+    my %hash = reverse %edgehash;
+    $edge = $hash{$edge};
+  };
+  return $edge;
 };
 
 sub _site {
@@ -665,6 +692,9 @@ sub fetch_zcwifs {
 
   my @zcwifs;
   my $file = ($self->feff_version == 8) ? 'list.dat' : 'files.dat';
+  ## a feff8.inp file can be parsed for used with feff6, thus using
+  ## files.dat, but the feff object will be flagged as being for feff8, hence...
+  $file = 'files.dat' if (($self->feff_version == 8) and (not -e File::Spec->catfile($self->workspace, $file)));
   return () if (not -e File::Spec->catfile($self->workspace, $file));
   open(my $FD, '<', File::Spec->catfile($self->workspace, $file));
   my $flag = 0;
@@ -986,7 +1016,7 @@ sub prep_fuzz {
 
 sub _collapse_heap {
   my ($self, $heap) = @_;
-  $self->prep_fuzz;
+  #$self->prep_fuzz;
   if (ref($self) =~ m{Aggregate}) {
     foreach my $p (@{$self->parts}) {
       $p->set(fuzz=>$self->fuzz, betafuzz=>$self->betafuzz);
@@ -1300,7 +1330,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 
 =head1 SYNOPSIS

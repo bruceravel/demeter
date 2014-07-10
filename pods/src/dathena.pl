@@ -6,14 +6,6 @@ BEGIN {
   $ENV{UBUNTU_MENUPROXY} = 0;
   use Demeter::Here;
   use Wx::Perl::SplashFast Demeter::Here->here.'UI/Athena/share/logo.jpg', 4000;
-  ## munge the PATH list on Windows so that Demeter's MinGW gets found first
-  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-    my (@not, @mingw);
-    foreach my $folder (split(/;/, $ENV{PATH})) {
-      if ($folder =~ m{mingw}i) { push @mingw, $folder } else { push @not, $folder };
-    };
-    $ENV{PATH} = join(";", @not, @mingw);
-  };
   ## munge the PATH env. var. under Windows, also add useful debugging
   ## info to the log file
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
@@ -49,7 +41,7 @@ athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 

@@ -1080,6 +1080,7 @@ sub fetch_correlations {
 
 sub fetch_pathresults {
   my ($self) = @_;
+  $self->clear_pathresults;
   foreach my $p (@ {$self->paths}) {
     $self->push_pathresults([$p->data->group,
 			     $p->get(qw(name n s02_value sigma2_value
@@ -1461,6 +1462,7 @@ override 'deserialize' => sub {
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
     delete $hash{group};
     $this->set(%hash);
+    $this->from_yaml(1);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$d} = $this;
@@ -1563,10 +1565,12 @@ override 'deserialize' => sub {
 
     } elsif (exists $pathlike->{absorber}) { # this is an FSPath
       #my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
-      my $feff = $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
-      my $ws = $feff->workspace;
-      $ws =~ s{\\}{/}g;		# path separators...
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $feff = Demeter -> mo -> fetch('Feff', $pathlike->{parentgroup});
+      $feff = Demeter -> mo -> fetch('Feff', basename($pathlike->{folder})) if (ref($feff) !~ m{Feff});
+      #my $ws = $feff->workspace;
+      #$ws =~ s{\\}{/}g;		# path separators...
+      #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($pathlike->{folder})));
       $feff->workspace($where);
       $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
       $this->feff_done(0);
@@ -1577,9 +1581,9 @@ override 'deserialize' => sub {
       delete $hash{feff_done};
       delete $hash{workspace};
       delete $hash{folder};
-      $this -> set(parent=>$feff, workspace=>$where, folder=>$where);
       $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
+      $this -> set(parent=>$feff, parentgroup=>$feff->group, workspace=>$where, folder=>$where);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };
@@ -1752,7 +1756,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.19.
+This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
