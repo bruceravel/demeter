@@ -1,7 +1,9 @@
 {
   @list = @{ $C->get("many_list") };
+  $eshift = q{};
+  $eshift = "+".$S->bkg_eshift if ($C->get("many_space") eq 'energy');
   q{}
 }
-write_ascii("{$C->get("many_file")}", {$S->group}.{$C->get("many_space")}, {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
+write_ascii("{$C->get("many_file")}", {$S->group}.{$C->get("many_space")}{$eshift}, {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
             label="{$C->get("many_space")}{foreach $g (@list) {($n=$g->name)=~ s{[- ,/.]+}{_}g; $OUT .= "  $n"}}",
 	    header={$S->group}.myheader)
