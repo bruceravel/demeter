@@ -1,13 +1,17 @@
 {
   @list = @{ $C->get("many_list") };
   $i = 3;
+  $eshift = q{};
+  $eshift = "+".$S->bkg_eshift if ($C->get("many_space") eq 'energy');
   q{}
 }
-write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.{$C->get("many_space")},
+set {$S->group}.xxx = {$S->group}.{$C->get("many_space")}{$eshift}
+write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,
            {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
            label="{$C->get("many_space")}{foreach $g (@list) {($n=$g->name)=~ s{ +}{_}g; $OUT .= "  $n"}}")
 erase $many_title_1
 erase $many_title_2
+erase {$S->group}.xxx
 {
   foreach $g (@list) {
     $OUT .= "erase \$many_title_" . $i++ . "\n";

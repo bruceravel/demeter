@@ -6,7 +6,7 @@
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "64"
-#define Pre "pre9"
+#define Pre "pre10"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
