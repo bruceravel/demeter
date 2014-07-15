@@ -1,5 +1,6 @@
 [%break%]
 <a name="[% label | remove(" ") | lower %]">
+<p>&nbsp;</p>
+</a>
 [% USE image "${site.url.images}/LightningBolt.png" %]
 <h3> [%- image.tag(align="bottom", title="Essential topic", alt="[Essential topic]") IF expert -%] [% label %]</h3>
-</a>

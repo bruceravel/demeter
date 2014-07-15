@@ -290,4 +290,35 @@ Finally, the items in this submenu  write a short text to the status
 bar explaining the various parameter types.
 [% END %]
 [% END %]
+
+[% PROCESS subsection label="Creating parameters from math expressions on the path page" %]
+
+[% FILTER html_para -%]
+Parameters can be created from the 
+[% INCLUDE html/link link="path/index.html" text="path page"%].
+When you right click on a word in a math expression for the one of the
+[% INCLUDE html/link link="path/mathexp.html" text="path
+parameters"%], a menu pops up which allows you to set the word you
+clicked upon as GDS parameter.
+[% END %]
+
+[% WRAPPER figure file="gds_path.png" %]
+Creating GDS parameters by right clicking on a math expression on the
+Path page.
+[% END %]
+
+[% FILTER html_para -%]
+If you have not yet defined the word you click on, then the GDS window
+will appear on screen, and the parameter will be inserted into the GDS
+table as the type of parameter selected from the menu.
+
+If the word has already been defined, then its type will be changed to
+the type you select from the menu.
+
+If the word is something that is not allowed as a parameter name
+(things like [% INCLUDE font/mono a="dr1" %] and [% INCLUDE font/mono a="cos" %]
+are reserved words and cannot be used as parameter names) then the menu
+will not be posted.  Likewise, the menu will not be posted if you
+right click on a number.
+[% END %]
 [% END %]
