@@ -222,11 +222,11 @@ header {
     float:left;
     position:fixed;
     border: 1px solid #000;
-    -webkit-border-top-right-radius: 4px;
+    /* -webkit-border-top-right-radius: 4px; */
     -webkit-border-bottom-right-radius: 4px;
-    -moz-border-radius-topright: 4px;
+    /* -moz-border-radius-topright: 4px; */
     -moz-border-radius-bottomright: 4px;
-    border-top-right-radius: 4px;
+    /* border-top-right-radius: 4px; */
     border-bottom-right-radius: 4px;
     padding: 12px 25px 12px 50px;
     margin: 0 25px 0 0;
