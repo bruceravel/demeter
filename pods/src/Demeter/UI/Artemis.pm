@@ -808,20 +808,20 @@ sub fit {
 ##   %hash = (1=>'a', 2=>'b', 3=>'c')
 ## on linux as
 ##   ---
-##   3: kvvai
-##   5: ushvu
-##   6: fzuzd
+##   1: a
+##   2: b
+##   3: c
 ## and on Windows as
 ##   ---
-##   '3': kvvai
-##   '5': ushvu
-##   '6': fzuzd
+##   '1': a
+##   '2': b
+##   '3': c
 ##
 ## It will fail to read the latter on linux, even though it is valid YAML
 ##
 ## Solution #1: use YAML rather than YAML::Tiny
-## Solution #2: strinp the single quotes
-## I opted for 3 since the YAML string is never very large
+## Solution #2: strip the single quotes
+## I opted for 2 since the YAML string is never very large
 ## The substitution below implements this
 
 sub update_order_file {

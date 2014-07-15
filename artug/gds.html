@@ -114,9 +114,10 @@ The <span class=program>ARTEMIS</span> GDS window.
 
 <hr class=hide />
 <a name="parametertypes">
+<p>&nbsp;</p>
+</a>
 
 <h2>  Parameter types</h2>
-</a>
 
 <p>
 Every parameter of any type used in any math expression must be
@@ -261,9 +262,10 @@ Penalty and merge parameters have not been implemented.
 
 <hr class=hide />
 <a name="userinteraction">
+<p>&nbsp;</p>
+</a>
 
 <h2>  User interaction</h2>
-</a>
 
 <p class=todo>
 <img class=tinyfloatleft border=0 src="../images/todo.png" alt="To do!">
@@ -272,9 +274,10 @@ Explain drag and drop
 
 <hr class=hide />
 <a name="buttonbar">
+<p>&nbsp;</p>
+</a>
 
 <h3>  Button bar</h3>
-</a>
 
 <p>
 The stack of buttons on the right side of the GDS window contains many
@@ -358,9 +361,10 @@ This button appends a blank row to the end of the grid.
 
 <hr class=hide />
 <a name="keyboardshortcuts">
+<p>&nbsp;</p>
+</a>
 
 <h3>  Keyboard shortcuts</h3>
-</a>
 
 <p>
 When one or more rows are selected, you can use the following keyboard
@@ -398,9 +402,10 @@ shortcuts to change the parameter type of that set of parameters.
 
 <hr class=hide />
 <a name="contextmenu">
+<p>&nbsp;</p>
+</a>
 
 <h3>  Context menu</h3>
-</a>
 
 <p>
 
@@ -533,6 +538,64 @@ bar explaining the various parameter types.
 </dd>
 </dl>
 </p>
+
+<p>
+<hr class=hide />
+<a name="creatingparametersfrommathexpressionsonthepathpage">
+<p>&nbsp;</p>
+</a>
+</p>
+
+<p>
+<h3>  Creating parameters from math expressions on the path page</h3>
+</p>
+
+<p>
+<p>
+Parameters can be created from the 
+<a href="path/index.html">path page</a>.
+When you right click on a word in a math expression for the one of the
+<a href="path/mathexp.html">path
+parameters</a>, a menu pops up which allows you to set the word you
+clicked upon as GDS parameter.
+</p>
+</p>
+
+<p>
+<div class=figure style="max-width: 912px; min-width: 7em;">
+<a name=gds_path>
+<img src=../images/gds_path.png width=100%>
+</a>
+<p align=center>
+Creating GDS parameters by right clicking on a math expression on the
+Path page.
+</p>
+</div>
+</p>
+
+<p>
+<p>
+If you have not yet defined the word you click on, then the GDS window
+will appear on screen, and the parameter will be inserted into the GDS
+table as the type of parameter selected from the menu.
+</p>
+</p>
+
+<p>
+<p>
+If the word has already been defined, then its type will be changed to
+the type you select from the menu.
+</p>
+</p>
+
+<p>
+<p>
+If the word is something that is not allowed as a parameter name
+(things like <tt>dr1</tt> and <tt>cos</tt>
+are reserved words and cannot be used as parameter names) then the menu
+will not be posted.  Likewise, the menu will not be posted if you
+right click on a number.
+</p></p>
 
 </div>
 
