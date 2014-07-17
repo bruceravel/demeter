@@ -23,6 +23,9 @@
               suffix  => 'flat',
  	      shift   => $D->bkg_eshift,
 	     );
+  ($key1 = $D ->name) =~ s{_}{\\\\_}g;
+  ($key2 = $DS->name) =~ s{_}{\\\\_}g;
+
 
   ## k quadrant: k-weighted chi(k)
   $kylabel = $P->plot_kylabel;
@@ -75,8 +78,8 @@ set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
 set ylabel "\{/*1.4 x\{/Symbol m\}(E)\}"
 set key bottom right
 set xrange [ {$emin} : {$emax} ]
-plot '{$emu1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$D->name}",\
-     '{$emu2}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "{$DS->name}"
+plot '{$emu1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$key1}",\
+     '{$emu2}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "{$key2}"
 
 unset key
 
