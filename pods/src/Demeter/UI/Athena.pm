@@ -2201,12 +2201,12 @@ sub plot {
   };
 
   ## I am not clear why this is necessary...
-  foreach my $i (0 .. $#data) {
-    my @save = $data[0]->get(qw(update_columns update_norm update_bkg update_fft update_bft));
-    $data[$i]->bkg_fixstep($is_fixed[$i]);
-    $data[$i]->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
-		   update_fft     => $save[3], update_bft  => $save[4],);
-  };
+  #foreach my $i (0 .. $#data) {
+  #  my @save = $data[0]->get(qw(update_columns update_norm update_bkg update_fft update_bft));
+  #  $data[$i]->bkg_fixstep($is_fixed[$i]);
+  #  $data[$i]->set(update_columns => $save[0], update_norm => $save[1], update_bkg => $save[2],
+  #		   update_fft     => $save[3], update_bft  => $save[4],);
+  #};
   $app->postplot($data[0], $is_fixed[0]);
 
   $app->{lastplot} = [$space, $how];
