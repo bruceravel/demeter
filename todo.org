@@ -1,6 +1,9 @@
-#+TITLE: Demeter To Do List (also Athena and Artemis)
+#+TITLE: Demeter/Athena/Artemis To Do List
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
+#+OPTIONS: toc:2
 
 * top priorities
 ** small things

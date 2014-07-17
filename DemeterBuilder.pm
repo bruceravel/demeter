@@ -202,12 +202,16 @@ sub ACTION_build_dpg {
 ### Manage org-mode pages
 
 sub ACTION_org2html {
+  print "copying stylesheets\n";
+  copy(File::Spec->catfile('css','orgstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgstyle.css'));
+  copy(File::Spec->catfile('css','orgtocstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgtocstyle.css'));
   if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
-    system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
+    #system(q{emacs --batch --eval="(require 'org)" -f org-html-export-to-html todo.org});
+    system('emacs --batch --visit=todo.org --funcall org-html-export-to-html');
     move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
   };
   if (not is_older("Changes.org", File::Spec->catfile($ghpages, 'Changes.html'))) {
-    system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=Changes.org --funcall org-export-as-html-batch');
+    system('emacs --batch --visit=Changes.org --funcall org-html-export-to-html');
     move('Changes.html', File::Spec->catfile($ghpages, 'Changes.html'));
   };
 };
@@ -307,6 +311,7 @@ sub _slurp {
 sub is_older {
   my ($file1, $file2) = @_;
   return 1 if not -e $file1;
+  return 0 if not -e $file2;
   return (stat($file1))[9] < (stat($file2))[9]
 };
 

@@ -1,0 +1,22 @@
+body {
+  width: 63%;
+  float: left;
+}
+#table-of-contents {
+    background: #fdf6e3;
+    /* color: #000; */
+    float: top;
+    margin-top: 0;
+    margin-bottom: 10;
+    margin-left: 64%;
+    margin-right: 0;
+    clear: left;
+    position: fixed;
+    width: 30%;
+    height: 70%;
+    font: 0.8em sans-serif;
+    font-weight: normal;
+    border: 1pt solid #93a1a1;
+    padding: 0.35em 0.625em 0.75em;
+    overflow: auto;
+}
