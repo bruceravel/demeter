@@ -174,43 +174,44 @@ h6 {
   font-weight: 700;
 }
 html {
-  background-color: #eee8d5;
-  color: #657b83;
+  /* background-color: #eee8d5; */
+  background-color: #202525;
+  color: #eeeeec;
   margin: 1em;
 }
 body {
-  background-color: #fdf6e3;
+  background-color: #2D3333;
   margin: 0 auto;
   max-width: 23cm;
   border: 1pt solid #93a1a1;
   padding: 1em;
 }
 code {
-  background-color: #eee8d5;
+  background-color: #465050;
   padding: 2px;
 }
 a {
-  color: #b58900;
+  color: #7EC0EE;
 }
 a:visited {
-  color: #cb4b16;
+  color: #7EC0EE;
 }
 a:hover {
-  color: #cb4b16;
+  color: #7EC0EE;
 }
-h1 {
-  color: #d33682;
+h2 {
+  color: #1E90FF;
 }
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #859900;
+h1,h3 {
+    color: #EDD400
+}
+
+h4,h5,h6 {
+  color: #6ac214;
 }
 pre {
-  background-color: #fdf6e3;
-  color: #657b83;
+  background-color: #465050;
+  color: #bbbbbc;
   border: 1pt solid #93a1a1;
   padding: 1em;
   box-shadow: 5pt 5pt 8pt #eee8d5;
