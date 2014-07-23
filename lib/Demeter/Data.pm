@@ -484,6 +484,9 @@ override alldone => sub {
 override all => sub {
   my ($self) = @_;
   my %all = $self->SUPER::all;
+  foreach my $k (keys %all) {
+    delete $all{$k} if $k =~ m {\Axdi};
+  };
   delete $all{fft_pcpath};
   delete $all{is_mc};
   delete $all{xdi};

@@ -40,14 +40,15 @@ sub is_xdac {
   ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
     if (exists $INC{'Xray/XDI.pm'}) {
-      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION->normal : '0';
-      $self->xdi_version($ver);
+      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION : '0';
+      $self->xdi->xdi_version($ver);
     } else {
-      $self->xdi_version('-1');
+      $self->xdi->xdi_version('-1');
+      return 1;
     };
-    $self->xdi_applications(sprintf("XDAC/%s.%s", $1, $2));
-    $self->set_xdi_facility('name', 'NSLS');
-    $self->set_xdi_facility('xray_source', 'bend magnet');
+    $self->xdi->extra_version(sprintf("XDAC/%s.%s", $1, $2));
+    $self->xdi->set('Facility', 'name', 'NSLS');
+    $self->xdi->set('Facility', 'xray_source', 'bend magnet');
 
     my $flag = 0;
     my $remove_ifeffit_comments = 0;
@@ -57,7 +58,7 @@ sub is_xdac {
       my @line = split(" ", $li);
     SWITCH: {
 	($line[0] =~ m{\AE0}) and do {
-	  $self->set_xdi_scan('edge_energy', $line[1]);
+	  $self->xdi->set('Scan', 'edge_energy', $line[1]);
 	  last SWITCH;
 	};
 
@@ -66,7 +67,7 @@ sub is_xdac {
 	  my ($year) = ($3 < 80) ? 2000+$3 : 1900+$3;
 	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $year, $2, $1, 'T', $hour, $5, $6);
 	  my $bl = lc(sprintf("%s%s%s%s", $8, $9, $10, $11));
-	  $self->set_xdi_scan('start_time', $time);
+	  $self->xdi->set('Scan', 'start_time', $time);
 	  $self->daq('xdac');
 	  $self->beamline($bl);
 	  my $ini = join(".", 'xdac', $bl, 'ini');
@@ -81,27 +82,27 @@ sub is_xdac {
 	};
 
 	($line[0] =~ m{\ASRB}) and do {
-	  $self->push_xdi_extension('XDAC.SRB: ' . join(" ", @line[1..$#line]));
+	  $self->xdi->set('XDAC', 'SRB', join(" ", @line[1..$#line]));
 	  last SWITCH;
 	};
 
 	($line[0] =~ m{\ASRSS}) and do {
-	  $self->push_xdi_extension('XDAC.SRSS: ' . join(" ", @line[1..$#line]));
+	  $self->xdi->set('XDAC', 'SRSS', join(" ", @line[1..$#line]));
 	  last SWITCH;
 	};
 
 	($line[0] =~ m{\ASettling}) and do {
-	  $self->push_xdi_extension('XDAC.Settling_time: ' . join(" ", $line[2]));
+	  $self->xdi->set('XDAC', 'Settling_time', join(" ", $line[2]));
 	  last SWITCH;
 	};
 
 	($line[0] =~ m{\AOffsets}) and do {
-	  $self->push_xdi_extension('XDAC.Offsets: ' . join(" ", @line[1..$#line]));
+	  $self->xdi->set('XDAC', 'Offsets', join(" ", @line[1..$#line]));
 	  last SWITCH;
 	};
 
 	($line[0] =~ m{\AGains}) and do {
-	  $self->push_xdi_extension('XDAC.Gains: ' . join(" ", @line[1..$#line]));
+	  $self->xdi->set('XDAC', 'Gains', join(" ", @line[1..$#line]));
 	  $flag = 1;
 	  last SWITCH;
 	};

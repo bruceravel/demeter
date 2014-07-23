@@ -1,191 +1,116 @@
 package Demeter::Data::XDI;
 use Moose::Role;
+use MooseX::Aliases;
 use File::Basename;
 use Demeter::IniReader;
 use Demeter::StrTypes qw( Empty );
 use List::MoreUtils qw(zip);
 
 if ($INC{'Xray/XDI.pm'}) {
-  has 'xdi' => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
-		trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
+  has xdifile => (is => 'rw', isa => 'Str', default=>q{},
+		  trigger => sub{my ($self, $new) = @_; $self->_import_xdi($new);});
+  has xdi     => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},);
 } else {
-  has 'xdi' => (is => 'ro', isa => 'Str', default=>q{},);
+  has xdifile => (is => 'ro', isa => 'Str', default=>q{},);
+  has xdi     => (is => 'ro', isa => 'Str', default=>q{},);
 };
-
-has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
-
-
-has 'xdi_column'    => (traits    => ['Hash'],
-			is        => 'rw',
-			isa       => 'HashRef',
-			default   => sub { {} },
-			handles   => {
-				      'exists_in_xdi_column'   => 'exists',
-				      'keys_in_xdi_column'     => 'keys',
-				      'get_xdi_column'         => 'get',
-				      'set_xdi_column'         => 'set',
-				      'delete_from_xdi_column' => 'delete'
-				     }
-		       );
-has 'xdi_scan'      => (traits    => ['Hash'],
-			is        => 'rw',
-			isa       => 'HashRef',
-			default   => sub { {} },
-			handles   => {
-				      'exists_in_xdi_scan'   => 'exists',
-				      'keys_in_xdi_scan'     => 'keys',
-				      'get_xdi_scan'         => 'get',
-				      'set_xdi_scan'         => 'set',
-				      'delete_from_xdi_scan' => 'delete'
-				     }
-		       );
-has 'xdi_mono'     => (traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_xdi_mono'   => 'exists',
-				     'keys_in_xdi_mono'     => 'keys',
-				     'get_xdi_mono'         => 'get',
-				     'set_xdi_mono'         => 'set',
-				     'delete_from_xdi_mono' => 'delete'
-				    }
-		      );
-has 'xdi_beamline' => (traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_xdi_beamline'   => 'exists',
-				     'keys_in_xdi_beamline'     => 'keys',
-				     'get_xdi_beamline'         => 'get',
-				     'set_xdi_beamline'         => 'set',
-				     'delete_from_xdi_beamline' => 'delete'
-				    }
-		      );
-has 'xdi_facility' => (traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_xdi_facility'   => 'exists',
-				     'keys_in_xdi_facility'     => 'keys',
-				     'get_xdi_facility'         => 'get',
-				     'set_xdi_facility'         => 'set',
-				     'delete_from_xdi_facility' => 'delete'
-				    }
-		      );
-has 'xdi_detector' => (traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_xdi_detector'   => 'exists',
-				     'keys_in_xdi_detector'     => 'keys',
-				     'get_xdi_detector'         => 'get',
-				     'set_xdi_detector'         => 'set',
-				     'delete_from_xdi_detector' => 'delete'
-				    }
-		      );
-has 'xdi_sample'   => (traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_xdi_sample'   => 'exists',
-				     'keys_in_xdi_sample'     => 'keys',
-				     'get_xdi_sample'         => 'get',
-				     'set_xdi_sample'         => 'set',
-				     'delete_from_xdi_sample' => 'delete'
-				    }
-		      );
+has 'xdi_allattributes' => (
+			 traits    => ['Array'],
+			 is        => 'ro',
+			 isa       => 'ArrayRef',
+			 default   => sub { [qw(ok warning errorcode error filename xdi_libversion xdi_version extra_version
+						element edge dspacing comments nmetadata npts narrays narray_labels array_labels
+						array_units metadata data)] },
+			);
 
 
-has 'xdi_extensions'   => (traits    => ['Array'],
-			   is => 'rw', isa => 'ArrayRef[Str]',
-			   default => sub{[]},
-			   handles   => {
-					 'push_xdi_extension'  => 'push',
-					 'pop_xdi_extension'   => 'pop',
-					 'clear_xdi_extensions' => 'clear',
-					},
-			  );
-
-has 'xdi_comments'     => (
-			   traits    => ['Array'],
-			   is        => 'rw',
-			   isa       => 'ArrayRef',
-			   default   => sub { [] },
-			   handles   => {
-					 'push_xdi_comment'  => 'push',
-					 'pop_xdi_comment'   => 'pop',
-					 'clear_xdi_comments' => 'clear',
-					}
-			  );
-has 'xdi_labels'     => (
-			   traits    => ['Array'],
-			   is        => 'rw',
-			   isa       => 'ArrayRef',
-			   default   => sub { [] },
-			   handles   => {
-					 'push_xdi_label'  => 'push',
-					 'pop_xdi_label'   => 'pop',
-					 'clear_xdi_labels' => 'clear',
-					}
-			  );
-
-sub import_xdi {
-  my ($self, $xdi) = @_;
+sub _import_xdi {
+  my ($self, $xdifile) = @_;
   return $self if not ($INC{'Xray/XDI.pm'});
-  return $self if (ref($xdi) !~ m{XDI|Class::MOP|Moose::Meta::Class});
-  foreach my $f (qw(version applications
-		    column scan mono beamline facility detector sample
-		    extensions comments labels)) {
-    my $att = 'xdi_' . $f;
-    $self->$att($xdi->$f);
-  };
-  ## move data into backend (Ifeffit/Larch) arrays
-  my $ncol = $#{$xdi->labels};
-  my $npts = $#{$xdi->data};
-  my $data = $xdi->data;
-  my $transposed = [];
-  foreach my $i (0 .. $npts) {
-    foreach my $j (0 .. $ncol) {
-      $transposed->[$j]->[$i] = $data->[$i]->[$j]
-    };
-  };
-  #use Data::Dumper;
-  #print Data::Dumper->Dump([$transposed], [qw(*transposed)]);
-  foreach my $i (0 .. $ncol) {
-    $self->put_array($xdi->labels->[$i], $transposed->[$i]);
-  };
-
-  ## process the data in the manner of Demeter::Data::read_data
-  $self->place_scalar("e0", 0);
-  my $string = lc( join(" ", @{$xdi->labels}) );
-  $self->place_string("column_label", $string);
-  $self->columns(join(" ", $string));
-  $self->provenance("XDI file ".$self->file);
-  $self->is_col(1);
-  $self->file($xdi->file);
-  $self->update_data(0);
-  $self->update_columns(0);
-  $self->update_norm(1);
-  $self->sort_data;
-  $self->put_data;
-  $self->resolve_defaults;
-
-  my @x = $self->get_array('energy'); # set things for about dialog
-  return $self if not @x;
-  $self->npts($#x+1);
-  $self->xmin($x[0]);
-  $self->xmax($x[$#x]);
-  $self->name(basename($self->file));
+  return $self if not -e $xdifile;
+  my $xdi   = Xray::XDI->new;
+  $xdi  -> file($xdifile);
+  $self -> xdi($xdi);
   return $self;
-
-  ## use math expressions for making spectra
 };
+
+
+##### metadata ########################################
+
+sub xdi_families {
+  my ($self) = @_;
+  return () if not ($INC{'Xray/XDI.pm'});
+  return sort keys %{$self->xdi->{metadata}};
+};
+
+sub xdi_keys {
+  my ($self, $family) = @_;
+  return () if not ($INC{'Xray/XDI.pm'});
+  return () if not defined $self->xdi->{metadata}->{$family};
+  return sort keys %{$self->xdi->{metadata}->{$family}};
+};
+
+
+sub xdi_datum {
+  my ($self, $family, $key) = @_;
+  return q{} if not ($INC{'Xray/XDI.pm'});
+  return "family $family does not exist"      if not defined $self->xdi->{metadata}->{$family};
+  return "key $key does not exist in $family" if not defined $self->xdi->{metadata}->{$family}->{$key};
+  return $self->xdi->{metadata}->{$family}->{$key};
+};
+
+sub xdi_metadata {
+  my ($self) = @_;
+  return () if not ($INC{'Xray/XDI.pm'});
+  return %{$self->xdi->{metadata}};
+};
+
+##### data table ######################################
+
+sub xdi_data {
+  my ($self) = @_;
+  return () if not ($INC{'Xray/XDI.pm'});
+  return %{$self->xdi->{data}};
+};
+
+sub xdi_get_array {
+  my ($self, $label) = @_;
+  my $i = 0;
+  foreach my $lab ($self->xdi->array_labels) {
+    last if (lc($label) eq lc($lab));
+    ++$i;
+  };
+  return () if not $self->xdi->data->{$label};
+  return @{$self->xdi->data->{$label}};
+};
+sub xdi_get_iarray {
+  my ($self, $i) = @_;
+  return () if ($i > $self->xdi->narrays);
+  return () if ($i < 1);
+  return @{$self->xdi->data->{$self->xdi->array_labels->[$i-1]}};
+};
+
+
+
+##### Moosish attributes ##############################
+
+sub xdi_attribute {
+  my ($self, @which) = @_;
+  return () if not ($INC{'Xray/XDI.pm'});
+  my $regex = join("|",@{$self->xdi_allattributes});
+  if (wantarray) {
+    my @list = map {($_ =~ m{$regex}o) ? $self->xdi->$_ : q{}} @which;
+    return @list;
+  } else {
+    my $att = $which[0];
+    return $self->xdi->$att;
+  };
+};
+alias xdi_attributes => 'xdi_attribute';
+
+
+
+
 
 sub metadata_from_ini {
   my ($self, $inifile) = @_;
@@ -198,36 +123,28 @@ sub metadata_from_ini {
     next if ($namespace eq 'labels');
     foreach my $parameter (keys(%{$ini->{$namespace}})) {
       my $method = "set_xdi_$namespace";
-      $self->$method($parameter, $ini->{$namespace}{$parameter});
+      $self->xdi->set(ucfirst($namespace), $parameter, $ini->{$namespace}{$parameter});
     };
   };
   $self->labels([split(" ", $ini->{labels}{labels})]) if exists $ini->{labels};
 };
 
-sub xdi_defined {
-  my ($self, $cc) = @_;
-  return $self if not ($INC{'Xray/XDI.pm'});
-  $cc ||= q{};
-  $cc .= " " if ($cc and ($cc !~ m{ \z}));
-  my $text = q{};
-  foreach my $namespace (qw(beamline scan mono facility detector sample)) {
-    my $method = 'xdi_'.$namespace;
-    next if ($self->$method =~ m{\A\s*\z});
-    foreach my $k (sort keys %{$self->$method}) {
-      $text .= sprintf "%s%s.%s: %s$/", $cc, ucfirst($namespace), $k, $self->$method->{$k};
-    };
-  };
-  return $text;
-};
+# sub xdi_defined {
+#   my ($self, $cc) = @_;
+#   return $self if not ($INC{'Xray/XDI.pm'});
+#   $cc ||= q{};
+#   $cc .= " " if ($cc and ($cc !~ m{ \z}));
+#   my $text = q{};
+#   foreach my $namespace (qw(beamline scan mono facility detector sample)) {
+#     my $method = 'xdi_'.$namespace;
+#     next if ($self->$method =~ m{\A\s*\z});
+#     foreach my $k (sort keys %{$self->$method}) {
+#       $text .= sprintf "%s%s.%s: %s$/", $cc, ucfirst($namespace), $k, $self->$method->{$k};
+#     };
+#   };
+#   return $text;
+# };
 
-sub metadata {
-  my ($self) = @_;
-  my @keys = qw(xdi_version xdi_applications xdi_comments xdi_scan xdi_mono
-		xdi_beamline xdi_facility xdi_detector xdi_sample xdi_extensions
-		xdi_comments xdi_labels);
-  my @values = $self->get(@keys);
-  return zip @keys, @values;
-};
 
 1;
 

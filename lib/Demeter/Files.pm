@@ -213,6 +213,15 @@ sub is_zipproj {
   return 1;
 };
 
+sub is_xdi {
+  my ($self, $xdifile, $verbose) = @_;
+  open (my $X, $xdifile) or $self->Croak("could not open $xdifile: $!");
+  my $first = <$X>;
+  close $X;
+  print $first if $verbose;
+  return ($first =~ m{\A\#\s+XDI});
+};
+
 
 1;
 

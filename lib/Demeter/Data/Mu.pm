@@ -801,8 +801,8 @@ sub find_edge {
   my $input = $e0;
   my ($edge, $answer, $this) = ("K", 1, 0);
   my $diff = 100000;
-  my $xdi_elem = (exists $self->xdi_scan->{element}) ? $self->xdi_scan->{element} : q{};
-  my $xdi_edge = (exists $self->xdi_scan->{edge})    ? $self->xdi_scan->{edge}    : q{};
+  my $xdi_elem = ($INC{'Xray::XDI.pm'} and $self->xdi_attribute('element')) ? $self->xdi_attribute('element') : q{};
+  my $xdi_edge = ($INC{'Xray::XDI.pm'} and $self->xdi_attribute('edge'))    ? $self->xdi_attribute('edge')    : q{};
   return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
   foreach my $ed (qw(K L1 L2 L3)) {  # M1 M2 M3 M4 M5
   Z: foreach (1..104) {

@@ -92,8 +92,8 @@ sub pull_values {
   return if (not exists $INC{'Xray/XDI.pm'});
   my @exttext  = split(/\n/, $this->{extensions}->GetValue);
   my @commtext = split(/\n/, $this->{comments}  ->GetValue);
-  $data->xdi_extensions(\@exttext);
-  $data->xdi_comments(\@commtext);
+#  $data->xdi_extensions(\@exttext);
+#  $data->xdi_comments(\@commtext);
   return $this;
 };
 
@@ -105,19 +105,19 @@ sub push_values {
   foreach my $namespace ('beamline', 'scan', 'mono', 'facility', 'detector', 'sample') {
     my $leaf = $this->{tree}->AppendItem($this->{root}, ucfirst($namespace), 0, 1,
 					Wx::TreeItemData->new( $namespace ));
-    my $att = 'xdi_'.$namespace;
-    foreach my $k (sort {$a cmp $b} keys %{$data->$att}) {
-      my $label = sprintf("%s = %s", $k, $data->$att->{$k});
-      my $child = $this->{tree}->AppendItem($leaf, $label, 0, 1,
-					    Wx::TreeItemData->new( sprintf("%s.%s = %s",
-									   $namespace, $k, $data->$att->{$k} ) ));
-    };
+    # my $att = 'xdi_'.$namespace;
+    # foreach my $k (sort {$a cmp $b} keys %{$data->$att}) {
+    #   my $label = sprintf("%s = %s", $k, $data->$att->{$k});
+    #   my $child = $this->{tree}->AppendItem($leaf, $label, 0, 1,
+    # 					    Wx::TreeItemData->new( sprintf("%s.%s = %s",
+    # 									   $namespace, $k, $data->$att->{$k} ) ));
+    # };
     $this->{tree}->Expand($leaf);
   };
-  $this->{xdi}->SetValue($data->xdi_version);
-  $this->{apps}->SetValue($data->xdi_applications);
-  $this->{extensions}->SetValue(join($/, @{$data->xdi_extensions}));
-  $this->{comments}  ->SetValue(join($/, @{$data->xdi_comments  }));
+  # $this->{xdi}->SetValue($data->xdi_version);
+  # $this->{apps}->SetValue($data->xdi_applications);
+  # $this->{extensions}->SetValue(join($/, @{$data->xdi_extensions}));
+  # $this->{comments}  ->SetValue(join($/, @{$data->xdi_comments  }));
   1;
 };
 

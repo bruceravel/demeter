@@ -114,7 +114,7 @@ sub Import {
     };
 
     my $xdi = q{};
-    if ($Demeter::XDI_exists) {
+    if ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
       $xdi = Xray::XDI->new;
       $xdi->file($file);
       ## at this point, run a test against $xdi->applications and
@@ -127,7 +127,7 @@ sub Import {
       $type = 'prj';
       $stashfile = $file;
     } else {
-      if ($xdi and $xdi->is_xdi) {
+      if ($xdi and $xdi->ok and 0) { # <============ XDI disabled!!!
 	$type = 'xdi';
       } else {
 	$plugin = test_plugins($app, $file);
@@ -768,6 +768,7 @@ sub _prj {
     $app->{main}->status("Canceled import from project file.");
     return 0;
   };
+
 
   my @selected = $app->{main}->{prj}->{grouplist}->GetSelections;
   @selected = (0 .. $app->{main}->{prj}->{grouplist}->GetCount-1) if not @selected;

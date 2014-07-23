@@ -3,8 +3,8 @@
 # Column.2: i0
 # Column.3: itrans
 # Column.4: mutrans
-# Scan.edge: K
-# Scan.element: Cu
+# Element.edge: K
+# Element.symbol: Cu
 # Scan.edge_energy: 8980.0
 # Mono.name: Si 111
 # Mono.d_spacing: 3.13553
@@ -23,6 +23,7 @@
 # GSE.EXTRA:  config 1
 # ///
 # Cu foil Room Temperature
+# measured at beamline 13-ID
 #----
 # energy i0 itrans mutrans
   8779.0  149013.7  550643.089065  -1.3070486
