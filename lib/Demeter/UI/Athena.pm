@@ -169,9 +169,9 @@ sub OnInit {
   $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
   Demeter->set_mode(callback     => \&ifeffit_buffer,
-		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
-		     feedback     => \&feedback,
-		    );
+		    plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		    feedback     => \&feedback,
+		   );
 
   $app->{main} -> SetSizerAndFit($hbox);
   $app->{main} ->{return}->Show;

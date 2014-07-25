@@ -11,8 +11,8 @@
   $spl2  = sprintf("%.3f", $D->bkg_spl2);
   $nc0   = sprintf("%.6f", $D->bkg_nc0);
   $nc1   = sprintf("%.6g", $D->bkg_nc1);
-  $nc2   = sprintf("%.6g", $D->bkg_nc2);
-  $nc3   = ($D->is_larch) ? sprintf("%.6g", $D->bkg_nc3) : 0;
+  $nc2   = sprintf("%.9g", $D->bkg_nc2);
+  $nc3   = ($D->is_larch) ? sprintf("%.12g", $D->bkg_nc3) : 0;
   $int   = sprintf("%.6f", $D->bkg_int);
   $slope = sprintf("%.6g", $D->bkg_slope);
   q{}

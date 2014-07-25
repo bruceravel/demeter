@@ -77,7 +77,7 @@ sub is_xdac {
 	};
 
 	($line[0] =~ m{\ANUM_REGIONS}) and do {
-	  $self->push_xdi_extension('XDAC.NUM_REGIONS: ' . $line[1]);
+	  $self->xdi->set('XDAC', 'NUM_REGIONS', $line[1]);
 	  last SWITCH;
 	};
 
@@ -115,7 +115,7 @@ sub is_xdac {
 	  $remove_ifeffit_comments = 0; # may want to set this to 1 once XDI is properly
                                         # integrated into Demeter.  will then need to fix
 				        # clear_ifeffit_titles test in 004_data.t
-	  $self->push_xdi_comment($li);
+	  $self->xdi->push_comment($li);
 	  last SWITCH;
 	};
 

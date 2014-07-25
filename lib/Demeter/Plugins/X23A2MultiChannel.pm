@@ -99,8 +99,8 @@ sub add_metadata {
   my ($self, @data) = @_;
   foreach my $d (@data) {
     $d->is_xdac($self->file);
-    $d->set_xdi_detector('i0', 'multichannel ionization chamber');
-    $d->set_xdi_detector('it', 'multichannel ionization chamber');
+    $d->xdi->set('Detector', 'i0', 'multichannel ionization chamber');
+    $d->xdi->set('Detector', 'it', 'multichannel ionization chamber');
   };
 };
 

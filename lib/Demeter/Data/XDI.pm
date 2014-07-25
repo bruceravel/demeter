@@ -18,9 +18,9 @@ has 'xdi_allattributes' => (
 			 traits    => ['Array'],
 			 is        => 'ro',
 			 isa       => 'ArrayRef',
-			 default   => sub { [qw(ok warning errorcode error filename xdi_libversion xdi_version extra_version
-						element edge dspacing comments nmetadata npts narrays narray_labels array_labels
-						array_units metadata data)] },
+			 default   => sub { [qw(ok warning errorcode error filename xdi_libversion xdi_version
+						extra_version element edge dspacing comments nmetadata npts
+						narrays narray_labels array_labels array_units metadata data)] },
 			);
 
 
@@ -65,6 +65,8 @@ sub xdi_metadata {
   return %{$self->xdi->{metadata}};
 };
 
+
+
 ##### data table ######################################
 
 sub xdi_data {
@@ -103,7 +105,7 @@ sub xdi_attribute {
     return @list;
   } else {
     my $att = $which[0];
-    return $self->xdi->$att;
+    return $self->xdi->$att || q{};
   };
 };
 alias xdi_attributes => 'xdi_attribute';

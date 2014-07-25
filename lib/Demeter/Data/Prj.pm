@@ -272,6 +272,10 @@ sub _record {
 				 xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
 				 xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
 				 xdi_mu_reference
+
+				 xdi_mono xdi_sample xdi_scan xdi_extensions xdi_applications
+				 xdi_labels xdi_detector xdi_beamline xdi_column xdi_comments xdi_version
+				 xdi_facility
 			      );
   SWITCH: {
       ($k eq 'quenched') and do {
@@ -313,10 +317,10 @@ sub _record {
 	$groupargs{$k} = $args{$k};
 	last SWITCH;
       };
-      ($k eq 'xdi_beamline') and do {
-	$groupargs{$k} = {name => $args{$k}} if $args{$k};
-	last SWITCH;
-      };
+      #($k eq 'xdi_beamline') and do {
+      #  $groupargs{$k} = {name => $args{$k}} if $args{$k};
+      #  last SWITCH;
+      #};
 
       ## back Fourier transform parameters
       ($k =~ m{\Abft_(.*)\z}) and do { # bft_win --> bft_rwindow, others are the same
@@ -372,10 +376,10 @@ sub _record {
       };
 
       ## xdi_ parameters
-      ($k =~ m{\Axdi_(.*)\z}) and do {
-	$groupargs{$k} = $args{$k};
-	last SWITCH;
-      };
+      # ($k =~ m{\Axdi_(.*)\z}) and do {
+      # 	$groupargs{$k} = $args{$k};
+      # 	last SWITCH;
+      # };
 
     };
   };

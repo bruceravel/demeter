@@ -214,7 +214,7 @@ sub _correct {
 sub add_metadata {
   my ($self, $data) = @_;
   $data->is_xdac($self->file);
-  $data->set_xdi_detector('if', $self->nelements.' element Vortex silicon drift');
+  $data->xdi->set('Detector', 'if', $self->nelements.' element Vortex silicon drift');
 };
 
 

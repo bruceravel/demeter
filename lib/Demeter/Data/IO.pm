@@ -313,9 +313,10 @@ sub title_glob {
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
-  my $apps = join(" ", "XDI/1.0", $self->data->xdi_applications, "Demeter/$Demeter::VERSION");
+  my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Demeter/$Demeter::VERSION");
 
-  my @all = ($apps, @titles, "///", @{$self->data->xdi_comments});
+  my $xdic = $self->data->xdi_attribute('comments') || q{};
+  my @all = ($apps, @titles, "///", split(/\n/, $xdic));
   if ($self->is_ifeffit) {
     foreach my $line (@all) {
       ++$i;

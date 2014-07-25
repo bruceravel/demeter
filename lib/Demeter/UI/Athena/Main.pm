@@ -1100,9 +1100,11 @@ sub ContextMenu {
     $menu->AppendSeparator;
     $menu->Append($ALL_TO_1,    "Set Importance to 1 for all groups");
     $menu->Append($MARKED_TO_1, "Set Importance to 1 for marked groups");
-    if (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions}) {
-      $menu->AppendSeparator;
-      $menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data to BLA pixel ratio");
+    if ($app->current_data->xdi) {
+      if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
+	$menu->AppendSeparator;
+	$menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data to BLA pixel ratio");
+      };
     };
   } elsif ($which eq 'bkg_eshift') {
     $menu->AppendSeparator;
@@ -1126,9 +1128,11 @@ sub ContextMenu {
     $menu->Append($STEP_MARKED,  "Show edge steps of marked groups");
     $menu->AppendSeparator;
     $menu->Append($STEP_ERROR,   "Approximate uncertainty in edge step");
-  } elsif (($which eq 'plot_multiplier') and (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions})) {
-    $menu->AppendSeparator;
-    $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
+  } elsif (($which eq 'plot_multiplier') and ($app->current_data->xdi)) {
+    if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
+      $menu->AppendSeparator;
+      $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
+    };
   };
 
   ## set to session default
@@ -1224,10 +1228,9 @@ sub DoContextMenu {
     ($id == $IMP_BLA_PIXEL) and do {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	next if (not $app->{main}->{list}->IsChecked($i));
-	foreach my $ext (@{$app->{main}->{list}->GetIndexedData($i)->xdi_extensions}) {
-	  if ($ext =~ m{BLA.pixel_ratio:\s+($NUMBER)}) {
-	    $app->{main}->{list}->GetIndexedData($i)->importance($1);
-	  };
+	my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
+	if (looks_like_number($pr)) {
+	  $app->{main}->{list}->GetIndexedData($i)->importance($pr);
 	};
       };
       $app->modified(1);
@@ -1237,10 +1240,9 @@ sub DoContextMenu {
     ($id == $SCALE_BLA_PIXEL) and do {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	next if (not $app->{main}->{list}->IsChecked($i));
-	foreach my $ext (@{$app->{main}->{list}->GetIndexedData($i)->xdi_extensions}) {
-	  if ($ext =~ m{BLA.pixel_ratio:\s+($NUMBER)}) {
-	    $app->{main}->{list}->GetIndexedData($i)->plot_multiplier($1);
-	  };
+	my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
+	if (looks_like_number($pr)) {
+	  $app->{main}->{list}->GetIndexedData($i)->plot_multiplier($pr);
 	};
       };
       $app->modified(1);
