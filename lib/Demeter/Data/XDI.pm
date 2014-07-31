@@ -26,7 +26,7 @@ has 'xdi_allattributes' => (
 
 sub _import_xdi {
   my ($self, $xdifile) = @_;
-  return $self if not ($INC{'Xray/XDI.pm'});
+  return $self if not $INC{'Xray/XDI.pm'};
   return $self if not -e $xdifile;
   my $xdi   = Xray::XDI->new;
   $xdi  -> file($xdifile);
@@ -39,13 +39,13 @@ sub _import_xdi {
 
 sub xdi_families {
   my ($self) = @_;
-  return () if not ($INC{'Xray/XDI.pm'});
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return sort keys %{$self->xdi->{metadata}};
 };
 
 sub xdi_keys {
   my ($self, $family) = @_;
-  return () if not ($INC{'Xray/XDI.pm'});
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return () if not defined $self->xdi->{metadata}->{$family};
   return sort keys %{$self->xdi->{metadata}->{$family}};
 };
@@ -53,7 +53,7 @@ sub xdi_keys {
 
 sub xdi_datum {
   my ($self, $family, $key) = @_;
-  return q{} if not ($INC{'Xray/XDI.pm'});
+  return q{} if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return "family $family does not exist"      if not defined $self->xdi->{metadata}->{$family};
   return "key $key does not exist in $family" if not defined $self->xdi->{metadata}->{$family}->{$key};
   return $self->xdi->{metadata}->{$family}->{$key};
@@ -61,7 +61,7 @@ sub xdi_datum {
 
 sub xdi_metadata {
   my ($self) = @_;
-  return () if not ($INC{'Xray/XDI.pm'});
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return %{$self->xdi->{metadata}};
 };
 
@@ -71,7 +71,7 @@ sub xdi_metadata {
 
 sub xdi_data {
   my ($self) = @_;
-  return () if not ($INC{'Xray/XDI.pm'});
+  return () if ((((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi))) or (not $self->xdi)));
   return %{$self->xdi->{data}};
 };
 
@@ -98,7 +98,7 @@ sub xdi_get_iarray {
 
 sub xdi_attribute {
   my ($self, @which) = @_;
-  return () if not ($INC{'Xray/XDI.pm'});
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   my $regex = join("|",@{$self->xdi_allattributes});
   if (wantarray) {
     my @list = map {($_ =~ m{$regex}o) ? $self->xdi->$_ : q{}} @which;
@@ -116,7 +116,7 @@ alias xdi_attributes => 'xdi_attribute';
 
 sub metadata_from_ini {
   my ($self, $inifile) = @_;
-  return $self if not ($INC{'Xray/XDI.pm'});
+  return $self if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return if not -e $inifile;
   return if not -r $inifile;
   my $ini = Demeter::IniReader->read_file($inifile);

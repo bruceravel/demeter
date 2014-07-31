@@ -36,7 +36,7 @@ SKIP: {
     ok( $data->xdi_attribute('xdi_version') == $Xray::XDI::VERSION,         "version recognized");
     ok( $data->xdi_attribute('ok'),                                         "XDI file ok");
     ok( (not $data->xdi_attribute('warning')),                              "no warnings");
-    ok( $data->xdi_attribute('errorcode') == 0,                             "errorcode 0");
+    ok( (not $data->xdi_attribute('errorcode')),                            "no errorcode");
     ok( $data->xdi_attribute('extra_version') eq 'GSE/1.0',                 "extra version (moosish)");
     ok( $data->xdi_attribute('element') eq 'Cu',                            "element (moosish)");
     ok( $data->xdi_attribute('edge') eq 'K',                                "edge (moosish)");

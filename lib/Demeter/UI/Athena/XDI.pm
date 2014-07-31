@@ -89,7 +89,7 @@ sub new {
 
 sub pull_values {
   my ($this, $data) = @_;
-  return if (not exists $INC{'Xray/XDI.pm'});
+  return if ((not ($INC{'Xray/XDI.pm'}) or (not $data->xdi)));
   my @exttext  = split(/\n/, $this->{extensions}->GetValue);
   my @commtext = split(/\n/, $this->{comments}  ->GetValue);
 #  $data->xdi_extensions(\@exttext);
@@ -100,7 +100,7 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  return if (not exists $INC{'Xray/XDI.pm'});
+  return if ((not ($INC{'Xray/XDI.pm'}) or (not $data->xdi)));
   $this->{tree}->DeleteChildren($this->{root});
   foreach my $namespace ('beamline', 'scan', 'mono', 'facility', 'detector', 'sample') {
     my $leaf = $this->{tree}->AppendItem($this->{root}, ucfirst($namespace), 0, 1,

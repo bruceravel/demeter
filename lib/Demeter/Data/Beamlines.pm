@@ -34,6 +34,7 @@ sub identify_beamline {
 
 sub is_xdac {
   my ($self, $file) = @_;
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   open(my $fh, '<', $file);
   my $first = <$fh>;
 
