@@ -27,6 +27,9 @@ sub new {
     $box->Add(1,1,1);
   } else {
 
+
+    my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+
     ## versioning information
     my $versionbox       = Wx::StaticBox->new($this, -1, 'Versions', wxDefaultPosition, wxDefaultSize);
     my $versionboxsizer  = Wx::StaticBoxSizer->new( $versionbox, wxHORIZONTAL );
@@ -41,9 +44,9 @@ sub new {
 
 
     ## Defined fields
-    my $definedbox      = Wx::StaticBox->new($this, -1, 'Defined fields', wxDefaultPosition, wxDefaultSize);
-    my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxHORIZONTAL );
-    $this->{sizer}     -> Add($definedboxsizer, 2, wxALL|wxGROW, 0);
+    my $definedbox      = Wx::StaticBox->new($this, -1, 'XDI Metadata', wxDefaultPosition, wxDefaultSize);
+    my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxVERTICAL );
+    $this->{sizer}     -> Add($definedboxsizer, 3, wxALL|wxGROW, 0);
     $this->{defined}    = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
     $definedboxsizer->Add($this->{defined}, 1, wxALL|wxGROW, 5);
     my $defbox  = Wx::BoxSizer->new( wxVERTICAL );
@@ -55,27 +58,41 @@ sub new {
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
     $defbox -> Add($this->{tree}, 1, wxALL|wxGROW, 0);
     $this->{root} = $this->{tree}->AddRoot('Root');
-    EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
+    #EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
 
-    my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+    $this->{tree}->SetFont( Wx::Font->new( $size - 1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+
+
+    my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{expand}   = Wx::Button->new($this, -1, "Expand all");
+    $this->{collapse} = Wx::Button->new($this, -1, "Collapse all");
+    $definedboxsizer -> Add($hbox, 0, wxALL|wxGROW, 0);
+    $hbox            -> Add($this->{expand},  1, wxALL|wxGROW, 5);
+    $hbox            -> Add($this->{collapse}, 1, wxALL|wxGROW, 5);
+    EVT_BUTTON($this, $this->{expand},   sub{$this->{tree}->ExpandAll});
+    EVT_BUTTON($this, $this->{collapse}, sub{$this->{tree}->CollapseAll});
 
     ## extension fields
-    my $extensionbox      = Wx::StaticBox->new($this, -1, 'Extension fields', wxDefaultPosition, wxDefaultSize);
-    my $extensionboxsizer = Wx::StaticBoxSizer->new( $extensionbox, wxVERTICAL );
-    $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 0);
-    $this->{extensions}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					      wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
-    $this->{extensions}  -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-    $extensionboxsizer->Add($this->{extensions}, 1, wxALL|wxGROW, 5);
+    # my $extensionbox      = Wx::StaticBox->new($this, -1, 'Extension fields', wxDefaultPosition, wxDefaultSize);
+    # my $extensionboxsizer = Wx::StaticBoxSizer->new( $extensionbox, wxVERTICAL );
+    # $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 0);
+    # $this->{extensions}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+    # 					      wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
+    # $this->{extensions}  -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+    # $extensionboxsizer->Add($this->{extensions}, 1, wxALL|wxGROW, 5);
 
     ## comments
     my $commentsbox      = Wx::StaticBox->new($this, -1, 'Comments', wxDefaultPosition, wxDefaultSize);
-    my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxVERTICAL );
+    my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxHORIZONTAL );
     $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 0);
     $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
     $this->{comments}   -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $commentsboxsizer->Add($this->{comments}, 1, wxALL|wxGROW, 5);
+
+    $this->{savecomm}   = Wx::Button->new($this, -1, "Save\ncomments");
+    $commentsboxsizer->Add($this->{savecomm}, 0, wxALL|wxGROW, 5);
+    EVT_BUTTON($this, $this->{savecomm}, sub{$::app->{main}->status("Saving comments (not yet...).")});
 
   };
 
@@ -90,34 +107,35 @@ sub new {
 sub pull_values {
   my ($this, $data) = @_;
   return if ((not ($INC{'Xray/XDI.pm'}) or (not $data->xdi)));
-  my @exttext  = split(/\n/, $this->{extensions}->GetValue);
   my @commtext = split(/\n/, $this->{comments}  ->GetValue);
-#  $data->xdi_extensions(\@exttext);
-#  $data->xdi_comments(\@commtext);
   return $this;
 };
+
+my $WHITE = Wx::Colour->new(wxWHITE);
+my $GRAY  = Wx::Colour->new(wxLIGHT_GREY);
+
 
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
   return if ((not ($INC{'Xray/XDI.pm'}) or (not $data->xdi)));
   $this->{tree}->DeleteChildren($this->{root});
-  foreach my $namespace ('beamline', 'scan', 'mono', 'facility', 'detector', 'sample') {
-    my $leaf = $this->{tree}->AppendItem($this->{root}, ucfirst($namespace), 0, 1,
-					Wx::TreeItemData->new( $namespace ));
-    # my $att = 'xdi_'.$namespace;
-    # foreach my $k (sort {$a cmp $b} keys %{$data->$att}) {
-    #   my $label = sprintf("%s = %s", $k, $data->$att->{$k});
-    #   my $child = $this->{tree}->AppendItem($leaf, $label, 0, 1,
-    # 					    Wx::TreeItemData->new( sprintf("%s.%s = %s",
-    # 									   $namespace, $k, $data->$att->{$k} ) ));
-    # };
+  my $count = 0;
+  foreach my $namespace ($data->xdi_families) {
+    next if ($namespace =~ m{athena|artemis}i);
+    my $leaf = $this->{tree}->AppendItem($this->{root}, sprintf("%-72s", ucfirst($namespace)));
+    $this->{tree} -> SetItemBackgroundColour($leaf,  ($count++ % 2) ? wxWHITE : wxLIGHT_GREY );
+    foreach my $tag ($data->xdi_tags($namespace)) {
+      my $value = $data->xdi_datum($namespace, $tag);
+      my $string = sprintf("%-20s = %-47s", lc($tag), $value);
+      my $item = $this->{tree}->AppendItem($leaf, $string);
+      $this->{tree} -> SetItemBackgroundColour($item,  ($count++ % 2) ? wxWHITE : wxLIGHT_GREY );
+    };
     $this->{tree}->Expand($leaf);
   };
-  # $this->{xdi}->SetValue($data->xdi_version);
-  # $this->{apps}->SetValue($data->xdi_applications);
-  # $this->{extensions}->SetValue(join($/, @{$data->xdi_extensions}));
-  # $this->{comments}  ->SetValue(join($/, @{$data->xdi_comments  }));
+  $this->{xdi}->SetValue($data->xdi_attribute('xdi_version'));
+  $this->{apps}->SetValue($data->xdi_attribute('extra_version'));
+  $this->{comments}  ->SetValue($data->xdi_attribute('comments'));
   1;
 };
 
@@ -127,79 +145,79 @@ sub mode {
   1;
 };
 
-const my $EDIT   => Wx::NewId();
-const my $ADD    => Wx::NewId();
-const my $DELETE => Wx::NewId();
+# const my $EDIT   => Wx::NewId();
+# const my $ADD    => Wx::NewId();
+# const my $DELETE => Wx::NewId();
 
-sub OnRightClick {
-  my ($tree, $event) = @_;
-  my $text = $tree->{tree}->GetItemData($event->GetItem)->GetData;
-  return if ($text !~ m{(\w+)\.(\w+) = (.+)});
-  my ($namespace, $parameter, $value) = ($1, $2, $3);
-  my $menu  = Wx::Menu->new(q{});
-  $menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
-  $menu->Append($ADD,    "Add a parameter to ".ucfirst($namespace)." namespace");
-  $menu->Append($DELETE, "Delete ".ucfirst($namespace).".$parameter");
-  EVT_MENU($menu, -1, sub{ $tree->DoContextMenu(@_, $namespace, $parameter, $value) });
-  $tree -> PopupMenu($menu, $event->GetPoint);
+# sub OnRightClick {
+#   my ($tree, $event) = @_;
+#   my $text = $tree->{tree}->GetItemData($event->GetItem)->GetData;
+#   return if ($text !~ m{(\w+)\.(\w+) = (.+)});
+#   my ($namespace, $parameter, $value) = ($1, $2, $3);
+#   my $menu  = Wx::Menu->new(q{});
+#   $menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
+#   $menu->Append($ADD,    "Add a parameter to ".ucfirst($namespace)." namespace");
+#   $menu->Append($DELETE, "Delete ".ucfirst($namespace).".$parameter");
+#   EVT_MENU($menu, -1, sub{ $tree->DoContextMenu(@_, $namespace, $parameter, $value) });
+#   $tree -> PopupMenu($menu, $event->GetPoint);
 
-  $event->Skip(1);
-};
+#   $event->Skip(1);
+# };
 
-sub DoContextMenu {
-  my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
-  my $data = $::app->current_data;
-  if ($event->GetId == $EDIT) {
-    my $method = "set_xdi_".$namespace;
-    my $ted = Wx::TextEntryDialog->new($::app->{main}, "Enter a new value for \"$namespace.$parameter\":", "$namespace.$parameter",
-				       $value, wxOK|wxCANCEL, Wx::GetMousePosition);
-    #$::app->set_text_buffer($ted, "xdi");
-    $ted->SetValue($value);
-    if ($ted->ShowModal == wxID_CANCEL) {
-      $::app->{main}->status("Resetting XDI parameter canceled.");
-      return;
-    };
-    my $newvalue = $ted->GetValue;
-    $data->$method($parameter, $newvalue);
+# sub DoContextMenu {
+#   my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
+#   my $data = $::app->current_data;
+#   if ($event->GetId == $EDIT) {
+#     my $method = "set_xdi_".$namespace;
+#     my $ted = Wx::TextEntryDialog->new($::app->{main}, "Enter a new value for \"$namespace.$parameter\":", "$namespace.$parameter",
+# 				       $value, wxOK|wxCANCEL, Wx::GetMousePosition);
+#     #$::app->set_text_buffer($ted, "xdi");
+#     $ted->SetValue($value);
+#     if ($ted->ShowModal == wxID_CANCEL) {
+#       $::app->{main}->status("Resetting XDI parameter canceled.");
+#       return;
+#     };
+#     my $newvalue = $ted->GetValue;
+#     $data->$method($parameter, $newvalue);
 
-  } elsif ($event->GetId == $ADD) {
-    my $method = "set_xdi_".$namespace;
-    my $addparam = Demeter::UI::Athena::XDIAddParameter->new($xditool, $data, $namespace);
-    my $response = $addparam->ShowModal;
-    if ($response eq wxID_CANCEL) {
-      $::app->{main}->status("Adding metadata canceled");
-      return;
-    };
-    return if ($addparam->{param}->GetValue =~ m{\A\s*\z});
-    #print $addparam->{param}->GetValue, "  ", $addparam->{value}->GetValue, $/;
-    $data->$method($addparam->{param}->GetValue, $addparam->{value}->GetValue);
-    undef $addparam;
+#   } elsif ($event->GetId == $ADD) {
+#     my $method = "set_xdi_".$namespace;
+#     my $addparam = Demeter::UI::Athena::XDIAddParameter->new($xditool, $data, $namespace);
+#     my $response = $addparam->ShowModal;
+#     if ($response eq wxID_CANCEL) {
+#       $::app->{main}->status("Adding metadata canceled");
+#       return;
+#     };
+#     return if ($addparam->{param}->GetValue =~ m{\A\s*\z});
+#     #print $addparam->{param}->GetValue, "  ", $addparam->{value}->GetValue, $/;
+#     $data->$method($addparam->{param}->GetValue, $addparam->{value}->GetValue);
+#     undef $addparam;
 
-  } elsif ($event->GetId == $DELETE) {
-    my $which = ucfirst($namespace).".$parameter";
-    my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
-						 "Really delete $which?",
-						 "Really delete $which?",
-						 "Delete");
-    my $result = $yesno->ShowModal;
-    if ($result == wxID_NO) {
-      $::app->{main}->status("Not deleting $which");
-      return 0;
-    };
-    my $method = "delete_from_xdi_".$namespace;
-    $data->$method($parameter);
-    $::app->{main}->status("Deleted $which");
-  };
-  $xditool->push_values($data);
+#   } elsif ($event->GetId == $DELETE) {
+#     my $which = ucfirst($namespace).".$parameter";
+#     my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
+# 						 "Really delete $which?",
+# 						 "Really delete $which?",
+# 						 "Delete");
+#     my $result = $yesno->ShowModal;
+#     if ($result == wxID_NO) {
+#       $::app->{main}->status("Not deleting $which");
+#       return 0;
+#     };
+#     my $method = "delete_from_xdi_".$namespace;
+#     $data->$method($parameter);
+#     $::app->{main}->status("Deleted $which");
+#   };
+#   $xditool->push_values($data);
 
-};
+# };
 
-sub OnParameter {
-  my ($this, $param) = @_;
-  my $data = $::app->current_data;
-  my $att = 'xdi_'.$param;
-  $data->$att($this->{$param}->GetValue)
-};
+# sub OnParameter {
+#   my ($this, $param) = @_;
+#   my $data = $::app->current_data;
+#   my $att = 'xdi_'.$param;
+#   $data->$att($this->{$param}->GetValue)
+# };
 
 
 1;

@@ -22,6 +22,7 @@ use Moose::Role;
 
 has 'daq'      => (is => 'rw', isa => 'Str', default => q{});
 has 'beamline' => (is => 'rw', isa => 'Str', default => q{});
+has 'beamline_identified' => (is => 'rw', isa => 'Bool', default => 0);
 
 sub identify_beamline {
   my ($self, $file) = @_;
@@ -34,7 +35,9 @@ sub identify_beamline {
 
 sub is_xdac {
   my ($self, $file) = @_;
-  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
+  return if $self->beamline_identified;
+  return () if not ($INC{'Xray/XDI.pm'});
+  $self->xdi(Xray::XDI->new()) if not $self->xdi;
   open(my $fh, '<', $file);
   my $first = <$fh>;
 
@@ -48,8 +51,8 @@ sub is_xdac {
       return 1;
     };
     $self->xdi->extra_version(sprintf("XDAC/%s.%s", $1, $2));
-    $self->xdi->set('Facility', 'name', 'NSLS');
-    $self->xdi->set('Facility', 'xray_source', 'bend magnet');
+    $self->xdi->set_item('Facility', 'name', 'NSLS');
+    $self->xdi->set_item('Facility', 'source', 'bend magnet');
 
     my $flag = 0;
     my $remove_ifeffit_comments = 0;
@@ -58,17 +61,17 @@ sub is_xdac {
       next if ($li =~ m{\A\s*\z});
       my @line = split(" ", $li);
     SWITCH: {
-	($line[0] =~ m{\AE0}) and do {
-	  $self->xdi->set('Scan', 'edge_energy', $line[1]);
-	  last SWITCH;
-	};
-
 	($li =~ m{created on (\d+)/(\d+)/(\d+) at (\d+):(\d+):(\d+) ([AP])M on ([UX])-(\d+)([A-Z]?)(\d?)}) and do {
-	  my ($hour) = ($7 eq 'A') ? $4 : $4+12;
-	  my ($year) = ($3 < 80) ? 2000+$3 : 1900+$3;
-	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $year, $2, $1, 'T', $hour, $5, $6);
+	  my $hour = ($7 eq 'A') ? $4 : $4+12;
+	  my $year;
+	  if (length($3)>2) {
+	    $year=$3;
+	  } else {
+	    $year = ($3 < 80) ? 2000+$3 : 1900+$3;
+	  };
+	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $year, $1, $2, 'T', $hour, $5, $6);
 	  my $bl = lc(sprintf("%s%s%s%s", $8, $9, $10, $11));
-	  $self->xdi->set('Scan', 'start_time', $time);
+	  $self->xdi->set_item('Scan', 'start_time', $time);
 	  $self->daq('xdac');
 	  $self->beamline($bl);
 	  my $ini = join(".", 'xdac', $bl, 'ini');
@@ -77,41 +80,9 @@ sub is_xdac {
 	  last SWITCH;
 	};
 
-	($line[0] =~ m{\ANUM_REGIONS}) and do {
-	  $self->xdi->set('XDAC', 'NUM_REGIONS', $line[1]);
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASRB}) and do {
-	  $self->xdi->set('XDAC', 'SRB', join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASRSS}) and do {
-	  $self->xdi->set('XDAC', 'SRSS', join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASettling}) and do {
-	  $self->xdi->set('XDAC', 'Settling_time', join(" ", $line[2]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\AOffsets}) and do {
-	  $self->xdi->set('XDAC', 'Offsets', join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\AGains}) and do {
-	  $self->xdi->set('XDAC', 'Gains', join(" ", @line[1..$#line]));
-	  $flag = 1;
-	  last SWITCH;
-	};
-
-	($li =~ m{\A\-{3,}}) and do {
+	($li =~ m{\A\-{3,}}) and do { # end of header
 	  last FILE;
 	};
-
 	($flag) and do {
 	  $remove_ifeffit_comments = 0; # may want to set this to 1 once XDI is properly
                                         # integrated into Demeter.  will then need to fix
@@ -120,10 +91,61 @@ sub is_xdac {
 	  last SWITCH;
 	};
 
+	($li =~ m{\ADiffraction element= (\w+)\s*([()0-9]+)}) and do {
+	  $self->xdi->set_item('Mono', 'name', $1 . $2);
+	  if ($li =~ m{Ring energy= (\d\.\d+) (\w+)}) {
+	    $self->xdi->set_item('Facility', 'energy', $1 . " " . $2);
+	  };
+	  last SWITCH;
+	};
+	($li =~ m{\ARing energy= (\d\.\d+) (\w+)}) and do {
+	  $self->xdi->set_item('Facility', 'energy', $1 . " " . $2);
+	  last SWITCH;
+	};
+
+	($li =~ m{\AE0}) and do {
+	  $self->xdi->set_item('Scan', 'edge_energy', $line[1]);
+	  last SWITCH;
+	};
+
+	($li =~ m{\ANUM_REGIONS}) and do {
+	  $self->xdi->set_item('XDAC', 'NUM_REGIONS', $line[1]);
+	  last SWITCH;
+	};
+
+	($li =~ m{\ASRB}) and do {
+	  $self->xdi->set_item('XDAC', 'SRB', join(" ", @line[1..$#line]));
+	  last SWITCH;
+	};
+
+	($li =~ m{\ASRSS}) and do {
+	  $self->xdi->set_item('XDAC', 'SRSS', join(" ", @line[1..$#line]));
+	  last SWITCH;
+	};
+
+	($li =~ m{\ASettling}) and do {
+	  $self->xdi->set_item('XDAC', 'Settling_time', join(" ", $line[2]));
+	  last SWITCH;
+	};
+
+	($li =~ m{\AOffsets}) and do {
+	  $self->xdi->set_item('XDAC', 'Offsets', join(" ", @line[1..$#line]));
+	  last SWITCH;
+	};
+
+	($li =~ m{\AGains}) and do {
+	  $self->xdi->set_item('XDAC', 'Gains', join(" ", @line[1..$#line]));
+	  $flag = 1;
+	  last SWITCH;
+	};
+
+
+
       };
     };
     close $fh;
     $self->clear_ifeffit_titles if ($remove_ifeffit_comments);
+    $self->beamline_identified(1);
     return 1;
 
 

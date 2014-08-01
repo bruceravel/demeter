@@ -17,30 +17,40 @@
   $slope = sprintf("%.6g", $D->bkg_slope);
   q{}
 }
-Athena.element:              {$D->bkg_z}
-Athena.edge:                 {$D->fft_edge}
-Athena.e0:                   {$D->bkg_e0}
-Athena.eshift:               {$D->bkg_eshift}
-Athena.rbkg:                 {$D->bkg_rbkg}
-Athena.standard:             None
-Athena.bkg_kweight:          {$D->bkg_kw}
-Athena.edge_step:            {$D->bkg_step}
-Athena.fixed_step:           {$D->yesno(bkg_fixstep)}
-Athena.flatten:              {$D->yesno(bkg_flatten)}
-Athena.pre_edge_range:       {$D->bkg_pre1} {$D->bkg_pre2}
-Athena.pre_edge_line:        {$int} + {$slope} * E
-Athena.normalization_range:  {$D->bkg_nor1} {$D->bkg_nor2}
-Athena.post_edge_polynomial: {$nc0} + {$nc1} * E + {$nc2} * E^2 + {$nc3} * E^3
-Athena.spline_range_energy:  {$spl1e} {$spl2e}
-Athena.clamps:               {$D->clamp($D->bkg_clamp1)}/{$D->clamp($D->bkg_clamp2)}
-Athena.spline_range_k:       {$spl1} {$spl2}
-Athena.kweight:              {$D->get_kweight}
-Athena.window:               {$D->fft_kwindow}
-Athena.phase_correction:     {$D->fft_pc}
-Athena.k_range:              {$D->fft_kmin} {$D->fft_kmax}
-Athena.dk:                   {$D->fft_dk}
-Athena.r_range:              {$D->bft_rmin} {$D->bft_rmax}
-Athena.dr:                   {$D->bft_dr}
-Athena.window:               {$D->bft_rwindow}
-Athena.plot_multiplier:      {$D->plot_multiplier}
-Athena.y_offset:             {$D->y_offset}
+{
+  $OUT = q{};
+  if ($D->xdi) {
+    foreach my $f ($D->xdi_families) {
+      foreach my $t ($D->xdi_keys($f)) {
+         $OUT .= sprintf("%-30s %s\n", $f . '.' . $t . ': ',  $D->xdi->get_item($f, $t));
+      };
+    };
+  };
+}
+Athena.element:                {$D->bkg_z}
+Athena.edge:                   {$D->fft_edge}
+Athena.e0:                     {$D->bkg_e0}
+Athena.eshift:                 {$D->bkg_eshift}
+Athena.rbkg:                   {$D->bkg_rbkg}
+Athena.standard:               None
+Athena.bkg_kweight:            {$D->bkg_kw}
+Athena.edge_step:              {$D->bkg_step}
+Athena.fixed_step:             {$D->yesno(bkg_fixstep)}
+Athena.flatten:                {$D->yesno(bkg_flatten)}
+Athena.pre_edge_range:         {$D->bkg_pre1} {$D->bkg_pre2}
+Athena.pre_edge_line:          {$int} + {$slope} * E
+Athena.normalization_range:    {$D->bkg_nor1} {$D->bkg_nor2}
+Athena.post_edge_polynomial:   {$nc0} + {$nc1} * E + {$nc2} * E^2 + {$nc3} * E^3
+Athena.spline_range_energy:    {$spl1e} {$spl2e}
+Athena.clamps:                 {$D->clamp($D->bkg_clamp1)}/{$D->clamp($D->bkg_clamp2)}
+Athena.spline_range_k:         {$spl1} {$spl2}
+Athena.kweight:                {$D->get_kweight}
+Athena.window:                 {$D->fft_kwindow}
+Athena.phase_correction:       {$D->fft_pc}
+Athena.k_range:                {$D->fft_kmin} {$D->fft_kmax}
+Athena.dk:                     {$D->fft_dk}
+Athena.r_range:                {$D->bft_rmin} {$D->bft_rmax}
+Athena.dr:                     {$D->bft_dr}
+Athena.window:                 {$D->bft_rwindow}
+Athena.plot_multiplier:        {$D->plot_multiplier}
+Athena.y_offset:               {$D->y_offset}

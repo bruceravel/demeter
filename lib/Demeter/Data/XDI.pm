@@ -14,14 +14,13 @@ if ($INC{'Xray/XDI.pm'}) {
   has xdifile => (is => 'ro', isa => 'Str', default=>q{},);
   has xdi     => (is => 'ro', isa => 'Str', default=>q{},);
 };
-has 'xdi_allattributes' => (
-			 traits    => ['Array'],
-			 is        => 'ro',
-			 isa       => 'ArrayRef',
-			 default   => sub { [qw(ok warning errorcode error filename xdi_libversion xdi_version
-						extra_version element edge dspacing comments nmetadata npts
-						narrays narray_labels array_labels array_units metadata data)] },
-			);
+
+sub xdi_allattributes {
+  my ($self) = @_;
+  return [qw(ok warning errorcode error filename xdi_libversion xdi_version
+	     extra_version element edge dspacing comments nmetadata npts
+	     narrays narray_labels array_labels array_units metadata data)];
+};
 
 
 sub _import_xdi {
@@ -42,6 +41,7 @@ sub xdi_families {
   return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   return sort keys %{$self->xdi->{metadata}};
 };
+alias xdi_namespaces => 'xdi_families';
 
 sub xdi_keys {
   my ($self, $family) = @_;
@@ -49,6 +49,8 @@ sub xdi_keys {
   return () if not defined $self->xdi->{metadata}->{$family};
   return sort keys %{$self->xdi->{metadata}->{$family}};
 };
+alias xdi_keywords => 'xdi_keys';
+alias xdi_tags => 'xdi_keys';
 
 
 sub xdi_datum {
@@ -58,6 +60,7 @@ sub xdi_datum {
   return "key $key does not exist in $family" if not defined $self->xdi->{metadata}->{$family}->{$key};
   return $self->xdi->{metadata}->{$family}->{$key};
 };
+alias xdi_item => 'xdi_datum';
 
 sub xdi_metadata {
   my ($self) = @_;
@@ -124,8 +127,7 @@ sub metadata_from_ini {
   foreach my $namespace (keys %$ini) {
     next if ($namespace eq 'labels');
     foreach my $parameter (keys(%{$ini->{$namespace}})) {
-      my $method = "set_xdi_$namespace";
-      $self->xdi->set(ucfirst($namespace), $parameter, $ini->{$namespace}{$parameter});
+      $self->xdi->set_item(ucfirst($namespace), $parameter, $ini->{$namespace}{$parameter});
     };
   };
   $self->labels([split(" ", $ini->{labels}{labels})]) if exists $ini->{labels};

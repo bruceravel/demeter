@@ -124,10 +124,16 @@ sub _write_record {
   # ------------------------------------------------------------
   # -------- clean up non-pre-0.9.18 attributes ----------------
   if ($compatibility) {
+    ## introduced in 0.9.21
+    delete $hash{beamline_identified};
     ## introduced in 0.9.18
     delete $hash{bkg_delta_eshift};
     delete $hash{bkg_nc3};
     delete $hash{bkg_is_pixel};
+    ## XDI related
+    foreach my $k (keys %hash) {
+      delete $hash{$k} if $k =~ m{xdi};
+    };
   };
   # ------------------------------------------------------------
 

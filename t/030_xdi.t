@@ -76,7 +76,7 @@ SKIP: {
     ok(@e ,                                                                 "imported second array");
     ok($#e+1 == $data->xdi_attribute('npts') ,                              "identified number of data points by iarray");
 
-    $data->xdi->set('Element', 'edge', 'L3');
+    $data->xdi->set_item('Element', 'edge', 'L3');
     ok((($data->xdi_datum(qw(Element edge)) eq "L3") and ($data->xdi_datum(qw(Beamline name)) eq "13ID")),
                                                                            "setting works");
   };

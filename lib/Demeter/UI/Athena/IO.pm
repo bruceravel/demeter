@@ -113,35 +113,34 @@ sub Import {
       next;
     };
 
-    my $xdi = q{};
-    if ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
-      $xdi = Xray::XDI->new;
-      $xdi->file($file);
+    my ($xdi, $is_xdi) = (q{}, 0);
+    #if ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
+    #  $xdi = Xray::XDI->new;
+    #  $xdi->file($file);
       ## at this point, run a test against $xdi->applications and
       ## $xdi->labels to determine is this is a multichannel detector
       ## file from X23A2 or 10BM , if so, set is_xdi to false and let
       ## this fall through to the plugin
-    };
+    #};
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
     if (Demeter->is_prj($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
+    } elsif ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
+      $type = 'xdi';
+      $stashfile = $file;
     } else {
-      if ($xdi and $xdi->ok and 0) { # <============ XDI disabled!!!
-	$type = 'xdi';
-      } else {
-	$plugin = test_plugins($app, $file);
-	if ($plugin =~ m{\A\!}) {
-	  $app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
-	  return;
-	};
-	$stashfile = ($plugin) ? $plugin->fixed : $file;
-	$type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
-	      : ($plugin and ($plugin->output eq 'project')) ? 'prj'
-	      : ($plugin and ($plugin->output eq 'list'))    ? 'list'
-              : (Demeter->dd->is_data($file,$verbose))           ? 'raw'
-              :                                                '???';
+      $plugin = test_plugins($app, $file);
+      if ($plugin =~ m{\A\!}) {
+	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	return;
       };
+      $stashfile = ($plugin) ? $plugin->fixed : $file;
+      $type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
+	    : ($plugin and ($plugin->output eq 'project')) ? 'prj'
+	    : ($plugin and ($plugin->output eq 'list'))    ? 'list'
+	    : (Demeter->dd->is_data($file,$verbose))       ? 'raw'
+            :                                                '???';
     };
     if ($type eq '???') {
 
@@ -161,7 +160,7 @@ sub Import {
     };
 
   SWITCH: {
-      $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
+      $retval = _data($app, $stashfile, $type, $first, $plugin), last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
       ($type eq 'list') and do {
@@ -254,10 +253,11 @@ sub _data {
   my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
-  if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
-    $displayfile = $orig->file;
+  if ($orig eq 'xdi') {
+    $displayfile = $file;
     $data = Demeter::Data->new;
-    $data->xdi($orig);
+    $data->xdifile($file);
+    $data->file($file);
   } else {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
@@ -834,6 +834,7 @@ sub save_column {
   return if $app->is_empty;
 
   my $data = $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
+
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
 
   my ($desc, $suff, $out) = ($how eq 'mue')  ? ("$MU(E)",  '.xmu',  'xmu')
