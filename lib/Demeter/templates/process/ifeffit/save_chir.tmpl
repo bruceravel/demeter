@@ -11,10 +11,13 @@
   # example:
   #   $string = $self->template("process", "save_chir",
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
+  $nonxdi = q{};
+  $nonxdi = ' $' . $D->group . '_title_*' if not exists($INC{'Xray/XDI.pm'}) . ',';
+  q{};
 }
 ##|
 ##| saving "{$S->name}" as chi(R)
-write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
-           label="r chir_re chir_im chir_mag chir_pha win deriv_phase",
+write_data(file="{$filename}", ${$titles},{$nonxdi}
+           label="r chir_re chir_im chir_mag chir_pha win deriv_pha",
            {$S->group}.r, {$S->group}.chir_re, {$S->group}.chir_im,
            {$S->group}.chir_mag, {$S->group}.chir_pha, {$D->group}.rwin, {$S->group}.dph)

@@ -39,15 +39,15 @@ sub _import_xdi {
 sub xdi_families {
   my ($self) = @_;
   return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
-  return sort keys %{$self->xdi->{metadata}};
+  return sort keys %{$self->xdi->metadata};
 };
 alias xdi_namespaces => 'xdi_families';
 
 sub xdi_keys {
   my ($self, $family) = @_;
   return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
-  return () if not defined $self->xdi->{metadata}->{$family};
-  return sort keys %{$self->xdi->{metadata}->{$family}};
+  return () if not defined $self->xdi->metadata->{$family};
+  return sort keys %{$self->xdi->metadata->{$family}};
 };
 alias xdi_keywords => 'xdi_keys';
 alias xdi_tags => 'xdi_keys';
@@ -56,18 +56,26 @@ alias xdi_tags => 'xdi_keys';
 sub xdi_datum {
   my ($self, $family, $key) = @_;
   return q{} if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
-  return "family $family does not exist"      if not defined $self->xdi->{metadata}->{$family};
-  return "key $key does not exist in $family" if not defined $self->xdi->{metadata}->{$family}->{$key};
-  return $self->xdi->{metadata}->{$family}->{$key};
+  return "family $family does not exist"      if not defined $self->xdi->metadata->{$family};
+  return "key $key does not exist in $family" if not defined $self->xdi->metadata->{$family}->{$key};
+  return $self->xdi->metadata->{$family}->{$key};
 };
 alias xdi_item => 'xdi_datum';
 
 sub xdi_metadata {
   my ($self) = @_;
   return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
-  return %{$self->xdi->{metadata}};
+  return %{$self->xdi->metadata};
 };
 
+
+sub xdi_set_columns {
+  my ($self, $hash) = @_;
+  my $metadata = $self->xdi->metadata;
+  $metadata->{Column} = $hash;
+  $self->xdi->metadata($metadata);
+  return $self;
+};
 
 
 ##### data table ######################################

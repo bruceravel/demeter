@@ -801,9 +801,16 @@ sub find_edge {
   my $input = $e0;
   my ($edge, $answer, $this) = ("K", 1, 0);
   my $diff = 100000;
-  my $xdi_elem = ($INC{'Xray::XDI.pm'} and $self->xdi_attribute('element')) ? $self->xdi_attribute('element') : q{};
-  my $xdi_edge = ($INC{'Xray::XDI.pm'} and $self->xdi_attribute('edge'))    ? $self->xdi_attribute('edge')    : q{};
+
+  my ($xdi_elem, $xdi_edge) = (q{}, q{});
+
+  # default is to use XDI values, if available
+  if ($INC{'Xray/XDI.pm'}) {
+    ($xdi_elem, $xdi_edge) = ($self->xdi_attribute('element'), $self->xdi_attribute('edge'));
+  };
   return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
+
+  # perform a search if XDI values are not available
   foreach my $ed (qw(K L1 L2 L3)) {  # M1 M2 M3 M4 M5
   Z: foreach (1..104) {
       last Z unless (Xray::Absorption->in_resource($_));
@@ -846,6 +853,10 @@ sub find_edge {
     #($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
     ## prefer Pd K to Bk L2
     ($elem, $edge) = ("Pd", "K")  if (($elem eq "Bk") and ($edge eq "L2"));
+  };
+  if ($INC{'Xray/XDI.pm'}) {
+    $self->xdi->set_item('Element', 'symbol', $elem);
+    $self->xdi->set_item('Element', 'edge',   $edge);
   };
   return ($elem, $edge);
 };

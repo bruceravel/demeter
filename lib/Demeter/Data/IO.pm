@@ -18,6 +18,7 @@ package Demeter::Data::IO;
 use Moose::Role;
 
 use Carp;
+use Const::Fast;
 use List::MoreUtils qw(none);
 use Regexp::Assemble;
 
@@ -296,6 +297,14 @@ sub rfactor {
 };
 
 
+const my %MU_HASH    => (1=>'energy eV',         2=>'xmu',     3=>'bkg',     4=>'pre_edge', 5=>'post_edge', 6=>'der',     7=>'sec', 8=>'i0');
+const my %NORM_HASH  => (1=>'energy eV',         2=>'norm',    3=>'nbkg',    4=>'flat',     5=>'fbkg',      6=>'nder',    7=>'nsec');
+const my %CHIK_HASH  => (1=>'wavenumber invAng', 2=>'chi',     3=>'chik',    4=>'chik2',    5=>'chik3',     6=>'window');
+const my %CHIKW_HASH => (1=>'wavenumber invAng', 2=>'chi');
+const my %CHIR_HASH  => (1=>'distance Ang',      2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
+const my %CHIQ_HASH  => (1=>'wavenumber invAng', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
+const my %FIT_HASH   => (1=>'wavenumber invAng', 2=>'chi',     3=>'chi_fit', 4=>'chi_res',  5=>'chi_bkg',   6=>'window');
+
 sub title_glob {
   my ($self, $globname, $space, $how) = @_;
   $how ||= q{};
@@ -309,11 +318,43 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my @titles = split(/\n/, $data->template("report", "xdi_report"));
+  my $save_columns = 0;
+  if ($data->xdi) {
+    $save_columns = $data->xdi->metadata->{Column};
+    #Demeter->Dump($save_columns);
+  COLUMNS: {
+      ($space eq 'e') and do {
+	$self->xdi_set_columns(\%MU_HASH);
+	last COLUMNS;
+      };
+      ($space eq 'n') and do {
+	$self->xdi_set_columns(\%NORM_HASH);
+	last COLUMNS;
+      };
+      ($space eq 'k') and do {
+	$self->xdi_set_columns(\%CHIK_HASH);
+	last COLUMNS;
+      };
+      ($space eq 'r') and do {
+	$self->xdi_set_columns(\%CHIR_HASH);
+	last COLUMNS;
+      };
+      ($space eq 'q') and do {
+	$self->xdi_set_columns(\%CHIQ_HASH);
+	last COLUMNS;
+      };
+      ($space eq 'f') and do {
+	$self->xdi_set_columns(\%FIT_HASH);
+	last COLUMNS;
+      };
+    };
+  };
+
+  my @titles = (); #split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
-  my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Demeter/$Demeter::VERSION");
+  my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
 
   my $xdic = $self->data->xdi_attribute('comments') || q{};
   my @all = ($apps, @titles, "///", split(/\n/, $xdic));
@@ -327,6 +368,8 @@ sub title_glob {
     $self -> co -> set(headers => \@all);
     $self->dispense("process", "save_header");
   };
+
+  $self->xdi_set_columns($save_columns) if ($data->xdi);
   return $self;
 };
 

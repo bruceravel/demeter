@@ -23,6 +23,7 @@
 
 * larch chores
 
++ [ ] XDI headers and saving current with larch
 + [X] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 + [ ] start work on Artemis-related templates
 + [ ] kaiser vs. kaiser-bessel

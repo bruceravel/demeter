@@ -92,7 +92,7 @@ sub new {
 
     $this->{savecomm}   = Wx::Button->new($this, -1, "Save\ncomments");
     $commentsboxsizer->Add($this->{savecomm}, 0, wxALL|wxGROW, 5);
-    EVT_BUTTON($this, $this->{savecomm}, sub{$::app->{main}->status("Saving comments (not yet...).")});
+    EVT_BUTTON($this, $this->{savecomm}, sub{ &OnSaveComments });
 
   };
 
@@ -143,6 +143,14 @@ sub push_values {
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
+};
+
+
+sub OnSaveComments {
+  my ($this, $event) = @_;
+  my $data = $::app->current_data;
+  $data->xdi->comments($this->{comments}->GetValue);
+  $::app->{main}->status("Saved changes to XDI comments.")
 };
 
 # const my $EDIT   => Wx::NewId();
