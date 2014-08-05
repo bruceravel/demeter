@@ -50,6 +50,7 @@ my $prj = Demeter::Data::Prj->new(file=>File::Spec->catfile($here, 'cyanobacteri
 my @data = $prj->records(9,10,11);
 $data[0] -> save_many('many.dat', 'xmu', @data);
 ok(count_lines('many.dat') == 334, 'save_many template works');
+unlink 'many.dat';
 
 ## test dphase template
 $d->dispense('process', 'dphase');

@@ -855,6 +855,7 @@ sub find_edge {
     ($elem, $edge) = ("Pd", "K")  if (($elem eq "Bk") and ($edge eq "L2"));
   };
   if ($INC{'Xray/XDI.pm'}) {
+    $self->xdi(Xray::XDI->new()) if (not $self->xdi);
     $self->xdi->set_item('Element', 'symbol', $elem);
     $self->xdi->set_item('Element', 'edge',   $edge);
   };

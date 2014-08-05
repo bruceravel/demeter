@@ -353,7 +353,8 @@ sub title_glob {
   my @titles = (); #split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
-  $self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
+  #$self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
+  $self->clear_ifeffit_titles('dem_data');
   my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
 
   my $xdic = $self->data->xdi_attribute('comments') || q{};

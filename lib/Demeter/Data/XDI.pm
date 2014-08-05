@@ -127,9 +127,10 @@ alias xdi_attributes => 'xdi_attribute';
 
 sub metadata_from_ini {
   my ($self, $inifile) = @_;
-  return $self if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
+  return $self if not exists($INC{'Xray/XDI.pm'});
   return if not -e $inifile;
   return if not -r $inifile;
+  $self->xdi(Xray::XDI->new()) if (not $self->xdi);
   my $ini = Demeter::IniReader->read_file($inifile);
   #tie my %ini, 'Config::IniFiles', ( -file => $inifile );
   foreach my $namespace (keys %$ini) {
