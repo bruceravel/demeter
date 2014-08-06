@@ -122,8 +122,9 @@ sub push_values {
   $this->{$_}->SetValue(q{}) foreach (qw(xdi apps comments));
   $this->{tree}->DeleteChildren($this->{root});
   return if not $data->xdi;
-  my $count = 0;
+  my $outer_count = 0;
   foreach my $namespace ($data->xdi_families) {
+    my $count = $outer_count++;
     next if ($namespace =~ m{athena|artemis}i);
     my $leaf = $this->{tree}->AppendItem($this->{root}, sprintf("%-72s", ucfirst($namespace)));
     $this->{tree} -> SetItemBackgroundColour($leaf,  ($count++ % 2) ? wxWHITE : wxLIGHT_GREY );

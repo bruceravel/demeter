@@ -856,8 +856,8 @@ sub find_edge {
   };
   if ($INC{'Xray/XDI.pm'}) {
     $self->xdi(Xray::XDI->new()) if (not $self->xdi);
-    $self->xdi->set_item('Element', 'symbol', $elem);
-    $self->xdi->set_item('Element', 'edge',   $edge);
+    $self->xdi->set_item('Element', 'symbol', uc($elem));
+    $self->xdi->set_item('Element', 'edge',   ucfirst(lc($edge)));
   };
   return ($elem, $edge);
 };

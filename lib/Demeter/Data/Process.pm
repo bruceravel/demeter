@@ -130,6 +130,13 @@ sub rebin {
   $rebinned->xmin($bingrid[0]);
   $rebinned->xmax($bingrid[$#bingrid]);
 
+  if (Demeter->xdi_exists) {
+    $rebinned -> xdi($self->xdi->clone);
+    $rebinned -> xdi -> set_item('Element', 'edge',    uc($rebinned->fft_edge));
+    $rebinned -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($rebinned->bkg_z)));
+    $rebinned -> xdi -> set_item('Scan',    'process', "Data rebinned onto a three-region energy grid");
+  };
+
   ##(ref($standard) =~ m{Data}) ? $standard->standard :
   $self->unset_standard;
   return $rebinned;
@@ -274,8 +281,8 @@ sub merge {
     $merged -> xdi($self->xdi->clone);
     $merged -> xdi -> delete_item('Scan', 'start_time');
     $merged -> xdi -> delete_item('Scan', 'end_time');
-    $merged -> xdi -> set_item('Element', 'edge',    $merged->fft_edge);
-    $merged -> xdi -> set_item('Element', 'symbol',  $merged->bkg_z);
+    $merged -> xdi -> set_item('Element', 'edge',    uc($merged->fft_edge));
+    $merged -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($merged->bkg_z)));
     $merged -> xdi -> set_item('Scan',    'process', sprintf("Merge of %d scans", $#used+1));
   };
 
@@ -531,6 +538,13 @@ sub boxcar {
   } elsif ($how eq "chi") {
     $smoothed->update_fft(1);
   };
+  if (Demeter->xdi_exists) {
+    $smoothed -> xdi($self->xdi->clone);
+    $smoothed -> xdi -> set_item('Element', 'edge',    uc($smoothed->fft_edge));
+    $smoothed -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($smoothed->bkg_z)));
+    $smoothed -> xdi -> set_item('Scan',    'process', 'Smoothed data by boxcar average');
+  };
+
   return $smoothed;
 };
 
@@ -574,6 +588,12 @@ sub gaussian_filter {
     $smoothed->update_norm(1);
   } elsif ($how eq "chi") {
     $smoothed->update_fft(1);
+  };
+  if (Demeter->xdi_exists) {
+    $smoothed -> xdi($self->xdi->clone);
+    $smoothed -> xdi -> set_item('Element', 'edge',    uc($smoothed->fft_edge));
+    $smoothed -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($smoothed->bkg_z)));
+    $smoothed -> xdi -> set_item('Scan',    'process', 'Smoothed data by boxcar average');
   };
   return $smoothed;
 };
@@ -692,10 +712,19 @@ sub mee {
   };
 
   my $new = $self->Clone;
-  $new -> name($new->name . ' (MEE)');
-  $new -> standard;
-  $self->dispense('process', 'mee_do', {amp=>$args{amp}});
-  $new -> unset_standard;
+  $new   -> name($new->name . ' (MEE)');
+  $new   -> standard;
+  $self  -> dispense('process', 'mee_do', {amp=>$args{amp}});
+  $new   -> unset_standard;
+
+  if (Demeter->xdi_exists) {
+    $new -> xdi($self->xdi->clone);
+    $new -> xdi -> set_item('Element', 'edge',    uc($new->fft_edge));
+    $new -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($new->bkg_z)));
+    my $processing = $new -> xdi -> get_item('Scan', 'process');
+    $new -> xdi -> set_item('Scan',    'process', 'Removed multi-electron excitation');
+  };
+
   return $new;
 };
 

@@ -2,6 +2,7 @@ package Demeter::Data::BulkMerge;
 
 use Moose;
 extends 'Demeter';
+with 'Demeter::Data::XDI';
 
 use List::MoreUtils qw(any);
 
@@ -140,6 +141,16 @@ sub merge {
   $self->sum -> update_norm(1);
   $self->sum -> name("Merge of $count scans");
 
+  if (Demeter->xdi_exists) {
+    $self->sum -> xdi($self->master->xdi->clone);
+    $self->sum -> xdi -> delete_item('Scan', 'start_time');
+    $self->sum -> xdi -> delete_item('Scan', 'end_time');
+    $self->sum -> xdi -> set_item('Element', 'edge',    uc($self->sum->fft_edge));
+    $self->sum -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($self->sum->bkg_z)));
+    $self->sum -> xdi -> set_item('Scan',    'process', sprintf("BulkMerge of %d scans", $#{$self->data}+1));
+  };
+
+
   $self->po->set(e_smooth=>$save);
   return $self->sum;
 };
@@ -154,7 +165,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data::MultiChannel - Efficiantly merge many files into a single spectrum
+Demeter::Data::BulkMerge - Efficiantly merge many files into a single spectrum
 
 =head1 VERSION
 

@@ -96,6 +96,102 @@ returns.
 These checks can be completely disabled by setting the
 C<operations->identify_beamline> configuration parameter to 0.
 
+A beamline plugin provides one (and only one) method.  This method
+must be called C<is>.
+
+This method is called like so:
+
+    Demeter::Plugin::Beamlines::MX->is($data, $file);
+
+where C<$data> is the Demeter::Data object that represents the data in
+the file and C<$file> is the fully resolved filename of the file being
+tested.
+
+Each C<is> method B<must> perform the following chores:
+
+=over 4
+
+=item 1.
+
+B<Very quickly> recognize whether a file comes from the beamline.
+Speed is essential as every file will be checked sequentially against
+every beamline plugin.  If a beamline plugin is slow to determine
+this, then the use of Athena or other applications will be noticeably
+affected.
+
+=item 2.
+
+Recognize semantic content from the file header.  Where possible, map
+this content onto defined XDI headers.  Other semantic content should
+be placed into extension headers.
+
+=item 3.
+
+Add versioning information for the data acquisition program into the
+XDI extra_version attribute.
+
+=item 4.
+
+Set the C<daq> and C<beamline> attributes of the Demeter::Data object
+with the names of the data acquisition software and the designation of
+the beamline.
+
+=back
+
+C<is> is not required to read the data table and is encouraged not to
+do so.  Of course, if there is semantic content in the data table
+intended to be interpreted as metadata, then it would be appropriate.
+But ... ick ...!
+
+=head1 Hints for plugin writers
+
+=over 4
+
+=item *
+
+If possible, recognize the beamline by examination of the first line
+(or first few lines) of the file.
+
+=item *
+
+Define an Xray::XDI object for use with the Demeter::Data object as
+soon as possible, but after the bail-out point for a file that is not
+from this beamline.
+
+=item *
+
+Use C<$data->xdi->set_item> to set a defined or extension header.  The
+syntax is
+
+    $data->xdi->set_item($family, $tag, $value);
+
+Use defined fields wherever possible.
+
+=item *
+
+Use C<$data->xdi->push_comment> to push each user comment line onto
+the XDi comment attribute.  The syntax is:
+
+    $data->xdi->push_comment($comment_line);
+
+where C<$comment_line> is free-form text and does B<not> end with an
+end-of-line character.  The C<push_comment> method handles the
+end-of-line character correctly for your computer.
+
+=item *
+
+Some metadata is constant for any file collected at a beamline.
+Deposit an .ini file in Demeter's F<share/xdi/> folder and use it by a
+call to C<$data->metadata_from_ini>.  The syntax is
+
+    $data->metadata_from_ini($inifile);
+
+where C<$inifile> is the fully resolved name of the .ini file, likely
+in the F<share/xdi/> folder (but it can be anywhere).  That method
+will fail gracefully if C<$inifile> does not exist.
+
+=back
+
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to the Ifeffit Mailing List

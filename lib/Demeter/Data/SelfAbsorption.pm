@@ -63,7 +63,14 @@ sub sa {
   $hash{out}       ||= 45;
   $hash{density}   ||= 1;
   my $method = 'sa_' . lc($how);
-  return $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  my ($sadata, $text) = $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  if (Demeter->xdi_exists) {
+    $sadata -> xdi($self->xdi->clone);
+    $sadata -> xdi -> set_item('Element', 'edge',    uc($sadata->fft_edge));
+    $sadata -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($sadata->bkg_z)));
+    $sadata -> xdi -> set_item('Scan',    'process', sprintf("Self-absorption corrected (%s) data", $how));
+  };
+  return ($sadata, $text);
 };
 
 sub sa_troger {

@@ -75,6 +75,14 @@ sub Copy {
     $newname = "Copy $largest of $snip";
   };
   $clone->name($newname);
+  if (Demeter->xdi_exists) {
+    $clone -> xdi($data->xdi->clone);
+    $clone -> xdi -> delete_item('Scan', 'start_time');
+    $clone -> xdi -> delete_item('Scan', 'end_time');
+    $clone -> xdi -> set_item('Element', 'edge',    uc($clone->fft_edge));
+    $clone -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($clone->bkg_z)));
+  };
+
   my $index = $app->current_index;
   my $checked = $app->{main}->{list}->IsChecked($index);
   if ($index == $app->{main}->{list}->GetCount-1) {

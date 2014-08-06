@@ -152,101 +152,11 @@ program in use at several NSLS beamlines, including U7a, X3b, X11a,
 X11b, X18b, X19a, X23a2, X23b, and X24a.  Once recognized, several
 pieces of XDI metadata are set appropriate to the beamline.
 
-See L<https://github.com/XraySpectroscopy/XAS-Data-Interchange>
+For details about Demeter beamline recognition plugins, see
+L<Demeter::Data::Beamlines>.
 
-=head1 Methods
-
-A beamline plugin provides one (and only one) method.  This method
-must be called C<is>.
-
-This method is called like so:
-
-    Demeter::Plugin::Beamlines::XDAC->is($data, $file);
-
-where C<$data> is the Demeter::Data object that represents the data in
-the file and C<$file> is the fully resolved filename of the file being
-tested.
-
-C<is> must perform the following chores:
-
-=over 4
-
-=item 1.
-
-Very quickly recognize whether a file comes from the beamline.  Speed
-is essential as every file will be checked sequentially against every
-beamline plugin.  If a beamline plugin is slow to determine this, then
-the use of Athena or other applications will be noticeably affected.
-
-=item 2.
-
-Recognize semantic content from the file header.  Where possible, map
-this content onto defined XDI headers.  Other semantic content should
-be placed into extension headers.
-
-=item 3.
-
-Add versioning information for the data acquisition program into the
-XDI extra_version attribute.
-
-=item 4.
-
-Set the C<daq> and C<beamline> attributes of the Demeter::Data object
-with the names of the data acquisition software and the designation of
-the beamline.
-
-=back
-
-C<is> does B<not> read the data table, unless, I suppose, there is
-semantic content in the data table intended to be interpreted as
-metadata.  But ... ick ...!
-
-=head1 Hints for plugin writers
-
-=over 4
-
-=item *
-
-If possible, recognize the beamline by examination of the first line
-of the file, as at lines 11 and 14.
-
-=item *
-
-Define an Xray::XDI object for use with the Demeter::Data object as
-soon as possible.  See line 15.
-
-=item *
-
-Use C<$data->xdi->set_item> to set a defined or extension header.  The
-syntax is
-
-    $data->xdi->set_item($family, $tag, $value);
-
-Use defined fields wherever possible.
-
-=item *
-
-Use C<$data->xdi->push_comment> to push each user comment line onto
-the XDi comment attribute.  The syntax is:
-
-    $data->xdi->push_comment($comment_line);
-
-where C<$comment_line> is free-form text and does B<not> end with an
-end-of-line character.  The C<push_comment> method handles the
-end-of-line character correctly for your computer.
-
-=item *
-
-Some metadata is constant for any file collected at a beamline.
-Deposit an .ini file in Demeter's F<share/xdi/> folder and use it by a
-call to C<$data->metadata_from_ini>, as at line 52.  The syntax is
-
-    $data->metadata_from_ini($inifile);
-
-where C<$inifile> is the name (but B<not> the fully resolved name) of
-the .ini file in the F<share/xdi/> folder.
-
-=back
+For information about the XAS Data Interchange format, see
+L<https://github.com/XraySpectroscopy/XAS-Data-Interchange>
 
 
 =head1 AUTHOR

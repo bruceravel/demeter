@@ -125,6 +125,7 @@ sub plot {
   if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
     $this->{data}  = $data->Clone(name=>$data->name." smoothed $width times");
     $this->{data} -> smooth($width);
+    ## XDI data not preserved!  :FIXME:
     $text .= "smoothed data, three-point smoothed $width times";
   } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
     $this->{data}  = $data->Clone(name=>$data->name." Savitzky-Golay");

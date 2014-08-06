@@ -409,10 +409,16 @@ sub _record {
   $data->quenched($quenched_state);
 
   if (Demeter->xdi_exists) {
-    my $comments = $xdi->comments;
-    $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
-    $xdi->comments($comments);
-    $data->xdi($xdi);
+    if ($xdi) {
+      my $comments = $xdi->comments;
+      $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
+      $xdi->comments($comments);
+      $data->xdi($xdi);
+    } else {
+      $data->xdi(Xray::XDI->new());
+      $data -> xdi -> set_item('Element', 'edge',    uc($data->fft_edge));
+      $data -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($data->bkg_z)));
+    };
   };
 
   return $data;

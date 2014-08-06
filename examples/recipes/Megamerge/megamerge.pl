@@ -8,7 +8,7 @@ use File::Basename;
 use File::Spec;
 use Demeter qw(:plotwith=gnuplot :ui=screen :data);
 
-Demeter->set_mode(template_process=>"larch", screen=>0);
+#Demeter->set_mode(template_process=>"larch", screen=>0);
 
 ## get a list of files to include
 my $base = dirname($0);
