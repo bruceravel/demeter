@@ -39,6 +39,7 @@ foreach my $pm (@files) {
 
 sub identify_beamline {
   my ($self, $file) = @_;
+  return $self if not Demeter->co->default('operations', 'identify_beamline');
   return $self if ((not -e $file) or (not -r $file));
   return $self if $self->beamline_identified;
   my $ok = 0;
@@ -54,7 +55,7 @@ sub identify_beamline {
 
 =head1 NAME
 
-Demeter::Data::Athena - Role for identifying the beamline provenance of data
+Demeter::Data::Beamlines - Role for identifying the beamline provenance of data
 
 =head1 VERSION
 
@@ -62,9 +63,38 @@ This documentation refers to Demeter version 0.9.20.
 
 =head1 DESCRIPTION
 
+Using plugins found in F<Demeter/Plugins/Beamlines>, attempt to
+identify the beamline of origin of the data file.  If identified,
+attempt to glean metadata from the file header.
+
 =head1 ATTRIBUTES
 
+=over 4
+
+=item C<daq> (string)
+
+The name of the data acquisition program used to collect the data.
+
+=item C<beamline> (string)
+
+The designation of the beamline at which the data were collected.
+
+=item C<beamline_identified> (boolean)
+
+Set to true once the beamline has been positively identified.
+
+=back
+
 =head1 METHODS
+
+There is only one method -- C<identify_beamline>.  This steps through
+the plugins found in F<Demeter/Plugins/Beamlines>, each of which must
+provide a method called C<is>.  Each plugin's C<is> method is called
+in turn.  Once one returns a positive, metadata is set and this method
+returns.
+
+These checks can be completely disabled by setting the
+C<operations->identify_beamline> configuration parameter to 0.
 
 =head1 BUGS AND LIMITATIONS
 

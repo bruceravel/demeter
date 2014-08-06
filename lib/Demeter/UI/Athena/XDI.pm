@@ -118,8 +118,10 @@ my $GRAY  = Wx::Colour->new(wxLIGHT_GREY);
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  return if ((not ($INC{'Xray/XDI.pm'}) or (not $data->xdi)));
+  return if not $INC{'Xray/XDI.pm'};
+  $this->{$_}->SetValue(q{}) foreach (qw(xdi apps comments));
   $this->{tree}->DeleteChildren($this->{root});
+  return if not $data->xdi;
   my $count = 0;
   foreach my $namespace ($data->xdi_families) {
     next if ($namespace =~ m{athena|artemis}i);

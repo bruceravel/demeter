@@ -38,12 +38,12 @@ $plot->set(emin=>-50, emax=>200, e_norm=>0, e_markers=>1, e_bkg=>0);
 $d0 -> plot('e');
 
 print "Smoothing once and replotting data\n";
-my $d1 = $d0 -> clone(name=>"AuO, smoothed 1 time");
+my $d1 = $d0 -> Clone(name=>"AuO, smoothed 1 time");
 $d1 -> smooth(1);
 $d1 -> plot('e');
 
 print "Smoothing 7 times and replotting data\n";
-my $d2 = $d0 -> clone(name=>"AuO, smoothed 7 times");
+my $d2 = $d0 -> Clone(name=>"AuO, smoothed 7 times");
 $d2 -> smooth(7);
 $d2 -> plot('e');
 

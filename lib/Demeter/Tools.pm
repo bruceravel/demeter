@@ -91,6 +91,10 @@ sub is_ifeffit {
   return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
 };
 
+sub xdi_exists {
+  return exists($INC{'Xray/XDI.pm'});
+};
+
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;

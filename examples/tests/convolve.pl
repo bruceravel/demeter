@@ -41,12 +41,12 @@ $plot->set(emin=>-50, emax=>100, e_norm=>0, e_markers=>1, e_bkg=>0);
 $d0 -> plot('e');
 
 print "Gaussian convolution and replotting data\n";
-my $d1 = $d0 -> clone(name=>"2 eV, gaussian");
+my $d1 = $d0 -> Clone(name=>"2 eV, gaussian");
 $d1 -> convolve(width=>2, type=>'gaussian');
 $d1 -> plot('e');
 
 print "Lorentzian convolution and replotting data\n";
-my $d2 = $d0 -> clone(name=> "2 eV, lorentzian");
+my $d2 = $d0 -> Clone(name=> "2 eV, lorentzian");
 $d2 -> convolve(width=>2, type=>'lorentzian');
 $d2 -> plot('e');
 

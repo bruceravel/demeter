@@ -390,7 +390,7 @@ sub finish {
   };
 };
 
-=for LiteratureReference (clone)
+=for LiteratureReference (Clone)
   For the Jews, on the other hand, the apparition of the Double was
   not a foreshadowing of death, but rather a proof that the person to
   whom it appeared had achieved the rank of prophet.  This is the
@@ -405,7 +405,7 @@ sub finish {
 ## return a new object initialized to the values of $self.  @arguments
 ## is a list of attributes for the new object
 
-sub clone {
+sub Clone {
   my ($self, @arguments) = @_;
 
   my $new = ref($self) -> new();
@@ -1093,11 +1093,11 @@ This the constructor method.  It builds and initializes new objects.
 New can optionally take an array of attributes and values with the
 same syntax as the C<set> method.
 
-=item C<clone>
+=item C<Clone>
 
 This method clones an object, returning the reference to the new object.
 
-  $newobject = $oldobject->clone(@new_arguments);
+  $newobject = $oldobject->Clone(@new_arguments);
 
 Cloning returns the reference and sets all attributes of the new
 object to the values for the old object.  The optional argument is a
@@ -1105,6 +1105,9 @@ reference to a hash of those attributes which you wish to change for
 the new object.  Passing this hash reference is equivalent to cloning
 the object, then calling the C<set> method on the new object with that
 hash reference.
+
+Note the capital C<C>, which distinguishes this method from the one
+provided by the L<MooseX::Clone> role.
 
 =item C<set>
 

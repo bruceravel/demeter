@@ -645,14 +645,14 @@ sub _group {
     $app->{main}->status("Importing reference for ". $data->name);
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
-    #$ref = ($ref) ? $ref->clone : Demeter::Data->new(file => $data->file);
+    #$ref = ($ref) ? $ref->Clone : Demeter::Data->new(file => $data->file);
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
     };
 
 ## what was this for?
 #    if ($repeated) {
-#      my $foo = $ref->clone;
+#      my $foo = $ref->Clone;
 #      $ref = $foo;
 #    };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};

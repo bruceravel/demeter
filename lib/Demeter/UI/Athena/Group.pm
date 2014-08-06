@@ -64,7 +64,7 @@ sub Copy {
   $newname ||= q{};
 
   my $data = $app->current_data;
-  my $clone = $data->clone;
+  my $clone = $data->Clone;
   if (not $newname) {
     my $largest = 0;
     (my $snip = $data->name) =~ s{Copy\s+(\d+\s+)?of\s+}{};

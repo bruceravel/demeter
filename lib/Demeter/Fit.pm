@@ -244,7 +244,7 @@ override all => sub {
   return %all;
 };
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
 
   my $new = ref($self) -> new();

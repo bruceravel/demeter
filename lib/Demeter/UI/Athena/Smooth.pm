@@ -123,11 +123,11 @@ sub plot {
   my $text = "Plotted \"".$data->name."\" with its ";
   $data->standard;
   if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
-    $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
+    $this->{data}  = $data->Clone(name=>$data->name." smoothed $width times");
     $this->{data} -> smooth($width);
     $text .= "smoothed data, three-point smoothed $width times";
   } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
-    $this->{data}  = $data->clone(name=>$data->name." Savitzky-Golay");
+    $this->{data}  = $data->Clone(name=>$data->name." Savitzky-Golay");
     $this->{data} -> smooth(1);
     $text .= "smoothed data, Savitzky-Golay";
   } elsif ($this->{choice}->GetStringSelection eq 'Boxcar average') {
@@ -155,12 +155,12 @@ sub save {
   my $text = " \"" . $app->current_data->name."\" and made a new data group";
   $app->current_data->standard;
   if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
-    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
+    $this->{data}  = $app->current_data->Clone(name=>$app->current_data->name." smoothed $width times");
     $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
     $this->{data} -> smooth($width);
     $text = "Smoothed" . $text;
   } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
-    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." Savitzky-Golay");
+    $this->{data}  = $app->current_data->Clone(name=>$app->current_data->name." Savitzky-Golay");
     $this->{data} -> source("Smoothed ".$app->current_data->name.", Savitzky-Golay");
     $this->{data} -> smooth(1);
     $text = "SG" . $text;

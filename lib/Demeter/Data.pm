@@ -25,6 +25,7 @@ use YAML::Tiny;
 
 use Moose;
 extends 'Demeter';
+#with 'MooseX::Clone';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::Athena';
 with 'Demeter::Data::Beamlines';
@@ -494,11 +495,11 @@ override all => sub {
 };
 
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
   $self->_update('background');
   $self->_update('fft') if ($self->datatype =~ m{(?:xmu|chi)});
-  my $new = $self->SUPER::clone();
+  my $new = $self->SUPER::Clone();
 
   my $standard = $self->get_mode('standard');
   $new  -> standard;

@@ -141,8 +141,8 @@ my @paths = (Demeter::Path->new(name    => "carbon neighbor",
                                 delr    => 'delr_cl',
                                 sigma2  => 'ss_cl',)
             );
-push @paths, $paths[0]->clone(n=>1, data=>$mmt);
-push @paths, $paths[1]->clone(n=>3, data=>$mmt);
+push @paths, $paths[0]->Clone(n=>1, data=>$mmt);
+push @paths, $paths[1]->Clone(n=>3, data=>$mmt);
 
 ## -------- and fit!
 my $fit = Demeter::Fit->new(data  => [$dmt, $mmt],

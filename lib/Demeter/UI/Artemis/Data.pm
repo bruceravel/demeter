@@ -2174,7 +2174,7 @@ sub clone {
   $path->n($path->n / 2);
   $pathpage->{pp_n}->SetValue($path->n);
 
-  my $cloned = $path->clone(n => $path->n);
+  my $cloned = $path->Clone(n => $path->n);
   $cloned->name($path->name . " (clone)");
 
   my $newpage = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $cloned, $datapage);

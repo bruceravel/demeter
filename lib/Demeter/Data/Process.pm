@@ -26,6 +26,7 @@ use Demeter::Constants qw($EPSILON5 $NULLFILE);
 #eval 'use PDL::Lite' if $Demeter::PDL_exists;
 use PDL::Lite;
 use PDL::Filter::Linear;
+##use Storable qw(dclone);
 
 sub rebin {
   my ($self, $rhash) = @_;
@@ -109,7 +110,7 @@ sub rebin {
   $self->place_array('re___bin.energy', \@e);
   $self->place_array('re___bin.xmu', \@z);
 
-  my $rebinned = $self->clone;
+  my $rebinned = $self->Clone;
   $self -> standard;		# make self the standard for rebinning
   $rebinned -> dispense("process", "rebin");
   $rebinned -> bkg_e0(0);
@@ -203,7 +204,7 @@ sub merge {
   my $standard = $self->mo->standard;
   $self->standard;		# make self the standard for merging
 
-  my $merged = $self->clone;
+  my $merged = $self->Clone;
   $merged -> source($NULLFILE);
   $merged -> file($NULLFILE);
   $merged -> reference(q{});
@@ -269,8 +270,14 @@ sub merge {
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
   #$merged -> set($self->metadata);
-  #$merged -> delete_from_xdi_scan('start_time');
-  #$merged -> delete_from_xdi_scan('end_time');
+  if (Demeter->xdi_exists) {
+    $merged -> xdi($self->xdi->clone);
+    $merged -> xdi -> delete_item('Scan', 'start_time');
+    $merged -> xdi -> delete_item('Scan', 'end_time');
+    $merged -> xdi -> set_item('Element', 'edge',    $merged->fft_edge);
+    $merged -> xdi -> set_item('Element', 'symbol',  $merged->bkg_z);
+    $merged -> xdi -> set_item('Scan',    'process', sprintf("Merge of %d scans", $#used+1));
+  };
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");
@@ -684,7 +691,7 @@ sub mee {
     $self->dispense('process', 'mee_arctan',  {width=>$args{width}, shift=>$args{shift}});
   };
 
-  my $new = $self->clone;
+  my $new = $self->Clone;
   $new -> name($new->name . ' (MEE)');
   $new -> standard;
   $self->dispense('process', 'mee_do', {amp=>$args{amp}});
@@ -824,7 +831,7 @@ Perform three-point smoothing on the mu(E) or chi(k) data, as
 appropriate.  The argument tells Demeter how many times to reapply the
 smoothing.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> smooth(5);
 
 =item C<convolve>
@@ -837,14 +844,14 @@ negative number will be interpretted as zero.  The type is either
 "Gaussian" or "Lorentzian".  The type is either "xmu" or "chi" -- that
 is convolute mu(E) or chi(k) data.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> convolve(width=>2, type=>'gaussian', which=>'xmu');
 
 =item C<noise>
 
 Add noise to a mu(E) or chi(k) spectrum.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> noise(noise=>0.02, which=>'xmu');
 
 The amount of noise is intepretted differently for mu(E) data as for

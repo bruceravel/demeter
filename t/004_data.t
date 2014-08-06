@@ -113,7 +113,7 @@ my $data4 = Demeter::Data -> new(file=>File::Spec->catfile($here, 'fe.061'),
 				);
 
 
-my $data5 = $data3->clone;
+my $data5 = $data3->Clone;
 $data5->e0('ifeffit');
 
 $data3->e0('ifeffit'); ## how do I make this happen automatically??

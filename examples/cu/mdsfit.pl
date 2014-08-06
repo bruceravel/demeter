@@ -109,7 +109,7 @@ foreach my $i (0 .. 4) {
 my @paths_150k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k);
+  $paths_150k[$i] = $paths_010k[$i] -> Clone(data => $data_150k);
 };
 
 print "--- make a Fit object (a collection of GDS, Data, and Path objects)\n";

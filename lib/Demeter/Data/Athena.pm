@@ -142,6 +142,12 @@ sub _write_record {
   $string  = '$old_group = \'' . $self->group . "';\n";
   $string .= Data::Dumper->Dump([\@array], [qw/*args/]) . "\n";
   $string .= $arraystring;
+  if ($self->xdi) {
+    my $xdistring = $self->xdi->serialize;
+    $xdistring =~ s{VAR1}{xdi};
+    $xdistring =~ s{[\n\r]+}{\\n}g;	# stringify newlines in comments (see D::D::Prj#413)
+    $string .=  $xdistring . "\n";
+  };
   $string .= "[record]   # create object and set arrays in ifeffit\n\n";
   return $string;
 };

@@ -211,7 +211,7 @@ sub DEMOLISH {
   $self->alldone;
 };
 
-override 'clone' => sub {
+override 'Clone' => sub {
   my ($self, @arguments) = @_;
   my $new = Demeter::Feff -> new();
 
