@@ -2,11 +2,6 @@
   ($name = $D->name) =~ s{\s+}{_}g;
   q{}
 }
-write_data(file="{$filename}", $pca_title_*, {$S->group}.x,
+write_data(file="{$filename}", $dem_data_*, {$S->group}.x,
            {$S->group}.{$D->group}, {$S->group}.tt, {$S->group}.diff,
            label="x {$name} tt residual")
-{
-  foreach $t (1 .. $S->ntitles+1) {
-    $OUT .= "erase \$pca_title_" . $t . "\n";
-  }
-}

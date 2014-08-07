@@ -190,6 +190,24 @@ sub place_array {
 };
 
 
+sub header_strings {
+  my ($self, @list) = @_;
+  my $i = 1;
+  if ($self->is_ifeffit) {	# ifeffit
+    foreach my $line (@list) {
+      ++$i;
+      my $t = sprintf("%s%2.2d", 'dem_data_', $i);
+      $self->place_string($t, $line);
+    };
+  } else {			# larch
+    $self -> co -> set(headers => \@list);
+    $self->dispense("process", "save_header");
+  };
+  return $self;
+};
+
+
+
 1;
 
 

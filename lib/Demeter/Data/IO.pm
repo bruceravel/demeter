@@ -318,7 +318,7 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my $save_columns = 0;
+  my $save_columns = {};
   if ($data->xdi) {
     $save_columns = $data->xdi->metadata->{Column};
     #Demeter->Dump($save_columns);
@@ -350,26 +350,8 @@ sub title_glob {
     };
   };
 
-  my @titles = (); #split(/\n/, $data->template("report", "xdi_report"));
-  ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
-  my $i = 0;
-  #$self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
-  $self->clear_ifeffit_titles('dem_data');
-  my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
-
-  my $xdic = $self->data->xdi_attribute('comments') || q{};
-  my @all = ($apps, @titles, "///", split(/\n/, $xdic));
-  if ($self->is_ifeffit) {
-    foreach my $line (@all) {
-      ++$i;
-      my $t = sprintf("%s%2.2d", $globname, $i);
-      $self->place_string($t, $line);
-    };
-  } else {
-    $self -> co -> set(headers => \@all);
-    $self->dispense("process", "save_header");
-  };
-
+  my $which = ($space eq 'f') ? 'fit' : 'data';
+  $self->xdi_output_header($which, q{});
   $self->xdi_set_columns($save_columns) if ($data->xdi);
   return $self;
 };

@@ -482,6 +482,18 @@ sub any {
   return q{};
 };
 
+
+=for LiteratureReference 
+  And when she buries a man, that action concerns me: all mankind is
+  of one author, and is one volume; when one man dies, one chapter is
+  not torn out of the book, but translated into a better language; and
+  every chapter must be so translated.
+                                John Donne, Meditation XVII
+                                From Devotions upon Emergent Occasions (1623)
+
+=cut
+
+
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];

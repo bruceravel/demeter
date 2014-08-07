@@ -5,7 +5,7 @@
   $x = ($S->space =~ m{\Achi}) ? 'k' : 'energy';
   q{}
 }
-write_data(file="{$filename}", $lcf_title_*, {$S->group}.x, {$S->group}.func, {$S->group}.lcf, {$S->group}.resid,
+write_data(file="{$filename}", $dem_data_*, {$S->group}.x, {$S->group}.func, {$S->group}.lcf, {$S->group}.resid,
            {$standards},
            label="{$x} data fit residual {$components}")
 {

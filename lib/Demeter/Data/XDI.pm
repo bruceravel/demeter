@@ -158,6 +158,42 @@ sub metadata_from_ini {
 #   return $text;
 # };
 
+##### utilities #######################################
+
+sub xdi_output_header {
+  my ($self, $datafit, $text) = @_;
+
+  $self->clear_ifeffit_titles('dem_data');
+  my $apps   = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
+  my $report = q{};
+  if ($datafit eq 'xdi') {
+    foreach my $f ('Element', 'Column') {
+      foreach my $t ($self->data->xdi_keys($f)) {
+	$report .= sprintf("%-30s %s\n", $f . '.' . $t . ': ',  $self->data->xdi->get_item($f, $t));
+      };
+    };
+  } elsif ($datafit eq 'fit') {
+    $report = $self->data->fit_parameter_report;
+  } else {
+    $report = $self->data->data_parameter_report;
+  };
+  my $xdic   = $self->data->xdi_attribute('comments') || q{};
+  my @blank  = ($xdic =~ m{\A\s*\z}) ? () : ($/);
+  @blank     = () if $text =~ m{\A\s*\z};
+
+  my @all = ($apps,		   # version line
+	     split(/\n/, $report), # XDI + Athena metadata
+	     "///",
+	     split(/\n/, $xdic),   # XDI comments
+	     @blank,
+	     split(/\n/, $text)	   # output specific text
+	    );
+
+  $self->header_strings(@all);	   # see Demeter::Get
+  return $self;
+};
+
+
 
 1;
 
@@ -172,18 +208,27 @@ This documentation refers to Demeter version 0.9.20.
 
 This is compliant with L<Xray::XDI> 1.0.
 
+=head1 SYNOPSIS
+
+Demeter wrapper around L<Xray::XDI>, also providing fallback
+functionality when L<Xray::XDI> is not available.
+
 =head1 METHODS
 
 =over 4
 
-=item C<import_xdi>
+=item C<_import_xdi>
 
-Turn an Xray::XDI object into a Demeter::Data object.
+Called when the C<xdifile> attribute is set.  Associates an Xray::XDI
+object with a Demeter::Data object.
 
   $data  = Demeter::Data->new;
-  $xdi   = Xray::XDI->new;
-  $xdi  -> file($file);
-  $data -> import_xdi($xdi);
+  $data -> xdifile($file);
+
+=item C<xdi_output_header>
+
+Organize all the various forms of metadata and comments into a
+sensible header for an XDI file written be either Ifeffit or Larch.
 
 =back
 

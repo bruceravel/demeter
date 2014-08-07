@@ -409,14 +409,14 @@ sub save_components {
   my ($this, $event) = @_;
   my $fname = $this->get_filename('pca');
   return if not $fname;
-  $this->{PCA}->save_components($fname);
+  $this->{PCA}->save('components', $fname);
 };
 
 sub save_stack {
   my ($this, $event) = @_;
   my $fname = $this->get_filename('stack');
   return if not $fname;
-  $this->{PCA}->save_stack($fname);
+  $this->{PCA}->save('stack', $fname);
 };
 
 sub save_reconstruction {
@@ -432,7 +432,7 @@ sub save_reconstruction {
       last;
     };
   };
-  $this->{PCA}->save_reconstruction($data_index, $fname);
+  $this->{PCA}->save('reconstruction', $fname, $data_index);
 };
 
 sub save_tt {
@@ -441,7 +441,7 @@ sub save_tt {
   (my $name = $target->name) =~ s{\s+}{_}g;
   my $fname = $this->get_filename('tt', $name);
   return if not $fname;
-  $this->{PCA}->save_tt($target, $fname);
+  $this->{PCA}->save('tt', $fname, $target);
 };
 
 1;
