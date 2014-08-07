@@ -64,12 +64,7 @@ sub sa {
   $hash{density}   ||= 1;
   my $method = 'sa_' . lc($how);
   my ($sadata, $text) = $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
-  if (Demeter->xdi_exists) {
-    $sadata -> xdi($self->xdi->clone);
-    $sadata -> xdi -> set_item('Element', 'edge',    uc($sadata->fft_edge));
-    $sadata -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($sadata->bkg_z)));
-    $sadata -> xdi -> set_item('Scan',    'process', sprintf("Self-absorption corrected (%s) data", $how));
-  };
+  $sadata->xdi_make_clone($self, sprintf("Self-absorption corrected (%s) data", $how), 0) if (Demeter->xdi_exists);
   return ($sadata, $text);
 };
 

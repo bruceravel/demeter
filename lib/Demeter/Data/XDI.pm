@@ -193,6 +193,20 @@ sub xdi_output_header {
   return $self;
 };
 
+sub xdi_make_clone {
+  my ($self, $orig, $process, $remove_times) = @_;
+  $self -> xdi($orig->xdi->clone);
+  if ($remove_times) {
+    $self -> xdi -> delete_item('Scan', 'start_time');
+    $self -> xdi -> delete_item('Scan', 'end_time');
+  };
+  $self -> xdi -> set_item('Element', 'edge',    uc($self->fft_edge));
+  $self -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($self->bkg_z)));
+  my $processing = $self -> xdi -> get_item('Scan', 'process');
+  $process = join("; ", $processing, $process) if $processing;
+  $self -> xdi -> set_item('Scan',    'process', $process) if $process;
+};
+
 
 
 1;
@@ -229,6 +243,28 @@ object with a Demeter::Data object.
 
 Organize all the various forms of metadata and comments into a
 sensible header for an XDI file written be either Ifeffit or Larch.
+
+=item C<xdi_make_clone>
+
+Use this method to clone an Xray::XDI object from one Demeter::Data
+object to another, for example when making a copy or performing a data
+processing operation that results in a new group.
+
+   $data->xdi_make_clone($original, $text, $remove_timestamps);
+
+Here C<$orignal> is the Demeter::Data object (B<not> the Xray::XDI
+object) from which the Xray::XDI object will be cloned.
+
+C<$text> is a short bit of text describing the data processing chore.
+For a straight copy, set C<$text> to something that evaluates false.
+These text strings are accumulated, so keep it short!
+
+If C<$remove_timestamps> is true, then the C<Scan.start_time> and
+C<Scan.end_time> items will be removed from the cloned metadata.  This
+shouldbe true for something like a merge, which results in data that
+is distinct from the source data.  This should be false fomr something
+like a copy or a simple data processing step for which the time stamps
+remain relevant to the data.
 
 =back
 
