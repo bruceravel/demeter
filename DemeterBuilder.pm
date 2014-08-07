@@ -207,11 +207,11 @@ sub ACTION_org2html {
   copy(File::Spec->catfile('css','orgtocstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgtocstyle.css'));
   if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
     #system(q{emacs --batch --eval="(require 'org)" -f org-html-export-to-html todo.org});
-    system('emacs --batch --visit=todo.org --funcall org-html-export-to-html');
+    system('emacs --batch --visit=todo.org --funcall org-export-as-html');
     move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
   };
   if (not is_older("Changes.org", File::Spec->catfile($ghpages, 'Changes.html'))) {
-    system('emacs --batch --visit=Changes.org --funcall org-html-export-to-html');
+    system('emacs --batch --visit=Changes.org --funcall org-export-as-html');
     move('Changes.html', File::Spec->catfile($ghpages, 'Changes.html'));
   };
 };

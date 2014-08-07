@@ -7,7 +7,7 @@
 
 * 0.9 series
 
-** 0.9.20   12 May 2014
+** 0.9.20    7 Aug 2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager
