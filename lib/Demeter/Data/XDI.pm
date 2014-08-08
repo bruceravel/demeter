@@ -160,23 +160,57 @@ sub metadata_from_ini {
 
 ##### utilities #######################################
 
+sub xdi_header_lines {
+  my ($self) = @_;
+  my $text = q{};
+  if ($self->xdi) {
+    foreach my $f ($self->xdi_families) {
+      foreach my $t ($self->xdi_keys($f)) {
+         $text .= sprintf("%-30s %s\n", $f . '.' . $t . ': ',  $self->xdi->get_item($f, $t));
+      };
+    };
+  } else {
+    $text .= sprintf("%-30s %s\n", 'Element.edge: ',   ucfirst($self->fft_edge));
+    $text .= sprintf("%-30s %s\n", 'Element.symbol: ', ucfirst(lc($self->bkg_z)));
+    my $columns = $self->co->get("output_columns");
+    foreach my $i (sort keys %$columns) {
+      $text .= sprintf("%-30s %s\n", "Column.$i: ", $columns->{$i});
+    };
+  };
+  return $text;
+};
+
 sub xdi_output_header {
-  my ($self, $datafit, $text) = @_;
+  my ($self, $datafit, $text, $columns) = @_;
 
   $self->clear_ifeffit_titles('dem_data');
   my $apps   = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
   my $report = q{};
-  if ($datafit eq 'xdi') {
-    foreach my $f ('Element', 'Column') {
-      foreach my $t ($self->data->xdi_keys($f)) {
-	$report .= sprintf("%-30s %s\n", $f . '.' . $t . ': ',  $self->data->xdi->get_item($f, $t));
+
+  if ($datafit eq 'xdi') {	# something else, suppress Athena.* header lines
+    if ($self->xdi) {
+      foreach my $f ('Element', 'Column') {
+	foreach my $t ($self->data->xdi_keys($f)) {
+	  $report .= sprintf("%-30s %s\n", $f . '.' . $t . ': ',  $self->data->xdi->get_item($f, $t));
+	};
+      };
+    } else {
+      $report .= sprintf("%-30s %s\n", 'Element.edge: ',   ucfirst($self->fft_edge));
+      $report .= sprintf("%-30s %s\n", 'Element.symbol: ', ucfirst(lc($self->bkg_z)));
+      foreach my $i (sort keys %$columns) {
+	$report .= sprintf("%-30s %s\n", "Column.$i: ", $columns->{$i});
       };
     };
-  } elsif ($datafit eq 'fit') {
+
+  } elsif ($datafit eq 'fit') {	# fit
+    $self->co->set(output_columns => $columns);
     $report = $self->data->fit_parameter_report;
-  } else {
+
+  } else {			# data
+    $self->co->set(output_columns => $columns); # this is used in xdi_header_lines
     $report = $self->data->data_parameter_report;
   };
+
   my $xdic   = $self->data->xdi_attribute('comments') || q{};
   my @blank  = ($xdic =~ m{\A\s*\z}) ? () : ($/);
   @blank     = () if $text =~ m{\A\s*\z};
@@ -242,7 +276,8 @@ object with a Demeter::Data object.
 =item C<xdi_output_header>
 
 Organize all the various forms of metadata and comments into a
-sensible header for an XDI file written be either Ifeffit or Larch.
+sensible header for an XDI file written be either Ifeffit or Larch and
+with or without L<Xray::XDI>.
 
 =item C<xdi_make_clone>
 

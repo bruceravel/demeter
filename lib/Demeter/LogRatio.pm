@@ -89,14 +89,14 @@ sub save {
 
   my $save_columns = {};
   my $text;
+  my $hash = {1=>'wavenumber inverse Angstrom', 2=>'log ratio', 3=>'even fit', 4=>'phase difference', 5=>'odd fit'};
   if ($self->data->xdi) {
     $text = $self->template('analysis', 'lr_results');
     $save_columns  = $self->data->xdi->metadata->{Column};
-    my $hash = {1=>'wavenumber invAng', 2=>'log ratio', 3=>'even fit', 4=>'phase difference', 5=>'odd fit'};
     $self->data->xdi_set_columns($hash);
   };
 
-  $self->data->xdi_output_header('data', $text);
+  $self->data->xdi_output_header('data', $text, $hash);
   $self->dispense("analysis", "lr_save", {file=>$fname});
   $self->data->xdi_set_columns($save_columns) if ($self->data->xdi);
   return $fname;

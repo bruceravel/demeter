@@ -297,13 +297,13 @@ sub rfactor {
 };
 
 
-const my %MU_HASH    => (1=>'energy eV',         2=>'xmu',     3=>'bkg',     4=>'pre_edge', 5=>'post_edge', 6=>'der',     7=>'sec', 8=>'i0');
-const my %NORM_HASH  => (1=>'energy eV',         2=>'norm',    3=>'nbkg',    4=>'flat',     5=>'fbkg',      6=>'nder',    7=>'nsec');
-const my %CHIK_HASH  => (1=>'wavenumber invAng', 2=>'chi',     3=>'chik',    4=>'chik2',    5=>'chik3',     6=>'window');
-const my %CHIKW_HASH => (1=>'wavenumber invAng', 2=>'chi');
-const my %CHIR_HASH  => (1=>'distance Ang',      2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
-const my %CHIQ_HASH  => (1=>'wavenumber invAng', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
-const my %FIT_HASH   => (1=>'wavenumber invAng', 2=>'chi',     3=>'chi_fit', 4=>'chi_res',  5=>'chi_bkg',   6=>'window');
+const my %MU_HASH    => (1=>'energy eV',                   2=>'xmu',     3=>'bkg',     4=>'pre_edge', 5=>'post_edge', 6=>'der',     7=>'sec', 8=>'i0');
+const my %NORM_HASH  => (1=>'energy eV',                   2=>'norm',    3=>'nbkg',    4=>'flat',     5=>'fbkg',      6=>'nder',    7=>'nsec');
+const my %CHIK_HASH  => (1=>'wavenumber inverse Angstrom', 2=>'chi',     3=>'chik',    4=>'chik2',    5=>'chik3',     6=>'window');
+const my %CHIKW_HASH => (1=>'wavenumber inverse Angstrom', 2=>'chi');
+const my %CHIR_HASH  => (1=>'distance Angstrom',           2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
+const my %CHIQ_HASH  => (1=>'wavenumber inverse Angstrom', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
+const my %FIT_HASH   => (1=>'wavenumber inverse Angstrom', 2=>'chi',     3=>'chi_fit', 4=>'chi_res',  5=>'chi_bkg',   6=>'window');
 
 sub title_glob {
   my ($self, $globname, $space, $how) = @_;
@@ -319,39 +319,39 @@ sub title_glob {
 	                       q{}        ;
 
   my $save_columns = {};
-  if ($data->xdi) {
-    $save_columns = $data->xdi->metadata->{Column};
-    #Demeter->Dump($save_columns);
-  COLUMNS: {
-      ($space eq 'e') and do {
-	$self->xdi_set_columns(\%MU_HASH);
-	last COLUMNS;
-      };
-      ($space eq 'n') and do {
-	$self->xdi_set_columns(\%NORM_HASH);
-	last COLUMNS;
-      };
-      ($space eq 'k') and do {
-	$self->xdi_set_columns(\%CHIK_HASH);
-	last COLUMNS;
-      };
-      ($space eq 'r') and do {
-	$self->xdi_set_columns(\%CHIR_HASH);
-	last COLUMNS;
-      };
-      ($space eq 'q') and do {
-	$self->xdi_set_columns(\%CHIQ_HASH);
-	last COLUMNS;
-      };
-      ($space eq 'f') and do {
-	$self->xdi_set_columns(\%FIT_HASH);
-	last COLUMNS;
-      };
+  my $hash = {};
+  $save_columns = $data->xdi->metadata->{Column} if ($data->xdi);
+  #Demeter->Dump($save_columns);
+ COLUMNS: {
+    ($space eq 'e') and do {
+      $hash = \%MU_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'n') and do {
+      $hash = \%NORM_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'k') and do {
+      $hash = \%CHIK_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'r') and do {
+      $hash = \%CHIR_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'q') and do {
+      $hash = \%CHIQ_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'f') and do {
+      $hash = \%FIT_HASH;
+      last COLUMNS;
     };
   };
+  $self->xdi_set_columns($hash) if ($data->xdi);
 
   my $which = ($space eq 'f') ? 'fit' : 'data';
-  $self->xdi_output_header($which, q{});
+  $self->xdi_output_header($which, q{}, $hash);
   $self->xdi_set_columns($save_columns) if ($data->xdi);
   return $self;
 };

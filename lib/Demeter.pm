@@ -411,6 +411,7 @@ sub Clone {
   my $new = ref($self) -> new();
   my %hash = $self->all;
   delete $hash{group};
+  delete $hash{xdifile} if not Demeter->xdi_exists;
   $new -> set(%hash);
   $new -> set(@arguments);
 

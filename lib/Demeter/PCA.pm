@@ -384,60 +384,51 @@ sub save {
   print "save type must be one of components, stack, reconstruction, or tt\n" && die if ($which !~ m{\A(?:components|stack|reconstruction|tt)\z});
   #print "$filename cannot be written", die if (not -w $filename);
   my $save_columns;
-  if ($self->stack->[0]->xdi) {
-    my $hash    = {1=>'energy eV'};
-    $hash->{1}  = 'wavelength invAng' if $self->space =~ m{[ck]};
-
-    if ($which eq 'components') {
-      $save_columns = $self->stack->[0]->xdi->metadata->{Column};
-      $hash->{$_+1} = "component $_" foreach (1 .. $#{$self->stack}+1);
-      $self->stack->[0]->xdi_set_columns($hash);
-    } elsif ($which eq 'stack') {
-      $save_columns = $self->stack->[0]->xdi->metadata->{Column};
-      $hash->{$_+2} = $self->stack->[$_]->name foreach (0 .. $#{$self->stack});
-      $self->stack->[0]->xdi_set_columns($hash);
-    } elsif ($which eq 'reconstruction') {
-      $save_columns = $self->stack->[$index_or_target]->xdi->metadata->{Column};
-      $hash->{2} = $self->stack->[$index_or_target]->name;
-      $hash->{3} = 'reconstruction';
-      $hash->{4} = 'residual';
-      $self->stack->[$index_or_target]->xdi_set_columns($hash);
-    } elsif ($which eq 'tt') {
-      $save_columns = $index_or_target->xdi->metadata->{Column};
-      $hash->{2} = $index_or_target->name;
-      $hash->{3} = 'target transform';
-      $hash->{4} = 'residual';
-      $index_or_target->xdi_set_columns($hash);
-    };
+  my $hash    = {1=>'energy eV'};
+  $hash->{1}  = 'wavelength inverse Angstrom' if $self->space =~ m{[ck]};
+  $save_columns = $self->stack->[0]->xdi->metadata->{Column} if ($self->stack->[0]->xdi);
+  if ($which eq 'components') {
+    $hash->{$_+1} = "component $_" foreach (1 .. $#{$self->stack}+1);
+  } elsif ($which eq 'stack') {
+    $hash->{$_+2} = $self->stack->[$_]->name foreach (0 .. $#{$self->stack});
+  } elsif ($which eq 'reconstruction') {
+    $hash->{2} = $self->stack->[$index_or_target]->name;
+    $hash->{3} = 'reconstruction';
+    $hash->{4} = 'residual';
+  } elsif ($which eq 'tt') {
+    $hash->{2} = $index_or_target->name;
+    $hash->{3} = 'target transform';
+    $hash->{4} = 'residual';
   };
+  $self->stack->[0]->xdi_set_columns($hash) if ($self->stack->[0]->xdi);
   my $method = "save_$which";
-  $self->$method($filename, $index_or_target);
+  $self->$method($filename, $hash, $index_or_target);
   $self->stack->[0]->xdi_set_columns($save_columns) if ($self->stack->[0]->xdi);
   return $self;
 };
 
 sub save_components {
-  my ($self, $filename) = @_;
-  $self->stack->[0]->xdi_output_header('xdi', $self->header);
+  my ($self, $filename, $hash, $toss) = @_;
+  $self->stack->[0]->xdi_output_header('xdi', $self->header, $hash);
   #$self->dispense('analysis', 'pca_header', {which=>'components'});
   $self->dispense('analysis', 'pca_save', {filename=>$filename});
   return $self;
 };
 
 sub save_stack {
-  my ($self, $filename) = @_;
-  $self->stack->[0]->xdi_output_header('xdi', $self->header);
+  my ($self, $filename, $hash, $toss) = @_;
+  $self->stack->[0]->xdi_output_header('xdi', $self->header, $hash);
   #$self->dispense('analysis', 'pca_header', {which=>'data stack'});
   $self->dispense('analysis', 'pca_save_stack', {filename=>$filename});
   return $self;
 };
 
 sub save_reconstruction {
-  my ($self, $filename, $index) = @_;
+  my ($self, $filename, $hash, $index) = @_;
   $self->reconstruct;
   $self->plot_reconstruction($index, 1);
   $self->data($self->stack->[$index]);
-  $self->data->xdi_output_header('data', $self->header);
+  $self->data->xdi_output_header('data', $self->header, $hash);
   #$self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
   $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
   $self->data(q{});
@@ -445,9 +436,9 @@ sub save_reconstruction {
 };
 
 sub save_tt {
-  my ($self, $filename, $target) = @_;
+  my ($self, $filename, $hash, $target) = @_;
   $self->data($target);
-  $self->data->xdi_output_header('data', $self->header);
+  $self->data->xdi_output_header('data', $self->header, $hash);
   #$self->dispense('analysis', 'pca_header', {which=>'target transform'});
   $self->dispense('analysis', 'pca_save_tt', {filename=>$filename});
   $self->data(q{});

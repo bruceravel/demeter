@@ -562,19 +562,19 @@ sub save {
   #$self->ntitles($#titles + 1);
 
   my $save_columns = {};
+  my $hash = {1=>'energy eV', 2=>'data', 3=>'fit', 4=>'residual'};
+  my $i=4;
+  foreach my $st (@{ $self->lineshapes }) {
+    ++$i;
+    $hash->{$i} = $st->name;
+  };
   if ($self->data->xdi) {
     $save_columns  = $self->data->xdi->metadata->{Column};
-    my $hash = {1=>'energy eV', 2=>'data', 3=>'fit', 4=>'residual'};
-    my $i=4;
-    foreach my $st (@{ $self->lineshapes }) {
-      ++$i;
-      $hash->{$i} = $st->name;
-    };
     $self->data->xdi_set_columns($hash);
   };
 
 
-  $self->data->xdi_output_header('data', $self->report);
+  $self->data->xdi_output_header('data', $self->report, $hash);
   $self->dispense("analysis", "peak_save", {filename=>$filename});
   $self->data->xdi_set_columns($save_columns) if ($self->data->xdi);
   return $self;
