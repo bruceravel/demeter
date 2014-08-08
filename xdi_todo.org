@@ -4,11 +4,13 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
 #+OPTIONS: toc:2
+#+STARTUP: showall
 
 * Athena related
 
  + [ ] save many, what should this header look like
  + [ ] test X23A2MED and X23A2MultiChannel plugins
+
 
 * Artemis related
 

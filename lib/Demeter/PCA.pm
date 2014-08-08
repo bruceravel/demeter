@@ -367,7 +367,7 @@ sub tt_report {
 sub header {
   my ($self) = @_;
   my $header = "Principle components for:\n";
-  my $i = 0;
+  my $i = 1;
   foreach my $g (@{$self->stack}) {
     $header .= sprintf(". %3d: %s\n", $i++, $g->name);
   };

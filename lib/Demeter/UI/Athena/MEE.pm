@@ -6,6 +6,9 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_TEXT EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
+
+use File::Basename;
+use File::Spec;
 use Scalar::Util qw(looks_like_number);
 
 
@@ -14,7 +17,9 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use vars qw($label);
 $label = "Multi-electron excitation removal";
 
-my $tcsize = [60,-1];
+my $tcsize   = [60,-1];
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -42,15 +47,19 @@ sub new {
   $gbs->Add(Wx::StaticText->new($this, -1, "Broadening"),   Wx::GBPosition->new(2,0));
   $gbs->Add(Wx::StaticText->new($this, -1, "eV"),           Wx::GBPosition->new(2,2));
 
-  $this->{shift} = Wx::TextCtrl->new($this, -1, '0');
-  $this->{amp}   = Wx::TextCtrl->new($this, -1, '0.01');
-  $this->{width} = Wx::TextCtrl->new($this, -1, '0.01');
-  $gbs->Add($this->{shift}, Wx::GBPosition->new(0,1));
-  $gbs->Add($this->{amp},   Wx::GBPosition->new(1,1));
-  $gbs->Add($this->{width}, Wx::GBPosition->new(2,1));
+  $this->{shift}       = Wx::TextCtrl->new($this, -1, '0');
+  $this->{shift_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $this->{amp}         = Wx::TextCtrl->new($this, -1, '0.01');
+  $this->{width}       = Wx::TextCtrl->new($this, -1, '0.5');
+  $gbs->Add($this->{shift},       Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{shift_pluck}, Wx::GBPosition->new(0,3));
+  $gbs->Add($this->{amp},         Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{width},       Wx::GBPosition->new(2,1));
   EVT_TEXT($this, $this->{shift}, sub{$this->{update} = 1});
   EVT_TEXT($this, $this->{amp},   sub{$this->{update} = 1});
   EVT_TEXT($this, $this->{width}, sub{$this->{update} = 1});
+  EVT_BUTTON($this, $this->{shift_pluck}, sub{Pluck(@_, $app)});
+
 
   ## plotting
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -93,6 +102,8 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   $this->{update} = 1;
+  return if $::app->{plotting};
+  $this->quickplot;
   1;
 };
 
@@ -100,6 +111,37 @@ sub push_values {
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
+};
+
+
+sub Pluck {
+  my ($frame, $event, $app) = @_;
+  my $space = $app->{lastplot}->[0];
+  if ($space !~ m{\A[ekq]\z}i) {
+    $app->{main}->status("cannot pluck from a $space space plot in the MEE tool", 'alert');
+    return;
+  };
+  $frame->quickplot($space);
+  my ($return, $x, $y) = $app->cursor;
+  if (not $return->status) {
+    $app->{main}->status($return->message, 'alert');
+    return;
+  };
+  $x = $app->current_data->k2e($x, 'absolute') if (lc($space) ne 'e');
+  my $e = sprintf("%.3f", $x-$::app->current_data->bkg_e0);
+  $frame->{shift}->SetValue($e);
+  $app->{main}->status("Plucked $e for energy shift");
+};
+
+sub quickplot {
+  my ($this, $space) = @_;
+  $space ||= 'E';
+  Demeter->po->start_plot;
+  $::app->{main}->{'Plot'.uc($space)}->pull_single_values;
+  Demeter->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  $::app->current_data->plot($space);
+  $::app->{lastplot} = [$space, 'single'];
+  return 1;
 };
 
 sub plot {
@@ -111,6 +153,7 @@ sub plot {
       return;
     };
   };
+  $this->quickplot($space), return if ($this->{shift}->GetValue <= 0);
   if ($this->{update}) {
     $this->{mee} = $data->mee(shift => $this->{shift}->GetValue,
 			      amp   => $this->{amp}  ->GetValue,
@@ -123,6 +166,7 @@ sub plot {
 		 e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0, chie=>0);
   $data->plot($space);
   $this->{mee}->plot($space);
+  $::app->{lastplot} = [$space, 'single'];
   $this->{update} = 0;
 };
 

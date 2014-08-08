@@ -83,7 +83,12 @@ sub fix {
 			     );
   };
 
-  $self->dispense('process', 'erase', {items=>"\@group ".$mc->group});
+  $data[0]->dispense('process', 'erase', {items=>"\@group ".$mc->group});
+  foreach my $d (@data) {
+    my ($elem, $edge) = $d->find_edge($d->e0('ifeffit'));
+    $d->bkg_z($elem);
+    $d->fft_edge($edge);
+  };
   $data[0]->write_athena($prj, @data);
   $_ -> DEMOLISH foreach (@data, $mc);
 
@@ -99,9 +104,9 @@ sub add_metadata {
   my ($self, @data) = @_;
   return if not Demeter->xdi_exists;
   foreach my $d (@data) {
-    Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
-    $d->xdi->set('Detector', 'i0', 'multichannel ionization chamber');
-    $d->xdi->set('Detector', 'it', 'multichannel ionization chamber');
+    Demeter::Plugins::Beamlines::XDAC->is($d, $self->file);
+    $d->xdi->set_item('Detector', 'i0', 'multichannel ionization chamber');
+    $d->xdi->set_item('Detector', 'it', 'multichannel ionization chamber');
   };
 };
 

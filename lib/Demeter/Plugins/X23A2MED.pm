@@ -215,7 +215,7 @@ sub add_metadata {
   my ($self, $data) = @_;
   return if not Demeter->xdi_exists;
   Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
-  $data->xdi->set('Detector', 'if', $self->nelements.' element Vortex silicon drift');
+  $data->xdi->set_item('Detector', 'if', $self->nelements.' element Vortex silicon drift');
 };
 
 

@@ -74,6 +74,12 @@ Xray::Absorption->load('elam');
   and bend to parch with fire the grain they had salvaged,
   grind it fine on stone.
                                 Virgil, The Aeneid, 1:209-213
+  .
+  EXAFS can be thought of as a kind of spherical LEED with an
+  electron gun and a phase-sensitive detector buried deep in
+  a solid.
+                                P. A. Lee and J. B. Pendry (1975)
+                                doi: 10.1103/PhysRevB.11.2795
 
 =cut
 
@@ -229,8 +235,6 @@ use Demeter::NumTypes qw( Natural
 			  NonNeg
 		       );
 
-#use Demeter::Templates;
-
 sub import {
   my ($class, @pragmata) = @_;
   strict->import;
@@ -280,7 +284,7 @@ sub import {
       $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':athena') {
       @load = (@data, @anal, @plot);
-      $doplugins     = 0;     # delay registering plugins until after start-up
+      $doplugins     = 0;       # delay registering plugins until after start-up
       $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':artemis') {
       @load = (@heph, @fit, 'Plot/Indicator');
@@ -312,7 +316,6 @@ sub import {
   };
 
   if ($PDL_exists and $PSG_exists) {
-    ##print DateTime->now,  "  Demeter/PCA.pm\n";
     require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
   };
   $class -> register_plugins if $doplugins;
@@ -548,14 +551,12 @@ sub set_mode {
   my %which = @which; ## coerce the group list to a hash for convenience
   foreach my $k (keys %which) {
     next if not $mode->meta->has_method($k);
-    #print ">>>>>>> $k   $which{$k}\n";
 
     if ((any {$k eq $_} qw(template_process template_analysis template_fit))
 	and ($which{$k} eq 'larch')
 	and (not $Larch::larch_is_go)) {
       die "\nDemeter says:\n\tUh oh!\n\tYou have requested using Larch, but there is no Larch server running!\n\n";
     };
-
 
     $mode -> $k($which{$k});
   };
@@ -594,15 +595,12 @@ sub plot_with {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       require Demeter::Plot::SingleFile;
       $self -> mo -> plot(Demeter::Plot::SingleFile->new);
-      #$self -> dd -> standard;
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISH if $old_plot_object;
-      #print $self->co->default('gnuplot', 'program'), $/;
-      #print $self->co->default('gnuplot', 'terminal'), $/;
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );

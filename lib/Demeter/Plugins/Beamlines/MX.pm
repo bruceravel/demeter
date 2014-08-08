@@ -92,7 +92,7 @@ sub is {
 	  last SWITCH;
 	};
 	($li =~ m{\ASPP}) and do {
-	  $data->xdi->set_item('MX', 'SRSS', join(", ", @line[1..$#line]));
+	  $data->xdi->set_item('MX', 'SPP', join(", ", @line[1..$#line]));
 	  last SWITCH;
 	};
 	($li =~ m{\ASettling}) and do {

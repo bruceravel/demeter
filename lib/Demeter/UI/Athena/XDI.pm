@@ -47,16 +47,10 @@ sub new {
     my $definedbox      = Wx::StaticBox->new($this, -1, 'XDI Metadata', wxDefaultPosition, wxDefaultSize);
     my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxVERTICAL );
     $this->{sizer}     -> Add($definedboxsizer, 3, wxALL|wxGROW, 0);
-    $this->{defined}    = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
-    $definedboxsizer->Add($this->{defined}, 1, wxALL|wxGROW, 5);
-    my $defbox  = Wx::BoxSizer->new( wxVERTICAL );
-    $this->{defined} -> SetSizer($defbox);
-    $this->{defined} -> SetScrollbars(0, 20, 0, 50);
-    ## edit toggle
 
-    $this->{tree} = Wx::TreeCtrl->new($this->{defined}, -1, wxDefaultPosition, wxDefaultSize,
+    $this->{tree} = Wx::TreeCtrl->new($this, -1, wxDefaultPosition, wxDefaultSize,
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
-    $defbox -> Add($this->{tree}, 1, wxALL|wxGROW, 0);
+    $definedboxsizer -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
     $this->{root} = $this->{tree}->AddRoot('Root');
     #EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
 
@@ -244,9 +238,8 @@ This documentation refers to Demeter version 0.9.20.
 
 =head1 SYNOPSIS
 
-This module provides a simple, tree-based overview of XDI defined
-metadata and textual interfaces to other kinds of metadata.  Metadata
-can be edited, added, and deleted.
+This module provides a simple, tree-based overview of XDI defined and
+extension metadata.  User comments can be altered.
 
 =head1 DEPENDENCIES
 
