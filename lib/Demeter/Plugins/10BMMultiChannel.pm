@@ -32,7 +32,6 @@ sub is {
   };
   my $is_mc = (<$D> =~ m{mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}});
   close $D;
-  #print join("|",$is_xdac, $is_mc), $/;
   return ($is_mx and $is_mc);
 };
 

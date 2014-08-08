@@ -97,8 +97,9 @@ sub suggest {
 
 sub add_metadata {
   my ($self, @data) = @_;
+  return if not Demeter->xdi_exists;
   foreach my $d (@data) {
-    $d->is_xdac($self->file);
+    Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
     $d->xdi->set('Detector', 'i0', 'multichannel ionization chamber');
     $d->xdi->set('Detector', 'it', 'multichannel ionization chamber');
   };

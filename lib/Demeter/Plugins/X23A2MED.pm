@@ -213,7 +213,8 @@ sub _correct {
 
 sub add_metadata {
   my ($self, $data) = @_;
-  $data->is_xdac($self->file);
+  return if not Demeter->xdi_exists;
+  Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
   $data->xdi->set('Detector', 'if', $self->nelements.' element Vortex silicon drift');
 };
 
