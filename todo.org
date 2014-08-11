@@ -22,13 +22,14 @@
 
 * larch chores
 
-+ [ ] XDI headers and saving current with larch
++ [X] XDI headers and saving current with larch
 + [X] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 + [ ] start work on Artemis-related templates
 + [ ] kaiser vs. kaiser-bessel
 + [ ] use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
-+ [X] command line in command buffer in A&A
-+ [ ] testing of Larch + XDI & of Larch - XDI
++ [ ] +command line in command buffer in A&A+ & capture feedback from server
++ [X] testing of Larch + XDI & of Larch - XDI
++ [ ] empirical standard generation in Athena
 
 ** Larch v. Ifeffit problem areas
 

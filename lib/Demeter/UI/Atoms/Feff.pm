@@ -319,7 +319,7 @@ sub run_feff {
 
   if ($feff->rmax > 6.51) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						 'You have set RMAX to larger than 6.5 Angstroms.
+						 'You have set RMAX to larger than 6.5 Angstrom.
 
 The pathfinder will likely be quite time consuming,
 as will reading and writing a project file

@@ -184,7 +184,7 @@ sub xdi_output_header {
   my ($self, $datafit, $text, $columns) = @_;
 
   $self->clear_ifeffit_titles('dem_data');
-  my $apps   = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Athena/$Demeter::VERSION");
+  my $apps   = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), Demeter->mo->identity."/$Demeter::VERSION");
   my $report = q{};
 
   if ($datafit eq 'xdi') {	# something else, suppress Athena.* header lines

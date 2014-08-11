@@ -172,7 +172,7 @@ sub Import {
 	last SWITCH;
       };
     };
-    undef $xdi;
+    #undef $xdi;
     if ($plugin) {
       unlink $plugin->fixed;
       undef $plugin;
@@ -272,11 +272,11 @@ sub _data {
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
   $data -> set(name	   => basename($displayfile),
 	       is_col      => 1,
-	       energy      => $suggest{energy}||'$1',
-	       numerator   => $suggest{numerator}||1,
-	       denominator => $suggest{denominator}||1,
-	       ln          => $suggest{ln}||0,
-	       inv         => $suggest{inv}||0,
+	       energy      => $suggest{energy}      || '$1',
+	       numerator   => $suggest{numerator}   || 1,
+	       denominator => $suggest{denominator} || 1,
+	       ln          => $suggest{ln}          || 0,
+	       inv         => $suggest{inv}         || 0,
 	       display	   => 1);
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
@@ -484,6 +484,14 @@ sub _data {
 
   $data->metadata_from_ini($plugin->metadata_ini) if ($plugin and $plugin->metadata_ini);
   $plugin->add_metadata($data) if $plugin;
+  if (Demeter->xdi_exists) {
+    my $hash = $plugin->headers;
+    foreach my $f (keys %$hash) {
+      foreach my $k (keys %{$hash->{$f}}) {
+	$data->xdi->set_item($f, $k, $hash->{$f}->{$k});
+      };
+    };
+  };
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 

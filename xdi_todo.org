@@ -9,7 +9,7 @@
 * Athena related
 
  + [ ] save many, what should this header look like
- + [ ] test X23A2MED and X23A2MultiChannel plugins
+ + [X] test X23A2MED and X23A2MultiChannel plugins
 
 
 * Artemis related
@@ -17,3 +17,10 @@
  + [ ] bkgsub
  + [ ] fit output column files
  + [ ] paths and xdi
+
+* Larch related
+
+note that headers get appended to Data, not to an analysis object, so
+header generating templates need to draw headers from the appropriate
+Data object
+

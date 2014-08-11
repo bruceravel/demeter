@@ -49,6 +49,7 @@ sub make_data {
   delete $args{$_} foreach (qw(ln energy numerator denominator));
   ## what about chi(k) MC data?
   my $this = Demeter::Data->new(energy=>$energy_string, file=>$self->file, columns=>$self->columns);
+  $this -> dispense('process','make_group');
 
   ## resolve column tokens
   my $group = $self->group;

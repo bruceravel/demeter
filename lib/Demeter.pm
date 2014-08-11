@@ -889,6 +889,7 @@ sub conditional_features {
 
 Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
 		  template_analysis => $ENV{DEMETER_BACKEND},
+		  template_plugin   => $ENV{DEMETER_BACKEND},
 		  template_fit      => $ENV{DEMETER_BACKEND});
 $devflag = 1 if $ENV{DEMETER_DEVFLAG};
 Demeter->dispense('process', 'init') if Demeter->is_larch;

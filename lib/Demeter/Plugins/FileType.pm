@@ -31,6 +31,7 @@ has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
 has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
 has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
+has 'headers'      => (is => 'rw', isa => 'HashRef', default => sub{ {} });
 
 enum 'OutputTypes' => ['data', 'list', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
@@ -352,6 +353,22 @@ by this attribute.  The default is an empty string, which indicates
 that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.
+
+=item C<metadata_ini>
+
+If the plugin is for a file from a beamline with metadata tabulated in
+Demeter's F<share/xdi/> folder, this attribute should be set to F<.ini>
+file for that beamline.
+
+=item C<headers>
+
+This contains an array reference to be added to XDI headers.  It
+should look like this:
+
+   $self->headers({ Family  => {key1=>$val1, key2=>$val2, ...},
+                    Family2 => {keyA=>$valA, keyB=>$valB, ...},
+                    ...
+                  });
 
 =back
 

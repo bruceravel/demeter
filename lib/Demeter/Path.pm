@@ -1070,7 +1070,7 @@ is equivalent to (and fewer keystrokes than):
 
 =item C<longest_leg>
 
-This returns the length in Angstroms of the longest leg of a path.
+This returns the length in Angstrom of the longest leg of a path.
 
   print $path_object -> longest_leg, $/;
 

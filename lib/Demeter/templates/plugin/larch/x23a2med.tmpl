@@ -6,6 +6,4 @@
 {$gp}.medtitles = ["<MED> Deadtime corrected MED data, {$text}",
                    "<MED> Deadtimes (nsec):{$dts}",
                    "<MED> Maximum iterations:{$maxints}"]
-write_ascii(file="{$file}", {$gp}.{$columns},header={$gp}.medtitles)
-
-#del @group {$gp}
+write_ascii("{$file}", {$gp}.{$columns}, header={$gp}.medtitles)

@@ -38,10 +38,10 @@ Here is what gets printed out by the line with the
 # Hg at site 15 in thymidine            
 # This paths.dat file was written by Demeter 0.3.0
 # The central atom is denoted by this token: <+>  
-# Cluster size = 4.50000 Angstroms, containing 21 atoms
+# Cluster size = 4.50000 Angstrom, containing 21 atoms
 # 23 paths were found                                  
 # Forward scattering cutoff 25.00                      
-# Distance fuzz = 0.0300 Angstroms                     
+# Distance fuzz = 0.0300 Angstroms
 # Angle fuzz = 3.0000 degrees                          
 # Suppressing eta: yes                                 
 # -------------------------------------------------------------------------------
