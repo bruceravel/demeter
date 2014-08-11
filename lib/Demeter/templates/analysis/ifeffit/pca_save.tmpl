@@ -1,8 +1,9 @@
 {
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   $labels = join(" ", (1 .. $#{$S->stack}+1));
   $components = $S->group . '.ev' . join(', '.$S->group.'.ev', (0 .. $#{$S->stack}));
   q{}
 }
 write_data(file="{$filename}", $dem_data_*, {$S->group}.x,
            {$components},
-           label="x {$labels}")
+           label="{$abcissa} {$labels}")

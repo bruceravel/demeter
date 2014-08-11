@@ -226,7 +226,8 @@ sub main_page {
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
 
   foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
-    $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+    my $n = ($w eq 'fit') ? 4 : 0;
+    $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxTOP, $n);
     $this->{$w}->Enable(0);
   };
   $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxTOP, 10);
@@ -251,7 +252,7 @@ sub main_page {
   $::app->mouseover($this->{make},      "Turn the current sum of standards into its own data group.");
   $::app->mouseover($this->{plotr},     "Plot the current group and the current model in R space.");
   $::app->mouseover($this->{document},  "Show the document page for LCF in a browser.");
-  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
+  $::app->mouseover($this->{usemarked}, "Move all marked groups into the list of standards.");
 
 
   $panel->SetSizerAndFit($box);

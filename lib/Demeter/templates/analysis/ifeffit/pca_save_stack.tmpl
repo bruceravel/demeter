@@ -1,4 +1,5 @@
 {
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   $labels = join(" ", grep {s{ +}{_}g || $_} map {$_->name} @{$S->stack});
   @list = map {$_->group} (@{$S->stack});
   $datastack = $S->group . '.' . join(', '.$S->group.'.', @list);
@@ -6,4 +7,4 @@
 }
 write_data(file="{$filename}", $dem_data_*, {$S->group}.x,
            {$datastack},
-           label="x {$labels}")
+           label="{$abcissa} {$labels}")

@@ -566,7 +566,8 @@ sub save {
   my $i=4;
   foreach my $st (@{ $self->lineshapes }) {
     ++$i;
-    $hash->{$i} = $st->name;
+    (my $n = $st->name) =~ s{\s+}{_}g;
+    $hash->{$i} = $n;
   };
   if ($self->data->xdi) {
     $save_columns  = $self->data->xdi->metadata->{Column};

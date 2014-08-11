@@ -1,14 +1,3 @@
-{
-  @lr___pd = split(/\n/, $S->report);
-  q{}
-}
-{$S->data->group}.myheader = ["Log-ratio/phase difference fit of {$S->data->name} to {$S->standard->name}"]
-{$S->data->group}.myheader.append("Fit range [{$S->qmin}:{$S->qmax}], {$S->twopi} 2pi phase jumps")
-{$S->data->group}.myheader.append("{$lr___pd[0]}")
-{$S->data->group}.myheader.append("{$lr___pd[1]}")
-{$S->data->group}.myheader.append("{$lr___pd[2]}")
-{$S->data->group}.myheader.append("{$lr___pd[3]}")
-{$S->data->group}.myheader.append("{$lr___pd[4]}")
 write_ascii("{$file}",
             {$S->data->group}.q, {$S->data->group}.ratio, {$S->data->group}.even, {$S->data->group}.diff, {$S->data->group}.odd,
 	    label="q ratio even difference odd", header={$S->data->group}.myheader)

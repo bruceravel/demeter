@@ -1,7 +1,8 @@
 {
   ($name = $D->name) =~ s{\s+}{_}g;
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   q{}
 }
 write_data(file="{$filename}", $dem_data_*, {$S->group}.x,
            {$S->group}.{$D->group}, {$S->group}.rec{$index}, {$S->group}.diff{$index},
-           label="x {$name} reconstruction residual")
+           label="{$abcissa} {$name} reconstruction residual")

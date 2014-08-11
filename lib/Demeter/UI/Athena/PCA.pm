@@ -97,7 +97,7 @@ sub new {
 
     $this->{screebox} -> Add($this->{scree}, 1, wxRIGHT, 5);
     $this->{screebox} -> Add($this->{logscree}, 0, wxTOP, 2);
-    $this->{frombox}  -> Add($this->{components}, 1, wxALL, 0);
+    $this->{frombox}  -> Add($this->{components}, 1, wxTOP, 4);
     $this->{frombox}  -> Add($this->{ncomptext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
     $this->{frombox}  -> Add($this->{ncomp}, 0, wxGROW|wxALL, 0);
 
@@ -159,10 +159,10 @@ sub new {
     $this->{ttbox} -> Add($this->{ntt}, 0, wxGROW|wxALL, 0);
 
     foreach my $w (qw(nrecbox ttbox)) {
-      $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+      $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxTOP, 4);
     };
     $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
-    $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxALL, 0);
+    $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxTOP, 4);
     foreach my $w (qw(rectext nrecon reconstruct tt)) {
       $this->{$w}->Enable(0);
     };

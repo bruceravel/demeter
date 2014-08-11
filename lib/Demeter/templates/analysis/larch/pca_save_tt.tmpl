@@ -1,7 +1,8 @@
 {
   ($name = $D->name) =~ s{\s+}{_}g;
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   q{}
 }
 write_ascii("{$filename}", {$S->group}.x,
-           {$S->group}.{$D->group}, {$S->group}.tt{$index}, {$S->group}.resid,
-           label="x {$name} tt residual", header={$S->group}.myheader)
+           {$S->group}.{$D->group}, {$S->group}.tt, {$S->group}.resid,
+           label="{$abcissa} {$name} tt residual", header={$S->data->group}.myheader)
