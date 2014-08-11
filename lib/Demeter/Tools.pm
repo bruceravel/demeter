@@ -85,10 +85,12 @@ sub attribute_exists {
 }
 
 sub is_larch {
-  return (Demeter->mo->template_process eq 'larch');
+  return ($ENV{DEMETER_BACKEND} eq 'larch');
+  #return (Demeter->mo->template_process eq 'larch');
 };
 sub is_ifeffit {
-  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+  return ($ENV{DEMETER_BACKEND} eq 'ifeffit');
+  #return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
 };
 
 sub xdi_exists {

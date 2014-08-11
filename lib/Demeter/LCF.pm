@@ -361,7 +361,7 @@ sub fit {
   ## create the array to minimize and perform the fit
   $self -> dispense("analysis", "lcf_fit");
 
-  if (Demeter->mo->template_analysis =~ m{ifeffit|iff_columns}) {
+  if (Demeter->is_ifeffit) {
     my $sumsqr = 0;
     foreach my $st (@all) {
       my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
@@ -408,7 +408,7 @@ sub _statistics {
   my ($self) = @_;
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
 
-  if (Demeter->mo->template_analysis =~ m{ifeffit|iff_columns}) {
+  if (Demeter->is_ifeffit) {
     my @x     = $self->get_array('x');
     my @func  = $self->get_array('func');
     my @resid = $self->get_array('resid');

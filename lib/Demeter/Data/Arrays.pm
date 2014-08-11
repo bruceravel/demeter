@@ -154,7 +154,7 @@ sub arrays {
   };
   my @arrays = ();
 
-  if ($self->mo->template_process eq 'larch') {
+  if ($self->is_larch) {
     $self->dispense("process", "attributes");
     @arrays = $self->fetch_array($self->group.'.l___ist');
   } else {

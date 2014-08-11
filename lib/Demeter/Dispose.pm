@@ -40,6 +40,14 @@ if ($ANSIColor_exists) {
   sub ON_RED  {q{}};
   sub RESET   {q{}};';
 };
+
+=for LiteratureReference (_ansify)
+  “Has anyone really been far even as decided to use even go want to
+   do look more like?”
+                                        -- The internets
+
+=cut
+
 sub _ansify {
   my ($self, $thisline, $kind) = @_;
   my ($start, $end) = (q{}, q{});
@@ -241,7 +249,6 @@ sub dispose {
 
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("backend")) {
-    #if ($self->mo->template_process eq 'larch') {
     if ($self->is_larch) {
       Larch::dispose($command);
     } else {
@@ -256,20 +263,24 @@ sub dispose {
     ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
-      my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
-      if ($lines) {		# is there feedback?
-	foreach my $i (1 .. $lines) {
-	  my $response = Ifeffit::get_echo();
+      if ($self->is_larch) {
+	## ned something here...
+      } else {
+	my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
+	if ($lines) {		# is there feedback?
+	  foreach my $i (1 .. $lines) {
+	    my $response = Ifeffit::get_echo();
 
-	  ## send to feedback code ref
-	  if ($coderef) {
-	    ($response) and &$coderef($response."\n");
+	    ## send to feedback code ref
+	    if ($coderef) {
+	      ($response) and &$coderef($response."\n");
 
-	  ## send to the screen with ANSI colorization
-	  } elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
-	    $self->_ansify($response.$/, "feedback")
+	      ## send to the screen with ANSI colorization
+	    } elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	      $self->_ansify($response.$/, "feedback")
+	    };
+
 	  };
-
 	};
       };
     };
