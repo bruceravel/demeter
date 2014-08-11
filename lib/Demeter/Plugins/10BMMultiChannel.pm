@@ -107,6 +107,18 @@ sub fix {
   return $prj;
 };
 
+
+after 'add_metadata' => sub {
+  my ($self, @data) = @_;
+  return if not Demeter->xdi_exists;
+  foreach my $d (@data) {
+    Demeter::Plugins::Beamlines::MX->is($d, $self->file);
+    $d->xdi->set_item('Detector', 'i0', '4-channel ionization chamber');
+    $d->xdi->set_item('Detector', 'it', '4-channel ionization chamber');
+  };
+};
+
+
 sub suggest {
   ();
 };

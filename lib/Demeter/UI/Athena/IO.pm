@@ -482,16 +482,8 @@ sub _data {
     _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
-  $data->metadata_from_ini($plugin->metadata_ini) if ($plugin and $plugin->metadata_ini);
+  ## meta data and MRU file
   $plugin->add_metadata($data) if $plugin;
-  if (Demeter->xdi_exists) {
-    my $hash = $plugin->headers;
-    foreach my $f (keys %$hash) {
-      foreach my $k (keys %{$hash->{$f}}) {
-	$data->xdi->set_item($f, $k, $hash->{$f}->{$k});
-      };
-    };
-  };
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 

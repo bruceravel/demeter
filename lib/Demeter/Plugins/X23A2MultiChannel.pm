@@ -100,13 +100,13 @@ sub suggest {
   ();
 };
 
-sub add_metadata {
+after 'add_metadata' => sub {
   my ($self, @data) = @_;
   return if not Demeter->xdi_exists;
   foreach my $d (@data) {
     Demeter::Plugins::Beamlines::XDAC->is($d, $self->file);
-    $d->xdi->set_item('Detector', 'i0', 'multichannel ionization chamber');
-    $d->xdi->set_item('Detector', 'it', 'multichannel ionization chamber');
+    $d->xdi->set_item('Detector', 'i0', '4-channel ionization chamber');
+    $d->xdi->set_item('Detector', 'it', '4-channel ionization chamber');
   };
 };
 

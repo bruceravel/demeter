@@ -31,7 +31,6 @@ has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
 has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
 has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
-has 'headers'      => (is => 'rw', isa => 'HashRef', default => sub{ {} });
 
 enum 'OutputTypes' => ['data', 'list', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
@@ -47,7 +46,9 @@ sub Croak {
 };
 
 sub add_metadata {
-  return $_[0];
+  my ($self, $data) = @_;
+  $data->metadata_from_ini($self->metadata_ini) if $self->metadata_ini;
+  return $self;
 };
 
 sub data_attributes {
@@ -359,16 +360,6 @@ mechanism for modifying the configuration.
 If the plugin is for a file from a beamline with metadata tabulated in
 Demeter's F<share/xdi/> folder, this attribute should be set to F<.ini>
 file for that beamline.
-
-=item C<headers>
-
-This contains an array reference to be added to XDI headers.  It
-should look like this:
-
-   $self->headers({ Family  => {key1=>$val1, key2=>$val2, ...},
-                    Family2 => {keyA=>$valA, keyB=>$valB, ...},
-                    ...
-                  });
 
 =back
 

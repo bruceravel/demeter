@@ -17,6 +17,8 @@ has '+description'  => (default => "the NSLS X23A2 Vortex");
 has '+version'      => (default => 0.2);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 has 'nelements'     => (is => 'rw', isa => 'Int', default => 4);
+has 'dts'           => (is => 'rw', isa => 'Str', default => q{});
+has 'maxints'       => (is => 'rw', isa => 'Str', default => q{});
 
 has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
@@ -143,9 +145,10 @@ sub fix {
 
   $dts     =~ s{\s+\z}{};
   $maxints =~ s{\s+\z}{};
+  $self->dts($dts);
+  $self->maxints($maxints);
   my $command = Demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
 							  dts=>$dts, maxints=>$maxints});
-  $self->headers({Detector => {med_nchannels=>$self->nelements, med_deadtime=>$dts, med_maxiterations=>$maxints}});
 
   unlink $new if (-e $new);
   Demeter->dispose($command);
@@ -218,11 +221,14 @@ sub _correct {
   return ($maxiter, @corrected);
 };
 
-sub add_metadata {
+after 'add_metadata' => sub {
   my ($self, $data) = @_;
   return if not Demeter->xdi_exists;
   Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
-  $data->xdi->set_item('Detector', 'if', $self->nelements.' element Vortex silicon drift');
+  $data->xdi->set_item('Detector', 'if',                $self->nelements.' element Vortex silicon drift');
+  $data->xdi->set_item('Detector', 'med_nchannels',     $self->nelements);
+  $data->xdi->set_item('Detector', 'med_deadtime',      $self->dts);
+  $data->xdi->set_item('Detector', 'med_maxiterations', $self->maxints);
 };
 
 

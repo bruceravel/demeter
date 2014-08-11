@@ -175,6 +175,7 @@ $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI" || 0;
+Inline->init()        if $XDI_exists;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
@@ -555,7 +556,23 @@ sub set_mode {
     if ((any {$k eq $_} qw(template_process template_analysis template_fit))
 	and ($which{$k} eq 'larch')
 	and (not $Larch::larch_is_go)) {
-      die "\nDemeter says:\n\tUh oh!\n\tYou have requested using Larch, but there is no Larch server running!\n\n";
+      print <<'DEATH'
+Demeter says:
+    Uh oh!
+    You are using the Larch backend, but there is no Larch server running!
+
+    Either reset the DEMETER_BACKEND variable to 'ifeffit':
+
+         ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, ect)
+         ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, ect)
+
+    or start a Larch server:
+
+         ~> larch -r
+
+DEATH
+	;
+      exit 255;
     };
 
     $mode -> $k($which{$k});
