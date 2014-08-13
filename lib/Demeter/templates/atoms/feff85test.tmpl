@@ -13,7 +13,7 @@
 
  *  {$A->corel} {uc($A->edge)} edge energy = {$A->eedge} eV
  EDGE      {uc($A->edge)}
- S02       1.0
+ S02       \{\{s02\}\}
 
  *         pot    xsph  fms   paths genfmt ff2chi
  CONTROL   1      1     1     1     1      1
@@ -23,7 +23,7 @@
  EXCHANGE  0
                                            *** Radius for self-consistent pots (2 shells is a good choice)
  *         r_scf  [ l_scf   n_scf   ca ]   *** l_scf = 0 for a solid, 1 for a molecule
- {$doscf}SCF       {$A->rscf}
+ {$doscf}SCF       \{\{scf\}\}
 
  *         kmax   [ delta_k  delta_e ]     *** Upper limit of XANES calculation.
  {$doxanes}XANES     4.0
@@ -35,7 +35,7 @@
  {$doxanes}LDOS      -30   20     0.1
 
                *** for EXAFS: RPATH {$A->rpath} and uncomment the EXAFS card
- RPATH     {$A->rpath}
+ RPATH     \{\{rpath\}\}
  EXAFS     20
 
  POTENTIALS

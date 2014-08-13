@@ -14,6 +14,8 @@ if ($INC{'Xray/XDI.pm'}) {
   has xdifile => (is => 'ro', isa => 'Str', default=>q{},);
   has xdi     => (is => 'ro', isa => 'Str', default=>q{},);
 };
+has xdi_will_be_cloned => (is => 'rw', isa => 'Bool', default=>0,);
+
 
 sub xdi_allattributes {
   my ($self) = @_;

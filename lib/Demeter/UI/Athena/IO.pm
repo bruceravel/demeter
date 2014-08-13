@@ -675,7 +675,14 @@ sub _group {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
+    $ref->xdi_will_be_cloned(1);
     $ref -> _update('normalize');
+    if (Demeter->xdi_exists) {
+      $ref->xdi($data->xdi->clone);
+      $ref->xdi->set_item('Element', 'symbol', ucfirst(lc($ref->bkg_z)));
+      $ref->xdi->set_item('Element', 'edge',   ucfirst($ref->fft_edge));
+      $ref->xdi_will_be_cloned(0);
+    };
 
     ## need to fix the e0 of the reference in two situations
     if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
