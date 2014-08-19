@@ -160,6 +160,12 @@ img {
   z-index:1;
 }
 
+.cc {
+    float: left;
+    padding: 0px;
+    margin: 10px 10px 0 0;
+}
+
 
 /* Code blocks */
 
