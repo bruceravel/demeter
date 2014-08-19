@@ -1452,7 +1452,12 @@ override 'deserialize' => sub {
     foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
 		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
 		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
-		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
+
+		      xdi_mono xdi_sample xdi_scan xdi_extensions xdi_applications
+		      xdi_labels xdi_detector xdi_beamline xdi_column xdi_comments xdi_version
+		      xdi_facility
+		    )) {
       delete $r_attributes->{$x};
     };
     #if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
