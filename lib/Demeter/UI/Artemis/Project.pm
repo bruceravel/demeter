@@ -491,6 +491,7 @@ sub restore_fit {
     return q{It seems that you have not actually performed a fit in this fitting project.};
   };
   my $import_problems = q{};
+  ##print '>>>>', $lastfit->group, $/;
   $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
 
   ## -------- load up the GDS parameters
@@ -499,6 +500,7 @@ sub restore_fit {
   my $start = $rframes->{GDS}->find_next_empty_row;
   $rframes->{main}->status("Restoring GDS parameters", 'wait|nobuffer');
   foreach my $g (@{$fit->gds}) {
+    ##print $g->write_gds;
     if ($start >= $grid->GetNumberRows) {
       $grid -> AppendRows(1,1);
       $rframes->{GDS}->initialize_row( $grid->GetNumberRows - 1 );
@@ -540,6 +542,7 @@ sub restore_fit {
   my $count = 0;
   $rframes->{main}->status("Restoring data", 'wait|nobuffer');
   foreach my $d (@{$fit->data}) {
+    ##print $d->name, $/;
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if (($rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel})
 						     and # take care in case of a project with data but no paths
@@ -559,9 +562,20 @@ sub restore_fit {
 
       $p -> sp($p -> mo -> fetch('ScatteringPath', $p->spgroup)) if ($p->spgroup and not $p->sp);
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
+      ##Demeter->pjoin($p->name, $p->include, $p->delr);
       my $n = $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;
       $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
+
+      ## disable atoms and feff run buttons for any Feff calc contributing paths to this fit
+      foreach my $key (keys %Demeter::UI::Artemis::frames) {
+	next if $key !~ m{feff};
+	my $frame = $Demeter::UI::Artemis::frames{$key};
+	next if ($p->parentgroup ne $frame->{Feff}->{feffobject}->group);
+	$frame->{Feff}->{toolbar}->EnableTool($frame->{Feff}->{ffid},0);
+	$frame->{Atoms}->{toolbar}->EnableTool($frame->{Atoms}->{atid},0);
+	$frame->{Atoms}->{toolbar}->EnableTool($frame->{Atoms}->{aggid},0);
+      };
     };
 
     $rframes->{$dnum}->{pathlist}->SetSelection(0) if $datapaths; #($#{$fit->paths} > -1);

@@ -143,7 +143,8 @@ sub new {
   $self->{toolbar} -> AddSeparator;
   #$self->{toolbar} -> AddTool(-1, "Doc",  $self->icon("document"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   #$self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
+  my $at = $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
+  $self->{atid} = $at->GetId;
 
   my $agg;
   if ($self->{parent}->{component}) {
