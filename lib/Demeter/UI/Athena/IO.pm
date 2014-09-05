@@ -345,6 +345,7 @@ sub _data {
   my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
     $data->place_scalar("e0", 0);
+    undef $busy;
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
@@ -440,6 +441,7 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
+    my $busy = Wx::BusyCursor->new();
     $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
     $yaml->{each}  = $colsel->{each}->GetValue;
     $yaml->{units} = $colsel->{units}->GetSelection;
@@ -765,7 +767,6 @@ sub constrain {
 
 sub _prj {
   my ($app, $file, $orig, $first, $plugin) = @_;
-  my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
   $app->{main}->{prj}->{import}->SetFocus;
@@ -775,6 +776,7 @@ sub _prj {
     $app->{main}->status("Canceled import from project file.");
     return 0;
   };
+  my $busy = Wx::BusyCursor->new();
 
 
   my @selected = $app->{main}->{prj}->{grouplist}->GetSelections;
