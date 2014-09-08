@@ -4,6 +4,11 @@
   #   {$D->parameter} returns the value of that parameter
   ($file, $label) = ($D->file,      'file          ');
   ($file, $label) = ($D->prjrecord, 'Athena project') if $D->from_athena;
+  $bkg_removal = q{};
+  if ($D->provenance =~ m{Athena project file}) {
+    $bkg_removal = sprintf("E0: %s, Rbkg: %s, range: [%s:%s], clamps: %s/%s, kw: %s",
+                           $D->bkg_e0, $D->bkg_rbkg, $D->bkg_spl1, $D->bkg_spl2, $D->bkg_clamp1, $D->bkg_clamp2, $D->bkg_kw)
+  }
   q{}
 }
 <<nl>>===== Data set >> {$D->name} << ====================================
@@ -20,5 +25,6 @@
 : fitting space        = {$D->fit_space}
 : background function  = {$D->yesno("fit_do_bkg")}
 : phase correction     = {$D->fft_pc}
+: background removal   = {$bkg_removal}
 : R-factor by k-weight = 1 -> {sprintf "%.5f", $D->fit_rfactor1},  2 -> {sprintf "%.5f", $D->fit_rfactor2},  3 -> {sprintf "%.5f", $D->fit_rfactor3}
 <<nl>>
