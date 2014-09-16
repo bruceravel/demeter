@@ -450,7 +450,7 @@ sub _data {
 
   ## to write each MED channel to a group, loop over channels, calling
   ## this.  Set all eshifts the same and don't redo alignment
-  my $dtp = (not defined($colsel))                   ? 'xmu' # this line is a crude hack...
+  my $dtp = (not defined($colsel))                   ? $yaml->{datatype} # this line is a crude hack...
           : ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
           : ($colsel->{datatype}->GetSelection == 1) ? 'xanes'
           : ($colsel->{datatype}->GetSelection == 3) ? 'chi'
@@ -505,6 +505,10 @@ sub _data {
 		     each        => $yaml->{each},
 		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);
+  if ($data->datatype eq 'chi') {
+    $persistence{datatype}  = 'chi';
+    $persistence{numerator} = $data->chi_column;
+  };
   ## reference
   $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
   $persistence{ref_ln}      = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue     : $yaml->{ref_ln};

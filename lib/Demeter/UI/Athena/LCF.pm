@@ -384,7 +384,7 @@ sub push_values {
   my ($this, $data) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
     my $str = $this->{'standard'.$i}->GetStringSelection;
-    $this->{'standard'.$i}->fill($::app, 0, 0);
+    $this->{'standard'.$i}->fill($::app, 1, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
     $this->{'standard'.$i}->SetSelection(0) if not scalar $this->{'standard'.$i}->GetSelection;
 
@@ -406,6 +406,16 @@ sub push_values {
   $this->{plot}      -> Enable($count > 0);
   $this->{plotr}     -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
   $this->{LCF}->data($::app->current_data);
+  if ($this->{LCF}->data->datatype eq 'chi') {
+    $this->{space}->Enable(0,0);
+    $this->{space}->Enable(1,0);
+    $this->{space}->SetSelection(2);
+    $this->OnSpace;
+  } else {
+    $this->{space}->Enable(0,1);
+    $this->{space}->Enable(1,1);
+    $this->OnSpace;
+  };
   1;
 };
 

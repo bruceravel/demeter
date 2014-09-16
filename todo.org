@@ -163,7 +163,10 @@
      + [ ] compute R-factor in k or R using fit from energy.  (see
            mail from Scott 7 January 2012)
      + [ ] boundary on E0 shift.  See email from Dean Hesterburg from 30 May, 2014
-   - [-] *PCA tool* [2/10]
+   - [-] *PCA tool* [2/11]
+     + [ ] test setection against analysis space.  do the right thing
+       with xanes data and chi(k) analysis or chi(k) data and energy
+       analysis
      + [ ] persistance -- what's the value of persistance for PCA?
      + [ ] manual entry of component coefficients (??)
      + [ ] cluster analysis, select two components and plot the
