@@ -349,6 +349,8 @@ sub _data {
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
+    $colsel->{ln}->SetValue($yaml->{ln});
+    $colsel->{inv}->SetValue($yaml->{inv});
     $colsel->{each}->SetValue($yaml->{each});
     $colsel->{units}->SetSelection($yaml->{units});
     $colsel->{constant}->SetValue($yaml->{multiplier}||1);
