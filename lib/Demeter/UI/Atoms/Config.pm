@@ -61,7 +61,7 @@ Demeter::UI::Atoms::Config - Atoms' configuration utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 

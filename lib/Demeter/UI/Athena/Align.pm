@@ -287,7 +287,7 @@ Demeter::UI::Athena::Align - An alignment tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 

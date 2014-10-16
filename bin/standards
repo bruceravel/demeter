@@ -217,7 +217,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -295,7 +295,7 @@ In this mode, this is an interactive utility with a simple keyboard
 interface.  The user is presented with a screen that looks like this
 (albeit in color, if L<Term::ANSIColor> is available):
 
- Standard reference materials (Demeter 0.9.20)
+ Standard reference materials (Demeter 0.9.21)
  .
        H                                                                   He
        Li  Be                                          B   C   N   O   F   Ne
