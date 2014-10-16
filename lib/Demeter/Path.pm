@@ -178,9 +178,9 @@ override all => sub {
   return %all;
 };
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
-  my $new = $self->SUPER::clone();
+  my $new = $self->SUPER::Clone();
   $new->parent($self->parent);
   $new->data($self->data);
   $new->sp($self->sp);
@@ -907,7 +907,7 @@ scattering path.
 
 =head1 METHODS
 
-The Path object inherits creation (C<new> and C<clone>) and accessor
+The Path object inherits creation (C<new> and C<Clone>) and accessor
 methods (C<set>, C<get>) from the parent class described in the
 L<Demeter> documentation.
 
@@ -1070,7 +1070,7 @@ is equivalent to (and fewer keystrokes than):
 
 =item C<longest_leg>
 
-This returns the length in Angstroms of the longest leg of a path.
+This returns the length in Angstrom of the longest leg of a path.
 
   print $path_object -> longest_leg, $/;
 

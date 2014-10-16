@@ -85,10 +85,16 @@ sub attribute_exists {
 }
 
 sub is_larch {
-  return (Demeter->mo->template_process eq 'larch');
+  return ($ENV{DEMETER_BACKEND} eq 'larch');
+  #return (Demeter->mo->template_process eq 'larch');
 };
 sub is_ifeffit {
-  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+  return ($ENV{DEMETER_BACKEND} eq 'ifeffit');
+  #return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+};
+
+sub xdi_exists {
+  return exists($INC{'Xray/XDI.pm'});
 };
 
 sub environment {
@@ -425,7 +431,7 @@ sub clear_ifeffit_titles {
   $self->dispense("process", "show_strings");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
-  my $target = $group . '_title_';
+  my $target = ($group eq 'dem_data') ? $group : $group . '_title_';
   my @all = ();
   foreach my $l (@titles_text) {
     #print $l, $/;

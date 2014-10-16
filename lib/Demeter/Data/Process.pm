@@ -26,6 +26,7 @@ use Demeter::Constants qw($EPSILON5 $NULLFILE);
 #eval 'use PDL::Lite' if $Demeter::PDL_exists;
 use PDL::Lite;
 use PDL::Filter::Linear;
+##use Storable qw(dclone);
 
 sub rebin {
   my ($self, $rhash) = @_;
@@ -109,7 +110,7 @@ sub rebin {
   $self->place_array('re___bin.energy', \@e);
   $self->place_array('re___bin.xmu', \@z);
 
-  my $rebinned = $self->clone;
+  my $rebinned = $self->Clone;
   $self -> standard;		# make self the standard for rebinning
   $rebinned -> dispense("process", "rebin");
   $rebinned -> bkg_e0(0);
@@ -128,6 +129,8 @@ sub rebin {
   $rebinned->npts($#bingrid+1);
   $rebinned->xmin($bingrid[0]);
   $rebinned->xmax($bingrid[$#bingrid]);
+
+  $rebinned->xdi_make_clone($self, "Data rebinned onto a three-region energy grid", 0) if (Demeter->xdi_exists);
 
   ##(ref($standard) =~ m{Data}) ? $standard->standard :
   $self->unset_standard;
@@ -203,7 +206,7 @@ sub merge {
   my $standard = $self->mo->standard;
   $self->standard;		# make self the standard for merging
 
-  my $merged = $self->clone;
+  my $merged = $self->Clone;
   $merged -> source($NULLFILE);
   $merged -> file($NULLFILE);
   $merged -> reference(q{});
@@ -269,8 +272,7 @@ sub merge {
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
   #$merged -> set($self->metadata);
-  #$merged -> delete_from_xdi_scan('start_time');
-  #$merged -> delete_from_xdi_scan('end_time');
+  $merged->xdi_make_clone($self, sprintf("Merge of %d scans", $#used+1), 1) if (Demeter->xdi_exists);
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");
@@ -524,6 +526,8 @@ sub boxcar {
   } elsif ($how eq "chi") {
     $smoothed->update_fft(1);
   };
+  $smoothed->xdi_make_clone($self, 'Smoothed data by boxcar average', 0) if (Demeter->xdi_exists);
+
   return $smoothed;
 };
 
@@ -568,6 +572,7 @@ sub gaussian_filter {
   } elsif ($how eq "chi") {
     $smoothed->update_fft(1);
   };
+  $smoothed->xdi_make_clone($self, 'Smoothed data by Gaussian filter', 0) if (Demeter->xdi_exists);
   return $smoothed;
 };
 
@@ -684,11 +689,14 @@ sub mee {
     $self->dispense('process', 'mee_arctan',  {width=>$args{width}, shift=>$args{shift}});
   };
 
-  my $new = $self->clone;
-  $new -> name($new->name . ' (MEE)');
-  $new -> standard;
-  $self->dispense('process', 'mee_do', {amp=>$args{amp}});
-  $new -> unset_standard;
+  my $new = $self->Clone;
+  $new   -> name($new->name . ' (MEE)');
+  $new   -> standard;
+  $self  -> dispense('process', 'mee_do', {amp=>$args{amp}});
+  $new   -> unset_standard;
+
+  $new->xdi_make_clone($self, 'Removed multi-electron excitation', 0) if (Demeter->xdi_exists);
+
   return $new;
 };
 
@@ -824,7 +832,7 @@ Perform three-point smoothing on the mu(E) or chi(k) data, as
 appropriate.  The argument tells Demeter how many times to reapply the
 smoothing.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> smooth(5);
 
 =item C<convolve>
@@ -837,14 +845,14 @@ negative number will be interpretted as zero.  The type is either
 "Gaussian" or "Lorentzian".  The type is either "xmu" or "chi" -- that
 is convolute mu(E) or chi(k) data.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> convolve(width=>2, type=>'gaussian', which=>'xmu');
 
 =item C<noise>
 
 Add noise to a mu(E) or chi(k) spectrum.
 
-  $copy = $data -> clone;
+  $copy = $data -> Clone;
   $copy -> noise(noise=>0.02, which=>'xmu');
 
 The amount of noise is intepretted differently for mu(E) data as for

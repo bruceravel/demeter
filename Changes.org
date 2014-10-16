@@ -7,7 +7,33 @@
 
 * 0.9 series
 
-** 0.9.20    7 Aug 2014
+** 0.9.21   XX XXX 2014
+
+*** Athena
+   - pluck button for MEE
+   - inv bug in Col Sel dialog (thanks to Ian Rosbottom)
+   - Busy cursor in column & project selection dialogs on Windows
+     (thanks to Ian Godrey)
+   - Improvements to import of chi(k) data + LCF using chi(k) imported
+     data (thanks to Andrea Foster)
+   - Menu items for reporting a bug and asking a question
+
+*** Artemis
+   - Disable run atoms and run feff buttons after first DnD (thanks to
+     Yanyun Hu)
+   - XDI related bug in Demeter::Fit (thanks to Allen Morris)
+   - Add a line about background removal parameters to Artemis log
+     (thanks to Sebastiano Cammelli)
+   - Menu items for reporting a bug and asking a question
+
+*** Hephaestus
+   - Menu items for reporting a bug and asking a question
+
+*** Demeter
+   - Sensible message and die when encountering a problem loading
+     Ifeffit.pm or Larch.pm (thanks to Eric Breynaert)
+
+** 0.9.20   12 May 2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager

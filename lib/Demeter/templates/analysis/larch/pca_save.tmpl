@@ -1,8 +1,9 @@
 {
   $labels = join(" ", (1 .. $#{$S->stack}+1));
   $components = $S->group . '.ev' . join(', '.$S->group.'.ev', (0 .. $#{$S->stack}));
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   q{}
 }
 write_ascii("{$filename}", {$S->group}.x,
            {$components},
-           label="x data {$labels}", header={$S->group}.myheader)
+           label="{$abcissa} {$labels}", header={$S->stack->[0]->group}.myheader)

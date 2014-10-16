@@ -138,7 +138,8 @@ has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->de
 has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rpath") ||  5},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
 has 'rscf'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rscf")  ||  5},);
-has 'do_scf'           => (is => 'rw', isa =>'Bool', default=> 0);
+has 'do_scf'           => (is => 'rw', isa =>'Bool', default=> 1);
+has 'do_xanes'         => (is => 'rw', isa =>'Bool', default=> 0);
 
 has 'rss'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, coerce => 1, default=> q{},

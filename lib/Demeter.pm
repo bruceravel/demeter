@@ -46,6 +46,10 @@ BEGIN {
   } else {
     eval "use Ifeffit qw(ifeffit);"
   };
+  if ($@) {
+    print $@;
+    die $/;
+  };
 }
 ############################
 
@@ -74,6 +78,12 @@ Xray::Absorption->load('elam');
   and bend to parch with fire the grain they had salvaged,
   grind it fine on stone.
                                 Virgil, The Aeneid, 1:209-213
+  .
+  EXAFS can be thought of as a kind of spherical LEED with an
+  electron gun and a phase-sensitive detector buried deep in
+  a solid.
+                                P. A. Lee and J. B. Pendry (1975)
+                                doi: 10.1103/PhysRevB.11.2795
 
 =cut
 
@@ -169,6 +179,7 @@ $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI" || 0;
+Inline->init()        if $XDI_exists;
 $PDL_exists         = 0;
 $PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
@@ -229,8 +240,6 @@ use Demeter::NumTypes qw( Natural
 			  NonNeg
 		       );
 
-#use Demeter::Templates;
-
 sub import {
   my ($class, @pragmata) = @_;
   strict->import;
@@ -280,7 +289,7 @@ sub import {
       $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':athena') {
       @load = (@data, @anal, @plot);
-      $doplugins     = 0;     # delay registering plugins until after start-up
+      $doplugins     = 0;       # delay registering plugins until after start-up
       $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':artemis') {
       @load = (@heph, @fit, 'Plot/Indicator');
@@ -312,7 +321,6 @@ sub import {
   };
 
   if ($PDL_exists and $PSG_exists) {
-    ##print DateTime->now,  "  Demeter/PCA.pm\n";
     require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
   };
   $class -> register_plugins if $doplugins;
@@ -390,7 +398,7 @@ sub finish {
   };
 };
 
-=for LiteratureReference (clone)
+=for LiteratureReference (Clone)
   For the Jews, on the other hand, the apparition of the Double was
   not a foreshadowing of death, but rather a proof that the person to
   whom it appeared had achieved the rank of prophet.  This is the
@@ -405,12 +413,13 @@ sub finish {
 ## return a new object initialized to the values of $self.  @arguments
 ## is a list of attributes for the new object
 
-sub clone {
+sub Clone {
   my ($self, @arguments) = @_;
 
   my $new = ref($self) -> new();
   my %hash = $self->all;
   delete $hash{group};
+  delete $hash{xdifile} if not Demeter->xdi_exists;
   $new -> set(%hash);
   $new -> set(@arguments);
 
@@ -547,14 +556,28 @@ sub set_mode {
   my %which = @which; ## coerce the group list to a hash for convenience
   foreach my $k (keys %which) {
     next if not $mode->meta->has_method($k);
-    #print ">>>>>>> $k   $which{$k}\n";
 
     if ((any {$k eq $_} qw(template_process template_analysis template_fit))
 	and ($which{$k} eq 'larch')
 	and (not $Larch::larch_is_go)) {
-      die "\nDemeter says:\n\tUh oh!\n\tYou have requested using Larch, but there is no Larch server running!\n\n";
-    };
+      print <<'DEATH'
+Demeter says:
+    Uh oh!
+    You are using the Larch backend, but there is no Larch server running!
 
+    Either reset the DEMETER_BACKEND variable to 'ifeffit':
+
+         ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, ect)
+         ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, ect)
+
+    or start a Larch server:
+
+         ~> larch -r
+
+DEATH
+	;
+      exit 255;
+    };
 
     $mode -> $k($which{$k});
   };
@@ -593,15 +616,12 @@ sub plot_with {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       require Demeter::Plot::SingleFile;
       $self -> mo -> plot(Demeter::Plot::SingleFile->new);
-      #$self -> dd -> standard;
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISH if $old_plot_object;
-      #print $self->co->default('gnuplot', 'program'), $/;
-      #print $self->co->default('gnuplot', 'terminal'), $/;
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
@@ -890,6 +910,7 @@ sub conditional_features {
 
 Demeter->set_mode(template_process  => $ENV{DEMETER_BACKEND},
 		  template_analysis => $ENV{DEMETER_BACKEND},
+		  template_plugin   => $ENV{DEMETER_BACKEND},
 		  template_fit      => $ENV{DEMETER_BACKEND});
 $devflag = 1 if $ENV{DEMETER_DEVFLAG};
 Demeter->dispense('process', 'init') if Demeter->is_larch;
@@ -1093,11 +1114,11 @@ This the constructor method.  It builds and initializes new objects.
 New can optionally take an array of attributes and values with the
 same syntax as the C<set> method.
 
-=item C<clone>
+=item C<Clone>
 
 This method clones an object, returning the reference to the new object.
 
-  $newobject = $oldobject->clone(@new_arguments);
+  $newobject = $oldobject->Clone(@new_arguments);
 
 Cloning returns the reference and sets all attributes of the new
 object to the values for the old object.  The optional argument is a
@@ -1105,6 +1126,9 @@ reference to a hash of those attributes which you wish to change for
 the new object.  Passing this hash reference is equivalent to cloning
 the object, then calling the C<set> method on the new object with that
 hash reference.
+
+Note the capital C<C>, which distinguishes this method from the one
+provided by the L<MooseX::Clone> role.
 
 =item C<set>
 

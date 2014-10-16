@@ -469,7 +469,7 @@ sub restore {
   my $was = Demeter->mo->currentfit;
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
   my $old = $self->{list}->GetIndexedData($position);
-  my $fit = $old->clone;
+  my $fit = $old->Clone;
   my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $old->group);
   $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
   $fit->fom($was-1);

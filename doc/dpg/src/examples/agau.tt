@@ -80,7 +80,7 @@ $paths[0]->set(data     => $data_100,
 ## -------- clone the Ag Feff calculation, add Au to the potentials
 ##          list, make an Au scatterer out of the first site after the
 ##          absorber
-my $aufeff = $agfeff->clone;
+my $aufeff = $agfeff->Clone;
 $aufeff -> set(workspace=>"feffau/", screen=>0,);
 $aufeff -> make_workspace;
 $aufeff -> push_potentials([2, 79, 'Au']); ## add Au to the end of the potentials list
@@ -97,14 +97,14 @@ my %map = (2=>$data_80, 4=>$data_60, 6=>$data_50, 8=>$data_40);
 my %percentage = (2=>'80', 4=>'60', 6=>'50', 8=>'40');
 foreach my $i (2,4,6,8) {       # clone silver paths
   my $j = $i-1;
-  $paths[$j] = $paths[0]->clone(data  => $map{$i},
+  $paths[$j] = $paths[0]->Clone(data  => $map{$i},
                                 #s02  => "amp*frac",   # lguess
                                 s02   => "amp*[cv]",   # char. value
                                );
 };
 foreach my $i (2,4,6,8) {       # clone gold paths
   my $j = $i-1;
-  $paths[$i] = $paths[$j]->clone(parent  => $aufeff,
+  $paths[$i] = $paths[$j]->Clone(parent  => $aufeff,
                                  sp      => $aufeff->find_path(tag=>['Au']),
                                  name    => "gold",
                                  n       => 12,

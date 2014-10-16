@@ -2,7 +2,7 @@
   # run all parts of feff8 using a simple, streamlined feff.inp file
   #   {$T->parameter} returns the value of that theory parameter
   $doscf = ($A->do_scf) ? '' : '* ';
-  $doexafs = ($A->do_scf) ? '* ' : '';
+  $doxanes = ($A->do_xanes) ? '' : '* ';
   q{}
 }
 << >>* 
@@ -18,13 +18,13 @@
  S02       1.0
 
  CONTROL   1      1     1     1     1     1
- PRINT     0      0     0     0     0     0
+ PRINT     0      0     0     0     0     3
 
  {$doscf}SCF       {$A->rscf}
- {$doscf}XANES     4.0
- {$doscf}FMS     {$A->rss}  0
- {$doscf}LDOS      -30   20     0.1
- {$doscf}RPATH     0.1
+ {$doxanes}XANES     4.0
+ {$doxanes}FMS     {$A->rss}  0
+ {$doxanes}LDOS      -30   20     0.1
+ {$doxanes}RPATH     0.1
  EXAFS     20
 
 {foreach $l (@ {$T->othercards}) {

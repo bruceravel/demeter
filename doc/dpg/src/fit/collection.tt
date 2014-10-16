@@ -80,7 +80,7 @@ foreach my $i (0 .. 4) {
 
   ## paths for data at 150K
   my $j = $i+5;
-  $paths[$j] = $paths[$i] -> clone;
+  $paths[$j] = $paths[$i] -> Clone;
   $paths[$j] -> set(data     => $data[1],
                     delr     => 'alpha150*reff',
                     sigma2   => 'debye(150, theta) + sigmm',

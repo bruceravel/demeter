@@ -32,7 +32,6 @@ sub is {
   };
   my $is_mc = (<$D> =~ m{mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}});
   close $D;
-  #print join("|",$is_xdac, $is_mc), $/;
   return ($is_mx and $is_mc);
 };
 
@@ -107,6 +106,18 @@ sub fix {
   $self->fixed($prj);
   return $prj;
 };
+
+
+after 'add_metadata' => sub {
+  my ($self, @data) = @_;
+  return if not Demeter->xdi_exists;
+  foreach my $d (@data) {
+    Demeter::Plugins::Beamlines::MX->is($d, $self->file);
+    $d->xdi->set_item('Detector', 'i0', '4-channel ionization chamber');
+    $d->xdi->set_item('Detector', 'it', '4-channel ionization chamber');
+  };
+};
+
 
 sub suggest {
   ();

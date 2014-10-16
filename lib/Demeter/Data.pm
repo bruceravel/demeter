@@ -25,6 +25,7 @@ use YAML::Tiny;
 
 use Moose;
 extends 'Demeter';
+#with 'MooseX::Clone';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::Athena';
 with 'Demeter::Data::Beamlines';
@@ -484,9 +485,9 @@ override alldone => sub {
 override all => sub {
   my ($self) = @_;
   my %all = $self->SUPER::all;
-  foreach my $k (keys %all) {
-    delete $all{$k} if $k =~ m {\Axdi};
-  };
+  #foreach my $k (keys %all) {
+  #  delete $all{$k} if $k =~ m {\Axdi};
+  #};
   delete $all{fft_pcpath};
   delete $all{is_mc};
   delete $all{xdi};
@@ -494,11 +495,11 @@ override all => sub {
 };
 
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
   $self->_update('background');
   $self->_update('fft') if ($self->datatype =~ m{(?:xmu|chi)});
-  my $new = $self->SUPER::clone();
+  my $new = $self->SUPER::Clone();
 
   my $standard = $self->get_mode('standard');
   $new  -> standard;
@@ -736,7 +737,7 @@ sub read_data {
   $self->xmax($x[$#x]);
   my $filename = fileparse($self->file, qr{\.dat}, qr{\.xmu}, qr{\.chi});
   $self->name($filename) if not $self->name;
-  $self->identify_beamline($self->file);
+  $self->identify_beamline($self->file) if not $self->xdi_will_be_cloned;
   return $self;
 };
 

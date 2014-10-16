@@ -224,6 +224,7 @@ sub _record {
   my @i0     = $self->_array($index, 'i0');
   my @signal = $self->_array($index, 'signal');
   my @std    = $self->_array($index, 'stddev');
+  my $xdi    = $self->_ref  ($index, 'xdi');
   my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
   ## this allows you to import the same data group twice without a
@@ -406,6 +407,19 @@ sub _record {
   $data->dispose($command);
   $data->quenched($quenched_state);
 
+  if (Demeter->xdi_exists) {
+    if ($xdi) {
+      my $comments = $xdi->comments;
+      $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
+      $xdi->comments($comments);
+      $data->xdi($xdi);
+    } else {
+      $data->xdi(Xray::XDI->new());
+      $data -> xdi -> set_item('Element', 'edge',    uc($data->fft_edge));
+      $data -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($data->bkg_z)));
+    };
+  };
+
   return $data;
 };
 
@@ -434,6 +448,33 @@ sub _array {
   };
   $prj->gzclose();
   return @array;
+};
+
+sub _ref {
+  my ($self, $index, $which) = @_;
+  my $prjfile = $self->file;
+  my $cpt = new Safe;
+  my $ref;
+  my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
+  my $count = 0;
+  my $found = 0;
+  my $re = '\$' . $which;
+  my $line = q{};
+  while ($prj->gzreadline($line) > 0) {
+    ++$count;
+    $found = 1 if ($count == $index);
+    next unless $found;
+    last if ($line =~ /^\[record\]/);
+    if ($line =~ /^$re/) {
+      $line =~ s{\A\s*\$$which}{\$ref};
+      eval $line;
+      #${$cpt->varglob('ref')} = $cpt->reval( $line );
+      #$ref = ${$cpt->varglob('ref')};
+      last;
+    };
+  };
+  $prj->gzclose();
+  return $ref;
 };
 
 __PACKAGE__->meta->make_immutable;

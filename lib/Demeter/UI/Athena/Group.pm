@@ -64,7 +64,7 @@ sub Copy {
   $newname ||= q{};
 
   my $data = $app->current_data;
-  my $clone = $data->clone;
+  my $clone = $data->Clone;
   if (not $newname) {
     my $largest = 0;
     (my $snip = $data->name) =~ s{Copy\s+(\d+\s+)?of\s+}{};
@@ -75,6 +75,8 @@ sub Copy {
     $newname = "Copy $largest of $snip";
   };
   $clone->name($newname);
+  $clone->xdi_make_clone($data, q{}, 0) if (Demeter->xdi_exists);
+
   my $index = $app->current_index;
   my $checked = $app->{main}->{list}->IsChecked($index);
   if ($index == $app->{main}->{list}->GetCount-1) {

@@ -5,7 +5,7 @@
   #   {$C->parameter} returns a Cell attribute
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
   $doscf = ($A->do_scf) ? '' : '* ';
-  $doexafs = ($A->do_scf) ? '* ' : '';
+  $doxanes = ($A->do_xanes) ? '' : '* ';
   q{}
 }
 << >>
@@ -17,33 +17,22 @@
 
  *         pot    xsph  fms   paths genfmt ff2chi
  CONTROL   1      1     1     1     1      1
- PRINT     1      0     0     0     0      0
+ PRINT     1      0     0     0     0      3
 
-               *** ixc=0 means to use Hedin-Lundqvist
- *         ixc  [ Vr  Vi ]
+ *         ixc  [ Vr  Vi ]     *** ixc=0 means to use Hedin-Lundqvist
  EXCHANGE  0
-
-               *** Radius of small cluster for self-consistency calculation
-               *** A sphere including 2 shells is a good choice
-               *** l_scf = 0 for a solid, 1 for a molecule
- *         r_scf  [ l_scf   n_scf   ca ]
+                                           *** Radius for self-consistent pots (2 shells is a good choice)
+ *         r_scf  [ l_scf   n_scf   ca ]   *** l_scf = 0 for a solid, 1 for a molecule
  {$doscf}SCF       {$A->rscf}
 
-               *** Upper limit of XANES calculation.
-               *** This *must* be uncommented to make Feff calculate full
-               *** multiple scattering rather than a path expansion
- *         kmax   [ delta_k  delta_e ]
- {$doscf}XANES     4.0
+ *         kmax   [ delta_k  delta_e ]     *** Upper limit of XANES calculation.
+ {$doxanes}XANES     4.0
 
-               *** Radius of cluster for Full Multiple Scattering calculation
-               *** l_fms = 0 for a solid, 1 for a molecule
- *         r_fms     l_fms
- {$doscf}FMS     {$A->rss}  0
+ *         r_fms     l_fms      *** Radius for Full Mult. Scatt. l_fms = 0 for a solid, 1 for a molecule
+ {$doxanes}FMS     {$A->rss}  0
 
-               *** Energy grid over which to calculate
-               *** DOS functions
- *         emin  emax   eimag
- {$doscf}LDOS      -30   20     0.1
+ *         emin  emax   eimag   *** Energy grid over which to calculate DOS functions
+ {$doxanes}LDOS      -30   20     0.1
 
                *** for EXAFS: RPATH {$A->rpath} and uncomment the EXAFS card
  RPATH     {$A->rpath}

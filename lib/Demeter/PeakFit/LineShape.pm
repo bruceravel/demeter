@@ -150,20 +150,19 @@ sub parameter_names {
 sub report {
   my ($self) = @_;
   my @names = $self->parameter_names;
-  my $string = sprintf("%s (%s)\n   ", $self->name, $self->function);
+  my $string = sprintf("%s (%s)\n.", $self->name, $self->function);
   my $count = 0;
   foreach my $n (@names) {
     my $a = 'a'.$count;
     my $e = 'e'.$count;
     if ($n =~ m{center|e0}) {
-      $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
+      $string .= sprintf("  %s = %.2f(%.2f)", $n, $self->$a, $self->$e);
     } else {
-      $string .= sprintf(" %s = %.3f(%.3f),", $n, $self->$a, $self->$e);
+      $string .= sprintf("  %s = %.3f(%.3f)", $n, $self->$a, $self->$e);
     };
     ++$count;
   };
-  chop $string;
-  $string .= sprintf("\n    area = %.2f", $self->area) if $self->peaked;
+  $string .= sprintf("\n.    area = %.3f", $self->area) if $self->peaked;
   $string .= $/;
   return $string;
 };

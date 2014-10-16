@@ -46,7 +46,9 @@ sub Croak {
 };
 
 sub add_metadata {
-  return $_[0];
+  my ($self, $data) = @_;
+  $data->metadata_from_ini($self->metadata_ini) if $self->metadata_ini;
+  return $self;
 };
 
 sub data_attributes {
@@ -352,6 +354,12 @@ by this attribute.  The default is an empty string, which indicates
 that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.
+
+=item C<metadata_ini>
+
+If the plugin is for a file from a beamline with metadata tabulated in
+Demeter's F<share/xdi/> folder, this attribute should be set to F<.ini>
+file for that beamline.
 
 =back
 

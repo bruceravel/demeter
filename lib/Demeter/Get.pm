@@ -21,9 +21,9 @@ my $mode = Demeter->mo;
 
 sub backend_name {
   my ($self) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return 'Ifeffit';
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return 'Larch';
   };
 };
@@ -31,18 +31,18 @@ sub backend_name {
 sub backend_id {
   my ($self) = @_;
 
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return "Ifeffit " . Ifeffit::get_string('&build')
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return "Larch " . Larch::get_larch_scalar('larch.__version__');
   };
 };
 
 sub backend_version {
   my ($self) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return (split(" ", Ifeffit::get_string('&build')))[0];
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return Larch::get_larch_scalar('larch.__version__');
   };
 };
@@ -50,10 +50,10 @@ sub backend_version {
 sub fetch_scalar {
   my ($self, $param) = @_;
 
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return Ifeffit::get_scalar($param);
 
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     my $gp = $self->group || Demeter->mo->throwaway_group;
     if ($param =~ m{norm_c\d}) {
       $param = $gp.'.'.$param;
@@ -100,10 +100,10 @@ sub fetch_scalar {
 sub fetch_string {
   my ($self, $param) = @_;
   $param =~ s{\A\$}{};
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return Ifeffit::get_string($param);
 
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     if ($param eq'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
       $param = $gp.'.column_labels';
@@ -118,9 +118,9 @@ sub fetch_string {
 
 sub fetch_array {
   my ($self, $param) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     return Ifeffit::get_array($param);
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return Larch::get_larch_array($param);
   };
 };
@@ -130,11 +130,11 @@ sub fetch_array {
 sub toggle_echo {
   my ($self, $onoff) = @_;
   my $prior = 1;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     $prior = $self->fetch_scalar("\&screen_echo");
     $self->dispose("set \&screen_echo = $onoff\n");
     return $prior;
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return $prior;
   };
 };
@@ -143,7 +143,7 @@ sub toggle_echo {
 sub echo_lines {
   my ($self, $param) = @_;
   my @lines = ();
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     my $save = $self->fetch_scalar("\&screen_echo");
     $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
     my $lines = $self->fetch_scalar('&echo_lines');
@@ -153,7 +153,7 @@ sub echo_lines {
     };
     $self->dispose("\&screen_echo = $save\n") if $save;
     return @lines;
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     return 1;
   };
 };
@@ -161,9 +161,9 @@ sub echo_lines {
 
 sub place_scalar {
   my ($self, $param, $value) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     Ifeffit::put_scalar($param, $value);
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     Larch::put_larch_scalar($param, $value);
   };
   return 1;
@@ -171,9 +171,9 @@ sub place_scalar {
 
 sub place_string {
   my ($self, $param, $value) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     Ifeffit::put_string($param, $value);
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     Larch::put_larch_scalar($param, $value);
   };
   return 1;
@@ -181,13 +181,31 @@ sub place_string {
 
 sub place_array {
   my ($self, $param, $arrayref) = @_;
-  if ($mode->template_process =~ m{ifeffit|iff_columns}) {
+  if ($self->is_ifeffit) {
     Ifeffit::put_array($param, $arrayref);
-  } elsif ($mode->template_process eq 'larch') {
+  } elsif ($self->is_larch) {
     Larch::put_larch_array($param, $arrayref);
   };
   return 1;
 };
+
+
+sub header_strings {
+  my ($self, @list) = @_;
+  my $i = 1;
+  if ($self->is_ifeffit) {	# ifeffit
+    foreach my $line (@list) {
+      ++$i;
+      my $t = sprintf("%s%2.2d", 'dem_data_', $i);
+      $self->place_string($t, $line);
+    };
+  } else {			# larch
+    $self -> co -> set(headers => \@list);
+    $self->dispense("process", "save_header");
+  };
+  return $self;
+};
+
 
 
 1;

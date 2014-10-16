@@ -42,6 +42,7 @@ my $build = DemeterBuilder
 	 requires           => {
 				'Moose'			    => '2.09',
 				'MooseX::Aliases'           => '0.10',
+				#'MooseX::Clone'             => '0.05',
 				#'MooseX::StrictConstructor' => '0.19',
 				#'MooseX::Singleton'	    => '0.29',
 				'MooseX::Types'		    => '0.31',
@@ -189,6 +190,23 @@ $build->add_build_element('txt');
 
 $build->create_build_script;
 
+print <<END_MESSAGE
+
+If all dependencies are met, build and install Demeter by doing
+
+  ./Build
+  ./Build test
+  ./Build install  (or sudo ./Build install)
+
+If you are reinstalling Demeter after updating your operating
+system (or updating perl), you may need to do:
+
+  ./Build touch_wrapper
+  ./Build test
+  ./Build install  (or sudo ./Build install)
+
+END_MESSAGE
+;
 
 =head1 NAME
 

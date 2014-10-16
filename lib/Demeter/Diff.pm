@@ -167,6 +167,9 @@ sub make_group {
   $data->source("Computed difference spectrum");
   $data->datatype($self->datatype);
   $data->update_norm(1);
+
+  $data->xdi_make_clone($self->data, 'Difference spectrum', 0) if (Demeter->xdi_exists);
+
   return $data;
 };
 

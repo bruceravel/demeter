@@ -14,7 +14,7 @@ my $data = $prj->record(3);
 $data->bkg_fixstep(0);
 
 my $peak = Demeter::PeakFit->new(data=>$data, xmin=>-15, xmax=>1, screen => 0, plot_components=>1);
-$peak -> backend($ENV{DEMETER_BACKEND});
+$peak -> backend($ENV{DEMETER_BACKEND}||'ifeffit');
 
 $data->set_mode(screen=>0);
 

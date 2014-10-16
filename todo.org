@@ -7,8 +7,6 @@
 
 * top priorities
 ** small things
-  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
-  - [ ] Lepidocrocite issue (amam gets changed to cmcm)
   - [ ] Dispersive algorithm, include in Athena
   - [X] S02 display issue
   - [ ] clone data sets and path lists in Artemis
@@ -20,14 +18,18 @@
   - [ ] PCA improvements
   - [ ] feff8.5L
   - [ ] persistance of analysis methods in Athena
+        This can be implemented in the same way I implemented XDI persistance -- for each group, serialize a blessed scalar and write that to the record
 
 * larch chores
 
++ [X] XDI headers and saving current with larch
 + [X] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 + [ ] start work on Artemis-related templates
 + [ ] kaiser vs. kaiser-bessel
 + [ ] use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
-+ [X] command line in command buffer in A&A
++ [ ] +command line in command buffer in A&A+ & capture feedback from server
++ [X] testing of Larch + XDI & of Larch - XDI
++ [ ] empirical standard generation in Athena
 
 ** Larch v. Ifeffit problem areas
 
@@ -63,10 +65,11 @@
 ** Moose issues
 
 ** wx issues
-  - [ ] why does Wx::FileDialog with ~wxFD_OVERWRITE_PROMPT~ style not work correctly?
+  - [X] why does Wx::FileDialog with ~wxFD_OVERWRITE_PROMPT~ style not work correctly?
         see https://bugzilla.gnome.org/show_bug.cgi?id=631908 and 
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
+        *This is now deprecated.*
 
 ** installation issues [2/2]
   - [X] Relocation needs testing on Windows, need to make sure that
@@ -88,8 +91,8 @@
   - [ ] MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
   - [ ] Feff8 integration
   - [ ] Use PDL in pathfinder
-  - [X] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
   - [ ] background groups for AXAFS
+  - [X] Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
   - [X] serialize VPath, put VPath into dpj and fpj files
   - [X] set E0 to peak of white line
   - [X] need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot
@@ -137,7 +140,7 @@
     3. +PCA+
     4. +boxcar average+
 
-*** needs doing [3/15] [20%]
+*** needs doing [4/15] [26%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
@@ -153,15 +156,18 @@
    - [ ] *Difference tool* [0/1]
      + [ ] difference in k
    - [ ] *LCF tool* [0/4]
-     + [ ] persistance of LCF results
+     + [ ] persistance of LCF results -- /use serialized blessed scalar, like XDI/
      + [ ] satisfying both inclusive and unity can be trouble for
            poorly normalized data and/or poor standard selection
            (see email from Jack Hitch)
      + [ ] compute R-factor in k or R using fit from energy.  (see
            mail from Scott 7 January 2012)
      + [ ] boundary on E0 shift.  See email from Dean Hesterburg from 30 May, 2014
-   - [-] *PCA tool* [2/10]
-     + [ ] persistance
+   - [-] *PCA tool* [2/11]
+     + [ ] test setection against analysis space.  do the right thing
+       with xanes data and chi(k) analysis or chi(k) data and energy
+       analysis
+     + [ ] persistance -- what's the value of persistance for PCA?
      + [ ] manual entry of component coefficients (??)
      + [ ] cluster analysis, select two components and plot the
            associations of each data with those two in a scatter plot.
@@ -178,7 +184,7 @@
            into the PCA and check against that rather than the
            current list of marked groups
    - [-] *Peakfit tool* [7/12]
-     + [ ] persistance
+     + [ ] persistance -- /use serialized blessed scalar, like XDI/
      + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
      + [ ] broken using XES
      + [ ] explicitly state ninfo and epsilon
@@ -194,10 +200,10 @@
    - [-] *MEE tool* [1/3]
      + [X] arctan removal
      + [ ] other algorithms from the literature
-     + [ ] good guesses for parameters
+     + [ ] good guesses for parameters -- at least a pluck button for shift
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
-   - [ ] *metadata tool*
+   - [X] *metadata tool*
    - [ ] *Data summer*
      + push_values method needs to update menus to reflect changes in group list
 
@@ -312,10 +318,10 @@
   - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
 
-** Atoms [4/10] [40%]
-  - [ ] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
-  - [ ] should be a way to insert tabulated shift vector, if it exists
-  - [ ] handle ": setting" notation: =:R=, =:H=, =:1=, =:2= [[http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section%3DAppendix:%2520Space%2520Groups&][(for example)]]
+** Atoms [7/10] [70%]
+  - [X] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+  - [X] should be a way to insert tabulated shift vector, if it exists
+  - [X] handle ": setting" notation: =:R=, =:H=, =:1=, =:2= [[http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section%3DAppendix:%2520Space%2520Groups&][(for example)]]
     + =:1= and =:2= seem to have to do with whether the shift vector should be used, see [[file:examples/atoms/ZnFe2O4.cif][ZnFe2O4.cif]] and use the shift vector
     + =:R=, =:H= specify rhombohedral or tri/hexagonal setting
   - [X] Lepidocrocite issue (amam gets changed to cmcm)

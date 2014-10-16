@@ -86,6 +86,7 @@
 [% MACRO la1    BLOCK -%]L&alpha;<sub>1</sub>[%- END -%]
 [% MACRO l3     BLOCK -%]L<sub>III</sub>[%- END -%]
 [% MACRO l2     BLOCK -%]L<sub>II</sub>[%- END -%]
+[% MACRO l1     BLOCK -%]L<sub>I</sub>[%- END -%]
 [% MACRO n6     BLOCK -%]N<sub>6</sub>[%- END -%]
 [% MACRO n7     BLOCK -%]N<sub>7</sub>[%- END -%]
 [% MACRO l3n67  BLOCK -%]L<sub>III</sub>N<sub>6,7</sub>[%- END -%]

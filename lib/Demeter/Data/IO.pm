@@ -18,6 +18,7 @@ package Demeter::Data::IO;
 use Moose::Role;
 
 use Carp;
+use Const::Fast;
 use List::MoreUtils qw(none);
 use Regexp::Assemble;
 
@@ -296,6 +297,14 @@ sub rfactor {
 };
 
 
+const my %MU_HASH    => (1=>'energy eV',                   2=>'xmu',     3=>'bkg',     4=>'pre_edge', 5=>'post_edge', 6=>'der',     7=>'sec', 8=>'i0');
+const my %NORM_HASH  => (1=>'energy eV',                   2=>'norm',    3=>'nbkg',    4=>'flat',     5=>'fbkg',      6=>'nder',    7=>'nsec');
+const my %CHIK_HASH  => (1=>'wavenumber inverse Angstrom', 2=>'chi',     3=>'chik',    4=>'chik2',    5=>'chik3',     6=>'window');
+const my %CHIKW_HASH => (1=>'wavenumber inverse Angstrom', 2=>'chi');
+const my %CHIR_HASH  => (1=>'distance Angstrom',           2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
+const my %CHIQ_HASH  => (1=>'wavenumber inverse Angstrom', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
+const my %FIT_HASH   => (1=>'wavenumber inverse Angstrom', 2=>'chi',     3=>'chi_fit', 4=>'chi_res',  5=>'chi_bkg',   6=>'window');
+
 sub title_glob {
   my ($self, $globname, $space, $how) = @_;
   $how ||= q{};
@@ -309,24 +318,41 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my @titles = split(/\n/, $data->template("report", "xdi_report"));
-  ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
-  my $i = 0;
-  $self->dispense('process', 'erase',  {items=>"\$$globname\*"}) if ($self->is_ifeffit);
-  my $apps = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), "Demeter/$Demeter::VERSION");
-
-  my $xdic = $self->data->xdi_attribute('comments') || q{};
-  my @all = ($apps, @titles, "///", split(/\n/, $xdic));
-  if ($self->is_ifeffit) {
-    foreach my $line (@all) {
-      ++$i;
-      my $t = sprintf("%s%2.2d", $globname, $i);
-      $self->place_string($t, $line);
+  my $save_columns = {};
+  my $hash = {};
+  $save_columns = $data->xdi->metadata->{Column} if ($data->xdi);
+  #Demeter->Dump($save_columns);
+ COLUMNS: {
+    ($space eq 'e') and do {
+      $hash = \%MU_HASH;
+      last COLUMNS;
     };
-  } else {
-    $self -> co -> set(headers => \@all);
-    $self->dispense("process", "save_header");
+    ($space eq 'n') and do {
+      $hash = \%NORM_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'k') and do {
+      $hash = \%CHIK_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'r') and do {
+      $hash = \%CHIR_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'q') and do {
+      $hash = \%CHIQ_HASH;
+      last COLUMNS;
+    };
+    ($space eq 'f') and do {
+      $hash = \%FIT_HASH;
+      last COLUMNS;
+    };
   };
+  $self->xdi_set_columns($hash) if ($data->xdi);
+
+  my $which = ($space eq 'f') ? 'fit' : 'data';
+  $self->xdi_output_header($which, q{}, $hash);
+  $self->xdi_set_columns($save_columns) if ($data->xdi);
   return $self;
 };
 

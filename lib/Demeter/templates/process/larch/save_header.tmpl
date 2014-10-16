@@ -1,6 +1,7 @@
 {$D->group}.myheader = []
 {
   foreach $g (@{ $C->get('headers') }) {
+    next if ($g =~ m{\A\s*\z});
     $gg = ($g =~ m{\A\#}) ? '# '.$g : $g;
     $OUT .= $D->group . ".myheader.append(\"" . $gg . "\")\n";
   }

@@ -124,6 +124,13 @@ sub suggest {
   };
 };
 
+after 'add_metadata' => sub {
+  my ($self, $data) = @_;
+  return if not Demeter->xdi_exists;
+  $data->xdi->set_item('Mono', 'd_spacing', $TWOD/2);
+  $data->xdi->set_item('Mono', 'name',      'Si(111)');
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

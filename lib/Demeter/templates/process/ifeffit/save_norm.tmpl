@@ -10,12 +10,15 @@
   # example:
   #   $string = $self->template("process", "save_norm",
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
+  $nonxdi = q{};
+  $nonxdi = ' $' . $D->group . '_title_*' if not exists($INC{'Xray/XDI.pm'}) . ',';
+  q{};
 }
 ##| saving "{$D->name}" as normalized mu(E)
 set {$D->group}.e = {$D->group}.energy+{$D->bkg_eshift}
 set({$D->group}.nder = deriv({$D->group}.norm)/deriv({$D->group}.energy),
     {$D->group}.nsec = deriv({$D->group}.nder)/deriv({$D->group}.energy) )
-write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
+write_data(file="{$filename}", ${$titles},{$nonxdi}
            {$D->group}.e, {$D->group}.norm, {$D->group}.nbkg, {$D->group}.flat,
            {$D->group}.fbkg, {$D->group}.nder, {$D->group}.nsec)
 erase {$D->group}.e

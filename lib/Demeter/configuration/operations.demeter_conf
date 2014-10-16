@@ -45,6 +45,16 @@ section_description
   These parameters control various aspects of Demeter's operations.
   These parameters do not fit well into other parameter groups.
 
+variable=identify_beamline
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When true, attempt to identify the beamline of origin of the data
+  file in order to glean metadata from the file.  Setting this to
+  false disables the beamline check.
+
 variable=config_text_width
 type=positive interpolation
 default=90

@@ -63,7 +63,9 @@ sub sa {
   $hash{out}       ||= 45;
   $hash{density}   ||= 1;
   my $method = 'sa_' . lc($how);
-  return $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  my ($sadata, $text) = $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  $sadata->xdi_make_clone($self, sprintf("Self-absorption corrected (%s) data", $how), 0) if (Demeter->xdi_exists);
+  return ($sadata, $text);
 };
 
 sub sa_troger {

@@ -325,7 +325,7 @@ after when local guess parameters are in play.
 
 =head2 Object handling methods
 
-The GDS object uses the C<new>, C<clone>, C<set>, and C<get> methods
+The GDS object uses the C<new>, C<Clone>, C<set>, and C<get> methods
 described in the L<Demeter> documentation.
 
 =over 4

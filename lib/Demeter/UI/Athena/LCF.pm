@@ -226,7 +226,8 @@ sub main_page {
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
 
   foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
-    $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+    my $n = ($w eq 'fit') ? 4 : 0;
+    $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxTOP, $n);
     $this->{$w}->Enable(0);
   };
   $actionsboxsizer->Add($this->{usemarked}, 0, wxGROW|wxTOP, 10);
@@ -251,7 +252,7 @@ sub main_page {
   $::app->mouseover($this->{make},      "Turn the current sum of standards into its own data group.");
   $::app->mouseover($this->{plotr},     "Plot the current group and the current model in R space.");
   $::app->mouseover($this->{document},  "Show the document page for LCF in a browser.");
-  $::app->mouseover($this->{usemarked},   "Move all marked groups into the list of standards.");
+  $::app->mouseover($this->{usemarked}, "Move all marked groups into the list of standards.");
 
 
   $panel->SetSizerAndFit($box);
@@ -383,7 +384,7 @@ sub push_values {
   my ($this, $data) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
     my $str = $this->{'standard'.$i}->GetStringSelection;
-    $this->{'standard'.$i}->fill($::app, 0, 0);
+    $this->{'standard'.$i}->fill($::app, 1, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
     $this->{'standard'.$i}->SetSelection(0) if not scalar $this->{'standard'.$i}->GetSelection;
 
@@ -405,6 +406,16 @@ sub push_values {
   $this->{plot}      -> Enable($count > 0);
   $this->{plotr}     -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
   $this->{LCF}->data($::app->current_data);
+  if ($this->{LCF}->data->datatype eq 'chi') {
+    $this->{space}->Enable(0,0);
+    $this->{space}->Enable(1,0);
+    $this->{space}->SetSelection(2);
+    $this->OnSpace;
+  } else {
+    $this->{space}->Enable(0,1);
+    $this->{space}->Enable(1,1);
+    $this->OnSpace;
+  };
   1;
 };
 

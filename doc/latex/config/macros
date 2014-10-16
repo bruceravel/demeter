@@ -84,6 +84,7 @@
 [% MACRO la1    BLOCK -%]L$\alpha_1$[%- END -%]
 [% MACRO l3     BLOCK -%]L$_{\mathrm{III}}$[%- END -%]
 [% MACRO l2     BLOCK -%]L$_{\mathrm{II}}$[%- END -%]
+[% MACRO l1     BLOCK -%]L$_{\mathrm{I}}$[%- END -%]
 [% MACRO n6     BLOCK -%]N$_{6}$[%- END -%]
 [% MACRO n7     BLOCK -%]N$_{7}$[%- END -%]
 [% MACRO l3n67  BLOCK -%]L$_{\mathrm{III}}$N$_{6,7}$[%- END -%]

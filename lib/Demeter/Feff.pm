@@ -198,6 +198,7 @@ has 'iobuffer' => (
 has 'execution_wrapper' => (is=>'rw', isa => 'Any', default => 0);
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
 has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
+has 'feffran'  => (is=>'rw', isa => 'Bool',    default => 0);
 
 has 'feff_version' => (is=>'rw', isa => 'Int', default => 6);
 
@@ -211,7 +212,7 @@ sub DEMOLISH {
   $self->alldone;
 };
 
-override 'clone' => sub {
+override 'Clone' => sub {
   my ($self, @arguments) = @_;
   my $new = Demeter::Feff -> new();
 

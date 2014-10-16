@@ -14,7 +14,7 @@ print FBR $atoms_br -> Write('feff');
 close FBR;
 
 ## -------- Clone AgBr input file to make AgCl
-my $atoms_cl = $atoms_br -> clone(name=>'AgCl');
+my $atoms_cl = $atoms_br -> Clone(name=>'AgCl');
 my $popped = $atoms_cl -> pop_sites;
 $popped   =~ s{Br}{Cl}g;
 $atoms_cl -> push_sites($popped);

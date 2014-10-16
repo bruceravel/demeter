@@ -33,7 +33,7 @@ $ARGV[0] ||= 0;
 
 my $data_index = $ARGV[0];
 $pca->ncompused(2);
-#$pca->save_reconstruction($data_index, "foo");
+#$pca->save_reconstruction("foo", $data_index);
 $pca->tt($target,3);
 #print $pca->tt_report($target,4);
 $pca->plot_tt($target);

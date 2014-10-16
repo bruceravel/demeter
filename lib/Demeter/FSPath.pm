@@ -192,7 +192,7 @@ override path => sub {
   return $self;
 };
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
   $self->_update_from_ScatteringPath;
 

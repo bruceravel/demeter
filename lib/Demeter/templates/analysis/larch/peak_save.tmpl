@@ -7,4 +7,4 @@
 write_ascii("{$filename}",
             {$S->group}.{$S->xaxis}, {$S->group}.func, {$S->group}.peak, {$S->group}.resid,
             {$shapes},
-            label="energy data fit residual {$components}", header={$S->group}.myheader)
+            label="energy data fit residual {$components}", header={$S->data->group}.myheader)

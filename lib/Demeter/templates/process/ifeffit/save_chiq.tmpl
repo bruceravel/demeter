@@ -12,12 +12,15 @@
   #   $string = $self->template("process", "save_chir",
   #                             {filename => $filename,
   #                              titles   => "\$dem_data_*"});
+  $nonxdi = q{};
+  $nonxdi = ' $' . $D->group . '_title_*' if not exists($INC{'Xray/XDI.pm'}) . ',';
+  q{};
 }
 ##|
 ##| saving "{$S->name}" as back-transformed chi(k)
 set {$S->group}.chik = {$S->group}.k^{$D->get_kweight}*{$S->group}.chi
-write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
-           label="q chiq_re chiq_im chiq_mag chiq_pha win chik",
+write_data(file="{$filename}", ${$titles},{$nonxdi}
+           label="q chi_re chi_im chi_mag chi_pha win chi",
            {$S->group}.q, {$S->group}.chiq_re, {$S->group}.chiq_im,
            {$S->group}.chiq_mag, {$S->group}.chiq_pha, {$S->group}.win, {$S->group}.chik)
 erase {$S->group}.chik

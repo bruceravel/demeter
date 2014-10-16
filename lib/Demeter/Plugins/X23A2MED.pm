@@ -17,6 +17,8 @@ has '+description'  => (default => "the NSLS X23A2 Vortex");
 has '+version'      => (default => 0.2);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 has 'nelements'     => (is => 'rw', isa => 'Int', default => 4);
+has 'dts'           => (is => 'rw', isa => 'Str', default => q{});
+has 'maxints'       => (is => 'rw', isa => 'Str', default => q{});
 
 has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
@@ -86,7 +88,9 @@ sub fix {
     push @options, [$l, $val];
   };
 
-  my @labs    = (Demeter->co->default('x23a2med', 'energy'), lc(Demeter->co->default('x23a2med', 'i0')));
+  my $elab = Demeter->co->default('x23a2med', 'energy');
+  $elab = 'energy' if (($elab eq 'nergy') and Demeter->is_larch); # ifeffit's frickin' nergy problem!
+  my @labs    = ($elab, lc(Demeter->co->default('x23a2med', 'i0')));
   my (@edge1, @edge2);
   my $maxints = q{};
   my $dts     = q{};
@@ -103,14 +107,15 @@ sub fix {
       next;
     };
 
+    my ($max, @corr);
     if (not $multiedge) {	# normal MED file
       my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.'.lc(Demeter->co->default("x23a2med", "roi$ch" )));
-      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
       $self->place_array(Demeter->mo->throwaway_group.".corr$ch", \@corr);
       push @labs, "corr$ch";
     } else {			# multiedge MED file
       my @roi  = $self->fetch_array(Demeter->mo->throwaway_group.'.roi1_'.$ch);
-      my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
+      ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
       $self->place_array(Demeter->mo->throwaway_group.".c1_$ch", \@corr);
       push @edge1, "c1_$ch";
 
@@ -119,10 +124,10 @@ sub fix {
       $self->place_array(Demeter->mo->throwaway_group.".c2_$ch", \@corr);
       push @edge2, "c2_$ch";
 
-      $maxints .= " $max";
     };
+    $maxints .= "$max ";
 
-    $dts .= " $deadtime";
+    $dts .= "$deadtime ";
   };
   if ($multiedge) {
     push @labs, @edge1, @edge2;
@@ -138,8 +143,13 @@ sub fix {
   my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
   my $columns = join(", ".Demeter->mo->throwaway_group.".", @labs);
 
+  $dts     =~ s{\s+\z}{};
+  $maxints =~ s{\s+\z}{};
+  $self->dts($dts);
+  $self->maxints($maxints);
   my $command = Demeter->template('plugin', 'x23a2med', {file=>$new, columns=>$columns, text=>$text,
 							  dts=>$dts, maxints=>$maxints});
+
   unlink $new if (-e $new);
   Demeter->dispose($command);
 
@@ -211,10 +221,14 @@ sub _correct {
   return ($maxiter, @corrected);
 };
 
-sub add_metadata {
+after 'add_metadata' => sub {
   my ($self, $data) = @_;
-  $data->is_xdac($self->file);
-  $data->xdi->set('Detector', 'if', $self->nelements.' element Vortex silicon drift');
+  return if not Demeter->xdi_exists;
+  Demeter::Plugins::Beamlines::XDAC->is($data, $self->file);
+  $data->xdi->set_item('Detector', 'if',                $self->nelements.' element Vortex silicon drift');
+  $data->xdi->set_item('Detector', 'med_nchannels',     $self->nelements);
+  $data->xdi->set_item('Detector', 'med_deadtime',      $self->dts);
+  $data->xdi->set_item('Detector', 'med_maxiterations', $self->maxints);
 };
 
 

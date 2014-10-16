@@ -174,7 +174,7 @@ sub do_plot {
   } elsif ($data->datatype  eq 'chi') {
     $this->{plotas}->Enable(0,  0);
     $this->{plotas}->Enable($_, 1) foreach (1..7);
-    $this->{plotas}->SetSelection(4);
+    $this->{plotas}->SetSelection(4) if $this->{plotas}->GetSelection == 0;
   } else {
     $this->{plotas}->Enable($_, 1) foreach (0..7);
   };

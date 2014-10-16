@@ -2,9 +2,10 @@
   $datastack = $S->group . '.' . join(', '.$S->group.'.', map {$_->group} (@{$S->stack}));
   @list = map {$_->name} (@{$S->stack});
   foreach (@list) {$_ =~ s/\s+/_/g};
+  $abcissa = ($S->space =~ m{[ck]}) ? 'k' : 'energy';
   $labels = join(" ", @list); 
   q{}
 }
 write_ascii("{$filename}", {$S->group}.x,
            {$datastack},
-           label="x data {$labels}", header={$S->group}.myheader)
+           label="{$abcissa} {$labels}", header={$S->stack->[0]->group}.myheader)

@@ -40,12 +40,12 @@ $plot->set(emin=>-50, emax=>100, e_bkg=>0, e_norm=>0, e_markers=>1);
 $d0 -> plot('e');
 
 print "2% noise and replotting data\n";
-my $d1 = $d0 -> clone(name => "2% noise", 'y_offset' => 1);
+my $d1 = $d0 -> Clone(name => "2% noise", 'y_offset' => 1);
 $d1 -> noise(noise=>0.02, which=>'xmu');
 $d1 -> plot('e');
 
 print "10% noise and replotting data\n";
-my $d2 = $d0 -> clone(name => "10% noise", y_offset => 0);
+my $d2 = $d0 -> Clone(name => "10% noise", y_offset => 0);
 $d2 -> noise(noise=>0.1, which=>'xmu');
 $d2 -> plot('e');
 

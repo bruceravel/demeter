@@ -1,0 +1,26 @@
+#+TITLE: XDI integration To Do List
+#+AUTHOR: Bruce Ravel
+#+EMAIL: bravel AT bnl DOT gov
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
+#+OPTIONS: toc:2
+#+STARTUP: showall
+
+* Athena related
+
+ + [ ] save many, what should this header look like
+ + [X] test X23A2MED and X23A2MultiChannel plugins
+
+
+* Artemis related
+
+ + [ ] bkgsub
+ + [ ] fit output column files
+ + [ ] paths and xdi
+
+* Larch related
+
+note that headers get appended to Data, not to an analysis object, so
+header generating templates need to draw headers from the appropriate
+Data object
+
