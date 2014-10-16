@@ -93,6 +93,8 @@ const my $DOCUMENT        => Wx::NewId();
 const my $DOCUMENT_PLOT   => Wx::NewId();
 const my $DOCUMENT_FEFF   => Wx::NewId();
 const my $DOCUMENT_FIT    => Wx::NewId();
+const my $BUG             => Wx::NewId();
+const my $QUESTION        => Wx::NewId();
 const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
@@ -278,6 +280,8 @@ sub OnInit {
   $helpmenu->Append($DOCUMENT_PLOT, "Documentation: Plot window" );
   $helpmenu->Append($DOCUMENT_FEFF, "Documentation: Atoms and Feff" );
   $helpmenu->Append($DOCUMENT_FIT,  "Documentation: Running a fit" );
+  $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Athena" );
+  $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Athena" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
 
@@ -553,8 +557,8 @@ sub on_about {
   #$info->SetVersion( Demeter->version );
   $info->SetDescription( "EXAFS analysis using Feff and ".Demeter->backend_name );
   $info->SetCopyright( Demeter->identify );
-  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
-  $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n" .
+  $info->SetWebSite( 'http://bruceravel.github.io/demeter', 'The Demeter web site' );
+  $info->SetDevelopers( ["Bruce Ravel (http://bruceravel.github.io/home)\n" .
 			 Demeter->backend_name." ".Demeter->backend_id."\n" .
 			 "Artemis is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
 			 "and Moose $Moose::VERSION"]
@@ -953,6 +957,15 @@ sub OnMenuClick {
       $::app->document('fit');
       return;
     };
+    ($id == $BUG) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW');
+      return;
+    };
+    ($id == $QUESTION) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help');
+      return;
+    };
+
 
     ($id == wxID_CLOSE) and do {
       close_project(\%frames);

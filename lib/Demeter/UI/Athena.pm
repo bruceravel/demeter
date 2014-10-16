@@ -309,10 +309,12 @@ sub on_about {
   #$info->SetVersion( Demeter->version );
   $info->SetDescription( "XAS Data Processing" );
   $info->SetCopyright( Demeter->identify . "\nusing " . Demeter->backend_id );
-  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
-  #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2014 Matt Newville"
-  #			] );
+  $info->SetWebSite( 'http://bruceravel.github.io/demeter/', 'The Demeter web site' );
+  $info->SetDevelopers( ["Bruce Ravel (http://bruceravel.github.io/home)\n" .
+			 Demeter->backend_name." ".Demeter->backend_id."\n" .
+			 "Athena is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
+			 "and Moose $Moose::VERSION"]
+		      );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
   Wx::AboutBox( $info );
@@ -480,6 +482,8 @@ const my $MERGE_DOC		=> Wx::NewId();
 const my $DOCUMENT		=> Wx::NewId();
 const my $TIP 		        => Wx::NewId();
 const my $DEMO			=> Wx::NewId();
+const my $BUG			=> Wx::NewId();
+const my $QUESTION		=> Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -735,6 +739,8 @@ sub menubar {
   $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
   $helpmenu->Append($TIP,       "Show tip",             "Show a tip" );
   #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Athena" );
+  $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Athena" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
@@ -1473,7 +1479,14 @@ sub OnMenuClick {
       $app->show_tip;
       return;
     };
-
+    ($id == $BUG) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW');
+      return;
+    };
+    ($id == $QUESTION) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help');
+      return;
+    };
 
   };
 };
@@ -2851,7 +2864,6 @@ sub show_tip {
   Demeter->co->set_default('athena', 'tips', $show_again);
   Demeter->co->write_ini;
 };
-
 
 
 =for Explain

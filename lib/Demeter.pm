@@ -46,6 +46,10 @@ BEGIN {
   } else {
     eval "use Ifeffit qw(ifeffit);"
   };
+  if ($@) {
+    print $@;
+    die $/;
+  };
 }
 ############################
 
