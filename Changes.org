@@ -1,6 +1,5 @@
 #+TITLE: Demeter revision history
 #+AUTHOR: Bruce Ravel
-#+EMAIL: bravel AT bnl DOT gov
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
 #+OPTIONS: toc:2

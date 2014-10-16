@@ -9,7 +9,7 @@
 	 athena  = "http://bruceravel.github.io/demeter/"
 	 demeter = "http://bruceravel.github.io/demeter/"
 	 feff    = "http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"
-	 ifeffit = "http://cars9.uchicago.edu/iffwiki/Ifeffit"
+	 ifeffit = "https://github.com/newville/ifeffit"
 	 xafsorg = "http://xafs.org"
 	 cc      = "http://creativecommons.org/licenses/by-sa/3.0/"
 	 ccsupport = "http://creativecommons.org/support/"

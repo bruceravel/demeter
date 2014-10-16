@@ -1,7 +1,7 @@
 ## Time-stamp: <2010-05-06 16:39:51 bruce>
 ######################################################################
 ##  This module is copyright (c) 1999-2010 Bruce Ravel
-##  <bravel AT bnl DOT gov>
+##  <http://bruceravel.github.io/home>
 ##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
@@ -228,13 +228,13 @@ The None subclass returns the symbol itself.
 
 =head1 AUTHOR
 
-Bruce Ravel, bravel AT bnl DOT gov
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 http://bruceravel.github.io/demeter
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2008 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

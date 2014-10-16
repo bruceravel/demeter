@@ -434,8 +434,8 @@ Patches are welcome.
 
 =head1 AUTHORS
 
-  Joe Woicik <woicik AT bnl DOT gov> (algorithm)
-  Bruce Ravel <bravel AT bnl DOT gov> (implementation)
+  Joe Woicik, NIST (algorithm)
+  Bruce Ravel, L<http://bruceravel.github.io/home> (implementation)
   http://bruceravel.github.io/demeter
 
 =cut

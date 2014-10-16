@@ -1,7 +1,7 @@
 ######################################################################
 ##  This module is copyright (c) 2001-2014 Bruce Ravel
-##  <bravel AT bnl DOT gov>
-##  http://bruceravel.github.io/demeter/
+##  http://bruceravel.github.io/home
+##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -314,7 +314,7 @@ can be found on CPAN.  C::Scan is maintained by Hugo van der Sanden.
 
 =head1 AUTHOR
 
-Bruce Ravel <bravel AT bnl DOT gov>
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 http://bruceravel.github.io/demeter/
 
@@ -333,7 +333,7 @@ __DATA__
 ##  Chemistry::Formula.  Please feel free to add to this file and to
 ##  contribute your additions back to the author:
 ##    Bruce Ravel
-##    bravel AT bnl DOT gov
+##    http://bruceravel.github.io/home
 ##    http://bruceravel.github.io/demeter/
 ##
 ######################################################################

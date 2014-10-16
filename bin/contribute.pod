@@ -31,8 +31,7 @@ Answer a question on the mailing list.
 =item *
 
 Report a bug or make a suggestion for improving the codes.  Do this on
-the L<Ifeffit mailing
-lL<ist|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>>.
+the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
 
 =back
 
@@ -63,10 +62,6 @@ Make a video explaining how to do something with the software.
 Give a lecture at an XAS training course.  Post your presentation and
 any relevant data on L<http://xafs.org>.
 
-=item *
-
-Design a spiffy new web presence for Demeter.
-
 =back
 
 =head2 Packaging contributions
@@ -75,26 +70,20 @@ Design a spiffy new web presence for Demeter.
 
 =item *
 
-Update the horae Mac installer to use the new Demeter codes.
-
-=item *
-
-Make, support, and keep up-to-date installer packages for Red Hat
-based systems, other Linux distributions, or BSD.
+Make, support, and keep up-to-date installer packages for Debian based
+systems, Red Hat based systems, other Linux distributions, or BSD.
 
 =item *
 
 Improve the Windows installer: add more XAS-related Start menu
 options, add more perl-related Start menu options, write a better
-README file for display upon installation, fix the problems with
-relocating the installation location, figure out how to dispense with
-the useless dosbox, etc.
+README file for display upon installation, figure out how to dispense
+with the useless dosbox, etc.
 
 =item *
 
-There is no Windows updater.  One has to download the entire package
-at each release.  Could something be done with git and automating the
-build process?
+As a Windows updater, could something be done with git and automating
+the build process?
 
 =item *
 
@@ -150,13 +139,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

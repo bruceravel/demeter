@@ -1,5 +1,5 @@
 ##  This module is copyright (c) 2007, 2008 Bruce Ravel
-##  <bravel AT bnl DOT gov>
+##  http://bruceravel.github.io/home
 ##  http://bruceravel.github.io/demeter/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
 ##

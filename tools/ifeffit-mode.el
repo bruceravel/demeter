@@ -1,7 +1,7 @@
 ;;; ifeffit-macro.el --- a major mode for editing ifeffit macro files
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Author:  Bruce Ravel <bravel AT bnl DOT gov>
-;; Maintainer:  Bruce Ravel <bravel AT bnl DOT gov>
+;; Author:  Bruce Ravel <http://bruceravel.github.io/home>
+;; Maintainer:  Bruce Ravel <http://bruceravel.github.io/home>
 ;; Created:  23 December 1999
 ;; Updated:  31 December 2006
 ;; Version:  see `ifm-cvs-version'
@@ -101,7 +101,7 @@
 (defconst ifm-version          "pre-release")
   ;;(substring ifm-cvs-version 14 17) )
 (defconst ifm-author           "Bruce Ravel")
-(defconst ifm-maintainer-email "bravel AT bnl DOT gov")
+(defconst ifm-maintainer-email "http://bruceravel.github.io/home")
 (defconst ifm-url              "http://cars.uchicago.edu/~newville/ifeffit")
 
 (defgroup ifm nil

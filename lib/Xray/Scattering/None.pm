@@ -1,7 +1,7 @@
 ## Time-stamp: <16-Nov-2009 08:17:52 bruce>
 ######################################################################
 ##  This module is copyright (c) 2005-2008 Bruce Ravel
-##  <bravel AT bnl DOT gov>
+##  <http://bruceravel.github.io/home>
 ##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
@@ -103,7 +103,7 @@ Always returns the symbol itself.
 
 =head1 AUTHOR
 
-  Bruce Ravel, bravel AT bnl DOT gov
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter
 
 =cut

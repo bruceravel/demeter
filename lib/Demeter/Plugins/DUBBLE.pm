@@ -212,6 +212,6 @@ true value be the number of subsequent lines which contain MED data.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel AT bnl DOT gov>
+  Bruce Ravel <L<http://bruceravel.github.io/home>>
   http://bruceravel.github.io/demeter
   Athena copyright (c) 2001-2014

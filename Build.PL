@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -36,7 +36,7 @@ my $build = DemeterBuilder
 	 create_readme      => 0,
 	 ##create_makefile_pl => 'traditional',
 	 license            => 'gpl',
-	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
+	 dist_author        => 'Bruce Ravel <http://bruceravel.github.io/home>',
 	 auto_configure_requires => 1,
 	 needs_compiler     => 1,
 	 requires           => {

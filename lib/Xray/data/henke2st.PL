@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 ######################################################################
 ##  This program is copyright (c) 1999, 2011 Bruce Ravel
-##  bravel AT bnl DOT gov
+##  http://bruceravel.github.io/home
 ##  http://bruceravel.github.io/demeter/
 ##
 ## -------------------------------------------------------------------

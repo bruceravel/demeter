@@ -9,7 +9,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2009 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or

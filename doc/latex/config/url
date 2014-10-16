@@ -7,7 +7,7 @@
          css     = "$rooturl/html/ab.css"
          perlcss = "$rooturl/html/perl.css"
 	 athena  = "http://bruceravel.github.io/demeter/"
-	 ifeffit = "http://cars9.uchicago.edu/iffwiki/ifeffit"
+	 ifeffit = "https://github.com/newville/ifeffit"
 	 xafsorg = "http://xafs.org"
 	 cc      = "http://creativecommons.org/licenses/by-sa/3.0/"
 	 ccsupport = "http://creativecommons.org/support/"
