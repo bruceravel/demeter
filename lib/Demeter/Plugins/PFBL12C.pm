@@ -136,7 +136,7 @@ me to refine the C<is> method to work with multiple PF XAS beamlines.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
-  http://bruceravel.github.com/ demeter
+  Bruce Ravel, L<http://bruceravel.github.io/home>
+  http://bruceravel.github.io/demeter
 
 =cut

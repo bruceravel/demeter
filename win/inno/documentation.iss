@@ -4,7 +4,7 @@
 #define MyInstName "Demeter HTML Documentation"
 #define MyAppVersion "0.9.18"
 #define MyAppPublisher "Bruce Ravel"
-#define MyAppURL "http://bruceravel.github.com/demeter"
+#define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 
 [Setup]

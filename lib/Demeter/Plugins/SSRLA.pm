@@ -131,7 +131,7 @@ they get stripped from the file and replaced with ASCII look-alikes.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
-  http://bruceravel.github.com/demeter
+  Bruce Ravel, L<http://bruceravel.github.io/home>
+  http://bruceravel.github.io/demeter
 
 =cut

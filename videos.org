@@ -2,7 +2,6 @@
 
 #+TITLE:     videos
 #+AUTHOR:    Bruce Ravel
-#+EMAIL:     bravel@bnl.gov
 #+LANGUAGE:  en
 #+TEXT:      Artemis instructional videos
 #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:nil

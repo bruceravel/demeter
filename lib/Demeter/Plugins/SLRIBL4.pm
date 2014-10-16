@@ -97,5 +97,5 @@ Need to make sure F<athena.dxas> exists and has useful values.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter/

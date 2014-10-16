@@ -422,7 +422,7 @@ This module has not be tested sufficiently.
 
 =head1 AUTHOR
 
-  Bruce Ravel, bravel@bnl.gov
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter/Absorption/
 
 =cut

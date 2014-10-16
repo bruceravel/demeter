@@ -3,7 +3,7 @@
 ## Time-stamp: <2011-10-05 16:07:27 bruce>
 ######################################################################
 ##  This program is copyright (c) 2005-2006, 2011 Bruce Ravel
-##  <bravel@bnl.gov>
+##  http://bruceravel.github.io/home
 ##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------

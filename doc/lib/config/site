@@ -3,7 +3,7 @@
 	   artemis_name = 'Artemis Users Guide'
 	   athena_name  = 'Athena Users Guide'
 	   server    = 'http://bruceravel.github.io/demeter' 
-	   admin     = 'bravel@bnl.gov'
+	   admin     = 'http://bruceravel.github.io/home'
 	   copyright = '2007-2014 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };

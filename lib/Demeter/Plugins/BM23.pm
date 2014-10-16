@@ -106,5 +106,5 @@ Athena by naming the first column "L" rather an "e_kev_".
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter/
