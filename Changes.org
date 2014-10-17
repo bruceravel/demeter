@@ -6,13 +6,15 @@
 
 * 0.9 series
 
-** 0.9.21   XX XXX 2014
+** 0.9.21   XX XXX       2014
 
 *** Athena
+   - XDI integration
    - pluck button for MEE
-   - inv bug in Col Sel dialog (thanks to Ian Rosbottom)
-   - Busy cursor in column & project selection dialogs on Windows
-     (thanks to Ian Godrey)
+   - fixed a bug related to the inv button in Col Sel dialog (thanks
+     to Ian Rosbottom)
+   - Fixed the appearence of the Busy cursor in column & project
+     selection dialogs on Windows (thanks to Ian Godrey)
    - Improvements to import of chi(k) data + LCF using chi(k) imported
      data (thanks to Andrea Foster)
    - Menu items for reporting a bug and asking a question
@@ -25,14 +27,19 @@
      (thanks to Sebastiano Cammelli)
    - Menu items for reporting a bug and asking a question
 
+*** Atoms
+   - Menu items for reporting a bug and asking a question
+
 *** Hephaestus
    - Menu items for reporting a bug and asking a question
 
 *** Demeter
    - Sensible message and die when encountering a problem loading
      Ifeffit.pm or Larch.pm (thanks to Eric Breynaert)
+   - Expunge all reference to my email address, replacing it with a
+     link to my homepage
 
-** 0.9.20   12 May 2014
+** 0.9.20   12 May       2014
 
 *** Athena
    - File drag-n-drop onto the group list from the system file manager
@@ -174,7 +181,7 @@
    - Badari Rao reported the problem with data being lost when saving
      an Artemis project before doing a fit
 
-** 0.9.19    8 January 2014 (withdrawn)
+** 0.9.19    8 January   2014 (withdrawn)
 
 The windows installer for this release had too many problems and was
 withdrawn a couple of days after its release.  One of the goals of

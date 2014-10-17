@@ -965,7 +965,7 @@ manipulated in any real program using Demeter.  Each of these objects
 is implemented using Moose, the amazing meta-object system for Perl.
 Although Moose adds some overhead at start-up for any application
 using Demeter, its benefits are legion.  See L<Moose> and
-L<http://www.iinteractive.com/moose> for more information.
+L<http://moose.iinteractive.com> for more information.
 
 =head1 IMPORT
 

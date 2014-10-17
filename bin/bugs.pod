@@ -22,10 +22,9 @@ to fix it promptly.
 
 =item *
 
-Use the L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
-mailing list is always the appropriate place to report problems with
-the software.  There are good reasons for this:
+Use the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
+The mailing list is always the appropriate place to report problems
+with the software.
 
 =item *
 
@@ -51,7 +50,7 @@ you with your problem.
 
 The problem and -- hopefully -- it's solution will be archived.  That
 means that someone else having the same problem might find that
-solution. 
+solution.
 
 =back
 
@@ -65,7 +64,7 @@ Don't send email directly to Bruce.
 
 =item *
 
-Don't be vague.  
+Don't be vague.
 
 =back
 
@@ -89,11 +88,12 @@ information, regardless of how cryptic or repetitive it may seem.
 
 Each of the GUI programs (Athena, Artemis, and Hephaestus) writes its
 output messages to a log file.  This log file is in the
-C<%APPDATA%\demeter> folder.  On Windows 7, C<APPDATA> is typically
+C<%APPDATA%\demeter> folder.  On Windows 7, C<%APPDATA%> is typically
 
   C:\Users\<username>\AppData\Roaming\
 
-On Windows XP and Vista, C<APPDATA> is typically
+where C<E<lt>usernameE<gt>> is I<your> login name.  For me, this ends up being C<C:\Users\bravel\AppData\Roaming\>.
+On Windows XP and Vista, C<%APPDATA%> is typically
 
   C:\Documents and Settings\<username>\Application Data\
 

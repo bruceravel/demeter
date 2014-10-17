@@ -302,12 +302,14 @@ use vars qw($atoms_base $frame);
 $atoms_base = identify_self();
 
 use Const::Fast;
-const my $ATOMS   => Wx::NewId();
-const my $FEFF    => Wx::NewId();
-const my $PATHS   => Wx::NewId();
-const my $CONSOLE => Wx::NewId();
-const my $DOC     => Wx::NewId();
-const my $CONFIG  => Wx::NewId();
+const my $ATOMS    => Wx::NewId();
+const my $FEFF     => Wx::NewId();
+const my $PATHS    => Wx::NewId();
+const my $CONSOLE  => Wx::NewId();
+const my $DOC      => Wx::NewId();
+const my $CONFIG   => Wx::NewId();
+const my $BUG      => Wx::NewId();
+const my $QUESTION => Wx::NewId();
 
 sub OnInit {
   my ($self) = @_;
@@ -336,17 +338,21 @@ sub OnInit {
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q"    );
 
   my $help = Wx::Menu->new;
+  $help->Append($BUG,        "Report a bug",    "How to report a bug in Athena" );
+  $help->Append($QUESTION,   "Ask a question",  "How to ask a question about Athena" );
   $help->Append( wxID_ABOUT, "&About Atoms"    );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
-  EVT_MENU( $frame, $ATOMS,   sub{ $frame->make_page('Atoms');     $frame->{notebook}->ChangeSelection(0); });
-  EVT_MENU( $frame, $FEFF,    sub{ $frame->make_page('Feff');      $frame->{notebook}->ChangeSelection(1); });
-  EVT_MENU( $frame, $PATHS,   sub{ $frame->make_page('Paths');     $frame->{notebook}->ChangeSelection(2); });
-  EVT_MENU( $frame, $CONSOLE, sub{ $frame->make_page('Console');   $frame->{notebook}->ChangeSelection(3); });
-  EVT_MENU( $frame, $DOC,     sub{ $frame->make_page('Document');  $frame->{notebook}->ChangeSelection(4); });
-  EVT_MENU( $frame, $CONFIG,  sub{ $frame->make_page('Configure'); $frame->{notebook}->ChangeSelection(5); });
+  EVT_MENU( $frame, $ATOMS,    sub{ $frame->make_page('Atoms');     $frame->{notebook}->ChangeSelection(0); });
+  EVT_MENU( $frame, $FEFF,     sub{ $frame->make_page('Feff');      $frame->{notebook}->ChangeSelection(1); });
+  EVT_MENU( $frame, $PATHS,    sub{ $frame->make_page('Paths');     $frame->{notebook}->ChangeSelection(2); });
+  EVT_MENU( $frame, $CONSOLE,  sub{ $frame->make_page('Console');   $frame->{notebook}->ChangeSelection(3); });
+  EVT_MENU( $frame, $DOC,      sub{ $frame->make_page('Document');  $frame->{notebook}->ChangeSelection(4); });
+  EVT_MENU( $frame, $CONFIG,   sub{ $frame->make_page('Configure'); $frame->{notebook}->ChangeSelection(5); });
+  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
+  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
