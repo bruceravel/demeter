@@ -2,7 +2,7 @@ package Demeter::Path;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -178,9 +178,9 @@ override all => sub {
   return %all;
 };
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
-  my $new = $self->SUPER::clone();
+  my $new = $self->SUPER::Clone();
   $new->parent($self->parent);
   $new->data($self->data);
   $new->sp($self->sp);
@@ -610,7 +610,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 
 =head1 SYNOPSIS
@@ -907,7 +907,7 @@ scattering path.
 
 =head1 METHODS
 
-The Path object inherits creation (C<new> and C<clone>) and accessor
+The Path object inherits creation (C<new> and C<Clone>) and accessor
 methods (C<set>, C<get>) from the parent class described in the
 L<Demeter> documentation.
 
@@ -1070,7 +1070,7 @@ is equivalent to (and fewer keystrokes than):
 
 =item C<longest_leg>
 
-This returns the length in Angstroms of the longest leg of a path.
+This returns the length in Angstrom of the longest leg of a path.
 
   print $path_object -> longest_leg, $/;
 
@@ -1130,14 +1130,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

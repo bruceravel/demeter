@@ -2,7 +2,7 @@ package Demeter::Data::Mu;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -801,9 +801,16 @@ sub find_edge {
   my $input = $e0;
   my ($edge, $answer, $this) = ("K", 1, 0);
   my $diff = 100000;
-  my $xdi_elem = (exists $self->xdi_scan->{element}) ? $self->xdi_scan->{element} : q{};
-  my $xdi_edge = (exists $self->xdi_scan->{edge})    ? $self->xdi_scan->{edge}    : q{};
+
+  my ($xdi_elem, $xdi_edge) = (q{}, q{});
+
+  # default is to use XDI values, if available
+  if ($INC{'Xray/XDI.pm'}) {
+    ($xdi_elem, $xdi_edge) = ($self->xdi_attribute('element'), $self->xdi_attribute('edge'));
+  };
   return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
+
+  # perform a search if XDI values are not available
   foreach my $ed (qw(K L1 L2 L3)) {  # M1 M2 M3 M4 M5
   Z: foreach (1..104) {
       last Z unless (Xray::Absorption->in_resource($_));
@@ -846,6 +853,11 @@ sub find_edge {
     #($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
     ## prefer Pd K to Bk L2
     ($elem, $edge) = ("Pd", "K")  if (($elem eq "Bk") and ($edge eq "L2"));
+  };
+  if ($INC{'Xray/XDI.pm'}) {
+    $self->xdi(Xray::XDI->new()) if (not $self->xdi);
+    $self->xdi->set_item('Element', 'edge',   ucfirst($edge));
+    $self->xdi->set_item('Element', 'symbol', ucfirst(lc($elem)));
   };
   return ($elem, $edge);
 };
@@ -922,7 +934,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -1127,13 +1139,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

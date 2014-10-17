@@ -123,11 +123,12 @@ sub plot {
   my $text = "Plotted \"".$data->name."\" with its ";
   $data->standard;
   if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
-    $this->{data}  = $data->clone(name=>$data->name." smoothed $width times");
+    $this->{data}  = $data->Clone(name=>$data->name." smoothed $width times");
     $this->{data} -> smooth($width);
+    ## XDI data not preserved!  :FIXME:
     $text .= "smoothed data, three-point smoothed $width times";
   } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
-    $this->{data}  = $data->clone(name=>$data->name." Savitzky-Golay");
+    $this->{data}  = $data->Clone(name=>$data->name." Savitzky-Golay");
     $this->{data} -> smooth(1);
     $text .= "smoothed data, Savitzky-Golay";
   } elsif ($this->{choice}->GetStringSelection eq 'Boxcar average') {
@@ -155,12 +156,12 @@ sub save {
   my $text = " \"" . $app->current_data->name."\" and made a new data group";
   $app->current_data->standard;
   if ($this->{choice}->GetStringSelection eq 'Three-point smoothing') {
-    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." smoothed $width times");
+    $this->{data}  = $app->current_data->Clone(name=>$app->current_data->name." smoothed $width times");
     $this->{data} -> source("Smoothed ".$app->current_data->name.", $width times");
     $this->{data} -> smooth($width);
     $text = "Smoothed" . $text;
   } elsif ($this->{choice}->GetStringSelection eq 'Savitzky-Golay') {
-    $this->{data}  = $app->current_data->clone(name=>$app->current_data->name." Savitzky-Golay");
+    $this->{data}  = $app->current_data->Clone(name=>$app->current_data->name." Savitzky-Golay");
     $this->{data} -> source("Smoothed ".$app->current_data->name.", Savitzky-Golay");
     $this->{data} -> smooth(1);
     $text = "SG" . $text;
@@ -197,7 +198,7 @@ Demeter::UI::Athena::Smooth - A smoothing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -227,13 +228,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

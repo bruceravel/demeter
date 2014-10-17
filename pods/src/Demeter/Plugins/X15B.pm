@@ -129,7 +129,7 @@ Demeter::Plugin::X15B - NSLS X15B filetype plugin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -164,7 +164,7 @@ configuration interface.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter
 
 =cut

@@ -2,7 +2,7 @@ package Demeter::PeakFit::LineShape;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -150,20 +150,19 @@ sub parameter_names {
 sub report {
   my ($self) = @_;
   my @names = $self->parameter_names;
-  my $string = sprintf("%s (%s)\n   ", $self->name, $self->function);
+  my $string = sprintf("%s (%s)\n.", $self->name, $self->function);
   my $count = 0;
   foreach my $n (@names) {
     my $a = 'a'.$count;
     my $e = 'e'.$count;
     if ($n =~ m{center|e0}) {
-      $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
+      $string .= sprintf("  %s = %.2f(%.2f)", $n, $self->$a, $self->$e);
     } else {
-      $string .= sprintf(" %s = %.3f(%.3f),", $n, $self->$a, $self->$e);
+      $string .= sprintf("  %s = %.3f(%.3f)", $n, $self->$a, $self->$e);
     };
     ++$count;
   };
-  chop $string;
-  $string .= sprintf("\n    area = %.2f", $self->area) if $self->peaked;
+  $string .= sprintf("\n.    area = %.3f", $self->area) if $self->peaked;
   $string .= $/;
   return $string;
 };
@@ -209,7 +208,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -315,14 +314,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

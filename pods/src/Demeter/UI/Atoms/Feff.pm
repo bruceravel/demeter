@@ -46,7 +46,8 @@ sub new {
   $self->{toolbar} -> AddSeparator;
   #$self->{toolbar} -> AddTool(-1, "Doc",        $self->icon("document"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   #$self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
+  my $ff = $self->{toolbar} -> AddTool(-1, "Run Feff",   $self->icon("exec"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
+  $self->{ffid} = $ff->GetId;
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 5);
@@ -319,7 +320,7 @@ sub run_feff {
 
   if ($feff->rmax > 6.51) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($self, -1,
-						 'You have set RMAX to larger than 6.5 Angstroms.
+						 'You have set RMAX to larger than 6.5 Angstrom.
 
 The pathfinder will likely be quite time consuming,
 as will reading and writing a project file
@@ -430,6 +431,8 @@ Should we continue?',
 
   $feff->execution_wrapper(0);
   $self->{parent}->{Console}->{console}->AppendText(Demeter->howlong($start, 'Your Feff calculation')."\n\n");
+
+  $feff->feffran(1);
 
   #unlink $inpfile;
   undef $busy;
@@ -618,7 +621,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -626,13 +629,13 @@ This class is used to populate the Feff tab in the Wx version of Atoms.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

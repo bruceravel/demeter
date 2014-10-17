@@ -76,7 +76,7 @@ Demeter::Plugin::BM23 - ESRF BM23 filetype plugin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -106,5 +106,5 @@ Athena by naming the first column "L" rather an "e_kev_".
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter/

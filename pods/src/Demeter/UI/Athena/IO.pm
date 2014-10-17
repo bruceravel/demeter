@@ -113,35 +113,34 @@ sub Import {
       next;
     };
 
-    my $xdi = q{};
-    if ($Demeter::XDI_exists) {
-      $xdi = Xray::XDI->new;
-      $xdi->file($file);
+    my ($xdi, $is_xdi) = (q{}, 0);
+    #if ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
+    #  $xdi = Xray::XDI->new;
+    #  $xdi->file($file);
       ## at this point, run a test against $xdi->applications and
       ## $xdi->labels to determine is this is a multichannel detector
       ## file from X23A2 or 10BM , if so, set is_xdi to false and let
       ## this fall through to the plugin
-    };
+    #};
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
     if (Demeter->is_prj($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
+    } elsif ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
+      $type = 'xdi';
+      $stashfile = $file;
     } else {
-      if ($xdi and $xdi->is_xdi) {
-	$type = 'xdi';
-      } else {
-	$plugin = test_plugins($app, $file);
-	if ($plugin =~ m{\A\!}) {
-	  $app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
-	  return;
-	};
-	$stashfile = ($plugin) ? $plugin->fixed : $file;
-	$type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
-	      : ($plugin and ($plugin->output eq 'project')) ? 'prj'
-	      : ($plugin and ($plugin->output eq 'list'))    ? 'list'
-              : (Demeter->dd->is_data($file,$verbose))           ? 'raw'
-              :                                                '???';
+      $plugin = test_plugins($app, $file);
+      if ($plugin =~ m{\A\!}) {
+	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	return;
       };
+      $stashfile = ($plugin) ? $plugin->fixed : $file;
+      $type = ($plugin and ($plugin->output eq 'data'))    ? 'raw'
+	    : ($plugin and ($plugin->output eq 'project')) ? 'prj'
+	    : ($plugin and ($plugin->output eq 'list'))    ? 'list'
+	    : (Demeter->dd->is_data($file,$verbose))       ? 'raw'
+            :                                                '???';
     };
     if ($type eq '???') {
 
@@ -161,7 +160,7 @@ sub Import {
     };
 
   SWITCH: {
-      $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
+      $retval = _data($app, $stashfile, $type, $first, $plugin), last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
       ($type eq 'list') and do {
@@ -173,7 +172,7 @@ sub Import {
 	last SWITCH;
       };
     };
-    undef $xdi;
+    #undef $xdi;
     if ($plugin) {
       unlink $plugin->fixed;
       undef $plugin;
@@ -254,10 +253,11 @@ sub _data {
   my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
-  if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
-    $displayfile = $orig->file;
+  if ($orig eq 'xdi') {
+    $displayfile = $file;
     $data = Demeter::Data->new;
-    $data->xdi($orig);
+    $data->xdifile($file);
+    $data->file($file);
   } else {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
@@ -272,11 +272,11 @@ sub _data {
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
   $data -> set(name	   => basename($displayfile),
 	       is_col      => 1,
-	       energy      => $suggest{energy}||'$1',
-	       numerator   => $suggest{numerator}||1,
-	       denominator => $suggest{denominator}||1,
-	       ln          => $suggest{ln}||0,
-	       inv         => $suggest{inv}||0,
+	       energy      => $suggest{energy}      || '$1',
+	       numerator   => $suggest{numerator}   || 1,
+	       denominator => $suggest{denominator} || 1,
+	       ln          => $suggest{ln}          || 0,
+	       inv         => $suggest{inv}         || 0,
 	       display	   => 1);
   $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
@@ -345,9 +345,12 @@ sub _data {
   my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
     $data->place_scalar("e0", 0);
+    undef $busy;
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
+    $colsel->{ln}->SetValue($yaml->{ln});
+    $colsel->{inv}->SetValue($yaml->{inv});
     $colsel->{each}->SetValue($yaml->{each});
     $colsel->{units}->SetSelection($yaml->{units});
     $colsel->{constant}->SetValue($yaml->{multiplier}||1);
@@ -440,6 +443,7 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
+    my $busy = Wx::BusyCursor->new();
     $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
     $yaml->{each}  = $colsel->{each}->GetValue;
     $yaml->{units} = $colsel->{units}->GetSelection;
@@ -448,7 +452,7 @@ sub _data {
 
   ## to write each MED channel to a group, loop over channels, calling
   ## this.  Set all eshifts the same and don't redo alignment
-  my $dtp = (not defined($colsel))                   ? 'xmu' # this line is a crude hack...
+  my $dtp = (not defined($colsel))                   ? $yaml->{datatype} # this line is a crude hack...
           : ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
           : ($colsel->{datatype}->GetSelection == 1) ? 'xanes'
           : ($colsel->{datatype}->GetSelection == 3) ? 'chi'
@@ -482,7 +486,7 @@ sub _data {
     _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
-  $data->metadata_from_ini($plugin->metadata_ini) if ($plugin and $plugin->metadata_ini);
+  ## meta data and MRU file
   $plugin->add_metadata($data) if $plugin;
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
@@ -503,6 +507,10 @@ sub _data {
 		     each        => $yaml->{each},
 		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);
+  if ($data->datatype eq 'chi') {
+    $persistence{datatype}  = 'chi';
+    $persistence{numerator} = $data->chi_column;
+  };
   ## reference
   $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
   $persistence{ref_ln}      = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue     : $yaml->{ref_ln};
@@ -645,14 +653,14 @@ sub _group {
     $app->{main}->status("Importing reference for ". $data->name);
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
-    #$ref = ($ref) ? $ref->clone : Demeter::Data->new(file => $data->file);
+    #$ref = ($ref) ? $ref->Clone : Demeter::Data->new(file => $data->file);
     if (not $ref) {
       $ref = Demeter::Data->new(file => $data->file);
     };
 
 ## what was this for?
 #    if ($repeated) {
-#      my $foo = $ref->clone;
+#      my $foo = $ref->Clone;
 #      $ref = $foo;
 #    };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
@@ -675,7 +683,14 @@ sub _group {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
+    $ref->xdi_will_be_cloned(1);
     $ref -> _update('normalize');
+    if (Demeter->xdi_exists) {
+      $ref->xdi($data->xdi->clone);
+      $ref->xdi->set_item('Element', 'symbol', ucfirst(lc($ref->bkg_z)));
+      $ref->xdi->set_item('Element', 'edge',   ucfirst($ref->fft_edge));
+      $ref->xdi_will_be_cloned(0);
+    };
 
     ## need to fix the e0 of the reference in two situations
     if ($same_edge) {		# because of noise, e0 for a ref of the same edge may be significantly wrong
@@ -758,7 +773,6 @@ sub constrain {
 
 sub _prj {
   my ($app, $file, $orig, $first, $plugin) = @_;
-  my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
   $app->{main}->{prj}->{import}->SetFocus;
@@ -768,6 +782,8 @@ sub _prj {
     $app->{main}->status("Canceled import from project file.");
     return 0;
   };
+  my $busy = Wx::BusyCursor->new();
+
 
   my @selected = $app->{main}->{prj}->{grouplist}->GetSelections;
   @selected = (0 .. $app->{main}->{prj}->{grouplist}->GetCount-1) if not @selected;
@@ -833,6 +849,7 @@ sub save_column {
   return if $app->is_empty;
 
   my $data = $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
+
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
 
   my ($desc, $suff, $out) = ($how eq 'mue')  ? ("$MU(E)",  '.xmu',  'xmu')
@@ -875,10 +892,10 @@ sub save_marked {
 
   my ($desc, $suff) = ($how eq 'xmu')      ? ("$MU(E)",          '.xmu')
                     : ($how eq 'norm')     ? ("norm(E)",         '.nor')
-                    : ($how eq 'der')      ? ("deriv($MU(E))",   '.nor')
-                    : ($how eq 'nder')     ? ("deriv(norm(E))",  '.nor')
-                    : ($how eq 'sec')      ? ("second($MU(E))",  '.nor')
-                    : ($how eq 'nsec')     ? ("second(norm(E))", '.nor')
+                    : ($how eq 'der')      ? ("deriv($MU(E))",   '.der')
+                    : ($how eq 'nder')     ? ("deriv(norm(E))",  '.nder')
+                    : ($how eq 'sec')      ? ("second($MU(E))",  '.sec')
+                    : ($how eq 'nsec')     ? ("second(norm(E))", '.nsec')
                     : ($how eq 'chi')      ? ("$CHI(k)",         '.chi')
                     : ($how eq 'chik')     ? ("k$CHI(k)",        '.chik')
                     : ($how eq 'chik2')    ? ("k$TWO$CHI(k)",    '.chik2')
@@ -1014,7 +1031,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -1033,11 +1050,11 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

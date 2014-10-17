@@ -2,7 +2,7 @@ package Demeter::Data::Beamlines;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -18,135 +18,179 @@ package Demeter::Data::Beamlines;
 use autodie qw(open close);
 
 use File::Basename;
+use File::Spec;
 use Moose::Role;
 
 has 'daq'      => (is => 'rw', isa => 'Str', default => q{});
 has 'beamline' => (is => 'rw', isa => 'Str', default => q{});
+has 'beamline_identified' => (is => 'rw', isa => 'Bool', default => 0);
+
+my @known;
+my $bldir = File::Spec->catfile(dirname($INC{"Demeter.pm"}), 'Demeter', 'Plugins', 'Beamlines');
+opendir(my $BL, $bldir);
+my @files = grep {/\.pm\z/} readdir $BL;
+closedir $BL;
+#print join("|", $bldir, @files), $/;
+foreach my $pm (@files) {
+  my $command = 'require Demeter::Plugins::Beamlines::'.basename($pm, '.pm');
+  eval $command;
+  push @known, 'Demeter::Plugins::Beamlines::'.basename($pm, '.pm') if (not $@);
+};
 
 sub identify_beamline {
   my ($self, $file) = @_;
+  return $self if not Demeter->co->default('operations', 'identify_beamline');
   return $self if ((not -e $file) or (not -r $file));
-  $self->is_xdac($file);
-#    ||
-#  $self->is_mx($file)
+  return $self if $self->beamline_identified;
+  my $ok = 0;
+  foreach my $class (@known) {
+    $ok = $class->is($self, $file);
+    last if $ok;
+  };
   return $self;
 };
 
-sub is_xdac {
-  my ($self, $file) = @_;
-  open(my $fh, '<', $file);
-  my $first = <$fh>;
-
-  ## this IS an XDAC file
-  if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
-    if (exists $INC{'Xray/XDI.pm'}) {
-      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION->normal : '0';
-      $self->xdi_version($ver);
-    } else {
-      $self->xdi_version('-1');
-    };
-    $self->xdi_applications(sprintf("XDAC/%s.%s", $1, $2));
-    $self->set_xdi_facility('name', 'NSLS');
-    $self->set_xdi_facility('xray_source', 'bend magnet');
-
-    my $flag = 0;
-    my $remove_ifeffit_comments = 0;
-  FILE: foreach my $li (<$fh>) {
-      chomp $li;
-      next if ($li =~ m{\A\s*\z});
-      my @line = split(" ", $li);
-    SWITCH: {
-	($line[0] =~ m{\AE0}) and do {
-	  $self->set_xdi_scan('edge_energy', $line[1]);
-	  last SWITCH;
-	};
-
-	($li =~ m{created on (\d+)/(\d+)/(\d+) at (\d+):(\d+):(\d+) ([AP])M on ([UX])-(\d+)([A-Z]?)(\d?)}) and do {
-	  my ($hour) = ($7 eq 'A') ? $4 : $4+12;
-	  my ($year) = ($3 < 80) ? 2000+$3 : 1900+$3;
-	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $year, $2, $1, 'T', $hour, $5, $6);
-	  my $bl = lc(sprintf("%s%s%s%s", $8, $9, $10, $11));
-	  $self->set_xdi_scan('start_time', $time);
-	  $self->daq('xdac');
-	  $self->beamline($bl);
-	  my $ini = join(".", 'xdac', $bl, 'ini');
-	  my $inifile = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', $ini);
-	  $self->metadata_from_ini($inifile);
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ANUM_REGIONS}) and do {
-	  $self->push_xdi_extension('XDAC.NUM_REGIONS: ' . $line[1]);
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASRB}) and do {
-	  $self->push_xdi_extension('XDAC.SRB: ' . join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASRSS}) and do {
-	  $self->push_xdi_extension('XDAC.SRSS: ' . join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\ASettling}) and do {
-	  $self->push_xdi_extension('XDAC.Settling_time: ' . join(" ", $line[2]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\AOffsets}) and do {
-	  $self->push_xdi_extension('XDAC.Offsets: ' . join(" ", @line[1..$#line]));
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{\AGains}) and do {
-	  $self->push_xdi_extension('XDAC.Gains: ' . join(" ", @line[1..$#line]));
-	  $flag = 1;
-	  last SWITCH;
-	};
-
-	($li =~ m{\A\-{3,}}) and do {
-	  last FILE;
-	};
-
-	($flag) and do {
-	  $remove_ifeffit_comments = 0; # may want to set this to 1 once XDI is properly
-                                        # integrated into Demeter.  will then need to fix
-				        # clear_ifeffit_titles test in 004_data.t
-	  $self->push_xdi_comment($li);
-	  last SWITCH;
-	};
-
-      };
-    };
-    close $fh;
-    $self->clear_ifeffit_titles if ($remove_ifeffit_comments);
-    return 1;
-
-
-  ## this IS NOT an XDAC file
-  } else {
-    close $fh;
-    return 0;
-  };
-};
 
 1;
 
 =head1 NAME
 
-Demeter::Data::Athena - Role for identifying the beamline provenance of data
+Demeter::Data::Beamlines - Role for identifying the beamline provenance of data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
+Using plugins found in F<Demeter/Plugins/Beamlines>, attempt to
+identify the beamline of origin of the data file.  If identified,
+attempt to glean metadata from the file header.
+
 =head1 ATTRIBUTES
 
+=over 4
+
+=item C<daq> (string)
+
+The name of the data acquisition program used to collect the data.
+
+=item C<beamline> (string)
+
+The designation of the beamline at which the data were collected.
+
+=item C<beamline_identified> (boolean)
+
+Set to true once the beamline has been positively identified.
+
+=back
+
 =head1 METHODS
+
+There is only one method -- C<identify_beamline>.  This steps through
+the plugins found in F<Demeter/Plugins/Beamlines>, each of which must
+provide a method called C<is>.  Each plugin's C<is> method is called
+in turn.  Once one returns a positive, metadata is set and this method
+returns.
+
+These checks can be completely disabled by setting the
+C<operations->identify_beamline> configuration parameter to 0.
+
+A beamline plugin provides one (and only one) method.  This method
+must be called C<is>.
+
+This method is called like so:
+
+    Demeter::Plugin::Beamlines::MX->is($data, $file);
+
+where C<$data> is the Demeter::Data object that represents the data in
+the file and C<$file> is the fully resolved filename of the file being
+tested.
+
+Each C<is> method B<must> perform the following chores:
+
+=over 4
+
+=item 1.
+
+B<Very quickly> recognize whether a file comes from the beamline.
+Speed is essential as every file will be checked sequentially against
+every beamline plugin.  If a beamline plugin is slow to determine
+this, then the use of Athena or other applications will be noticeably
+affected.
+
+=item 2.
+
+Recognize semantic content from the file header.  Where possible, map
+this content onto defined XDI headers.  Other semantic content should
+be placed into extension headers.
+
+=item 3.
+
+Add versioning information for the data acquisition program into the
+XDI extra_version attribute.
+
+=item 4.
+
+Set the C<daq> and C<beamline> attributes of the Demeter::Data object
+with the names of the data acquisition software and the designation of
+the beamline.
+
+=back
+
+C<is> is not required to read the data table and is encouraged not to
+do so.  Of course, if there is semantic content in the data table
+intended to be interpreted as metadata, then it would be appropriate.
+But ... ick ...!
+
+=head1 Hints for plugin writers
+
+=over 4
+
+=item *
+
+If possible, recognize the beamline by examination of the first line
+(or first few lines) of the file.
+
+=item *
+
+Define an Xray::XDI object for use with the Demeter::Data object as
+soon as possible, but after the bail-out point for a file that is not
+from this beamline.
+
+=item *
+
+Use C<$data->xdi->set_item> to set a defined or extension header.  The
+syntax is
+
+    $data->xdi->set_item($family, $tag, $value);
+
+Use defined fields wherever possible.
+
+=item *
+
+Use C<$data->xdi->push_comment> to push each user comment line onto
+the XDi comment attribute.  The syntax is:
+
+    $data->xdi->push_comment($comment_line);
+
+where C<$comment_line> is free-form text and does B<not> end with an
+end-of-line character.  The C<push_comment> method handles the
+end-of-line character correctly for your computer.
+
+=item *
+
+Some metadata is constant for any file collected at a beamline.
+Deposit an .ini file in Demeter's F<share/xdi/> folder and use it by a
+call to C<$data->metadata_from_ini>.  The syntax is
+
+    $data->metadata_from_ini($inifile);
+
+where C<$inifile> is the fully resolved name of the .ini file, likely
+in the F<share/xdi/> folder (but it can be anywhere).  That method
+will fail gracefully if C<$inifile> does not exist.
+
+=back
 
 =head1 BUGS AND LIMITATIONS
 
@@ -157,13 +201,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

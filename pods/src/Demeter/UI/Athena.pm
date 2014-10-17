@@ -169,9 +169,9 @@ sub OnInit {
   $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
   Demeter->set_mode(callback     => \&ifeffit_buffer,
-		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
-		     feedback     => \&feedback,
-		    );
+		    plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		    feedback     => \&feedback,
+		   );
 
   $app->{main} -> SetSizerAndFit($hbox);
   $app->{main} ->{return}->Show;
@@ -309,10 +309,12 @@ sub on_about {
   #$info->SetVersion( Demeter->version );
   $info->SetDescription( "XAS Data Processing" );
   $info->SetCopyright( Demeter->identify . "\nusing " . Demeter->backend_id );
-  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
-  #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2014 Matt Newville"
-  #			] );
+  $info->SetWebSite( 'http://bruceravel.github.io/demeter/', 'The Demeter web site' );
+  $info->SetDevelopers( ["Bruce Ravel (http://bruceravel.github.io/home)\n" .
+			 Demeter->backend_name." ".Demeter->backend_id."\n" .
+			 "Athena is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
+			 "and Moose $Moose::VERSION"]
+		      );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
   Wx::AboutBox( $info );
@@ -480,6 +482,8 @@ const my $MERGE_DOC		=> Wx::NewId();
 const my $DOCUMENT		=> Wx::NewId();
 const my $TIP 		        => Wx::NewId();
 const my $DEMO			=> Wx::NewId();
+const my $BUG			=> Wx::NewId();
+const my $QUESTION		=> Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -735,6 +739,8 @@ sub menubar {
   $helpmenu->Append($DOCUMENT,  "Document\tCtrl-m",     "Open the Athena document" );
   $helpmenu->Append($TIP,       "Show tip",             "Show a tip" );
   #$helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Athena" );
+  $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Athena" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
@@ -1473,7 +1479,14 @@ sub OnMenuClick {
       $app->show_tip;
       return;
     };
-
+    ($id == $BUG) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW');
+      return;
+    };
+    ($id == $QUESTION) and do {
+      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help');
+      return;
+    };
 
   };
 };
@@ -2853,7 +2866,6 @@ sub show_tip {
 };
 
 
-
 =for Explain
 
 Every window in Athena is a Wx::Frame.  This inserts a method into
@@ -2982,7 +2994,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -3021,13 +3033,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

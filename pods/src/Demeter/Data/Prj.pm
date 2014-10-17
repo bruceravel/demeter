@@ -2,7 +2,7 @@ package Demeter::Data::Prj;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -224,6 +224,7 @@ sub _record {
   my @i0     = $self->_array($index, 'i0');
   my @signal = $self->_array($index, 'signal');
   my @std    = $self->_array($index, 'stddev');
+  my $xdi    = $self->_ref  ($index, 'xdi');
   my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
   ## this allows you to import the same data group twice without a
@@ -271,7 +272,10 @@ sub _record {
 				 xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
 				 xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
 				 xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
-				 xdi_mu_reference
+
+				 xdi_mono xdi_sample xdi_scan xdi_extensions xdi_applications
+				 xdi_labels xdi_detector xdi_beamline xdi_column xdi_comments xdi_version
+				 xdi_facility
 			      );
   SWITCH: {
       ($k eq 'quenched') and do {
@@ -313,10 +317,10 @@ sub _record {
 	$groupargs{$k} = $args{$k};
 	last SWITCH;
       };
-      ($k eq 'xdi_beamline') and do {
-	$groupargs{$k} = {name => $args{$k}} if $args{$k};
-	last SWITCH;
-      };
+      #($k eq 'xdi_beamline') and do {
+      #  $groupargs{$k} = {name => $args{$k}} if $args{$k};
+      #  last SWITCH;
+      #};
 
       ## back Fourier transform parameters
       ($k =~ m{\Abft_(.*)\z}) and do { # bft_win --> bft_rwindow, others are the same
@@ -372,10 +376,10 @@ sub _record {
       };
 
       ## xdi_ parameters
-      ($k =~ m{\Axdi_(.*)\z}) and do {
-	$groupargs{$k} = $args{$k};
-	last SWITCH;
-      };
+      # ($k =~ m{\Axdi_(.*)\z}) and do {
+      # 	$groupargs{$k} = $args{$k};
+      # 	last SWITCH;
+      # };
 
     };
   };
@@ -402,6 +406,19 @@ sub _record {
   my $command = $data->template("process", "deriv");
   $data->dispose($command);
   $data->quenched($quenched_state);
+
+  if (Demeter->xdi_exists) {
+    if ($xdi) {
+      my $comments = $xdi->comments;
+      $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
+      $xdi->comments($comments);
+      $data->xdi($xdi);
+    } else {
+      $data->xdi(Xray::XDI->new());
+      $data -> xdi -> set_item('Element', 'edge',    uc($data->fft_edge));
+      $data -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($data->bkg_z)));
+    };
+  };
 
   return $data;
 };
@@ -433,6 +450,33 @@ sub _array {
   return @array;
 };
 
+sub _ref {
+  my ($self, $index, $which) = @_;
+  my $prjfile = $self->file;
+  my $cpt = new Safe;
+  my $ref;
+  my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
+  my $count = 0;
+  my $found = 0;
+  my $re = '\$' . $which;
+  my $line = q{};
+  while ($prj->gzreadline($line) > 0) {
+    ++$count;
+    $found = 1 if ($count == $index);
+    next unless $found;
+    last if ($line =~ /^\[record\]/);
+    if ($line =~ /^$re/) {
+      $line =~ s{\A\s*\$$which}{\$ref};
+      eval $line;
+      #${$cpt->varglob('ref')} = $cpt->reval( $line );
+      #$ref = ${$cpt->varglob('ref')};
+      last;
+    };
+  };
+  $prj->gzclose();
+  return $ref;
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -443,7 +487,7 @@ Demeter::Data::Prj - Read data from Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -621,13 +665,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

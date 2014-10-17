@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.20.
+## This pod document is for Demeter version 0.9.21.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Reporting bugs in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 OVERVIEW
 
@@ -22,10 +22,9 @@ to fix it promptly.
 
 =item *
 
-Use the L<Ifeffit mailing
-list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
-mailing list is always the appropriate place to report problems with
-the software.  There are good reasons for this:
+Use the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
+The mailing list is always the appropriate place to report problems
+with the software.
 
 =item *
 
@@ -51,7 +50,7 @@ you with your problem.
 
 The problem and -- hopefully -- it's solution will be archived.  That
 means that someone else having the same problem might find that
-solution. 
+solution.
 
 =back
 
@@ -65,7 +64,7 @@ Don't send email directly to Bruce.
 
 =item *
 
-Don't be vague.  
+Don't be vague.
 
 =back
 
@@ -93,7 +92,8 @@ C<%APPDATA%\demeter> folder.  On Windows 7, C<APPDATA> is typically
 
   C:\Users\<username>\AppData\Roaming\
 
-On Windows XP and Vista, C<APPDATA> is typically
+where C<E<lt>usernameE<gt>> is I<your> login name.  For me, this ends up being C<C:\Users\bravel\AppData\Roaming\>.
+On Windows XP and Vista, C<%APPDATA%> is typically
 
   C:\Documents and Settings\<username>\Application Data\
 
@@ -253,13 +253,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

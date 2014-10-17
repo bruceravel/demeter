@@ -83,7 +83,7 @@ Demeter::Plugin::Zip - Open a zip file of data file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -158,5 +158,5 @@ Removes the temporary folder to which the data were written.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter

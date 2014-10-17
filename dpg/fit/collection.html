@@ -16,7 +16,7 @@
     <tr>
       <td align=left>
         &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
-        &laquo;<a class=navtable href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="https://github.com/newville/ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
         <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
         &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
 	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
@@ -152,7 +152,7 @@ established using both data sets.
 <li>
 <li><span class="comment">&nbsp;&nbsp;## paths for data at 150K
 <li></span>&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$j</span> <span class="operator">=</span> <span class="symbol">$i</span><span class="operator">+</span><span class="number">5</span><span class="structure">;</span>
-<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$j</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">clone</span><span class="structure">;</span>
+<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$j</span><span class="structure">]</span> <span class="operator">=</span> <span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">Clone</span><span class="structure">;</span>
 <li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$j</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span><span class="operator">,</span>
 <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'alpha150*reff'</span><span class="operator">,</span>
 <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'debye(150, theta) + sigmm'</span><span class="operator">,</span>

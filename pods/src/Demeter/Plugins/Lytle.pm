@@ -95,7 +95,7 @@ Demeter::Plugin::Lytle - Import Lytle database files stored by encoder value.
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -134,7 +134,7 @@ files, directly read compressed files using Archive::Zip
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
-  http://bruceravel.github.com/demeter
+  Bruce Ravel, L<http://bruceravel.github.io/home>
+  http://bruceravel.github.io/demeter
 
 =cut

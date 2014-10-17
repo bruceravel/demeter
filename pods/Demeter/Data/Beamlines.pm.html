@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<title>Demeter::Data::Athena</title>
+	<title>Demeter::Data::Beamlines</title>
 <link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <script type="text/javascript">
 
@@ -53,6 +53,7 @@
 	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
 	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
 	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#Hints_for_plugin_writers">Hints for plugin writers</a></li>
 	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
@@ -62,17 +63,105 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Demeter::Data::Athena - Role for identifying the beamline provenance of data</p>
+<p>Demeter::Data::Beamlines - Role for identifying the beamline provenance of data</p>
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.20.</p>
+<p>This documentation refers to Demeter version 0.9.21.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
+<p>Using plugins found in <cite>Demeter/Plugins/Beamlines</cite>, attempt to
+identify the beamline of origin of the data file.  If identified,
+attempt to glean metadata from the file header.</p>
+
 <h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
+<dl>
+	<dt><code>daq</code> (string)</dt>
+		<dd><p>The name of the data acquisition program used to collect the data.</p></dd>
+	<dt><code>beamline</code> (string)</dt>
+		<dd><p>The designation of the beamline at which the data were collected.</p></dd>
+	<dt><code>beamline_identified</code> (boolean)</dt>
+		<dd><p>Set to true once the beamline has been positively identified.</p></dd>
+</dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>There is only one method -- <code>identify_beamline</code>.  This steps through
+the plugins found in <cite>Demeter/Plugins/Beamlines</cite>, each of which must
+provide a method called <code>is</code>.  Each plugin's <code>is</code> method is called
+in turn.  Once one returns a positive, metadata is set and this method
+returns.</p>
+
+<p>These checks can be completely disabled by setting the
+<code>operations-</code>identify_beamline&gt; configuration parameter to 0.</p>
+
+<p>A beamline plugin provides one (and only one) method.  This method
+must be called <code>is</code>.</p>
+
+<p>This method is called like so:</p>
+
+<pre>    Demeter::Plugin::Beamlines::MX-&gt;is($data, $file);
+
+</pre><p>where <code>$data</code> is the Demeter::Data object that represents the data in
+the file and <code>$file</code> is the fully resolved filename of the file being
+tested.</p>
+
+<p>Each <code>is</code> method <strong>must</strong> perform the following chores:</p>
+
+<dl>
+	<dt>1.</dt>
+		<dd><p><strong>Very quickly</strong> recognize whether a file comes from the beamline.
+Speed is essential as every file will be checked sequentially against
+every beamline plugin.  If a beamline plugin is slow to determine
+this, then the use of Athena or other applications will be noticeably
+affected.</p></dd>
+	<dt>2.</dt>
+		<dd><p>Recognize semantic content from the file header.  Where possible, map
+this content onto defined XDI headers.  Other semantic content should
+be placed into extension headers.</p></dd>
+	<dt>3.</dt>
+		<dd><p>Add versioning information for the data acquisition program into the
+XDI extra_version attribute.</p></dd>
+	<dt>4.</dt>
+		<dd><p>Set the <code>daq</code> and <code>beamline</code> attributes of the Demeter::Data object
+with the names of the data acquisition software and the designation of
+the beamline.</p></dd>
+</dl>
+<p><code>is</code> is not required to read the data table and is encouraged not to
+do so.  Of course, if there is semantic content in the data table
+intended to be interpreted as metadata, then it would be appropriate.
+But ... ick ...!</p>
+
+<h1 id="Hints_for_plugin_writers">Hints for plugin writers <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>If possible, recognize the beamline by examination of the first line
+(or first few lines) of the file.</li>
+	<li>Define an Xray::XDI object for use with the Demeter::Data object as
+soon as possible, but after the bail-out point for a file that is not
+from this beamline.</li>
+	<li>Use <code>$data-</code>xdi-&gt;set_item&gt; to set a defined or extension header.  The
+syntax is<pre>    $data-&gt;xdi-&gt;set_item($family, $tag, $value);
+
+</pre>
+<br /><br />Use defined fields wherever possible.</li>
+	<li>Use <code>$data-</code>xdi-&gt;push_comment&gt; to push each user comment line onto
+the XDi comment attribute.  The syntax is:<pre>    $data-&gt;xdi-&gt;push_comment($comment_line);
+
+</pre>
+<br /><br />where <code>$comment_line</code> is free-form text and does <strong>not</strong> end with an
+end-of-line character.  The <code>push_comment</code> method handles the
+end-of-line character correctly for your computer.</li>
+	<li>Some metadata is constant for any file collected at a beamline.
+Deposit an .ini file in Demeter's <cite>share/xdi/</cite> folder and use it by a
+call to <code>$data-</code>metadata_from_ini&gt;.  The syntax is<pre>    $data-&gt;metadata_from_ini($inifile);
+
+</pre>
+<br /><br />where <code>$inifile</code> is the fully resolved name of the .ini file, likely
+in the <cite>share/xdi/</cite> folder (but it can be anywhere).  That method
+will fail gracefully if <code>$inifile</code> does not exist.</li>
+</ul>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -83,13 +172,13 @@
 
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

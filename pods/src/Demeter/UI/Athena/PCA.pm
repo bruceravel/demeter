@@ -97,7 +97,7 @@ sub new {
 
     $this->{screebox} -> Add($this->{scree}, 1, wxRIGHT, 5);
     $this->{screebox} -> Add($this->{logscree}, 0, wxTOP, 2);
-    $this->{frombox}  -> Add($this->{components}, 1, wxALL, 0);
+    $this->{frombox}  -> Add($this->{components}, 1, wxTOP, 4);
     $this->{frombox}  -> Add($this->{ncomptext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
     $this->{frombox}  -> Add($this->{ncomp}, 0, wxGROW|wxALL, 0);
 
@@ -159,10 +159,10 @@ sub new {
     $this->{ttbox} -> Add($this->{ntt}, 0, wxGROW|wxALL, 0);
 
     foreach my $w (qw(nrecbox ttbox)) {
-      $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+      $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxTOP, 4);
     };
     $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
-    $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxALL, 0);
+    $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxTOP, 4);
     foreach my $w (qw(rectext nrecon reconstruct tt)) {
       $this->{$w}->Enable(0);
     };
@@ -409,14 +409,14 @@ sub save_components {
   my ($this, $event) = @_;
   my $fname = $this->get_filename('pca');
   return if not $fname;
-  $this->{PCA}->save_components($fname);
+  $this->{PCA}->save('components', $fname);
 };
 
 sub save_stack {
   my ($this, $event) = @_;
   my $fname = $this->get_filename('stack');
   return if not $fname;
-  $this->{PCA}->save_stack($fname);
+  $this->{PCA}->save('stack', $fname);
 };
 
 sub save_reconstruction {
@@ -432,7 +432,7 @@ sub save_reconstruction {
       last;
     };
   };
-  $this->{PCA}->save_reconstruction($data_index, $fname);
+  $this->{PCA}->save('reconstruction', $fname, $data_index);
 };
 
 sub save_tt {
@@ -441,7 +441,7 @@ sub save_tt {
   (my $name = $target->name) =~ s{\s+}{_}g;
   my $fname = $this->get_filename('tt', $name);
   return if not $fname;
-  $this->{PCA}->save_tt($target, $fname);
+  $this->{PCA}->save('tt', $fname, $target);
 };
 
 1;
@@ -453,7 +453,7 @@ Demeter::UI::Athena::PCA - A principle components analysis tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -485,13 +485,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

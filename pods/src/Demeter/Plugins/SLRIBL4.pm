@@ -62,7 +62,7 @@ Demeter::Plugin::SLRIBL4 - filetype plugin for SLRI BL4 dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -97,5 +97,5 @@ Need to make sure F<athena.dxas> exists and has useful values.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter/

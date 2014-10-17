@@ -130,7 +130,7 @@ sub plot {
   return if not $ok;
   $data->po->start_plot;
   $data -> plot('E');
-  $this->{processed}  = $data -> clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
+  $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
   $this->{processed} -> convolve(width=>$width, type=>$function) if ($width > 0);
   $this->{processed} -> noise(noise=>$noise, which=>'xmu') if ($noise > 0);
   $this->{processed} -> plot('E');
@@ -163,7 +163,7 @@ Demeter::UI::Athena::ConvoluteNoise - A convolution and artficial noise tool for
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -194,13 +194,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Atoms;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -138,7 +138,8 @@ has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->de
 has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rpath") ||  5},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
 has 'rscf'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rscf")  ||  5},);
-has 'do_scf'           => (is => 'rw', isa =>'Bool', default=> 0);
+has 'do_scf'           => (is => 'rw', isa =>'Bool', default=> 1);
+has 'do_xanes'         => (is => 'rw', isa =>'Bool', default=> 0);
 
 has 'rss'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, coerce => 1, default=> q{},
@@ -980,7 +981,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -1416,14 +1417,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or

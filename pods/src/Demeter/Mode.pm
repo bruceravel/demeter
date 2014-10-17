@@ -482,6 +482,18 @@ sub any {
   return q{};
 };
 
+
+=for LiteratureReference 
+  And when she buries a man, that action concerns me: all mankind is
+  of one author, and is one volume; when one man dies, one chapter is
+  not torn out of the book, but translated into a better language; and
+  every chapter must be so translated.
+                                John Donne, Meditation XVII
+                                From Devotions upon Emergent Occasions (1623)
+
+=cut
+
+
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];
@@ -606,7 +618,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -974,13 +986,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

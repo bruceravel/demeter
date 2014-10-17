@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -46,13 +46,14 @@ use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
 use vars qw($app);
 
-my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, Demeter->co->default("atoms", "rmax"), 0, 1, 0, 0);
+my ($feff6, $feff8, $feff85, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, Demeter->co->default("atoms", "rmax"), 0, 1, 0, 0);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
 			 "r|rmax=s" => \$rmax,
 			 "6"	    => \$feff6,
 			 "8"	    => \$feff8,
+			 "85"	    => \$feff85,
 			 "a"	    => \$abs,
 			 "s"	    => \$sg,
 			 "p"	    => \$p1,
@@ -71,12 +72,13 @@ die "Atoms terminating: $file does not exist\n" if (not -e $file);
 my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $file);
 my $atoms = Demeter::Atoms->new(@call);
 
-my $which = ($feff6) ? "feff6"
-          : ($feff8) ? "feff8"
-          : ($abs)   ? "absorption"
-          : ($sg)    ? "spacegroup"
-          : ($p1)    ? "p1"
-          : ($atinp) ? "atoms"
+my $which = ($feff6)  ? "feff6"
+          : ($feff8)  ? "feff8"
+          : ($feff85) ? "feff85test"
+          : ($abs)    ? "absorption"
+          : ($sg)     ? "spacegroup"
+          : ($p1)     ? "p1"
+          : ($atinp)  ? "atoms"
           :            "feff6" ;
 $atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{\A$NUMBER\z});
 print $atoms -> Write($which);
@@ -99,7 +101,7 @@ atoms - Convert crystallography data to a feff.inp file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -240,14 +242,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

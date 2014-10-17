@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -2174,7 +2174,7 @@ sub clone {
   $path->n($path->n / 2);
   $pathpage->{pp_n}->SetValue($path->n);
 
-  my $cloned = $path->clone(n => $path->n);
+  my $cloned = $path->Clone(n => $path->n);
   $cloned->name($path->name . " (clone)");
 
   my $newpage = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $cloned, $datapage);
@@ -2488,6 +2488,7 @@ sub OnData {
 
   } else {			#  this is a normal path
     my @sparray = map { Demeter->mo->fetch("ScatteringPath", $_) } @$spref;
+    my $parentgroup;
     foreach my $sp ( @sparray ) {
       my $thispath;
       if (ref($sp->feff) =~ m{Aggregate}) {
@@ -2505,6 +2506,7 @@ sub OnData {
 				       n      => $sp->n,
 				      );
       };
+      $parentgroup = $sp->feff->group;
       my $label = $thispath->label;
       $thispath->_update('all');
       #local $|=1;
@@ -2513,7 +2515,16 @@ sub OnData {
       $book->AddPage($page, $label, 1, 0);
       $page->{pp_n}->SetValue($sp->n) if (ref($sp->feff) =~ m{Aggregate});
       $page->include_label;
+
       $book->Update;
+    };
+    foreach my $key (keys %Demeter::UI::Artemis::frames) {
+      next if $key !~ m{feff};
+      my $frame = $Demeter::UI::Artemis::frames{$key};
+      next if ($parentgroup ne $frame->{Feff}->{feffobject}->group);
+      $frame->{Feff}->{toolbar}->EnableTool($frame->{Feff}->{ffid},0);
+      $frame->{Atoms}->{toolbar}->EnableTool($frame->{Atoms}->{atid},0);
+      $frame->{Atoms}->{toolbar}->EnableTool($frame->{Atoms}->{aggid},0);
     };
   };
 
@@ -2566,6 +2577,7 @@ sub make_path {
   my $page = Demeter::UI::Artemis::Path->new($book, $pathlike, $this->{PARENT});
   my $i = $book->AddPage($page, $pathlike->name, 1, 0);
   $page->include_label(q{});
+
   $book->Update;
 
 };
@@ -2784,7 +2796,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -2816,12 +2828,12 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

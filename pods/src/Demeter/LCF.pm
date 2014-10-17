@@ -2,7 +2,7 @@ package Demeter::LCF;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -361,7 +361,7 @@ sub fit {
   ## create the array to minimize and perform the fit
   $self -> dispense("analysis", "lcf_fit");
 
-  if (Demeter->mo->template_analysis =~ m{ifeffit|iff_columns}) {
+  if (Demeter->is_ifeffit) {
     my $sumsqr = 0;
     foreach my $st (@all) {
       my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
@@ -408,7 +408,7 @@ sub _statistics {
   my ($self) = @_;
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
 
-  if (Demeter->mo->template_analysis =~ m{ifeffit|iff_columns}) {
+  if (Demeter->is_ifeffit) {
     my @x     = $self->get_array('x');
     my @func  = $self->get_array('func');
     my @resid = $self->get_array('resid');
@@ -576,11 +576,28 @@ sub fft {
 
 sub save {
   my ($self, $fname) = @_;
-  my $text = $self->template('analysis', 'lcf_header');
-  my @titles = split(/\n/, $text);
-  $self->ntitles($#titles + 1);
-  $text .= $self->template('analysis', 'lcf_save', {filename=>$fname});
-  $self->dispose($text);
+
+  my $text = $self->template('analysis', 'lcf_report');
+
+  my $save_columns = {};
+  my $hash = {1=>'energy eV', 2=>'data', 3=>'fit', 4=>'residual'};
+  $hash->{1} = 'wavelength inverse Angstrom' if $self->space eq 'chi';
+  my $i=4;
+  foreach my $st (@{ $self->standards }) {
+    ++$i;
+    (my $name = $st->name) =~ s{\s+}{_}g;
+    $hash->{$i} = $name;
+  };
+  if ($self->data->xdi) {
+    #$text = $self->template('analysis', 'lcf_report');
+    $save_columns  = $self->data->xdi->metadata->{Column};
+    $self->data->xdi_set_columns($hash);
+  };
+
+  $self->data->xdi_output_header('data', $text, $hash);
+  $self->dispose($self->template('analysis', 'lcf_save', {filename=>$fname}));
+  $self->data->xdi_set_columns($save_columns) if ($self->data->xdi);
+
   return $self;
 };
 
@@ -978,7 +995,7 @@ Demeter::LCF - Linear combination fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -1631,14 +1648,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

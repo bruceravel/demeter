@@ -92,7 +92,7 @@ Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory and SPring8
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -136,7 +136,7 @@ me to refine the C<is> method to work with multiple PF XAS beamlines.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
-  http://bruceravel.github.com/ demeter
+  Bruce Ravel, L<http://bruceravel.github.io/home>
+  http://bruceravel.github.io/demeter
 
 =cut

@@ -2,6 +2,7 @@ package Demeter::Data::BulkMerge;
 
 use Moose;
 extends 'Demeter';
+with 'Demeter::Data::XDI';
 
 use List::MoreUtils qw(any);
 
@@ -69,7 +70,7 @@ has 'skipped' => (
 has 'master' => (is => 'rw', isa => 'Demeter::Data',
 		 trigger => sub{my ($self, $new) = @_;
 				if ($new) {
-				  $self->sum($new->clone);
+				  $self->sum($new->Clone);
 				  $self->sum->standard;
 				  $self->sum->set(is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
 				};
@@ -124,7 +125,7 @@ sub merge {
     $thisdata -> dispense('process', 'musum');
     if (any {$count == $_} @{$self->subsample}) {
       $self -> dispense('process', 'comment', {comment=>"Quick merge subsample of $count spectra"});
-      my $sample = $self->sum->clone;
+      my $sample = $self->sum->Clone;
       $sample -> set(name=>"Merge of $count scans", is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
       $sample -> update_norm(1);
       $sample -> dispense('process', 'muave', {count=>$count});
@@ -140,6 +141,9 @@ sub merge {
   $self->sum -> update_norm(1);
   $self->sum -> name("Merge of $count scans");
 
+  $self->sum->xdi_make_clone($self->master, sprintf("BulkMerge of %d scans", $#{$self->data}+1), 1) if (Demeter->xdi_exists);
+
+
   $self->po->set(e_smooth=>$save);
   return $self->sum;
 };
@@ -154,11 +158,11 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data::MultiChannel - Efficiantly merge many files into a single spectrum
+Demeter::Data::BulkMerge - Efficiantly merge many files into a single spectrum
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -296,13 +300,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

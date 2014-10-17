@@ -49,6 +49,7 @@ sub make_data {
   delete $args{$_} foreach (qw(ln energy numerator denominator));
   ## what about chi(k) MC data?
   my $this = Demeter::Data->new(energy=>$energy_string, file=>$self->file, columns=>$self->columns);
+  $this -> dispense('process','make_group');
 
   ## resolve column tokens
   my $group = $self->group;
@@ -107,7 +108,7 @@ Demeter::Data::MultiChannel - Efficiantly read multiple data channels from a sin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -206,13 +207,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

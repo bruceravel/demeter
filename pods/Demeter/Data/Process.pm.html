@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.20.</p>
+<p>This documentation refers to Demeter version 0.9.21.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -156,7 +156,7 @@ points.  This is a bug, but not, I don't think, a horrible one.</p></dd>
 		<dd><p>Perform three-point smoothing on the mu(E) or chi(k) data, as
 appropriate.  The argument tells Demeter how many times to reapply the
 smoothing.</p></dd>
-<dd><pre>  $copy = $data -&gt; clone;
+<dd><pre>  $copy = $data -&gt; Clone;
   $copy -&gt; smooth(5);
 
 </pre></dd>	<dt><code>convolve</code></dt>
@@ -167,12 +167,12 @@ processing backend (Ifeffit/Larch) and is a possitive number.  A
 negative number will be interpretted as zero.  The type is either
 &quot;Gaussian&quot; or &quot;Lorentzian&quot;.  The type is either &quot;xmu&quot; or &quot;chi&quot; -- that
 is convolute mu(E) or chi(k) data.</p></dd>
-<dd><pre>  $copy = $data -&gt; clone;
+<dd><pre>  $copy = $data -&gt; Clone;
   $copy -&gt; convolve(width=&gt;2, type=&gt;'gaussian', which=&gt;'xmu');
 
 </pre></dd>	<dt><code>noise</code></dt>
 		<dd><p>Add noise to a mu(E) or chi(k) spectrum.</p></dd>
-<dd><pre>  $copy = $data -&gt; clone;
+<dd><pre>  $copy = $data -&gt; Clone;
   $copy -&gt; noise(noise=&gt;0.02, which=&gt;'xmu');
 
 </pre></dd>		<dd><p>The amount of noise is intepretted differently for mu(E) data as for
@@ -208,13 +208,13 @@ mu(E) does.)</li>
 
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+<p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

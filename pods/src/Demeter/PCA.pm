@@ -2,7 +2,7 @@ package Demeter::PCA;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -367,45 +367,79 @@ sub tt_report {
 sub header {
   my ($self) = @_;
   my $header = "Principle components for:\n";
-  my $i = 0;
+  my $i = 1;
   foreach my $g (@{$self->stack}) {
     $header .= sprintf(". %3d: %s\n", $i++, $g->name);
   };
   $header .= $self->report;
   my @n = split(/\n/, $header);
   $self->ntitles($#n+1);
+
   return $header;
 };
 
+
+sub save {
+  my ($self, $which, $filename, $index_or_target) = @_;
+  print "save type must be one of components, stack, reconstruction, or tt\n" && die if ($which !~ m{\A(?:components|stack|reconstruction|tt)\z});
+  #print "$filename cannot be written", die if (not -w $filename);
+  my $save_columns;
+  my $hash    = {1=>'energy eV'};
+  $hash->{1}  = 'wavelength inverse Angstrom' if $self->space =~ m{[ck]};
+  $save_columns = $self->stack->[0]->xdi->metadata->{Column} if ($self->stack->[0]->xdi);
+  if ($which eq 'components') {
+    $hash->{$_+1} = "component $_" foreach (1 .. $#{$self->stack}+1);
+  } elsif ($which eq 'stack') {
+    $hash->{$_+2} = $self->stack->[$_]->name foreach (0 .. $#{$self->stack});
+  } elsif ($which eq 'reconstruction') {
+    $hash->{2} = $self->stack->[$index_or_target]->name;
+    $hash->{3} = 'reconstruction';
+    $hash->{4} = 'residual';
+  } elsif ($which eq 'tt') {
+    $hash->{2} = $index_or_target->name;
+    $hash->{3} = 'target transform';
+    $hash->{4} = 'residual';
+  };
+  $self->stack->[0]->xdi_set_columns($hash) if ($self->stack->[0]->xdi);
+  my $method = "save_$which";
+  $self->$method($filename, $hash, $index_or_target);
+  $self->stack->[0]->xdi_set_columns($save_columns) if ($self->stack->[0]->xdi);
+  return $self;
+};
+
 sub save_components {
-  my ($self, $filename) = @_;
-  $self->dispense('analysis', 'pca_header', {which=>'components'});
+  my ($self, $filename, $hash, $toss) = @_;
+  $self->stack->[0]->xdi_output_header('xdi', $self->header, $hash);
+  #$self->dispense('analysis', 'pca_header', {which=>'components'});
   $self->dispense('analysis', 'pca_save', {filename=>$filename});
   return $self;
 };
 
 sub save_stack {
-  my ($self, $filename) = @_;
-  $self->dispense('analysis', 'pca_header', {which=>'data stack'});
+  my ($self, $filename, $hash, $toss) = @_;
+  $self->stack->[0]->xdi_output_header('xdi', $self->header, $hash);
+  #$self->dispense('analysis', 'pca_header', {which=>'data stack'});
   $self->dispense('analysis', 'pca_save_stack', {filename=>$filename});
   return $self;
 };
 
 sub save_reconstruction {
-  my ($self, $index, $filename) = @_;
+  my ($self, $filename, $hash, $index) = @_;
   $self->reconstruct;
   $self->plot_reconstruction($index, 1);
   $self->data($self->stack->[$index]);
-  $self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
+  $self->data->xdi_output_header('data', $self->header, $hash);
+  #$self->dispense('analysis', 'pca_header', {which=>'reconstruction'});
   $self->dispense('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename});
   $self->data(q{});
   return $self;
 };
 
 sub save_tt {
-  my ($self, $target, $filename) = @_;
+  my ($self, $filename, $hash, $target) = @_;
   $self->data($target);
-  $self->dispense('analysis', 'pca_header', {which=>'target transform'});
+  $self->data->xdi_output_header('data', $self->header, $hash);
+  #$self->dispense('analysis', 'pca_header', {which=>'target transform'});
   $self->dispense('analysis', 'pca_save_tt', {filename=>$filename});
   $self->data(q{});
   return $self;
@@ -512,14 +546,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (http://bruceravel.github.io/home)
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

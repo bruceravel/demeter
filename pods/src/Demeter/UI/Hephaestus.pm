@@ -2,7 +2,7 @@ package Demeter::UI::HephaestusApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -206,6 +206,8 @@ use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 use Const::Fast;
 const my $CONFIG   => Wx::NewId();
 const my $DOCUMENT => Wx::NewId();
+const my $BUG      => Wx::NewId();
+const my $QUESTION => Wx::NewId();
 const my $ABS  => Wx::NewId();
 const my $FORM => Wx::NewId();
 const my $ION  => Wx::NewId();
@@ -264,6 +266,9 @@ sub OnInit {
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure\tCtrl+c" );
   $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
+  $help->Append( $BUG,       "Report a bug",    "How to report a bug in Athena" );
+  $help->Append( $QUESTION,  "Ask a question",  "How to ask a question about Athena" );
+  $file->AppendSeparator;
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
@@ -282,6 +287,8 @@ sub OnInit {
   EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
   #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, $DOCUMENT, \&document);
+  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
+  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
@@ -326,10 +333,10 @@ sub on_about {
   $info->SetVersion( hversion() );
   $info->SetDescription( hdescription() );
   $info->SetCopyright( hcopyright() );
-  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
-  $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
+  $info->SetWebSite( 'http://bruceravel.github.io/demeter', 'The Demeter web site' );
+  $info->SetDevelopers( ["Bruce Ravel (http://bruceravel.github.io/home)\n",
 			 "See the document for literature references\nfor the data resources.\n\n",
-			 "Core-hole lifetimes are from Keski-Rahkinen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
+			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/\n",
 			] );
@@ -378,7 +385,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -437,13 +444,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

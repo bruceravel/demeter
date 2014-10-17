@@ -2,7 +2,7 @@ package Demeter::Data::SelfAbsorption;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -63,7 +63,9 @@ sub sa {
   $hash{out}       ||= 45;
   $hash{density}   ||= 1;
   my $method = 'sa_' . lc($how);
-  return $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  my ($sadata, $text) = $self->$method($hash{formula}, $hash{in}, $hash{out}, $hash{density}, $hash{thickness});
+  $sadata->xdi_make_clone($self, sprintf("Self-absorption corrected (%s) data", $how), 0) if (Demeter->xdi_exists);
+  return ($sadata, $text);
 };
 
 sub sa_troger {
@@ -434,7 +436,7 @@ Demeter::Data::SelfAbsorption - Self-absorption corrections for mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -573,7 +575,7 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
@@ -581,7 +583,7 @@ With help from Dan Olive and Corwin Booth
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

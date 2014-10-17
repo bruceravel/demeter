@@ -2,7 +2,7 @@ package Demeter::PeakFit;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -247,8 +247,10 @@ sub compute_ninfo {
 sub fit {
   my ($self, $nofit) = @_;
   $nofit ||= 0;
+
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM}; # very cryptic!
   $self->start_spinner("Demeter is performing a peak fit")
-    if (($self->mo->ui eq 'screen') and not $self->doing_seq and not $nofit);
+    if (($self->mo->ui eq 'screen') and (not $self->doing_seq) and (not $nofit));
 
   $self->data->_update('fft');
   ## this does the right stuff for XES/Data
@@ -555,11 +557,27 @@ sub clean {
 
 sub save {
   my ($self, $filename) = @_;
-  my $text = $self->template('analysis', 'peak_header');
-  my @titles = split(/\n/, $text);
-  $self->ntitles($#titles + 1);
-  $text .= $self->template("analysis", "peak_save", {filename=>$filename});
-  $self->dispose($text);
+  #my $text = $self->template('analysis', 'peak_header');
+  #my @titles = split(/\n/, $text);
+  #$self->ntitles($#titles + 1);
+
+  my $save_columns = {};
+  my $hash = {1=>'energy eV', 2=>'data', 3=>'fit', 4=>'residual'};
+  my $i=4;
+  foreach my $st (@{ $self->lineshapes }) {
+    ++$i;
+    (my $n = $st->name) =~ s{\s+}{_}g;
+    $hash->{$i} = $n;
+  };
+  if ($self->data->xdi) {
+    $save_columns  = $self->data->xdi->metadata->{Column};
+    $self->data->xdi_set_columns($hash);
+  };
+
+
+  $self->data->xdi_output_header('data', $self->report, $hash);
+  $self->dispense("analysis", "peak_save", {filename=>$filename});
+  $self->data->xdi_set_columns($save_columns) if ($self->data->xdi);
   return $self;
 };
 
@@ -574,7 +592,7 @@ Demeter::PeakFit - A peak fitting object for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -793,14 +811,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

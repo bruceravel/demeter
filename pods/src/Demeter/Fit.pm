@@ -2,7 +2,7 @@ package Demeter::Fit;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -244,7 +244,7 @@ override all => sub {
   return %all;
 };
 
-override clone => sub {
+override Clone => sub {
   my ($self, @arguments) = @_;
 
   my $new = ref($self) -> new();
@@ -1200,12 +1200,17 @@ sub grab {			# deserialize lite -- grab the yaml
       foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
 			xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
 			xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
-			xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+			xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
+
+			xdi_mono xdi_sample xdi_scan xdi_extensions xdi_applications
+			xdi_labels xdi_detector xdi_beamline xdi_column xdi_comments xdi_version
+			xdi_facility
+		      )) {
 	delete $r_attributes->{$x};
       };
-      if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
-	$r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
-      };
+      # if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+      # 	$r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+      # };
       my %hash = %$r_attributes;
       next if not exists $hash{group};
       #Demeter->trace;
@@ -1443,16 +1448,21 @@ override 'deserialize' => sub {
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
-    ## correct for earlier XDI design
+    ##  clean up from old implementation(s) of XDI
     foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
 		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
 		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
-		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
+
+		      xdi_mono xdi_sample xdi_scan xdi_extensions xdi_applications
+		      xdi_labels xdi_detector xdi_beamline xdi_column xdi_comments xdi_version
+		      xdi_facility
+		    )) {
       delete $r_attributes->{$x};
     };
-    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
-      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
-    };
+    #if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+    #  $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+    #};
     my %hash = %$r_attributes;
     next if not exists $hash{group};
     #Demeter->trace;
@@ -1756,7 +1766,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -2117,14 +2127,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

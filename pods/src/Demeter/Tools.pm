@@ -2,7 +2,7 @@ package Demeter::Tools;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -85,10 +85,16 @@ sub attribute_exists {
 }
 
 sub is_larch {
-  return (Demeter->mo->template_process eq 'larch');
+  return ($ENV{DEMETER_BACKEND} eq 'larch');
+  #return (Demeter->mo->template_process eq 'larch');
 };
 sub is_ifeffit {
-  return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+  return ($ENV{DEMETER_BACKEND} eq 'ifeffit');
+  #return (Demeter->mo->template_process =~ m{ifeffit|iff_columns});
+};
+
+sub xdi_exists {
+  return exists($INC{'Xray/XDI.pm'});
 };
 
 sub environment {
@@ -425,7 +431,7 @@ sub clear_ifeffit_titles {
   $self->dispense("process", "show_strings");
   $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
-  my $target = $group . '_title_';
+  my $target = ($group eq 'dem_data') ? $group : $group . '_title_';
   my @all = ();
   foreach my $l (@titles_text) {
     #print $l, $/;
@@ -578,7 +584,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -839,14 +845,14 @@ Patches are welcome.
 The euclid method was swiped from Math::Numbers by David Moreno Garza
 and is Copyright (C) 2007 and is licensed like Perl itself.
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::History;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -469,7 +469,7 @@ sub restore {
   my $was = Demeter->mo->currentfit;
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
   my $old = $self->{list}->GetIndexedData($position);
-  my $fit = $old->clone;
+  my $fit = $old->Clone;
   my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $old->group);
   $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
   $fit->fom($was-1);
@@ -712,7 +712,7 @@ Demeter::UI::Artemis::History - A fit history interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -753,13 +753,13 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

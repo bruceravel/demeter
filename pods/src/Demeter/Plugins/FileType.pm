@@ -46,7 +46,9 @@ sub Croak {
 };
 
 sub add_metadata {
-  return $_[0];
+  my ($self, $data) = @_;
+  $data->metadata_from_ini($self->metadata_ini) if $self->metadata_ini;
+  return $self;
 };
 
 sub data_attributes {
@@ -65,7 +67,7 @@ Demeter::Plugins::FileType - base class for file type plugins
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -353,6 +355,12 @@ that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.
 
+=item C<metadata_ini>
+
+If the plugin is for a file from a beamline with metadata tabulated in
+Demeter's F<share/xdi/> folder, this attribute should be set to F<.ini>
+file for that beamline.
+
 =back
 
 =head2 Common methods
@@ -508,13 +516,13 @@ malformed compared to the expectations of C<fix>.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 http://bruceravel.github.io/demeter/
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+# Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 #
 # This example is free software; you can redistribute it and/or
 # modify it under the same terms as Perl itself. See L<perlgpl>.
@@ -217,7 +217,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -295,7 +295,7 @@ In this mode, this is an interactive utility with a simple keyboard
 interface.  The user is presented with a screen that looks like this
 (albeit in color, if L<Term::ANSIColor> is available):
 
- Standard reference materials (Demeter 0.9.20)
+ Standard reference materials (Demeter 0.9.21)
  .
        H                                                                   He
        Li  Be                                          B   C   N   O   F   Ne
@@ -501,14 +501,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

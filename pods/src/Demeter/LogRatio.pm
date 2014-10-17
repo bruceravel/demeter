@@ -2,7 +2,7 @@ package Demeter::LogRatio;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -86,7 +86,19 @@ sub plot_odd {
 sub save {
   my ($self, $fname) = @_;
   $fname ||= 'lrpd.dat';
+
+  my $save_columns = {};
+  my $text;
+  my $hash = {1=>'wavenumber inverse Angstrom', 2=>'log ratio', 3=>'even fit', 4=>'phase difference', 5=>'odd fit'};
+  if ($self->data->xdi) {
+    $text = $self->template('analysis', 'lr_results');
+    $save_columns  = $self->data->xdi->metadata->{Column};
+    $self->data->xdi_set_columns($hash);
+  };
+
+  $self->data->xdi_output_header('data', $text, $hash);
   $self->dispense("analysis", "lr_save", {file=>$fname});
+  $self->data->xdi_set_columns($save_columns) if ($self->data->xdi);
   return $fname;
 };
 
@@ -98,7 +110,7 @@ Demeter::LogRatio - Log-ratio/phase-difference analysis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -222,14 +234,14 @@ Patches are welcome.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel, L<http://bruceravel.github.io/home>
 
 L<http://bruceravel.github.io/demeter/>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

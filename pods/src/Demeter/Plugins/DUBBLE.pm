@@ -124,6 +124,13 @@ sub suggest {
   };
 };
 
+after 'add_metadata' => sub {
+  my ($self, $data) = @_;
+  return if not Demeter->xdi_exists;
+  $data->xdi->set_item('Mono', 'd_spacing', $TWOD/2);
+  $data->xdi->set_item('Mono', 'name',      'Si(111)');
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -135,7 +142,7 @@ Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -205,6 +212,6 @@ true value be the number of subsequent lines which contain MED data.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel AT bnl DOT gov>
+  Bruce Ravel <L<http://bruceravel.github.io/home>>
   http://bruceravel.github.io/demeter
   Athena copyright (c) 2001-2014

@@ -1,7 +1,6 @@
 ##  This module is copyright (c) 1999-2007 Bruce Ravel
-##  <bravel AT bnl DOT gov>
-##  http://bruceravel.github.io/demeter/
-##  http://cars9.uchicago.edu/svn/libperlxray/
+##  http://bruceravel.github.io/home
+##  http://bruceravel.github.io/demeter
 ##
 ## -------------------------------------------------------------------
 ##     All rights reserved. This program is free software; you can
@@ -371,7 +370,7 @@ None that I know about...
 
 =head1 AUTHOR
 
-  Bruce Ravel, bravel AT bnl DOT gov
+  Bruce Ravel, http://bruceravel.github.io/home
   http://bruceravel.github.io/demeter/
 
 =cut

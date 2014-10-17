@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2014 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@ denv - Display Demeter's operating environment
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 DESCRIPTION
 
@@ -68,14 +68,14 @@ Append information about Wx and WxPerl to the report.
 
 =head1 AUTHOR
 
-Bruce Ravel (bravel AT bnl DOT gov)
+Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 http://bruceravel.github.io/demeter/
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2009 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

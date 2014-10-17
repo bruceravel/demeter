@@ -32,7 +32,6 @@ sub is {
   };
   my $is_mc = (<$D> =~ m{mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}});
   close $D;
-  #print join("|",$is_xdac, $is_mc), $/;
   return ($is_mx and $is_mc);
 };
 
@@ -108,6 +107,18 @@ sub fix {
   return $prj;
 };
 
+
+after 'add_metadata' => sub {
+  my ($self, @data) = @_;
+  return if not Demeter->xdi_exists;
+  foreach my $d (@data) {
+    Demeter::Plugins::Beamlines::MX->is($d, $self->file);
+    $d->xdi->set_item('Detector', 'i0', '4-channel ionization chamber');
+    $d->xdi->set_item('Detector', 'it', '4-channel ionization chamber');
+  };
+};
+
+
 sub suggest {
   ();
 };
@@ -121,7 +132,7 @@ Demeter::Plugins::10BMMultiChannel - filetype plugin for 10BM multi-channel data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.20.
+This documentation refers to Demeter version 0.9.21.
 
 =head1 SYNOPSIS
 
@@ -320,7 +331,7 @@ Initial version
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@bnl.gov>
+  Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter
 
 =cut
