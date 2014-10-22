@@ -38,6 +38,12 @@
      Ifeffit.pm or Larch.pm (thanks to Eric Breynaert)
    - Expunge all reference to my email address, replacing it with a
      link to my homepage
+   - Work around the mysterious situation on Windows wherein the MRU
+     file gets overwritten with a few hundred NUL characters, causing
+     a crash in Config::INI::Reader.  I have no idea what causes this,
+     but changing from croak to carp when handling and unparsed line
+     avoids it and issues a useful error message.  (thanks to Kurinji
+     Krishnamoorthy)
 
 ** 0.9.20   12 May       2014
 

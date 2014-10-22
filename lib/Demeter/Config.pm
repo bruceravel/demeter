@@ -473,6 +473,7 @@ sub read_ini {
   #   undef $toss;
   # };
   foreach my $g (keys %$personal_ini) {
+    #next if $g eq 'ini__filename';
     next if ($group and ($g ne $group));
     my $hash = $personal_ini->{$g};
     foreach my $p (keys %$hash) {
