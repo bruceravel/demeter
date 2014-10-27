@@ -1580,7 +1580,17 @@ override 'deserialize' => sub {
       #my $ws = $feff->workspace;
       #$ws =~ s{\\}{/}g;		# path separators...
       #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($pathlike->{folder})));
+
+      ## there is a situation (not yet understood) where a path on Windows gets saved with \ rather than /
+      my $ws = basename($pathlike->{folder});
+      if (length($ws) != 5) {
+	my $save = fileparse_set_fstype();
+	fileparse_set_fstype('MSWin32');
+	$ws = basename($pathlike->{folder});
+	fileparse_set_fstype($save);
+      };
+
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', $ws));
       $feff->workspace($where);
       $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
       $this->feff_done(0);
@@ -1593,7 +1603,8 @@ override 'deserialize' => sub {
       delete $hash{folder};
       $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
-      $this -> set(parent=>$feff, parentgroup=>$feff->group, workspace=>$where, folder=>$where);
+      $this -> set(make_gds => 0, parent=>$feff, parentgroup=>$feff->group);
+      $this -> set(workspace=>$where, folder=>$where);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };

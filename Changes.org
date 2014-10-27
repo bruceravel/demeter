@@ -20,12 +20,14 @@
    - Menu items for reporting a bug and asking a question
 
 *** Artemis
-   - Disable run atoms and run feff buttons after first DnD (thanks to
-     Yanyun Hu)
+   - Disable run atoms and run feff buttons after first DnD of a path
+     (thanks to Yanyun Hu)
    - XDI related bug in Demeter::Fit (thanks to Allen Morris)
    - Add a line about background removal parameters to Artemis log
      (thanks to Sebastiano Cammelli)
    - Menu items for reporting a bug and asking a question
+   - Fix problems importing a project file containing FSPaths -- need
+     to recompute Feff at the correct time.  (thanks to Ian Godfrey)
 
 *** Atoms
    - Menu items for reporting a bug and asking a question

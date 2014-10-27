@@ -72,7 +72,7 @@ has 'workspace'    => (is => 'rw', isa => 'Str',   default => q{},
 				      $this->parent(Demeter::Feff->new(name=>'qfs', screen=>0)) if not $this->parent;
 				      $this->parent->workspace($new);
 				      $this->parent->make_workspace($new);
-				      $this->set_parent;
+				      $this->set_parent($this->parent);
 				    });
 
 
@@ -284,7 +284,7 @@ sub unset_parameters {
 	     sigma2 => 0,
 	     third  => 0,
 	     fourth => 0);
-  $self -> _update('bft') if $self->data; # this makes it ready to use immediately
+  $self -> update_path(1) if $self->data; # this makes it ready to use immediately
   return $self;
 };
 

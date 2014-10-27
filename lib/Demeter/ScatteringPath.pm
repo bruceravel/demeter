@@ -203,6 +203,8 @@ sub intrplist {
   } else {		      ## this is a normal feff calc
     foreach my $a (@atoms[1 .. $#atoms-1]) {
       my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+      #Demeter->pjoin($self->group, $a);
+      #Demeter->trace;
       $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
       push @intrp, sprintf("%-6s", $this);
     };
