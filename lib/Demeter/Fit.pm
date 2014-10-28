@@ -1194,7 +1194,11 @@ sub grab {			# deserialize lite -- grab the yaml
       my $yaml = ($args{file}) ? $zip->contents("$d$which.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$d$which.yaml"));
       my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
-      delete $r_attributes->{fit_pcpath};	   # correct an early
+
+      ## the current implementation of XDI support has the xdifile attribute read-only if Xray::XDI is not available
+      delete $r_attributes->{xdi} if (not $INC{'Xray/XDI.pm'});
+
+      delete $r_attributes->{fit_pcpath};    # correct an early
       delete $r_attributes->{fit_do_pcpath}; # design mistake...
       ## correct for earlier XDI design
       foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
