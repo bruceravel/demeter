@@ -64,6 +64,7 @@ The columns in any of the [% chik %] output files are:
 [% WRAPPER html/li %] k-squared-weighted [% chik %]    [% END %]
 [% WRAPPER html/li %] k-cubed-weighted [% chik %]    [% END %]
 [% WRAPPER html/li %] Fourier transform window [% END %]
+[% WRAPPER html/li %] Energy in absolute units [% END %]
 [% END %]
 
 [% FILTER html_para %]

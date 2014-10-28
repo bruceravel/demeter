@@ -18,6 +18,8 @@
    - Improvements to import of chi(k) data + LCF using chi(k) imported
      data (thanks to Andrea Foster)
    - Menu items for reporting a bug and asking a question
+   - Add energy columns to chi(k) output files.  (thanks to Karina
+     Mathisen)
 
 *** Artemis
    - Disable run atoms and run feff buttons after first DnD of a path
@@ -28,6 +30,8 @@
    - Menu items for reporting a bug and asking a question
    - Fix problems importing a project file containing FSPaths -- need
      to recompute Feff at the correct time.  (thanks to Ian Godfrey)
+   - Correctly display initial guesses of 0 when reading GDS values
+     from a project file.  (thanks to Ian Godfrey)
 
 *** Atoms
    - Menu items for reporting a bug and asking a question

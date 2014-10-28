@@ -2,8 +2,22 @@
   @list = @{ $C->get("many_list") };
   $eshift = q{};
   $eshift = "+".$S->bkg_eshift if ($C->get("many_space") eq 'energy');
+
+  ## this is rather more complicated in order to deal with the additional energy column
+  ## for the chi(k) output files.  Basically, these three variables are empty strings unless
+  ## this is chi(k) data
+  $ecol   = q{};
+  $eline  = q{};
+  $elabel = q{};
+  if ($C->get("many_space") eq 'k') {
+     $ecol   = ' '.$S->group . '.chiee,';
+     $eline  = $S->group . '.chiee = ' . $D->bkg_e0 . ' + ' . $S->group . ".k**2 / 0.2624682917";
+     $elabel = ' energy';
+  };
+
   q{}
 }
-write_ascii("{$C->get("many_file")}", {$S->group}.{$C->get("many_space")}{$eshift}, {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
-            label="{$C->get("many_space")}{foreach $g (@list) {($n=$g->name)=~ s{[- ,/.]+}{_}g; $OUT .= "  $n"}}",
+{$eline}
+write_ascii("{$C->get("many_file")}", {$S->group}.{$C->get("many_space")}{$eshift},{$ecol} {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
+            label="{$C->get("many_space")}{$label}{foreach $g (@list) {($n=$g->name)=~ s{[- ,/.]+}{_}g; $OUT .= "  $n"}}",
 	    header={$S->group}.myheader)

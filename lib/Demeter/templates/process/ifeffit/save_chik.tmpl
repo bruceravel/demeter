@@ -19,8 +19,10 @@
 ##| saving "{$S->name}" as chi(k)
 set({$S->group}.chik  = {$S->group}.k*{$S->group}.chi,
     {$S->group}.chik2 = {$S->group}.k^2*{$S->group}.chi,
-    {$S->group}.chik3 = {$S->group}.k^3*{$S->group}.chi )
+    {$S->group}.chik3 = {$S->group}.k^3*{$S->group}.chi,
+    {$S->group}.chiee = {$D->bkg_e0} + {$S->group}.k**2 / 0.2624682917
+)
 write_data(file="{$filename}", ${$titles},{$nonxdi}
-           label="k chi chik chik2 chik3 win",
-           {$S->group}.k, {$S->group}.chi, {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$D->group}.win)
-erase {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3
+           label="k chi chik chik2 chik3 win energy",
+           {$S->group}.k, {$S->group}.chi, {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$D->group}.win, {$S->group}.chiee)
+erase {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$S->group}.chiee
