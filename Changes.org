@@ -8,6 +8,10 @@
 
 ** 0.9.21   XX XXX       2014
 
+Begin practice of using /{preN}/ tags to indicate exactly when a
+feature was added.  Also begin practice of acknowledging the
+appropriate individual directly with the change log entry.
+
 *** Athena
    - XDI integration
    - pluck button for MEE
@@ -19,7 +23,10 @@
      data (thanks to Andrea Foster)
    - Menu items for reporting a bug and asking a question
    - Add energy columns to chi(k) output files.  (thanks to Karina
-     Mathisen)
+     Mathisen) /{pre3}/
+   - Take care to handle xdifile Data attribute when Xray::XDI is not
+     available  (thanks to Ian Godfrey) /{pre3}/
+
 
 *** Artemis
    - Disable run atoms and run feff buttons after first DnD of a path
@@ -29,9 +36,9 @@
      (thanks to Sebastiano Cammelli)
    - Menu items for reporting a bug and asking a question
    - Fix problems importing a project file containing FSPaths -- need
-     to recompute Feff at the correct time.  (thanks to Ian Godfrey)
+     to recompute Feff at the correct time.  (thanks to Ian Godfrey) /{pre2}/
    - Correctly display initial guesses of 0 when reading GDS values
-     from a project file.  (thanks to Ian Godfrey)
+     from a project file.  (thanks to Ian Godfrey) /{pre3}/
 
 *** Atoms
    - Menu items for reporting a bug and asking a question
@@ -50,6 +57,9 @@
      but changing from croak to carp when handling and unparsed line
      avoids it and issues a useful error message.  (thanks to Kurinji
      Krishnamoorthy)
+
+*** Windows
+   - Add Demeter version number to screen/log file messages /{pre3}/
 
 ** 0.9.20   12 May       2014
 

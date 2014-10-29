@@ -1196,7 +1196,7 @@ sub grab {			# deserialize lite -- grab the yaml
       my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
 
       ## the current implementation of XDI support has the xdifile attribute read-only if Xray::XDI is not available
-      delete $r_attributes->{xdi} if (not $INC{'Xray/XDI.pm'});
+      delete $r_attributes->{xdifile} if (not $INC{'Xray/XDI.pm'});
 
       delete $r_attributes->{fit_pcpath};    # correct an early
       delete $r_attributes->{fit_do_pcpath}; # design mistake...
@@ -1450,6 +1450,8 @@ override 'deserialize' => sub {
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+    ## the current implementation of XDI support has the xdifile attribute read-only if Xray::XDI is not available
+    delete $r_attributes->{xdifile} if (not $INC{'Xray/XDI.pm'});
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
     ##  clean up from old implementation(s) of XDI

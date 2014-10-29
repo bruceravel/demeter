@@ -381,8 +381,14 @@ sub _record {
       # 	last SWITCH;
       # };
 
+      ## skip all parameters that will be generated as Athena proceeds (including the possibly ro xdifile)
+      #do {
+      #  print $k, $/;
+      #};
+
     };
   };
+
   $groupargs{name} = $groupargs{label} || q{};
   delete $groupargs{label};
   $groupargs{fft_pc}   = ($args{fft_pc} eq 'None') ? 0 : 0;

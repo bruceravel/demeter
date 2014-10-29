@@ -19,6 +19,7 @@ require v5.10;
 
 use version;
 our $VERSION = version->new('0.9.21');
+print("Demeter version ", $VERSION, $/ x 2) if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ############################
 ## Carp
