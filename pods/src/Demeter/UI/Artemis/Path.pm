@@ -208,6 +208,10 @@ sub populate {
 
   $pathobject->sp($pathobject -> mo -> fetch('ScatteringPath', $pathobject->spgroup))
     if ((not $pathobject->sp) and $pathobject->spgroup);
+
+  ## reconnect an FSPath with its Feff calculation
+  $pathobject->_update('bft') if ref($pathobject) =~ m{FSPath};
+
   $this->{path} = $pathobject;
   #return if ((ref($pathobject) !~ m{FSPath}) and (not $pathobject->sp));
   return if (not $pathobject->sp);

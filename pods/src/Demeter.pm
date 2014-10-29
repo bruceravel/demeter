@@ -19,6 +19,7 @@ require v5.10;
 
 use version;
 our $VERSION = version->new('0.9.21');
+print("Demeter version ", $VERSION, $/ x 2) if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ############################
 ## Carp
@@ -145,6 +146,10 @@ with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::
 ###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
 
+## this is a dummy variable to aid issuing useful error messages when reading INI files
+## see Demeter::IniReader
+use vars qw($__reading_ini);
+$__reading_ini = q{};
 
 ## dotfolder needs to exist before this bit
 use Demeter::Config;
@@ -965,7 +970,7 @@ manipulated in any real program using Demeter.  Each of these objects
 is implemented using Moose, the amazing meta-object system for Perl.
 Although Moose adds some overhead at start-up for any application
 using Demeter, its benefits are legion.  See L<Moose> and
-L<http://www.iinteractive.com/moose> for more information.
+L<http://moose.iinteractive.com> for more information.
 
 =head1 IMPORT
 

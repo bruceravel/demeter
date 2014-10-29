@@ -73,6 +73,10 @@ a comment line to include a line begining with a hash character.
 Also change the definition of an end-of-line comment the same way,
 taking care not to remove an RGB color value of the form <code>#0000FF</code>.</p>
 
+<p>It also calls carp rather than croak for an unparsed line, using a
+Demeter-specific global scalar (ick, but the best I could think of) to
+structure the error message.</p>
+
 <h1 id="ACKNOWELDGEMENT">ACKNOWELDGEMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p><a href="http://search.cpan.org/perldoc?Config%3A%3AINI%3A%3AReader">Config::INI::Reader</a> was written by Ricardo Signes &lt;rjbs@cpan.org&gt;.

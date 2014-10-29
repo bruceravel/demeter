@@ -37,7 +37,8 @@ sub push_mru {
   $stash =~ s{\\}{\\\\}g if $self->is_windows;	# it seems like there should be something more elegant...
   return $self if ($file =~ m{$stash});
   my $mrufile = File::Spec->catfile($self->dot_folder, "demeter.mru");
-  my $rmru = Demeter::IniReader->read_file($mrufile);
+  my $slurp = Demeter->slurp($mrufile);
+  my $rmru = Demeter::IniReader->read_file($mrufile); # no clue what causes it, but this averts a crash in Config::INI:Reader
   my %mru = %$rmru;
   #tie %mru, 'Config::IniFiles', ( -file => $mrufile );
   my @list_of_files;

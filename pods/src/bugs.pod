@@ -88,7 +88,7 @@ information, regardless of how cryptic or repetitive it may seem.
 
 Each of the GUI programs (Athena, Artemis, and Hephaestus) writes its
 output messages to a log file.  This log file is in the
-C<%APPDATA%\demeter> folder.  On Windows 7, C<APPDATA> is typically
+C<%APPDATA%\demeter> folder.  On Windows 7, C<%APPDATA%> is typically
 
   C:\Users\<username>\AppData\Roaming\
 

@@ -1194,7 +1194,11 @@ sub grab {			# deserialize lite -- grab the yaml
       my $yaml = ($args{file}) ? $zip->contents("$d$which.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$d$which.yaml"));
       my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
-      delete $r_attributes->{fit_pcpath};	   # correct an early
+
+      ## the current implementation of XDI support has the xdifile attribute read-only if Xray::XDI is not available
+      delete $r_attributes->{xdifile} if (not $INC{'Xray/XDI.pm'});
+
+      delete $r_attributes->{fit_pcpath};    # correct an early
       delete $r_attributes->{fit_do_pcpath}; # design mistake...
       ## correct for earlier XDI design
       foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
@@ -1446,6 +1450,8 @@ override 'deserialize' => sub {
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+    ## the current implementation of XDI support has the xdifile attribute read-only if Xray::XDI is not available
+    delete $r_attributes->{xdifile} if (not $INC{'Xray/XDI.pm'});
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
     ##  clean up from old implementation(s) of XDI
@@ -1580,7 +1586,17 @@ override 'deserialize' => sub {
       #my $ws = $feff->workspace;
       #$ws =~ s{\\}{/}g;		# path separators...
       #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($pathlike->{folder})));
+
+      ## there is a situation (not yet understood) where a path on Windows gets saved with \ rather than /
+      my $ws = basename($pathlike->{folder});
+      if (length($ws) != 5) {
+	my $save = fileparse_set_fstype();
+	fileparse_set_fstype('MSWin32');
+	$ws = basename($pathlike->{folder});
+	fileparse_set_fstype($save);
+      };
+
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', $ws));
       $feff->workspace($where);
       $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
       $this->feff_done(0);
@@ -1593,7 +1609,8 @@ override 'deserialize' => sub {
       delete $hash{folder};
       $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
-      $this -> set(parent=>$feff, parentgroup=>$feff->group, workspace=>$where, folder=>$where);
+      $this -> set(make_gds => 0, parent=>$feff, parentgroup=>$feff->group);
+      $this -> set(workspace=>$where, folder=>$where);
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };

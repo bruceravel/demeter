@@ -1,5 +1,15 @@
 package Demeter::IniReader;
 use parent qw(Config::INI::Reader);
+
+my %filename_hash = ();
+
+sub read_file {
+  my ($self, $file) = @_;
+  my $foo = $self->SUPER::read_file($file);
+  $Demeter::__reading_ini = $file;
+  return $foo;
+};
+
 sub can_ignore {
   my ($self, $line) = @_;
 
@@ -13,6 +23,17 @@ sub preprocess_line {
   ${$line} =~ s/\s+;.*$//g;
   ${$line} =~ s/\s+\#(?![0-9a-fA-F]+).*$//g;
 }
+
+sub handle_unparsed_line {
+  my ($self, $line, $handle) = @_;
+  my $lineno = $handle->input_line_number;
+  {
+    local $Carp::Verbose = 0;
+    Carp::carp "Could not read INI file at line $lineno of\n".$Demeter::__reading_ini."\n\n";
+  };
+}
+
+
 1;
 
 =head1 NAME
@@ -29,6 +50,10 @@ This inherits from L<Config::INI::Reader>, changing the definition of
 a comment line to include a line begining with a hash character.
 Also change the definition of an end-of-line comment the same way,
 taking care not to remove an RGB color value of the form C<#0000FF>.
+
+It also calls carp rather than croak for an unparsed line, using a
+Demeter-specific global scalar (ick, but the best I could think of) to
+structure the error message.
 
 =head1 ACKNOWELDGEMENT
 
