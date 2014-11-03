@@ -411,7 +411,7 @@ Should we continue?',
       $self->{parent}->{Console}->{console}->AppendText("Feff failed to compute potentials!  See Feff console for details.\n\n");
       $self->{parent}->{Console}->{console}->AppendText(" *** It is likely that Feff failed to run to completion.\n");
       $self->{parent}->{Console}->{console}->AppendText(" *** See screen messages or log file for Feff's error message.\n");
-      $self->{parent}->{Console}->{console}->AppendText("     Log file: $INC{APPDATA}\\demeter\\dartemis.log\n") if (Demeter->is_windows);
+      $self->{parent}->{Console}->{console}->AppendText("     Log file: $ENV{APPDATA}\\demeter\\dartemis.log\n") if (Demeter->is_windows);
       $n=4;
     } else {
       $self->{parent}->status("Feff failed to compute potentials!");
