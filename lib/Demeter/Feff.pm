@@ -1173,11 +1173,14 @@ sub run_feff {
   ## -------- the following commented bit is how I have solved the
   ##          problem of running Feff since the old Tk/Artemis days
   local $| = 1;		# unbuffer output of fork
-  my $pid = open(my $WRITEME, "$exe |");
+  eval '
+  my $pid = open(my $WRITEME, "$exe &|");
   while (<$WRITEME>) {
     $self->report($_);
   };
-  close $WRITEME;
+  close $WRITEME;';
+  #&{$self->execution_wrapper}($@)  if ($@ and $self->execution_wrapper);
+  #carp $@ if ($@);
 
   ## -------- the following is a more robust, CPAN-reliant way of
   ##          running Feff
