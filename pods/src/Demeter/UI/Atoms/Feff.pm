@@ -408,6 +408,10 @@ Should we continue?',
     my $n = 4;
     if (exists $Demeter::UI::Artemis::frames{main}) {
       $Demeter::UI::Artemis::frames{main}->status("Feff failed to compute potentials!  See Feff console for details.", 'error');
+      $self->{parent}->{Console}->{console}->AppendText("Feff failed to compute potentials!\n\n");
+      $self->{parent}->{Console}->{console}->AppendText(" *** It is likely that Feff failed to run to completion.\n");
+      $self->{parent}->{Console}->{console}->AppendText(" *** See screen messages or log file for Feff's error message.\n");
+      $self->{parent}->{Console}->{console}->AppendText("     Log file: $ENV{APPDATA}\\demeter\\dartemis.log\n") if (Demeter->is_windows);
       $n=4;
     } else {
       $self->{parent}->status("Feff failed to compute potentials!");

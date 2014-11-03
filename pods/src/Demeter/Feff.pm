@@ -415,6 +415,17 @@ sub rdinp {
     };
   };
   close $INP;
+
+  ## apply RMULTIPLIER
+  my @rmultiplied = ();
+  foreach my $s (@{$self->sites}) {
+    $s->[0] *= $self->rmultiplier;
+    $s->[1] *= $self->rmultiplier;
+    $s->[2] *= $self->rmultiplier;
+    push @rmultiplied, $s;
+  };
+  $self->sites(\@rmultiplied);
+
   $self->nsites($#{$self->sites});
   $self->feff_version(8) if any {$_ =~ m{scf|exafs|xanes|ldos}} @{$self->othercards};
   $self->feff_version(8) if $nmodules > 4;
@@ -631,9 +642,10 @@ sub _pathsdat_head {
   $header .= $prefix . " This paths.dat file was written by Demeter " . $self->version . "\n";
   $header .= sprintf("%s Distance fuzz = %.3f A\n",         $prefix, $self->fuzz);
   $header .= sprintf("%s Angle fuzz = %.2f degrees\n",      $prefix, $self->betafuzz);
+  $header .= sprintf("%s Rmultiplier = %.2f\n",             $prefix, $self->rmultiplier);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno($self->eta_suppress));
   $header .= sprintf("%s Ranking criterion = %s   --   %s\n", $prefix, $self->co->default('pathfinder','rank'),
-		                              $self->explain_ranking($self->co->default('pathfinder','rank')));
+		                                $self->explain_ranking($self->co->default('pathfinder','rank')));
   $header .= sprintf("%s Post criterion = %.2f\n",          $prefix, $self->postcrit);
   $header .= $prefix . " " . "-" x 70 . "\n";
   return $header;
@@ -1161,11 +1173,14 @@ sub run_feff {
   ## -------- the following commented bit is how I have solved the
   ##          problem of running Feff since the old Tk/Artemis days
   local $| = 1;		# unbuffer output of fork
+  eval '
   my $pid = open(my $WRITEME, "$exe |");
   while (<$WRITEME>) {
     $self->report($_);
   };
-  close $WRITEME;
+  close $WRITEME;';
+  #&{$self->execution_wrapper}($@)  if ($@ and $self->execution_wrapper);
+  #carp $@ if ($@);
 
   ## -------- the following is a more robust, CPAN-reliant way of
   ##          running Feff
