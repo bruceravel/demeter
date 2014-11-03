@@ -105,6 +105,11 @@ C<%APPDATA%\demeter\dathena.log> and so on.
 
 This log file should be included in any bug report.
 
+Please note that this log file is overwritten I<every> time you fire
+up the associated program.  When reporting a bug, be sure to use the
+log file you find I<immediately> after acountering your problem and
+before you relaunch the program.
+
 =item B<Linux or other Unix systems>
 
 On Linux and other Unixes, the GUI programs do not record log files as

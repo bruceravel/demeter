@@ -10,7 +10,7 @@
 
 Begin practice of using /{preN}/ tags to indicate exactly when a
 feature was added.  Also begin practice of acknowledging the
-appropriate individual directly with the change log entry.
+(appropriate individual) directly with the change log entry.
 
 *** Athena
    - XDI integration
@@ -42,6 +42,11 @@ appropriate individual directly with the change log entry.
 
 *** Atoms
    - Menu items for reporting a bug and asking a question
+   - slapped an eval around the feff run.  this allows feff to fail a
+     bit more gracefully.  feff's error message gets sent to STDERR
+     (i.e. the screen or the log file on Windows) and an inscrutible
+     message gets posted via carp, but Artemis/Atoms does not crash.
+     (thanks to Stephen Parry) /{pre4}/
 
 *** Hephaestus
    - Menu items for reporting a bug and asking a question
