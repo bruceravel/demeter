@@ -1174,7 +1174,7 @@ sub run_feff {
   ##          problem of running Feff since the old Tk/Artemis days
   local $| = 1;		# unbuffer output of fork
   eval '
-  my $pid = open(my $WRITEME, "$exe &|");
+  my $pid = open(my $WRITEME, "$exe |");
   while (<$WRITEME>) {
     $self->report($_);
   };
