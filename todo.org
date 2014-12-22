@@ -10,9 +10,14 @@
   - [X] S02 display issue
   - [ ] clone data sets and path lists in Artemis
   - [X] Artemis history improvments
+  - [ ] xkcd style plots, see
+    http://tex.stackexchange.com/questions/74878/create-xkcd-style-diagram-in-tex
+    and http://rfonseca.github.io/xkcd-gnuplot/ and
+    http://antiyawn.com/uploads/humorsans.html
 
 ** big things
   - [X] fuzzy over sites
+  - [ ] switch .prj to json
   - [ ] 5 and 6 legged paths
   - [ ] PCA improvements
   - [ ] feff8.5L
