@@ -228,7 +228,23 @@ When using [% gnuplot %] as the plotting backend, you have an option
 to direct plots to multiple windows, thus allowing you to plot
 something new without removing an existing plot.  This menu controls
 which of four such plot displays is active.
+
+The top two options are used to export the most recent plot to a PNG
+or PDF file.  You will be prompted for a filename.
+
+The bottom two options tick on or off the 
+[% INCLUDE font/quote a="Plot after fit" %] buttons for each data set, 
+which may be useful for a multiple data set fit.
+
+[%artemis%] can make plots in a style that resembles the famous
+[% INCLUDE html/link text="XKCD comic" link="http://xkcd.com/" %].
+To make use of this most essential feature, you should first download and install the 
+[% INCLUDE html/link text="Humor-Sans font" link="http://antiyawn.com/uploads/humorsans.html"%]
+onto your computer.
+Once you have installed the font, simply check the [% INCLUDE
+font/quote a="Plot XKCD style" %] button in the Plot menu.  Enjoy!  
 [% END %]
+
 
 [% PROCESS subsection label="The Main help menu" %]
 

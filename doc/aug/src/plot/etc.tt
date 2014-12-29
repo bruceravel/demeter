@@ -239,3 +239,22 @@ phase corrected [%chiq%], a [% INCLUDE font/quote a="kq" %] plot will
 be somewhat less insightful because phase correction is not performed
 on the original [%chik%] data.
 [% END %]
+
+[% INCLUDE section label="XKCD-style plots" %]
+
+[% FILTER html_para %]
+[%athena%] can make plots in a style that resembles the famous
+[% INCLUDE html/link text="XKCD comic" link="http://xkcd.com/" %].
+
+To make use of this most essential feature, you should first download and install the 
+[% INCLUDE html/link text="Humor-Sans font" link="http://antiyawn.com/uploads/humorsans.html"%]
+onto your computer.
+
+Once you have installed the font, simply check the [% INCLUDE
+font/quote a="Plot XKCD style" %] button in the Plot menu.  Enjoy!  
+[% END %]
+
+
+[% WRAPPER image file="plot_xkcd.png" %]
+A plot sort of in the XKCD style.
+[% END %]

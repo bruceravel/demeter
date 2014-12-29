@@ -3,6 +3,7 @@ use Moose::Role;
 use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise minmax);
+use PDL::Lite;
 use Regexp::Assemble;
 
 use Demeter::Constants qw($ETOK);
@@ -241,6 +242,14 @@ sub points {
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;
   };
+  # if (Demeter->co->default('gnuplot', 'xkcd')) {
+  #   my $x = PDL->new(\@x);
+  #   my $y = PDL->new(\@y);
+  #   my $random  = PDL::Primitive::random($x->dims);
+  #   my $range = PDL::Ufunc::max($y);
+  #   my $jiggled = $y+$range*(2*($random-0.5)*0.005);
+  #   @y = PDL::Core::list($jiggled);
+  # };
 
   my $message = q{};
   pairwise { $message .= join(" ", $a, $b, $/) if (defined($a) and defined($b))} @x, @y;

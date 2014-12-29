@@ -10,10 +10,11 @@
   - [X] S02 display issue
   - [ ] clone data sets and path lists in Artemis
   - [X] Artemis history improvments
-  - [ ] xkcd style plots, see
+  - [X] xkcd style plots, see
     http://tex.stackexchange.com/questions/74878/create-xkcd-style-diagram-in-tex
     and http://rfonseca.github.io/xkcd-gnuplot/ and
     http://antiyawn.com/uploads/humorsans.html
+  - [ ] plot key for neg part of envelope is incorrect
 
 ** big things
   - [X] fuzzy over sites
@@ -22,7 +23,9 @@
   - [ ] PCA improvements
   - [ ] feff8.5L
   - [ ] persistance of analysis methods in Athena
-        This can be implemented in the same way I implemented XDI persistance -- for each group, serialize a blessed scalar and write that to the record
+        This can be implemented in the same way I implemented XDI
+        persistance -- for each group, serialize a blessed scalar and
+        write that to the record
 
 * larch chores
 

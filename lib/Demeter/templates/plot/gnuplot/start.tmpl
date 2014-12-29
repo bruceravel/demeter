@@ -38,6 +38,8 @@ set style arrow 1 nohead ls 16
 unset arrow
 
 ## plot formatting
+unset key
+set border 15
 set style line 20 linecolor rgb "{$C->default("gnuplot", "gridcolor")}"
 set grid ls 20
 set key {$C->default("gnuplot", "keylocation")} {$inout} {$C->default("gnuplot", "keyparams")}

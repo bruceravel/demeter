@@ -99,6 +99,7 @@ const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
 const my $PLOT_PDF	  => Wx::NewId();
+const my $PLOT_XKCD	  => Wx::NewId();
 const my $PLOT_ALL_DATA	  => Wx::NewId();
 const my $PLOT_NO_DATA	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
@@ -263,8 +264,10 @@ sub OnInit {
   #my $settingsmenu = Wx::Menu->new;
 
   my $plotmenu = Wx::Menu->new;
+  $frames{main}->{plotmenu} = $plotmenu;
   $plotmenu->Append($PLOT_PNG, "Last plot to png file", "Send the last plot to a png file");
   $plotmenu->Append($PLOT_PDF, "Last plot to pdf file", "Send the last plot to a pdf file");
+  $plotmenu->AppendCheckItem($PLOT_XKCD, 'Plot XKCD style', 'Plot more or less in the style of an XKCD cartoon');
   $plotmenu->AppendSeparator;
   $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
@@ -273,6 +276,8 @@ sub OnInit {
   $plotmenu->AppendSeparator;
   $plotmenu->Append($PLOT_ALL_DATA, "Plot all data sets after fit", "Set all data sets to be plotted after a fit finishes");
   $plotmenu->Append($PLOT_NO_DATA,  "Plot no data sets after fit", "Set all data sets NOT to be plotted after a fit finishes");
+
+  $plotmenu->Check($PLOT_XKCD, Demeter->co->default('gnuplot', 'xkcd'));
 
 
   my $helpmenu = Wx::Menu->new;
@@ -1091,6 +1096,19 @@ sub OnMenuClick {
       $frames{Plot}->image('pdf');
       last SWITCH;
     };
+    if ($frames{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
+      Demeter->co->set_default('gnuplot', 'xkcd', 1);
+      ## this does not seem to work correctly:
+      my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor-Sans" );
+      if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor-Sans\b}) {
+	Demeter->co->set_default('gnuplot', 'font', 'Humor-Sans');
+      };
+      undef $fontobj;
+    } else {
+      Demeter->co->set_default('gnuplot', 'xkcd', 0);
+      Demeter->co->set_default('gnuplot', 'font', Demeter->co->demeter('gnuplot', 'font'));
+    };
+
 
     ($id == $TERM_1) and do {
       Demeter->po->terminal_number(1);

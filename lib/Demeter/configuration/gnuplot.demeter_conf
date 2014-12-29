@@ -121,7 +121,7 @@ description
 
 variable=keyparams
 type=string
-default=width 1 height 1 box
+default=width 1 height 1 box lw 1
 description
   Use this to set the parameters of the legend.  Be sure to follow
   gnuplot's syntax -- Demeter does no error checking on the value of
@@ -286,3 +286,13 @@ description
   This indicates how long, in seconds, a GUI should wait for the user
   to double click a plucked point in the Gnuplot window before giving
   up and returning control to the GUI.
+
+variable=xkcd
+type=boolean
+default=false
+onvalue=1
+offvalue=0
+description
+  When true, plots will be made in the gnuplot style.  Set
+  gnuplot->font to Humor-Sans for maximum xkcd-ness.
+

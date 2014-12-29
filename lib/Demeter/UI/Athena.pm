@@ -444,6 +444,7 @@ const my $PLOT_PNG		=> Wx::NewId();
 const my $PLOT_GIF		=> Wx::NewId();
 const my $PLOT_JPG		=> Wx::NewId();
 const my $PLOT_PDF		=> Wx::NewId();
+const my $PLOT_XKCD		=> Wx::NewId();
 const my $PLOT_DOC		=> Wx::NewId();
 
 const my $SHOW_BUFFER		=> Wx::NewId();
@@ -664,10 +665,11 @@ sub menubar {
   $app->{main}->{freezemenu} = $freezemenu;
 
 
-  my $plotmenu    = Wx::Menu->new;
+  my $plotmenu        = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
   my $mergedplotmenu  = Wx::Menu->new;
+  $app->{main}->{plotmenu}        = $plotmenu;
   $app->{main}->{currentplotmenu} = $currentplotmenu;
   $app->{main}->{markedplotmenu}  = $markedplotmenu;
   $app->{main}->{mergedplotmenu}  = $mergedplotmenu;
@@ -699,6 +701,7 @@ sub menubar {
 
     $plotmenu->AppendSeparator;
     $plotmenu->AppendSubMenu($imagemenu, "Save last plot as...", "Save the last plot as an image file");
+    $plotmenu->AppendCheckItem($PLOT_XKCD, 'Plot XKCD style', 'Plot more or less in the style of an XKCD cartoon');
     $plotmenu->AppendSeparator;
     $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
     $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
@@ -707,7 +710,8 @@ sub menubar {
   };
   $plotmenu->AppendSeparator;
   $plotmenu->Append($PLOT_DOC,      "Document section: plotting data", "Open the document page on plotting data" );
-  $app->{main}->{plotmenu} = $plotmenu;
+
+  $plotmenu->Check($PLOT_XKCD, Demeter->co->default('gnuplot', 'xkcd'));
 
   my $markmenu   = Wx::Menu->new;
   $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tShift+Ctrl+t", "Toggle mark of current group" );
@@ -1358,6 +1362,21 @@ sub OnMenuClick {
     };
     ($id == $PLOT_PDF) and do {
       $app->image('pdf');
+      last SWITCH;
+    };
+    ($id == $PLOT_XKCD) and do {
+      if ($app->{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
+	Demeter->co->set_default('gnuplot', 'xkcd', 1);
+	## this does not seem to work correctly:
+	my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor-Sans" );
+	if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor-Sans\b}) {
+	  Demeter->co->set_default('gnuplot', 'font', 'Humor-Sans');
+	};
+	undef $fontobj;
+      } else {
+	Demeter->co->set_default('gnuplot', 'xkcd', 0);
+	Demeter->co->set_default('gnuplot', 'font', Demeter->co->demeter('gnuplot', 'font'));
+      };
       last SWITCH;
     };
 

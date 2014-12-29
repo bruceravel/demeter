@@ -52,6 +52,7 @@ before start_plot => sub {
   my ($self) = @_;
   my $command = $self->template("plot", "start");
   $command .= $self->copyright_text;
+  $command .= $self->template("plot", "xkcd") if Demeter->co->default('gnuplot', 'xkcd');
   $self->dispose($command, "plotting");
   $self->lastplot(q{});
 };
