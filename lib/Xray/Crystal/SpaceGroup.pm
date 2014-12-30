@@ -2,7 +2,7 @@ package Xray::Crystal::SpaceGroup;
 
 =for Copyright
  .
- Copyright (c) 1999-2015 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 1999-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
