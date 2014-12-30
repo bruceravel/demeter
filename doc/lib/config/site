@@ -4,7 +4,7 @@
 	   athena_name  = 'Athena Users Guide'
 	   server    = 'http://bruceravel.github.io/demeter' 
 	   admin     = 'http://bruceravel.github.io/home'
-	   copyright = '2007-2014 Bruce Ravel'
+	   copyright = '2007-2015 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };
 -%]

@@ -3,6 +3,6 @@
 	   name      = 'Athena Book'
 	   server    = 'http://bruceravel.github.io/demeter' 
 	   admin     = 'bravel\@anl.gov'
-	   copyright = '2014 Bruce Ravel'
+	   copyright = '2015 Bruce Ravel'
 	  };
 -%]

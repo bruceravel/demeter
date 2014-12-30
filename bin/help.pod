@@ -52,7 +52,7 @@ already asked your question.
 =head2 How to ask for help
 
 If you are asking for help, I encourage you to ask specific questions
-rather than vague ones. For example, 
+rather than vague ones. For example,
 
   I don't understand multiple k-weight fitting. What does it mean to
   use more than one k-weight in a fit and why should I want to do so?
@@ -93,7 +93,7 @@ nor should they be contacted with questions about Demeter or Ifeffit.)
 The community web site, L<http://xafs.org>, provides a wealth of
 information, educational materials, links to other sites of interest
 to XAS practitioners, and other community tools. The
-L<tutorials|http://xafs.org/Tutorials>> page contains links to
+L<tutorials|http://xafs.org/Tutorials> page contains links to
 educational materials written by a number of the luminaries of the XAS
 community.  The L<workshops page|http://xafs.org/Workshops> lists
 links to several workshops and schools from recent years.  Many of
@@ -121,8 +121,12 @@ Mineralogical methods. Ulery, A. L. and Drees, L. R. Madison, WI, USA,
 Soil Science Society of America: 367-463.  L<(Amazon
 link)|http://www.amazon.com/Methods-Soil-Analysis-Part-Mineralogical/dp/0891188460/>
 
-Grant Bunker's recent book, I<Introduction to XAFS: A Practical Guide
-to X-ray Absorption Fine Structure Spectroscopy>, is an excellent
+Scott Calvin's book I<XAFS for Everyone> is my favorite XAFS textbook.
+L<(Amazon
+link)|http://www.amazon.com/XAFS-Everyone-Scott-Calvin/dp/1439878633/>
+
+Grant Bunker's book, I<Introduction to XAFS: A Practical Guide
+to X-ray Absorption Fine Structure Spectroscopy>, is also an excellent
 resource.  L<(Amazon
 link)|http://www.amazon.com/Introduction-XAFS-Practical-Absorption-Spectroscopy/dp/052176775X/>
 
@@ -146,8 +150,8 @@ If your question pertains to Feff -- specifically in the area of using
 Feff for XANES calculations -- remember that Bruce is but a minor
 contributor to Feff and may not in a position to answer your question
 authoritatively.  The PI of the Feff project and his team all read
-the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> an>d
-often answer questions posted there.
+the L<Ifeffit mailing list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>
+and often answer questions posted there.
 
 The Feff homepage is at L<http://leonardo.phys.washington.edu/feff/>.
 The Feff9 document, in wiki format, is at
@@ -169,7 +173,7 @@ L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2008-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
