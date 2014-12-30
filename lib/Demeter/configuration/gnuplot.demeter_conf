@@ -100,7 +100,8 @@ variable=font
 type=font
 default=Arial
 description
-  This is the font family to use in gnuplot plots.
+  This is the font family to use in gnuplot plots.  Please note that
+  the size of the font is set using the gnupot->fontsize parameter.
 
 variable=fontsize
 type=positive integer
@@ -108,7 +109,8 @@ default=11
 minint=8
 maxint=100
 description
-  This is the font size to use by default in gnuplot plots.
+  This is the font size to use by default in gnuplot plots.  Set the
+  font family using the gnuplot->font parameter.
 
 variable=keylocation
 type=string

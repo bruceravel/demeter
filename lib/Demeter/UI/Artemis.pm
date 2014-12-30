@@ -1106,7 +1106,7 @@ sub OnMenuClick {
       undef $fontobj;
     } else {
       Demeter->co->set_default('gnuplot', 'xkcd', 0);
-      Demeter->co->set_default('gnuplot', 'font', Demeter->co->demeter('gnuplot', 'font'));
+      Demeter->co->set_default('gnuplot', 'font', Demeter->co->was('gnuplot', 'font') || Demeter->co->demeter('gnuplot', 'font'));
     };
 
 

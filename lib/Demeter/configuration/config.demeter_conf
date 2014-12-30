@@ -60,7 +60,7 @@
 ##   boolean               Checkbutton
 ##   keypress              Entry  -- rigged to display one character at a time
 ##   color                 Button -- launches color browser
-##   font                  Button -- does nothing at this time
+##   font                  Button -- launches font browser
 
 include file.demeter_conf          ## file import parameters 
 

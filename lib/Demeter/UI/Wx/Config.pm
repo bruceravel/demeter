@@ -22,7 +22,7 @@ use List::MoreUtils qw(firstidx uniq);
 use Text::Wrap;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER);
+use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER EVT_FONTPICKER_CHANGED);
 
 use Demeter qw(:none);
 
@@ -235,6 +235,7 @@ sub tree_select {
       $self->set_spin_widget($parent, $param),          last WIDGET if ($type eq 'positive integer');
       $self->set_boolean_widget($parent, $param),       last WIDGET if ($type eq 'boolean');
       $self->set_color_widget($parent, $param),         last WIDGET if ($type eq 'color');
+      $self->set_font_widget($parent, $param),          last WIDGET if ($type eq 'font');
 
       ## fall back
       $self->set_stub;
@@ -278,6 +279,11 @@ sub apply {
     $value = $self->{Set}->GetValue,           last WIDGET if ($type eq 'positive integer');
     $value = Demeter->onezero($self->{Set}->GetValue), last WIDGET if ($type eq 'boolean');
     $value = $self->{Set}->GetColour->GetAsString(wxC2S_HTML_SYNTAX), last WIDGET if ($type eq 'color');
+    if ($type eq 'font') {
+      $value = $self->{Set}->GetSelectedFont->GetNativeFontInfoDesc;
+      $value =~ s{\s+\d+\z}{};
+      last WIDGET;
+    };
   };
 
   Demeter->co->set_default($parent, $param, $value);
@@ -361,8 +367,8 @@ sub report {
 ## x  list                  Menubutton or some other multiple selection widget
 ## x  boolean               Checkbutton
 ##   keypress              Entry  -- rigged to display one character at a time
-##   color                 Button -- launches color browser
-##   font                  Button -- does nothing at this time
+## x  color                 Button -- launches color browser
+## x  font                  Button -- launches font picker control
 ## x  absolute energy
 
 sub set_string_widget {
@@ -429,6 +435,16 @@ sub set_color_widget {
 
   #EVT_COLOURPICKER_CHANGED( $self, $self->{Set}, sub{ my ($self, $event) = @_; $self->color_picker; } );
 
+  return $self->{Set};
+};
+
+
+sub set_font_widget {
+  my ($self, $parent, $param) = @_;
+  my $font = Wx::Font->new(10,
+			   wxDEFAULT, wxNORMAL, wxNORMAL, 0,
+			   Demeter->co->default($parent, $param));
+  $self->{Set} = Wx::FontPickerCtrl->new($self, -1, $font, [-1,-1], [200,-1]);
   return $self->{Set};
 };
 
