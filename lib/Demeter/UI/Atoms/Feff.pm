@@ -506,7 +506,7 @@ sub fill_intrp_page {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp1color') ),
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
-  my $i = 0;
+  my $i = 1;
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText("\n\n********** Ranking paths...\n");
   $self->{parent}->status("Ranking paths...");

@@ -1128,7 +1128,7 @@ sub intrp {
   my @list_of_paths = @{ $self-> pathlist };
   $text .= $self->intrp_header(%markup);
   $text .=  $markup{comment} . "#       degen     Reff       scattering path                      I    Rank  legs   type" .  $markup{close} . "\n";
-  my $i = 0;
+  my $i = 1;
   foreach my $sp (@list_of_paths) {
     last if ($rmax and ($sp->halflength > $rmax));
     $text .= $markup{$sp->weight} . $sp->intrpline(++$i) . $markup{close} . $/;
