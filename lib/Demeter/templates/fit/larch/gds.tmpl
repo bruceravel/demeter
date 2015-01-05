@@ -1,0 +1,19 @@
+{ # -*- ifm -*-
+  # GDS template
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
+}
+{
+  $gds = lc($S->gds);
+  ($gds = 'def') if ($gds =~ m{(?:after|restrain)});
+  ($gds = 'set') if ($gds eq "lguess");
+
+  # get the syntax correct for guess, set, and def
+  $content = ($gds eq 'def') ? sprintf("expr='%s'", $S->mathexp)
+                             : sprintf("%s, vary=%s", $S->mathexp, Demeter->TrueFalse($gds eq 'guess'));
+
+  ## need to comment out skips and merges
+  $prefix = ($gds =~ m{(?:merge|skip)}) ? "## (".$gds.") " : "";
+  q{}
+}
+{$prefix}gds.{lc($S->name)} = Parameter({$content})

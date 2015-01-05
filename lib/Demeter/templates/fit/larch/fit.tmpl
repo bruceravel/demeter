@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # feffit command template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$F->parameter} returns the value for the current Fit
+}
+###__ append data set {$D->name} ({$D->group}) to the list of data groups
+dsets.append(feffit_dataset(data={$D->group}, pathlist=[], transform=trans))

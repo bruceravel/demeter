@@ -22,7 +22,7 @@ extends 'Demeter';
 use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
-use Demeter::Constants qw($NUMBER);
+use Demeter::Constants qw($NUMBER $EPSILON7);
 
 has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,     default => 'guess');
@@ -63,6 +63,15 @@ sub parameter_list {
 # skip after merge
 sub write_gds {
   my ($self) = @_;
+  if ($self->mathexp =~ m{\A$NUMBER\z}) {
+    if (Demeter->is_larch and (abs($self->mathexp) < $EPSILON7)) {
+      if ($self->mathexp < 0) {
+	$self->mathexp(-1*$EPSILON7);
+      } else {
+	$self->mathexp($EPSILON7);
+      };
+    };
+  };
   my $string = $self->template("fit", "gds");
   return $string;
 };

@@ -1,0 +1,9 @@
+{ # -*- ifm -*-
+  # residual arrays template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+##| residual arrays for {$D->group}
+{$D->group}_res = Group()
+{$D->group}_res.k   = {$D->group}.k
+{$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi

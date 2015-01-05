@@ -451,6 +451,8 @@ sub S_reff_rmax {
 sub S_exceed_ifeffit_limits {
   my ($self) = @_;
   my $found = 0;
+  return 0 if Demeter->is_larch;
+
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
