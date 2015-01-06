@@ -6,4 +6,4 @@
 ##| residual arrays for {$D->group}
 {$D->group}_res = Group()
 {$D->group}_res.k   = {$D->group}.k
-{$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi
+{$D->group}_res.chi = {$D->group}.chi - dset_{$D->group}.model.chi

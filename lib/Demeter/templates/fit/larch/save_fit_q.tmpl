@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # save fit template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+
+  ($bkg, $label) = ($D->fit_do_bkg)
+                 ? ($D->group."_bkg.$suffix, ", "q chi fit residual background window")
+                 : (q{},                        "q chi fit residual window");
+  q{}
+}
+<<nl>>
+write_ascii(file="{$filename}",
+            {$D->group}.q, {$D->group}.{$suffix}, {$D->group}_fit.{$suffix}, {$D->group}_res.{$suffix}, {$bkg}{$D->group}.rwin
+            label="{$label}", header={$S->group}.myheader)

@@ -457,6 +457,9 @@ sub fit {
     $command .= "\n";
 
     ## define all the paths for this data set
+    ##
+    ## ifeffit needs a list of path indeces
+    ## larch needs a list of path group names, larch uses the misnamed indeces attribute to carry this list
     my $group = $data->group;
     my @indexstring = ();
     my $iii=1;
@@ -476,12 +479,20 @@ sub fit {
       $p->set(name=>$lab);
       $p->rewrite_cv;
       $command .= $p->_path_command(0);
-      push @indexstring, $p->Index;
+      if (Demeter->is_ifeffit) {
+	push @indexstring, $p->Index;
+      } elsif (Demeter->is_larch) {
+	push @indexstring, $p->group;
+      };
     };
     $command .= "\n";
 
     $command .= $data->template("fit", "next") if ($count > 1);
-    $self -> indeces(_normalize_paths(\@indexstring));
+    if (Demeter->is_ifeffit) {
+      $self -> indeces(_normalize_paths(\@indexstring));
+    } elsif (Demeter->is_larch) {
+      $self -> indeces(join(',', @indexstring));
+    };
     if ($data->fit_data lt $self->ndata) {
       $command .= $data->template("fit", "fit");
     } else {
@@ -730,6 +741,7 @@ sub _local_parameters {
 };
 
 
+
 # swiped from the old Ifeffit::IO:
 #   change (3,1,14,5,15,2,13,7,8,6,12) to "1-3,5-8,12-15"
 sub _normalize_paths {
@@ -939,6 +951,7 @@ sub fetch_statistics {
     foreach my $d (@ {$self->data} ) {
       $nidp += $d->nidp;
     };
+    $nidp = 0 if ($nidp < 0);
     $self->n_idp(sprintf("%.3f", $nidp));
   };
   if ($self->n_varys == 0) {

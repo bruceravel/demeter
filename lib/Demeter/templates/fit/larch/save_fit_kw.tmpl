@@ -1,0 +1,20 @@
+{ # -*- ifm -*-
+  # save fit template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+
+  ($bkg, $label) = ($D->fit_do_bkg)
+                 ? ($D->group."_bkg.chik, ", "k chi fit residual background window")
+                 : (q{},                     "k chi fit residual window");
+  q{}
+}
+<<nl>>
+{$D->group}.chik     = {$D->group}.k^{$kweight}*{$D->group}.chi
+{$D->group}_fit.chik = {$D->group}.k^{$kweight}*{$D->group}_fit.chi
+{$D->group}_res.chik = {$D->group}.k^{$kweight}*{$D->group}_res.chi
+if {Demeter->TrueFalse($D->fit_do_bkg)}:
+   {$D->group}_bkg.chik = {$D->group}.k^{$kweight}*{$D->group}_bkg.chi
+endif
+write_ascii(file="{$filename}",
+            {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.kwin
+            label="{$label}", header={$S->group}.myheader)

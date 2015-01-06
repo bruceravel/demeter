@@ -15,7 +15,13 @@
   q{}
 }
 ###__ perform the fit
-dsets.append(feffit_dataset(data={$D->group}, pathlist=[], transform=trans))
-trans = feffit_transform(kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, kw={$kstring}, dk={$D->fft_dk}, window={$D->fft_kwindow},
-                         rmin={$D->bft_rmin}, rmax={$D->bft_rmax})
+trans_{$D->group} = feffit_transform(kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, kw={$kstring}, dk={$D->fft_dk}, window={$D->fft_kwindow},
+                               rmin={$D->bft_rmin}, rmax={$D->bft_rmax})
+dset_{$D->group} = feffit_dataset(data={$D->group}, pathlist=[{$F->indeces}], transform=trans_{$D->group})
+dsets.append(dset_{$D->group})
 fit   = feffit(gds, dsets)
+
+##| fit group for {$D->group}
+{$D->group}_fit = Group()
+{$D->group}_fit.k   = {$D->group}.k
+{$D->group}_fit.chi = dset_{$D->group}.model.chi
