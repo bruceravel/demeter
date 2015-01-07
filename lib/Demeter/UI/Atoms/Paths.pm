@@ -234,7 +234,7 @@ sub OnDrag {
   my @data;
   my $item = $list->GetFirstSelected;
   while ($item ne -1) {
-    my $p = $list->GetItemData($item);
+    my $p = $list->GetItemData($item)-1;
     push @data, $pathlist[$p]->group;
     #print $pathlist[$item]->intrpline, $/;
     $item = $list->GetNextSelected($item);
