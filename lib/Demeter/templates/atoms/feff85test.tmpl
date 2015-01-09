@@ -23,7 +23,7 @@
  EXCHANGE  0
                                            *** Radius for self-consistent pots (2 shells is a good choice)
  *         r_scf  [ l_scf   n_scf   ca ]   *** l_scf = 0 for a solid, 1 for a molecule
- {$doscf}SCF       \{\{scf\}\}
+ \{\{doscf\}\}{$doscf}SCF       \{\{scf\}\}
 
  *         kmax   [ delta_k  delta_e ]     *** Upper limit of XANES calculation.
  {$doxanes}XANES     4.0
