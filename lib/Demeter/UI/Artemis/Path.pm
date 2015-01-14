@@ -469,7 +469,12 @@ sub OnLabelMenu {
 
     (($id == $DEBYE) or ($id == $EINS)) and do {	# correlated Debye model / Einstein model
       my $theta = ($id == $DEBYE) ? 'thetad' : 'thetae';
-      my $func  = ($id == $DEBYE) ? 'debye'  : 'eins';
+      my $func;
+      if (Demeter->is_ifeffit) {
+	$func = ($id == $DEBYE) ? 'debye'  : 'eins';
+      } elsif (Demeter->is_larch) {
+	$func = ($id == $DEBYE) ? 'sigma2_debye'  : 'sigma2_eins';
+      };
       my $full  = ($id == $DEBYE) ? 'Debye'  : 'Einstein';
       $currentpage->{"pp_$param"}->SetValue("$func(temp, $theta)");
       my $gds = $Demeter::UI::Artemis::frames{GDS};

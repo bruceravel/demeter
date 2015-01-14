@@ -68,6 +68,12 @@ The Einstein function is most useful as part of a multiple data set
 fit.  In that case, a path can have its [%sigsqr%] parametrized using
 the [% INCLUDE font/mono a="eins" %] function and a single [%thetae%]
 guess parameter is used for all temperatures.
+
+When using [%ifeffit%], the Einstein function is called 
+[% INCLUDE font/mono a="eins()" %].  When using [%larch%], it is
+called [% INCLUDE font/mono a="sigma2_eins()" %].  The user of
+[%artemis%] can use either form with either backend and the correct
+thing will happen.
 [% END %]
 [% WRAPPER html/dt dt="Correlated Debye model" %]
 The correlated Debye model assumes that the [%sigsqr%] for any pair of
@@ -86,6 +92,12 @@ The caveat is that the correlated Debye model is only strictly valid
 for a monoatomic material.  In practice, the Debye model works well
 for metals like Cu, Au, and Pt.  It works poorly for any material that
 has two or more atomic species.
+
+When using [%ifeffit%], the Debye function is called 
+[% INCLUDE font/mono a="debye()" %].  When using [%larch%], it is
+called [% INCLUDE font/mono a="sigma2_debye()" %].  The user of
+[%artemis%] can use either form with either backend and the correct
+thing will happen.
 [% END %]
 [% END %]
 
@@ -104,7 +116,7 @@ doi = "10.1103/PhysRevB.20.4908"
 [% PROCESS section label="Collinear multiple scattering paths" %]
 
 [% WRAPPER floatright this="collinear.png" -%]
-This valuable paper by
+A valuable paper by
 [% INCLUDE citation
 author = "E.A. Hudson et al."
 journal = "Phys. Rev."
