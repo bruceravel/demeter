@@ -9,6 +9,6 @@
   q{}
 }
 <<nl>>
-write_ascii(file="{$filename}",
-            {$D->group}.q, {$D->group}.{$suffix}, {$D->group}_fit.{$suffix}, {$D->group}_res.{$suffix}, {$bkg}{$D->group}.rwin
+write_ascii('{$filename}',
+            {$D->group}.q, {$D->group}.{$suffix}, {$D->group}_fit.{$suffix}, {$D->group}_res.{$suffix}, {$bkg}{$D->group}.rwin,
             label="{$label}", header={$S->group}.myheader)

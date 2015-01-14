@@ -2,6 +2,21 @@
   # chores to be done before starting a fit
   q{}
 }
-gds   = Group()
+try:
+    del gds
+except NameError:
+    pass
+#endtry
+try:
+    del paths
+except NameError:
+    pass
+#endtry
+try:
+    del dsets
+except NameError:
+    pass
+#endtry
+gds   = group()
 dsets = list()
 paths = list()

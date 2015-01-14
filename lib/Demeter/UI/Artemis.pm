@@ -493,6 +493,7 @@ sub OnInit {
 		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
 		     feedback     => \&feedback,
 		    );
+  Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   1;

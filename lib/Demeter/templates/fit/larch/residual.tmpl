@@ -4,6 +4,6 @@
   #   {$D->parameter} returns the value of that parameter
 }
 ##| residual arrays for {$D->group}
-{$D->group}_res = Group()
+{$D->group}_res     = group()
 {$D->group}_res.k   = {$D->group}.k
 {$D->group}_res.chi = {$D->group}.chi - dset_{$D->group}.model.chi

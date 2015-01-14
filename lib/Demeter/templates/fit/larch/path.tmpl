@@ -14,10 +14,10 @@
 ##| Path #{$i} (group={$S->group}) ={substr(ref($S), 9)}=
 {$S->group} = feffpath('{$nnnn}',
                  label  = '{$S->name}',
-                 degen  =  {$S->n},
+                 degen  = '{$S->n}',
                  s02    = '{lc($S->s02)    || 1}',
                  e0     = '{lc($S->e0)     || 0}',
-                 delr   = '{lc($S->delr)   || 0}',
+                 deltar = '{lc($S->delr)   || 0}',
                  sigma2 = '{lc($S->sigma2) || 0}',
                  ei     = '{lc($S->ei)     || 0}',
                  third  = '{lc($S->third)  || 0}',

@@ -102,6 +102,8 @@ has 'site_fraction'=> (is => 'rw', isa => 'LaxNum',   default => 1);
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
 
+has 'cleanup'      => (is => 'rw', isa => 'Bool',     default => 1);
+
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 #has 'ipots'        => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -136,7 +138,7 @@ sub DEMOLISH {
 override 'alldone' => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->file);
-  unlink $nnnn if -e $nnnn;
+  unlink $nnnn if ((-e $nnnn) and ($self->cleanup));
   $self->remove;
   return $self;
 };

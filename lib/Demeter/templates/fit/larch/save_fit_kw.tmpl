@@ -15,6 +15,6 @@
 if {Demeter->TrueFalse($D->fit_do_bkg)}:
    {$D->group}_bkg.chik = {$D->group}.k^{$kweight}*{$D->group}_bkg.chi
 endif
-write_ascii(file="{$filename}",
-            {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.kwin
+write_ascii('{$filename}',
+            {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.kwin,
             label="{$label}", header={$S->group}.myheader)

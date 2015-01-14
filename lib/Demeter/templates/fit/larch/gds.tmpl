@@ -16,4 +16,4 @@
   $prefix = ($gds =~ m{(?:merge|skip)}) ? "## (".$gds.") " : "";
   q{}
 }
-{$prefix}gds.{lc($S->name)} = Parameter({$content})
+{$prefix}gds.{lc($S->name)} = param({$content})

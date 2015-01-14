@@ -47,34 +47,42 @@ has 'n'		      => (is=>'rw', isa=>'LaxNum', default =>  0);
 has 's02'	      => (is=>'rw', isa=>'Str',    default => '1'); # trigger value into _stored
 has 's02_stored'      => (is=>'rw', isa=>'Str',    default => '1');
 has 's02_value'	      => (is=>'rw', isa=>'LaxNum', default =>  1);
+has 's02_stderr'      => (is=>'rw', isa=>'LaxNum', default =>  1);
 
 has 'e0'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'e0_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'e0_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'e0_stderr'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
-has 'delr'	      => (is=>'rw', isa=>'Str',    default => '0');
-has 'delr_stored'     => (is=>'rw', isa=>'Str',    default => '0');
-has 'delr_value'      => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'delr'	      => (is=>'rw', isa=>'Str',    default => '0', alias => 'deltar');
+has 'delr_stored'     => (is=>'rw', isa=>'Str',    default => '0', alias => 'deltar_stored');
+has 'delr_value'      => (is=>'rw', isa=>'LaxNum', default =>  0,  alias => 'deltar_value' );
+has 'delr_stderr'     => (is=>'rw', isa=>'LaxNum', default =>  0,  alias => 'deltar_stderr');
 
 has 'sigma2'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'sigma2_stored'   => (is=>'rw', isa=>'Str',    default => '0');
 has 'sigma2_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'sigma2_stderr'   => (is=>'rw', isa=>'LaxNum', default =>  0);
 
 has 'ei'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'ei_stored'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'ei_value'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'ei_stderr'	      => (is=>'rw', isa=>'LaxNum', default =>  0);
 
 has 'third'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'third_stored'    => (is=>'rw', isa=>'Str',    default => '0');
 has 'third_value'     => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'third_stderr'    => (is=>'rw', isa=>'LaxNum', default =>  0);
 
 has 'fourth'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'fourth_stored'   => (is=>'rw', isa=>'Str',    default => '0');
 has 'fourth_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'fourth_stderr'   => (is=>'rw', isa=>'LaxNum', default =>  0);
 
 has 'dphase'	      => (is=>'rw', isa=>'Str',    default => '0');
 has 'dphase_stored'   => (is=>'rw', isa=>'Str',    default => '0');
 has 'dphase_value'    => (is=>'rw', isa=>'LaxNum', default =>  0);
+has 'dphase_stderr'   => (is=>'rw', isa=>'LaxNum', default =>  0);
 
 has 'id'	      => (is=>'rw', isa=>'Str',    default => q{});
 has 'k_array'	      => (is=>'rw', isa=>'Str',    default => q{});
@@ -289,7 +297,12 @@ sub make_name {
 sub path {
   my ($self, $do_ff2chi) = @_;
   $self->_update_from_ScatteringPath if $self->sp;
-  $self->dispose($self->_path_command($do_ff2chi));
+
+  my $this_command = $self->_path_command($do_ff2chi);
+  $this_command =~ s{(?<!sigma2_)(debye|eins)\(}{sigma2_$1\(}g if (Demeter->is_larch);
+  $this_command =~ s{sigma2_(debye|eins)\(}{$1\(}g if (Demeter->is_ifeffit);
+
+  $self->dispose($this_command);
   $self->update_path(0);
   return $self;
 };
@@ -467,34 +480,61 @@ my %_pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
 sub fetch {
   my ($self) = @_;
 
-  @path_text = ();
-  my @save = ($self->toggle_echo(0),
-	      $self->get_mode("feedback"));
+  if (Demeter->is_ifeffit) {
+    @path_text = ();
+    my @save = ($self->toggle_echo(0),
+		$self->get_mode("feedback"));
 
-  $self->set_mode(feedback=>sub{push @path_text, $_[0]}); # set feedback coderef
-  $self->dispense("fit", "show_path");
-  $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(feedback=>$save[1]);
+    $self->set_mode(feedback=>sub{push @path_text, $_[0]}); # set feedback coderef
+    $self->dispense("fit", "show_path");
+    $self->toggle_echo($save[0]);	# reset everything
+    $self->set_mode(feedback=>$save[1]);
 
-  my $found = 0;
-  foreach my $l (@path_text) {
-    ($found = 1), next if ($l =~ m{\A\s*PATH}x);
-    next if not $found;
-    chomp $l;
-    my @line = split(/\s+=\s*/, $l);
-  SWITCH: {
+    my $found = 0;
+    foreach my $l (@path_text) {
+      ($found = 1), next if ($l =~ m{\A\s*PATH}x);
+      next if not $found;
+      chomp $l;
+      my @line = split(/\s+=\s*/, $l);
+    SWITCH: {
 
-      ($line[0] eq 'id') and do {
-	$self -> set(id=>$line[1]);
-	last SWITCH;
+	($line[0] eq 'id') and do {
+	  $self -> set(id=>$line[1]);
+	  last SWITCH;
+	};
+
+	($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
+	  $self -> evaluate($_pp_trans{$line[0]}, $line[1]);
+	  last SWITCH;
+	}
+
       };
-
-      ($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
-	$self -> evaluate($_pp_trans{$line[0]}, $line[1]);
-	last SWITCH;
-      }
-
     };
+
+  } elsif (Demeter->is_larch) {
+    $self -> id($self->fetch_string(join('.', $self->group, 'label')));
+
+    $self -> s02_value ($self->fetch_scalar(join('.', $self->group, 's02', 'value' )));
+    $self -> s02_stderr($self->fetch_scalar(join('.', $self->group, 's02', 'stderr')));
+
+    $self -> e0_value ($self->fetch_scalar(join('.', $self->group, 'e0', 'value' )));
+    $self -> e0_stderr($self->fetch_scalar(join('.', $self->group, 'e0', 'stderr')));
+
+    $self -> delr_value ($self->fetch_scalar(join('.', $self->group, 'deltar', 'value' )));
+    $self -> delr_stderr($self->fetch_scalar(join('.', $self->group, 'deltar', 'stderr')));
+
+    $self -> sigma2_value ($self->fetch_scalar(join('.', $self->group, 'sigma2', 'value' )));
+    $self -> sigma2_stderr($self->fetch_scalar(join('.', $self->group, 'sigma2', 'stderr')));
+
+    $self -> ei_value ($self->fetch_scalar(join('.', $self->group, 'ei', 'value' )));
+    $self -> ei_stderr($self->fetch_scalar(join('.', $self->group, 'ei', 'stderr')));
+
+    $self -> third_value ($self->fetch_scalar(join('.', $self->group, 'third', 'value' )));
+    $self -> third_stderr($self->fetch_scalar(join('.', $self->group, 'third', 'stderr')));
+
+    $self -> fourth_value ($self->fetch_scalar(join('.', $self->group, 'fourth', 'value' )));
+    $self -> fourth_stderr($self->fetch_scalar(join('.', $self->group, 'fourth', 'stderr')));
+
   };
   return 0;
 };

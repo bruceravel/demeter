@@ -23,7 +23,7 @@ unlink "cufit.iff" if (-e "cufit.iff");
 print "make a Data object and set the FT and fit parameters\n";
 my $data = Demeter::Data -> new();
 
-$data->set_mode(screen  => 1, backend => 0); #, file => ">cufit.iff", );
+$data->set_mode(screen  => 1, backend => 1); #, file => ">cufit.iff", );
 $data -> plot_with('gnuplot');    ## similar to the :plotwith pragma
 
 $data ->set(file       => "cu10k.chi",
@@ -42,7 +42,7 @@ my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alPha', mathexp => 0),
 	    Demeter::GDS -> new(gds => 'guess', name => 'Enot',  mathexp => 0),
 	    Demeter::GDS -> new(gds => 'guess', name => 'theta', mathexp => 500),
 	    #Demeter::GDS -> new(gds => 'guess', name => 'fred',  mathexp => 500),
-	    Demeter::GDS -> new(gds => 'set',   name => 'temP',  mathexp => 300),
+	    Demeter::GDS -> new(gds => 'set',   name => 'temP',  mathexp => 10),
 	    Demeter::GDS -> new(gds => 'set',   name => 'sigmm', mathexp => 0.00052),
 	   );
 
@@ -106,6 +106,7 @@ $data->po->set(plot_data => 1,
 	      );
 $data->plot('r');
 $data->pause;
+exit;
 
 print "save the results of the fit\n";
 my ($header, $footer) = ("Fit to copper data", q{});

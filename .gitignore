@@ -25,6 +25,8 @@ src/*.dll
 src/*.so
 src/*.o
 
+**/temp/*
+
 athena.prj
 artemis.fpj
 

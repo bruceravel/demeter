@@ -478,7 +478,11 @@ sub fit {
       ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
       $p->set(name=>$lab);
       $p->rewrite_cv;
-      $command .= $p->_path_command(0);
+      my $this_command = $p->_path_command(0);
+      $this_command =~ s{(?<!sigma2_)(debye|eins)\(}{sigma2_$1\(}g if (Demeter->is_larch);
+      $this_command =~ s{sigma2_(debye|eins)\(}{$1\(}g if (Demeter->is_ifeffit);
+      $command .= $this_command;
+
       if (Demeter->is_ifeffit) {
 	push @indexstring, $p->Index;
       } elsif (Demeter->is_larch) {
@@ -1028,61 +1032,71 @@ my @correl_text = ();
 sub fetch_correlations {
   my ($self) = @_;
 
-  @correl_text = ();		     # initialize array buffer for accumulating correlations text
-  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
-	      $self->get_mode("screen"),
-	      $self->get_mode("plotscreen"),
-	      $self->get_mode("feedback"));
-  $self->set_mode(screen=>0, plotscreen=>0,
-		  feedback=>sub{push @correl_text, $_[0]}); # set feedback coderef
   my %correlations_of;
-  my $d = $self -> data -> [0];
-  #my $correl_lines;
-  #$self->set_mode(buffer=>\$correl_lines);
-  $self->dispense("fit", "correl");
-  $self->toggle_echo($save[0]);	# reset everything
-  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+  if (Demeter->is_ifeffit) {
+    @correl_text = ();		     # initialize array buffer for accumulating correlations text
+    my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+		$self->get_mode("screen"),
+		$self->get_mode("plotscreen"),
+		$self->get_mode("feedback"));
+    $self->set_mode(screen=>0, plotscreen=>0,
+		    feedback=>sub{push @correl_text, $_[0]}); # set feedback coderef
+    my $d = $self -> data -> [0];
+    #my $correl_lines;
+    #$self->set_mode(buffer=>\$correl_lines);
+    $self->dispense("fit", "correl");
+    $self->toggle_echo($save[0]);	# reset everything
+    $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 
-  my @gds = map {lc($_->name)} @{ $self->gds };
-  my $regex = Regexp::Assemble->new()->add(@gds)->re;
+    my @gds = map {lc($_->name)} @{ $self->gds };
+    my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
-  foreach my $line (@correl_text) { # parse the correlations text
-    if ($line =~ m{correl_
-		   ($regex)_   # first variable name followed by underscore
-		   ($regex)    # second variable name
-		   \s+=\s+     # space equals space
-		   ($NUMBER)   # a number
-		}xi) {
-      my ($x, $y, $correl) = ($1, $2, $3);
-      #print join(" ", $x, $y, $correl), $/;
-      $correlations_of{$x}{$y} = $correl;
-    };
-    if ($line =~ m{correl_
-		   (bkg\d\d_\d\d)_   # bkg parameter followed by an underscore
-		   ($regex)	       # variable name
-		   \s+=\s+	       # space equals space
-		   ($NUMBER)	       # a number
-		}xi) {
-      my ($x, $y, $correl) = ($1, $2, $3);
-      #print join(" ", $x, $y, $correl), $/;
-      $correlations_of{$x}{$y} = $correl;
-    };
-    if ($self->co->default("fit", "bkg_corr")) {
+    foreach my $line (@correl_text) { # parse the correlations text
       if ($line =~ m{correl_
-		     (bkg\d\d_\d\d)_ # bkg parameter followed by an underscore
-		     (bkg\d\d_\d\d)  # another bkg parameter
-		     \s+=\s+	       # space equals space
-		     ($NUMBER)       # a number
+		     ($regex)_   # first variable name followed by underscore
+		     ($regex)    # second variable name
+		     \s+=\s+     # space equals space
+		     ($NUMBER)   # a number
 		  }xi) {
 	my ($x, $y, $correl) = ($1, $2, $3);
 	#print join(" ", $x, $y, $correl), $/;
 	$correlations_of{$x}{$y} = $correl;
       };
+      if ($line =~ m{correl_
+		     (bkg\d\d_\d\d)_   # bkg parameter followed by an underscore
+		     ($regex)	       # variable name
+		     \s+=\s+	       # space equals space
+		     ($NUMBER)	       # a number
+		  }xi) {
+	my ($x, $y, $correl) = ($1, $2, $3);
+	#print join(" ", $x, $y, $correl), $/;
+	$correlations_of{$x}{$y} = $correl;
+      };
+      if ($self->co->default("fit", "bkg_corr")) {
+	if ($line =~ m{correl_
+		       (bkg\d\d_\d\d)_ # bkg parameter followed by an underscore
+		       (bkg\d\d_\d\d)  # another bkg parameter
+		       \s+=\s+	       # space equals space
+		       ($NUMBER)       # a number
+		    }xi) {
+	  my ($x, $y, $correl) = ($1, $2, $3);
+	  #print join(" ", $x, $y, $correl), $/;
+	  $correlations_of{$x}{$y} = $correl;
+	};
+      };
+    };
+
+  } elsif (Demeter->is_larch) {
+    my @params = $self->fetch_array(join('.', $self->group, 'params', 'covar_vars'));
+    foreach my $p1 (@params) {
+      my %correls = $self->fetch_array(join('.', $self->group, 'params', $p1, 'correl'));
+      foreach my $p2 (@params) {
+	next if $p1 eq $p2;
+	$correlations_of{$p1}{$p2} = $correls{$p2};
+      };
     };
   };
-
-#  use Data::Dumper;
-#  print Data::Dumper->Dump([\%correlations_of]);
+  ##print Demeter->Dump([\%correlations_of]);
 
   foreach my $k (keys %correlations_of) {
     $self->set_correlations($k, $correlations_of{$k});
@@ -1244,9 +1258,11 @@ sub grab {			# deserialize lite -- grab the yaml
       #$datae{$d} = $this;
       #$datae{$this->group} = $this;
       if ($this->datatype eq 'xmu') {
+	$this->dispense('fit', 'group');
 	$self->place_array($this->group.".energy", $r_x);
 	$self->place_array($this->group.".xmu",    $r_y);
       } elsif  ($this->datatype eq 'chi') {
+	$this->dispense('fit', 'group');
 	$self->place_array($this->group.".k",      $r_x);
 	$self->place_array($this->group.".chi",    $r_y);
       };
@@ -1503,7 +1519,7 @@ override 'deserialize' => sub {
       $self->place_array($this->group.".k",      $r_x);
       $self->place_array($this->group.".chi",    $r_y);
     };
-    $this -> set(update_data=>0, update_columns=>0);
+    $this -> set(update_data=>0, update_columns=>0, update_norm=>1);
     push @data, $this;
   };
 
@@ -1520,11 +1536,14 @@ override 'deserialize' => sub {
     push @gds, $this;
     my $command;
     if ($this->gds eq 'guess') {
-      $command = sprintf "guess %s = %f\n", $this->name, $this->bestfit;
+      #$command = sprintf "guess %s = %f\n", $this->name, $this->bestfit;
+      $command = $this->dispose('fit', 'gds')
     } elsif ($this->gds =~ m{\A(?:def|after)}) {
-      $command = sprintf "def %s = %s\n", $this->name, $this->mathexp;
+      #$command = sprintf "def %s = %s\n", $this->name, $this->mathexp;
+      $command = $this->dispose('fit', 'gds')
     } elsif ($this->gds eq 'set') {
-      $command = sprintf "set %s = %s\n", $this->name, $this->mathexp;
+      #$command = sprintf "set %s = %s\n", $this->name, $this->mathexp;
+      $command = $this->dispose('fit', 'gds')
     };
     ## restrain, skip, after, (merge, penalty) should not be disposed at this time
     if ($this->gds =~ m{(?:guess|def|set)}) {

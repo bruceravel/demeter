@@ -26,5 +26,7 @@
 : background function  = {$D->yesno("fit_do_bkg")}
 : phase correction     = {$D->fft_pc}
 : background removal   = {$bkg_removal}
+: epsilon_k            = {$S->epsk   || 0}
+: epsilon_r            = {$S->epsr   || 0}
 : R-factor by k-weight = 1 -> {sprintf "%.5f", $D->fit_rfactor1},  2 -> {sprintf "%.5f", $D->fit_rfactor2},  3 -> {sprintf "%.5f", $D->fit_rfactor3}
 <<nl>>
