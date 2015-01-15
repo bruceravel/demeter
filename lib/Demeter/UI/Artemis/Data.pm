@@ -1072,7 +1072,8 @@ sub OnMenuClick {
     ($id == $DATA_EPSK) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
-      my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e and $EPSILON(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
+      my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e, $EPSILON(R) = %.2e, suggested kmax = %.1f",
+			 $datapage->{data}->epsk, $datapage->{data}->epsr, $datapage->{data}->recommended_kmax);
       $datapage->status($text);
       last SWITCH;
     };

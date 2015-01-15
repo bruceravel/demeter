@@ -41,7 +41,8 @@ const our $FEFFNOTOK => qr{[^-a-zA-Z0-9_.]};
 const our $NULLFILE  => '@&^^null^^&@';
 const our $ENDOFLINE => $/;
 const our $CTOKEN    => '+';
-const our $STATS     => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
+const our $STATS     => "n_idp n_varys chi_square chi_reduced r_factor data_total";
+#const our $STATS_IFEFFIT => "epsilon_k epsilon_r";
 
 
 const our $EPSILON2 => 1e-2;

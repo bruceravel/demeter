@@ -60,8 +60,14 @@ sub fetch_scalar {
       $param = $gp.'.'.$param;
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{epsilon_([kr])}) {
-      $param = $gp.'.epsilon_'.$1;
+      #if ($self->fit_group) {
+      #	my $n = $self->fit_data-1;
+      #	$param = join('.', $self->fit_group, 'datasets['.$n.']', 'epsilon_'.$1);
+      #	return Larch::get_larch_array($param);
+      #} else {
+      $param = join('.', $self->group, 'epsilon_'.$1);
       return denull(Larch::get_larch_scalar($param));
+      #};
     } elsif ($param =~ m{r_factor}) {
       $param = $gp.'.params.rfactor';
       return denull(Larch::get_larch_scalar($param));

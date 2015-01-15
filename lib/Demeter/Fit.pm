@@ -450,7 +450,7 @@ sub fit {
   foreach my $data (@datasets) {
     next if not $data->fit_include;
     ++$count;
-    $data -> set(fitting=>1, fit_data=>$count);
+    $data -> set(fitting=>1, fit_data=>$count, fit_group=>$self->group);
 
     ## read the data
     $data -> _update('fft');
@@ -536,6 +536,8 @@ sub fit {
   ## prep data for plotting
   foreach my $data (@useddata) {
     $data->update_fft(1);
+    #$data->fitting(0);
+    #$data->fit_group(q{});
   };
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
@@ -968,14 +970,14 @@ sub fetch_statistics {
   if ($self->data_total == 0) {
     $self->data_total($#{ $self->data } + 1);
   };
-  if ($self->epsilon_k == 0) {
-    my $which = q{};
-    foreach my $d (@ {$self->data} ) {
-      ($which = $d) if ($d->fitting);
-    };
-    $self->epsilon_k($which->epsk);
-    $self->epsilon_r($which->epsr);
-  };
+  # if ($self->epsilon_k == 0) {
+  #   my $which = q{};
+  #   foreach my $d (@ {$self->data} ) {
+  #     ($which = $d) if ($d->fitting);
+  #   };
+  #   $self->epsilon_k($which->epsk);
+  #   $self->epsilon_r($which->epsr);
+  # };
 
   return 0;
 };
@@ -1266,7 +1268,7 @@ sub grab {			# deserialize lite -- grab the yaml
 	$self->place_array($this->group.".k",      $r_x);
 	$self->place_array($this->group.".chi",    $r_y);
       };
-      $this -> set(update_data=>0, update_columns=>0);
+      $this -> set(update_data=>0, update_columns=>0, fit_group=>q{});
       push @data, $this;
     };
   };
@@ -1784,6 +1786,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
+    $d->fit_group(q{});
     #unlink $file;   # why would I want to do this?
   };
 

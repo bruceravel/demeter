@@ -7,6 +7,7 @@ autobk(data.energy+0, data.xmu, group=data,
        kmin=1e-05, kmax=14.956, kweight=2, dk=1,
        win='hanning', nclamp=5, clamp_lo=0, clamp_hi=24)
 
+estimate_noise(data.k, data.chi)
 
 gds   = group()
 dsets = list()
@@ -129,6 +130,6 @@ dataset = feffit_dataset(data=data,
 
 dsets.append(dataset)
 
-#estimate_noise(data.k, data.chi, group=data)
+estimate_noise(data.k, data.chi)
 fit = feffit(gds, dsets)
-print feffit_report(fit)
+#print feffit_report(fit)

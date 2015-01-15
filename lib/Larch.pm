@@ -35,6 +35,7 @@ sub get_larch_array {
   my ($param) = @_;
   #Demeter->trace;
   #$rpcdata = $client -> get_data('_main.'.$param);
+
   $rpcdata = $client -> get_data($param);
 
   return () if (not defined($rpcdata->result));
