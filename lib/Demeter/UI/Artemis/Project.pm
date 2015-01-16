@@ -505,6 +505,7 @@ sub restore_fit {
       $grid -> AppendRows(1,1);
       $rframes->{GDS}->initialize_row( $grid->GetNumberRows - 1 );
     };
+    $g->gds('skip') if (Demeter->is_larch and ($g->gds eq 'restrain'));
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {

@@ -69,6 +69,7 @@ sub new {
   $this->{background} = Wx::CheckBox->new($this, -1, "Plot bkg");
   $gbs -> Add($this->{background}, Wx::GBPosition->new(0,1));
   Demeter->po->plot_bkg(0);
+  $this->{background}->Enable(0) if Demeter->is_larch;
 
   $this->{window} = Wx::CheckBox->new($this, -1, "Plot window");
   $gbs -> Add($this->{window}, Wx::GBPosition->new(1,0));

@@ -64,7 +64,9 @@ use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
 const my $PM => $PLUSMN2;	# see Project.pm line ~36
 const my $PMRE => quotemeta($PM) . '\s*.*';
 
+#                0     1   2   3      4    5        6     7       8
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
+$types    = [qw(guess def set lguess skip          after penalty merge)] if Demeter->is_larch;
 
 my %gridcolors = (
 		  guess	   => Wx::Colour->new(Demeter->co->default('gds','guess_color'   )),
@@ -144,16 +146,17 @@ sub new {
     $this->initialize_row($row);
   };
 
-  my $accelerator = Wx::AcceleratorTable->new(
-   					      [wxACCEL_ALT, 103, $GUESS],
-   					      [wxACCEL_ALT, 115, $SET],
-   					      [wxACCEL_ALT, 100, $DEF],
-   					      [wxACCEL_ALT, 107, $SKIP],
-   					      [wxACCEL_ALT,  97, $AFTER],
-   					      [wxACCEL_ALT, 108, $LGUESS],
-   					      [wxACCEL_ALT, 112, $PENALTY],
-   					      [wxACCEL_ALT, 114, $RESTRAIN],
-   					     );
+  my @accelerator_table = ([wxACCEL_ALT, 103, $GUESS],
+			   [wxACCEL_ALT, 115, $SET],
+			   [wxACCEL_ALT, 100, $DEF],
+			   [wxACCEL_ALT, 107, $SKIP],
+			   [wxACCEL_ALT,  97, $AFTER],
+			   [wxACCEL_ALT, 108, $LGUESS],
+			   [wxACCEL_ALT, 112, $PENALTY],);
+  push @accelerator_table, [wxACCEL_ALT, 114, $RESTRAIN] if not Demeter->is_larch;
+
+  my $accelerator = Wx::AcceleratorTable->new( @accelerator_table );
+
   $grid->SetAcceleratorTable( $accelerator );
 
   EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnSetType(@_)      });
@@ -655,6 +658,7 @@ sub PostGridMenu {
   my $ind = 100;
   foreach my $t (@$types) {
     next if ($t eq 'merge');
+    next if (Demeter->is_larch and ($t eq 'restrain'));
     $change->Append($ind++, $t);
   };
   my $explain = Wx::Menu->new(q{});
@@ -682,6 +686,7 @@ sub PostGridMenu {
   $menu->AppendSeparator;
   $menu->AppendSubMenu   ($explain, "Explain");
   $self->SelectRow($row, 1);
+  $menu->Enable(9,0) if Demeter->is_larch;
 
   if (($which =~ m{\A\s*\z}) or ($which eq 'current row')) {
     $menu->Enable($_,0) foreach (0, 8, 9, 10, 12, 13);
@@ -712,6 +717,7 @@ sub OnGridMenu {
     my $i = $which - 200;
     $parent->status($types->[$i] . ": " . $explain{$types->[$i]});
   } else {			# change type submenu
+    #++$which if (Demeter->is_larch and ($which >= 105));
     my $i = $which - 100;
     $parent->change($types->[$i]);
   };

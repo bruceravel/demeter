@@ -430,6 +430,7 @@ sub new {
   $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
   $this->mouseover("fit_bkg",    "Click here to co-refine a background spline during the fit.");
 
+  $this->{fit_bkg}->Enable(0) if Demeter->is_larch;
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
