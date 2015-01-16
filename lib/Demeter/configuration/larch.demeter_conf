@@ -1,0 +1,55 @@
+## -*- config -*-
+###########################################################################
+## This configuration file is for Demeter version 0.9.21.
+##
+##                     Demeter is copyright (c) 2007-2015 Bruce Ravel
+##                                   http://bruceravel.github.io/home
+##
+##             Larch is copyright (c) 2015 Matt Newville, Tom Trainor
+##                                https://github.com/xraypy/xraylarch
+##
+##	  The latest version of Demeter can always be found at
+##               http://bruceravel.github.io/demeter/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains gnuplot configuration group for the Larch backend
+
+
+######################################################################
+section=larch
+section_description
+  These variables control aspects of Demeter's interaction with Larch
+  or the larch server.
+
+variable=zero
+type=real
+default=1e-7
+description
+  In Larch, an initial guess of 0 can result in an unstability in some
+  EXAFS fitting situations.  The easiest solution is to have Demeter
+  translate initial EXAFS guess values of 0 to a small number.  The
+  default of 1e-7 is chosen because it is small compared to most
+  common EXAFS parameters.  For example, a typical sigma^2 value is of
+  the order of 1e-3 and expressed to 3 significant digits.

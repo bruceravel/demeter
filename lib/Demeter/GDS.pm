@@ -63,12 +63,14 @@ sub parameter_list {
 # skip after merge
 sub write_gds {
   my ($self) = @_;
+  my $small = Demeter->co->default('larch', 'zero');
+  $small ||= $EPSILON7;
   if ($self->mathexp =~ m{\A$NUMBER\z}) {
-    if (Demeter->is_larch and (abs($self->mathexp) < $EPSILON7)) {
+    if (Demeter->is_larch and (abs($self->mathexp) < $small)) {
       if ($self->mathexp < 0) {
-	$self->mathexp(-1*$EPSILON7);
+	$self->mathexp(-1*$small);
       } else {
-	$self->mathexp($EPSILON7);
+	$self->mathexp($small);
       };
     };
   };

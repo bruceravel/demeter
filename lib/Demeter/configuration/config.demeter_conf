@@ -102,6 +102,8 @@ include plot.demeter_conf          ## plotting parameters
 
 include gnuplot.demeter_conf       ## gnuplot-specific parameters
 
+include larch.demeter_conf         ## larch-specific parameters
+
 include ornaments.demeter_conf     ## plotting ornaments parameters (indicators markers)
 
 include pathfinder.demeter_conf    ## Feff pathfinder parameters

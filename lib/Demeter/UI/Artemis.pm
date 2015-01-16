@@ -168,9 +168,9 @@ sub OnInit {
   $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
   ##$frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
-  $app->{main}->{prefgroups} = [sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
-					file histogram bft fit interpolation bkg fspath lcf warnings gds
-					operations)];
+  $app->{main}->{prefgroups} = [sort qw(gnuplot larch indicator marker artemis feff happiness
+					pathfinder fft plot atoms file histogram bft fit
+					interpolation bkg fspath lcf warnings gds operations)];
 
 
   ## -------- Set up menubar

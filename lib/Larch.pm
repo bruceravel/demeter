@@ -3,20 +3,47 @@ package Larch;
 use strict;
 use warnings;
 use Cwd;
+use Time::HiRes qw(usleep);
+use File::Spec;
 
 #use JSON::Tiny;
 #my $json  = JSON::Tiny->new;
 
+use Demeter::Here;
+use YAML::Tiny;
+my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
+my $rhash;
+eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
+#print join("|", %$rhash), $/;
+
+$rhash->{server}  ||= 'localhost';
+$rhash->{port}    ||= 4966;
+$rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
+$rhash->{timeout} ||= 3;
+$rhash->{quiet}   ||= 0;
+
+my $command = $rhash->{quiet} ? "larch_server -q start" : "larch_server start";
+my $ok = system $command;
+
+
 use XMLRPC::Lite;
 our $client;
-$client = XMLRPC::Lite -> proxy("http://localhost:4966");
+$client = XMLRPC::Lite -> proxy($rhash->{proxy});
 our $rpcdata;
 
 use vars qw($larch_is_go);
 $larch_is_go = 1;
 
 eval {$client->larch(q{cd('} . cwd . q{')})};
-$larch_is_go = 0 if $@;
+my $count = 0;
+while ($count < $rhash->{timeout}*5) {
+  $larch_is_go = 0 if $@;
+  eval {$client->larch(q{cd('} . cwd . q{')})};
+  if (not $rhash->{quiet}) {print $@, $/};
+  $larch_is_go = 1, last if not $@;
+  ++$count;
+  usleep(200000);
+};
 
 sub dispose {
   my ($text) = @_;

@@ -114,7 +114,7 @@ sub OnInit {
   $app->{main}->{prefgroups} = [qw(absorption athena bft bkg clamp convolution dispersive
 				   edgestep fft file fit gnuplot indicator interpolation
 				   lcf marker merge operations pca peakfit plot rebin
-				   smooth whiteline xanes)];
+				   smooth whiteline xanes larch)];
 
 
   ## -------- Set up menubar

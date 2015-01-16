@@ -72,6 +72,9 @@ use Text::Template;
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 
+use Demeter::Here;
+use YAML::Tiny;
+
 =for LiteratureReference
   Then, spent as they were from all their toil,
   they set out food, the bounty of Ceres, drenched
@@ -565,22 +568,29 @@ sub set_mode {
     if ((any {$k eq $_} qw(template_process template_analysis template_fit))
 	and ($which{$k} eq 'larch')
 	and (not $Larch::larch_is_go)) {
-      print <<'DEATH'
+      my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
+      my $rhash;
+      eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
+
+      print "
 Demeter says:
+
     Uh oh!
-    You are using the Larch backend, but there is no Larch server running!
+    You are using the Larch backend, but the Larch server either could
+    not be started or could not be contacted.
 
-    Either reset the DEMETER_BACKEND variable to 'ifeffit':
+    Verify that the Larch configuration is correct:
+       server:  $rhash->{server}
+       port:    $rhash->{port}
+       timeout: $rhash->{timeout}
 
-         ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, ect)
-         ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, ect)
+    or use the ifeffit backend by setting the DEMETER_BACKEND
+    variable to 'ifeffit':
 
-    or start a Larch server:
+       ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, etc.)
+       ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, etc.)
 
-         ~> larch -r
-
-DEATH
-	;
+";
       exit 255;
     };
 

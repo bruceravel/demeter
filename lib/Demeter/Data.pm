@@ -568,6 +568,11 @@ sub chi_noise {
   $self->recommended_kmax( sprintf("%.3f", $self->fetch_scalar("kmax_suggest")) );
   return $self;
 };
+
+## how Larch and Ifeffit report epsilon is very different, so it is
+## hard to abstract this out in the manner of Get.pm.  Instead, I am
+## simply special-casing the problem of reporting epsilon in the fit
+## log file
 sub get_eps {
   my ($self) = @_;
   my ($epsk, $epsr) = (0,0);
