@@ -1,8 +1,0 @@
-{ # -*- ifm -*-
-  # template for preparing to plot the function of a fluorescence filter
-  #   {$C} returns the config object
-  $filterz    = Chemistry::Elements::get_Z($C->get("filter_filter"));
-  q{}
-}
-set f1f2.energy = range({$C->get("filter_emin")}, {$C->get("filter_emax")}, 10)
-f1f2(energy=f1f2.energy, z={$filterz}, width=-2)

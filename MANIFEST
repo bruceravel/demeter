@@ -21,6 +21,8 @@ Build.PL
 Changes.org
 CONTRIBUTING.md
 COPYRIGHT.STAR-Parser
+css/orgstyle.css
+css/orgtocstyle.css
 DemeterBuilder.pm
 doc/artug/bin/build.tt
 doc/artug/bin/tex.tt
@@ -96,6 +98,7 @@ doc/artug/images/fitproperties.png
 doc/artug/images/gds-menu.png
 doc/artug/images/gds-restraint.png
 doc/artug/images/gds.png
+doc/artug/images/gds_path.png
 doc/artug/images/heap.png
 doc/artug/images/helpmenu.png
 doc/artug/images/history-log.png
@@ -341,6 +344,7 @@ doc/aug/images/mee_k.png
 doc/aug/images/merge_stddev.png
 doc/aug/images/merge_variance.png
 doc/aug/images/mergemenu.png
+doc/aug/images/metadata.png
 doc/aug/images/newfeature.png
 doc/aug/images/other.png
 doc/aug/images/pallas_athene.jpg
@@ -382,6 +386,7 @@ doc/aug/images/plot_scaled.png
 doc/aug/images/plot_special.png
 doc/aug/images/plot_stack.png
 doc/aug/images/plot_stacked.png
+doc/aug/images/plot_xkcd.png
 doc/aug/images/prefs.png
 doc/aug/images/process.png
 doc/aug/images/rbkg.png
@@ -697,6 +702,7 @@ doc/latex/site/layout
 doc/latex/site/logo
 doc/latex/site/wrapper.artemis
 doc/latex/site/wrapper.athena
+doc/latex/songofartemis
 doc/latex/subsection
 doc/latex/todo
 doc/latex/triimage
@@ -834,6 +840,7 @@ examples/data/mn3o4.201
 examples/data/mn3o4.202
 examples/data/uhup.003
 examples/data/uhup.101
+examples/data/zip.pl
 examples/Fayalite.cif
 examples/fe.060
 examples/fe.inp
@@ -850,6 +857,7 @@ examples/notdata.5
 examples/PbFe12O19.inp
 examples/plot
 examples/recipes/BondValence/bv.pl
+examples/recipes/BondValence/MnO.prj
 examples/recipes/ComplexFit/0README
 examples/recipes/ComplexFit/dna2feff.pl
 examples/recipes/ComplexFit/feff6.tmpl
@@ -904,11 +912,15 @@ examples/recipes/EmpiricalStandard/es.pl
 examples/recipes/FeS2/FeS2.inp
 examples/recipes/FeS2/FeS2.prj
 examples/recipes/FeS2/fes2_rt01_mar02.xmu
+examples/recipes/FeS2/fit.lar
+examples/recipes/FeS2/fit.pl
 examples/recipes/FeS2/README.org
 examples/recipes/Filetypes/SSRLB/IN_540_001.003
 examples/recipes/Filetypes/SSRLB/ssrlb.pl
 examples/recipes/FuzzyOverSites/BaFe12O19.inp
+examples/recipes/FuzzyOverSites/fbo.prj
 examples/recipes/FuzzyOverSites/febaa.300
+examples/recipes/FuzzyOverSites/gds.txt
 examples/recipes/FuzzyOverSites/pfo.pl
 examples/recipes/FuzzyOverSites/Zirconolite/zirconolite.cif
 examples/recipes/FuzzyOverSites/Zirconolite/zirconolite.prj
@@ -942,6 +954,7 @@ examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
 examples/recipes/LCF/seq.pl
 examples/recipes/LogRatio/lrpd.pl
+examples/recipes/MEE/LaCoO3.prj
 examples/recipes/MEE/mee.pl
 examples/recipes/Megamerge/megamerge.pl
 examples/recipes/Methyltin/DMT.fpj
@@ -1042,6 +1055,7 @@ lib/Demeter/configuration/happiness.demeter_conf
 lib/Demeter/configuration/hephaestus.demeter_conf
 lib/Demeter/configuration/histogram.demeter_conf
 lib/Demeter/configuration/interpolation.demeter_conf
+lib/Demeter/configuration/larch.demeter_conf
 lib/Demeter/configuration/lcf.demeter_conf
 lib/Demeter/configuration/operations.demeter_conf
 lib/Demeter/configuration/ornaments.demeter_conf
@@ -1132,6 +1146,9 @@ lib/Demeter/Plot/SingleFile.pm
 lib/Demeter/Plot/Style.pm
 lib/Demeter/Plugins/10bmmultichannel.demeter_conf
 lib/Demeter/Plugins/10BMMultiChannel.pm
+lib/Demeter/Plugins/Beamlines/MX.pm
+lib/Demeter/Plugins/Beamlines/X11A.pm
+lib/Demeter/Plugins/Beamlines/XDAC.pm
 lib/Demeter/Plugins/BM23.pm
 lib/Demeter/Plugins/CMC.pm
 lib/Demeter/Plugins/DUBBLE.pm
@@ -1163,8 +1180,11 @@ lib/Demeter/share/Demeter_icon.ico
 lib/Demeter/share/Demeter_icon.png
 lib/Demeter/share/Demeter_installer.bmp
 lib/Demeter/share/Demeter_installer.png
+lib/Demeter/share/fonts/Humor-Sans-1.0.ttf
+lib/Demeter/share/fonts/Humor-SansOFL-1.0.license
 lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/ini/athena.styles.ini
+lib/Demeter/share/ini/larch_server.ini
 lib/Demeter/share/pgplot/grfont.dat
 lib/Demeter/share/pgplot/rgb.txt
 lib/Demeter/share/Readme.fit_serialization
@@ -1207,6 +1227,8 @@ lib/Demeter/share/standards/Fe-K-ALS-10.3.2.ini
 lib/Demeter/share/standards/standards.ini
 lib/Demeter/share/standards/templates/htmlindex.tmpl
 lib/Demeter/share/standards/templates/htmlpage.tmpl
+lib/Demeter/share/xdi/mx.10bm.ini
+lib/Demeter/share/xdi/mx.10id.ini
 lib/Demeter/share/xdi/slribl4.ini
 lib/Demeter/share/xdi/template.ini
 lib/Demeter/share/xdi/x10c.ini
@@ -1306,6 +1328,7 @@ lib/Demeter/templates/atoms/copyright.tmpl
 lib/Demeter/templates/atoms/feff6.tmpl
 lib/Demeter/templates/atoms/feff7.tmpl
 lib/Demeter/templates/atoms/feff8.tmpl
+lib/Demeter/templates/atoms/feff85test.tmpl
 lib/Demeter/templates/atoms/mcmaster.tmpl
 lib/Demeter/templates/atoms/prettyline.tmpl
 lib/Demeter/templates/atoms/spacegroup.tmpl
@@ -1344,6 +1367,7 @@ lib/Demeter/templates/fit/ifeffit/endfit.tmpl
 lib/Demeter/templates/fit/ifeffit/ff2chi.tmpl
 lib/Demeter/templates/fit/ifeffit/fit.tmpl
 lib/Demeter/templates/fit/ifeffit/gds.tmpl
+lib/Demeter/templates/fit/ifeffit/group.tmpl
 lib/Demeter/templates/fit/ifeffit/just_fit.tmpl
 lib/Demeter/templates/fit/ifeffit/next.tmpl
 lib/Demeter/templates/fit/ifeffit/path.tmpl
@@ -1375,6 +1399,23 @@ lib/Demeter/templates/fit/iff_columns/restraint.tmpl
 lib/Demeter/templates/fit/iff_columns/save_bkgsub.tmpl
 lib/Demeter/templates/fit/iff_columns/save_fit.tmpl
 lib/Demeter/templates/fit/iff_columns/sum.tmpl
+lib/Demeter/templates/fit/larch/correl.tmpl
+lib/Demeter/templates/fit/larch/endfit.tmpl
+lib/Demeter/templates/fit/larch/ff2chi.tmpl
+lib/Demeter/templates/fit/larch/fit.tmpl
+lib/Demeter/templates/fit/larch/gds.tmpl
+lib/Demeter/templates/fit/larch/group.tmpl
+lib/Demeter/templates/fit/larch/next.tmpl
+lib/Demeter/templates/fit/larch/path.tmpl
+lib/Demeter/templates/fit/larch/path_index.tmpl
+lib/Demeter/templates/fit/larch/prep_fit.tmpl
+lib/Demeter/templates/fit/larch/read_fit.tmpl
+lib/Demeter/templates/fit/larch/residual.tmpl
+lib/Demeter/templates/fit/larch/save_fit.tmpl
+lib/Demeter/templates/fit/larch/save_fit_kw.tmpl
+lib/Demeter/templates/fit/larch/save_fit_q.tmpl
+lib/Demeter/templates/fit/larch/save_fit_r.tmpl
+lib/Demeter/templates/fit/larch/show_path.tmpl
 lib/Demeter/templates/plot/demeter/copyright.tmpl
 lib/Demeter/templates/plot/demeter/newe.tmpl
 lib/Demeter/templates/plot/demeter/overe.tmpl
@@ -1426,8 +1467,6 @@ lib/Demeter/templates/plot/gnuplot/plot_file.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_info_depth.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_info_depth_e.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_stats.tmpl
-lib/Demeter/templates/plot/gnuplot/prep_f1f2.tmpl
-lib/Demeter/templates/plot/gnuplot/prep_filter.tmpl
 lib/Demeter/templates/plot/gnuplot/quad.tmpl
 lib/Demeter/templates/plot/gnuplot/restore.tmpl
 lib/Demeter/templates/plot/gnuplot/rkk.tmpl
@@ -1440,6 +1479,7 @@ lib/Demeter/templates/plot/gnuplot/stddevn.tmpl
 lib/Demeter/templates/plot/gnuplot/variancee.tmpl
 lib/Demeter/templates/plot/gnuplot/variancek.tmpl
 lib/Demeter/templates/plot/gnuplot/window.tmpl
+lib/Demeter/templates/plot/gnuplot/xkcd.tmpl
 lib/Demeter/templates/plot/pgplot/copyright.tmpl
 lib/Demeter/templates/plot/pgplot/f1.tmpl
 lib/Demeter/templates/plot/pgplot/f1f2.tmpl
@@ -1472,8 +1512,6 @@ lib/Demeter/templates/plot/pgplot/overxes.tmpl
 lib/Demeter/templates/plot/pgplot/plot_file.tmpl
 lib/Demeter/templates/plot/pgplot/plot_info_depth.tmpl
 lib/Demeter/templates/plot/pgplot/plot_stats.tmpl
-lib/Demeter/templates/plot/pgplot/prep_f1f2.tmpl
-lib/Demeter/templates/plot/pgplot/prep_filter.tmpl
 lib/Demeter/templates/plot/pgplot/run.tmpl
 lib/Demeter/templates/plot/pgplot/save_f1f2.tmpl
 lib/Demeter/templates/plot/pgplot/stddev.tmpl
@@ -1574,6 +1612,8 @@ lib/Demeter/templates/process/ifeffit/pixel_fit.tmpl
 lib/Demeter/templates/process/ifeffit/pixel_set.tmpl
 lib/Demeter/templates/process/ifeffit/pixel_setup.tmpl
 lib/Demeter/templates/process/ifeffit/post_autobk.tmpl
+lib/Demeter/templates/process/ifeffit/prep_f1f2.tmpl
+lib/Demeter/templates/process/ifeffit/prep_filter.tmpl
 lib/Demeter/templates/process/ifeffit/prep_kwindow.tmpl
 lib/Demeter/templates/process/ifeffit/prep_rwindow.tmpl
 lib/Demeter/templates/process/ifeffit/prep_vpath.tmpl
@@ -1677,6 +1717,8 @@ lib/Demeter/templates/process/larch/nderiv.tmpl
 lib/Demeter/templates/process/larch/noise.tmpl
 lib/Demeter/templates/process/larch/normalize.tmpl
 lib/Demeter/templates/process/larch/post_autobk.tmpl
+lib/Demeter/templates/process/larch/prep_f1f2.tmpl
+lib/Demeter/templates/process/larch/prep_filter.tmpl
 lib/Demeter/templates/process/larch/prep_kwindow.tmpl
 lib/Demeter/templates/process/larch/prep_rwindow.tmpl
 lib/Demeter/templates/process/larch/read.tmpl
@@ -1703,6 +1745,7 @@ lib/Demeter/templates/process/larch/save_many.tmpl
 lib/Demeter/templates/process/larch/save_many_header.tmpl
 lib/Demeter/templates/process/larch/save_norm.tmpl
 lib/Demeter/templates/process/larch/save_xmu.tmpl
+lib/Demeter/templates/process/larch/show.tmpl
 lib/Demeter/templates/process/larch/smooth.tmpl
 lib/Demeter/templates/process/larch/smoothed.tmpl
 lib/Demeter/templates/process/larch/trun_signal_after.tmpl
@@ -2394,11 +2437,16 @@ notes/Atoms/A2n_atoms.inp
 notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem
 notes/copyright.block
+notes/edge.pl
 notes/H16PW12O46.cif
 notes/how_to_tie
 notes/howto_build.org
 notes/sgolay.m
 notes/sgolayfilt.m
+notes/sym.pl
+notes/templates.analysis.list
+notes/templates.list
+notes/test_xdi.pl
 notes/tree.pl
 private-install
 README.pod
@@ -2499,6 +2547,7 @@ tools/config-mode.el
 tools/copyright.sh
 tools/cumulant_order.zip
 tools/demeter-skeletons.el
+tools/gnufix
 tools/ifeffit-mode.el
 tools/README
 tools/templates.process
@@ -2541,3 +2590,4 @@ win/start_menu/Ifeffit.ico
 win/start_menu/readme
 win/start_menu/xafs.org.ico
 win/start_menu/XAFS.org.url
+xdi_todo.org
