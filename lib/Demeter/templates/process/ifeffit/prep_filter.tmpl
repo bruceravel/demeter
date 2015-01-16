@@ -7,4 +7,3 @@
 set f1f2.energy = range({$C->get("filter_emin")}, {$C->get("filter_emax")}, 10)
 f1f2(energy=f1f2.energy, z={$filterz}, width=-2)
 write_data(file="{$C->get("filter_file")}", f1f2.energy, f1f2.f2)
-set top = ceil(f1f2.f2)

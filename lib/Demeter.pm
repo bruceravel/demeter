@@ -551,7 +551,7 @@ sub get_mode {
   my ($self, @which) = @_;
   my $mode = $self->mo;
   my @val;
-  foreach my $w (@which) {             ##     vvvvvvv    wow, that works!
+  foreach my $w (@which) {
     $mode->meta->has_method($w) ? push @val, $mode->$w
                                 : push @val, undef;
   };

@@ -334,7 +334,7 @@ sub filter_plot {
 		       filter_file     => Demeter->po->tempfile,
 		       filter_width    => Demeter->co->default(qw(hephaestus filter_width)),
 		      );
-  my $command = Demeter->template('plot', 'prep_filter');
+  my $command = Demeter->template('process', 'prep_filter');
   Demeter -> dispose($command);
 
   $command = Demeter->template('plot', 'filter');

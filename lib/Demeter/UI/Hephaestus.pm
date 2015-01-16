@@ -75,8 +75,11 @@ sub new {
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
+  Demeter->set_mode('plotscreen'=>1);
+
   my @list = ('hephaestus', 'plot');
   push @list, 'gnuplot' if (Demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
+  push @list, 'larch'   if (Demeter->is_larch);
   $self->{prefgroups} = \@list;
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );

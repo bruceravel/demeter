@@ -161,7 +161,7 @@ sub f1f2_get_data {
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  Demeter->dispense("plot", 'prep_f1f2');
+  Demeter->dispense('process', 'prep_f1f2');
   Demeter->chart("plot", $which);
 
   $self->{echo}->SetStatusText(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",

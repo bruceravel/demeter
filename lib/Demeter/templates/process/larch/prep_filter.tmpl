@@ -1,0 +1,15 @@
+{ # -*- ifm -*-
+  # template for preparing to plot the function of a fluorescence filter
+  #   {$C} returns the config object
+  $filterz = Chemistry::Elements::get_Z($C->get("filter_filter"));
+  q{}
+}
+try:
+    del f1f2
+except NameError:
+    pass
+#endtry
+f1f2 = group()
+f1f2.energy = linspace({$C->get("filter_emin")}, {$C->get("filter_emax")}, 100)
+(f1f2.fp, f1f2.fpp) = f1f2_cl({$filterz}, f1f2.energy)
+write_ascii('{$C->get("filter_file")}', f1f2.energy, f1f2.fpp)

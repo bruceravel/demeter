@@ -117,6 +117,10 @@ sub fetch_scalar {
       $param = 'dempcatt._p'.$1;
       return denull(Larch::get_larch_scalar($param));
 
+    } elsif ($param eq 'filter_top') {
+      $param = "f1f2.$param";
+      return denull(Larch::get_larch_scalar($param));
+
     } else {
       return denull(Larch::get_larch_scalar($param));
     };

@@ -1,0 +1,23 @@
+{ # -*- ifm -*-
+  # template for prepping plotting theoretical anomalous scattering
+  #   {$C} is the config object
+  #
+  # f1f2_emin  : beginning of plot range
+  # f1f2_emax  : end of plot range
+  # f1f2_egrid : spacing of plot grid
+  # f1f2_z     : element to be plotted
+  $z = Chemistry::Elements::get_Z($C->get("f1f2_z"));
+  $name = Chemistry::Elements::get_name($C->get("f1f2_z"));
+  $w = $C->get("f1f2_width") || 2;
+  $first = ($C->get("f1f2_newplot")) ? "newplot" : "plot";
+  q{}
+}
+try:
+    del f1f2
+except NameError:
+    pass
+#endtry
+f1f2 = group()
+f1f2.energy = linspace({$C->get("f1f2_emin")}, {$C->get("f1f2_emax")}, int(({$C->get("f1f2_emax")}-{$C->get("f1f2_emin")})/{$C->get("f1f2_egrid")}))
+(f1f2.fp, f1f2.fpp) = f1f2_cl({$z}, f1f2.energy, width={$w})
+write_ascii('{$C->get("f1f2_file")}', f1f2.energy, f1f2.fp, f1f2.fpp)

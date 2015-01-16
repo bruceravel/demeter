@@ -3,14 +3,15 @@ package Larch;
 use strict;
 use warnings;
 use Cwd;
-use Time::HiRes qw(usleep);
-use File::Spec;
-
-#use JSON::Tiny;
-#my $json  = JSON::Tiny->new;
-
 use Demeter::Here;
+use File::Spec;
+use Time::HiRes qw(usleep);
 use YAML::Tiny;
+
+
+######################################################################
+## ----- configure and start the Larch server
+######################################################################
 my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
 my $rhash;
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
@@ -26,6 +27,10 @@ my $command = $rhash->{quiet} ? "larch_server -q start" : "larch_server start";
 my $ok = system $command;
 
 
+######################################################################
+## ----- contact the Larch server, trying repeatedly until contact is
+##       established, eventually failing if contact cannot be made
+######################################################################
 use XMLRPC::Lite;
 our $client;
 $client = XMLRPC::Lite -> proxy($rhash->{proxy});
@@ -45,6 +50,9 @@ while ($count < $rhash->{timeout}*5) {
   usleep(200000);
 };
 
+######################################################################
+## ----- send a string to the server
+######################################################################
 sub dispose {
   my ($text) = @_;
   $rpcdata = $client -> larch($text);
@@ -57,7 +65,10 @@ sub dispose {
 #   print Data::Dumper->Dump([$rpcdata]), $/;
 # };
 
-use Data::Dumper;
+######################################################################
+## ----- put and get scalars and lists from the server
+######################################################################
+
 sub get_larch_array {
   my ($param) = @_;
   #Demeter->trace;
@@ -137,15 +148,34 @@ and sending command strings to Larch via an XML-RPC framework.
 
 =item C<dispose>
 
+Send a text string to the server for interpretation by Larch.
+
 =item C<get_larch_scalar>
+
+Fetch the value of a Larch scalar given a symbol.  This can be a
+number or a string.  Care is taken not return 0 rather than a null
+value.
 
 =item C<put_larch_scalar>
 
+Push a scalar to Larch given a symbol name.
+
 =item C<get_larch_array>
+
+Fetch the value of a Larch list given a symbol.  In fact, this can
+fetch any kind of collection, including a numpy array.
 
 =item C<put_larch_array>
 
+Push a list to Larch given a symbol name.
+
 =back
+
+=head1 CONFIGURATION
+
+See the file F<lib/Demeter/share/ini/larch_server.ini>.  The URL and
+port used by the server can be configured, as can the length of the
+timeout and the on-screen verbosity of the server.
 
 =head1 AUTHOR
 
@@ -153,7 +183,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
-Larch is the work of Matt Newville and Tom Trainor
+Larch is copyright (c) 2015, Matthew Newville and Tom Trainor
 
 =head1 SEE ALSO
 

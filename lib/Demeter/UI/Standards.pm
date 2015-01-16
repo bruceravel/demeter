@@ -353,7 +353,7 @@ sub filter_plot {
 	       filter_file     => $po->tempfile,
 	      );
   $po -> start_plot;
-  my $command = Demeter->template('plot', 'prep_filter');
+  my $command = Demeter->template('process', 'prep_filter');
   $po -> dispose($command);
 
   $command = Demeter->template('plot', 'filter');

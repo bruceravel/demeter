@@ -8,32 +8,30 @@
   #  filter_emin       lower bound of plot
   #  filter_emax       upper bound of plot
   #
-  $filterz    = Chemistry::Elements::get_Z($C->get("filter_filter"));
+  $filterz      = Chemistry::Elements::get_Z($C->get("filter_filter"));
   $filtersymbol = Chemistry::Elements::get_symbol($C->get("filter_filter"));
-  $filtername = Chemistry::Elements::get_name($C->get("filter_filter"));
-  $abssymbol  = Chemistry::Elements::get_symbol($C->get("filter_abs"));
-  $absname    = Chemistry::Elements::get_name($C->get("filter_abs"));
-  $absenergy  = Xray::Absorption->get_energy($C->get("filter_abs"),$C->get("filter_edge"));
+  $filtername   = Chemistry::Elements::get_name($C->get("filter_filter"));
+  $abssymbol    = Chemistry::Elements::get_symbol($C->get("filter_abs"));
+  $absname      = Chemistry::Elements::get_name($C->get("filter_abs"));
+  $absenergy    = Xray::Absorption->get_energy($C->get("filter_abs"),$C->get("filter_edge"));
 
-  $z          = $C->get("filter_abs");
+  $z            = $C->get("filter_abs");
 
-  $line1      = ($z < 57) ? "Ka1" : "Lb2";
-  $line2      = ($z < 57) ? "Ka2" : "La1";
-  $line3      = ($z < 57) ? q{}   : "La2";
+  $line1        = ($z < 57) ? "Ka1" : "Lb2";
+  $line2        = ($z < 57) ? "Ka2" : "La1";
+  $line3        = ($z < 57) ? q{}   : "La2";
 
-  $e1         = Xray::Absorption -> get_energy($z, $line1);
-  $e2         = Xray::Absorption -> get_energy($z, $line2);
-  $e3         = Xray::Absorption -> get_energy($z, $line3);
+  $e1           = Xray::Absorption -> get_energy($z, $line1);
+  $e2           = Xray::Absorption -> get_energy($z, $line2);
+  $e3           = Xray::Absorption -> get_energy($z, $line3);
 
-  $h1         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line1));
-  $h2         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line2));
-  $h3         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line3));
+  $h1           = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line1));
+  $h2           = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line2));
+  $h3           = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line3));
 
-  $line1key   = ($z < 57) ? "K{/Symbol a}{_1}" : "L{/Symbol b}{_1}";
-  $line2key   = ($z < 57) ? "K{/Symbol a}{_2}" : "L{/Symbol a}{_1}";
-  $line3key   = ($z < 57) ? q{}       : "L{/Symbol a}{_2}";
-
-  $top        = $S->fetch_scalar("top");
+  $line1key     = ($z < 57) ? "K{/Symbol a}{_1}" : "L{/Symbol b}{_1}";
+  $line2key     = ($z < 57) ? "K{/Symbol a}{_2}" : "L{/Symbol a}{_1}";
+  $line3key     = ($z < 57) ? q{}       : "L{/Symbol a}{_2}";
 
   q{}
 }
@@ -45,7 +43,9 @@ set ylabel '\{/*1.2 filter and lines (arb. units)\}'
 set xrange [ 0.98*{$C->get("filter_emin")} : 1.04*{$C->get("filter_emax")} ]
 set samples 1000
 
-set arrow from {$absenergy},0 to {$absenergy},{$top} nohead
+set key opaque
+
+set arrow from {$absenergy},graph 0 to {$absenergy},graph 1 nohead
 set label '&\{aa\}{$abssymbol} {$C->get("filter_edge")} edge' at {$absenergy},1 left
 
 plot '{$C->get("filter_file")}' with lines ls 1 title '{$filtersymbol} filter',\
