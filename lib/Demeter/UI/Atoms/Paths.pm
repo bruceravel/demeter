@@ -356,7 +356,7 @@ sub plot {
   while ($this != -1) {
     my $i    = $self->{paths}->GetItemData($this);
     my $feff = $self->{parent}->{Feff}->{feffobject};
-    my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
+    my $sp   = $feff->pathlist->[$i-1]; # the ScatteringPath associated with this selected item
     my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
 
     $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at "));

@@ -526,6 +526,22 @@ sub Touch {
 };
 
 
+sub xkcd {
+  my ($class, $onoff) = @_;
+  if ($onoff) {
+    Demeter->co->set_default('gnuplot', 'xkcd', 1);
+    ## this does not seem to work correctly:
+    #my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor-Sans" );
+    #if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor-Sans\b}) {
+    Demeter->co->set_default('gnuplot', 'font', 'Humor-Sans');
+    #};
+    #undef $fontobj;
+  } else {
+    Demeter->co->set_default('gnuplot', 'xkcd', 0);
+    Demeter->co->set_default('gnuplot', 'font', Demeter->co->was('gnuplot', 'font') || Demeter->co->demeter('gnuplot', 'font'));
+  };
+};
+
 sub stop_larch_server {
   my ($self) = @_;
   system "larch_server stop" if (Demeter->is_larch and Demeter->co->default('larch', 'stop_server'));

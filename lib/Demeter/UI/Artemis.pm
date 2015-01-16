@@ -978,8 +978,8 @@ sub OnMenuClick {
       return;
     };
     ($id == wxID_EXIT) and do {
-      Demeter->stop_larch_server;
       $self->Close;
+      Demeter->stop_larch_server;
       return;
     };
     ($id == wxID_OPEN) and do {
@@ -1098,19 +1098,13 @@ sub OnMenuClick {
       $frames{Plot}->image('pdf');
       last SWITCH;
     };
-    if ($frames{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
-      Demeter->co->set_default('gnuplot', 'xkcd', 1);
-      ## this does not seem to work correctly:
-      my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor-Sans" );
-      if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor-Sans\b}) {
-	Demeter->co->set_default('gnuplot', 'font', 'Humor-Sans');
+    ($id == $PLOT_XKCD) and do {
+      if ($frames{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
+	Demeter->xkcd(1);
+      } else {
+	Demeter->xkcd(0);
       };
-      undef $fontobj;
-    } else {
-      Demeter->co->set_default('gnuplot', 'xkcd', 0);
-      Demeter->co->set_default('gnuplot', 'font', Demeter->co->was('gnuplot', 'font') || Demeter->co->demeter('gnuplot', 'font'));
     };
-
 
     ($id == $TERM_1) and do {
       Demeter->po->terminal_number(1);

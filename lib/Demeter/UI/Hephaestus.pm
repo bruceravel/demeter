@@ -199,27 +199,40 @@ sub make_page {
 package Demeter::UI::Hephaestus;
 use File::Basename;
 
-use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
+use Wx qw( :everything );
+#use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT wxDEFAULT wxSLANT wxNORMAL);
 use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
+
+use Cwd;
 
 use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
 use Const::Fast;
-const my $CONFIG   => Wx::NewId();
-const my $DOCUMENT => Wx::NewId();
-const my $BUG      => Wx::NewId();
-const my $QUESTION => Wx::NewId();
-const my $ABS  => Wx::NewId();
-const my $FORM => Wx::NewId();
-const my $ION  => Wx::NewId();
-const my $DATA => Wx::NewId();
-const my $TRAN => Wx::NewId();
-const my $EDGE => Wx::NewId();
-const my $LINE => Wx::NewId();
-const my $STAN => Wx::NewId();
-const my $FPPP => Wx::NewId();
+const my $CONFIG    => Wx::NewId();
+const my $DOCUMENT  => Wx::NewId();
+const my $BUG	    => Wx::NewId();
+const my $QUESTION  => Wx::NewId();
+const my $ABS	    => Wx::NewId();
+const my $FORM	    => Wx::NewId();
+const my $ION	    => Wx::NewId();
+const my $DATA	    => Wx::NewId();
+const my $TRAN	    => Wx::NewId();
+const my $EDGE	    => Wx::NewId();
+const my $LINE	    => Wx::NewId();
+const my $STAN	    => Wx::NewId();
+const my $FPPP	    => Wx::NewId();
+const my $TERM_1    => Wx::NewId();
+const my $TERM_2    => Wx::NewId();
+const my $TERM_3    => Wx::NewId();
+const my $TERM_4    => Wx::NewId();
+const my $PLOT_PNG  => Wx::NewId();
+const my $PLOT_GIF  => Wx::NewId();
+const my $PLOT_JPG  => Wx::NewId();
+const my $PLOT_PDF  => Wx::NewId();
+const my $PLOT_XKCD => Wx::NewId();
+
 
 sub identify_self {
   my @caller = caller;
@@ -266,6 +279,22 @@ sub OnInit {
   $file->AppendSeparator;
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
+  my $plot;
+  if (Demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+    $plot = Wx::Menu->new;
+    $plot->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
+    $plot->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
+    $plot->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
+    $plot->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
+    #my $imagemenu = Wx::Menu->new;
+    #$imagemenu->Append($PLOT_PNG, "PNG", "Send the last plot to a PNG file");
+    #$imagemenu->Append($PLOT_PDF, "PDF", "Send the last plot to a PDF file");
+    #$plot->AppendSeparator;
+    #$plot->AppendSubMenu($imagemenu, "Save last plot as...", "Save the last plot as an image file");
+    $plot->AppendSeparator;
+    $plot->AppendCheckItem( $PLOT_XKCD, , 'Plot XKCD style', 'Plot more or less in the style of an XKCD cartoon');
+  };
+
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure\tCtrl+c" );
   $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
@@ -275,6 +304,7 @@ sub OnInit {
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
+  $bar->Append( $plot, "&Plot" ) if (Demeter->co->default('plot', 'plotwith') eq 'gnuplot');
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
 
@@ -294,6 +324,21 @@ sub OnInit {
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
+
+  EVT_MENU( $frame, $TERM_1,    sub{Demeter->po->terminal_number(1)} );
+  EVT_MENU( $frame, $TERM_2,    sub{Demeter->po->terminal_number(2)} );
+  EVT_MENU( $frame, $TERM_3,    sub{Demeter->po->terminal_number(3)} );
+  EVT_MENU( $frame, $TERM_4,    sub{Demeter->po->terminal_number(4)} );
+  #EVT_MENU( $frame, $PLOT_PNG,  sub{$_[0]->image('png')} );
+  EVT_MENU( $frame, $PLOT_XKCD,
+	    sub{
+	      if ($plot->IsChecked($PLOT_XKCD)) {
+		Demeter->xkcd(1);
+	      } else {
+		Demeter->xkcd(0);
+	      };
+	    });
+
   EVT_CLOSE( $frame,  \&on_close);
 
   ## -------- fix up frame contents
@@ -326,6 +371,8 @@ sub document {
     Wx::LaunchDefaultBrowser($url);
   };
 };
+
+
 
 sub on_about {
   my ($self) = @_;
