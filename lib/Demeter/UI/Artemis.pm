@@ -978,6 +978,7 @@ sub OnMenuClick {
       return;
     };
     ($id == wxID_EXIT) and do {
+      Demeter->stop_larch_server;
       $self->Close;
       return;
     };

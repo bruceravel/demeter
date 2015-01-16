@@ -42,9 +42,9 @@ use Carp;
 ##  code at runtime."
 BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
-  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+  if (lc($ENV{DEMETER_BACKEND}) eq 'larch') {
     eval "use Larch";
-  } else {
+  } else {			# ifeffit or any misspelling
     eval "use Ifeffit qw(ifeffit);"
   };
   if ($@) {

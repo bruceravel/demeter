@@ -113,8 +113,8 @@ sub OnInit {
   EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
   $app->{main}->{prefgroups} = [qw(absorption athena bft bkg clamp convolution dispersive
 				   edgestep fft file fit gnuplot indicator interpolation
-				   lcf marker merge operations pca peakfit plot rebin
-				   smooth whiteline xanes larch)];
+				   larch lcf marker merge operations pca peakfit plot rebin
+				   smooth whiteline xanes)];
 
 
   ## -------- Set up menubar
@@ -837,6 +837,7 @@ sub OnMenuClick {
     ($id == wxID_EXIT) and do {
       #my $ok = $app->on_close;
       #return if not $ok;
+      Demeter->stop_larch_server;
       $self->Close;
       return;
     };

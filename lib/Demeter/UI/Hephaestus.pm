@@ -290,7 +290,7 @@ sub OnInit {
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
-  EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
+  EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
 
   ## -------- fix up frame contents

@@ -53,3 +53,15 @@ description
   default of 1e-7 is chosen because it is small compared to most
   common EXAFS parameters.  For example, a typical sigma^2 value is of
   the order of 1e-3 and expressed to 3 significant digits.
+
+variable=stop_server
+type=boolean
+default=true
+onvalue=1
+offvalue=0
+description
+  When true, this tells Demeter to stop the Larch server when the
+  Demeter application exits.  This is probably a bad idea if you like
+  to run more than one instance of a Demeter application -- for
+  instance, if you like to have Athena and Artemis open at the same
+  time, or two instances of Athena.

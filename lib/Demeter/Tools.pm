@@ -526,6 +526,11 @@ sub Touch {
 };
 
 
+sub stop_larch_server {
+  my ($self) = @_;
+  system "larch_server stop" if (Demeter->is_larch and Demeter->co->default('larch', 'stop_server'));
+};
+
 ## this will fail if on linux or Mac and importing a shortcut from a
 ## network mounted folder
 sub follow_link {
