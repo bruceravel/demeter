@@ -1514,6 +1514,7 @@ override 'deserialize' => sub {
     $self->mo->datacount($savecv);
     $datae{$d} = $this;
     $datae{$this->group} = $this;
+    $this->dispense('process', 'group') if Demeter->is_larch;
     if ($this->datatype eq 'xmu') {
       $self->place_array($this->group.".energy", $r_x);
       $self->place_array($this->group.".xmu",    $r_y);

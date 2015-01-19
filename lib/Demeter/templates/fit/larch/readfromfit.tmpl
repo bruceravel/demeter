@@ -5,17 +5,11 @@
 }
 ##| reading fit file "{$filename}" as group {$D->group}
 t___emp = read_ascii('{$filename}')
-try:
-   {$D->group}
-except NameError:
-   {$D->group} = group(__name__='{$D->group}')
-#endtry
 {$D->group}_fit = group(__name__='{$D->group}_fit')
 {$D->group}_res = group(__name__='{$D->group}_res')
-{$D->group}.k       = t___emp.k
-{$D->group}.chi     = t___emp.chi
 {$D->group}_fit.k   = t___emp.k
-{$D->group}_fit.chi = t___emp.fit
+{$D->group}_fit.chi = t___emp.chi
 {$D->group}_res.k   = t___emp.k
-{$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi
-del t___emp
+{$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi 
+del t___emp 
+

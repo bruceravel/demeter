@@ -93,7 +93,18 @@ sub get_larch_array {
   } else {
     my $ret = eval $rpcdata->result;
     return () if not $ret;
-    return @$ret;
+    #Demeter->trace;
+    #print '>>>>>', ref($ret), $/;
+    if (ref($ret) eq 'ARRAY') {
+      return @$ret;
+    # } elsif ($ret =~ m{\(array\(}) {
+    #   $ret =~ s{\(array\(}{};
+    #   chop($ret); chop($ret); chop($ret);
+    #   $ret = eval($ret);
+    #   return @$ret;
+    } else {
+      return ();
+    }
   };
   #or not (defined($rpcdata->result->{value})));
 };

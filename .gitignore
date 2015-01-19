@@ -26,6 +26,7 @@ src/*.so
 src/*.o
 
 **/temp/*
+examples/recipes/*/feff/*
 
 athena.prj
 artemis.fpj

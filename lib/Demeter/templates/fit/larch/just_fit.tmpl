@@ -1,0 +1,12 @@
+{ # -*- ifm -*-
+  # import the fit column as data from a fit template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+##| reading fit file "{$filename}" as group {$D->group}
+
+t___emp = read_ascii('{$filename}')
+{$D->group} = group(__name__='{$D->group}')
+{$D->group}.k       = t___emp.k
+{$D->group}.chi     = t___emp.fit
+del t___emp 
