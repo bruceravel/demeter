@@ -86,10 +86,9 @@ sub get_larch_array {
     ## serialization, evals it into a hash, then returns it as an
     ## array.  sigh....
     my $hash = $rpcdata->result;
-    $hash =~ s{:}{,}g;
+    $hash =~ s{:}{=>}g;
     $hash = eval $hash;
-    my @ret = %$hash;
-    return @ret;
+    return @{$hash->{value}};
   } else {
     my $ret = eval $rpcdata->result;
     return () if not $ret;
@@ -128,6 +127,19 @@ sub get_larch_scalar {
   } elsif (ref($res) eq 'HASH') {
     $res = $res->{value};
     #print $res, $/;
+  } elsif ($rpcdata->result =~ m{\A\{}) {
+    ## the RPC client returns a stringification of a python
+    ## dictionary.  the following converts that to a hash
+    ## serialization, evals it into a hash, then returns it as an
+    ## array.  sigh....
+    my $hash = $rpcdata->result;
+    $hash =~ s{:}{=>}g;
+    $hash = eval $hash;
+    if (defined $hash->{value}) {
+      return $hash->{value};
+    } else {
+      return 0;
+    };
   } else {
     #print "------------- $param ", $res, $/;
     $res =~ s{(\A\"|\"\z)}{}g;
