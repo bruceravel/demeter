@@ -79,9 +79,13 @@ sub get_larch_array {
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {
     my $ret = $rpcdata->result->{value};
-    return @{eval $ret};
+    if (ref($ret) eq 'ARRAY') {
+      return @$ret;
+    } else {
+      return @{eval $ret};
+    };
   } elsif ($rpcdata->result =~ m{\A\{}) {
-    ## the RPC client returns a stringification of a python
+    ## if the RPC client returns a stringification of a python
     ## dictionary.  the following converts that to a hash
     ## serialization, evals it into a hash, then returns it as an
     ## array.  sigh....

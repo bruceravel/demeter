@@ -146,7 +146,6 @@ sub is_data {
       $onepoint = 1;
       Demeter->dispense('process', 'erase', {items=>$scalar});
     };
-    print '>>>>>>> array: ', "$gp.$l", $/;
     my @array = Demeter->fetch_array("$gp.$l");
     if (@array) {
       my $npts = $#array+1;
