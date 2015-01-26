@@ -25,6 +25,7 @@ use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::IO';
+with 'Demeter::Data::XDI';
 with 'Demeter::Path::Process';
 with 'Demeter::Path::Sanity';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');

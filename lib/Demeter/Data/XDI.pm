@@ -278,7 +278,7 @@ object with a Demeter::Data object.
 =item C<xdi_output_header>
 
 Organize all the various forms of metadata and comments into a
-sensible header for an XDI file written be either Ifeffit or Larch and
+sensible header for an XDI file written by either Ifeffit or Larch and
 with or without L<Xray::XDI>.
 
 =item C<xdi_make_clone>
