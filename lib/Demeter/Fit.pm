@@ -1602,6 +1602,10 @@ override 'deserialize' => sub {
     if (exists $pathlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
+      if (not $Demeter::XDI_exists) {
+	delete($hash{xdifile});
+	delete($hash{xdi});
+      };
       $this -> set(%hash);
       $this -> sp($this);
       ##print $this->group, "  ", $this->name, "  ", $this->parent->group, $/;
