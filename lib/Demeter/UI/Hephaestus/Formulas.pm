@@ -131,7 +131,7 @@ sub on_key_down {
   my ($self, $event, $parent) = @_;
   if ($event->GetKeyCode == 13) {
     #print join("|", $self, $event, $parent), $/;
-    get_formula_data($self, $event, $parent);
+    get_formula_data($parent, $event, $parent);
   } else {
     $event->Skip;
   };
