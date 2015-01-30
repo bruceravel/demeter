@@ -6,7 +6,7 @@
   q{}
 }
 ##| prepare {$S->name} ({$S->group}) as an LCF standard
-demlcfsh.{$S->group} = param({$S->bkg_eshift}, vary=False)
+demlcfsh.{$S->group} = {$S->bkg_eshift}
 
 ## set bounds on amplitude if constrained to be between 0 and 1
 __aparam = '{$S->group}'+'_a'
@@ -19,7 +19,7 @@ endif
 ## set per-data-set e0 shift appropriately (blocks in order are: over all / floated for this data set / fixed)
 __eparam = '{$S->group}'+'_e'
 if {$DS->TrueFalse($DS->one_e0)}:
-    setattr(demlcf, __eparam, param(expr='demlcf.{$DS->group}'))
+    setattr(demlcf, __eparam, param(expr='demlcf.{$DS->group}', vary=False))
 elif {$DS->TrueFalse($DS->is_e0_floated($S))}:
     setattr(demlcf, __eparam, param({$e0}, vary=True))
 else:

@@ -13,7 +13,9 @@
 ##| set up the LCF objective function
 demlcf.ninfo = {$S->ninfo}
 
-def lcf_fit(par, par_sh, lcf):
+show demlcf
+
+def lcf_fit(par, par_sh=None, lcf=None):
     for g in ({$string}):
         ## amplitude/e0 parameters, bkg_eshift for this standard
         __a  = getattr(par,    g+'_a')
@@ -50,6 +52,6 @@ def lcf_fit(par, par_sh, lcf):
 enddef
 
 ##| perform the LCF fit
-minimize(lcf_fit, demlcf, args=(demlcfsh, {$S->group}))
+minimize(lcf_fit, demlcf, kws=\{'par_sh': demlcfsh, 'lcf': {$S->group}\})
 _sys.paramGroup = None
 demlcf.rfactor = sum({$S->group}.resid[demlcfconst.i1:demlcfconst.i2]**2) / sum({$S->group}.func[demlcfconst.i1:demlcfconst.i2]**2)

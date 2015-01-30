@@ -8,16 +8,16 @@
   q{}
 }
 ##| prepare {$S->name} ({$S->group}) as an LCF standard
-demlcfsh.{$S->group} = param({$S->bkg_eshift}, vary=False)
+demlcfsh.{$S->group} = {$S->bkg_eshift}
 
 ## constrain this weight to be 1 - the sum of all other weights
 __aparam = '{$S->group}'+'_a'
-setattr(demlcf, __aparam, param(expr='1-({$sum})'))
+setattr(demlcf, __aparam, param(expr='1-({$sum})', vary=False))
 
 ## set per-data-set e0 shift appropriately (blocks in order are: over all / floated for this data set / fixed)
 __eparam = '{$S->group}'+'_e'
 if {$DS->TrueFalse($DS->one_e0)}:
-    setattr(demlcf, __eparam, param(expr='demlcf.{$DS->group}'))
+    setattr(demlcf, __eparam, param(expr='demlcf.{$DS->group}', vary=False))
 elif {$DS->TrueFalse($DS->is_e0_floated($S))}:
     setattr(demlcf, __eparam, param({$e0}, vary=True))
 else:

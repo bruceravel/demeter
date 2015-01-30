@@ -126,6 +126,11 @@ sub get_larch_scalar {
   $rpcdata = $client -> get_data($param);
   my $res = $rpcdata->result;
 
+  #if ($param =~ m{lcf}) {
+    #print $param, $/;
+    #print $res, $/;
+  #};
+
   if (not defined($res)) {
     return 0;
   } elsif (ref($res) eq 'HASH') {

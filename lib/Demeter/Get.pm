@@ -88,7 +88,7 @@ sub fetch_scalar {
       $param = $1.'.'.$2.'.stderr';
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{(aa__)_(esh|scale)\b}) {
-      $param = $1.'.'.$2;
+      $param = $1.'.'.$2.'.value';
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
@@ -96,10 +96,10 @@ sub fetch_scalar {
 
     ## log ratio/phase difference parameters
     } elsif ($param =~ m{\A(lr_)__(pd[024])}) {
-      $param = $1.'e.'.$2;
+      $param = $1.'e.'.$2.'.value';
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{\A(lr_)__(pd[13])}) {
-      $param = $1.'o.'.$2;
+      $param = $1.'o.'.$2.'.value';
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{delta_(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.stderr';
@@ -111,6 +111,10 @@ sub fetch_scalar {
     ## exafs fitting parameters
     } elsif ($param =~ m{delta_(.+)}) {
       $param = join('.', 'gds', $1, 'stderr');
+      return denull(Larch::get_larch_scalar($param));
+
+    } elsif ($param =~ m{\Ademlcf.+_(a|e|offset|slope)\z}) {
+      $param .= '.value';
       return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{_p(\d+)\z}) {
