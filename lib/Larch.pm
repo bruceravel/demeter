@@ -75,6 +75,7 @@ sub get_larch_array {
   #$rpcdata = $client -> get_data('_main.'.$param);
 
   $rpcdata = $client -> get_data($param);
+  #Demeter->pjoin($param, $rpcdata->result);
 
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {
@@ -88,11 +89,14 @@ sub get_larch_array {
     ## if the RPC client returns a stringification of a python
     ## dictionary.  the following converts that to a hash
     ## serialization, evals it into a hash, then returns it as an
-    ## array.  sigh....
+    ## hash.  sigh....
     my $hash = $rpcdata->result;
     $hash =~ s{:}{=>}g;
+    #print $hash, $/;
     $hash = eval $hash;
-    return @{$hash->{value}};
+    #print $hash, $/;
+    return %$hash;
+    #return @{$hash->{value}};
   } else {
     my $ret = eval $rpcdata->result;
     return () if not $ret;

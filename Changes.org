@@ -26,6 +26,7 @@ feature was added.  Also begin practice of acknowledging the
      Mathisen) /{pre3}/
    - Take care to handle xdifile Data attribute when Xray::XDI is not
      available  (thanks to Ian Godfrey) /{pre3}/
+   - Fixed faulty output file from log-ratio analysis /{pre6}/
 
 
 *** Artemis
@@ -64,6 +65,10 @@ feature was added.  Also begin practice of acknowledging the
      Krishnamoorthy)
    - XKCD-ish plots in A&A /{pre5}/
    - font picker control now available in Demeter::Wx::Config /{pre5}/
+
+*** Larch
+   - Much work on both Athena and Artemis to work properly with Larch,
+     particularly in light of recent changes to larch server
 
 *** Windows
    - Add Demeter version number to screen/log file messages /{pre3}/

@@ -117,6 +117,10 @@ sub fetch_scalar {
       $param .= '.value';
       return denull(Larch::get_larch_scalar($param));
 
+    } elsif ($param =~ m{\Adempeak\.\w+_\d\z}) {
+      $param .= '.value';
+      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{_p(\d+)\z}) {
       $param = 'dempcatt._p'.$1;
       return denull(Larch::get_larch_scalar($param));

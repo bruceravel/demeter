@@ -90,8 +90,9 @@ sub save {
   my $save_columns = {};
   my $text;
   my $hash = {1=>'wavenumber inverse Angstrom', 2=>'log ratio', 3=>'even fit', 4=>'phase difference', 5=>'odd fit'};
+  $text = $self->template('analysis', 'lr_results', {cumulants=>$self->cumulants,
+						     errorbars=>$self->errorbars});
   if ($self->data->xdi) {
-    $text = $self->template('analysis', 'lr_results');
     $save_columns  = $self->data->xdi->metadata->{Column};
     $self->data->xdi_set_columns($hash);
   };

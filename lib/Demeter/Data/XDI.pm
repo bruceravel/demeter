@@ -184,7 +184,7 @@ sub xdi_header_lines {
 
 sub xdi_output_header {
   my ($self, $datafit, $text, $columns) = @_;
-
+  $text ||= q{};
   $self->clear_ifeffit_titles('dem_data');
   my $apps   = join(" ", "XDI/1.0", $self->data->xdi_attribute('extra_version'), Demeter->mo->identity."/$Demeter::VERSION");
   my $report = q{};
