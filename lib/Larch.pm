@@ -130,9 +130,9 @@ sub get_larch_scalar {
   $rpcdata = $client -> get_data($param);
   my $res = $rpcdata->result;
 
-  #if ($param =~ m{lcf}) {
-    #print $param, $/;
-    #print $res, $/;
+  #if ($param =~ m{demlcf}) {
+  #  print $param, $/;
+  #  print $res, $/;
   #};
 
   if (not defined($res)) {

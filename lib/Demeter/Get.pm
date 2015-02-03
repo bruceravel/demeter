@@ -71,7 +71,7 @@ sub fetch_scalar {
     } elsif ($param =~ m{r_factor}) {
       $param = $gp.'.params.rfactor';
       return denull(Larch::get_larch_scalar($param));
-    } elsif ($param =~ m{(chi_reduced|chi_square)}) {
+    } elsif ($param =~ m{(?<!demlcf\.)(chi_reduced|chi_square)}) { # NOT the ones from an LCF fit!
       $param = $gp.'.params.'.$1;
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{\A(?:e0|edge_step|kmax_suggest)\z}) {

@@ -438,7 +438,8 @@ sub _statistics {
     $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
     $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
     $self->nvarys($self->fetch_scalar('n_varys'));
-  } elsif (Demeter->mo->template_analysis eq 'larch') {
+  } elsif (Demeter->is_larch) {
+    print "hi!\n";
     $self->rfactor(sprintf("%.7f", $self->fetch_scalar('demlcf.rfactor')));
     $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
     $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));

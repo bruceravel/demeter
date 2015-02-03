@@ -135,6 +135,8 @@ sub new {
   EVT_BUTTON( $self, $self->{save},  sub{my($self, $event) = @_; $self->apply($callback, 1)} );
   EVT_BUTTON( $self, $self->{reset_all},  sub{my($self, $event) = @_; $self->reset_all($main)} );
 
+  $self -> SetSizerAndFit($mainsizer);
+
   return $self;
 };
 

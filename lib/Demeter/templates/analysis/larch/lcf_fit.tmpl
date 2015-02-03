@@ -53,3 +53,4 @@ enddef
 minimize(lcf_fit, demlcf, kws=\{'par_sh': demlcfsh, 'lcf': {$S->group}\})
 _sys.paramGroup = None
 demlcf.rfactor = sum({$S->group}.resid[demlcfconst.i1:demlcfconst.i2]**2) / sum({$S->group}.func[demlcfconst.i1:demlcfconst.i2]**2)
+show demlcf
