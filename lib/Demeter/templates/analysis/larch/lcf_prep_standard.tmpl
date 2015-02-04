@@ -14,7 +14,7 @@ if {$DS->TrueFalse($DS->inclusive)}:
     setattr(demlcf, __aparam, param({$weight}, vary=True, min=0, max=1))
 else:
     setattr(demlcf, __aparam, param({$weight}, vary=True))
-endif
+#endif
 
 ## set per-data-set e0 shift appropriately (blocks in order are: over all / floated for this data set / fixed)
 __eparam = '{$S->group}'+'_e'
@@ -24,5 +24,5 @@ elif {$DS->TrueFalse($DS->is_e0_floated($S))}:
     setattr(demlcf, __eparam, param({$e0}, vary=True))
 else:
     setattr(demlcf, __eparam, param({$e0}, vary=False))
-endif
+#endif
 

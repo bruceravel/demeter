@@ -9,7 +9,7 @@ if hasattr({$D->group}, 'stddev'):
     {$S->group}.epsilon = {$D->group}.stddev
 else:
     {$S->group}.epsilon = ones(len({$D->group}.energy))
-endif
+#endif
 
 ## add noise to the data?
 if {$S->TrueFalse($S->noise)}: {$S->group}.func = {$S->group}.func + random.normal(size=len({$S->group}.x), scale={$S->noise})

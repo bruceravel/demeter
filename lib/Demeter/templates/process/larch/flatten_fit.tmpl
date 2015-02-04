@@ -40,6 +40,6 @@ _sys.paramGroup = None
 {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}
 if hasattr({$D->group}, 'bkg'):
    {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.pre_edge+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step}
-endif
+#endif
 
 del fla___t

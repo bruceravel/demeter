@@ -5,10 +5,10 @@
 if hasattr(re___bin, 'i0'):
    {$D->group}.i0 = interp(re___bin.energy, re___bin.i0, re___bin.eee, fill_value=0.0)
    {$D->group}.i0 = {$D->group}.i0[1:-1]
-endif
+#endif
 if hasattr(re___bin, 'signal'):
    {$D->group}.signal = interp(re___bin.energy, re___bin.signal, re___bin.eee, fill_value=0.0)
    {$D->group}.signal = {$D->group}.signal[1:-1]
-endif
+#endif
 
 del re___bin

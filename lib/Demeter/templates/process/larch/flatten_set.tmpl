@@ -23,12 +23,12 @@ if {$D->group}.nnorm >= 2:
    flat_c2 = {$D->group}.norm_c2
 else:
    flat_c2 = 0
-endif
+#endif
 if {$D->group}.nnorm == 3:
    flat_c3 = {$D->group}.norm_c3
 else:
    flat_c3 = 0
-endif
+#endif
 {$D->group}.line = (flat_c0 + flat_c1*({$D->group}.energy+{$D->bkg_eshift}) + flat_c2*({$D->group}.energy+{$D->bkg_eshift})**2)
 {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step}
 {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.pre_edge+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step}

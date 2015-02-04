@@ -37,9 +37,9 @@ def alignment(par, da=None, st=None):
        resid = savitzky_golay(deriv(st.y)/deriv(st.x), window_size={$s}, order={$o}) - par.scale*savitzky_golay((deriv(xmui)/deriv(st.x)), window_size={$s}, order={$o})
     else:
        resid = deriv(st.y)/deriv(st.x) - par.scale*(deriv(xmui)/deriv(st.x))
-    endif
+    #endif
     return resid[da.i1:da.i2]
-enddef
+#enddef
 
 minimize(alignment, aa__, kws=\{'da': aa__data,  'st':aa__stan\})
 _sys.paramGroup = None

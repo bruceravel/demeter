@@ -44,13 +44,13 @@ def peakfit(par, peak):
            __new = a0 * students_t(peak.energy, a1, a2)
         else:
            __new = zeros(len(peak.energy))
-        endif
+        #endif
         setattr(peak, g, __new)
-    endfor
+    #endfor
     peak.func = {$mix}
     peak.resid = (peak.peak - peak.func) / peak.epsilon
     return peak.resid
-enddef
+#enddef
 
 ##| sum the lineshapes or perform the peak fit
 if {$S->TrueFalse($nofit)}:
@@ -58,5 +58,5 @@ if {$S->TrueFalse($nofit)}:
 else:
     minimize(peakfit, dempeak, args=({$S->group},))
     _sys.paramGroup = None
-endif
+#endif
 dempeak.rfactor = sum({$S->group}.resid**2) / sum({$S->group}.func**2)

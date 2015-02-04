@@ -20,14 +20,14 @@ def lr_even_fit(par, stan, data):
     even  = par.pd0 - 2*par.pd2*stan.x**2 + (2/3)*par.pd4*stan.x**4
     resev = ratio - even
     return resev
-enddef
+#enddef
 
 def lr_odd_fit(par, stan, data):
     diff  = data.z - stan.z
     odd   = 2*par.pd1*stan.x - (4/3)*par.pd3*stan.x**3 + {$S->twopi}*2*pi
     resod = diff - odd
     return resod
-enddef
+#enddef
 
 minimize(lr_even_fit, lr_e, args=(lr__stan, lr__data))
 _sys.paramGroup = None

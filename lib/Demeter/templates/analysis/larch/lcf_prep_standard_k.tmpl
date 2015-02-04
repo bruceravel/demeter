@@ -14,7 +14,7 @@ if {$DS->TrueFalse($DS->inclusive)}:
     setattr(demlcf, __aparam, param({$weight}, vary=True, min=0, max=1))
 else:
     setattr(demlcf, __aparam, param({$weight}, vary=True))
-endif
+#endif
 
 ## e0 shift must be 0 and must not vary for an LCF in k
 __eparam = '{$S->group}'+'_e'

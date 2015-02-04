@@ -14,7 +14,7 @@ if '{$D->i0_string}' == '1':
 else:
    {$D->group}.i0 = {$D->i0_string}
     __i0_scale     = __xmu_max / max({$D->group}.i0)
-endif
+#endif
 
 {$D->group}.signal = {$D->signal_string}
 __signal_scale = __xmu_max / max({$D->group}.signal)

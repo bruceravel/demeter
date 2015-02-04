@@ -14,7 +14,7 @@
 {$D->group}_res.chik = {$D->group}.k^{$kweight}*{$D->group}_res.chi
 if {Demeter->TrueFalse($D->fit_do_bkg)}:
    {$D->group}_bkg.chik = {$D->group}.k^{$kweight}*{$D->group}_bkg.chi
-endif
+#endif
 write_ascii('{$filename}',
             {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.kwin,
             label="{$label}", header={$S->group}.myheader)

@@ -28,17 +28,17 @@ for g in ({$string}):
         __data = getattr(_main.get_group(g), '{$S->suffix}')
         ## this standard, weighted, interpolated onto data grid
         __new  = __a * interp(__ener+__e+__sh, __data, __grid, fill_value=0.0)
-    endif
+    #endif
     __part = array(__new)
     setattr({$S->group}, g, __part)
-endfor
+#endfor
 
 if '{$S->space}' == 'chi':
    {$S->group}.line = zeros(len({$S->group}.x))
 else:
    {$S->group}.line = demlcf._slope * {$S->group}.x + demlcf._offset
    {$S->group}.line[:demlcfconst.i0] = 0
-endif
+#endif
 
 {$S->group}.lcf = {$mix} + {$S->group}.line
 {$S->group}.resid = {$S->group}.lcf - {$S->group}.func

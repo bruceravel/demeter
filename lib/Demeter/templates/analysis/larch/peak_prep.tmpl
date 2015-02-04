@@ -11,4 +11,4 @@ if hasattr({$D->group}, 'stddev'):
     {$S->group}.epsilon = {$D->group}.stddev[{$i1}:{$i2}]
 else:
     {$S->group}.epsilon = ones(len({$S->group}.energy))
-endif
+#endif
