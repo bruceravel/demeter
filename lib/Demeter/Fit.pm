@@ -1543,13 +1543,13 @@ override 'deserialize' => sub {
     my $command;
     if ($this->gds eq 'guess') {
       #$command = sprintf "guess %s = %f\n", $this->name, $this->bestfit;
-      $command = $this->dispose('fit', 'gds')
+      $command = $this->template('fit', 'gds')
     } elsif ($this->gds =~ m{\A(?:def|after)}) {
       #$command = sprintf "def %s = %s\n", $this->name, $this->mathexp;
-      $command = $this->dispose('fit', 'gds')
+      $command = $this->template('fit', 'gds')
     } elsif ($this->gds eq 'set') {
       #$command = sprintf "set %s = %s\n", $this->name, $this->mathexp;
-      $command = $this->dispose('fit', 'gds')
+      $command = $this->template('fit', 'gds')
     };
     ## restrain, skip, after, (merge, penalty) should not be disposed at this time
     if ($this->gds =~ m{(?:guess|def|set)}) {
