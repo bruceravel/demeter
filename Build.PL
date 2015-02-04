@@ -62,6 +62,7 @@ my $build = DemeterBuilder
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0', # what is this used for?
+				'JSON'                      => '0',
 				'List::MoreUtils'	    => '0',
 				'Math::Combinatorics'	    => '0',
 				'Math::Derivative'	    => '0',

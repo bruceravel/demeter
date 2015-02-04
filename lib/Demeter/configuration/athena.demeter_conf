@@ -280,3 +280,17 @@ description
   be lost when saving compatible project files.  This parameter is
   used to set the check box in Athena's File menu at startup.
   Compatibility can be toggled non-permanently in the File menu.
+
+variable=project_format
+type=list
+options=athena json
+default=athena
+description
+  This determines the format of the Athena project file.  The default,
+  athena, is the original format.  This is a collection of simple
+  serializations of perl scalars and arrays along with some textual
+  tokens used to delimit data groups.  The other option saves the same
+  information, but in JSON format.  The JSON format is not backwards
+  compatible with older versions of Athena, but may be more useful for
+  interoperability with other software.  Athena will transparently
+  import either format.

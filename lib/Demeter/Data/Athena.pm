@@ -22,18 +22,31 @@ use Moose::Role;
 use Carp;
 use Compress::Zlib;
 use Data::Dumper;
+use JSON;
 
 sub write_athena {
   my ($self, $filename, @list) = @_;
   croak("You must supply a filename to the write_athena method") if ( (not defined($filename)) or
 								      (ref($filename) =~ m{Data}) );
   my $gzout = gzopen($filename, 'wb9');
-  $gzout->gzwrite("# Athena project file -- Demeter version " . $self->version . "\n" .
-		  "# This file created at " . $self->now . "\n" .
-		  "# Using " . $self->environment . "\n\n");
 
   ##$gzout->gzwrite('$filename = ' . $filename . ";\n\n");
-  $gzout->gzwrite($self->_write_record);
+
+  my @order = ();
+  if (Demeter->co->default('athena', 'project_format') eq 'json') {
+    $gzout->gzwrite("{\"_____emacs_mode\": \"-*- mode: json; truncate-lines: t -*-\",\n");
+    $gzout->gzwrite("\"_____header1\": " . "\"# Athena project file -- Demeter version " . $self->version . "\",\n");
+    $gzout->gzwrite("\"_____header2\": " . "\"# This file created at " . $self->now . "\",\n");
+    $gzout->gzwrite("\"_____header3\": " . "\"# Using " . $self->environment . "\",\n\n");
+    $gzout->gzwrite($self->_write_record_json);
+    push @order, $self->group;
+  } else {
+    $gzout->gzwrite("# Athena project file -- Demeter version " . $self->version . "\n" .
+		    "# This file created at " . $self->now . "\n" .
+		    "# Using " . $self->environment . "\n\n");
+    $gzout->gzwrite($self->_write_record_athena);
+  };
+
   my $journal = q{};
   foreach my $d (@list) {
     next if ($d eq $self);
@@ -41,31 +54,42 @@ sub write_athena {
       $journal ||= $d;
       next;
     };
-    $gzout->gzwrite($d->_write_record);
+    if (Demeter->co->default('athena', 'project_format') eq 'json') {
+      $gzout->gzwrite($d->_write_record_json);
+      push @order, $d->group;
+    } else {
+      $gzout->gzwrite($d->_write_record_athena);
+    };
   };
   if ($journal) {
     my @journal = split(/\n/, $journal->text);
-    local $Data::Dumper::Indent = 0;
-    $gzout->gzwrite(Data::Dumper->Dump([\@journal], [qw/*journal/]));
+    if (Demeter->co->default('athena', 'project_format') eq 'json') {
+      $gzout->gzwrite("\n\"_____journal\": " . encode_json(\@journal) . ",\n");
+    } else {
+      local $Data::Dumper::Indent = 0;
+      $gzout->gzwrite(Data::Dumper->Dump([\@journal], [qw/*journal/]));
+    };
   };
-  $gzout->gzwrite('
-
-1;
-
+  if (Demeter->co->default('athena', 'project_format') eq 'json') {
+    $gzout->gzwrite("\n\"_____order\": " . encode_json(\@order) . "\n");
+    $gzout->gzwrite("}\n\n");
+  } else {
+    $gzout->gzwrite("\n\n1;\n\n");
+    $gzout->gzwrite('
 # Local Variables:
 # truncate-lines: t
 # End:
-');
+'
+		   );
+  };
   $gzout->gzclose;
   return $self;
 };
 
-sub _write_record {
+sub _write_record_athena {
   my ($self) = @_;
   croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
   #print $self->group, " ", $self->name, $/;
-
-  my $compatibility = Demeter->co->get('athena_compatibility');
 
   local $Data::Dumper::Indent = 0;
   my ($string, $arraystring) = (q{}, q{});
@@ -101,6 +125,76 @@ sub _write_record {
   };
   ## xmudat?? xanes?? detector??
 
+
+  @array   = $self->_clean_up_args;
+
+  $string  = '$old_group = \'' . $self->group . "';\n";
+  $string .= Data::Dumper->Dump([\@array], [qw/*args/]) . "\n";
+  $string .= $arraystring;
+  if ($self->xdi) {
+    my $xdistring = $self->xdi->serialize;
+    $xdistring =~ s{VAR1}{xdi};
+    $xdistring =~ s{[\n\r]+}{\\n}g;	# stringify newlines in comments (see D::D::Prj#413)
+    $string .=  $xdistring . "\n";
+  };
+  $string .= "[record]   # create object and set arrays in ifeffit\n\n";
+  return $string;
+};
+
+
+sub _write_record_json {
+  my ($self) = @_;
+  croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
+  #print $self->group, " ", $self->name, $/;
+
+  my ($string, $arraystring) = (q{}, q{});
+
+  $self->_update('normalize');
+  my @array = ();
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
+    #$self -> _update("background");
+    @array        = $self -> get_array("energy");
+    $arraystring .= '           "x": ' . encode_json(\@array) . ",\n";
+    @array        = $self -> get_array("xmu");
+    $arraystring .= '           "y": ' . encode_json(\@array) . ",\n";
+    if (($self->i0_string) and ($self->i0_string ne '1')) {
+      @array        = $self -> get_array("i0");
+      $arraystring .= '           "i0": ' . encode_json(\@array) . ",\n";
+    };
+    if ($self->get("signal_string")) {
+      @array        = $self -> get_array("signal");
+      $arraystring .= '           "signal": ' . encode_json(\@array) . ",\n";
+    };
+    if ($self->get_array("stddev")) {
+      @array        = $self -> get_array("stddev");
+      $arraystring .= '           "stddev": ' . encode_json(\@array) . ",\n";
+    };
+    ## merge array?
+  } elsif ($self->datatype eq "chi") {
+    $self->read_data if ($self->update_data);
+    @array        = $self -> get_array("k");
+    $arraystring .= '           "x": ' . encode_json(\@array) . ",\n";
+    @array        = $self -> get_array("chi");
+    $arraystring .= '           "y": ' . encode_json(\@array) . ",\n";
+    ## merge array?
+  };
+  chop $arraystring;		# remove trailing comma
+  chop $arraystring;		# (and newline, which must be replaced)
+
+  my %args = $self->_clean_up_args;
+
+  $string  = '"' . $self->group . "\": {\n";
+  $string .= '           "args": ' . encode_json(\%args) . ",\n";
+  $string .= $arraystring . "\n";
+  $string .= "},\n";
+
+  return $string;
+};
+
+sub _clean_up_args {
+  my ($self) = @_;
+
+  my $compatibility = Demeter->co->get('athena_compatibility');
   my %hash = $self -> all;
 
   # -------- clean up non-athena attributes --------------------
@@ -137,20 +231,9 @@ sub _write_record {
   };
   # ------------------------------------------------------------
 
-  @array   = %hash;
-
-  $string  = '$old_group = \'' . $self->group . "';\n";
-  $string .= Data::Dumper->Dump([\@array], [qw/*args/]) . "\n";
-  $string .= $arraystring;
-  if ($self->xdi) {
-    my $xdistring = $self->xdi->serialize;
-    $xdistring =~ s{VAR1}{xdi};
-    $xdistring =~ s{[\n\r]+}{\\n}g;	# stringify newlines in comments (see D::D::Prj#413)
-    $string .=  $xdistring . "\n";
-  };
-  $string .= "[record]   # create object and set arrays in ifeffit\n\n";
-  return $string;
+  return %hash;
 };
+
 
 1;
 

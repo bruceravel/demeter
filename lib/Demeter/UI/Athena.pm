@@ -349,6 +349,8 @@ const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
 const my $SAVE_COMPAT		=> Wx::NewId();
+const my $SAVE_ORIG		=> Wx::NewId();
+const my $SAVE_JSON		=> Wx::NewId();
 
 const my $EACH_MUE		=> Wx::NewId();
 const my $EACH_NORM		=> Wx::NewId();
@@ -490,7 +492,15 @@ const my $QUESTION		=> Wx::NewId();
 sub menubar {
   my ($app) = @_;
   my $bar        = Wx::MenuBar->new;
+
   $app->{main}->{mrumenu} = Wx::Menu->new;
+
+  $app->{main}->{formatmenu} = Wx::Menu->new;
+  $app->{main}->{formatmenu} -> AppendRadioItem($SAVE_ORIG, "Original format", "Save Athena project files in the original, backwards compatible format");
+  $app->{main}->{formatmenu} -> AppendRadioItem($SAVE_JSON, "JSON format", "Save Athena project files in the JSON format");
+  $app->{main}->{formatmenu} -> Check($SAVE_ORIG, 1) if Demeter->co->default('athena', 'project_format') eq 'athena';
+  $app->{main}->{formatmenu} -> Check($SAVE_JSON, 1) if Demeter->co->default('athena', 'project_format') eq 'json';
+
   my $filemenu   = Wx::Menu->new;
   $app->{main}->{filemenu} = $filemenu;
   $filemenu->Append(wxID_OPEN,  "Import data\tCtrl+o", "Import data from a data or project file" );
@@ -501,6 +511,7 @@ sub menubar {
   $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
   $filemenu->AppendCheckItem($SAVE_COMPAT, "Backwards compatible project files", "Save project files so that they can be imported by Athena 0.9.17 and earlier (information WILL be lost!)");
   $filemenu->Check($SAVE_COMPAT, Demeter->co->default('athena', 'compatibility'));
+  $filemenu->AppendSubMenu($app->{main}->{formatmenu}, "Project format", "Specify the format of the Athena project file" );
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -856,6 +867,16 @@ sub OnMenuClick {
     };
     ($id == $SAVE_MARKED) and do {
       $app -> Export('marked');
+      last SWITCH;
+    };
+    ($id == $SAVE_ORIG) and do {
+      Demeter->co->set_default('athena', 'project_format', 'athena');
+      $app->{main}->status("Saving Athena projects to the original, backwards-compatible format");
+      last SWITCH;
+    };
+    ($id == $SAVE_JSON) and do {
+      Demeter->co->set_default('athena', 'project_format', 'json');
+      $app->{main}->status("Saving Athena projects to the JSON format");
       last SWITCH;
     };
 
