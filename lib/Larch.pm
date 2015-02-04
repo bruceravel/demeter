@@ -75,13 +75,21 @@ sub get_larch_array {
   #$rpcdata = $client -> get_data('_main.'.$param);
 
   $rpcdata = $client -> get_data($param);
-  #Demeter->pjoin($param, $rpcdata->result);
 
+  ## this is a mess and mixes cases relevant to the time before and after
+  ## https://github.com/xraypy/xraylarch/issues/99
   return () if (not defined($rpcdata->result));
   if (ref($rpcdata->result) eq 'HASH') {
     my $ret = $rpcdata->result->{value};
-    if (ref($ret) eq 'ARRAY') {
+    if ($param =~ m{correl}) {
+      my %hash = %{$rpcdata->result};
+      delete $hash{__class__};
+      my @ret = %hash;
+      return @ret;
+    } elsif (ref($ret) eq 'ARRAY') {
       return @$ret;
+    } elsif (not $ret) {
+      return ();
     } else {
       return @{eval $ret};
     };

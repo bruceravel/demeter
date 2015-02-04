@@ -799,7 +799,7 @@ sub evaluate {
   ## get correlations
   $self->fetch_correlations;
 
-  ## get correlations
+  ## get path parameters
   $self->fetch_pathresults;
 
   ## set properties
@@ -1129,10 +1129,13 @@ sub correl {
 sub all_correl {
   my ($self) = @_;
   my %all = ();
+  my %seen = ();
   foreach my $x ($self->keys_in_correlations) {
     foreach my $y (keys %{ $self->get_correlations($x) } ) {
       my $key = join("|", $x, $y);
-      $all{$key} = $self->get_correlations($x)->{$y};
+      next if $seen{join("|", $y, $x)};
+      $all{$key} = $self->get_correlations($x)->{$y} || 0;
+      ++$seen{$key};
     };
   };
   return %all;

@@ -129,6 +129,9 @@ sub fetch_scalar {
       $param = "f1f2.$param";
       return denull(Larch::get_larch_scalar($param));
 
+    } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
+      return denull(Larch::get_larch_scalar($param.'.value'));
+
     } else {
       return denull(Larch::get_larch_scalar($param));
     };
