@@ -855,6 +855,7 @@ sub ifeffit_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $frames{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $color = 'endblock' if ($line =~ m{\A\#end});
     $frames{Buffer}->color('ifeffit', $was, $is, $color);
     $frames{Buffer}->insert('ifeffit', $/)
   };
@@ -875,6 +876,7 @@ sub feedback {
   my ($text) = @_;
   my ($was, $is) = $frames{Buffer}->insert('ifeffit', $text);
   my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $color = 'warning' if $text =~ m{(?<!except )(?:Name|UnboundLocal)Error:};
   $frames{Buffer}->color('ifeffit', $was, $is, $color);
 };
 

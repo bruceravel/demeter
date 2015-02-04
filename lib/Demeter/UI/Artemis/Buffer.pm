@@ -60,8 +60,9 @@ sub new {
   my @font = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
   $this->{IFEFFIT}->{normal}     = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), $wxBGC, Wx::Font->new( @font ) );
   $this->{IFEFFIT}->{comment}    = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{endblock}   = Wx::TextAttr->new(Wx::Colour->new( '#A0A0A0' ), $wxBGC, Wx::Font->new( @font ) );
   $this->{IFEFFIT}->{feedback}   = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), $wxBGC, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{warning}    = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), $wxBGC, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{warning}    = Wx::TextAttr->new(Wx::Colour->new( '#C00000' ), $wxBGC, Wx::Font->new( @font ) );
   $this->{IFEFFIT}->{singlefile} = Wx::TextAttr->new(Wx::Colour->new( '#F08557' ), $wxBGC, Wx::Font->new( @font ) );
 
 
@@ -188,7 +189,7 @@ This documentation refers to Demeter version 0.9.21.
 This module provides a space to display the text issued as commands to
 Ifeffit and as plotting commands to the plotting backend.
 
-It also provides a simple Ifeffit command line and command history.
+It also provides a simple Larch/Ifeffit command line and command history.
 
 =head1 CONFIGURATION
 

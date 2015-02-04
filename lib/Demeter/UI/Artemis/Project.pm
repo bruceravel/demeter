@@ -531,6 +531,7 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
+  $rframes->{GDS}->reset_all;
   $fom = $fit->fom+1;
   Demeter->mo->currentfit($fom);
   my ($name, $description) = (q{}, q{});

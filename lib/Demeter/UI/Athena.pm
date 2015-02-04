@@ -243,6 +243,7 @@ sub ifeffit_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $color = 'endblock' if ($line =~ m{\A\#end});
     $::app->{Buffer}->color('ifeffit', $was, $is, $color);
     $::app->{Buffer}->insert('ifeffit', $/)
   };
@@ -254,7 +255,6 @@ sub plot_buffer {
     my $color = ($line =~ m{\A\#}) ? 'comment'
       : (Demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
 	:'normal';
-
     $::app->{Buffer}->color('plot', $was, $is, $color);
     $::app->{Buffer}->insert('plot', $/)
   };
@@ -263,6 +263,7 @@ sub feedback {
   my ($text) = @_;
   my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $text);
   my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $color = 'warning' if $text =~ m{(?<!except )(?:Name|UnboundLocal)Error:};
   $::app->{Buffer}->color('ifeffit', $was, $is, $color);
 };
 

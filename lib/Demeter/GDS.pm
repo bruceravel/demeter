@@ -19,6 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+use MooseX::Aliases;
 use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
@@ -191,11 +192,13 @@ sub evaluate {
   return 1;
 };
 
-sub push_ifeffit {
+sub push_backend {
   my ($self) = @_;
   $self->dispose($self->write_gds);
   return $self;
 };
+alias push_larch   => 'push_backend';
+alias push_ifeffit => 'push_backend';
 
 __PACKAGE__->meta->make_immutable;
 1;

@@ -59,11 +59,10 @@ sub dispose {
   return $rpcdata;
 };
 
-# sub get_messages {
-#   $rpcdata = $client -> get_messages();
-#   use Data::Dumper;
-#   print Data::Dumper->Dump([$rpcdata]), $/;
-# };
+sub get_messages {
+  $rpcdata = $client -> get_messages();
+  return $rpcdata->result;
+};
 
 ######################################################################
 ## ----- put and get scalars and lists from the server

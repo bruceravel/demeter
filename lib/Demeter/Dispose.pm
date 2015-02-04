@@ -264,7 +264,16 @@ sub dispose {
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
       if ($self->is_larch) {
-	## ned something here...
+	my $response = Larch::get_messages;
+	## send to feedback code ref
+	if ($coderef) {
+	  ($response) and &$coderef($response."\n");
+
+	## send to the screen with ANSI colorization
+	} elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	  $self->_ansify($response.$/, "feedback")
+	};
+
       } else {
 	my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
 	if ($lines) {		# is there feedback?
