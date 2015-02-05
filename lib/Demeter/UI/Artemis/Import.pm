@@ -62,7 +62,7 @@ sub prjrecord {
     $file = $fd->GetPath;
   }
   $file = Demeter->follow_link($file);
-  if (not Demeter->is_prj($file)) {
+  if ((not Demeter->is_prj($file)) and (not Demeter->is_json($file))) {
     $rframes->{main}->status("$file is not an Athena project file.", 'error');
     return (q{}, q{}, -1);
   };

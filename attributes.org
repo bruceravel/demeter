@@ -1,0 +1,311 @@
+
+
+* Athena's JSON-style project file
+
+** Fields in JSON file
+
+The project file is a serialized dictionary/hash/associative array.
+Each entry has a key and a value.  The value is typically a dictionary
+or a list.
+
+There are several special fields that the JSON file must contain so
+that Athena can properly process the file and preserve the order of
+display of the data contained in the file.
+
+Special fields all begin with 5 underscores.  That's a bit wacky, but
+5 preceeding underscores is unlikely to carry special meaning in any
+programming language, yet underscores are likely to be valid as parts
+of variable or dictionary key names.
+
+*** Headers
+
+The first several lines should look something like this
+
+:     {"_____emacs_mode": "-*- mode: json; truncate-lines: t -*-",
+:      "_____header1": "# Athena project file -- Demeter version 0.9.21",
+:      "_____header2": "# This file created at 2015-02-04T17:23:22",
+:      "_____header3": "# Using Demeter 0.9.21 with perl 5.018002 and using Larch 0.9.24 on linux",
+
+The ~_____emacs_mode~ line is a convenience for Bruce.  That will
+cause the file to display in a helpful way in Emacs, which helps him
+troubleshoot problems.  That line is not actually necessary, but Bruce
+will be grateful if you includee it.
+
+The ~_____headerN~ lines identify the file as an Athena project file,
+identify the moment of creation, and identify the program that and
+computing environment that did the creating.
+
+The ~_____header1~ line is *necessary*.  That *must* appear in the
+first four lines of the file or Athena/Artemis will not recognize the
+file as a project file.  In fact, Demeter looks for this regexp in the
+first four lines:
+
+:      /_____header\d.+Athena project file/
+
+The use of single or double quotes is not important.  The index in
+~_____headerN~ is not important.  But one of the header fields *must*
+contain ~Athena project file~ and *must* show up in the first four
+line of the file.
+
+The ~_____header2~ and ~_____header3~ lines are not strictly
+necessary, but including them is good form and may help with
+troubleshooting.
+
+** Other fields
+
+The *must* be a field called ~_____order~ which is a list of group
+names in the order of display.  Because the decoded JSON file is a
+dictionary/hash/associative array, the order of entries cannot be
+guaranteed.  The Athena users expects to see the data in the same
+order when a project file is re-opened.  ~_____order~, then, is used
+to specify the order.
+
+Here is an example from a project file with two data groups:
+
+:  "_____order": ["ftaja","cyrlv"]
+
+
+A field called ~_____journal~ is optional.  If provided, it is a list
+of strings that together are user-supplied commentary on the project
+file.  In the context of Athena, this is the content of the project
+journal.
+
+** Data fields
+
+A data field has a key which is used as the Demeter group attribute,
+the Ifeffit group name, and the Larch group name.  In the Larch
+context, a data group might be defined like so:
+
+:       abcde = read_ascii('mydata.dat')
+
+while in the Ifeffit context
+
+:       read_data(file= mydata.dat, type=raw, group=abcde)
+
+In each case, "abcde" is the group name which should be used as the
+key for the data field.
+
+Each data field consists of a dictionary of attributes, and 2 or more
+lists of numbers.
+
+| subfield name | purpose                          | required |
+|---------------+----------------------------------+----------|
+| args          | attribute dictionary             | yes      |
+| x             | ordinate array (energy or k)     | yes      |
+| y             | abscissa array (mu(E) or chi(k)) | yes      |
+| i0            | i0 array                         | no       |
+| signal        | signal array                     | no       |
+| stddev        | standard deviation array         | no       |
+| xdi           | metadata dictionary              | no       |
+
+
+Here's an example of a data field for a group named "ftaja".  (Athena
+uses, but does not require, random 5-character strings as group
+names.)
+
+: "ftaja": {
+:           "args": {"key1": "val1", ..., "keyN": "valN"}
+:           "x": ["6911.98862","6916.99353", ...]
+:           "y": ["0.044142489773191296","0.041334046117570016", ...]
+:           "i0": ["41410.4","41396.4", ...]
+:           "signal": ["39622.2","39720.2", ...]
+: }
+
+** Attributes
+
+The following tables explain all the attributes found in a project
+file written by Athena.  They are all listed here for the sake of
+completeness and to document the contents of an Athena-written Athena
+project file.
+
+Every input parameter has a sensible default, thus any or all of these
+can be skipped in a project file written outside of Athena.  Athena
+will do the right thing with any that are missing.
+
+For example, a project file can have only parameters related to
+Autobk.  Those will be used by Athena and Athena's defaults will be
+used elsewhere.
+
+*** Background removal attributes
+
+| attribute name   | description                                       | Demeter's default                         |
+|------------------+---------------------------------------------------+-------------------------------------------|
+| bkg_algorithm    | autobk or cl                                      | autobk                                    |
+| bkg_cl           |                                                   |                                           |
+| bkg_clamp1       | lower clamp value                                 | 0                                         |
+| bkg_clamp2       | upper clamp value                                 | 24                                        |
+| bkg_delta_eshift | uncertainty in fitted energy shift                | 0                                         |
+| bkg_dk           | will width for autobk Fourier transform           | 1                                         |
+| bkg_e0           | edge position                                     | /determined from data/                    |
+| bkg_e0_fraction  | fraction used in Athena's edge fraction algorithm | 0.5                                       |
+| bkg_eshift       | energy shift for alignment or calibration         | 0                                         |
+| bkg_fitted_step  | determined value for edge step                    | /determined from data/                    |
+| bkg_fixstep      | flag to fix edge step to user-supplied value      | false                                     |
+| bkg_flatten      | flag to plot "flattened" data                     | true                                      |
+| bkg_fnorm        | flag to do functional normalization               | false                                     |
+| bkg_former_e0    | saved value of e0 when changing its value         |                                           |
+| bkg_int          | intercept of pre-edge line                        | /determined from data/                    |
+| bkg_kw           | k-weight used in autobk Fourier transform         | 1                                         |
+| bkg_kwindow      | functional form of window for autobk FT           | hanning                                   |
+| bkg_nc0          | post-edge polynomial constant parameter           | /determined from data/                    |
+| bkg_nc1          | post-edge polynomial linear parameter             | /determined from data/                    |
+| bkg_nc2          | post-edge polynomial quadratic parameter          | /determined from data/                    |
+| bkg_nc3          | post-edge polynomial quartic parameter            | /determined from data/                    |
+| bkg_nclamp       | number of data points used in clamp               | 5                                         |
+| bkg_nnorm        | normalization order (1,2,3)                       | 3 (2 for XANES data)                      |
+| bkg_nor1         | lower bound of post-edge region                   | 150 above edge                            |
+| bkg_nor2         | upper bound of post-edge region                   | 100 volts from end of data                |
+| bkg_pre1         | lower bound of pre-edge region                    | -150 from edge                            |
+| bkg_pre2         | upper bound of pre-edge region                    | -30 from edge                             |
+| bkg_rbkg         | autobk Rbkg value                                 | 1                                         |
+| bkg_slope        | slope of pre-edge line                            | /determined from data/                    |
+| bkg_spl1         | lower bound of autobk spline in k                 | 0                                         |
+| bkg_spl1e        | lower bound of autobk spline in energy            | 0 from edge                               |
+| bkg_spl2         | upper bound of autobk spline in k                 | end of data                               |
+| bkg_spl2e        | upper bound of autobk spline in energy            | end of data                               |
+| bkg_stan         | group used as background removal standard         | none                                      |
+| bkg_step         | edge step                                         | /determined from data/ or /user-supplied/ |
+| bkg_tie_e0       | /unused/                                          |                                           |
+| bkg_z            | 1- or 2-letter symbol of absorber                 | /determined from data/                    |
+
+
+*** Forward transform parameters
+
+| attribute name  | description                                 | Demeter's default          |
+|-----------------+---------------------------------------------+----------------------------|
+| fft_edge        | absorption edge of measurement              | determined from data       |
+| fft_kmin        | lower end of trasnform range                | 3                          |
+| fft_kmax        | upper end of trasnform range                | 2 inv Ang from end of data |
+| fft_kwindow     | functional form of window                   | hanning                    |
+| fft_dk          | window sill width                           | 2                          |
+| fft_pctype      | phase correction type ('central' or 'path') | central                    |
+| fft_pc          | flag for phase corrected transform          | false                      |
+| fft_pcpathgroup | path to use for phase corrected transform   | none                       |
+| rmax_out        | maximum value of R grid                     | 10                         |
+
+*** Backward transform parameters
+
+| attribute name | description                              | Demeter's default |
+|----------------+------------------------------------------+-------------------|
+| bft_rmin       | lower end of backtransform/fitting range |                 1 |
+| bft_rmax       | upper end of backtransform/fitting range |                 3 |
+| bft_dr         | window sill width                        |                 0 |
+| bft_rwindow    | functional form of window                |           hanning |
+
+*** Fitting parameters
+
+| attribute name     | description                                                    | Demeter's default                  |
+|--------------------+----------------------------------------------------------------+------------------------------------|
+| fit_k1             | flag to use k=1 weighting in fit                               | true                               |
+| fit_k2             | flag to use k=2 weighting in fit                               | true                               |
+| fit_k3             | flag to use k=3 weighting in fit                               | true                               |
+| fit_karb           | flag to use user-supplied k weighting in fit                   | false                              |
+| fit_karb_value     | user-supplied k-weighting                                      | 0.5                                |
+| fit_space          | space in which to evaluate fit (k, R, q)                       | R                                  |
+| fit_epsilon        | measurement uncertainty                                        | 0 (i.e. use Larch's estimate)      |
+| fit_cormin         | smallest correlation to report in log file                     | 0.4                                |
+| fit_include        | flag to include this data set in a fit                         | true                               |
+| fit_data           |                                                                |                                    |
+| fit_plot_after_fit | flag for pushing data to Artemis' plot list after fit finishes | true for first data set in project |
+| fit_do_bkg         | flag for background corefinement                               | false                              |
+| fit_rfactor1       | R-factor computed with k-weight = 1                            | /output/                           |
+| fit_rfactor2       | R-factor computed with k-weight = 2                            | /output/                           |
+| fit_rfactor3       | R-factor computed with k-weight = 3                            | /output/                           |
+| fit_group          | pointer to the fit group that this data is a part of           | /set at time of fit/               |
+
+Note that the fitting range is the same in Artemis as the back-transform range
+
+*** Parameters related to contructing data from column ascii files
+
+| attribute name | description                                    | Demeter's default |
+|----------------+------------------------------------------------+-------------------|
+| chi_column     |                                                | /user-supplied/   |
+| chi_string     | string used to chi(k) from columns             | /user-supplied/   |
+| denominator    | string used to construct denominator of data   | /user-supplied/   |
+| energy_string  | string used to construct energy from columns   | /user-supplied/   |
+| inv            | flag used to negate signal                     | /user-supplied/   |
+| is_kev         | flag indicating energy column was in keV units | /user-supplied/   |
+| i0_string      | string used to construct I0 from columns       | /user-supplied/   |
+| ln             | flag indicating transmission data              | /user-supplied/   |
+| numerator      | string used to construct numerator of data     | /user-supplied/   |
+| signal_string  | string used to construct signal from columns   | /user-supplied/   |
+| xmu_string     | string used to mu(E) from columns              | /user-supplied/   |
+
+*** Other data processing parameters
+
+| attribute name | description                                                                  | Demeter's default      |
+|----------------+------------------------------------------------------------------------------+------------------------|
+| importance     | user-supplied relative merge weight                                          | 1                      |
+| epsk           | measurement uncertainty in k                                                 | /determined from data/ |
+| epsr           | measurement uncertainty in R                                                 | /determined from data/ |
+| i0_scale       | in a plot of data with i0&signal, this scales i0 to the size of the data     | /determined from data/ |
+| is_col         | flag indicating data originated as column data                               | false                  |
+| is_fit         |   ???                                                                        |                        |
+| is_merge       | flag indicating data group was made by merging data                          | false                  |
+| is_nor         | flag indicating data group imported as normalized mu(E)                      | false                  |
+| is_pixel       | flag indicating dispersive XAS data                                          | false                  |
+| is_special     |   ???                                                                        |                        |
+| is_xmu         | flag indicating mu(E) data (*deprecated*, but seen in old project files)     | true                   |
+| rebinned       | flag indicating data group was made by rebinning data                        |                        |
+| signal_scale   | in a plot of data with i0&signal, this scales signal to the size of the data | /determined from data/ |
+
+
+*** And all the rest
+
+| attribute name      | description                                                            | Demeter's default |
+|---------------------+------------------------------------------------------------------------+-------------------|
+| annotation          |                                                                        |                   |
+| beamline            | name of beamline where data was measured (used to autoinsert metadata) |                   |
+| beamline_identified | flag stating whether beamline was identified                           | false             |
+| collided            |                                                                        |                   |
+| columns             |                                                                        |                   |
+| daq                 |                                                                        |                   |
+| datagroup           |                                                                        |                   |
+| display             |                                                                        |                   |
+| energy              |                                                                        |                   |
+| file                |                                                                        |                   |
+| forcekey            |                                                                        |                   |
+| from_athena         |                                                                        |                   |
+| from_yaml           |                                                                        |                   |
+| frozen              |                                                                        |                   |
+| generated           |                                                                        |                   |
+| label               |                                                                        |                   |
+| mark                |                                                                        |                   |
+| marked              |                                                                        |                   |
+| maxk                |                                                                        |                   |
+| merge_weight        |                                                                        |                   |
+| multiplier          |                                                                        |                   |
+| nidp                |                                                                        |                   |
+| nknots              |                                                                        |                   |
+| npts                |                                                                        |                   |
+| numerator           |                                                                        |                   |
+| plot_scale          |                                                                        |                   |
+| plot_yoffset        |                                                                        |                   |
+| plotkey             |                                                                        |                   |
+| plotspaces          |                                                                        |                   |
+| prjrecord           |                                                                        |                   |
+| provenance          |                                                                        |                   |
+| quenched            |                                                                        |                   |
+| quickmerge          |                                                                        |                   |
+| read_as_raw         |                                                                        |                   |
+| recommended_kmax    |                                                                        |                   |
+| recordtype          |                                                                        |                   |
+| referencegroup      |                                                                        |                   |
+| rmax_out            |                                                                        |                   |
+| source              |                                                                        |                   |
+| tag                 |                                                                        |                   |
+| titles              |                                                                        |                   |
+| trouble             |                                                                        |                   |
+| tying               |                                                                        |                   |
+| unreadable          | flag indicating data file could not be read                            | false             |
+| update_bft          | flag indicating need to perform back transform                         | /as needed/       |
+| update_bkg          | flag indicating need to perform autobk                                 | /as needed/       |
+| update_columns      | flag indicating need to construct data from columns                    | /as needed/       |
+| update_data         | flag indicating need to read data from file                            | /as needed/       |
+| update_fft          | flag indicating need to perform forward transform                      | /as needed/       |
+| update_norm         | flag indicating need to perform normalization                          | /as needed/       |
+| xdi_will_be_cloned  |                                                                        |                   |
+| xdifile             |                                                                        |                   |
+| xmax                |                                                                        |                   |
+| xmin                |                                                                        |                   |
+

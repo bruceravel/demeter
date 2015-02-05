@@ -231,7 +231,7 @@ sub read_project {
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
     Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
-    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
+    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname) or Demeter->is_json($fname));
     Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
     Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
     $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');

@@ -255,8 +255,8 @@ sub import {
   #print join(" ", $class, caller), $/;
 
   my @load  = ();
-  my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
-  my @heph  = (qw(Data Data/Prj));
+  my @data  = (qw(Data XES Journal Data/Prj Data/JSON Data/Pixel Data/MultiChannel Data/BulkMerge));
+  my @heph  = (qw(Data Data/Prj Data/JSON));
   my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));

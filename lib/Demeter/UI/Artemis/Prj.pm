@@ -36,14 +36,21 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxSTAY_ON_TOP
 			       );
 
-  my $prj = Demeter::Data::Prj->new(file=>$file);
-  my ($names, $entries, $positions) = $prj -> plot_as_chi;
+  my $prj;
+  if (Demeter->is_prj($file)) {
+    $prj = Demeter::Data::Prj->new(file=>$file);
+  } elsif (Demeter->is_json($file)) {
+    $prj = Demeter::Data::JSON->new(file=>$file);
+  } else {
+    die "That wasn't either a prj file or a json file!  How did that happen?!?\n"
+  };
+  my ($names, $entries, $positions) = $prj -> plot_as_chi; # used by Artemis
   ##print join("|", @$names, @$entries, @$positions), $/;
 
-  if ($style ne 'single') {
+  if ($style ne 'single') {	# used by Athena
     $names = [$prj->allnames(0)];
     $entries = $prj->entries;
-    $positions = [0 .. $#{$entries}];
+    $positions = [0 .. $#{$names}];
   };
   $this->{prj}    = $prj;
   $this->{record} = -1;

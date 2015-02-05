@@ -123,7 +123,7 @@ sub Import {
       ## this fall through to the plugin
     #};
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
-    if (Demeter->is_prj($file,$verbose)) {
+    if (Demeter->is_prj($file,$verbose) or Demeter->is_json($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
     } elsif ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {

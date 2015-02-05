@@ -1,4 +1,4 @@
-package Demeter::Data::Prj;
+package Demeter::Data::JSON;
 
 =for Copyright
  .
@@ -25,14 +25,16 @@ use Demeter::StrTypes qw( FileName );
 #use diagnostics;
 use Carp;
 use Compress::Zlib;
+use File::Basename;
+use File::Spec;
+use JSON;
 use List::Util qw(max);
 use List::MoreUtils qw(any none);
-use Safe;
 
-use Data::Dumper;
 
 has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
+has 'decoded' => (is => 'rw', isa => 'HashRef');
 has 'entries' => (
 		  traits    => ['Array'],
 		  is        => 'rw',
@@ -45,12 +47,11 @@ has 'entries' => (
 			       }
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
-
 has 'journal' => (is => 'rw', isa => 'Str',  default => q{},);
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mo->push_Prj($self);
+  $self->mo->push_JSON($self);
 };
 
 sub Read {
@@ -68,44 +69,23 @@ sub Read {
 
   my @entries = ();
   my $athena_fh = gzopen($file, "rb") or die "could not open $file as an Athena project\n";
-  my $nline = 0;
-  my $count = 0;
-  my $line = q{};
-  my $cpt = new Safe;
+  my $stash = File::Spec->catfile(Demeter->stash_folder, basename($self->file));
+  my $line;
+  open(my $S, ">", $stash);
   while ($athena_fh->gzreadline($line) > 0) {
-    ++$nline;
-    if ($line =~ m{\A\@journal}) { # original style
-      @ {$cpt->varglob('journal')} = $cpt->reval( $line );
-      my @journal = @ {$cpt->varglob('journal')};
-      $self->journal(join($/, @journal));
-    };
-    next unless ($line =~ /^\$old_group/);
-    ## need to make a map to the groups by old group name so that
-    ## background removal with a standard can be performed correctly
-    $ {$cpt->varglob('old_group')} = $cpt->reval( $line );
-    my $og = $ {$cpt->varglob('old_group')};
-    $self -> add_entry([$nline, $og]);
-    ++$count;
+    print $S $line;
   };
-  $self->n($count);
   $athena_fh->gzclose();
+  close $S;
+
+  $self->decoded(decode_json(Demeter->slurp($stash)));
+  $self->n($#{$self->decoded->{_____order}} + 1);
+  $self->journal(join($/, @{$self->decoded->{_____journal}}));
+
+  unlink $stash;
+  #print join("|", @{$self->decoded->{_____order}}), $/;
 };
 
-
-# Note that the array referenced by the C<entries> attribute is a
-# list-of-lists containing information used to locate the entry in the
-# project file.  It looks something like this:
-#
-#   $entries_ref = [ [4, 'iaxh'],
-#                    [11,'yksy'],
-#                    [18,'eitj']
-#                  ];
-#
-# Each item in the list is a reference to a two-element list containing
-# the line number where the group's record begins in the project file
-# and the name of the group in the Athena session that saved the project
-# file.  This information can be used along with the C<record> method to
-# extract individual groups from the project file.
 
 
 sub list {
@@ -115,9 +95,8 @@ sub list {
   my @rows;
 
   ## slurp up record labels and optional attributes
-  foreach my $group (@{ $self->entries }) {
-    my $index = $group->[0];
-    my %args = $self->_array($index, 'args');
+  foreach my $group (@{ $self->decoded->{_____order} }) {
+    my %args = %{ $self->decoded->{$group}->{args} };
     $length = max($length, length($args{label}));
     push @rows, [$args{label}, @args{@attributes}];
   };
@@ -149,9 +128,8 @@ sub allnames {
   my ($self, $notxanes) = @_;
   my @names;
   ## slurp up record labels
-  foreach my $group (@{ $self->entries }) {
-    my $index = $group->[0];
-    my %args = $self->_array($index, 'args');
+  foreach my $group (@{ $self->decoded->{_____order} }) {
+    my %args = %{ $self->decoded->{$group}->{args} };
     next if ($notxanes and ($args{datatype} =~ m{(?:detector|background|xanes)}));
     push @names, $args{label};
   };
@@ -162,10 +140,9 @@ sub plot_as_chi {
   my (@names, @entries, @positions);
   ## slurp up record labels and optional attributes
   my $pos = -1;
-  foreach my $group (@{ $self->entries }) {
+  foreach my $group (@{ $self->decoded->{_____order} }) {
     ++$pos;
-    my $index = $group->[0];
-    my %args = $self->_array($index, 'args');
+    my %args = %{ $self->decoded->{$group}->{args} };
     next if ($args{datatype} and ($args{datatype} =~ m{(?:detector|background|xanes)}));
     next if $args{is_xanes};
     next if $args{not_data};
@@ -176,13 +153,15 @@ sub plot_as_chi {
   return \@names, \@entries, \@positions;
 };
 
+
 sub slurp {
   my ($self) = @_;
-  my @groups = @{ $self->entries };
+  my @groups = @{ $self->decoded->{_____order} };
   my @data = $self->record(1 .. $#groups+1);
   return @data;
 };
 alias prj => 'slurp';
+
 
 sub record {
   my ($self, @entries) = @_;
@@ -192,9 +171,8 @@ sub record {
   foreach my $g (@which) {
     next if ($g > $self->n);
     my $gg = $g-1;
-    my $entries_ref = $self -> entries;
-    my @this = @{ $entries_ref->[$gg] };
-    my $rec = $self->_record( @this );
+    my $group = $self->decoded->{_____order}->[$gg];
+    my $rec = $self->_record( $group );
     $rec->prjrecord(join(", ", $self->file, $g));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
 
@@ -215,43 +193,44 @@ sub record {
 };
 alias records => 'record';
 
-## $index is the line number in the project file, *not* the record number
+
+
 sub _record {
-  my ($self, $index, $groupname) = @_;
-  my %args   = $self->_array($index, 'args');
-  my @x      = $self->_array($index, 'x');
-  my @y      = $self->_array($index, 'y');
-  my @i0     = $self->_array($index, 'i0');
-  my @signal = $self->_array($index, 'signal');
-  my @std    = $self->_array($index, 'stddev');
-  my $xdi    = $self->_ref  ($index, 'xdi');
+  my ($self, $group) = @_;
+  my %args   = %{ $self->decoded->{$group}->{args} };
+  my @x      = @{ $self->decoded->{$group}->{x} };
+  my @y      = @{ $self->decoded->{$group}->{y} };
+  my @i0     = exists($self->decoded->{$group}->{i0})     ? @{ $self->decoded->{$group}->{i0} }     : ();
+  my @signal = exists($self->decoded->{$group}->{signal}) ? @{ $self->decoded->{$group}->{signal} } : ();
+  my @std    = exists($self->decoded->{$group}->{stddev}) ? @{ $self->decoded->{$group}->{stddev} } : ();
+  my @xdi    = exists($self->decoded->{$group}->{xdi})    ? @{ $self->decoded->{$group}->{xdi} }    : ();
   my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
   ## this allows you to import the same data group twice without a
   ## groupname collision.
   my $collided = 0;
-  if (Demeter->mo->any($groupname)) {
-    $groupname = $self->_get_group;
+  if (Demeter->mo->any($group)) {
+    $group = $self->_get_group;
     $collided  = 1;
   };
-  my $data = Demeter::Data->new(group	    => $groupname,
+  my $data = Demeter::Data->new(group	    => $group,
 				from_athena => 1,
 				collided    => $collided,
 			       );
   $data->dispense('process','make_group');
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
-  $self->place_array(join('.', $groupname, $xsuff), \@x);
-  $self->place_array(join('.', $groupname, $ysuff), \@y);
+  $self->place_array(join('.', $group, $xsuff), \@x);
+  $self->place_array(join('.', $group, $ysuff), \@y);
   if (@i0) {
-    $self->place_array(join('.', $groupname, 'i0'), \@i0);
+    $self->place_array(join('.', $group, 'i0'), \@i0);
     $i0_scale = max(@y) / max(@i0);
   };
   if (@signal) {
-    $self->place_array(join('.', $groupname, 'signal'), \@signal);
+    $self->place_array(join('.', $group, 'signal'), \@signal);
     $signal_scale = max(@y) / max(@signal);
   };
   if (@std) {
-    $self->place_array(join('.', $groupname, 'stddev'), \@std);
+    $self->place_array(join('.', $group, 'stddev'), \@std);
     $is_merge = 1;
   };
   my $quenched_state = 0;
@@ -413,75 +392,25 @@ sub _record {
   $data->dispose($command);
   $data->quenched($quenched_state);
 
-  if (Demeter->xdi_exists) {
-    if ($xdi) {
-      my $comments = $xdi->comments;
-      $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
-      $xdi->comments($comments);
-      $data->xdi($xdi);
-    } else {
-      $data->xdi(Xray::XDI->new());
-      $data -> xdi -> set_item('Element', 'edge',    uc($data->fft_edge));
-      $data -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($data->bkg_z)));
-    };
-  };
+  # if (Demeter->xdi_exists) {
+  #   if (@xdi) {
+  #     my $comments = $xdi->comments;
+  #     $comments =~ s{\\n}{\n}g;	# unstringify newlines in comments (see D::D::Athena#148)
+  #     $xdi->comments($comments);
+  #     $data->xdi($xdi);
+  #   } else {
+  #     $data->xdi(Xray::XDI->new());
+  #     $data -> xdi -> set_item('Element', 'edge',    uc($data->fft_edge));
+  #     $data -> xdi -> set_item('Element', 'symbol',  ucfirst(lc($data->bkg_z)));
+  #   };
+  # };
 
   return $data;
-};
+}
 
 
-## args x y i0 stddev
-sub _array {
-  my ($self, $index, $which) = @_;
-  my $prjfile = $self->file;
-  my $cpt = new Safe;
-  my @array;
-  my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
-  my $count = 0;
-  my $found = 0;
-  my $re = '@' . $which;
-  my $line = q{};
-  while ($prj->gzreadline($line) > 0) {
-    ++$count;
-    $found = 1 if ($count == $index);
-    next unless $found;
-    last if ($line =~ /^\[record\]/);
-    if ($line =~ /^$re/) {
-      @ {$cpt->varglob('array')} = $cpt->reval( $line );
-      @array = @ {$cpt->varglob('array')};
-      last;
-    };
-  };
-  $prj->gzclose();
-  return @array;
-};
 
-sub _ref {
-  my ($self, $index, $which) = @_;
-  my $prjfile = $self->file;
-  my $cpt = new Safe;
-  my $ref;
-  my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
-  my $count = 0;
-  my $found = 0;
-  my $re = '\$' . $which;
-  my $line = q{};
-  while ($prj->gzreadline($line) > 0) {
-    ++$count;
-    $found = 1 if ($count == $index);
-    next unless $found;
-    last if ($line =~ /^\[record\]/);
-    if ($line =~ /^$re/) {
-      $line =~ s{\A\s*\$$which}{\$ref};
-      eval $line;
-      #${$cpt->varglob('ref')} = $cpt->reval( $line );
-      #$ref = ${$cpt->varglob('ref')};
-      last;
-    };
-  };
-  $prj->gzclose();
-  return $ref;
-};
+
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -489,7 +418,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data::Prj - Read data from original-style Athena project files
+Demeter::Data::JSON - Read data from JSON-style Athena project files
 
 =head1 VERSION
 
@@ -500,7 +429,7 @@ This documentation refers to Demeter version 0.9.21.
 This class contains methods for interacting with Athena project files.
 It is not a subclass of some other Demeter method.
 
-  $project   = Demeter::Data::Prj->new(file=>'some.prj');
+  $project   = Demeter::Data::JSON->new(file=>'some.prj');
   @data     = $project -> slurp;         # import all records
   ($d1, $2) = $project -> record(3, 8);  # import specific records
 
@@ -510,8 +439,11 @@ See L<Demeter::Data::Athena> for Demeter's method of writing
 Athena project files.
 
 Note that the semantics of this object are identical to
-Demeter::Data::JSON.  They are intended to be used interchangeably.
+Demeter::Data::Prj.  They are intended to be used interchangeably.
 Athena and Artemis will read Prj and JSON files transparently.
+
+This JSON file has some manditory structure to allow it to be used
+properly by Athena and Artemis see L<some file...>.
 
 =head1 METHODS
 
@@ -614,11 +546,11 @@ groups, the second containing the filtered entries list.
 
 =over 4
 
-=item C<Demeter::Data::Prj: $file does not exist>
+=item C<Demeter::Data::JSON: $file does not exist>
 
 The Athena project file cannot be found on your computer.
 
-=item C<Demeter::Data::Prj:$file cannot be read (permissions?)>
+=item C<Demeter::Data::JSON:$file cannot be read (permissions?)>
 
 The specified Athena project file cannot be read by Demeter, possibly
 because of permissions settings.
