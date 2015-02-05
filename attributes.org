@@ -76,14 +76,17 @@ A data field has a key which is used as the Demeter group attribute,
 the Ifeffit group name, and the Larch group name.  In the Larch
 context, a data group might be defined like so:
 
-:       abcde = read_ascii('mydata.dat')
+:       ftaja = read_ascii('mydata.dat')
 
 while in the Ifeffit context
 
-:       read_data(file= mydata.dat, type=raw, group=abcde)
+:       read_data(file= mydata.dat, type=raw, group=ftaja)
 
-In each case, "abcde" is the group name which should be used as the
-key for the data field.
+In each case, "ftaja" is the group name which should be used as the
+key for the data field.  In Demeter, "ftaja" will be the return value
+of
+
+:       $data_object->group;
 
 Each data field consists of a dictionary of attributes, and 2 or more
 lists of numbers.

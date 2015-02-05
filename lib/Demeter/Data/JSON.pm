@@ -80,7 +80,7 @@ sub Read {
 
   $self->decoded(decode_json(Demeter->slurp($stash)));
   $self->n($#{$self->decoded->{_____order}} + 1);
-  $self->journal(join($/, @{$self->decoded->{_____journal}}));
+  $self->journal(join($/, @{$self->decoded->{_____journal}})) if exists $self->decoded->{_____journal};
 
   unlink $stash;
   #print join("|", @{$self->decoded->{_____order}}), $/;
