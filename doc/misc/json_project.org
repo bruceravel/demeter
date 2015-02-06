@@ -1,3 +1,5 @@
+#+STARTUP: showall
+
 
 
 * Athena's JSON-style project file
@@ -20,8 +22,11 @@ order of display of the data contained in the file.
 
 Special fields all begin with 5 underscores.  That's a bit wacky, but
 5 preceeding underscores is unlikely to carry special meaning in any
-programming language, yet underscores are likely to be valid as parts
-of variable or dictionary key names in most languages.
+programming language, yet underscores are likely to be valid
+characters for variable or dictionary key names in most languages.
+
+[[file:~/git/demeter/examples/athena_json.prj][Here is an example]] of a JSON-style project file.  This is the
+cyanobacteria example data exported into the JSON format.
 
 *** Headers
 
@@ -98,7 +103,7 @@ of
 :       $data_object->group;
 
 Each data field consists of a dictionary of attributes, and 2 or more
-lists of numbers.
+lists of numbers representing data arrays associated with the group.
 
 | subfield name | purpose                          | required |
 |---------------+----------------------------------+----------|
