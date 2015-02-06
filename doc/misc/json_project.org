@@ -4,6 +4,40 @@
 
 * Athena's JSON-style project file
 
+** Summary
+
+ 1. JSON-style project file is valid JSON, possibly gzipped
+
+ 2. File contains a single dictionary
+
+ 3. An entry with the key ~_____header1~ contains the string ~Athena
+    project file~ and is in the first four lines of the file.  This is
+    used by Demeter to recognize the project file.
+
+ 4. An entry with the key ~_____order~ takes a list of strings as its
+    value.  This is used to presevre the order of presentation of the
+    data regardless of how a JSON parser orders the keys in the
+    dictionary.
+
+ 5. Data groups use a group name as the key and take a dictionary as
+    the value.  This dictionary contains a key called ~args~ which
+    takes a dictionary of attributes and values, a key called ~x~ with
+    a vlue of a list containing the abscissa array, and a key called
+    ~y~ with a vlue of a list containing the abscissa array.  Other
+    optional arrays are possible.
+
+ 6. Every data group has a unique group name used as its dictionary
+    key.
+
+ 7. The ~args~ dictionary has several required attributes, including
+    ~datatype~, which is used to interpret the content of ~x~ and ~y~.
+
+ 8. Other data processing attributes can be specified in ~args~ or
+    Athena can be relied upon to set sensible defaults.
+
+ 9. A project journal is optionally specified with the key
+    ~_____journal~ and a list of strings containing the jounral text.
+
 ** Fields in JSON file
 
 The JSON-style project file is typically saved as a gzipped file with
@@ -25,10 +59,13 @@ Special fields all begin with 5 underscores.  That's a bit wacky, but
 programming language, yet underscores are likely to be valid
 characters for variable or dictionary key names in most languages.
 
-[[file:~/git/demeter/examples/athena_json.prj][Here is an example]] of a JSON-style project file.  This is the
+[[file:../../examples/athena_json.prj][Here is an example]] of a JSON-style project file.  This is the
 cyanobacteria example data exported into the JSON format.
 
 *** Headers
+
+Standard JSON does not have comments, so special headers are used to
+carry material that might have gone into comments.
 
 The first several lines should look something like this
 
@@ -108,15 +145,15 @@ lists of numbers representing data arrays associated with the group.
 | subfield name | purpose                          | required |
 |---------------+----------------------------------+----------|
 | args          | attribute dictionary             | yes      |
-| x             | ordinate array (energy or k)     | yes      |
-| y             | abscissa array (mu(E) or chi(k)) | yes      |
+| x             | abscissa array (energy or k)     | yes      |
+| y             | ordinate array (mu(E) or chi(k)) | yes      |
 | i0            | i0 array                         | no       |
 | signal        | signal array                     | no       |
 | stddev        | standard deviation array         | no       |
 | xdi           | metadata dictionary              | no       |
 
 Athena figures out whether to interpret ~x/y~ as energy/mu or k/chi
-based on the value of the ~datatype~ attribute from teh ~args~
+based on the value of the ~datatype~ attribute from the ~args~
 dictionary.
 
 
