@@ -162,10 +162,10 @@ uses, but does not require, random 5-character strings as group
 names.)
 
 : "ftaja": {
-:           "args": {"key1": "val1", ..., "keyN": "valN"}
-:           "x": ["6911.98862","6916.99353", ...]
-:           "y": ["0.044142489773191296","0.041334046117570016", ...]
-:           "i0": ["41410.4","41396.4", ...]
+:           "args": {"key1": "val1", ..., "keyN": "valN"},
+:           "x": ["6911.98862","6916.99353", ...],
+:           "y": ["0.044142489773191296","0.041334046117570016", ...],
+:           "i0": ["41410.4","41396.4", ...],
 :           "signal": ["39622.2","39720.2", ...]
 : }
 
@@ -207,12 +207,18 @@ retrofitted to use a different lexicon.
 A data entry in the project file cannot be considered complete without
 these attributes included in the ~args~ dictionary.
 
+
 | attribute name | description                                                     | options                                 |
 |----------------+-----------------------------------------------------------------+-----------------------------------------|
 | datatype       | identify the type of data contained in the data entry           | xmu, xanes, chi, xmudat                 |
 | group          | string used as the group name                                   | Athena uses a random 5-character string |
 | label          | string used as a label, for example in the group list in Athena | default is the file name                |
 | is_nor         | flag indicating mu(E) data is already normalized                | false                                   |
+
+I suppose that ~group~ is not necessary since the same string is used
+as the key.  Hmmm....
+
+Note that the ~label~ need not be unique, but the ~group~ *must* be.
 
 *** Background removal attributes
 
