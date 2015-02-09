@@ -264,7 +264,7 @@ sub dispose {
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
       if ($self->is_larch) {
-	my $response = Larch::get_messages;
+	my $response = Larch::get_messages();
 	## send to feedback code ref
 	if ($coderef) {
 	  ($response) and &$coderef($response."\n");
