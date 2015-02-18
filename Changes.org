@@ -65,6 +65,10 @@ feature was added.  Also begin practice of acknowledging the
      Krishnamoorthy)
    - XKCD-ish plots in A&A /{pre5}/
    - font picker control now available in Demeter::Wx::Config /{pre5}/
+   - Update tests to reflect recent larch-related changes (thanks to
+     Stevan Ognjanovic)
+   - Fix a silly mistake introduced to one of the Chantler data files 
+     when I did s{2014}{2015}g in January (thanks to Stevan Ognjanovic)
 
 *** Larch
    - Much work on both Athena and Artemis to work properly with Larch,
