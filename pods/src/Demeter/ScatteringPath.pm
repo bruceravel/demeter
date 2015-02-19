@@ -2,7 +2,7 @@ package Demeter::ScatteringPath;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -102,6 +102,8 @@ has 'site_fraction'=> (is => 'rw', isa => 'LaxNum',   default => 1);
 has 'pathfinding'  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'pathfinder_index'=> (is=>'rw', isa=>  Natural, default => 0);
 
+has 'cleanup'      => (is => 'rw', isa => 'Bool',     default => 1);
+
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 #has 'ipots'        => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -136,7 +138,7 @@ sub DEMOLISH {
 override 'alldone' => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->file);
-  unlink $nnnn if -e $nnnn;
+  unlink $nnnn if ((-e $nnnn) and ($self->cleanup));
   $self->remove;
   return $self;
 };
@@ -1151,7 +1153,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter;  # http://xkcd.com/844/
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -42,9 +42,9 @@ use Carp;
 ##  code at runtime."
 BEGIN {
   $ENV{DEMETER_BACKEND} ||= 'ifeffit';
-  if ($ENV{DEMETER_BACKEND} eq 'larch') {
+  if (lc($ENV{DEMETER_BACKEND}) eq 'larch') {
     eval "use Larch";
-  } else {
+  } else {			# ifeffit or any misspelling
     eval "use Ifeffit qw(ifeffit);"
   };
   if ($@) {
@@ -71,6 +71,9 @@ use Regexp::Assemble;
 use Text::Template;
 use Xray::Absorption;
 Xray::Absorption->load('elam');
+
+use Demeter::Here;
+use YAML::Tiny;
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -252,8 +255,8 @@ sub import {
   #print join(" ", $class, caller), $/;
 
   my @load  = ();
-  my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
-  my @heph  = (qw(Data Data/Prj));
+  my @data  = (qw(Data XES Journal Data/Prj Data/JSON Data/Pixel Data/MultiChannel Data/BulkMerge));
+  my @heph  = (qw(Data Data/Prj Data/JSON));
   my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
@@ -461,8 +464,8 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  #return "copyright " . chr(169) . " 2006-2014 Bruce Ravel";
-  return "copyright 2006-2014 Bruce Ravel";
+  #return "copyright " . chr(169) . " 2006-2015 Bruce Ravel";
+  return "copyright 2006-2015 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;
@@ -482,7 +485,6 @@ sub hashes {
     Than ours, a friend to man, to whom thou say'st,
   'Beauty is truth, truth beauty,—that is all
       Ye know on earth, and all ye need to know.'
-
                                 John Keats
                                 Ode on a Grecian Urn
 
@@ -548,7 +550,7 @@ sub get_mode {
   my ($self, @which) = @_;
   my $mode = $self->mo;
   my @val;
-  foreach my $w (@which) {             ##     vvvvvvv    wow, that works!
+  foreach my $w (@which) {
     $mode->meta->has_method($w) ? push @val, $mode->$w
                                 : push @val, undef;
   };
@@ -565,22 +567,29 @@ sub set_mode {
     if ((any {$k eq $_} qw(template_process template_analysis template_fit))
 	and ($which{$k} eq 'larch')
 	and (not $Larch::larch_is_go)) {
-      print <<'DEATH'
+      my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
+      my $rhash;
+      eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
+
+      print "
 Demeter says:
+
     Uh oh!
-    You are using the Larch backend, but there is no Larch server running!
+    You are using the Larch backend, but the Larch server either could
+    not be started or could not be contacted.
 
-    Either reset the DEMETER_BACKEND variable to 'ifeffit':
+    Verify that the Larch configuration is correct:
+       server:  $rhash->{server}
+       port:    $rhash->{port}
+       timeout: $rhash->{timeout}
 
-         ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, ect)
-         ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, ect)
+    or use the ifeffit backend by setting the DEMETER_BACKEND
+    variable to 'ifeffit':
 
-    or start a Larch server:
+       ~> export DEMETER_BACKEND=ifeffit    # (bash, zsh, etc.)
+       ~> setenv DEMETER_BACKEND ifeffit    # (csh, tcsh, etc.)
 
-         ~> larch -r
-
-DEATH
-	;
+";
       exit 255;
     };
 
@@ -1033,8 +1042,7 @@ Specify the plotting backend.  The default is C<pgplot>.  The other
 option is C<gnuplot>.  A C<demeter> option will be available soon for
 generating perl scripts which plot.
 
-This can also be set during run-time using the C<plot_with> method
-during run-time.
+This can also be set during run-time using the C<plot_with> method.
 
 =item C<:ui=XX>
 
@@ -1051,7 +1059,7 @@ object, offering a CLI interface to the results of a fit.
 
 =item 2.
 
-Uses L<Term::Twiddle> or C<Term::Sk> to provide some visual feedback
+Uses L<Term::Twiddle> or L<Term::Sk> to provide some visual feedback
 on the screen while something time consuming is happening.
 
 =item 3.
@@ -1429,7 +1437,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

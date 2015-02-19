@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2008-2015 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -59,7 +59,16 @@ usage() if not $file;
 die "lsprj: $file does not exist\n" if (not -e $file);
 die "lsprj: $file cannot be read\n" if (not -r $file);
 
-my $prj = Demeter::Data::Prj->new();
+my $prj;
+if (Demeter->is_prj($file)) {
+  $prj = Demeter::Data::Prj->new();
+} elsif (Demeter->is_json($file)) {
+  $prj = Demeter::Data::JSON->new();
+} else {
+  print "\n'$file' is not an Athena project file\n";
+  usage();
+  exit;
+};
 my ($en, $ex) = ($prj->co->default('plot', 'emin'), $prj->co->default('plot', 'emax'));
 $prj -> set(file=>$file);
 $prj -> plot_with('gnuplot') if $gnuplot;
@@ -274,7 +283,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

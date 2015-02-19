@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -430,6 +430,7 @@ sub new {
   $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
   $this->mouseover("fit_bkg",    "Click here to co-refine a background spline during the fit.");
 
+  $this->{fit_bkg}->Enable(0) if Demeter->is_larch;
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -1072,7 +1073,8 @@ sub OnMenuClick {
     ($id == $DATA_EPSK) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
-      my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e and $EPSILON(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
+      my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e, $EPSILON(R) = %.2e, suggested kmax = %.1f",
+			 $datapage->{data}->epsk, $datapage->{data}->epsr, $datapage->{data}->recommended_kmax);
       $datapage->status($text);
       last SWITCH;
     };
@@ -2833,7 +2835,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

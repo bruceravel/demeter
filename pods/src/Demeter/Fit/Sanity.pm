@@ -2,7 +2,7 @@ package Demeter::Fit::Sanity;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -451,6 +451,8 @@ sub S_reff_rmax {
 sub S_exceed_ifeffit_limits {
   my ($self) = @_;
   my $found = 0;
+  return 0 if Demeter->is_larch;
+
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
@@ -1054,7 +1056,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

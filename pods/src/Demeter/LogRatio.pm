@@ -2,7 +2,7 @@ package Demeter::LogRatio;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -90,8 +90,9 @@ sub save {
   my $save_columns = {};
   my $text;
   my $hash = {1=>'wavenumber inverse Angstrom', 2=>'log ratio', 3=>'even fit', 4=>'phase difference', 5=>'odd fit'};
+  $text = $self->template('analysis', 'lr_results', {cumulants=>$self->cumulants,
+						     errorbars=>$self->errorbars});
   if ($self->data->xdi) {
-    $text = $self->template('analysis', 'lr_results');
     $save_columns  = $self->data->xdi->metadata->{Column};
     $self->data->xdi_set_columns($hash);
   };
@@ -241,7 +242,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

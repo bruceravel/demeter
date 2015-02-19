@@ -2,7 +2,7 @@ package Demeter::Plot::Gnuplot;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -52,6 +52,7 @@ before start_plot => sub {
   my ($self) = @_;
   my $command = $self->template("plot", "start");
   $command .= $self->copyright_text;
+  $command .= $self->template("plot", "xkcd") if Demeter->co->default('gnuplot', 'xkcd');
   $self->dispose($command, "plotting");
   $self->lastplot(q{});
 };
@@ -221,6 +222,32 @@ override fix_envelope => sub {
 };
 
 
+## this redefines the DESTROY method for Graphics::GnuplotIF to remove
+## an unhelpful warning
+package Graphics::GnuplotIF;
+
+{ no warnings 'redefine';
+  sub DESTROY {
+    my  $self = shift;
+    #---------------------------------------------------------------------------
+    #  close pipe to gnuplot / close the script file -- SILENTLY!
+    #---------------------------------------------------------------------------
+    defined $self->{__iohandle_pipe} && close $self->{__iohandle_pipe};
+    defined $self->{__iohandle_file} && close $self->{__iohandle_file};
+
+    #---------------------------------------------------------------------------
+    #  remove empty error logfiles, if any
+    #---------------------------------------------------------------------------
+    my  @stat   = stat $self->{__error_log};
+
+    if ( defined $stat[7] && $stat[7]==0 ) {
+        unlink $self->{__error_log}
+            or croak "Couldn't unlink $self->{__error_log}: $!"
+    }
+    return;
+  } # ----------  end of subroutine DESTROY  ----------
+}
+
 
 # this gives problems during cleanup:
 #        (in cleanup) Can't call method "execute" on an undefined
@@ -330,7 +357,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

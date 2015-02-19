@@ -2,7 +2,7 @@ package Demeter::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -515,6 +515,15 @@ sub fix {
   $self->set_default("athena", "autosave_frequency", $self->demeter("athena", "autosave_frequency"))
     if $self->default("athena", "autosave_frequency") < 2;
 
+  if ($self->default('gnuplot', 'keyparams') =~ m{box(?!\slw)}) {
+    my $old = $self->default('gnuplot', 'keyparams');
+    $old =~ s{box}{box lw 1};
+    $self->set_default('gnuplot', 'keyparams', $old);
+  };
+  if ($self->default('gnuplot', 'xkcd')) {
+    $self->set_default('gnuplot', 'font', 'Humor-Sans');
+  };
+
   return $self;
 };
 
@@ -966,7 +975,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

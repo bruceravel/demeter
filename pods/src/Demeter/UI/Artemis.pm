@@ -99,6 +99,7 @@ const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
 const my $PLOT_PDF	  => Wx::NewId();
+const my $PLOT_XKCD	  => Wx::NewId();
 const my $PLOT_ALL_DATA	  => Wx::NewId();
 const my $PLOT_NO_DATA	  => Wx::NewId();
 const my $TERM_1          => Wx::NewId();
@@ -167,9 +168,9 @@ sub OnInit {
   $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
   ##$frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
-  $app->{main}->{prefgroups} = [sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
-					file histogram bft fit interpolation bkg fspath lcf warnings gds
-					operations)];
+  $app->{main}->{prefgroups} = [sort qw(gnuplot larch indicator marker artemis feff happiness
+					pathfinder fft plot atoms file histogram bft fit
+					interpolation bkg fspath lcf warnings gds operations)];
 
 
   ## -------- Set up menubar
@@ -263,8 +264,10 @@ sub OnInit {
   #my $settingsmenu = Wx::Menu->new;
 
   my $plotmenu = Wx::Menu->new;
+  $frames{main}->{plotmenu} = $plotmenu;
   $plotmenu->Append($PLOT_PNG, "Last plot to png file", "Send the last plot to a png file");
   $plotmenu->Append($PLOT_PDF, "Last plot to pdf file", "Send the last plot to a pdf file");
+  $plotmenu->AppendCheckItem($PLOT_XKCD, 'Plot XKCD style', 'Plot more or less in the style of an XKCD cartoon');
   $plotmenu->AppendSeparator;
   $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
   $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
@@ -273,6 +276,8 @@ sub OnInit {
   $plotmenu->AppendSeparator;
   $plotmenu->Append($PLOT_ALL_DATA, "Plot all data sets after fit", "Set all data sets to be plotted after a fit finishes");
   $plotmenu->Append($PLOT_NO_DATA,  "Plot no data sets after fit", "Set all data sets NOT to be plotted after a fit finishes");
+
+  $plotmenu->Check($PLOT_XKCD, Demeter->co->default('gnuplot', 'xkcd'));
 
 
   my $helpmenu = Wx::Menu->new;
@@ -488,6 +493,7 @@ sub OnInit {
 		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
 		     feedback     => \&feedback,
 		    );
+  Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   1;
@@ -849,6 +855,7 @@ sub ifeffit_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $frames{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $color = 'endblock' if ($line =~ m{\A\#end});
     $frames{Buffer}->color('ifeffit', $was, $is, $color);
     $frames{Buffer}->insert('ifeffit', $/)
   };
@@ -869,6 +876,7 @@ sub feedback {
   my ($text) = @_;
   my ($was, $is) = $frames{Buffer}->insert('ifeffit', $text);
   my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $color = 'warning' if $text =~ m{(?<!except )(?:Name|UnboundLocal)Error:};
   $frames{Buffer}->color('ifeffit', $was, $is, $color);
 };
 
@@ -973,6 +981,7 @@ sub OnMenuClick {
     };
     ($id == wxID_EXIT) and do {
       $self->Close;
+      Demeter->stop_larch_server;
       return;
     };
     ($id == wxID_OPEN) and do {
@@ -1090,6 +1099,13 @@ sub OnMenuClick {
     ($id == $PLOT_PDF) and do {
       $frames{Plot}->image('pdf');
       last SWITCH;
+    };
+    ($id == $PLOT_XKCD) and do {
+      if ($frames{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
+	Demeter->xkcd(1);
+      } else {
+	Demeter->xkcd(0);
+      };
     };
 
     ($id == $TERM_1) and do {
@@ -1736,7 +1752,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

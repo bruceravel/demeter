@@ -2,7 +2,7 @@ package Demeter::UI::Artemis::Project;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -231,7 +231,7 @@ sub read_project {
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
     Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
-    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
+    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname) or Demeter->is_json($fname));
     Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
     Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
     $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');
@@ -505,6 +505,7 @@ sub restore_fit {
       $grid -> AppendRows(1,1);
       $rframes->{GDS}->initialize_row( $grid->GetNumberRows - 1 );
     };
+    $g->gds('skip') if (Demeter->is_larch and ($g->gds eq 'restrain'));
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
@@ -530,6 +531,7 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
+  $rframes->{GDS}->reset_all;
   $fom = $fit->fom+1;
   Demeter->mo->currentfit($fom);
   my ($name, $description) = (q{}, q{});
@@ -795,7 +797,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

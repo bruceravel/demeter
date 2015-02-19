@@ -2,7 +2,7 @@ package Demeter::Data::Prj;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -74,7 +74,7 @@ sub Read {
   my $cpt = new Safe;
   while ($athena_fh->gzreadline($line) > 0) {
     ++$nline;
-    if ($line =~ m{\A\@journal}) {
+    if ($line =~ m{\A\@journal}) { # original style
       @ {$cpt->varglob('journal')} = $cpt->reval( $line );
       my @journal = @ {$cpt->varglob('journal')};
       $self->journal(join($/, @journal));
@@ -489,7 +489,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data::Prj - Read data from Athena project files
+Demeter::Data::Prj - Read data from original-style Athena project files
 
 =head1 VERSION
 
@@ -507,7 +507,11 @@ It is not a subclass of some other Demeter method.
 The script C<lsprj>, which comes with Demeter, uses this module.
 
 See L<Demeter::Data::Athena> for Demeter's method of writing
-Athena project file.
+Athena project files.
+
+Note that the semantics of this object are identical to
+Demeter::Data::JSON.  They are intended to be used interchangeably.
+Athena and Artemis will read Prj and JSON files transparently.
 
 =head1 METHODS
 
@@ -652,15 +656,7 @@ Need to deal with chi groups, detector groups, etc.
 
 =item *
 
-Need to resolve interdependencies, such as background removal standard
-
-=item *
-
 Not dealing yet with, for instance, LCF parameters
-
-=item *
-
-Some information available from Ctrl-b in Athena is thrown away
 
 =back
 
@@ -677,7 +673,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

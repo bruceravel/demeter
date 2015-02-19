@@ -3,7 +3,7 @@ package  Demeter::UI::Artemis::Plot::Limits;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -69,6 +69,7 @@ sub new {
   $this->{background} = Wx::CheckBox->new($this, -1, "Plot bkg");
   $gbs -> Add($this->{background}, Wx::GBPosition->new(0,1));
   Demeter->po->plot_bkg(0);
+  $this->{background}->Enable(0) if Demeter->is_larch;
 
   $this->{window} = Wx::CheckBox->new($this, -1, "Plot window");
   $gbs -> Add($this->{window}, Wx::GBPosition->new(1,0));
@@ -222,7 +223,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

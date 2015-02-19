@@ -70,10 +70,7 @@
 <hr />
 <!-- INDEX END -->
 
-<pre>                                John Keats
-                                Ode on a Grecian Urn
-
-</pre><h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <p>Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch</p>
 
@@ -88,7 +85,7 @@
 <pre>  use Demeter;
 
 </pre><p>This will import all Demeter components into your program.
-Using Demeter automatically turns on <a href="http://search.cpan.org/perldoc?strict">strict</a> and <a href="http://search.cpan.org/perldoc?warnings">warnings</a>.</p>
+Using Demeter automatically turns on <a href="https://metacpan.org/pod/strict">strict</a> and <a href="https://metacpan.org/pod/warnings">warnings</a>.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
@@ -118,7 +115,7 @@ analysis or complex physical modeling.</p>
 manipulated in any real program using Demeter.  Each of these objects
 is implemented using Moose, the amazing meta-object system for Perl.
 Although Moose adds some overhead at start-up for any application
-using Demeter, its benefits are legion.  See <a href="http://search.cpan.org/perldoc?Moose">Moose</a> and
+using Demeter, its benefits are legion.  See <a href="https://metacpan.org/pod/Moose">Moose</a> and
 <a href="http://moose.iinteractive.com">http://moose.iinteractive.com</a> for more information.</p>
 
 <h1 id="IMPORT">IMPORT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
@@ -167,8 +164,7 @@ Demeter program by specfying that behavior at compile-time.</p>
 		<dd><p>Specify the plotting backend.  The default is <code>pgplot</code>.  The other
 option is <code>gnuplot</code>.  A <code>demeter</code> option will be available soon for
 generating perl scripts which plot.</p></dd>
-		<dd><p>This can also be set during run-time using the <code>plot_with</code> method
-during run-time.</p></dd>
+		<dd><p>This can also be set during run-time using the <code>plot_with</code> method.</p></dd>
 	<dt><code>:ui=XX</code></dt>
 		<dd><p>Specify the user interface.  Currently the only option is <code>screen</code>.
 Setting the UI to screen does four things:</p></dd>
@@ -178,27 +174,27 @@ Setting the UI to screen does four things:</p></dd>
 object.  This imports the <code>interview</code> method for use with the Fit
 object, offering a CLI interface to the results of a fit.</p></dd>
 	<dt>2.</dt>
-		<dd><p>Uses <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a> or <code>Term::Sk</code> to provide some visual feedback
+		<dd><p>Uses <a href="https://metacpan.org/pod/Term%3A%3ATwiddle">Term::Twiddle</a> or <a href="https://metacpan.org/pod/Term%3A%3ASk">Term::Sk</a> to provide some visual feedback
 on the screen while something time consuming is happening.</p></dd>
 	<dt>3.</dt>
 		<dd><p>Makes the CLI prompting tool from <a href="Demeter/UI/Screen/Pause.pm.html">Demeter::UI::Screen::Pause</a>
 available.</p></dd>
 	<dt>4.</dt>
-		<dd><p>Turns on colorization of output using <a href="http://search.cpan.org/perldoc?Term%3A%3AASCIIColor">Term::ASCIIColor</a>.</p></dd>
+		<dd><p>Turns on colorization of output using <a href="https://metacpan.org/pod/Term%3A%3AASCIIColor">Term::ASCIIColor</a>.</p></dd>
 </dl>
 </dd>
-		<dd><p>The interview method uses <a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a>.  This is made into a
+		<dd><p>The interview method uses <a href="https://metacpan.org/pod/Term%3A%3AReadLine">Term::ReadLine</a>.  This is made into a
 pragmatic interaction in Demeter in case you want to use
-<a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a> in some other way in your program.  Not importing
+<a href="https://metacpan.org/pod/Term%3A%3AReadLine">Term::ReadLine</a> in some other way in your program.  Not importing
 the interview method by default allows you to avoid this error message
 from Term::ReadLine when you are using it in some other capacity:
 <code>Cannot create second readline interface, falling back to dumb.</code></p></dd>
-		<dd><p>Also <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a> is not imported until it is needed, allowing
+		<dd><p>Also <a href="https://metacpan.org/pod/Term%3A%3ATwiddle">Term::Twiddle</a> is not imported until it is needed, allowing
 this dependeny to be relaxed from a requirement to a suggestion.</p></dd>
 		<dd><p>Future UI options might include <code>tk</code>, <code>wx</code>, or <code>rpc</code>.</p></dd>
 	<dt><code>:t=XX</code> or <code>:template=XX</code></dt>
 		<dd><p>Specify the template set to use for data processing and fitting
-chores.  See <a href="http://search.cpan.org/perldoc?Demeter%3A%3Atemplates">Demeter::templates</a>.</p></dd>
+chores.  See <a href="https://metacpan.org/pod/Demeter%3A%3Atemplates">Demeter::templates</a>.</p></dd>
 		<dd><p>These can also be set during run-time using the <code>set_mode</code> method --
 see <a href="Demeter/Mode.pm.html">Demeter::Mode</a>.</p></dd>
 </dl>
@@ -243,10 +239,10 @@ the new object.  Passing this hash reference is equivalent to cloning
 the object, then calling the <code>set</code> method on the new object with that
 hash reference.</p></dd>
 		<dd><p>Note the capital <code>C</code>, which distinguishes this method from the one
-provided by the <a href="http://search.cpan.org/perldoc?MooseX%3A%3AClone">MooseX::Clone</a> role.</p></dd>
+provided by the <a href="https://metacpan.org/pod/MooseX%3A%3AClone">MooseX::Clone</a> role.</p></dd>
 	<dt><code>set</code></dt>
 		<dd><p>This method sets object attributes.  This is a convenience wrapper
-around the accessors provided by <a href="http://search.cpan.org/perldoc?Moose">Moose</a>.</p></dd>
+around the accessors provided by <a href="https://metacpan.org/pod/Moose">Moose</a>.</p></dd>
 <dd><pre>  $data_object -&gt; set(fft_kmin=&gt;3.1, fft_kmax=&gt;12.7);
   $path_object -&gt; set(file=&gt;'feff0123.dat', s0=&gt;'amp');
   $gds_object  -&gt; set(Type=&gt;'set', name=&gt;'foo', mathexp=&gt;7);
@@ -433,7 +429,7 @@ not require Demeter to know what kind of UI is in use.</p></dd>
 fitting model.  When using Demeter non-interactively, useful messages
 about problems in the fitting model will be written to standard
 output.  Critical problems in a non-interactive mode will be cause the
-script to croak (see <a href="http://search.cpan.org/perldoc?Carp">Carp</a>).</p>
+script to croak (see <a href="https://metacpan.org/pod/Carp">Carp</a>).</p>
 
 <p>In an interactive mode (such as with the Wx interface), the
 <code>add_trouble</code> method is used to fill the <code>trouble</code> attribute, which
@@ -463,7 +459,7 @@ system.</p>
 <ul>
 	<li>Template evaluation is a potential security hole in the sense that
 someone could put something like <code>{system 'rm -rf *'}</code> in one of the
-templates.  <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> supports using a <a href="http://search.cpan.org/perldoc?Safe">Safe</a> compartment.</li>
+templates.  <a href="https://metacpan.org/pod/Text%3A%3ATemplate">Text::Template</a> supports using a <a href="https://metacpan.org/pod/Safe">Safe</a> compartment.</li>
 	<li>Serialization is incompletely implemented at this time.</li>
 </ul>
 
@@ -483,15 +479,15 @@ templates.  <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Te
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2014 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
+<p>Copyright (c) 2006-2015 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
 
 <p>This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
 
-</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
 </html>

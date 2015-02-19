@@ -123,7 +123,7 @@ sub Import {
       ## this fall through to the plugin
     #};
     my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
-    if (Demeter->is_prj($file,$verbose)) {
+    if (Demeter->is_prj($file,$verbose) or Demeter->is_json($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
     } elsif ($Demeter::XDI_exists and Demeter->is_xdi($file,$verbose)) {
@@ -1054,7 +1054,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

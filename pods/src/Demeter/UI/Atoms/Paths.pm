@@ -234,7 +234,7 @@ sub OnDrag {
   my @data;
   my $item = $list->GetFirstSelected;
   while ($item ne -1) {
-    my $p = $list->GetItemData($item);
+    my $p = $list->GetItemData($item)-1;
     push @data, $pathlist[$p]->group;
     #print $pathlist[$item]->intrpline, $/;
     $item = $list->GetNextSelected($item);
@@ -356,7 +356,7 @@ sub plot {
   while ($this != -1) {
     my $i    = $self->{paths}->GetItemData($this);
     my $feff = $self->{parent}->{Feff}->{feffobject};
-    my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
+    my $sp   = $feff->pathlist->[$i-1]; # the ScatteringPath associated with this selected item
     my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
 
     $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation (".$sp->randstring.") beginning at "));
@@ -408,7 +408,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

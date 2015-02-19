@@ -2,7 +2,7 @@ package Demeter::UI::AtomsApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -354,7 +354,7 @@ sub OnInit {
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
-  EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
+  EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
   $frame->{atomsmenu} = $file;
   $frame->{helpmenu} = $help;
@@ -594,7 +594,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

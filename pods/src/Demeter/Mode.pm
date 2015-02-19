@@ -232,6 +232,17 @@ has 'Prj' => (
 			      'splice_Prj'  => 'splice',
 			     }
 	       );
+has 'JSON' => (
+		traits    => ['Array'],
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		handles   => {
+			      'push_JSON'    => 'push',
+			      'clear_JSON'   => 'clear',
+			      'splice_JSON'  => 'splice',
+			     }
+	       );
 
 has 'MultiChannel' => (
 		traits    => ['Array'],
@@ -404,7 +415,7 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},
+				   StructuralUnit Prj JSON Pixel MultiChannel BulkMerge Journal Distributions)]},
 	       );
 
 has 'Plugins' => (
@@ -541,6 +552,7 @@ sub everything {
 	  @{ $self->FSPath	   },
 	  @{ $self->StructuralUnit },
 	  @{ $self->Prj		   },
+	  @{ $self->JSON	   },
 	  @{ $self->Pixel          },
 	  @{ $self->MultiChannel   },
 	  @{ $self->BulkMerge      },
@@ -639,14 +651,15 @@ objects.  Any of these methods can be called by any Demeter object:
     ## and so on ...
 
 This object also monitors the creation and destruction of Demeter
-objects (Atoms, Data, Data::Prj, Data::MultiChannel, Data::BulkMerge,
-Feff, Feff::External, Fit, GDS, Path, Plot, Plot::Indicator,
-ScatteringPath, SSPath, VPath, etc.) and provides methods which give a
-way for one object to affect any other objects created during the
-instance of Demeter.  For example, when the kweight value of the Plot
-object is changed, it is necessary to signal all Data objects that
-they will need to update their forward Fourier transforms.  This
-object is the glue that allows things like that to happen.
+objects (Atoms, Data, Data::Prj, Data::JSON, Data::MultiChannel,
+Data::BulkMerge, Feff, Feff::External, Fit, GDS, Path, Plot,
+Plot::Indicator, ScatteringPath, SSPath, VPath, etc.) and provides
+methods which give a way for one object to affect any other objects
+created during the instance of Demeter.  For example, when the kweight
+value of the Plot object is changed, it is necessary to signal all
+Data objects that they will need to update their forward Fourier
+transforms.  This object is the glue that allows things like that to
+happen.
 
 =head1 ATTRIBUTES
 
@@ -826,6 +839,10 @@ A list of all SSPath objects created during this instance of Demeter.
 
 A list of all Data::Prj objects created during this instance of Demeter.
 
+=item C<JSON>
+
+A list of all Data::JSON objects created during this instance of Demeter.
+
 =back
 
 =head2 Other attributes
@@ -992,7 +1009,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

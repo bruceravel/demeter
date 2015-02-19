@@ -2,7 +2,7 @@ package Demeter::Files;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -175,6 +175,28 @@ sub is_prj {
 };
 alias is_athena => 'is_prj';
 
+sub is_json {
+  my ($self, $file, $verbose) = @_;
+  $verbose ||= 0;
+  my $gz = gzopen($file, "rb");
+  return 0 if not defined $gz;
+  my $is_jsn = 0;
+  my $line;
+  foreach my $l (1..4) {	# look for _____header1 in the first four lines
+    $gz->gzreadline($line);
+    #print $line, $/;
+    $is_jsn = ($line =~ /_____header\d.+Athena project file/) ? 1 : 0;
+    last if $is_jsn;
+  };
+  $gz->gzclose();
+  if ($verbose) {
+    my $passfail = ($is_jsn) ? 'athena    ' : 'not athena';
+    printf "%s\n\t%s  is_json=%s\n", $file, $passfail, $is_jsn;
+  };
+  return $is_jsn;
+};
+
+
 sub is_zipproj {
   my ($self, $file, $verbose, $type) = @_;
   $verbose ||= 0;
@@ -277,7 +299,7 @@ Patches are welcome.
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

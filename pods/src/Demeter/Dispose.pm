@@ -2,7 +2,7 @@ package Demeter::Dispose;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -264,7 +264,16 @@ sub dispose {
     my $coderef = $self->get_mode("feedback");
     if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
       if ($self->is_larch) {
-	## ned something here...
+	my $response = Larch::get_messages();
+	## send to feedback code ref
+	if ($coderef) {
+	  ($response) and &$coderef($response."\n");
+
+	## send to the screen with ANSI colorization
+	} elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	  $self->_ansify($response.$/, "feedback")
+	};
+
       } else {
 	my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
 	if ($lines) {		# is there feedback?
@@ -632,7 +641,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

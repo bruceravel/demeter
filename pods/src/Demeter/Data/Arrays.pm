@@ -3,6 +3,7 @@ use Moose::Role;
 use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise minmax);
+use PDL::Lite;
 use Regexp::Assemble;
 
 use Demeter::Constants qw($ETOK);
@@ -241,6 +242,14 @@ sub points {
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;
   };
+  # if (Demeter->co->default('gnuplot', 'xkcd')) {
+  #   my $x = PDL->new(\@x);
+  #   my $y = PDL->new(\@y);
+  #   my $random  = PDL::Primitive::random($x->dims);
+  #   my $range = PDL::Ufunc::max($y);
+  #   my $jiggled = $y+$range*(2*($random-0.5)*0.005);
+  #   @y = PDL::Core::list($jiggled);
+  # };
 
   my $message = q{};
   pairwise { $message .= join(" ", $a, $b, $/) if (defined($a) and defined($b))} @x, @y;
@@ -378,7 +387,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

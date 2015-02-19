@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::F1F2;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -161,7 +161,7 @@ sub f1f2_get_data {
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  Demeter->dispense("plot", 'prep_f1f2');
+  Demeter->dispense('process', 'prep_f1f2');
   Demeter->chart("plot", $which);
 
   $self->{echo}->SetStatusText(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",
@@ -269,7 +269,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

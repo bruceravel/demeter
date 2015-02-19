@@ -113,7 +113,7 @@ sub OnInit {
   EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
   $app->{main}->{prefgroups} = [qw(absorption athena bft bkg clamp convolution dispersive
 				   edgestep fft file fit gnuplot indicator interpolation
-				   lcf marker merge operations pca peakfit plot rebin
+				   larch lcf marker merge operations pca peakfit plot rebin
 				   smooth whiteline xanes)];
 
 
@@ -243,6 +243,7 @@ sub ifeffit_buffer {
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $color = 'endblock' if ($line =~ m{\A\#end});
     $::app->{Buffer}->color('ifeffit', $was, $is, $color);
     $::app->{Buffer}->insert('ifeffit', $/)
   };
@@ -254,7 +255,6 @@ sub plot_buffer {
     my $color = ($line =~ m{\A\#}) ? 'comment'
       : (Demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
 	:'normal';
-
     $::app->{Buffer}->color('plot', $was, $is, $color);
     $::app->{Buffer}->insert('plot', $/)
   };
@@ -263,6 +263,7 @@ sub feedback {
   my ($text) = @_;
   my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $text);
   my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $color = 'warning' if $text =~ m{(?<!except )(?:Name|UnboundLocal)Error:};
   $::app->{Buffer}->color('ifeffit', $was, $is, $color);
 };
 
@@ -348,6 +349,8 @@ const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
 const my $SAVE_COMPAT		=> Wx::NewId();
+const my $SAVE_ORIG		=> Wx::NewId();
+const my $SAVE_JSON		=> Wx::NewId();
 
 const my $EACH_MUE		=> Wx::NewId();
 const my $EACH_NORM		=> Wx::NewId();
@@ -444,6 +447,7 @@ const my $PLOT_PNG		=> Wx::NewId();
 const my $PLOT_GIF		=> Wx::NewId();
 const my $PLOT_JPG		=> Wx::NewId();
 const my $PLOT_PDF		=> Wx::NewId();
+const my $PLOT_XKCD		=> Wx::NewId();
 const my $PLOT_DOC		=> Wx::NewId();
 
 const my $SHOW_BUFFER		=> Wx::NewId();
@@ -488,7 +492,15 @@ const my $QUESTION		=> Wx::NewId();
 sub menubar {
   my ($app) = @_;
   my $bar        = Wx::MenuBar->new;
+
   $app->{main}->{mrumenu} = Wx::Menu->new;
+
+  $app->{main}->{formatmenu} = Wx::Menu->new;
+  $app->{main}->{formatmenu} -> AppendRadioItem($SAVE_ORIG, "Original format", "Save Athena project files in the original, backwards compatible format");
+  $app->{main}->{formatmenu} -> AppendRadioItem($SAVE_JSON, "JSON format", "Save Athena project files in the JSON format");
+  $app->{main}->{formatmenu} -> Check($SAVE_ORIG, 1) if Demeter->co->default('athena', 'project_format') eq 'athena';
+  $app->{main}->{formatmenu} -> Check($SAVE_JSON, 1) if Demeter->co->default('athena', 'project_format') eq 'json';
+
   my $filemenu   = Wx::Menu->new;
   $app->{main}->{filemenu} = $filemenu;
   $filemenu->Append(wxID_OPEN,  "Import data\tCtrl+o", "Import data from a data or project file" );
@@ -499,6 +511,7 @@ sub menubar {
   $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
   $filemenu->AppendCheckItem($SAVE_COMPAT, "Backwards compatible project files", "Save project files so that they can be imported by Athena 0.9.17 and earlier (information WILL be lost!)");
   $filemenu->Check($SAVE_COMPAT, Demeter->co->default('athena', 'compatibility'));
+  $filemenu->AppendSubMenu($app->{main}->{formatmenu}, "Project format", "Specify the format of the Athena project file" );
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -664,10 +677,11 @@ sub menubar {
   $app->{main}->{freezemenu} = $freezemenu;
 
 
-  my $plotmenu    = Wx::Menu->new;
+  my $plotmenu        = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
   my $mergedplotmenu  = Wx::Menu->new;
+  $app->{main}->{plotmenu}        = $plotmenu;
   $app->{main}->{currentplotmenu} = $currentplotmenu;
   $app->{main}->{markedplotmenu}  = $markedplotmenu;
   $app->{main}->{mergedplotmenu}  = $mergedplotmenu;
@@ -699,6 +713,7 @@ sub menubar {
 
     $plotmenu->AppendSeparator;
     $plotmenu->AppendSubMenu($imagemenu, "Save last plot as...", "Save the last plot as an image file");
+    $plotmenu->AppendCheckItem($PLOT_XKCD, 'Plot XKCD style', 'Plot more or less in the style of an XKCD cartoon');
     $plotmenu->AppendSeparator;
     $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
     $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
@@ -707,7 +722,8 @@ sub menubar {
   };
   $plotmenu->AppendSeparator;
   $plotmenu->Append($PLOT_DOC,      "Document section: plotting data", "Open the document page on plotting data" );
-  $app->{main}->{plotmenu} = $plotmenu;
+
+  $plotmenu->Check($PLOT_XKCD, Demeter->co->default('gnuplot', 'xkcd'));
 
   my $markmenu   = Wx::Menu->new;
   $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tShift+Ctrl+t", "Toggle mark of current group" );
@@ -834,6 +850,7 @@ sub OnMenuClick {
       #my $ok = $app->on_close;
       #return if not $ok;
       $self->Close;
+      Demeter->stop_larch_server;
       return;
     };
     ($id == wxID_OPEN) and do {
@@ -850,6 +867,16 @@ sub OnMenuClick {
     };
     ($id == $SAVE_MARKED) and do {
       $app -> Export('marked');
+      last SWITCH;
+    };
+    ($id == $SAVE_ORIG) and do {
+      Demeter->co->set_default('athena', 'project_format', 'athena');
+      $app->{main}->status("Saving Athena projects to the original, backwards-compatible format");
+      last SWITCH;
+    };
+    ($id == $SAVE_JSON) and do {
+      Demeter->co->set_default('athena', 'project_format', 'json');
+      $app->{main}->status("Saving Athena projects to the JSON format");
       last SWITCH;
     };
 
@@ -1358,6 +1385,14 @@ sub OnMenuClick {
     };
     ($id == $PLOT_PDF) and do {
       $app->image('pdf');
+      last SWITCH;
+    };
+    ($id == $PLOT_XKCD) and do {
+      if ($app->{main}->{plotmenu}->IsChecked($PLOT_XKCD)) {
+	Demeter->xkcd(1);
+      } else {
+	Demeter->xkcd(0);
+      };
       last SWITCH;
     };
 
@@ -3039,7 +3074,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

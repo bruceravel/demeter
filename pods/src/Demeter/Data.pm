@@ -2,7 +2,7 @@ package Demeter::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .transmission
  This file is free software; you can redistribute it and/or
@@ -428,6 +428,7 @@ has 'fit_rfactor1'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
 has 'fit_rfactor2'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
 has 'fit_rfactor3'	  => (is => 'rw', isa => 'LaxNum',   default => 0, );
 has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] }, traits => [ qw(Quenchable) ],);
+has 'fit_group' 	  => (is => 'rw', isa => 'Str',      default => q{}, );
 
 ## -------- plotting parameters
 has 'y_offset'	          => (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
@@ -491,6 +492,7 @@ override all => sub {
   delete $all{fft_pcpath};
   delete $all{is_mc};
   delete $all{xdi};
+  delete $all{fit_group};
   return %all;
 };
 
@@ -553,6 +555,7 @@ sub _nidp {
 }
 sub chi_noise {
   my ($self) = @_;
+  #return $self if $self->fit_group;
   $self->dispense("process", "chi_noise");
   my $epsk = $self->fetch_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
@@ -564,6 +567,42 @@ sub chi_noise {
   $self->epsr( sprintf("%.3e", $epsr) );
   $self->recommended_kmax( sprintf("%.3f", $self->fetch_scalar("kmax_suggest")) );
   return $self;
+};
+
+## how Larch and Ifeffit report epsilon is very different, so it is
+## hard to abstract this out in the manner of Get.pm.  Instead, I am
+## simply special-casing the problem of reporting epsilon in the fit
+## log file
+sub get_eps {
+  my ($self) = @_;
+  my ($epsk, $epsr) = (0,0);
+  my ($eps1, $eps2, $eps3) = (0,0,0);
+  if (Demeter->is_larch and $self->fit_group) {
+    my @eps = $self->fetch_array('dset_'.$self->group.'.epsilon_k');
+    $eps2 = shift @eps if $self->fit_k2;
+    $eps1 = shift @eps if $self->fit_k1;
+    $eps3 = shift @eps if $self->fit_k3;
+    my @parts = ();
+    push(@parts, sprintf("1 -> %.3e", $eps1)) if $self->fit_k1;
+    push(@parts, sprintf("2 -> %.3e", $eps2)) if $self->fit_k2;
+    push(@parts, sprintf("3 -> %.3e", $eps3)) if $self->fit_k3;
+    $epsk = join(', ', @parts);
+
+    @eps = $self->fetch_array('dset_'.$self->group.'.epsilon_r');
+    $eps2 = shift @eps if $self->fit_k2;
+    $eps1 = shift @eps if $self->fit_k1;
+    $eps3 = shift @eps if $self->fit_k3;
+    @parts = ();
+    push(@parts, sprintf("1 -> %.3e", $eps1)) if $self->fit_k1;
+    push(@parts, sprintf("2 -> %.3e", $eps2)) if $self->fit_k2;
+    push(@parts, sprintf("3 -> %.3e", $eps3)) if $self->fit_k3;
+    $epsr = join(', ', @parts);
+
+  } else {
+    $epsk = $self->epsk;
+    $epsr = $self->epsr;
+  };
+  return ($epsk, $epsr);
 };
 
 sub get_kweight {
@@ -1902,7 +1941,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

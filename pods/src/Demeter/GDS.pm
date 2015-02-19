@@ -2,7 +2,7 @@ package Demeter::GDS;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,10 +19,11 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+use MooseX::Aliases;
 use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
-use Demeter::Constants qw($NUMBER);
+use Demeter::Constants qw($NUMBER $EPSILON7);
 
 has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,     default => 'guess');
@@ -63,6 +64,17 @@ sub parameter_list {
 # skip after merge
 sub write_gds {
   my ($self) = @_;
+  my $small = Demeter->co->default('larch', 'zero');
+  $small ||= $EPSILON7;
+  if ($self->mathexp =~ m{\A$NUMBER\z}) {
+    if (Demeter->is_larch and (abs($self->mathexp) < $small)) {
+      if ($self->mathexp < 0) {
+	$self->mathexp(-1*$small);
+      } else {
+	$self->mathexp($small);
+      };
+    };
+  };
   my $string = $self->template("fit", "gds");
   return $string;
 };
@@ -180,11 +192,13 @@ sub evaluate {
   return 1;
 };
 
-sub push_ifeffit {
+sub push_backend {
   my ($self) = @_;
   $self->dispose($self->write_gds);
   return $self;
 };
+alias push_larch   => 'push_backend';
+alias push_ifeffit => 'push_backend';
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -449,7 +463,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

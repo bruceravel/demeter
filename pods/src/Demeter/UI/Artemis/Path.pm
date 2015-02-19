@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Path;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -469,7 +469,12 @@ sub OnLabelMenu {
 
     (($id == $DEBYE) or ($id == $EINS)) and do {	# correlated Debye model / Einstein model
       my $theta = ($id == $DEBYE) ? 'thetad' : 'thetae';
-      my $func  = ($id == $DEBYE) ? 'debye'  : 'eins';
+      my $func;
+      if (Demeter->is_ifeffit) {
+	$func = ($id == $DEBYE) ? 'debye'  : 'eins';
+      } elsif (Demeter->is_larch) {
+	$func = ($id == $DEBYE) ? 'sigma2_debye'  : 'sigma2_eins';
+      };
       my $full  = ($id == $DEBYE) ? 'Debye'  : 'Einstein';
       $currentpage->{"pp_$param"}->SetValue("$func(temp, $theta)");
       my $gds = $Demeter::UI::Artemis::frames{GDS};
@@ -661,7 +666,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::LCF;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -438,11 +438,11 @@ sub _statistics {
     $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
     $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
     $self->nvarys($self->fetch_scalar('n_varys'));
-  } elsif (Demeter->mo->template_analysis eq 'larch') {
+  } elsif (Demeter->is_larch) {
     $self->rfactor(sprintf("%.7f", $self->fetch_scalar('demlcf.rfactor')));
     $self->chisqr(sprintf("%.5f", $self->fetch_scalar('demlcf.chi_square')));
     $self->chinu(sprintf("%.7f", $self->fetch_scalar('demlcf.chi_reduced')));
-    $self->nvarys($self->fetch_scalar('demlcf.nvarys'));
+    $self->nvarys(int($self->fetch_scalar('demlcf.nvarys')));
     my @x     = $self->get_array('x');
     foreach my $i (0 .. $#x) {
       next if ($x[$i] < $self->xmin);
@@ -1655,7 +1655,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

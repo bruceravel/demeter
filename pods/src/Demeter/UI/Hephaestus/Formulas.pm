@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::Formulas;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -131,7 +131,7 @@ sub on_key_down {
   my ($self, $event, $parent) = @_;
   if ($event->GetKeyCode == 13) {
     #print join("|", $self, $event, $parent), $/;
-    get_formula_data($self, $event, $parent);
+    get_formula_data($parent, $event, $parent);
   } else {
     $event->Skip;
   };
@@ -392,7 +392,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -506,7 +506,7 @@ sub fill_intrp_page {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp1color') ),
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
-  my $i = 0;
+  my $i = 1;
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText("\n\n********** Ranking paths...\n");
   $self->{parent}->status("Ranking paths...");
@@ -639,7 +639,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

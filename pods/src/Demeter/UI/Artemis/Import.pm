@@ -62,7 +62,7 @@ sub prjrecord {
     $file = $fd->GetPath;
   }
   $file = Demeter->follow_link($file);
-  if (not Demeter->is_prj($file)) {
+  if ((not Demeter->is_prj($file)) and (not Demeter->is_json($file))) {
     $rframes->{main}->status("$file is not an Athena project file.", 'error');
     return (q{}, q{}, -1);
   };
@@ -756,7 +756,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

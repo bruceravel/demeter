@@ -2,7 +2,7 @@ package Demeter::Get;
 
 =for Copyright
  .
- Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -53,48 +53,94 @@ sub fetch_scalar {
   if ($self->is_ifeffit) {
     return Ifeffit::get_scalar($param);
 
+  ## munge ifeffit parameter names to their larch equivalent
   } elsif ($self->is_larch) {
     my $gp = $self->group || Demeter->mo->throwaway_group;
     if ($param =~ m{norm_c\d}) {
       $param = $gp.'.'.$param;
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{epsilon_([kr])}) {
-      $param = $gp.'.epsilon_'.$1;
-      return Larch::get_larch_scalar($param);
+      #if ($self->fit_group) {
+      #	my $n = $self->fit_data-1;
+      #	$param = join('.', $self->fit_group, 'datasets['.$n.']', 'epsilon_'.$1);
+      #	return Larch::get_larch_array($param);
+      #} else {
+      $param = join('.', $self->group, 'epsilon_'.$1);
+      return denull(Larch::get_larch_scalar($param));
+      #};
+    } elsif ($param =~ m{r_factor}) {
+      $param = $gp.'.params.rfactor';
+      return denull(Larch::get_larch_scalar($param));
+    } elsif ($param =~ m{(?<!demlcf\.)(chi_reduced|chi_square)}) { # NOT the ones from an LCF fit!
+      $param = $gp.'.params.'.$1;
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{\A(?:e0|edge_step|kmax_suggest)\z}) {
       $param = $gp.'.'.$param;
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
+
+    ## normalization parameters
     } elsif ($param =~ m{pre_(?:offset|slope)}) {
       $param = $gp.'.'.$param;
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
+
+    ## auto-alignment parameter
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{(aa__)_(esh|scale)\b}) {
-      $param = $1.'.'.$2;
-      return Larch::get_larch_scalar($param);
+      $param = $1.'.'.$2.'.value';
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
+
+    ## log ratio/phase difference parameters
     } elsif ($param =~ m{\A(lr_)__(pd[024])}) {
-      $param = $1.'e.'.$2;
-      return Larch::get_larch_scalar($param);
+      $param = $1.'e.'.$2.'.value';
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{\A(lr_)__(pd[13])}) {
-      $param = $1.'o.'.$2;
-      return Larch::get_larch_scalar($param);
+      $param = $1.'o.'.$2.'.value';
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{delta_(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.stderr';
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{delta_(lr_)__(pd[13])}) {
       $param = $1.'o.'.$2.'.stderr';
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
+
+    ## exafs fitting parameters
+    } elsif ($param =~ m{delta_(.+)}) {
+      $param = join('.', 'gds', $1, 'stderr');
+      return denull(Larch::get_larch_scalar($param));
+
+    } elsif ($param =~ m{\Ademlcf.+_(a|e|offset|slope)\z}) {
+      $param .= '.value';
+      return denull(Larch::get_larch_scalar($param));
+
+    } elsif ($param =~ m{\Adempeak\.\w+_\d\z}) {
+      $param .= '.value';
+      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{_p(\d+)\z}) {
       $param = 'dempcatt._p'.$1;
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
+
+    } elsif ($param eq 'filter_top') {
+      $param = "f1f2.$param";
+      return denull(Larch::get_larch_scalar($param));
+
+    } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
+      return denull(Larch::get_larch_scalar($param.'.value'));
+
     } else {
-      return Larch::get_larch_scalar($param);
+      return denull(Larch::get_larch_scalar($param));
     };
   };
+};
+
+sub denull {
+  return 0 if $_[0] eq 'null';
+  return $_[0];
 };
 
 sub fetch_string {
@@ -107,7 +153,8 @@ sub fetch_string {
     if ($param eq'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
       $param = $gp.'.column_labels';
-      my $list = eval(Larch::get_larch_scalar($param));
+      my $list = Larch::get_larch_scalar($param);
+      $list = eval($list) if ref($list) ne 'ARRAY';
       return q{} if not $list;
       return join(" ", @$list);
     } else {
@@ -314,7 +361,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2014 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
