@@ -200,7 +200,7 @@ If all dependencies are met, build and install Demeter by doing:
   ./Build install  (or sudo ./Build install)
 
 If you are reinstalling Demeter after updating your operating
-system (or updating perl), you may find that none of the program
+system (or updating perl), you may find that none of the programs
 will run successfully.  You may need to do:
 
   ./Build touch_wrapper
