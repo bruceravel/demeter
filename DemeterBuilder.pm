@@ -225,6 +225,8 @@ sub ACTION_org2html {
 use File::Find;
 use File::Slurp::Tiny qw(read_file write_file);
 use File::Basename;
+my $old_cpan = qr{http://search\.cpan\.org/perldoc\?};
+my $new_cpan = q{https://metacpan.org/pod/};
 sub ACTION_doctree {
   my $self = shift;
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
@@ -247,17 +249,19 @@ sub ACTION_doctree {
   };
 
   find({wanted=>\&fix_cpan_link}, File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')));
-  my $n    = File::Spec->catfile('..', 'demeter-gh-pages', 'pods', 'index.html');
-  my $text = read_file($n);
-  $text    =~ s{http://search\.cpan\.org/perldoc\?}{https://metacpan.org/pod/}g;
-  write_file($n, $text);
+  my $n = File::Spec->catfile('..', 'demeter-gh-pages', 'pods', 'index.html');
+  slurp_replace($n, $old_cpan, $new_cpan);
 };
 sub fix_cpan_link {		# change all search.cpan.org links to equivalent link to metacpan.org
   return if $_ !~ m{\.html\z};
   my $n    = File::Spec->canonpath(File::Spec->catfile(cwd, basename($File::Find::name)));
-  my $text = read_file($n);
-  $text    =~ s{http://search\.cpan\.org/perldoc\?}{https://metacpan.org/pod/}g;
-  write_file($n, $text);
+  slurp_replace($n, $old_cpan, $new_cpan);
+};
+sub slurp_replace {
+  my ($file, $oldtext, $newtext) = @_;
+  my $text = read_file($file);
+  $text    =~ s{$oldtext}{$newtext}g;
+  write_file($file, $text);
 };
 
 sub ACTION_pull {
