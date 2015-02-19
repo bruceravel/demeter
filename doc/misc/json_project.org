@@ -38,17 +38,18 @@
  9. A project journal is optionally specified with the key
     ~_____journal~ and a list of strings containing the jounral text.
 
-** Fields in JSON file
+** Fields in the JSON file
 
 The JSON-style project file is typically saved as a gzipped file with
 a ~.prj~ extension.  Athena/Artemis are able to read the file gzipped
 or as plain text.  That is, an external application can save an Athena
 project file with or without compression.
 
-The project file is a serialized dictionary.  (I'll use pythonic
-language in this document.  By dictionary, I mean what another
-language might call a hash or an associative array.)  Each entry has a
-key and a value.  The value is typically a dictionary or a list.
+The project file is a single serialized dictionary.  (I'll use
+pythonic language in this document.  By dictionary, I mean what
+another language might call a hash or an associative array.)  Each
+entry has a key and a value.  The value is typically a dictionary or a
+list.
 
 There are several special fields that the JSON-style project file must
 contain so that Athena can properly process the file and preserve the
@@ -77,7 +78,7 @@ The first several lines should look something like this
 The ~_____emacs_mode~ line is a convenience for Bruce.  That will
 cause the file to display in a helpful way in Emacs, which will help
 him troubleshoot problems.  That line is *not required*, but Bruce
-will be grateful if you includee it.
+will be grateful if you include it.
 
 The ~_____headerN~ lines identify the file as an Athena project file,
 identify the moment of creation, and identify the program that and
@@ -93,7 +94,7 @@ in the first four lines:
 This regexp is insensitive to the type of quote or the amount of
 whitespace.  The index N in ~_____headerN~ is not important.  But one
 of the header fields *must* contain ~Athena project file~ and *must*
-show up in the first four line of the file.
+show up in the first four lines of the file.
 
 The ~_____header2~ and ~_____header3~ lines are *recommended*,
 including them is good form and may help with troubleshooting.  It is
@@ -131,7 +132,7 @@ context, a data group might be defined like so:
 
 while in the Ifeffit context
 
-:       read_data(file= mydata.dat, type=raw, group=ftaja)
+:       read_data(file=mydata.dat, type=raw, group=ftaja)
 
 In each case, "ftaja" is the group name which should be used as the
 key for the data field.  In Demeter, "ftaja" will be the return value
@@ -173,6 +174,10 @@ A proper JSON parser is used to read the project file.  The content
 must be valid JSON, but can be linted in any way.  Athena writes the
 data subfields as single lines, but that is *not required*.
 
+*:TODO:* Explain how the metadata dictionary works.
+
+*:TODO:* Serialization of analysis results (i.e. LCF, peak fitting, PCA)
+
 ** Attributes
 
 The following tables explain all the attributes found in a project
@@ -188,10 +193,10 @@ For example, a project file can have only parameters related to
 Autobk.  Those will be used by Athena and Athena's defaults will be
 used elsewhere.
 
-Attributes described as /output/, /determined from data/, or
-/user-supplied/ can be ignored by an external application writing a
-project file.  Those attributes are either evaluated by Athena during
-normal operation or can safely be ignored.
+Attributes described with things like /output/, /determined from
+data/, or /user-supplied/ can be ignored by an external application
+writing a project file.  Those attributes are either evaluated by
+Athena during normal operation or can safely be ignored.
 
 The lexicon of attribute names is open for discussion.  The Athena
 project file is basically a serialization of Demeter Data objects and
@@ -208,12 +213,12 @@ A data entry in the project file cannot be considered complete without
 these attributes included in the ~args~ dictionary.
 
 
-| attribute name | description                                                     | options                                 |
-|----------------+-----------------------------------------------------------------+-----------------------------------------|
-| datatype       | identify the type of data contained in the data entry           | xmu, xanes, chi, xmudat                 |
-| group          | string used as the group name                                   | Athena uses a random 5-character string |
-| label          | string used as a label, for example in the group list in Athena | default is the file name                |
-| is_nor         | flag indicating mu(E) data is already normalized                | false                                   |
+| attribute name | description                                                | options                                |
+|----------------+------------------------------------------------------------+----------------------------------------|
+| datatype       | identify the type of data contained in the data entry      | xmu, xanes, chi, xmudat                |
+| group          | string used as the group name                              | Athena uses random 5-character strings |
+| Label          | string used as a label, for example in Athena's group list | default is the file name               |
+| is_nor         | flag indicating mu(E) data is already normalized           | false                                  |
 
 I suppose that ~group~ is not necessary since the same string is used
 as the key.  Hmmm....
@@ -229,8 +234,8 @@ Note that the ~label~ need not be unique, but the ~group~ *must* be.
 | bkg_clamp1       | lower clamp value                                 | 0                                         |
 | bkg_clamp2       | upper clamp value                                 | 24                                        |
 | bkg_delta_eshift | uncertainty in fitted energy shift                | 0                                         |
-| bkg_dk           | will width for autobk Fourier transform           | 1                                         |
-| bkg_e0           | edge position                                     | /determined from data/                    |
+| bkg_dk           | sill width for autobk Fourier transform           | 1                                         |
+| bkg_e0           | edge position in eV                               | /determined from data/                    |
 | bkg_e0_fraction  | fraction used in Athena's edge fraction algorithm | 0.5                                       |
 | bkg_eshift       | energy shift for alignment or calibration         | 0                                         |
 | bkg_fitted_step  | determined value for edge step                    | /determined from data/                    |
@@ -254,7 +259,7 @@ Note that the ~label~ need not be unique, but the ~group~ *must* be.
 | bkg_rbkg         | autobk Rbkg value                                 | 1                                         |
 | bkg_slope        | slope of pre-edge line                            | /determined from data/                    |
 | bkg_spl1         | lower bound of autobk spline in k                 | 0                                         |
-| bkg_spl1e        | lower bound of autobk spline in energy            | 0 from edge                               |
+| bkg_spl1e        | lower bound of autobk spline in energy            | 0 (relative to edge)                      |
 | bkg_spl2         | upper bound of autobk spline in k                 | end of data                               |
 | bkg_spl2e        | upper bound of autobk spline in energy            | end of data                               |
 | bkg_stan         | group used as background removal standard         | none                                      |
@@ -288,6 +293,9 @@ Note that the ~label~ need not be unique, but the ~group~ *must* be.
 | bft_dr         | window sill width                        |                 0 |
 | bft_rwindow    | functional form of window                |           hanning |
 
+Note that the fitting range in Artemis is the back-transform range in
+Athena and uses the same attributes.
+
 *** Fitting parameters
 
 | attribute name     | description                                                    | Demeter's default                  |
@@ -309,15 +317,16 @@ Note that the ~label~ need not be unique, but the ~group~ *must* be.
 | fit_rfactor3       | R-factor computed with k-weight = 3                            | /output/                           |
 | fit_group          | pointer to the fit group that this data is a part of           | /set at time of fit/               |
 
-Note that the fitting range is the same in Artemis as the back-transform range
+Note that the fitting range in Artemis is the back-transform range in
+Athena and uses the same attributes.
 
 *** Plotting parameters
 
-| attribute name | description                                       |      Demeter's default |
-|----------------+---------------------------------------------------+------------------------|
-| plot_scale     | multiplier used when plotting data                |                      1 |
-| plot_yoffset   | vertical offset used when plotting data           |                      0 |
-| plotspaces     | string explaining how a data group can be plotted | /determined from data/ |
+| attribute name | description                                       |                    Demeter's default |
+|----------------+---------------------------------------------------+--------------------------------------|
+| plot_scale     | multiplier used when plotting data                |                                    1 |
+| plot_yoffset   | vertical offset used when plotting data           |                                    0 |
+| plotspaces     | string explaining how a data group can be plotted | /determined from datatype attribute/ |
 
 
 *** Parameters related to contructing data from column ascii files
@@ -374,47 +383,47 @@ Much of this need not be written by an external application.
 Some of this is chaff.  I've been working on Athena for a loooong time
 now....
 
-| attribute name      | description                                                                  | Demeter's default                             |
-|---------------------+------------------------------------------------------------------------------+-----------------------------------------------|
-| annotation          | inherited attribute not used by Data objects                                 |                                               |
-| beamline            | name of beamline where data was measured (used to autoinsert metadata)       |                                               |
-| beamline_identified | flag stating whether beamline was identified                                 | false                                         |
-| collided            | flag set true if a group name collision is identified                        | false                                         |
-| daq                 | identifies the data acquisition software, used for automated metadata        |                                               |
-| datagroup           | generally the same as group -- serves a real function in Artemis             |                                               |
-| file                | fully resolved name of source file for data                                  |                                               |
-| forcekey            | flag used to help select correct string for use in plot legend               | false                                         |
-| from_athena         | flag stating whether the data group was imported from a project file         | false (set true wehn reading Athena project)  |
-| from_yaml           | flag stating whether the data group was imported from an Artemis project     | false (set true wehn reading Artemis project) |
-| +frozen+            | /deprecated/                                                                 | false                                         |
-| generated           | flag set true if the data are generated (e.g. a merged group)                | false                                         |
-| +mark+              | /apparently not used for anything/                                           |                                               |
-| marked              | flag stating whether the data group is marked in Athena's group list         | false                                         |
-| maxk                | end of k range of data                                                       | /determined from data/                        |
-| merge_weight        | weight used for this data group in a merge                                   | 1                                             |
-| nidp                | number of independent points in the data                                     | /determined from fft and bft parameters/      |
-| npts                | number of points in data                                                     | /determined from data/                        |
-| plotkey             | string used in plot legend for data group                                    | /determined on the fly/                       |
-| prjrecord           | string identifying filename and record number of data from a project file    | /determined from data/                        |
-| provenance          | a short string explaining where the data group came from                     | /set when data is imported/                   |
-| quenched            | flag set true if attribute values are to be invarient                        | false                                         |
-| quickmerge          | flag indicating a certain merging algorithm is in process                    | false                                         |
-| recommended_kmax    | Larch's/Ifeffit's best guess of the best kmax value                          | /determined from data/                        |
-| recordtype          | string used as a label to explain datattype attribute                        | /determined from data/                        |
-| source              | redundant with file (?)                                                      |                                               |
-| tag                 | usually same a group name                                                    |                                               |
-| titles              | list of title lines taken from source file                                   | empty list                                    |
-| trouble             | string containing results of Artemis sanity checks on fitting model          | empty string                                  |
-| tying               | flag used to avoid infinite regression when setting e0 of data and reference | false                                         |
-| unreadable          | flag indicating data file could not be read                                  | false                                         |
-| update_bft          | flag indicating need to perform back transform                               | /as needed/                                   |
-| update_bkg          | flag indicating need to perform autobk                                       | /as needed/                                   |
-| update_columns      | flag indicating need to construct data from columns                          | /as needed/                                   |
-| update_data         | flag indicating need to read data from file                                  | /as needed/                                   |
-| update_fft          | flag indicating need to perform forward transform                            | /as needed/                                   |
-| update_norm         | flag indicating need to perform normalization                                | /as needed/                                   |
-| xdi_will_be_cloned  | flag used to indicate whether XDI metadata is transfered to derived group    | false                                         |
-| xdifile             | filename when recognized as an XDI file                                      |                                               |
-| xmax                | used in display of description of data in Athena                             | beginning of data range                       |
-| xmin                | used in display of description of data in Athena                             | end of data range                             |
+| attribute name      | description                                                                 | Demeter's default                             |
+|---------------------+-----------------------------------------------------------------------------+-----------------------------------------------|
+| annotation          | inherited attribute not used by Data objects                                |                                               |
+| beamline            | name of beamline where data was measured (used to autoinsert metadata)      |                                               |
+| beamline_identified | flag stating whether beamline was identified                                | false                                         |
+| collided            | flag set true if a group name collision is identified                       | false                                         |
+| daq                 | identifies the data acquisition software, used for automated metadata       |                                               |
+| datagroup           | generally the same as group -- serves a real function in Artemis            |                                               |
+| file                | fully resolved name of source file for data                                 |                                               |
+| forcekey            | flag used to help select correct string for use in plot legend              | false                                         |
+| from_athena         | flag stating whether the data group was imported from a project file        | false (set true wehn reading Athena project)  |
+| from_yaml           | flag stating whether the data group was imported from an Artemis project    | false (set true wehn reading Artemis project) |
+| +frozen+            | *deprecated*                                                                | false                                         |
+| generated           | flag set true if the data are generated (e.g. a merged group)               | false                                         |
+| +mark+              | /apparently not used for anything/                                          |                                               |
+| marked              | flag stating whether the data group is marked in Athena's group list        | false                                         |
+| maxk                | end of k range of data                                                      | /determined from data/                        |
+| merge_weight        | weight used for this data group in a merge                                  | 1                                             |
+| nidp                | number of independent points in the data                                    | /determined from fft and bft parameters/      |
+| npts                | number of points in data                                                    | /determined from data/                        |
+| plotkey             | string used in plot legend for data group                                   | /determined on the fly/                       |
+| prjrecord           | string identifying filename and record number of data from a project file   | /determined from data/                        |
+| provenance          | a short string explaining where the data group came from                    | /set when data is imported/                   |
+| quenched            | flag set true if attribute values are to be invarient                       | false                                         |
+| quickmerge          | flag indicating a certain merging algorithm is in process                   | false                                         |
+| recommended_kmax    | Larch's/Ifeffit's best guess of the best kmax value                         | /determined from data/                        |
+| recordtype          | string used as a label to explain datattype attribute                       | /determined from data/                        |
+| source              | redundant with file (?)                                                     |                                               |
+| tag                 | usually same as the group attribute                                         |                                               |
+| titles              | list of title lines taken from source file                                  | empty list                                    |
+| trouble             | string containing results of Artemis sanity checks on fitting model         | empty string                                  |
+| tying               | flag used to avoid infinite recursion when setting e0 of data and reference | false                                         |
+| unreadable          | flag indicating data file could not be read                                 | false                                         |
+| update_bft          | flag indicating need to perform back transform                              | /as needed/                                   |
+| update_bkg          | flag indicating need to perform autobk                                      | /as needed/                                   |
+| update_columns      | flag indicating need to construct data from columns                         | /as needed/                                   |
+| update_data         | flag indicating need to read data from file                                 | /as needed/                                   |
+| update_fft          | flag indicating need to perform forward transform                           | /as needed/                                   |
+| update_norm         | flag indicating need to perform normalization                               | /as needed/                                   |
+| xdi_will_be_cloned  | flag used to indicate whether XDI metadata is transfered to derived group   | false                                         |
+| xdifile             | filename when recognized as an XDI file                                     |                                               |
+| xmax                | used in display of description of data in Athena                            | beginning of data range                       |
+| xmin                | used in display of description of data in Athena                            | end of data range                             |
 
