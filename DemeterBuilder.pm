@@ -13,6 +13,8 @@ use File::Copy;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
 #use File::Touch;
+use Pod::ProjectDocs;
+
 
 ## this eval is required so that the build scripts can be made even if
 ## F::C::R is not yet installed.  A "Build installdeps" is required to
@@ -220,9 +222,11 @@ sub ACTION_org2html {
 ################################################################################
 ### Manage programming documentation
 
+use File::Find;
+use File::Slurp::Tiny qw(read_file write_file);
+use File::Basename;
 sub ACTION_doctree {
   my $self = shift;
-  require Pod::ProjectDocs;
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
   my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
   my @list = (qw(denv dhephaestus datoms dfeff dfeffit rdfit dlsprj standards dathena dartemis));
@@ -230,16 +234,30 @@ sub ACTION_doctree {
     copy(File::Spec->catfile($BIN, $d),        File::Spec->catfile($BIN, "$d.pl"));
   };
   my $pd = Pod::ProjectDocs->new(
-				 outroot => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
-				 libroot => [$LIB, $BIN],
-				 title   => 'Demeter',
-				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
-				 except  => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline)],
+				 outroot  => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
+				 libroot  => [$LIB, $BIN],
+				 forcegen => 1,
+				 title    => 'Demeter',
+				 desc     => "Perl tools for X-ray Absorption Spectroscopy",
+				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline)],
 				);
   $pd->gen();
   foreach my $d (@list) {
     unlink File::Spec->catfile($BIN, "$d.pl");
   };
+
+  find({wanted=>\&fix_cpan_link}, File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')));
+  my $n    = File::Spec->catfile('..', 'demeter-gh-pages', 'pods', 'index.html');
+  my $text = read_file($n);
+  $text    =~ s{http://search\.cpan\.org/perldoc\?}{https://metacpan.org/pod/}g;
+  write_file($n, $text);
+};
+sub fix_cpan_link {		# change all search.cpan.org links to equivalent link to metacpan.org
+  return if $_ !~ m{\.html\z};
+  my $n    = File::Spec->canonpath(File::Spec->catfile(cwd, basename($File::Find::name)));
+  my $text = read_file($n);
+  $text    =~ s{http://search\.cpan\.org/perldoc\?}{https://metacpan.org/pod/}g;
+  write_file($n, $text);
 };
 
 sub ACTION_pull {

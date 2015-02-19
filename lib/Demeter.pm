@@ -485,7 +485,6 @@ sub hashes {
     Than ours, a friend to man, to whom thou say'st,
   'Beauty is truth, truth beauty,—that is all
       Ye know on earth, and all ye need to know.'
-
                                 John Keats
                                 Ode on a Grecian Urn
 
@@ -979,7 +978,7 @@ Demeter is a parent class for the objects that are directly
 manipulated in any real program using Demeter.  Each of these objects
 is implemented using Moose, the amazing meta-object system for Perl.
 Although Moose adds some overhead at start-up for any application
-using Demeter, its benefits are legion.  See L<Moose> and
+using Demeter, its benefits are legion.  See  L<Moose> and
 L<http://moose.iinteractive.com> for more information.
 
 =head1 IMPORT
@@ -1043,8 +1042,7 @@ Specify the plotting backend.  The default is C<pgplot>.  The other
 option is C<gnuplot>.  A C<demeter> option will be available soon for
 generating perl scripts which plot.
 
-This can also be set during run-time using the C<plot_with> method
-during run-time.
+This can also be set during run-time using the C<plot_with> method.
 
 =item C<:ui=XX>
 
@@ -1061,7 +1059,7 @@ object, offering a CLI interface to the results of a fit.
 
 =item 2.
 
-Uses L<Term::Twiddle> or C<Term::Sk> to provide some visual feedback
+Uses L<Term::Twiddle> or L<Term::Sk> to provide some visual feedback
 on the screen while something time consuming is happening.
 
 =item 3.

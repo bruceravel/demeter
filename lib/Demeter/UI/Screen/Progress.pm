@@ -140,7 +140,7 @@ The speed at which the thingy changes.  Default is 0.1.
 
 =item C<progress>
 
-The text string which formats the progress meter.  See L<Text::Sk> for
+The text string which formats the progress meter.  See L<Term::Sk> for
 full details.  The default is
 
   Elapsed: %8t %30b (%c of %m)
@@ -212,7 +212,7 @@ Configuring the form and rate of the twiddler would be nice.
 
 =item *
 
-A way to access the Term::Sk whisper method would be helpful.
+A way to access the L<Term::Sk> whisper method would be helpful.
 
 =back
 

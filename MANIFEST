@@ -1024,7 +1024,6 @@ examples/tests/truncate.pl
 examples/zbroken.dat
 fixin
 INSTALL
-l.pl
 larch_templates
 lib/Chemistry/Formula.pm
 lib/Demeter.pm
