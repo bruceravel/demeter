@@ -26,7 +26,10 @@ feature was added.  Also begin practice of acknowledging the
      Mathisen) /{pre3}/
    - Take care to handle xdifile Data attribute when Xray::XDI is not
      available  (thanks to Ian Godfrey) /{pre3}/
-   - Fixed faulty output file from log-ratio analysis /{pre6}/
+   - Fixed faulty output file from log-ratio analysis /{pre5}/
+   - Fixed a problem whereby a group using a bkg removal standard not
+     present in the project would cause a crash (thanks to Allen
+     Robert Morris) /{pre5}/
 
 
 *** Artemis

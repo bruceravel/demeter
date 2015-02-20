@@ -484,7 +484,11 @@ sub autobk {
   if (not $self->is_nor) {
     if (lc($self->bkg_stan) ne 'none') {
       my $stan = $self->mo->fetch("Data", $self->bkg_stan);
-      $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+      if ($stan) {
+	$command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+      } else {
+	$self->bkg_stan('None');
+      };
     };
     $command .= $self->template("process", "autobk");
     $fixed = $self->bkg_step if $self->bkg_fixstep;
