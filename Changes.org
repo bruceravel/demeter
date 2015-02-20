@@ -31,7 +31,6 @@ feature was added.  Also begin practice of acknowledging the
      present in the project would cause a crash (thanks to Allen
      Robert Morris) /{pre5}/
 
-
 *** Artemis
    - Disable run atoms and run feff buttons after first DnD of a path
      (thanks to Yanyun Hu)
@@ -69,9 +68,10 @@ feature was added.  Also begin practice of acknowledging the
    - XKCD-ish plots in A&A /{pre5}/
    - font picker control now available in Demeter::Wx::Config /{pre5}/
    - Update tests to reflect recent larch-related changes (thanks to
-     Stevan Ognjanovic)
-   - Fix a silly mistake introduced to one of the Chantler data files 
-     when I did s{2014}{2015}g in January (thanks to Stevan Ognjanovic)
+     Stevan Ognjanovic) /{pre5}/
+   - Fix a silly mistake introduced to one of the Chantler data files
+     when I did s{2014}{2015}g in January (thanks to Stevan
+     Ognjanovic) /{pre5}/
 
 *** Larch
    - Much work on both Athena and Artemis to work properly with Larch,
