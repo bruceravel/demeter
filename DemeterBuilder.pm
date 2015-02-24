@@ -9,12 +9,11 @@ use warnings;
 use strict;
 use Carp;
 use Cwd;
+use File::Basename;
 use File::Copy;
+use File::Find;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
-#use File::Touch;
-use Pod::ProjectDocs;
-
 
 ## this eval is required so that the build scripts can be made even if
 ## F::C::R is not yet installed.  A "Build installdeps" is required to
@@ -24,6 +23,8 @@ eval "
 use File::Copy::Recursive qw(dircopy);
 use DocBuilder::Artemis;
 use DocBuilder::Athena;
+use Pod::ProjectDocs;
+use File::Slurp::Tiny qw(read_file write_file);
 ";
 
 ######################################################################
@@ -74,6 +75,10 @@ sub ACTION_test_for_gnuplot {
   my $conffile = File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf');
   return if not is_older($conffile, $infile);
   print STDOUT "Simple test for presence of gnuplot ---> ";
+  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+    print STDOUT "this is windows.  Using gnuplot.\n";
+    return;
+  };
   system 'gnuplot -e "set xrange [0:1]"';
   if ($? != 0) {
     copy($infile, $conffile);
@@ -222,9 +227,6 @@ sub ACTION_org2html {
 ################################################################################
 ### Manage programming documentation
 
-use File::Find;
-use File::Slurp::Tiny qw(read_file write_file);
-use File::Basename;
 my $old_cpan = qr{http://search\.cpan\.org/perldoc\?};
 my $new_cpan = q{https://metacpan.org/pod/};
 sub ACTION_doctree {

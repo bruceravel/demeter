@@ -59,6 +59,7 @@ my $build = DemeterBuilder
 				'File::Copy::Recursive'     => '0',
 				'File::CountLines'          => '0',
 				'File::Touch'	            => '0',
+				'File::Which'	            => '1.09',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0', # what is this used for?

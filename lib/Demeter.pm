@@ -64,6 +64,7 @@ use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
+use File::Which;
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
@@ -570,6 +571,7 @@ sub set_mode {
       my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
       my $rhash;
       eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
+      $rhash->{exe} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : which('larch_server');
 
       print "
 Demeter says:
@@ -582,6 +584,7 @@ Demeter says:
        server:  $rhash->{server}
        port:    $rhash->{port}
        timeout: $rhash->{timeout}
+       server:  $rhash->{exe}
 
     or use the ifeffit backend by setting the DEMETER_BACKEND
     variable to 'ifeffit':
