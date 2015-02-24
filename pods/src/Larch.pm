@@ -22,8 +22,9 @@ $rhash->{port}    ||= 4966;
 $rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
 $rhash->{timeout} ||= 3;
 $rhash->{quiet}   ||= 0;
+$rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
 
-my $command = $rhash->{quiet} ? "larch_server -q start" : "larch_server start";
+my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
 my $ok = system $command;
 
 

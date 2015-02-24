@@ -23,7 +23,9 @@ BEGIN {
       $ENV{PATH} = join(';', @not, @mingw);
       print "PATH (reordered):$/\t$ENV{PATH}$/$/";
     };
-    print STDOUT "perl version: $^V$/$/";
+    print STDOUT "perl version: $^V$/";
+    my $backend = $ENV{DEMETER_BACKEND} || 'ifeffit';
+    print STDOUT "backend: $backend$/$/";
     print STDOUT "\@INC:$/\t" . join("$/\t", @INC) . "$/";
   };
 };
