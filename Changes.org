@@ -6,14 +6,15 @@
 
 * 0.9 series
 
-** 0.9.21   XX XXX       2015
+** 0.9.21   XX February  2015
 
 Begin practice of using /{preN}/ tags to indicate exactly when a
 feature was added.  Also begin practice of acknowledging the
 (appropriate individual) directly with the change log entry.
 
 *** Athena
-   - XDI integration
+   - XDI integration (available in Demeter, but Xray::XDI is not
+     currently in the Windows distribution)
    - pluck button for MEE
    - fixed a bug related to the inv button in Col Sel dialog (thanks
      to Ian Rosbottom)
@@ -29,12 +30,14 @@ feature was added.  Also begin practice of acknowledging the
    - Fixed faulty output file from log-ratio analysis /{pre5}/
    - Fixed a problem whereby a group using a bkg removal standard not
      present in the project would cause a crash (thanks to Allen
-     Robert Morris) /{pre5}/
+     Robert Morris)
+   - Option for writing and reading Athena project files in a JSON
+     format. (thanks to Matt for the prompt)
 
 *** Artemis
    - Disable run atoms and run feff buttons after first DnD of a path
      (thanks to Yanyun Hu)
-   - XDI related bug in Demeter::Fit (thanks to Allen Morris)
+   - XDI related bug in Demeter::Fit (thanks to Allen Robert Morris)
    - Add a line about background removal parameters to Artemis log
      (thanks to Sebastiano Cammelli)
    - Menu items for reporting a bug and asking a question
@@ -62,20 +65,24 @@ feature was added.  Also begin practice of acknowledging the
    - Work around the mysterious situation on Windows wherein the MRU
      file gets overwritten with a few hundred NUL characters, causing
      a crash in Config::INI::Reader.  I have no idea what causes this,
-     but changing from croak to carp when handling and unparsed line
+     but changing from croak to carp when handling an unparsed line
      avoids it and issues a useful error message.  (thanks to Kurinji
      Krishnamoorthy)
-   - XKCD-ish plots in A&A /{pre5}/
-   - font picker control now available in Demeter::Wx::Config /{pre5}/
+   - XKCD-ish plots in A&A
+   - font picker control now available in Demeter::Wx::Config
    - Update tests to reflect recent larch-related changes (thanks to
-     Stevan Ognjanovic) /{pre5}/
+     Stevan Ognjanovic)
    - Fix a silly mistake introduced to one of the Chantler data files
      when I did s{2014}{2015}g in January (thanks to Stevan
-     Ognjanovic) /{pre5}/
+     Ognjanovic)
 
 *** Larch
    - Much work on both Athena and Artemis to work properly with Larch,
      particularly in light of recent changes to larch server
+   - Made "l" versions of A, A, and H.  These set DEMETER_BACKEND to
+     "larch" in the BEGIN block
+   - Made ~larch_server.ini~ file, specify windows path for
+     larch_server
 
 *** Windows
    - Add Demeter version number to screen/log file messages /{pre3}/

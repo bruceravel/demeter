@@ -168,6 +168,12 @@ my $build = DemeterBuilder
 				'lib/Demeter/doc/dpg/templates/lib/config/version',
 				't/feff',
 			       ],
+	 meta_merge     => {
+			    resources => {
+					  MailingList => 'mailto:ifeffit@millenia.cars.aps.anl.gov',
+					  repository  => 'https://github.com/bruceravel/demeter',
+					 }
+			   },
 	);
 
 ## include all required non-perl files in the installation
@@ -200,7 +206,7 @@ If all dependencies are met, build and install Demeter by doing:
 
   ./Build
   ./Build test
-  ./Build install  (or sudo ./Build install)
+  ./Build install # (or sudo ./Build install)
 
 If you are reinstalling Demeter after updating your operating
 system (or updating perl), you may find that none of the programs
@@ -208,7 +214,7 @@ will run successfully.  You may need to do:
 
   ./Build touch_wrapper
   ./Build test
-  ./Build install  (or sudo ./Build install)
+  ./Build install # (or sudo ./Build install)
 
 END_MESSAGE
 ;
