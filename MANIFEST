@@ -1022,9 +1022,7 @@ examples/tests/serialize.pl
 examples/tests/smooth.pl
 examples/tests/truncate.pl
 examples/zbroken.dat
-fixin
 INSTALL
-larch_templates
 lib/Chemistry/Formula.pm
 lib/Demeter.pm
 lib/Demeter/Atoms.pm
@@ -2546,6 +2544,7 @@ tools/config-mode.el
 tools/copyright.sh
 tools/cumulant_order.zip
 tools/demeter-skeletons.el
+tools/fixin
 tools/gnufix
 tools/ifeffit-mode.el
 tools/README

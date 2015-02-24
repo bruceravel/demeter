@@ -5,64 +5,65 @@
 #+LANGUAGE:  en
 #+TEXT:      Artemis instructional videos
 #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:nil
+#+STARTUP: showall
 
 * Introduction
-** Explain that concepts are largely the same but with imporvements
-** Explain main window and plot window
-** Demonstrate importing data from an Athena project file
-** Demonstrate importing crystal data
+ - Explain that concepts are largely the same but with imporvements
+ - Explain main window and plot window
+ - Demonstrate importing data from an Athena project file
+ - Demonstrate importing crystal data
 
 * Running Atoms and Feff
-** Import gold crystal data again
-** Cluster size and longest path
-** Style
-** Run atoms
-** Run Feff
-** Plot paths
+ - Import gold crystal data again
+ - Cluster size and longest path
+ - Style
+ - Run atoms
+ - Run Feff
+ - Plot paths
 
 * Assign a path to a data set and run a simple fit
-** Drag n drop
-** Open GDS window
-** Make some fitting and path parameters
-** Check data/fit parameters
-** Run a one-shell fit
-** plot
-** log file
+ - Drag n drop
+ - Open GDS window
+ - Make some fitting and path parameters
+ - Check data/fit parameters
+ - Run a one-shell fit
+ - plot
+ - log file
 
 * Assign many paths to a data set and run a multi-shell fit
-** Drag n drop
-** Open GDS window
-** Make some fitting and path parameters
-** Check data/fit parameters
-** Run a multi-shell fit
-** plot
-** log file
+ - Drag n drop
+ - Open GDS window
+ - Make some fitting and path parameters
+ - Check data/fit parameters
+ - Run a multi-shell fit
+ - plot
+ - log file
 
 * Plot window
-** Transfer data and paths
-** Tour through limits tab
-** stack tab
-** indic tab
+ - Transfer data and paths
+ - Tour through limits tab
+ - stack tab
+ - indic tab
 
 * Virtual paths
-** Transfer all paths from the 4th shell distance and plot them with the data
-** Set up a virtual path of all paths at the fourth shell distance
-** Plot
-** Show right click in VPath space
-** Discuss freeze button
+ - Transfer all paths from the 4th shell distance and plot them with the data
+ - Set up a virtual path of all paths at the fourth shell distance
+ - Plot
+ - Show right click in VPath space
+ - Discuss freeze button
 
 * Features of the GDS page
-** For start, prep a page with one of each
-** Show explain
-** Show change, change selected
-** Highlight
-** Discard all, then import uranyl project
-** Where used
-** Rename globally
-** One best fit, all best fit
-** Annotate
-** Click reset all, explain what happened
-** Explain import/export in words
+ - For start, prep a page with one of each
+ - Show explain
+ - Show change, change selected
+ - Highlight
+ - Discard all, then import uranyl project
+ - Where used
+ - Rename globally
+ - One best fit, all best fit
+ - Annotate
+ - Click reset all, explain what happened
+ - Explain import/export in words
 
 * Importing other things
   1. chi column data
@@ -87,5 +88,5 @@
 * Exporting iff or pl
 
 * Complex examples
-** More than one feff calculation
-** MDS fit
+ - More than one feff calculation
+ - MDS fit
