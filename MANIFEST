@@ -2446,7 +2446,7 @@ notes/templates.list
 notes/test_xdi.pl
 notes/tree.pl
 private-install
-README.pod
+README.md
 src/Ifeffit.bs
 src/ifeffit.h
 src/ifeffit_wrap.c
