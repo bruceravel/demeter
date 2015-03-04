@@ -1600,15 +1600,16 @@ override 'deserialize' => sub {
       1;
     };
     my %hash = %{ $pathlike };
+    if (not $Demeter::XDI_exists) {
+      delete($hash{xdifile});
+      delete($hash{xdi});
+      delete($hash{xdi_will_be_cloned});
+    };
     my $this;
 
     if (exists $pathlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$pathlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $pathlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
-      if (not $Demeter::XDI_exists) {
-	delete($hash{xdifile});
-	delete($hash{xdi});
-      };
       $this -> set(%hash);
       $this -> sp($this);
       ##print $this->group, "  ", $this->name, "  ", $this->parent->group, $/;
@@ -1646,9 +1647,9 @@ override 'deserialize' => sub {
       $hash{update_path} = 1;
       $hash{update_fft}  = 1;
       $hash{update_bft}  = 1;
-      delete $hash{feff_done};
-      delete $hash{workspace};
-      delete $hash{folder};
+      foreach my $att (qw(feff_done workspace folder)) {
+	delete $hash{$att};
+      };
       $this -> sp($this -> mo -> fetch('ScatteringPath', $this->spgroup));
       $this -> set(%hash);
       $this -> set(make_gds => 0, parent=>$feff, parentgroup=>$feff->group);

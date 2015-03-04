@@ -116,11 +116,13 @@ sub Pluck {
   my $busy = Wx::BusyCursor->new();
   my ($ok, $x, $y) = $app->cursor;
   return if not $ok;
+  return if $x < -90000;
   my $plucked = $x;
   $plucked -= $app->current_data->bkg_e0 if (lc($on_screen) eq 'e');
   $plucked = sprintf("%.3f", $plucked);
 
   ($on_screen = uc($on_screen)) if ($on_screen =~ m{\A[er]\z});
+  Demeter->pjoin($on_screen, $plucked);
   $this->{'space'.$j}->SetStringSelection($on_screen);
   $this->{'value'.$j}->SetValue($plucked);
 
