@@ -6,7 +6,7 @@
 
 * 0.9 series
 
-** 0.9.22    4 March     2015
+** 0.9.22   XX March     2015
 
 *** Athena
    - Fixed behavior of UI::Athena::Cursor when time-out happens by
@@ -16,6 +16,11 @@
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
      available. (thanks to Ian Godfrey) /{pre1}/
+   - Issue with how log file is displayed in the history window.  Had
+     been regenerated from Fit object, which could cause confusion
+     related to current state of Data object(s).  Now simply using log
+     file which is saved in the fit folder. (thanks to Ian Godfrey and
+     Jason Gaudet) /{pre2}/
 
 *** Hephaestus
    - Added annotations for many Ag standards. (thanks to Ian Godfrey)

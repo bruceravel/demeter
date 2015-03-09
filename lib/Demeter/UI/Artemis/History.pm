@@ -345,7 +345,8 @@ sub mark {
 sub put_log {
   my ($self, $fit) = @_;
 #  my $busy = Wx::BusyCursor -> new();
-  Demeter::UI::Artemis::LogText -> make_text($self->{log}, $fit);
+  my $log = File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group, 'log');
+  Demeter::UI::Artemis::LogText -> make_text($self->{log}, $log, $fit->color);
 #  undef $busy;
 };
 
