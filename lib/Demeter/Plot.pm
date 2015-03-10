@@ -62,6 +62,7 @@ has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 has 'backend'   => (is => 'rw', isa => 'Str',  default => q{pgplot});
+has 'version'   => (is => 'ro', isa => 'Str',  default => q{5.2});
 
 ## -------- legend parameters
 has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});

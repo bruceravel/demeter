@@ -14,6 +14,7 @@ use File::Copy;
 use File::Find;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
+use IPC::Open3;
 
 ## this eval is required so that the build scripts can be made even if
 ## F::C::R is not yet installed.  A "Build installdeps" is required to
@@ -50,6 +51,8 @@ our $ghpages = '../demeter-gh-pages';
 
 sub ACTION_build {
   my $self = shift;
+  unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'plot.demeter_conf');
+  unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
   $self->SUPER::ACTION_build;
@@ -76,10 +79,17 @@ sub ACTION_test_for_gnuplot {
   return if not is_older($conffile, $infile);
   print STDOUT "Simple test for presence of gnuplot ---> ";
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-    print STDOUT "this is windows.  Using gnuplot.\n";
+    print STDOUT "this is windows.  Using gnuplot with the wxt terminal.\n";
     return;
   };
-  system 'gnuplot -e "set xrange [0:1]"';
+
+  ## in the following system calls, I want to capture and NOT display STDERR
+  ## from the call to gnuplot, instead relying upon the return value $?
+  ## see http://perldoc.perl.org/perlfaq8.html#How-can-I-capture-STDERR-from-an-external-command%3f
+  my $in = '';
+  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set xrange [0:1]"');
+  while( <PH> ) { }
+  waitpid($pid, 0);
   if ($? != 0) {
     copy($infile, $conffile);
     print STDOUT "*** Gnuplot not found: using pgplot.\n";
@@ -90,7 +100,31 @@ sub ACTION_test_for_gnuplot {
   open(my $FIXED, '>', $conffile);
   print $FIXED $text;
   close $FIXED;
-  print STDOUT "found it!  Using gnuplot.\n";
+  print STDOUT "found it!  Using gnuplot with the ";
+
+  ## now test for terminal type
+  my $term = 'x11';
+  $in = '';
+  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set terminal wxt"');
+  while( <PH> ) { }
+  waitpid($pid, 0);
+  if ($? == 0) {
+    $term = 'wxt';
+  };
+  $in = '';
+  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set terminal qt"');
+  while( <PH> ) { }
+  waitpid($pid, 0);
+  if ($? == 0) {
+    $term = 'qt';
+  };
+  $text = _slurp(File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf.in'));
+  $text =~ s{default=x11}{default=$term};
+  open($FIXED, '>', File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf'));
+  print $FIXED $text;
+  close $FIXED;
+
+  print STDOUT "$term terminal.\n";
 };
 
 sub ACTION_compile_ifeffit_wrapper {

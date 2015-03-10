@@ -26,6 +26,15 @@
    - Added annotations for many Ag standards. (thanks to Ian Godfrey)
      /{pre1}/
 
+*** Windows
+   - Now using gnuplot 5.0.0 in the Windows installer
+
+*** Gnuplot
+   - Attempt to sensibly default to wxt terminal with gnuplot 4.6 and
+     qt with gnuplot 5.0
+   - Adjust build script to try to set the terminal default sensibly
+     at install time
+
 ** 0.9.21   26 February  2015
 Begin practice of using /{preN}/ tags to indicate exactly when a
 feature was added.  Also begin practice of acknowledging the

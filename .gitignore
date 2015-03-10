@@ -20,6 +20,7 @@ lib/Xray/Scattering/*.db
 lib/Xray/Crystal/share/space_groups.db
 
 lib/Demeter/configuration/plot.demeter_conf
+lib/Demeter/configuration/gnuplot.demeter_conf
 
 src/*.dll
 src/*.so

@@ -106,6 +106,7 @@ my $build = DemeterBuilder
 				## project docs
 				'Pod::ProjectDocs'        => '0',
 				'File::Slurp::Tiny'       => '0',
+				'Capture::Tiny'           => '0',
 
 				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'      => '0',

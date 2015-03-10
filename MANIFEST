@@ -1047,7 +1047,7 @@ lib/Demeter/configuration/file.demeter_conf
 lib/Demeter/configuration/fit.demeter_conf
 lib/Demeter/configuration/fspath.demeter_conf
 lib/Demeter/configuration/gds.demeter_conf
-lib/Demeter/configuration/gnuplot.demeter_conf
+lib/Demeter/configuration/gnuplot.demeter_conf.in
 lib/Demeter/configuration/happiness.demeter_conf
 lib/Demeter/configuration/hephaestus.demeter_conf
 lib/Demeter/configuration/histogram.demeter_conf
