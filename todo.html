@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Demeter/Athena/Artemis To Do List</title>
-<!-- 2014-08-07 Thu 17:54 -->
+<!-- 2015-03-10 Tue 14:07 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Bruce Ravel" />
@@ -215,7 +215,7 @@ for the JavaScript code in this tag.
 <li><a href="#sec-5">5. Atoms and Feff</a>
 <ul>
 <li><a href="#sec-5-1">5.1. CIF <code>[0/3]</code> <code>[0%]</code></a></li>
-<li><a href="#sec-5-2">5.2. Atoms <code>[4/10]</code> <code>[40%]</code></a></li>
+<li><a href="#sec-5-2">5.2. Atoms <code>[7/10]</code> <code>[70%]</code></a></li>
 <li><a href="#sec-5-3">5.3. Feff</a></li>
 </ul>
 </li>
@@ -232,10 +232,6 @@ for the JavaScript code in this tag.
 <h3 id="sec-1-1"><span class="section-number-3">1.1</span> small things</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
-</li>
-<li><code>[&#xa0;]</code> Lepidocrocite issue (amam gets changed to cmcm)
-</li>
 <li><code>[&#xa0;]</code> Dispersive algorithm, include in Athena
 </li>
 <li><code>[X]</code> S02 display issue
@@ -243,6 +239,13 @@ for the JavaScript code in this tag.
 <li><code>[&#xa0;]</code> clone data sets and path lists in Artemis
 </li>
 <li><code>[X]</code> Artemis history improvments
+</li>
+<li><code>[X]</code> xkcd style plots, see
+<a href="http://tex.stackexchange.com/questions/74878/create-xkcd-style-diagram-in-tex">http://tex.stackexchange.com/questions/74878/create-xkcd-style-diagram-in-tex</a>
+and <a href="http://rfonseca.github.io/xkcd-gnuplot/">http://rfonseca.github.io/xkcd-gnuplot/</a> and
+<a href="http://antiyawn.com/uploads/humorsans.html">http://antiyawn.com/uploads/humorsans.html</a>
+</li>
+<li><code>[&#xa0;]</code> plot key for neg part of envelope is incorrect
 </li>
 </ul>
 </div>
@@ -254,6 +257,8 @@ for the JavaScript code in this tag.
 <ul class="org-ul">
 <li><code>[X]</code> fuzzy over sites
 </li>
+<li><code>[&#xa0;]</code> switch .prj to json
+</li>
 <li><code>[&#xa0;]</code> 5 and 6 legged paths
 </li>
 <li><code>[&#xa0;]</code> PCA improvements
@@ -261,6 +266,9 @@ for the JavaScript code in this tag.
 <li><code>[&#xa0;]</code> feff8.5L
 </li>
 <li><code>[&#xa0;]</code> persistance of analysis methods in Athena
+This can be implemented in the same way I implemented XDI
+persistance &#x2013; for each group, serialize a blessed scalar and
+write that to the record
 </li>
 </ul>
 </div>
@@ -271,6 +279,8 @@ for the JavaScript code in this tag.
 <h2 id="sec-2"><span class="section-number-2">2</span> larch chores</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
+<li><code>[X]</code> XDI headers and saving current with larch
+</li>
 <li><code>[X]</code> finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 </li>
 <li><code>[&#xa0;]</code> start work on Artemis-related templates
@@ -279,7 +289,11 @@ for the JavaScript code in this tag.
 </li>
 <li><code>[&#xa0;]</code> use of stddev array in LCF is slightly incorrect, needs to be sensitive to the sapce in which the merge was made.
 </li>
-<li><code>[X]</code> command line in command buffer in A&amp;A
+<li><code>[&#xa0;]</code> <del>command line in command buffer in A&amp;A</del> &amp; capture feedback from server
+</li>
+<li><code>[X]</code> testing of Larch + XDI &amp; of Larch - XDI
+</li>
+<li><code>[&#xa0;]</code> empirical standard generation in Athena
 </li>
 </ul>
 </div>
@@ -350,10 +364,11 @@ lib/Demeter/Plugins/x23a2med.demeter_conf
 <h3 id="sec-4-2"><span class="section-number-3">4.2</span> wx issues</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> why does Wx::FileDialog with <code>wxFD_OVERWRITE_PROMPT</code> style not work correctly?
+<li><code>[X]</code> why does Wx::FileDialog with <code>wxFD_OVERWRITE_PROMPT</code> style not work correctly?
 see <a href="https://bugzilla.gnome.org/show_bug.cgi?id=631908">https://bugzilla.gnome.org/show_bug.cgi?id=631908</a> and 
 <a href="https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674">https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674</a> for more info
 Turns out this is a gtk problem &#x2013; I can make the same thing happen with Firefox!
+<b>This is now deprecated.</b>
 </li>
 </ul>
 </div>
@@ -404,9 +419,9 @@ the executables can all be found,
 </li>
 <li><code>[&#xa0;]</code> Use PDL in pathfinder
 </li>
-<li><code>[X]</code> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
-</li>
 <li><code>[&#xa0;]</code> background groups for AXAFS
+</li>
+<li><code>[X]</code> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)
 </li>
 <li><code>[X]</code> serialize VPath, put VPath into dpj and fpj files
 </li>
@@ -505,7 +520,7 @@ the executables can all be found,
 </div>
 
 <div id="outline-container-sec-4-5-3" class="outline-4">
-<h4 id="sec-4-5-3"><span class="section-number-4">4.5.3</span> needs doing <code>[3/15]</code> <code>[20%]</code></h4>
+<h4 id="sec-4-5-3"><span class="section-number-4">4.5.3</span> needs doing <code>[4/15]</code> <code>[26%]</code></h4>
 <div class="outline-text-4" id="text-4-5-3">
 <ul class="org-ul">
 <li><code>[&#xa0;]</code> beter error handling in plugins &#x2013; specifically need to do a
@@ -542,7 +557,7 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 </li>
 <li><code>[&#xa0;]</code> <b>LCF tool</b> <code>[0/4]</code>
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> persistance of LCF results
+<li><code>[&#xa0;]</code> persistance of LCF results &#x2013; <i>use serialized blessed scalar, like XDI</i>
 </li>
 <li><code>[&#xa0;]</code> satisfying both inclusive and unity can be trouble for
 poorly normalized data and/or poor standard selection
@@ -555,9 +570,13 @@ mail from Scott 7 January 2012)
 </li>
 </ul>
 </li>
-<li><code>[-]</code> <b>PCA tool</b> <code>[2/10]</code>
+<li><code>[-]</code> <b>PCA tool</b> <code>[2/11]</code>
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> persistance
+<li><code>[&#xa0;]</code> test setection against analysis space.  do the right thing
+with xanes data and chi(k) analysis or chi(k) data and energy
+analysis
+</li>
+<li><code>[&#xa0;]</code> persistance &#x2013; what's the value of persistance for PCA?
 </li>
 <li><code>[&#xa0;]</code> manual entry of component coefficients (??)
 </li>
@@ -587,7 +606,7 @@ current list of marked groups
 </li>
 <li><code>[-]</code> <b>Peakfit tool</b> <code>[7/12]</code>
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> persistance
+<li><code>[&#xa0;]</code> persistance &#x2013; <i>use serialized blessed scalar, like XDI</i>
 </li>
 <li><code>[&#xa0;]</code> verify that fit is sensible (ndata/ninfo vs nparam)
 </li>
@@ -621,7 +640,7 @@ current list of marked groups
 </li>
 <li><code>[&#xa0;]</code> other algorithms from the literature
 </li>
-<li><code>[&#xa0;]</code> good guesses for parameters
+<li><code>[&#xa0;]</code> good guesses for parameters &#x2013; at least a pluck button for shift
 </li>
 </ul>
 </li>
@@ -631,7 +650,7 @@ current list of marked groups
 </li>
 </ul>
 </li>
-<li><code>[&#xa0;]</code> <b>metadata tool</b>
+<li><code>[X]</code> <b>metadata tool</b>
 </li>
 <li><code>[&#xa0;]</code> <b>Data summer</b>
 <ul class="org-ul">
@@ -881,14 +900,14 @@ More standards!!
 </div>
 
 <div id="outline-container-sec-5-2" class="outline-3">
-<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Atoms <code>[4/10]</code> <code>[40%]</code></h3>
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Atoms <code>[7/10]</code> <code>[70%]</code></h3>
 <div class="outline-text-3" id="text-5-2">
 <ul class="org-ul">
-<li><code>[&#xa0;]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
+<li><code>[X]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
 </li>
-<li><code>[&#xa0;]</code> should be a way to insert tabulated shift vector, if it exists
+<li><code>[X]</code> should be a way to insert tabulated shift vector, if it exists
 </li>
-<li><code>[&#xa0;]</code> handle ": setting" notation: <code>:R</code>, <code>:H</code>, <code>:1</code>, <code>:2</code> <a href="http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section=Appendix:%2520Space%2520Groups&">(for example)</a>
+<li><code>[X]</code> handle ": setting" notation: <code>:R</code>, <code>:H</code>, <code>:1</code>, <code>:2</code> <a href="http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section=Appendix:%2520Space%2520Groups&">(for example)</a>
 <ul class="org-ul">
 <li><code>:1</code> and <code>:2</code> seem to have to do with whether the shift vector should be used, see <a href="examples/atoms/ZnFe2O4.cif">ZnFe2O4.cif</a> and use the shift vector
 </li>
@@ -1053,7 +1072,7 @@ worth implementing)
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Bruce Ravel</p>
-<p class="date">Created: 2014-08-07 Thu 17:54</p>
+<p class="date">Created: 2015-03-10 Tue 14:07</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.3.1 (<a href="http://orgmode.org">Org</a> mode 8.2.7c)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
