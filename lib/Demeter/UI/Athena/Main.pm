@@ -90,7 +90,7 @@ sub group {
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
   $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1 if Demeter->is_windows;
   $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
-					   wxDefaultPosition, [95,12], wxNO_BORDER);
+					   wxDefaultPosition, [95,18], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);

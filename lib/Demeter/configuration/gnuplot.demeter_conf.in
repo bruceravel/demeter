@@ -296,5 +296,5 @@ onvalue=1
 offvalue=0
 description
   When true, plots will be made in the gnuplot style.  Set
-  gnuplot->font to Humor-Sans for maximum xkcd-ness.
+  gnuplot->font to Humor Sans for maximum xkcd-ness.
 

@@ -85,7 +85,7 @@ unset key
 
 ## k quadrant
 set title "\{/*1.5 k-space\}"
-set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(Å^\{-1\})\}"
 set ylabel "\{/*1.2 {$P->plot_kylabel}\}"
 set xrange [ {$P->kmin} : {$P->kmax} ]
 plot '{$chik1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1},\
@@ -93,7 +93,7 @@ plot '{$chik1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->inc
 
 ## R quadrant
 set title "\{/*1.5 R-space\}"
-set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
+set xlabel "\{/*1.2 Radial distance&\{aa\}(Å)\}"
 set ylabel "\{/*1.2 {$P->plot_rylabel}\}"
 set xrange [ {$P->rmin} : {$P->rmax} ]
 plot '{$rmag1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1},\
@@ -101,7 +101,7 @@ plot '{$rmag1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->inc
 
 ## q quadrant
 set title "\{/*1.5 q-space\}"
-set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(Å^\{-1\})\}"
 set ylabel "\{/*1.2 {$P->plot_qylabel}\}"
 set xrange [ {$P->qmin} : {$P->qmax} ]
 plot '{$chiq1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1},\

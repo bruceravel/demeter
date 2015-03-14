@@ -6,7 +6,7 @@ m=250
 
 unset key
 set title  "{/*1.3 Distribution of nearly collinear triple scattering paths}"
-set xlabel "{/*1.2 Half path length &{aa}({\305})}"
+set xlabel "{/*1.2 Half path length &{aa}(Å)}"
 set ylabel "{/*1.2 angle (degrees)}"
 
 unset arrow 1

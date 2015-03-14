@@ -11,7 +11,7 @@
     $emin = $P->kmin;
     $emax = $P->kmax;
   };
-  $xlabel = ($S->space =~ m{\Achi}) ? "Wavenumber&\{aa\}(\{\305\}^\{-1\})" : "Energy&\{aa\}(eV)";
+  $xlabel = ($S->space =~ m{\Achi}) ? "Wavenumber&\{aa\}(Å^\{-1\})" : "Energy&\{aa\}(eV)";
   ($ylabel = "Difference of absorption")            if ($S->space =~ m{\Axmu});
   ($ylabel = "Difference of normalized absorption") if ($S->space =~ m{\Anor});
   ($ylabel = "Difference of derivative")            if ($S->space =~ m{\An?der});

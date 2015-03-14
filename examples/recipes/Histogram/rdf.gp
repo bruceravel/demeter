@@ -19,7 +19,7 @@ unset obj 20
 set size 1,0.99
 set origin 0,0.01
 
-set xlabel '{/=16 Radial distance ({\305})}' offset 0,0
+set xlabel '{/=16 Radial distance (Å)}' offset 0,0
 set ylabel '{/=16 Bin population}' offset 0,0
 set xrange [0:4.5]
 plot 'RDFDAT20K' u 1:($2*scale) title '20K distribution' w impulses ls 1

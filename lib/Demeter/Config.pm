@@ -521,7 +521,7 @@ sub fix {
     $self->set_default('gnuplot', 'keyparams', $old);
   };
   if ($self->default('gnuplot', 'xkcd')) {
-    $self->set_default('gnuplot', 'font', 'Humor-Sans');
+    $self->set_default('gnuplot', 'font', 'Humor Sans');
   };
 
   return $self;
