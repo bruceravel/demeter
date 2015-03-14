@@ -27,6 +27,8 @@ use DocBuilder::Athena;
 use Pod::ProjectDocs;
 use File::Slurp::Tiny qw(read_file write_file);
 ";
+#use File::Which;
+
 
 ######################################################################
 ## Configuration
@@ -87,7 +89,8 @@ sub ACTION_test_for_gnuplot {
   ## from the call to gnuplot, instead relying upon the return value $?
   ## see http://perldoc.perl.org/perlfaq8.html#How-can-I-capture-STDERR-from-an-external-command%3f
   my $in = '';
-  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set xrange [0:1]"');
+  #my $gp = File::Which::where('gnuplot');
+  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set xrange [0:1]"');
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? != 0) {
@@ -105,14 +108,14 @@ sub ACTION_test_for_gnuplot {
   ## now test for terminal type
   my $term = 'x11';
   $in = '';
-  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set terminal wxt"');
+  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set terminal wxt"');
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {
     $term = 'wxt';
   };
   $in = '';
-  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set terminal qt"');
+  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set terminal qt"');
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {

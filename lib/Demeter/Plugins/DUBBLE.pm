@@ -27,7 +27,7 @@ sub is {
     last if m{\A\s+\&END};
   };
   close D;
-  return $is_srs and $is_dubble;
+  return ($is_srs and $is_dubble);
 };
 
 

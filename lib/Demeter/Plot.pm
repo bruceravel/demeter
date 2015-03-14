@@ -443,12 +443,12 @@ sub i0_text {
 sub is_i0_plot {
   my ($self) = @_;
   my @rest = $self->get(qw(e_mu e_zero e_bkg e_pre e_post e_norm e_der e_sec e_signal));
-  return $self->e_i0 and (none {$_} @rest);
+  return ($self->e_i0 and (none {$_} @rest));
 };
 sub is_d0s_plot {
   my ($self) = @_;
   my @rest = $self->get(qw(e_zero e_bkg e_pre e_post e_norm e_der e_sec));
-  return $self->e_mu and $self->e_i0 and $self->e_signal and (none {$_} @rest);
+  return ($self->e_mu and $self->e_i0 and $self->e_signal and (none {$_} @rest));
 };
 
 sub copyright_text {
