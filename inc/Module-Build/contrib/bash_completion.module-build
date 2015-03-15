@@ -1,0 +1,39 @@
+# Module::Build Bash completion function
+# Contributed by Julian Mehnle <julian@mehnle.net>
+# $Id$
+# vim:syn=sh
+
+if
+    actions=$(
+        perl -M'Module::Build' -le 'print foreach Module::Build->known_actions' 2>/dev/null
+    ) && 
+    properties=$(
+        perl -M'Module::Build' -le 'print foreach sort Module::Build->valid_properties' 2>/dev/null
+    )
+then
+    eval "_Build_actions () { echo '$actions'; }"
+    eval "_Build_properties () { echo '$properties'; }"
+    unset -v actions properties
+    
+    _Build () {
+        local word=${COMP_WORDS[COMP_CWORD]}
+        #local prev_word=${COMP_WORDS[COMP_CWORD-1]}
+        #local action=${COMP_WORDS[1]}
+        
+        if (( $COMP_CWORD == 1 )); then
+            # Complete actions:
+            local IFS_org="$IFS"
+            IFS=$'\x1F\t\n'
+                # Avoid space (\x20) as a word separator to make the following -S ' ' work.
+            COMPREPLY=($( compgen -W "$(_Build_actions)" -S ' ' -- "$word" ))
+            IFS="$IFS_org"
+        else
+            # Complete properties:
+            COMPREPLY=($( compgen -W "$(_Build_properties)" -S = -- "$word" ))
+        fi
+        
+        return 0
+    }
+    
+    complete -o nospace -F _Build Build
+fi
