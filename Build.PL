@@ -26,8 +26,6 @@ use strict;
 use warnings;
 use Cwd;
 use File::Spec;
-#use Module::Build;
-##use DocBuilder::FCR;
 use DemeterBuilder; # subclass of Module::Build defining some Demeter specific installation instructions
 
 ## --------------------------------------------------------------------------------
@@ -40,7 +38,7 @@ my $Bundled_MB = 0.4211;  # or whatever version it was.
 
 # Find out what version of Module::Build is installed or fail quietly.
 # This should be cross-platform.
-my $Installed_MB = `$^X -e "eval q{require Module::Build; print Module::Build->VERSION} or exit 1";`;
+my $Installed_MB = `$^X -e "eval q{require Module::Build; print Module::Build->VERSION} or exit 1"`;
 
 # some operating systems put a newline at the end of every print.
 chomp $Installed_MB;

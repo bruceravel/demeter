@@ -23,17 +23,20 @@
      Jason Gaudet) /{pre2}/
 
 *** Hephaestus
-   - Added annotations for many Ag standards. (thanks to Ian Godfrey)
+   - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
      /{pre1}/
 
-*** Windows
-   - Now using gnuplot 5.0.0 in the Windows installer
-
-*** Gnuplot
+*** Demeter
+   - Manage deprecation of Module::Build from perl core by placing
+     Module::Build in `inc/`.  See [[https://metacpan.org/pod/Module::Build::Cookbook#Bundling-Module::Build][this]] and [[http://www.dagolden.com/index.php/2140/paying-respect-to-modulebuild/][this]].
+   - Fix several minor gnuplot display problem
    - Attempt to sensibly default to wxt terminal with gnuplot 4.6 and
      qt with gnuplot 5.0
    - Adjust build script to try to set the terminal default sensibly
      at install time
+
+*** Windows
+   - Now using gnuplot 5.0.0 in the Windows installer
 
 ** 0.9.21   26 February  2015
 Begin practice of using /{preN}/ tags to indicate exactly when a
