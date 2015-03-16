@@ -277,6 +277,7 @@ sub read_project {
     my $rhash = {};
     eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($py)};
     delete $rhash->{nindicators};
+    delete $rhash->{version};
     Demeter->po->set(%$rhash);
     $rframes->{Plot}->populate;
   };
