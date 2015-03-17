@@ -19,7 +19,7 @@ has xdi_will_be_cloned => (is => 'rw', isa => 'Bool', default=>0,);
 
 sub xdi_allattributes {
   my ($self) = @_;
-  return [qw(ok warning errorcode error filename xdi_libversion xdi_version
+  return [qw(errorcode errormessage filename xdi_libversion xdi_version
 	     extra_version element edge dspacing comments nmetadata npts
 	     narrays narray_labels array_labels array_units metadata data)];
 };
@@ -32,6 +32,7 @@ sub _import_xdi {
   my $xdi   = Xray::XDI->new;
   $xdi  -> file($xdifile);
   $self -> xdi($xdi);
+  
   return $self;
 };
 

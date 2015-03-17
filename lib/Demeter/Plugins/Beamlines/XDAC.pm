@@ -21,7 +21,7 @@ sub is {
     };
     $data->xdi->extra_version(sprintf("XDAC/%s.%s", $1, $2));
     $data->xdi->set_item('Facility', 'name', 'NSLS');
-    $data->xdi->set_item('Facility', 'source', 'bend magnet');
+    $data->xdi->set_item('Facility', 'xray_source', 'bend magnet');
 
     my $flag = 0;
     my $remove_ifeffit_comments = 0;

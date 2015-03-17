@@ -49,7 +49,7 @@ sub is {
 	  my $inifile = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', $ini);
 	  $data->metadata_from_ini($inifile);                # #3
 	  my $source = ($2 eq 'ID') ? 'undulator A' : 'bend magnet';
-	  $data->xdi->set_item('Facility', 'source', $source); # #4
+	  $data->xdi->set_item('Facility', 'xray_source', $source); # #4
 	  last SWITCH;
 	};
 

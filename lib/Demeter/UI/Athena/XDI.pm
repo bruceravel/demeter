@@ -3,6 +3,8 @@ package Demeter::UI::Athena::XDI;
 use strict;
 use warnings;
 use Const::Fast;
+use File::Basename;
+use File::Spec;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -14,6 +16,11 @@ use vars qw($label);
 $label = "File metadata";
 
 my $tcsize = [60,-1];
+
+my $icon = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "x.png");
+my $not  = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
+$icon    = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "check.png");
+my $ok   = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -42,6 +49,25 @@ sub new {
     $versionboxsizer -> Add(Wx::StaticText->new($this, -1, "Applications"), 0, wxALL, 5);
     $versionboxsizer -> Add($this->{apps}, 1, wxALL|wxALIGN_CENTER, 5);
 
+
+    my $rbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{rbox} = $rbox;
+    $this->{sizer} -> Add($rbox, 0, wxALL|wxGROW, 0);
+    $this->{required_lab} = Wx::StaticText->new($this, -1, q{Required metadata:});
+    $rbox -> Add($this->{required_lab}, 0, wxLEFT|wxRIGHT, 5);
+    $this->{required_ok}  = Wx::BitmapButton->new($this, -1, $ok);
+    $this->{required_not} = Wx::BitmapButton->new($this, -1, $not);
+    $rbox -> Add($this->{required_ok}, 0, wxALL, 0);
+    $rbox -> Add($this->{required_not}, 0, wxALL, 0);
+    $rbox -> AddSpacer(30);
+    $this->{recommended_lab} = Wx::StaticText->new($this, -1, q{Recommended metadata:});
+    $rbox -> Add($this->{recommended_lab}, 0, wxLEFT|wxRIGHT, 5);
+    $this->{recommended_ok}  = Wx::BitmapButton->new($this, -1, $ok);
+    $this->{recommended_not} = Wx::BitmapButton->new($this, -1, $not);
+    $rbox -> Add($this->{recommended_ok}, 0, wxALL, 0);
+    $rbox -> Add($this->{recommended_not}, 0, wxALL, 0);
+    $this->{required_ok}->Hide;
+    $this->{recommended_ok}->Hide;
 
     ## Defined fields
     my $definedbox      = Wx::StaticBox->new($this, -1, 'XDI Metadata', wxDefaultPosition, wxDefaultSize);
@@ -133,6 +159,39 @@ sub push_values {
   $this->{xdi}->SetValue($data->xdi_attribute('xdi_version'));
   $this->{apps}->SetValue($data->xdi_attribute('extra_version'));
   $this->{comments}  ->SetValue($data->xdi_attribute('comments'));
+
+  my $req_ok = 1;
+  foreach my $req ($data->xdi->required_metadata) {
+    my ($namespace, $tag) = split(/\./, $req);
+    $req_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
+    Demeter->pjoin($req, $namespace, $tag, $data->xdi_datum($namespace, $tag), $req_ok);
+  };
+  if ($req_ok) {
+     $this->{required_not} -> Hide;
+     $this->{required_ok} -> Show(1);
+     $this->{rbox} -> Layout();
+  } else {
+     $this->{required_ok} -> Hide;
+     $this->{required_not} -> Show(1);
+     $this->{rbox} -> Layout();
+  };
+
+  my $rec_ok = 1;
+  foreach my $rec ($data->xdi->recommended_metadata) {
+    my ($namespace, $tag) = split(/\./, $rec);
+    $rec_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
+    Demeter->pjoin($rec, $namespace, $tag, $data->xdi_datum($namespace, $tag), $rec_ok);
+  };
+  if ($rec_ok) {
+     $this->{recommended_not} -> Hide;
+     $this->{recommended_ok} -> Show(1);
+     $this->{rbox} -> Layout();
+  } else {
+     $this->{recommended_ok} -> Hide;
+     $this->{recommended_not} -> Show(1);
+     $this->{rbox} -> Layout();
+  };
+
   1;
 };
 
