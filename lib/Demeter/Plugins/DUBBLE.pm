@@ -7,6 +7,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => "the DUBBLE beamline at the ESRF");
 has '+version'     => (default => 0.1);
 has 'is_med'       => (is => 'rw', isa => 'Int', default => 0);
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'dubble.ini'));
 
 use Carp;
 use Scalar::Util qw(looks_like_number);
@@ -18,15 +19,15 @@ const my $NLMED => 3; # 9 MED elements, 4 per line, requires three lines
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (DUBBLE)\n");
-  my $first = <D>;
+  open my $D, '<', $self->file or $self->Croak("could not open " . $self->file . " as data (DUBBLE)\n");
+  my $first = <$D>;
   my $is_srs = ($first =~ m{\&SRS});
   my $is_dubble = 0;
-  while (<D>) {
+  while (<$D>) {
     $is_dubble = ($_ =~ m{dubble});
-    last if m{\A\s+\&END};
+    last if ($is_dubble or m{\A\s+\&END});
   };
-  close D;
+  close $D;
   return ($is_srs and $is_dubble);
 };
 

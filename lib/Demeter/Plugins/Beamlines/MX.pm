@@ -25,6 +25,7 @@ sub is {
     $data->xdi->set_item('Facility', 'name', 'APS');
 
     my $flag = 0;
+    my $get_labels = 0;
     my $remove_ifeffit_comments = 0;
   FILE: foreach my $li (<$fh>) {
       chomp $li;
@@ -53,8 +54,20 @@ sub is {
 	  last SWITCH;
 	};
 
-	## bail out at the end of the header
+	## snarf column labels then bail out at the end of the header
 	($li =~ m{\A\-{3,}}) and do {
+	  $get_labels = 1;
+	  last FILE;
+	};
+
+	($get_labels) and do {
+	  my @list = split(" ", $li);
+	  my $i = 0;
+	  foreach my $l (@list) {
+	    ++$i;
+	    #Demeter->pjoin('Column', $i, $l);
+	    $data->xdi->set_item('Column', $i, $l);
+	  };
 	  last FILE;
 	};
 
