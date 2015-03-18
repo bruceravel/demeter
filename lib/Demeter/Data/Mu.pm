@@ -34,7 +34,7 @@ $Text::Wrap::columns = 65;
 use Chemistry::Elements qw(get_symbol);
 use Xray::Absorption;
 
-use Demeter::StrTypes qw( Clamp );
+use Demeter::StrTypes qw( Clamp Element Edge );
 
   #my $config = Demeter->get_mode("params");
   # my %clamp = ("None"   => 0,
@@ -812,6 +812,7 @@ sub find_edge {
   if ($INC{'Xray/XDI.pm'}) {
     ($xdi_elem, $xdi_edge) = ($self->xdi_attribute('element'), $self->xdi_attribute('edge'));
   };
+  ($xdi_elem, $xdi_edge) = (q{}, q{}) if ((not is_Element($xdi_elem)) or (not is_Edge($xdi_edge)));
   return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
 
   # perform a search if XDI values are not available
