@@ -11,6 +11,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EVT_MENU);
 use Demeter::UI::Athena::XDIAddParameter;
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Artemis::ShowText;
 
 use vars qw($label);
 $label = "File metadata";
@@ -54,20 +55,25 @@ sub new {
     $this->{rbox} = $rbox;
     $this->{sizer} -> Add($rbox, 0, wxALL|wxGROW, 0);
     $this->{required_lab} = Wx::StaticText->new($this, -1, q{Required metadata:});
-    $rbox -> Add($this->{required_lab}, 0, wxLEFT|wxRIGHT, 5);
+    $rbox -> Add($this->{required_lab}, 0, wxALL, 5);
     $this->{required_ok}  = Wx::BitmapButton->new($this, -1, $ok);
     $this->{required_not} = Wx::BitmapButton->new($this, -1, $not);
     $rbox -> Add($this->{required_ok}, 0, wxALL, 0);
     $rbox -> Add($this->{required_not}, 0, wxALL, 0);
     $rbox -> AddSpacer(30);
     $this->{recommended_lab} = Wx::StaticText->new($this, -1, q{Recommended metadata:});
-    $rbox -> Add($this->{recommended_lab}, 0, wxLEFT|wxRIGHT, 5);
+    $rbox -> Add($this->{recommended_lab}, 0, wxALL, 5);
     $this->{recommended_ok}  = Wx::BitmapButton->new($this, -1, $ok);
     $this->{recommended_not} = Wx::BitmapButton->new($this, -1, $not);
     $rbox -> Add($this->{recommended_ok}, 0, wxALL, 0);
     $rbox -> Add($this->{recommended_not}, 0, wxALL, 0);
     $this->{required_ok}->Hide;
     $this->{recommended_ok}->Hide;
+
+    EVT_BUTTON($this, $this->{required_ok},     sub{ &rrmetadata(@_, 'required', 1) });
+    EVT_BUTTON($this, $this->{required_not},    sub{ &rrmetadata(@_, 'required', 0) });
+    EVT_BUTTON($this, $this->{recommended_ok},  sub{ &rrmetadata(@_, 'recommended', 1) });
+    EVT_BUTTON($this, $this->{recommended_not}, sub{ &rrmetadata(@_, 'recommended', 0) });
 
     ## Defined fields
     my $definedbox      = Wx::StaticBox->new($this, -1, 'XDI Metadata', wxDefaultPosition, wxDefaultSize);
@@ -78,7 +84,7 @@ sub new {
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
     $definedboxsizer -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
     $this->{root} = $this->{tree}->AddRoot('Root');
-    #EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
+    EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
 
     $this->{tree}->SetFont( Wx::Font->new( $size - 1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
@@ -113,6 +119,8 @@ sub new {
     $this->{savecomm}   = Wx::Button->new($this, -1, "Save\ncomments");
     $commentsboxsizer->Add($this->{savecomm}, 0, wxALL|wxGROW, 5);
     EVT_BUTTON($this, $this->{savecomm}, sub{ &OnSaveComments });
+
+    $this->{spare_xdi} = Xray::XDI->new();
 
   };
 
@@ -164,7 +172,7 @@ sub push_values {
   foreach my $req ($data->xdi->required_metadata) {
     my ($namespace, $tag) = split(/\./, $req);
     $req_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
-    Demeter->pjoin($req, $namespace, $tag, $data->xdi_datum($namespace, $tag), $req_ok);
+    #Demeter->pjoin($req, $namespace, $tag, $data->xdi_datum($namespace, $tag), $req_ok);
   };
   if ($req_ok) {
      $this->{required_not} -> Hide;
@@ -180,7 +188,7 @@ sub push_values {
   foreach my $rec ($data->xdi->recommended_metadata) {
     my ($namespace, $tag) = split(/\./, $rec);
     $rec_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
-    Demeter->pjoin($rec, $namespace, $tag, $data->xdi_datum($namespace, $tag), $rec_ok);
+    #Demeter->pjoin($rec, $namespace, $tag, $data->xdi_datum($namespace, $tag), $rec_ok);
   };
   if ($rec_ok) {
      $this->{recommended_not} -> Hide;
@@ -209,28 +217,63 @@ sub OnSaveComments {
   $::app->{main}->status("Saved changes to XDI comments.")
 };
 
+sub rrmetadata {
+  my ($this, $event, $which, $ok) = @_;
+  my $data = $::app->current_data;
+  my $text = q{};
+  my @list = ($which eq 'required') ? $data->xdi->required_metadata : $data->xdi->recommended_metadata;
+  if ($ok) {
+    $text  = "These data have all $which metadata:\n\t";
+    $text .= join("\n\t", @list) . "\n";
+  } else {
+    $text  = ucfirst($which)." metadata:\n\n";
+    foreach my $item (@list) {
+      my ($namespace, $tag) = split(/\./, $item);
+      my $status = ($data->xdi_datum($namespace, $tag) =~ m{does not exist}) ? "missing" : "ok";
+      $text .= sprintf("%27s:  %s\n", $item, $status);
+    };
+  };
+  my $dialog = Demeter::UI::Artemis::ShowText->new($this, $text, ucfirst($which).' metadata') -> Show;
+};
+
 # const my $EDIT   => Wx::NewId();
 # const my $ADD    => Wx::NewId();
 # const my $DELETE => Wx::NewId();
+const my $VALIDATE => Wx::NewId();
 
-# sub OnRightClick {
-#   my ($tree, $event) = @_;
-#   my $text = $tree->{tree}->GetItemData($event->GetItem)->GetData;
-#   return if ($text !~ m{(\w+)\.(\w+) = (.+)});
-#   my ($namespace, $parameter, $value) = ($1, $2, $3);
-#   my $menu  = Wx::Menu->new(q{});
-#   $menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
-#   $menu->Append($ADD,    "Add a parameter to ".ucfirst($namespace)." namespace");
-#   $menu->Append($DELETE, "Delete ".ucfirst($namespace).".$parameter");
-#   EVT_MENU($menu, -1, sub{ $tree->DoContextMenu(@_, $namespace, $parameter, $value) });
-#   $tree -> PopupMenu($menu, $event->GetPoint);
+sub OnRightClick {
+  my ($this, $event) = @_;
+  my $family = $this->{tree}->GetItemText($this->{tree}->GetItemParent($event->GetItem));
+  $family =~ s{\s+\z}{};
+  return if ($family eq 'Root');
+  my ($name, $value) = split(/\s+=\s+/, $this->{tree}->GetItemText($event->GetItem));
+  Demeter->pjoin($family,  $name,  $value);
 
-#   $event->Skip(1);
-# };
+  my $menu  = Wx::Menu->new(q{});
+  #$menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
+  #$menu->Append($ADD,    "Add a parameter to ".ucfirst($namespace)." namespace");
+  #$menu->Append($DELETE, "Delete ".ucfirst($namespace).".$parameter");
+  $menu->Append($VALIDATE, "Validate ".ucfirst($family).".$name");
+  EVT_MENU($menu, -1, sub{ $this->DoContextMenu(@_, $family, $name, $value) });
+#  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
+  my $where = Wx::Point->new($event->GetPoint->x, $event->GetPoint->y+80);
+  $this -> PopupMenu($menu, $where);
 
-# sub DoContextMenu {
-#   my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
-#   my $data = $::app->current_data;
+  $event->Skip(1);
+};
+
+sub DoContextMenu {
+  my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
+  my $data = $::app->current_data;
+  my $xdi = $data->xdi;
+
+  if ($event->GetId == $VALIDATE) {
+    $xdi->validate($namespace, $parameter, $value);
+    print $xdi->errorcode, $/;
+    print $xdi->errormessage, $/;
+  };
+
+};
 #   if ($event->GetId == $EDIT) {
 #     my $method = "set_xdi_".$namespace;
 #     my $ted = Wx::TextEntryDialog->new($::app->{main}, "Enter a new value for \"$namespace.$parameter\":", "$namespace.$parameter",

@@ -457,6 +457,7 @@ const my $PCA_YAML		=> Wx::NewId();
 const my $PEAK_YAML		=> Wx::NewId();
 const my $STYLE_YAML		=> Wx::NewId();
 const my $INDIC_YAML		=> Wx::NewId();
+const my $XDI_SERIALIZATION	=> Wx::NewId();
 const my $MODE_STATUS		=> Wx::NewId();
 const my $PERL_MODULES		=> Wx::NewId();
 const my $CONDITIONAL		=> Wx::NewId();
@@ -584,6 +585,7 @@ sub menubar {
   $debugmenu->Append($STYLE_YAML,   "plot style objects yaml",   "Show yaml dialog for plot style objects" );
   $debugmenu->Append($INDIC_YAML,   "Indicator objects yaml",    "Show yaml dialog for Indicator objects" );
   $debugmenu->AppendSeparator;
+  $debugmenu->Append($XDI_SERIALIZATION, "XDI serialization",    "Show serialization of the Xray::XDI object" );
   $debugmenu->Append($LCF_YAML,     "LCF object yaml",           "Show yaml dialog for LCF object" );
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
@@ -1183,6 +1185,17 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $XDI_SERIALIZATION) and do {
+      my $data = $app->current_data;
+      if (ref($data->xdi) =~ m{XDI}) {
+	my $dialog = Demeter::UI::Artemis::ShowText
+	  -> new($app->{main}, $data->xdi->serialization, 'XDI serialization')
+	    -> Show;
+      } else {
+	$app->{main}->status("The current data did not come from an XDI file.");
+      };
+      last SWITCH;
+    };
     ($id == $LCF_YAML) and do {
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
