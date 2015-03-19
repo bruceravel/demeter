@@ -92,11 +92,14 @@ sub new {
     my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
     $this->{expand}   = Wx::Button->new($this, -1, "Expand all");
     $this->{collapse} = Wx::Button->new($this, -1, "Collapse all");
+    $this->{validate} = Wx::Button->new($this, -1, "Validate all");
     $definedboxsizer -> Add($hbox, 0, wxALL|wxGROW, 0);
     $hbox            -> Add($this->{expand},  1, wxALL|wxGROW, 5);
     $hbox            -> Add($this->{collapse}, 1, wxALL|wxGROW, 5);
+    $hbox            -> Add($this->{validate}, 1, wxALL|wxGROW, 5);
     EVT_BUTTON($this, $this->{expand},   sub{$this->{tree}->ExpandAll});
     EVT_BUTTON($this, $this->{collapse}, sub{$this->{tree}->CollapseAll});
+    EVT_BUTTON($this, $this->{validate}, sub{ValidateAll(@_)});
 
     ## extension fields
     # my $extensionbox      = Wx::StaticBox->new($this, -1, 'Extension fields', wxDefaultPosition, wxDefaultSize);
@@ -120,7 +123,7 @@ sub new {
     $commentsboxsizer->Add($this->{savecomm}, 0, wxALL|wxGROW, 5);
     EVT_BUTTON($this, $this->{savecomm}, sub{ &OnSaveComments });
 
-    $this->{spare_xdi} = Xray::XDI->new();
+    $this->{spare_xdi} = Xray::XDI->new(file=>File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'UI', 'Athena', 'share', 'spare.xdi'));
 
   };
 
@@ -209,6 +212,51 @@ sub mode {
   1;
 };
 
+sub ValidateAll {
+  my ($this, $event) = @_;
+
+  my $data = $::app->current_data;
+  my $text = q{};
+  my $xdi;
+  if ($data->xdi->xdifile) {    # there is an Xray::XDI object associated with this $data
+    $xdi = $data->xdi;
+  } else {
+    $xdi = $this->{spare_xdi};	# use the spare Xray::XDI object
+    $xdi->xdifile->_set_extra_version($data->xdi->extra_version);
+  };
+
+  my $root = $this->{tree}->GetRootItem;
+  my ($famitem, $cookie) = $this->{tree}->GetFirstChild($root);
+  #print $this->{tree}->GetItemText($famitem);
+  while ($famitem->IsOk) {
+    my $family = $this->{tree}->GetItemText($famitem);
+    $family =~ s{\s+\z}{}; # trim leading and trailing whitespace
+
+    my ($nameitem, $cookie2) = $this->{tree}->GetFirstChild($famitem);
+    while ($nameitem->IsOk) {
+
+      my ($name, $value) = split(/\s*=\s*/, $this->{tree}->GetItemText($nameitem));
+      $name   =~ s{\s+\z}{};
+      $value  =~ s{\s+\z}{};
+      #Demeter->pjoin($family, $name, $value, '<');
+
+      $xdi->validate($family, $name, $value);
+      if ($xdi->errorcode) {
+	$text .= sprintf("%s.%s: %s\n\t%s\n\n", $family, $name, $value, $xdi->errormessage);
+      };
+
+      ($nameitem, $cookie2) = $this->{tree}->GetNextChild($famitem, $cookie2);
+    };
+    ($famitem, $cookie) = $this->{tree}->GetNextChild($root, $cookie);
+  };
+
+  if ($text) {
+    my $dialog = Demeter::UI::Artemis::ShowText->new($this, $text, 'Validation of metadata') -> Show;
+  } else {
+    $::app->{main}->status("All metadata are fine", 'normal');
+  };
+
+};
 
 sub OnSaveComments {
   my ($this, $event) = @_;
@@ -247,7 +295,6 @@ sub OnRightClick {
   $family =~ s{\s+\z}{};
   return if ($family eq 'Root');
   my ($name, $value) = split(/\s+=\s+/, $this->{tree}->GetItemText($event->GetItem));
-  Demeter->pjoin($family,  $name,  $value);
 
   my $menu  = Wx::Menu->new(q{});
   #$menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
@@ -265,12 +312,27 @@ sub OnRightClick {
 sub DoContextMenu {
   my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
   my $data = $::app->current_data;
-  my $xdi = $data->xdi;
+  $namespace =~ s{\A\s*(\S+)\s+\z}{$1}; # trim leading and trailing whitespace
+  $parameter =~ s{\A\s*(\S+)\s+\z}{$1};
+  $value     =~ s{\A\s*(\S+)\s+\z}{$1};
+
+  my $xdi;
+  if ($data->xdi->xdifile) {		# there is an Xray::XDI object associated with this $data
+    $xdi = $data->xdi;
+  } else {
+    $xdi = $xditool->{spare_xdi}; # use the spare Xray::XDI object
+    $xdi->xdifile->_set_extra_version($data->xdi->extra_version);
+  };
 
   if ($event->GetId == $VALIDATE) {
     $xdi->validate($namespace, $parameter, $value);
-    print $xdi->errorcode, $/;
-    print $xdi->errormessage, $/;
+    #print $data->xdi->errorcode, $/;
+    #print $data->xdi->errormessage, $/;
+    if ($xdi->errorcode) {
+      $::app->{main}->status($xdi->errormessage, 'alert');
+    } else {
+      $::app->{main}->status(sprintf("%s.%s is fine", ucfirst(lc($namespace)), lc($parameter)), 'normal');
+    };
   };
 
 };
