@@ -12,6 +12,8 @@ use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EV
 use Demeter::UI::Athena::XDIAddParameter;
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Wx::ColourDatabase;
+my $cdb = Demeter::UI::Wx::ColourDatabase->new;
 
 use vars qw($label);
 $label = "File metadata";
@@ -78,9 +80,9 @@ sub new {
     ## Defined fields
     my $definedbox      = Wx::StaticBox->new($this, -1, 'XDI Metadata', wxDefaultPosition, wxDefaultSize);
     my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxVERTICAL );
-    $this->{sizer}     -> Add($definedboxsizer, 3, wxALL|wxGROW, 0);
+    $this->{sizer}     -> Add($definedboxsizer, 2, wxALL|wxGROW, 0);
 
-    $this->{tree} = Wx::TreeCtrl->new($this, -1, wxDefaultPosition, wxDefaultSize,
+    $this->{tree} = Wx::TreeCtrl->new($this, -1, wxDefaultPosition, [-1,300],
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
     $definedboxsizer -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
     $this->{root} = $this->{tree}->AddRoot('Root');
@@ -101,20 +103,11 @@ sub new {
     EVT_BUTTON($this, $this->{collapse}, sub{$this->{tree}->CollapseAll});
     EVT_BUTTON($this, $this->{validate}, sub{ValidateAll(@_)});
 
-    ## extension fields
-    # my $extensionbox      = Wx::StaticBox->new($this, -1, 'Extension fields', wxDefaultPosition, wxDefaultSize);
-    # my $extensionboxsizer = Wx::StaticBoxSizer->new( $extensionbox, wxVERTICAL );
-    # $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 0);
-    # $this->{extensions}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-    # 					      wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
-    # $this->{extensions}  -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-    # $extensionboxsizer->Add($this->{extensions}, 1, wxALL|wxGROW, 5);
-
     ## comments
     my $commentsbox      = Wx::StaticBox->new($this, -1, 'Comments', wxDefaultPosition, wxDefaultSize);
     my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxHORIZONTAL );
     $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 0);
-    $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+    $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,100],
 					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
     $this->{comments}   -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $commentsboxsizer->Add($this->{comments}, 1, wxALL|wxGROW, 5);
@@ -131,6 +124,7 @@ sub new {
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("other.meta")});
 
+  $this->{sizer}->Layout;
   $this->SetSizerAndFit($box);
   return $this;
 };
@@ -142,9 +136,14 @@ sub pull_values {
   return $this;
 };
 
-my $WHITE = Wx::Colour->new(wxWHITE);
-my $GRAY  = Wx::Colour->new(wxLIGHT_GREY);
-
+use Capture::Tiny qw(capture);
+my ($WHITE, $GRAY);
+## some part of Wx is compiled with debug mode on my new Ubuntu 14.10
+## machine, causing these color assignments so spew to stderr. so...
+my @toss = capture {
+  $WHITE = Wx::Colour->new($cdb->Find('WHITE'));
+  $GRAY  = Wx::Colour->new($cdb->Find('LIGHT GREY'));
+};
 
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
