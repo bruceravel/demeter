@@ -159,7 +159,7 @@ sub show_geometry {
   ## paths are displayed in the path interpretation due to the
   ## postcrit
   my $i = $list->GetItemData($parent->{rcselected});
-  my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
+  my $sp   = $pathlist[$i-1]; # the ScatteringPath associated with this selected item
   my $feff = $parent->{parent}->{Feff}->{feffobject};
   my $pd = (($feff->source eq 'aggregate') and ($sp->nleg == 2)) ? $feff->path_geom($sp) : $sp->pathsdat;
   ##                                       ^^^^^^^^^^^^^^^^^^^^
@@ -293,7 +293,7 @@ sub rank {
   foreach my $item (0 .. $self->{paths}->GetItemCount-1) {
 
     my $data = $self->{paths}->GetItemData($item);
-    my $sp   = $feff->pathlist->[$data]; # the ScatteringPath associated with this selected item
+    my $sp   = $feff->pathlist->[$data-1]; # the ScatteringPath associated with this selected item
 
 
     $text .= sprintf("  %s  " . $format . "\n",
