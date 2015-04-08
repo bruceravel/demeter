@@ -34,6 +34,8 @@
      qt with gnuplot 5.0
    - Adjust build script to try to set the terminal default sensibly
      at install time
+   - Fix is_json file test for files with CR line termination (thanks
+     to Anna Zimina) {/pre3/}
 
 *** Windows
    - Now using gnuplot 5.0.0 in the Windows installer
