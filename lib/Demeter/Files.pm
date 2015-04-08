@@ -185,6 +185,7 @@ sub is_json {
   foreach my $l (1..4) {	# look for _____header1 in the first four lines
     $gz->gzreadline($line);
     #print $line, $/;
+    last if not defined($line);
     $is_jsn = ($line =~ /_____header\d.+Athena project file/) ? 1 : 0;
     last if $is_jsn;
   };
