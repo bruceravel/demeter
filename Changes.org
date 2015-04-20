@@ -12,6 +12,8 @@
    - Fixed behavior of UI::Athena::Cursor when time-out happens by
      checking if a vary large negative number is returned (thanks to
      Ian Godfrey) /{pre1}/
+   - Fixed import of pre-nomralized XANES data (thanks to Ken Latham)
+     {/pre4/}
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
@@ -21,6 +23,10 @@
      related to current state of Data object(s).  Now simply using log
      file which is saved in the fit folder. (thanks to Ian Godfrey and
      Jason Gaudet) /{pre2}/
+   - Fix display of path labels using pathfinder->name mini-templates
+     (thanks to Anna Wolska) {/pre4/}
+   - Added restart tag to intrp coplor configuration parameters
+     (thanks to Anna Wolska) {/pre4/}
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
