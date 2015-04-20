@@ -3,6 +3,8 @@
   #   {$T->parameter} returns the value of that theory parameter
   @sites = @ {$T->sites};
   $#sites = 499 if $#sites>499;
+  $polarization = ($T->is_polarization) ? sprintf(" POLARIZATION  %s %s %s\n", @{$T->polarization}) : "";
+  $ellipticity  = ($T->is_ellipticity)  ? sprintf(" ELLIPTICITY   %s %s %s\n", @{$T->ellipticity})  : "";
   q{};
 }
 << >>* 
@@ -22,6 +24,7 @@
 
  RMAX      {$T->rmax}
  CRITERIA  {$T->ccrit}   {$T->pcrit}
+{$polarization}{$ellipticity}
 
 {foreach $l (@ {$T->othercards}) {
   $OUT .= $l . "\n";}

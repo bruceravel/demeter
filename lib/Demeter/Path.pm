@@ -263,8 +263,8 @@ sub make_name {
   my $re = qr(\Q$token\E);	# \Q...\E quotes the metacharacters, see perlre
   $noends =~ s{\A$re}{};
   $noends =~ s{$re\z}{};
-  my %table = (i   => $self->Index,
-	       I   => sprintf("%4.4d", $self->Index),
+  my %table = (i   => $self->sp->pathfinder_index,
+	       I   => sprintf("%4.4d", $self->sp->pathfinder_index),
 	       p   => $sp->intrplist,
 	       P   => $noends,
 	       r   => sprintf("%.3f", $sp->fuzzy),
@@ -276,6 +276,7 @@ sub make_name {
 	       f   => $sp->feff->name,
 	       '%' => '%',
 	      );
+  #Demeter->Dump(\%table);
   my $regex = '[' . join('', keys(%table)) . ']';
 
   $pattern =~ s{\%($regex)}{$table{$1}}g;

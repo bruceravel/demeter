@@ -82,6 +82,8 @@ has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
 has 'halflength'   => (is => 'rw', isa => 'LaxNum',   default => 0);
+has 'anglein'      => (is => 'rw', isa => 'LaxNum',   default => 0);
+has 'angleout'     => (is => 'rw', isa => 'LaxNum',   default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
@@ -310,9 +312,33 @@ sub compute_halflength {
   my $halflength = sprintf("%.5f", 0.5*Demeter::Feff::_length($cindex, @atoms, $cindex));
   $self->halflength($halflength);
   $self->heapvalue($halflength);
+  $self->compute_polarization_angles($feff, @atoms);
   return $halflength;
 };
 
+sub compute_polarization_angles {
+  my ($self, $feff, @atoms) = @_;
+  if (not $feff->is_polarization) {
+    $self->anglein(0);
+    $self->angleout(0);
+    return $self;
+  };
+  my $first = $feff->sites->[$atoms[0]];
+  my $costheta = $first->[0]*$feff->polarization->[0] +
+    $first->[1]*$feff->polarization->[1] +
+      $first->[2]*$feff->polarization->[2];
+  $costheta /= sqrt($first->[0]**2 + $first->[1]**2 + $first->[2]**2);
+  $costheta /= sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2);
+  $self->anglein(180*acos($costheta)/$PI);
+
+  my $last  = $feff->sites->[$atoms[-1]];
+  $costheta = $last->[0]*$feff->polarization->[0] +
+    $last->[1]*$feff->polarization->[1] +
+      $last->[2]*$feff->polarization->[2];
+  $costheta /= sqrt($last->[0]**2 + $last->[1]**2 + $last->[2]**2);
+  $costheta /= sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2);
+  $self->angleout(180*acos($costheta)/$PI);
+};
 
 =for Explanation (compute_beta)
   trigonometry to determine beta and eta angles.  these are straight
@@ -540,6 +566,8 @@ sub compare {
     @eta_compare = pairwise { abs(abs($a) - abs($b)) < $feff->betafuzz } @this_eta, @that_eta;
     return "etas different" if (notall {$_} @eta_compare);
   };
+
+  ## polarization angles
 
   #$self->set(fuzzy=>$fuzzy) if ( abs($self->halflength - $other->halflength) > $EPSILON5 );
   return q{};

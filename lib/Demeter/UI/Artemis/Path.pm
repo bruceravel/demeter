@@ -544,7 +544,7 @@ sub include_label {
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
 
-  my $name = $self->{path}->name;
+  my $name = $self->{path}->label;
 
   $self->Rename($name);
   my $label = $self->{path}->label;
@@ -589,7 +589,8 @@ sub Rename {
     if ($n > 0) {
       $feffname = substr($feffname, 0, $n) if length($feffname) > $n;
     };
-    $self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
+    ##$self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
+    $self->{path}->label($newname);
   };
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;

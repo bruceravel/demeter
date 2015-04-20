@@ -75,6 +75,7 @@ description
 variable=intrp2color
 type=color
 default=#046a15
+restart=1
 description
   The color of the interpretation text for high importance paths.  The
   default is a dark green.
@@ -82,6 +83,7 @@ description
 variable=intrp1color
 type=color
 default=#78670e
+restart=1
 description
   The color of the interpretation text for medium importance paths.  The
   default is a dark yellow.
@@ -89,6 +91,7 @@ description
 variable=intrp0color
 type=color
 default=#787878
+restart=1
 description
   The color of the interpretation text for low importance paths.  The
   default is a grey tone.

@@ -114,6 +114,7 @@ sub set_initial_page_callback {
 sub AddPage {
   my ($self, $page, $text, $select, $imageid, $position) = @_;
   my $end = (defined($position)) ? $position : $self->{LIST} -> GetCount;
+  #print '>>>>>>', $text, $/;
   $self->{LIST} -> InsertData($text, $end, $page);
   #$self->{LIST} -> SetIndexedData($end, $page);
   $self->{LIST} -> Deselect($self->{LIST}->GetSelection);

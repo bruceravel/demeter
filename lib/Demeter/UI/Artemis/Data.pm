@@ -2565,6 +2565,7 @@ sub make_path {
     $pathlike -> feff_done(1);
   } else {
     $pathlike = Demeter::Path->new(%$rhash);
+    $pathlike -> make_name;
     my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
     $pathlike -> sp($sp);
     #$pathlike -> folder(q{});
