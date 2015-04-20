@@ -5,7 +5,7 @@ If crystal data has two or more inequivalent sites occupied by the
 same kind of atom, some additional functionality is enabled when one
 of the inequivalent sites is selected as the absorber.  As you can see
 in the following screenshot, the [% INCLUDE font/quote a="Aggregate"%]
-is available, as are controls for setting the 
+button is available, as are controls for setting the 
 [% INCLUDE html/link link="../extended/fuzzy.html" text="fuzzy degeneracy"%]
 parameters.
 [%END%]
@@ -45,21 +45,17 @@ at 1.984 [%AA%], 0.5 O atoms at 2.050 [%AA%], and 0.5 O atoms at 2.498
 Instead of having to parameterize 12 different Ti-O distances, keeping
 track of fractional populations when parameterizing the [%s02%] values
 for each path, the aggregate [%feff%] calculation requires managing
-only 4 paths.  Because the non-integer 
+only 4 paths. 
 
 For a complete discussion of the the aggregate [%feff%] calculation,
 see
 [% INCLUDE citation
       author = "B. Ravel"
       journal = "J. Synchrotron Radiat."
-      volume = XX
-      pages = "XX-XX"
+      volume = 21
+      pages = "1269-1274"
       year = 2014
-      doi = "10.1107/XXX"
+      doi = "10.1107/S1600577514014982"
 %]
 
-[% END %]
-
-[% WRAPPER html/todo %]
-Cite paper in JSR.
 [% END %]
