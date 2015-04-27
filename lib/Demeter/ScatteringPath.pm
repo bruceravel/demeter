@@ -84,6 +84,7 @@ has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
 has 'halflength'   => (is => 'rw', isa => 'LaxNum',   default => 0);
 has 'anglein'      => (is => 'rw', isa => 'LaxNum',   default => 0);
 has 'angleout'     => (is => 'rw', isa => 'LaxNum',   default => 0);
+has 'cosinout'     => (is => 'rw', isa => 'LaxNum',   default => 0);
 
 has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
@@ -214,7 +215,11 @@ sub intrplist {
     };
   }
   push @intrp, $token;
-  return join(" ", @intrp);
+  my $text = sprintf("%-29s", join(" ", @intrp));
+  if ($feff->is_polarization) {
+    $text .= sprintf("(%5.1f, %5.1f)", $self->anglein, $self->angleout);
+  };
+  return $text;
 };
 
 sub intrpline {
@@ -222,7 +227,9 @@ sub intrpline {
   $i ||= 9999;
   my $rank = $self->get_rank(Demeter->co->default('pathfinder', 'rank'));
   $rank ||= 0;
-  return sprintf " %4.4d  %6.3F   %6.3f  ---  %-29s       %2d  %6.2f  %d  %s",
+  my $format = " %4.4d  %6.3F   %6.3f  ---  %-29s    %2d  %6.2f  %d  %s";
+  $format = " %4.4d  %6.3F   %6.3f  ---  %-42s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
+  return sprintf $format,
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
       $rank, $self->nleg, $self->Type;
 };
@@ -321,23 +328,26 @@ sub compute_polarization_angles {
   if (not $feff->is_polarization) {
     $self->anglein(0);
     $self->angleout(0);
+    $self->cosinout(0);
     return $self;
   };
   my $first = $feff->sites->[$atoms[0]];
-  my $costheta = $first->[0]*$feff->polarization->[0] +
+  my $costheta = ($first->[0]*$feff->polarization->[0] +
     $first->[1]*$feff->polarization->[1] +
-      $first->[2]*$feff->polarization->[2];
-  $costheta /= sqrt($first->[0]**2 + $first->[1]**2 + $first->[2]**2);
-  $costheta /= sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2);
+      $first->[2]*$feff->polarization->[2]) /
+	(sqrt($first->[0]**2 + $first->[1]**2 + $first->[2]**2) *
+	 sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2));
   $self->anglein(180*acos($costheta)/$PI);
+  $self->cosinout($costheta);
 
   my $last  = $feff->sites->[$atoms[-1]];
-  $costheta = $last->[0]*$feff->polarization->[0] +
+  $costheta = ($last->[0]*$feff->polarization->[0] +
     $last->[1]*$feff->polarization->[1] +
-      $last->[2]*$feff->polarization->[2];
-  $costheta /= sqrt($last->[0]**2 + $last->[1]**2 + $last->[2]**2);
-  $costheta /= sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2);
+      $last->[2]*$feff->polarization->[2]) /
+	(sqrt($last->[0]**2 + $last->[1]**2 + $last->[2]**2) *
+	 sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2));
   $self->angleout(180*acos($costheta)/$PI);
+  $self->cosinout(abs($costheta * $self->cosinout));
 };
 
 =for Explanation (compute_beta)
@@ -568,6 +578,8 @@ sub compare {
   };
 
   ## polarization angles
+  return "polarization angle product different" if (abs($self->cosinout - $other->cosinout) > $EPSILON5);
+
 
   #$self->set(fuzzy=>$fuzzy) if ( abs($self->halflength - $other->halflength) > $EPSILON5 );
   return q{};
@@ -804,7 +816,9 @@ sub cmp {
                            ||
             $self->betakey cmp $other->betakey
                            ||
-	       $self->nkey <=> $other->nkey;
+	       $self->nkey <=> $other->nkey
+                           ||
+           $self->cosinout <=> $other->cosinout;
 };
 
 __PACKAGE__->meta->make_immutable;
