@@ -152,7 +152,7 @@ description
   .  %i   path index
   .  %I   index, padded to 4 chars
   .  %p   path geometry
-  .  %P   geometry, leading and trailing central atom tokens trimmed
+  .  %P   geometry, leading/trailing cent. at. tokens trimmed
   .  %r   R effective (fuzzy)
   .  %n   number of legs
   .  %d   path degeneracy (fuzzy)
@@ -160,26 +160,29 @@ description
   .  %m   heuristic importance
   .  %g   Ifeffit group name
   .  %f   name of parent Feff calculation
+  .  %a   angle btwn outgoing leg and inc. beam
+  .  %A   angle btwn incoming leg and inc. beam
   .  %%   a literal percent sign
   .
   .
   As an example, if you wanted a path name that indicated the length,
   degeneracy, and number of legs you might set this to: "R=%r degen=%d
-  nleg=%n".
+  nleg=%n".  The "%a" and "%A" tokens will be 0 when the POLARIZATION
+  is not used in Feff.
 
 variable=label
 type=string
 default=[%f]%P
 description
   This is a mini-template that will be used to construct the label of
-  the path.  The name is intended to explain just the path and its
+  the path.  The name is intended to explain the path and its
   parentage.  In Artemis, this is the label in the checklist of paths
   on the Data page.  See the name parameter.  The following is a table
   of tokens that will be replaced with data from the path.
   .  %i   path index
   .  %I   index, padded to 4 chars
   .  %p   path geometry
-  .  %P   geometry, leading and trailing central atom tokens trimmed
+  .  %P   geometry, leading/trailing cent. at. tokens trimmed
   .  %r   R effective (fuzzy)
   .  %n   number of legs
   .  %d   path degeneracy (fuzzy)
@@ -187,12 +190,15 @@ description
   .  %m   heuristic importance
   .  %g   Ifeffit group name
   .  %f   name of parent Feff calculation
+  .  %a   angle btwn outgoing leg and inc. beam
+  .  %A   angle btwn incoming leg and inc. beam
   .  %%   a literal percent sign
   .
   .
   As an example, if you wanted a path name that indicated the length,
   degeneracy, and number of legs you might set this to: "R=%r degen=%d
-  nleg=%n".
+  nleg=%n".  The "%a" and "%A" tokens will be 0 when the POLARIZATION
+  is not used in Feff.
 
 variable=rank
 type=list

@@ -88,6 +88,45 @@ described below.  The remaining buttons are related to making plots of
 the selected paths.
 [% END %]
 
+[% PROCESS section label="Polarization" %]
+
+[% FILTER html_para -%]
+
+If [%feff%] has been run considering linear polarization, the path
+list will be considerably longer.  The degeneracy checker in the path
+finder calculation will recognize the effect of polarization on path
+degeneracy.  Paths with common outgoing and incoming angles of the
+photoelectron with respect to the specified polarization vector will
+be treated as degenerate.  Paths which would be degenerate in the
+absence of polarization, but which have distinct outgoing and/or
+incoming angles will be presented as separate paths in the path list.
+
+When the polarization calculation is performed, the outgoing and
+incoming angles will be displayed in 
+[% INCLUDE font/quote a="Scattering path" %] column (although you may
+need to widen the column by clicking on and dragging the little
+vertical line that separates the 
+[% INCLUDE font/quote a="Scattering path" %] and
+[% INCLUDE font/quote a="Rank" %] columns in the header row).
+
+Also, when dragging a path onto the data page, the angles out and in
+will be displayed in the path geometry box on the
+[% INCLUDE html/link link="../path/index.html" text="path page"%].
+
+Optionally, the angles can be displayed in the path list label by
+setting the 
+[% INCLUDE preference group="pathfinder" option="label" %]
+configuration parameter appropriately.
+
+[% WRAPPER html/caution %]
+[%feff%]'s[%#'%] ELLIPTICITY keyword is not supported at this time.
+That means the trick of modeling 
+[% INCLUDE font/quote a="polarization in the plane" %] is not yet
+supported by [%artemis%].
+[% END %]
+[% END %]
+
+
 [% PROCESS section label="Path plotting and path geometry" %]
 
 

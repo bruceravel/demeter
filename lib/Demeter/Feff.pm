@@ -1175,7 +1175,7 @@ sub intrp {
   my @list_of_paths = @{ $self-> pathlist };
   $text .= $self->intrp_header(%markup);
   $text .=  $markup{comment} . "#       degen     Reff       scattering path                   ";
-  $text .= " " x 14 if $self->is_polarization;
+  $text .= " " x 11 if $self->is_polarization;
   $text .= "I    Rank  legs   type" .  $markup{close} . "\n";
   my $i = 1;
   foreach my $sp (@list_of_paths) {

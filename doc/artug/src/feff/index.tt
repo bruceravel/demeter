@@ -154,6 +154,32 @@ atoms
   C     0.50880    0.12400    0.68620  C             1.00000
 [% END %]
 
+[% PROCESS section label="Polarization" %]
+
+[% FILTER html_para -%]
+
+A [%feff%] calculation considering linear polarization can be
+triggered by setting one or more non-zero values for the polarization
+vector.
+
+This vector sets the value of the [%INCLUDE font/mono a="POLARIZATION"%]
+keyword in the resulting [% INCLUDE font/file a="feff.inp" %].  The
+value written in the [% INCLUDE font/file a="feff.inp" %] file is the
+value that will be used in the pathfinder and when
+computing the path contributions.  That is, if you edit the 
+[%INCLUDE font/mono a="POLARIZATION"%] in the 
+[% INCLUDE font/file a="feff.inp" %] file, the edited value will take
+precedence over the value specified here.
+
+[% WRAPPER html/caution %]
+[%feff%]'s[%#'%] ELLIPTICITY keyword is not supported at this time.
+That means the trick of modeling 
+[% INCLUDE font/quote a="polarization in the plane" %] is not yet
+supported by [%artemis%].
+[% END %]
+[% END %]
+
+
 [% PROCESS section label="Atoms tool bar" %]
 
 [% FILTER html_para -%]

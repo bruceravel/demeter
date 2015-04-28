@@ -217,7 +217,7 @@ sub intrplist {
   push @intrp, $token;
   my $text = sprintf("%-29s", join(" ", @intrp));
   if ($feff->is_polarization) {
-    $text .= sprintf("(%5.1f, %5.1f)", $self->anglein, $self->angleout);
+    $text .= sprintf("%5.1f/%5.1f", $self->anglein, $self->angleout);
   };
   return $text;
 };
@@ -228,7 +228,7 @@ sub intrpline {
   my $rank = $self->get_rank(Demeter->co->default('pathfinder', 'rank'));
   $rank ||= 0;
   my $format = " %4.4d  %6.3F   %6.3f  ---  %-29s    %2d  %6.2f  %d  %s";
-  $format = " %4.4d  %6.3F   %6.3f  ---  %-42s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
+  $format = " %4.4d  %6.3F   %6.3f  ---  %-39s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
   return sprintf $format,
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
       $rank, $self->nleg, $self->Type;

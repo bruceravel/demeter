@@ -262,7 +262,7 @@ sub make_name {
   my $noends = $sp->intrplist;
   my $re = qr(\Q$token\E);	# \Q...\E quotes the metacharacters, see perlre
   $noends =~ s{\A$re}{};
-  $noends =~ s{$re\z}{};
+  $noends =~ s{$re.*\z}{};
   my %table = (i   => $self->sp->pathfinder_index,
 	       I   => sprintf("%4.4d", $self->sp->pathfinder_index),
 	       p   => $sp->intrplist,
@@ -274,6 +274,8 @@ sub make_name {
 	       m   => $sp->weight,
 	       g   => $sp->group,
 	       f   => $sp->feff->name,
+	       a   => $sp->angleout,
+	       A   => $sp->anglein,
 	       '%' => '%',
 	      );
   #Demeter->Dump(\%table);

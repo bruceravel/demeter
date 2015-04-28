@@ -802,6 +802,16 @@ sub get_crystal_data {
   $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
   $atoms->shiftvec(\@shift);
 
+
+  my @pol = map { $self->{$_}->GetValue || 0 } qw(pol_x pol_y pol_z);
+  @pol = map { $self->number($_, "%5.1f") } @pol;
+  $problems .= "\"" . $self->{pol_x}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[0] == -9999);
+  $problems .= "\"" . $self->{pol_y}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[1] == -9999);
+  $problems .= "\"" . $self->{pol_z}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[2] == -9999);
+  $atoms->polarization(\@pol);
+
+
+
   my $core_selected = 0;
   my $first_valid_row = -1;
   my $count_valid_row = 0;
@@ -862,13 +872,14 @@ sub get_crystal_data {
 };
 
 sub number {
-  my ($self, $string) = @_;
+  my ($self, $string, $format) = @_;
+  $format ||= "%9.5f";
 
   ## empty string
   return 0 if ($string =~ m{\A\s*\z});
 
   ## floating point number
-  return sprintf("%9.5f", $string) if ($string =~ m{\A\s*$NUMBER\s*\z});
+  return sprintf($format, $string) if ($string =~ m{\A\s*$NUMBER\s*\z});
 
   ## binary operation
   if ($string =~ m{
@@ -881,7 +892,7 @@ sub number {
 		    \s*\z	   # trailing whitespace
 		}x) {
     my $num = eval $string;
-    return sprintf("%9.5f", $num);
+    return sprintf($format, $num);
   };
 
   return -9999;
