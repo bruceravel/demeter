@@ -93,7 +93,7 @@ the selected paths.
 [% FILTER html_para -%]
 
 If [%feff%] has been run considering linear polarization, the path
-list will be considerably longer.  The degeneracy checker in the path
+list may be considerably longer.  The degeneracy checker in the path
 finder calculation will recognize the effect of polarization on path
 degeneracy.  Paths with common outgoing and incoming angles of the
 photoelectron with respect to the specified polarization vector will
@@ -117,6 +117,15 @@ Optionally, the angles can be displayed in the path list label by
 setting the 
 [% INCLUDE preference group="pathfinder" option="label" %]
 configuration parameter appropriately.
+
+Low ranking paths are, by default, not displayed in the paths list.
+In a polarization calculation, typically, paths close to or at 90
+degrees in either angle will have very small amplitude and so will not
+be displayed in the path list.  This behavior of suppressing
+low-ranking paths can be controlled by setting the 
+[% INCLUDE preference group="pathfinder" option="postcrit" %]
+configuration parameter.  Setting it to 0 will cause all paths, even
+the right angle ones, to be displayed in the paths list.
 
 [% WRAPPER html/caution %]
 [%feff%]'s[%#'%] ELLIPTICITY keyword is not supported at this time.

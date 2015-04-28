@@ -345,12 +345,12 @@ sub _update_from_ScatteringPath {
   $self->set(name=>$label);
   #print join("|", "<<<<", $self->data->name, $self->reff, $self->sp->fuzzy), $/, $/;
 
-  unlink File::Spec->catfile($feff->workspace, "paths.dat");
+  #unlink File::Spec->catfile($feff->workspace, "paths.dat");
   unlink File::Spec->catfile($feff->workspace, "feff.run");
-  unlink File::Spec->catfile($feff->workspace, "nstar.dat");
+  #unlink File::Spec->catfile($feff->workspace, "nstar.dat");
   if (not $feff->save) {
-    unlink File::Spec->catfile($feff->workspace, "feff.inp");
-    unlink File::Spec->catfile($feff->workspace, "files.dat");
+    #unlink File::Spec->catfile($feff->workspace, "feff.inp");
+    #unlink File::Spec->catfile($feff->workspace, "files.dat");
   };
   return $self;
 };

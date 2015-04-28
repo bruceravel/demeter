@@ -217,7 +217,7 @@ sub intrplist {
   push @intrp, $token;
   my $text = sprintf("%-29s", join(" ", @intrp));
   if ($feff->is_polarization) {
-    $text .= sprintf("%5.1f/%5.1f", $self->anglein, $self->angleout);
+    $text .= sprintf("%5.1f/%5.1f", $self->angleout, $self->anglein);
   };
   return $text;
 };
@@ -337,7 +337,7 @@ sub compute_polarization_angles {
       $first->[2]*$feff->polarization->[2]) /
 	(sqrt($first->[0]**2 + $first->[1]**2 + $first->[2]**2) *
 	 sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2));
-  $self->anglein(180*acos($costheta)/$PI);
+  $self->angleout(180*acos($costheta)/$PI);
   $self->cosinout($costheta);
 
   my $last  = $feff->sites->[$atoms[-1]];
@@ -346,7 +346,7 @@ sub compute_polarization_angles {
       $last->[2]*$feff->polarization->[2]) /
 	(sqrt($last->[0]**2 + $last->[1]**2 + $last->[2]**2) *
 	 sqrt($feff->polarization->[0]**2 + $feff->polarization->[1]**2 + $feff->polarization->[2]**2));
-  $self->angleout(180*acos($costheta)/$PI);
+  $self->anglein(180*acos($costheta)/$PI);
   $self->cosinout(abs($costheta * $self->cosinout));
 };
 

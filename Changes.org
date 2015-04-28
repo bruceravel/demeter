@@ -25,8 +25,7 @@
      Jason Gaudet) /{pre2}/
    - Fix display of path labels using pathfinder->name mini-templates
      (thanks to Anna Wolska) {/pre4/}
-   - Added restart tag to intrp coplor configuration parameters
-     (thanks to Anna Wolska) {/pre4/}
+   - Accommodate linear polarization (but not ellipticity) in Artemis
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
@@ -42,6 +41,8 @@
      at install time
    - Fix is_json file test for files with CR line termination (thanks
      to Anna Zimina) {/pre3/}
+   - Add capacity to Atoms, Feff, ScatteringPath objects to
+     accommodate polarization
 
 *** Windows
    - Now using gnuplot 5.0.0 in the Windows installer
