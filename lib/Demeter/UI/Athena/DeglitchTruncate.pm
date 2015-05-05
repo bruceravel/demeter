@@ -178,8 +178,8 @@ sub mode {
 
 sub plot {
   my ($this, $data) = @_;
-  my $save = $data->po->datastyle;
-  $data->po->datastyle("points");
+  my $save = $data->co->default("gnuplot", "datastyle");
+  $data->co->set_default("gnuplot", "datastyle", "points");
 
   $::app->{main}->{PlotE}->pull_single_values;
   $data->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
@@ -199,7 +199,7 @@ sub plot {
   $::app->{main}->status(sprintf("Plotted %s as points for deglitching", $data->name));
   $::app->heap_check(0);
 
-  $data->po->datastyle($save);
+  $data->co->set_default("gnuplot", "datastyle", $save);
 };
 
 

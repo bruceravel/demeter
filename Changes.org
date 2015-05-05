@@ -14,6 +14,8 @@
      Ian Godfrey) /{pre1}/
    - Fixed import of pre-nomralized XANES data (thanks to Ken Latham)
      {/pre4/}
+   - Deglitching now plots with points (thanks to Shoaib Muhammad)
+     {/pre4/}
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
