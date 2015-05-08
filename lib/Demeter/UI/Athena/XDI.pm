@@ -171,9 +171,9 @@ sub push_values {
   $this->{comments}  ->SetValue($data->xdi_attribute('comments'));
 
   my $req_ok = 1;
-  foreach my $req ($data->xdi->required_metadata) {
+  foreach my $req ($data->xdi->required_list) {
     my ($namespace, $tag) = split(/\./, $req);
-    $req_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
+    $req_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist}i);
     #Demeter->pjoin($req, $namespace, $tag, $data->xdi_datum($namespace, $tag), $req_ok);
   };
   if ($req_ok) {
@@ -187,9 +187,9 @@ sub push_values {
   };
 
   my $rec_ok = 1;
-  foreach my $rec ($data->xdi->recommended_metadata) {
+  foreach my $rec ($data->xdi->recommended_list) {
     my ($namespace, $tag) = split(/\./, $rec);
-    $rec_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist});
+    $rec_ok = 0 if ($data->xdi_datum($namespace, $tag) =~ m{does not exist}i);
     #Demeter->pjoin($rec, $namespace, $tag, $data->xdi_datum($namespace, $tag), $rec_ok);
   };
   if ($rec_ok) {
@@ -268,7 +268,7 @@ sub rrmetadata {
   my ($this, $event, $which, $ok) = @_;
   my $data = $::app->current_data;
   my $text = q{};
-  my @list = ($which eq 'required') ? $data->xdi->required_metadata : $data->xdi->recommended_metadata;
+  my @list = ($which eq 'required') ? $data->xdi->required_list : $data->xdi->recommended_list;
   if ($ok) {
     $text  = "These data have all $which metadata:\n\t";
     $text .= join("\n\t", @list) . "\n";
@@ -276,7 +276,7 @@ sub rrmetadata {
     $text  = ucfirst($which)." metadata:\n\n";
     foreach my $item (@list) {
       my ($namespace, $tag) = split(/\./, $item);
-      my $status = ($data->xdi_datum($namespace, $tag) =~ m{does not exist}) ? "missing" : "ok";
+      my $status = ($data->xdi_datum($namespace, $tag) =~ m{does not exist}i) ? "missing" : "ok";
       $text .= sprintf("%27s:  %s\n", $item, $status);
     };
   };
