@@ -217,6 +217,7 @@ sub OnChoose {
   my ($ok, $xx, $yy) = $app->cursor;
   return if not $ok;
   local $|=1;
+  #printf("cursor: %.3f  %.3f\n", $xx, $yy);
 
   my ($dist, $ii) = (1e10, -1);
   my $which = ($this->{plotas}->GetSelection) ? 'chi' : 'xmu';
@@ -225,18 +226,19 @@ sub OnChoose {
   my @y = $data->get_array($which);
   my ($miny, $maxy) = minmax(@y);
   foreach my $i (0 .. $#x) {	# need to scale these appropriately
-    my $px  = ($x[$i] - $xx)/($x[-1] - $x[0]);
+    my $px  = ($x[$i] + $data->bkg_eshift- $xx)/($x[-1] - $x[0]);
     my $ppy = ($which eq 'chi') ? $y[$i]*$xx**$data->get_kweight : $y[$i];
     my $py  = ($ppy - $yy)/($maxy - $miny);
     my $d   = sqrt($px**2 + $py**2);
+    #Demeter->pjoin($i, $x[$i], $px, $py, $d);
     ($d < $dist) and ($dist, $ii) = ($d, $i);
   };
   $this->plot($data);
   my $request = ($which eq 'chi') ? 'chie' : 'xmu';
-  $data->plot_marker($request, $x[$ii]);
+  $data->plot_marker($request, $x[$ii] + $data->bkg_eshift);
   $this->{point} = ($which eq 'chi') ? $data->k2e($x[$ii], 'absolute') : $x[$ii];
   $this->{remove}->Enable(1);
-  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $this->{point}, $data->name));
+  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $this->{point} + $data->bkg_eshift, $data->name));
 };
 
 sub OnRemove {

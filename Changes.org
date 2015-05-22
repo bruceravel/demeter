@@ -16,6 +16,8 @@
      {/pre4/}
    - Deglitching now plots with points (thanks to Shoaib Muhammad)
      {/pre4/}
+   - Deglitching now uses energy shift correctly (thanks to Shoaib
+     Muhammad) {/pre4/}
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
