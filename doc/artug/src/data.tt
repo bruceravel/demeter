@@ -438,19 +438,31 @@ use it foolishly, you only have yourself to blame.
 
 [% PROCESS subsection label="The Actions menu" %]
 
-[% WRAPPER floatright this="data-actionsmenu.png" title="Actions menu" %]
-Every item in this menu operates on the set of marked paths.  Again,
-keyboard shortcuts are given in the menu.
+[% WRAPPER floatright this="data-actionsmenu.png" title="Actions menu"%]
+Every item in this menu operates either on the set of included paths
+or the set of marked paths.  Again, keyboard shortcuts are given in
+the menu.
 
-The first option is used to make
+The first two options will make
 [% INCLUDE html/link link="plot/vpaths.html" text="a VPath"%]
-from  the marked paths.  The second option will transfer all marked
-paths to the plotting list in the 
-[% INCLUDE html/link link="plot/index.html" text="Plot window"%].
+out of either all the paths for this data set or the marked paths.
+The VPath will be placed in the plotting list in the
+[% INCLUDE html/link link="plot/index.html" text="Plot window"%]
+and a plot will be made in R.
+The option to make the sum of all paths is particularly useful for
+comparing the fittingmodel to the data without actually running the fit.
+
+The next two options will transfer paths to the plotting list, then
+make a plot in R.
 
 The next two options will cause the set of marked paths to be included
-in or excluded from the fit.  The next item causes all marked paths to
-be discarded from your fitting project and removed from the path list.
+in or excluded from the fit.  The next item computes the value of
+[% INCLUDE html/link link="extended/bvs.html" text="a bond valence sum"%]
+using the set of marked paths.  You will be prompted for some
+information about the absorber and scatterer.
+
+The next item causes all marked paths to be discarded from your
+fitting project and removed from the path list.
 
 The final two items are about controlling what gets transferred into the
 plotting list after a fit.  The next to last item causes all marked
