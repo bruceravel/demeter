@@ -136,6 +136,30 @@ has 'rmultiplier'  => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive 
 has 'pcrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'ccrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 
+has 'polarization' => (
+		       traits    => ['Array'],
+		       is        => 'rw',
+		       isa       => 'ArrayRef',
+		       default   => sub { [0,0,0] },
+		       handles   => {
+				     'push_polarization'  => 'push',
+				     'pop_polarization'   => 'pop',
+				     'clear_polarization' => 'clear',
+				    }
+		      );
+has 'ellipticity' => (
+		       traits    => ['Array'],
+		       is        => 'rw',
+		       isa       => 'ArrayRef',
+		       default   => sub { [0,0,0,0] },
+		       handles   => {
+				     'push_ellipticity'  => 'push',
+				     'pop_ellipticity'   => 'pop',
+				     'clear_ellipticity' => 'clear',
+				    }
+		      );
+
+
 ### feff8 cards
 
 has 'scf'          => (is=>'rw', isa =>  'ArrayRef', default => sub{[]});
@@ -169,6 +193,7 @@ has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => Demeter->co->defaul
 has 'site_fraction'=> (is => 'rw', isa => 'LaxNum', default => 1);
 has 'pathlist' => (		# list of ScatteringPath objects
 		   traits    => ['Array'],
+		   alias     => 'pathslist',
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
@@ -242,6 +267,8 @@ sub clear {
   $self->clear_absorber;
   $self->clear_othercards;
   $self->clear_pathlist;
+  $self->polarization([0,0,0]);
+  $self->ellipticity([0,0,0]);
   $self->set(abs_index   => 0, edge  => 'K', s02   => 1,  rmax    => 0,   nlegs => 4,
 	     rmultiplier => 1, pcrit =>  0,  ccrit => 0,  miscdat => q{},
 	     npaths      => 0, scf   => [],  xanes => [], ldos    => [],  fms => [],
@@ -300,6 +327,16 @@ sub site_species {
   return get_symbol($ipots[$i]->[1]);
 };
 
+sub is_polarization {
+  my ($self) = @_;
+  return ($self->polarization->[0] or $self->polarization->[1] or $self->polarization->[2]);
+};
+
+sub is_ellipticity {
+  my ($self) = @_;
+  return ($self->ellipticity->[0] or $self->ellipticity->[1] or $self->ellipticity->[2] or $self->ellipticity->[3]);
+};
+
 sub rdinp {
   my ($self) = @_;
   $self->clear;
@@ -335,6 +372,8 @@ sub rdinp {
 	$thiscard = 'scf',          last CARDS if ($thiscard =~ m{\Ascf});
 	$thiscard = 'fms',          last CARDS if ($thiscard =~ m{\Afms});
 	$thiscard = 'ldos',         last CARDS if ($thiscard =~ m{\Aldo});
+	$thiscard = 'polarization', last CARDS if ($thiscard =~ m{\Apol});
+	$thiscard = 'ellipticity',  last CARDS if ($thiscard =~ m{\Aell});
 	$thiscard = 'xanes',        last CARDS if ($thiscard =~ m{\Axan});
 	                            last CARDS if ($thiscard =~ m{\A(?:con|pri|deb)}); ## CONTROL and PRINT are under demeter's control
 	                                                                               ## DEBYE is simply ignored by Demeter
@@ -386,6 +425,14 @@ sub rdinp {
 	};
 	($thiscard eq 'ldos')  and do {
 	  $self->feff_version(8); $self->ldos([@line[1..$#line]]);
+	  last DOCARD;
+	};
+	($thiscard eq 'polarization')  and do {
+	  $self->polarization([$line[1], $line[2], $line[3]]);
+	  last DOCARD;
+	};
+	($thiscard eq 'ellipticity')  and do {
+	  $self->ellipticity([$line[1], $line[2], $line[3], $line[4]]);
 	  last DOCARD;
 	};
       };
@@ -1127,11 +1174,13 @@ sub intrp {
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
   $text .= $self->intrp_header(%markup);
-  $text .=  $markup{comment} . "#       degen     Reff       scattering path                      I    Rank  legs   type" .  $markup{close} . "\n";
+  $text .=  $markup{comment} . "#       degen     Reff       scattering path                   ";
+  $text .= " " x 11 if $self->is_polarization;
+  $text .= "I    Rank  legs   type" .  $markup{close} . "\n";
   my $i = 1;
   foreach my $sp (@list_of_paths) {
     last if ($rmax and ($sp->halflength > $rmax));
-    $text .= $markup{$sp->weight} . $sp->intrpline(++$i) . $markup{close} . $/;
+    $text .= $markup{$sp->weight} . $sp->intrpline($i++) . $markup{close} . $/;
   };
   return $text;
 };

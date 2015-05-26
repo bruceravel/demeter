@@ -515,12 +515,12 @@ sub fill_intrp_page {
   foreach my $p (@{ $feff->pathlist }) {
     if ($p->get_rank($which) > $feff->postcrit) {
       $p->pathfinder_index($i);
-      my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
+      my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%3d", $i), 0);
       $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
       $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
       #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
-      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, sprintf("%.3f", $p->n));
-      $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, sprintf("%.2f", $p->n));
+      $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.3f", $p->fuzzy));
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
       #$self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
       $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->get_rank($which));

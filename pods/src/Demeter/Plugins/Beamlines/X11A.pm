@@ -23,7 +23,7 @@ sub is {
     };
     $data->xdi->extra_version(sprintf("EDC/%s.%s", $1, $2));
     $data->xdi->set_item('Facility', 'name',               'NSLS');
-    $data->xdi->set_item('Facility', 'source',             'bend magnet');
+    $data->xdi->set_item('Facility', 'xray_source',        'bend magnet');
     $data->xdi->set_item('Beamline', 'collimation',        'none');
     $data->xdi->set_item('Beamline', 'focusing',           'none');
     $data->xdi->set_item('Beamline', 'harmonic_rejection', 'detuned mono');

@@ -83,16 +83,18 @@ sub new {
   $self->{paths}->InsertColumn( 2, "Reff"	     );
   $self->{paths}->InsertColumn( 3, "Scattering path" );
   $self->{paths}->InsertColumn( 4, "Rank"	     );
-  $self->{paths}->InsertColumn( 5, "Legs"	     );
+  $self->{paths}->InsertColumn( 5, "L"  	     );
   $self->{paths}->InsertColumn( 6, "Type"	     );
 
-  $self->{paths}->SetColumnWidth( 0,  50 );
-  $self->{paths}->SetColumnWidth( 1,  55 );
-  $self->{paths}->SetColumnWidth( 2,  55 );
-  $self->{paths}->SetColumnWidth( 3, 190 );
+  $self->{paths}->SetColumnWidth( 0,  40 );
+  $self->{paths}->SetColumnWidth( 1,  50 );
+  $self->{paths}->SetColumnWidth( 2,  50 );
+  $self->{paths}->SetColumnWidth( 3, 245 );
   $self->{paths}->SetColumnWidth( 4,  50 );
-  $self->{paths}->SetColumnWidth( 5,  40 );
+  $self->{paths}->SetColumnWidth( 5,  15 );
   $self->{paths}->SetColumnWidth( 6, 180 );
+
+  $self->{paths}->SetFont(Wx::Font->new( 8, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
 
   #EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, sub{OnRightClick(@_)});
   EVT_RIGHT_DOWN($self->{paths}, sub{OnRightClick(@_, $self)});
@@ -159,7 +161,7 @@ sub show_geometry {
   ## paths are displayed in the path interpretation due to the
   ## postcrit
   my $i = $list->GetItemData($parent->{rcselected});
-  my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
+  my $sp   = $pathlist[$i-1]; # the ScatteringPath associated with this selected item
   my $feff = $parent->{parent}->{Feff}->{feffobject};
   my $pd = (($feff->source eq 'aggregate') and ($sp->nleg == 2)) ? $feff->path_geom($sp) : $sp->pathsdat;
   ##                                       ^^^^^^^^^^^^^^^^^^^^
@@ -293,7 +295,7 @@ sub rank {
   foreach my $item (0 .. $self->{paths}->GetItemCount-1) {
 
     my $data = $self->{paths}->GetItemData($item);
-    my $sp   = $feff->pathlist->[$data]; # the ScatteringPath associated with this selected item
+    my $sp   = $feff->pathlist->[$data-1]; # the ScatteringPath associated with this selected item
 
 
     $text .= sprintf("  %s  " . $format . "\n",

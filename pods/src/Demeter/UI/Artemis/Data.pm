@@ -57,7 +57,6 @@ use Const::Fast;
 const my $DATA_RENAME	      => Wx::NewId();
 const my $DATA_DIFF	      => Wx::NewId();
 const my $DATA_TRANSFER	      => Wx::NewId();
-const my $DATA_VPATH	      => Wx::NewId();
 const my $DATA_BALANCE	      => Wx::NewId();
 const my $DATA_DEGEN_N	      => Wx::NewId();
 const my $DATA_DEGEN_1	      => Wx::NewId();
@@ -145,11 +144,15 @@ const my $MARK_AFTER	      => Wx::NewId();
 const my $MARK_INC	      => Wx::NewId();
 const my $MARK_EXC	      => Wx::NewId();
 
+const my $ACTION_VPATH_ALL    => Wx::NewId();
+const my $ACTION_PLOT_ALL     => Wx::NewId();
+const my $ACTION_PLOT_EACH    => Wx::NewId();
 const my $ACTION_INCLUDE      => Wx::NewId();
 const my $ACTION_EXCLUDE      => Wx::NewId();
 const my $ACTION_DISCARD      => Wx::NewId();
 const my $ACTION_VPATH	      => Wx::NewId();
 const my $ACTION_TRANSFER     => Wx::NewId();
+const my $ACTION_TRANSFER_ALL => Wx::NewId();
 const my $ACTION_AFTER	      => Wx::NewId();
 const my $ACTION_NONEAFTER    => Wx::NewId();
 const my $ACTION_BVS          => Wx::NewId();
@@ -605,26 +608,63 @@ sub OnDownButton {
 };
 
 sub OnTransferButton {
-  my ($self, $event) = @_;
+  my ($self, $all) = @_;
+  $all ||= 0;
   my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
   return if ($pathpage !~ m{Path});
   foreach my $p (0 .. $self->{pathlist}->GetPageCount - 1) {
-    $self->{pathlist}->GetPage($p)->transfer if $self->{pathlist}->IsChecked($p);
+    if ($all) {
+      $self->{pathlist}->GetPage($p)->transfer if $self->{pathlist}->GetPage($p)->{include}->GetValue;
+    } else {
+      $self->{pathlist}->GetPage($p)->transfer if $self->{pathlist}->IsChecked($p);
+    };
   };
   $self->status("Transfered marked groups to plotting list");
 };
 
 sub OnMakeVPathButton {
-  my ($self, $event) = @_;
+  my ($self, $all) = @_;
+  $all ||= 0;
   my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
   return if ($pathpage !~ m{Path});
 
   my @list = ();
   foreach my $p (0 .. $self->{pathlist}->GetPageCount - 1) {
-    push(@list, $self->{pathlist}->GetPage($p)->{path}) if $self->{pathlist}->IsChecked($p);
+    if ($all) {
+      push(@list, $self->{pathlist}->GetPage($p)->{path}) if $self->{pathlist}->GetPage($p)->{include}->GetValue;
+    } else {
+      push(@list, $self->{pathlist}->GetPage($p)->{path}) if $self->{pathlist}->IsChecked($p);
+    };
   };
   return if ($#list == -1);
-  $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+  if ($all) {
+    my $name = 'sum';		# add data group name if MDS fit
+    my $count = 0;
+    my $group = q{};
+    foreach my $k (keys(%Demeter::UI::Artemis::frames)) {
+      ++$count if ($k =~ m{\Adata});
+    };
+    $name = sprintf("sum  (%s)", $self->{name}->GetLabel) if ($count > 1);
+    foreach my $i (0 .. $Demeter::UI::Artemis::frames{Plot}->{VPaths}->{vpathlist}->GetCount-1) {
+      if ($Demeter::UI::Artemis::frames{Plot}->{VPaths}->{vpathlist}->GetString($i) eq $name) {        # remove previous VPath with this name
+	$group = $Demeter::UI::Artemis::frames{Plot}->{VPaths}->{vpathlist}->GetClientData($i)->group;
+	foreach my $i (0 .. $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetCount-1) {             # and from the plotting list
+	  if ($Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i)->group eq $group) {
+	    my $obj = $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i);
+	    $Demeter::UI::Artemis::frames{Plot}->{plotlist}->DeleteData($i);
+	    $obj -> DESTROY;
+	    last;
+	  };
+	};
+	$Demeter::UI::Artemis::frames{Plot}->{VPaths}->{vpathlist}->Delete($i);
+	last;
+      };
+    };
+
+    $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_named_vpath($name, @list);
+  } else {
+    $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+  };
   autosave();
   $self->status("Made a VPath from the marked groups");
 };
@@ -816,16 +856,21 @@ sub make_menubar {
 
    ## -------- actions menu
   $self->{actionsmenu} = Wx::Menu->new;
-  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tAlt+Shift+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_BVS,       "Compute bond valence sum\tAlt+Shift+b", "Compute bond valence summ from marked paths",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_PLOT_ALL,  "Make sum of all paths and plot in R\tAlt+Shift+s",  "Plot data with the full sum of paths in R", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make sum of marked paths and plot in R\tAlt+Shift+m",  "Plot data along with each included path in R", wxITEM_NORMAL );
+  $self->{actionsmenu}->AppendSeparator;
+#  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
+#  $self->{actionsmenu}->Append($ACTION_VPATH_ALL, "Make VPath from all included paths\tAlt+Shift+s",  "Make a virtual path from all paths included in the fit to these data", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked paths and plot in R\tAlt+Shift+t", "Transfer marked paths to the plotting list and plot in R",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER_ALL, "Transfer each path and plot in R\tAlt+Shift+e", "Transfer each included path to the plotting list and plot in R",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tAlt+Shift+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tAlt+Shift+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_BVS,       "Compute bond valence sum\tAlt+Shift+b", "Compute bond valence summ from marked paths",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",          "Discard all marked paths",              wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tAlt+Shift+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tAlt+Shift+a",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
   $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tAlt+Shift+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
 
@@ -1050,11 +1095,6 @@ sub OnMenuClick {
       last SWITCH;
     };
 
-    ($id == $DATA_VPATH) and do {
-      $datapage->OnMakeVPathButton;
-      last SWITCH;
-    };
-
     ($id == $DATA_KMAXSUGEST) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
@@ -1211,13 +1251,33 @@ sub OnMenuClick {
     #   last SWITCH;
     #};
 
-    ($id == $ACTION_TRANSFER) and do {
-      $datapage->OnTransferButton;
+    ($id == $ACTION_PLOT_ALL) and do {
+      $datapage->OnMakeVPathButton(1);
+      $Demeter::UI::Artemis::frames{Plot}->{notebook}->SetSelection(0);
+      $Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'R');
       last SWITCH;
     };
 
     ($id == $ACTION_VPATH) and do {
-      $datapage->OnMakeVPathButton;
+      $datapage->OnMakeVPathButton(0);
+      $Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'R');
+      last SWITCH;
+    };
+
+    ($id == $ACTION_TRANSFER) and do {
+      $datapage->OnTransferButton(0);
+      $Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'R');
+      last SWITCH;
+    };
+
+    ($id == $ACTION_TRANSFER_ALL) and do {
+      $datapage->OnTransferButton(1);
+      $Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'R');
+      last SWITCH;
+    };
+
+    ($id == $ACTION_VPATH_ALL) and do {
+      $datapage->OnMakeVPathButton(1);
       last SWITCH;
     };
 
@@ -2565,6 +2625,7 @@ sub make_path {
     $pathlike -> feff_done(1);
   } else {
     $pathlike = Demeter::Path->new(%$rhash);
+    $pathlike -> make_name;
     my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
     $pathlike -> sp($sp);
     #$pathlike -> folder(q{});

@@ -457,6 +457,7 @@ const my $PCA_YAML		=> Wx::NewId();
 const my $PEAK_YAML		=> Wx::NewId();
 const my $STYLE_YAML		=> Wx::NewId();
 const my $INDIC_YAML		=> Wx::NewId();
+const my $XDI_SERIALIZATION	=> Wx::NewId();
 const my $MODE_STATUS		=> Wx::NewId();
 const my $PERL_MODULES		=> Wx::NewId();
 const my $CONDITIONAL		=> Wx::NewId();
@@ -584,6 +585,7 @@ sub menubar {
   $debugmenu->Append($STYLE_YAML,   "plot style objects yaml",   "Show yaml dialog for plot style objects" );
   $debugmenu->Append($INDIC_YAML,   "Indicator objects yaml",    "Show yaml dialog for Indicator objects" );
   $debugmenu->AppendSeparator;
+  $debugmenu->Append($XDI_SERIALIZATION, "XDI serialization",    "Show serialization of the Xray::XDI object" );
   $debugmenu->Append($LCF_YAML,     "LCF object yaml",           "Show yaml dialog for LCF object" );
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
@@ -1183,6 +1185,17 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $XDI_SERIALIZATION) and do {
+      my $data = $app->current_data;
+      if (ref($data->xdi) =~ m{XDI}) {
+	my $dialog = Demeter::UI::Artemis::ShowText
+	  -> new($app->{main}, $data->xdi->serialization, 'XDI serialization')
+	    -> Show;
+      } else {
+	$app->{main}->status("The current data did not come from an XDI file.");
+      };
+      last SWITCH;
+    };
     ($id == $LCF_YAML) and do {
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
@@ -1555,9 +1568,9 @@ sub main_window {
   $topbar -> Add(1,1,1);
 
   $app->{main}->{save}   = Wx::Button->new($viewpanel, wxID_SAVE, q{},  wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
   $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add(Wx::StaticText->new($viewpanel, -1, q{    }), 0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 2);
@@ -1659,7 +1672,7 @@ sub main_window {
   };
   $app->{main}->{views}->SetSelection(0);
 
-  $app->{main}->{return}   = Wx::Button->new($viewpanel, -1, 'Return to main window', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->{main}->{return}   = Wx::Button->new($viewpanel, -1, 'Return to main window', wxDefaultPosition, wxDefaultSize);#, wxBU_EXACTFIT);
   $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0)});
   $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
@@ -1680,6 +1693,7 @@ sub main_window {
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views},
 			      sub{$app->OnGroupSelect(0,0,0);
 				  $app->{main}->{return}->Show($app->{main}->{views}->GetSelection);
+				  $app->{hbox}->Layout; # the return button does not get shown
 				  $app->{main}->SetSizerAndFit($app->{hbox}); # the return button does not get shown
 				});                                           # on windows without this twiddle
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views},

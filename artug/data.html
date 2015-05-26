@@ -737,24 +737,40 @@ use it foolishly, you only have yourself to blame.
 <p>
 
 </td>
-<td width=271>
+<td width=402>
 <a class=floatright href="../images/data-actionsmenu.png"  title=Actions menu target=_blank><img border=0 src="../images/data-actionsmenu.png"  title="Actions menu"  alt="data-actionsmenu.png"></a>
-Every item in this menu operates on the set of marked paths.  Again,
-keyboard shortcuts are given in the menu.
+Every item in this menu operates either on the set of included paths
+or the set of marked paths.  Again, keyboard shortcuts are given in
+the menu.
 </p>
 
 <p>
-The first option is used to make
+The first two options will make
 <a href="plot/vpaths.html">a VPath</a>
-from  the marked paths.  The second option will transfer all marked
-paths to the plotting list in the 
-<a href="plot/index.html">Plot window</a>.
+out of either all the paths for this data set or the marked paths.
+The VPath will be placed in the plotting list in the
+<a href="plot/index.html">Plot window</a>
+and a plot will be made in R.
+The option to make the sum of all paths is particularly useful for
+comparing the fittingmodel to the data without actually running the fit.
+</p>
+
+<p>
+The next two options will transfer paths to the plotting list, then
+make a plot in R.
 </p>
 
 <p>
 The next two options will cause the set of marked paths to be included
-in or excluded from the fit.  The next item causes all marked paths to
-be discarded from your fitting project and removed from the path list.
+in or excluded from the fit.  The next item computes the value of
+<a href="extended/bvs.html">a bond valence sum</a>
+using the set of marked paths.  You will be prompted for some
+information about the absorber and scatterer.
+</p>
+
+<p>
+The next item causes all marked paths to be discarded from your
+fitting project and removed from the path list.
 </p>
 
 <p>

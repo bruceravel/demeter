@@ -169,6 +169,17 @@ has 'shiftvec' => (
 			      'clear_shiftvec' => 'clear',
 			     }
 	       );
+has 'polarization' => (
+		       traits    => ['Array'],
+		       is        => 'rw',
+		       isa       => 'ArrayRef',
+		       default   => sub { [0, 0, 0] },
+		       handles   => {
+				     'push_polarization'  => 'push',
+				     'pop_polarization'   => 'pop',
+				     'clear_polarization' => 'clear',
+				    }
+	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
@@ -303,6 +314,7 @@ sub clear {
   $self->clear_sites;
   $self->clear_cluster;
   $self->shiftvec([0,0,0]);
+  $self->polarization([0,0,0]);
   $self->clear_titles;
   $self->cell->clear;
   $self->is_imported(0);
@@ -954,6 +966,13 @@ sub spacegroup_file {
   $string   .= $self->template("spacegroup");
   return $string;
 };
+
+sub is_polarization {
+  my ($self) = @_;
+  return '' if (($self->polarization->[0]>$EPSILON4) or ($self->polarization->[1]>$EPSILON4) or ($self->polarization->[2]>$EPSILON4));
+  return '*';
+};
+
 
 override serialization => sub {
   my ($self) = @_;

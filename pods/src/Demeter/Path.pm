@@ -262,9 +262,9 @@ sub make_name {
   my $noends = $sp->intrplist;
   my $re = qr(\Q$token\E);	# \Q...\E quotes the metacharacters, see perlre
   $noends =~ s{\A$re}{};
-  $noends =~ s{$re\z}{};
-  my %table = (i   => $self->Index,
-	       I   => sprintf("%4.4d", $self->Index),
+  $noends =~ s{$re.*\z}{};
+  my %table = (i   => $self->sp->pathfinder_index,
+	       I   => sprintf("%4.4d", $self->sp->pathfinder_index),
 	       p   => $sp->intrplist,
 	       P   => $noends,
 	       r   => sprintf("%.3f", $sp->fuzzy),
@@ -274,8 +274,11 @@ sub make_name {
 	       m   => $sp->weight,
 	       g   => $sp->group,
 	       f   => $sp->feff->name,
+	       a   => $sp->angleout,
+	       A   => $sp->anglein,
 	       '%' => '%',
 	      );
+  #Demeter->Dump(\%table);
   my $regex = '[' . join('', keys(%table)) . ']';
 
   $pattern =~ s{\%($regex)}{$table{$1}}g;
@@ -342,12 +345,12 @@ sub _update_from_ScatteringPath {
   $self->set(name=>$label);
   #print join("|", "<<<<", $self->data->name, $self->reff, $self->sp->fuzzy), $/, $/;
 
-  unlink File::Spec->catfile($feff->workspace, "paths.dat");
+  #unlink File::Spec->catfile($feff->workspace, "paths.dat");
   unlink File::Spec->catfile($feff->workspace, "feff.run");
-  unlink File::Spec->catfile($feff->workspace, "nstar.dat");
+  #unlink File::Spec->catfile($feff->workspace, "nstar.dat");
   if (not $feff->save) {
-    unlink File::Spec->catfile($feff->workspace, "feff.inp");
-    unlink File::Spec->catfile($feff->workspace, "files.dat");
+    #unlink File::Spec->catfile($feff->workspace, "feff.inp");
+    #unlink File::Spec->catfile($feff->workspace, "files.dat");
   };
   return $self;
 };

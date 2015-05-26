@@ -34,7 +34,7 @@ $Text::Wrap::columns = 65;
 use Chemistry::Elements qw(get_symbol);
 use Xray::Absorption;
 
-use Demeter::StrTypes qw( Clamp );
+use Demeter::StrTypes qw( Clamp Element Edge );
 
   #my $config = Demeter->get_mode("params");
   # my %clamp = ("None"   => 0,
@@ -353,6 +353,10 @@ sub normalize {
     $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
     $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
+    $self->initialize_e0;
+    my ($elem, $edge) = $self->find_edge($self->bkg_e0);
+    $self->bkg_z($elem);
+    $self->fft_edge($edge);
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
     $self->dispense("process", "is_nor");
@@ -461,7 +465,6 @@ sub edgestep_error {
 sub autobk {
   my ($self) = @_;
   my $group = $self->group;
-#      print ">>>", $self->datatype, "  ", $self->update_bkg, $/;
 
   if ($self->datatype eq 'detector') {
     carp($self->name . " is a detector group, which cannot have its background removed\n\n");
@@ -812,6 +815,7 @@ sub find_edge {
   if ($INC{'Xray/XDI.pm'}) {
     ($xdi_elem, $xdi_edge) = ($self->xdi_attribute('element'), $self->xdi_attribute('edge'));
   };
+  ($xdi_elem, $xdi_edge) = (q{}, q{}) if ((not is_Element($xdi_elem)) or (not is_Edge($xdi_edge)));
   return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
 
   # perform a search if XDI values are not available

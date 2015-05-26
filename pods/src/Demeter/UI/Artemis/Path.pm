@@ -223,7 +223,8 @@ sub populate {
                                    # better would be to figure out how
                                    # it gets here....
 
-  $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ') if $pathobject->parent;
+  ##$this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ') if $pathobject->parent;
+  $this->{fefflabel} -> SetLabel('') if $pathobject->parent;
   $this->{fefflabel} -> SetLabel(q{[Emp.] }) if ref($pathobject) =~ m{FPath};
   my $name = $pathobject->name;
   $name =~ s{\A\s+}{};
@@ -249,11 +250,14 @@ sub populate {
   };
 
 
-  my $imp = sprintf(" (%4.4d) %s, %s%s", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
+  my $imp = sprintf(" (%d) %s, %s%s", $pathobject->sp->pathfinder_index, $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight], $rank);
   $imp = substr($imp, 7, -6) if ($pathobject->sp->pathfinder_index == 9999);
   $imp .= "\n";
   $this->{geometry} -> WriteText($imp);
   $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
+  if ($pathobject->sp->feff->is_polarization) {
+    $this->{geometry} -> WriteText( sprintf("  angle out=%5.1f, angle in=%5.1f\n", $pathobject->sp->angleout, $pathobject->sp->anglein) );
+  };
   $this->{geometry} -> WriteText($geometry);
   $this->{geometry} -> SetInsertionPoint(0);
 
@@ -544,7 +548,7 @@ sub include_label {
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
 
-  my $name = $self->{path}->name;
+  my $name = $self->{path}->label;
 
   $self->Rename($name);
   my $label = $self->{path}->label;
@@ -589,7 +593,8 @@ sub Rename {
     if ($n > 0) {
       $feffname = substr($feffname, 0, $n) if length($feffname) > $n;
     };
-    $self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
+    ##$self->{path}->label(sprintf("[%s] %s", $feffname, $newname));
+    $self->{path}->label($newname);
   };
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;

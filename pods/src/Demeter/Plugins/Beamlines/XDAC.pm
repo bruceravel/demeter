@@ -21,9 +21,10 @@ sub is {
     };
     $data->xdi->extra_version(sprintf("XDAC/%s.%s", $1, $2));
     $data->xdi->set_item('Facility', 'name', 'NSLS');
-    $data->xdi->set_item('Facility', 'source', 'bend magnet');
+    $data->xdi->set_item('Facility', 'xray_source', 'bend magnet');
 
     my $flag = 0;
+    my $get_labels = 0;
     my $remove_ifeffit_comments = 0;
   FILE: foreach my $li (<$fh>) {
       chomp $li;
@@ -53,8 +54,20 @@ sub is {
 	  last SWITCH;
 	};
 
-	## bail out at the end of the header
+	## snarf column labels then bail out at the end of the header
 	($li =~ m{\A\-{3,}}) and do {
+	  $get_labels = 1;
+	  last SWITCH;
+	};
+
+	($get_labels) and do {
+	  my @list = split(" ", $li);
+	  my $i = 0;
+	  foreach my $l (@list) {
+	    ++$i;
+	    #Demeter->pjoin('Column', $i, $l);
+	    $data->xdi->set_item('Column', $i, $l);
+	  };
 	  last FILE;
 	};
 
@@ -120,6 +133,7 @@ sub is {
 
       };
     };
+
     close $fh;
     $data->clear_ifeffit_titles if ($remove_ifeffit_comments);
     $data->beamline_identified(1);

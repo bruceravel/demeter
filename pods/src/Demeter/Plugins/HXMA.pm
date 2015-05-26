@@ -7,6 +7,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => "the HXMA and SXRMB beamlines at the CLS");
 has '+version'     => (default => 0.1);
 has 'beamline'     => (is => 'rw', isa => 'Str', default => q{});
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'hxma.ini'));
 
 sub is {
   my ($self) = @_;

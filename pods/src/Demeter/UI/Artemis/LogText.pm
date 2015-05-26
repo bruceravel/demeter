@@ -36,9 +36,18 @@ my %attr = (
 	   );
 
 sub make_text {
-  my ($self, $location, $fit) = @_;
+  my ($self, $location, $fit, $color) = @_;
   return if not defined $fit;
-  my $text = $fit->logtext;
+  $color ||= '#FFEE90';
+  my $text = q{};
+  if (ref($fit) =~ m{Fit}) {	# arg is a Demeter::Fit object
+    $text = $fit->logtext;
+    $color = $fit->color;
+  } elsif (-e $fit) {		#  arg is a path to a file
+    $text = Demeter->slurp($fit);
+  } else {			# else presume that arg is the text of the log file
+    $text = $fit;
+  };
   $location -> SetValue(q{});
   #my $max = 0;
   #foreach my $line (split(/\n/, $text)) {
@@ -46,7 +55,7 @@ sub make_text {
   #};
   my $max = 80;
   my $pattern = '%-' . $max . 's';
-  $attr{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($fit->color), Wx::Font->new( @font ) );
+  $attr{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($color), Wx::Font->new( @font ) );
 
   my $was;
   foreach my $line (split(/\n/, $text)) {

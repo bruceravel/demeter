@@ -531,9 +531,9 @@ sub xkcd {
   if ($onoff) {
     Demeter->co->set_default('gnuplot', 'xkcd', 1);
     ## this does not seem to work correctly:
-    #my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor-Sans" );
-    #if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor-Sans\b}) {
-    Demeter->co->set_default('gnuplot', 'font', 'Humor-Sans');
+    #my $fontobj = Wx::Font->new(0, wxDEFAULT, wxSLANT, wxNORMAL, 0, "Humor Sans" );
+    #if ($fontobj->GetNativeFontInfoUserDesc =~ m{\bHumor Sans\b}) {
+    Demeter->co->set_default('gnuplot', 'font', 'Humor Sans');
     #};
     #undef $fontobj;
   } else {

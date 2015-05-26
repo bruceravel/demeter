@@ -62,6 +62,7 @@ has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 has 'backend'   => (is => 'rw', isa => 'Str',  default => q{pgplot});
+has 'version'   => (is => 'ro', isa => 'Str',  default => q{5.2});
 
 ## -------- legend parameters
 has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});
@@ -224,7 +225,7 @@ override 'alldone' => sub {
 
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|error_log|lastplot|pathtype|sentinal)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|error_log|lastplot|pathtype|sentinal|version)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -442,12 +443,12 @@ sub i0_text {
 sub is_i0_plot {
   my ($self) = @_;
   my @rest = $self->get(qw(e_mu e_zero e_bkg e_pre e_post e_norm e_der e_sec e_signal));
-  return $self->e_i0 and (none {$_} @rest);
+  return ($self->e_i0 and (none {$_} @rest));
 };
 sub is_d0s_plot {
   my ($self) = @_;
   my @rest = $self->get(qw(e_zero e_bkg e_pre e_post e_norm e_der e_sec));
-  return $self->e_mu and $self->e_i0 and $self->e_signal and (none {$_} @rest);
+  return ($self->e_mu and $self->e_i0 and $self->e_signal and (none {$_} @rest));
 };
 
 sub copyright_text {

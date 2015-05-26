@@ -92,6 +92,9 @@ my %hints = (
 	     shift_x   => "The x-coordinate of the vector for recentering this crystal",
 	     shift_y   => "The y-coordinate of the vector for recentering this crystal",
 	     shift_z   => "The z-coordinate of the vector for recentering this crystal",
+	     pol_x     => "The x-coordinate of the polarization vector of the incident beam",
+	     pol_y     => "The y-coordinate of the polarization vector of the incident beam",
+	     pol_z     => "The z-coordinate of the polarization vector of the incident beam",
 	     shift_suggest => "If your space group has a shift vector in the Int'l Tables, insert it $MDASH Right click to reset",
 	     edge      => "The absorption edge to use in the Feff calculation",
 	     template  => "Choose the output file style and the ipot selection style",
@@ -275,23 +278,23 @@ sub new {
 
   #$spacebox->Add(1,1,1);
 
-  $self->{addbutton} = Wx::Button->new($self, -1, "Add a site");
-  $spacebox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxALIGN_BOTTOM, 0);
-  EVT_BUTTON($self, $self->{addbutton}, sub{$self->AddSite(0, $self)});
+  $self->{polarizationbox}       = Wx::StaticBox->new($self, -1, 'Polarization vector', wxDefaultPosition, wxDefaultSize);
+  $self->{polarizationboxsizer}  = Wx::StaticBoxSizer->new( $self->{polarizationbox}, wxHORIZONTAL );
 
-  # $self->{addbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
-  # EVT_MENU( $self->{addbar}, -1, sub{my ($toolbar, $event) = @_; AddSite($toolbar, $event, $self)} );
-  # $self->{addbar} -> AddTool(-1, "Add a site", $self->icon("add"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add}  );
-  # EVT_TOOL_ENTER( $self, $self->{addbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'addbar')} );
-  # $self->{addbar} -> Realize;
-  # $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 0);
+  $self->{pol_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
+  $self->{pol_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
+  $self->{pol_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
+  $self->{polarizationboxsizer} -> Add($self->{$_}, 1, wxALL, 5) foreach qw(pol_x pol_y pol_z);
+
+  $spacebox->Add($self->{polarizationboxsizer}, 0, wxGROW|wxALL);
+
 
   ## -------- end off space group and edge controls
 
 
 
   ## -------- lattice constant controls
-  $self->{latticebox}       = Wx::StaticBox->new($self, -1, 'Lattice Constants', wxDefaultPosition, wxDefaultSize);
+  $self->{latticebox}       = Wx::StaticBox->new($self, -1, 'Lattice constants', wxDefaultPosition, wxDefaultSize);
   $self->{latticeboxsizer}  = Wx::StaticBoxSizer->new( $self->{latticebox}, wxVERTICAL );
   my $tsz = Wx::GridBagSizer->new( 6, 10 );
 
@@ -367,12 +370,10 @@ sub new {
   EVT_RIGHT_DOWN($self->{shift_suggest}, sub{$self->InsertShiftvec(@_)});
 
   $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL);
+
   ## -------- end of R constant controls
 
-  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath addbutton
-				  shift_x shift_y shift_z shift_suggest edge template));
-
-  foreach my $x (qw(a b c alpha beta gamma name space rmax rpath shift_x shift_y shift_z edge template)) {
+  foreach my $x (qw(a b c alpha beta gamma name space rmax rpath shift_x shift_y shift_z pol_x pol_y pol_z edge template)) {
     EVT_TEXT_ENTER($self, $self->{$x}, sub{1});
   };
 
@@ -383,8 +384,23 @@ sub new {
   EVT_GRID_LABEL_RIGHT_CLICK($self->{sitesgrid}, \&PostGridMenu);
   EVT_MENU($self->{sitesgrid}, -1, \&OnGridMenu);
 
-  $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
+  $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL, 0);
+
+
+
+  $self->{addbutton} = Wx::Button->new($self, -1, " Add a site ");
+  $hbox -> Add($self->{addbutton}, 0, wxGROW|wxALL|wxLEFT|wxRIGHT, 3);
+  EVT_BUTTON($self, $self->{addbutton}, sub{$self->AddSite(0, $self)});
+
+
+
   $vbox -> Add($hbox, 2, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+
+  $self->{name}->SetFocus;
+  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath addbutton
+				  shift_x shift_y shift_z shift_suggest pol_x pol_y pol_z
+				  edge template));
+
 
   $self -> SetSizer( $vbox );
 
@@ -786,6 +802,16 @@ sub get_crystal_data {
   $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
   $atoms->shiftvec(\@shift);
 
+
+  my @pol = map { $self->{$_}->GetValue || 0 } qw(pol_x pol_y pol_z);
+  @pol = map { $self->number($_, "%5.1f") } @pol;
+  $problems .= "\"" . $self->{pol_x}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[0] == -9999);
+  $problems .= "\"" . $self->{pol_y}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[1] == -9999);
+  $problems .= "\"" . $self->{pol_z}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[2] == -9999);
+  $atoms->polarization(\@pol);
+
+
+
   my $core_selected = 0;
   my $first_valid_row = -1;
   my $count_valid_row = 0;
@@ -846,13 +872,14 @@ sub get_crystal_data {
 };
 
 sub number {
-  my ($self, $string) = @_;
+  my ($self, $string, $format) = @_;
+  $format ||= "%9.5f";
 
   ## empty string
   return 0 if ($string =~ m{\A\s*\z});
 
   ## floating point number
-  return sprintf("%9.5f", $string) if ($string =~ m{\A\s*$NUMBER\s*\z});
+  return sprintf($format, $string) if ($string =~ m{\A\s*$NUMBER\s*\z});
 
   ## binary operation
   if ($string =~ m{
@@ -865,7 +892,7 @@ sub number {
 		    \s*\z	   # trailing whitespace
 		}x) {
     my $num = eval $string;
-    return sprintf("%9.5f", $num);
+    return sprintf($format, $num);
   };
 
   return -9999;
