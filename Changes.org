@@ -6,7 +6,7 @@
 
 * 0.9 series
 
-** 0.9.22   XX April     2015
+** 0.9.22   XX June      2015
 
 *** Athena
    - Fixed behavior of UI::Athena::Cursor when time-out happens by
@@ -30,6 +30,10 @@
    - Fix display of path labels using pathfinder->name mini-templates
      (thanks to Anna Wolska) {/pre4/}
    - Accommodate linear polarization (but not ellipticity) in Artemis
+     (thanks to Anna Wolska and Shoaib Muhammad) {/pre4/}
+   - Making VPaths and transfering paths now also plots in R
+     automatically.  Also, options for all/marked paths. (Thanks to
+     Matt) {/pre4/}
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
