@@ -3,9 +3,10 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
 }
+set {$D->group}_fit.chi = interp({$D->group}_fit.k, {$D->group}_fit.chi, {$D->group}.k)
+set {$D->group}_fit.k   = {$D->group}.k
+
 ##| residual arrays for {$D->group}
 set {$D->group}_res.k   = {$D->group}.k
 set {$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi
 
-set {$D->group}_fit.chi = interp({$D->group}_fit.k, {$D->group}_fit.chi, {$D->group}.k)
-set {$D->group}_fit.k   = {$D->group}.k
