@@ -11,6 +11,8 @@ set({$D->group}.k       = t___emp.k,
     {$D->group}_fit.chi = t___emp.fit,
     {$D->group}_res.k   = t___emp.k,
     {$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi )
+show @group {$D->group} 
+show @group {$D->group}_fit
 erase @group t___emp 
 erase $t___emp_title_01 $t___emp_title_02 $t___emp_title_03 $t___emp_title_04 $t___emp_title_05
 erase $t___emp_title_06 $t___emp_title_07 $t___emp_title_08 $t___emp_title_09 $t___emp_title_10

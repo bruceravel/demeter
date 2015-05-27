@@ -303,7 +303,7 @@ const my %CHIK_HASH  => (1=>'k inverse Angstrom', 2=>'chi',     3=>'chik',    4=
 const my %CHIKW_HASH => (1=>'k inverse Angstrom', 2=>'chi');
 const my %CHIR_HASH  => (1=>'R Angstrom',         2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
 const my %CHIQ_HASH  => (1=>'q inverse Angstrom', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
-const my %FIT_HASH   => (1=>'k inverse Angstrom', 2=>'chi',     3=>'chi_fit', 4=>'chi_res',  5=>'chi_bkg',   6=>'window');
+my %FIT_HASH = (1=>'k inverse Angstrom', 2=>'chi',     3=>'fit',     4=>'residual', 5=>'running',   6=>'window');
 
 sub title_glob {
   my ($self, $globname, $space, $how) = @_;
@@ -343,8 +343,33 @@ sub title_glob {
       $hash = \%CHIQ_HASH;
       last COLUMNS;
     };
-    ($space eq 'f') and do {
+    ($space eq 'f') and do {	# this got messy!
       $hash = \%FIT_HASH;
+      if ($how =~ m{\Ak}) {
+	$hash->{2} = join('_', 'chi', $how);
+      } elsif ($how eq 'rmag') {
+	$hash->{1} = $CHIR_HASH{1};
+	$hash->{2} = $CHIR_HASH{4};
+      } elsif ($how eq 'rre') {
+	$hash->{1} = $CHIR_HASH{1};
+	$hash->{2} = $CHIR_HASH{2};
+      } elsif ($how eq 'rim') {
+	$hash->{1} = $CHIR_HASH{1};
+	$hash->{2} = $CHIR_HASH{3};
+      } elsif ($how eq 'qmag') {
+	$hash->{1} = $CHIQ_HASH{1};
+	$hash->{2} = $CHIQ_HASH{4};
+      } elsif ($how eq 'qre') {
+	$hash->{1} = $CHIQ_HASH{1};
+	$hash->{2} = $CHIQ_HASH{2};
+      } elsif ($how eq 'qim') {
+	$hash->{1} = $CHIQ_HASH{1};
+	$hash->{2} = $CHIQ_HASH{3};
+      };
+      if ($self->fit_do_bkg) {
+	$hash->{7} = $hash->{6};
+	$hash->{6} = 'background';
+      };
       last COLUMNS;
     };
   };

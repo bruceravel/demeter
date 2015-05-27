@@ -15,6 +15,8 @@
   q{}
 }
 ###__ perform the fit
+erase {$D->group}_res
+erase {$D->group}_fit
 feffit({$F->indeces}, group={$D->group}_fit, chi={$D->group}.chi, k={$D->group}.k,
        {$kstring},
        rmin={$D->bft_rmin}, rmax={$D->bft_rmax}, kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, 

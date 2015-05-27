@@ -44,7 +44,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use List::Util qw(max);
-use List::MoreUtils qw(any none zip uniq);
+use List::MoreUtils qw(any none zip uniq minmax);
 use Regexp::Assemble;
 use Demeter::Constants qw($NUMBER $NULLFILE $STATS);
 use Text::Wrap;
@@ -517,7 +517,12 @@ sub fit {
       $command .= $data->template("fit", "background");
     };
   };
+  #my @xxx = Ifeffit::get_array('lmzpb_fit.k');
+  #Demeter->pjoin(3, minmax(@xxx));
+  #print $command, $/;
   $self->dispose($command);
+  #@xxx = Ifeffit::get_array('lmzpb_fit.k');
+  #Demeter->pjoin(3.1, minmax(@xxx));
   $self->evaluate;
 
   ## set happiness statistics

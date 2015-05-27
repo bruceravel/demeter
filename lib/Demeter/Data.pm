@@ -556,6 +556,7 @@ sub _nidp {
 sub chi_noise {
   my ($self) = @_;
   #return $self if $self->fit_group;
+  $self->maxk($self->fft_kmax) if ($self->maxk < $self->fft_kmin);
   $self->dispense("process", "chi_noise");
   my $epsk = $self->fetch_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;

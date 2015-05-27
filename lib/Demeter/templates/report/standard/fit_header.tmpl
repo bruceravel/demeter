@@ -1,0 +1,22 @@
+{ # -*- ifm -*-
+  # fit header
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  $file = ($D->from_athena) ? $D->prjrecord : $D->file;
+  q{}
+}
+Artemis.data_set:            {$D->name}
+Artemis.file:                {$file}
+Artemis.name:                {$D->name}
+Artemis.k-range:             {$D->fft_kmin} - {$D->fft_kmax}
+Artemis.dk:                  {$D->fft_dk}
+Artemis.k-window:            {$D->fft_kwindow}
+Artemis.k-weight:            {$D->_kw_string}
+Artemis.R-range:             {$D->bft_rmin} - {$D->bft_rmax}
+Artemis.dR:                  {$D->bft_dr}
+Artemis.R-window:            {$D->bft_rwindow}
+Artemis.fitting_space:       {$D->fit_space}
+Artemis.epsilon_k:           {$S->epsk   || 0}
+Artemis.epsilon_r:           {$S->epsr   || 0}
+Artemis.background_function: {$D->yesno("fit_do_bkg")}
+Artemis.phase correction:    {$D->fft_pc}

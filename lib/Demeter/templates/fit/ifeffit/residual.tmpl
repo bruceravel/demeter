@@ -6,3 +6,6 @@
 ##| residual arrays for {$D->group}
 set {$D->group}_res.k   = {$D->group}.k
 set {$D->group}_res.chi = {$D->group}.chi - {$D->group}_fit.chi
+
+set {$D->group}_fit.chi = interp({$D->group}_fit.k, {$D->group}_fit.chi, {$D->group}.k)
+set {$D->group}_fit.k   = {$D->group}.k

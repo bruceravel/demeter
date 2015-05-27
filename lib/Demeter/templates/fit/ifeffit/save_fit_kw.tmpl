@@ -26,7 +26,7 @@ set({$D->group}.chik     = {$D->group}.k^{$kweight}*{$D->group}.chi,
     {$D->group}_res.chik = {$D->group}.k^{$kweight}*{$D->group}_res.chi,
     {$bkgstring})
 write_data(file="{$filename}",
-           ${$titles}, ${$D->group}_title_*, "chi(k) weighted by {$kweight}",
+           ${$titles}, ${$D->group}_title_*,
            label="{$label}",
            {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$D->group}.krun, {$bkg}{$D->group}.win)
 erase {$D->group}.chik {$D->group}_fit.chik {$D->group}_res.chik {$D->group}_bkg.chik

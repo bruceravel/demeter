@@ -207,7 +207,13 @@ sub xdi_output_header {
 
   } elsif ($datafit eq 'fit') {	# fit
     $self->co->set(output_columns => $columns);
-    $report = $self->data->fit_parameter_report;
+    $report .= sprintf("%-28s %s\n", 'Element.edge: ',   ucfirst($self->fft_edge));
+    $report .= sprintf("%-28s %s\n", 'Element.symbol: ', ucfirst(lc($self->bkg_z)));
+    foreach my $i (sort keys %$columns) {
+      $report .= sprintf("%-28s %s\n", "Column.$i: ", $columns->{$i});
+    };
+    $report .= $self->template('report', 'fit_header');
+    ##$report = $self->data->fit_parameter_report;
 
   } else {			# data
     $self->co->set(output_columns => $columns); # this is used in xdi_header_lines
