@@ -34,6 +34,13 @@
    - Making VPaths and transfering paths now also plots in R
      automatically.  Also, options for all/marked paths. (Thanks to
      Matt) {/pre4/}
+   - plot after fit nw certain to respect k-weight setting in Plot
+     window {/pre5/}
+   - data+fit save file in Artemis are now XDI files {/pre5/}
+   - crude fix for an odd situation where the _fit group's k array
+     gets reset to something different from the Data k grid.
+     Interpolate back onto the expected k-grid.  (thanks to Rosalie
+     Hocking) {/pre5/}
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
@@ -51,6 +58,8 @@
      to Anna Zimina) {/pre3/}
    - Add capacity to Atoms, Feff, ScatteringPath objects to
      accommodate polarization
+   - In some cases, chi_noise called with 0 for kmax.  Use fft_kmax in
+     that case. {/pre5/}
 
 *** Windows
    - Now using gnuplot 5.0.0 in the Windows installer
