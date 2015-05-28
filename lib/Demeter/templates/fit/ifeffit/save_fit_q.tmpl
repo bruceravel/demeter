@@ -13,8 +13,8 @@
 }
 {
   ($bkg, $label) = ($D->fit_do_bkg)
-                 ? ($D->group."_bkg.$suffix, ", "q $suffix fit residual running background window")
-                 : (q{},                        "q $suffix fit residual running window");
+                 ? ($D->group."_bkg.$suffix, ", "k $suffix fit residual running background window")
+                 : (q{},                        "k $suffix fit residual running window");
   q{}
 }
 <<nl>>

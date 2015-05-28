@@ -19,13 +19,20 @@
 	    chiq_im  => 'imaginary part of chi(q)',
 	    chiq_pha => 'phase of chi(q)',
 	   );
-  $i = 1;
+  $i = 3;
   q{}
 }
-{$D->group}.myheader = ["Demeter multicolumn data file - Demeter version {$S->version} - {$S->now}"]
-{$D->group}.myheader.append("This file contains {$trans{$C->get("many_which")}} data from:")
+{$D->group}.myheader = ["XDI/1.0 Demeter/{$S->version}"]
+{$D->group}.myheader.append('Demeter.output_filetype: multicolumn {$trans{$C->get("many_which")}}')
+{$D->group}.myheader.append('Element.symbol: {$D->bkg_z}')
+{$D->group}.myheader.append('Element.edge: {$D->fft_edge}')
+{$D->group}.myheader.append('Column.1: k')
+{$D->group}.myheader.append('Column.2: energy')
 {
   foreach $g (@list) {
-    $OUT .= $D->group . ".myheader.append(\"\t" . $g->name . "\")\n";
+    $word = $g->name;
+    $word =~ s{\s+}{_}g;
+    $OUT .= $D->group . ".myheader.append(\"Column." . $i . ": " . $word . "\")\n";
+    $i++;
   }
 }

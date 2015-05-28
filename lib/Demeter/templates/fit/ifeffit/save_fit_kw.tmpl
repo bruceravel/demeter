@@ -13,8 +13,8 @@
 }
 {
   ($bkg, $label) = ($D->fit_do_bkg)
-                 ? ($D->group."_bkg.chi, ", "k chi_k$kweight fit residual running background window")
-                 : (q{},                    "k chi_k$kweight fit residual running window");
+                 ? ($D->group."_bkg.chi, ", "k chi fit residual running background window")
+                 : (q{},                    "k chi fit residual running window");
   $bkgstring = ($D->fit_do_bkg)
              ? $D->group . '_bkg.chik = ' . $D->group . '.k^' . $kweight . '*' . $D->group . '_bkg.chi'
              : q{};

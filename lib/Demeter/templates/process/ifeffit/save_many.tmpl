@@ -23,12 +23,10 @@
 write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,{$ecol}
            {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
            label="{$C->get("many_space")}{$elabel}{foreach $g (@list) {($n=$g->name)=~ s{ +}{_}g; $OUT .= "  $n"}}")
-erase $many_title_1
-erase $many_title_2
 erase {$S->group}.xxx
 erase {$S->group}.chiee
 {
-  foreach $g (@list) {
+  foreach $i (1..$#list+7) {
     $OUT .= "erase \$many_title_" . $i++ . "\n";
   }
 }

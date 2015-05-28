@@ -22,10 +22,17 @@
   $i = 1;
   q{}
 }
-$many_title_{$i++} = "Demeter multicolumn data file -- Demeter version {$S->version}"
-$many_title_{$i++} = "This file contains {$trans{$C->get("many_which")}} data from:"
+$many_title_{$i++} = "XDI/1.0 Demeter/{$S->version}"
+$many_title_{$i++} = 'Demeter.output_filetype: multicolumn {$trans{$C->get("many_which")}}'
+$many_title_{$i++} = 'Element.symbol: {$D->bkg_z}'
+$many_title_{$i++} = 'Element.edge: {$D->fft_edge}'
+$many_title_{$i++} = 'Column.1: k'
+$many_title_{$i++} = 'Column.2: energy'
 {
   foreach $g (@list) {
-    $OUT .= "\$many_title_" . $i++ . ' =    ' . $g->name . "\n";
+    $word = $g->name;
+    $word =~ s{\s+}{_}g;
+    $OUT .= "\$many_title_" . $i . ' = "Column.' . ($i-3) . ': ' . $word . "\"\n";
+    $i++;
   }
 }

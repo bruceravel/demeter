@@ -212,6 +212,7 @@ sub xdi_output_header {
     foreach my $i (sort keys %$columns) {
       $report .= sprintf("%-28s %s\n", "Column.$i: ", $columns->{$i});
     };
+    $report .= sprintf("%-28s %s\n", 'Artemis.output_kweight: ', $self->po->kweight);
     $report .= $self->template('report', 'fit_header');
     ##$report = $self->data->fit_parameter_report;
 

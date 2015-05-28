@@ -302,7 +302,7 @@ const my %NORM_HASH  => (1=>'energy eV',          2=>'norm',    3=>'nbkg',    4=
 const my %CHIK_HASH  => (1=>'k inverse Angstrom', 2=>'chi',     3=>'chik',    4=>'chik2',    5=>'chik3',     6=>'window',  7=>'energy');
 const my %CHIKW_HASH => (1=>'k inverse Angstrom', 2=>'chi');
 const my %CHIR_HASH  => (1=>'R Angstrom',         2=>'chir_re', 3=>'chir_im', 4=>'chir_mag', 5=>'chir_pha',  6=>'window',  7=>'deriv_pha');
-const my %CHIQ_HASH  => (1=>'q inverse Angstrom', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
+const my %CHIQ_HASH  => (1=>'k inverse Angstrom', 2=>'chi_re',  3=>'chi_im',  4=>'chi_mag',  5=>'chi_pha',   6=>'window',  7=>'chi');
 my %FIT_HASH = (1=>'k inverse Angstrom', 2=>'chi',     3=>'fit',     4=>'residual', 5=>'running',   6=>'window');
 
 sub title_glob {
@@ -345,9 +345,7 @@ sub title_glob {
     };
     ($space eq 'f') and do {	# this got messy!
       $hash = \%FIT_HASH;
-      if ($how =~ m{\Ak}) {
-	$hash->{2} = join('_', 'chi', $how);
-      } elsif ($how eq 'rmag') {
+      if ($how eq 'rmag') {
 	$hash->{1} = $CHIR_HASH{1};
 	$hash->{2} = $CHIR_HASH{4};
       } elsif ($how eq 'rre') {
@@ -375,6 +373,7 @@ sub title_glob {
   };
   $self->xdi_set_columns($hash) if ($data->xdi);
 
+  $self->po->kweight($1) if ($how =~ m{k(\d)});
   my $which = ($space eq 'f') ? 'fit' : 'data';
   $self->xdi_output_header($which, q{}, $hash);
   $self->xdi_set_columns($save_columns) if ($data->xdi);
