@@ -173,7 +173,7 @@ sub get_formula_data {
       $density += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
     };
     ## number_of_amus * molarity(moles/liter) * 1 gram/amu = density of solute
-    $density *= $parent->{density};
+    $density *= $parent->{density}->GetValue;
     # molarity is moles/liter, density is g/cm^3, 1000 is the conversion
     # btwn liters and cm^3
     $density /= 1000;
