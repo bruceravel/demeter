@@ -395,7 +395,7 @@ sub push_values {
     # };
   };
   $this->{result}->Clear;
-  $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));
+  $this->{$_} -> Enable(0) foreach (qw(make report fitmarked resultplot resultreport));
   my $count = 0;
   foreach my $i (0 .. $this->{nstan}-1) {
     ++$count if (scalar $this->{'standard'.$i}->GetSelection > 0);

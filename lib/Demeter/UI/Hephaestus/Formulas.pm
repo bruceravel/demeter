@@ -25,7 +25,7 @@ use Text::Wrap;
 use Xray::Absorption;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN EVT_CHOICE);
 use base 'Wx::Panel';
 use Demeter::UI::Wx::PeriodicTableDialog;
 
@@ -84,6 +84,7 @@ sub new {
   $tsz -> Add($self->{densityunits}, Wx::GBPosition->new(1,2));
   EVT_KEY_DOWN( $self->{density}, sub{on_key_down(@_, $self)} );
   $self->{dm}->SetSelection(0);
+  EVT_CHOICE($self, $self->{dm}, sub{OnDensity(@_)});
 
   ## -------- Energy
   $label = Wx::StaticText->new($self, -1, 'Energy', wxDefaultPosition, [$width,-1]);
@@ -134,6 +135,15 @@ sub on_key_down {
     get_formula_data($parent, $event, $parent);
   } else {
     $event->Skip;
+  };
+};
+
+sub OnDensity {
+  my ($self, $event) = @_;
+  if ($self->{dm}->GetCurrentSelection) {
+    $self->{densityunits}->SetLabel('mol/L');
+  } else {
+    $self->{densityunits}->SetLabel('g/cm^3');
   };
 };
 

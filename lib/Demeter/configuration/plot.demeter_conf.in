@@ -62,7 +62,7 @@ variable=showcopyright
 type=boolean
 onvalue=1
 offvalue=0
-default=true
+default=false
 restart=1
 description
   This tells whether a copyright statement will be drawn on the plot.
