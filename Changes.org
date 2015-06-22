@@ -33,7 +33,8 @@
    - Fix display of path labels using pathfinder->name mini-templates
      (thanks to Anna Wolska) {/pre4/}
    - Accommodate linear polarization (but not ellipticity) in Artemis
-     (thanks to Anna Wolska and Shoaib Muhammad) {/pre4/}
+     (thanks to Anna Wolska and Shoaib Muhammad) {/pre4/} + proper
+     handling of persistance in Artemis
    - Making VPaths and transfering paths now also plots in R
      automatically.  Also, options for all/marked paths. (Thanks to
      Matt) {/pre4/}

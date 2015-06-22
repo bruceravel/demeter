@@ -180,6 +180,17 @@ has 'polarization' => (
 				     'clear_polarization' => 'clear',
 				    }
 	       );
+has 'ellipticity' => (
+		       traits    => ['Array'],
+		       is        => 'rw',
+		       isa       => 'ArrayRef',
+		       default   => sub { [0, 0, 0] },
+		       handles   => {
+				     'push_ellipticity'  => 'push',
+				     'pop_ellipticity'   => 'pop',
+				     'clear_ellipticity' => 'clear',
+				    }
+	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
@@ -315,6 +326,7 @@ sub clear {
   $self->clear_cluster;
   $self->shiftvec([0,0,0]);
   $self->polarization([0,0,0]);
+  $self->ellipticity([0,0,0]);
   $self->clear_titles;
   $self->cell->clear;
   $self->is_imported(0);
@@ -397,15 +409,17 @@ sub parse_line {
     $rest =~ s{$val(?:$SEPARATOR)?}{};
     my $vv = ($key =~ m{\bout}) ? shift @words : q{};
     $rest =~ s{$vv(?:$SEPARATOR)?}{};
-    my $vvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
+    my $vvv = ($key =~ m{shi|daf|qve|ref|pol|ell}) ? shift @words : q{};
     $rest =~ s{$vvv(?:$SEPARATOR)?}{};
-    my $vvvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
+    my $vvvv = ($key =~ m{shi|daf|qve|ref|pol|ell}) ? shift @words : q{};
     $rest =~ s{$vvvv(?:$SEPARATOR)?}{};
 
     return if ($key =~ m{\#});
     $key = lc($key);
-    my $kk = ($key =~ m{shi}) ? 'shiftvec' : $key;
-    if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref})) {
+    my $kk = ($key =~ m{shi}) ? 'shiftvec'
+           : ($key =~ m{pol}) ? 'polarization'
+           :                     $key;
+    if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref|pol|ell})) {
       $self->$kk([$val, $vvv, $vvvv]);
     } elsif ($self->meta->has_method($key)) {
       $self->$key(lc($val));
@@ -968,9 +982,9 @@ sub spacegroup_file {
 };
 
 sub is_polarization {
-  my ($self) = @_;
+  my ($self, $token) = @_;
   return '' if (($self->polarization->[0]>$EPSILON4) or ($self->polarization->[1]>$EPSILON4) or ($self->polarization->[2]>$EPSILON4));
-  return '*';
+  return $token || '*';
 };
 
 
@@ -982,7 +996,7 @@ override serialization => sub {
 		      shiftvec cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
 		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
 		      is_ipots_set is_expanded is_rhomb is_hex is_first is_second
-		      absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
+		      absorption_done mcmaster_done i0_done self_done nclus polarization ellipticity)) { #  sites cluster
     $cards{$key} = $self->$key;
   };
 
