@@ -705,6 +705,10 @@ sub open_file {
   $self->{shift_x}->SetValue($shiftvec[0]||0);
   $self->{shift_y}->SetValue($shiftvec[1]||0);
   $self->{shift_z}->SetValue($shiftvec[2]||0);
+  my @pol = @{ $atoms->polarization }; # eventually, same for ellipticity
+  $self->{pol_x}->SetValue($pol[0]||0);
+  $self->{pol_y}->SetValue($pol[1]||0);
+  $self->{pol_z}->SetValue($pol[2]||0);
 
   my $i = 0;
   my $corerow = 0;
@@ -804,7 +808,7 @@ sub get_crystal_data {
 
 
   my @pol = map { $self->{$_}->GetValue || 0 } qw(pol_x pol_y pol_z);
-  @pol = map { $self->number($_, "%5.1f") } @pol;
+  @pol = map { $self->number($_, "%.1f") } @pol;
   $problems .= "\"" . $self->{pol_x}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[0] == -9999);
   $problems .= "\"" . $self->{pol_y}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[1] == -9999);
   $problems .= "\"" . $self->{pol_z}->GetValue . "\" is not a valid value for a polarization coordinate (should be a number or a simple fraction).\n\n" if ($pol[2] == -9999);
@@ -997,6 +1001,8 @@ sub run_atoms {
   my ($self, $is_aggregate) = @_;
   $is_aggregate = 0;
   my $seems_ok = $self->get_crystal_data;
+  my $atomsfile = File::Spec->catfile($self->{parent}->{Feff}->{feffobject}->workspace, "atoms.inp");
+  $self->save_file($atomsfile);
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
   my ($template, $style) = split(/ - /, $this);
   $style = 'elements' if $style eq 'elem';

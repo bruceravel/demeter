@@ -1287,7 +1287,7 @@ override serialization => sub {
   my %cards = ();
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      group hidden source feff_version scf fms ldos xanes)) {
+		      group hidden source feff_version scf fms ldos xanes polarization ellipticity)) {
     $cards{$key} = $self->$key;
   };
   $cards{zzz_arrays} = "titles othercards potentials absorber sites";
@@ -1346,7 +1346,7 @@ sub read_yaml {
 	       sites	  => shift(@refs));
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      screen buffer save fuzz betafuzz eta_suppress miscdat
-		      hidden source)) {
+		      hidden source polarization ellipticity)) {
     $self -> $key($rhash->{$key}) if exists $rhash->{$key};
   };
   if (defined $ws) {

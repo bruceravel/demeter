@@ -25,7 +25,7 @@ use Text::Wrap;
 use Xray::Absorption;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN EVT_CHOICE);
 use base 'Wx::Panel';
 use Demeter::UI::Wx::PeriodicTableDialog;
 
@@ -84,6 +84,7 @@ sub new {
   $tsz -> Add($self->{densityunits}, Wx::GBPosition->new(1,2));
   EVT_KEY_DOWN( $self->{density}, sub{on_key_down(@_, $self)} );
   $self->{dm}->SetSelection(0);
+  EVT_CHOICE($self, $self->{dm}, sub{OnDensity(@_)});
 
   ## -------- Energy
   $label = Wx::StaticText->new($self, -1, 'Energy', wxDefaultPosition, [$width,-1]);
@@ -137,6 +138,15 @@ sub on_key_down {
   };
 };
 
+sub OnDensity {
+  my ($self, $event) = @_;
+  if ($self->{dm}->GetCurrentSelection) {
+    $self->{densityunits}->SetLabel('mol/L');
+  } else {
+    $self->{densityunits}->SetLabel('g/cm^3');
+  };
+};
+
 sub get_formula_data {
   my ($self, $event, $parent) = @_;
   my $answer = "\n";
@@ -173,7 +183,7 @@ sub get_formula_data {
       $density += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
     };
     ## number_of_amus * molarity(moles/liter) * 1 gram/amu = density of solute
-    $density *= $parent->{density};
+    $density *= $parent->{density}->GetValue;
     # molarity is moles/liter, density is g/cm^3, 1000 is the conversion
     # btwn liters and cm^3
     $density /= 1000;

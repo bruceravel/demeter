@@ -715,6 +715,7 @@ sub fit {
   ##autosave($name);
   my $result = $fit->fit;
 
+
   my $finishtext = q{};
   my $code = "normal";
   if ($result eq $fit) {
@@ -760,6 +761,7 @@ sub fit {
     if ($how =~ m{\A(?:rmr|rk|r123|k123|kq)\z}) {
       foreach my $d (@data) {
 	if ($d->fit_include) {
+	  $Demeter::UI::Artemis::frames{Plot}->fetch_parameters('data');
 	  $d->plot($how);
 	  last;
 	};
