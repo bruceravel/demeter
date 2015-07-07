@@ -45,6 +45,9 @@
      gets reset to something different from the Data k grid.
      Interpolate back onto the expected k-grid.  (thanks to Rosalie
      Hocking) {/pre5/}
+   - Remove spurious minus sign appended to results of GDS evaluate
+     button {/pre5/}
+   - remove wxSHAPED attribute from GDS window's toolbar {/pre5/}
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)

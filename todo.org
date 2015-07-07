@@ -17,8 +17,21 @@
   - [ ] plot key for neg part of envelope is incorrect
 
 ** big things
-  - [X] fuzzy over sites
-  - [ ] switch .prj to json
+  - [ ] From Joel Ullom: In our data, the error bar in each energy bin
+    of the EXAFS spectrum is known from Poisson statistics since the
+    photons are (laboriously) counted one by one. This creates the
+    opportunity to propagate these errors through the Artemis fitting
+    process.  Potentially, the resulting error bars on the fit
+    parameters are more meaningful.  This software capability would be
+    interesting to explore.
+  - [ ] From Joel Ullom: In the rebinning functionality of Athena, all
+    rebinnings reduced the amplitude of the white line feature in our
+    ferrioxalate data.  You explained well why rebinning is seldom
+    useful when using a conventional EXAFS energy grid.  However, we
+    only reproduce the conventional energy grid through rebinning so I
+    think rebinning is still relevant for us.  It would be nice to be
+    able to rebin without reducing spectral detail in the XANES
+    region. -- What is the width of the box?
   - [ ] 5 and 6 legged paths
   - [ ] PCA improvements
   - [ ] feff8.5L
