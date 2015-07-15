@@ -90,7 +90,7 @@ sub ACTION_test_for_gnuplot {
   ## see http://perldoc.perl.org/perlfaq8.html#How-can-I-capture-STDERR-from-an-external-command%3f
   my $in = '';
   #my $gp = File::Which::where('gnuplot');
-  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplotxxx -d -e "set xrange [0:1]"');
+  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set xrange [0:1]"');
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? != 0) {
