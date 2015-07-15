@@ -71,6 +71,8 @@
    - In some cases, chi_noise called with 0 for kmax.  Use fft_kmax in
      that case. {/pre5/}
    - Change default for copyright statement in plot to false
+   - Fixed a testing bug resulting from gnuplot not being found
+     (thanks to Isabelle Kieffer, see mailing list for 15 July, 2015)
 
 *** Windows
    - Now using gnuplot 5.0.0 in the Windows installer

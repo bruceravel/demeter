@@ -23,7 +23,7 @@
     opportunity to propagate these errors through the Artemis fitting
     process.  Potentially, the resulting error bars on the fit
     parameters are more meaningful.  This software capability would be
-    interesting to explore.
+    interesting to explore. /This is a Larch chore/
   - [ ] From Joel Ullom: In the rebinning functionality of Athena, all
     rebinnings reduced the amplitude of the white line feature in our
     ferrioxalate data.  You explained well why rebinning is seldom
@@ -42,6 +42,7 @@
 
 * larch chores
 
++ [ ] /l/ versions of the A,A,&H need path wrangling on Windows that includes PATH info for larch
 + [X] XDI headers and saving current with larch
 + [X] finsh Athena templates, including recently added ones (e.g. MEE templates, pixel)
 + [ ] start work on Artemis-related templates
@@ -259,8 +260,8 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/8]  [0%]
-   - [ ] More work on history, see Anthony Ardizzi's issue
+*** Artemis bugs and missing features [1/8]  [12%]
+   - [X] More work on history, see Anthony Ardizzi's issue
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
    - [ ] do SSPaths get serialized and deserialized with the pointers
@@ -280,9 +281,9 @@
          don't really expect name collisions, but it seems to loose
          track between all the feff runs."  /This is a bit unclear.../
    - [ ] Path drag and drop [0/3]
-        - [ ] DND of an SSPath does not work correctly
-        - [ ] DND of FPath also broken
-        - [ ] DND of selection (currently only one at a time)
+     - [ ] DND of an SSPath does not work correctly
+     - [ ] DND of FPath also broken
+     - [ ] DND of selection (currently only one at a time)
 
 **** Project [2/4]
    - [X] VPaths to/from project file
