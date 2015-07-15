@@ -14,6 +14,7 @@ use File::Copy;
 use File::Find;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
+use IPC::Cmd qw(can_run);
 use IPC::Open3;
 
 ## this eval is required so that the build scripts can be made even if
@@ -89,11 +90,15 @@ sub ACTION_test_for_gnuplot {
   ## from the call to gnuplot, instead relying upon the return value $?
   ## see http://perldoc.perl.org/perlfaq8.html#How-can-I-capture-STDERR-from-an-external-command%3f
   my $in = '';
-  #my $gp = File::Which::where('gnuplot');
-  my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set xrange [0:1]"');
-  while( <PH> ) { }
-  waitpid($pid, 0);
-  if ($? != 0) {
+  ##my $gp = File::Which::where('gnuplot');
+  #my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -e "set xrange [0:1]"');
+  #my $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -V');
+  #while( <PH> ) { print '>', $_, '<', $/}
+  #waitpid($pid, 0);
+  #if ($? != 0) {
+
+  my $gp = can_run("gnuplot");
+  if (not $gp) {
     copy($infile, $conffile);
     ## still need to make a gnuplot.demeter_conf so tests can run correctly
     copy(File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf.in'),
@@ -108,22 +113,42 @@ sub ACTION_test_for_gnuplot {
   close $FIXED;
   print STDOUT "found it!  Using gnuplot with the ";
 
-  ## now test for terminal type
+  ## figure out the version number and patchlevel of this version of gnuplot
+  ## we are looking to see if the version is 4.6.2 or higher so we can use the -d flag
+  ## -d avoids getting tripped up by weirdness in the ~/.gnuplot file
+  my $gpv = 0;
+  $gpv = `$gp -V` if $gp;
+  my ($major, $minor) = (0,0);
+  my $command = 'gnuplot -d -e "set terminal wxt"';
+  if ($gpv =~ m{gnuplot\s+(\d\.\d+)\s+patchlevel\s+(\d+)}) {
+    if ($1 < 4.6) {
+      $command = 'gnuplot -e "set terminal wxt"';
+    } elsif ($1 eq '4.6' and $2 < 2) {
+      $command = 'gnuplot -e "set terminal wxt"';
+    };
+  };
+
+  ## now test for wxt terminal
   my $term = 'x11';
   $in = '';
-  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set terminal wxt"');
+  my $pid = open3($in, ">&STDERR", \*PH, $command);
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {
     $term = 'wxt';
   };
+
+  ## and for qt terminal
+  $command =~ s{wxt}{qt};
   $in = '';
-  $pid = open3($in, ">&STDERR", \*PH, 'gnuplot -d -e "set terminal qt"');
+  $pid = open3($in, ">&STDERR", \*PH, $command);
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {
     $term = 'qt';
   };
+
+  ## and set conf file accordingly
   $text = _slurp(File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf.in'));
   $text =~ s{default=x11}{default=$term};
   open($FIXED, '>', File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf'));
