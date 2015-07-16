@@ -21,6 +21,9 @@
    - Do not disable "Save fit sequence" button when selecting
      groups. (Thanks to a fellow named Muhammad at the 2015 ASEAN
      Workshop on X-ray Absorption Spectroscopy)
+   - A change in 0.9.20 made it impossible to change the defaults for
+     plotting ranges in the four spces.  This has been fixed.  (thanks
+     to Lisa Bovenkamp) {/pre5/}
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not

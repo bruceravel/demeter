@@ -250,6 +250,7 @@ variable=emin
 type=real
 default=-200
 units=eV
+restart=1
 description
   The startup value for the minimum value of an energy plot.  This
   number is relative to the E0 of the current group or of the first
@@ -260,6 +261,7 @@ variable=emax
 type=real
 default=800
 units=eV
+restart=1
 description
   The startup value for the maximum value of an energy plot.  This
   number is relative to the E0 of the current group or of the first
@@ -270,6 +272,7 @@ variable=kmin
 type=real
 default=0
 units=inverse Angstroms
+restart=1
 description
   The startup value for the minimum value of a k plot.  This value
   will be overridden by the plot options saved in a project file.
@@ -278,6 +281,7 @@ variable=kmax
 type=real
 default=15
 units=inverse Angstroms
+restart=1
 description
   The startup value for the maximum value of a k plot.  This value
   will be overridden by the plot options saved in a project file.
@@ -286,6 +290,7 @@ variable=rmin
 type=real
 default=0
 units=Angstroms
+restart=1
 description
   The startup value for the minimum value of an R plot.  This value
   will be overridden by the plot options saved in a project file.
@@ -294,6 +299,7 @@ variable=rmax
 type=real
 default=6
 units=Angstroms
+restart=1
 description
   The startup value for the maximum value of an R plot.  This value
   will be overridden by the plot options saved in a project file.
@@ -302,6 +308,7 @@ variable=qmin
 type=real
 default=0
 units=inverse Angstroms
+restart=1
 description
   The startup value for the minimum value of a back-transformed k plot.
   This value will be overridden by the plot options saved in a
@@ -311,6 +318,7 @@ variable=qmax
 type=real
 default=15
 units=inverse Angstroms
+restart=1
 description
   The startup value for the maximum value of a back-transformed k plot.
   This value will be overridden by the plot options saved in a
@@ -320,6 +328,7 @@ variable=e_mu
 type=boolean
 onvalue=1
 default=true
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the data is plotted by default.  This value will
@@ -329,6 +338,7 @@ variable=e_bkg
 type=boolean
 onvalue=1
 default=true
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the background spline is plotted by default.  This
@@ -339,6 +349,7 @@ variable=e_pre
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the pre-edge line is plotted by default.  This
@@ -349,6 +360,7 @@ variable=e_post
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the normalization line is plotted by default.
@@ -359,6 +371,7 @@ variable=e_norm
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the normalized data and background are plotted by
@@ -369,6 +382,7 @@ variable=e_der
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the derivative of the data is plotted by default.
@@ -379,6 +393,7 @@ variable=e_sec
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the second derivative of the data is plotted by
@@ -389,6 +404,7 @@ variable=e_i0
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the I0 array of the data is plotted by  default.
@@ -399,6 +415,7 @@ variable=e_signal
 type=boolean
 onvalue=1
 default=false
+restart=1
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the signal array of the data is plotted by  default.
@@ -425,6 +442,7 @@ variable=r_pl
 type=list
 options=m e r i p
 default=m
+restart=1
 description
   This sets the plotting mode at startup for marked data set plots in
   R.  This value will be overridden by the plot options saved in a
@@ -439,6 +457,7 @@ variable=q_pl
 type=list
 options=m e r i p
 default=r
+restart=1
 description
   This sets the plotting mode at startup for marked data set plots in
   q.  This value will be overridden by the plot options saved in a
@@ -453,6 +472,7 @@ variable=kweight
 type=list
 options=0 1 2 3
 default=2
+restart=1
 description
   This sets the kweight for plotting to be used at startup.
 
