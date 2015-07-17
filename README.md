@@ -2,6 +2,8 @@
 
 Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.20631.svg)](http://dx.doi.org/10.5281/zenodo.20631)
+
 # VERSION
 
 This documentation refers to Demeter version 0.9.21
