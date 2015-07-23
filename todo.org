@@ -183,7 +183,10 @@
            (see email from Jack Hitch)
      + [ ] compute R-factor in k or R using fit from energy.  (see
            mail from Scott 7 January 2012)
-     + [ ] boundary on E0 shift.  See email from Dean Hesterburg from 30 May, 2014
+     + [ ] boundary on E0 shift.  See email from Dean Hesterburg from
+           30 May, 2014.  /This is a Larch chore./
+     + [ ] plot in norm(E) for this fit in chi(k) or plot in chi(k)
+           for this fit in norm(E)
    - [-] *PCA tool* [2/11]
      + [ ] test setection against analysis space.  do the right thing
        with xanes data and chi(k) analysis or chi(k) data and energy

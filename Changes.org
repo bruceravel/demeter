@@ -24,6 +24,8 @@
    - A change in 0.9.20 made it impossible to change the defaults for
      plotting ranges in the four spces.  This has been fixed.  (thanks
      to Lisa Bovenkamp) {/pre5/}
+   - Fix buglet with ln checkbutton in col. sel. dialog reported as
+     issue #22 (thanks to roetgenium) {/pre5/}
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
