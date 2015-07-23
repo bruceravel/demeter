@@ -22,7 +22,7 @@
      groups. (Thanks to a fellow named Muhammad at the 2015 ASEAN
      Workshop on X-ray Absorption Spectroscopy)
    - A change in 0.9.20 made it impossible to change the defaults for
-     plotting ranges in the four spces.  This has been fixed.  (thanks
+     plotting ranges in the four spaces.  This has been fixed.  (thanks
      to Lisa Bovenkamp) {/pre5/}
    - Fix buglet with ln checkbutton in col. sel. dialog reported as
      issue #22 (thanks to roetgenium) {/pre5/}
@@ -43,7 +43,7 @@
    - Making VPaths and transfering paths now also plots in R
      automatically.  Also, options for all/marked paths. (Thanks to
      Matt) {/pre4/}
-   - plot after fit nw certain to respect k-weight setting in Plot
+   - plot after fit now certain to respect k-weight setting in Plot
      window {/pre5/}
    - data+fit save file in Artemis are now XDI files {/pre5/}
    - crude fix for an odd situation where the _fit group's k array
