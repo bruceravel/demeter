@@ -83,7 +83,7 @@ sub rebin {
   my @x = $self->fetch_array($self->group.".xmu");
   my (@i,@s);
   my $pdl = PDL->new(\@x);
-  my $n = 3;
+  my $n = $self->co->default('rebin', 'width');
   my $kernel = PDL::Core::ones($n) / $n;
   my $sm = $pdl->conv1d($kernel);
   my @z = $sm->list;

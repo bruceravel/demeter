@@ -23,9 +23,9 @@
      Workshop on X-ray Absorption Spectroscopy)
    - A change in 0.9.20 made it impossible to change the defaults for
      plotting ranges in the four spaces.  This has been fixed.  (thanks
-     to Lisa Bovenkamp) {/pre5/}
+     to Lisa Bovenkamp) 
    - Fix buglet with ln checkbutton in col. sel. dialog reported as
-     issue #22 (thanks to roetgenium) {/pre5/}
+     issue #22 (thanks to roetgenium) 
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
@@ -44,22 +44,22 @@
      automatically.  Also, options for all/marked paths. (Thanks to
      Matt) {/pre4/}
    - plot after fit now certain to respect k-weight setting in Plot
-     window {/pre5/}
-   - data+fit save file in Artemis are now XDI files {/pre5/}
+     window 
+   - data+fit save file in Artemis are now XDI files 
    - crude fix for an odd situation where the _fit group's k array
      gets reset to something different from the Data k grid.
      Interpolate back onto the expected k-grid.  (thanks to Rosalie
-     Hocking) {/pre5/}
+     Hocking) 
    - Remove spurious minus sign appended to results of GDS evaluate
-     button {/pre5/}
-   - remove wxSHAPED attribute from GDS window's toolbar {/pre5/}
+     button 
+   - remove wxSHAPED attribute from GDS window's toolbar 
 
 *** Hephaestus
    - [[https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3][Added annotations]] for many Ag standards. (thanks to Ian Godfrey)
      /{pre1}/
    - Fixed molarity calculation in formula tool and set
      density/molarity units correctly (thanks for Guanghui Zhang)
-     {/pre5/}
+     
 
 *** Demeter
    - Manage deprecation of Module::Build from perl core by placing
@@ -74,10 +74,12 @@
    - Add capacity to Atoms, Feff, ScatteringPath objects to
      accommodate polarization
    - In some cases, chi_noise called with 0 for kmax.  Use fft_kmax in
-     that case. {/pre5/}
+     that case. 
    - Change default for copyright statement in plot to false
    - Fixed a testing bug resulting from gnuplot not being found
      (thanks to Isabelle Kieffer, see mailing list for 15 July, 2015)
+   - Kernel width for rebinning is now configurable (thanks to Joel
+     Ullom)
 
 *** Windows
    - Now using gnuplot 5.0.0 in the Windows installer

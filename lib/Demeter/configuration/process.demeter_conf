@@ -93,6 +93,15 @@ description
   to be set to the tabulated value.  Set this to a very large number
   to force Demeter to use the Ifeffit default value for E0.
 
+variable=width
+type=positive integer
+default=3
+minint=1
+maxint=11
+units=points
+description
+  The width in data points of the kernel of the rebinning function.
+
 ######################################################################
 section=convolution
 section_description
@@ -124,7 +133,7 @@ description
 variable=sg_order
 type=positive integer
 default=4
-maxint=9
+minint=9
 maxint=39
 description
   The polynomial order of a Savitzky-Golay filter.  If equal to or

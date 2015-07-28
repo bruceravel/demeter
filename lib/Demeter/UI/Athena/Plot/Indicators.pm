@@ -122,7 +122,7 @@ sub Pluck {
   $plucked = sprintf("%.3f", $plucked);
 
   ($on_screen = uc($on_screen)) if ($on_screen =~ m{\A[er]\z});
-  Demeter->pjoin($on_screen, $plucked);
+  #Demeter->pjoin($on_screen, $plucked);
   $this->{'space'.$j}->SetStringSelection($on_screen);
   $this->{'value'.$j}->SetValue($plucked);
 
