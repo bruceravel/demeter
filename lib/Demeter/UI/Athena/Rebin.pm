@@ -160,7 +160,7 @@ sub plot {
   $_->plot($space) foreach ($data, $this->{rebinned});
   my @datax = $data->get_array('energy');
   my @binx  = $this->{rebinned}->get_array('energy');
-  my $text  = sprintf("Rebinned data from %d points to %d points with kernel width", $#datax+1, $#binx+1, $self->co->default('rebin', 'width'));
+  my $text  = sprintf("Rebinned data from %d points to %d points with kernel width %d", $#datax+1, $#binx+1, Demeter->co->default('rebin', 'width'));
   $this->{feedback}->SetValue($text);
   $::app->{main}->status("Plotted ".$data->name." with its rebinned data");
   $::app->heap_check(0);
