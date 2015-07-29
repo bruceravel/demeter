@@ -82,6 +82,9 @@ sub ACTION_test_for_gnuplot {
   return if not is_older($conffile, $infile);
   print STDOUT "Simple test for presence of gnuplot ---> ";
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+    ## still need to make a gnuplot.demeter_conf so tests can run correctly
+    copy(File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf.in'),
+	 File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf'));
     print STDOUT "this is windows.  Using gnuplot with the wxt terminal.\n";
     return;
   };
