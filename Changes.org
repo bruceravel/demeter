@@ -25,7 +25,9 @@
      plotting ranges in the four spaces.  This has been fixed.  (thanks
      to Lisa Bovenkamp) 
    - Fix buglet with ln checkbutton in col. sel. dialog reported as
-     issue #22 (thanks to roetgenium) 
+     issue #22 (thanks to roetgenium)
+   - Better handle case of i0_string = 1, leading to an array of ones
+     for the i0 array
 
 *** Artemis
    - Care with path-like objects when Xray::XDI is not
