@@ -6,7 +6,7 @@
 
 * 0.9 series
 
-** 0.9.22   XX June      2015
+** 0.9.22   29 July      2015
 
 *** Athena
    - Fixed behavior of UI::Athena::Cursor when time-out happens by
