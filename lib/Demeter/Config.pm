@@ -94,12 +94,17 @@ sub BUILD {
   my ($self) = @_;
   #return $Demeter::mode->config if $Demeter::mode->config;
 
+  ## we are assuming that gnuplot has been placed in a specific
+  ## location relative to the perl executable:
+  ##   $^X ($EXECUTABLE_NAME) = C:\strawberry\perl\bin\perl.exe
+  ##   gnuplot location =  C:\strawberry\c\bin\gnuplot\bin\perl.exe
+  ##   thus perl_base is C:\strawberry, see line 268
   if ($self->is_windows) {
-    my ($volume,$directories,$fname) = File::Spec->splitpath( $INC{'Demeter.pm'} );
+    my ($volume,$directories,$fname) = File::Spec->splitpath( $^X );
     #$directories =~ s{\A[/\\]}{};
     $directories =~ s{[/\\]\z}{};
     my @dir = File::Spec->splitdir( $directories );
-    pop @dir; pop @dir; pop @dir;  # perl\site\lib
+    pop @dir; pop @dir;  # perl\bin
     $self->perl_base(File::Spec->catdir($volume, @dir));
   };
 
