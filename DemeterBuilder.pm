@@ -85,6 +85,7 @@ sub ACTION_test_for_gnuplot {
     ## still need to make a gnuplot.demeter_conf so tests can run correctly
     copy(File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf.in'),
 	 File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf'));
+    copy($infile, $conffile);
     print STDOUT "this is windows.  Using gnuplot with the wxt terminal.\n";
     return;
   };
