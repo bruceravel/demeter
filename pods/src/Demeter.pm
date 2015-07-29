@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.21');
+our $VERSION = version->new('0.9.22');
 print("Demeter version ", $VERSION, $/ x 2) if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ############################
@@ -945,7 +945,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21
+This documentation refers to Demeter version 0.9.22
 
 =head1 SYNOPSIS
 

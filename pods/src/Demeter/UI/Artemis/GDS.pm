@@ -185,7 +185,7 @@ sub new {
   $this->{toolbar} -> AddSeparator;
   $this->{toolbar} -> AddTool(-1, "About: GDS", Demeter::UI::Artemis::icon("doc"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{doc} );
   $this->{toolbar} -> Realize;
-  $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
+  $hbox -> Add($this->{toolbar}, 0, wxALL, 5);
 
   EVT_MENU($this->{toolbar}, -1, sub{ $this->OnToolClick(@_, $grid) } );
 
@@ -392,7 +392,7 @@ sub clear_highlight {
 sub evaluate {
   my ($parent) = @_;
   my $grid = $parent->{grid};
-  my $busy = Wx::BusyCursor->new();  
+  my $busy = Wx::BusyCursor->new();
   my $r_gds = $parent->reset_all;
   my ($command, $text) = (q{}, q{});
   foreach my $row (0 .. $grid->GetNumberRows) {
@@ -401,7 +401,7 @@ sub evaluate {
     my $g = $grid->{$name};
     next if ref($g) !~ m{GDS};
     $g->evaluate;
-    $grid -> SetCellValue($row, 3, sprintf("%.5f-", $g->bestfit));
+    $grid -> SetCellValue($row, 3, sprintf("%.5f", $g->bestfit));
   };
   undef $busy;
 };
@@ -1144,7 +1144,7 @@ Demeter::UI::Artemis::GDS - A Guess/Def/Set interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21.
+This documentation refers to Demeter version 0.9.22.
 
 =head1 SYNOPSIS
 

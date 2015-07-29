@@ -318,6 +318,8 @@ sub _data {
   } else {
     $do_guess = 1;
   };
+  my $guessed_ln = $yaml->{ln};	          # figure out if ln chould be ticked on, considering yaml,
+  $guessed_ln = $suggest{ln} if @suggest; # plugin suggestion, and guess_columns -- in that order
   $yaml->{energy} = $data->energy;
   if ($do_guess) {
     my $untext = $data->guess_units;
@@ -337,7 +339,10 @@ sub _data {
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class});
-  $data->guess_columns if ($do_guess and (not $plugin));
+  if ($do_guess and (not $plugin)) {
+    $data->guess_columns;
+    $guessed_ln = $data->{ln};
+  };
 
   ## -------- display column selection dialog
   my $repeated = 1;
@@ -349,7 +354,7 @@ sub _data {
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
-    $colsel->{ln}->SetValue($yaml->{ln});
+    $colsel->{ln}->SetValue($guessed_ln);
     $colsel->{inv}->SetValue($yaml->{inv});
     $colsel->{each}->SetValue($yaml->{each});
     $colsel->{units}->SetSelection($yaml->{units});
@@ -1031,7 +1036,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21.
+This documentation refers to Demeter version 0.9.22.
 
 =head1 SYNOPSIS
 

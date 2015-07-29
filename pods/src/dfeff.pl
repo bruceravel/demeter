@@ -19,14 +19,19 @@ BEGIN {
   ## munge the PATH env. var. under Windows, also add useful debugging
   ## info to the log file
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-    if ($ENV{PATH} =~ m{mingw}i) {
-      my @list = split(/;/, $ENV{PATH});
-      my (@mingw, @not);
-      foreach my $p (@list) {
-	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
-      };
-      $ENV{PATH} = join(';', @not, @mingw);
-    };
+    # print  STDOUT "PATH was:$/\t$ENV{PATH}$/$/";
+    my $newpath = q{C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;C:\strawberry\c\bin\gnuplot\bin;};
+    $ENV{PATH} = $newpath;
+    # print  STDOUT "PATH reset to:$/$newpath$/$/";
+
+    # if ($ENV{PATH} =~ m{mingw}i) {
+    #   my @list = split(/;/, $ENV{PATH});
+    #   my (@mingw, @not);
+    #   foreach my $p (@list) {
+    # 	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
+    #   };
+    #   $ENV{PATH} = join(';', @not, @mingw);
+    # };
   };
 };
 
@@ -167,7 +172,7 @@ dfeff - Run Demeter's implementation of Feff6
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21.
+This documentation refers to Demeter version 0.9.22.
 
 =head1 SYNOPSIS
 

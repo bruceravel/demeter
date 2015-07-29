@@ -147,7 +147,7 @@ Demeter::UI::Hephaestus:::LineFinder - Hephaestus' line finder utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21.
+This documentation refers to Demeter version 0.9.22.
 
 =head1 SYNOPSIS
 

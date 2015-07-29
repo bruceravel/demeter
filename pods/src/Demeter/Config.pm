@@ -26,6 +26,7 @@ use MooseX::Aliases;
 
 use Carp;
 #use diagnostics;
+use Demeter::Constants qw($EPSILON2);
 use Demeter::StrTypes qw(FileName);
 use Demeter::IniReader;
 use Config::INI::Writer;
@@ -507,10 +508,26 @@ sub fix {
   ## somehow, it may happen that a users ini file will have
   ## zero-length plotting ranges -- very confusing, so reset to
   ## demeter defaults
-  foreach my $p (qw(kmax rmax qmax emin emax)) {
-    my $val = $self->default("plot", $p);
-    $self->set_default("plot", $p, $self->demeter("plot", $p));
+  if (abs($self->default("plot", 'emax') - $self->default("plot", 'emin')) < $EPSILON2) {
+    $self->set_default("plot", 'emin', $self->demeter("plot", 'emin'));
+    $self->set_default("plot", 'emax', $self->demeter("plot", 'emax'));
   };
+  if (abs($self->default("plot", 'kmax') - $self->default("plot", 'kmin')) < $EPSILON2) {
+    $self->set_default("plot", 'kmin', $self->demeter("plot", 'kmin'));
+    $self->set_default("plot", 'kmax', $self->demeter("plot", 'kmax'));
+  };
+  if (abs($self->default("plot", 'rmax') - $self->default("plot", 'rmin')) < $EPSILON2) {
+    $self->set_default("plot", 'rmin', $self->demeter("plot", 'rmin'));
+    $self->set_default("plot", 'rmax', $self->demeter("plot", 'rmax'));
+  };
+  if (abs($self->default("plot", 'qmax') - $self->default("plot", 'qmin')) < $EPSILON2) {
+    $self->set_default("plot", 'qmin', $self->demeter("plot", 'qmin'));
+    $self->set_default("plot", 'qmax', $self->demeter("plot", 'qmax'));
+  };
+  # foreach my $p (qw(kmax rmax qmax emin emax)) {
+  #   my $val = $self->default("plot", $p);
+  #   $self->set_default("plot", $p, $self->demeter("plot", $p));
+  # };
 
   $self->set_default("athena", "autosave_frequency", $self->demeter("athena", "autosave_frequency"))
     if $self->default("athena", "autosave_frequency") < 2;
@@ -537,7 +554,7 @@ Demeter::Config - Demeter's configuration system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.21.
+This documentation refers to Demeter version 0.9.22.
 
 =head1 DESCRIPTION
 
