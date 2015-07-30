@@ -5,6 +5,22 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
+** 0.9.23   XX XXXX      2015
+
+*** Athena
+   - In plugin configuration tool, fix crashiness of "reset all"
+     button (thanks to roentgenium, issue #23) Note: in the end, the
+     reset_all button was commented out -- it is implemented awkwardly.
+   - Changes made to plugin configuration now correctly saved to and
+     restored from demeter.ini (thanks to roentgenium, issue #23)
+
+*** Artemis
+
+*** Hephaestus
+
+*** Demeter
+
+*** Windows
 
 ** 0.9.22   29 July      2015
 

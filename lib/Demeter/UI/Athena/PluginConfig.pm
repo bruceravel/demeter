@@ -33,7 +33,7 @@ sub new {
   EVT_CLOSE($this, \&on_close);
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
-  my $config = Demeter::UI::Wx::Config->new($this, \&target);
+  my $config = Demeter::UI::Wx::Config->new($this, \&target, $::app->{main});
   $config->populate($group);
   $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);

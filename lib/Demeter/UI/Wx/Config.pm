@@ -127,13 +127,13 @@ sub new {
   $buttonbox -> Add($self->{save}, 1, wxEXPAND|wxALL, 5);
   $right -> Add($buttonbox, 0, wxEXPAND|wxALL, 0);
 
-  $self->{reset_all} = Wx::Button->new( $self, -1, 'Reset all parameters to Demeter\'s defaults', wxDefaultPosition, wxDefaultSize );
-  $right -> Add($self->{reset_all}, 0, wxEXPAND|wxALL, 5);
+  #$self->{reset_all} = Wx::Button->new( $self, -1, 'Reset all parameters to Demeter\'s defaults', wxDefaultPosition, wxDefaultSize );
+  #$right -> Add($self->{reset_all}, 0, wxEXPAND|wxALL, 5);
 
 
   EVT_BUTTON( $self, $self->{apply}, sub{my($self, $event) = @_; $self->apply($callback, 0)} );
   EVT_BUTTON( $self, $self->{save},  sub{my($self, $event) = @_; $self->apply($callback, 1)} );
-  EVT_BUTTON( $self, $self->{reset_all},  sub{my($self, $event) = @_; $self->reset_all($main)} );
+  #EVT_BUTTON( $self, $self->{reset_all},  sub{my($self, $event) = @_; $self->reset_all($main)} );
 
   $self -> SetSizerAndFit($mainsizer);
 
