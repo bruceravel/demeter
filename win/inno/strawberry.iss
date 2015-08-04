@@ -1,7 +1,7 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.22"
+#define MyAppVersion "0.9.23"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
@@ -30,8 +30,8 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output\{#MyAppVersion}
-;OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})_{#Pre}
-OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})
+OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})_{#Pre}
+;OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2015 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Larch is copyright (c) 2015, Matt Newville and Tom Trainor; Perl is copyright 1987-2011, Larry Wall
