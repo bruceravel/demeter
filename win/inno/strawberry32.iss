@@ -1,12 +1,12 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.22"
+#define MyAppVersion "0.9.23"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "32"
-#define Pre "pre2"
+#define Pre "pre1"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
