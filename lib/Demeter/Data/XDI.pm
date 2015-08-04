@@ -74,6 +74,7 @@ sub xdi_metadata {
 
 sub xdi_set_columns {
   my ($self, $hash) = @_;
+  return () if ((not ($INC{'Xray/XDI.pm'}) or (not $self->xdi)));
   my $metadata = $self->xdi->metadata;
   $metadata->{Column} = $hash;
   $self->xdi->metadata($metadata);

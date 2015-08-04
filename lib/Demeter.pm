@@ -208,9 +208,9 @@ if ($backend eq 'gnuplot') {
   $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
   require Demeter::Plot::Gnuplot;
   $mode -> plot( Demeter::Plot::Gnuplot->new() );
-  if ((Demeter->po->version =~ m{\A5}) and (Demeter->co->default('gnuplot', 'terminal') eq 'wxt')) {
-    Demeter->co->set_default('gnuplot', 'terminal', 'qt');
-  };
+  #if ((Demeter->po->version =~ m{\A5}) and (Demeter->co->default('gnuplot', 'terminal') eq 'wxt')) {
+  #  Demeter->co->set_default('gnuplot', 'terminal', 'qt');
+  #};
 };
 
 use Demeter::StrTypes qw( Empty

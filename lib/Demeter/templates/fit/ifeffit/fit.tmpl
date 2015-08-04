@@ -15,6 +15,7 @@
   q{}
 }
 ###__ perform the fit
+set kweight = 2
 erase {$D->group}_res
 erase {$D->group}_fit
 feffit({$F->indeces}, group={$D->group}_fit, chi={$D->group}.chi, k={$D->group}.k,

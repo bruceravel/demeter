@@ -918,6 +918,12 @@ sub populate {
   $self->{fit_bkg}->SetValue($data->fit_do_bkg);
   $self->{epsilon}->SetValue($data->fit_epsilon);
 
+  $self->{windowmenu}->Check($WINDOW_HANNING, 1) if lc($data->fft_kwindow) eq 'hanning';
+  $self->{windowmenu}->Check($WINDOW_KB,      1) if lc($data->fft_kwindow) =~ m{kaiser};
+  $self->{windowmenu}->Check($WINDOW_WELCH,   1) if lc($data->fft_kwindow) eq 'welch';
+  $self->{windowmenu}->Check($WINDOW_PARZEN,  1) if lc($data->fft_kwindow) eq 'parzen';
+  $self->{windowmenu}->Check($WINDOW_SINE,    1) if lc($data->fft_kwindow) eq 'sine';
+
   $self->{titles}->SetValue(join($/, @{$data->titles}));
 
   EVT_CHECKBOX($self, $self->{include},    sub{$data->fit_include       ($self->{include}   ->GetValue)});
@@ -955,7 +961,16 @@ sub fetch_parameters {
   if (Demeter->co->default('artemis', 'window_function') eq 'user') {
     $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
     $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
-  };
+  } else {
+    my $function = ($this->{windowmenu}->IsChecked($WINDOW_HANNING)) ? 'Hanning'
+                 : ($this->{windowmenu}->IsChecked($WINDOW_KB))      ? 'Kaiser-Bessel'
+                 : ($this->{windowmenu}->IsChecked($WINDOW_PARZEN))  ? 'Parzen'
+                 : ($this->{windowmenu}->IsChecked($WINDOW_WELCH))   ? 'Welch'
+                 : ($this->{windowmenu}->IsChecked($WINDOW_SINE))    ? 'Sine'
+                 :                                                     'Hanning';
+    $this->{data}->fft_kwindow($function);
+    $this->{data}->bft_rwindow($function);
+  } ;
   $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
   $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
   $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );
@@ -1356,28 +1371,38 @@ sub OnMenuClick {
     };
 
     ($id == $WINDOW_HANNING) and do {
-      Demeter->co->set_default('artemis', 'window_function', 'hanning');
-      $datapage->status("Using a Hanning window for all Fourier transforms.");
+      $datapage->{data}->fft_kwindow('hanning');
+      $datapage->{data}->bft_rwindow('hanning');
+      #Demeter->co->set_default('artemis', 'window_function', 'hanning');
+      $datapage->status("Using a Hanning window for all Fourier transforms for this data set.");
       last SWITCH;
     };
     ($id == $WINDOW_KB) and do {
-      Demeter->co->set_default('artemis', 'window_function', 'kaiser-bessel');
-      $datapage->status("Using a Kaiser-Bessel window for all Fourier transforms.");
+      $datapage->{data}->fft_kwindow('kaiser-bessel');
+      $datapage->{data}->bft_rwindow('kaiser-bessel');
+      #Demeter->co->set_default('artemis', 'window_function', 'kaiser-bessel');
+      $datapage->status("Using a Kaiser-Bessel window for all Fourier transforms for this data set.");
       last SWITCH;
     };
     ($id == $WINDOW_WELCH) and do {
-      Demeter->co->set_default('artemis', 'window_function', 'welch');
-      $datapage->status("Using a Welch window for all Fourier transforms.");
+      $datapage->{data}->fft_kwindow('welch');
+      $datapage->{data}->bft_rwindow('welch');
+      #Demeter->co->set_default('artemis', 'window_function', 'welch');
+      $datapage->status("Using a Welch window for all Fourier transforms for this data set.");
       last SWITCH;
     };
     ($id == $WINDOW_PARZEN) and do {
-      Demeter->co->set_default('artemis', 'window_function', 'parzen');
-      $datapage->status("Using a Parzen window for all Fourier transforms.");
+      $datapage->{data}->fft_kwindow('parzen');
+      $datapage->{data}->bft_rwindow('parzen');
+      #Demeter->co->set_default('artemis', 'window_function', 'parzen');
+      $datapage->status("Using a Parzen window for all Fourier transforms for this data set.");
       last SWITCH;
     };
     ($id == $WINDOW_SINE) and do {
-      Demeter->co->set_default('artemis', 'window_function', 'sine');
-      $datapage->status("Using a Sine window for all Fourier transforms.");
+      $datapage->{data}->fft_kwindow('sine');
+      $datapage->{data}->bft_rwindow('sine');
+      #Demeter->co->set_default('artemis', 'window_function', 'sine');
+      $datapage->status("Using a Sine window for all Fourier transforms for this data set.");
       last SWITCH;
     };
 

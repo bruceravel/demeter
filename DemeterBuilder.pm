@@ -132,24 +132,24 @@ sub ACTION_test_for_gnuplot {
     };
   };
 
-  ## now test for wxt terminal
+  ## now test for qt terminal
   my $term = 'x11';
   $in = '';
   my $pid = open3($in, ">&STDERR", \*PH, $command);
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {
-    $term = 'wxt';
+    $term = 'qt';
   };
 
-  ## and for qt terminal
-  $command =~ s{wxt}{qt};
+  ## and for wxt terminal
+  $command =~ s{qt}{wxt};
   $in = '';
   $pid = open3($in, ">&STDERR", \*PH, $command);
   while( <PH> ) { }
   waitpid($pid, 0);
   if ($? == 0) {
-    $term = 'qt';
+    $term = 'wxt';
   };
 
   ## and set conf file accordingly

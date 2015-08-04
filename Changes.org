@@ -15,10 +15,18 @@
      restored from demeter.ini (thanks to roentgenium, issue #23)
 
 *** Artemis
+   - Fixed a serious problem setting windowing function in Artemis.
+     There was a situation where the wfunction could change between
+     successive fits, resulting in different fitting results without
+     changes to the model.  (thanks to Ian Godfrey)
 
 *** Hephaestus
 
 *** Demeter
+   - Fixed a crashy bug in Demeter::Data::XDI
+   - Removed a bit of code related to choice of plot terminal with
+     Gnuplot 5 that was not respecting the configured terminal value
+     (thanks to Ian Godfrey)
 
 *** Windows
 
