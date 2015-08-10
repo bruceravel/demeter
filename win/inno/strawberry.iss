@@ -6,7 +6,7 @@
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "64"
-#define Pre "pre1"
+#define Pre "pre2"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -54,7 +54,7 @@ InfoAfterFile=Demeter.readme.txt
 [Run]
 Filename: "{app}\relocation.pl.bat";
 Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
-Filename: "{app}\munge_pathenv.pl.bat"; Parameters: """{app}"""
+;Filename: "{app}\munge_pathenv.pl.bat"; Parameters: """{app}"""
 
 
 [Dirs]

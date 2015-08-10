@@ -26,24 +26,9 @@ BEGIN {
     my @now = localtime(time);
     printf STDOUT "Started at %d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d$/", $now[5]+1900, $now[4]+1, reverse(@now[0..3]);
     print  STDOUT Win32::GetOSName(), "\t", Win32::GetOSVersion, $/, $/;
-    print  STDOUT "PATH was:$/\t$ENV{PATH}$/$/";
-    my $newpath = q{C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;C:\strawberry\c\bin\gnuplot\bin;};
-    $ENV{PATH} = $newpath;
-    print  STDOUT "PATH reset to:$/$newpath$/$/";
-
-    # print  STDOUT "PATH:$/\t$ENV{PATH}$/$/";
-    # if ($ENV{PATH} =~ m{mingw}i) {
-    #   my @list = split(/;/, $ENV{PATH});
-    #   my (@mingw, @not);
-    #   foreach my $p (@list) {
-    # 	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
-    #   };
-    #   $ENV{PATH} = join(';', @not, @mingw);
-    #   print "PATH (reordered):$/\t$ENV{PATH}$/$/";
-    # };
-
-    print STDOUT "perl version: $^V$/$/";
-    print STDOUT "\@INC:$/\t" . join("$/\t", @INC) . "$/";
+    print  STDOUT "PATH is:$/\t$ENV{PATH}$/$/";
+    print  STDOUT "perl version: $^V$/$/";
+    print  STDOUT "\@INC:$/\t" . join("$/\t", @INC) . "$/";
   };
 };
 

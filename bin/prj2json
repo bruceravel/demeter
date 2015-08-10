@@ -15,25 +15,6 @@
 
 =cut
 
-BEGIN {
-  ## munge the PATH env. var. under Windows
-  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-    # print  STDOUT "PATH was:$/\t$ENV{PATH}$/$/";
-    my $newpath = q{C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;C:\strawberry\c\bin\gnuplot\bin;};
-    $ENV{PATH} = $newpath;
-    # print  STDOUT "PATH reset to:$/$newpath$/$/";
-
-    # if ($ENV{PATH} =~ m{mingw}i) {
-    #   my @list = split(/;/, $ENV{PATH});
-    #   my (@mingw, @not);
-    #   foreach my $p (@list) {
-    # 	if ($p =~ m{mingw}i) {push @mingw, $p} else {push @not, $p};
-    #   };
-    #   $ENV{PATH} = join(';', @not, @mingw);
-    # };
-  };
-};
-
 use Demeter qw(:hephaestus);
 
 my ($prjfile, $jsonfile)  = @ARGV;

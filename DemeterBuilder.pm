@@ -475,11 +475,22 @@ package Module::Build::Platform::Windows;
       $opts{out} .= '.bat' unless $opts{in} =~ /\.bat$/i or $opts{in} =~ /^-$/;
     }
 
+    ## %~dp0 will give the drive and path to the bat file being run
+    ## if the bat file is C:\strawberry\perl\site\bin\dathena.bat
+    ## %~dp0 = C:\strawberry\perl\site\bin\
+    ## DEMETER_BASE will, therefore, be C:\strawberry
+    ## presumably, all the bat files are in C:\strawberry\perl\site\bin\, so
+    ##   trimming \perl\site\bin\ (which is what the following line does)
+    ##   is ok
+    ## then set a minimal path for running Demeter
     my $head = <<EOT;
     \@rem = '--*-Perl-*--
     \@echo off
     SET DOTDIR="%APPDATA%\\demeter"
     IF NOT EXIST %DOTDIR% MD %DOTDIR%
+    SET DEMETER_BASE=%~dp0
+    SET DEMETER_BASE=%DEMETER_BASE:\\perl\\site\\bin\\=%
+    SET PATH=C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;%DEMETER_BASE%\\c\\bin;%DEMETER_BASE%\\perl\\site\\bin;%DEMETER_BASE%\\perl\\bin;%DEMETER_BASE%\\c\\bin\\gnuplot\\bin
     if "%OS%" == "Windows_NT" goto WinNT
     perl $opts{otherargs}
     goto endofperl
