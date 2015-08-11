@@ -144,16 +144,15 @@
 	<a name="mac"><p>&nbsp;</p></a>
 	<h1>Macintosh Installation</h1>
 	<p>
-	  <strong>The MacPorts package may not work on Yosemite. 
-	    <a href="http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04777.html">See
-	      this link for for more information.</a>
-	  </strong>
+	  The Macintosh package
+	  uses <a href="http://www.macports.org/">MacPorts</a> and is
+	  currently at version 0.9.22.
 	</p>
 	<ol>
 	  <li><strong>Carefully</strong> follow the steps to install Macports at
 	    <a href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>.</li>
 	  <li>Open a new Terminal window and type the following: 
-	    <pre> sudo port install xorg-server demeter-devel </pre> It will
+	    <pre> sudo port install xorg-server demeter </pre> It will
 	    take a while depending on your computer and network speed.
 	  </li>
 	  <li>If this is your first time installing <code>xorg-server</code>, log
@@ -162,10 +161,14 @@
 	</ol>
 	<p>
 	  When it is done, launch Athena by typing the following
-	  in Terminal:<pre> athena </pre> Note: Make sure you are in a
+	  in Terminal:<pre> athena </pre></p><p> Note: Make sure you are in a
 	  directory you have write permission to (like your home
 	  directory) because hidden files are created at launch
 	  time.
+	</p>
+	<p>
+	  To update a previously installed version of Demeter to the latest, open a Terminal window and do
+	  <pre>port self update && port upgrade demeter</pre>
 	</p>
 	<p>
 	  Please note that the Mac version is a work in progress.
