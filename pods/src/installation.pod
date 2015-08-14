@@ -331,7 +331,7 @@ pre-built package (the Debian package is called libpdl-stats-perl).
 
 If you cannot use a package and you are unable to build L<PDL::Stats>,
 as L<discussed in this mailing list
-post|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html>,
+thread|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html>,
 do the following:
 
 =over 4
