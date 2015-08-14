@@ -35,7 +35,6 @@ use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
 use Scalar::Util qw(looks_like_number);
 use Text::Wrap;
-#use Data::Dumper;
 
 ## these do not get inherited as this is imported as compile time, but
 ## attributes get made at run time.  sigh...
@@ -94,12 +93,17 @@ sub BUILD {
   my ($self) = @_;
   #return $Demeter::mode->config if $Demeter::mode->config;
 
+  ## we are assuming that gnuplot has been placed in a specific
+  ## location relative to the perl executable:
+  ##   $^X ($EXECUTABLE_NAME) = C:\strawberry\perl\bin\perl.exe
+  ##   gnuplot location =  C:\strawberry\c\bin\gnuplot\bin\perl.exe
+  ##   thus perl_base is C:\strawberry, see line 268
   if ($self->is_windows) {
-    my ($volume,$directories,$fname) = File::Spec->splitpath( $INC{'Demeter.pm'} );
+    my ($volume,$directories,$fname) = File::Spec->splitpath( $^X );
     #$directories =~ s{\A[/\\]}{};
     $directories =~ s{[/\\]\z}{};
     my @dir = File::Spec->splitdir( $directories );
-    pop @dir; pop @dir; pop @dir;  # perl\site\lib
+    pop @dir; pop @dir;  # perl\bin
     $self->perl_base(File::Spec->catdir($volume, @dir));
   };
 
@@ -275,7 +279,6 @@ sub _read_config_file {
 
 sub set_this_param {
   my ($self, $group, $param, %hash) = @_;
-  #use Data::Dumper;
   my $key = join(":", $group, $param);
   #local $| = 1;
   #print $key, $/;
@@ -332,7 +335,14 @@ sub set_default {
   #local $| = 1;
   #print $key, $/;
   my $rhash = $self->get($key);
-  return $self if (not $rhash);
+  if (not $rhash) {
+    my $conffile = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $group.'.demeter_conf');
+    if (-e ($conffile)) {
+      $self->read_config($conffile);
+      $rhash = $self->get($key);
+    };
+    return $self if (not $rhash);
+  };
   $rhash->{was} = $rhash->{default};
   $rhash->{default} = $value;
   if ($rhash->{type} eq 'boolean') {
@@ -476,12 +486,16 @@ sub read_ini {
   foreach my $g (keys %$personal_ini) {
     #next if $g eq 'ini__filename';
     next if ($group and ($g ne $group));
+    #print $g, $/;
     my $hash = $personal_ini->{$g};
     foreach my $p (keys %$hash) {
       ($p = 'col'.$1) if ($p =~ m{c(\d)}); # compatibility, convert cN -> colN
+      #Demeter->pjoin($inifile, $g, $p, $personal_ini->{$g}{$p}) if ($g eq 'x15b');
       $self->set_default($g, $p, $personal_ini->{$g}{$p});
     };
   };
+  #Demeter->trace;
+  #Demeter->Dump($ini{x15b});
   return $self;
 };
 

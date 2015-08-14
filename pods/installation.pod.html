@@ -64,6 +64,7 @@
 <ul>
 	<li><a href="#Step_3a_Configure_cpan_optional">Step 3a: Configure cpan (optional)</a></li>
 	<li><a href="#Step_3b_Install_Demeter_s_dependenci">Step 3b: Install Demeter's dependencies (not optional!)</a></li>
+	<li><a href="#Step_3c_Dealing_with_failed_dependen">Step 3c: Dealing with failed dependencies.</a></li>
 </ul>
 </li>
 	<li><a href="#Step_4_Build_and_install_Demeter">Step 4: Build and install Demeter</a></li>
@@ -121,18 +122,13 @@ download the updater and install it yourself.</p></dd>
 		<dd><p>If the version installed on your computer is smaller than the version
 number of the updater but larger or equal to the version number of the
 installer, you will only need to download and apply the updater.</p></dd>
-		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater">http://cars9.uchicago.edu/ifeffit/Demeter/WindowsUpdater</a>.</p></dd>
 	<dt><strong>Macintosh OSX</strong></dt>
-		<dd><p>Frank Schima has performed yeoman's duty by making Demeter and its
-tool chain available on Macports.  Thus far, testing has only been
-done for OS X Mavericks and Mountain Lion.</p></dd>
-		<dd><p>At this time, the Mac packages should be considered as a release
-candidate.  Some functionality may not yet be present.  If you run
-into problems, use <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">The Ifeffit mailing list</a>.  Be as
-explicit as possible about the nature of the problem and remember that
-saying <i>&quot;This is my problem and this what I've tried so far to fix it&quot;</i>
-is much more valuable than just <i>&quot;This is my problem.&quot;</i></p></dd>
-<dd><dl>
+		<dd><p>Frank Schima and Joe Fowler have performed yeoman's duty by making
+Demeter and its tool chain available on Macports.</p></dd>
+<dd>
+
+
+</dd><dd><dl>
 	<dt>1. </dt>
 		<dd><p><i>Carefully</i> follow the steps to install Macports: <a href="http://www.macports.org/install.php">http://www.macports.org/install.php</a></p></dd>
 	<dt>2.</dt>
@@ -152,11 +148,24 @@ Terminal:</p></dd>
 </pre></dd>		<dd><p>Note: Make sure you are in a directory you have write permission to
 (like your home directory) because hidden files are created at
 launch time.</p></dd>
+		<dd><p>To update a previously installed version of Demeter to the latest,
+open a Terminal window and do</p></dd>
+<dd><pre>   sudo port selfupdate &amp;&amp; sudo port upgrade demeter
+
+</pre></dd>		<dd><p>If you are not using a system-wide MacPorts installation, running
+commands as sudo is not necessary.</p></dd>
 		<dd><p>The Windows installer can be used under emulation.  <a href="http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels">Here are some notes</a>
-from Scott Calvin on doing so using
-<a href="http://www.parallels.com/">Parallels</a>.</p></dd>
-	<dt><strong>Debian, Ubuntu, and Debian-based Linux</strong></dt>
-		<dd><p>Not yet available because no one has stepped up and make linux packages.</p></dd>
+from Scott Calvin on doing so using <a href="http://www.parallels.com/">Parallels</a>.</p></dd>
+		<dd><p>If you run into problems, use <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">The Ifeffit mailing list</a>.  Be as
+explicit as possible about the nature of the problem and remember that
+saying <i>&quot;This is my problem and this what I've tried so far to fix
+it&quot;</i> is much more valuable than just <i>&quot;This is my problem.&quot;</i></p></dd>
+<dd>
+
+
+</dd>	<dt><strong>Debian-based or other Linux distributions</strong></dt>
+		<dd><p>There are no Linux packages yet available because no one has yet
+volunteered to do this work.</p></dd>
 </dl>
 <h2 id="Installing_source_code">Installing source code</h2>
 
@@ -179,6 +188,9 @@ instructions are given for installation without root privileges.  All
 the instructions are the same, once you do an additional preparatory
 step.</p>
 
+<p><a href="https://gist.github.com/waveform80/3959252">Here is another take on installation instructions</a>,
+written in another person's words.</p>
+
 <p>Demeter is written in perl. <strong>You must install perl on your
 computer</strong>. On Ubuntu, the package name is simply &quot;perl&quot;. (My computers
 are all Ubuntu, hence all of my hints about packages that need
@@ -192,7 +204,9 @@ have to upgrade perl before using Demeter.</p>
 <p>Demeter benefits <strong>tremendously</strong> by having
 <a href="http://gnuplot.info">Gnuplot</a> installed. All Linux distributions
 should have a package for Gnuplot. On Ubuntu, the package is called
-&quot;gnuplot&quot;.  Or you can grab the latest source code from <a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/">Gnuplot's SourceForge site</a> and
+&quot;gnuplot&quot;.  You also likely want to install one of the GUI packages,
+&quot;gnuplot-x11&quot; or &quot;gnuplot-qt&quot;.  Or you can grab the latest source code
+from <a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/">Gnuplot's SourceForge site</a> and
 install it from scratch.</p>
 
 <h1 id="BUILD_DEMETER_AND_ITS_DEPENDENCIES">BUILD DEMETER AND ITS DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
@@ -309,6 +323,47 @@ installations.  They also all install smoothly under <a href="http://strawberryp
 failures, you will need to track down the problems and fix them in
 order to proceed.</p>
 
+<h3 id="Step_3c_Dealing_with_failed_dependen">Step 3c: Dealing with failed dependencies.</h3>
+
+<p>Demeter has a lot of dependencies on other Perl modules.  The
+<code>./Build installdeps</code> step downloads each of the approximately 40
+modules that Demeter needs.  Each of those modules has its own tree of
+dependencies.  All in all, a couple hundred packages get downloaded,
+built, and installed when do the <code>./Build installdeps</code> step.</p>
+
+<p>Sometimes, a few of these fail.  This is not a disaster.  In most
+cases, the problem can be dispatched easily.  See <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/012608.html">this post</a>
+to the Ifeffit Mailing List about some strategies for dealing with
+failed builds of dependencies.</p>
+
+<p><a href="https://metacpan.org/pod/PDL%3A%3AStats">PDL::Stats</a> presents a special challange.  There is a <a href="http://sourceforge.net/p/pdl/mailman/pdl-devel/?viewmonth=201505&amp;viewday=12">known bug</a>
+in <a href="https://metacpan.org/pod/PDL%3A%3AStats">PDL::Stats</a> that is not yet fixed (at the time of this writing,
+Aug. 2015) in the upstream source.  If possible, use your system's
+pre-built package (the Debian package is called libpdl-stats-perl).</p>
+
+<p>If you cannot use a package and you are unable to build <a href="https://metacpan.org/pod/PDL%3A%3AStats">PDL::Stats</a>,
+as <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html">discussed in this mailing list post</a>,
+do the following:</p>
+
+<dl>
+	<dt>1.</dt>
+		<dd><p>Download PDL::Stats from <a href="https://metacpan.org/pod/PDL::Stats">https://metacpan.org/pod/PDL::Stats</a></p></dd>
+	<dt>2.</dt>
+		<dd><p>Unpack the tarball and cd into its directory</p></dd>
+	<dt>3.</dt>
+		<dd><p>Copy the file <cite>glm.patch</cite> from Demeter's <cite>tools/</cite> directory into the
+PDL:Stats top directory</p></dd>
+	<dt>4.</dt>
+		<dd><p>Apply the patch</p></dd>
+<dd><pre>    patch -p0 &lt; glm.patch
+
+</pre></dd>	<dt>5. Build and install PDL::Stats</dt>
+<dd><pre>    perl Makefile.PL
+    make
+    make test
+    make install
+
+</pre></dd></dl>
 <h2 id="Step_4_Build_and_install_Demeter">Step 4: Build and install Demeter</h2>
 
 <p>Almost done! Just do each of the following:</p>

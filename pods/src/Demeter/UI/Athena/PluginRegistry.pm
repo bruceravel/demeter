@@ -36,9 +36,14 @@ sub new {
   my $persist = File::Spec->catfile(Demeter->dot_folder, "athena.plugin_registry");
   my $state = (-e $persist) ? YAML::Tiny::Load(Demeter->slurp($persist)) : {};
 
+  my @get_ini = ();
   foreach my $pl (sort @{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
     my $obj = $pl->new;
+    ## gather list of plugins that have a demeter_conf file associated with
+    if ($obj->conffile =~ m{(\w+)\.demeter_conf}) {
+      push @get_ini, $1;
+    }
     my $label = sprintf("%s :  %s", (split(/::/, $pl))[2], $obj->description);
     $this->{$pl} = Wx::CheckBox->new($this->{window}, -1, $label);
     $winbox->Add($this->{$pl}, 0, wxALL|wxGROW, 3);
@@ -47,6 +52,10 @@ sub new {
     EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});
     EVT_RIGHT_DOWN($this->{$pl}, sub{OnRight(@_, $app)});
     EVT_MENU($this->{$pl}, -1, sub{ $this->DoContextMenu(@_, $app, $pl) });
+  };
+  # loading the plugin read the demeter_conf file, this overwrites default from demeter.ini
+  foreach my $g (@get_ini) {
+    Demeter->co->read_ini($g);
   };
   $box->Add($this->{window}, 1, wxALL|wxGROW, 5);
   #$box->Add(Wx::StaticText->new($this, -1, "(Right click on a plugin above to open the configuration dialog for that plugin.)"), 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 5);

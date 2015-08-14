@@ -490,9 +490,9 @@ sub OnInit {
   ## now that everything is established, set up disposal callbacks to
   ## display Ifeffit/Larch commands in the buffer window
   Demeter->set_mode(callback     => \&ifeffit_buffer,
-		     plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
-		     feedback     => \&feedback,
-		    );
+		    plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		    feedback     => \&feedback,
+		   );
   Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
@@ -705,10 +705,6 @@ sub fit {
   $fit_space = 'q' if $frames{main}->{fitspace}->[2]->GetValue;
   foreach my $d (@data) {
     $d->fit_space($fit_space);
-    if ($d->co->default('artemis', 'window_function') ne 'user') {
-      $d->fft_kwindow($d->co->default('artemis', 'window_function'));
-      $d->bft_rwindow($d->co->default('artemis', 'window_function'));
-    };
   };
 
   $fit->set_mode(backend=>1, screen=>0);
