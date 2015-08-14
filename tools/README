@@ -13,6 +13,30 @@ demeter-skeletons.el: skeleton and abbrev definitions to help write Demeter perl
 		      see the comments in the header for using this
 
 
+Patches
+=======
+
+If you are unable to duild and install PDL::Stats, as discussed at
+http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html,
+do the following:
+
+ 1. Download PDL::Stats from https://metacpan.org/pod/PDL::Stats
+
+ 2. Unpack the tarball and cd into its directory
+
+ 3. Copy `glm.patch' from Demeter's tools directory into the new
+    PDL::Stats directory
+
+ 4. Apply `glm.patch' by issuing this command:
+      patch -p0 < glm.patch
+
+ 5. Build and install PDL::Stats by doing
+      perl Makefile.PL
+      make
+      make test
+      make install # or sudo make install
+
+
 Personal Demeter templates
 ==========================
 

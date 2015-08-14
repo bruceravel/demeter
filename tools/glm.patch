@@ -1,0 +1,20 @@
+--- GLM/glm.pp	2013-10-06 17:01:11.000000000 -0400
++++ GLM/glm.pp.fixed	2015-08-14 09:40:36.308853768 -0400
+@@ -102,7 +102,7 @@
+   CopyBadStatusCode => '
+     /* propogate badflag if inplace AND it has changed */
+     if ( a == b && $ISPDLSTATEBAD(a) )
+-      PDL->propogate_badflag( b, 0 );
++      PDL->propagate_badflag( b, 0 );
+ 
+     /* always make sure the output is "good" */
+     $SETPDLSTATEGOOD(b);
+@@ -169,7 +169,7 @@
+   CopyBadStatusCode => '
+     /* propogate badflag if inplace AND it has changed */
+     if ( a == b && $ISPDLSTATEBAD(a) )
+-      PDL->propogate_badflag( b, 0 );
++      PDL->propagate_badflag( b, 0 );
+ 
+     /* always make sure the output is "good" */
+     $SETPDLSTATEGOOD(b);

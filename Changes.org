@@ -16,7 +16,7 @@
 
 *** Artemis
    - Fixed a serious problem setting windowing function in Artemis.
-     There was a situation where the wfunction could change between
+     There was a situation where the function could change between
      successive fits, resulting in different fitting results without
      changes to the model.  (thanks to Ian Godfrey)
 
@@ -29,6 +29,8 @@
      (thanks to Ian Godfrey)
 
 *** Windows
+   - Handle path munging at the level of the .bat file header. take
+     care with relocation
 
 ** 0.9.22   29 July      2015
 
