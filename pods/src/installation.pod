@@ -420,8 +420,10 @@ versions of Ifeffit and PGPLOT by following the instructions at
 L<http://debian-xray.iit.edu/>.
 
 Prior to Step 3a, go to L<https://metacpan.org/module/local::lib> and
-download the latest version of the L<local::lib> module.  Unpack it and
-cd into the newly created directory.
+download the latest version of the L<local::lib> module.  Unpack it
+and cd into the newly created directory.  (L<See this mailing list
+post|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2014-June/011828.html>
+for an explanation of why you want to use L<local::lib>.)
 
 Do
 
