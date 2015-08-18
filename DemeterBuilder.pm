@@ -26,7 +26,7 @@ use File::Copy::Recursive qw(dircopy);
 use DocBuilder::Artemis;
 use DocBuilder::Athena;
 use Pod::ProjectDocs;
-use File::Slurp::Tiny qw(read_file write_file);
+use File::Slurper qw(read_text write_text);
 ";
 #use File::Which;
 
@@ -330,9 +330,9 @@ sub fix_cpan_link {		# change all search.cpan.org links to equivalent link to me
 };
 sub slurp_replace {
   my ($file, $oldtext, $newtext) = @_;
-  my $text = read_file($file);
+  my $text = read_text($file);
   $text    =~ s{$oldtext}{$newtext}g;
-  write_file($file, $text);
+  write_text($file, $text);
 };
 
 sub ACTION_pull {

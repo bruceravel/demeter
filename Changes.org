@@ -27,6 +27,8 @@
    - Removed a bit of code related to choice of plot terminal with
      Gnuplot 5 that was not respecting the configured terminal value
      (thanks to Ian Godfrey)
+   - use [[https://metacpan.org/pod/File::Slurper][File::Slurper]] instead of [[https://metacpan.org/pod/File::Slurp::Tiny][File::Slurp::Tiny]] in DemeterBuilder,
+     see [[http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html][this]]
 
 *** Windows
    - Handle path munging at the level of the .bat file header. take
