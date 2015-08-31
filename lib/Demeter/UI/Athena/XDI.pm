@@ -106,8 +106,8 @@ sub new {
     ## comments
     my $commentsbox      = Wx::StaticBox->new($this, -1, 'Comments', wxDefaultPosition, wxDefaultSize);
     my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxHORIZONTAL );
-    $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 0);
-    $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,100],
+    $this->{sizer}      -> Add($commentsboxsizer, 0, wxALL|wxGROW, 0);
+    $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,75],
 					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
     $this->{comments}   -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $commentsboxsizer->Add($this->{comments}, 1, wxALL|wxGROW, 5);
@@ -320,11 +320,11 @@ sub DoContextMenu {
     $xdi = $data->xdi;
   } else {
     $xdi = $xditool->{spare_xdi}; # use the spare Xray::XDI object
-    $xdi->xdifile->_set_extra_version($data->xdi->extra_version);
+    #$xdi->xdifile->_set_extra_version($data->xdi->extra_version);
   };
 
   if ($event->GetId == $VALIDATE) {
-    $xdi->validate($namespace, $parameter, $value);
+    $xdi->validate($namespace, $parameter, lc($value));
     #print $data->xdi->errorcode, $/;
     #print $data->xdi->errormessage, $/;
     if ($xdi->errorcode) {
