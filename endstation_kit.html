@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>BMM End Station</title>
+<!-- 2015-09-08 Tue 11:33 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Bruce Ravel" />
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">BMM End Station</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Main Objectives</a>
+<ul>
+<li><a href="#sec-1-1">1.1. Be window</a></li>
+<li><a href="#sec-1-2">1.2. Be window gantry</a></li>
+<li><a href="#sec-1-3">1.3. BPM</a></li>
+<li><a href="#sec-1-4">1.4. Table</a></li>
+<li><a href="#sec-1-5">1.5. Rail system</a>
+<ul>
+<li><a href="#sec-1-5-1">1.5.1. Downstream support</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-6">1.6. Transport pipe</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Other features</a>
+<ul>
+<li><a href="#sec-2-1">2.1. Gas handling</a></li>
+<li><a href="#sec-2-2">2.2. Camera</a></li>
+<li><a href="#sec-2-3">2.3. Stages I'd like to have</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Main Objectives</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>Terminate photon delivery system with an appropriately sized Be
+window
+</li>
+
+<li>Gantry to support <b>vacuum pressure of about 700 pounds</b> on the Be
+window.  This gantry should move vertically with the table to
+track the various beams.
+</li>
+
+<li>BPM follows Be window
+</li>
+
+<li>The main table is something like 2.5 m by 1.5 m and has 4 degrees
+of freedom:
+<ul class="org-ul">
+<li>Vertical to <b>follow beam height</b>
+</li>
+<li>Pitch to <b>make surface of table parallel to beam</b>
+</li>
+<li>Yaw and horizontal to align table holes to beam path
+</li>
+</ul>
+</li>
+
+<li>Rail on table serves two purposes:
+<ul class="org-ul">
+<li>Fixed height supports for ion chambers (table pitch and vertical
+ensures ion chambers are in beam path)
+</li>
+<li>Support for transport pipe when goniometer is in use
+</li>
+</ul>
+</li>
+
+<li>Transport pipe for delivering beam to goniometer.
+</li>
+</ol>
+</div>
+
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Be window</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+I am assuming that this is a thin window which is a bit bigger than
+the beam.  It gets positioned vertically into the beam (with a bit of
+wiggle room for adjusting the mirrors).
+</p>
+
+<p>
+An alternative would be to have a window enough to accommodate the
+full vertical range of the beam.  Presumably, this would have to be
+significantly thicker.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Be window gantry</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+The gantry must support a vacuum force in the negative beam direction
+<b>and</b> adjust vertically accroding to the beam height.
+</p>
+
+<p>
+Options:
+</p>
+<ul class="org-ul">
+<li>Gantry is mounted on the main table, as main table moves to meet
+the beam, the window moves with it.
+</li>
+<li>Gantry sites on an independent table whose motion is coordinated
+with the main table motion.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> BPM</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+This is, presumably, FMBO's nanoBPM.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> Table</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+See "market research" from <a href="https://github.com/bruceravel/X23A2_inventory/raw/master/axilon.pdf">Axilon</a>
+</p>
+
+<ul class="org-ul">
+<li>Optical table supported on a granite block.
+</li>
+
+<li>Articulation of all degrees of freedom.
+</li>
+
+<li>Need to define margins for vertical, pitch, horizontal, and roll.
+</li>
+
+<li>In many cases, table will not be level, so a rim will be needed
+around the downstream end of the table.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> Rail system</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+The base of this can be standard X-rail.  The vertical supports for
+both the ion chambers and the transport pipe need design work.
+</p>
+
+<p>
+The ion chamber supports should be fixed.  When the table is at a
+height and pitch appropriate to the mirror positions, the ion chambers
+will be in the beam.
+</p>
+
+<p>
+The transport pipe support is a bit more complicated.  It should
+have some flexibility in pitch such that, along with the bellows
+attaching it to the entry window, its is possible to clamp the bellows
+in place and adjust the height of the downstream support.
+</p>
+</div>
+
+<div id="outline-container-sec-1-5-1" class="outline-4">
+<h4 id="sec-1-5-1"><span class="section-number-4">1.5.1</span> Downstream support</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<p>
+Motorized jack to lift/lower the downstream end of the pipe.  This
+rotation is supported by a hinged upstream support and a bellows
+connecting to the entry window.
+</p>
+
+<p>
+How is the height of the jack set?  My suggestion is that a series of
+survey marks is placed on a nearby wall.  A survey target is placed on
+the transport pipe just above the jack.  A theodolite is set to the
+selected beam height.  Looking through the theodolite, use a hand-held
+controller to actuate the jack.
+</p>
+
+<p>
+Given the size of the transport pipe and the possibility for damage if
+the jack is driven incorrectly, this is a good candidate for this sort
+of non-automated solution.  That is, a person must be physically
+present to do the transport pipe height adjustment.
+</p>
+
+<p>
+The exit window should be a generous enough in height so that the
+mirrors can be tweaked without needing to readjust the jack height.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-1-6" class="outline-3">
+<h3 id="sec-1-6"><span class="section-number-3">1.6</span> Transport pipe</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>Pipe with fittings on top side for lifting by overhead hoist.
+</li>
+
+<li>Supported at one point on the table rail.  This support is hinged
+in the pitch direction to facilitate placement of transport pipe
+and adjustment of angle.
+</li>
+
+<li>Supported at downstream end by adjustable height pillar so pitch of
+transport pipe can be set appropriate to beam mode.  
+</li>
+
+<li>Quick connect to upstream window flange via bellows.  (So, not UHV)
+</li>
+
+<li>Be or plastic window on downstream end.  Perhaps some kind of snout
+for bringing beam close to eucentric of goniometer.
+</li>
+
+<li>Pumping port.  Rough + turbo.
+</li>
+
+<li>Will need clear procedure for placement of pipe at a specific angle
+and for adjustment of angle when changing modes.  
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Other features</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Here is a list of additional toys, widgets, and features I would like
+to have for the end station.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Gas handling</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Automated system for rough-pumping ion chambers and refilling with new
+gases.  (Get details from, e.g., B18 at Diamond.)
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Camera</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+See <a href="https://www.dectris.com/pilatus-100k.html#main_head_navigation">https://www.dectris.com/pilatus-100k.html#main_head_navigation</a>.
+The Pilatus 100K is quite cheap, but not for long.
+</p>
+
+<p>
+Many, many uses:
+</p>
+<ul class="org-ul">
+<li>Beam profile characterization at arbitrary positions along beam
+path
+</li>
+<li>Area detector for goniometer
+</li>
+<li>Yoneda-EXAFS
+</li>
+<li>bulk-XES rig
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Stages I'd like to have</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li>Three 4-axis stacks (x,y,pitch,yaw)
+
+<ul class="org-ul">
+<li>2 for 4-channel ion chambers
+</li>
+<li>1 for polycap lens
+</li>
+</ul>
+<p>
+I would like permanent mounting stages for these instruments so
+that they can become regular fixtures at the beamline.
+</p>
+</li>
+
+<li>Rotation stage for samples &#x2013; disk bolted to rotation, all standing
+on a two-axis stage.  A rotation stage with a disk can easily mount
+20 or more sample.  Translation between samples can be made without
+needing to move the fluorescence detector (the caveat is that there
+must be adequate space in front of the detector for the samples to
+pass by).  My thought is to make many (50 or so) plates and loan
+them to visitors for mounting samples at home.
+</li>
+
+<li>Rotation stage for reference foils &#x2013; disk bolted to rotation, all
+standing on a two-axis stage.  This allows a change of reference
+foil to be easily automated.
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Bruce Ravel</p>
+<p class="date">Created: 2015-09-08 Tue 11:33</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
