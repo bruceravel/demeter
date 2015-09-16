@@ -1,0 +1,24 @@
+
+I am VERY pleased that you would like to implement the energy dependent normalization in Athena!
+
+I enclose an Athena file with some files:
+
+"S_mirr_nodet_2ave_corr.txt" is a spectrum of pure sulfur deposited on a
+membrane collected in transmission mode.  So let's say that the
+oscillations have the "correct" intensities.  I know that this may not
+be completely true given that making a sample of sulfur for
+transmission mode is not straightforward. It took me a morning of
+trial and error.  Anyway, I fitted the first shell and the values of
+the best fit make sense, so I have assumed that this spectrum is a
+good reference
+
+"VST1-LiTDI_000.corr" is the initial spectrum of the discharge cycle of
+the battery, taken at the back side of the cathode. So it is pure
+sulfur, but is in fluorescence mode.
+
+"VST1-LiTDI_000norm.dat" is the same spectrum with the energy dependent
+calibration.
+
+The other two couples of files : "VST1-LiTDI_nnn.corr" and
+"VST1-LiTDI_nnnnorm.dat" are spectra along the discharge cycle without
+and with the energy dependent normalization.

@@ -63,6 +63,10 @@ sub target {
       Xray::Absorption->load($value) if is_AbsorptionTables($value);
       last SWITCH;
     };
+    ($param eq 'show_funnorm') and do {
+      $::app->{main}->{Main}->{bkg_funnorm}->Show($value);
+      last SWITCH;
+    };
   };
 
   $value = Demeter->truefalse($value) if Demeter->co->Type($parent, $param) eq 'boolean';

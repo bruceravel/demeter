@@ -242,14 +242,6 @@ description
   displayed, setting it to false means to display the normalized data
   as it comes out of ifeffit's spline() function.
 
-variable=fnorm
-type=boolean
-onvalue=1
-offvalue=0
-default=true
-description
-  This parameter tells Demeter to use a functional normalization.
-
 variable=nnorm
 type=list
 default=3

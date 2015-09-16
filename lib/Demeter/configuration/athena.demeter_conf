@@ -112,6 +112,15 @@ description
   If true, display the check buttons for plotting the derivative of
   the phase in R-space.
 
+variable=show_funnorm
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  This parameter tells Athena to display a checkbutton for performing
+  a functional normalization.
+
 variable=interactive_fixstep
 type=boolean
 onvalue=1

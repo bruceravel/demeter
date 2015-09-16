@@ -493,7 +493,11 @@ sub autobk {
 	$self->bkg_stan('None');
       };
     };
-    $command .= $self->template("process", "autobk");
+    if ($self->bkg_funnorm) {
+      $command .= $self->template("process", "fnorm");
+    } else {
+      $command .= $self->template("process", "autobk");
+    };
     $fixed = $self->bkg_step if $self->bkg_fixstep;
   };
 
@@ -527,7 +531,8 @@ sub autobk {
     $command .= $self->template("process", "is_nor");
   };
 
-  #$self->dispose($command);
+  $self->dispose($command);
+  $command = q{};
 
   if ($self->is_nor) {
     1;
@@ -536,16 +541,18 @@ sub autobk {
   } else {
     $command .= $self->template("process", "flatten_set");
   };
-  #$self->dispose($command);
+  $self->dispose($command);
+  $command = q{};
 
   ## first and second derivative
   #$command .= $self->template("process", "deriv");
   $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
-    $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
-    $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
-    $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+
+  $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
+  $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
+  $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
+  $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');

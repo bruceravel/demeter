@@ -35,7 +35,7 @@ Every updater package is a cumulative updater which incorporates all
 changes since the installer package.  Thus only the most recent
 updater needs to be applied.
 
-It is B<not> sufficent to simply install the updater.  You must
+It is B<not> sufficient to simply install the updater.  You must
 install the installer package first.
 
 There is B<not> an automated updater for the software.  You must

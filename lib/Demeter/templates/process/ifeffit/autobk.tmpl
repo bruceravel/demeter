@@ -3,7 +3,8 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
   $win = lc($D->bkg_kwindow);
-  $win = 'kaiser-bessel' if (lc($D->bkg_kwindow) eq 'kaiser')
+  $win = 'kaiser-bessel' if (lc($D->bkg_kwindow) eq 'kaiser');
+  q{}
 }
 
 spline("{$D->group}.energy+{$D->bkg_eshift}", {$D->group}.xmu, e0={$D->bkg_e0}, rbkg={$D->bkg_rbkg},

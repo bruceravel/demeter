@@ -330,7 +330,7 @@ has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->d
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
-has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "fnorm")   || 0},
+has 'bkg_funnorm' => (is => 'rw', isa => 'Bool',    default => 0,
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
@@ -1373,9 +1373,11 @@ the C<normalize> method.  (Larch only)
 
 When true, a plot of normalized mu(E) data will be flattened.
 
-=item C<bkg_fnorm> (boolean) I<[0]>
+=item C<bkg_funnorm> (boolean) I<[0]>
 
-When true, a functional normalization is performed.  I<not yet implemented>
+When true, a functional normalization is performed to approximately
+remove the effect of quickly varying I0 signal on fluorescence EXAFS.
+Note that this effects chi(k), but not the display of mu(E).
 
 =item C<bkg_nnorm> (integer) I<[3]>
 

@@ -9,7 +9,7 @@
 ##| post autobk
 set({$D->group}.pre_edge = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy + {$D->bkg_eshift}),
     {$D->group}.nbkg     = ({$D->group}.bkg - {$D->group}.pre_edge) / {$D->bkg_step} + {$D->y_offset},
-{if ($D->datatype eq 'xanes') {
+{if (($D->datatype eq 'xanes') or ($D->bkg_funnorm)) {
       $OUT .= sprintf("    %s.prex      = (%s.xmu-%s.pre_edge),\n",    $D->group, $D->group, $D->group);
       $OUT .= sprintf("    %s.norm      = (%s.xmu-%s.pre_edge)/%g,\n", $D->group, $D->group, $D->group, $D->bkg_step);
       $OUT .= sprintf("    %s.post_edge = %f+%f*(%s.energy+%f)+%g*(%s.energy+%f)**2)\n",
