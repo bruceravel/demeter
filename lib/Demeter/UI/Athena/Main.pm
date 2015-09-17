@@ -175,7 +175,7 @@ sub bkg {
   my $backgroundboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
   $backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
   $this->{sizer}  -> Add($backgroundboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 5);
-  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Background removal and normalization parameters');
+  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Normalization and background removal parameters');
   $this->{background_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $backgroundboxsizer -> Add($this->{background_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 
@@ -398,8 +398,8 @@ sub bkg {
   };
   foreach my $x (qw(bkg_flatten bkg_funnorm bkg_fixstep)) {
     EVT_CHECKBOX($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
-    #EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
-    #EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
+    EVT_RIGHT_DOWN($this->{$x}, sub{ContextMenu(@_, $app, $x)});
+    EVT_MENU($this->{$x}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
   foreach my $x (qw(bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3)) {
     EVT_RADIOBUTTON($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
