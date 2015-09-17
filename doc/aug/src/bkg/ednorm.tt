@@ -1,0 +1,67 @@
+[% META title = 'Energy-dependent normalization'
+	about = ''
+%]
+
+[% FILTER html_para %]
+When measuring fluorescence data at low energy, the data might have an
+unusual overall shape as shown in the S K-edge data in the figure
+below.  This behavior is due to the energy dependence of the signal on
+the gas-filled [%i0%] chamber.
+
+As the energy of the incident beam increases, the absorption of the
+gasses in [%i0%] significantly decreases.  Since the fluorescence
+signal if [%ifl%]/[%i0%], the [%mue%] grows with energy.  Since the
+edge-step normalization of the data is made by dividing out a constant
+edge-step value, the energy-dependence of [%i0%] results in a [%chik%]
+signal that is somewhat amplified.
+[% END %]
+
+
+[% WRAPPER quadplot files=["bkg_s_mu.png", "bkg_s_chi.png"] %]
+(Left) Sulfur K edge spectrum measured in fluorescence. (Right) The
+blue trace is the [%chik%] data extracted directly from the [%mue%]
+data to the right.  The red trace is the same data, but with the
+energy-dependent normalization applied.
+[% END %]
+
+[% FILTER html_para %]
+This amplification effect can be approximately corrected by an
+energy-dependent normalization.  This is implemented using the pre-
+and post-edge lines.  A function is computed as the difference between
+the post-edge and pre-edge lines.  This difference function, which
+will be positive definite so long as the pre- and post-edge lines are
+well-behaved, is multiplied by [%mue%] before performing the
+background removal.
+
+The resulting corrected [%chi%] is shown as the red trace in the
+right-hand figure above.  The correction is small, but might
+contribute to the accuracy of an EXAFS analysis.
+
+[% WRAPPER html/caution %]
+This sort of correction is only valid for low-energy EXAFS data
+measured in fluorescence.  Using this tool incorrectly can damage your
+[%chik%] data in a way that is difficult to understand after the fact.
+Also, using this tool with poorly chosen pre- or post-edge lines will
+damage the data.  It is up to [%INCLUDE font/b a="you"%] to be sure
+those lines are chosen sensibly.
+[% END %]
+
+The control for this energy-dependent normalization is the checkbutton
+near the bottom of the background removal section of controls, as seen
+in the following screenshot.
+[% END %]
+
+
+[% WRAPPER figure file="bkg_ednorm.png" %]
+[%athena%] with S K-edge EXAFS data measured in fluorescence.  Note
+that the control for turning on the energy-dependent normalization is
+enabled. 
+[% END %]
+
+[% FILTER html_para %]
+This control is normally disabled.  To enable it, you must toggle on the
+[% INCLUDE preference group="athena" option="show_funnorm" %]
+[% INCLUDE html/link text="configuration parameter" link="../other/prefs.html" %].
+If you import a project file which has one or more groups using the
+energy-dependent normalization, then the control will be turned on automatically.
+[% END %]

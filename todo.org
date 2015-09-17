@@ -97,9 +97,10 @@
         the executables can all be found,
   - [X] also need to be able to find all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [5/20] [25%]
+** Demeter bugs, shortcomings, missing features  [5/21] [23%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] tie multiple groups together (e.g. MED data with reference)
+  - [ ] config param updated AND that param is currently showing in the Prefs tool -- need to update display in Prefs tool
   - [ ] add a record to an existing Athena project file
   - [ ] clnorm + Julia and Jingen's MBACK replacement
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist

@@ -524,6 +524,14 @@ sub onezero {
   #my $value = $self->is_true($self->$attribute);
   return ($value) ? '1' : '0';
 };
+sub enableddisabled {
+  my ($self, $attribute) = @_;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  #my $value = $self->is_true($self->$attribute);
+  return ($value) ? 'enabled' : 'disabled';
+};
 sub is_true {
   my ($self, $value) = @_;
   return 0 if (not defined $value);

@@ -797,6 +797,7 @@ sub _prj {
   my $prj = $app->{main}->{prj}->{prj};
 
   my $count = 0;
+  my $use_funnorm = 0;
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
@@ -806,6 +807,7 @@ sub _prj {
       $data->prjrecord($orig . ", $1");
     };
     $plugin->add_metadata($data) if $plugin;
+    $use_funnorm = 1 if $data->bkg_funnorm;
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
     $app->{main}->{list}->AddData($data->name, $data);
@@ -817,6 +819,7 @@ sub _prj {
       $data->bkg_stan('None');
       Import_plot($app, $data);
       $data->bkg_stan($save);
+      $data->update_norm(1) if $data->bkg_funnorm;
     };
   };
   return -1 if not $count;
@@ -845,6 +848,11 @@ sub _prj {
   undef $app->{main}->{prj};
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
+  if ($use_funnorm and not Demeter->co->default('athena', 'show_funnorm')) {
+    Demeter->co->set_default('athena', 'show_funnorm', 1);
+    $app->{main}->status("This project has groups using functional normalization -- energy-dependent normalization control enabled", "alert");
+    #Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $funnorm_message, "Notice", wxOK|wxICON_INFORMATION) -> ShowModal;
+  };
   return 1;
 };
 

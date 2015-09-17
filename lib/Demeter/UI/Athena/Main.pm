@@ -240,7 +240,7 @@ sub bkg {
   push @bkg_parameters, qw(bkg_nor1 bkg_nor2);
 
   $this->{bkg_flatten}    = Wx::CheckBox -> new($this, -1, q{Flatten normalized data});
-  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(1,6), Wx::GBSpan->new(1,3));
+  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
   $this->{bkg_flatten}->SetValue(1);
   push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
 
@@ -256,11 +256,11 @@ sub bkg {
   $this->{bkg_step_label} = Wx::StaticText -> new($this, -1, "Edge step");
   $this->{bkg_step}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix});
-  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(0,6));
-  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(0,7));
-  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(1,6));
+  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(1,7));
+  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(1,8));
 
-  
+
   $backgroundboxsizer -> Add($gbs, 0, wxLEFT, 5);
 
   #$backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL), 0, wxALIGN_CENTRE_HORIZONTAL|wxTOP|wxBOTTOM, 10);
@@ -352,9 +352,10 @@ sub bkg {
   EVT_TEXT($this, $this->{bkg_spl1e}, sub{OnSpl(@_, $app, 'bkg_spl1e')});
   EVT_TEXT($this, $this->{bkg_spl2e}, sub{OnSpl(@_, $app, 'bkg_spl2e')});
 
-  $this->{bkg_funnorm}    = Wx::CheckBox -> new($this, -1, q{Functional normalization});
-  $gbs -> Add($this->{bkg_funnorm},    Wx::GBPosition->new(3,6), Wx::GBSpan->new(1,4));
-  $this->{bkg_funnorm}->Hide if not Demeter->co->default('athena', 'show_funnorm');
+  $this->{bkg_funnorm}    = Wx::CheckBox -> new($this, -1, q{Energy-dependent normalization});
+  $gbs -> Add($this->{bkg_funnorm},    Wx::GBPosition->new(3,5), Wx::GBSpan->new(1,4));
+  #$this->{bkg_funnorm}->Enable(0);
+  #$this->{bkg_funnorm}->Enable(1) if Demeter->co->default('athena', 'show_funnorm');
   $this->{bkg_funnorm}->SetValue(0);
   push @bkg_parameters, qw(bkg_funnorm);
 
@@ -365,7 +366,7 @@ sub bkg {
   #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
   $this->{bkg_stan}         = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
   $gbs -> Add($this->{bkg_stan_label}, Wx::GBPosition->new(3,0) );
-  $gbs -> Add($this->{bkg_stan},       Wx::GBPosition->new(3,1), Wx::GBSpan->new(1,5) );
+  $gbs -> Add($this->{bkg_stan},       Wx::GBPosition->new(3,1), Wx::GBSpan->new(1,4) );
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
   $app -> mouseover($this->{bkg_stan}, "Perform background removal using the selected data standard.");
 
@@ -672,6 +673,7 @@ sub mode {
     foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
+    $this->set_widget_state('bkg_funnorm', Demeter->co->default('athena', 'show_funnorm'));
     $this->set_widget_state('freeze', 1);
   };
 
@@ -1117,7 +1119,7 @@ sub ContextMenu {
   ($text = "group parameters")  if ($text =~ m{currentgroup});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
-  if (none {$text eq $_} ('Edge step', 'Functional normalization', 'fix', 'Flatten normalized data')) {
+  if (none {$text eq $_} ('Edge step', 'Energy-dependent normalization', 'fix', 'Flatten normalized data')) {
     $menu->AppendSeparator;
     $menu->Append($TO_DEFAULT, "Set $text to its default value");
   };

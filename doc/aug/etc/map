@@ -26,13 +26,14 @@
 	    intro   = { name = 'Introduction'}
 	    bkg     = {
 		    name = 'Background Removal'
-		    menu = [ 'norm', 'rbkg', 'kweight', 'range' ]
+		    menu = [ 'norm', 'rbkg', 'kweight', 'range', 'ednorm' ]
 		    page = {
 			   norm    = { name = 'Normalization' }
 			   ft      = { name = 'Introduction to Fourier transforms' }
 			   rbkg    = { name = 'The Rbkg parameter' }
 			   kweight = { name = 'Spline clamps and k-weight' }
 			   range   = { name = 'Spline range' }
+			   ednorm  = { name = 'Energy-dependent normalization' }
 			   }
 		    }
 	    plot    = {

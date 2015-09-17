@@ -13,6 +13,10 @@
      reset_all button was commented out -- it is implemented awkwardly.
    - Changes made to plugin configuration now correctly saved to and
      restored from demeter.ini (thanks to roentgenium, issue #23)
+   - implement a functional normalization control (thanks to Giuliana
+     Aquilanti) {/pre3/} also athena->show_funnorm configuration
+     parameter, enable control is athena project file is read which
+     uses funnorm.
 
 *** Artemis
    - Fixed a serious problem setting windowing function in Artemis.
@@ -29,6 +33,13 @@
      (thanks to Ian Godfrey)
    - use [[https://metacpan.org/pod/File::Slurper][File::Slurper]] instead of [[https://metacpan.org/pod/File::Slurp::Tiny][File::Slurp::Tiny]] in DemeterBuilder,
      see [[http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html][this]]
+   - implement a functional normalization for use in low energy
+     fluorescence data where I0 changes a lot over the course of the
+     scan.  this divides mu(E) by (post-pre) before removing
+     background
+   - Plucking now works with the qt terminal, although the first
+     double click of the session will always fail to return something
+     useful (simply do another double-click before the time out).
 
 *** Windows
    - Handle path munging at the level of the .bat file header. take

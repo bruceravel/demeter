@@ -42,7 +42,7 @@ sub cursor {
     Demeter->dispose("cursor(crosshair=true)");
     ($x, $y) = (Demeter->fetch_scalar("cursor_x"), Demeter->fetch_scalar("cursor_y"));
 
-  } elsif (Demeter->mo->template_plot eq 'gnuplot') {
+  } elsif ((Demeter->mo->template_plot eq 'gnuplot') and (Demeter->co->default('gnuplot', 'terminal') ne 'qt')) {
 
     # my $recent;
     # if (wxTheClipboard->Open) {
@@ -101,6 +101,25 @@ sub cursor {
       ($x, $y) = split(/,\s+/, $new);
     };
 
+  } elsif ((Demeter->mo->template_plot eq 'gnuplot') and (Demeter->co->default('gnuplot', 'terminal') eq 'qt')) {
+
+    my $elog  = Demeter->po->error_log;
+    my $sleep = 200000;
+    my $wait  = Demeter->co->default('gnuplot', 'pluck_timeout') * 1e6 / 200000;
+    my $count = 0;
+    while ($count < 50) {
+      Demeter->mo->external_plot_object->gnuplot_cmd('print MOUSE_X, MOUSE_Y');
+      my @lines = split("$/", `cat $elog`);
+      my ($x, $y) = split(" ", $lines[-1]);
+      if (looks_like_number($x) and looks_like_number($y)) {
+	return($return, $x, $y);
+      };
+      ++$count;
+      usleep($sleep);       # 1/5 second
+    };
+    $return->status(0);
+    $return->message("Pluck timed out!");
+    return ($return, -100000, -100000);
 
   } else {
     $app->{main}->status("Unknown or unpluckable plotting backend.  Pluck canceled.");
@@ -131,6 +150,13 @@ sub cursor {
   };
   return ($return, $x, $y);
 };
+
+sub qt_cursor {
+  my ($self, $elog) = @_;
+  my @lines = split("$/", `cat $elog`);
+  return $lines[-1];
+}
+
 
 1;
 

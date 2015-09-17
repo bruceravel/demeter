@@ -38,7 +38,7 @@ equation is problematic is the factor of [% mu0 %] in the
 denominator.  In practice, one cannot trust the [% mu0 %] to be
 sufficiently well behaved that it can be used as a multiplicative
 factor.  An example is shown in
-[% INCLUDE imageref text="the figure below" label="bkg_normzerocross" %].
+[(Left% INCLUDE imageref text="the figure below" label="bkg_normzerocross" %].
 [% END %]
 
 [% WRAPPER figure file="bkg_normzerocross.png" %]
