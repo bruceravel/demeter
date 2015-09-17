@@ -1117,7 +1117,7 @@ sub ContextMenu {
   ($text = "group parameters")  if ($text =~ m{currentgroup});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
-  if ($text ne 'Edge step') {
+  if (none {$text eq $_} ('Edge step', 'Functional normalization', 'fix', 'Flatten normalized data')) {
     $menu->AppendSeparator;
     $menu->Append($TO_DEFAULT, "Set $text to its default value");
   };
