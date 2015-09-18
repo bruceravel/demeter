@@ -86,6 +86,7 @@ sub cursor {
 	if ($count > 50) {    # 10 seconds have passed
 	  $return->status(0);
 	  $return->message("Pluck timed out!");
+	  undef $busy;
 	  return ($return, -100000, -100000);
 	};
 	wxTheClipboard->Open;
@@ -107,11 +108,14 @@ sub cursor {
     my $sleep = 200000;
     my $wait  = Demeter->co->default('gnuplot', 'pluck_timeout') * 1e6 / 200000;
     my $count = 0;
+    $app->{main}->status("Double click on a point to pluck its value (there WILL be a short pause after clicking) ...", "wait");
+    $busy = Wx::BusyCursor->new();
     while ($count < 50) {
       Demeter->mo->external_plot_object->gnuplot_cmd('print MOUSE_X, MOUSE_Y');
       my @lines = split("$/", `cat $elog`);
       my ($x, $y) = split(" ", $lines[-1]);
       if (looks_like_number($x) and looks_like_number($y)) {
+	undef $busy;
 	return($return, $x, $y);
       };
       ++$count;
@@ -119,6 +123,7 @@ sub cursor {
     };
     $return->status(0);
     $return->message("Pluck timed out!");
+    undef $busy;
     return ($return, -100000, -100000);
 
   } else {

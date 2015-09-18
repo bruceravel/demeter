@@ -1673,7 +1673,9 @@ sub main_window {
   $app->{main}->{views}->SetSelection(0);
 
   $app->{main}->{return}   = Wx::Button->new($viewpanel, -1, 'Return to main window', wxDefaultPosition, wxDefaultSize);#, wxBU_EXACTFIT);
-  $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0)});
+  $app->EVT_BUTTON($app->{main}->{return},   sub{ $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0);
+						  $app->{main}->status("");
+						});
   $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   $viewbox->Fit($app->{main}->{views});
@@ -2967,7 +2969,7 @@ sub status {
   $self->GetStatusBar->SetBackgroundColour($color);
   $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
-  $self->{Status}->put_text($text, $type);
+  $self->{Status}->put_text($text, $type) if ($text !~ m{\A\s*\z});
   $self->Refresh;
 };
 
