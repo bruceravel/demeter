@@ -234,6 +234,8 @@ sub test_plugins {
 sub Import_plot {
   my ($app, $data) = @_;
   my $how = lc($data->co->default('athena', 'import_plot'));
+  my $save = $data->bkg_funnorm;
+  $data->bkg_funnorm(0);
   $data->po->start_plot;
   if ($how eq 'quad') {
     $app->quadplot($data);
@@ -246,6 +248,7 @@ sub Import_plot {
   } elsif ($how =~ m{\A[ekrq]\z}) {
     $app->plot(0, 0, $how, 'single');
   }; # else $how is none
+  $data->bkg_funnorm($save);
   return;
 };
 

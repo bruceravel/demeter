@@ -12,7 +12,7 @@ set n = nofx({$D->group}.energy, {$D->bkg_e0}+{$D->bkg_eshift})
 set {$D->group}.fn1 = ones(n-1)
 set {$D->group}.fn2 = slice({$D->group}.fn, n, npts({$D->group}.energy))
 set fnmax = ceil({$D->group}.fn2)
-set {$D->group}.fn2 = {$D->group}.fn2
+set {$D->group}.fn2 = {$D->group}.fn2/fnmax
 set {$D->group}.fn = join({$D->group}.fn1, {$D->group}.fn2)
 
 set {$D->group}.fun = {$D->group}.xmu / {$D->group}.fn

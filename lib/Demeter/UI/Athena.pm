@@ -2088,6 +2088,14 @@ sub plot {
 
   my $busy = Wx::BusyCursor->new();
 
+  my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
+  my @is_fixed = map {$_->bkg_fixstep} @data;
+  ## save values of bkg_funnorm, turn bkg_funnorm off for all of @data
+  my @save_ednorm = map { $_->bkg_funnorm } @data;
+  if (lc($space) eq 'e') {
+    foreach my $d (@data) { $d->bkg_funnorm(0) };
+  };
+
   ## process a right click on a plot button
   if ($right) {
     my $continue = 0;
@@ -2132,9 +2140,6 @@ sub plot {
       return;
     };
   };
-
-  my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
-  my @is_fixed = map {$_->bkg_fixstep} @data;
 
   if (not @data and ($how eq 'marked')) {
     $app->{main}->status("No groups are marked.  Marked plot canceled.");
@@ -2270,6 +2275,10 @@ sub plot {
   #		   update_fft     => $save[3], update_bft  => $save[4],);
   #};
   $app->postplot($data[0], $is_fixed[0]);
+  ## restore values of bkg_funnorm
+  if (lc($space) eq 'e') {
+    foreach my $i (0..$#data) { $data[$i]->bkg_funnorm($save_ednorm[$i]) };
+  };
 
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);

@@ -15,8 +15,11 @@
      restored from demeter.ini (thanks to roentgenium, issue #23)
    - implement a functional normalization control (thanks to Giuliana
      Aquilanti) {/pre3/} also athena->show_funnorm configuration
-     parameter, enable control is athena project file is read which
+     parameter, enable control if athena project file is read which
      uses funnorm.
+   - rearrange controls in normalization and background removal group
+     to better distinguish which parameters control normalization and
+     which background removal
 
 *** Artemis
    - Fixed a serious problem setting windowing function in Artemis.
@@ -36,7 +39,7 @@
    - implement a functional normalization for use in low energy
      fluorescence data where I0 changes a lot over the course of the
      scan.  this divides mu(E) by (post-pre) before removing
-     background
+     background (thanks to Giuliana Aquilanti) {/pre3/}
    - Plucking now works with the qt terminal, although the first
      double click of the session will always fail to return something
      useful (simply do another double-click before the time out).

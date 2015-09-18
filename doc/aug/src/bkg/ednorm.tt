@@ -65,3 +65,17 @@ This control is normally disabled.  To enable it, you must toggle on the
 If you import a project file which has one or more groups using the
 energy-dependent normalization, then the control will be turned on automatically.
 [% END %]
+
+[% WRAPPER html/caution %]
+Another word of caution about using this feature of [%athena%].  When
+you make a plot in energy, the function that gets plotted is [%mue%]
+and it's[%#'%] background, [%INCLUDE font/b a="not"%] the corrected
+[%mue%] and [%INCLUDE font/em a="it's"%] background.  However, [%chik%], [%chir%], and
+[%chiq%] are made from the corrected [%mue%].  It is possible,
+paticularly for especially noisy data, that the background removal
+displayed for the raw [%mue%] will be substantively different from the
+background calculated for the corrected [%mue%].  Thus it is possible
+that a plot in energy might look sensible, but the plot in k will be
+garbage.  Or vice-versa.  Again, use this feature of [%athena%] with
+caution and foreknowledge.
+[% END %]
