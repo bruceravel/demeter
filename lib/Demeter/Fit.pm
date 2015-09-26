@@ -1402,6 +1402,7 @@ override 'serialize' => sub {
   ##          is handled somewhat differently)
   if ($args{copyfeff}) {
     foreach my $f (values %feffs) {
+      next if not defined($f);
       my $ff = $f->group;
       my $feffyaml = File::Spec->catfile($self->folder, $ff.".yaml");
       $f->serialize($feffyaml, 1);

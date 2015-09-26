@@ -28,6 +28,8 @@
      changes to the model.  (thanks to Ian Godfrey)
 
 *** Hephaestus
+   - configurable energy width used for computing edge steps.  [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-September/012762.html][see
+     comment from Matthew Marcus]] {/pre3/}
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI

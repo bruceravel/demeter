@@ -92,6 +92,21 @@ restart=1
 description
   The initial energy value in the Formulas utility
 
+variable=stepwidth
+type=real
+default=0.001
+description
+  This parameter sets the width in energy above and below an edge
+  which is used to compute an edge step in the formulas tool in
+  Hephaestus.  If the value is any number greater than or equal to 1,
+  then that is used as the energy width.  So if the value is 50, then
+  the step will be computed by comaring the absorption at +/- 50 eV.
+  If the value is less than 1, then it will be multiplied by the
+  specified energy to yield the width.  The default value of 0.001
+  says that the width is 1% of the specified energy.  For Fe K at
+  7112, the width will be 7.112 eV.  If it is less than 0, it will be
+  reset to 0.001.
+
 variable=ion_energy
 type=absolute energy
 default=9000

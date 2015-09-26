@@ -138,7 +138,7 @@ sub new {
   $self -> SetSize($framesize);
 
 
-  $self -> SetSizer($vbox);
+  $self -> SetSizerAndFit($vbox);
   $vbox -> Fit($tb);
   $vbox -> SetSizeHints($tb);
   return $self;
