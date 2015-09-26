@@ -161,7 +161,7 @@ sub new {
 
   foreach my $el (@elements) {
     my $element = $el->[ELEMENT];
-    my $button = Wx::Button->new( $self, -1, $element, [-1,-1], [35,-1], wxBU_EXACTFIT );
+    my $button = Wx::Button->new( $self, -1, $element, [-1,-1], [37,-1], wxBU_EXACTFIT );
     $self->{$element} = $button;
     my $cell = $tsz -> Add($button, Wx::GBPosition->new($el->[ROW], $el->[COL]));
     EVT_BUTTON( $parent, $button, sub{&$command($element)} );

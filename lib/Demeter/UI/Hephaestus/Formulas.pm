@@ -93,7 +93,7 @@ sub new {
   $tsz -> Add($self->{energy}, Wx::GBPosition->new(2,1));
   $self->{energy} -> SetValue($self->{energyvalue});
   EVT_KEY_DOWN( $self->{energy}, sub{on_key_down(@_, $self)} );
-  my $numval = Wx::Perl::TextValidator -> new('\d', \($self->{data}));
+  my $numval = Wx::Perl::TextValidator -> new('[\d.]', \($self->{data}));
   $self->{energy}->SetValidator($numval);
 
 
