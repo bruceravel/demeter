@@ -6,7 +6,7 @@
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "64"
-#define Pre "pre2"
+#define Pre "pre3"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -23,15 +23,16 @@
 AppId=Strawberry_Perl_with_Demeter
 AppName={#Demeter} {#MyAppVersion}
 AppVersion={#MyAppVersion} ({#Bits})
-DefaultDirName=\strawberry
+DefaultDirName={userappdata}\DemeterPerl
+UsePreviousAppDir=no
 DefaultGroupName={#Demeter}
 ; UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output\{#MyAppVersion}
-OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})_{#Pre}
-;OutputBaseFilename={#MyInstName}_{#MyAppVersion}_({#Bits})
+OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})_{#Pre}
+;OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2015 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Larch is copyright (c) 2015, Matt Newville and Tom Trainor; Perl is copyright 1987-2011, Larry Wall
@@ -53,7 +54,7 @@ InfoAfterFile=Demeter.readme.txt
 
 [Run]
 Filename: "{app}\relocation.pl.bat";
-Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
+;Filename: "{app}\modify_path.pl.bat"; Parameters: """{app}"""
 ;Filename: "{app}\munge_pathenv.pl.bat"; Parameters: """{app}"""
 
 
@@ -183,20 +184,20 @@ end;
 
 
 // Restrict the installation path to have no space 
-function NextButtonClick(CurPageID: Integer): Boolean;
-begin
-  Result :=True;
-  case CurPageID of
-    wpSelectDir :
-    begin
-    if Pos(' ', ExpandConstant('{app}') ) <> 0 then
-      begin
-        MsgBox('You cannot install to a path containing spaces. Please select a different path.', mbError, mb_Ok);
-        Result := False;
-      end;
-    end;
-  end;
-end;
+//function NextButtonClick(CurPageID: Integer): Boolean;
+//begin
+//  Result :=True;
+//  case CurPageID of
+//    wpSelectDir :
+//    begin
+//    if Pos(' ', ExpandConstant('{app}') ) <> 0 then
+//      begin
+//        MsgBox('You cannot install to a path containing spaces. Please select a different path.', mbError, mb_Ok);
+//        Result := False;
+//      end;
+//    end;
+//  end;
+//end;
 
 
 
