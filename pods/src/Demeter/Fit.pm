@@ -1253,6 +1253,8 @@ sub grab {			# deserialize lite -- grab the yaml
 		      )) {
 	delete $r_attributes->{$x};
       };
+      ## correct for change in energy-dependent normalization
+      delete $r_attributes->{bkg_fnorm};
       # if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
       # 	$r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
       # };
@@ -1402,6 +1404,7 @@ override 'serialize' => sub {
   ##          is handled somewhat differently)
   if ($args{copyfeff}) {
     foreach my $f (values %feffs) {
+      next if not defined($f);
       my $ff = $f->group;
       my $feffyaml = File::Spec->catfile($self->folder, $ff.".yaml");
       $f->serialize($feffyaml, 1);
@@ -1497,6 +1500,8 @@ override 'deserialize' => sub {
     delete $r_attributes->{xdifile} if (not $INC{'Xray/XDI.pm'});
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
+    ## correct for change in energy-dependent normalization
+    delete $r_attributes->{bkg_fnorm};
     ##  clean up from old implementation(s) of XDI
     foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
 		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy

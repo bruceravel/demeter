@@ -311,8 +311,20 @@ the <code>normalize</code> method.</p></dd>
 the <code>normalize</code> method.  (Larch only)</p></dd>
 	<dt><code>bkg_flatten</code> (boolean) <i>[1]</i></dt>
 		<dd><p>When true, a plot of normalized mu(E) data will be flattened.</p></dd>
-	<dt><code>bkg_fnorm</code> (boolean) <i>[0]</i></dt>
-		<dd><p>When true, a functional normalization is performed.  <i>not yet implemented</i></p></dd>
+	<dt><code>bkg_funnorm</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When true, a functional normalization is performed to approximately
+remove the effect of quickly varying I0 signal on fluorescence EXAFS.</p></dd>
+		<dd><p>Note that has a bad impact on the display of mu(E).  The
+energy-dependent normalization is made by dividing (post(E)-pre(E))
+from mu(E) right doing the background removal.  Thus the background
+function is computed from something different from mu(E).  This turns
+out to be hard to keep track of when using Demeter's plotting system.
+Athena &quot;solves&quot; this by keeping track of what is being plotted.  A
+plot in k, R, or q uses the corrected mu(E).  A plot in E is made by
+temporarily turning off the energy-dependent normalization flag,
+re-evaluating the background function, then turning the flag back on.
+This is a bit of an efficiency hit.  And the plot in E does not quite
+correspond to the plot in k.  Awkward!</p></dd>
 	<dt><code>bkg_nnorm</code> (integer) <i>[3]</i></dt>
 		<dd><p>This can be either 2 or 3 and specifies the order of the post-edge regression.
 When this is 2, <code>bkg_nc2</code> will be forced to 0 in the regression.  <i>not yet

@@ -40,6 +40,7 @@ sub new {
 sub target {
   my ($self, $parent, $param, $value, $save) = @_;
 
+  my $specific_message = q{};
  SWITCH: {
     ($parent eq 'lcf') and do {
       last SWITCH if none {$param eq $_} qw(components difference unity inclusive);
@@ -63,14 +64,21 @@ sub target {
       Xray::Absorption->load($value) if is_AbsorptionTables($value);
       last SWITCH;
     };
+    ($param eq 'show_funnorm') and do {
+      $::app->{main}->{Main}->{bkg_funnorm}->Enable($value);
+      $specific_message = "Functional normalization button has been " . Demeter->enableddisabled($value);
+      last SWITCH;
+    };
   };
 
   $value = Demeter->truefalse($value) if Demeter->co->Type($parent, $param) eq 'boolean';
 
-  ($save)
-    ? $::app->{main}->status("Now using $value for $parent-->$param and an ini file was saved")
-      : $::app->{main}->status("Now using $value for $parent-->$param");
+  my $save_message = "Now using $value for $parent-->$param and an ini file was saved";
+  my $applied_message = "Now using $value for $parent-->$param";
 
+  ($save)
+    ? $::app->{main}->status($specific_message || $save_message)
+      : $::app->{main}->status($specific_message || $applied_message);
 };
 
 sub pull_values {

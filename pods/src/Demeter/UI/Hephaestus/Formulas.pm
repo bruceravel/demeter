@@ -93,7 +93,7 @@ sub new {
   $tsz -> Add($self->{energy}, Wx::GBPosition->new(2,1));
   $self->{energy} -> SetValue($self->{energyvalue});
   EVT_KEY_DOWN( $self->{energy}, sub{on_key_down(@_, $self)} );
-  my $numval = Wx::Perl::TextValidator -> new('\d', \($self->{data}));
+  my $numval = Wx::Perl::TextValidator -> new('[\d.]', \($self->{data}));
   $self->{energy}->SetValidator($numval);
 
 
@@ -268,10 +268,17 @@ sub get_formula_data {
       };
     };
     ## compute unit edge step lengths for all the relevant edges in this material
+    my $width = Demeter->co->default('hephaestus', 'stepwidth');
+    if ($width <= 0) {
+      $width = 0.001;
+    };
+    if ($width < 1) {
+      $width = $width * $parent->{energy}->GetValue;
+    };
     foreach my $e (@edges) {
       my $enot = Xray::Absorption -> get_energy(@$e);
       my @abovebelow = ();
-      foreach my $step (-50, +50) {
+      foreach my $step (-1*$width, $width) {
 	my ($bpfu, $apfu) = (0, 0);
 	my $energy = $enot + $step;
 	foreach my $k (keys(%count)) {
@@ -304,8 +311,8 @@ sub get_formula_data {
 #       ($which = "scattering") if ($which =~ /coherent/);
 #     };
     ($resource = $1) if ($resource =~ m{(\w+)\.pm});
-    $answer .= sprintf("\nThe %s database and the %s cross-sections were used in the calculation.",
-		       $resource, $which);
+    $answer .= sprintf("\nThe %s database and the %s cross-sections were used in the calculation (step width = %.2f eV)",
+		       $resource, $which, $width);
   } else {
     $answer .= "\nInput error:\n\t".$count{error};
   };

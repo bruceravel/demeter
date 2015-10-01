@@ -86,6 +86,7 @@ sub Copy {
   };
   $app->{main}->{list}->Check($index+1, $checked);
   $app->modified(1);
+  $clone->_update('fft');
   $app->{main}->status("Copied ".$data->name);
   $app->heap_check(0);
   return $clone;

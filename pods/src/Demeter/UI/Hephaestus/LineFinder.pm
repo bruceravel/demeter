@@ -80,7 +80,7 @@ sub new {
   $self->{lines}->SetItemState($start, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   $self->{lines}->EnsureVisible($start);
   $self->{linesboxsizer} -> Add($self->{lines}, 1, wxGROW|wxALL, 0);
-  $hbox -> Add($self->{linesboxsizer}, 5, wxGROW|wxALL, 5);
+  $hbox -> Add($self->{linesboxsizer}, 7, wxGROW|wxALL, 5);
 
   $self->{targetbox} = Wx::StaticBox->new($self, -1, 'Target energy', wxDefaultPosition, wxDefaultSize);
   $self->{targetboxsizer} = Wx::StaticBoxSizer->new( $self->{targetbox}, wxVERTICAL );

@@ -90,11 +90,12 @@ sub group {
   my $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
   $type_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1 if Demeter->is_windows;
   $this->{type} = Wx::HyperlinkCtrl -> new($this, -1, q{}, q{},
-					   wxDefaultPosition, [95,18], wxNO_BORDER);
+					   wxDefaultPosition, [115,18], wxNO_BORDER);
   $this->{type}-> SetFont(Wx::Font->new( $type_font_size, wxNORMAL, wxNORMAL, wxNORMAL, 0, "", ));
   $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
   $hbox -> Add(1,1,1);
-  $hbox -> Add($this->{type}, 0, wxTOP, (Demeter->is_windows) ? 2 : 4);
+  #$hbox -> Add($this->{type}, 0, wxTOP, (Demeter->is_windows) ? 2 : 4);
+  $hbox -> Add($this->{type}, 0, wxTOP|wxEXPAND, 0);
   $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
   EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
   $app->mouseover($this->{freeze}, "Freeze all parameter values for this group.  Do this when you want to avoid accidentally changing parameter values.");
@@ -174,67 +175,39 @@ sub bkg {
   my $backgroundboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
   $backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
   $this->{sizer}  -> Add($backgroundboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 5);
-  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Background removal and normalization parameters');
+  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Normalization and background removal parameters');
   $this->{background_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $backgroundboxsizer -> Add($this->{background_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 
   EVT_RIGHT_DOWN($this->{background_group_label}, sub{ContextMenu(@_, $app, 'bkg')});
   EVT_MENU($this->{background_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bkg') });
 
-  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+  my $e0sizer = Wx::BoxSizer->new( wxHORIZONTAL );
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
   $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1], wxTE_PROCESS_ENTER);
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
-  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  #$this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
-  $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
-  $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
-  $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
-  $gbs -> Add($this->{bkg_e0_pluck},   Wx::GBPosition->new(0,2));
-  $gbs -> Add($this->{bkg_rbkg_label}, Wx::GBPosition->new(0,3));
-  $gbs -> Add($this->{bkg_rbkg},       Wx::GBPosition->new(0,4));
-  $gbs -> Add($this->{bkg_rbkg_pluck}, Wx::GBPosition->new(0,5));
-  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
-  $this->{bkg_flatten}->SetValue(1);
-  push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
-  EVT_SPIN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_)});
-  $this->{bkg_rbkg_pluck}->SetRange(-1,1);
-  $this->{bkg_rbkg_pluck}->SetValue(0);
-  $this->{last_spin} = DateTime->now(time_zone => 'floating');  # see comment in spin_rbkg
-  $app->mouseover($this->{bkg_rbkg_pluck}, "Increment or deincrement Rbkg and plot immediately.  (You must wait 2 seconds between clicks!)");
-
-  ## kweight, step, fix step
-  $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
-  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 0, 3);
-  $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(1,3));
-  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(1,4));
-  push @bkg_parameters, qw(bkg_kw bkg_step bkg_fixstep);
-
-  ## algorithm and normalization order
-  $this->{bkg_algorithm_label} = Wx::StaticText  -> new($this, -1, "Algorithm");
-  $this->{bkg_algorithm}       = Wx::Choice      -> new($this, -1, wxDefaultPosition, wxDefaultSize,
-							['Autobk', 'CLnorm']);
+  $e0sizer -> Add($this->{bkg_e0_label},   0, wxTOP, 3);
+  $e0sizer -> Add($this->{bkg_e0},         0, wxLEFT, 5);
+  $e0sizer -> Add($this->{bkg_e0_pluck},   0, wxLEFT, 5);
   $this->{bkg_nnorm_label}     = Wx::StaticText  -> new($this, -1, "Normalization order");
   $this->{bkg_nnorm_1}         = Wx::RadioButton -> new($this, -1, '1', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   $this->{bkg_nnorm_2}         = Wx::RadioButton -> new($this, -1, '2');
   $this->{bkg_nnorm_3}         = Wx::RadioButton -> new($this, -1, '3');
-  $gbs -> Add($this->{bkg_algorithm_label}, Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{bkg_algorithm},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_nnorm_label},     Wx::GBPosition->new(1,5), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_nnorm_1},         Wx::GBPosition->new(1,7));
-  $gbs -> Add($this->{bkg_nnorm_2},         Wx::GBPosition->new(1,8));
-  $gbs -> Add($this->{bkg_nnorm_3},         Wx::GBPosition->new(1,9));
-  $this->{bkg_algorithm} -> SetSelection(0);
+  $e0sizer -> Add(1,1,3);
+  $e0sizer -> Add($this->{bkg_nnorm_label},     0, wxLEFT, 5);
+  $e0sizer -> Add($this->{bkg_nnorm_1},         0, wxLEFT, 5);
+  $e0sizer -> Add($this->{bkg_nnorm_2},         0, wxLEFT, 5);
+  $e0sizer -> Add($this->{bkg_nnorm_3},         0, wxLEFT, 5);
+  $e0sizer -> Add(1,1,1);
   $this->{bkg_nnorm_3}   -> SetValue(1);
-  push @bkg_parameters, qw(bkg_algorithm bkg_nnorm bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3);
+  push @bkg_parameters, qw(bkg_nnorm bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3); # bkg_algorithm 
 
-  $backgroundboxsizer -> Add($gbs, 0, wxLEFT, 5);
 
-  $gbs = Wx::GridBagSizer->new( 5, 5 );
+  $backgroundboxsizer -> Add($e0sizer, 0, wxEXPAND|wxBOTTOM|wxLEFT, 5);
+
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   ## pre edge line
   $this->{bkg_pre1_label} = Wx::StaticText   -> new($this, -1, "Pre-edge range");
@@ -251,7 +224,7 @@ sub bkg {
   $gbs -> Add($this->{bkg_pre2_pluck}, Wx::GBPosition->new(0,5));
   push @bkg_parameters, qw(bkg_pre1 bkg_pre2);
 
-  ## noirmalization line
+  ## normalization line
   $this->{bkg_nor1_label} = Wx::StaticText   -> new($this, -1, "Normalization range");
   $this->{bkg_nor1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_nor2_label} = Wx::StaticText   -> new($this, -1, "to");
@@ -266,17 +239,63 @@ sub bkg {
   $gbs -> Add($this->{bkg_nor2_pluck}, Wx::GBPosition->new(1,5));
   push @bkg_parameters, qw(bkg_nor1 bkg_nor2);
 
+  $this->{bkg_flatten}    = Wx::CheckBox -> new($this, -1, q{Flatten normalized data});
+  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
+  $this->{bkg_flatten}->SetValue(1);
+  push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
+
+  ## algorithm and normalization order
+  #$this->{bkg_algorithm_label} = Wx::StaticText  -> new($this, -1, "Algorithm");
+  #$this->{bkg_algorithm}       = Wx::Choice      -> new($this, -1, wxDefaultPosition, wxDefaultSize,
+  #							['Autobk', 'CLnorm']);
+  #$gbs -> Add($this->{bkg_algorithm_label}, Wx::GBPosition->new(1,0));
+  #$gbs -> Add($this->{bkg_algorithm},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,2));
+  #$this->{bkg_algorithm} -> SetSelection(0);
+
+
   $this->{bkg_step_label} = Wx::StaticText -> new($this, -1, "Edge step");
   $this->{bkg_step}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix});
-  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(0,7));
-  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(0,8));
-  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(0,9));
+  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(1,6));
+  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(1,7));
+  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(1,8));
+
+
+  $backgroundboxsizer -> Add($gbs, 0, wxLEFT, 5);
+
+  #$backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL), 0, wxALIGN_CENTRE_HORIZONTAL|wxTOP|wxBOTTOM, 10);
+  $backgroundboxsizer -> Add(1,20,0);
+
+  $gbs = Wx::GridBagSizer->new( 5, 5 );
+
+  $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
+  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  #$this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
+  $gbs -> Add($this->{bkg_rbkg_label}, Wx::GBPosition->new(0,0));
+  $gbs -> Add($this->{bkg_rbkg},       Wx::GBPosition->new(0,1));
+  $gbs -> Add($this->{bkg_rbkg_pluck}, Wx::GBPosition->new(0,2));
+  $this->{bkg_rbkg_pluck}->SetRange(-1,1);
+  $this->{bkg_rbkg_pluck}->SetValue(0);
+  $this->{last_spin} = DateTime->now(time_zone => 'floating');  # see comment in spin_rbkg
+  $app->mouseover($this->{bkg_rbkg_pluck}, "Increment or deincrement Rbkg and plot immediately.  (You must wait 2 seconds between clicks!)");
+  push @bkg_parameters, qw(bkg_rbkg);
+  EVT_SPIN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_)});
+  ## kweight, step, fix step
+  $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
+  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 0, 3);
+  $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(0,3), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(0,5));
+  push @bkg_parameters, qw(bkg_kw bkg_step bkg_fixstep);
+
+
+
+
 
   my $clampbox       = Wx::StaticBox->new($this, -1, 'Spline clamps', wxDefaultPosition, wxDefaultSize);
   my $clampboxsizer  = Wx::StaticBoxSizer->new( $clampbox, wxVERTICAL );
   $clampbox         -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
-  $gbs -> Add($clampboxsizer, Wx::GBPosition->new(1,7), Wx::GBSpan->new(3,3));
+  $gbs -> Add($clampboxsizer, Wx::GBPosition->new(0,7), Wx::GBSpan->new(3,3));
   my $cgbs = Wx::GridBagSizer->new( 5, 5 );
   $clampboxsizer -> Add($cgbs, 0, wxALL, 5);
   $this->{clampbox}  = $clampbox;
@@ -302,12 +321,12 @@ sub bkg {
   $this->{bkg_spl2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $gbs -> Add($this->{bkg_spl1_label}, Wx::GBPosition->new(2,0));
-  $gbs -> Add($this->{bkg_spl1},       Wx::GBPosition->new(2,1));
-  $gbs -> Add($this->{bkg_spl1_pluck}, Wx::GBPosition->new(2,2));
-  $gbs -> Add($this->{bkg_spl2_label}, Wx::GBPosition->new(2,3));
-  $gbs -> Add($this->{bkg_spl2},       Wx::GBPosition->new(2,4));
-  $gbs -> Add($this->{bkg_spl2_pluck}, Wx::GBPosition->new(2,5));
+  $gbs -> Add($this->{bkg_spl1_label}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_spl1},       Wx::GBPosition->new(1,2));
+  $gbs -> Add($this->{bkg_spl1_pluck}, Wx::GBPosition->new(1,3));
+  $gbs -> Add($this->{bkg_spl2_label}, Wx::GBPosition->new(1,4));
+  $gbs -> Add($this->{bkg_spl2},       Wx::GBPosition->new(1,5));
+  $gbs -> Add($this->{bkg_spl2_pluck}, Wx::GBPosition->new(1,6));
   push @bkg_parameters, qw(bkg_spl1 bkg_spl2);
   EVT_TEXT($this, $this->{bkg_spl1}, sub{OnSpl(@_, $app, 'bkg_spl1')});
   EVT_TEXT($this, $this->{bkg_spl2}, sub{OnSpl(@_, $app, 'bkg_spl2')});
@@ -323,30 +342,37 @@ sub bkg {
   $this->{bkg_spl2e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl1e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $gbs -> Add($this->{bkg_spl1e_label}, Wx::GBPosition->new(3,0));
-  $gbs -> Add($this->{bkg_spl1e},       Wx::GBPosition->new(3,1));
-  $gbs -> Add($this->{bkg_spl1e_pluck}, Wx::GBPosition->new(3,2));
-  $gbs -> Add($this->{bkg_spl2e_label}, Wx::GBPosition->new(3,3));
-  $gbs -> Add($this->{bkg_spl2e},       Wx::GBPosition->new(3,4));
-  $gbs -> Add($this->{bkg_spl2e_pluck}, Wx::GBPosition->new(3,5));
+  $gbs -> Add($this->{bkg_spl1e_label}, Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_spl1e},       Wx::GBPosition->new(2,2));
+  $gbs -> Add($this->{bkg_spl1e_pluck}, Wx::GBPosition->new(2,3));
+  $gbs -> Add($this->{bkg_spl2e_label}, Wx::GBPosition->new(2,4));
+  $gbs -> Add($this->{bkg_spl2e},       Wx::GBPosition->new(2,5));
+  $gbs -> Add($this->{bkg_spl2e_pluck}, Wx::GBPosition->new(2,6));
   push @bkg_parameters, qw(bkg_spl1e bkg_spl2e); # chainlink);
   EVT_TEXT($this, $this->{bkg_spl1e}, sub{OnSpl(@_, $app, 'bkg_spl1e')});
   EVT_TEXT($this, $this->{bkg_spl2e}, sub{OnSpl(@_, $app, 'bkg_spl2e')});
 
-  $backgroundboxsizer -> Add($gbs, 0, wxLEFT|wxTOP, 5);
+  $this->{bkg_funnorm}    = Wx::CheckBox -> new($this, -1, q{Energy-dependent normalization});
+  $gbs -> Add($this->{bkg_funnorm},    Wx::GBPosition->new(3,5), Wx::GBSpan->new(1,4));
+  #$this->{bkg_funnorm}->Enable(0);
+  #$this->{bkg_funnorm}->Enable(1) if Demeter->co->default('athena', 'show_funnorm');
+  $this->{bkg_funnorm}->SetValue(0);
+  push @bkg_parameters, qw(bkg_funnorm);
 
   ## standard and clamps
-  my $abox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{box_with_standard} = $abox;
+  #my $abox = Wx::BoxSizer->new( wxHORIZONTAL );
+  #$this->{box_with_standard} = $abox;
   $this->{bkg_stan_label}   = Wx::StaticText -> new($this, -1, "Standard");
   #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
   $this->{bkg_stan}         = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
-  $abox -> Add($this->{bkg_stan_label},   0, wxBOTTOM|wxRIGHT,   5);
-  $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 10);
+  $gbs -> Add($this->{bkg_stan_label}, Wx::GBPosition->new(3,0) );
+  $gbs -> Add($this->{bkg_stan},       Wx::GBPosition->new(3,1), Wx::GBSpan->new(1,4) );
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
   $app -> mouseover($this->{bkg_stan}, "Perform background removal using the selected data standard.");
 
-  $backgroundboxsizer -> Add($abox, 0, wxLEFT, 5);
+  $backgroundboxsizer -> Add($gbs, 0, wxLEFT|wxTOP, 5);
+
+  #$backgroundboxsizer -> Add($abox, 0, wxLEFT, 5);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
@@ -362,7 +388,7 @@ sub bkg {
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
-  foreach my $x (qw(bkg_clamp1 bkg_clamp2 bkg_algorithm)) {
+  foreach my $x (qw(bkg_clamp1 bkg_clamp2)) {  #  bkg_algorithm
     EVT_CHOICE($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
@@ -371,10 +397,10 @@ sub bkg {
   foreach my $x (qw(bkg_e0 bkg_rbkg bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e)) {
     EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $app, $x)})
   };
-  foreach my $x (qw(bkg_flatten bkg_fixstep)) {
+  foreach my $x (qw(bkg_flatten bkg_funnorm bkg_fixstep)) {
     EVT_CHECKBOX($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
-    #EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
-    #EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
+    EVT_RIGHT_DOWN($this->{$x}, sub{ContextMenu(@_, $app, $x)});
+    EVT_MENU($this->{$x}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
   foreach my $x (qw(bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3)) {
     EVT_RADIOBUTTON($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
@@ -622,7 +648,7 @@ sub mode {
   ## XANES data
   } elsif ($group->datatype eq 'xanes') {
     foreach my $w (@bkg_parameters, 'background_group_label') {
-      if ($w =~ m{spl|chain|clampbox|bkg_(rbkg|kw)}) {
+      if ($w =~ m{spl|chain|clampbox|bkg_(rbkg|kw|stan|funnorm|clamp)}) {
 	$this->set_widget_state($w, 0);
       } else {
 	$this->set_widget_state($w, $enabled);
@@ -647,12 +673,13 @@ sub mode {
     foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
+    $this->set_widget_state('bkg_funnorm', Demeter->co->default('athena', 'show_funnorm'));
     $this->set_widget_state('freeze', 1);
   };
 
-  foreach my $w (qw(bkg_algorithm)) {
-    $this->set_widget_state($w, 0);
-  };
+  #foreach my $w (qw(bkg_algorithm)) {
+  #  $this->set_widget_state($w, 0);
+  #};
 
   my $is_merge = ($group) ? $group->is_merge : 0;
 
@@ -834,7 +861,7 @@ sub OnParameter {
             : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
             : (ref($widget) =~ m{GroupList}) ? scalar $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
             : ($which eq 'bkg_z')            ? interpret_bkg_z($widget->GetValue)
-            : ($which =~ m{nnorm})           ? interpret_nnorm($app)
+            : ($which =~ m{(?<!fu)nnorm})    ? interpret_nnorm($app) # catch bkg_nnorm, but not bkg_funnorm
 	    :                                  $widget->GetValue;
   $value = 0 if ((not looks_like_number($value)) and ($which !~ m{window}));
   if ($which !~ m{nnorm}) {
@@ -869,6 +896,9 @@ sub OnParameter {
 
   } elsif ($which =~ m{nnorm_(\d)}) { # norm order
     $data->bkg_nnorm($1);
+
+  } elsif ($which =~ m{funnorm}) { # functional normalization
+    $data->bkg_funnorm($value);
 
   } elsif ($which !~ m{fixstep}) { # toggle
     $data->$which($value);
@@ -1089,7 +1119,7 @@ sub ContextMenu {
   ($text = "group parameters")  if ($text =~ m{currentgroup});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
-  if ($text ne 'Edge step') {
+  if (none {$text eq $_} ('Edge step', 'Energy-dependent normalization', 'fix', 'Flatten normalized data')) {
     $menu->AppendSeparator;
     $menu->Append($TO_DEFAULT, "Set $text to its default value");
   };

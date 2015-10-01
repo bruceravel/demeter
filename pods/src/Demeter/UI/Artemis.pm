@@ -1619,7 +1619,7 @@ sub status {
   $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
 #  Demeter->trace;
-  $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
+  $Demeter::UI::Artemis::frames{Status}->put_text($text, $type) if ($text !~ m{\A\s*\z});
 };
 
 

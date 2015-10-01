@@ -330,7 +330,7 @@ has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->d
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
-has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "fnorm")   || 0},
+has 'bkg_funnorm' => (is => 'rw', isa => 'Bool',    default => 0,
 		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
@@ -1373,9 +1373,22 @@ the C<normalize> method.  (Larch only)
 
 When true, a plot of normalized mu(E) data will be flattened.
 
-=item C<bkg_fnorm> (boolean) I<[0]>
+=item C<bkg_funnorm> (boolean) I<[0]>
 
-When true, a functional normalization is performed.  I<not yet implemented>
+When true, a functional normalization is performed to approximately
+remove the effect of quickly varying I0 signal on fluorescence EXAFS.
+
+Note that has a bad impact on the display of mu(E).  The
+energy-dependent normalization is made by dividing (post(E)-pre(E))
+from mu(E) right doing the background removal.  Thus the background
+function is computed from something different from mu(E).  This turns
+out to be hard to keep track of when using Demeter's plotting system.
+Athena "solves" this by keeping track of what is being plotted.  A
+plot in k, R, or q uses the corrected mu(E).  A plot in E is made by
+temporarily turning off the energy-dependent normalization flag,
+re-evaluating the background function, then turning the flag back on.
+This is a bit of an efficiency hit.  And the plot in E does not quite
+correspond to the plot in k.  Awkward!
 
 =item C<bkg_nnorm> (integer) I<[3]>
 
