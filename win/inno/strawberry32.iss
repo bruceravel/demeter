@@ -23,7 +23,8 @@
 AppId=Strawberry_Perl_with_Demeter
 AppName={#Demeter} {#MyAppVersion}
 AppVersion={#MyAppVersion} ({#Bits})
-DefaultDirName=\strawberry
+DefaultDirName={userappdata}\DemeterPerl
+UsePreviousAppDir=no
 DefaultGroupName={#Demeter}
 ; UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
