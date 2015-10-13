@@ -32,6 +32,7 @@ my $header_color = Wx::Colour->new(68, 31, 156);
 my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       Formulas     => 'compute total cross sections of materials',
 	       Data	    => 'periodic table of physical and chemical data',
+	       IonicRadii   => 'Shannon ionic radii of the elements',
 	       Ion	    => 'optimize ion chamber gases',
 	       Transitions  => 'electronic transitions for fluorescence lines',
 	       EdgeFinder   => 'ordered list of absorption edge energies',
@@ -44,6 +45,7 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 my %label_of = (Absorption   => ' Absorption ',
 		Formulas     => '  Formulas  ',
 		Data	     => '    Data    ',
+		IonicRadii   => 'Ionic Radii ',
 		Ion	     => 'Ion chambers',
 		Transitions  => ' Transitions',
 		EdgeFinder   => ' Edge finder',
@@ -57,7 +59,7 @@ my $icon_dimension = 30;
 
 use vars qw($periodic_table);
 
-my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
+my @utilities = qw(Absorption Formulas Ion Data IonicRadii Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
 #my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
 
 sub new {
@@ -69,7 +71,7 @@ sub new {
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT|wxTB_NO_TOOLTIPS );
   my $statusbar = $self->CreateStatusBar;
   $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;
@@ -218,6 +220,7 @@ const my $ABS	    => Wx::NewId();
 const my $FORM	    => Wx::NewId();
 const my $ION	    => Wx::NewId();
 const my $DATA	    => Wx::NewId();
+const my $RADII	    => Wx::NewId();
 const my $TRAN	    => Wx::NewId();
 const my $EDGE	    => Wx::NewId();
 const my $LINE	    => Wx::NewId();
@@ -246,7 +249,7 @@ sub OnInit {
   Demeter -> mo -> identity('Hephaestus');
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
-  foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
+  foreach my $m (qw(Absorption Formulas Ion Data IonicRadii Transitions EdgeFinder LineFinder
 		    Standards F1F2 Config)) { # Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
@@ -269,11 +272,12 @@ sub OnInit {
   $file->Append( $FORM,     "F&ormulas\tCtrl+2" );
   $file->Append( $ION,      "&Ion Chambers\tCtrl+3" );
   $file->Append( $DATA,     "&Data\tCtrl+4" );
-  $file->Append( $TRAN,     "&Transitions\tCtrl+5" );
-  $file->Append( $EDGE,     "&Edge Finder\tCtrl+6" );
-  $file->Append( $LINE,     "&Line Finder\tCtrl+7" );
-  $file->Append( $STAN,     "&Standards\tCtrl+8" );
-  $file->Append( $FPPP,     "&F' and F\"\tCtrl+9" );
+  $file->Append( $RADII,    "&Ionic radii\tCtrl+5" );
+  $file->Append( $TRAN,     "&Transitions\tCtrl+6" );
+  $file->Append( $EDGE,     "&Edge Finder\tCtrl+7" );
+  $file->Append( $LINE,     "&Line Finder\tCtrl+8" );
+  $file->Append( $STAN,     "&Standards\tCtrl+9" );
+  $file->Append( $FPPP,     "&F' and F\"\tCtrl+f" );
   $file->Append( $CONFIG,   "&Configure\tCtrl+c" );
   ##$file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
   $file->AppendSeparator;
@@ -312,13 +316,14 @@ sub OnInit {
   EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
   EVT_MENU( $frame, $ION,      sub{shift->{book}->SetSelection(2)});
   EVT_MENU( $frame, $DATA,     sub{shift->{book}->SetSelection(3)});
-  EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(4)});
-  EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(5)});
-  EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(6)});
-  EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(7)});
-  EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(8)});
-  EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
-  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
+  EVT_MENU( $frame, $RADII,    sub{shift->{book}->SetSelection(4)});
+  EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(5)});
+  EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(6)});
+  EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(7)});
+  EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(8)});
+  EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(9)});
+  EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(10)});
+  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(11)});
   EVT_MENU( $frame, $DOCUMENT, \&document);
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
@@ -389,6 +394,7 @@ sub on_about {
 			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/\n",
+			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551) and David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)"
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
@@ -420,6 +426,10 @@ http://alpha.asi.ualberta.com/ProjectAreas/XraySpec/xrayproj.htm
 The standards icon is a photo of the EXAFS Materials
 box of foils swiped from the APS XSD website.
 http://www.aps.anl.gov/Xray_Science_Division/Beamline_Technical_Support/Equipment_Pool/Equipment_Information/3d_Metal_Foil_Set/
+
+The Ionic Radii icon is cropped from an image at
+from Wikimedia
+https://commons.wikimedia.org/wiki/File:Atomic_%26_ionic_radii.svg
 EOH
   ;
   $info -> AddArtist($artwork);
