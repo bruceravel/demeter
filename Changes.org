@@ -30,6 +30,8 @@
 *** Hephaestus
    - configurable energy width used for computing edge steps.  [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-September/012762.html][see
      comment from Matthew Marcus]] {/pre3/}
+   - added tool for looking at Shannon atomic radii using json version
+     of [[http://v.web.umkc.edu/vanhornj/Radii.txt][David van Horn's]] compilation of the [[http://dx.doi.org/10.1107/S0567739476001551][Shannon data]]
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI
