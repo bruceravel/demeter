@@ -272,12 +272,11 @@ sub OnInit {
   $file->Append( $FORM,     "F&ormulas\tCtrl+2" );
   $file->Append( $ION,      "&Ion Chambers\tCtrl+3" );
   $file->Append( $DATA,     "&Data\tCtrl+4" );
-  $file->Append( $RADII,    "&Ionic radii\tCtrl+5" );
-  $file->Append( $TRAN,     "&Transitions\tCtrl+6" );
-  $file->Append( $EDGE,     "&Edge Finder\tCtrl+7" );
-  $file->Append( $LINE,     "&Line Finder\tCtrl+8" );
-  $file->Append( $STAN,     "&Standards\tCtrl+9" );
-  $file->Append( $FPPP,     "&F' and F\"\tCtrl+f" );
+  $file->Append( $TRAN,     "&Transitions\tCtrl+5" );
+  $file->Append( $EDGE,     "&Edge Finder\tCtrl+6" );
+  $file->Append( $LINE,     "&Line Finder\tCtrl+7" );
+  $file->Append( $STAN,     "&Standards\tCtrl+8" );
+  $file->Append( $FPPP,     "&F' and F\"\tCtrl+9" );
   $file->Append( $CONFIG,   "&Configure\tCtrl+c" );
   ##$file->Append( $DOCUMENT, "Docu&ment\tCtrl+m" );
   $file->AppendSeparator;
@@ -316,14 +315,14 @@ sub OnInit {
   EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
   EVT_MENU( $frame, $ION,      sub{shift->{book}->SetSelection(2)});
   EVT_MENU( $frame, $DATA,     sub{shift->{book}->SetSelection(3)});
-  EVT_MENU( $frame, $RADII,    sub{shift->{book}->SetSelection(4)});
-  EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(5)});
-  EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(6)});
-  EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(7)});
-  EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(8)});
-  EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(9)});
-  EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(10)});
-  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(11)});
+  #EVT_MENU( $frame, $RADII,    sub{shift->{book}->SetSelection(4)});
+  EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(4)});
+  EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(5)});
+  EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(6)});
+  EVT_MENU( $frame, $STAN,     sub{shift->{book}->SetSelection(7)});
+  EVT_MENU( $frame, $FPPP,     sub{shift->{book}->SetSelection(8)});
+  EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
+  #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, $DOCUMENT, \&document);
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
@@ -394,7 +393,8 @@ sub on_about {
 			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/\n",
-			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)"
+			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)",
+			 "Neutron scattering lengths and cross sections from\nNeutron News, Vol. 3, No. 3, 1992, pp. 29-37 and\nhttps://www.ncnr.nist.gov/resources/n-lengths/list.html"
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'

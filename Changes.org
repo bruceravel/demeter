@@ -33,6 +33,8 @@
    - on Data tool, added Shannon atomic radii using json version of
      [[http://v.web.umkc.edu/vanhornj/Radii.txt][David van Horn's]] compilation of the [[http://dx.doi.org/10.1107/S0567739476001551][Shannon data]] (thanks to Neil
      Hyatt)
+   - On Data tool, added neutron scattering lengths and cross sections
+     from [[http://dx.doi.org/10.1080/10448639208218770][V.F. Sears, Neutron News, 3:3 (1992) pp. 26-37]] and [[https://www.ncnr.nist.gov/resources/n-lengths/list.html][NIST NCNR]].
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI

@@ -1,4 +1,4 @@
-[% META title = 'Hephaestus'
+% META title = 'Hephaestus'
         about = 'A Periodic Table for the X-ray Absorption Spectroscopist'
 	chapter = 1
 	nosubpages = 1
@@ -413,7 +413,8 @@ Beneath the periodic table is a tabbed notebook.  Each tab contains a
 different data table.  The [% INCLUDE font/quote a="Elemental data"%]
 tab contains a variety of general information.  The 
 [% INCLUDE font/quote a="Ionic radii"%] tab contains the Shannon ionic
-radii.
+radii.  The [% INCLUDE font/quote a="Neutron data"%] tab
+conatins data on scattering lengths and cross sections for the major isotopes.
 [% END %]
 
 [% WRAPPER figure file="Hephaestus_data.png" %]
@@ -444,8 +445,25 @@ link="http://v.web.umkc.edu/vanhornj/shannonradii.htm"
 text="Electronic Table of Shannon Ionic Radii, J. David Van Horn,
 2001, downloaded 10/13/2015." %]
 [%END%]
+[% WRAPPER html/dt dt="Neutron data" %]
+Source is
+[% INCLUDE citation
+      author = "V.F. Sears"
+      journal = "Neutron News"
+      volume = 3
+      number = 3
+      pages = "26-37"
+      year = 1992
+      doi = "10.1080/10448639208218770" %]
+and [% INCLUDE html/link link="https://www.ncnr.nist.gov/resources/n-lengths/list.html"%].
+Scattering lengths are in femtometers, cross sections are in barns
+(10E-24 cm), scattering lengths and cross sections in parenthesis are
+uncertainties, and for radioisotopes the half-life is given instead of
+the natural abundance.
 [%END%]
 [%END%]
+[%END%]
+
 
 [% INCLUDE section label="Transitions" %]
 

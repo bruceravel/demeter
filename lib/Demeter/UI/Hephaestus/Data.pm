@@ -37,6 +37,9 @@ my %kalzium = %$rkalzium;
 my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 								 'Hephaestus', 'data', "ionic_radii.dem")));
 
+my $neutron_xs = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
+								'Hephaestus', 'data', "neutrons.dem")));
+
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
@@ -119,10 +122,25 @@ sub new {
   $panel->SetSizerAndFit($box);
 
   $self->{tabs} -> AddPage($panel, 'Ionic Radii', 0);
-  
-  # my $this_width = ($panel->GetSizeWH)[0];
-  # my $this_height = ($panel->GetSizeWH)[1];
-  # Demeter->pjoin($this_width, $this_height);
+
+  ## -------- Neutron cross sections
+  $panel = Wx::Panel->new($self->{tabs}, -1);
+  $box = Wx::BoxSizer->new( wxVERTICAL );
+
+  $self->{neutrons} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+  $self->{neutrons}->InsertColumn( 0, "Isotope",   wxLIST_FORMAT_LEFT, 70 );
+  $self->{neutrons}->InsertColumn( 1, "Abundance", wxLIST_FORMAT_LEFT, 100 );
+  $self->{neutrons}->InsertColumn( 2, "Coh b",     wxLIST_FORMAT_LEFT, 75 );
+  $self->{neutrons}->InsertColumn( 3, "Inc b",     wxLIST_FORMAT_LEFT, 100 );
+  $self->{neutrons}->InsertColumn( 4, "Coh xs",    wxLIST_FORMAT_LEFT, 70 );
+  $self->{neutrons}->InsertColumn( 5, "Inc xs",    wxLIST_FORMAT_LEFT, 70 );
+  $self->{neutrons}->InsertColumn( 6, "Scatt xs",  wxLIST_FORMAT_LEFT, 70 );
+  $self->{neutrons}->InsertColumn( 7, "Abs xs",    wxLIST_FORMAT_LEFT, 90 );
+  $box -> Add($self->{neutrons}, 1, wxEXPAND|wxALL, 5);
+
+  $panel->SetSizerAndFit($box);
+
+  $self->{tabs} -> AddPage($panel, 'Neutron data', 0);
 
   return $self;
 };
@@ -133,6 +151,8 @@ sub multiplexer {
     $self->data_get_data($el);
   } elsif ($self->{tabs}->GetSelection == 1) {
     $self->ionicradii_get_data($el);
+  } elsif ($self->{tabs}->GetSelection == 2) {
+    $self->neutrons_get_data($el);
   };
 };
 
@@ -184,6 +204,35 @@ sub ionicradii_get_data {
   return 1;
 };
 
+sub neutrons_get_data {
+  my ($self, $el) = @_;
+  my $hash = $neutron_xs->{$el};
+  $self->{neutrons}->DeleteAllItems;
+  return if not $hash;
+
+  my $idx = $self->{neutrons}->InsertStringItem(0, join(" ", $el, 'avg'));
+  $self->{neutrons}->SetItem( $idx, 1, $hash->{avg}->{concentration});
+  $self->{neutrons}->SetItem( $idx, 2, $hash->{avg}->{coherent_length});
+  $self->{neutrons}->SetItem( $idx, 3, $hash->{avg}->{incoherent_length});
+  $self->{neutrons}->SetItem( $idx, 4, $hash->{avg}->{coherent_cross_section});
+  $self->{neutrons}->SetItem( $idx, 5, $hash->{avg}->{incoherent_cross_section});
+  $self->{neutrons}->SetItem( $idx, 6, $hash->{avg}->{scattering_cross_section});
+  $self->{neutrons}->SetItem( $idx, 7, $hash->{avg}->{absolute_cross_section});
+
+  my $row = 1;
+  foreach my $key (sort keys %$hash) {
+    next if ($key eq 'avg');
+    my $idx = $self->{neutrons}->InsertStringItem($row, join(" ", $el, $key));
+    $self->{neutrons}->SetItem( $idx, 1, $hash->{$key}->{concentration});
+    $self->{neutrons}->SetItem( $idx, 2, $hash->{$key}->{coherent_length});
+    $self->{neutrons}->SetItem( $idx, 3, $hash->{$key}->{incoherent_length});
+    $self->{neutrons}->SetItem( $idx, 4, $hash->{$key}->{coherent_cross_section});
+    $self->{neutrons}->SetItem( $idx, 5, $hash->{$key}->{incoherent_cross_section});
+    $self->{neutrons}->SetItem( $idx, 6, $hash->{$key}->{scattering_cross_section});
+    $self->{neutrons}->SetItem( $idx, 7, $hash->{$key}->{absolute_cross_section});
+    ++$row;
+  };
+};
 
 sub unselect_data {
   my ($self, $event, $parent) = @_;
