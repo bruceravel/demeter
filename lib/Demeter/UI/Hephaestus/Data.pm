@@ -19,11 +19,13 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use JSON qw(decode_json);
 use Demeter::IniReader;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED);
+use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Demeter::UI::Wx::PeriodicTable;
 
@@ -32,13 +34,15 @@ my $rkalzium = Demeter::IniReader->read_file(File::Spec->catfile($Demeter::UI::H
 my %kalzium = %$rkalzium;
 #tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 #							      'Hephaestus', 'data', "kalziumrc.dem"));
+my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
+								 'Hephaestus', 'data', "ionic_radii.dem")));
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->data_get_data($_[0])}, $echoarea);
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->multiplexer($_[0])}, $echoarea);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -47,14 +51,23 @@ sub new {
 
   ## horizontal box for containing the tables of element data
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+
+
+
+  $vbox -> Add($hbox, 1, wxEXPAND|wxALL);
+  $self->{tabs}  = Wx::Notebook->new($self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+  $hbox -> Add($self->{tabs}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
+  $self -> SetSizerAndFit( $vbox );
+
   ## -------- Element data
-  $self->{databox} = Wx::StaticBox->new($self, -1, 'Element data', wxDefaultPosition, wxDefaultSize);
-  $self->{databoxsizer} = Wx::StaticBoxSizer->new( $self->{databox}, wxVERTICAL );
-  $self->{data} = Wx::ListCtrl->new($self, -1, wxDefaultPosition, [620,-1], wxLC_REPORT);
+  my $panel = Wx::Panel->new($self->{tabs}, -1);
+  my $box = Wx::BoxSizer->new( wxVERTICAL );
+
+  $self->{data} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
   $self->{data}->InsertColumn( 0, "Physical Properties", wxLIST_FORMAT_LEFT, 140 );
-  $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 160);
-  $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 140 );
-  $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 160 );
+  $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 170);
+  $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 150 );
+  $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 170 );
   my $i = 0;
   foreach my $row ('Name', 'Number', 'Symbol', 'Atomic Weight',
 		   'Atomic Radius', 'Mossbauer', q{}) {
@@ -72,16 +85,55 @@ sub new {
     $self->{data}->SetItem( $i++, 3, q{} );
     ##$self->{data}->SetItemFont( $idx, Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
-
-  $self->{databoxsizer} -> Add($self->{data}, 1, wxEXPAND|wxALL, 0);
-  $hbox -> Add($self->{databoxsizer}, 1, wxEXPAND|wxALL, 5);
   EVT_LIST_ITEM_SELECTED($self->{data}, $self->{data}, sub{unselect_data(@_, $self)});
 
-  ## finish up
-  $vbox -> Add($hbox, 1, wxALIGN_CENTER_HORIZONTAL|wxALL);
-  $self -> SetSizerAndFit( $vbox );
+  $box -> Add($self->{data}, 1, wxEXPAND|wxALL, 5);
+  $panel->SetSizerAndFit($box);
+
+  $self->{tabs} -> AddPage($panel, 'Elemental data', 1);
+
+  ## -------- Ioonic Radii
+  $panel = Wx::Panel->new($self->{tabs}, -1);
+  $box = Wx::BoxSizer->new( wxVERTICAL );
+
+  $self->{radii} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+  $self->{radii}->InsertColumn( 0, "Ionization", wxLIST_FORMAT_LEFT, 90 );
+  $self->{radii}->InsertColumn( 1, "Configuration", wxLIST_FORMAT_LEFT, 100 );
+  $self->{radii}->InsertColumn( 2, "Coordination #", wxLIST_FORMAT_LEFT, 105 );
+  $self->{radii}->InsertColumn( 3, "Spin state", wxLIST_FORMAT_LEFT, 75 );
+  $self->{radii}->InsertColumn( 4, "Crystal radius", wxLIST_FORMAT_LEFT, 100 );
+  $self->{radii}->InsertColumn( 5, "Ionic radius", wxLIST_FORMAT_LEFT, 100 );
+  $self->{radii}->InsertColumn( 6, "Notes", wxLIST_FORMAT_LEFT, 70 );
+  $box -> Add($self->{radii}, 1, wxEXPAND|wxALL, 5);
+
+  my $font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+
+  my $text = Wx::StaticText->new($panel, -1, 'Notes:  R=from r3 vs V plots,  C=calculated,  E=estimated,  ?=doubtful,  *=most reliable');
+  $text -> SetFont(Wx::Font->new( $font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
+  $box -> Add($text, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
+  $text = Wx::StaticText->new($panel, -1, '    M=from metallic oxides,  A=Ahrens (1952),  P=Pauling (1960)');
+  $text -> SetFont(Wx::Font->new( $font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
+  $box -> Add($text, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
+  $panel->SetSizerAndFit($box);
+
+  $self->{tabs} -> AddPage($panel, 'Ionic Radii', 0);
+  
+  # my $this_width = ($panel->GetSizeWH)[0];
+  # my $this_height = ($panel->GetSizeWH)[1];
+  # Demeter->pjoin($this_width, $this_height);
 
   return $self;
+};
+
+sub multiplexer {
+  my ($self, $el) = @_;
+  if ($self->{tabs}->GetSelection == 0) {
+    $self->data_get_data($el);
+  } elsif ($self->{tabs}->GetSelection == 1) {
+    $self->ionicradii_get_data($el);
+  };
 };
 
 sub data_get_data {
@@ -94,7 +146,7 @@ sub data_get_data {
   $self->{data}->SetItem(1, 1, $z);
   $self->{data}->SetItem(2, 1, get_symbol($el));
   $self->{data}->SetItem(3, 1, sprintf("%.3f amu",$kalzium{$z}{Weight}));
-  my $radius = ($kalzium{$z}{AR}) ? sprintf("%.3f Å",$kalzium{$z}{AR}/100) : q{};
+  my $radius = ($kalzium{$z}{AR}) ? sprintf("%.3f $ARING",$kalzium{$z}{AR}/100) : q{};
   $self->{data}->SetItem(4, 1, $radius);
   $self->{data}->SetItem(5, 1, $kalzium{$z}{Mossbauer} || q{});
 
@@ -111,6 +163,27 @@ sub data_get_data {
   my $second = ($kalzium{$z}{IE2}) ? sprintf("%s eV", $kalzium{$z}{IE2}) : q{};
   $self->{data}->SetItem(6, 3, $second);
 };
+
+sub ionicradii_get_data {
+  my ($self, $el) = @_;
+  my $z = get_Z($el);
+  my $row = 0;
+  $self->{radii}->DeleteAllItems;
+  foreach my $this (@$ionic_radii) {
+    if ($this->{element} eq $el) {
+      my $idx = $self->{radii}->InsertStringItem($row, join(" ", $this->{element}, $this->{ionization}));
+      $self->{radii}->SetItem( $idx, 1, $this->{coordination});
+      $self->{radii}->SetItem( $idx, 2, $this->{configuration});
+      $self->{radii}->SetItem( $idx, 3, ($this->{spin} eq 'HS') ? 'high' : ($this->{spin} eq 'LS') ? 'low' : '');
+      $self->{radii}->SetItem( $idx, 4, sprintf("%.3f $ARING", $this->{crystalradius}));
+      $self->{radii}->SetItem( $idx, 5, sprintf("%.3f $ARING", $this->{ionicradius}));
+      $self->{radii}->SetItem( $idx, 6, $this->{notes});
+      ++$row;
+    };
+  };
+  return 1;
+};
+
 
 sub unselect_data {
   my ($self, $event, $parent) = @_;

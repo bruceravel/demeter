@@ -30,8 +30,9 @@
 *** Hephaestus
    - configurable energy width used for computing edge steps.  [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-September/012762.html][see
      comment from Matthew Marcus]] {/pre3/}
-   - added tool for looking at Shannon atomic radii using json version
-     of [[http://v.web.umkc.edu/vanhornj/Radii.txt][David van Horn's]] compilation of the [[http://dx.doi.org/10.1107/S0567739476001551][Shannon data]]
+   - on Data tool, added Shannon atomic radii using json version of
+     [[http://v.web.umkc.edu/vanhornj/Radii.txt][David van Horn's]] compilation of the [[http://dx.doi.org/10.1107/S0567739476001551][Shannon data]] (thanks to Neil
+     Hyatt)
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI
@@ -40,9 +41,9 @@
      (thanks to Ian Godfrey)
    - use [[https://metacpan.org/pod/File::Slurper][File::Slurper]] instead of [[https://metacpan.org/pod/File::Slurp::Tiny][File::Slurp::Tiny]] in DemeterBuilder,
      see [[http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html][this]]
-   - implement a functional normalization for use in low energy
-     fluorescence data where I0 changes a lot over the course of the
-     scan.  this divides mu(E) by (post-pre) before removing
+   - implement a functional normalization for use in tender energy
+     fluorescence EXAFS data where I0 changes a lot over the course of
+     the scan.  this divides mu(E) by (post-pre) before removing
      background (thanks to Giuliana Aquilanti) {/pre3/}
    - Plucking now works with the qt terminal, although the first
      double click of the session will always fail to return something
@@ -50,7 +51,7 @@
 
 *** Windows
    - Handle path munging at the level of the .bat file header. take
-     care with relocation
+     care with relocation (thanks to Matt)
 
 ** 0.9.22   29 July      2015
 

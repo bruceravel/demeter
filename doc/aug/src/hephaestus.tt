@@ -407,12 +407,45 @@ The ion chambers tool.
 [% FILTER html_para %]
 This tool is used to display a number of useful physical and chemical
 properties of the elements.  Selecting an element from the periodic
-table will fill in the table with the data for that element.
+table will fill in a table with the data for that element.
+
+Beneath the periodic table is a tabbed notebook.  Each tab contains a
+different data table.  The [% INCLUDE font/quote a="Elemental data"%]
+tab contains a variety of general information.  The 
+[% INCLUDE font/quote a="Ionic radii"%] tab contains the Shannon ionic
+radii.
 [% END %]
 
 [% WRAPPER figure file="Hephaestus_data.png" %]
 The data tool.
 [% END %]
+
+[% FILTER html_para %]
+Data sources:
+[% WRAPPER html/list type='dl' %]
+[% WRAPPER html/dt dt="General data" %]
+Swiped from [% INCLUDE html/link link="http://edu.kde.org/kalzium/"%]
+[%END%]
+[% WRAPPER html/dt dt="Mossbauer data" %]
+List of Mossbauer actuve isotopes is from
+[% INCLUDE html/link link="http://mossbauer.org"%]
+[%END%]
+[% WRAPPER html/dt dt="Ionic radii" %]
+Ionic radii are from
+[% INCLUDE citation
+      author = "R.D. Shannon"
+      journal = "Acta Crystallographica A"
+      volume = 32
+      pages = "751-776"
+      year = 1976
+      doi = "10.1107/S0567739476001551" %]
+using a conversion to JSON of [% INCLUDE html/link
+link="http://v.web.umkc.edu/vanhornj/shannonradii.htm"
+text="Electronic Table of Shannon Ionic Radii, J. David Van Horn,
+2001, downloaded 10/13/2015." %]
+[%END%]
+[%END%]
+[%END%]
 
 [% INCLUDE section label="Transitions" %]
 

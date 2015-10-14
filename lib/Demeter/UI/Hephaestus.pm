@@ -59,7 +59,7 @@ my $icon_dimension = 30;
 
 use vars qw($periodic_table);
 
-my @utilities = qw(Absorption Formulas Ion Data IonicRadii Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
+my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
 #my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
 
 sub new {
@@ -394,7 +394,7 @@ sub on_about {
 			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/\n",
-			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551) and David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)"
+			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)"
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
@@ -426,16 +426,18 @@ http://alpha.asi.ualberta.com/ProjectAreas/XraySpec/xrayproj.htm
 The standards icon is a photo of the EXAFS Materials
 box of foils swiped from the APS XSD website.
 http://www.aps.anl.gov/Xray_Science_Division/Beamline_Technical_Support/Equipment_Pool/Equipment_Information/3d_Metal_Foil_Set/
-
-The Ionic Radii icon is cropped from an image at
-from Wikimedia
-https://commons.wikimedia.org/wiki/File:Atomic_%26_ionic_radii.svg
 EOH
   ;
   $info -> AddArtist($artwork);
 
   Wx::AboutBox( $info );
 }
+
+
+# The Ionic Radii icon is cropped from an image at
+# from Wikimedia
+# https://commons.wikimedia.org/wiki/File:Atomic_%26_ionic_radii.svg
+
 
 1;
 
