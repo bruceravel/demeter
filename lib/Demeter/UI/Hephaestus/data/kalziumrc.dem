@@ -2006,7 +2006,7 @@ IE=
 IE2=
 AR=
 Ox=+3,+4
-Mossbauer=Silent
+Mossbauer=
 
 [97]
 Name=Berkelium
@@ -2026,7 +2026,7 @@ IE=
 IE2=
 AR=
 Ox=+3,+4
-Mossbauer=Silent
+Mossbauer=
 
 [98]
 Name=Californium
@@ -2046,7 +2046,7 @@ IE=
 IE2=
 AR=
 Ox=+3,+4
-Mossbauer=Silent
+Mossbauer=
 
 [99]
 Name=Einsteinium
@@ -2066,7 +2066,7 @@ IE=
 IE2=
 AR=
 Ox=+2,+3
-Mossbauer=Silent
+Mossbauer=
 
 [100]
 Name=Fermium
@@ -2086,7 +2086,7 @@ IE=
 IE2=
 AR=
 Ox=+2,+3
-Mossbauer=Silent
+Mossbauer=
 
 [101]
 Name=Mendelevium
@@ -2106,7 +2106,7 @@ IE=
 IE2=
 AR=
 Ox=+2,+3
-Mossbauer=Silent
+Mossbauer=
 
 [102]
 Name=Nobelium
@@ -2126,7 +2126,7 @@ IE=
 IE2=
 AR=
 Ox=+2,+3
-Mossbauer=Silent
+Mossbauer=
 
 [103]
 Name=Lawrencium
@@ -2146,7 +2146,7 @@ IE=
 IE2=
 AR=
 Ox=+3
-Mossbauer=Silent
+Mossbauer=
 
 [104]
 Name=Rutherfordium
@@ -2166,7 +2166,7 @@ IE=
 IE2=
 AR=
 Ox=+3
-Mossbauer=Silent
+Mossbauer=
 
 [105]
 Name=Dubnium
@@ -2187,7 +2187,7 @@ IE2=
 AR=
 Orbits=Rn 5f14 6d3 7s2
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
 
 [106]
 Name=Seaborgium
@@ -2207,7 +2207,7 @@ IE=
 IE2=
 AR=
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
 
 [107]
 Name=Bohrium
@@ -2227,7 +2227,7 @@ IE=
 IE2=
 AR=
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
 
 [108]
 Name=Hassium
@@ -2247,7 +2247,7 @@ IE=
 IE2=
 AR=
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
 
 [109]
 Name=Meitnerium
@@ -2267,7 +2267,7 @@ IE=
 IE2=
 AR=
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
 
 [110]
 Name=Darmstadtium
@@ -2287,4 +2287,164 @@ IE=
 IE2=
 AR=
 Ox=k.A.
-Mossbauer=Silent
+Mossbauer=
+
+[111]
+Name=Roentgenium
+Symbol=Rg
+Weight=282
+Block=d
+acidbeh=0
+az=4
+date=1994
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[112]
+Name=Copernicium
+Symbol=Cn
+Weight=285
+Block=d
+acidbeh=0
+az=4
+date=1996
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[113]
+Name=Ununtrium
+Symbol=Uut
+Weight=286
+Block=d
+acidbeh=0
+az=4
+date=2003
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[114]
+Name=Flerovium
+Symbol=Fl
+Weight=289
+Block=d
+acidbeh=0
+az=4
+date=1999
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[115]
+Name=Ununpentium
+Symbol=Uup
+Weight=289
+Block=d
+acidbeh=0
+az=4
+date=2003
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[116]
+Name=Livermorium
+Symbol=Lv
+Weight=293
+Block=d
+acidbeh=0
+az=4
+date=2000
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[117]
+Name=Ununseptium
+Symbol=Uus
+Weight=294
+Block=d
+acidbeh=0
+az=4
+date=2010
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=
+
+[118]
+Name=Ununoctium
+Symbol=Uuo
+Weight=294
+Block=d
+acidbeh=0
+az=4
+date=2002
+biological=0
+Group=8
+EN=
+MP=
+BP=
+Density=
+IE= 
+IE2=
+AR=
+Ox=k.A.
+Mossbauer=

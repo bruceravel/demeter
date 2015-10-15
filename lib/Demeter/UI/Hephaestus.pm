@@ -392,7 +392,7 @@ sub on_about {
 			 "See the document for literature references\nfor the data resources.\n\n",
 			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
-			 "Mossbauer data comes from http://mossbauer.org/\n",
+			 "Mossbauer data comes from http://mossbauer.org/\n(which does not seem to be about Mossbauer spectroscopy anymore)",
 			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)",
 			 "Neutron scattering lengths and cross sections from\nNeutron News, Vol. 3, No. 3, 1992, pp. 29-37 and\nhttps://www.ncnr.nist.gov/resources/n-lengths/list.html"
 			] );

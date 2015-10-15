@@ -414,7 +414,8 @@ different data table.  The [% INCLUDE font/quote a="Elemental data"%]
 tab contains a variety of general information.  The 
 [% INCLUDE font/quote a="Ionic radii"%] tab contains the Shannon ionic
 radii.  The [% INCLUDE font/quote a="Neutron data"%] tab
-conatins data on scattering lengths and cross sections for the major isotopes.
+conatins data on thermal neutron scattering lengths and cross sections
+for the major isotopes.
 [% END %]
 
 [% WRAPPER figure file="Hephaestus_data.png" %]
@@ -428,8 +429,9 @@ Data sources:
 Swiped from [% INCLUDE html/link link="http://edu.kde.org/kalzium/"%]
 [%END%]
 [% WRAPPER html/dt dt="Mossbauer data" %]
-List of Mossbauer actuve isotopes is from
-[% INCLUDE html/link link="http://mossbauer.org"%]
+List of Mossbauer active isotopes is from
+[% INCLUDE html/link link="http://mossbauer.org"%], which does not seem
+to be about Mossbauer spectroscopy anymore.
 [%END%]
 [% WRAPPER html/dt dt="Ionic radii" %]
 Ionic radii are from

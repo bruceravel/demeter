@@ -38,6 +38,9 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  foreach my $i (1 .. 110) {
+    $pt->{get_symbol($i)}->Enable($i<=92);
+  };
 
   $vbox -> Add( 20, 10, 0, wxGROW );
 

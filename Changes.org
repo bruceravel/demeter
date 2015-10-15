@@ -35,6 +35,10 @@
      Hyatt)
    - On Data tool, added neutron scattering lengths and cross sections
      from [[http://dx.doi.org/10.1080/10448639208218770][V.F. Sears, Neutron News, 3:3 (1992) pp. 26-37]] and [[https://www.ncnr.nist.gov/resources/n-lengths/list.html][NIST NCNR]].
+   - Better handling of enabled element buttons
+   - Slightly darker color for lanthanides and actinides
+   - Added discovery date to elemental data display
+   - Added elements 110 to 118
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI

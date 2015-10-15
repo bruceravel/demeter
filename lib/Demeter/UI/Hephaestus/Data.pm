@@ -24,7 +24,7 @@ use Demeter::IniReader;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_NOTEBOOK_PAGE_CHANGED);
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Demeter::UI::Wx::PeriodicTable;
@@ -36,6 +36,10 @@ my %kalzium = %$rkalzium;
 #							      'Hephaestus', 'data', "kalziumrc.dem"));
 my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 								 'Hephaestus', 'data', "ionic_radii.dem")));
+my %ionic_radius_exists;
+foreach my $item (@$ionic_radii) {
+  $ionic_radius_exists{$item->{element}} = 1;
+};
 
 my $neutron_xs = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 								'Hephaestus', 'data', "neutrons.dem")));
@@ -45,10 +49,10 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->multiplexer($_[0])}, $echoarea);
+  $self->{pt} = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->multiplexer($_[0])}, $echoarea);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
-  $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  $vbox -> Add($self->{pt}, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   $vbox -> Add( 20, 10, 0, wxGROW );
 
@@ -61,6 +65,7 @@ sub new {
   $self->{tabs}  = Wx::Notebook->new($self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $hbox -> Add($self->{tabs}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self -> SetSizerAndFit( $vbox );
+  EVT_NOTEBOOK_PAGE_CHANGED($self, $self->{tabs}, sub{$self->select_tool(@_)});
 
   ## -------- Element data
   my $panel = Wx::Panel->new($self->{tabs}, -1);
@@ -73,7 +78,7 @@ sub new {
   $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 170 );
   my $i = 0;
   foreach my $row ('Name', 'Number', 'Symbol', 'Atomic Weight',
-		   'Atomic Radius', 'Mossbauer', q{}) {
+		   'Atomic Radius', 'Mossbauer', q{Discovery}) {
     my $idx = $self->{data}->InsertImageStringItem($i, $row, 0);
     $self->{data}->SetItemData($idx, $i++);
     $self->{data}->SetItem( $idx, 1, q{} );
@@ -169,6 +174,7 @@ sub data_get_data {
   my $radius = ($kalzium{$z}{AR}) ? sprintf("%.3f $ARING",$kalzium{$z}{AR}/100) : q{};
   $self->{data}->SetItem(4, 1, $radius);
   $self->{data}->SetItem(5, 1, $kalzium{$z}{Mossbauer} || q{});
+  $self->{data}->SetItem(6, 1, $kalzium{$z}{date} || q{ancient});
 
   $self->{data}->SetItem(0, 3, $kalzium{$z}{Orbits} || q{});
   my $ox = ($kalzium{$z}{Ox} eq 'k.A.') ? q{} : $kalzium{$z}{Ox};
@@ -240,6 +246,27 @@ sub unselect_data {
     $parent->{data}->SetItemState( $_, 0, wxLIST_STATE_SELECTED );
   };
 };
+
+sub select_tool {
+  my ($self, $toss, $event) = @_;
+  if ($self->{tabs}->GetSelection == 0) {
+    $self->{pt}->{get_symbol($_)}->Enable(1) foreach (1 .. 118);
+    return;
+  };
+  foreach my $i (1 .. 118) {
+    my $el = get_symbol($i);
+    $self->{pt}->{$el}->Enable(1);
+    my $onoff = 1;
+    if ($self->{tabs}->GetSelection == 1) {
+      $onoff = exists($ionic_radius_exists{$el});
+    } elsif ($self->{tabs}->GetSelection == 2) {
+      $onoff = exists($neutron_xs->{$el});
+    };
+    $self->{pt}->{$el}->Enable($onoff);
+  };
+
+};
+
 
 1;
 

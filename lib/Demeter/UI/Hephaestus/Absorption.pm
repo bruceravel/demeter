@@ -72,7 +72,7 @@ sub new {
   $self->{databoxsizer} = Wx::StaticBoxSizer->new( $self->{databox}, wxVERTICAL );
   $self->{data} = Wx::ListCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
   $self->{data}->InsertColumn( 0, "Property", wxLIST_FORMAT_LEFT, 65 );
-  $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 98  );
+  $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 100  );
   my $i = 0;
   foreach my $row (qw(Name Number Weight Density)) {
     my $idx = $self->{data}->InsertImageStringItem($i, $row, 0);
