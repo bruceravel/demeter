@@ -143,25 +143,26 @@ my @elements = (['H',  0, 0,  'g'],
 		['Sg', 6, 5,  'm'],
 		['Bh', 6, 6,  'm'],
 		['Hs', 6, 7,  'm'],
-		['Mt', 6, 8,  'm'],
-		['Ds', 6, 9,  'm'],
-		['Rg', 6, 10,  'm'],
-		['Cn', 6, 11,  'm'],
-		['Uut', 6, 12,  'm'],
-		['Fl', 6, 13,  'm'],
-		['Uup', 6, 14,  'm'],
-		['Lv', 6, 15,  'm'],
-		['Uus', 6, 16,  'm'],
-		['Uuo', 6, 17,  'm'],
+		['Mt', 6, 8,  'u'],
+		['Ds', 6, 9,  'u'],
+		['Rg', 6, 10, 'u'],
+		['Cn', 6, 11, 'm'],
+		['Uut',6, 12, 'u'],
+		['Fl', 6, 13, 'u'],
+		['Uup',6, 14, 'u'],
+		['Lv', 6, 15, 'u'],
+		['Uus',6, 16, 'u'],
+		['Uuo',6, 17, 'u'],
 	       );
 
 my %color_of = (
 		m => [210, 221, 239, 0],	# metal (powder blue)
-		l => [197, 207, 224, 0],	# lanthanide metal (slightly darker powder blue)
-		a => [197, 207, 224, 0],	# actinide metal (slightly darker powder blue)
+		l => [223, 198, 167, 0],	# lanthanide metal (slightly darker powder blue)
+		a => [223, 214, 167, 0],	# actinide metal (slightly darker powder blue)
 		g => [234, 186, 184, 0],	# gas (Red)
 		s => [238, 214, 240, 0],	# semi-metal (light purple)
 		n => [213, 236, 194, 0],	# non-metal (Green)
+		u => [200, 200, 200, 0],	# unknown (gray)
 	       );
 
 sub new {

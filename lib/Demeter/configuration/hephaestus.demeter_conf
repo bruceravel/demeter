@@ -52,6 +52,16 @@ description
   energies from the Elam resource are always used in the edge finder,
   line finder and absorption utilities.
 
+variable=enable_beamline
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  Enable or disable beamline customizations.  Don't forget to edit
+  Hephaestus' beamline.ini file.
+
 # variable=units
 # type=list
 # options=energy wavelength

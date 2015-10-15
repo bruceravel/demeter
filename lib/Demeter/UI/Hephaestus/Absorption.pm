@@ -28,7 +28,7 @@ use Demeter::Constants qw($PI $HBAR);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_LIST_ITEM_FOCUSED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_LIST_ITEM_FOCUSED EVT_BUTTON EVT_TOGGLEBUTTON EVT_KEY_DOWN);
 
 my $hash;
 do {
@@ -51,6 +51,13 @@ my @LINELIST = qw(Ka1 Ka2 Ka3 Kb1 Kb2 Kb3 Kb4 Kb5
 		  Lg1 Lg2 Lg3 Lg6 Ll Ln Ma Mb Mg Mz);
 my @EDGELIST = qw(K L1 L2 L3 M1 M2 M3 M4 M5 N1 N2 N3 N4 N5 N6 N7 O1 O2 O3 O4 O5 P1 P2 P3);
 
+my ($beamline, $rbeamline);
+if (-e File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "beamline.ini")) {
+  $rbeamline = Demeter::IniReader->read_file(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
+								 'Hephaestus', 'data', "beamline.ini"));
+  $beamline = (keys %$rbeamline)[0];
+  $rbeamline = $rbeamline->{$beamline};
+};
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -61,14 +68,15 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 #  $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
+  $self->{pt} = $pt;
+  
   $vbox -> Add( 20, 10, 0, wxGROW );
 
   ## horizontal box for containing the tables of element data
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
   ## -------- Element data
-  $self->{databox} = Wx::StaticBox->new($self, -1, 'Element data', wxDefaultPosition, wxDefaultSize);
+  $self->{databox} = Wx::StaticBox->new($self, -1, ' Element data', wxDefaultPosition, wxDefaultSize);
   $self->{databoxsizer} = Wx::StaticBoxSizer->new( $self->{databox}, wxVERTICAL );
   $self->{data} = Wx::ListCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
   $self->{data}->InsertColumn( 0, "Property", wxLIST_FORMAT_LEFT, 65 );
@@ -94,14 +102,23 @@ sub new {
 
 
   $self->{filter} = Wx::Button->new( $self, -1, 'Plot filter', wxDefaultPosition, wxDefaultSize );
-  $self->{databoxsizer} -> Add($self->{filter}, 0, wxEXPAND|wxBOTTOM, 50);
+  $self->{databoxsizer} -> Add($self->{filter}, 0, wxEXPAND|wxBOTTOM, 5);
   EVT_BUTTON( $self, $self->{filter}, \&filter_plot );
   $self->{filter}->Enable(0);
+
+  if ($beamline and Demeter->co->default(qw(hephaestus enable_beamline))) {
+    $self->{beamline_k} = Wx::ToggleButton->new( $self, -1, $beamline . ': Show K edges', wxDefaultPosition, wxDefaultSize );
+    $self->{databoxsizer} -> Add($self->{beamline_k}, 0, wxEXPAND|wxBOTTOM, 2);
+    $self->{beamline_l} = Wx::ToggleButton->new( $self, -1, $beamline . ': Show L edges', wxDefaultPosition, wxDefaultSize );
+    $self->{databoxsizer} -> Add($self->{beamline_l}, 0, wxEXPAND|wxBOTTOM, 2);
+    EVT_TOGGLEBUTTON($self, $self->{beamline_k}, sub{$self->show_beamline('k')});
+    EVT_TOGGLEBUTTON($self, $self->{beamline_l}, sub{$self->show_beamline('l')});
+  };
 
   $hbox -> Add($self->{databoxsizer}, 11, wxGROW|wxALL, 5);
 
   ## -------- Edge energies
-  $self->{edgebox} = Wx::StaticBox->new($self, -1, 'Absorption edges', wxDefaultPosition, wxDefaultSize);
+  $self->{edgebox} = Wx::StaticBox->new($self, -1, ' Absorption edges', wxDefaultPosition, wxDefaultSize);
   $self->{edgeboxsizer} = Wx::StaticBoxSizer->new( $self->{edgebox}, wxVERTICAL );
   $self->{edge} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 55 );
@@ -119,7 +136,7 @@ sub new {
   $hbox -> Add($self->{edgeboxsizer}, 13, wxGROW|wxALL, 5);
 
   ## -------- Line energies
-  $self->{linebox} = Wx::StaticBox->new($self, -1, 'Fluorescence lines', wxDefaultPosition, wxDefaultSize);
+  $self->{linebox} = Wx::StaticBox->new($self, -1, ' Fluorescence lines', wxDefaultPosition, wxDefaultSize);
   $self->{lineboxsizer} = Wx::StaticBoxSizer->new( $self->{linebox}, wxVERTICAL );
   $self->{line} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES);
   $self->{line}->InsertColumn( 0, "Line", wxLIST_FORMAT_LEFT, 50 );
@@ -145,6 +162,34 @@ sub new {
   $self -> SetSizerAndFit( $vbox );
 
   return $self;
+};
+
+sub show_beamline {
+  my ($self, $edge) = @_;
+  ## K toggle is (de)pressed
+  if (lc($edge) eq 'k') {
+    $self->{beamline_l} -> SetValue(0);
+    if ($self->{beamline_k}->GetValue) {
+      foreach my $el (map {get_symbol($_)} (1 .. 118)) {
+	my $en = Xray::Absorption -> get_energy($el, 'k');
+	$::app->enable_element($self->{pt}, $el, sub{ $en>=$rbeamline->{emin} and  $en<=$rbeamline->{emax} })
+      };
+    } else {
+      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    };
+
+  ## L toggle is (de)pressed
+  } elsif (lc($edge) =~ m{\Al}) {
+    $self->{beamline_k} -> SetValue(0);
+    if ($self->{beamline_l}->GetValue) {
+      foreach my $el (map {get_symbol($_)} (1 .. 118)) {
+	my $en = Xray::Absorption -> get_energy($el, 'l3');
+	$::app->enable_element($self->{pt}, $el, sub{ $en>=$rbeamline->{emin} and  $en<=$rbeamline->{emax} })
+      };
+    } else {
+      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    };
+  };
 };
 
 sub abs_get_data {

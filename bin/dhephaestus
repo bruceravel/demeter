@@ -23,8 +23,9 @@ BEGIN {
 use Wx;
 use Demeter::UI::Hephaestus;
 #Wx::InitAllImageHandlers();
-my $window = Demeter::UI::Hephaestus->new;
-$window   -> MainLoop;
+use vars qw($app);
+$app  = Demeter::UI::Hephaestus->new;
+$app -> MainLoop;
 
 
 

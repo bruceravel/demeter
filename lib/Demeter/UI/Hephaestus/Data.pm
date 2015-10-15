@@ -114,13 +114,14 @@ sub new {
   $self->{radii}->InsertColumn( 6, "Notes", wxLIST_FORMAT_LEFT, 70 );
   $box -> Add($self->{radii}, 1, wxEXPAND|wxALL, 5);
 
-  my $font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 2;
+  my $font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
+  #$font_size += 1 if Demeter->is_windows;
 
-  my $text = Wx::StaticText->new($panel, -1, 'Notes:  R=from r3 vs V plots,  C=calculated,  E=estimated,  ?=doubtful,  *=most reliable');
+  my $text = Wx::StaticText->new($panel, -1, 'Notes: R=from r3 vs V plots  C=calculated  E=estimated  ?=doubtful  *=most reliable');
   $text -> SetFont(Wx::Font->new( $font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
   $box -> Add($text, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  $text = Wx::StaticText->new($panel, -1, '    M=from metallic oxides,  A=Ahrens (1952),  P=Pauling (1960)');
+  $text = Wx::StaticText->new($panel, -1,    '       M=from metallic oxides  A=Ahrens (1952)  P=Pauling (1960)');
   $text -> SetFont(Wx::Font->new( $font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
   $box -> Add($text, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
@@ -250,19 +251,19 @@ sub unselect_data {
 sub select_tool {
   my ($self, $toss, $event) = @_;
   if ($self->{tabs}->GetSelection == 0) {
-    $self->{pt}->{get_symbol($_)}->Enable(1) foreach (1 .. 118);
+    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     return;
   };
   foreach my $i (1 .. 118) {
     my $el = get_symbol($i);
-    $self->{pt}->{$el}->Enable(1);
     my $onoff = 1;
+    my $function = sub{return 0};
     if ($self->{tabs}->GetSelection == 1) {
-      $onoff = exists($ionic_radius_exists{$el});
+      $function = sub{ exists( $ionic_radius_exists{$_[0]} ) };
     } elsif ($self->{tabs}->GetSelection == 2) {
-      $onoff = exists($neutron_xs->{$el});
+      $function = sub{ exists( $neutron_xs->{$_[0]} ) };
     };
-    $self->{pt}->{$el}->Enable($onoff);
+    $::app->enable_element($self->{pt}, $el, $function);
   };
 
 };
