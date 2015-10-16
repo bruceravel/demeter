@@ -129,7 +129,9 @@ absorber.
 [% END %]
 
 [% WRAPPER figure file="Hephaestus_filterplot.png" %]
-A filter plot showing why manganese is a good choice for an iron absorber.
+A filter plot showing why manganese is a good choice for an iron
+absorber [%ndash%] it passes the fluorescence, which is below the Mn K
+edge, but preferentially absorbes the elastically scattered radiation.
 [% END %]
 
 [% INCLUDE subsection label="Beamline customization" %]
@@ -149,43 +151,18 @@ the beamline.
 [% END %]
 
 [% FILTER html_para %]
-This customization is managed via a file called
-[% INCLUDE font/file a="UI/Hephaestus/data/beamline.ini"%] in the
-installation location.  The installation location can be determined by
-issuing the following command at the command line:
-[% END %]
-[% WRAPPER html/pre %]
-perl -e 'use Demeter; print $INC{"Demeter.pm"}, $/'
-[% END %]
-[% FILTER html_para %]
-The folder part of the response is the location of that file.  On
-Windows, this is typically
-[% INCLUDE font/file a="%APPDATA%\\DemeterPerl\\perl\\site\\lib\\Demeter"%].
-
-The [% INCLUDE font/file a="UI/Hephaestus/data/beamline.ini"%] is very
-simple .  It looks something like this:
-[% END %]
-
-[% WRAPPER html/pre %]
-[BMM]
-emin = 4500
-emax = 23000
-[% END %]
-
-[% FILTER html_para %]
-To enable beamline customization, replace
-[% INCLUDE font/mono a="BMM"%] with the name of your beamline.  Keep
-it short [%ndash%] it needs to fit on the button!  Replace 
-[% INCLUDE font/mono a="emin"%] and [% INCLUDE font/mono a="emax"%]
-with the lower and upper energy bounds of your beamline.
-
-Finally, set the
+To enable beamline customization, set the
 [% INCLUDE preference group="hephaestus" option="enable_beamline" %]
-configuration parameter to true.  The next time you fire up
-[%hephaestus%], the show edges buttons will appear!
+[% INCLUDE html/link text="configuration parameter" link="other/prefs.html"%]
+to true.
 
-Note that the [% INCLUDE font/file a="beamline.ini"%] file is in a
-system location and may require adminstrator privilege to modify.
+You will want to set the 
+[% INCLUDE preference group="hephaestus" option="beamline_name" %]
+parameter to the name of your beamline.  Keep
+it short [%ndash%] it needs to fit on the button!  Finally, set the
+[% INCLUDE preference group="hephaestus" option="beamline_emin" %] and
+[% INCLUDE preference group="hephaestus" option="beamline_emax" %]
+parameters to the lower and upper energy bounds of your beamline.
 [% END %]
 
 
