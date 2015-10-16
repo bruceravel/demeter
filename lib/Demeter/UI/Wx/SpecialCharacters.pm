@@ -8,12 +8,12 @@ our @EXPORT_OK = qw(emph
 		    $ALPHA $BETA $GAMMA $ETA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $ONE $TWO $THR
-		    $ARING $MACRON $APPROX $PLUSMN $PLUSMN2
+		    $ARING $OUMLAUT $MACRON $APPROX $PLUSMN $PLUSMN2
 		  );
 our %EXPORT_TAGS = (all   => [qw(emph
 				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 				 $ALPHA $BETA $GAMMA
-				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
+				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING $OUMLAUT
 				 $ONE $TWO $THR $MACRON $APPROX $PLUSMN $PLUSMN2)],
 		    super => [qw($ONE $TWO $THR $MACRON)],
 		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
@@ -49,6 +49,7 @@ our $LAQUO     = chr(171);  #"\xC2\xAB";     #'«';
 our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
 our $ARING     = chr(197);  # 'Å'
+our $OUMLAUT   = chr(246);  # 'ö'
 our $MACRON    = chr(175);  # ''
 our $APPROX    = chr(2248); # ''
 our $PLUSMN    = chr(177);  # q{+/-};  # q{±}; #chr(177);  # 

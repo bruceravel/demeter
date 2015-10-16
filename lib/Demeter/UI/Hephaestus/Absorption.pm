@@ -92,7 +92,6 @@ sub new {
   $filterbox -> Add($self->{filterelement}, 0, wxEXPAND|wxALL, 5);
   EVT_KEY_DOWN( $self->{filterelement}, sub{on_key_down(@_, $self)} );
 
-
   $self->{filter} = Wx::Button->new( $self, -1, 'Plot filter', wxDefaultPosition, wxDefaultSize );
   $self->{databoxsizer} -> Add($self->{filter}, 0, wxEXPAND|wxBOTTOM, 5);
   EVT_BUTTON( $self, $self->{filter}, \&filter_plot );

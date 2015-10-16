@@ -41,6 +41,8 @@
    - Added elements 110 to 118
    - Added beamline customization to Absorption page
    - Abstract element enabler for use in several places in Hephaestus
+   - On Data tool: buttons for showing Mossbauer-active elements and
+     elements by decade of discovery
 
 *** Demeter
    - Fixed a crashy bug in Demeter::Data::XDI

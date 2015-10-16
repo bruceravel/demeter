@@ -24,8 +24,8 @@ use Demeter::IniReader;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_NOTEBOOK_PAGE_CHANGED);
-use Demeter::UI::Wx::SpecialCharacters qw($ARING);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_NOTEBOOK_PAGE_CHANGED EVT_TOGGLEBUTTON EVT_SPIN);
+use Demeter::UI::Wx::SpecialCharacters qw($ARING $OUMLAUT);
 
 use Demeter::UI::Wx::PeriodicTable;
 
@@ -71,14 +71,14 @@ sub new {
   my $panel = Wx::Panel->new($self->{tabs}, -1);
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{data} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+  $self->{data} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{data}->InsertColumn( 0, "Physical Properties", wxLIST_FORMAT_LEFT, 140 );
   $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 170);
   $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 150 );
   $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 170 );
   my $i = 0;
   foreach my $row ('Name', 'Number', 'Symbol', 'Atomic Weight',
-		   'Atomic Radius', 'Mossbauer', q{Discovery}) {
+		   'Atomic Radius', "M${OUMLAUT}ssbauer", q{Discovery}) {
     my $idx = $self->{data}->InsertImageStringItem($i, $row, 0);
     $self->{data}->SetItemData($idx, $i++);
     $self->{data}->SetItem( $idx, 1, q{} );
@@ -94,10 +94,30 @@ sub new {
     ##$self->{data}->SetItemFont( $idx, Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
   EVT_LIST_ITEM_SELECTED($self->{data}, $self->{data}, sub{unselect_data(@_, $self)});
-
   $box -> Add($self->{data}, 1, wxEXPAND|wxALL, 5);
-  $panel->SetSizerAndFit($box);
 
+  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box -> Add($hh, 0, wxEXPAND|wxALL, 0);
+
+  $self->{mossbauer} = Wx::ToggleButton->new($panel, -1, "Show M${OUMLAUT}ssbauer-active elements");
+  $hh -> Add($self->{mossbauer}, 0, wxLEFT, 5);
+  EVT_TOGGLEBUTTON($self, $self->{mossbauer}, sub{show_mossbauer(@_)});
+
+  $self->{by} = Wx::ToggleButton->new($panel, -1, "Show elements known by");
+  $hh -> Add($self->{by}, 0, wxLEFT, 25);
+  EVT_TOGGLEBUTTON($self, $self->{by}, sub{show_date(@_)});
+
+  $self->{datelabel} = Wx::StaticText->new($panel, -1, '1660');
+  $hh -> Add($self->{datelabel}, 0, wxTOP|wxLEFT|wxRIGHT, 4);
+  $self->{date} = Wx::SpinButton->new($panel, -1, wxDefaultPosition, wxDefaultSize);
+  $self->{date}->SetRange(0,36);
+  $self->{date}->SetValue(0);
+  $hh -> Add($self->{date}, 0, wxALL, 0);
+  EVT_SPIN($self, $self->{date}, sub{increment_date(@_)});
+  $self->{datelabel}->Enable(0);
+  $self->{date}->Enable(0);
+
+  $panel->SetSizerAndFit($box);
   $self->{tabs} -> AddPage($panel, 'Elemental data', 1);
 
   ## -------- Ioonic Radii
@@ -266,6 +286,38 @@ sub select_tool {
     $::app->enable_element($self->{pt}, $el, $function);
   };
 
+};
+
+sub show_mossbauer {
+  my ($self, $event) = @_;
+  if (not $self->{mossbauer}->GetValue) {
+    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    return;
+  };
+  foreach my $z (1 .. 118) {
+    $::app->enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{Mossbauer} !~ m{\A(?:|silent)\z}i }); # not '' or Silent
+  };
+};
+
+sub show_date {
+  my ($self, $event) = @_;
+  if (not $self->{by}->GetValue) {
+    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    $self->{datelabel}->Enable(0);
+    $self->{date}->Enable(0);
+    return;
+  };
+  $self->{datelabel}->Enable(1);
+  $self->{date}->Enable(1);
+  increment_date($self, $event);
+};
+sub increment_date {
+  my ($self, $event) = @_;
+  my $year = 1660 + 10*$self->{date}->GetValue;
+  $self->{datelabel}->SetLabel("$year");
+  foreach my $z (1 .. 118) {
+    $::app->enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{date} < $year });
+  };
 };
 
 
