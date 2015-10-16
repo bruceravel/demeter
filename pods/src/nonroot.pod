@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.22.
+## This pod document is for Demeter version 0.9.23.
 
 =head1 NAME
 

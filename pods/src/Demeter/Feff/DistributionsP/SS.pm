@@ -319,7 +319,7 @@ Demeter::Feff::DistributionsP::SS - Histograms for single scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

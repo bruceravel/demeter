@@ -157,7 +157,7 @@ emission energy expressed in wavelength units.
 </p>
 
 <p>
-<div class=figure style="max-width: 848px; min-width: 7em;">
+<div class=figure style="max-width: 847px; min-width: 7em;">
 <a name=Hephaestus_absorption>
 <img src=../images/Hephaestus_absorption.png width=100%>
 </a>
@@ -167,7 +167,15 @@ The absorption tool.
 </div>
 </p>
 
+
+<hr class=hide />
+<a name="filters">
+<p>&nbsp;</p>
+</a>
+
+<h3>  Filters</h3>
 <p>
+
 The rules for the selection of the filter elements are:
 </p>
 
@@ -212,9 +220,64 @@ absorber.
 <img src=../images/Hephaestus_filterplot.png width=100%>
 </a>
 <p align=center>
-A filter plot showing why manganese is a good choice for an iron absorber.
+A filter plot showing why manganese is a good choice for an iron
+absorber &ndash; it passes the fluorescence, which is below the Mn K
+edge, but preferentially absorbes the elastically scattered radiation.
 </p>
 </div>
+
+<hr class=hide />
+<a name="beamlinecustomization">
+<p>&nbsp;</p>
+</a>
+
+<h3>  Beamline customization</h3>
+
+<p>
+
+When beamline customization is enabled, the two buttons labeled
+&ldquo;Show K edges&rdquo; and
+&ldquo;Show L edges&rdquo; will be visible.  These are
+both toggle buttons.  When pressed, they will disable all elements
+that cannot be measured by that edge at the beamline.
+</p>
+
+
+<div class=figure style="max-width: 847px; min-width: 7em;">
+<a name=Hephaestus_beamline>
+<img src=../images/Hephaestus_beamline.png width=100%>
+</a>
+<p align=center>
+The absorption tool with beamline customization for the NSLS-II BMM
+(6BM) beamline showing the elements whose K edges can be measured at
+the beamline.
+</p>
+</div>
+
+<p>
+
+To enable beamline customization, set the
+<span class=pref>&diams;Hephaestus&nbsp;&rarr;&nbsp;enable_beamline</span>
+<a href="other/prefs.html">configuration parameter</a>
+to true.
+</p>
+
+<p>
+You will want to set the 
+<span class=pref>&diams;Hephaestus&nbsp;&rarr;&nbsp;beamline_name</span>
+parameter to the name of your beamline.  Keep
+it short &ndash; it needs to fit on the button!  Finally, set the
+<span class=pref>&diams;Hephaestus&nbsp;&rarr;&nbsp;beamline_emin</span> and
+<span class=pref>&diams;Hephaestus&nbsp;&rarr;&nbsp;beamline_emax</span>
+parameters to the lower and upper energy bounds of your beamline.
+</p>
+
+
+
+<p>
+
+</p>
+
 
 <hr class=hide />
 <a name="formulas">
@@ -557,11 +620,21 @@ The ion chambers tool.
 
 This tool is used to display a number of useful physical and chemical
 properties of the elements.  Selecting an element from the periodic
-table will fill in the table with the data for that element.
+table will fill in a table with the data for that element.
+</p>
+
+<p>
+Beneath the periodic table is a tabbed notebook.  Each tab contains a
+different data table.  The &ldquo;Elemental data&rdquo;
+tab contains a variety of general information.  The 
+&ldquo;Ionic radii&rdquo; tab contains the Shannon ionic
+radii.  The &ldquo;Neutron data&rdquo; tab
+conatins data on thermal neutron scattering lengths and cross sections
+for the major isotopes.
 </p>
 
 
-<div class=figure style="max-width: 848px; min-width: 7em;">
+<div class=figure style="max-width: 847px; min-width: 7em;">
 <a name=Hephaestus_data>
 <img src=../images/Hephaestus_data.png width=100%>
 </a>
@@ -569,6 +642,61 @@ table will fill in the table with the data for that element.
 The data tool.
 </p>
 </div>
+
+<p>
+
+Data sources:
+<dl>
+  
+<dt>
+  General data
+</dt>
+<dd>
+Swiped from <a href="http://edu.kde.org/kalzium/">http://edu.kde.org/kalzium/</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  Mossbauer data
+</dt>
+<dd>
+List of Mossbauer active isotopes is from
+<a href="http://mossbauer.org">http://mossbauer.org</a>, which does not seem
+to be about Mossbauer spectroscopy anymore.
+  <br />
+  <br />
+</dd>
+<dt>
+  Ionic radii
+</dt>
+<dd>
+Ionic radii are from
+R.D. Shannon, <em>Acta Crystallographica A</em>, <strong>32</strong>, 
+(1976) p.&nbsp;751-776<a href="http://dx.doi.org/10.1107/S0567739476001551"> (DOI: 10.1107/S0567739476001551)</a>
+using a conversion to JSON of <a href="http://v.web.umkc.edu/vanhornj/shannonradii.htm">Electronic Table of Shannon Ionic Radii, J. David Van Horn,
+2001, downloaded 10/13/2015.</a>
+  <br />
+  <br />
+</dd>
+<dt>
+  Neutron data
+</dt>
+<dd>
+Source is
+V.F. Sears, <em>Neutron News</em>, <strong>3</strong>, 
+(1992) p.&nbsp;26-37<a href="http://dx.doi.org/10.1080/10448639208218770"> (DOI: 10.1080/10448639208218770)</a>
+and <a href="https://www.ncnr.nist.gov/resources/n-lengths/list.html">https://www.ncnr.nist.gov/resources/n-lengths/list.html</a>.
+Scattering lengths are in femtometers, cross sections are in barns
+(10E-24 cm), scattering lengths and cross sections in parenthesis are
+uncertainties, and for radioisotopes the half-life is given instead of
+the natural abundance.
+  <br />
+  <br />
+</dd>
+</dl>
+</p>
+
+
 
 <hr class=hide />
 <a name="transitions">

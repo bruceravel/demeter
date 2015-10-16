@@ -34,10 +34,13 @@ sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->f1f2_get_data($_[0])});
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->f1f2_get_data($_[0])}, $echoarea);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  foreach my $i (1 .. 118) {
+    $::app->enable_element($pt, get_symbol($_), sub{$_>3 && $_<=92}) foreach (1 .. 118);
+  };
 
   $vbox -> Add( 20, 10, 0, wxGROW );
 
@@ -206,7 +209,7 @@ Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

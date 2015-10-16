@@ -19,6 +19,8 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name);
+use Chemistry::MoreElements;	## teach Chemistry::Elements about elements above 109
+
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
@@ -90,20 +92,20 @@ my @elements = (['H',  0, 0,  'g'],
 		['Cs', 5, 0,  'm'],
 		['Ba', 5, 1,  'm'],
 		['La', 5, 2,  'm'],
-		['Ce', 7, 3,  'm'],
-		['Pr', 7, 4,  'm'],
-		['Nd', 7, 5,  'm'],
-		['Pm', 7, 6,  'm'],
-		['Sm', 7, 7,  'm'],
-		['Eu', 7, 8,  'm'],
-		['Gd', 7, 9,  'm'],
-		['Tb', 7, 10, 'm'],
-		['Dy', 7, 11, 'm'],
-		['Ho', 7, 12, 'm'],
-		['Er', 7, 13, 'm'],
-		['Tm', 7, 14, 'm'],
-		['Yb', 7, 15, 'm'],
-		['Lu', 7, 16, 'm'],
+		['Ce', 7, 3,  'l'],
+		['Pr', 7, 4,  'l'],
+		['Nd', 7, 5,  'l'],
+		['Pm', 7, 6,  'l'],
+		['Sm', 7, 7,  'l'],
+		['Eu', 7, 8,  'l'],
+		['Gd', 7, 9,  'l'],
+		['Tb', 7, 10, 'l'],
+		['Dy', 7, 11, 'l'],
+		['Ho', 7, 12, 'l'],
+		['Er', 7, 13, 'l'],
+		['Tm', 7, 14, 'l'],
+		['Yb', 7, 15, 'l'],
+		['Lu', 7, 16, 'l'],
 		['Hf', 5, 3,  'm'],
 		['Ta', 5, 4,  'm'],
 		['W',  5, 5,  'm'],
@@ -122,33 +124,45 @@ my @elements = (['H',  0, 0,  'g'],
 		['Fr', 6, 0,  'm'],
 		['Ra', 6, 1,  'm'],
 		['Ac', 6, 2,  'm'],
-		['Th', 8, 3,  'm'],
-		['Pa', 8, 4,  'm'],
-		['U',  8, 5,  'm'],
-		['Np', 8, 6,  'm'],
-		['Pu', 8, 7,  'm'],
-		['Am', 8, 8,  'm'],
-		['Cm', 8, 9,  'm'],
-		['Bk', 8, 10, 'm'],
-		['Cf', 8, 11, 'm'],
-		['Es', 8, 12, 'm'],
-		['Fm', 8, 13, 'm'],
-		['Md', 8, 14, 'm'],
-		['No', 8, 15, 'm'],
-		['Lr', 8, 16, 'm'],
+		['Th', 8, 3,  'a'],
+		['Pa', 8, 4,  'a'],
+		['U',  8, 5,  'a'],
+		['Np', 8, 6,  'a'],
+		['Pu', 8, 7,  'a'],
+		['Am', 8, 8,  'a'],
+		['Cm', 8, 9,  'a'],
+		['Bk', 8, 10, 'a'],
+		['Cf', 8, 11, 'a'],
+		['Es', 8, 12, 'a'],
+		['Fm', 8, 13, 'a'],
+		['Md', 8, 14, 'a'],
+		['No', 8, 15, 'a'],
+		['Lr', 8, 16, 'a'],
 		['Rf', 6, 3,  'm'],
 		['Ha', 6, 4,  'm'],
 		['Sg', 6, 5,  'm'],
 		['Bh', 6, 6,  'm'],
 		['Hs', 6, 7,  'm'],
-		['Mt', 6, 8,  'm'],
+		['Mt', 6, 8,  'u'],
+		['Ds', 6, 9,  'u'],
+		['Rg', 6, 10, 'u'],
+		['Cn', 6, 11, 'm'],
+		['Uut',6, 12, 'u'],
+		['Fl', 6, 13, 'u'],
+		['Uup',6, 14, 'u'],
+		['Lv', 6, 15, 'u'],
+		['Uus',6, 16, 'u'],
+		['Uuo',6, 17, 'u'],
 	       );
 
 my %color_of = (
 		m => [210, 221, 239, 0],	# metal (powder blue)
+		l => [223, 198, 167, 0],	# lanthanide metal (slightly darker powder blue)
+		a => [223, 214, 167, 0],	# actinide metal (slightly darker powder blue)
 		g => [234, 186, 184, 0],	# gas (Red)
 		s => [238, 214, 240, 0],	# semi-metal (light purple)
 		n => [213, 236, 194, 0],	# non-metal (Green)
+		u => [200, 200, 200, 0],	# unknown (gray)
 	       );
 
 sub new {
@@ -156,6 +170,7 @@ sub new {
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $font_size = 9;
+  my $smfont_size = 8;
   my $bheight = int(2.5*$font_size+3);
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
@@ -168,10 +183,14 @@ sub new {
     my $text = sprintf("%s: %s, element #%d", $element, get_name($element), get_Z($element));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
-    $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    if ($element =~ m{\AUu}) {
+      $button->SetFont( Wx::Font->new( $smfont_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    } else {
+      $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    };
     $button->SetBackgroundColour( Wx::Colour->new(@{ $color_of{$el->[PHASE]} }) );
   };
-  my $label = Wx::StaticText->new($self, -1, 'Lanthanides', [5,-1], [105,23], wxALIGN_RIGHT);
+  my $label = Wx::StaticText->new($self, -1, "Lanthanides", [5,-1], [105,23], wxALIGN_RIGHT);
   $label   -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
   $tsz     -> Add($label, Wx::GBPosition->new(7,0), Wx::GBSpan->new(1,3));
   $label    = Wx::StaticText->new($self, -1, 'Actinides', wxDefaultPosition, [105,23], wxALIGN_RIGHT);
@@ -197,7 +216,7 @@ Demeter::UI::Wx::PeriodicTable - A periodic table widget
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

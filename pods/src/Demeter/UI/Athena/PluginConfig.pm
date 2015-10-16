@@ -133,7 +133,7 @@ Demeter::UI::Athena::Prefs - A preferences tool for Athena's filetype plugins
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

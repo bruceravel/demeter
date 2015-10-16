@@ -32,6 +32,7 @@ my $header_color = Wx::Colour->new(68, 31, 156);
 my %note_of = (Absorption   => 'periodic table of edge and line energies',
 	       Formulas     => 'compute total cross sections of materials',
 	       Data	    => 'periodic table of physical and chemical data',
+	       IonicRadii   => 'Shannon ionic radii of the elements',
 	       Ion	    => 'optimize ion chamber gases',
 	       Transitions  => 'electronic transitions for fluorescence lines',
 	       EdgeFinder   => 'ordered list of absorption edge energies',
@@ -44,6 +45,7 @@ my %note_of = (Absorption   => 'periodic table of edge and line energies',
 my %label_of = (Absorption   => ' Absorption ',
 		Formulas     => '  Formulas  ',
 		Data	     => '    Data    ',
+		IonicRadii   => 'Ionic Radii ',
 		Ion	     => 'Ion chambers',
 		Transitions  => ' Transitions',
 		EdgeFinder   => ' Edge finder',
@@ -69,7 +71,7 @@ sub new {
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT|wxTB_NO_TOOLTIPS );
   my $statusbar = $self->CreateStatusBar;
   $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;
@@ -218,6 +220,7 @@ const my $ABS	    => Wx::NewId();
 const my $FORM	    => Wx::NewId();
 const my $ION	    => Wx::NewId();
 const my $DATA	    => Wx::NewId();
+const my $RADII	    => Wx::NewId();
 const my $TRAN	    => Wx::NewId();
 const my $EDGE	    => Wx::NewId();
 const my $LINE	    => Wx::NewId();
@@ -246,7 +249,7 @@ sub OnInit {
   Demeter -> mo -> identity('Hephaestus');
   Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
-  foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
+  foreach my $m (qw(Absorption Formulas Ion Data IonicRadii Transitions EdgeFinder LineFinder
 		    Standards F1F2 Config)) { # Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
@@ -312,6 +315,7 @@ sub OnInit {
   EVT_MENU( $frame, $FORM,     sub{shift->{book}->SetSelection(1)});
   EVT_MENU( $frame, $ION,      sub{shift->{book}->SetSelection(2)});
   EVT_MENU( $frame, $DATA,     sub{shift->{book}->SetSelection(3)});
+  #EVT_MENU( $frame, $RADII,    sub{shift->{book}->SetSelection(4)});
   EVT_MENU( $frame, $TRAN,     sub{shift->{book}->SetSelection(4)});
   EVT_MENU( $frame, $EDGE,     sub{shift->{book}->SetSelection(5)});
   EVT_MENU( $frame, $LINE,     sub{shift->{book}->SetSelection(6)});
@@ -372,6 +376,12 @@ sub document {
   };
 };
 
+## arguments: $::app, pointer to periodic table widget, element symbol,
+## function reference that takes $element as its argument and evaluates T/F
+sub enable_element {
+  my ($self, $pt, $element, $function) = @_;
+  $pt->{$element}->Enable($function->($element));
+};
 
 
 sub on_about {
@@ -388,7 +398,9 @@ sub on_about {
 			 "See the document for literature references\nfor the data resources.\n\n",
 			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
-			 "Mossbauer data comes from http://mossbauer.org/\n",
+			 "Mossbauer data comes from http://mossbauer.org/\n(which does not seem to be about Mossbauer spectroscopy anymore)",
+			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)",
+			 "Neutron scattering lengths and cross sections from\nNeutron News, Vol. 3, No. 3, 1992, pp. 29-37 and\nhttps://www.ncnr.nist.gov/resources/n-lengths/list.html"
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
@@ -427,6 +439,12 @@ EOH
   Wx::AboutBox( $info );
 }
 
+
+# The Ionic Radii icon is cropped from an image at
+# from Wikimedia
+# https://commons.wikimedia.org/wiki/File:Atomic_%26_ionic_radii.svg
+
+
 1;
 
 =head1 NAME
@@ -435,7 +453,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

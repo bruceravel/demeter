@@ -41,9 +41,9 @@ sub new {
   $self->{echo} = $echoarea;
 
   my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->standards_get_data($_[0])}, $echoarea);
-  foreach my $i (1 .. 109) {
+  foreach my $i (1 .. 118) {
     my $el = get_symbol($i);
-    $pt->{$el}->Disable if not $standards->element_exists($el);
+    $::app->enable_element($pt, get_symbol($i), sub{ $standards->element_exists($_[0])  });
   };
   $pt->{Mt}->Disable;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -216,7 +216,7 @@ Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 SYNOPSIS
 

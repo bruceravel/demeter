@@ -23,8 +23,9 @@ BEGIN {
 use Wx;
 use Demeter::UI::Hephaestus;
 #Wx::InitAllImageHandlers();
-my $window = Demeter::UI::Hephaestus->new;
-$window   -> MainLoop;
+use vars qw($app);
+$app  = Demeter::UI::Hephaestus->new;
+$app -> MainLoop;
 
 
 
@@ -34,7 +35,7 @@ hephaestus - A souped-up periodic table for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.22.
+This documentation refers to Demeter version 0.9.23.
 
 =head1 DESCRIPTION
 
