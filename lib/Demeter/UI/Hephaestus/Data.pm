@@ -109,7 +109,7 @@ sub new {
 
   $self->{datelabel} = Wx::StaticText->new($panel, -1, '1660');
   $hh -> Add($self->{datelabel}, 0, wxTOP|wxLEFT|wxRIGHT, 4);
-  $self->{date} = Wx::SpinButton->new($panel, -1, wxDefaultPosition, wxDefaultSize);
+  $self->{date} = Wx::SpinButton->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxSP_WRAP);
   $self->{date}->SetRange(0,36);
   $self->{date}->SetValue(0);
   $hh -> Add($self->{date}, 0, wxALL, 0);
@@ -294,6 +294,7 @@ sub show_mossbauer {
     $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     return;
   };
+  $self->{by}->SetValue(0);
   foreach my $z (1 .. 118) {
     $::app->enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{Mossbauer} !~ m{\A(?:|silent)\z}i }); # not '' or Silent
   };
@@ -307,6 +308,7 @@ sub show_date {
     $self->{date}->Enable(0);
     return;
   };
+  $self->{mossbauer}->SetValue(0);
   $self->{datelabel}->Enable(1);
   $self->{date}->Enable(1);
   increment_date($self, $event);
