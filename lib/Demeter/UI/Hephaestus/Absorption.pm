@@ -22,7 +22,7 @@ use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 use Demeter::UI::Wx::PeriodicTable;
-use Demeter::UI::Hephaestus::Common qw(e2l);
+use Demeter::UI::Hephaestus::Common qw(e2l enable_element);
 use Demeter::UI::Wx::SpecialCharacters qw($GAMMA $ARING);
 use Demeter::Constants qw($PI $HBAR);
 
@@ -164,11 +164,11 @@ sub show_beamline {
     if ($self->{beamline_k}->GetValue) {
       foreach my $el (map {get_symbol($_)} (1 .. 118)) {
 	my $en = Xray::Absorption -> get_energy($el, 'k');
-	$::app->enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
-						      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
+	enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
+					      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
       };
     } else {
-      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+      enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     };
 
   ## L toggle is (de)pressed
@@ -177,11 +177,11 @@ sub show_beamline {
     if ($self->{beamline_l}->GetValue) {
       foreach my $el (map {get_symbol($_)} (1 .. 118)) {
 	my $en = Xray::Absorption -> get_energy($el, 'l3');
-	$::app->enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
-						      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
+	enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
+					      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
       };
     } else {
-      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+      enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     };
   };
 };
@@ -426,6 +426,9 @@ works.
 
 =head1 CONFIGURATION
 
+Beamline configuration via the C<enable_beamline>, C<beamline_name>,
+C<beamline_emin>, and C<beamline_emax> configuration parameters in the
+C<Hephaestus> group.
 
 =head1 DEPENDENCIES
 

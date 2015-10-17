@@ -34,6 +34,7 @@ $standards -> ini(q{});
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Wx::SpecialCharacters qw($MU);
 use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Hephaestus::Common qw(enable_element);
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -43,7 +44,7 @@ sub new {
   my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->standards_get_data($_[0])}, $echoarea);
   foreach my $i (1 .. 118) {
     my $el = get_symbol($i);
-    $::app->enable_element($pt, get_symbol($i), sub{ $standards->element_exists($_[0])  });
+    enable_element($pt, get_symbol($i), sub{ $standards->element_exists($_[0])  });
   };
   $pt->{Mt}->Disable;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
