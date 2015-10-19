@@ -205,7 +205,12 @@ if ($backend eq 'gnuplot') {
     die $message if ($message);
   };
   $mode -> template_plot('gnuplot');
-  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
+  ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
+  ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
+  ## line to do the right thing.
+  my $program = $config->default('gnuplot', 'program');
+  $program =~ s{ }{\\ }g;	# escape any spaces
+  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
   require Demeter::Plot::Gnuplot;
   $mode -> plot( Demeter::Plot::Gnuplot->new() );
   #if ((Demeter->po->version =~ m{\A5}) and (Demeter->co->default('gnuplot', 'terminal') eq 'wxt')) {
@@ -650,7 +655,12 @@ sub plot_with {
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISH if $old_plot_object;
-      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
+      ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
+      ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
+      ## line to do the right thing.
+      my $program = $config->default('gnuplot', 'program');
+      $program =~ s{ }{\\ }g;	# escape any spaces
+      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
       last SWITCH;
