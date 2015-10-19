@@ -20,29 +20,30 @@ use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use JSON qw(decode_json);
+
 use Demeter::IniReader;
+use Demeter::UI::Hephaestus::Common qw(enable_element);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_NOTEBOOK_PAGE_CHANGED EVT_TOGGLEBUTTON EVT_SPIN);
 use Demeter::UI::Wx::SpecialCharacters qw($ARING $OUMLAUT);
-
 use Demeter::UI::Wx::PeriodicTable;
 
-my $rkalzium = Demeter::IniReader->read_file(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-								 'Hephaestus', 'data', "kalziumrc.dem"));
-my %kalzium = %$rkalzium;
-#tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-#							      'Hephaestus', 'data', "kalziumrc.dem"));
-my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-								 'Hephaestus', 'data', "ionic_radii.dem")));
+my $datadir = File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data');
+
+## --- tab 0: general data
+my %kalzium = %{Demeter::IniReader->read_file(File::Spec->catfile($datadir, "kalziumrc.dem"))};
+
+## --- tab 1: Shannon ionic radii
+my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($datadir, "ionic_radii.dem")));
 my %ionic_radius_exists;
 foreach my $item (@$ionic_radii) {
   $ionic_radius_exists{$item->{element}} = 1;
 };
 
-my $neutron_xs = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-								'Hephaestus', 'data', "neutrons.dem")));
+## --- tab 2: thermal neutron lengths and cross sections
+my $neutron_xs = decode_json(Demeter->slurp(File::Spec->catfile($datadir, "neutrons.dem")));
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -71,7 +72,8 @@ sub new {
   my $panel = Wx::Panel->new($self->{tabs}, -1);
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{data} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+  $self->{data} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize,
+				    wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{data}->InsertColumn( 0, "Physical Properties", wxLIST_FORMAT_LEFT, 140 );
   $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 170);
   $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 150 );
@@ -85,10 +87,8 @@ sub new {
     ##$self->{data}->SetItemFont( $idx, Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
   $i = 0;
-  foreach my $row ('Orbital Configuration', 'Oxidation State',
-		   'Melting Point', 'Boiling Point',
-		   'Electronegativity', 'Ionization Energy',
-		   '2nd Ion. Energy') {
+  foreach my $row ('Orbital Configuration', 'Oxidation State', 'Melting Point', 'Boiling Point',
+		   'Electronegativity', 'Ionization Energy', '2nd Ion. Energy') {
     $self->{data}->SetItem( $i, 2, $row );
     $self->{data}->SetItem( $i++, 3, q{} );
     ##$self->{data}->SetItemFont( $idx, Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
@@ -124,18 +124,18 @@ sub new {
   $panel = Wx::Panel->new($self->{tabs}, -1);
   $box = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{radii} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
-  $self->{radii}->InsertColumn( 0, "Ionization", wxLIST_FORMAT_LEFT, 90 );
-  $self->{radii}->InsertColumn( 1, "Configuration", wxLIST_FORMAT_LEFT, 100 );
+  $self->{radii} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize,
+				     wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+  $self->{radii}->InsertColumn( 0, "Ionization",     wxLIST_FORMAT_LEFT, 90 );
+  $self->{radii}->InsertColumn( 1, "Configuration",  wxLIST_FORMAT_LEFT, 100 );
   $self->{radii}->InsertColumn( 2, "Coordination #", wxLIST_FORMAT_LEFT, 105 );
-  $self->{radii}->InsertColumn( 3, "Spin state", wxLIST_FORMAT_LEFT, 75 );
+  $self->{radii}->InsertColumn( 3, "Spin state",     wxLIST_FORMAT_LEFT, 75 );
   $self->{radii}->InsertColumn( 4, "Crystal radius", wxLIST_FORMAT_LEFT, 100 );
-  $self->{radii}->InsertColumn( 5, "Ionic radius", wxLIST_FORMAT_LEFT, 100 );
-  $self->{radii}->InsertColumn( 6, "Notes", wxLIST_FORMAT_LEFT, 70 );
+  $self->{radii}->InsertColumn( 5, "Ionic radius",   wxLIST_FORMAT_LEFT, 100 );
+  $self->{radii}->InsertColumn( 6, "Notes",          wxLIST_FORMAT_LEFT, 70 );
   $box -> Add($self->{radii}, 1, wxEXPAND|wxALL, 5);
 
   my $font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
-  #$font_size += 1 if Demeter->is_windows;
 
   my $text = Wx::StaticText->new($panel, -1, 'Notes: R=from r3 vs V plots  C=calculated  E=estimated  ?=doubtful  *=most reliable');
   $text -> SetFont(Wx::Font->new( $font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ));
@@ -153,7 +153,8 @@ sub new {
   $panel = Wx::Panel->new($self->{tabs}, -1);
   $box = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{neutrons} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+  $self->{neutrons} = Wx::ListView->new($panel, -1, wxDefaultPosition, wxDefaultSize,
+					wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{neutrons}->InsertColumn( 0, "Isotope",   wxLIST_FORMAT_LEFT, 70 );
   $self->{neutrons}->InsertColumn( 1, "Abundance", wxLIST_FORMAT_LEFT, 100 );
   $self->{neutrons}->InsertColumn( 2, "Coh b",     wxLIST_FORMAT_LEFT, 75 );
@@ -207,8 +208,8 @@ sub data_get_data {
   $self->{data}->SetItem(4, 3, $kalzium{$z}{EN});
   my $ie = ($kalzium{$z}{IE}) ? sprintf("%s eV", $kalzium{$z}{IE}) : q{};
   $self->{data}->SetItem(5, 3, $ie);
-  my $second = ($kalzium{$z}{IE2}) ? sprintf("%s eV", $kalzium{$z}{IE2}) : q{};
-  $self->{data}->SetItem(6, 3, $second);
+  my $sc = ($kalzium{$z}{IE2}) ? sprintf("%s eV", $kalzium{$z}{IE2}) : q{};
+  $self->{data}->SetItem(6, 3, $sc);
 };
 
 sub ionicradii_get_data {
@@ -271,7 +272,11 @@ sub unselect_data {
 sub select_tool {
   my ($self, $toss, $event) = @_;
   if ($self->{tabs}->GetSelection == 0) {
-    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    $self->{mossbauer}->SetValue(0);
+    $self->{by}->SetValue(0);
+    $self->{datelabel}->Enable(0);
+    $self->{date}->Enable(0);
     return;
   };
   foreach my $i (1 .. 118) {
@@ -283,7 +288,7 @@ sub select_tool {
     } elsif ($self->{tabs}->GetSelection == 2) {
       $function = sub{ exists( $neutron_xs->{$_[0]} ) };
     };
-    $::app->enable_element($self->{pt}, $el, $function);
+    enable_element($self->{pt}, $el, $function);
   };
 
 };
@@ -291,19 +296,19 @@ sub select_tool {
 sub show_mossbauer {
   my ($self, $event) = @_;
   if (not $self->{mossbauer}->GetValue) {
-    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     return;
   };
   $self->{by}->SetValue(0);
   foreach my $z (1 .. 118) {
-    $::app->enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{Mossbauer} !~ m{\A(?:|silent)\z}i }); # not '' or Silent
+    enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{Mossbauer} !~ m{\A(?:|silent)\z}i }); # not '' or Silent
   };
 };
 
 sub show_date {
   my ($self, $event) = @_;
   if (not $self->{by}->GetValue) {
-    $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     $self->{datelabel}->Enable(0);
     $self->{date}->Enable(0);
     return;
@@ -315,10 +320,10 @@ sub show_date {
 };
 sub increment_date {
   my ($self, $event) = @_;
-  my $year = 1660 + 10*$self->{date}->GetValue;
+  my $year = 1660 + 10*$self->{date}->GetValue; # discovery of phosphorus in 1669
   $self->{datelabel}->SetLabel("$year");
   foreach my $z (1 .. 118) {
-    $::app->enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{date} < $year });
+    enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{date} < $year });
   };
 };
 
@@ -356,8 +361,6 @@ This utility uses a periodic table as the interface to chemical and
 physcial data of the elements.  Clicking on an element in the periodic
 table will display that element's data.
 
-=head1 CONFIGURATION
-
 
 =head1 DEPENDENCIES
 
@@ -366,10 +369,6 @@ Demeter's dependencies are in the F<Build.PL> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
-
-=item *
-
-Size of the ListView widget is not chosen optimally.
 
 =item *
 

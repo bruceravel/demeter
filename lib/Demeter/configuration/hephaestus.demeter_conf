@@ -59,8 +59,7 @@ offvalue=0
 default=false
 restart=1
 description
-  Enable or disable beamline customizations.  Don't forget to edit
-  Hephaestus' beamline.ini file.
+  Enable or disable beamline customizations.
 
 variable=beamline_name
 type=string
@@ -83,6 +82,17 @@ default=23000
 units=eV
 description
   The upper bound of the energy range of yor beamline.
+
+variable=beamline_show_m
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  Display the button for beamline customization for M edges
+
+
 
 # variable=units
 # type=list

@@ -376,13 +376,6 @@ sub document {
   };
 };
 
-## arguments: $::app, pointer to periodic table widget, element symbol,
-## function reference that takes $element as its argument and evaluates T/F
-sub enable_element {
-  my ($self, $pt, $element, $function) = @_;
-  $pt->{$element}->Enable($function->($element));
-};
-
 
 sub on_about {
   my ($self) = @_;

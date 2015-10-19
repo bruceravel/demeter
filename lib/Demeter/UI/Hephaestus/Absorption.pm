@@ -22,7 +22,7 @@ use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 use Demeter::UI::Wx::PeriodicTable;
-use Demeter::UI::Hephaestus::Common qw(e2l);
+use Demeter::UI::Hephaestus::Common qw(e2l enable_element);
 use Demeter::UI::Wx::SpecialCharacters qw($GAMMA $ARING);
 use Demeter::Constants qw($PI $HBAR);
 
@@ -67,12 +67,13 @@ sub new {
   ## horizontal box for containing the tables of element data
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
+  my $vv = Wx::BoxSizer->new( wxVERTICAL );
   ## -------- Element data
   $self->{databox} = Wx::StaticBox->new($self, -1, ' Element data', wxDefaultPosition, wxDefaultSize);
   $self->{databoxsizer} = Wx::StaticBoxSizer->new( $self->{databox}, wxVERTICAL );
   $self->{data} = Wx::ListCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{data}->InsertColumn( 0, "Property", wxLIST_FORMAT_LEFT, 65 );
-  $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 100  );
+  $self->{data}->InsertColumn( 1, "Value",    wxLIST_FORMAT_LEFT, 100);
   my $i = 0;
   foreach my $row (qw(Name Number Weight Density)) {
     my $idx = $self->{data}->InsertImageStringItem($i, $row, 0);
@@ -80,7 +81,7 @@ sub new {
     $self->{data}->SetItem( $idx, 1, q{} );
     ##$self->{data}->SetItemFont( $idx, 0, Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
-  $self->{databoxsizer} -> Add($self->{data}, 1, wxGROW|wxALL, 0);
+  $self->{databoxsizer} -> Add($self->{data}, 1, wxGROW|wxALL, 2);
   EVT_LIST_ITEM_SELECTED($self->{data}, $self->{data}, sub{unselect_data(@_, $self)});
 
 
@@ -93,29 +94,46 @@ sub new {
   EVT_KEY_DOWN( $self->{filterelement}, sub{on_key_down(@_, $self)} );
 
   $self->{filter} = Wx::Button->new( $self, -1, 'Plot filter', wxDefaultPosition, wxDefaultSize );
-  $self->{databoxsizer} -> Add($self->{filter}, 0, wxEXPAND|wxBOTTOM, 5);
+  $self->{databoxsizer} -> Add($self->{filter}, 0, wxEXPAND|wxALL, 2);
   EVT_BUTTON( $self, $self->{filter}, \&filter_plot );
   $self->{filter}->Enable(0);
 
+  $vv->Add($self->{databoxsizer}, 1, wxGROW|wxALL, 0);
+
   if (Demeter->co->default(qw(hephaestus enable_beamline))) {
+
     my $beamline = Demeter->co->default(qw(hephaestus beamline_name));
-    $self->{beamline_k} = Wx::ToggleButton->new( $self, -1, $beamline . ': Show K edges', wxDefaultPosition, wxDefaultSize );
-    $self->{databoxsizer} -> Add($self->{beamline_k}, 0, wxEXPAND|wxBOTTOM, 2);
-    $self->{beamline_l} = Wx::ToggleButton->new( $self, -1, $beamline . ': Show L edges', wxDefaultPosition, wxDefaultSize );
-    $self->{databoxsizer} -> Add($self->{beamline_l}, 0, wxEXPAND|wxBOTTOM, 2);
+    $self->{blbox} = Wx::StaticBox->new($self, -1, ' '.$beamline.': show edge', wxDefaultPosition, wxDefaultSize);
+    $self->{blboxsizer} = Wx::StaticBoxSizer->new( $self->{blbox}, wxHORIZONTAL );
+
+    $vv -> Add($self->{blboxsizer}, 0, wxEXPAND|wxALL, 0);
+
+    my $width = (Demeter->co->default(qw(hephaestus beamline_show_m))) ? 40 : 60;
+
+    $self->{beamline_k} = Wx::ToggleButton->new( $self, -1, 'K', wxDefaultPosition, [$width,-1] );
+    $self->{blboxsizer} -> Add($self->{beamline_k}, 1, wxLEFT|wxBOTTOM, 2);
     EVT_TOGGLEBUTTON($self, $self->{beamline_k}, sub{$self->show_beamline('k')});
+
+    $self->{beamline_l} = Wx::ToggleButton->new( $self, -1, 'L', wxDefaultPosition, [$width,-1] );
+    $self->{blboxsizer} -> Add($self->{beamline_l}, 1, wxLEFT|wxRIGHT|wxBOTTOM, 2);
     EVT_TOGGLEBUTTON($self, $self->{beamline_l}, sub{$self->show_beamline('l')});
+
+    $self->{beamline_m} = Wx::ToggleButton->new( $self, -1, 'M', wxDefaultPosition, [$width,-1] );
+    $self->{blboxsizer} -> Add($self->{beamline_m}, 1, wxRIGHT|wxBOTTOM, 2);
+    EVT_TOGGLEBUTTON($self, $self->{beamline_m}, sub{$self->show_beamline('m')});
+    $self->{beamline_m} -> Show(0) if not  Demeter->co->default(qw(hephaestus beamline_show_m));
+
   };
 
-  $hbox -> Add($self->{databoxsizer}, 11, wxGROW|wxALL, 5);
+  $hbox -> Add($vv, 11, wxGROW|wxALL, 5);
 
   ## -------- Edge energies
   $self->{edgebox} = Wx::StaticBox->new($self, -1, ' Absorption edges', wxDefaultPosition, wxDefaultSize);
   $self->{edgeboxsizer} = Wx::StaticBoxSizer->new( $self->{edgebox}, wxVERTICAL );
   $self->{edge} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
-  $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 55 );
-  $self->{edge}->InsertColumn( 1, "Energy", wxLIST_FORMAT_RIGHT, 70  );
-  $self->{edge}->InsertColumn( 2, "$GAMMA(ch)", wxLIST_FORMAT_RIGHT, 55  );
+  $self->{edge}->InsertColumn( 0, "Edge",       wxLIST_FORMAT_LEFT,  55 );
+  $self->{edge}->InsertColumn( 1, "Energy",     wxLIST_FORMAT_RIGHT, 70 );
+  $self->{edge}->InsertColumn( 2, "$GAMMA(ch)", wxLIST_FORMAT_RIGHT, 55 );
   $i = 0;
   foreach my $row (@EDGELIST) {
     my $idx = $self->{edge}->InsertImageStringItem($i, $row, 0);
@@ -124,17 +142,17 @@ sub new {
   };
   EVT_LIST_ITEM_SELECTED($self->{edge}, $self->{edge}, sub{select_edge(@_, $self)});
   EVT_LIST_ITEM_ACTIVATED($self->{edge}, $self->{edge}, sub{highlight_lines(@_, $self)});
-  $self->{edgeboxsizer} -> Add($self->{edge}, 1, wxGROW|wxALL, 0);
+  $self->{edgeboxsizer} -> Add($self->{edge}, 1, wxGROW|wxALL, 2);
   $hbox -> Add($self->{edgeboxsizer}, 13, wxGROW|wxALL, 5);
 
   ## -------- Line energies
   $self->{linebox} = Wx::StaticBox->new($self, -1, ' Fluorescence lines', wxDefaultPosition, wxDefaultSize);
   $self->{lineboxsizer} = Wx::StaticBoxSizer->new( $self->{linebox}, wxVERTICAL );
   $self->{line} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES);
-  $self->{line}->InsertColumn( 0, "Line", wxLIST_FORMAT_LEFT, 50 );
-  $self->{line}->InsertColumn( 1, "Transition" );
-  $self->{line}->InsertColumn( 2, "Energy", wxLIST_FORMAT_RIGHT, 70 );
-  $self->{line}->InsertColumn( 3, "Strength", wxLIST_FORMAT_RIGHT );
+  $self->{line}->InsertColumn( 0, "Line",       wxLIST_FORMAT_LEFT,  50 );
+  $self->{line}->InsertColumn( 1, "Transition", wxLIST_FORMAT_LEFT,  70 );
+  $self->{line}->InsertColumn( 2, "Energy",     wxLIST_FORMAT_RIGHT, 70 );
+  $self->{line}->InsertColumn( 3, "Strength",   wxLIST_FORMAT_RIGHT, 65 );
   $i = 0;
   foreach my $row (@LINELIST) {
     my $idx = $self->{line}->InsertImageStringItem($i, $row, 0);
@@ -143,7 +161,7 @@ sub new {
   };
   EVT_LIST_ITEM_SELECTED($self->{line}, $self->{line}, sub{select_line(@_, $self)});
   EVT_LIST_ITEM_ACTIVATED($self->{line}, $self->{line}, sub{highlight_edge(@_, $self)});
-  $self->{lineboxsizer} -> Add($self->{line}, 2, wxGROW|wxALL, 0);
+  $self->{lineboxsizer} -> Add($self->{line}, 2, wxGROW|wxALL, 2);
   $hbox -> Add($self->{lineboxsizer}, 18, wxGROW|wxALL, 5);
 
 
@@ -161,27 +179,43 @@ sub show_beamline {
   ## K toggle is (de)pressed
   if (lc($edge) eq 'k') {
     $self->{beamline_l} -> SetValue(0);
+    $self->{beamline_m} -> SetValue(0);
     if ($self->{beamline_k}->GetValue) {
       foreach my $el (map {get_symbol($_)} (1 .. 118)) {
 	my $en = Xray::Absorption -> get_energy($el, 'k');
-	$::app->enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
-						      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
+	enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
+					      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
       };
     } else {
-      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+      enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     };
 
   ## L toggle is (de)pressed
   } elsif (lc($edge) =~ m{\Al}) {
     $self->{beamline_k} -> SetValue(0);
+    $self->{beamline_m} -> SetValue(0);
     if ($self->{beamline_l}->GetValue) {
       foreach my $el (map {get_symbol($_)} (1 .. 118)) {
 	my $en = Xray::Absorption -> get_energy($el, 'l3');
-	$::app->enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
-						      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
+	enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
+					      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
       };
     } else {
-      $::app->enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+      enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
+    };
+
+  ## M toggle is (de)pressed
+  } elsif (lc($edge) =~ m{\Am}) {
+    $self->{beamline_k} -> SetValue(0);
+    $self->{beamline_l} -> SetValue(0);
+    if ($self->{beamline_m}->GetValue) {
+      foreach my $el (map {get_symbol($_)} (1 .. 118)) {
+	my $en = Xray::Absorption -> get_energy($el, 'm5');
+	enable_element($self->{pt}, $el, sub{ $en>=Demeter->co->default(qw(hephaestus beamline_emin)) and
+					      $en<=Demeter->co->default(qw(hephaestus beamline_emax)) })
+      };
+    } else {
+      enable_element($self->{pt}, get_symbol($_), sub{1}) foreach (1 .. 118);
     };
   };
 };
@@ -426,6 +460,9 @@ works.
 
 =head1 CONFIGURATION
 
+Beamline configuration via the C<enable_beamline>, C<beamline_name>,
+C<beamline_emin>, and C<beamline_emax> configuration parameters in the
+C<Hephaestus> group.
 
 =head1 DEPENDENCIES
 
