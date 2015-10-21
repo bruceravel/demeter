@@ -208,8 +208,7 @@ if ($backend eq 'gnuplot') {
   ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
   ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
   ## line to do the right thing.
-  my $program = $config->default('gnuplot', 'program');
-  $program =~ s{ }{\\ }g;	# escape any spaces
+  my $program = q{"} . $config->default('gnuplot', 'program') . q{"};
   $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
   require Demeter::Plot::Gnuplot;
   $mode -> plot( Demeter::Plot::Gnuplot->new() );
@@ -658,8 +657,7 @@ sub plot_with {
       ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
       ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
       ## line to do the right thing.
-      my $program = $config->default('gnuplot', 'program');
-      $program =~ s{ }{\\ }g;	# escape any spaces
+      my $program = q{"} . $config->default('gnuplot', 'program') . q{"};
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
