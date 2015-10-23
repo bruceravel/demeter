@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.23.</p>
+<p>This documentation refers to Demeter version 0.9.24.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
@@ -95,6 +95,15 @@ throughout Hephaestus.</p>
 		<dd><p>Return a string giving a description of Hephaestus' operating
 environment, including version numbers for perl, WxWidgets, and
 WxPerl.</p></dd>
+	<dt><code>enable_element</code></dt>
+		<dd><p>Enable/disable a specific element on a periodic table given a code
+reference that returns a true/false value.</p></dd>
+<dd><pre>   enable_element($pt, $el, $coderef)
+
+</pre></dd>		<dd><p>The <code>$coderef</code> is called with <code>$el</code> as its argument.  <code>el</code> is the
+first-letter capitalized element symbol.  <code>$pt</code> is a pointer to an
+instance of a periodic table widget.  The state of the <code>$el</code> button
+on $&lt;pt&gt; will be set.</p></dd>
 </dl>
 <h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 

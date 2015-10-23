@@ -376,13 +376,6 @@ sub document {
   };
 };
 
-## arguments: $::app, pointer to periodic table widget, element symbol,
-## function reference that takes $element as its argument and evaluates T/F
-sub enable_element {
-  my ($self, $pt, $element, $function) = @_;
-  $pt->{$element}->Enable($function->($element));
-};
-
 
 sub on_about {
   my ($self) = @_;
@@ -453,7 +446,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,4 @@
-## This pod document is for Demeter version 0.9.23.
+## This pod document is for Demeter version 0.9.24.
 
 =head1 NAME
 
@@ -6,7 +6,7 @@ Seeking help about XAS or about the software
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 OVERVIEW
 

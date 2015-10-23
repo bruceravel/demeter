@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.23');
+our $VERSION = version->new('0.9.24');
 print("Demeter version ", $VERSION, $/ x 2) if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ############################
@@ -205,7 +205,11 @@ if ($backend eq 'gnuplot') {
     die $message if ($message);
   };
   $mode -> template_plot('gnuplot');
-  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
+  ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
+  ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
+  ## line to do the right thing.
+  my $program = q{"} . $config->default('gnuplot', 'program') . q{"};
+  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $program, no_error_log=>1) );
   require Demeter::Plot::Gnuplot;
   $mode -> plot( Demeter::Plot::Gnuplot->new() );
   #if ((Demeter->po->version =~ m{\A5}) and (Demeter->co->default('gnuplot', 'terminal') eq 'wxt')) {
@@ -650,7 +654,11 @@ sub plot_with {
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISH if $old_plot_object;
-      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
+      ## if the path to the gnuplot executable has a space, the pipe to gnuplot is not opened correctly.
+      ## see line 146 of Graphics::GnuplotIF.  the space has to be escaped for that shellcommand at that
+      ## line to do the right thing.
+      my $program = q{"} . $config->default('gnuplot', 'program') . q{"};
+      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $program, no_error_log=>1) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
       last SWITCH;
@@ -953,7 +961,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23
+This documentation refers to Demeter version 0.9.24
 
 =head1 SYNOPSIS
 

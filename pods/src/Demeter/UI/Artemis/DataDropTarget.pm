@@ -44,7 +44,7 @@ Demeter::UI::Artemis::FileDropTarget - An Athena project file  drop target for A
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 

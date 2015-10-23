@@ -27,7 +27,7 @@ use Wx qw(wxVERSION_STRING);
 require Exporter;
 @ISA       = qw(Exporter);
 #@EXPORT    = qw(e2l);
-@EXPORT_OK = qw(e2l hversion hcopyright hdescription);
+@EXPORT_OK = qw(e2l hversion hcopyright hdescription enable_element);
 
 sub hversion {
   return $Demeter::VERSION;
@@ -48,6 +48,14 @@ sub e2l {
   return 2*$PI*$HBARC / $_[0];
 };
 
+## arguments: $::app, pointer to periodic table widget, element symbol,
+## function reference that takes $element as its argument and evaluates T/F
+sub enable_element {
+  my ($pt, $element, $function) = @_;
+  $pt->{$element}->Enable($function->($element));
+};
+
+
 
 =head1 NAME
 
@@ -55,7 +63,7 @@ Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 
@@ -91,6 +99,18 @@ Return a string giving the Hephaestus copyright statement.
 Return a string giving a description of Hephaestus' operating
 environment, including version numbers for perl, WxWidgets, and
 WxPerl.
+
+=item C<enable_element>
+
+Enable/disable a specific element on a periodic table given a code
+reference that returns a true/false value.
+
+   enable_element($pt, $el, $coderef)
+
+The C<$coderef> is called with C<$el> as its argument.  C<el> is the
+first-letter capitalized element symbol.  C<$pt> is a pointer to an
+instance of a periodic table widget.  The state of the C<$el> button
+on $<pt> will be set.
 
 =back
 

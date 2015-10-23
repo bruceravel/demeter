@@ -29,6 +29,7 @@ use base 'Wx::Panel';
 
 #use Demeter;
 use Demeter::UI::Wx::PeriodicTable;
+use Demeter::UI::Hephaestus::Common qw(enable_element);
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -39,7 +40,7 @@ sub new {
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
   foreach my $i (1 .. 118) {
-    $::app->enable_element($pt, get_symbol($_), sub{$_>3 && $_<=92}) foreach (1 .. 118);
+    enable_element($pt, get_symbol($_), sub{$_>3 && $_<=92}) foreach (1 .. 118);
   };
 
   $vbox -> Add( 20, 10, 0, wxGROW );
@@ -209,7 +210,7 @@ Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 

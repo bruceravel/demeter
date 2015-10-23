@@ -61,7 +61,7 @@ Demeter::UI::Athena::ChangeDatatype - A dialog for changing data type in Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 

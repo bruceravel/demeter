@@ -225,8 +225,13 @@ sub horae_feff {
   $feff -> name($args{lab});
   $feff -> postcrit(0);
   $feff -> set(workspace=>File::Spec->catfile($unzip, $old_path), screen=>0);
-  $feff -> file(File::Spec->catfile($unzip, $old_path, 'feff.inp'));
-
+  if (-e File::Spec->catfile($unzip, $old_path, 'feff.inp')) {
+    $feff -> file(File::Spec->catfile($unzip, $old_path, 'feff.inp'));
+  } elsif (-e File::Spec->catfile($unzip, $old_path, 'FEFF.INP')) {
+    $feff -> file(File::Spec->catfile($unzip, $old_path, 'FEFF.INP'));
+  };				# should downcase anything =~ m{feff\.inp}i
+  #$feff->potph;
+  
   #$feff->set_mode(theory=>$feff);
   #print $feff->template("feff", 'full');
   #$feff->set_mode(theory=>q{});
@@ -281,7 +286,7 @@ Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter f
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 DESCRIPTION
 
