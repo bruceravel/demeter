@@ -5,8 +5,19 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.23   15 October   2015
+** 0.9.24   23 October   2015
+*** Demeter
+   - Fix a problem related to spaces in path names when opening the
+     pipe to gnuplot
 
+*** Artemis
+   - Half-hearted attempt to fix an odd edge case in importing
+     old-style project files with a =FEFF.INP= file (in caps).
+
+*** Hephaestus
+   - A few changes to display of beamline customizations
+
+** 0.9.23   15 October   2015
 *** Athena
    - In plugin configuration tool, fix crashiness of "reset all"
      button (thanks to roentgenium, issue #23) Note: in the end, the

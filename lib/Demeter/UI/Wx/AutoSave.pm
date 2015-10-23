@@ -60,7 +60,7 @@ Demeter::UI::Wx::AutoSave - A Wx dialog for restoring an autosave file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 

@@ -207,7 +207,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.23.
+This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 
