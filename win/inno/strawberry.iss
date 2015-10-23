@@ -1,7 +1,7 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.23"
+#define MyAppVersion "0.9.24"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
