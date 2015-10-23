@@ -210,7 +210,7 @@ if ($backend eq 'gnuplot') {
   ## line to do the right thing.
   my $program = $config->default('gnuplot', 'program');
   $program =~ s{ }{\\ }g;	# escape any spaces
-  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
+  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $program, no_error_log=>1) );
   require Demeter::Plot::Gnuplot;
   $mode -> plot( Demeter::Plot::Gnuplot->new() );
   #if ((Demeter->po->version =~ m{\A5}) and (Demeter->co->default('gnuplot', 'terminal') eq 'wxt')) {
@@ -660,7 +660,7 @@ sub plot_with {
       ## line to do the right thing.
       my $program = $config->default('gnuplot', 'program');
       $program =~ s{ }{\\ }g;	# escape any spaces
-      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $program) );
+      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $program, no_error_log=>1) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
       last SWITCH;
