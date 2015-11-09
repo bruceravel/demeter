@@ -845,6 +845,7 @@ sub OnMenuClick {
       $app->{main}->status("Closing project ...", "wait");
       my $busy = Wx::BusyCursor->new();
       $app->Remove('all');
+      $app->{main}->{Summer}->Reset if exists $app->{main}->{Summer};
       undef $busy;
       last SWITCH;
     };

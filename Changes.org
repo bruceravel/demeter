@@ -5,6 +5,11 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
+** 0.9.25   XX November  2015
+*** Athena
+   - Menus of groups names not updating correctly in data summation
+     tool. (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012833.html][Matteo Busi]])
+
 ** 0.9.24   23 October   2015
 *** Demeter
    - Fix a problem related to spaces in path names when opening the
