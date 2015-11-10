@@ -107,6 +107,11 @@ use MooseX::Types::LaxNum;
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
+if (Demeter->is_windows) {
+  with 'Demeter::File::Windows';
+} else {
+  with 'Demeter::File::Common';
+};
 with 'Demeter::Project';
 my $toss = Demeter->dot_folder;
 ##print $toss, $/;

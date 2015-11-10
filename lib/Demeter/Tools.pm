@@ -22,7 +22,6 @@ use Moose::Role;
 use Carp;
 #use Demeter::GDS;
 use Regexp::Assemble;
-use Fcntl qw(:flock);
 use List::Util qw(sum);
 use List::MoreUtils qw(any);
 use Math::Random;
@@ -247,21 +246,6 @@ sub write_file {
   return $file;
 };
 
-sub readable {
-  my ($self, $file) = @_;
-  return "$file does not exist"  if (not -e $file);
-  return "$file is not readable" if (not -r $file);
-  return "$file is locked"       if $self->locked($file);
-  return 0;
-};
-
-sub locked {
-  my ($self, $file) = @_;
-  my $rc = open(my $HANDLE, $file);
-  $rc = flock($HANDLE, LOCK_EX|LOCK_NB);
-  close($HANDLE);
-  return !$rc;
-};
   # if (open my $fh, "+<", $file) {
   #   close $fh;
   # } else {
