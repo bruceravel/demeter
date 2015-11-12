@@ -583,7 +583,7 @@ sub save {
   my $hash = {1=>'energy eV', 2=>'data', 3=>'fit', 4=>'residual'};
   $hash->{1} = 'wavelength inverse Angstrom' if $self->space eq 'chi';
   my $i=4;
-  foreach my $st (@{ $self->standards }) {
+  foreach my $st (sort {$b cmp $a} @{ $self->standards }) {
     ++$i;
     (my $name = $st->name) =~ s{\s+}{_}g;
     $hash->{$i} = $name;
@@ -737,7 +737,7 @@ sub combi_report {
 sub report_excel {
   my ($self, $fname, $which) = @_;
   my @stats = qw(rfactor chinu chisqr nvarys scaleby);
-  my @stand = keys %{ $self->options };
+  my @stand = sort {$b cmp $a} keys %{ $self->options };
   my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
   #@names = map { $_ =~ s{,}{ }g; $_ } @names;
 
@@ -816,7 +816,7 @@ sub report_excel {
 sub report_csv {
   my ($self, $fname, $which) = @_;
   my @stats = qw(rfactor chinu chisqr nvarys scaleby);
-  my @stand = keys %{ $self->options };
+  my @stand = sort {$b cmp $a} keys %{ $self->options };
   my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
   @names = map { $_ =~ s{,}{ }g; $_ } @names;
   open(my $FH, '>', $fname);

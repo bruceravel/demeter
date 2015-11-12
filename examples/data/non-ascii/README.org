@@ -5,16 +5,16 @@ The files in this directory are copies of =../fe.060= with names
 changed to use different character sets.
 
 The file names are not necessarily meaningful.  They are chosen to
-demonstrate and test Athena's response to such files.  For instance,
-the Greek filename is just a sequence of greek characters.  The
-hiragana, Cyrillic, and Arabic examples are things I coped and pasted
-from a [[http://stackoverflow.com/questions/2309215/how-can-i-substitute-unicode-characters-with-ascii-in-perl][Stack Overflow post]] about [[https://metacpan.org/pod/Text::Unidecode][Text::Unidecode]].
+demonstrate and test Athena's response to such files.  Many of these
+examples use words I copied and pasted from a [[http://stackoverflow.com/questions/2309215/how-can-i-substitute-unicode-characters-with-ascii-in-perl][Stack Overflow post]]
+about [[https://metacpan.org/pod/Text::Unidecode][Text::Unidecode]].
 
 | alphabet                     | file name        | decodes to        |
 |------------------------------+------------------+-------------------|
 | Roman (Portuguese)           | Calibração.060   | Calibracao.060    |
+| Roman (Spanish)              | muñeco.060       | muneco.060        |
 | Roman (German)               | groß.060         | gross.060         |
-| Greek                        | χρονος.060       | xpovoc.060        |
+| Greek                        | χρονος.060       | khronos.060       |
 | hiragana (Japanese)          | みせる.060       | miseru.060        |
 | Cyrillic (Russian)           | Здравствуйте.060 | Zdravstvuitie.060 |
 | Arabic (with BOM)            | السلام.060       | lslm.060          |

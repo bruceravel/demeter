@@ -11,5 +11,5 @@ Reduced chi-square = {$S->chinu}
 
 .    standard             weight           e0
 ========================================================
-{foreach $st (@{ $S->standards }) {$OUT .= sprintf(".   %-20s  %.3f (%.3f)    %.3f (%.3f)\n", $st->name, $S->weight($st), $S->e0($st)) }}
+{foreach $st (sort {$b cmp $a} @{ $S->standards }) {$OUT .= sprintf(".   %-20s  %.3f (%.3f)    %.3f (%.3f)\n", $st->name, $S->weight($st), $S->e0($st)) }}
 .         sum ........... {$S->scaleby}

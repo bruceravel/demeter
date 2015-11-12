@@ -9,6 +9,13 @@
 *** Athena
    - Menus of groups names not updating correctly in data summation
      tool. (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012833.html][Matteo Busi]])
+   - Attempt to handle non-US-ASCII characters in file names
+     gracefully using wxWindows.  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012845.html][Marcelo Eduardo Alves]] for
+     bringing this to my attention)
+
+*** Demeter
+   - When saving LCF results, sort the standards alphabetically.
+     (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])
 
 ** 0.9.24   23 October   2015
 *** Demeter

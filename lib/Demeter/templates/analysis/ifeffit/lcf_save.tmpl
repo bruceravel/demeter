@@ -1,6 +1,6 @@
 {
-  $components = join(" ", grep {$_ =~ s{ +}{_}g; $_} map {$_->name} (@{$S->standards}));
-  @list = map {$_->group} (@{$S->standards});
+  $components = join(" ", grep {$_ =~ s{ +}{_}g; $_} sort {$b cmp $a} map {$_->name} (@{$S->standards}));
+  @list = sort {$b cmp $a} map {$_->group} (@{$S->standards});
   $standards = $S->group . '.' . join(', '.$S->group.'.', @list);
   $x = ($S->space =~ m{\Achi}) ? 'k' : 'energy';
   q{}
