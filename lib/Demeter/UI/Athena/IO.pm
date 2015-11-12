@@ -202,6 +202,8 @@ sub Import {
       my $n = $app->{main}->{list}->GetCount;
       my $thisdata = $app->{main}->{list}->GetIndexedData($n-1);
       $thisdata->source($original);
+      chdir(dirname($original));
+      $app->{main}->status("Imported ".$thisdata->name." from $original"); # reissue status bar message
       unlink $deunifile;
     };
     if ($retval == 0) {		# bail on a file sequence if one gets canceled
