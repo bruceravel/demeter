@@ -99,6 +99,7 @@ my $build = DemeterBuilder
                                 'Spreadsheet::WriteExcel'   => '0',
                                 'Statistics::Descriptive'   => '0',
 				'Text::Template'	    => '0',
+				'Text::Unidecode'	    => '0',
 				'Tree::Simple'		    => '0',
 				'Want'			    => '0',
 				'YAML::Tiny'		    => '0',

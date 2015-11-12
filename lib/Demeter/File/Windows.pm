@@ -2,7 +2,9 @@ package Demeter::File::Windows;
 
 use Moose::Role;
 use Fcntl qw(:flock);
-use Win32::Unicode::File qw(file_type);
+use File::Basename;
+use Text::Unidecode;
+use Win32::Unicode::File qw(file_type copyW);
 
 sub readable {
   my ($self, $file) = @_;
@@ -20,6 +22,22 @@ sub locked {
   $rc = flock($HANDLE, LOCK_EX|LOCK_NB);
   close($HANDLE);
   return !$rc;
+};
+
+sub is_unicode {
+  my ($self, $file) = @_;
+  if ($self->readable($file) and (not -r $file)) {
+    ## likely indicator of a problematic unicode file name
+    return 1;
+  };
+  return 0;
+};
+
+sub unicopy {
+  my ($self, $file) = @_;
+  my $target = File::Spec->catfile(Demeter->stash_folder, unidecode(basename($file)));
+  copyW($file, $target);
+  return $target;
 };
 
 
@@ -50,6 +68,10 @@ Return true if a file can be read.
 =item C<locked>
 
 Return true if a file is locked.
+
+=item C<unicopy>
+
+Safely copy a file to the stash folder.  Returns the safe file path+name.
 
 =back
 
