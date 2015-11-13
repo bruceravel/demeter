@@ -1471,7 +1471,7 @@ sub replace {
   my $dnum = $datapage->{dnum};
   my $was = $datapage->{data}->name;
   $datapage->{data}->DEMOLISH;
-  my ($file, $prj, $record) = prjrecord();
+  my ($file, $prj, $record, $unidecoded, $original) = prjrecord();
   if (not $prj) {
     $datapage->{PARENT}->status("Replacing data canceled" );
     return;
@@ -1502,6 +1502,10 @@ sub replace {
     $datapage->{PARENT}->status("Reimported \"$was\"" );
   } else {
     $datapage->{PARENT}->status("Replaced \"$was\" with \"$is\"" );
+  };
+  if ($unidecoded) {
+    unlink $file;
+    #$file = $original;
   };
 };
 

@@ -21,6 +21,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use List::MoreUtils qw{any};
+use Text::Unidecode;
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -50,6 +51,7 @@ sub Import {
 sub prjrecord {
   my ($fname, $choice) = @_;
   my $file = $fname;
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Athena project", cwd, q{},
 				  "Athena project (*.prj)|*.prj|All files (*)|*",
@@ -60,6 +62,13 @@ sub prjrecord {
       return;
     };
     $file = $fd->GetPath;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $rframes->{main}->status("Moved $file to $deunifile");
+      $original = $file;
+      $file = $deunifile;
+    };
   }
   $file = Demeter->follow_link($file);
   if ((not Demeter->is_prj($file)) and (not Demeter->is_json($file))) {
@@ -78,7 +87,7 @@ sub prjrecord {
     return (q{}, q{}, 0);
   };
 
-  return ($file, $rframes->{prj}->{prj}, $rframes->{prj}->{record});
+  return ($file, $rframes->{prj}->{prj}, $rframes->{prj}->{record}, $unidecoded, $original);
 };
 
 ##############################################################################################################
@@ -92,7 +101,7 @@ sub _prj {
     $choice = $2;
     $fname =~ s{$1}{};
   };
-  my ($file, $prj, $record) = prjrecord($fname, $choice);
+  my ($file, $prj, $record, $unidecoded, $original) = prjrecord($fname, $choice);
 
   if (defined($record) and ($record < 0)) {
     return;
@@ -143,6 +152,10 @@ sub _prj {
   $prj->DESTROY;
   $rframes->{prj} -> Destroy;
   delete $rframes->{prj};
+  if ($unidecoded) {
+    unlink $file;
+    $file = $original;
+  };
   Demeter->push_mru("athena", $file, $record);
   autosave();
   chdir dirname($file);
@@ -154,6 +167,7 @@ sub _feff {
   my ($fname) = @_;
   ## also yaml data
   my $file = $fname;
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   if (not $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import crystal data", cwd, q{},
 				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files (*)|*",
@@ -164,6 +178,13 @@ sub _feff {
       return;
     };
     $file = $fd->GetPath;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $rframes->{main}->status("Moved $file to $deunifile");
+      $original = $file;
+      $file = $deunifile;
+    };
   };
   if (not -e $file) {
     $rframes->{main}->status("$file does not exist.");
@@ -178,6 +199,12 @@ sub _feff {
   return if (not defined($fnum));
   $rframes->{$fnum} -> Show(1);
   autosave();
+  if ($unidecoded) {
+    unlink $file;
+    $file = $original;
+  };
+  Demeter -> push_mru("feff", $file);
+  chdir dirname($file);
   $rframes->{$fnum}->status("Imported crystal data from " . basename($file));
   $rframes->{main}->{$fnum}->SetValue(1);
 };
@@ -186,6 +213,7 @@ sub _feff {
 sub _chi {
   my ($fname) = @_;
   my $file = $fname;
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import $CHI(k) data", cwd, q{},
 				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files (*)|*",
@@ -196,6 +224,13 @@ sub _chi {
       return;
     };
     $file = $fd->GetPath;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $rframes->{main}->status("Moved $file to $deunifile");
+      $original = $file;
+      $file = $deunifile;
+    };
   };
   if (not Demeter->is_data($file)) {
     $rframes->{main}->status("$file is not a column data file.", 'error');
@@ -209,8 +244,12 @@ sub _chi {
   $data->plot_window('k') if $data->po->plot_win;
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
-  Demeter->push_mru("chik", $file);
   autosave();
+  if ($unidecoded) {
+    unlink $file;
+    $file = $original;
+  };
+  Demeter->push_mru("chik", $file);
   chdir dirname($file);
   $rframes->{main}->status("Imported $file as $CHI(k) data.");
 };
@@ -218,6 +257,7 @@ sub _chi {
 sub _dpj {
   my ($fname, $nomru, $postcrit) = @_;
   my $file = $fname;
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   $nomru ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Demeter fit serialization file", cwd, q{},
@@ -229,6 +269,13 @@ sub _dpj {
       return;
     };
     $file = $fd->GetPath;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $rframes->{main}->status("Moved $file to $deunifile");
+      $original = $file;
+      $file = $deunifile;
+    };
   };
   $file = Demeter->follow_link($file);
   if (not Demeter->is_zipproj($file,0, 'dpj')) {
@@ -321,10 +368,14 @@ sub _dpj {
     $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
     $rframes->{History}->OnSelect;
   };
+  if ($unidecoded) {
+    unlink $file;
+    $file = $original;
+  };
   if (not $nomru) {
     $fit->push_mru("fit_serialization", $file) ;
     $rframes->{main}->{projectpath} = $file;
-    $rframes->{main}->{projectname} = basename($file, '.dpj');
+    $rframes->{main}->{projectname} = unidecode(basename($file, '.dpj'));
     $rframes->{main}->status("Imported fit serialization $file.");
   };
   my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
@@ -368,7 +419,6 @@ EOH
     $rframes->{main}->status("Not importing an external Feff calculation.");
     return;
   };
-
 
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Atoms or Feff input file", cwd, q{},
@@ -471,6 +521,7 @@ EOH
 sub _old {
   my ($file) = @_;
   $file ||= q{};
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   if (not -e $file) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
 				  "old-style Artemis project (*.apj)|*.apj|All files (*)|*",
@@ -481,6 +532,13 @@ sub _old {
       return;
     };
     $file = $fd->GetPath;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $rframes->{main}->status("Moved $file to $deunifile");
+      $original = $file;
+      $file = $deunifile;
+    };
   };
   $file = Demeter->follow_link($file);
 
@@ -508,9 +566,14 @@ sub _old {
   Import('dpj', $dpj, postcrit=>0);
   unlink $dpj;
 
+  if ($unidecoded) {
+    unlink $file;
+    $file = $original;
+  };
+
   Demeter->push_mru("old_artemis", $file);
   $rframes->{main}->{projectpath} = $file;
-  $rframes->{main}->{projectname} = basename($file, '.apj');
+  $rframes->{main}->{projectname} = unidecode(basename($file, '.apj'));
   $rframes->{Journal}->{journal} -> SetValue($journal);
 
   modified(1);

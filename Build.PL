@@ -170,7 +170,7 @@ my $build = DemeterBuilder
 				'File::Monitor::Lite' => '0',
 
 				## this suppresses a spurious warning on Windows with wxWidgets 3.0
-				'Encoding::FixLatin::XS' => 0,
+				##(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? ('Encoding::FixLatin::XS' => 0) : (),
 
 				## these are used for direct access to the pgplot terminal
 				#'ExtUtils::F77'       => '0',

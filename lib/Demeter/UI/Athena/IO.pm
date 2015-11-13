@@ -128,8 +128,9 @@ sub Import {
     };
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
-    if (not !Demeter->readable($file)) {
-      Wx::MessageDialog->new($app->{main}, "$file is not readable", "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+    my $check = Demeter->readable($file);
+    if ($check) {
+      Wx::MessageDialog->new($app->{main}, $check, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
       next;
     };
 

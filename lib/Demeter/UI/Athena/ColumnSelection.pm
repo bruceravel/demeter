@@ -105,7 +105,7 @@ sub new {
   					wxTE_MULTILINE|wxTE_RICH2|wxTE_DONTWRAP|wxALWAYS_SHOW_SB);
   $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "", ) );
   $right -> Add($this->{contents}, 1, wxGROW|wxALL, 5);
-  my $fixed = fix_latin(Demeter->slurp($data->file));
+  my $fixed = fix_latin(Demeter->slurp($data->file), use_xs=>'never');
   $this->{contents}->SetValue($fixed);
   #$this->{contents}->LoadFile($data->file);
 

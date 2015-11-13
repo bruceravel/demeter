@@ -12,7 +12,7 @@ sub readable {
   return "$file does not exist" if (not $exists);
   my $isfile = file_type(f=>$file);
   return "$file is not a file"  if (not $isfile);
-  #return "$file is locked"       if $self->locked($file);
+  return "$file is locked"      if $self->locked($file);
   return 0;
 };
 
@@ -26,8 +26,9 @@ sub locked {
 
 sub is_unicode {
   my ($self, $file) = @_;
-  if ($self->readable($file) and (not -r $file)) {
-    ## likely indicator of a problematic unicode file name
+  ##if ($self->readable($file) and (not -r $file)) {
+  ##  ## likely indicator of a problematic unicode file name
+  if ($file =~ m{[^[:ascii:]]}) { # see http://perldoc.perl.org/perlrecharclass.html#POSIX-Character-Classes
     return 1;
   };
   return 0;
@@ -55,7 +56,10 @@ This documentation refers to Demeter version 0.9.24.
 =head1 DESCRIPTION
 
 This module contains a number of methods for interacting with files on
-Windows systems.
+Windows systems.  There seems to be some confusion surrounding
+encoding when using Wx::FileDialog to get the name of a file with
+non-US-ASCII characters in its path and/or name.  This module provides
+tools Athena and Artemis can use to manage such files.
 
 =head1 METHODS
 
@@ -71,9 +75,17 @@ Return true if a file is locked.
 
 =item C<unicopy>
 
-Safely copy a file to the stash folder.  Returns the safe file path+name.
+Safely copy a file to the stash folder, unidecoding basename.  Returns
+the safe, fully ASCII file path+name.
 
 =back
+
+=head1 DEPENDENCIES
+
+The dependencies of the Demeter system are listed in the
+F<Build.PL> file.
+
+This module uses F<Win32::Unicode::File> and F<Text::Unidecode>.
 
 =head1 BUGS AND LIMITATIONS
 

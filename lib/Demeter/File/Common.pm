@@ -65,9 +65,17 @@ Return true if a file is locked.
 
 =item C<unicopy>
 
-Safely copy a file to the stash folder.  Returns the safe file path+name.
+Safely copy a file to the stash folder, unidecoding the basename.
+Returns the safe, fully ASCII file path+name.
 
 =back
+
+=head1 DEPENDENCIES
+
+The dependencies of the Demeter system are listed in the
+F<Build.PL> file.
+
+This module uses F<Text::Unidecode>.
 
 =head1 BUGS AND LIMITATIONS
 
