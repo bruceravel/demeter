@@ -16,6 +16,9 @@
 *** Demeter
    - When saving LCF results, sort the standards alphabetically.
      (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])
+   - Disable check to see if a file is locked.  Currently does not
+     work over NFS and I do not know how to check is a drive is an NFS
+     mount.
 
 ** 0.9.24   23 October   2015
 *** Demeter

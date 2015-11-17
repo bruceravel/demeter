@@ -10,9 +10,14 @@ sub readable {
   my ($self, $file) = @_;
   return "$file does not exist"  if (not -e $file);
   return "$file is not readable" if (not -r $file);
-  return "$file is locked"       if $self->locked($file);
+  #return "$file is locked"       if $self->locked($file);
   return 0;
 };
+
+## test for nfs mount:
+## mount -l | grep nfs | cut -d " " -f 3,5
+## gives mount point, filesystem type
+## works on Linux
 
 sub locked {
   my ($self, $file) = @_;
