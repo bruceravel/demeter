@@ -493,6 +493,7 @@ override all => sub {
   delete $all{is_mc};
   delete $all{xdi};
   delete $all{fit_group};
+  delete $all{bkg_funnorm} if not Demeter->co->default('athena', 'show_funnorm'); # preserve backwards compatability before 0.9.23
   return %all;
 };
 
