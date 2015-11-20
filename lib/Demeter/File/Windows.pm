@@ -12,7 +12,7 @@ sub readable {
   return "$file does not exist" if (not $exists);
   my $isfile = file_type(f=>$file);
   return "$file is not a file"  if (not $isfile);
-  return "$file is locked"      if $self->locked($file);
+  #return "$file is locked"      if $self->locked($file);
   return 0;
 };
 
