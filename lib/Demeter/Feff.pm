@@ -1083,6 +1083,8 @@ sub _collapse_heap {
     };
   };
 
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
+
   my $bigcount = 0;
   my $freq     = $self->co->default("pathfinder", "degen_freq");
   my $pattern  = "(%12d examined)";

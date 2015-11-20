@@ -31,7 +31,7 @@ our @EXPORT = qw(Import prjrecord);
 sub Import {
   my ($which, $fname, @args) = @_;
   my %args = @args;
-  $args{postcrit} || Demeter->co->default('pathfinder', 'postcrit');
+  $args{postcrit} ||= Demeter->co->default('pathfinder', 'postcrit');
   my $retval = q{};
  SWITCH: {
     read_project($rframes, $fname),             last SWITCH if  ($which eq 'fpj');

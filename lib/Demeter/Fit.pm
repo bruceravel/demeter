@@ -1576,10 +1576,11 @@ override 'deserialize' => sub {
   $self->call_sentinal("Importing Feff calculations");
   if ($args{file}) {
     foreach my $f (@$r_feff) {
-      my $ws = $f->workspace;
-      $ws =~ s{\\}{/}g;		# path separators...
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
-      my $this = Demeter::Feff->new(group=>$f, workspace=>$where);
+      #my $ws = $f->workspace;
+      #$ws =~ s{\\}{/}g;		# path separators...
+      #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $where = "";
+      my $this = Demeter::Feff->new(group=>$f); #, workspace=>$where);
       $parents{$this->group} = $this;
       my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$f.yaml"));
