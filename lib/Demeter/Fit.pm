@@ -384,6 +384,7 @@ sub fit {
   my ($self) = @_;
   $self->stop(0);
 
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   my $prefit = $self->pre_fit;
   $self->number($self->mo->currentfit);

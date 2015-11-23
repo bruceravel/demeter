@@ -601,6 +601,8 @@ sub run {
 sub potph {
   my ($self) = @_;
   my $ret = Demeter::Return->new;
+
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->check_workspace;
 
   ## write a feff.inp for the first module
@@ -634,6 +636,8 @@ sub potph {
 };
 sub genfmt {
   my ($self, @list_of_path_indeces) = @_;
+
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   @list_of_path_indeces = (1 .. $self->npaths) if not @list_of_path_indeces;
   ##verify_feff_processing_hash($self);
   $self->check_workspace;
@@ -833,6 +837,8 @@ sub rank_paths {
 
 sub pathfinder {
   my ($self) = @_;
+
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->start_spinner("Demeter's pathfinder is running") if ((not $self->screen) and ($self->mo->ui eq 'screen'));
   my $config = $self->co;
   $self -> eta_suppress($config->default("pathfinder", "eta_suppress"));
