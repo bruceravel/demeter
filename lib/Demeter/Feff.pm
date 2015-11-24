@@ -838,7 +838,7 @@ sub rank_paths {
 sub pathfinder {
   my ($self) = @_;
 
-  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
+  #local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->start_spinner("Demeter's pathfinder is running") if ((not $self->screen) and ($self->mo->ui eq 'screen'));
   my $config = $self->co;
   $self -> eta_suppress($config->default("pathfinder", "eta_suppress"));
