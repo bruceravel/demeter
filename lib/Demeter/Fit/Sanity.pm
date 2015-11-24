@@ -71,6 +71,21 @@ sub S_feff_files_exist {
   return $found;
 };
 
+sub S_sp_exist {
+  my ($self) = @_;
+  my $found = 0;
+  my @paths = @{ $self->paths };
+  foreach my $p (@paths) {
+    next if not $p->include;
+    next if not $p->data->fit_include;
+    if (ref($p->sp) !~ m{Path}) {
+      ++$found;
+      $p->add_trouble('spnotexist');
+    };
+  };
+  return $found;
+};
+
 
 ## 1. check that all guesses are used in defs and pathparams
 sub S_defined_not_used {
@@ -863,6 +878,11 @@ The path file does not exist (perhaps the Feff calculation was not run).
 =item C<-r>
 
 The path file cannot be read.
+
+=item C<spnotexist>
+
+The C<sp> attribute is not defined or not set to a ScatteringPath or
+other Path object.
 
 =item C<useundef> + C<$pp> + C<$token>
 
