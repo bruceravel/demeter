@@ -5,7 +5,7 @@
 ##
 ## ======== NEW PLOT ========
 set output
-set encoding iso_8859_1
+set encoding default # iso_8859_1
 set terminal {$C->default("gnuplot","terminal")} {$P->terminal_number} font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' {$C->default("gnuplot","termparams")} title "{$C->mo->identity}[Plot.{$P->terminal_number}]"
 set mouse doubleclick 750
 set origin 0.01,0.01

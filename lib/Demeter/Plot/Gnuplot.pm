@@ -170,13 +170,13 @@ override 'plot_kylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
   if ($w == 1) {
-    return 'k {\267} {/Symbol c}(k)&{aa}(A^{-1})';
+    return 'k {/Symbol c}(k)&{aa}(A^{-1})';
   } elsif ($w == 0) {
     return '{/Symbol c}(k)';
   } elsif ($w < 0) {
     return '{/Symbol c}(k) (variable k-weighting)';
   } else {
-    return sprintf('k^{%s} {\267} {/Symbol c}(k)&{aa}(A^{-%s})', $w, $w);
+    return sprintf('k^{%s} {/Symbol c}(k)&{aa}(A^{-%s})', $w, $w);
   };
 };
 # override 'plot_kylabel' => sub {
