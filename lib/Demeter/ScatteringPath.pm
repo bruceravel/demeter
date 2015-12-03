@@ -77,6 +77,7 @@ has 'rleg'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'beta'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'fs'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'eta'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'betanotstraightish' => (is => 'rw', isa => 'Bool',     default => 0);
 has 'etanonzero'   => (is => 'rw', isa => 'Bool',     default => 0);
 has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
@@ -202,7 +203,7 @@ sub intrplist {
       } else {
 	$this = $self->feff->potentials->[$a]->[2] || get_symbol($self->feff->potentials->[$a]->[1]);
       };
-      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      #$this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
       push @intrp, sprintf("%-6s", $this);
     };
   } else {		      ## this is a normal feff calc
@@ -210,7 +211,7 @@ sub intrplist {
       my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
       #Demeter->pjoin($self->group, $a);
       #Demeter->trace;
-      $this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
+      #$this =~ s{$FEFFNOTOK}{}g; # scrub characters that will confuse Feff
       push @intrp, sprintf("%-6s", $this);
     };
   }
@@ -229,6 +230,14 @@ sub intrpline {
   $rank ||= 0;
   my $format = " %4.4d  %6.3F   %6.3f  ---  %-29s    %2d  %6.2f  %d  %s";
   $format = " %4.4d  %6.3F   %6.3f  ---  %-39s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
+  if ($self->feff->nlegs == 5) {
+    $format = " %4.4d  %6.3F   %6.3f  ---  %-36s    %2d  %6.2f  %d  %s";
+    $format = " %4.4d  %6.3F   %6.3f  ---  %-46s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
+  };
+  if ($self->feff->nlegs == 6) {
+    $format = " %4.4d  %6.3F   %6.3f  ---  %-43s    %2d  %6.2f  %d  %s";
+    $format = " %4.4d  %6.3F   %6.3f  ---  %-53s    %2d  %6.2f  %d  %s" if $self->feff->is_polarization;
+  };
   return sprintf $format,
     $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight,
       $rank, $self->nleg, $self->Type;
@@ -504,6 +513,7 @@ sub compute_beta {
   };
   $self->rleg(\@rleg);
   $self->beta(\@beta);
+  $self->betanotstraightish(1) if (any {($_ > $fsangle) and ($_ < (180-$fsangle))} @beta);
   $self->eta(\@eta);
   $self->etanonzero($nonzero);
   $self->fs($fs);
@@ -776,6 +786,16 @@ sub identify_path {
       last TYPE;
     };
 
+    (($nleg == 5) and (any {($_ < $ncangle)} @beta[1..2]) ) and do {
+      ($weight, $type) = (2, "5-legged forward scattering");
+      last TYPE;
+    };
+
+    (($nleg == 6) and (any {($_ < $ncangle)} @beta[1..2]) ) and do {
+      ($weight, $type) = (2, "6-legged forward scattering");
+      last TYPE;
+    };
+
     ($nleg == 3) and do {
       ($weight, $type) = (0, "other double scattering");
       last TYPE;
@@ -783,6 +803,16 @@ sub identify_path {
 
     ($nleg == 4) and do {
       ($weight, $type) = (0, "other triple scattering");
+      last TYPE;
+    };
+
+    ($nleg == 5) and do {
+      ($weight, $type) = (0, "other 5-legged scattering");
+      last TYPE;
+    };
+
+    ($nleg == 6) and do {
+      ($weight, $type) = (0, "other 6-legged scattering");
       last TYPE;
     };
 

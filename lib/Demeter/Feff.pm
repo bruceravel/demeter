@@ -695,6 +695,10 @@ sub _pathsdat_head {
   $header .= sprintf("%s Angle fuzz = %.2f degrees\n",      $prefix, $self->betafuzz);
   $header .= sprintf("%s Rmultiplier = %.2f\n",             $prefix, $self->rmultiplier);
   $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno($self->eta_suppress));
+  if ($self->nlegs > 4) {
+    $header .= sprintf("%s Suppressing steep angle for 5&6 legged paths: %s (fs_angle = %.2f)\n",
+		       $prefix, $self->yesno($self->co->default('pathfinder', 'suppress_5_6_not_straight')), $self->co->default('pathfinder','fs_angle'));
+  };
   $header .= sprintf("%s Ranking criterion = %s   --   %s\n", $prefix, $self->co->default('pathfinder','rank'),
 		                                $self->explain_ranking($self->co->default('pathfinder','rank')));
   $header .= sprintf("%s Post criterion = %.2f\n",          $prefix, $self->postcrit);
@@ -838,7 +842,7 @@ sub rank_paths {
 sub pathfinder {
   my ($self) = @_;
 
-  #local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->start_spinner("Demeter's pathfinder is running") if ((not $self->screen) and ($self->mo->ui eq 'screen'));
   my $config = $self->co;
   $self -> eta_suppress($config->default("pathfinder", "eta_suppress"));
@@ -906,7 +910,7 @@ sub _populate_tree {
   my $freq     = $self->co->default("pathfinder", "tree_freq");
   my $pattern  = "(%12d nodes)";
 
-  $self->report("=== Populating Tree (. = $freq nodes added to the tree;  + = " . $freq*20 . " nodes considered)\n    ");
+  $self->report("=== Populating Tree (nlegs = " . $self->nlegs . ";  . = $freq nodes added to the tree;  + = " . $freq*20 . " nodes considered)\n    ");
   # create a tree to visit.  the root represents the absorber
   my $tree = Tree::Simple->new(Tree::Simple->ROOT);
 
@@ -982,6 +986,84 @@ sub _populate_tree {
       };
     };
   };
+
+  if ($self->nlegs == 4) {
+    $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
+			      $tree->size, $natoms, $rmax));
+    return $tree;
+  };
+
+  ##
+  ## Quadruple Scattering Paths (5-legged)
+  @kids = $tree->getAllChildren;
+  foreach my $k (@kids) {
+    my $thiskid = $k->getNodeValue;
+    my @grandkids = $k->getAllChildren;
+    foreach my $g (@grandkids) {
+      my @greatgrandkids = $g->getAllChildren;
+      my $thisgk = $g->getNodeValue;
+      foreach my $gg (@greatgrandkids) {
+	## these represent the quad scattering paths
+	my $thisggk = $gg->getNodeValue;
+	my $indggk = -1;
+	foreach my $s (@sites) {
+	  ++$indggk;
+	  ++$outercount;
+	  $self->click('.') if not ($outercount % ($freq*20));
+	  next if ($leglength[$cindex][$indggk] > $rmax); # prune distant atoms
+	  next if ($thisggk == $indggk);  # avoid same atom twice
+	  ##next if (($self->get('nlegs') == 4) and ($indgk  == $cindex)); # exclude absorber from this generation
+	  ##next if ($indgk  == $cindex); # exclude absorber from this generation
+	  next if (_length($cindex, $thiskid, $thisgk, $thisggk, $indggk, $cindex) > $rmax2);        # prune long paths from the tree
+	  ++$innercount;
+	  $self->click('.') if not ($innercount % $freq);
+	  $gg -> addChild(Tree::Simple->new($indggk));
+	};
+      };
+    };
+  };
+
+  if ($self->nlegs == 5) {
+    $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
+			      $tree->size, $natoms, $rmax));
+    return $tree;
+  };
+
+  ##
+  ## Quintuple Scattering Paths (6-legged)
+  @kids = $tree->getAllChildren;
+  foreach my $k (@kids) {
+    my $thiskid = $k->getNodeValue;
+    my @grandkids = $k->getAllChildren;
+    foreach my $g (@grandkids) {
+      my @greatgrandkids = $g->getAllChildren;
+      my $thisgk = $g->getNodeValue;
+      foreach my $gg (@greatgrandkids) {
+	my @greatgreatgrandkids = $gg->getAllChildren;
+	my $thisggk = $gg->getNodeValue;
+	foreach my $ggg (@greatgreatgrandkids) {
+	  ## these represent the quad scattering paths
+	  my $thisgggk = $ggg->getNodeValue;
+	  my $indgggk = -1;
+	  foreach my $s (@sites) {
+	    ++$indgggk;
+	    ++$outercount;
+	    $self->click('.') if not ($outercount % ($freq*20));
+	    next if ($leglength[$cindex][$indgggk] > $rmax); # prune distant atoms
+	    next if ($thisgggk == $indgggk);  # avoid same atom twice
+	    ##next if (($self->get('nlegs') == 4) and ($indgk  == $cindex)); # exclude absorber from this generation
+	    ##next if ($indgk  == $cindex); # exclude absorber from this generation
+	    next if (_length($cindex, $thiskid, $thisgk, $thisggk, $thisgggk, $indgggk, $cindex) > $rmax2);        # prune long paths from the tree
+	    ++$innercount;
+	    $self->click('.') if not ($innercount % $freq);
+	    $ggg -> addChild(Tree::Simple->new($indgggk));
+	  };
+	};
+      };
+    };
+  };
+
+
   #$self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
   #			$tree->size, $natoms, $rmax));
   $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
@@ -1043,6 +1125,10 @@ sub _visit {
   $sp       -> evaluate;
   ## prune branches that involve non-0 eta angles (if desired)
   if ($feff->eta_suppress and $sp->etanonzero) {
+    $sp->DEMOLISH;
+    return 0;
+  };
+  if (Demeter->co->default('pathfinder', 'suppress_5_6_not_straight') and ($sp->nleg > 4) and ($sp->betanotstraightish)) {
     $sp->DEMOLISH;
     return 0;
   };

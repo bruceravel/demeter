@@ -503,6 +503,7 @@ sub OnToolRightClick {
   };
 };
 
+
 ## this overrides a click event on the core column to make those
 ## checkboxes work like radioboxes.  a click event elsewhere on the
 ## grid is passed through
@@ -1116,6 +1117,8 @@ sub aggregate {
   $self->{parent}->{Feff}->{betafuzz}->SetValue($bigfeff->betafuzz);
   $self->{parent}->{Feff}->{margin}->Enable(0);
   $self->{parent}->{Feff}->{betafuzz}->Enable(0);
+  $self->{parent}->{Feff}->{nlegs4}->Enable(0);
+  $self->{parent}->{Feff}->{nlegs6}->Enable(0);
 
   ## 5. Labels & Fill Paths tab
   my $name = $self->{name}->GetValue;

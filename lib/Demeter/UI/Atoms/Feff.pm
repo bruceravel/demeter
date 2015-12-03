@@ -12,7 +12,7 @@ use base 'Wx::Panel';
 
 #use Wx::Perl::ProcessStream qw( :everything );
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RIGHT_DOWN);
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RIGHT_DOWN EVT_RADIOBUTTON);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::VerbDialog;
 
@@ -26,6 +26,8 @@ my %hints = (
 	     name     => "The name given to this Feff calculation",
 	     margin   => "The width in path length of the bin used for fuzzy degeneracy",
 	     betafuzz => "The width in angle of the bin used for fuzzy degeneracy of MS paths",
+	     nlegs4   => "Consider up to 4-legged paths in the Feff calculation",
+	     nlegs6   => "Consider up to 6-legged paths in the Feff calculation (much slower!)",
 	    );
 
 sub new {
@@ -59,17 +61,27 @@ sub new {
   my $label      = Wx::StaticText->new($self, -1, 'Name: ', wxDefaultPosition, [-1,-1]);
   $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [70,-1], wxTE_READONLY);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{name}, 2, wxEXPAND|wxLEFT|wxRIGHT, 2);
+  $hh->Add($self->{name}, 2, wxLEFT|wxRIGHT, 2);
   $label           = Wx::StaticText->new($self, -1, 'Margin: ', wxDefaultPosition, [-1,-1]);
   $self->{margin}  = Wx::TextCtrl  ->new($self, -1, Demeter->co->default(qw(pathfinder fuzz)), wxDefaultPosition, [70,-1]);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{margin}, 1, wxEXPAND|wxLEFT|wxRIGHT, 2);
+  $hh->Add($self->{margin}, 1, wxLEFT|wxRIGHT, 2);
   $label            = Wx::StaticText->new($self, -1, 'Beta: ', wxDefaultPosition, [-1,-1]);
   $self->{betafuzz} = Wx::TextCtrl  ->new($self, -1, Demeter->co->default(qw(pathfinder betafuzz)), wxDefaultPosition, [70,-1]);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{betafuzz}, 1, wxEXPAND|wxLEFT|wxRIGHT, 2);
+  $hh->Add($self->{betafuzz}, 1, wxLEFT|wxRIGHT, 2);
 
-  $self->set_hint($_) foreach (qw(name margin betafuzz));
+  $label          = Wx::StaticText->new($self, -1, 'nlegs: ', wxDefaultPosition, [-1,-1]);
+  $self->{nlegs4} = Wx::RadioButton->new($self, -1, '4', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  $self->{nlegs6} = Wx::RadioButton->new($self, -1, '6', wxDefaultPosition, wxDefaultSize);
+  $hh->Add($label, 0, wxALL, 4);
+  $hh->Add($self->{nlegs4}, 0, wxLEFT|wxRIGHT|wxTOP, 2);
+  $hh->Add($self->{nlegs6}, 0, wxLEFT|wxRIGHT|wxTOP, 2);
+  EVT_RADIOBUTTON($self, $self->{nlegs4}, \&OnNlegs);
+  EVT_RADIOBUTTON($self, $self->{nlegs6}, \&OnNlegs);
+
+
+  $self->set_hint($_) foreach (qw(name margin betafuzz)); #  nlegs4 nlegs6
 
   $self->{feffbox}       = Wx::StaticBox->new($self, -1, 'Feff input file', wxDefaultPosition, wxDefaultSize);
   $self->{feffboxsizer}  = Wx::StaticBoxSizer->new( $self->{feffbox}, wxVERTICAL );
@@ -102,9 +114,9 @@ sub icon {
 
 sub set_hint {
   my ($self, $w) = @_;
-  (my $ww = $w) =~ s{\d+\z}{};
+  #(my $ww = $w) =~ s{\d+\z}{};
   EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_;
-				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!})});
+				    $self->OnWidgetEnter($widg, $event, $hints{$w}||q{})});
   EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnWidgetLeave});
 };
 
@@ -183,6 +195,19 @@ sub OnCardMenu {
   my $url = Demeter->feffcardpage($this->{card});
   Wx::LaunchDefaultBrowser($url);
 };
+
+sub OnNlegs {
+  my ($self, $event) = @_;
+  $self->{parent}->status("");
+  return if Demeter->co->default('atoms', 'suppress_nleg_warning');
+  if ($self->{nlegs6}->GetValue) {
+    my $message = Wx::MessageDialog->new($self, "Considering 5- and 6-legged paths is NOT recommended as it will make running Feff MUCH slower!.", "Warning!", wxOK);
+    $message->ShowModal;
+    $self->{parent}->status("Considering 5- and 6-legged paths will make running Feff MUCH slower!.");
+  };
+};
+
+
 
 sub noop {
   return 1;
@@ -290,7 +315,9 @@ sub run_feff {
   print $OUT $self->{feff}->GetValue;
   close $OUT;
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
-  $feff->file($inpfile);
+  $feff->file($inpfile);	# this likely sets nleg to 4, so...
+  $feff->nlegs(4);
+  $feff->nlegs(6) if $self->{nlegs6}->GetValue;
 
   ##print join("|", $feff->feff_version, @{$feff->scf}), $/;
   if (($feff->feff_version == 8) and (@{$feff->scf})) {

@@ -276,3 +276,12 @@ description
   that exceed the given size.  Set this to 0 to display all paths,
   regardless of size, in Artemis' path list In Artemis, a change to
   this parameter will take affect after the next Feff calculation. 
+
+variable=suppress_5_6_not_straight
+type=boolean
+onvalue=1
+default=true
+description
+  When true, this excludes any path with 5 or 6 legs and which has an
+  angle that is outside the range of 0 to fs_angle or 180-fs)angle to
+  180.  See fs_angle in this configuration group.

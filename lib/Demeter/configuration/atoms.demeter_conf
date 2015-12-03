@@ -156,3 +156,11 @@ description
   When false, this tells an Atoms/Feff GUI not to post confirmation
   dialogs associated with cleaing out the contents of the Atoms or
   Feff interfaces.
+
+variable=suppress_nleg_warning
+type=boolean
+onvalue=1
+default=false
+description
+  When true, this tells an Atoms/Feff GUI not to post a warning about
+  setting nleg to 6.
