@@ -96,7 +96,7 @@
 		      	}
 		extended = {
 			    name = 'Extended topics'
-			    menu = ['qfs', 'cv', 'delr', 'ss', 'constraints', 'bvs', 'empirical', 'ipots', 'fuzzy', 'dopants']
+			    menu = ['qfs', 'cv', 'delr', 'ss', 'constraints', 'bvs', 'empirical', 'ipots', 'fuzzy', 'dopants', 'fivesix']
 			    page = {
 				    qfs = {name = 'Quick first shell theory'}
 				    cv  = {name = 'Characteristic value'}
@@ -108,6 +108,7 @@
 				    ipots = {name = 'Unique potentials'}
 				    fuzzy = {name = 'Fuzzy degeneracy'}
 				    dopants = {name = 'Handling dopants'}
+				    fivesix = {name = '5 and 6 legged paths'}
 				   }
 			   }
 	       }

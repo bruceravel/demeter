@@ -1,0 +1,90 @@
+[% META title = '5 and 6 legged paths' %]
+
+[% PROCESS section label="Examples of situations requiring
+consideration of higher order paths" %]
+
+
+[% FILTER html_para %]
+Normally, the 
+[% INCLUDE html/link link="../feff/paths.html" text="pathfinder" %]
+in [%artemis%]'s[%#'%] implementation of [%feff%] only considers up to
+triple scattering [%ndash%] 4-legged [%ndash%] paths.  This is for two
+reasons.  First, [%artemis%]'s[%#'%] pathfinder is a bit slow.
+Second, it is rather uncommon to need higher order paths in an EXAFS
+analysis.  Here are a few examples.
+
+Paradibromobenzene is a benzene molecule [%ndash%] so a ring of 6
+carbon atoms [%ndash%] with two of the hydrogen ligands replaced by
+bromine.  The bromine atoms are in the para arrangement, i.e. on
+opposite corners of the benzene ring.
+
+Being the only heaavy scatterer in a rigid structure, the second
+bromine atom is quite evident in the EXAFS, giving rise to the large
+peak just above 6 [%AA%] in the [%chir%] data shown below.
+[% END %]
+
+[% WRAPPER quadplot files=["fivesix-paradibromobenzene.png", "fivesix-br-chir.png"] %]
+The paradibromobenzene molecule and its [%chir%] data.
+[% END %]
+
+[% FILTER html_para %]
+That big peak resulting from the second bromine atom inlcudes not just
+the single scattering contribution, but a number of collinear multiple
+scattering paths.  This includes the 5-legged paths that scatter from
+both carbon atoms on the way to (or from) the bromine atoms, and the
+6-legged path that includes forward scattering from both carbon atoms
+in both directions.
+
+5- and 6-legged paths are, in general, only important in EXAFS for
+structures that are both rigid and have 4 collinear atoms.  This is
+pretty high bar, which is why examples are few and far between.  That
+said, there are a couple more examples.
+[% END %]
+
+[% WRAPPER floatleft this="fivesix-prussian-blue.png" %]
+Prussian blue, ferric ferrocyanate, represents a class of framework
+structured materials that have metal atoms at corner positions in the
+unit cell.  These metal atoms are bridged by cyanide molecules.  This
+is much like a rocksalt structure, but with the cation replaced by a
+cyanide molecule oriented in the direction of the bond.
+
+The metal anions are separated by about 5.1 [%AA%], thus are at a
+distance that can easily be resolved and analyzed in an EXAFS
+experiment.  To interpret that part of the EXAFS signal, however, it
+is necessary to consider all the multiple scattering paths involving
+the C, N, and Fe atoms.  This includes significant, colinear 5- and
+6-legged paths.
+
+The final example is good ol'[%#'%] copper metal, which is often
+analyzed out to about 5 [%AA%], which includes 5 coordination shells
+and a number of double and triple scattering paths.  To analyze
+farther in R, one eventual gets to the single scattering path which
+includes the face center atom in the diagonally adjacent cell.  In the
+figure below,  the absorber is represented by the pink atom.  The
+distant neighbor is the farthest lavendar-colored atom.  To analyze
+the single scattering contribution from that distance would require
+consideration of all the multiple scattering among the pink and
+lavendar atoms, which are colinear along that unit cell diagonal.
+[% END %]
+
+
+[% WRAPPER quadplot files=["fivesix-cu7A.png", "fivesix-chir.png"] %]
+4 unit cells of FCC copper with the colinear atoms contributing at
+about 7 [%AA%] highlighted.  On the right is [%chir%] data for copper
+metal.  The signal from the various SS and MS involving the lavendar
+atoms paths contributes to the the peaks around 7 [%AA%].
+[% END %]
+
+
+[% PROCESS section label="5 and 6 legged paths in Artemis" %]
+
+[% WRAPPER html/caution %]
+Enabling the calculation of 5- and 6-legged paths significantly slows
+down the pathfinder calculation in [%artemis%].  If you are unsure
+whether you need 5- and 6-legged paths, you almost certainly
+[% INCLUDE font/b a="do not" %] want to do so!
+[% END %]
+
+[% FILTER html_para %]
+Blah blah
+[% END %]

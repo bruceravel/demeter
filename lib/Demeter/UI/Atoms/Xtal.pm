@@ -1002,6 +1002,7 @@ sub run_atoms {
   my ($self, $is_aggregate) = @_;
   $is_aggregate = 0;
   my $seems_ok = $self->get_crystal_data;
+  $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
   my $atomsfile = File::Spec->catfile($self->{parent}->{Feff}->{feffobject}->workspace, "atoms.inp");
   $self->save_file($atomsfile);
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
@@ -1023,7 +1024,6 @@ sub run_atoms {
     ## these can be disabled by an aggregate calculation
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
-    $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
     $self->{parent}->{Feff}->{toolbar}->Enable(1);
     $self->{parent}->{Feff}->{name}->Enable(1);
     $self->{parent}->{Feff}->{feff}->Enable(1);
