@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.25   XX November  2015
+** 0.9.25   XX December  2015
 *** Athena
    - Menus of groups names not updating correctly in data summation
      tool. (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012833.html][Matteo Busi]])
@@ -13,12 +13,23 @@
      gracefully using wxWindows.  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012845.html][Marcelo Eduardo Alves]] for
      bringing this to my attention)
 
+*** Artemis
+   - Control for enabling 5- and 6-legged paths in Feff tab
+
 *** Demeter
    - When saving LCF results, sort the standards alphabetically.
      (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])
    - Disable check to see if a file is locked.  Currently does not
      work over NFS and I do not know how to check is a drive is an NFS
      mount.
+   - Add 5- and 6-legged paths to pathfinder
+   - Add xyz, alchemy, and overfull output types for Atoms
+   - Added Demeter::UI::Wx::ConfigurationDialog
+   - Added a fitting sanity check to verify that the ScatteringPath
+     object actually exists
+   - Removed ={\267}= from gnuplot plots in k-space
+   - Explicitly set SIGALRM in several more places, which is helpful
+     for command line scripts
 
 ** 0.9.24   23 October   2015
 *** Demeter

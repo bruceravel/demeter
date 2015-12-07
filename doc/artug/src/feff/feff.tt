@@ -37,7 +37,6 @@ font/quote a="Save" %] button will post the standard column selection
 dialog for choosing a file name for saving the current [%feff%] input
 data.  The [% INCLUDE font/quote a="Clear" %] button will remove all
 text from the big text box.
-[% END %]
 
 The [%feff%] calculation is started by clicking the 
 [% INCLUDE font/quote a="Run Feff" %] button.
@@ -47,6 +46,12 @@ Above the box containing the
 The first contains the name of this [%feff%] calculation.  The other
 two set the parameters used for
 [% INCLUDE html/link link="../extended/fuzzy.html" text="fuzzy degeneracy"%].
+
+See [% INCLUDE html/link link="../extended/finesix.html" text="the
+discussion of 5- and 6-legged paths"%] before telling [%artemis%] to
+compute paths of higher order than triple scattering..
+[% END %]
+
 
 [% PROCESS section label="Feff documentation" %]
 

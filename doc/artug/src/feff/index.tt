@@ -200,18 +200,23 @@ The save button will prompt you for a filename for an output
 [% INCLUDE font/file a="atoms.inp" %] saving the current state of the
 tab.
 
-Clicking the export button will post dialog on the right, which offers several
-different kinds of output files based on the crystal data.
+Clicking the export button will post the dialog on the right, which
+offers several different kinds of output files based on the crystal
+data.
+
 [% WRAPPER html/list type="ul" %]
+
 [% WRAPPER html/li %]
-The [% INCLUDE font/quote a="Feff6" %] and [% INCLUDE font/quote
-a="Feff8" %] options will write input files for [%feff6%] and
-[%feff8%].
+The [% INCLUDE font/quote a="Feff6" %] and
+[% INCLUDE font/quote a="Feff8" %] options will write input files for
+[%feff6%] and [%feff8%].
 [% END %]
+
 [% WRAPPER html/li %]
-The [% INCLUDE font/quote a="Atoms" %] option write the
-same file as the save button.
+The [% INCLUDE font/quote a="Atoms" %] option write the same file as
+the save button.
 [% END %]
+
 [% WRAPPER html/li %]
 The [% INCLUDE font/quote a="P1" %]
 option writes the crystal data to an [% INCLUDE font/file a="atoms.inp" %]
@@ -220,16 +225,19 @@ fully decorated unit cell. The [% INCLUDE font/quote a="Spacegroup" %]
 option writes a file that fully describes 
 the space group.
 [% END %]
+
 [% WRAPPER html/li %]
 The [% INCLUDE font/quote a="Absorption" %] option
 writes a file containing some calculations based on tables of X-ray
 absorption coefficients.
 [% END %]
+
 [% WRAPPER html/li %]
 [% INCLUDE font/quote a="XYZ" %] and 
 [% INCLUDE font/quote a="Alchemy" %] are formats that are commonly
 understood by molecule rendoring software.
 [% END %]
+
 [% WRAPPER html/li %]
 [% INCLUDE font/quote a="Overfull" %]
 is an [% INCLUDE font/quote a="XYZ" %] file with the contents of
@@ -238,6 +246,7 @@ atoms near a cell wall replicated near the opposite cell wall.  The
 purpose of this output type is generate nice figures of unit cells
 with decorations on all the corners, sides, and edges.
 [% END %]
+
 [% END %]
 
 The clear button is used to clear all data from all controls on the
