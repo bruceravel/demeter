@@ -38,7 +38,7 @@ parameter.
                           "Warning!",
                           );
 
-This results in a window like this:
+When shown, a window like this is displayed:
 
    +-----------------------------------------+
    |                Warning!                 |
@@ -50,11 +50,11 @@ This results in a window like this:
    |                               +------+  |
    +-----------------------------------------+
 
-The dialog returns the value of the checkbox, so
+The dialog returns the value of the checkbox, which can then be used
+to set a boolean:
 
    my $value = $dialog -> ShowModal;
    Demeter -> co -> set_default($group, $parameter, $value);
-
 
 =head1 DESCRIPTION
 
@@ -121,7 +121,7 @@ use base 'Wx::Dialog';
 
 sub new {
   my ($class, $parent, $id, $message, $title, $verb) = @_;
-  my $verb ||= 'show';
+  $verb ||= 'show';
 
   my $this = $class->SUPER::new($parent, $id, $title, wxDefaultPosition, wxDefaultSize,
 				wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP

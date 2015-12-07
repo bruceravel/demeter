@@ -18,7 +18,7 @@ atoms [%ndash%] with two of the hydrogen ligands replaced by bromine.
 The bromine atoms are in the para (1-4) arrangement, i.e. on opposite
 corners of the benzene ring.
 
-Being the only heaavy scatterer in a rigid structure, the second
+Being the only heavy scatterer in a rigid structure, the second
 bromine atom is quite evident in the EXAFS, giving rise to the large
 peak just above 6 [%AA%] in the [%chir%] data shown below.
 [% END %]
@@ -38,7 +38,7 @@ in both directions.
 5- and 6-legged paths are, in general, only important in EXAFS for
 structures that are both rigid and have 4 collinear atoms.  This is
 pretty high bar, which is why examples are few and far between.  That
-said, there are a couple more examples.
+said, here are a couple more examples.
 [% END %]
 
 [% WRAPPER floatleft this="fivesix-prussian-blue.png" %]
@@ -53,28 +53,28 @@ The metal anions are separated by about 5.1 [%AA%], thus are at a
 distance that can easily be resolved and analyzed with good EXAFS
 data.  To interpret that part of the EXAFS signal, however, it is
 necessary to consider all the multiple scattering paths involving the
-C, N, and Fe atoms.  This includes significant, colinear 5- and
+C, N, and Fe atoms.  This includes significant, collinear 5- and
 6-legged paths.
 
 The final example is good ol'[%#'%] copper metal, which is often
-analyzed out to about 5 [%AA%], a disatnce which includes 5
+analyzed out to about 5 [%AA%], a distance which includes 5
 coordination shells and a number of double and triple scattering
 paths.  To analyze farther in R, one eventual gets to the single
 scattering path which includes the face center atom in the diagonally
 adjacent cell.  In the figure below, the absorber is represented by
-the pink atom.  The distant neighbor is the farthest lavendar-colored
+the pink atom.  The distant neighbor is the farthest lavender-colored
 atom.  To analyze the single scattering contribution from that
 distance would require consideration of all the multiple scattering
-among the pink and lavendar atoms, which are colinear along that unit
+among the pink and lavender atoms, which are collinear along that unit
 cell diagonal.
 [% END %]
 
 
 [% WRAPPER quadplot files=["fivesix-cu7A.png", "fivesix-chir.png"] %]
-4 unit cells of FCC copper with the colinear atoms contributing at
-about 7 [%AA%] highlighted.  On the right is [%chir%] data for copper
-metal.  The signal from the various SS and MS involving the lavendar
-atoms paths contributes to the the peaks around 7 [%AA%].
+4 unit cells of FCC copper with the collinear atoms contributing at
+about 7 [%AA%] highlighted in lavender.  On the right is [%chir%] data
+for copper metal.  The signal from the various SS and MS involving the
+lavender atoms paths contributes to the the peaks around 7 [%AA%].
 [% END %]
 
 
@@ -88,5 +88,58 @@ whether you need 5- and 6-legged paths, you almost certainly
 [% END %]
 
 [% FILTER html_para %]
-Blah blah
+The default behavior in [%artemis%] is to compute up to 4-legged
+paths.  For any [%feff%] calculation, this can be extended to include
+5- and 6-legged paths by selecting the 
+[% INCLUDE font/quote a="6" %] button, as indicated in the screenshot
+below.  Note that this sets the order of scattering paths only for the
+current [%feff%] calculation.  The default for all subsequent [%feff%]
+calculations will again be 4-legged paths.
+The [% INCLUDE html/link link="../feff/aggregate.html" text="aggregate calculation" %]
+is always made with up to 4-legged paths.
+[% END %]
+
+[% WRAPPER image file="fivesix-atoms.png" %]
+[%feff%] tool showing the check box for selecting order of multiple scattering.
+[% END %]
+
+
+[% FILTER html_para %]
+Besides being slow, the other consequence of setting the upper order
+of multiple scattering to 6 is that the 
+[% INCLUDE html/link link="../feff/paths.html" text="path list" %]
+will be much longer and possibly more confusing.  Really, truly!
+Don't[%#'%] use this feature of [%artemis%] unless you have a very
+good reason to do so.
+
+Some [% INCLUDE html/link link="../prefs.html"
+text="configuration parameters"%] that relate to choice of the order of multiple
+scattering:
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+[% INCLUDE preference group="pathfinder"
+option="suppress_5_6_not_straight" %]: When true, only consider 5- and
+6-legged paths that have scattering angles within 
+[% INCLUDE preference group="pathfinder"
+option="fs_angle" %] (typically 20 degrees) of 0 or 180 degrees.  That
+is, suppress all paths with angles far from forward and backward scattering.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE preference group="atoms" option="suppress_nleg_warning"%]: When
+true, this will suppress the dialog box posted by [%atoms%] when you
+select the [% INCLUDE font/quote a="6" %] button
+warning you against considering 5- and 6-legged paths.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE preference group="pathfinder" option="eta_suppress"%]: If
+you need to consider nearly collinear paths in a structure with
+buckling of atomic planes, you may need to set this parameter to
+false.  When true, it suppresses any path with a non-zero Eulerian
+[%eta%] angle.  In most cases, this is a good heuristic for removing
+irrelevant paths from the path list, however for orders of scattering
+above 4 and nearly collinear paths, this filter might remove desirable
+paths.  Use this with caution as it will greatly expand the size of
+the path list.
+[% END %]
+[% END %]
 [% END %]

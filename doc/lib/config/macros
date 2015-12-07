@@ -24,6 +24,7 @@
 [% MACRO sigma   BLOCK -%]&sigma;[%- END -%]
 [% MACRO alpha   BLOCK -%]&alpha;[%- END -%]
 [% MACRO beta    BLOCK -%]&beta;[%- END -%]
+[% MACRO eta     BLOCK -%]&eta;[%- END -%]
 [% MACRO gamma   BLOCK -%]&gamma;[%- END -%]
 [% MACRO Delta   BLOCK -%]&Delta;[%- END -%]
 [% MACRO sigsqr  BLOCK -%]&sigma;&sup2;[%- END -%]

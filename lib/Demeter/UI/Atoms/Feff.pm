@@ -201,7 +201,7 @@ sub OnNlegs {
   my ($self, $event) = @_;
   if ($self->{nlegs6}->GetValue) {
     if (not Demeter->co->default('atoms', 'suppress_nleg_warning') ) {
-      my $message = Demeter::UI::Wx::ConfigurationDialog->new($self, -1, "Considering 5- and 6-legged paths is NOT recommended as it will make running Feff MUCH slower!", "Warning!");
+      my $message = Demeter::UI::Wx::ConfigurationDialog->new($self, -1, "Considering 5- and 6-legged paths is NOT recommended as it will make running Feff MUCH slower!\n\nIt is strongly recommended to use only up to 4-legged paths unless you have a clear reason for doing otherwise.\n\nReally! Truly!", "Warning!");
       my $suppress = $message->ShowModal;
       Demeter->co->set_default('atoms', 'suppress_nleg_warning', $suppress);
       Demeter->co->write_ini;

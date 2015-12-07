@@ -748,6 +748,31 @@ sub cluster_list {
   };
   return $string;
 };
+
+sub xyz_list {
+  my ($self, $pattern) = @_;
+  $pattern ||= "  %-10s  %9.5f  %9.5f  %9.5f\n";
+  my $string = q{};
+  my @list = @ {$self->cluster };
+  foreach my $pos (@list) {
+    $string .= sprintf($pattern, $pos->[3]->element, $pos->[0], $pos->[1], $pos->[2]);
+  };
+  return $string;
+};
+
+sub alchemy_list {
+  my ($self, $pattern) = @_;
+  $pattern ||= "  %4d %-2s  %9.5f  %9.5f  %9.5f   0.00\n";
+  my $string = q{};
+  my @list = @ {$self->cluster };
+  my $count = 1;
+  foreach my $pos (@list) {
+    $string .= sprintf($pattern, $count, $pos->[3]->element, $pos->[0], $pos->[1], $pos->[2]);
+    ++$count;
+  };
+  return $string;
+};
+
 sub R {
   my ($self, $x, $y, $z) = @_;
   return sqrt($x**2 + $y**2 + $z**2);
@@ -914,7 +939,7 @@ sub Write {
   my ($self, $type) = @_;
   $type ||= "feff6";
   $type = lc($type);
-  ($type = 'feff6') if ($type eq'feff');
+  ($type = 'feff6') if ($type eq 'feff');
   $self->update_absorption;
   return $self->atoms_file             if ($type eq 'atoms');
   return $self->atoms_file('p1')       if ($type eq 'p1');
@@ -924,7 +949,7 @@ sub Write {
     $self->populate if (not $self->is_populated);
     return $self->spacegroup_file(0, '# ');
   };
-  return $self->Write_feff($type) if ($type =~ m{feff});
+  return $self->Write_feff($type) if ($type =~ m{feff|xyz|alc});
 
   ## still need: overfull, p1_cartesian, gnxas
 
@@ -938,17 +963,19 @@ sub Write_feff {
   return q{} if ($#{$self->cluster} == -1);
   return q{} if ($#{$self->cluster} == 0);
   my $string = q{};
-  $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
-  if ($self->co->default("atoms", "atoms_in_feff")) {
-    $string .= $self->template('prettyline', {prefix => ' * '});
-    $string .= $self->atoms_file('feff', ' * ');
-    $string .= $self->template('prettyline', {prefix => ' * '});
-    $string .= $/;
-  }
-  if ($self->gases_set) {
-    $string .= $self->template('absorption', {prefix => ' * '});
-  } else {
-    $string .= $self->template('mcmaster', {prefix => ' * '});
+  if ($type =~ m{feff}) {	# none of this header stuff for xyz or alchemy or the like
+    $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
+    if ($self->co->default("atoms", "atoms_in_feff")) {
+      $string .= $self->template('prettyline', {prefix => ' * '});
+      $string .= $self->atoms_file('feff', ' * ');
+      $string .= $self->template('prettyline', {prefix => ' * '});
+      $string .= $/;
+    }
+    if ($self->gases_set) {
+      $string .= $self->template('absorption', {prefix => ' * '});
+    } else {
+      $string .= $self->template('mcmaster', {prefix => ' * '});
+    };
   };
   $string .= $self->template($type);
   return $string;
