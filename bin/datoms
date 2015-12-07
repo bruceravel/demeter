@@ -35,21 +35,17 @@ BEGIN {
 use Demeter qw(:atoms);
 use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
+use List::MoreUtils qw(none);
 use vars qw($app);
 
-my ($feff6, $feff8, $feff85, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, Demeter->co->default("atoms", "rmax"), 0, 1, 0, 0);
+my ($rmax, $cif, $record, $wx, $output) = (Demeter->co->default("atoms", "rmax"), 0, 1, 0, 'feff6');
+
 my $result = GetOptions (
-			 "c|cif"    => \$cif,
-			 "rec=i"    => \$record,
-			 "r|rmax=s" => \$rmax,
-			 "6"	    => \$feff6,
-			 "8"	    => \$feff8,
-			 "85"	    => \$feff85,
-			 "a"	    => \$abs,
-			 "s"	    => \$sg,
-			 "p"	    => \$p1,
-			 "atoms"    => \$atinp,
-			 "wx"       => \$wx,
+			 "c|cif"      => \$cif,
+			 "rec=i"      => \$record,
+			 "r|rmax=s"   => \$rmax,
+			 "0|output=s" => \$output,
+			 "wx"         => \$wx,
 			);
 
 if ($wx) {
@@ -63,16 +59,17 @@ die "Atoms terminating: $file does not exist\n" if (not -e $file);
 my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $file);
 my $atoms = Demeter::Atoms->new(@call);
 
-my $which = ($feff6)  ? "feff6"
-          : ($feff8)  ? "feff8"
-          : ($feff85) ? "feff85test"
-          : ($abs)    ? "absorption"
-          : ($sg)     ? "spacegroup"
-          : ($p1)     ? "p1"
-          : ($atinp)  ? "atoms"
-          :            "feff6" ;
+$output = lc($output);
+$output = 'feff6'      if ($output eq '6');
+$output = 'feff8'      if ($output eq '8');
+$output = 'feff85test' if ($output eq '85');
+
+if (none {$output eq $_} (@Demeter::StrTypes::output_list)) {
+  print STDERR "$output is not a recognized output type.  Writing feff6 output.\n\n";
+  $output = 'feff6';
+};
 $atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{\A$NUMBER\z});
-print $atoms -> Write($which);
+print $atoms -> Write($output);
 
 
 sub wx {
@@ -96,7 +93,7 @@ This documentation refers to Demeter version 0.9.24.
 
 =head1 SYNOPSIS
 
-  datoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
+  datoms [--output format] [--rmax #] [--cif --rec=#] [--wx] mydata.inp
 
 If no input or CIF file is specified at the command line, F<atoms.inp>
 in the current working directory will be used, if available.
@@ -107,10 +104,10 @@ line arguments are ignored.
 =head1 DESCRIPTION
 
 This reads an atoms input file or a CIF file (CIF is not working at
-this time) and writes out the results of a calculation using that
-crystallography data.  Typically the output is a F<feff.inp> file, but
-it may also be a summary of the space group, calculation using tables
-of X-ray absorption coefficients, etc.
+this time) and writes the results of a calculation using that
+crystallography data to standard output.  Typically the output is a
+F<feff.inp> file, but it may also be a summary of the space group,
+calculation using tables of X-ray absorption coefficients, etc.
 
 =head1 COMMAND LINE SWITCHES
 
@@ -123,28 +120,62 @@ the F<feff.inp> file can be overridden from the command line.
 
 Run the wxWidgets-based GUI (ignoring all other command-line flags).
 
-=item C<-6>
+=item C<--output=format> or C<-o format>
 
-Write an input file for Feff6 (which is the default).
+Specify the output type.  Must be (case-insensitive) one of
 
-=item C<-8>
+=over 4 
 
-Write an input file for Feff8.
+=item C<feff6>, C<6>
 
-=item C<-a>
+Write a F<feff.inp> file for feff6.
 
-Write the results of calculations using tables of X-ray absorption
-coefficients.
+=item C<feff8>, C<8>
 
-=item C<-s>
+Write a F<feff.inp> file for feff8.
 
-Write a space group summary file.
+=item C<feff85test>, C<85>
 
-=item C<--atoms>
+Write a F<feff.inp> file for use with the feff85exafs testing
+framework.
 
-Write an atoms input file.  This is most useful for interacting with a
-CIF file for which the central atom cannot be identified by Demeter's
-simplistic algorithm.
+=item C<spacegroup>
+
+Write a file with information about the space group.
+
+=item C<p1>
+
+Write the crystal structure as an atoms input file using the C<P1>
+space group, i.e. the fully decorated unit cell.
+
+=item C<absorption>
+
+Write a file with the results of calculations based on the crystal
+structure and tables of X-ray absorption coefficients.
+
+=item C<atoms>
+
+Write the input data as an atoms input file (mostly useful for CIF to
+F<atoms.inp> conversion)
+
+=item C<xyz>
+
+Write the cluster in the simple L<XYZ molecule format|https://en.wikipedia.org/wiki/XYZ_file_format>.
+
+=item C<alchemy>
+
+Write the cluster in the alchemy molecule format.
+
+=item C<overfull>
+
+Write the contents of the unit cell in Cartesian coordinates with all
+atoms near a cell wall replicated near the opposite cell wall.  This
+is written in the form of an L<XYZ molecule
+format|https://en.wikipedia.org/wiki/XYZ_file_format> file.  The
+purpose of this output type is generate nice figures of unit cells
+with decorations on all the corners, sides, and edges.
+
+=back
 
 =item C<--rmax=#> or C<-r #>
 

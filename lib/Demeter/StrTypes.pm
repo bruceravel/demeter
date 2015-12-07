@@ -35,6 +35,7 @@ use MooseX::Types -declare => [qw( Empty
 				   AtomsLattice
 				   AtomsGas
 				   AtomsObsolete
+				   AtomsOutput
 				   SpaceGroup
 				   Plotting
 				   DataPart
@@ -322,6 +323,15 @@ subtype AtomsObsolete,
   as Str,
   where { lc($_) =~ m{\A$obsolete_regexp\z} },
   message { "That string ($_) is not an Atoms obsolete keyword" };
+
+## -------- Atoms output types
+use vars qw(@output_list $output_regexp);
+@output_list = qw(feff6 feff8 feff85test spacegroup p1 absorption atoms xyz alchemy overfull);
+$output_regexp = Regexp::Assemble->new()->add(@obsolete_list)->re;
+subtype AtomsOutput,
+  as Str,
+  where { lc($_) =~ m{\A$output_regexp\z} },
+  message { "That string ($_) is not an Atoms output type" };
 
 ## -------- Spacegroup database keys
 use vars qw(@sg_list $sg_regexp);

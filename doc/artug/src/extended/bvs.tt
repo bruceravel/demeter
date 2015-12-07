@@ -34,9 +34,9 @@ distance and [%r0ij%] and B are empirically determined parameters.
 They searched through the Inorganic Crystal Structures Database to
 determine empirical values for [%sij%] for over 150 cation/anion
 pairs.  Other authors have supplemented this work with additional
-cation/anion pairs.  Most of these are for common anions, such as
+anion/cation pairs.  Most of these are for common cations, such as
 oxygen, nitrogen, or sulfur.  Interestingly, B is nearly constant
-across all bonds and equal to 0.37.  For some cations such as K and U,
+across all bonds and equal to 0.37.  For some anions such as K and U,
 the value of B can be as high as about 0.6.  [%r0ij%] depends on the
 contact pair and has been tabulated along with B in a database.
 

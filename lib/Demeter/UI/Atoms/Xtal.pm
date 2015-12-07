@@ -1178,7 +1178,7 @@ sub write_output {
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
     my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
-					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption", 'XYZ', 'Alchemy']
+					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption", 'XYZ', 'Alchemy', 'Overfull']
 					    );
     if( $dialog->ShowModal == wxID_CANCEL ) {
       $self->{parent}->status("Writing Atoms output canceled.");
