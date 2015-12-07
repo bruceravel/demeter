@@ -8,15 +8,15 @@ consideration of higher order paths" %]
 Normally, the 
 [% INCLUDE html/link link="../feff/paths.html" text="pathfinder" %]
 in [%artemis%]'s[%#'%] implementation of [%feff%] only considers up to
-triple scattering [%ndash%] 4-legged [%ndash%] paths.  This is for two
-reasons.  First, [%artemis%]'s[%#'%] pathfinder is a bit slow.
-Second, it is rather uncommon to need higher order paths in an EXAFS
-analysis.  Here are a few examples.
+triple scattering (4-legged) paths.  This is for two reasons.  First,
+[%artemis%]'s[%#'%] pathfinder is a bit slow.  Second, it is rather
+uncommon to need higher order paths in an EXAFS analysis.  Here are a
+few examples.
 
-Paradibromobenzene is a benzene molecule [%ndash%] so a ring of 6
-carbon atoms [%ndash%] with two of the hydrogen ligands replaced by
-bromine.  The bromine atoms are in the para arrangement, i.e. on
-opposite corners of the benzene ring.
+Paradibromobenzene is a benzene molecule [%ndash%] a ring of 6 carbon
+atoms [%ndash%] with two of the hydrogen ligands replaced by bromine.
+The bromine atoms are in the para (1-4) arrangement, i.e. on opposite
+corners of the benzene ring.
 
 Being the only heaavy scatterer in a rigid structure, the second
 bromine atom is quite evident in the EXAFS, giving rise to the large
@@ -28,7 +28,7 @@ The paradibromobenzene molecule and its [%chir%] data.
 [% END %]
 
 [% FILTER html_para %]
-That big peak resulting from the second bromine atom inlcudes not just
+That big peak resulting from the second bromine atom includes not just
 the single scattering contribution, but a number of collinear multiple
 scattering paths.  This includes the 5-legged paths that scatter from
 both carbon atoms on the way to (or from) the bromine atoms, and the
@@ -42,29 +42,31 @@ said, there are a couple more examples.
 [% END %]
 
 [% WRAPPER floatleft this="fivesix-prussian-blue.png" %]
-Prussian blue, ferric ferrocyanate, represents a class of framework
-structured materials that have metal atoms at corner positions in the
-unit cell.  These metal atoms are bridged by cyanide molecules.  This
-is much like a rocksalt structure, but with the cation replaced by a
-cyanide molecule oriented in the direction of the bond.
+Prussian blue, ferric ferrocyanate, represents a class of
+framework-structured materials that have metal atoms at corner
+positions in the unit cell.  These metal atoms are bridged by cyanide
+molecules.  This is much like a rocksalt structure, but with the
+cation replaced by a cyanide molecule oriented in the direction of the
+bond.
 
 The metal anions are separated by about 5.1 [%AA%], thus are at a
-distance that can easily be resolved and analyzed in an EXAFS
-experiment.  To interpret that part of the EXAFS signal, however, it
-is necessary to consider all the multiple scattering paths involving
-the C, N, and Fe atoms.  This includes significant, colinear 5- and
+distance that can easily be resolved and analyzed with good EXAFS
+data.  To interpret that part of the EXAFS signal, however, it is
+necessary to consider all the multiple scattering paths involving the
+C, N, and Fe atoms.  This includes significant, colinear 5- and
 6-legged paths.
 
 The final example is good ol'[%#'%] copper metal, which is often
-analyzed out to about 5 [%AA%], which includes 5 coordination shells
-and a number of double and triple scattering paths.  To analyze
-farther in R, one eventual gets to the single scattering path which
-includes the face center atom in the diagonally adjacent cell.  In the
-figure below,  the absorber is represented by the pink atom.  The
-distant neighbor is the farthest lavendar-colored atom.  To analyze
-the single scattering contribution from that distance would require
-consideration of all the multiple scattering among the pink and
-lavendar atoms, which are colinear along that unit cell diagonal.
+analyzed out to about 5 [%AA%], a disatnce which includes 5
+coordination shells and a number of double and triple scattering
+paths.  To analyze farther in R, one eventual gets to the single
+scattering path which includes the face center atom in the diagonally
+adjacent cell.  In the figure below, the absorber is represented by
+the pink atom.  The distant neighbor is the farthest lavendar-colored
+atom.  To analyze the single scattering contribution from that
+distance would require consideration of all the multiple scattering
+among the pink and lavendar atoms, which are colinear along that unit
+cell diagonal.
 [% END %]
 
 

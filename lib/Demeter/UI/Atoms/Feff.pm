@@ -14,6 +14,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RIGHT_DOWN EVT_RADIOBUTTON);
 use Demeter::UI::Wx::MRU;
+use Demeter::UI::Wx::ConfigurationDialog;
 use Demeter::UI::Wx::VerbDialog;
 
 my %hints = (
@@ -198,12 +199,16 @@ sub OnCardMenu {
 
 sub OnNlegs {
   my ($self, $event) = @_;
-  $self->{parent}->status("");
-  return if Demeter->co->default('atoms', 'suppress_nleg_warning');
   if ($self->{nlegs6}->GetValue) {
-    my $message = Wx::MessageDialog->new($self, "Considering 5- and 6-legged paths is NOT recommended as it will make running Feff MUCH slower!.", "Warning!", wxOK);
-    $message->ShowModal;
+    if (not Demeter->co->default('atoms', 'suppress_nleg_warning') ) {
+      my $message = Demeter::UI::Wx::ConfigurationDialog->new($self, -1, "Considering 5- and 6-legged paths is NOT recommended as it will make running Feff MUCH slower!", "Warning!");
+      my $suppress = $message->ShowModal;
+      Demeter->co->set_default('atoms', 'suppress_nleg_warning', $suppress);
+      Demeter->co->write_ini;
+    };
     $self->{parent}->status("Considering 5- and 6-legged paths will make running Feff MUCH slower!.");
+  } else {
+    $self->{parent}->status("Limiting pathfinder to 4-legged paths.");
   };
 };
 
