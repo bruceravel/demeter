@@ -45,10 +45,10 @@ The columns in the norm(E) output file are:
 
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %] energy                [% END %]
-[% WRAPPER html/li %] flattened [% mu %]    [% END %]
-[% WRAPPER html/li %] flattened background  [% END %]
 [% WRAPPER html/li %] normalized [% mu %]   [% END %]
 [% WRAPPER html/li %] normalized background [% END %]
+[% WRAPPER html/li %] flattened [% mu %]    [% END %]
+[% WRAPPER html/li %] flattened background  [% END %]
 [% WRAPPER html/li %] derivative of normalized [% mu %] [% END %]
 [% WRAPPER html/li %] second derivative of normalized [% mu %] [% END %]
 [% END %]
