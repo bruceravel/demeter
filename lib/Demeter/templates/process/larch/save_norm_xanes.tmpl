@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # save norm(E) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+}
+##|
+##| saving "{$S->name}" as normalized mu(E)
+{$D->group}.e = {$D->group}.energy+{$D->bkg_eshift}
+{$D->group}.nbkg = zeros(size({$D->group}.energy))
+{$D->group}.fbkg = zeros(size({$D->group}.energy))
+write_ascii("{$filename}",
+            {$D->group}.e, {$D->group}.norm, {$D->group}.nbkg, {$D->group}.flat, {$D->group}.fbkg, {$D->group}.nder, {$D->group}.nsec,
+	    label="energy norm flattened norm_derivative norm_second", header={$S->group}.myheader)
+del {$D->group}.e

@@ -12,6 +12,8 @@
    - Attempt to handle non-US-ASCII characters in file names
      gracefully using wxWindows.  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012845.html][Marcelo Eduardo Alves]] for
      bringing this to my attention)
+   - Fixed missing columns from mu(E) and norm(E) output files for
+     XANES data (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012912.html][Jeff Catalano]])
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab

@@ -1,0 +1,23 @@
+{ # -*- ifm -*-
+  # save mu(E) template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  # the filename and titles were passed to the template method
+  # $titles should contain a string that Ifeffit will be able to
+  # interpret as a set of title lines already set in Ifeffit.  one
+  # common way of doing this is with a glob structure, like
+  # $dem_data_* 
+  # example:
+  #   $string = $self->template("process", "save_xmu",
+  #                             {filename=>$filename, titles=>"\$dem_data_*"});
+  $nonxdi = q{};
+  $nonxdi = ' $' . $D->group . '_title_*' if not exists($INC{'Xray/XDI.pm'}) . ',';
+  q{};
+}
+##| saving "{$D->name}" as mu(E)
+set {$D->group}.e = {$D->group}.energy+{$D->bkg_eshift}
+set {$D->group}.bkg = zeros(npts({$D->group}.energy))
+write_data(file="{$filename}", ${$titles},{$nonxdi}
+           {$D->group}.e, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.pre_edge,
+           {$D->group}.post_edge, {$D->group}.der, {$D->group}.sec, {$D->group}.i0)
+erase {$D->group}.e

@@ -882,16 +882,28 @@ sub _save_xmu_command {
   croak("No filename specified for save_xmu") unless $filename;
 
   $self->title_glob("dem_data_", "e");
-  my $string = $self->template("process", "save_xmu", {filename => $filename,
-						       titles   => "dem_data_*"});
+  my $string;
+  if ($self->datatype eq 'xanes') {
+    $string = $self->template("process", "save_xmu_xanes", {filename => $filename,
+							    titles   => "dem_data_*"});
+  } else {
+    $string = $self->template("process", "save_xmu", {filename => $filename,
+						      titles   => "dem_data_*"});
+  };
   return $string;
 };
 sub _save_norm_command {
   my ($self, $filename) = @_;
   croak("No filename specified for save_norm") unless $filename;
   $self->title_glob("dem_data_", "n");
-  my $string = $self->template("process", "save_norm", {filename => $filename,
-							titles   => "dem_data_*"});
+  my $string;
+  if ($self->datatype eq 'xanes') {
+    $string = $self->template("process", "save_norm_xanes", {filename => $filename,
+							     titles   => "dem_data_*"});
+  } else {
+    $string = $self->template("process", "save_norm", {filename => $filename,
+						       titles   => "dem_data_*"});
+  };
   return $string;
 };
 

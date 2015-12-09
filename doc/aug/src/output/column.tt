@@ -40,6 +40,9 @@ The columns in the [% mu %] output file are:
 [% END %]
 
 [% FILTER html_para %]
+If the data group is marked as being XANES data, then the background
+column will be all zeros.
+
 The columns in the norm(E) output file are:
 [% END %]
 
@@ -54,7 +57,10 @@ The columns in the norm(E) output file are:
 [% END %]
 
 [% FILTER html_para %]
-The columns in any of the [% chik %] output files are:
+If the data group is marked as being XANES data, then the normalized
+and flattened background columns will be all zeros.
+
+The columns in the [% chik %] output files are:
 [% END %]
 
 [% WRAPPER html/list type="ol" %]
