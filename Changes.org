@@ -21,15 +21,20 @@
      (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])
    - Disable check to see if a file is locked.  Currently does not
      work over NFS and I do not know how to check is a drive is an NFS
-     mount.
+     mount (thanks to Karen Chen-Wiegart)
    - Add 5- and 6-legged paths to pathfinder
    - Add xyz, alchemy, and overfull output types for Atoms
    - Added Demeter::UI::Wx::ConfigurationDialog
    - Added a fitting sanity check to verify that the ScatteringPath
      object actually exists
-   - Removed ={\267}= from gnuplot plots in k-space
+   - Removed ={\267}= from gnuplot plots in k-space (thanks to
+     [[https://github.com/bruceravel/demeter/issues/25][@roentgenium]])
    - Explicitly set SIGALRM in several more places, which is helpful
      for command line scripts
+
+*** Documentation
+   - Fixed a misstatement in the Athena document about the order of
+     columns in the norm(E) output file  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html][Jeff Catalano]])
 
 ** 0.9.24   23 October   2015
 *** Demeter
