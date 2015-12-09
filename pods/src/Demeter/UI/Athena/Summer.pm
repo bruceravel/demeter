@@ -62,11 +62,13 @@ sub new {
   $this->{plot}     = Wx::Button->new($this, -1, 'Plot sum');
   $this->{plotchir} = Wx::Button->new($this, -1, "Plot sum as $CHI(R)");
   $this->{make}     = Wx::Button->new($this, -1, 'Make data group from sum');
+  $this->{reset}    = Wx::Button->new($this, -1, 'Reset');
   #$this->{add}      = Wx::Button->new($this, -1, 'Add another group');
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 3) foreach qw(plot plotchir make); # add);
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 3) foreach qw(plot plotchir make reset); # add);
   EVT_BUTTON($this, $this->{plot},     sub{$this->plot});
   EVT_BUTTON($this, $this->{plotchir}, sub{$this->plot('R')});
   EVT_BUTTON($this, $this->{make},     sub{$this->make});
+  EVT_BUTTON($this, $this->{reset},    sub{$this->Reset});
   $this->{plotchir}->Enable(0);
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
@@ -88,7 +90,9 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  1;
+  foreach my $i (1 .. $this->{n}) {
+    $this->{'standard'.$i}->fill($::app, 0, 0);
+  };
 };
 
 ## this subroutine sets the enabled/frozen state of the controls
@@ -96,6 +100,14 @@ sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
 };
+
+sub Reset {
+  my ($this) = @_;
+  foreach my $i (1 .. $this->{n}) {
+    $this->{'standard'.$i}->SetSelection(0);
+    $this->{'weight'.$i}->SetValue(1);
+  };
+}
 
 sub OnRadioBox {
   my ($this, $event) = @_;
@@ -115,7 +127,7 @@ sub add_choice {
 
   $box->Add(Wx::StaticText->new($this, -1, $this->{n}), 0, wxGROW|wxALL, 3);
   my $key = "standard".$this->{n};
-  $this->{$key} = Demeter::UI::Athena::GroupList -> new($this, $::app, 1);
+  $this->{$key} = Demeter::UI::Athena::GroupList -> new($this, $::app, 0);
   $box->Add($this->{$key}, 1, wxGROW|wxALL, 0);
   $box->Add(Wx::StaticText->new($this, -1, "weight:"), 0, wxGROW|wxALL, 3);
   $key = "weight".$this->{n};
@@ -141,6 +153,7 @@ sub sum {
   my $datatype = ($space eq 'chi') ? 'chi' : 'xmu';
   foreach my $i (1 .. $this->{nmax}) {
     next if ($this->{"standard$i"}->GetStringSelection eq 'None');
+    next if ($this->{"standard$i"}->GetStringSelection =~ m{\A\s*\z});
     next if ($this->{"weight$i"}->GetValue == 0);
     next if not looks_like_number($this->{"weight$i"}->GetValue);
     push @data, $this->{"standard$i"}->GetClientData(scalar $this->{"standard$i"}->GetSelection);
@@ -151,7 +164,7 @@ sub sum {
   my $save = Demeter->po->kweight;
   Demeter->po->kweight(0);
 
-  $this->{lcf}->data($data[0]);		# the data must be set to provide an
+  $this->{lcf}->data($data[0]); # the data must be set to provide an
                                 # interpolation standard, but no fit
                                 # will actually be done
   foreach my $n (0 .. $#data) {

@@ -247,6 +247,7 @@ sub dispose {
     $reprocessed .= $thisline . $eol;
   };
 
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM}; # very cryptic!
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("backend")) {
     if ($self->is_larch) {

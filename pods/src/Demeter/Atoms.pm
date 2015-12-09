@@ -290,7 +290,7 @@ has 'cluster' => (
 				'clear_cluster' => 'clear',
 			       }
 		 );
-has 'nclus'	       => (is => 'rw', isa =>'Str', default=> 0);
+has 'nclus' => (is => 'rw', isa =>'Str', default=> 0);
 
 
 sub BUILD {
@@ -748,6 +748,31 @@ sub cluster_list {
   };
   return $string;
 };
+
+sub xyz_list {
+  my ($self, $pattern) = @_;
+  $pattern ||= "  %-10s  %9.5f  %9.5f  %9.5f\n";
+  my $string = q{};
+  my @list = @ {$self->cluster };
+  foreach my $pos (@list) {
+    $string .= sprintf($pattern, $pos->[3]->element, $pos->[0], $pos->[1], $pos->[2]);
+  };
+  return $string;
+};
+
+sub alchemy_list {
+  my ($self, $pattern) = @_;
+  $pattern ||= "  %4d %-2s  %9.5f  %9.5f  %9.5f   0.00\n";
+  my $string = q{};
+  my @list = @ {$self->cluster };
+  my $count = 1;
+  foreach my $pos (@list) {
+    $string .= sprintf($pattern, $count, $pos->[3]->element, $pos->[0], $pos->[1], $pos->[2]);
+    ++$count;
+  };
+  return $string;
+};
+
 sub R {
   my ($self, $x, $y, $z) = @_;
   return sqrt($x**2 + $y**2 + $z**2);
@@ -797,15 +822,23 @@ sub p1_list {
   my ($self, $rhash) = @_;
   $self->populate if (not $self->is_populated);
   my $prec = '%'.$self->co->default("atoms", "precision");
-  $rhash->{pattern} ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
-  $rhash->{prefix}  ||= q{};
+  $rhash->{pattern}   ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
+  $rhash->{prefix}    ||= q{};
+  $rhash->{cartesian} ||= 0;
   my $cell = $self->cell;
   my $rlist = $cell->contents;
   my $string = q{};
   foreach my $l (@$rlist) {
-    $string .= $rhash->{prefix} . sprintf($rhash->{pattern},
-					  ucfirst(lc($l->[0]->element)),
-					  $$l[1], $$l[2], $$l[3], $l->[0]->tag)
+    if ($rhash->{cartesian}) {
+      my @list = $cell->metric($$l[1], $$l[2], $$l[3]);
+      $string .= $rhash->{prefix} . sprintf($rhash->{pattern},
+					    ucfirst(lc($l->[0]->element)),
+					    @list, $l->[0]->tag)
+    } else {
+      $string .= $rhash->{prefix} . sprintf($rhash->{pattern},
+					    ucfirst(lc($l->[0]->element)),
+					    $$l[1], $$l[2], $$l[3], $l->[0]->tag)
+    };
   };
   return $string;
 };
@@ -914,17 +947,18 @@ sub Write {
   my ($self, $type) = @_;
   $type ||= "feff6";
   $type = lc($type);
-  ($type = 'feff6') if ($type eq'feff');
+  ($type = 'feff6') if ($type eq 'feff');
   $self->update_absorption;
   return $self->atoms_file             if ($type eq 'atoms');
   return $self->atoms_file('p1')       if ($type eq 'p1');
+  return $self->template('overfull')   if ($type eq 'overfull');
   return $self->template("absorption") if (($type eq 'absorption') and $self->gases_set);
   return $self->template("mcmaster")   if (($type eq 'absorption') and not $self->gases_set);
   if ($type eq 'spacegroup') {
     $self->populate if (not $self->is_populated);
     return $self->spacegroup_file(0, '# ');
   };
-  return $self->Write_feff($type) if ($type =~ m{feff});
+  return $self->Write_feff($type) if ($type =~ m{feff|xyz|alc});
 
   ## still need: overfull, p1_cartesian, gnxas
 
@@ -938,17 +972,19 @@ sub Write_feff {
   return q{} if ($#{$self->cluster} == -1);
   return q{} if ($#{$self->cluster} == 0);
   my $string = q{};
-  $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
-  if ($self->co->default("atoms", "atoms_in_feff")) {
-    $string .= $self->template('prettyline', {prefix => ' * '});
-    $string .= $self->atoms_file('feff', ' * ');
-    $string .= $self->template('prettyline', {prefix => ' * '});
-    $string .= $/;
-  }
-  if ($self->gases_set) {
-    $string .= $self->template('absorption', {prefix => ' * '});
-  } else {
-    $string .= $self->template('mcmaster', {prefix => ' * '});
+  if ($type =~ m{feff}) {	# none of this header stuff for xyz or alchemy or the like
+    $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
+    if ($self->co->default("atoms", "atoms_in_feff")) {
+      $string .= $self->template('prettyline', {prefix => ' * '});
+      $string .= $self->atoms_file('feff', ' * ');
+      $string .= $self->template('prettyline', {prefix => ' * '});
+      $string .= $/;
+    }
+    if ($self->gases_set) {
+      $string .= $self->template('absorption', {prefix => ' * '});
+    } else {
+      $string .= $self->template('mcmaster', {prefix => ' * '});
+    };
   };
   $string .= $self->template($type);
   return $string;
@@ -969,6 +1005,98 @@ sub atoms_file {
   $string   .= ($type eq 'P1') ? $self->p1_list({prefix=>$prefix}) : $self->sites_list({prefix=>$prefix});
   return $string;
 };
+
+sub overfull_list {
+  my ($self, $nclus) = @_;
+  $self->populate if (not $self->is_populated);
+  my $cell = $self -> cell;
+  my $p1cell = $self->p1_list();
+  my $string = q{};
+  my $count  = 0;
+  foreach my $line (split($/, $p1cell)) {
+    my ($elem, $x, $y, $z, $tag) = split(" ", $line);
+    $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y, $z));
+    ++$count;
+
+    ## atoms with a near-0 coordinate
+    if (abs($x) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x+1, $y, $z));
+      ++$count;
+    };
+    if (abs($y) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y+1, $z));
+      ++$count;
+    };
+    if (abs($z) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y, $z+1));
+      ++$count;
+    };
+
+    if ((abs($x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs($y) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x+1, $y+1, $z));
+      ++$count;
+    };
+    if ((abs($x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs($z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x+1, $y, $z+1));
+      ++$count;
+    };
+    if ((abs($y) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs($z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y+1, $z+1));
+      ++$count;
+    };
+
+    if ((abs($x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs($y) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs($z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x+1, $y+1, $z+1));
+      ++$count;
+    };
+
+    ## atoms with a near-1 coordinate
+    if (abs(1-$x) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x-1, $y, $z));
+      ++$count;
+    };
+    if (abs(1-$y) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y-1, $z));
+      ++$count;
+    };
+    if (abs(1-$z) < Demeter->co->default('atoms', 'overfull_margin')) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y, $z-1));
+      ++$count;
+    };
+
+    if ((abs(1-$x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs(1-$y) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x-1, $y-1, $z));
+      ++$count;
+    };
+    if ((abs(1-$x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs(1-$z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x-1, $y, $z-1));
+      ++$count;
+    };
+    if ((abs(1-$y) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs(1-$z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x, $y-1, $z-1));
+      ++$count;
+    };
+
+    if ((abs(1-$x) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs(1-$y) < Demeter->co->default('atoms', 'overfull_margin')) and
+	(abs(1-$z) < Demeter->co->default('atoms', 'overfull_margin'))) {
+      $string .= sprintf("  %-2s   %9.5f   %9.5f   %9.5f\n", $elem, $cell->metric($x-1, $y-1, $z-1));
+      ++$count;
+    };
+  };
+  $self->nclus($count);
+  $string = $count . $/ . $string if ($nclus);
+  return $string;
+};
+
 
 sub spacegroup_file {
   my ($self) = @_;

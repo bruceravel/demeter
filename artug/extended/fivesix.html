@@ -1,0 +1,292 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>5 and 6 legged paths</title>
+    <link rel="stylesheet" href=../artug.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <a class=navhead href="../index.html">The Artemis Users' Guide</a>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        &laquo;<a class=navtable href="http://bruceravel.github.io/demeter/"><span class=programlink>DEMETER</span></a>&raquo; &nbsp;
+        &laquo;<a class=navtable href="https://github.com/newville/ifeffit"><span class=programlink>IFEFFIT</span></a>&raquo; &nbsp;
+        <!-- [&nbsp;<a class=navtable href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp; -->
+        &laquo;<a class=navtable href="http://xafs.org">xafs.org</a>&raquo; &nbsp;
+	<!-- [&nbsp;<a class=navtable href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a class=navtable href="../extended/dopants.html" class="menu">Handling dopants</a>
+        &nbsp;&nbsp;
+        Up: <a class=navtable href="../extended/index.html" class="menu">Extended topics</a>      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/Artemis_logo.jpg
+    width=90% border=0 alt='[Artemis logo]'></a>
+  <br />
+  <a href="../index.html"  class="menu">Home</a><br />
+<a href="../intro.html"  class="menu">Introduction</a><br />
+<a href="../startup/index.html"  class="menu">Starting Artemis</a><br />
+<a href="../data.html"  class="menu">The Data window</a><br />
+<a href="../feff/index.html"  class="menu">The Atoms/Feff window</a><br />
+<a href="../path/index.html"  class="menu">The Path page</a><br />
+<a href="../gds.html"  class="menu">The GDS window</a><br />
+<a href="../fit/index.html"  class="menu">Running a fit</a><br />
+<a href="../plot/index.html"  class="menu">The Plot window</a><br />
+<a href="../logjournal.html"  class="menu">The Log & Journal windows</a><br />
+<a href="../history.html"  class="menu">The History window</a><br />
+<a href="../monitor.html"  class="menu">Monitoring things</a><br />
+<a href="../prefs.html"  class="menu">Managing preferences</a><br />
+<a href="../examples/index.html"  class="menu">Worked examples</a><br />
+<a href="../atoms/index.html"  class="menu">Crystallography for EXAFS</a><br />
+<a href="../extended/index.html"  class="menuselect">Extended topics</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/qfs.html"  class="menu">Quick first shell theory</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/cv.html"  class="menu">Characteristic value</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/delr.html"  class="menu">Modeling bond length</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ss.html"  class="menu">Modeling disorder</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/constraints.html"  class="menu">Constraints and restraints</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/bvs.html"  class="menu">Bond valence sums</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/empirical.html"  class="menu">Using empirical standards</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/ipots.html"  class="menu">Unique potentials</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/fuzzy.html"  class="menu">Fuzzy degeneracy</a><br />
+&nbsp;&#8618;&nbsp;<a href="../extended/dopants.html"  class="menu">Handling dopants</a><br />
+&nbsp;&#8618;&nbsp;<span style="font-style: italic;">5 and 6 legged paths</span><br />
+</div>
+
+<div class=contentarea>
+
+
+<h1>
+  5 and 6 legged paths
+</h1>
+
+<hr class=hide />
+<a name="examplesofsituationsrequiring
+considerationofhigherorderpaths">
+<p>&nbsp;</p>
+</a>
+
+<h2>  Examples of situations requiring
+consideration of higher order paths</h2>
+
+
+<p>
+
+Normally, the 
+<a href="../feff/paths.html">pathfinder</a>
+in <span class=program>ARTEMIS</span>'s implementation of <span class=program>FEFF</span> only considers up to
+triple scattering (4-legged) paths.  This is for two reasons.  First,
+<span class=program>ARTEMIS</span>'s pathfinder is a bit slow.  Second, it is rather
+uncommon to need higher order paths in an EXAFS analysis.  Here are a
+few examples.
+</p>
+
+<p>
+Paradibromobenzene is a benzene molecule &ndash; a ring of 6 carbon
+atoms &ndash; with two of the hydrogen ligands replaced by bromine.
+The bromine atoms are in the para (1-4) arrangement, i.e. on opposite
+corners of the benzene ring.
+</p>
+
+<p>
+Being the only heavy scatterer in a rigid structure, the second
+bromine atom is quite evident in the EXAFS, giving rise to the large
+peak just above 6 &Aring; in the &chi;(R) data shown below.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=fivesix-paradibromobenzene>&nbsp;</a><br><a href=../../images/fivesix-paradibromobenzene.png><img src="../../images/fivesix-paradibromobenzene.png" width=193></a>
+&nbsp;&nbsp;<a href=../../images/fivesix-br-chir.png><img src="../../images/fivesix-br-chir.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+The paradibromobenzene molecule and its &chi;(R) data.
+</p>
+</div>
+
+<p>
+
+That big peak resulting from the second bromine atom includes not just
+the single scattering contribution, but a number of collinear multiple
+scattering paths.  This includes the 5-legged paths that scatter from
+both carbon atoms on the way to (or from) the bromine atoms, and the
+6-legged path that includes forward scattering from both carbon atoms
+in both directions.
+</p>
+
+<p>
+5- and 6-legged paths are, in general, only important in EXAFS for
+structures that are both rigid and have 4 collinear atoms.  This is
+pretty high bar, which is why examples are few and far between.  That
+said, here are a couple more examples.
+</p>
+
+
+<p>
+<a class=floatleft href="../../images/fivesix-prussian-blue.png" target=_blank><img border=0 src="../../images/fivesix-prussian-blue.png"   alt="fivesix-prussian-blue.png"></a>
+Prussian blue, ferric ferrocyanate, represents a class of
+framework-structured materials that have metal atoms at corner
+positions in the unit cell.  These metal atoms are bridged by cyanide
+molecules.  This is much like a rocksalt structure, but with the
+cation replaced by a cyanide molecule oriented in the direction of the
+bond.
+</p>
+
+<p>
+The metal anions are separated by about 5.1 &Aring;, thus are at a
+distance that can easily be resolved and analyzed with good EXAFS
+data.  To interpret that part of the EXAFS signal, however, it is
+necessary to consider all the multiple scattering paths involving the
+C, N, and Fe atoms.  This includes significant, collinear 5- and
+6-legged paths.
+</p>
+
+<p>
+The final example is good ol' copper metal, which is often
+analyzed out to about 5 &Aring;, a distance which includes 5
+coordination shells and a number of double and triple scattering
+paths.  To analyze farther in R, one eventual gets to the single
+scattering path which includes the face center atom in the diagonally
+adjacent cell.  In the figure below, the absorber is represented by
+the pink atom.  The distant neighbor is the farthest lavender-colored
+atom.  To analyze the single scattering contribution from that
+distance would require consideration of all the multiple scattering
+among the pink and lavender atoms, which are collinear along that unit
+cell diagonal.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=fivesix-cu7A>&nbsp;</a><br><a href=../../images/fivesix-cu7A.png><img src="../../images/fivesix-cu7A.png" width=259></a>
+&nbsp;&nbsp;<a href=../../images/fivesix-chir.png><img src="../../images/fivesix-chir.png" alt="foo" width=49%></a>
+<br></a>
+<p>
+4 unit cells of FCC copper with the collinear atoms contributing at
+about 7 &Aring; highlighted in lavender.  On the right is &chi;(R) data
+for copper metal.  The signal from the various SS and MS involving the
+lavender atoms paths contributes to the the peaks around 7 &Aring;.
+</p>
+</div>
+
+
+<hr class=hide />
+<a name="5and6leggedpathsinartemis">
+<p>&nbsp;</p>
+</a>
+
+<h2>  5 and 6 legged paths in Artemis</h2>
+
+<p class=caution>
+<img class=tinyfloatleft border=0 src="../../images/alert.png" alt="Caution!">
+Enabling the calculation of 5- and 6-legged paths significantly slows
+down the pathfinder calculation in <span class=program>ARTEMIS</span>.  If you are unsure
+whether you need 5- and 6-legged paths, you almost certainly
+<strong>do not</strong> want to do so!
+</p>
+
+<p>
+
+The default behavior in <span class=program>ARTEMIS</span> is to compute up to 4-legged
+paths.  For any <span class=program>FEFF</span> calculation, this can be extended to include
+5- and 6-legged paths by selecting the 
+&ldquo;6&rdquo; button, as indicated in the screenshot
+below.  Note that this sets the order of scattering paths only for the
+current <span class=program>FEFF</span> calculation.  The default for all subsequent <span class=program>FEFF</span>
+calculations will again be 4-legged paths.
+The <a href="../feff/aggregate.html">aggregate calculation</a>
+is always made with up to 4-legged paths.
+</p>
+
+
+<a href="../../images/fivesix-atoms.png" target=_blank><img class=flexy src="../../images/fivesix-atoms.png" title="
+<span class=program>FEFF</span> tool showing the check box for selecting order of multiple scattering.
+" alt="
+<span class=program>FEFF</span> tool showing the check box for selecting order of multiple scattering.
+"></a>
+
+
+<p>
+
+Besides being slow, the other consequence of setting the upper order
+of multiple scattering to 6 is that the 
+<a href="../feff/paths.html">path list</a>
+will be much longer and possibly more confusing.  Really, truly!
+Don't use this feature of <span class=program>ARTEMIS</span> unless you have a very
+good reason to do so.
+</p>
+
+<p>
+Some <a href="../prefs.html">configuration parameters</a> that relate to choice of the order of multiple
+scattering:
+<ol>
+  
+<li><p>
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;suppress_5_6_not_straight</span>: When true, only consider 5- and
+6-legged paths that have scattering angles within 
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;fs_angle</span> (typically 20 degrees) of 0 or 180 degrees.  That
+is, suppress all paths with angles far from forward and backward scattering.
+</p></li>
+<li><p>
+<span class=pref>&diams;Atoms&nbsp;&rarr;&nbsp;suppress_nleg_warning</span>: When
+true, this will suppress the dialog box posted by <span class=program>ATOMS</span> when you
+select the &ldquo;6&rdquo; button
+warning you against considering 5- and 6-legged paths.
+</p></li>
+<li><p>
+<span class=pref>&diams;Pathfinder&nbsp;&rarr;&nbsp;eta_suppress</span>: If
+you need to consider nearly collinear paths in a structure with
+buckling of atomic planes, you may need to set this parameter to
+false.  When true, it suppresses any path with a non-zero Eulerian
+&eta; angle.  In most cases, this is a good heuristic for removing
+irrelevant paths from the path list, however for orders of scattering
+above 4 and nearly collinear paths, this filter might remove desirable
+paths.  Use this with caution as it will greatly expand the size of
+the path list.
+</p></li>
+</ol>
+</p>
+
+</div>
+
+<br />
+<hr class=hide />
+<hr class=bottomdivider />
+
+<div class=bottombar>
+  <div class=copyright>
+  <table>
+    <tr>
+      <td colspan=2>
+        <span class=program>DEMETER</span> is copyright &copy; 2009-2015 Bruce Ravel
+        &mdash;
+        This document is copyright &copy; 2015 Bruce Ravel
+        <br />
+      </td>
+    </tr>
+    <tr valign=middle>
+      <td> 
+           <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+  	This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  	The Creative Commons Attribution-ShareAlike License</a>.
+  	<br />
+  	If <span class=program>DEMETER</span> and this document are useful to you, please consider
+  	<a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Wx::ConfigurationDialog</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Wx-ConfigurationDialog
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Wx/ConfigurationDialog.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a><br />
+	<ul>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Wx::ConfigurationDialog - A Wx dialog with a checkbox for suppressing the dialog in the future</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.24.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This dialog presents an informational message (like a
+Wx::MessageDialog),and presents the user with a checkbox for
+suppressing the message in the future.  The intent is that the return
+value of the dialog will be used to set a boolean configuration
+parameter.</p>
+
+<pre>  use Demeter::UI::Wx::VerbDialog;
+  my $dialog = Demeter::UI::Wx::VerbDialog-&gt;new($parent, -1,
+                          &quot;Warning, Will Robinson!,
+                          &quot;Warning!&quot;,
+                          );
+
+</pre><p>When shown, a window like this is displayed:</p>
+
+<pre>   +-----------------------------------------+
+   |                Warning!                 |
+   +-----------------------------------------+
+   |  Warning, Will Robinson!                |
+   | _______________________________________ |
+   |                               +------+  |
+   |  [ ] Do not show again        |  OK  |  |
+   |                               +------+  |
+   +-----------------------------------------+
+
+</pre><p>The dialog returns the value of the checkbox, which can then be used
+to set a boolean:</p>
+
+<pre>   my $value = $dialog -&gt; ShowModal;
+   Demeter -&gt; co -&gt; set_default($group, $parameter, $value);
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>The arguments of the constructor are</p>
+
+<dl>
+	<dt>1.</dt>
+		<dd><p>The parent widget</p></dd>
+	<dt>2.</dt>
+		<dd><p>The ID</p></dd>
+	<dt>3.</dt>
+		<dd><p>The text for the body of the dialog</p></dd>
+	<dt>4.</dt>
+		<dd><p>The text for the title of the dialog</p></dd>
+	<dt>5.</dt>
+		<dd><p>Optional verb for checkbox label.  Default is to say &quot;Do not show
+again&quot;.  &quot;ask&quot; might be a better choice if <code>$message</code> is a question.</p></dd>
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+		<dd><p>Please report problems to the Ifeffit Mailing List
+(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p></dd>
+		<dd><p>Patches are welcome.</p></dd>
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+		<dd><p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p></dd>
+		<dd><p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p></dd>
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+		<dd><p>Copyright (c) 2006-2015 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p></dd>
+		<dd><p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p></dd>
+		<dd><p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p></dd>
+
+</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

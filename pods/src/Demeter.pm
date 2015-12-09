@@ -107,6 +107,11 @@ use MooseX::Types::LaxNum;
 
 ## make sure early on that the dotfolder exists
 with 'Demeter::Tools';
+if (Demeter->is_windows) {
+  with 'Demeter::File::Windows';
+} else {
+  with 'Demeter::File::Common';
+};
 with 'Demeter::Project';
 my $toss = Demeter->dot_folder;
 ##print $toss, $/;
@@ -149,6 +154,7 @@ with 'Demeter::Get'; # this must follow use Demeter::Mode so the $Demeter::Get::
 
 ###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
 ###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
+$SIG{ALRM} = sub{Demeter->trace};
 
 ## this is a dummy variable to aid issuing useful error messages when reading INI files
 ## see Demeter::IniReader

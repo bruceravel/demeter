@@ -73,7 +73,7 @@
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<pre>  datoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
+<pre>  datoms [--output format] [--rmax #] [--cif --rec=#] [--wx] mydata.inp
 
 </pre><p>If no input or CIF file is specified at the command line, <cite>atoms.inp</cite>
 in the current working directory will be used, if available.</p>
@@ -84,10 +84,10 @@ line arguments are ignored.</p>
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <p>This reads an atoms input file or a CIF file (CIF is not working at
-this time) and writes out the results of a calculation using that
-crystallography data.  Typically the output is a <cite>feff.inp</cite> file, but
-it may also be a summary of the space group, calculation using tables
-of X-ray absorption coefficients, etc.</p>
+this time) and writes the results of a calculation using that
+crystallography data to standard output.  Typically the output is a
+<cite>feff.inp</cite> file, but it may also be a summary of the space group,
+calculation using tables of X-ray absorption coefficients, etc.</p>
 
 <h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
@@ -97,19 +97,39 @@ the <cite>feff.inp</cite> file can be overridden from the command line.</p>
 <dl>
 	<dt><code>--wx</code></dt>
 		<dd><p>Run the wxWidgets-based GUI (ignoring all other command-line flags).</p></dd>
-	<dt><code>-6</code></dt>
-		<dd><p>Write an input file for Feff6 (which is the default).</p></dd>
-	<dt><code>-8</code></dt>
-		<dd><p>Write an input file for Feff8.</p></dd>
-	<dt><code>-a</code></dt>
-		<dd><p>Write the results of calculations using tables of X-ray absorption
-coefficients.</p></dd>
-	<dt><code>-s</code></dt>
-		<dd><p>Write a space group summary file.</p></dd>
-	<dt><code>--atoms</code></dt>
-		<dd><p>Write an atoms input file.  This is most useful for interacting with a
-CIF file for which the central atom cannot be identified by Demeter's
-simplistic algorithm.</p></dd>
+	<dt><code>--output=format</code> or <code>-o format</code></dt>
+		<dd><p>Specify the output type.  Must be (case-insensitive) one of</p></dd>
+<dd><dl>
+	<dt><code>feff6</code>, <code>6</code></dt>
+		<dd><p>Write a <cite>feff.inp</cite> file for feff6.</p></dd>
+	<dt><code>feff8</code>, <code>8</code></dt>
+		<dd><p>Write a <cite>feff.inp</cite> file for feff8.</p></dd>
+	<dt><code>feff85test</code>, <code>85</code></dt>
+		<dd><p>Write a <cite>feff.inp</cite> file for use with the feff85exafs testing
+framework.</p></dd>
+	<dt><code>spacegroup</code></dt>
+		<dd><p>Write a file with information about the space group.</p></dd>
+	<dt><code>p1</code></dt>
+		<dd><p>Write the crystal structure as an atoms input file using the <code>P1</code>
+space group, i.e. the fully decorated unit cell.</p></dd>
+	<dt><code>absorption</code></dt>
+		<dd><p>Write a file with the results of calculations based on the crystal
+structure and tables of X-ray absorption coefficients.</p></dd>
+	<dt><code>atoms</code></dt>
+		<dd><p>Write the input data as an atoms input file (mostly useful for CIF to
+<cite>atoms.inp</cite> conversion)</p></dd>
+	<dt><code>xyz</code></dt>
+		<dd><p>Write the cluster in the simple <a href="https://en.wikipedia.org/wiki/XYZ_file_format">XYZ molecule format</a>.</p></dd>
+	<dt><code>alchemy</code></dt>
+		<dd><p>Write the cluster in the alchemy molecule format.</p></dd>
+	<dt><code>overfull</code></dt>
+		<dd><p>Write the contents of the unit cell in Cartesian coordinates with all
+atoms near a cell wall replicated near the opposite cell wall.  This
+is written in the form of an <a href="https://en.wikipedia.org/wiki/XYZ_file_format">XYZ molecule format</a> file.  The
+purpose of this output type is generate nice figures of unit cells
+with decorations on all the corners, sides, and edges.</p></dd>
+</dl>
+</dd>
 	<dt><code>--rmax=#</code> or <code>-r #</code></dt>
 		<dd><p>Specify a cluster size from the command line.</p></dd>
 <dd><pre>  datoms -r 5.2 mydata.inp

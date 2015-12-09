@@ -342,7 +342,7 @@ sub OnInit {
   $help->Append($QUESTION,   "Ask a question",  "How to ask a question about Athena" );
   $help->Append( wxID_ABOUT, "&About Atoms"    );
 
-  $bar->Append( $file, "&File" );
+  $bar->Append( $file, "&Atoms" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
   EVT_MENU( $frame, $ATOMS,    sub{ $frame->make_page('Atoms');     $frame->{notebook}->ChangeSelection(0); });

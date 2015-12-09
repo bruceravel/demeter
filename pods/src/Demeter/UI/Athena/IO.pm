@@ -18,6 +18,7 @@ use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none);
 use Const::Fast;
+use Text::Unidecode;
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -106,10 +107,30 @@ sub Import {
   ## evkev?
   my $first = ($args{no_interactive}) ? 0 : 1;
   foreach my $file (sort {$a cmp $b} @files) {
+
+    my ($plugin, $stashfile, $type, $deunifile, $original) = (q{}, q{}, q{}, q{}, q{});
+
+    ## I am very confused about how Wx::FileDialog handles paths+names
+    ## with unicode characters, the situation is fairly
+    ## straightforward unix, but on Windows there is some confusion
+    ## about encoding systems that I don't understand.  My solution is
+    ## to copy (safely, using Win32::Unicode::File) the file to the
+    ## stash folder and read it from there.
+    ##
+    ## This remains fragile.  It may not work if the stash folder
+    ## itself has non-ascii characters in it.  Sigh....
+    my $unidecoded = 0;
+    if ($file =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($file);
+      $original = $file;
+      $file = $deunifile;	# cannot set $stashfile here because this may need a plugin
+    };
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
-    if (not !Demeter->readable($file)) {
-      Wx::MessageDialog->new($app->{main}, "$file is not readable", "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+    my $check = Demeter->readable($file);
+    if ($check) {
+      Wx::MessageDialog->new($app->{main}, $check, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
       next;
     };
 
@@ -122,7 +143,7 @@ sub Import {
       ## file from X23A2 or 10BM , if so, set is_xdi to false and let
       ## this fall through to the plugin
     #};
-    my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
+
     if (Demeter->is_prj($file,$verbose) or Demeter->is_json($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;
@@ -176,6 +197,15 @@ sub Import {
     if ($plugin) {
       unlink $plugin->fixed;
       undef $plugin;
+    };
+    if ($unidecoded) {
+      ## I made it very awkward to get the reference to the current data.... this works, but, grrr....
+      my $n = $app->{main}->{list}->GetCount;
+      my $thisdata = $app->{main}->{list}->GetIndexedData($n-1);
+      $thisdata->source($original);
+      chdir(dirname($original));
+      $app->{main}->status("Imported ".$thisdata->name." from $original"); # reissue status bar message
+      unlink $deunifile;
     };
     if ($retval == 0) {		# bail on a file sequence if one gets canceled
       return;
@@ -566,7 +596,7 @@ sub _data {
 ## this argument list has grown icky over time:
 # 1: Pointer to the Athena app, same as $::app
 # 2: $colsel, Pointer to the column selection frame
-# 3: $data, Pointer to the main Data object (as opposed to the refernece)
+# 3: $data, Pointer to the main Data object (as opposed to the reference)
 # 4: $yaml: the yaml containing the column selection persistence
 # 5: $file: the actual file being read, stashfile for a plugin, original file otherwise
 # 6: $orig: the fully resolved original file

@@ -286,65 +286,68 @@ sub _verify_fit {
   $trouble_found += $self->S_data_files_exist;
   $trouble_found += $self->S_feff_files_exist;
 
-  ## 2. check that all guesses are used in defs and pathparams
+  ## 2. Check that the Path sp attributes are set sensibly
+  $trouble_found += $self->S_sp_exist;
+
+  ## 3. check that all guesses are used in defs and pathparams
   $trouble_found += $self->S_defined_not_used;
 
-  ## 3. check that defs and path paramers do not use undefined GDS parameters
+  ## 4. check that defs and path paramers do not use undefined GDS parameters
   $trouble_found += $self->S_used_not_defined;
 
-  ## 4. check that ++ -- // *** do not appear in math expression
+  ## 5. check that ++ -- // *** do not appear in math expression
   $trouble_found += $self->S_binary_ops;
 
-  ## 5. check that all function() names are valid in math expressions
+  ## 6. check that all function() names are valid in math expressions
   $trouble_found += $self->S_function_names;
 
-  ## 6. check that all data have unique group names and tags
-  ## 7. check that all paths have unique group names
+  ## 7. check that all data have unique group names and tags
+  ## 8. check that all paths have unique group names
   $trouble_found += $self->S_unique_group_names;
 
-  ## 8. check that all GDS have unique names
+  ## 9. check that all GDS have unique names
   $trouble_found += $self->S_gds_unique_names;
 
-  ## 9. check that parens match
+  ## 10. check that parens match
   $trouble_found += $self->S_parens_not_match;
 
-  ## 10. check that data parameters are sensible
+  ## 11. check that data parameters are sensible
   $trouble_found += $self->S_data_parameters;
 
-  ## 11. check number of guesses against Nidp
+  ## 12. check number of guesses against Nidp
   $trouble_found += $self->S_nidp unless $self->ignore_nidp;
 
-  ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
+  ## 13. verify that Rmin is >= Rbkg for data imported as mu(E)
   $trouble_found += $self->S_rmin_rbkg unless $self->ignore_rbkg;
 
-  ## 13. verify that Reffs of all paths are within some margin of rmax
+  ## 14. verify that Reffs of all paths are within some margin of rmax
   $trouble_found += $self->S_reff_rmax unless $self->ignore_rmax;
 
-  ## 14. check that Ifeffit's hard wired limits are not exceeded
+  ## 15. check that Ifeffit's hard wired limits are not exceeded
   $trouble_found += $self->S_exceed_ifeffit_limits;
 
-  ## 15. check that parameters do not have program variable names
+  ## 16. check that parameters do not have program variable names
   $trouble_found += $self->S_program_var_names;
 
-  ## 15.1. check that parameters do not have unallowed characters in their names
+  ## 17.1. check that parameters do not have unallowed characters in their names
   $trouble_found += $self->S_bad_character;
 
-  ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
+  ## 18. check that all Path objects have either a ScatteringPath or a folder/file defined
   $trouble_found += $self->S_path_calculation_exists;
 
-  ## 17. check that there are no unresolved merge parameters
+  ## 19. check that there are no unresolved merge parameters
   $trouble_found += $self->S_notice_merge;
 
-  ## 18. check that no more than one path is flagged as the default path
+  ## 20. check that no more than one path is flagged as the default path
   $trouble_found += $self->S_default_path;
 
-  ## 19. check that GDS math expressions do not have loops or cycles
+  ## 21. check that GDS math expressions do not have loops or cycles
   $trouble_found += $self->S_cycle_loop;
 
-  ## 20. check for obvious cases of a data set used more than once
+  ## 22. check for obvious cases of a data set used more than once
   $trouble_found += $self->S_data_collision unless $self->ignore_datacollision;
 
-  ## 21. check that each data set used in the fit has one or more paths assigned to it
+  ## 23. check that each data set used in the fit has one or more paths assigned to it
   $trouble_found += $self->S_data_paths;
 
   return $trouble_found;
@@ -384,6 +387,7 @@ sub fit {
   my ($self) = @_;
   $self->stop(0);
 
+  local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM};
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   my $prefit = $self->pre_fit;
   $self->number($self->mo->currentfit);
@@ -1576,10 +1580,11 @@ override 'deserialize' => sub {
   $self->call_sentinal("Importing Feff calculations");
   if ($args{file}) {
     foreach my $f (@$r_feff) {
-      my $ws = $f->workspace;
-      $ws =~ s{\\}{/}g;		# path separators...
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
-      my $this = Demeter::Feff->new(group=>$f, workspace=>$where);
+      #my $ws = $f->workspace;
+      #$ws =~ s{\\}{/}g;		# path separators...
+      #my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $where = "";
+      my $this = Demeter::Feff->new(group=>$f); #, workspace=>$where);
       $parents{$this->group} = $this;
       my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$f.yaml"));

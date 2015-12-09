@@ -324,22 +324,81 @@ recent files dialog populated with recently imported
 
 
 <p>
-<a class=floatleft href="../../images/feff-export.png" target=_blank><img border=0 src="../../images/feff-export.png"   alt="feff-export.png"></a>
+
+</td>
+<td width=280>
+<a class=floatright href="../../images/feff-export.png"  title=The Artemis Users' Guide target=_blank><img border=0 src="../../images/feff-export.png"  title="The Artemis Users' Guide"  alt="feff-export.png"></a>
 The save button will prompt you for a filename for an output 
 <span class=file>atoms.inp</span> saving the current state of the
 tab.
 </p>
 
 <p>
-Clicking the export button will post dialog on the right, which offers several
-different kinds of output files based on the crystal data.
-The &ldquo;Feff6&rdquo; and &ldquo;Feff8&rdquo; options will write input files for <span class=program>FEFF6</span> and
-<span class=program>FEFF8</span>.  The &ldquo;Atoms&rdquo; option write the
-same file as the save button.  The &ldquo;P1&rdquo;
-option writes the cyrstal data using the <tt>P 1</tt> space group and with a fully decorated unit cell. The &ldquo;Spacegroup&rdquo; option writes a file that fully describes
-the space group. the &ldquo;Absorption&rdquo; option
+Clicking the export button will post the dialog on the right, which
+offers several different kinds of output files based on the crystal
+data.
+</p>
+
+<p>
+<ul>
+  
+</p>
+
+<p>
+<li><p>
+The &ldquo;Feff6&rdquo; and
+&ldquo;Feff8&rdquo; options will write input files for
+<span class=program>FEFF6</span> and <span class=program>FEFF8</span>.
+</p></li>
+</p>
+
+<p>
+<li><p>
+The &ldquo;Atoms&rdquo; option write the same file as
+the save button.
+</p></li>
+</p>
+
+<p>
+<li><p>
+The &ldquo;P1&rdquo;
+option writes the crystal data to an <span class=file>atoms.inp</span>
+file using the <tt>P 1</tt> space group and with a
+fully decorated unit cell. The &ldquo;Spacegroup&rdquo;
+option writes a file that fully describes 
+the space group.
+</p></li>
+</p>
+
+<p>
+<li><p>
+The &ldquo;Absorption&rdquo; option
 writes a file containing some calculations based on tables of X-ray
 absorption coefficients.
+</p></li>
+</p>
+
+<p>
+<li><p>
+&ldquo;XYZ&rdquo; and 
+&ldquo;Alchemy&rdquo; are formats that are commonly
+understood by molecule rendoring software.
+</p></li>
+</p>
+
+<p>
+<li><p>
+&ldquo;Overfull&rdquo;
+is an &ldquo;XYZ&rdquo; file with the contents of
+the unit cell in Cartesian coordinates and with all
+atoms near a cell wall replicated near the opposite cell wall.  The
+purpose of this output type is generate nice figures of unit cells
+with decorations on all the corners, sides, and edges.
+</p></li>
+</p>
+
+<p>
+</ul>
 </p>
 
 <p>

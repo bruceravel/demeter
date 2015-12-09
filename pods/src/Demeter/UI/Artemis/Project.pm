@@ -28,6 +28,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
+use Text::Unidecode;
 use YAML::Tiny;
 use Safe;
 
@@ -189,6 +190,8 @@ sub read_project {
   my ($rframes, $fname) = @_;
   my $debug = 0;
   my $statustype = ($debug) ? 'wait' : 'wait|nobuffer';
+  my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
+
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -206,6 +209,15 @@ sub read_project {
       return;
     };
     $fname = $fd->GetPath;
+
+    if ($fname =~ m{[^[:ascii:]]}) {
+      $unidecoded = 1;
+      $deunifile = Demeter->unicopy($fname);
+      $rframes->{main}->status("Moved $fname to $deunifile");
+      $original = $fname;
+      $fname = $deunifile;
+    };
+
   } else {
     chdir(dirname($fname));
   };
@@ -471,10 +483,15 @@ sub read_project {
     Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
 
+  if ($unidecoded) {
+    unlink $fname;
+    $fname = $original;
+  };
+
   Demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectpath} = $fname;
-  $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  $rframes->{main}->{projectname} = unidecode(basename($fname, '.fpj'));
   $rframes->{main}->status("Imported project $fname.");
 
 #  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");

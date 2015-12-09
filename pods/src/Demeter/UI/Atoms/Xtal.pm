@@ -503,6 +503,7 @@ sub OnToolRightClick {
   };
 };
 
+
 ## this overrides a click event on the core column to make those
 ## checkboxes work like radioboxes.  a click event elsewhere on the
 ## grid is passed through
@@ -1001,6 +1002,7 @@ sub run_atoms {
   my ($self, $is_aggregate) = @_;
   $is_aggregate = 0;
   my $seems_ok = $self->get_crystal_data;
+  $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
   my $atomsfile = File::Spec->catfile($self->{parent}->{Feff}->{feffobject}->workspace, "atoms.inp");
   $self->save_file($atomsfile);
   my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
@@ -1022,7 +1024,6 @@ sub run_atoms {
     ## these can be disabled by an aggregate calculation
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
-    $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
     $self->{parent}->{Feff}->{toolbar}->Enable(1);
     $self->{parent}->{Feff}->{name}->Enable(1);
     $self->{parent}->{Feff}->{feff}->Enable(1);
@@ -1116,6 +1117,8 @@ sub aggregate {
   $self->{parent}->{Feff}->{betafuzz}->SetValue($bigfeff->betafuzz);
   $self->{parent}->{Feff}->{margin}->Enable(0);
   $self->{parent}->{Feff}->{betafuzz}->Enable(0);
+  $self->{parent}->{Feff}->{nlegs4}->Enable(0);
+  $self->{parent}->{Feff}->{nlegs6}->Enable(0);
 
   ## 5. Labels & Fill Paths tab
   my $name = $self->{name}->GetValue;
@@ -1175,7 +1178,7 @@ sub write_output {
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
     my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
-					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption"]
+					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption", 'XYZ', 'Alchemy', 'Overfull']
 					    );
     if( $dialog->ShowModal == wxID_CANCEL ) {
       $self->{parent}->status("Writing Atoms output canceled.");
