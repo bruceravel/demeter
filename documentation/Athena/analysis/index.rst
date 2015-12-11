@@ -1,3 +1,4 @@
+.. _analysis-chapter:
 
 Data analysis in Athena
 =======================

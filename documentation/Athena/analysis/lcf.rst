@@ -1,3 +1,4 @@
+.. _lcf_sec:
 
 Linear combination fitting
 ==========================

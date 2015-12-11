@@ -10,9 +10,11 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
 
    forward.rst
    intro.rst
+   bkg/index.rst
    analysis/index.rst
    hephaestus.rst
    biblio

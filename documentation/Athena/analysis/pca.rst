@@ -1,3 +1,4 @@
+.. _pca_sec:
 
 Principle component analysis
 ============================
@@ -5,9 +6,10 @@ Principle component analysis
 Abstract decomposition of a data sequence
 -----------------------------------------
 
-|To do!| Document all the buttons and whatnot. Explain what useful
-features are still missing. Explain what PCA means, what it does, and
-what it does not do.
+.. todo::
+   Document all the buttons and whatnot. Explain what useful
+   features are still missing. Explain what PCA means, what it does, and
+   what it does not do.
 
 Here, I have imported a project file containing well-processed data on a
 time series of samples in which gold chloride is being reduced to gold
@@ -17,6 +19,8 @@ and normalizing your data before embarking on PCA. This is truly a case
 of garbage-in/garbage-out.
 
 I then select the PCA tool from the main menu.
+
+.. _fig-pca:
 
 .. figure:: ../images/pca.png
    :target: ../images/pca.png
@@ -58,21 +62,23 @@ reconstruction of an intermeidate time point using the top 3 components.
 
 .. subfigstart::
 
-.. _pca_components:
+.. _fig-pca-components:
    
 .. figure:: ../images/pca_components.png
    :target: ../images/pca_components.png
    :width: 100%
-
-.. _pca_recon:
+   :align: left
+	   
+.. _fig-pca-recon:
    
 .. figure:: ../images/pca_recon.png
    :target: ../images/pca_recon.png
    :width: 100%
+   :align: right
 
 .. subfigend::
-   :width: 0.4
-   :label: pca
+   :width: 0.45
+   :label: fig-pca-basics
 
    (Left) The principle components of this data ensemble. (Right) PCA
    reconstruction
@@ -81,29 +87,42 @@ Selecting one of the standards in the group list enables the target
 transform button. Clicking it shows the result of the transform and
 displays the coefficients of the transform in the smaller text box.
 
+.. _fig-pca-tt:
+
 .. figure:: ../images/pca_tt.png
    :target: ../images/pca_tt.png
    :width: 65%
    :align: center
 
-Performing a target transform against a data standard
+   Performing a target transform against a data standard
 
-.. figure:: ../images/pca_recon.png
-   :target: ../images/pca_recon.png
-   :width: 65%
+
+.. subfigstart::
+
+.. _fig-pca-tt-good:
+
+.. figure:: ../images/pca_tt_good.png
+   :target: ../images/pca_tt_good.png
+   :width: 45%
    :align: center
 
-(Left) A successful target transform on Au foil. Au foil is certainly a
-constituent of the data ensemble used in the PCA. (Right) A unsuccessful
-target transform on Au cyanide. Au cyanide is certainly not a
-constituent of the data ensemble used in the PCA.
+.. _fig-pca-tt-bad:
+
+.. figure:: ../images/pca_tt_bad.png
+   :target: ../images/pca_tt_bad.png
+   :width: 45%
+   :align: center
+
+.. subfigend::
+   :width: 0.45
+   :label: fig-pca-tt-goodbad
+
+   (Left) A successful target transform on Au foil. Au foil is certainly a
+   constituent of the data ensemble used in the PCA. (Right) A unsuccessful
+   target transform on Au cyanide. Au cyanide is certainly not a
+   constituent of the data ensemble used in the PCA.
 
 The list of chores still undone for the PCA tool can be found at `my
 Github
 site <https://github.com/bruceravel/demeter/blob/master/todo.org>`__.
 
-.. |image5| image:: ../../images/pca_tt.png
-.. |image6| image:: ../../images/pca_tt_good.png
-   :target: ../../images/pca_tt_good.png
-.. |foo| image:: ../../images/pca_tt_bad.png
-   :target: ../../images/pca_tt_bad.png

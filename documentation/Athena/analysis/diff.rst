@@ -1,3 +1,5 @@
+.. _diff-sec:
+
 Difference spectra
 ==================
 

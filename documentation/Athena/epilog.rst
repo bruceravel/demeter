@@ -14,7 +14,7 @@ Commons <http://creativecommons.org/support/>`__.
    :target: http://creativecommons.org/licenses/by-sa/3.0/
 
 .. |To do!| image:: ../images/todo.png
-.. |[Athena logo]| image:: ./../images/pallas_athene_thumb.jpg
+.. |[Athena logo]| image:: ../images/pallas_athene_thumb.jpg
    :target: ./pallas.html
 .. |Essential topic| image:: ../images/LightningBolt.png
    :target: ../images/LightningBolt.png

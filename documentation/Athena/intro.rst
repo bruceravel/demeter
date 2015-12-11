@@ -1,3 +1,4 @@
+.. _intro_chapter:
 
 Introduction to Athena
 ======================

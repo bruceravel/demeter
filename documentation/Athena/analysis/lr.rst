@@ -1,3 +1,4 @@
+.. _lr_sec:
 
 Log-ratio/phase-difference analysis
 ===================================

@@ -1,3 +1,4 @@
+.. _peak-sec:
 
 Peak fitting
 ============
