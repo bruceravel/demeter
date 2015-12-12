@@ -3,16 +3,17 @@
 Data analysis in Athena
 =======================
 
-ATHENA provides various kinds of data analysis. None of the data
-analysis capabilities in ATHENA require the use of FEFF. Analysis of
-data using FEFF is a huge topic and is thepurpose of the ARTEMIS
-program. The data analysis techniques included in ATHENA are all purely
+:demeter:`athena` provides various kinds of data analysis. None of the
+data analysis capabilities in :demeter:`athena` require the use of
+:demeter:`feff`. Analysis of data using :demeter:`feff` is a huge
+topic and is the purpose of the :demeter:`artemis` program. The data
+analysis techniques included in :demeter:`athena` are all purely
 empirical. While there is no substitute for careful, sophisticated
-analysis of EXAFS data using theory from FEFF, often the empirical
-techniques described in this chapter are adequate to answer the
-questions you have about your data.
+analysis of EXAFS data using theory from :demeter:`feff`, often the
+empirical techniques described in this chapter are adequate to answer
+the questions you have about your data.
 
-ATHENA's analysis tools are accessed from the Analysis menu, as shown
+:demeter:`athena`'s analysis tools are accessed from the Analysis menu, as shown
 below.
 
 .. figure:: ../images/analysis.png

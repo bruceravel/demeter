@@ -14,15 +14,15 @@ A Periodic Table for the X-ray Absorption Spectroscopist
         agriculture are the support of civilization.
                                      Mythology, Edith Hamilton
 
-HEPHAESTUS is a program for making calculations useful to the XAS
+:demeter:`hephaestus` is a program for making calculations useful to the XAS
 experimentalist using a periodic table, tables of X-ray absorption
 coefficients, and other elemental data.
 
-On the left of the HEPHAESTUS window is a stack of icons which are used
+On the left of the :demeter:`hephaestus` window is a stack of icons which are used
 to select the different tools. Clicking on one of the icons enables that
 tool.
 
-At the bottom of the HEPHAESTUS window is a status bar which HEPHAESTUS
+At the bottom of the :demeter:`hephaestus` window is a status bar which :demeter:`hephaestus`
 uses to convey information during the course of operation. Along with
 information about the most recently completed calculation, the status
 bar shows topical information. As the mouse passes over an element in
@@ -32,11 +32,12 @@ will display that energy in wavelength units in the status bar. In the
 Standards tool, some information about the plotted data is displayed in
 the status bar.
 
-The “Hephaestus” menu in the menu bar provides another way of navigating
-between the tools. The mouse can be used, as can the keyboard. Alt-e and
-Alt-h post the “Hephaestus” and “Help” menus. Control-1 through
-Control-9 change the display the various tools. Control-m displays the
-document in a web browser, while Control-c changes the display to the
+The :quoted:`Hephaestus` menu in the menu bar provides another way of
+navigating between the tools. The mouse can be used, as can the
+keyboard. ``Alt-e`` and ``Alt-h`` post the :quoted:`Hephaestus` and
+:quoted:`Help` menus. ``Control-1`` through ``Control-9`` change the
+display the various tools. ``Control-m`` displays the document in a
+web browser, while ``Control-c`` changes the display to the
 configuration tool.
 
 --------------
@@ -46,7 +47,7 @@ configuration tool.
 Absorption
 ----------
 
-This is the start page for HEPHAESTUS and is used to display information
+This is the start page for :demeter:`hephaestus` and is used to display information
 about edge and line energies for the elements.
 
 A periodic table is displayed atop three lists that will be filled in
@@ -57,21 +58,21 @@ The data table will be filled with some basic information about the
 element, including its name and Z number, its atomic weight, and bulk
 density under standard temperature and pressure. Beneath this table are
 two controls for determining the appropriate Z-1 or Z-2 filter to use in
-a fluorescence experiment. The “Filter” text box will be filled with the
+a fluorescence experiment. The :quoted:`Filter` text box will be filled with the
 likeliest candidate for the element selected from the periodic table.
-This can be edited by hand. Clicking the “Plot filter” button will
+This can be edited by hand. Clicking the :quoted:`Plot filter` button will
 display a plot showing the relative locations of the edge energy, the
 dominant fluorescence lines, and the filter edge energy.
 
-The “edges” table shows the value in eV of each edge associated with the
+The :quoted:`edges` table shows the value in eV of each edge associated with the
 element selected from the periodic table and the core-hole lifetime in
 eV of each edge. Clicking on a line in this table will display a message
 in the status bar giving the edge energy expressed in wavelength units
 and the core-hole lifetime expressed in approximate time units. Double
 clicking on a line will highlight all fluorescence lines associated with
-that edge in the “lines” table.
+that edge in the :quoted:`lines` table.
 
-The “lines” table shows the transitions and emission energies in eV of
+The :quoted:`lines` table shows the transitions and emission energies in eV of
 every line associated with the element selected from the periodic table.
 Also shown is the approximate strength, or branching ratio, of each
 line. The strengths for all lines associated with a particular edge will
@@ -131,10 +132,10 @@ The rules for the selection of the filter elements are:
 Beamline customization
 ~~~~~~~~~~~~~~~~~~~~~~
 
-When beamline customization is enabled, the two buttons labeled “Show K
-edges” and “Show L edges” will be visible. These are both toggle
-buttons. When pressed, they will disable all elements that cannot be
-measured by that edge at the beamline.
+When beamline customization is enabled, the two buttons labeled
+:quoted:`Show K edges` and :quoted:`Show L edges` will be visible. These are
+both toggle buttons. When pressed, they will disable all elements that
+cannot be measured by that edge at the beamline.
 
 .. figure:: ../images/Hephaestus_beamline.png
    :target: ../images/Hephaestus_beamline.png
@@ -145,14 +146,16 @@ measured by that edge at the beamline.
    (6BM) beamline showing the elements whose K edges can be measured at the
    beamline.
 
-To enable beamline customization, set the ♦Hephaestus → enable\_beamline
-`configuration parameter <other/prefs.html>`__ to true.
+To enable beamline customization, set the
+:configparam:`Hephaestus,enable\_beamline` `configuration parameter
+<other/prefs.html>`__ to true.
 
-You will want to set the ♦Hephaestus → beamline\_name parameter to the
-name of your beamline. Keep it short – it needs to fit on the button!
-Finally, set the ♦Hephaestus → beamline\_emin and
-♦Hephaestus → beamline\_emax parameters to the lower and upper energy
-bounds of your beamline.
+You will want to set the :configparam:`Hephaestus,beamline\_name`
+parameter to the name of your beamline. Keep it short – it needs to
+fit on the button!  Finally, set the
+:configparam:`Hephaestus,beamline\_emin` and
+:configparam:`Hephaestus,beamline\_emax` parameters to the lower and
+upper energy bounds of your beamline.
 
 --------------
 
@@ -164,8 +167,8 @@ Formulas
 This tool is used to compute approximate absorption lengths for common
 or user-specified materials. To the left is a list of materials commonly
 found at synchrotron beamlines. Clicking one of those items inserts its
-stoichiometric formula into the “Formula” box and the density into the
-“Density” box.
+stoichiometric formula into the :quoted:`Formula` box and the density into the
+:quoted:`Density` box.
 
 At the top of the right hand part of this tool are controls for entering
 the parameters of the absorption length calculation. The formula must be
@@ -175,8 +178,8 @@ a stoichiometric formula using a few simple rules.
 
 #. White space is unimportant -- it will be removed from the string. So
    will dollar signs, underscores, and curly braces (in an attempt to
-   handle TeX). Also a sequence like this: “/sub 3/” will be converted
-   to “3” (in an attempt to handle INSPEC).
+   handle TeX). Also a sequence like this: :quoted:`/sub 3/` will be converted
+   to :quoted:`3` (in an attempt to handle INSPEC).
 
 #. Numbers can be integers or floating point numbers. Things like 5,
    0.5, 12.87, and .5 are all acceptable, as is exponential notation
@@ -226,12 +229,12 @@ gravity of 2.29 and at energy of 7800 eV:
         The Elam database and the full cross-sections were
         used in the calculation.
 
-This reports on an important physical parameter, the “absorption
-length”. This is defined as the length of sample over which the
-intensity of the incident beam will be attenuated by 1/e, or about 63%,
-at the specified energy. Note that absorption length is an energy
-dependent parameter and that it changes significantly across an
-absorption edge.
+This reports on an important physical parameter, the
+:quoted:`absorption length`. This is defined as the length of sample
+over which the intensity of the incident beam will be attenuated by
+1/e, or about 63%, at the specified energy. Note that absorption
+length is an energy dependent parameter and that it changes
+significantly across an absorption edge.
 
 Here we see that 9000 eV photons will be e-fold attenuated in just over
 1 millimeter of packed BN. To make a sample with an area of 1 square
@@ -269,13 +272,13 @@ the Co K edge energy of 7709 eV.
         The Elam database and the full cross-sections were
         used in the calculation.
 
-Here we introduce a second important physical parameter, the “unit edge
-step length”. This is defined as the length over which the total
-absorption will change by a factor of 1/e as the incident beam energy is
-scanned over the absorption edge. To say that another way, the
-absorption will be e-fold greater just above the edge than just below
-the edge. With that length of sample, the edge step of a transmission
-XAS scan will be 1.
+Here we introduce a second important physical parameter, the
+:quoted:`unit edge step length`. This is defined as the length over
+which the total absorption will change by a factor of 1/e as the
+incident beam energy is scanned over the absorption edge. To say that
+another way, the absorption will be e-fold greater just above the edge
+than just below the edge. With that length of sample, the edge step of
+a transmission XAS scan will be 1.
 
 Suppose you wanted to mix some cobalt ferrite with 35 milligrams (i.e.
 an amount that will contribute 0.2 to the total absorption of the
@@ -363,8 +366,8 @@ given energy. The calculation requires several parameters, including
    pressure is 760 Torr.
 
 The percentage absorbed by the ion chamber will usually auto-update as
-you change the parameters. Clicking the “Compute” button forces an
-update. Clicking the “Reset” button returns all the parameters to their
+you change the parameters. Clicking the :quoted:`Compute` button forces an
+update. Clicking the :quoted:`Reset` button returns all the parameters to their
 initial values.
 
 As a rule of thumb, 10% is a good amount of absorption for the I0
@@ -405,9 +408,9 @@ properties of the elements. Selecting an element from the periodic table
 will fill in a table with the data for that element.
 
 Beneath the periodic table is a tabbed notebook. Each tab contains a
-different data table. The “Elemental data” tab contains a variety of
-general information. The “Ionic radii” tab contains the Shannon ionic
-radii. The “Neutron data” tab conatins data on thermal neutron
+different data table. The :quoted:`Elemental data` tab contains a variety of
+general information. The :quoted:`Ionic radii` tab contains the Shannon ionic
+radii. The :quoted:`Neutron data` tab conatins data on thermal neutron
 scattering lengths and cross sections for the major isotopes.
 
 .. figure:: ../images/Hephaestus_data.png
@@ -512,7 +515,7 @@ Demeter is distributed with a small library of data on standard
 materials. These XANES spectra can be access via this tool. You will
 find that this library is quite tiny at this time. The hope is that a
 future effort in an XAS standards library will take off. When that
-happens, this will be HEPHAESTUS' interface to that effort.
+happens, this will be :demeter:`hephaestus`' interface to that effort.
 
 Clicking on an element in the periodic table displays a list of all the
 standards in the library measured for that element. The disabled
@@ -523,10 +526,10 @@ The XANES data can be plotted as normalized mu(E) or as the derivative
 of mu(E). The data present have all been annotated so that interesting
 points are marked on the plots.
 
-The “Save” button will prompt for a file name and save the mu(E) data to
+The :quoted:`Save` button will prompt for a file name and save the mu(E) data to
 a file.
 
-One point of this tool is to make obsolete the “Reference Spectra”
+One point of this tool is to make obsolete the :quoted:`Reference Spectra`
 printout from EXAFS Materials that is found at many beamlines.
 http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
@@ -580,17 +583,18 @@ The f' and f" data can be saved to a file.
 Preferences
 -----------
 
-The behavior of HEPHAESTUS can be configured via the preferences tool.
+The behavior of :demeter:`hephaestus` can be configured via the preferences tool.
 This uses the same preferences tool as Athena and Artemis, although only
-those preference groups relevant to HEPHAESTUS and to plotting are
+those preference groups relevant to :demeter:`hephaestus` and to plotting are
 presented.
 
-Click on a group in the “Parameters” list to open a group. Click on a
-parameter to display it in the controls on the right. You will be given
-controls appropriate to each parameter's data type for setting the
-parameter value. The “Your value” and “Demeter's value” buttons can be
-used to restore a parameter's value. A description of the displayed
-parameter will be written in the large text box.
+Click on a group in the :quoted:`Parameters` list to open a
+group. Click on a parameter to display it in the controls on the
+right. You will be given controls appropriate to each parameter's data
+type for setting the parameter value. The :quoted:`Your value` and
+:quoted:`Demeter s value` buttons can be used to restore a parameter's
+value. A description of the displayed parameter will be written in the
+large text box.
 
 Parameters can be applied for the current session or applied and saved
 to your configuration file.
@@ -602,7 +606,7 @@ to your configuration file.
 Credits
 -------
 
--  The layout of HEPHAESTUS -- with its button bar on the left side
+-  The layout of :demeter:`hephaestus` -- with its button bar on the left side
    which changes the mode of the main part of the program -- was
    inspired by the personal information management program I use on my
    KDE systems, Kontact. I found it effective so I swiped it for this
@@ -634,7 +638,7 @@ Credits
    slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
    Data Booklet.
 
--  HEPHAESTUS makes use of several things from
+-  :demeter:`hephaestus` makes use of several things from
    http://www.cpan.org
 
 -  And, of course, the users of my various software efforts deserve all
@@ -666,7 +670,7 @@ The Shaltout tables
 Bugs and limitations
 --------------------
 
-Every calculation at high energy is inaccurate in HEPHAESTUS.
+Every calculation at high energy is inaccurate in :demeter:`hephaestus`.
 Xray::Absorption does not correctly handle the mass-energy absorption
 coefficients at high energy, although the ion chamber utility does
 attempt a (very) crude correction.

@@ -1,9 +1,8 @@
+.. _clamps_sec:
+
+
 Spline clamps and k-weight in background removal
 ================================================
-
---------------
-
- 
 
 Spline clamps
 -------------
@@ -12,138 +11,131 @@ One of the shortcomings of the use of piece-wise splines to approximate
 the background function is that the ends of spline are somewhat
 ill-defined by virtue of not having more data preceding or following. At
 times, this can result in the end of the spline splaying up or down,
-away from the μ(E) data. This results in significant distortion to χ(k)
+away from the μ(E) data. This results in significant distortion to |chi| (k)
 data.
 
-IFEFFIT provides a tool called *spline clamps*. These work by adding an
-additional term to the χ² metric used to fit the spline to the μ(E)
-data. The difference between the spline and the data is computed for the
-first and last five data points. This sum of differences computed in
-energy is multiplied by a user-chosen scaling factor and added to the χ²
-computed from the R-range below «rbkg». This has the effect of
-“clamping” the spline to the ends of the data range. In other words, we
-use the prior knowledge that μ₀(E) is a smooth function through the
-oscillatory structure of μ(E) to put a restraint on the fit used to
-determine μ₀(E).
+:demeter:`ifeffit` provides a tool called *spline clamps*. These work
+by adding an additional term to the |chi|\ :sup:`2` metric used to fit
+the spline to the |mu| (E) data. The difference between the spline and
+the data is computed for the first and last five data points. This sum
+of differences computed in energy is multiplied by a user-chosen
+scaling factor and added to the |chi| |sup2| computed from the R-range
+below :procparam:`rbkg`. This has the effect of :quoted:`clamping` the spline to the ends
+of the data range. In other words, we use the prior knowledge that
+|mu| |sub0| (E) is a smooth function through the oscillatory structure
+of |mu| (E) to put a restraint on the fit used to determine |mu|
+|sub0| (E).
 
-The user-selected multiplicative coefficient takes one of six predefined
-values: “none”, “slight”, “weak”, “medium”, “strong”, or “rigid”. These
-have values of 0, 3, 6, 12, 24, and 96, respectively and serve to set
-the strength of the clamp in the evaluation of χ².
+The user-selected multiplicative coefficient takes one of six
+predefined values: :quoted:`none`, :quoted:`slight`, :quoted:`weak`,
+:quoted:`medium`, :quoted:`strong`, or :quoted:`rigid`. These have
+values of 0, 3, 6, 12, 24, and 96, respectively and serve to set the
+strength of the clamp in the evaluation of |chi| |sup2|.
 
-|  
-| |image1|   |foo|
+.. subfigstart::
 
-(Left) EuTiO\ :sub:`3` Ti K-edge data with the background subtracted
-using a «k-weight» of 1 and a high-end spline clamp of “none”. Note that
-the end of the spline deviates significantly from the end of the data.
-(Right) Comparing the effects of different values of the high-end spline
-clamp on the EuTiO\ :sub:`3` data with all other parameters equal. The
-data using the “rigid” clamp show the most physically reasonable
-behavior at the end of the data range.
+.. _fig-clamp_mu:
 
-The default value of the clamp is “none” at the low end of the energy
-range and “strong” at the high end. Clamps tend not to help at the low
-energy end of the data. Since the μ(E) data is changing so quickly near
+.. figure::  ../../images/clamp_mu.png
+    :target: ../../images/clamp_mu.png
+    :width: 100%
+
+.. _fig-clamp_chi:
+
+.. figure::  ../../images/clamp_chi.png
+    :target: ../../images/clamp_chi.png
+    :width: 100%
+
+
+.. subfigend::
+    :width: 0.45
+    :label: fig_clamp
+
+    (Left) EuTiO\ :sub:`3` Ti K-edge data with the background
+    subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
+    :quoted:`none`. Note that the end of the spline deviates significantly
+    from the end of the data.  (Right) Comparing the effects of
+    different values of the high-end spline clamp on the EuTiO\
+    :sub:`3` data with all other parameters equal. The data using the
+    :quoted:`rigid` clamp show the most physically reasonable behavior at the
+    end of the data range.
+
+The default value of the clamp is :quoted:`none` at the low end of the energy
+range and :quoted:`strong` at the high end. Clamps tend not to help at the low
+energy end of the data. Since the |mu| (E) data is changing so quickly near
 the edge, biasing the spline to follow the data closely rarely helps
-improve the quality of the χ(k) data. A strong clamp at the high energy
+improve the quality of the |chi| (k) data. A strong clamp at the high energy
 frequently improves the behavior of the spline near the end of the data.
 
 The behavior of the clamping mechanism can be configured using the
-`preference tool <../other/prefs.html>`__. The ♦Bkg → nclamp preference
-changes the number of points at the end of the data range included in
-the calculation of the effect of the clamp. The ♦Bkg → clamp1 and
-♦Bkg → clamp2 parameters set the strengths of the two clamps. The
-strengths of the clamps can be fine tuned by changing the numeric
-values. The parameter ♦Clamp → weak sets the the weak clamp value, and
-so on.
+`preference tool <../other/prefs.html>`__. The
+:configparam:`Bkg,nclamp` preference changes the number of points at
+the end of the data range included in the calculation of the effect of
+the clamp. The :configparam:`Bkg,clamp1` and :configparam:`Bkg,clamp2`
+parameters set the strengths of the two clamps. The strengths of the
+clamps can be fine tuned by changing the numeric values. The parameter
+:configparam:`Clamp,weak` sets the the weak clamp value, and so on.
 
---------------
-
- 
 
 The effect of k-weight on background removal
 --------------------------------------------
 
-The background removal section has its own «k-weight» parameter which is
+The background removal section has its own :procparam:`kweight` parameter which is
 distinct from the k-weight used for `plotting and Fourier
-transforms <../ui/kweight.html>`__. The background removal «k-weight» is
+transforms <../ui/kweight.html>`__. The background removal :procparam:`kweight` is
 the value used to evaluate the Fourier transform performed to determine
-the background spline. By varying the value of this «k-weight», you can
+the background spline. By varying the value of this :procparam:`kweight`, you can
 emphasize the lower or upper end of the data in the determination of the
 background.
 
 For clean data with oscillatory structure at high energy that is small
 but observable, you may find that a larger value of the background
-removal «k-weight» produces a better χ(k) spectrum. In fact, setting
+removal :procparam:`kweight` produces a better |chi| (k) spectrum. In fact, setting
 this parameter to 2 or 3 can have a similar impact on the data as the
 highest value of the spline clamp shown in the image above.
 
-However, in data which are quite noisy, amplifying the noise by a large
-value of «k-weight» can have a dramatic effect leading to a very poor
-evaluation of μ₀(E). Indeed, the μ₀(E) evaluated from noisy data with a
-large value of «k-weight» will sometimes oscillate wildly, as shown in
-the example below.
+However, in data which are quite noisy, amplifying the noise by a
+large value of :procparam:`kweight` can have a dramatic effect leading to a very
+poor evaluation of |mu| |sub0| (E). Indeed, the |mu| |sub0| (E)
+evaluated from noisy data with a large value of :procparam:`kweight` will
+sometimes oscillate wildly, as shown in the example below.
 
-|image3|
+.. _fig-bkg_badkw:
 
-Noisy data with μ₀(E) computed using the default «k-weight» of 2. With a
-«k-weight» of 1, the data are still noisy (of course!) but the
-background function properly follows the data.
+.. figure:: ../images/bkg_badkw.png
+   :target: ../images/bkg_badkw.png
+   :width: 45%
+   :align: center
 
---------------
-
- 
+   Noisy data with |mu| ₀(E) computed using the default :procparam:`kweight`
+   of 2. With a :procparam:`kweight` of 1, the data are still noisy (of course!)
+   but the background function properly follows the data.
 
 The interaction between spline clamps and k-weight
 --------------------------------------------------
 
-The spline clamp and «k-weight» parameters sometimes interact strongly.
-The criterion that μ₀(E) follow closely to the end of the data that is
+The spline clamp and :procparam:`kweight` parameters sometimes interact strongly.
+The criterion that |mu| |sub0| (E) follow closely to the end of the data that is
 imposed by the spline clamp can have a surprising effect on noisy,
 heavily k-weighted data. This is what happened in the data shown in the
 previous section. Reducing the strength of the spline clamp can
 sometimes help.
 
-|image4|
+.. _fig-bkg_badkw_clamp0:
 
-The same noisy data as in the last figure, also with a background
-«k-weight» of 2. However, this time the high-end spline clamp was set to
-“none”.
+.. figure:: ../images/bkg_badkw_clamp0.png
+   :target: ../images/bkg_badkw_clamp0.png
+   :width: 45%
+   :align: center
 
-Sometimes your data are well served by a low «k-weight» and a strong
-spline clamp. Other times, a large «k-weight» and a weak clamp work
-better. Still other times, a strong «k-weight» *and* a strong clamp work
+   The same noisy data as in the last figure, also with a background
+   :procparam:`kweight` of 2. However, this time the high-end spline clamp was
+   set to :title:`none`.
+
+Sometimes your data are well served by a low :procparam:`kweight` and a strong
+spline clamp. Other times, a large :procparam:`kweight` and a weak clamp work
+better. Still other times, a strong :procparam:`kweight` *and* a strong clamp work
 best. How do you know what to do? There are no hard and fast rules,
 although you will develop an intuition for how different data will
 respond to different parameter values. Don't be shy about trying
 different combinations.
-
-| 
-
---------------
-
---------------
-
-| DEMETER is copyright © 2009-2015 Bruce Ravel — This document is
-copyright © 2015 Bruce Ravel
-
-|image5|    
-
-| This document is licensed under `The Creative Commons
-Attribution-ShareAlike
-License <http://creativecommons.org/licenses/by-sa/3.0/>`__.
-|  If DEMETER and this document are useful to you, please consider
-`supporting The Creative
-Commons <http://creativecommons.org/support/>`__.
-
-.. |[Athena logo]| image:: ../../images/pallas_athene_thumb.jpg
-   :target: ../pallas.html
-.. |image1| image:: ../../images/clamp_mu.png
-   :target: ../../images/clamp_mu.png
-.. |foo| image:: ../../images/clamp_chi.png
-   :target: ../../images/clamp_chi.png
-.. |image3| image:: ../../images/bkg_badkw.png
-.. |image4| image:: ../../images/bkg_badkw_clamp0.png
-.. |image5| image:: ../../images/somerights20.png
-   :target: http://creativecommons.org/licenses/by-sa/3.0/

@@ -6,7 +6,7 @@ Linear combination fitting
 Interpreting data as a mixture of standards
 -------------------------------------------
 
-ATHENA has a capability of fitting a linear combination of standard
+:demeter:`athena` has a capability of fitting a linear combination of standard
 spectra to an unknown spectra. These fits can be done using normalized
 μ(E), derivative of μ(E), or χ(k) spectra. One use of this sort of
 analysis might be to interpret the kinetics of series of spectra
@@ -18,7 +18,7 @@ species and quantities of standards in a heterogeneous sample.
 A worked example of linear combination fitting is shown `later in this
 manual <../examples/aucl.html>`__.
 
-To access this feature, choose “Linear combination fit” from the main
+To access this feature, choose :quoted:`Linear combination fit` from the main
 menu. The normal parameter view will be replaced by the tool in the
 following figure for performing the linear combination fit.
 
@@ -74,33 +74,33 @@ data *before* doing your linear combination fitting). These E₀ variables
 can be introduced by clicking on the checkbuttons in the table of
 standard spectra.
 
-You can introduce a linear offset to the fit to normalized μ(E) spectra.
-This is simple a line added to the sum of spectra in the fit. It
-introduces two parameters to the fit, a slope and an intercept. The line
-is multiplied by a step function centered at the E₀ of the unknown. Thus
-the linear offset is introduced only after the edge of the unknown. The
-purpose of this offset is to accommodate any variations in how the
-normalization is performed on the various spectra. To turn on the linear
-offset in the fit just click on the button labeled “Add a linear term
-after e0?”
+You can introduce a linear offset to the fit to normalized |mu| (E)
+spectra.  This is simple a line added to the sum of spectra in the
+fit. It introduces two parameters to the fit, a slope and an
+intercept. The line is multiplied by a step function centered at the
+E₀ of the unknown. Thus the linear offset is introduced only after the
+edge of the unknown. The purpose of this offset is to accommodate any
+variations in how the normalization is performed on the various
+spectra. To turn on the linear offset in the fit just click on the
+button labeled :quoted:`Add a linear term after e0?`
 
 .. CAUTION::
    For best results, you should do a good job of aligning and
    normalizing your spectra **before** starting linear combination
    analysis. When normalization and alignment are done correctly, you
-   can expect your fitted weights to sum to 1 and variation of E₀ for
-   the data or standards will be unnecessary.
+   can expect your fitted weights to sum to 1 and variation of
+   E\ :sub:`0` for the data or standards will be unnecessary.
 
 Constraints and modifications to the fit
 ----------------------------------------
 
-ATHENA's linear combination tool offers several constraints to the
+:demeter:`athena`'s linear combination tool offers several constraints to the
 fitting parameters. The constraints are set and unset using the
 checkbuttons near the bottom of the tool.
 
 **Weights between 0 and 1**
     You can constrain the variable weights to be between 0 and 1 by
-    clicking on the button labeled “Weights between 0 & 1.” In this
+    clicking on the button labeled :quoted:`Weights between 0 & 1.` In this
     case, each weight used is computed from the variable using this
     formula:
 
@@ -146,7 +146,7 @@ checkbuttons near the bottom of the tool.
 **Adding noise to the data**
     It is sometimes useful to check the robustness of the fit against
     noisy data. This is particularly true for a data set wherein some
-    data are much noisier than others. To this end, ATHENA allows you to
+    data are much noisier than others. To this end, :demeter:`athena` allows you to
     add pseudo-random noise to the data before performing the fit. This
     is done by generating an array of psuedo-random numbers and adding
     this array to the data. Given that normalized μ(E) is used in lCF
@@ -155,7 +155,7 @@ checkbuttons near the bottom of the tool.
     necessary to find a suitable level of noise for your test. For fits
     to χ(k), note that the noise is added to the data **before**
     k-weighting. You can examine the level of noise relative to your
-    data before fitting by using the “Plot data and sum” from the
+    data before fitting by using the :quoted:`Plot data and sum` from the
     actions list.
 **Adding a linear term to the fit**
     A line with a variable slope and offset can be added to a fit. The
@@ -166,10 +166,10 @@ checkbuttons near the bottom of the tool.
 Fitting, statistics, reports
 ----------------------------
 
-To perform the fit, click “Fit” from the actions list. After the fit
+To perform the fit, click :quoted:`Fit` from the actions list. After the fit
 finishes, the data and the linear combination will be plotted along with
 vertical bars indicating the range over which the fit was evaluated. The
-values of all the fitting parameters are written to the “Fit results”
+values of all the fitting parameters are written to the :quoted:`Fit results`
 tab.
 
 Interpretation of the statistical parameters in the linear combination
@@ -183,7 +183,7 @@ less than the number of data points measured. Nonetheless, when the
 chi-square is evaluated, the number of data points is used as the number
 of measurements.
 
-Second, ATHENA has no way of evaluating a measurement uncertainty ε for
+Second, :demeter:`athena` has no way of evaluating a measurement uncertainty ε for
 the XANES measurement. A value of 1 is used for ε in the equation for
 chi-square.
 
@@ -203,7 +203,7 @@ The R-factor reported in the text box is
         sum (     data^2     )
 
 where the sums are over the data points in the fitting region. The
-chi-square and reduced chi-square are those reported by IFEFFIT.
+chi-square and reduced chi-square are those reported by :demeter:`ifeffit`.
 
 Interpretation of the statistical parameters requires you to be mindful
 of what you know about the system you are measuring. The statistical
@@ -212,24 +212,24 @@ results of sample fractions must be meaningful in the context of any
 external knowledge you have about the system.
 
 You can replot the data and the fit using the most recent values for the
-fitted parameters by clicking “Plot” in the actions list.
+fitted parameters by clicking :quoted:`Plot` in the actions list.
 
 You can save the text from the fit results box to a file by clicking
-“Write a report” in the actions list. This writes a column data file
+:quoted:`Write a report` in the actions list. This writes a column data file
 with the fit results as the header information. The columns in the file
 are x-axis (either energy or k), the data, the best fit, the residual,
 and each of the weighted components.
 
 You can make a data group out of the linear combination by clicking
-“Make fit group” in the actions list or out of the residual by clicking
-“Make difference group” in the actions list. This will allow you to plot
+:quoted:`Make fit group` in the actions list or out of the residual by clicking
+:quoted:`Make difference group` in the actions list. This will allow you to plot
 and manipulate the fit or difference after leaving the linear
 combination tool. The data group containing the fit result will be
 treated as normal data that can have a background removed or be Fourier
 transformed. When you save a fit using the derivative spectra, the fit
 group will be saved as a normal μ(E) spectrum.
 
-“Reset” in the actions list returns almost everything in the tool back
+:quoted:`Reset` in the actions list returns almost everything in the tool back
 to its original state.
 
 If you need more than four standards, the number of standards as well as
@@ -242,12 +242,13 @@ Constraining linear combination fit parameters between groups
 -------------------------------------------------------------
 
 The various operational parameters described above can be constrained
-between data groups in the same manner as background removal and Fourier
-transform parameters on ATHENA's main page. Two items in the actions
-list are “Set params, all groups” and “Set params, marked groups”. These
-will export the current group's values for fitting range, noise, weights
-between 0 and 1, force weights to sum to 1, and use of linear term to
-other groups. This should probably be done before using the marked group
+between data groups in the same manner as background removal and
+Fourier transform parameters on :demeter:`athena`'s main page. Two
+items in the actions list are :quoted:`Set params, all groups` and
+:quoted:`Set params, marked groups`. These will export the current
+group's values for fitting range, noise, weights between 0 and 1,
+force weights to sum to 1, and use of linear term to other
+groups. This should probably be done before using the marked group
 fitting feature described in the next section.
 
 
@@ -255,11 +256,11 @@ fitting feature described in the next section.
 Batch processing
 ----------------
 
-One of the choices in the actions list is to “Fit marked groups”. All
+One of the choices in the actions list is to :quoted:`Fit marked groups`. All
 groups marked by having their purple buttons checked will be fit in the
 manner described above using the current selection of fitting standards
 and other fitting options. When the sequence of fits is finished, the
-“Write marked report” option will become enabled in the operation list.
+:quoted:`Write marked report` option will become enabled in the operation list.
 This will allow you to write a report in the form of a comma separated
 value file which summarizes the results of the sequence of fits. This
 report file can be read into any spreadsheet program.
@@ -283,7 +284,7 @@ Combinatorial fitting using many standards
 One of the uses of this sort of XANES fitting is to try to figure out
 what's actually in a sample. One approach to figuring this out is to
 measure all plausible standard compounds and try fitting a large number
-of different combinations of the standards to the data. ATHENA provides
+of different combinations of the standards to the data. :demeter:`athena` provides
 a tool for automating this. Here is how it works:
 
 #. Load all of the standards that you want to consider into the table of
@@ -293,24 +294,24 @@ a tool for automating this. Here is how it works:
    for all of the standards that you wish to consider.
 
 #. You can limit the number of standards used in each fit with the
-   incrementer widget just below the button marked “Use marked groups”.
+   incrementer widget just below the button marked :quoted:`Use marked groups`.
    By default this number is 4, which says that the fits will consider
    all possible binary, ternary, and quaternary combinations of
    standards. Increase this number to consider higher orders of
    combinations of standards. Decrease it to limit the number of fits to
-   perform. You can also indicate which standards are “required” by
+   perform. You can also indicate which standards are :quoted:`required` by
    clicking the check button in the right-most column of the table of
    standards. This will limit the combinations of standards tested
    against to data to those that contain the required standards, thus
    greatly reducing the scope of the combinatorial problem.
 
-#. Click “Fit all possible combinations” in the actions list and go get
+#. Click :quoted:`Fit all possible combinations` in the actions list and go get
    a cup of coffee. If the number of possible standards is large, this
    series of fits could take a while. For example, with 11 standards and
-   considering up to the quaternary combinations, ATHENA will perform
+   considering up to the quaternary combinations, :demeter:`athena` will perform
    550 fits. (Really! C(11, 2) + C(11, 3) + C(11, 4) = 550!)
 
-Once this series of fits finishes, the tab labeled “Combinatorics” will
+Once this series of fits finishes, the tab labeled :quoted:`Combinatorics` will
 become active and raise to the top. In this tab, you will see two
 tables. The top table concisely summarizes all the fits that were
 performed, in order of increasing R-factor. Initially, the first item in
@@ -353,11 +354,11 @@ Clicking the right mouse button on a fit in the upper table will post a
 context menu with options relevant to the selected fit. These options
 include saving the fit as a data group; writing a data file with columns
 for the data, fit, residual, and each weighted standard; saving the
-report from the “Fit results” tab to a file; and writing a
+report from the :quoted:`Fit results` tab to a file; and writing a
 comma-separated-value report for the entire combinatorial sequence which
 can be imported into a spreadsheet program.
 
-Beneath the tables is a button labeled “Write CSV report for all fits.”
+Beneath the tables is a button labeled :quoted:`Write CSV report for all fits.`
 Clicking this will prompt you for a file name and location, then write a
 comma-separated-value report of all fits.
 

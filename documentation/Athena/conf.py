@@ -49,7 +49,9 @@ extensions.extend([
     'natbib',
     'figtable',
     'singlehtml_toc',
-    'singletext'
+    'singletext',
+    'sphinx_clatex',
+    'demeterdocs'
 ])
 
 # Turns on numbered figures for HTML output
@@ -102,7 +104,7 @@ release = '0.9.24'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', 'epilog.rst']
+exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst']
 
 #sphinxtr
 # Ideally, we wouldn't have to do this, but sphinx seems to have trouble with
@@ -119,7 +121,9 @@ else:
 # every source file that is read.
 rst_epilog = open(os.path.join(CURDIR, 'epilog.rst'),'r').read().decode('utf8')
 
+rst_prolog = open(os.path.join(CURDIR, 'prolog.rst'),'r').read().decode('utf8')
 
+demeter_color = '#aa0000'
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.

@@ -41,7 +41,7 @@ by menu control at the top of the window and the selected group from the
 group list. The difference spectrum will be plotted, optionally along
 with the data and standard used to make the subtraction. The form of the
 difference spectrum – μ(E), normalized μ(E), and derivative or second
-derivative of μ(E) – is selected from the menu labeled “Form”. The
+derivative of μ(E) – is selected from the menu labeled :quoted:`Form`. The
 multiplier is a scaling factor that can be applied to the standard
 before subtraction.
 
@@ -58,9 +58,9 @@ skips the normalization algorithm. The :title:`renormalize` button can be
 ticked to make the resulting group a normal μ(E) group. When the form of
 the difference is set to plain μ(E), that button will be ticked.
 
-The name of the resulting data group will be set using the “Name
-template”, which includes a mini-language of tokens that will be
-substituted by specific values.
+The name of the resulting data group will be set using the
+:quoted:`Name template`, which includes a mini-language of tokens that
+will be substituted by specific values.
 
 ``%d``
     Replaced by the name of the data group.
@@ -104,7 +104,7 @@ substituted by specific values.
 
 The integrated areas obtained by computing a sequence over all groups
 marked in the group list can be plotted by clicking the button labeled
-“Plot integrated areas for all marked groups.” The reult of this shown
+:quoted:`Plot integrated areas for all marked groups.` The reult of this shown
 below.
 
 .. figure:: ../images/diff_areas.png
@@ -120,7 +120,7 @@ Uses of difference spectra
 --------------------------
 
 **Magnetic dichroism**
-    This part of ATHENA is directly applicable to dichroism studies. The
+    This part of :demeter:`athena` is directly applicable to dichroism studies. The
     difference spectra is made in normalized μ(E) and the integration
     can be used to measure magnetic moments in magnetic materials.
 **Experimental corrections**

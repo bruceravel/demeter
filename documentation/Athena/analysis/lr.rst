@@ -57,7 +57,7 @@ requires a spectrally isolated first shell.
    inappropriate for highly disordered materials.
 
 #. Although this analysis is often referred to in the literature as
-   “model independent analysis”, that is as much a shortcoming as an
+   :quoted:`model independent analysis`, that is as much a shortcoming as an
    advantage. The technique can be used to measure changes in structural
    cumulants, but cannot be used to measure absolute values of those
    cumulants.
@@ -70,7 +70,7 @@ requires a spectrally isolated first shell.
    multiple scattering paths will add considerable systematic
    uncertainty to this analysis.
 
-When you select “Log-Ratio” from the main menu, the main window is
+When you select :quoted:`Log-Ratio` from the main menu, the main window is
 replaced with the log-ratio/phase-difference tool, shown below.
 
 .. figure:: ../images/lr.png
@@ -81,14 +81,14 @@ replaced with the log-ratio/phase-difference tool, shown below.
    The log-ratio/phase-difference tool.
 
 Once you select Fourier transform parameters and ranges for use in the
-analysis, you can click the “Fit” button to perform the fit. The fit to
+analysis, you can click the :quoted:`Fit` button to perform the fit. The fit to
 the log-ratio of the amplitudes is plotted when the fit is over. The
 buttons can be used to plot either the fit to the log-ratio of
 amplitudes or the fit to the phase difference. The fits use all
 cumulants up to the fourth. Depending on your data quality, choice of
 Fourier transform ranges can be important and quite sensitive. You can
 save the log-ratio and phase-difference data along with the fits to a
-file by clicking the “Save ratio data and fit” button.
+file by clicking the :quoted:`Save ratio data and fit` button.
 
 
 .. subfigstart::

@@ -9,26 +9,25 @@ variations in sample preparation, sample thickness, absorber
 concentration, detector and amplifier settings, and any other aspects of
 the measurement. Normalized data can be directly compared, regardless of
 the details of the experiment. Normalization of your data is essential
-for comparison to theory. The scale of the μ(E) and χ(k) spectra
+for comparison to theory. The scale of the |mu| (E) and |chi| (k) spectra
 computed by FEFF is chosen for comparison to normalized data.
 
-The relationship between μ(E) and χ(k) is:
+The relationship between |mu| (E) and |chi| (k) is:
 
-μ(E) = μ₀(E) \* (1 + χ(E))
+|mu| (E) = |mu| |sub0| (E) \* (1 + |chi| (E))
 
 which means that
 
-χ(E) = (μ(E) - μ₀(E)) / μ₀(E)
+|chi| (E) = (|mu| (E) - |mu| |sub0| (E)) / |mu| |sub0| (E)
 
-The approximation of μ₀(E) in an experimental spectrum is a topic `that
+The approximation of |mu| |sub0| (E) in an experimental spectrum is a topic `that
 will be discussed shortly <rbkg.html>`__.
 
 This equation is not, in fact, the equation that is commonly used to
-extract χ(k) from the measured spectrum. The reason that equation is
-problematic is the factor of μ₀(E) in the denominator. In practice, one
-cannot trust the μ₀(E) to be sufficiently well behaved that it can be
-used as a multiplicative factor. An example is shown in [(Left% INCLUDE
-imageref text="the figure below" label="bkg\_normzerocross" %].
+extract |chi| (k) from the measured spectrum. The reason that equation is
+problematic is the factor of |mu| |sub0| (E) in the denominator. In practice, one
+cannot trust the |mu| |sub0| (E) to be sufficiently well behaved that it can be
+used as a multiplicative factor. An example is shown below.
 
 .. _fig-zerocross:
 
@@ -37,39 +36,42 @@ imageref text="the figure below" label="bkg\_normzerocross" %].
    :width: 45%
    :align: center
 
-   μ(E) data for gold hydroxide, which crosses the zero axis in the EXAFS
+   |mu| (E) data for gold hydroxide, which crosses the zero axis in the EXAFS
    region.
 
 In the case of the gold spectrum, the detector setting were such that
-the spectrum crosses the zero-axis. Dividing these spectra by μ₀(E)
+the spectrum crosses the zero-axis. Dividing these spectra by |mu| |sub0| (E)
 would be a disaster as the division would invert the phase of the
-extracted χ(k) data at the point of the zero-crossing.
+extracted |chi| (k) data at the point of the zero-crossing.
 
 To address this problem, we typically avoid functional normalization and
 instead perform an *edge step normalization*. The formula is
 
-χ(E) = (μ(E) - μ₀(E)) / μ₀(E₀)
+|chi| (E) = (|mu| (E) - |mu| |sub0| (E)) / |mu| |sub0| (E |sub0| )
 
-The difference is the term in the denominator. μ₀(E₀) is the value of
-the background function evaluated at the edge energy. This addresses the
-problem of a poorly behaved μ₀(E) function, but introduces another
-issue. Because the true μ₀(E) function should have some energy
-dependence, normalizing by μ₀(E₀) introduces an attenuation into χ(k)
-that is roughly linear in energy. An attenuation that is linear in
-energy is quadratic in wavenumber. Consequently, the edge step
-normalization introduces an artificial σ² term to the χ(k) data that
-adds to whatever thermal and static σ² may exist in the data.
+The difference is the term in the denominator. |mu| |sub0| (E |sub0| )
+is the value of the background function evaluated at the edge
+energy. This addresses the problem of a poorly behaved |mu| |sub0| (E)
+function, but introduces another issue. Because the true |mu|
+|sub0| (E) function should have some energy dependence, normalizing by
+|mu| |sub0| (E |sub0| ) introduces an attenuation into |chi| (k) that
+is roughly linear in energy. An attenuation that is linear in energy
+is quadratic in wavenumber. Consequently, the edge step normalization
+introduces an artificial |sigma| |sup2| term to the |chi| (k) data
+that adds to whatever thermal and static |sigma| |sup2| may exist in
+the data.
 
-This artificial σ² term is typically quite small and represents a much
-less severe problem than a misbehaving functional normalization.
+This artificial |sigma| |sup2| term is typically quite small and
+represents a much less severe problem than a misbehaving functional
+normalization.
 
 
 
 The normalization algorithm
 ---------------------------
 
-The normalization of a spectrum is controlled by the value of the «e0»,
-«pre-edge range», and «normalization range» parameters. These parameters
+The normalization of a spectrum is controlled by the value of the :procparam:`e0`,
+:procparam:`pre-edge range`, and :procparam:`normalization range` parameters. These parameters
 are highlighted in this screenshot.
 
 .. _fig-normparams:
@@ -79,17 +81,19 @@ are highlighted in this screenshot.
    :width: 65%
    :align: center
 
-   Selecting the normalization parameters in ATHENA.
+   Selecting the normalization parameters in :demeter:`athena`.
 
-The «pre-edge range» and «normalization range» parameters define two
-regions of the data -- one before the edge and one after the edge. A
-line is regressed to the data in the «pre-edge range» and a polynomial
-is regressed to the data in the «normalization range». By default, a
-three-term (quadratic) polynomial is used as the post-edge line, but its
-order can be controlled using the «normalization order» parameter. Note
-that *all* of the data in the «pre-edge range» and in the «normalization
-range» are used in the regressions, thus the regressions are relatively
-insensitive to the exact value of boundaries of those data ranges.
+The :procparam:`pre-edge range` and :procparam:`normalization range`
+parameters define two regions of the data -- one before the edge and
+one after the edge. A line is regressed to the data in the
+:procparam:`pre-edge range` and a polynomial is regressed to the data
+in the :procparam:`normalization range`. By default, a three-term
+(quadratic) polynomial is used as the post-edge line, but its order
+can be controlled using the :procparam:`normalization order`
+parameter. Note that *all* of the data in the :procparam:`pre-edge
+range` and in the :procparam:`normalization range` are used in the
+regressions, thus the regressions are relatively insensitive to the
+exact value of boundaries of those data ranges.
 
 The criteria for good pre- and post-edge lines are a bit subjective. It
 is very easy to see that the parameters are well chosen for these copper
@@ -115,7 +119,7 @@ through the middle of the data in their respective ranges.
     :width: 0.45
     :label: fig_normalization
 
-    (Left) Cu foil μ(E) with pre and post lines. (Right) Normalized μ(E)
+    (Left) Cu foil |mu| (E) with pre and post lines. (Right) Normalized |mu| (E)
     data for a copper foil.
 
 Data can be plotted with the pre-edge and normalization lines using
@@ -126,32 +130,32 @@ of your data to verify that your choice of normalization parameters is
 reasonable.
 
 When plotting the pre- and post-edge lines, the positions of the
-«pre-edge range», and «normalization range» parameters are shown by the
-little orange markers. (The upper bound of the «normalization range» is
-off screen in the plot above of the copper foil.)
+:procparam:`pre-edge range`, and :procparam:`normalization range`
+parameters are shown by the little orange markers. (The upper bound of
+the :procparam:`normalization range` is off screen in the plot above of the
+copper foil.)
 
-The normalization constant, μ₀(E₀) is evaluated by extrapolating the
-pre- and post-edge lines to «e0» and subtracting the e0-crossing of the
+The normalization constant, |mu| |sub0| (E |sub0| ) is evaluated by extrapolating the
+pre- and post-edge lines to :procparam:`e0` and subtracting the e0-crossing of the
 pre-edge line from the e0-crossing of the post-edge line. This
-difference is the value of the «edge step» parameter.
+difference is the value of the :procparam:`edge step` parameter.
 
 The pre-edge line is extrapolated to all energies in the measurement
-range of the data and subtracted from μ(E). This has the effect of
+range of the data and subtracted from |mu| (E). This has the effect of
 putting the pre-edge portion of the data on the y=0 axis. The pre-edge
-subtracted data are then divided by μ₀(E₀). The result is shown on the
+subtracted data are then divided by |mu| |sub0| (E |sub0| ). The result is shown on the
 right side of the figure above.
 
-.. todo::
-   In version 0.9.18, an option was added to the context menu
-   attached to the «edge step» label for approximating the error bar on the
-   edge step.
+.. todo:: In version 0.9.18, an option was added to the context menu
+   attached to the :procparam:`edge step` label for approximating the
+   error bar on the edge step.
 
 
 The flattening algorithm
 ------------------------
 
-For display of XANES data and certain kinds of analysis of μ(E) spectra,
-ATHENA provides an additional bit of sugar. By default, the *flattened*
+For display of XANES data and certain kinds of analysis of |mu| (E) spectra,
+:demeter:`athena` provides an additional bit of sugar. By default, the *flattened*
 spectrum is plotted in energy rather than the normalized spectrum. In
 the following plot, flattened data are shown along with a copy of the
 data that has the flattening turned off.
@@ -167,10 +171,10 @@ data that has the flattening turned off.
 
 To display the flattened data, the difference in slope and quadrature
 between the pre- and post-edge lines is subtracted from the data, but
-only after «e0». This has the effect of pushing the oscillatory part of
-the data up to the y=1 line. The flattened μ(E) data thus go from 0 to
+only after :procparam:`e0`. This has the effect of pushing the oscillatory part of
+the data up to the y=1 line. The flattened |mu| (E) data thus go from 0 to
 1. Note that this is for display and has no impact whatsoever on the
-extraction of χ(k) from the μ(E) spectrum.
+extraction of |chi| (k) from the |mu| (E) spectrum.
 
 This is a nice way of displaying XANES data as it removes many
 differences in the shape of the post-edge region from the data.
@@ -188,12 +192,13 @@ Getting the post-edge right
 ---------------------------
 
 It is important to always take care selecting the post-edge range.
-Mistakes made in selecting the «normalization range» parameters can have
-a profound impact on the extracted χ(k) data. Shown below is an extreme
-case of a poor choice of «normalization range» parameters. In this case,
-the upper bound was chosen to be on the high energy side of a subsequent
-edge in the spectrum. The resulting «edge step» is very wrong and the
-flattened data are highly distorted.
+Mistakes made in selecting the :procparam:`normalization range`
+parameters can have a profound impact on the extracted |chi| (k)
+data. Shown below is an extreme case of a poor choice of
+:procparam:`normalization range` parameters. In this case, the upper
+bound was chosen to be on the high energy side of a subsequent edge in
+the spectrum. The resulting :procparam:`edge step` is very wrong and
+the flattened data are highly distorted.
 
 
 .. subfigstart::
@@ -225,7 +230,7 @@ The previous example is obviously an extreme case, but it illustrates
 the need to examine the normalization parameters as you process your
 data. In many cases, subtle mistakes in the choice of normalization
 parameters can have an impact on how the XANES data are interpreted and
-in how the χ(k) data are normalized.
+in how the |chi| (k) data are normalized.
 
 
 .. subfigstart::
@@ -261,21 +266,21 @@ In this example, the different choice for the lower bound of the
 normalization range (42 eV in one case, 125 eV in the other) has an
 impact on the flattening of these uranium edge data data, which in turn
 may have in impact in the evaluation of average valence in the system.
-The small difference in the «edge step» will also slightly attenuate
-χ(k).
+The small difference in the :procparam:`edge step` will also slightly attenuate
+|chi| (k).
 
 
 
 Getting the pre-edge right
 --------------------------
 
-The choice of the «pre-edge range» parameters is similarly important and
+The choice of the :procparam:`pre-edge range` parameters is similarly important and
 also requires visual inspection. A poor choice can result in an
-incorrect value of the «edge step» and in distortions to the flattened
+incorrect value of the :procparam:`edge step` and in distortions to the flattened
 data. In the following spectrum, we see the presence of a small yttrium
 K-edge at 17038 eV which distorts the pre-edge for a uranium
 L\ :sub:`III`-edge spectrum at 17166 eV as shown in the figure below. In
-this case the «pre-edge range» should be chosen to be entirely above the
+this case the :procparam:`pre-edge range` should be chosen to be entirely above the
 yttrium K-edge energy.
 
 .. _fig-uy:
@@ -299,9 +304,9 @@ find normalization boundaries that provide good normalization lines.
 Without a good normalization, it can be difficult to compare a XANES
 measurement quantitatively with other measurements.
 
-Reducing the «normalization order» might help in the case of limited
+Reducing the :procparam:`normalization order` might help in the case of limited
 post-edge range. When measuring XANES spectra in a step scan, it is
 often a good idea to add several widely spaced steps to the end of a
-scan to extend the «normalization range» without adding excessive time
+scan to extend the :procparam:`normalization range` without adding excessive time
 to scan.
 

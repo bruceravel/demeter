@@ -1,29 +1,38 @@
+
 .. _forward_chapter:
 
 Forward
 =======
 
+.. todo:: installation instructions, document building instructions
+
+.. todo:: need to make sure all internal links point at actual targets
+
+	  
 Conventions and acknowledgements
 --------------------------------
 
-The best way to learn how to use ATHENA is to **use** ATHENA. Poke at
-the buttons, poke at the menus, try things just to see what happens. And
-above all, remember the physical and mathematical meanings of your data
-and of the data analysis techniques and think about how actions in
-ATHENA relate to those meanings.
+The best way to learn how to use :demeter:`athena` is to **use**
+:demeter:`athena`. Poke at the buttons, poke at the menus, try things
+just to see what happens. And above all, remember the physical and
+mathematical meanings of your data and of the data analysis techniques
+and think about how actions in :demeter:`athena` relate to those
+meanings.
 
-ATHENA is a powerful and versatile program capable of supporting almost
-all of your common (and not-so-common) XAS data processing chores. It is
-not, however, a particularly intuitive program. I doubt that any XAS
-program could be intuitive. On top of that, ATHENA has accumulated lots
-of features over the years. Many of these features are necessary for
-high-quality data processing, others are bells and whistles intended to
-make data processing more convenient or more fun.
+:demeter:`athena` is a powerful and versatile program
+capable of supporting almost all of your common (and not-so-common)
+XAS data processing chores. It is not, however, a particularly
+intuitive program. I doubt that any XAS program could be intuitive. On
+top of that, :demeter:`athena` has accumulated lots of features over the
+years. Many of these features are necessary for high-quality data
+processing, others are bells and whistles intended to make data
+processing more convenient or more fun.
 
-This document attempts to be a comprehensive overview of all of ATHENA's
-features. There are lots of words, but also lots of pictures. Feel free
-to jump around and to focus on the parts most directly relevant to your
-immediate needs. I hope you find this document and the program helpful.
+This document attempts to be a comprehensive overview of all of the
+features of :demeter:`athena`. There are lots of words,
+but also lots of pictures. Feel free to jump around and to focus on
+the parts most directly relevant to your immediate needs. I hope you
+find this document and the program helpful.
 
 
 Layout and typesetting conventions
@@ -33,29 +42,30 @@ Here is a summary of fonts, colors, and symbols used to denote different
 kinds of text. Note that some of these may appear the same in certain
 presentation media.
 
--  File names look ``C:\\like\\this``.
+- File names look ``C:\\like\\this``.
 
--  The names of parameters for data processing look «like\_this».
+- The names of parameters for data processing look
+  :procparam:`like\_this`.
 
--  Emphasized text looks *like this*.
+- Emphasized text looks *like this*.
 
--  Bold text looks **like this**.
+- Bold text looks **like this**.
 
--  Links to web sites look `like this <http://www.google.com>`__.
+- Links to web sites look `like this <http://www.google.com>`__.
 
--  Internal links look `like
-   this <forward.html#layoutandtypesettingconventions>`__.
+- Internal links look `like this
+  <forward.html#layoutandtypesettingconventions>`__.
 
--  Keyboard shortcuts look like this: ``Control-q``. This example means
-   to hit the q key while holding the Control (or Ctrl) key.
+- Keyboard shortcuts look like this: ``Control-q``. This example means
+  to hit the ``q`` key while holding the ``Control`` (or ``Ctrl``) key.
 
--  Program names from the DEMETER's extended family look like this:
-   ATHENA.
+- Program names from the :demeter:`demeter`'s extended family look
+  like this: :demeter:`athena`.
 
--  References to ATHENA's preferences are written like this:
-   ♦Bkg → fraction. To modify this preferences, open the “bkg” section
-   of the `preferences tool <other/prefs.html>`__ and then click on
-   “fraction”.
+- References to :demeter:`athena`'s preferences are written like this:
+  :configparam:`Bkg,fraction`.  To modify this preferences, open the
+  :quoted:`bkg` section of the `preferences tool <other/prefs.html>`__ and
+  then click on :quoted:`fraction`.
 
 .. CAUTION::
    Points that require special attention are written inside of
@@ -65,16 +75,17 @@ presentation media.
    Notes about features missing from the document are indicated
    like this.
 
-|To do!| Features that have been recently added to ATHENA are indicated
-like this if they have not yet been properly documented.
+|To do!| Features that have been recently added to
+:demeter:`athena` are indicated like this if they have not
+yet been properly documented.
 
 |Essential topic| This symbol indicates a section describing one of
-ATHENA's features that I consider especially powerful and central to the
-effective use of the program.
+:demeter:`athena`'s features that I consider especially
+powerful and central to the effective use of the program.
 
 |Advanced topic| This symbol indicates a section with difficult
-information that newcomers to ATHENA might pass over on their first
-reading of this document.
+information that newcomers to :demeter:`athena` might pass
+over on their first reading of this document.
 
 
 The html version of this document makes use of HTML 4.1 character
@@ -86,16 +97,17 @@ old browsers.
 Acknowledgments
 ----------------
 
-I have to thank Matt Newville, of course. Without IFEFFIT there
-wouldn't be an ATHENA. One afternoon over coffee, Julie Cross and
-Shelly Kelly lit the spark that eventually lead to the first version
-of this document. Some content of this document was inspired by a
-recent XAS review article :cite:ts:`KellyReview`, the first draft of
-which I had the pleasure of editing and the final draft of which I
-ended up on the author list. I have a huge debt of gratitude to all
-the folks on the IFEFFIT mailing list. Without the incredible support
-and wonderful feedback that I've received over the years, ATHENA would
-be a shadow of what it is today.
+I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
+there wouldn't be an :demeter:`athena`. One afternoon over coffee,
+Julie Cross and Shelly Kelly lit the spark that eventually lead to the
+first version of this document. Some content of this document was
+inspired by a recent XAS review article :cite:ts:`KellyReview`, the
+first draft of which I had the pleasure of editing and the final draft
+of which I ended up on the author list. I have a huge debt of
+gratitude to all the folks on the :demeter:`ifeffit` mailing
+list. Without the incredible support and wonderful feedback that I've
+received over the years, :demeter:`athena` would be a shadow of what
+it is today.
 
 The following great software tools were used to create this document:
 
@@ -108,23 +120,24 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
-
-Almost all screenshots were made of either ATHENA or the
-`Gnuplot <http://gnuplot.info/>`__ window on my `KDE
-desktop <http://www.kde.org>`__. The screenshots of spreadsheets made
-from `a report file <output/report.html#export_excelreport>`__ and `an
-LCF fit report <examples/aucl.html#ex_aucl_excel>`__ are displayed in
+.. todo:: links to extensions used (esp. natbib, sphinxtr, sphinx-clatex)
+  
+Almost all screenshots were made of either :demeter:`athena` or the
+`Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
+<http://www.kde.org>`__. The screenshots of spreadsheets made from `a
+report file <output/report.html#export_excelreport>`__ and `an LCF fit
+report <examples/aucl.html#ex_aucl_excel>`__ are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
 
 The images of the Tholos temple on the front page and the Klimt painting
 *Pallas Athena* in the navigation box of the html document are from
 http://www.artchive.com.
 
-The image used as the ATHENA program icon is from a “Terracotta lekythos
-depicting Athena holding a spear and aphlaston.”. The image is licensed
-as Creative Commons Attribution-Share Alike 3.0 and can be found at
-`Wikimedia
-Commons <http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg>`__.
+The image used as the :demeter:`athena` program icon is from a
+:quoted:`Terracotta lekythos depicting Athena holding a spear and
+aphlaston.`. The image is licensed as Creative Commons
+Attribution-Share Alike 3.0 and can be found at `Wikimedia Commons
+<http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg>`__.
 
 
 Data citations
@@ -174,7 +187,8 @@ Installing Athena on your computer
 ----------------------------------
 
 **Linux, BSD, and other unixes**
-    It is not especially hard to build ATHENA from source code. The
+    It is not especially hard to build :demeter:`athena`
+    from source code. The 
     procedure is explained in detail on this web page:
     http://bruceravel.github.io/demeter/pods/installation.pod.html. An
     excellent addendum to those instructions is at
@@ -212,23 +226,24 @@ copy of the source out and downloads it onto your computer:
 .. todo::
    explain use of Sphinx
    
-Contributions to the document are extremely welcome. The very best sort
-of contribution would be to directly edit the source templates and
-commit your changes to the SVN repository. The second best sort would be
-a patch file against the templates in the repository. If TT2 is more
-than you want to deal with, but you have corrections to suggest, I'd
-cheerfully accept almost any other format for the contribution.
-(Although I have to discourage using an html editing tool like FrontPage
-to edit the html directly. Tools like that tend to insert lots of
-additional html tags into the text, making it more difficult for me to
-incorporate your changes into the source.)
+Contributions to the document are extremely welcome. The very best
+sort of contribution would be to directly edit the source templates
+and make a pull request to the `git repository
+<https://github.com/bruceravel/demeter>`_. The second best sort would
+be a patch file against the templates in the repository. If sphinx is
+more than you want to deal with, but you have corrections to suggest,
+I'd cheerfully accept almost any other format for the contribution.
+(Although I have to discourage using an html editing tool to edit the
+html directly. Tools like that tend to insert lots of additional html
+tags into the text, making it more difficult for me to incorporate
+your changes into the source.)
 
 
 Building the html document
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After downloading and unpacking the source for DEMETER, you must
-configure it to build correctly on your computer. This is simple:
+After downloading and unpacking the source for :demeter:`demeter`, you
+must configure it to build correctly on your computer. This is simple:
 
 ::
 
@@ -274,10 +289,11 @@ disappear when you recompile the document.
 Using the document with Athena
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The html document files can be used by ATHENA. They are installed at the
-time that DEMETER is installed (and they can be installed on a Windows
-machine by downloading and installing the documentation package). If the
-html pages cannot be found, ATHENA will try to use your internet
-connection to fetch them from `the Demeter
-homepage <http://bruceravel.github.io/demeter/>`__.
+The html document files can be used by :demeter:`athena`. They are
+installed at the time that :demeter:`demeter` is installed
+(and they can be installed on a Windows machine by downloading and
+installing the documentation package). If the html pages cannot be
+found, :demeter:`athena` will try to use your internet connection to
+fetch them from `the Demeter homepage
+<http://bruceravel.github.io/demeter/>`__.
 
