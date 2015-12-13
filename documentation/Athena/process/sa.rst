@@ -226,25 +226,40 @@ particular experiment.
 Algorithm references
 --------------------
 
-**Fluo algorithm**
+Fluo algorithm
     The program documentation for Fluo can be found at Dani's web site
     and includes the mathematical derivation:
     http://www.aps.anl.gov/xfd/people/haskel/fluo.html
-**Booth Algorithm**
-    :cite:t:`Booth`
+
+Booth Algorithm
+    .. bibliography:: ../athena.bib
+       :filter: author % "Booth"
+
     See also Corwin's web site: http://lise.lbl.gov/RSXAP/
-**Troger Algorithm**
-    :cite:t:`Troger`
-**Pfalzer Algorithm**
+
+Troger Algorithm
+    .. bibliography:: ../athena.bib
+       :filter: author % "Arvanitis"
+
+Pfalzer Algorithm
     Another interesting approach to correcting self-absorption is
-    presented in :cite:t:`Pfalzer`
+    presented in
+    .. bibliography:: ../athena.bib
+       :filter: author % "Pfalzer"
+
     This is not implemented in :demeter:`athena` because the main result requires
     an integral over the solid angle subtended by the detector. This
     could be implemented, but the amount of solid angle subtended it is
     not something one typically writes in the lab notebook.
-**Atoms Algorithm**
-    :cite:t:`Atoms`
+
+Atoms Algorithm
+    .. bibliography:: ../athena.bib
+       :filter: author % "Ravel" and year == "2001"
+
     See also the documentation for Atoms at Bruce's website for more
     details about it's fluorescence correction calculations.
-**Elam tables of absorption coefficients**
-    :cite:t:`Elam`
+
+Elam tables of absorption coefficients
+    .. bibliography:: ../athena.bib
+       :filter: author % "Elam"
+

@@ -116,4 +116,5 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 The three plot buttons behave just like the purple plot buttons would
 behave were only the standard and unknown marked.
 
-My favorite explanation of this analysis method is :cite:t:`Bunker`.
+My favorite explanation of this analysis method is :cite:`Bunker`.
+

@@ -101,7 +101,7 @@ I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
 there wouldn't be an :demeter:`athena`. One afternoon over coffee,
 Julie Cross and Shelly Kelly lit the spark that eventually lead to the
 first version of this document. Some content of this document was
-inspired by a recent XAS review article :cite:t:`KellyReview`, the
+inspired by a recent XAS review article :cite:`KellyReview`, the
 first draft of which I had the pleasure of editing and the final draft
 of which I ended up on the author list. I have a huge debt of
 gratitude to all the folks on the :demeter:`ifeffit` mailing
@@ -153,7 +153,7 @@ Data citations
    section <analysis/diff.html>`__ were donated by Simon Bare.
 
 -  The gold edge data shown in many places throughout this document are
-   taken from measurements published as :cite:t:`Lengke`.
+   taken from measurements published as :cite:`Lengke`.
 
 -  The gold oxide data shown in `the smoothing
    section <process/smooth.html>`__ were donated by Norbert Weiher.
@@ -177,7 +177,7 @@ Data citations
    section <process/deg.html>`__ are from the group's standards library.
 
 -  Tin edge data which appear in several places are from
-   :cite:t:`Impellitteri`
+   :cite:`Impellitteri`
 
 -  Data on PbTiO\ :sub:`3`, BaTiO\ :sub:`3`, and EuTiO\ :sub:`3` are
    taken from my own PhD thesis.

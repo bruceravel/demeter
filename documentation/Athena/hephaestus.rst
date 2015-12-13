@@ -310,7 +310,7 @@ lengths of ferrite. The ferrite in BN will, therefore, attenuate the
 beam passing through the sample to the level of exp(-3.1), or about
 4.5%.
 
-In an early XAS paper -- :cite:t:`Stern-Kim` -- it was shown that the
+In an early XAS paper -- :cite:`Stern-Kim` -- it was shown that the
 edge step of a sample should not exceed 1.5. Using a simple
 statistical argument that presumes that measurement uncertainty is
 dominated by shot noise, the authors show that a sample is optimized
@@ -434,13 +434,17 @@ Data sources:
     List of Mossbauer active isotopes is from http://mossbauer.org,
     which does not seem to be about Mossbauer spectroscopy anymore.
 **Ionic radii**
-    Ionic radii are from :cite:t:`Shannon` 
-    using a conversion to JSON of `Electronic Table of Shannon Ionic
+    .. bibliography:: athena.bib
+       :filter: author % "Shannon"
+
+    Conversion of data to JSON at `Electronic Table of Shannon Ionic
     Radii, J. David Van Horn, 2001, downloaded
     10/13/2015. <http://v.web.umkc.edu/vanhornj/shannonradii.htm>`__
 **Neutron data**
-    :cite:t:`Sears`
-    and https://www.ncnr.nist.gov/resources/n-lengths/list.html.
+    .. bibliography:: athena.bib
+       :filter: author % "Sears"
+
+    See also https://www.ncnr.nist.gov/resources/n-lengths/list.html 
     Scattering lengths are in femtometers, cross sections are in barns
     (10E-24 cm), scattering lengths and cross sections in parenthesis
     are uncertainties, and for radioisotopes the half-life is given
@@ -603,10 +607,10 @@ The f' and f" data can be saved to a file.
 Preferences
 -----------
 
-The behavior of :demeter:`hephaestus` can be configured via the preferences tool.
-This uses the same preferences tool as Athena and Artemis, although only
-those preference groups relevant to :demeter:`hephaestus` and to plotting are
-presented.
+The behavior of :demeter:`hephaestus` can be configured via the
+preferences tool.  This uses the same preferences tool as Athena and
+Artemis, although only those preference groups relevant to
+:demeter:`hephaestus` and to plotting are presented.
 
 Click on a group in the :quoted:`Parameters` list to open a
 group. Click on a parameter to display it in the controls on the
@@ -649,12 +653,12 @@ Credits
 
 - The ion chamber and edge finder utilities were inspired by the
   similar utilities in the data acquisition program by Lars Fuerenlid
-  and Johnny Kirkland and in wide use at NSLS. Lars and Johnny seem
-  to have a deeper love of pastel than do I.
+  and Johnny Kirkland that was widely used at NSLS. Lars and Johnny
+  seem to have a deeper love of pastel than do I.
 
 - The electronic transitions chart was created from scratch but
-  slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
-  Data Booklet.
+  slavishly following Figure 1.1 in the `Center for X-Ray Optics X-Ray
+  Data Booklet <http://xdb.lbl.gov/>`_.
 
 - :demeter:`hephaestus` makes use of several things from
   http://www.cpan.org
@@ -666,21 +670,40 @@ Credits
 The absorption data resources all have literature references.
 
 The Elam tables
-    :cite:t:`Elam`  This is the source of data for the edge and line
-    finders and for the filter plot.
+    .. bibliography:: athena.bib
+       :filter: author % "Elam"
+
+   This is the source of data for the
+   edge and line finders and for the filter plot.
+    
 The McMaster tables
-    :cite:t:`McMaster` These data were originally compiled in machine
-    readable form by Pathikrit Bandyopadhyay.
+    .. bibliography:: athena.bib
+       :filter: author % "McMaster"
+
+    These data were originally
+    compiled in machine readable form by Pathikrit Bandyopadhyay.
+
 The Henke tables
-    :cite:t:`Henke` The data is available at
+    .. bibliography:: athena.bib
+       :filter: author % "Henke"
+
+    The data is available at
     http://www-cxro.lbl.gov/optical_constants.
+
 The Chantler tables
-    :cite:t:`Chantler` The data files can be found at
-    http://physics.nist.gov/PhysRefData/FFast/html/form.html
+    .. bibliography:: athena.bib
+       :filter: author % "Chantler" and year == "1995"
+
+    The data files can be found
+    at http://physics.nist.gov/PhysRefData/FFast/html/form.html
+
 The Cromer-Liberman tables
-    :cite:t:`Brennan-Cowan`
+    .. bibliography:: athena.bib
+       :filter: author % "Brennan"
+
 The Shaltout tables
-    :cite:t:`Shaltout`
+    .. bibliography:: athena.bib
+       :filter: author % "Shaltout"
 
 
 
@@ -700,6 +723,8 @@ highly likely to have an effect.
 
 My wish list includes auger/fluorescence branching ratios in one of
 the periodic table utilities and providing the Berger/Hubble XCOM
-tables (:cite:t:`XCOM`) and :demeter:`feff`'s optical calculations as
+tables and :demeter:`feff`'s optical calculations as
 data resources.
 
+    .. bibliography:: athena.bib
+       :filter: author % "Berger"

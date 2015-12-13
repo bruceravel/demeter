@@ -46,12 +46,13 @@ extensions.extend([
     'subfig',
     'numfig',
     'numsec',
-    'natbib',
+    #'natbib',
     'figtable',
     'singlehtml_toc',
     'singletext',
     'sphinx_clatex',
-    'demeterdocs'
+    'demeterdocs',
+    'sphinxcontrib.bibtex'
 ])
 
 # Turns on numbered figures for HTML output
@@ -62,7 +63,7 @@ natbib = {
     'file': 'athena.bib',
     'brackets': '[]',
     'separator': ',',
-    'style': 'authors',
+    'style': 'authoryear',
     'sort': True,
 }
 

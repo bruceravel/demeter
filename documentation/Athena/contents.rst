@@ -20,4 +20,3 @@ Table of Contents
    analysis/index.rst
    other/index.rst
    hephaestus.rst
-   biblio.rst

@@ -136,6 +136,6 @@ Uses of difference spectra
     measurement can be corrected by normalizing measured data by a blank
     scan – that is a measurement through the same energy range using the
     same instrumentation, but measured without the sample in the beam
-    path. This sort of correction, as shown in :cite:t:`Chantler-Barnea`
+    path. This sort of correction, as shown in :cite:`Chantler-Barnea`
     is equivalent to a difference spectrum measured in plain |mu| (E)
     between the data and balnk scan.
