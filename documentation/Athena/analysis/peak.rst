@@ -30,6 +30,8 @@ from the near-by postition of centrosymmetry. Peak fitting is a useful
 tool in this temperature-dependent study as it can quantify the
 relationship between a spectral feature and an extrinsic parameter.
 
+.. _fig-peak:
+
 .. figure:: ../images/peak.png
    :target: ../images/peak.png
    :width: 65%
@@ -77,6 +79,8 @@ Here is the result of a fit to the PbTiO\ :sub:`3` after slightly
 tweaking the centroids of the three lineshapes from the values shown
 above.
 
+.. _fig-peakfit:
+
 .. figure:: ../images/peak_fit.png
    :target: ../images/peak_fit.png
    :width: 65%
@@ -89,6 +93,8 @@ above.
 
 Fitting a single data group
 ---------------------------
+
+.. _fig-peakselect:
 
 .. figure:: ../images/peak_select.png
    :target: ../images/peak_select.png
@@ -137,6 +143,8 @@ If you wish to try a different lineshape at the same energy position,
 you can click on the :quoted:`change function` hot text to post a menu of other
 choices for line shape.
 
+.. _fig-peakchange:
+
 .. figure:: ../images/peak_change.png
    :target: ../images/peak_change.png
    :width: 65%
@@ -161,6 +169,8 @@ The fit results tab
 After a fit finishes, the remaining buttons in the :quoted:`Actions` section are
 enabled and the text box on the results tab is filled in with the
 outcome of the fit.
+
+.. _fig-peakresults:
 
 .. figure:: ../images/peak_results.png
    :target: ../images/peak_results.png
@@ -207,6 +217,8 @@ The results of the sequence of fits using the fitting model are shown in
 the :quoted:`Sequence` tab. You can have each fit plotted during the sequence by
 setting the :configparam:`Peakfit,plot\_during` parameter.
 
+.. _fig-peaksequence:
+
 .. figure:: ../images/peak_sequence.png
    :target: ../images/peak_sequence.png
    :width: 65%
@@ -228,6 +240,8 @@ parameter over the ensemble of data.
 Here we see the example of the height of the pseudo-Voigt line shape as
 a function of temperature. As expected, the value trends downward.
 
+.. _fig-peakheight:
+
 .. figure:: ../images/peak_height.png
    :target: ../images/peak_height.png
    :width: 65%
@@ -241,6 +255,8 @@ spreadsheet file for easy viewing and manipulation in a spreadsheet
 program, such as Excel, LibreOffice Calc, or Google Docs. This
 spreadsheet contains the statistics for each fit along with all the
 parameter values and their uncertainties.
+
+.. _fig-peakexcel:
 
 .. figure:: ../images/peak_excel.png
    :target: ../images/peak_excel.png

@@ -6,14 +6,15 @@ Linear combination fitting
 Interpreting data as a mixture of standards
 -------------------------------------------
 
-:demeter:`athena` has a capability of fitting a linear combination of standard
-spectra to an unknown spectra. These fits can be done using normalized
-μ(E), derivative of μ(E), or χ(k) spectra. One use of this sort of
-analysis might be to interpret the kinetics of series of spectra
-measured during a reduction reaction. By fitting each intermediate
-spectrum as a linear combination of the end members, one can deduce the
-rate of the reaction. Another possible use would be to determine the
-species and quantities of standards in a heterogeneous sample.
+:demeter:`athena` has a capability of fitting a linear combination of
+standard spectra to an unknown spectra. These fits can be done using
+normalized |mu| (E), derivative of |mu| (E), or |chi| (k) spectra. One
+use of this sort of analysis might be to interpret the kinetics of
+series of spectra measured during a reduction reaction. By fitting
+each intermediate spectrum as a linear combination of the end members,
+one can deduce the rate of the reaction. Another possible use would be
+to determine the species and quantities of standards in a
+heterogeneous sample.
 
 A worked example of linear combination fitting is shown `later in this
 manual <../examples/aucl.html>`__.
@@ -21,6 +22,8 @@ manual <../examples/aucl.html>`__.
 To access this feature, choose :quoted:`Linear combination fit` from the main
 menu. The normal parameter view will be replaced by the tool in the
 following figure for performing the linear combination fit.
+
+.. _fig-lcf:
 
 .. figure:: ../images/lcf.png
    :target: ../images/lcf.png
@@ -39,7 +42,7 @@ currently in the Data groups list. The basic idea of this tool is that
 you will choose two or more standard spectra and fit a linear
 combination of them to the current (i.e. the one highlighted in pale red
 in the Data groups list) group. The fitting is done using the normalized
-μ(E) spectra. If the standards or the unknown are to be flattened, then
+|mu| (E) spectra. If the standards or the unknown are to be flattened, then
 the flattened spectrum will be used. (See `the section on background
 removal <../bkg/norm.html>`__ for details about flattened spectra.)
 
@@ -58,15 +61,15 @@ standards, the first two would have weights ``x`` and ``y`` and the
 third would have weight ``1-x-y``. ``x`` and ``y`` would then be varied
 to best fit the data. Each standard spectrum is interpolated onto the
 energy grid of the unknown when the fit is performed as normalized or
-derivative μ(E). The fit is performed over the data range indicated by
+derivative |mu| (E). The fit is performed over the data range indicated by
 the text boxes near the top of the window. There are pluck buttons which
 can be used to set the fitting range by clicking on a plot of the data.
 
-Fitting normalized μ(E), derivative μ(E), or χ(k) is chosen using the
-radio buttons just above the table of standards. When fitting χ(k)
+Fitting normalized |mu| (E), derivative |mu| (E), or |chi| (k) is chosen using the
+radio buttons just above the table of standards. When fitting |chi| (k)
 spectra, you have the option of fitting a single spectrum to the data.
 
-When fitting normalized or derivative μ(E) spectra, you have the option
+When fitting normalized or derivative |mu| (E) spectra, you have the option
 of floating an E₀ for each standard independently. This is intended to
 fix up any inconsistencies in the energy alignment of the various
 spectra (although it is much better to do a good job of aligning your
@@ -78,7 +81,7 @@ You can introduce a linear offset to the fit to normalized |mu| (E)
 spectra.  This is simple a line added to the sum of spectra in the
 fit. It introduces two parameters to the fit, a slope and an
 intercept. The line is multiplied by a step function centered at the
-E₀ of the unknown. Thus the linear offset is introduced only after the
+E\ :sub:`0` of the unknown. Thus the linear offset is introduced only after the
 edge of the unknown. The purpose of this offset is to accommodate any
 variations in how the normalization is performed on the various
 spectra. To turn on the linear offset in the fit just click on the
@@ -142,18 +145,18 @@ checkbuttons near the bottom of the tool.
 **Constrain all standards to use a single E0 shift**
     You can force all standards to use a single E₀ shift parameter in
     the fit. This is equivalent (albeit with a sign change) to fixing
-    all the standards and using an E₀ shift on the unknown data.
+    all the standards and using an E\ :sub:`0` shift on the unknown data.
 **Adding noise to the data**
     It is sometimes useful to check the robustness of the fit against
     noisy data. This is particularly true for a data set wherein some
     data are much noisier than others. To this end, :demeter:`athena` allows you to
     add pseudo-random noise to the data before performing the fit. This
     is done by generating an array of psuedo-random numbers and adding
-    this array to the data. Given that normalized μ(E) is used in lCF
-    fits, σ (the scale of the noise) has a simple interpretation -- it
+    this array to the data. Given that normalized |mu| (E) is used in lCF
+    fits, |sigma| (the scale of the noise) has a simple interpretation -- it
     is a fraction of the edge step. A bit of trial and error might be
     necessary to find a suitable level of noise for your test. For fits
-    to χ(k), note that the noise is added to the data **before**
+    to |chi| (k), note that the noise is added to the data **before**
     k-weighting. You can examine the level of noise relative to your
     data before fitting by using the :quoted:`Plot data and sum` from the
     actions list.
@@ -183,9 +186,9 @@ less than the number of data points measured. Nonetheless, when the
 chi-square is evaluated, the number of data points is used as the number
 of measurements.
 
-Second, :demeter:`athena` has no way of evaluating a measurement uncertainty ε for
-the XANES measurement. A value of 1 is used for ε in the equation for
-chi-square.
+Second, :demeter:`athena` has no way of evaluating a measurement
+uncertainty ε for the XANES measurement. A value of 1 is used for
+|epsilon| in the equation for chi-square.
 
 These two issues, taken together, mean that chi-square and reduced
 chi-square tend to be very small numbers -- much smaller than 1. As a
@@ -227,7 +230,7 @@ and manipulate the fit or difference after leaving the linear
 combination tool. The data group containing the fit result will be
 treated as normal data that can have a background removed or be Fourier
 transformed. When you save a fit using the derivative spectra, the fit
-group will be saved as a normal μ(E) spectrum.
+group will be saved as a normal |mu| (E) spectrum.
 
 :quoted:`Reset` in the actions list returns almost everything in the tool back
 to its original state.
@@ -283,9 +286,10 @@ Combinatorial fitting using many standards
 
 One of the uses of this sort of XANES fitting is to try to figure out
 what's actually in a sample. One approach to figuring this out is to
-measure all plausible standard compounds and try fitting a large number
-of different combinations of the standards to the data. :demeter:`athena` provides
-a tool for automating this. Here is how it works:
+measure all plausible standard compounds and try fitting a large
+number of different combinations of the standards to the
+data. :demeter:`athena` provides a tool for automating this. Here is
+how it works:
 
 #. Load all of the standards that you want to consider into the table of
    standards in the linear combination tool. You may need to increase
@@ -318,6 +322,8 @@ performed, in order of increasing R-factor. Initially, the first item in
 the list -- which has the lowest R-factor -- is selected (i.e.
 highlighted in pale red).
 
+.. _fig-lcfcombo:
+
 .. figure:: ../images/lcf_combo.png
    :target: ../images/lcf_combo.png
    :width: 65%
@@ -325,8 +331,8 @@ highlighted in pale red).
 
    The combinatorial fitting results tab.
 
-The second table contains each of the standards and its weight and E₀
-from the fit selected in the upper table.
+The second table contains each of the standards and its weight and
+E\ :sub:`0` from the fit selected in the upper table.
 
 You can select a fit from the upper table by clicking on its line. When
 you do so, that fit becomes highlighted in pale red, its fitting results
@@ -335,9 +341,11 @@ with the data, and its results are inserted into the other two tabs. In
 this way, you can examine any fit from the series, as seen in the plot
 below.
 
+.. _fig-lcfcombofit:
+
 .. figure:: ../images/lcf_combofit.png
    :target: ../images/lcf_combofit.png
-   :width: 65%
+   :width: 45%
    :align: center
 
 

@@ -40,9 +40,7 @@ display the various tools. ``Control-m`` displays the document in a
 web browser, while ``Control-c`` changes the display to the
 configuration tool.
 
---------------
 
- 
 
 Absorption
 ----------
@@ -78,6 +76,8 @@ Also shown is the approximate strength, or branching ratio, of each
 line. The strengths for all lines associated with a particular edge will
 sum to 1. Clicking on a line in this table will display a message in the
 status bar giving the emission energy expressed in wavelength units.
+
+.. _fig-hephabsorption:
 
 .. figure:: ../images/Hephaestus_absorption.png
    :target: ../images/Hephaestus_absorption.png
@@ -118,7 +118,8 @@ The rules for the selection of the filter elements are:
    with a K-edge between the line and absorption energies of the
    absorber.
 
-
+.. _fig-hephfilterplot:
+   
 .. figure:: ../images/Hephaestus_filterplot.png
    :target: ../images/Hephaestus_filterplot.png
    :width: 45%
@@ -136,6 +137,8 @@ When beamline customization is enabled, the two buttons labeled
 :quoted:`Show K edges` and :quoted:`Show L edges` will be visible. These are
 both toggle buttons. When pressed, they will disable all elements that
 cannot be measured by that edge at the beamline.
+
+.. _fig-hephbeamline:
 
 .. figure:: ../images/Hephaestus_beamline.png
    :target: ../images/Hephaestus_beamline.png
@@ -157,9 +160,6 @@ fit on the button!  Finally, set the
 :configparam:`Hephaestus,beamline\_emax` parameters to the lower and
 upper energy bounds of your beamline.
 
---------------
-
- 
 
 Formulas
 --------
@@ -201,6 +201,8 @@ from the choice menu.
 
 Finally, an energy in eV is required at which to make the calculation.
 
+
+.. _fig-hephformulas:
 
 .. figure:: ../images/Hephaestus_formulas.png
    :target: ../images/Hephaestus_formulas.png
@@ -308,7 +310,7 @@ lengths of ferrite. The ferrite in BN will, therefore, attenuate the
 beam passing through the sample to the level of exp(-3.1), or about
 4.5%.
 
-In an early XAS paper -- :cite:ts:`Stern-Kim` -- it was shown that the
+In an early XAS paper -- :cite:t:`Stern-Kim` -- it was shown that the
 edge step of a sample should not exceed 1.5. Using a simple
 statistical argument that presumes that measurement uncertainty is
 dominated by shot noise, the authors show that a sample is optimized
@@ -392,6 +394,8 @@ chamber.
 The ionization energy is about 32 volts for most gasses and the electron
 charge ``e`` is about 1.6E-19 Coulombs.
 
+.. _fig-hephion:
+
 .. figure:: ../images/Hephaestus_ionchambers.png
    :target: ../images/Hephaestus_ionchambers.png
    :width: 65%
@@ -413,6 +417,8 @@ general information. The :quoted:`Ionic radii` tab contains the Shannon ionic
 radii. The :quoted:`Neutron data` tab conatins data on thermal neutron
 scattering lengths and cross sections for the major isotopes.
 
+.. _fig-hephdata:
+
 .. figure:: ../images/Hephaestus_data.png
    :target: ../images/Hephaestus_data.png
    :width: 65%
@@ -428,12 +434,12 @@ Data sources:
     List of Mossbauer active isotopes is from http://mossbauer.org,
     which does not seem to be about Mossbauer spectroscopy anymore.
 **Ionic radii**
-    Ionic radii are from :cite:ts:`Shannon` 
+    Ionic radii are from :cite:t:`Shannon` 
     using a conversion to JSON of `Electronic Table of Shannon Ionic
     Radii, J. David Van Horn, 2001, downloaded
     10/13/2015. <http://v.web.umkc.edu/vanhornj/shannonradii.htm>`__
 **Neutron data**
-    :cite:ts:`Sears`
+    :cite:t:`Sears`
     and https://www.ncnr.nist.gov/resources/n-lengths/list.html.
     Scattering lengths are in femtometers, cross sections are in barns
     (10E-24 cm), scattering lengths and cross sections in parenthesis
@@ -448,6 +454,8 @@ This tool displays a non-interactive chart explaining the transitions
 for each of the emission lines. The initial and final states for each
 named K and L transition is shown. The chart follows Figure 1.1 in the
 Center for X-Ray Optics X-Ray Data Booklet.
+
+.. _fig-hephtransitions:
 
 .. figure:: ../images/Hephaestus_transitions.png
    :target: ../images/Hephaestus_transitions.png
@@ -475,6 +483,8 @@ You can also search for edges at the second or third harmonic of the
 energy. This can be useful in the case of poor harmonic rejection in the
 incident beam and the excitation of a much higher energy edge.
 
+.. _fig-hephedgefinder:
+
 .. figure:: ../images/Hephaestus_edgefinder.png
    :target: ../images/Hephaestus_edgefinder.png
    :width: 65%
@@ -498,6 +508,8 @@ observed during measurements. To search the list, enter an energy in the
 text box on the right and click search (or hit return). The list will be
 recentered around that energy. Hopefully this will help you identify the
 mysterious line in your fluorescence data!
+
+.. _fig-hephlinefinder:
 
 .. figure:: ../images/Hephaestus_linefinder.png
    :target: ../images/Hephaestus_linefinder.png
@@ -533,12 +545,16 @@ One point of this tool is to make obsolete the :quoted:`Reference Spectra`
 printout from EXAFS Materials that is found at many beamlines.
 http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
+.. _fig-hephstandards:
+
 .. figure:: ../images/Hephaestus_standards.png
    :target: ../images/Hephaestus_standards.png
    :width: 65%
    :align: center
 
    The standards tool.
+
+.. _fig-hephstandardsplot:
 
 .. figure:: ../images/Hephaestus_standards_plot.png
    :target: ../images/Hephaestus_standards_plot.png
@@ -564,6 +580,8 @@ with other elements. You can also select to plot either f', f", or both.
 The f' and f" data can be saved to a file.
 
 
+.. _fig-hephf1f2:
+
 .. figure:: ../images/Hephaestus_f1f2.png
    :target: ../images/Hephaestus_f1f2.png
    :width: 65%
@@ -571,6 +589,8 @@ The f' and f" data can be saved to a file.
 
    The f' and f" tool.
 	   
+.. _fig-hephf1f2plot:
+
 .. figure:: ../images/Hephaestus_f1f2_plot.png
    :target: ../images/Hephaestus_f1f2_plot.png
    :width: 45%
@@ -599,73 +619,70 @@ large text box.
 Parameters can be applied for the current session or applied and saved
 to your configuration file.
 
---------------
-
- 
 
 Credits
 -------
 
--  The layout of :demeter:`hephaestus` -- with its button bar on the left side
-   which changes the mode of the main part of the program -- was
-   inspired by the personal information management program I use on my
-   KDE systems, Kontact. I found it effective so I swiped it for this
-   program.
+- The layout of :demeter:`hephaestus` -- with its button bar on the
+  left side which changes the mode of the main part of the program --
+  was inspired by the personal information management program I use
+  on my KDE systems, Kontact. I found it effective so I swiped it for
+  this program.
 
--  The pictures used on the buttons were cropped from images I found
-   using Google. The picture of the ion chamber is from the Advanced
-   Designed Consulting web site. Their ion chambers are quite nice. The
-   edge finder icon was swiped from the find.png icon in the kid's icon
-   theme for KDE. The line finder icon is from a web page by the Alberta
-   Synchrotron Institute and depicts a fluorescence map of some rock.
-   The documentation icon was found under a Creative Commons license at
-   http://battellemedia.com/archives/001952.php
+- The pictures used on the buttons were cropped from images I found
+  using Google. The picture of the ion chamber is from the Advanced
+  Designed Consulting web site. Their ion chambers are quite
+  nice. The edge finder icon was swiped from the find.png icon in the
+  kid's icon theme for KDE. The line finder icon is from a web page
+  by the Alberta Synchrotron Institute and depicts a fluorescence map
+  of some rock.  The documentation icon was found under a Creative
+  Commons license at http://battellemedia.com/archives/001952.php
 
--  The formulas utility owes much to Gerry Roe, who pointed out a bug,
-   and Erik Gullikson, whose similar utility on the web set me straight.
+- The formulas utility owes much to Gerry Roe, who pointed out a bug,
+  and Erik Gullikson, whose similar utility on the web set me
+  straight.
 
--  The information used in the chemical data utility is from the
-   kalziumrc file, which was swiped from the Kalzium package. See
-   http://edu.kde.org/kalzium/ for more details. The data for Mossbauer
-   active isotopes was taken from http://www.mossbauer.org
+- The information used in the chemical data utility is from the
+  kalziumrc file, which was swiped from the Kalzium package. See
+  http://edu.kde.org/kalzium/ for more details. The data for
+  Mossbauer active isotopes was taken from http://www.mossbauer.org
 
--  The ion chamber and edge finder utilities were inspired by the
-   similar utilities in the data acquisition program by Lars Fuerenlid
-   and Johnny Kirkland and in wide use at NSLS. Lars and Johnny seem to
-   have a deeper love of pastel than do I.
+- The ion chamber and edge finder utilities were inspired by the
+  similar utilities in the data acquisition program by Lars Fuerenlid
+  and Johnny Kirkland and in wide use at NSLS. Lars and Johnny seem
+  to have a deeper love of pastel than do I.
 
--  The electronic transitions chart was created from scratch but
-   slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
-   Data Booklet.
+- The electronic transitions chart was created from scratch but
+  slavishly following Figure 1.1 in the Center for X-Ray Optics X-Ray
+  Data Booklet.
 
--  :demeter:`hephaestus` makes use of several things from
-   http://www.cpan.org
+- :demeter:`hephaestus` makes use of several things from
+  http://www.cpan.org
 
--  And, of course, the users of my various software efforts deserve all
-   the credit for kind praise and useful feedback over these many years.
+- And, of course, the users of my various software efforts deserve all
+  the credit for kind praise and useful feedback over these many
+  years.
 
 The absorption data resources all have literature references.
 
 The Elam tables
-    :cite:ts:`Elam`  This is the source of data for the edge and line
+    :cite:t:`Elam`  This is the source of data for the edge and line
     finders and for the filter plot.
 The McMaster tables
-    :cite:ts:`McMaster` These data were originally compiled in machine
+    :cite:t:`McMaster` These data were originally compiled in machine
     readable form by Pathikrit Bandyopadhyay.
 The Henke tables
-    :cite:ts:`Henke` The data is available at
+    :cite:t:`Henke` The data is available at
     http://www-cxro.lbl.gov/optical_constants.
 The Chantler tables
-    :cite:ts:`Chantler` The data files can be found at
+    :cite:t:`Chantler` The data files can be found at
     http://physics.nist.gov/PhysRefData/FFast/html/form.html
 The Cromer-Liberman tables
-    :cite:ts:`Brennan-Cowan`
+    :cite:t:`Brennan-Cowan`
 The Shaltout tables
-    :cite:ts:`Shaltout`
+    :cite:t:`Shaltout`
 
---------------
 
- 
 
 Bugs and limitations
 --------------------
@@ -681,7 +698,8 @@ easily readable format (i.e. plain text is lovely). Merely suggesting
 new data types is unlikely to have any effect. Supplying the data is
 highly likely to have an effect.
 
-My wish list includes auger/fluorescence branching ratios in one of the
-periodic table utilities and providing the Berger/Hubble XCOM tables and
-Feff's optical calculations as data resources.
+My wish list includes auger/fluorescence branching ratios in one of
+the periodic table utilities and providing the Berger/Hubble XCOM
+tables (:cite:t:`XCOM`) and :demeter:`feff`'s optical calculations as
+data resources.
 

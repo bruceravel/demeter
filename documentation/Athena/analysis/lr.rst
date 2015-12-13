@@ -73,6 +73,8 @@ requires a spectrally isolated first shell.
 When you select :quoted:`Log-Ratio` from the main menu, the main window is
 replaced with the log-ratio/phase-difference tool, shown below.
 
+.. _fig-lr:
+
 .. figure:: ../images/lr.png
    :target: ../images/lr.png
    :width: 65%
@@ -114,4 +116,4 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 The three plot buttons behave just like the purple plot buttons would
 behave were only the standard and unknown marked.
 
-My favorite explanation of this analysis method is :cite:ts:`Bunker`.
+My favorite explanation of this analysis method is :cite:t:`Bunker`.

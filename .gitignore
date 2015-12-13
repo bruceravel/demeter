@@ -42,6 +42,8 @@ META.json
 MYMETA.yml
 MYMETA.json
 
+*.pyc
+
 doc/dpg/bin/build
 doc/dpg/etc/ttree.cfg
 doc/dpg/html/

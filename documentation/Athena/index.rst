@@ -3,9 +3,30 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Athena's documentation!
-==================================
+Athena: XAS Data Processing
+===========================
 
+::
+
+   Just as Phaeacian men excel the world at sailing, driving
+   their swift ships on the open seas, so the women excel at
+   all the arts of weaving. That is Athena's gift to them
+   beyond all others -- a genius for lovely work, and a fine
+   mind too.
+                                (Homer, The Odyssey, Book 7)
+
+
+.. endpar::
+
+.. figure:: ../images/greek_delphi.jpg
+   :width: 85%
+   :align: center
+
+.. endpar::
+
+.. endpar::
+
+				
 Contents:
 
 .. toctree::
@@ -22,8 +43,8 @@ Contents:
    output/index.rst
    process/index.rst
    analysis/index.rst
+   other/index.rst
    hephaestus.rst
-   biblio
    
 
 Indices and tables

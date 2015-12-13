@@ -63,11 +63,11 @@ natbib = {
     'brackets': '[]',
     'separator': ',',
     'style': 'authors',
-    'sort': False,
+    'sort': True,
 }
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = [os.path.abspath(os.path.join('..', '_templates'))]
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -154,7 +154,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'agogo'
+html_theme = 'nature'
 #html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -200,8 +200,12 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
-
+html_sidebars = {
+    '**': ['globaltoc.html',
+           os.path.abspath(os.path.join('..', '_templates', 'linksbox.html')),
+           'searchbox.html'],
+}
+    
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
 #html_additional_pages = {}
@@ -275,7 +279,29 @@ latex_documents = [
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = True
+latex_domain_indices = False
+
+latex_additional_files = [
+    #    'sphinx/tex/puthesis.cls',
+    '../sphinx/tex/preamble._tex',
+    '../sphinx/tex/refstyle.bst',
+    '../sphinx/tex/biblio.tex',
+    '../sphinx/tex/sphinx.sty',
+    'athena.bib',
+]
+
+## \setcounter{secnumdepth}{2}
+## \setcounter{tocdepth}{2}
+
+latex_elements = {'pointsizee': '11pt',
+                  'preamble': """
+\input{preamble._tex}
+\usepackage{sphinx}
+""",
+                 'footer':"""
+input{biblio.tex}
+"""
+}
 
 
 # -- Options for manual page output ---------------------------------------

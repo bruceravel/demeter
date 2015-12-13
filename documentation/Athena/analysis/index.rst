@@ -1,4 +1,3 @@
-.. _analysis-chapter:
 
 Data analysis in Athena
 =======================
@@ -15,6 +14,8 @@ the questions you have about your data.
 
 :demeter:`athena`'s analysis tools are accessed from the Analysis menu, as shown
 below.
+
+.. _fig-analysis:
 
 .. figure:: ../images/analysis.png
    :target: ../images/analysis.png

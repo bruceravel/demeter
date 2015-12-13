@@ -80,7 +80,9 @@ excitation at about 120 volts above the edge.
     La L\ :sub:`III`-edge data, which occurs at about 120 volts above
     the edge.  This excitation is seen near the cursor in the energy
     plot. Its effect is much more pronounced in the |chi| (k) data on
-    the right. See :cite:ts:`Kodre`
+    the right.
+
+See :cite:t:`Kodre`
 
 Using the parameter shown inthe screen shot above, the removal is
 performed and shown as the red line in the figures. The shift was
@@ -102,7 +104,7 @@ excitation, the excitation-subtracted data can be saved as a group in
 the group list.
 
 This is a good reference on the effect of small multi-electron
-excitations on otherwise excellent |chi| (k) data: :cite:ts:`Hennig`
+excitations on otherwise excellent |chi| (k) data: :cite:t:`Hennig`
 
 Note that this tool can also be used to approximately remove the
 contamination from a small edge of another element that shows up in the
