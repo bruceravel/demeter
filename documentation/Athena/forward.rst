@@ -4,14 +4,17 @@
 Forward
 =======
 
-.. todo:: translate examples section to rst
+.. todo::
+   #. translate examples section to rst
 
-.. todo:: installation instructions, document building instructions
+   #. installation instructions, document building instructions
 
-.. todo:: need to make sure all internal links point at actual targets
+   #. need to make sure all internal links point at actual targets
 
-.. todo:: CC image in epilog + linebreak as a directive (not a role)
-	  
+   #. CC image in epilog + linebreak as a directive (not a role)
+
+   #. mark index entries
+
 	  
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
@@ -20,20 +23,20 @@ mathematical meanings of your data and of the data analysis techniques
 and think about how actions in :demeter:`athena` relate to those
 meanings.
 
-:demeter:`athena` is a powerful and versatile program
-capable of supporting almost all of your common (and not-so-common)
-XAS data processing chores. It is not, however, a particularly
-intuitive program. I doubt that any XAS program could be intuitive. On
-top of that, :demeter:`athena` has accumulated lots of features over the
+:demeter:`athena` is a powerful and versatile program capable of
+supporting almost all of your common (and many not-so-common!) XAS
+data processing chores. It is not, however, a particularly intuitive
+program. I doubt that any XAS program could be intuitive. On top of
+that, :demeter:`athena` has accumulated lots of features over the
 years. Many of these features are necessary for high-quality data
 processing, others are bells and whistles intended to make data
 processing more convenient or more fun.
 
 This document attempts to be a comprehensive overview of all of the
-features of :demeter:`athena`. There are lots of words,
-but also lots of pictures. Feel free to jump around and to focus on
-the parts most directly relevant to your immediate needs. I hope you
-find this document and the program helpful.
+features of :demeter:`athena`. There are lots of words, but also lots
+of pictures. Feel free to jump around and to focus on the parts most
+directly relevant to your immediate needs. I hope you find this
+document and the program helpful.
 
 
 Layout and typesetting conventions
