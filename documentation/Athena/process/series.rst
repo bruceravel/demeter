@@ -23,8 +23,8 @@ disabled.
 
 .. _fig-series:
 
-.. figure:: ../../images/series.png
-   :target: ../../images/series.png
+.. figure:: ../../_images/series.png
+   :target: ../../_images/series.png
    :width: 65%
    :align: center
 
@@ -32,8 +32,8 @@ disabled.
 
 .. _fig-seriesplot:
 
-.. figure:: ../../images/series_plot.png
-   :target: ../../images/series_plot.png
+.. figure:: ../../_images/series_plot.png
+   :target: ../../_images/series_plot.png
    :width: 45%
    :align: center
 

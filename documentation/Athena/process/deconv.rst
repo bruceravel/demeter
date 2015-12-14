@@ -6,8 +6,10 @@ Removing experimental and lifetime broadening from your data
 ------------------------------------------------------------
 
 
-.. figure:: ../../images/comingsoon.jpg
-   :width: 45%
-   :align: center
+.. endpar::
+
+:mark:`soon,..`
+
+:linebreak:`.`
 
 Spectral deconvolution is on ATHENA's to do list.

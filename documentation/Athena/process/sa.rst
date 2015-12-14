@@ -1,18 +1,15 @@
 
-|Advanced topic| Self-absorption approximations
-=================================================
+Self-absorption approximations
+==============================
 
-Correcting data measured in fluorescence for self-absorption
-------------------------------------------------------------
-
-The statement that |mu| (E) measured in fluorescence is the ratio of
-the signals on the fluorescence and incident ion chambers is only true
-in the limit of very thin samples or very dilute samples. For thick,
-concentrated samples, the depth into which the incident beam can
-penetrate changes as fine structure of |mu| (E) changes. As the
-oscillatory part wiggles up, the penetration depth diminishes. As it
-wiggles down, the depth increases. This serves to attenuate the
-oscillatory structure.
+:mark:`bend,..` The statement that |mu| (E) measured in fluorescence
+is the ratio of the signals on the fluorescence and incident ion
+chambers is only true in the limit of very thin samples or very dilute
+samples. For thick, concentrated samples, the depth into which the
+incident beam can penetrate changes as fine structure of |mu| (E)
+changes. As the oscillatory part wiggles up, the penetration depth
+diminishes. As it wiggles down, the depth increases. This serves to
+attenuate the oscillatory structure.
 
 Ideally, all your samples that must be measured in fluorescence should
 be either sufficiently thin or sufficiently dilute that your data is
@@ -59,8 +56,8 @@ algorithms and to provide the parameters of the correction.
 
 .. _fig-selfabs:
 
-.. figure:: ../../images/selfabs.png
-   :target: ../../images/selfabs.png
+.. figure:: ../../_images/selfabs.png
+   :target: ../../_images/selfabs.png
    :width: 65%
    :align: center
 
@@ -101,20 +98,20 @@ the corrected spectra are shown on the bottom.
 
 .. _fig-saplot:
 
-.. figure::  ../../images/selfabs_plot.png
-   :target: ../../images/selfabs_plot.png
+.. figure::  ../../_images/selfabs_plot.png
+   :target: ../../_images/selfabs_plot.png
    :width: 100%
 
 .. _fig-sabefore:
 
-.. figure:: ../../images/selfabs_before.png 
-   :target: ../../images/selfabs_before.png
+.. figure:: ../../_images/selfabs_before.png 
+   :target: ../../_images/selfabs_before.png
    :width: 100%
 
 .. _fig-saafter:
 
-.. figure:: ../../images/selfabs_after.png 
-   :target: ../../images/selfabs_after.png
+.. figure:: ../../_images/selfabs_after.png 
+   :target: ../../_images/selfabs_after.png
    :width: 100%
 
 .. subfigend::
@@ -139,8 +136,8 @@ that samples are infinitely thick.
 
 .. _fig-sabooth:
 
-.. figure:: ../../images/selfabs_booth.png
-   :target: ../../images/selfabs_booth.png
+.. figure:: ../../_images/selfabs_booth.png
+   :target: ../../_images/selfabs_booth.png
    :width: 65%
    :align: center
 
@@ -170,8 +167,8 @@ in the plot below.
 
 .. _fig-saboothplot:
 
-.. figure:: ../../images/selfabs_boothplot.png
-   :target: ../../images/selfabs_boothplot.png
+.. figure:: ../../_images/selfabs_boothplot.png
+   :target: ../../_images/selfabs_boothplot.png
    :width: 45%
    :align: center
 
@@ -206,14 +203,14 @@ provides a useful metric for whether a film sample can be considered
 
 .. _fig-sainfoe:
 
-.. figure::  ../../images/sa_info_e.png
-   :target: ../../images/sa_info_e.png
+.. figure::  ../../_images/sa_info_e.png
+   :target: ../../_images/sa_info_e.png
    :width: 100%
 
 .. _fig-sainfok:
 
-.. figure::  ../../images/sa_info_k.png
-   :target: ../../images/sa_info_k.png
+.. figure::  ../../_images/sa_info_k.png
+   :target: ../../_images/sa_info_k.png
    :width: 100%
 
 

@@ -75,8 +75,8 @@ replaced with the log-ratio/phase-difference tool, shown below.
 
 .. _fig-lr:
 
-.. figure:: ../images/lr.png
-   :target: ../images/lr.png
+.. figure:: ../_images/lr.png
+   :target: ../_images/lr.png
    :width: 65%
    :align: center
 
@@ -97,14 +97,14 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 
 .. _lr_fit:
    
-.. figure:: ../images/lr_fit.png
-   :target: ../images/lr_fit.png
+.. figure:: ../_images/lr_fit.png
+   :target: ../_images/lr_fit.png
    :width: 100%
 
 .. _lr_pd_fit:
    
-.. figure:: ../images/lr_pd_fit.png
-   :target: ../images/lr_pd_fit.png
+.. figure:: ../_images/lr_pd_fit.png
+   :target: ../_images/lr_pd_fit.png
    :width: 100%
 
 .. subfigend::
@@ -116,5 +116,8 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 The three plot buttons behave just like the purple plot buttons would
 behave were only the standard and unknown marked.
 
-My favorite explanation of this analysis method is :cite:`Bunker`.
+My favorite explanation of this analysis method is
 
+    .. bibliography:: ../athena.bib
+       :filter: author % "Bunker"
+       :list: bullet

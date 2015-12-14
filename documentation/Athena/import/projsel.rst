@@ -13,8 +13,8 @@ contents of the project file.
 
 .. _fig-projsel:
 
-.. figure:: ../../images/import_projsel.png
-   :target: ../../images/import_projsel.png
+.. figure:: ../../_images/import_projsel.png
+   :target: ../../_images/import_projsel.png
    :width: 45%
    :align: center
 

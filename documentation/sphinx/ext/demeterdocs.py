@@ -1,3 +1,21 @@
+'''
+Sphinx roles for use with Demeter's documentation
+
+- decoration of names of programs in Demeter, as well as Feff,
+  Ifeffit, and Larch (colored and smallcaps)
+
+- decoration of configuration parameters (colored, preceded by a
+  colored diamond, right arrow between group and parameter names)
+
+- decoration of data processing parameters (colored and surrounded by
+  guillemots)
+
+- quoted text (default text, surrounded by proper opening and closing
+  double quotation marks)
+
+Bruce Ravel (https://github.com/bruceravel/demeter)
+
+'''
 
 from docutils.parsers.rst import directives
 from docutils.parsers.rst import Directive
@@ -5,7 +23,13 @@ from docutils import nodes
 
 class DemeterDocException(Exception): pass
 
+
+
+
 class demeter(nodes.Element):
+    ''' decoration of names of programs in Demeter, as well as Feff,
+        Ifeffit, and Larch (colored and smallcaps)
+    '''
     pass
     
 def demeter_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -34,6 +58,9 @@ def depart_demeter_latex(self, node):
 
     
 class configparam(nodes.Element):
+    ''' decoration of configuration parameters (colored, preceded by a
+        colored diamond, right arrow between group and parameter names)
+    '''
     pass
 
 def configparam_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -62,6 +89,9 @@ def depart_configparam_latex(self, node):
 
 
 class procparam(nodes.Element):
+    ''' decoration of data processing parameters (colored and surrounded by
+        guillemots)
+    '''
     pass
 
 def procparam_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -89,6 +119,9 @@ def depart_procparam_latex(self, node):
 
 
 class quoted(nodes.Element):
+    '''quoted text (default text, surrounded by proper opening and closing
+       double quotation marks)
+    '''
     pass
 
 def quoted_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -109,7 +142,63 @@ def visit_quoted_latex(self, node):
 def depart_quoted_latex(self, node):
     self.body.append("''")
 
-    
+class mark(nodes.Element):
+    '''mark a section by inserting a static image
+
+    This is used for the lightning bolt (essential material for
+    mastery of the program) and the bend sign (difficult material to
+    master)
+    '''
+    pass
+
+def mark_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    words =text.strip().split(',')
+    image = words[0]
+    path = words[1]
+    mark_node = mark()
+    mark_node['image'] = image
+    mark_node['path'] = path
+    return [mark_node], []
+
+def visit_mark_html(self, node):
+    self.body.append('<img alt="%s!" src="%s/_static/%s.png" align="left" hspace="5">' % (node['image'], node['path'], node['image']))
+
+def depart_mark_html(self, node):
+    self.body.append('&nbsp;</a>')
+
+def visit_mark_latex(self, node):
+    self.body.append(" mark bolt!")
+
+def depart_mark_latex(self, node):
+    self.body.append(" ")
+
+
+
+class linebreak(nodes.Element):
+    '''linebreak text (default text, surrounded by proper opening and closing
+       double quotation marks)
+    '''
+    pass
+
+def linebreak_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    linebreak_node = linebreak()
+    return [linebreak_node], []
+
+def visit_linebreak_html(self, node):
+    self.body.append('<br clear="all">')
+
+def depart_linebreak_html(self, node):
+    self.body.append('')
+
+def visit_linebreak_latex(self, node):
+    self.body.append("\\hfill\\break")
+
+def depart_linebreak_latex(self, node):
+    self.body.append("")
+
+
+
+
 
 def setup(app):
     app.add_role('demeter', demeter_role)
@@ -131,5 +220,15 @@ def setup(app):
     app.add_node(quoted,
             html = (visit_quoted_html, depart_quoted_html),
             latex = (visit_quoted_latex, depart_quoted_latex)
+            )
+    app.add_role('mark', mark_role)
+    app.add_node(mark,
+            html = (visit_mark_html, depart_mark_html),
+            latex = (visit_mark_latex, depart_mark_latex)
+            )
+    app.add_role('linebreak', linebreak_role)
+    app.add_node(linebreak,
+            html = (visit_linebreak_html, depart_linebreak_html),
+            latex = (visit_linebreak_latex, depart_linebreak_latex)
             )
 

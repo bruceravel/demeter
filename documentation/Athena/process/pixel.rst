@@ -1,13 +1,14 @@
 
-|Advanced topic| Dispersive XAS
+Dispersive XAS
 =================================
 
-Calibrating data measured on a pixel detector
----------------------------------------------
+:mark:`bend,..` Calibrating data measured on a pixel detector
 
-.. figure:: ../../images/comingsoon.jpg
-   :width: 45%
-   :align: center
+.. endpar::
 
+:mark:`soon,..`
 
+:linebreak:`.`
+
+   
 Dispersive XAS correction is on ATHENA's to do list.

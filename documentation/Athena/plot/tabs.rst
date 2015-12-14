@@ -21,8 +21,8 @@ and post-edge lines to verify that data normalization is done correctly.
 
 .. _fig-etab:
 
-.. figure:: ../../images/plot_etab.png
-   :target: ../../images/plot_etab.png
+.. figure:: ../../_images/plot_etab.png
+   :target: ../../_images/plot_etab.png
    :width: 65%
    :align: center
 
@@ -47,8 +47,8 @@ of :procparam:`e0`.
 
 .. _fig-ktab:
 
-.. figure:: ../../images/plot_ktab.png
-   :target: ../../images/plot_ktab.png
+.. figure:: ../../_images/plot_ktab.png
+   :target: ../../_images/plot_ktab.png
    :width: 30%
    :align: center
 
@@ -71,8 +71,8 @@ Plotting in R-space
 
 .. _fig-rtab:
 
-.. figure:: ../../images/plot_rtab.png
-   :target: ../../images/plot_rtab.png
+.. figure:: ../../_images/plot_rtab.png
+   :target: ../../_images/plot_rtab.png
    :width: 30%
    :align: center
 
@@ -113,8 +113,8 @@ function and to avoid confusion with unfiltered k-space. The units of
 
 .. _fig-qtab:
 
-.. figure:: ../../images/plot_qtab.png
-   :target: ../../images/plot_qtab.png
+.. figure:: ../../_images/plot_qtab.png
+   :target: ../../_images/plot_qtab.png
    :width: 30%
    :align: center
 

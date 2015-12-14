@@ -31,8 +31,8 @@ used as a multiplicative factor. An example is shown below.
 
 .. _fig-zerocross:
 
-.. figure:: ../images/bkg_normzerocross.png
-   :target: ../images/bkg_normzerocross.png
+.. figure:: ../_images/bkg_normzerocross.png
+   :target: ../_images/bkg_normzerocross.png
    :width: 45%
    :align: center
 
@@ -76,8 +76,8 @@ are highlighted in this screenshot.
 
 .. _fig-normparams:
 
-.. figure:: ../images/bkg_normparams.png
-   :target: ../images/bkg_normparams.png
+.. figure:: ../_images/bkg_normparams.png
+   :target: ../_images/bkg_normparams.png
    :width: 65%
    :align: center
 
@@ -104,14 +104,14 @@ through the middle of the data in their respective ranges.
 
 .. _fig-prepost:
 
-.. figure::  ../../images/bkg_prepost.png
-    :target: ../../images/bkg_prepost.png
+.. figure::  ../../_images/bkg_prepost.png
+    :target: ../../_images/bkg_prepost.png
     :width: 100%
 
 .. _fig-norm:
 
-.. figure::  ../../images/bkg_norm.png
-    :target: ../../images/bkg_norm.png
+.. figure::  ../../_images/bkg_norm.png
+    :target: ../../_images/bkg_norm.png
     :width: 100%
 
 
@@ -162,8 +162,8 @@ data that has the flattening turned off.
 
 .. _fig-flattened:
 
-.. figure:: ../../images/bkg_normvflat.png
-   :target: ../../images/bkg_normvflat.png
+.. figure:: ../../_images/bkg_normvflat.png
+   :target: ../../_images/bkg_normvflat.png
    :width: 45%
    :align: center
 
@@ -205,14 +205,14 @@ the flattened data are highly distorted.
 
 .. _fig-postbad:
 
-.. figure::  ../../images/bkg_postbad.png
-    :target: ../../images/bkg_postbad.png
+.. figure::  ../../_images/bkg_postbad.png
+    :target: ../../_images/bkg_postbad.png
     :width: 100%
 
 .. _fig-normbad:
 
-.. figure::  ../../images/bkg_normbad.png
-    :target: ../../images/bkg_normbad.png
+.. figure::  ../../_images/bkg_normbad.png
+    :target: ../../_images/bkg_normbad.png
     :width: 100%
 
 .. subfigend::
@@ -236,20 +236,20 @@ in how the |chi| (k) data are normalized.
 
 .. _fig-subtlepost1:
 
-.. figure::  ../../images/bkg_subtlepost.png
-    :target: ../../images/bkg_subtlepost.png
+.. figure::  ../../_images/bkg_subtlepost.png
+    :target: ../_images/bkg_subtlepost.png
     :width: 100%
 
 .. _fig-subtlepost2:
 
-.. figure::  ../../images/bkg_subtlepost2.png
-    :target: ../../images/bkg_subtlepost2.png
+.. figure::  ../../_images/bkg_subtlepost2.png
+    :target: ../_images/bkg_subtlepost2.png
     :width: 100%
 
 .. _fig-subtlepost3:
 
-.. figure::  ../../images/bkg_subtlepost_compare.png
-    :target: ../../images/bkg_subtlepost_compare.png
+.. figure::  ../../_images/bkg_subtlepost_compare.png
+    :target: ../_images/bkg_subtlepost_compare.png
     :width: 100%
 
 
@@ -286,8 +286,8 @@ energy.
 
 .. _fig-uy:
 
-.. figure:: ../images/bkg_uy.png
-   :target: ../images/bkg_uy.png
+.. figure:: ../_images/bkg_uy.png
+   :target: ../_images/bkg_uy.png
    :width: 45%
    :align: center
 

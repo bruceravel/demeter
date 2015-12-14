@@ -79,8 +79,8 @@ status bar giving the emission energy expressed in wavelength units.
 
 .. _fig-hephabsorption:
 
-.. figure:: ../images/Hephaestus_absorption.png
-   :target: ../images/Hephaestus_absorption.png
+.. figure:: ../_images/Hephaestus_absorption.png
+   :target: ../_images/Hephaestus_absorption.png
    :width: 65%
    :align: center
 
@@ -120,8 +120,8 @@ The rules for the selection of the filter elements are:
 
 .. _fig-hephfilterplot:
    
-.. figure:: ../images/Hephaestus_filterplot.png
-   :target: ../images/Hephaestus_filterplot.png
+.. figure:: ../_images/Hephaestus_filterplot.png
+   :target: ../_images/Hephaestus_filterplot.png
    :width: 45%
    :align: center
 
@@ -140,8 +140,8 @@ cannot be measured by that edge at the beamline.
 
 .. _fig-hephbeamline:
 
-.. figure:: ../images/Hephaestus_beamline.png
-   :target: ../images/Hephaestus_beamline.png
+.. figure:: ../_images/Hephaestus_beamline.png
+   :target: ../_images/Hephaestus_beamline.png
    :width: 65%
    :align: center
 
@@ -204,8 +204,8 @@ Finally, an energy in eV is required at which to make the calculation.
 
 .. _fig-hephformulas:
 
-.. figure:: ../images/Hephaestus_formulas.png
-   :target: ../images/Hephaestus_formulas.png
+.. figure:: ../_images/Hephaestus_formulas.png
+   :target: ../_images/Hephaestus_formulas.png
    :width: 65%
    :align: center
 
@@ -310,7 +310,7 @@ lengths of ferrite. The ferrite in BN will, therefore, attenuate the
 beam passing through the sample to the level of exp(-3.1), or about
 4.5%.
 
-In an early XAS paper -- :cite:`Stern-Kim` -- it was shown that the
+In an early XAS paper by Stern and Kim, it was shown that the
 edge step of a sample should not exceed 1.5. Using a simple
 statistical argument that presumes that measurement uncertainty is
 dominated by shot noise, the authors show that a sample is optimized
@@ -323,6 +323,11 @@ particularly those for which a minority dopant is the target of the
 XAS experiment -- work out so well. In practice, sample preparation is
 an exercise in compromise between total absorption and size of edge
 step.
+
+    .. bibliography:: athena.bib
+       :filter: author % "Stern"
+       :list: bullet
+
 
 Two final notes:
 
@@ -396,8 +401,8 @@ charge ``e`` is about 1.6E-19 Coulombs.
 
 .. _fig-hephion:
 
-.. figure:: ../images/Hephaestus_ionchambers.png
-   :target: ../images/Hephaestus_ionchambers.png
+.. figure:: ../_images/Hephaestus_ionchambers.png
+   :target: ../_images/Hephaestus_ionchambers.png
    :width: 65%
    :align: center
 
@@ -419,8 +424,8 @@ scattering lengths and cross sections for the major isotopes.
 
 .. _fig-hephdata:
 
-.. figure:: ../images/Hephaestus_data.png
-   :target: ../images/Hephaestus_data.png
+.. figure:: ../_images/Hephaestus_data.png
+   :target: ../_images/Hephaestus_data.png
    :width: 65%
    :align: center
 
@@ -461,8 +466,8 @@ Center for X-Ray Optics X-Ray Data Booklet.
 
 .. _fig-hephtransitions:
 
-.. figure:: ../images/Hephaestus_transitions.png
-   :target: ../images/Hephaestus_transitions.png
+.. figure:: ../_images/Hephaestus_transitions.png
+   :target: ../_images/Hephaestus_transitions.png
    :width: 65%
    :align: center
 
@@ -489,8 +494,8 @@ incident beam and the excitation of a much higher energy edge.
 
 .. _fig-hephedgefinder:
 
-.. figure:: ../images/Hephaestus_edgefinder.png
-   :target: ../images/Hephaestus_edgefinder.png
+.. figure:: ../_images/Hephaestus_edgefinder.png
+   :target: ../_images/Hephaestus_edgefinder.png
    :width: 65%
    :align: center
 
@@ -515,8 +520,8 @@ mysterious line in your fluorescence data!
 
 .. _fig-hephlinefinder:
 
-.. figure:: ../images/Hephaestus_linefinder.png
-   :target: ../images/Hephaestus_linefinder.png
+.. figure:: ../_images/Hephaestus_linefinder.png
+   :target: ../_images/Hephaestus_linefinder.png
    :width: 65%
    :align: center
 
@@ -551,8 +556,8 @@ http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
 .. _fig-hephstandards:
 
-.. figure:: ../images/Hephaestus_standards.png
-   :target: ../images/Hephaestus_standards.png
+.. figure:: ../_images/Hephaestus_standards.png
+   :target: ../_images/Hephaestus_standards.png
    :width: 65%
    :align: center
 
@@ -560,8 +565,8 @@ http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
 .. _fig-hephstandardsplot:
 
-.. figure:: ../images/Hephaestus_standards_plot.png
-   :target: ../images/Hephaestus_standards_plot.png
+.. figure:: ../_images/Hephaestus_standards_plot.png
+   :target: ../_images/Hephaestus_standards_plot.png
    :width: 45%
    :align: center
 
@@ -586,8 +591,8 @@ The f' and f" data can be saved to a file.
 
 .. _fig-hephf1f2:
 
-.. figure:: ../images/Hephaestus_f1f2.png
-   :target: ../images/Hephaestus_f1f2.png
+.. figure:: ../_images/Hephaestus_f1f2.png
+   :target: ../_images/Hephaestus_f1f2.png
    :width: 65%
    :align: center
 
@@ -595,8 +600,8 @@ The f' and f" data can be saved to a file.
 	   
 .. _fig-hephf1f2plot:
 
-.. figure:: ../images/Hephaestus_f1f2_plot.png
-   :target: ../images/Hephaestus_f1f2_plot.png
+.. figure:: ../_images/Hephaestus_f1f2_plot.png
+   :target: ../_images/Hephaestus_f1f2_plot.png
    :width: 45%
    :align: center
 

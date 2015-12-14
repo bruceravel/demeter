@@ -9,24 +9,24 @@ This behavior is due to the energy dependence of the signal on the
 gas-filled I |sub0| chamber.
 
 As the energy of the incident beam increases, the absorption of the
-gasses in I₀ significantly decreases. Since the fluorescence signal if
-I\ :sub:`f`/I |sub0|, the |mu| (E) grows with energy. Since the edge-step
-normalization of the data is made by dividing out a constant edge-step
-value, the energy-dependence of I₀ results in a |chi| (k) signal that is
-somewhat amplified.
+gasses in I\ :sub:`0` significantly decreases. Since the fluorescence
+signal if I\ :sub:`f`/I |sub0|, the |mu| (E) grows with energy. Since
+the edge-step normalization of the data is made by dividing out a
+constant edge-step value, the energy-dependence of I\ :sub:`0` results
+in a |chi| (k) signal that is somewhat amplified.
 
 .. subfigstart::
 
 .. _fig-blg_s_mu:
 
-.. figure::  ../../images/bkg_s_mu.png
-    :target: ../../images/bkg_s_mu.png
+.. figure::  ../../_images/bkg_s_mu.png
+    :target: ../../_images/bkg_s_mu.png
     :width: 100%
 
 .. _fig-s_chi:
 
-.. figure::  ../../images/bkg_s_chi.png
-    :target: ../../images/bkg_s_chi.png
+.. figure::  ../../_images/bkg_s_chi.png
+    :target: ../../_images/bkg_s_chi.png
     :width: 100%
 
 
@@ -65,8 +65,8 @@ in the following screenshot.
 
 .. _fig-bkg_ednorm:
 
-.. figure:: ../images/bkg_ednorm.png
-   :target: ../images/bkg_ednorm.png
+.. figure:: ../_images/bkg_ednorm.png
+   :target: ../_images/bkg_ednorm.png
    :width: 45%
    :align: center
 

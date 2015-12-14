@@ -14,8 +14,8 @@ than one data file by clicking on file names while holding down the
 
 .. _fig-multiple:
 
-.. figure:: ../../images/import_multiple.png
-   :target: ../../images/import_multiple.png
+.. figure:: ../../_images/import_multiple.png
+   :target: ../../_images/import_multiple.png
    :width: 45%
    :align: center
 
@@ -45,8 +45,8 @@ here
 
 .. _fig-multipleimported:
 
-.. figure:: ../../images/import_multipleimported.png
-   :target: ../../images/import_multipleimported.png
+.. figure:: ../../_images/import_multipleimported.png
+   :target: ../../_images/import_multipleimported.png
    :width: 65%
    :align: center
 

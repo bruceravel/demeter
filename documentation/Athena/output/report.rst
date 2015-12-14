@@ -12,8 +12,8 @@ parameters from the main window.
 
 .. _fig-expoertreport:
 
-.. figure:: ../../images/export_report.png
-   :target: ../../images/export_report.png
+.. figure:: ../../_images/export_report.png
+   :target: ../../_images/export_report.png
    :width: 65%
    :align: center
 
@@ -25,8 +25,8 @@ the marked groups.
 
 .. _fig-exportexcel:
 
-.. figure:: ../../images/export_excelreport.png
-   :target: ../../images/export_excelreport.png
+.. figure:: ../../_images/export_excelreport.png
+   :target: ../../_images/export_excelreport.png
    :width: 100%
    :align: center
 

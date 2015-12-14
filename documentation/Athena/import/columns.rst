@@ -13,8 +13,8 @@ selection dialog opens. On my Linux computer, it looks like this:
 
 .. _fig-import_filedialog:
 
-.. figure:: ../images/import_filedialog.png
-   :target: ../images/import_filedialog.png
+.. figure:: ../_images/import_filedialog.png
+   :target: ../_images/import_filedialog.png
    :width: 75%
    :align: center
 
@@ -46,8 +46,8 @@ sections.
 
 .. _fig-import_colsel:
 
-.. figure:: ../images/import_colsel.png
-   :target: ../images/import_colsel.png
+.. figure:: ../_images/import_colsel.png
+   :target: ../_images/import_colsel.png
    :width: 75%
    :align: center
 
@@ -98,8 +98,8 @@ The other choices are:
 
 .. _fig-import_types:
 
-.. figure:: ../../images/import_types.png
-   :target: ../../images/import_types.png
+.. figure:: ../../_images/import_types.png
+   :target: ../../_images/import_types.png
    :width: 75%
    :align: center
 
@@ -107,8 +107,8 @@ The other choices are:
 
 .. _fig-import_changetype:
 
-.. figure:: ../../images/import_changetype.png
-   :target: ../../images/import_changetype.png
+.. figure:: ../../_images/import_changetype.png
+   :target: ../../_images/import_changetype.png
    :width: 40%
    :align: center
 
@@ -146,8 +146,8 @@ selection dialog.
 
 .. _fig-import_med:
 
-.. figure:: ../images/import_med.png
-   :target: ../images/import_med.png
+.. figure:: ../_images/import_med.png
+   :target: ../_images/import_med.png
    :width: 75%
    :align: center
 
@@ -161,8 +161,8 @@ each channel as a group`, as shown here.
 
 .. _fig-import_medch:
 
-.. figure:: ../images/import_medch.png
-   :target: ../images/import_medch.png
+.. figure:: ../_images/import_medch.png
+   :target: ../_images/import_medch.png
    :width: 75%
    :align: center
 
@@ -176,8 +176,8 @@ that are not of usable quality.
 
 .. _fig-import_medchimported:
 
-.. figure:: ../images/import_medchimported.png
-   :target: ../images/import_medchimported.png
+.. figure:: ../_images/import_medchimported.png
+   :target: ../_images/import_medchimported.png
    :width: 75%
    :align: center
 

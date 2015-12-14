@@ -36,14 +36,14 @@ strength of the clamp in the evaluation of |chi| |sup2|.
 
 .. _fig-clamp_mu:
 
-.. figure::  ../../images/clamp_mu.png
-    :target: ../../images/clamp_mu.png
+.. figure::  ../../_images/clamp_mu.png
+    :target: ../../_images/clamp_mu.png
     :width: 100%
 
 .. _fig-clamp_chi:
 
-.. figure::  ../../images/clamp_chi.png
-    :target: ../../images/clamp_chi.png
+.. figure::  ../../_images/clamp_chi.png
+    :target: ../../_images/clamp_chi.png
     :width: 100%
 
 
@@ -102,8 +102,8 @@ sometimes oscillate wildly, as shown in the example below.
 
 .. _fig-bkg_badkw:
 
-.. figure:: ../images/bkg_badkw.png
-   :target: ../images/bkg_badkw.png
+.. figure:: ../_images/bkg_badkw.png
+   :target: ../_images/bkg_badkw.png
    :width: 45%
    :align: center
 
@@ -123,8 +123,8 @@ sometimes help.
 
 .. _fig-bkg_badkw_clamp0:
 
-.. figure:: ../images/bkg_badkw_clamp0.png
-   :target: ../images/bkg_badkw_clamp0.png
+.. figure:: ../_images/bkg_badkw_clamp0.png
+   :target: ../_images/bkg_badkw_clamp0.png
    :width: 45%
    :align: center
 

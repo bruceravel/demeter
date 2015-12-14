@@ -80,14 +80,17 @@ presentation media.
    :demeter:`athena` are indicated like this if they have not
    yet been properly documented.
 
-|Essential topic| This symbol indicates a section describing one of
+:mark:`lightning,.` This symbol indicates a section describing one of
 :demeter:`athena`'s features that I consider especially
 powerful and central to the effective use of the program.
 
-|Advanced topic| This symbol indicates a section with difficult
+.. endpar::
+
+:mark:`bend,.` This symbol indicates a section with difficult
 information that newcomers to :demeter:`athena` might pass
 over on their first reading of this document.
 
+.. endpar::
 
 The html version of this document makes use of HTML 4.1 character
 entities (mostly Greek symbols) and will not display correctly in very

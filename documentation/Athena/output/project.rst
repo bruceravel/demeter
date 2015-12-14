@@ -35,8 +35,8 @@ highlighted in this figure.
 
 .. _fig-exportproject:
 
-.. figure:: ../../images/export_project.png
-   :target: ../../images/export_project.png
+.. figure:: ../../_images/export_project.png
+   :target: ../../_images/export_project.png
    :width: 65%
    :align: center
 

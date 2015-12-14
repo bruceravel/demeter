@@ -1,14 +1,16 @@
 
-|Essential topic| Constraining parameters between data groups
-===============================================================
 
-In :demeter:`athena`, a *constraint* is the setting of a parameter to
-be the same for two or more data groups. (That word is used in a
-different context in :demeter:`artemis`.) :demeter:`athena` gives you
-a high level of control over the values of the parameters used to
-process your data. This control is very fine-grained in the sense that
-every group can have its own values for any parameters, thus allowing
-you to customize the data processing for each individual data group.
+Constraining parameters between data groups
+===========================================
+
+:mark:`lightning,..` In :demeter:`athena`, a *constraint* is the
+setting of a parameter to be the same for two or more data
+groups. (That word is used in a different context in
+:demeter:`artemis`.) :demeter:`athena` gives you a high level of
+control over the values of the parameters used to process your
+data. This control is very fine-grained in the sense that every group
+can have its own values for any parameters, thus allowing you to
+customize the data processing for each individual data group.
 
 Often, however, your data groups are sufficiently similar that it is
 expedient to use identical values for some or all parameters. Were you
@@ -27,8 +29,8 @@ a context menu, as shown in this figure.
 
 .. _fig-paramparam:
 
-.. figure:: ../../images/param_param.png
-   :target: ../../images/param_param.png
+.. figure:: ../../_images/param_param.png
+   :target: ../../_images/param_param.png
    :width: 65%
    :align: center
 
@@ -89,8 +91,8 @@ picture below.
 
 .. _fig-paramgroup:
 
-.. figure:: ../../images/param_group.png
-   :target: ../../images/param_group.png
+.. figure:: ../../_images/param_group.png
+   :target: ../../_images/param_group.png
    :width: 65%
    :align: center
 
@@ -118,8 +120,8 @@ this picture.
 
 .. _fig-paramall:
 
-.. figure:: ../../images/param_all.png
-   :target: ../../images/param_all.png
+.. figure:: ../../_images/param_all.png
+   :target: ../../_images/param_all.png
    :width: 65%
    :align: center
 

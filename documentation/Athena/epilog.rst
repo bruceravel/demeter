@@ -18,12 +18,6 @@ If :demeter:`demeter` and this document are useful to you, please
 consider `supporting The Creative Commons
 <http://creativecommons.org/support/>`__.
 
-.. |CreativeCommons| image:: ../images/somerights20.png
+.. |CreativeCommons| image:: ../_images/somerights20.png
    :target: http://creativecommons.org/licenses/by-sa/3.0/
-
-.. |To do!| image:: ../images/todo.png
-.. |[Athena logo]| image:: ../images/pallas_athene_thumb.jpg
-   :target: ./pallas.html
-.. |Essential topic| image:: ../images/LightningBolt.png
-.. |Advanced topic| image:: ../images/bend.png
 

@@ -27,8 +27,8 @@ each data set is weighted the same in the merge.
 
 .. _fig-mergemenu:
 
-.. figure:: ../../images/mergemenu.png
-   :target: ../../images/mergemenu.png
+.. figure:: ../../_images/mergemenu.png
+   :target: ../../_images/mergemenu.png
    :width: 65%
    :align: center
 
@@ -46,8 +46,8 @@ merge and all the data that entered the merge.
 
 .. _fig-merge_stddev:
 
-.. figure:: ../../images/merge_stddev.png
-   :target: ../../images/merge_stddev.png
+.. figure:: ../../_images/merge_stddev.png
+   :target: ../../_images/merge_stddev.png
    :width: 45%
    :align: center
 

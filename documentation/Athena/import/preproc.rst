@@ -36,8 +36,8 @@ measured in quick scan mode:
 
 .. _fig-rebin:
 
-.. figure:: ../../images/import_rebin.png
-   :target: ../../images/import_rebin.png
+.. figure:: ../../_images/import_rebin.png
+   :target: ../../_images/import_rebin.png
    :width: 65%
    :align: center
 
@@ -62,20 +62,20 @@ one without intervention according to the normal rules of multiple
 data set import.
 
 
-|Essential topic| Other pre-processing chores
------------------------------------------------
+Other pre-processing chores
+---------------------------
 
-This tab provides controls for a number of other things that can be
-done with your data as it is imported. The first one -- marking -- can
-be performed even on the first data set imported. The other two
-require that a standard be specified. The menu at the top of the tab
-contains every item from the group list. The one specified in that
-menu is the standard.
+:mark:`lightning,..` This tab provides controls for a number of other
+things that can be done with your data as it is imported. The first
+one -- marking -- can be performed even on the first data set
+imported. The other two require that a standard be specified. The menu
+at the top of the tab contains every item from the group list. The one
+specified in that menu is the standard.
 
 .. _fig-preproc:
 
-.. figure:: ../../images/import_preproc.png
-   :target: ../../images/import_preproc.png
+.. figure:: ../../_images/import_preproc.png
+   :target: ../../_images/import_preproc.png
    :width: 65%
    :align: center
 
@@ -105,3 +105,4 @@ be performed automatically. I typically import one data file and
 carefully calibrate it and set its various parameters. Having done
 that, the remaining data gets well processed simply by reading it
 in. This kind of time saver is of particular value at the beam line.
+

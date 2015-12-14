@@ -30,8 +30,8 @@ fit neatly into semantic groupings.
 
 .. _fig-metadata:
 
-.. figure:: ../../images/metadata.png
-   :target: ../../images/metadata.png
+.. figure:: ../../_images/metadata.png
+   :target: ../../_images/metadata.png
    :width: 65%
    :align: center
 

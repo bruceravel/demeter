@@ -22,8 +22,8 @@ I then select the PCA tool from the main menu.
 
 .. _fig-pca:
 
-.. figure:: ../images/pca.png
-   :target: ../images/pca.png
+.. figure:: ../_images/pca.png
+   :target: ../_images/pca.png
    :width: 65%
    :align: center
 
@@ -64,15 +64,15 @@ reconstruction of an intermeidate time point using the top 3 components.
 
 .. _fig-pca-components:
    
-.. figure:: ../images/pca_components.png
-   :target: ../images/pca_components.png
+.. figure:: ../_images/pca_components.png
+   :target: ../_images/pca_components.png
    :width: 100%
    :align: left
 	   
 .. _fig-pca-recon:
    
-.. figure:: ../images/pca_recon.png
-   :target: ../images/pca_recon.png
+.. figure:: ../_images/pca_recon.png
+   :target: ../_images/pca_recon.png
    :width: 100%
    :align: right
 
@@ -89,8 +89,8 @@ displays the coefficients of the transform in the smaller text box.
 
 .. _fig-pca-tt:
 
-.. figure:: ../images/pca_tt.png
-   :target: ../images/pca_tt.png
+.. figure:: ../_images/pca_tt.png
+   :target: ../_images/pca_tt.png
    :width: 65%
    :align: center
 
@@ -101,15 +101,15 @@ displays the coefficients of the transform in the smaller text box.
 
 .. _fig-pca-tt-good:
 
-.. figure:: ../images/pca_tt_good.png
-   :target: ../images/pca_tt_good.png
+.. figure:: ../_images/pca_tt_good.png
+   :target: ../_images/pca_tt_good.png
    :width: 45%
    :align: center
 
 .. _fig-pca-tt-bad:
 
-.. figure:: ../images/pca_tt_bad.png
-   :target: ../images/pca_tt_bad.png
+.. figure:: ../_images/pca_tt_bad.png
+   :target: ../_images/pca_tt_bad.png
    :width: 45%
    :align: center
 

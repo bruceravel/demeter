@@ -24,8 +24,8 @@ deglitching. Yes, I also think that's a funny sounding word.
 
 .. _fig-deglitch:
 
-.. figure:: ../../images/deglitch.png
-   :target: ../../images/deglitch.png
+.. figure:: ../../_images/deglitch.png
+   :target: ../../_images/deglitch.png
    :width: 65%
    :align: center
 
@@ -58,20 +58,20 @@ data, shown in the bottom panel.
 
 .. _fig-degplot:
 
-.. figure::  ../../images/deglitch_plot.png
-    :target: ../../images/deglitch_plot.png
+.. figure::  ../../_images/deglitch_plot.png
+    :target: ../../_images/deglitch_plot.png
     :width: 100%
 
 .. _fig-degpoint:
 
-.. figure::  ../../images/deglitch_point.png
-    :target: ../../images/deglitch_point.png
+.. figure::  ../../_images/deglitch_point.png
+    :target: ../../_images/deglitch_point.png
     :width: 100%
 
 .. _fig-degpointremoved:
 
-.. figure::  ../../images/deglitch_pointremoved.png
-    :target: ../../images/deglitch_pointremoved.png
+.. figure::  ../../_images/deglitch_pointremoved.png
+    :target: ../../_images/deglitch_pointremoved.png
     :width: 100%
 
 
@@ -119,20 +119,20 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
 
 .. _fig-degchiemu:
 
-.. figure::  ../../images/deglitch_chie_mu.png
-    :target: ../../images/deglitch_chie_mu.png
+.. figure::  ../../_images/deglitch_chie_mu.png
+    :target: ../../_images/deglitch_chie_mu.png
     :width: 100%
 
 .. _fig-degchiek:
 
-.. figure::  ../../images/deglitch_chie_k.png
-    :target: ../../images/deglitch_chie_k.png
+.. figure::  ../../_images/deglitch_chie_k.png
+    :target: ../../_images/deglitch_chie_k.png
     :width: 100%
 
 .. _fig-degchie:
 
-.. figure::  ../../images/deglitch_chie.png
-    :target: ../../images/deglitch_chie.png
+.. figure::  ../../_images/deglitch_chie.png
+    :target: ../../_images/deglitch_chie.png
     :width: 100%
 
 
@@ -172,8 +172,8 @@ chosen by typing in the box or by using `the pluck button
 
 .. _fig-trunplot:
 
-.. figure:: ../../images/truncate_plot.png
-   :target: ../../images/truncate_plot.png
+.. figure:: ../../_images/truncate_plot.png
+   :target: ../../_images/truncate_plot.png
    :width: 45%
    :align: center
 
@@ -192,8 +192,8 @@ normalization range will lead to a data processing disaster.
 
 .. _fig-trunbto:
 
-.. figure:: ../../images/truncate_batio3.png
-   :target: ../../images/truncate_batio3.png
+.. figure:: ../../_images/truncate_batio3.png
+   :target: ../../_images/truncate_batio3.png
    :width: 45%
    :align: center
 

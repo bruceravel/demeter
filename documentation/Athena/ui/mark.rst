@@ -21,8 +21,8 @@ list also serve to make all, mark none, and invert the marks.
 
 .. _fig-mark:
 
-.. figure:: ../images/ui_mark.png
-   :target: ../images/ui_mark.png
+.. figure:: ../_images/ui_mark.png
+   :target: ../_images/ui_mark.png
    :width: 65%
    :align: center
 
@@ -31,12 +31,12 @@ list also serve to make all, mark none, and invert the marks.
    using the mark buttons at the top of the group list.
 
 
-|Essential topic| Using regular expressions to mark groups
-------------------------------------------------------------
+Using regular expressions to mark groups
+----------------------------------------
 
-There is one more tool which is considerably more powerful and flexible.
-In the Mark menu, this last marking tool it is called *Mark regex* and
-it is bound to Shift-r.
+:mark:`lightning,..` There is one more tool which is considerably more
+powerful and flexible.  In the Mark menu, this last marking tool it is
+called *Mark regex* and it is bound to Shift-r.
 
 So, what does *regex* mean?
 
@@ -53,8 +53,8 @@ various vanadium standards, the Data groups list includes
 
 .. _fig-vstan:
 
-.. figure:: ../images/ui_vstan.png
-   :target: ../images/ui_vstan.png
+.. figure:: ../_images/ui_vstan.png
+   :target: ../_images/ui_vstan.png
    :width: 65%
    :align: center
 

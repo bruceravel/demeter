@@ -6,8 +6,8 @@ Blah blah
 
 .. _fig-other:
 
-.. figure:: ../../images/other.png
-   :target: ../../images/other.png
+.. figure:: ../../_images/other.png
+   :target: ../../_images/other.png
    :width: 65%
    :align: center
 

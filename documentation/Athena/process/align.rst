@@ -19,8 +19,8 @@ tool, shown below, to make this somewhat easier.
 
 .. _fig-align:
 
-.. figure:: ../../images/align.png
-   :target: ../../images/align.png
+.. figure:: ../../_images/align.png
+   :target: ../../_images/align.png
    :width: 65%
    :align: center
 
@@ -35,8 +35,8 @@ that plotting option is selected.
 
 .. _fig-alignplot:
 
-.. figure:: ../../images/align_plot.png
-   :target: ../../images/align_plot.png
+.. figure:: ../../_images/align_plot.png
+   :target: ../../_images/align_plot.png
    :width: 45%
    :align: center
 

@@ -23,14 +23,14 @@ range are ignored.
 
 .. _fig-indictab:
 
-.. figure::  ../../images/plot_indic.png
-    :target: ../../images/plot_indic.png
+.. figure::  ../../_images/plot_indic.png
+    :target: ../../_images/plot_indic.png
     :width: 50%
 
 .. _fig-indicplot:
 
-.. figure::  ../../images/plot_indicplot.png
-    :target: ../../images/plot_indicplot.png
+.. figure::  ../../_images/plot_indicplot.png
+    :target: ../../_images/plot_indicplot.png
     :width: 100%
 
 

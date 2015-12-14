@@ -1,11 +1,11 @@
 
-|Advanced topic| File type plugins
-====================================
+File type plugins
+=================
 
 Extending Athena to read new file types
 ---------------------------------------
 
-:demeter:`athena` uses :demeter:`ifeffit`'s `read\_data()
+:mark:`bend,..` :demeter:`athena` uses :demeter:`ifeffit`'s `read\_data()
 <http://cars9.uchicago.edu/~ifeffit/refman/node99.html>`__ function or
 :demeter:`larch`'s `read\_ascii()
 <http://xraypy.github.io/xraylarch/data/index.html>`__ function to
@@ -296,20 +296,20 @@ Athena's plugin registry
 ------------------------
 
 Because there might be a large number of file type plugins, it is
-possible for the user to turn the checks for the file types on and off.
-In the Settings menu, you will find the Plugin Registry. This is a
-simple list of all plugins found in the system and user directories. The
-check buttons enable and disable the plugins. The value of the ````
-variable is displayed in the list (so be sure to choose a suitable and
-suitably short value for that variable).
+possible for the user to turn the checks for the file types on and
+off.  In the Settings menu, you will find the Plugin Registry. This is
+a simple list of all plugins found in the system and user
+directories. The check buttons enable and disable the plugins. The
+value of the ``description`` attribute is displayed in the list (so be
+sure to choose a suitable and suitably short value for that variable).
 
 .. _fig-plugin:
 
-.. figure:: ../../images/import_plugin.png
-   :target: ../../images/import_plugin.png
+.. figure:: ../../_images/import_plugin.png
+   :target: ../../_images/import_plugin.png
    :width: 65%
    :align: center
-   
+
    The plugin registry.
 
 Note that the order in which the plugins are displayed above is the same

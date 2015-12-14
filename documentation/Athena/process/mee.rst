@@ -1,18 +1,15 @@
 
-|Advanced topic| Multi-electron excitation removal
-====================================================
+Multi-electron excitation removal
+=================================
 
-Handling multi-electron excitations
------------------------------------
-
-XAS is normally thought of in terms of a single electron phenomenon. A
-photon goes in and a photoelectron goes out. In fact multi-body
-phenomena are possible and, on occasion, must be considered in the
-interpretation of XAS data. One such is the so-called
-:quoted:`shake-off` effect in which the photoelectron has sufficient
-kinetic energy to excite a high-lying electron. For example, at around
-415 eV above the uranium L\ :sub:`III` edge, the photoelectron can
-excite an N\ :sub:`6` or N\ :sub:`7` transition.
+:mark:`bend,..` XAS is normally thought of in terms of a single
+electron phenomenon. A photon goes in and a photoelectron goes out. In
+fact multi-body phenomena are possible and, on occasion, must be
+considered in the interpretation of XAS data. One such is the
+so-called :quoted:`shake-off` effect in which the photoelectron has
+sufficient kinetic energy to excite a high-lying electron. For
+example, at around 415 eV above the uranium L\ :sub:`III` edge, the
+photoelectron can excite an N\ :sub:`6` or N\ :sub:`7` transition.
 
 The cross-section of this secondary edge can be quite small. In the
 example of the L\ :sub:`III`\ N\ :sub:`6,7` transition, the secondary
@@ -43,8 +40,8 @@ That said, let's carry on.
 
 .. _fig-mee:
 
-.. figure:: ../../images/mee.png
-   :target: ../../images/mee.png
+.. figure:: ../../_images/mee.png
+   :target: ../../_images/mee.png
    :width: 65%
    :align: center
 
@@ -61,14 +58,14 @@ excitation at about 120 volts above the edge.
 
 .. _fig-mee_e:
 
-.. figure::  ../../images/mee_e.png
-    :target: ../../images/mee_e.png
+.. figure::  ../../_images/mee_e.png
+    :target: ../../_images/mee_e.png
     :width: 100%
 
 .. _fig-mee_k:
 
-.. figure::  ../../images/mee_k.png
-    :target: ../../images/mee_k.png
+.. figure::  ../../_images/mee_k.png
+    :target: ../../_images/mee_k.png
     :width: 100%
 
 

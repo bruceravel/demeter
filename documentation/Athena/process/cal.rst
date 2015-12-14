@@ -12,8 +12,8 @@ usually the tabulated edge energy.
 
 .. _fig-calibrate:
 
-.. figure:: ../../images/calibrate.png
-   :target: ../../images/calibrate.png
+.. figure:: ../../_images/calibrate.png
+   :target: ../../_images/calibrate.png
    :width: 65%
    :align: center
 
@@ -35,8 +35,8 @@ the absorber measured for these data, but that too can be edited.
 
 .. _fig-calplot:
 
-.. figure:: ../../images/calibrate_plot.png
-   :target: ../../images/calibrate_plot.png
+.. figure:: ../../_images/calibrate_plot.png
+   :target: ../../_images/calibrate_plot.png
    :width: 45%
    :align: center
 

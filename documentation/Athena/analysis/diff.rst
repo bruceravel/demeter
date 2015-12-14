@@ -12,8 +12,8 @@ desorbed, resulting in measurable changes in the spectra.
 .. _fig-diff-mu:
 
 
-.. figure:: ../../images/diff_mu.png
-   :target: ../../images/diff_mu.png
+.. figure:: ../../_images/diff_mu.png
+   :target: ../../_images/diff_mu.png
    :width: 45%
    :align: center
 
@@ -32,8 +32,8 @@ that you take great care with `selecting parameters
 
 .. _fig-diff:
 
-.. figure:: ../images/diff.png
-   :target: ../images/diff.png
+.. figure:: ../_images/diff.png
+   :target: ../_images/diff.png
    :width: 65%
    :align: center
 
@@ -88,14 +88,14 @@ will be substituted by specific values.
 
 .. _fig-diff-diff:
    
-.. figure:: ../images/diff_diff.png
-   :target: ../images/diff_diff.png
+.. figure:: ../_images/diff_diff.png
+   :target: ../_images/diff_diff.png
    :width: 100%
 
 .. _fig-diff-diffsequence:
    
-.. figure:: ../images/diff_diffsequence.png
-   :target: ../images/diff_diffsequence.png
+.. figure:: ../_images/diff_diffsequence.png
+   :target: ../_images/diff_diffsequence.png
    :width: 100%
 
 .. subfigend::
@@ -115,8 +115,8 @@ below.
 
 .. _fig-diffareas:
 
-.. figure:: ../images/diff_areas.png
-   :target: ../images/diff_areas.png
+.. figure:: ../_images/diff_areas.png
+   :target: ../_images/diff_areas.png
    :width: 45%
    :align: center
 
@@ -136,6 +136,10 @@ Uses of difference spectra
     measurement can be corrected by normalizing measured data by a blank
     scan – that is a measurement through the same energy range using the
     same instrumentation, but measured without the sample in the beam
-    path. This sort of correction, as shown in :cite:`Chantler-Barnea`
+    path. This sort of correction, as shown in by Chantler, Barnea, et al.,
     is equivalent to a difference spectrum measured in plain |mu| (E)
     between the data and balnk scan.
+
+    .. bibliography:: ../athena.bib
+       :filter: author % "Barnea"
+       :list: bullet

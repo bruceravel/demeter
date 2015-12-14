@@ -20,8 +20,8 @@ and data analysis tools use pluck buttons, as does the
 
 .. _fig-pluck:
 
-.. figure:: ../../images/ui_pluck.png
-   :target: ../../images/ui_pluck.png
+.. figure:: ../../_images/ui_pluck.png
+   :target: ../../_images/ui_pluck.png
    :width: 65%
    :align: center
 
@@ -32,14 +32,14 @@ and data analysis tools use pluck buttons, as does the
 
 .. _fig-pluckpoint:
 
-.. figure::  ../../images/ui_pluckpoint.png
-   :target: ../../images/ui_pluckpoint.png
+.. figure::  ../../_images/ui_pluckpoint.png
+   :target: ../../_images/ui_pluckpoint.png
    :width: 100%
 
 .. _fig-plucked:
 
-.. figure::  ../../images/ui_plucked.png
-   :target: ../../images/ui_plucked.png
+.. figure::  ../../_images/ui_plucked.png
+   :target: ../../_images/ui_plucked.png
    :width: 100%
 
 

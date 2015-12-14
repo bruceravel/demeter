@@ -25,8 +25,8 @@ following figure for performing the linear combination fit.
 
 .. _fig-lcf:
 
-.. figure:: ../images/lcf.png
-   :target: ../images/lcf.png
+.. figure:: ../_images/lcf.png
+   :target: ../_images/lcf.png
    :width: 65%
    :align: center
 
@@ -324,8 +324,8 @@ highlighted in pale red).
 
 .. _fig-lcfcombo:
 
-.. figure:: ../images/lcf_combo.png
-   :target: ../images/lcf_combo.png
+.. figure:: ../_images/lcf_combo.png
+   :target: ../_images/lcf_combo.png
    :width: 65%
    :align: center
 
@@ -343,8 +343,8 @@ below.
 
 .. _fig-lcfcombofit:
 
-.. figure:: ../images/lcf_combofit.png
-   :target: ../images/lcf_combofit.png
+.. figure:: ../_images/lcf_combofit.png
+   :target: ../_images/lcf_combofit.png
    :width: 45%
    :align: center
 

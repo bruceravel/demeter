@@ -36,8 +36,8 @@ data and places it in the group list.
 
 .. _fig-smooth:
 
-.. figure:: ../../images/smooth.png
-   :target: ../../images/smooth.png
+.. figure:: ../../_images/smooth.png
+   :target: ../../_images/smooth.png
    :width: 65%
    :align: center
 
@@ -45,8 +45,8 @@ data and places it in the group list.
 
 .. _fig-smoothplot:
 
-.. figure:: ../../images/smooth_plot.png
-   :target: ../../images/smooth_plot.png
+.. figure:: ../../_images/smooth_plot.png
+   :target: ../../_images/smooth_plot.png
    :width: 45%
    :align: center
 

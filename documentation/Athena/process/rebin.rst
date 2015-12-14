@@ -22,8 +22,8 @@ edge region, but much too fine for the EXAFS region.
 
 .. _fig-rebintool:
 
-.. figure:: ../../images/rebin.png
-   :target: ../../images/rebin.png
+.. figure:: ../../_images/rebin.png
+   :target: ../../_images/rebin.png
    :width: 65%
    :align: center
 
@@ -51,8 +51,8 @@ selection dialog.
 
 .. _fig-rebinplot:
 
-.. figure:: ../../images/rebin_plot.png
-   :target: ../../images/rebin_plot.png
+.. figure:: ../../_images/rebin_plot.png
+   :target: ../../_images/rebin_plot.png
    :width: 45%
    :align: center
 
