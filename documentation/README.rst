@@ -24,12 +24,6 @@ the following tools installed on your computer.
 See each packages homepage for installation instructions.  pybtex and
 sphinxcontrib-bibtex can be installed using `pip <https://pypi.python.org/pypi/pip>`_:
 
-I use the `emacs rst-mode
-<http://docutils.sourceforge.net/docs/user/emacs.html>`_ to edit the
-rst files.  rst-mode is OK -- the indentation behavior is pretty
-wonky, though.  In any case, I highly recommend using an rst-sensitive
-text editor.
-
 .. sourcecode:: bash
 
    pip install sphinxcontrib-bibtex
@@ -39,6 +33,12 @@ or, you may need to upgrade all of their prerequisites:
 .. sourcecode:: bash
 
    pip install --upgrade sphinxcontrib-bibtex
+
+I use the `emacs rst-mode
+<http://docutils.sourceforge.net/docs/user/emacs.html>`_ to edit the
+rst files.  rst-mode is OK -- the indentation behavior is pretty
+wonky, though.  In any case, I highly recommend using an rst-sensitive
+text editor.
 
 Customizations
 --------------
@@ -76,6 +76,14 @@ pages, including:
 The other content of ``sphinx/ext/`` was swiped from `Larch's document
 <https://github.com/xraypy/xraylarch/tree/master/doc>`_
 
+The use of figures and subfigures is a big confusing.  The repository
+versions of the images files sit in ``_images/`` underneath this
+top-level documentation directory.  Thus the paths to the images must
+point to that location.  The ``:target:`` of each image (i.e. the file
+that gets linked to each image) must have a path relative to its
+location in ``_build/html/_images``.  As a result, the path to image
+always has one more ``../`` than the target.
+
 
   
 Building the html document
@@ -88,6 +96,7 @@ Building the html document
 
 This will place the document tree in ``Athena/_build/html``.
 
+Artemis and other documents ... coming soon.
 
 
 Translations

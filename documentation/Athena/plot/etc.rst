@@ -22,7 +22,7 @@ Special plots for the current group
 .. _fig-specialplot:
 
 .. figure:: ../../_images/plot_special.png
-   :target: ../../_images/plot_special.png
+   :target: ../_images/plot_special.png
    :width: 65%
    :align: center
 
@@ -40,7 +40,7 @@ Special plots for the current group
     .. _fig-quadplot:
 
     .. figure:: ../../_images/plot_quad.png
-       :target: ../../_images/plot_quad.png
+       :target: ../_images/plot_quad.png
        :width: 55%
        :align: center
 
@@ -54,7 +54,7 @@ Special plots for the current group
     .. _fig-ndplot:
 
     .. figure:: ../../_images/plot_nd.png
-       :target: ../../_images/plot_nd.png
+       :target: ../_images/plot_nd.png
        :width: 55%
        :align: center
 
@@ -72,7 +72,7 @@ Special plots for the current group
     .. _fig-mui0plot:
 
     .. figure:: ../../_images/plot_mui0.png
-       :target: ../../_images/plot_mui0.png
+       :target: ../_images/plot_mui0.png
        :width: 55%
        :align: center
 
@@ -88,7 +88,7 @@ Special plots for the current group
     .. _fig-k123plot:
 
     .. figure:: ../../_images/plot_k123.png
-       :target: ../../_images/plot_k123.png
+       :target: ../_images/plot_k123.png
        :width: 55%
        :align: center
 
@@ -108,7 +108,7 @@ Special plots for the current group
     .. _fig-r123plot:
 
     .. figure:: ../../_images/plot_r123.png
-       :target: ../../_images/plot_r123.png
+       :target: ../_images/plot_r123.png
        :width: 55%
        :align: center
 
@@ -130,7 +130,7 @@ to the set of groups in the group list that have been
     .. _fig-biquadplot:
 
     .. figure:: ../../_images/plot_biquad.png
-       :target: ../../_images/plot_biquad.png
+       :target: ../_images/plot_biquad.png
        :width: 55%
        :align: center
 
@@ -145,7 +145,7 @@ to the set of groups in the group list that have been
     .. _fig-e00plot:
 
     .. figure:: ../../_images/plot_e0_0.png
-       :target: ../../_images/plot_e0_0.png
+       :target: ../_images/plot_e0_0.png
        :width: 55%
        :align: center
 
@@ -161,7 +161,7 @@ to the set of groups in the group list that have been
     .. _fig-i0plot:
 
     .. figure:: ../../_images/plot_marked_i0.png
-       :target: ../../_images/plot_marked_i0.png
+       :target: ../_images/plot_marked_i0.png
        :width: 55%
        :align: center
 
@@ -177,7 +177,7 @@ to the set of groups in the group list that have been
     .. _fig-scaledplot:
 
     .. figure:: ../../_images/plot_scaled.png
-       :target: ../../_images/plot_scaled.png
+       :target: ../_images/plot_scaled.png
        :width: 55%
        :align: center
 
@@ -204,7 +204,7 @@ interesting ways.
     .. _fig-stddevplot:
 
     .. figure:: ../../_images/merge_stddev.png
-       :target: ../../_images/merge_stddev.png
+       :target: ../_images/merge_stddev.png
        :width: 55%
        :align: center
 
@@ -220,7 +220,7 @@ interesting ways.
     .. _fig-varianceplot:
 
     .. figure:: ../../_images/merge_variance.png
-       :target: ../../_images/merge_variance.png
+       :target: ../_images/merge_variance.png
        :width: 55%
        :align: center
 
@@ -288,7 +288,7 @@ button in the Plot menu. Enjoy!
 .. _fig-xkcd:
 
 .. figure:: ../../_images/plot_xkcd.png
-   :target: ../../_images/plot_xkcd.png
+   :target: ../_images/plot_xkcd.png
    :width: 55%
    :align: center
 

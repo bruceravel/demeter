@@ -46,8 +46,8 @@ used in a plot of |chi| (k) data or in a Fourier transform.
 
 .. _fig-uikweights:
 
-.. figure:: ./../_images/ui_kweights.png
-   :target: ./../_images/ui_kweights.png
+.. figure:: ../../_images/ui_kweights.png
+   :target: ../_images/ui_kweights.png
    :width: 65%
    :align: center
 

@@ -15,7 +15,7 @@ this text box.
 .. _fig-journal:
 
 .. figure:: ../../_images/journal.png
-   :target: ../../_images/journal.png
+   :target: /../_images/journal.png
    :width: 65%
    :align: center
 

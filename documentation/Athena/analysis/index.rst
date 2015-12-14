@@ -17,7 +17,7 @@ below.
 
 .. _fig-analysis:
 
-.. figure:: ../_images/analysis.png
+.. figure:: ../../_images/analysis.png
    :target: ../_images/analysis.png
    :width: 65%
    :align: center

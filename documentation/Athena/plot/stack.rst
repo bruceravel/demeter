@@ -21,13 +21,13 @@ sets these values for each marked group.
 .. _fig-stacktab:
 
 .. figure::  ../../_images/plot_stack.png
-    :target: ../../_images/plot_stack.png
+    :target: ../_images/plot_stack.png
     :width: 50%
 
 .. _fig-stacked:
 
 .. figure::  ../../_images/plot_stacked.png
-    :target: ../../_images/plot_stacked.png
+    :target: ../_images/plot_stacked.png
     :width: 100%
 
 

@@ -31,7 +31,7 @@ used as a multiplicative factor. An example is shown below.
 
 .. _fig-zerocross:
 
-.. figure:: ../_images/bkg_normzerocross.png
+.. figure:: ../../_images/bkg_normzerocross.png
    :target: ../_images/bkg_normzerocross.png
    :width: 45%
    :align: center
@@ -76,7 +76,7 @@ are highlighted in this screenshot.
 
 .. _fig-normparams:
 
-.. figure:: ../_images/bkg_normparams.png
+.. figure:: ../../_images/bkg_normparams.png
    :target: ../_images/bkg_normparams.png
    :width: 65%
    :align: center
@@ -105,13 +105,13 @@ through the middle of the data in their respective ranges.
 .. _fig-prepost:
 
 .. figure::  ../../_images/bkg_prepost.png
-    :target: ../../_images/bkg_prepost.png
+    :target: ../_images/bkg_prepost.png
     :width: 100%
 
 .. _fig-norm:
 
 .. figure::  ../../_images/bkg_norm.png
-    :target: ../../_images/bkg_norm.png
+    :target: ../_images/bkg_norm.png
     :width: 100%
 
 
@@ -163,7 +163,7 @@ data that has the flattening turned off.
 .. _fig-flattened:
 
 .. figure:: ../../_images/bkg_normvflat.png
-   :target: ../../_images/bkg_normvflat.png
+   :target: ../_images/bkg_normvflat.png
    :width: 45%
    :align: center
 
@@ -206,13 +206,13 @@ the flattened data are highly distorted.
 .. _fig-postbad:
 
 .. figure::  ../../_images/bkg_postbad.png
-    :target: ../../_images/bkg_postbad.png
+    :target: ../_images/bkg_postbad.png
     :width: 100%
 
 .. _fig-normbad:
 
 .. figure::  ../../_images/bkg_normbad.png
-    :target: ../../_images/bkg_normbad.png
+    :target: ../_images/bkg_normbad.png
     :width: 100%
 
 .. subfigend::
@@ -286,7 +286,7 @@ energy.
 
 .. _fig-uy:
 
-.. figure:: ../_images/bkg_uy.png
+.. figure:: ../../_images/bkg_uy.png
    :target: ../_images/bkg_uy.png
    :width: 45%
    :align: center

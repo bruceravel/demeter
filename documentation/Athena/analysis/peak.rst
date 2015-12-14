@@ -32,7 +32,7 @@ relationship between a spectral feature and an extrinsic parameter.
 
 .. _fig-peak:
 
-.. figure:: ../_images/peak.png
+.. figure:: ../../_images/peak.png
    :target: ../_images/peak.png
    :width: 65%
    :align: center
@@ -81,9 +81,9 @@ above.
 
 .. _fig-peakfit:
 
-.. figure:: ../_images/peak_fit.png
+.. figure:: ../../_images/peak_fit.png
    :target: ../_images/peak_fit.png
-   :width: 65%
+   :width: 45%
    :align: center
 
    Fit to PbTiO\ :sub:`3` data measured at room temperature using an
@@ -96,9 +96,9 @@ Fitting a single data group
 
 .. _fig-peakselect:
 
-.. figure:: ../_images/peak_select.png
+.. figure:: ../../_images/peak_select.png
    :target: ../_images/peak_select.png
-   :width: 35%
+   :width: 30%
    :align: center
 
    Choosing the lineshape to add to the model.
@@ -145,9 +145,9 @@ choices for line shape.
 
 .. _fig-peakchange:
 
-.. figure:: ../_images/peak_change.png
+.. figure:: ../../_images/peak_change.png
    :target: ../_images/peak_change.png
-   :width: 65%
+   :width: 50%
    :align: center
 
    The peak fitting results tab.
@@ -172,7 +172,7 @@ outcome of the fit.
 
 .. _fig-peakresults:
 
-.. figure:: ../_images/peak_results.png
+.. figure:: ../../_images/peak_results.png
    :target: ../_images/peak_results.png
    :width: 65%
    :align: center
@@ -219,7 +219,7 @@ setting the :configparam:`Peakfit,plot\_during` parameter.
 
 .. _fig-peaksequence:
 
-.. figure:: ../_images/peak_sequence.png
+.. figure:: ../../_images/peak_sequence.png
    :target: ../_images/peak_sequence.png
    :width: 65%
    :align: center
@@ -242,9 +242,9 @@ a function of temperature. As expected, the value trends downward.
 
 .. _fig-peakheight:
 
-.. figure:: ../_images/peak_height.png
+.. figure:: ../../_images/peak_height.png
    :target: ../_images/peak_height.png
-   :width: 65%
+   :width: 45%
    :align: center
 
    The results for peak height for the feature 4967 eV as measured over
@@ -258,9 +258,9 @@ parameter values and their uncertainties.
 
 .. _fig-peakexcel:
 
-.. figure:: ../_images/peak_excel.png
+.. figure:: ../../_images/peak_excel.png
    :target: ../_images/peak_excel.png
-   :width: 65%
+   :width: 75%
    :align: center
 
    The results for of a fit sequence exported as a spreadsheet.

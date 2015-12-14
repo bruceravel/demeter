@@ -35,7 +35,7 @@ range.
 
 .. _fig-bkg_splinerange:
 
-.. figure:: ../_images/bkg_splinerange.png
+.. figure:: ../../_images/bkg_splinerange.png
    :target: ../_images/bkg_splinerange.png
    :width: 45%
    :align: center

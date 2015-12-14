@@ -75,7 +75,7 @@ replaced with the log-ratio/phase-difference tool, shown below.
 
 .. _fig-lr:
 
-.. figure:: ../_images/lr.png
+.. figure:: ../../_images/lr.png
    :target: ../_images/lr.png
    :width: 65%
    :align: center
@@ -97,13 +97,13 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 
 .. _lr_fit:
    
-.. figure:: ../_images/lr_fit.png
+.. figure:: ../../_images/lr_fit.png
    :target: ../_images/lr_fit.png
    :width: 100%
 
 .. _lr_pd_fit:
    
-.. figure:: ../_images/lr_pd_fit.png
+.. figure:: ../../_images/lr_pd_fit.png
    :target: ../_images/lr_pd_fit.png
    :width: 100%
 

@@ -22,7 +22,7 @@ special tool and redisplay the main window.
 .. _fig-process:
 
 .. figure:: ../../_images/process.png
-   :target: ../../_images/process.png
+   :target: ../_images/process.png
    :width: 65%
    :align: center
 

@@ -22,7 +22,7 @@ That new group will be treated like normal data.
 .. _fig-summer:
 
 .. figure:: ../../_images/sum.png
-   :target: ../../_images/sum.png
+   :target: ../_images/sum.png
    :width: 65%
    :align: center
 
@@ -31,7 +31,7 @@ That new group will be treated like normal data.
 .. _fig-summerplot:
 
 .. figure:: ../../_images/sum_plot.png
-   :target: ../../_images/sum_plot.png
+   :target: ../_images/sum_plot.png
    :width: 45%
    :align: center
 

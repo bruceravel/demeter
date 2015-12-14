@@ -13,9 +13,9 @@ selection dialog opens. On my Linux computer, it looks like this:
 
 .. _fig-import_filedialog:
 
-.. figure:: ../_images/import_filedialog.png
+.. figure:: ../../_images/import_filedialog.png
    :target: ../_images/import_filedialog.png
-   :width: 75%
+   :width: 60%
    :align: center
 
    The file selection dialog on a Linux computer.
@@ -46,7 +46,7 @@ sections.
 
 .. _fig-import_colsel:
 
-.. figure:: ../_images/import_colsel.png
+.. figure:: ../../_images/import_colsel.png
    :target: ../_images/import_colsel.png
    :width: 75%
    :align: center
@@ -54,9 +54,9 @@ sections.
    The column selection dialog.
 
 In the example shown, the incident channel is, for some reason, called
-:quoted:`mcs3`. Since this is transmission data, I have checked the :quoted:`mcs3`
-button for the numerator. The transmission channel is called :quoted:`mcs4` and
-its button is checked for the denominator.
+:quoted:`mcs3`. Since this is transmission data, I have checked the
+:quoted:`mcs3` button for the numerator. The transmission channel is
+called :quoted:`mcs4` and its button is checked for the denominator.
 
 As you check the buttons, some helpful things happen. The first is that
 equation for how the columns combine to form |mu| (E) is displayed in the
@@ -69,10 +69,10 @@ try some of the other channels.
 
 I chose this example because the columns are labeled somewhat
 confusingly. Often the columns will be labeled in the file more
-obviously with names like :quoted:`I0` or :quoted:`It`. In this case, we either need to
-know what the columns mean or patiently click through the buttons to
-figure it out. As a last resort, you may need to ask the beamline
-scientist!
+obviously with names like :quoted:`I0` or :quoted:`It`. In this case,
+we either need to know what the columns mean or patiently click
+through the buttons to figure it out. As a last resort, you may need
+to ask the beamline scientist!
 
 
 
@@ -99,7 +99,7 @@ The other choices are:
 .. _fig-import_types:
 
 .. figure:: ../../_images/import_types.png
-   :target: ../../_images/import_types.png
+   :target: ../_images/import_types.png
    :width: 75%
    :align: center
 
@@ -108,8 +108,8 @@ The other choices are:
 .. _fig-import_changetype:
 
 .. figure:: ../../_images/import_changetype.png
-   :target: ../../_images/import_changetype.png
-   :width: 40%
+   :target: ../_images/import_changetype.png
+   :width: 35%
    :align: center
 
    The dialog for changing data type of a group.
@@ -146,9 +146,9 @@ selection dialog.
 
 .. _fig-import_med:
 
-.. figure:: ../_images/import_med.png
+.. figure:: ../../_images/import_med.png
    :target: ../_images/import_med.png
-   :width: 75%
+   :width: 65%
    :align: center
 
    Importing multi-element data in the column selection dialog.
@@ -161,7 +161,7 @@ each channel as a group`, as shown here.
 
 .. _fig-import_medch:
 
-.. figure:: ../_images/import_medch.png
+.. figure:: ../../_images/import_medch.png
    :target: ../_images/import_medch.png
    :width: 75%
    :align: center
@@ -176,9 +176,9 @@ that are not of usable quality.
 
 .. _fig-import_medchimported:
 
-.. figure:: ../_images/import_medchimported.png
+.. figure:: ../../_images/import_medchimported.png
    :target: ../_images/import_medchimported.png
-   :width: 75%
+   :width: 65%
    :align: center
 
    After importing the channels of multi-element data as individual groups.

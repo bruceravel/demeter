@@ -59,19 +59,19 @@ data, shown in the bottom panel.
 .. _fig-degplot:
 
 .. figure::  ../../_images/deglitch_plot.png
-    :target: ../../_images/deglitch_plot.png
+    :target: ../_images/deglitch_plot.png
     :width: 100%
 
 .. _fig-degpoint:
 
 .. figure::  ../../_images/deglitch_point.png
-    :target: ../../_images/deglitch_point.png
+    :target: ../_images/deglitch_point.png
     :width: 100%
 
 .. _fig-degpointremoved:
 
 .. figure::  ../../_images/deglitch_pointremoved.png
-    :target: ../../_images/deglitch_pointremoved.png
+    :target: ../_images/deglitch_pointremoved.png
     :width: 100%
 
 
@@ -120,19 +120,19 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
 .. _fig-degchiemu:
 
 .. figure::  ../../_images/deglitch_chie_mu.png
-    :target: ../../_images/deglitch_chie_mu.png
+    :target: ../_images/deglitch_chie_mu.png
     :width: 100%
 
 .. _fig-degchiek:
 
 .. figure::  ../../_images/deglitch_chie_k.png
-    :target: ../../_images/deglitch_chie_k.png
+    :target: ../_images/deglitch_chie_k.png
     :width: 100%
 
 .. _fig-degchie:
 
 .. figure::  ../../_images/deglitch_chie.png
-    :target: ../../_images/deglitch_chie.png
+    :target: ../_images/deglitch_chie.png
     :width: 100%
 
 
@@ -173,7 +173,7 @@ chosen by typing in the box or by using `the pluck button
 .. _fig-trunplot:
 
 .. figure:: ../../_images/truncate_plot.png
-   :target: ../../_images/truncate_plot.png
+   :target: ../_images/truncate_plot.png
    :width: 45%
    :align: center
 
@@ -193,7 +193,7 @@ normalization range will lead to a data processing disaster.
 .. _fig-trunbto:
 
 .. figure:: ../../_images/truncate_batio3.png
-   :target: ../../_images/truncate_batio3.png
+   :target: ../_images/truncate_batio3.png
    :width: 45%
    :align: center
 

@@ -57,7 +57,7 @@ algorithms and to provide the parameters of the correction.
 .. _fig-selfabs:
 
 .. figure:: ../../_images/selfabs.png
-   :target: ../../_images/selfabs.png
+   :target: ../_images/selfabs.png
    :width: 65%
    :align: center
 
@@ -98,20 +98,20 @@ the corrected spectra are shown on the bottom.
 
 .. _fig-saplot:
 
-.. figure::  ../../_images/selfabs_plot.png
-   :target: ../../_images/selfabs_plot.png
+.. figure:: ../../_images/selfabs_plot.png
+   :target: ../_images/selfabs_plot.png
    :width: 100%
 
 .. _fig-sabefore:
 
 .. figure:: ../../_images/selfabs_before.png 
-   :target: ../../_images/selfabs_before.png
+   :target: ../_images/selfabs_before.png
    :width: 100%
 
 .. _fig-saafter:
 
 .. figure:: ../../_images/selfabs_after.png 
-   :target: ../../_images/selfabs_after.png
+   :target: ../_images/selfabs_after.png
    :width: 100%
 
 .. subfigend::
@@ -137,7 +137,7 @@ that samples are infinitely thick.
 .. _fig-sabooth:
 
 .. figure:: ../../_images/selfabs_booth.png
-   :target: ../../_images/selfabs_booth.png
+   :target: ../_images/selfabs_booth.png
    :width: 65%
    :align: center
 
@@ -168,7 +168,7 @@ in the plot below.
 .. _fig-saboothplot:
 
 .. figure:: ../../_images/selfabs_boothplot.png
-   :target: ../../_images/selfabs_boothplot.png
+   :target: ../_images/selfabs_boothplot.png
    :width: 45%
    :align: center
 
@@ -203,14 +203,14 @@ provides a useful metric for whether a film sample can be considered
 
 .. _fig-sainfoe:
 
-.. figure::  ../../_images/sa_info_e.png
-   :target: ../../_images/sa_info_e.png
+.. figure:: ../../_images/sa_info_e.png
+   :target: ../_images/sa_info_e.png
    :width: 100%
 
 .. _fig-sainfok:
 
-.. figure::  ../../_images/sa_info_k.png
-   :target: ../../_images/sa_info_k.png
+.. figure:: ../../_images/sa_info_k.png
+   :target: ../_images/sa_info_k.png
    :width: 100%
 
 

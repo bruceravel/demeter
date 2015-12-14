@@ -37,7 +37,7 @@ measured in quick scan mode:
 .. _fig-rebin:
 
 .. figure:: ../../_images/import_rebin.png
-   :target: ../../_images/import_rebin.png
+   :target: ../_images/import_rebin.png
    :width: 65%
    :align: center
 
@@ -75,7 +75,7 @@ specified in that menu is the standard.
 .. _fig-preproc:
 
 .. figure:: ../../_images/import_preproc.png
-   :target: ../../_images/import_preproc.png
+   :target: ../_images/import_preproc.png
    :width: 65%
    :align: center
 

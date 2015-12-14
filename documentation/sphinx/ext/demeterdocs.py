@@ -164,10 +164,10 @@ def visit_mark_html(self, node):
     self.body.append('<img alt="%s!" src="%s/_static/%s.png" align="left" hspace="5">' % (node['image'], node['path'], node['image']))
 
 def depart_mark_html(self, node):
-    self.body.append('&nbsp;</a>')
+    self.body.append('</a>')
 
 def visit_mark_latex(self, node):
-    self.body.append(" mark bolt!")
+    self.body.append('%s!' % node['image'])
 
 def depart_mark_latex(self, node):
     self.body.append(" ")

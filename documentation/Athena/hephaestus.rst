@@ -2,8 +2,6 @@
 Hephaestus
 ==========
 
-A Periodic Table for the X-ray Absorption Spectroscopist
---------------------------------------------------------
 
 ::
 
@@ -80,7 +78,7 @@ status bar giving the emission energy expressed in wavelength units.
 .. _fig-hephabsorption:
 
 .. figure:: ../_images/Hephaestus_absorption.png
-   :target: ../_images/Hephaestus_absorption.png
+   :target: _images/Hephaestus_absorption.png
    :width: 65%
    :align: center
 
@@ -121,7 +119,7 @@ The rules for the selection of the filter elements are:
 .. _fig-hephfilterplot:
    
 .. figure:: ../_images/Hephaestus_filterplot.png
-   :target: ../_images/Hephaestus_filterplot.png
+   :target: _images/Hephaestus_filterplot.png
    :width: 45%
    :align: center
 
@@ -141,7 +139,7 @@ cannot be measured by that edge at the beamline.
 .. _fig-hephbeamline:
 
 .. figure:: ../_images/Hephaestus_beamline.png
-   :target: ../_images/Hephaestus_beamline.png
+   :target: _images/Hephaestus_beamline.png
    :width: 65%
    :align: center
 
@@ -205,7 +203,7 @@ Finally, an energy in eV is required at which to make the calculation.
 .. _fig-hephformulas:
 
 .. figure:: ../_images/Hephaestus_formulas.png
-   :target: ../_images/Hephaestus_formulas.png
+   :target: _images/Hephaestus_formulas.png
    :width: 65%
    :align: center
 
@@ -402,7 +400,7 @@ charge ``e`` is about 1.6E-19 Coulombs.
 .. _fig-hephion:
 
 .. figure:: ../_images/Hephaestus_ionchambers.png
-   :target: ../_images/Hephaestus_ionchambers.png
+   :target: _images/Hephaestus_ionchambers.png
    :width: 65%
    :align: center
 
@@ -425,7 +423,7 @@ scattering lengths and cross sections for the major isotopes.
 .. _fig-hephdata:
 
 .. figure:: ../_images/Hephaestus_data.png
-   :target: ../_images/Hephaestus_data.png
+   :target: _images/Hephaestus_data.png
    :width: 65%
    :align: center
 
@@ -467,7 +465,7 @@ Center for X-Ray Optics X-Ray Data Booklet.
 .. _fig-hephtransitions:
 
 .. figure:: ../_images/Hephaestus_transitions.png
-   :target: ../_images/Hephaestus_transitions.png
+   :target: _images/Hephaestus_transitions.png
    :width: 65%
    :align: center
 
@@ -495,7 +493,7 @@ incident beam and the excitation of a much higher energy edge.
 .. _fig-hephedgefinder:
 
 .. figure:: ../_images/Hephaestus_edgefinder.png
-   :target: ../_images/Hephaestus_edgefinder.png
+   :target: _images/Hephaestus_edgefinder.png
    :width: 65%
    :align: center
 
@@ -521,7 +519,7 @@ mysterious line in your fluorescence data!
 .. _fig-hephlinefinder:
 
 .. figure:: ../_images/Hephaestus_linefinder.png
-   :target: ../_images/Hephaestus_linefinder.png
+   :target: _images/Hephaestus_linefinder.png
    :width: 65%
    :align: center
 
@@ -557,7 +555,7 @@ http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 .. _fig-hephstandards:
 
 .. figure:: ../_images/Hephaestus_standards.png
-   :target: ../_images/Hephaestus_standards.png
+   :target: _images/Hephaestus_standards.png
    :width: 65%
    :align: center
 
@@ -566,7 +564,7 @@ http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 .. _fig-hephstandardsplot:
 
 .. figure:: ../_images/Hephaestus_standards_plot.png
-   :target: ../_images/Hephaestus_standards_plot.png
+   :target: _images/Hephaestus_standards_plot.png
    :width: 45%
    :align: center
 
@@ -592,7 +590,7 @@ The f' and f" data can be saved to a file.
 .. _fig-hephf1f2:
 
 .. figure:: ../_images/Hephaestus_f1f2.png
-   :target: ../_images/Hephaestus_f1f2.png
+   :target: _images/Hephaestus_f1f2.png
    :width: 65%
    :align: center
 
@@ -601,7 +599,7 @@ The f' and f" data can be saved to a file.
 .. _fig-hephf1f2plot:
 
 .. figure:: ../_images/Hephaestus_f1f2_plot.png
-   :target: ../_images/Hephaestus_f1f2_plot.png
+   :target: _images/Hephaestus_f1f2_plot.png
    :width: 45%
    :align: center
 

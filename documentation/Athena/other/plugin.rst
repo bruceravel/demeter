@@ -306,7 +306,7 @@ sure to choose a suitable and suitably short value for that variable).
 .. _fig-plugin:
 
 .. figure:: ../../_images/import_plugin.png
-   :target: ../../_images/import_plugin.png
+   :target: ../_images/import_plugin.png
    :width: 65%
    :align: center
 

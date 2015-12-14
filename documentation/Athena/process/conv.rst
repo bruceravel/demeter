@@ -21,7 +21,7 @@ example of data with artificial noise is shown on the right.
 .. _fig-convolution:
 
 .. figure:: ../../_images/convolution.png
-   :target: ../../_images/convolution.png
+   :target: ../_images/convolution.png
    :width: 65%
    :align: center
 
@@ -33,13 +33,13 @@ example of data with artificial noise is shown on the right.
 .. _fig-convconv:
 
 .. figure::  ../../_images/convolution_conv.png
-    :target: ../../_images/convolution_conv.png
+    :target: ../_images/convolution_conv.png
     :width: 100%
 
 .. _fig-convnoise:
 
 .. figure::  ../../_images/convolution_noise.png
-    :target: ../../_images/convolution_noise.png
+    :target: ../_images/convolution_noise.png
     :width: 100%
 
 

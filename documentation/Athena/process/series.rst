@@ -24,7 +24,7 @@ disabled.
 .. _fig-series:
 
 .. figure:: ../../_images/series.png
-   :target: ../../_images/series.png
+   :target: ../_images/series.png
    :width: 65%
    :align: center
 
@@ -33,7 +33,7 @@ disabled.
 .. _fig-seriesplot:
 
 .. figure:: ../../_images/series_plot.png
-   :target: ../../_images/series_plot.png
+   :target: ../_images/series_plot.png
    :width: 45%
    :align: center
 

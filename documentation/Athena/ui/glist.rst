@@ -61,7 +61,7 @@ posts a dialog for entering the new label for the group, shown here.
 .. _fig-renaming:
 
 .. figure:: ../../_images/ui_renaming.png
-   :target: ../../_images/ui_renaming.png
+   :target: ../_images/ui_renaming.png
    :width: 65%
    :align: center
 
@@ -72,7 +72,7 @@ Hitting Return or clicking the OK button renames the group, shown here.
 .. _fig-renamed:
 
 .. figure:: ../../_images/ui_renamed.png
-   :target: ../../_images/ui_renamed.png
+   :target: ../_images/ui_renamed.png
    :width: 65%
    :align: center
 
@@ -109,7 +109,7 @@ displays the dialog shown here.
 .. _fig-about:
 
 .. figure:: ../../_images/ui_about.png
-   :target: ../../_images/ui_about.png
+   :target: ../_images/ui_about.png
    :width: 35%
    :align: center
 
@@ -123,7 +123,7 @@ very useful for developing and debugging the software.
 .. _fig-changetype:
 
 .. figure:: ../../_images/import_changetype.png
-   :target: ../../_images/import_changetype.png
+   :target: ../_images/import_changetype.png
    :width: 30%
    :align: center
 
@@ -157,7 +157,7 @@ posted, as shown below, displaying the Group menu.
 .. _fig-groupcontext:
 
 .. figure:: ../../_images/ui_groupcontext.png
-   :target: ../../_images/ui_groupcontext.png
+   :target: ../_images/ui_groupcontext.png
    :width: 45%
    :align: center
 
@@ -182,7 +182,7 @@ places and the group list to its original original size.
 .. _fig-shrink:
 
 .. figure:: ../../_images/ui_shrink.png
-   :target: ../../_images/ui_shrink.png
+   :target: ../_images/ui_shrink.png
    :width: 45%
    :align: center
 

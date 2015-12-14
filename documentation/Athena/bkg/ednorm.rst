@@ -20,13 +20,13 @@ in a |chi| (k) signal that is somewhat amplified.
 .. _fig-blg_s_mu:
 
 .. figure::  ../../_images/bkg_s_mu.png
-    :target: ../../_images/bkg_s_mu.png
+    :target: ../_images/bkg_s_mu.png
     :width: 100%
 
 .. _fig-s_chi:
 
 .. figure::  ../../_images/bkg_s_chi.png
-    :target: ../../_images/bkg_s_chi.png
+    :target: ../_images/bkg_s_chi.png
     :width: 100%
 
 
@@ -65,7 +65,7 @@ in the following screenshot.
 
 .. _fig-bkg_ednorm:
 
-.. figure:: ../_images/bkg_ednorm.png
+.. figure:: ../../_images/bkg_ednorm.png
    :target: ../_images/bkg_ednorm.png
    :width: 45%
    :align: center

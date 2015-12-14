@@ -21,7 +21,7 @@ list also serve to make all, mark none, and invert the marks.
 
 .. _fig-mark:
 
-.. figure:: ../_images/ui_mark.png
+.. figure:: ../../_images/ui_mark.png
    :target: ../_images/ui_mark.png
    :width: 65%
    :align: center
@@ -53,7 +53,7 @@ various vanadium standards, the Data groups list includes
 
 .. _fig-vstan:
 
-.. figure:: ../_images/ui_vstan.png
+.. figure:: ../../_images/ui_vstan.png
    :target: ../_images/ui_vstan.png
    :width: 65%
    :align: center

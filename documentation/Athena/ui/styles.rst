@@ -18,7 +18,7 @@ You can discard a plot style by double clicking on it.
 .. _fig-styles:
 
 .. figure:: ../../_images/ui_plotstyles.png
-   :target: ../../_images/ui_plotstyles.png
+   :target: ../_images/ui_plotstyles.png
    :width: 65%
    :align: center
 

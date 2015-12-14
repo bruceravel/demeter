@@ -19,7 +19,7 @@ labels can be used to constrain these parameters across data groups.
 .. _fig-plotparams:
 
 .. figure:: ../../_images/plot_plotparams.png
-   :target: ../../_images/plot_plotparams.png
+   :target: ../_images/plot_plotparams.png
    :width: 65%
    :align: center
 

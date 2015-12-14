@@ -28,7 +28,7 @@ below.
 .. _fig-freeze:
 
 .. figure:: ../../_images/ui_freeze.png
-   :target: ../../_images/ui_freeze.png
+   :target: ../_images/ui_freeze.png
    :width: 65%
    :align: center
 

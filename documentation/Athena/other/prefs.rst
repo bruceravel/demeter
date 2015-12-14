@@ -12,7 +12,7 @@ tool is shown here.
 .. _fig-prefs:
 
 .. figure:: ../../_images/prefs.png
-   :target: ../../_images/prefs.png
+   :target: ../_images/prefs.png
    :width: 65%
    :align: center
 

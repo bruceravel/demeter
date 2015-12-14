@@ -4,14 +4,15 @@
 Forward
 =======
 
+.. todo:: translate examples section to rst
+
 .. todo:: installation instructions, document building instructions
 
 .. todo:: need to make sure all internal links point at actual targets
 
+.. todo:: CC image in epilog + linebreak as a directive (not a role)
 	  
-Conventions and acknowledgements
---------------------------------
-
+	  
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
 just to see what happens. And above all, remember the physical and
@@ -117,6 +118,12 @@ it is today.
    :filter: author % "Kelly"
    :list: bullet
 
+Scott Calvin has written an excellent XAFS text book which covers a
+lot of the material covered by :demeter:`athena`:
+
+.. bibliography:: athena.bib
+   :filter: title % "Everyone"
+   :list: bullet
 
 The following great software tools were used to create this document:
 

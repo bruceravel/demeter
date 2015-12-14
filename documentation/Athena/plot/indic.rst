@@ -24,13 +24,13 @@ range are ignored.
 .. _fig-indictab:
 
 .. figure::  ../../_images/plot_indic.png
-    :target: ../../_images/plot_indic.png
+    :target: ../_images/plot_indic.png
     :width: 50%
 
 .. _fig-indicplot:
 
 .. figure::  ../../_images/plot_indicplot.png
-    :target: ../../_images/plot_indicplot.png
+    :target: ../_images/plot_indicplot.png
     :width: 100%
 
 

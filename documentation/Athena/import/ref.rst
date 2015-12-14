@@ -27,7 +27,7 @@ data measured years apart at different synchrotrons.
 .. _fig-import_ref:
 
 .. figure:: ../../_images/import_ref.png
-   :target: ../../_images/import_ref.png
+   :target: ../_images/import_ref.png
    :width: 65%
    :align: center
 
@@ -62,7 +62,7 @@ in the box for :procparam:`energy shift`, as seen in this screenshot.
 .. _fig-refimported:
 
 .. figure:: ../../_images/import_refimported.png
-   :target: ../../_images/import_refimported.png
+   :target: ../_images/import_refimported.png
    :width: 65%
    :align: center
 

@@ -22,7 +22,7 @@ range, is the second coordination visible as a resolved peak.
 .. _fig-krange:
 
 .. figure:: ../../_images/plot_fe_krange.png
-   :target: ../../_images/plot_fe_krange.png
+   :target: ../_images/plot_fe_krange.png
    :width: 45%
    :align: center
 

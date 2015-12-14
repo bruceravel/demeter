@@ -30,7 +30,7 @@ a context menu, as shown in this figure.
 .. _fig-paramparam:
 
 .. figure:: ../../_images/param_param.png
-   :target: ../../_images/param_param.png
+   :target: ../_images/param_param.png
    :width: 65%
    :align: center
 
@@ -92,7 +92,7 @@ picture below.
 .. _fig-paramgroup:
 
 .. figure:: ../../_images/param_group.png
-   :target: ../../_images/param_group.png
+   :target: ../_images/param_group.png
    :width: 65%
    :align: center
 
@@ -121,7 +121,7 @@ this picture.
 .. _fig-paramall:
 
 .. figure:: ../../_images/param_all.png
-   :target: ../../_images/param_all.png
+   :target: ../_images/param_all.png
    :width: 65%
    :align: center
 

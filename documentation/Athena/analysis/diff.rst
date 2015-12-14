@@ -13,7 +13,7 @@ desorbed, resulting in measurable changes in the spectra.
 
 
 .. figure:: ../../_images/diff_mu.png
-   :target: ../../_images/diff_mu.png
+   :target: ../_images/diff_mu.png
    :width: 45%
    :align: center
 
@@ -32,7 +32,7 @@ that you take great care with `selecting parameters
 
 .. _fig-diff:
 
-.. figure:: ../_images/diff.png
+.. figure:: ../../_images/diff.png
    :target: ../_images/diff.png
    :width: 65%
    :align: center
@@ -88,13 +88,13 @@ will be substituted by specific values.
 
 .. _fig-diff-diff:
    
-.. figure:: ../_images/diff_diff.png
+.. figure:: ../../_images/diff_diff.png
    :target: ../_images/diff_diff.png
    :width: 100%
 
 .. _fig-diff-diffsequence:
    
-.. figure:: ../_images/diff_diffsequence.png
+.. figure:: ../../_images/diff_diffsequence.png
    :target: ../_images/diff_diffsequence.png
    :width: 100%
 
@@ -115,7 +115,7 @@ below.
 
 .. _fig-diffareas:
 
-.. figure:: ../_images/diff_areas.png
+.. figure:: ../../_images/diff_areas.png
    :target: ../_images/diff_areas.png
    :width: 45%
    :align: center

@@ -22,7 +22,7 @@ k-weightings using the entries in the submenu.
 .. _fig-exportsingle:
 
 .. figure:: ../../_images/export_single.png
-   :target: ../../_images/export_single.png
+   :target: ../_images/export_single.png
    :width: 65%
    :align: center
 
@@ -127,7 +127,7 @@ below.
 .. _fig-exportmarked:
 
 .. figure:: ../../_images/export_marked.png
-   :target: ../../_images/export_marked.png
+   :target: ../_images/export_marked.png
    :width: 65%
    :align: center
 
@@ -146,7 +146,7 @@ directory with a file name formed from the group label.
 .. _fig-exporteach:
 
 .. figure:: ../../_images/export_each.png
-   :target: ../../_images/export_each.png
+   :target: ../_images/export_each.png
    :width: 65%
    :align: center
 

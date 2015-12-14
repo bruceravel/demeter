@@ -41,7 +41,7 @@ That said, let's carry on.
 .. _fig-mee:
 
 .. figure:: ../../_images/mee.png
-   :target: ../../_images/mee.png
+   :target: ../_images/mee.png
    :width: 65%
    :align: center
 
@@ -59,13 +59,13 @@ excitation at about 120 volts above the edge.
 .. _fig-mee_e:
 
 .. figure::  ../../_images/mee_e.png
-    :target: ../../_images/mee_e.png
+    :target: ../_images/mee_e.png
     :width: 100%
 
 .. _fig-mee_k:
 
 .. figure::  ../../_images/mee_k.png
-    :target: ../../_images/mee_k.png
+    :target: ../_images/mee_k.png
     :width: 100%
 
 

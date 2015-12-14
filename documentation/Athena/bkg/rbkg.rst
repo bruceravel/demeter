@@ -35,19 +35,19 @@ here on the left.
 .. _fig-rbkg_initial1:
 
 .. figure::  ../../_images/rbkg_initial.png
-    :target: ../../_images/rbkg_initial.png
+    :target: ../_images/rbkg_initial.png
     :width: 100%
 
 .. _fig-rbkg_initial_k:
 
 .. figure::  ../../_images/rbkg_initial_k.png
-    :target: ../../_images/rbkg_initial_k.png
+    :target: ../_images/rbkg_initial_k.png
     :width: 100%
 
 .. _fig-_initial_r:
 
 .. figure::  ../../_images/rbkg_initial_r.png
-    :target: ../../_images/rbkg_initial_r.png
+    :target: ../_images/rbkg_initial_r.png
     :width: 100%
 
 
@@ -79,7 +79,7 @@ group` from the Group menu or by pressing
 
 .. _fig-rbkg:
 
-.. figure:: ../_images/rbkg.png
+.. figure:: ../../_images/rbkg.png
    :target: ../_images/rbkg.png
    :width: 65%
    :align: center
@@ -101,19 +101,19 @@ by clicking the R button. It should look something like this.
 .. _fig-rbkg_102:
 
 .. figure::  ../../_images/rbkg_1_0_2.png
-    :target: ../../_images/rbkg_1_0_2.png
+    :target: ../_images/rbkg_1_0_2.png
     :width: 100%
 
 .. _fig-rbkg_102k:
 
 .. figure::  ../../_images/rbkg_1_0_2k.png
-    :target: ../../_images/rbkg_1_0_2k.png
+    :target: ../_images/rbkg_1_0_2k.png
     :width: 100%
 
 .. _fig-rbkg_02e:
 
 .. figure::  ../../_images/rbkg_0_2e.png
-    :target: ../../_images/rbkg_0_2e.png
+    :target: ../_images/rbkg_0_2e.png
     :width: 100%
 
 
@@ -152,7 +152,7 @@ value? The |chi| (R) data for the values 1 and 2.5 are shown here.
 
 .. _fig-rbkg_125:
 
-.. figure:: ../_images/rbkg_1_2_5.png
+.. figure:: ../../_images/rbkg_1_2_5.png
    :target: ../_images/rbkg_1_2_5.png
    :width: 45%
    :align: center

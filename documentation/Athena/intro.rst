@@ -65,7 +65,7 @@ your computer screen. The :demeter:`athena` window is divided into several parts
 We will discuss each of these parts and give each a name.
 
 .. figure:: ../_images/athena_main.png
-   :target: ../_images/athena_main.png
+   :target: _images/athena_main.png
    :width: 65%
    :align: center
 
@@ -108,7 +108,7 @@ when making a forward Fourier transform. Below that are various other
 `plotting controls <ui/mark.html>`__ in the plotting options section.
 
 .. figure:: ../_images/athena_withdata.png
-   :target: ../_images/athena_withdata.png
+   :target: _images/athena_withdata.png
    :width: 65%
    :align: center
 
