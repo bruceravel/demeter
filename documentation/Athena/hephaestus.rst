@@ -669,41 +669,47 @@ Credits
 
 The absorption data resources all have literature references.
 
-The Elam tables
+**The Elam tables**
     .. bibliography:: athena.bib
        :filter: author % "Elam"
+       :list: bullet
 
-   This is the source of data for the
-   edge and line finders and for the filter plot.
+    This is the source of data for the
+    edge and line finders and for the filter plot.
     
-The McMaster tables
+**The McMaster tables**
     .. bibliography:: athena.bib
        :filter: author % "McMaster"
+       :list: bullet
 
     These data were originally
     compiled in machine readable form by Pathikrit Bandyopadhyay.
 
-The Henke tables
+**The Henke tables**
     .. bibliography:: athena.bib
        :filter: author % "Henke"
+       :list: bullet
 
     The data is available at
     http://www-cxro.lbl.gov/optical_constants.
 
-The Chantler tables
+**The Chantler tables**
     .. bibliography:: athena.bib
        :filter: author % "Chantler" and year == "1995"
+       :list: bullet
 
     The data files can be found
     at http://physics.nist.gov/PhysRefData/FFast/html/form.html
 
-The Cromer-Liberman tables
+**The Cromer-Liberman tables**
     .. bibliography:: athena.bib
        :filter: author % "Brennan"
+       :list: bullet
 
-The Shaltout tables
+**The Shaltout tables**
     .. bibliography:: athena.bib
        :filter: author % "Shaltout"
+       :list: bullet
 
 
 
@@ -728,3 +734,4 @@ data resources.
 
     .. bibliography:: athena.bib
        :filter: author % "Berger"
+       :list: bullet

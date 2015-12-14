@@ -86,6 +86,7 @@ For more information about multi-electron excitations, see
 
     .. bibliography:: ../athena.bib
        :filter: author % "Kodre"
+       :list: bullet
 
 
 Using the parameter shown inthe screen shot above, the removal is
@@ -112,7 +113,8 @@ excitations on otherwise excellent |chi| (k) data:
 
     .. bibliography:: ../athena.bib
        :filter: author % "Hennig"
-
+       :list: bullet
+       
 Note that this tool can also be used to approximately remove the
 contamination from a small edge of another element that shows up in the
 data.

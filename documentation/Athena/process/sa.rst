@@ -87,8 +87,10 @@ Adjusted for the density change upon adding the solute, there are about
 54.8 moles of water in the solution
 
 So the formulas for these three molar solution are
-``((NH4)2SO4)0.10(H2O)54.8``, ``((NH4)2SO4)0.47(H2O)54.8``, and
-``((NH4)2SO4)0.94(H2O)54.8``.
+((NH\ :sub:`4`)\ :sub:`2`\ SO\ :sub:`4`)\ :sub:`0.10`\ (H\ :sub:`2`\ O)\ :sub:`54.8`,
+((NH\ :sub:`4`)\ :sub:`2`\ SO\ :sub:`4`)\ :sub:`0.47`\ (H\ :sub:`2`\ O)\ :sub:`54.8`, and
+((NH\ :sub:`4`)\ :sub:`2`\ SO\ :sub:`4`)\ :sub:`0.94`\ (H\ :sub:`2`\ O)\ :sub:`54.8`.
+
 
 The uncorrected and corrected data for the 0.94M sample are shown here
 on the right. The three uncorrected spectra are shown on the left and
@@ -192,13 +194,13 @@ Information depth
 -----------------
 
 For any sample, you can plot the information depth as a function of
-wavenumber. This quantity was defined by Troger et al. (citation below)
-and represents the depth into the sample probed by the incident beam for
-a given sample geometry as a function of energy. In that depth, 68
-percent of the incident photons are absorbed and 68 percent of the
-fluorescence photons are generated. The information depth provides a
-useful metric for whether a film sample can be considered :quoted:`thick` in a
-particular experiment.
+wavenumber. This quantity was defined by Troger et al. (citation
+below) and represents the depth into the sample probed by the incident
+beam for a given sample geometry as a function of energy. In that
+depth, 68 percent of the incident photons are absorbed and 68 percent
+of the fluorescence photons are generated. The information depth
+provides a useful metric for whether a film sample can be considered
+:quoted:`thick` in a particular experiment.
 
 .. subfigstart::
 
@@ -226,40 +228,46 @@ particular experiment.
 Algorithm references
 --------------------
 
-Fluo algorithm
+**Fluo algorithm**
     The program documentation for Fluo can be found at Dani's web site
     and includes the mathematical derivation:
     http://www.aps.anl.gov/xfd/people/haskel/fluo.html
 
-Booth Algorithm
+**Booth Algorithm**
     .. bibliography:: ../athena.bib
        :filter: author % "Booth"
+       :list: bullet
 
     See also Corwin's web site: http://lise.lbl.gov/RSXAP/
 
-Troger Algorithm
+**Troger Algorithm**
     .. bibliography:: ../athena.bib
        :filter: author % "Arvanitis"
+       :list: bullet
 
-Pfalzer Algorithm
+**Pfalzer Algorithm**
     Another interesting approach to correcting self-absorption is
     presented in
+    
     .. bibliography:: ../athena.bib
        :filter: author % "Pfalzer"
+       :list: bullet
 
     This is not implemented in :demeter:`athena` because the main result requires
     an integral over the solid angle subtended by the detector. This
     could be implemented, but the amount of solid angle subtended it is
     not something one typically writes in the lab notebook.
 
-Atoms Algorithm
+**Atoms Algorithm**
     .. bibliography:: ../athena.bib
        :filter: author % "Ravel" and year == "2001"
+       :list: bullet
 
     See also the documentation for Atoms at Bruce's website for more
     details about it's fluorescence correction calculations.
 
-Elam tables of absorption coefficients
+**Elam tables of absorption coefficients**
     .. bibliography:: ../athena.bib
        :filter: author % "Elam"
+       :list: bullet
 

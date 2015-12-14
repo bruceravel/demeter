@@ -54,8 +54,8 @@ presentation media.
 - Links to web sites look `like this <http://www.google.com>`__.
 
 - Internal links look `like this
-  <forward.html#layoutandtypesettingconventions>`__.
-
+  <forward.html#layout-and-typesetting-conventions>`__.
+  
 - Keyboard shortcuts look like this: ``Control-q``. This example means
   to hit the ``q`` key while holding the ``Control`` (or ``Ctrl``) key.
 
@@ -68,16 +68,17 @@ presentation media.
   then click on :quoted:`fraction`.
 
 .. CAUTION::
-   Points that require special attention are written inside of
-   attention-grabbing boxes.
+   Points that require special attention are indicated
+   like this.
 
 .. TODO::
    Notes about features missing from the document are indicated
    like this.
 
-|To do!| Features that have been recently added to
-:demeter:`athena` are indicated like this if they have not
-yet been properly documented.
+.. versionadded:: 1.2.3
+   Features that have been recently added to
+   :demeter:`athena` are indicated like this if they have not
+   yet been properly documented.
 
 |Essential topic| This symbol indicates a section describing one of
 :demeter:`athena`'s features that I consider especially
@@ -101,13 +102,18 @@ I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
 there wouldn't be an :demeter:`athena`. One afternoon over coffee,
 Julie Cross and Shelly Kelly lit the spark that eventually lead to the
 first version of this document. Some content of this document was
-inspired by a recent XAS review article :cite:`KellyReview`, the
-first draft of which I had the pleasure of editing and the final draft
-of which I ended up on the author list. I have a huge debt of
-gratitude to all the folks on the :demeter:`ifeffit` mailing
+inspired by a recent XAS review article by Shelly Kelly and Dean
+Hesterberg, the first draft of which I had the pleasure of editing and
+the final draft of which I ended up on the author list. I have a huge
+debt of gratitude to all the folks on the :demeter:`ifeffit` mailing
 list. Without the incredible support and wonderful feedback that I've
 received over the years, :demeter:`athena` would be a shadow of what
 it is today.
+
+.. bibliography:: athena.bib
+   :filter: author % "Kelly"
+   :list: bullet
+
 
 The following great software tools were used to create this document:
 
@@ -120,8 +126,9 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
-.. todo:: links to extensions used (esp. natbib, sphinxtr, sphinx-clatex)
-  
+.. todo:: links to extensions used (esp. sphinxcontrib-bibtex,
+          sphinxtr, sphinx-clatex)
+
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
 <http://www.kde.org>`__. The screenshots of spreadsheets made from `a
@@ -129,8 +136,11 @@ report file <output/report.html#export_excelreport>`__ and `an LCF fit
 report <examples/aucl.html#ex_aucl_excel>`__ are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
 
-The images of the Tholos temple on the front page and the Klimt painting
-*Pallas Athena* in the navigation box of the html document are from
+The images of the `Tholos temple
+<https://en.wikipedia.org/wiki/Delphi#Tholos>`_ on the front page and
+the `Klimt painting Pallas Athena
+<http://www.wikiart.org/en/gustav-klimt/minerva-or-pallas-athena>`_ in
+the navigation box of the html document are from
 http://www.artchive.com.
 
 The image used as the :demeter:`athena` program icon is from a
@@ -153,7 +163,11 @@ Data citations
    section <analysis/diff.html>`__ were donated by Simon Bare.
 
 -  The gold edge data shown in many places throughout this document are
-   taken from measurements published as :cite:`Lengke`.
+   taken from measurements published as
+
+   .. bibliography:: athena.bib
+      :filter: author % "Lengke"
+      :list: bullet
 
 -  The gold oxide data shown in `the smoothing
    section <process/smooth.html>`__ were donated by Norbert Weiher.
@@ -177,12 +191,16 @@ Data citations
    section <process/deg.html>`__ are from the group's standards library.
 
 -  Tin edge data which appear in several places are from
-   :cite:`Impellitteri`
+   
+   .. bibliography:: athena.bib
+      :filter: author % "Impellitteri"
+      :list: bullet
 
 -  Data on PbTiO\ :sub:`3`, BaTiO\ :sub:`3`, and EuTiO\ :sub:`3` are
    taken from my own PhD thesis.
 
 
+   
 Installing Athena on your computer
 ----------------------------------
 
@@ -290,10 +308,9 @@ Using the document with Athena
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The html document files can be used by :demeter:`athena`. They are
-installed at the time that :demeter:`demeter` is installed
-(and they can be installed on a Windows machine by downloading and
-installing the documentation package). If the html pages cannot be
-found, :demeter:`athena` will try to use your internet connection to
-fetch them from `the Demeter homepage
-<http://bruceravel.github.io/demeter/>`__.
+installed at the time that :demeter:`demeter` is installed (and they
+can be installed on a Windows machine by downloading and installing
+the documentation package). If the html pages cannot be found,
+:demeter:`athena` will try to use your internet connection to fetch
+them from `the Demeter homepage <http://bruceravel.github.io/demeter/>`__.
 

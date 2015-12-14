@@ -7,27 +7,28 @@ Understanding the most important background removal parameter
 -------------------------------------------------------------
 
 The frequency cutoff between the background and the data discussed in
-the previous section is determined by the :procparam:`rbkg` parameter. This is the
-second parameter displayed in the background removal section of the main
-window.
+the previous section is determined by the :procparam:`rbkg`
+parameter. This is the second parameter displayed in the background
+removal section of the main window.
 
-When data are imported into :demeter:`athena`, :procparam:`rbkg` is set to its
-`default value <../params/defaults.html>`__, normally 1.
+When data are imported into :demeter:`athena`, :procparam:`rbkg` is
+set to its `default value <../params/defaults.html>`__, normally 1.
 
 This example, like many of the examples in this Users' Guide, can be
-found at `among the examples at my XAS-Education
+found `among the examples at my XAS-Education
 site <http://bruceravel.github.io/XAS-Education/>`__.
 
 Among these example files is one called ``fe.060``, which contains a
 spectrum from an iron foil measured at 60 K. Import this by selecting
-Open file from the File menu or by pressing ``Control-o``. Navigate to the
-location of your example files and select ``fe.060``. The `column selection
-dialog <../import/columns.html>`__ then appears. For now, just click OK.
+Open file from the File menu or by pressing ``Control-o``. Navigate to
+the location of your example files and select ``fe.060``. The `column
+selection dialog <../import/columns.html>`__ then appears. For now,
+just click OK.
 
-The data is imported and :procparam:`rbkg` is set to its default value of 1. The
-data and the background function found using the default parameter
-values can be found by pressing the E button. This is shown here on the
-left.
+The data is imported and :procparam:`rbkg` is set to its default value
+of 1. The data and the background function found using the default
+parameter values can be found by pressing the E button. This is shown
+here on the left.
 
 .. subfigstart::
 
@@ -65,32 +66,34 @@ the right panel above.
 When you press the R button, the Fourier transform is plotted, as in the
 bottom panel above.
 
-So :procparam:`rbkg` is the value below which the :demeter:`AUTOBK` algorithm
-removes Fourier components. As you can see, below 1 the |chi| (R)
-function is essentially 0, but above 1 the spectrum is non-zero.
+So :procparam:`rbkg` is the value below which the :demeter:`AUTOBK`
+algorithm removes Fourier components. As you can see, below 1 the
+|chi| (R) function is essentially 0, but above 1 the spectrum is
+non-zero.
 
-Now let's examine the effect of choosing different values for :procparam:`rbkg`.
-First, make a copy of the data so we can directly compare different
-values. Do that by selecting :quoted:`Copy current group` from the Group menu or
-by pressing ``Shift-y``. :demeter:`athena` now looks like this.
+Now let's examine the effect of choosing different values for
+:procparam:`rbkg`.  First, make a copy of the data so we can directly
+compare different values. Do that by selecting :quoted:`Copy current
+group` from the Group menu or by pressing
+``Shift-y``. :demeter:`athena` now looks like this.
 
 .. _fig-rbkg:
 
 .. figure:: ../images/rbkg.png
    :target: ../images/rbkg.png
-   :width: 45%
+   :width: 65%
    :align: center
 
    The original ``fe.060`` data and a copy of that data.
 
 Click on the group *Copy of fe.060* to display its parameters in the
-main window. Change :procparam:`rbkg` to 0.2. Now we want to directly compare these
-two ways of removing the background. The way of plotting multiple items
-in the groups list involves the row of purple plotting buttons and the
-little check buttons next to the items in the group list. Click on the
-little check buttons next to *fe.060* and *Copy 1 of fe.060*, as shown
-in the screenshot above. Now plot these two items by clicking the R
-button. It should look something like this.
+main window. Change :procparam:`rbkg` to 0.2. Now we want to directly
+compare these two ways of removing the background. The way of plotting
+multiple items in the groups list involves the row of purple plotting
+buttons and the little check buttons next to the items in the group
+list. Click on the little check buttons next to *fe.060* and *Copy 1
+of fe.060*, as shown in the screenshot above. Now plot these two items
+by clicking the R button. It should look something like this.
 
 
 .. subfigstart::
@@ -137,14 +140,15 @@ The blue spectrum oscillates around the zero axis, as one would expect.
 The red one has an obvious, long-wavelength oscillation. It is that
 oscillation that gives rise to the low-R peak in the |chi| (R) spectrum.
 
-The background function, computed using 0.2 as the value of :procparam:`rbkg` and
-plotted in energy, is shown above in the bottom panel.
+The background function, computed using 0.2 as the value of
+:procparam:`rbkg` and plotted in energy, is shown above in the bottom
+panel.
 
-Using an :procparam:`rbkg` value of 0.2 yields a background function that is not
-able to follow the actual shape of the data.
+Using an :procparam:`rbkg` value of 0.2 yields a background function
+that is not able to follow the actual shape of the data.
 
-What happens if the value of :procparam:`rbkg` is set to a very large value? The
-|chi| (R) data for the values 1 and 2.5 are shown here.
+What happens if the value of :procparam:`rbkg` is set to a very large
+value? The |chi| (R) data for the values 1 and 2.5 are shown here.
 
 .. _fig-rbkg_125:
 

@@ -215,7 +215,6 @@ the flattened data are highly distorted.
     :target: ../../images/bkg_normbad.png
     :width: 100%
 
-
 .. subfigend::
     :width: 0.45
     :label: fig_badnorm
@@ -258,36 +257,38 @@ in how the |chi| (k) data are normalized.
     :width: 0.45
     :label: fig_subtlepost
 
-    (Left) Example of a subtle effect in how the post-edge line is chosen in
-    a hydrated uranyl species. (Right) Comparing the flattened XANES data
-    for different choices of post-edge line in a hydrated uranyl species.
+    (Left) Example of a subtle effect in how the post-edge line is
+    chosen in a hydrated uranyl species. (Right) Comparing the
+    flattened XANES data for different choices of post-edge line in a
+    hydrated uranyl species.
 
 In this example, the different choice for the lower bound of the
 normalization range (42 eV in one case, 125 eV in the other) has an
-impact on the flattening of these uranium edge data data, which in turn
-may have in impact in the evaluation of average valence in the system.
-The small difference in the :procparam:`edge step` will also slightly attenuate
-|chi| (k).
+impact on the flattening of these uranium edge data data, which in
+turn may have in impact in the evaluation of average valence in the
+system.  The small difference in the :procparam:`edge step` will also
+slightly attenuate |chi| (k).
 
 
 
 Getting the pre-edge right
 --------------------------
 
-The choice of the :procparam:`pre-edge range` parameters is similarly important and
-also requires visual inspection. A poor choice can result in an
-incorrect value of the :procparam:`edge step` and in distortions to the flattened
-data. In the following spectrum, we see the presence of a small yttrium
-K-edge at 17038 eV which distorts the pre-edge for a uranium
-L\ :sub:`III`-edge spectrum at 17166 eV as shown in the figure below. In
-this case the :procparam:`pre-edge range` should be chosen to be entirely above the
-yttrium K-edge energy.
+The choice of the :procparam:`pre-edge range` parameters is similarly
+important and also requires visual inspection. A poor choice can
+result in an incorrect value of the :procparam:`edge step` and in
+distortions to the flattened data. In the following spectrum, we see
+the presence of a small yttrium K-edge at 17038 eV which distorts the
+pre-edge for a uranium L\ :sub:`III`-edge spectrum at 17166 eV as
+shown in the figure below. In this case the :procparam:`pre-edge
+range` should be chosen to be entirely above the yttrium K-edge
+energy.
 
 .. _fig-uy:
 
 .. figure:: ../images/bkg_uy.png
    :target: ../images/bkg_uy.png
-   :width: 65%
+   :width: 45%
    :align: center
 
    A sediment sample with both uranium and yttrium.
@@ -298,15 +299,16 @@ Measuring and normalizing XANES data
 
 If time and the demands of the experiment permit, it is always a good
 idea to measure significant amounts of the pre- and post-edge regions.
-About 150 volts in the pre-edge and at least 300 volts in the post-edge
-is a good rule of thumb. With shorter regions, it may be difficult to
-find normalization boundaries that provide good normalization lines.
-Without a good normalization, it can be difficult to compare a XANES
-measurement quantitatively with other measurements.
+About 150 volts in the pre-edge and at least 300 volts in the
+post-edge is a good rule of thumb. With shorter regions, it may be
+difficult to find normalization boundaries that provide good
+normalization lines.  Without a good normalization, it can be
+difficult to compare a XANES measurement quantitatively with other
+measurements.
 
-Reducing the :procparam:`normalization order` might help in the case of limited
-post-edge range. When measuring XANES spectra in a step scan, it is
-often a good idea to add several widely spaced steps to the end of a
-scan to extend the :procparam:`normalization range` without adding excessive time
-to scan.
+Reducing the :procparam:`normalization order` might help in the case
+of limited post-edge range. When measuring XANES spectra in a step
+scan, it is often a good idea to add several widely spaced steps to
+the end of a scan to extend the :procparam:`normalization range`
+without adding excessive time to scan.
 
