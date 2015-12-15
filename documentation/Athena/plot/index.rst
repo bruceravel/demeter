@@ -10,7 +10,7 @@ are no buttons or other kinds of controls that explicitly tell
 :demeter:`athena` to perform the basic processing chores. Instead,
 there are the plot buttons. When you click one of the plot buttons,
 the data processing which is required will be performed before the
-plot is made. For example, if you press the R button, the background
+plot is made. For example, if you press the :kbd:`R,orange` button, the background
 will be removed from the current group and the |chi| (k) will be
 Fourier transformed to |chi| (R). Once all that is finished, the plot
 in R-space will be made.
@@ -18,9 +18,9 @@ in R-space will be made.
 As you change the values of the parameters in the main window,
 :demeter:`athena` keeps track of what has been changed and which data
 processing steps need to be redone. If you change the
-:procparam:`krange` parameters, then press the R button again, the
-Fourier transform will be updated, but :demeter:`athena` will
-recognize that the background removal is still up-to-date.
+:procparam:`krange` parameters, then press the :kbd:`R,orange` button
+again, the Fourier transform will be updated, but :demeter:`athena`
+will recognize that the background removal is still up-to-date.
 
 .. todo:: Write document page for title, legends, single file tab.
 
