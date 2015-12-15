@@ -12,3 +12,5 @@
 .. |sup1|  unicode:: U+00B9 .. SUPERSCRIPT ONE
 .. |AA|    unicode:: U+00C5 .. LATIN CAPITAL LETTER A WITH RING ABOVE
    :rtrim:
+.. |pm|    unicode:: U+00B1 .. PLUS-MINUS SIGN
+   :trim:

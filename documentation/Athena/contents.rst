@@ -19,4 +19,5 @@ Table of Contents
    process/index.rst
    analysis/index.rst
    other/index.rst
+   examples/index.rst
    hephaestus.rst
