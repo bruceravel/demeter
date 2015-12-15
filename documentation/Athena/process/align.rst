@@ -56,7 +56,7 @@ type an energy shift value in the box that displays the current value of
 :procparam:`Energy shift`. You can click these buttons until the data line up
 nicely.
 
-Clicking the :quoted:`Auto align` button performs a simple fit in an attempt to
+Clicking the :kbd:`Auto align,light` button performs a simple fit in an attempt to
 align your data to the standard. The fit is evaluated over an energy
 range from 50 volts below the edge to 100 volts above. The parameters in
 the fit are an energy shift and an overall scaling term. The function
@@ -70,13 +70,13 @@ misaligned by less than 5 or 10 volts. For noisy data, the fit may be
 more successful if you choose to fit smoother data by selecting that
 option from the menu labeled :quoted:`Fit as:`. For very misaligned data, you
 may need to manually set an approximate value for :procparam:`Energy
-shift` before clicking the :quoted:`Auto align` button.
+shift` before clicking the :kbd:`Auto align,light` button.
 
 You can apply the automated alignment algorithm to many groups in
-sequence. First mark all the groups that need to be aligned, then click
-the button that says :quoted:`Align marked groups`. This may take a few minutes,
-depending on how many groups you have marked, but at the end hopefully
-all of your data will be nicely aligned.
+sequence. First mark all the groups that need to be aligned, then
+click the button that says :kbd:`Align marked groups,light`. This may
+take a few minutes, depending on how many groups you have marked, but
+at the end hopefully all of your data will be nicely aligned.
 
 This alignment algorithm is the same as the one used by `the
 preprocessing

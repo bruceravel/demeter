@@ -2,13 +2,11 @@
 Calibrating data groups
 =======================
 
-Putting data on an absolute energy grid
----------------------------------------
-
-Data calibration is the process of selecting a point in your data as the
-edge energy and applying an energy shift to your measured data so that
-the selected point is at a specified value. For metals, that value is
-usually the tabulated edge energy.
+Data calibration is the process of selecting a point in your data as
+the edge energy and applying an energy shift to your measured data so
+that the selected point is at a specified value. Thus, it is intended
+to put your data onto an absolute energy grid.  For metals, that
+value is usually the tabulated edge energy.
 
 .. _fig-calibrate:
 
@@ -29,8 +27,8 @@ replotted.
 
 The selected point is shown in the plot with the orange circle, as shown
 in the plot below. You can type in a new value in the :quoted:`Reference` box or
-click the :quoted:`Select a point` button then click on a point in the plot. By
-default, the :quoted:`Calibrate to` box contains the tabulated edge energy of
+click the :kbd:`Select a point,light` button then click on a point in the plot. By
+default, the :kbd:`Calibrate to,light` box contains the tabulated edge energy of
 the absorber measured for these data, but that too can be edited.
 
 .. _fig-calplot:
@@ -43,12 +41,13 @@ the absorber measured for these data, but that too can be edited.
    As you work on calibrating your data, the current reference point is
    indicated by a small orange circle.
 
-When you plot the second derivative, the :quoted:`Find zero crossing` button
-becomes enabled. This finds the zero crossing of the second derivative
-that is nearest to the current value of the reference point. When
-plotting the second derivative, smoothing helps, even for fairly clean
-data.
+When you plot the second derivative, the :kbd:`Find zero
+crossing,first` button becomes enabled. This finds the zero crossing
+of the second derivative that is nearest to the current value of the
+reference point. When plotting the second derivative, smoothing helps,
+even for fairly clean data.
 
-When you click the :quoted:`Calibrate` button, the values of :procparam:`E0`
-and :procparam:`Energy shift` are set for the current group such that
-the selected point in the data takes the calibration value.
+When you click the :kbd:`Calibrate,first` button, the values of
+:procparam:`E0` and :procparam:`Energy shift` are set for the current
+group such that the selected point in the data takes the calibration
+value.

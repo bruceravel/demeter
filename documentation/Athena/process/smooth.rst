@@ -27,12 +27,15 @@ smoothing algorithm repeatedly to your data. The number of repetitions
 is set using the number selection control used to set the kernel size
 of the other two options..
 
-One of these days, I intend to implement a `Savitsky-Golay
-filter <http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_smoothing_filter>`__.
+A `Savitsky-Golay filter
+<http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_smoothing_filter>`__.
+is available when using :demeter:`larch`, but not with
+:demeter:`ifeffit`.
 
-You can overplot the data and the smoothed data using the button on the
-left, as shown below. The other button makes a group out of the smoothed
-data and places it in the group list.
+You can overplot the data and the smoothed data using the :kbd:`Plot
+data and smoothed,light`. The :kbd:`Make smoothed group,light` button
+makes a group out of the smoothed data and places it in the group
+list.
 
 .. _fig-smooth:
 

@@ -11,10 +11,10 @@ varying a single processing parameter over a specified range. The
 give an initial value, an increment, and a number of copies, thus
 specifying the range over which the parameter is examine.
 
-Clicking the :quoted:`Make series` button creates copies of the current data
-group with the examined parameter set incrementally. The set of copied
-groups are marked and plotted in the space most appropriate for the
-examined parameter.
+Clicking the :kbd:`Make series,light` button creates copies of the
+current data group with the examined parameter set incrementally. The
+set of copied groups are marked and plotted in the space most
+appropriate for the examined parameter.
 
 For parameters, line the pre- and post-edge line parameter, which affect
 the edge step, the average edge step value and its standard devaition
