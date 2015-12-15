@@ -105,22 +105,22 @@ through the middle of the data in their respective ranges.
 .. _fig-prepost:
 
 .. figure::  ../../_images/bkg_prepost.png
-    :target: ../_images/bkg_prepost.png
-    :width: 100%
+   :target: ../_images/bkg_prepost.png
+   :width: 100%
 
 .. _fig-norm:
 
 .. figure::  ../../_images/bkg_norm.png
-    :target: ../_images/bkg_norm.png
-    :width: 100%
+   :target: ../_images/bkg_norm.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_normalization
+   :width: 0.45
+   :label: _fig-normalization
 
-    (Left) Cu foil |mu| (E) with pre and post lines. (Right) Normalized |mu| (E)
-    data for a copper foil.
+   (Left) Cu foil |mu| (E) with pre and post lines. (Right) Normalized |mu| (E)
+   data for a copper foil.
 
 Data can be plotted with the pre-edge and normalization lines using
 controls in the `energy plot
@@ -206,24 +206,24 @@ the flattened data are highly distorted.
 .. _fig-postbad:
 
 .. figure::  ../../_images/bkg_postbad.png
-    :target: ../_images/bkg_postbad.png
-    :width: 100%
+   :target: ../_images/bkg_postbad.png
+   :width: 100%
 
 .. _fig-normbad:
 
 .. figure::  ../../_images/bkg_normbad.png
-    :target: ../_images/bkg_normbad.png
-    :width: 100%
+   :target: ../_images/bkg_normbad.png
+   :width: 100%
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_badnorm
+   :width: 0.45
+   :label: _fig-badnorm
 
-    (Left) The post-edge line is chosen very poorly for this BaTiO\ :sub:`3`
-    spectrum. The upper end of the normalization range is on the other side
-    of the Ba L\ :sub:`III` edge. (Right) The poor choice of normalization
-    range for BaTiO\ :sub:`3` results in very poorly normalized Ti K edge
-    data.
+   (Left) The post-edge line is chosen very poorly for this BaTiO\ :sub:`3`
+   spectrum. The upper end of the normalization range is on the other side
+   of the Ba L\ :sub:`III` edge. (Right) The poor choice of normalization
+   range for BaTiO\ :sub:`3` results in very poorly normalized Ti K edge
+   data.
 
 The previous example is obviously an extreme case, but it illustrates
 the need to examine the normalization parameters as you process your
@@ -237,30 +237,30 @@ in how the |chi| (k) data are normalized.
 .. _fig-subtlepost1:
 
 .. figure::  ../../_images/bkg_subtlepost.png
-    :target: ../_images/bkg_subtlepost.png
-    :width: 100%
+   :target: ../_images/bkg_subtlepost.png
+   :width: 100%
 
 .. _fig-subtlepost2:
 
 .. figure::  ../../_images/bkg_subtlepost2.png
-    :target: ../_images/bkg_subtlepost2.png
-    :width: 100%
+   :target: ../_images/bkg_subtlepost2.png
+   :width: 100%
 
 .. _fig-subtlepost3:
 
 .. figure::  ../../_images/bkg_subtlepost_compare.png
-    :target: ../_images/bkg_subtlepost_compare.png
-    :width: 100%
+   :target: ../_images/bkg_subtlepost_compare.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_subtlepost
+   :width: 0.45
+   :label: _fig-subtlepost
 
-    (Left) Example of a subtle effect in how the post-edge line is
-    chosen in a hydrated uranyl species. (Right) Comparing the
-    flattened XANES data for different choices of post-edge line in a
-    hydrated uranyl species.
+   (Left) Example of a subtle effect in how the post-edge line is
+   chosen in a hydrated uranyl species. (Right) Comparing the
+   flattened XANES data for different choices of post-edge line in a
+   hydrated uranyl species.
 
 In this example, the different choice for the lower bound of the
 normalization range (42 eV in one case, 125 eV in the other) has an

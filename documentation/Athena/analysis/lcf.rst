@@ -348,8 +348,7 @@ below.
    :width: 45%
    :align: center
 
-
-The best fit from a combinatorial sequence.
+   The best fit from a combinatorial sequence.
 
 Depending on the selection of standards, it is reasonable that two or
 more fits might have similar R-factors. You might interpret that to mean

@@ -9,7 +9,7 @@ figure below is a sequence of Pt L\ :sub:`III` spectra measured on a
 hydrogenated Pt catalyst. In this sequence, the hydrogen is being
 desorbed, resulting in measurable changes in the spectra.
 
-.. _fig-diff-mu:
+.. _fig-diffmu:
 
 
 .. figure:: ../../_images/diff_mu.png
@@ -86,13 +86,13 @@ will be substituted by specific values.
 
 .. subfigstart::
 
-.. _fig-diff-diff:
+.. _fig-diffdiff:
    
 .. figure:: ../../_images/diff_diff.png
    :target: ../_images/diff_diff.png
    :width: 100%
 
-.. _fig-diff-diffsequence:
+.. _fig-diffdiffsequence:
    
 .. figure:: ../../_images/diff_diffsequence.png
    :target: ../_images/diff_diffsequence.png
@@ -100,7 +100,7 @@ will be substituted by specific values.
 
 .. subfigend::
    :width: 0.4
-   :label: fig-diffdiff
+   :label: _fig-diffdiffplot
 
    (Left) The difference spectra between the first group in the list and
    the current group in the screenshot of the difference tool. (Right) The

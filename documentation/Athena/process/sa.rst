@@ -116,7 +116,7 @@ the corrected spectra are shown on the bottom.
 
 .. subfigend::
    :width: 0.45
-   :label: fig_sa
+   :label: _fig-sa
 
    (Left) This is the 0.94M data corrected by this algorithm. (Right)
    Here is the raw data for the three samples. You can see the effect
@@ -216,7 +216,7 @@ provides a useful metric for whether a film sample can be considered
 
 .. subfigend::
    :width: 0.45
-   :label: fig_sainfo
+   :label: _fig-sainfo
 
    (Left) The information depth for an iron/gallium alloy, plotted in
    energy. (Right) The same plot, but in wavenumber.

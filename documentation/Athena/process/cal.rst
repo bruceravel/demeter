@@ -42,12 +42,12 @@ the absorber measured for these data, but that too can be edited.
    indicated by a small orange circle.
 
 When you plot the second derivative, the :kbd:`Find zero
-crossing,first` button becomes enabled. This finds the zero crossing
+crossing,light` button becomes enabled. This finds the zero crossing
 of the second derivative that is nearest to the current value of the
 reference point. When plotting the second derivative, smoothing helps,
 even for fairly clean data.
 
-When you click the :kbd:`Calibrate,first` button, the values of
+When you click the :kbd:`Calibrate,light` button, the values of
 :procparam:`E0` and :procparam:`Energy shift` are set for the current
 group such that the selected point in the data takes the calibration
 value.

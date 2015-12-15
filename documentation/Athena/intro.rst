@@ -64,6 +64,8 @@ When :demeter:`athena` first starts, something like the picture below appears on
 your computer screen. The :demeter:`athena` window is divided into several parts.
 We will discuss each of these parts and give each a name.
 
+.. _fig-athenamain:
+
 .. figure:: ../_images/athena_main.png
    :target: _images/athena_main.png
    :width: 65%
@@ -106,6 +108,8 @@ Below the group list area are the plot buttons. Below that are the
 buttons used to set the k-weighting for use when plotting in k-space or
 when making a forward Fourier transform. Below that are various other
 `plotting controls <ui/mark.html>`__ in the plotting options section.
+
+.. _fig-athenawithdata:
 
 .. figure:: ../_images/athena_withdata.png
    :target: _images/athena_withdata.png

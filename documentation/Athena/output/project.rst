@@ -110,7 +110,7 @@ value of :configparam:`athena,project_format`.
 
 
 Summary
-^^^^^^^
+~~~~~~~
 
 #. JSON-style project file is valid JSON, possibly gzipped
 
@@ -145,7 +145,7 @@ Summary
    ``_____journal`` and a list of strings containing the jounral text.
 
 Fields in the JSON file
-^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The JSON-style project file is typically saved as a gzipped file with
 a ``.prj`` extension. :demeter:`athena`/:demeter:`artemis` are able to
@@ -169,7 +169,7 @@ for variable or dictionary key names in most languages.
 
 
 Headers
-^^^^^^^
+~~~~~~~
 
 Standard JSON does not have comments, so special headers are used to
 carry material that might have gone into comments.
@@ -217,7 +217,7 @@ said, those two headers are not used in any way by :demeter:`athena`
 or :demeter:`artemis`.
 
 Other fields
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 
 There **must** be a field called ``_____order`` which is a list of
 group names in the order of display. Because the decoded JSON file is
@@ -238,7 +238,7 @@ file. In the context of :demeter:`athena`, this is the content of the
 `project journal <../other/journal.html>`__.
 
 Data fields
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 A data field has a key which is used as the :demeter:`Demeter` group
 attribute, the :demeter:`ifeffit` group name, and the :demeter:`larch`
@@ -308,7 +308,7 @@ subfields as single lines, but that is **not required**.
 
 
 Attributes
-^^^^^^^^^^
+~~~~~~~~~~
 
 The following tables explain all the attributes found in a project
 file written by :demeter:`athena`. They are all listed here for the
@@ -340,7 +340,7 @@ sufficiently easy for :demeter:`demeter` to be retrofitted to use a different
 lexicon.
 
 Essential attributes
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 A data entry in the project file cannot be considered complete without
 these attributes included in the ``args`` dictionary.
@@ -364,7 +364,7 @@ Note that the ``label`` need not be unique, but the ``name`` **must**
 be.
 
 Background removal attributes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +-------------------+-----------------------------------------------------+---------------------------------------------+
 | attribute name    | description                                         | :demeter:`Demeter`'s default                |
@@ -449,7 +449,7 @@ Background removal attributes
 +-------------------+-----------------------------------------------------+---------------------------------------------+
 
 Forward transform parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +-------------------+-----------------------------------------------+------------------------------+
 | attribute name    | description                                   | :demeter:`Demeter`'s default |
@@ -474,7 +474,7 @@ Forward transform parameters
 +-------------------+-----------------------------------------------+------------------------------+
 
 Backward transform parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +----------------+--------------------------------------------+------------------------------+
 | attribute name | description                                | :demeter:`Demeter`'s default |
@@ -493,7 +493,7 @@ back-transform range in :demeter:`athena` and uses the same
 attributes.
 
 Fitting parameters
-^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~
 
 +--------------------+------------------------------------------------------------------+------------------------------------------+
 | attribute name     | description                                                      | :demeter:`Demeter`'s default             |
@@ -535,7 +535,7 @@ Note that the fitting range in :demeter:`artemis` is the back-transform range in
 :demeter:`athena` and uses the same attributes.
 
 Plotting parameters
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 +----------------+-----------------------------------------------------+----------------------------------------+
 | attribute name | description                                         | :demeter:`Demeter`'s default           |
@@ -548,7 +548,7 @@ Plotting parameters
 +----------------+-----------------------------------------------------+----------------------------------------+
 
 Parameters related to contructing data from column ascii files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 An external application saving an :demeter:`athena` project file can probably
 ignore this group of attributes. In :demeter:`athena`, for a derived data group (a
@@ -592,7 +592,7 @@ string and the booleans are set to false.
 +-----------------+----------------------------------------------------------+--------------------------------+
 
 Other data processing parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Again, these are all things that an external program is unlikely to need
 to specify.
@@ -626,12 +626,11 @@ to specify.
 +----------------------+--------------------------------------------------------------------------------+------------------------------+
 
 And all the rest
-^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~
 
-Much of this need not be written by an external application.
-
-Some of this is chaff. I've been working on :demeter:`athena` for a loooong time
-now....
+Much of this need not be written by an external application.  Some of
+this is chaff. I've been working on :demeter:`athena` for a loooong
+time now....
 
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
 | attribute name        | description                                                                   | :demeter:`Demeter`'s default                    |

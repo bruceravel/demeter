@@ -45,21 +45,21 @@ monochromator calibration is obviously wrong as the orange circle is at
 .. _fig-fedatacalib:
 
 .. figure::  ../../_images/ex_data_calib.png
-    :target: ../_images/ex_data_calib.png
-    :width: 100%
+   :target: ../_images/ex_data_calib.png
+   :width: 100%
 
 .. _fig-fedatasecond:
 
 .. figure::  ../../_images/ex_data_second.png
-    :target: ../_images/ex_data_second.png
-    :width: 100%
+   :target: ../_images/ex_data_second.png
+   :width: 100%
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_febegin
+   :width: 0.45
+   :label: _fig-febegin
 
-    The iron foil data, as plotted in the calibration tool. (Left)
-    Derivative of |mu| (E). (Right) Second derivative of |mu| (E).
+   The iron foil data, as plotted in the calibration tool. (Left)
+   Derivative of |mu| (E). (Right) Second derivative of |mu| (E).
 
 We want to select the peak of the first derivative and set that point
 to 7112 eV. We can simply use the currently selected point -- it is
@@ -99,38 +99,38 @@ energy by clicking on the :kbd:`E,purple` button.
 .. _fig-fedatamisaligned:
 
 .. figure::  ../../_images/ex_data_misaligned.png
-    :target: ../_images/ex_data_misaligned.png
-    :width: 100%
+   :target: ../_images/ex_data_misaligned.png
+   :width: 100%
 
 .. _fig-fedataalign:
 
 .. figure::  ../../_images/ex_data_align.png
-    :target: ../_images/ex_data_align.png
-    :width: 100%
+   :target: ../_images/ex_data_align.png
+   :width: 100%
 
 .. _fig-fedatachik:
 
 .. figure::  ../../_images/ex_data_chik.png
-    :target: ../_images/ex_data_chik.png
-    :width: 100%
+   :target: ../_images/ex_data_chik.png
+   :width: 100%
 
 .. _fig-fedataaligned:
 
 .. figure::  ../../_images/ex_data_aligned.png
-    :target: ../_images/ex_data_aligned.png
-    :width: 100%
+   :target: ../_images/ex_data_aligned.png
+   :width: 100%
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_fealign
+   :width: 0.45
+   :label: _fig-fealign
 
-    (Upper left) Misaligned iron foil |mu| (E) data. (Upper right) The
-    derivatives of the misaligned data, as plotted in the alignment
-    tool.  (Lower left) Aligned data plotted in k, but with
-    :procparam:`E0` unconstrained.  (Lower right) Aligned data plotted
-    in k after constraining :procparam:`E0`. Once aligned and
-    constrained in :procparam:`E0`, these successive scans are quite
-    consistent.
+   (Upper left) Misaligned iron foil |mu| (E) data. (Upper right) The
+   derivatives of the misaligned data, as plotted in the alignment
+   tool.  (Lower left) Aligned data plotted in k, but with
+   :procparam:`E0` unconstrained.  (Lower right) Aligned data plotted
+   in k after constraining :procparam:`E0`. Once aligned and
+   constrained in :procparam:`E0`, these successive scans are quite
+   consistent.
 
 The upper left of the image above shows that these data are not aligned.
 Since they are successive scans on the same iron foil under the same
@@ -253,7 +253,7 @@ The |chi| (k) data for the aligned and constrained data are shown below.
 
 .. figure:: ../../_images/ex_data_allchik.png
    :target: ../_images/ex_data_allchik.png
-   :width: 65%
+   :width: 45%
    :align: center
 
    The |chi| (k) spectra for all the iron foil data.

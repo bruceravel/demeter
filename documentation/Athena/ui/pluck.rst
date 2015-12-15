@@ -42,7 +42,7 @@ and data analysis tools use pluck buttons, as does the
 
 .. subfigend::
    :width: 0.45
-   :label: fig_plucking
+   :label: _fig-plucking
 
    (Left) After clicking on the pluck button, the program waits for
    you to click on the plot, which shows |mu| (E) for BaTiO\

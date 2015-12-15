@@ -8,8 +8,8 @@ Forward
    #. installation instructions, document building instructions
    #. CC image in epilog + linebreak as a directive (not a role)
    #. mark index entries
-   #. link to AuCl plot in examples chapter
    #. use :kbd:`Button,light` throughout
+   #. fix image numbering
       
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
@@ -151,9 +151,10 @@ The following great software tools were used to create this document:
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
 <http://www.kde.org>`__. The screenshots of spreadsheets made from a
-report (Figure :num:`fig-exportexcel`) and `an LCF fit
-report <examples/aucl.html#ex_aucl_excel>`__ are displayed in
+report (:num:`Fig. #fig-exportexcel`) and an LCF fit
+report (:num:`Fig. #fig-auclexcel`) are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
+
 
 The images of the `Tholos temple
 <https://en.wikipedia.org/wiki/Delphi#Tholos>`_ on the front page and

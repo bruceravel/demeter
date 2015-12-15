@@ -24,23 +24,23 @@ range are ignored.
 .. _fig-indictab:
 
 .. figure::  ../../_images/plot_indic.png
-    :target: ../_images/plot_indic.png
-    :width: 50%
+   :target: ../_images/plot_indic.png
+   :width: 50%
 
 .. _fig-indicplot:
 
 .. figure::  ../../_images/plot_indicplot.png
-    :target: ../_images/plot_indicplot.png
-    :width: 100%
+   :target: ../_images/plot_indicplot.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_indic
+   :width: 0.45
+   :label: _fig-indic
 
-    (Left) The indicator tab. (Right) An example of a plot with indicators.
-    Note that plots made in E, k, or q will plot indicators selected in any
-    of those three spaces.
+   (Left) The indicator tab. (Right) An example of a plot with indicators.
+   Note that plots made in E, k, or q will plot indicators selected in any
+   of those three spaces.
 
 The following `preferences <../other/prefs.html>`__ can be set to
 customize the appearance of the indicators.

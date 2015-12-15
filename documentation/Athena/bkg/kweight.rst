@@ -37,28 +37,28 @@ strength of the clamp in the evaluation of |chi| |sup2|.
 .. _fig-clamp_mu:
 
 .. figure::  ../../_images/clamp_mu.png
-    :target: ../_images/clamp_mu.png
-    :width: 100%
+   :target: ../_images/clamp_mu.png
+   :width: 100%
 
 .. _fig-clamp_chi:
 
 .. figure::  ../../_images/clamp_chi.png
-    :target: ../_images/clamp_chi.png
-    :width: 100%
+   :target: ../_images/clamp_chi.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_clamp
+   :width: 0.45
+   :label: _fig-clamp
 
-    (Left) EuTiO\ :sub:`3` Ti K-edge data with the background
-    subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
-    :quoted:`none`. Note that the end of the spline deviates significantly
-    from the end of the data.  (Right) Comparing the effects of
-    different values of the high-end spline clamp on the EuTiO\
-    :sub:`3` data with all other parameters equal. The data using the
-    :quoted:`rigid` clamp show the most physically reasonable behavior at the
-    end of the data range.
+   (Left) EuTiO\ :sub:`3` Ti K-edge data with the background
+   subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
+   :quoted:`none`. Note that the end of the spline deviates significantly
+   from the end of the data.  (Right) Comparing the effects of
+   different values of the high-end spline clamp on the EuTiO\
+   :sub:`3` data with all other parameters equal. The data using the
+   :quoted:`rigid` clamp show the most physically reasonable behavior at the
+   end of the data range.
 
 The default value of the clamp is :quoted:`none` at the low end of the energy
 range and :quoted:`strong` at the high end. Clamps tend not to help at the low
@@ -100,7 +100,7 @@ poor evaluation of |mu| |sub0| (E). Indeed, the |mu| |sub0| (E)
 evaluated from noisy data with a large value of :procparam:`kweight` will
 sometimes oscillate wildly, as shown in the example below.
 
-.. _fig-bkg_badkw:
+.. _fig-bkgbadkw:
 
 .. figure:: ../../_images/bkg_badkw.png
    :target: ../_images/bkg_badkw.png

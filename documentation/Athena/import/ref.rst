@@ -24,7 +24,7 @@ standards and carry them with you to the synchrotron. By using the same
 standard for every experiment at an edge, you can align any data, even
 data measured years apart at different synchrotrons.
 
-.. _fig-import_ref:
+.. _fig-importref:
 
 .. figure:: ../../_images/import_ref.png
    :target: ../_images/import_ref.png

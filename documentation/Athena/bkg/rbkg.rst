@@ -32,32 +32,32 @@ here on the left.
 
 .. subfigstart::
 
-.. _fig-rbkg_initial1:
+.. _fig-rbkginitial1:
 
 .. figure::  ../../_images/rbkg_initial.png
-    :target: ../_images/rbkg_initial.png
-    :width: 100%
+   :target: ../_images/rbkg_initial.png
+   :width: 100%
 
-.. _fig-rbkg_initial_k:
+.. _fig-rbkginitial_k:
 
 .. figure::  ../../_images/rbkg_initial_k.png
-    :target: ../_images/rbkg_initial_k.png
-    :width: 100%
+   :target: ../_images/rbkg_initial_k.png
+   :width: 100%
 
-.. _fig-_initial_r:
+.. _fig-rbkginitial_r:
 
 .. figure::  ../../_images/rbkg_initial_r.png
-    :target: ../_images/rbkg_initial_r.png
-    :width: 100%
+   :target: ../_images/rbkg_initial_r.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_rbkg_initial
+   :width: 0.45
+   :label: _fig-rbkginitial
 
-    (Right) The ``fe.060`` data and its default background function. (Left) The
-    ``fe.060`` |chi| (k) data with its default background function. (Bottom) The
-    ``fe.060`` |chi| (R) data with its default background function.
+   (Right) The ``fe.060`` data and its default background function. (Left) The
+   ``fe.060`` |chi| (k) data with its default background function. (Bottom) The
+   ``fe.060`` |chi| (R) data with its default background function.
 
 The background function is subtracted from the data and normalized,
 resulting in a |chi| (k) function. Press the k button to see |chi| (k), shown in
@@ -98,33 +98,33 @@ by clicking the R button. It should look something like this.
 
 .. subfigstart::
 
-.. _fig-rbkg_102:
+.. _fig-rbkg102:
 
 .. figure::  ../../_images/rbkg_1_0_2.png
-    :target: ../_images/rbkg_1_0_2.png
-    :width: 100%
+   :target: ../_images/rbkg_1_0_2.png
+   :width: 100%
 
-.. _fig-rbkg_102k:
+.. _fig-rbkg102k:
 
 .. figure::  ../../_images/rbkg_1_0_2k.png
-    :target: ../_images/rbkg_1_0_2k.png
-    :width: 100%
+   :target: ../_images/rbkg_1_0_2k.png
+   :width: 100%
 
-.. _fig-rbkg_02e:
+.. _fig-rbkg02e:
 
 .. figure::  ../../_images/rbkg_0_2e.png
-    :target: ../_images/rbkg_0_2e.png
-    :width: 100%
+   :target: ../_images/rbkg_0_2e.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_rbkg_10
+   :width: 0.45
+   :label: _fig-rbkg10
 
-    (Left) Comparing |chi| (R) for the data and its copy with :procparam:`rbkg` values
-    of 1 and 0.2. (Right) Comparing |chi| (k) for the data and its copy
-    with :procparam:`rbkg` values of 1 and 0.2. (Bottom) |mu| (E) and the background
-    for the copy with an :procparam:`rbkg` value 0.2.
+   (Left) Comparing |chi| (R) for the data and its copy with :procparam:`rbkg` values
+   of 1 and 0.2. (Right) Comparing |chi| (k) for the data and its copy
+   with :procparam:`rbkg` values of 1 and 0.2. (Bottom) |mu| (E) and the background
+   for the copy with an :procparam:`rbkg` value 0.2.
 
 I suspect the blue spectrum is something like what you expect EXAFS data
 to look like, while the red one seems somehow worse. In fact, it is easy

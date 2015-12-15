@@ -17,13 +17,13 @@ in a |chi| (k) signal that is somewhat amplified.
 
 .. subfigstart::
 
-.. _fig-blg_s_mu:
+.. _fig-bkgsmu:
 
 .. figure::  ../../_images/bkg_s_mu.png
     :target: ../_images/bkg_s_mu.png
     :width: 100%
 
-.. _fig-s_chi:
+.. _fig-bkgschi:
 
 .. figure::  ../../_images/bkg_s_chi.png
     :target: ../_images/bkg_s_chi.png
@@ -32,7 +32,7 @@ in a |chi| (k) signal that is somewhat amplified.
 
 .. subfigend::
     :width: 0.45
-    :label: fig_bkg_s
+    :label: _fig-bkgs
 
     (Left) Sulfur K edge spectrum measured in fluorescence. (Right)
     The blue trace is the |chi| (k) data extracted directly from the

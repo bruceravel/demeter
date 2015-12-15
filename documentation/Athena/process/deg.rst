@@ -59,35 +59,35 @@ point from the data, shown in the bottom panel.
 .. _fig-degplot:
 
 .. figure::  ../../_images/deglitch_plot.png
-    :target: ../_images/deglitch_plot.png
-    :width: 100%
+   :target: ../_images/deglitch_plot.png
+   :width: 100%
 
 .. _fig-degpoint:
 
 .. figure::  ../../_images/deglitch_point.png
-    :target: ../_images/deglitch_point.png
-    :width: 100%
+   :target: ../_images/deglitch_point.png
+   :width: 100%
 
 .. _fig-degpointremoved:
 
 .. figure::  ../../_images/deglitch_pointremoved.png
-    :target: ../_images/deglitch_pointremoved.png
-    :width: 100%
+   :target: ../_images/deglitch_pointremoved.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_deglicth_points
+   :width: 0.45
+   :label: _fig-deglicthpoints
 
 
-    (Left) This is an example of data the needs deglitching. In this
-    case, there was a problem with data channels not arriving at the
-    measurement computer in the proper sequence. This timing problem
-    resulted in occasionally spikes in the data. (Right) A point has
-    been selected for removal. The point flagged for removal is
-    indicated with a little orange circle. (Bottom) The selected point
-    has been removed from the data. The deglitching margins are
-    displayed along with the data.
+   (Left) This is an example of data the needs deglitching. In this
+   case, there was a problem with data channels not arriving at the
+   measurement computer in the proper sequence. This timing problem
+   resulted in occasionally spikes in the data. (Right) A point has
+   been selected for removal. The point flagged for removal is
+   indicated with a little orange circle. (Bottom) The selected point
+   has been removed from the data. The deglitching margins are
+   displayed along with the data.
 
 The second method for removing glitches is more automated. In the figure
 above, the deglitching margins are shown by the pink lines. Those
@@ -121,32 +121,32 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
 .. _fig-degchiemu:
 
 .. figure::  ../../_images/deglitch_chie_mu.png
-    :target: ../_images/deglitch_chie_mu.png
-    :width: 100%
+   :target: ../_images/deglitch_chie_mu.png
+   :width: 100%
 
 .. _fig-degchiek:
 
 .. figure::  ../../_images/deglitch_chie_k.png
-    :target: ../_images/deglitch_chie_k.png
-    :width: 100%
+   :target: ../_images/deglitch_chie_k.png
+   :width: 100%
 
 .. _fig-degchie:
 
 .. figure::  ../../_images/deglitch_chie.png
-    :target: ../_images/deglitch_chie.png
-    :width: 100%
+   :target: ../_images/deglitch_chie.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_deglicth_chie
+   :width: 0.45
+   :label: _fig-deglitchchie
 
-    (Left) |mu| (E) data for U\ :sub:`3`\ O\ :sub:`8` that have a tiny
-    glitch hidden in the high energy region. (Right) Plotted as |chi|
-    (k), the glitch at about 12 |AA|\ :sup:`-1` in these |chi| (k)
-    data is clearly seen. (Bottom) With potting as |chi| (E)
-    selected. The spurious point at about 12 |AA|\ :sup:`-1` has been
-    chosen.
+   (Left) |mu| (E) data for U\ :sub:`3`\ O\ :sub:`8` that have a tiny
+   glitch hidden in the high energy region. (Right) Plotted as |chi|
+   (k), the glitch at about 12 |AA|\ :sup:`-1` in these |chi| (k)
+   data is clearly seen. (Bottom) With potting as |chi| (E)
+   selected. The spurious point at about 12 |AA|\ :sup:`-1` has been
+   chosen.
 
 When the |chi| (E) is displayed, the k-weight value specified by the
 k-weight controls is used. From there, the point-by-point technique is

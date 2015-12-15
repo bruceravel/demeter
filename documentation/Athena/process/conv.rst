@@ -33,20 +33,20 @@ example of data with artificial noise is shown on the right.
 .. _fig-convconv:
 
 .. figure::  ../../_images/convolution_conv.png
-    :target: ../_images/convolution_conv.png
-    :width: 100%
+   :target: ../_images/convolution_conv.png
+   :width: 100%
 
 .. _fig-convnoise:
 
 .. figure::  ../../_images/convolution_noise.png
-    :target: ../_images/convolution_noise.png
-    :width: 100%
+   :target: ../_images/convolution_noise.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_convoluting
+   :width: 0.45
+   :label: _fig-convoluting
 
-    (Left) Iron foil data broadened by 1 eV. (Right) Iron foil data
-    with a bit of artificial noise added.
+   (Left) Iron foil data broadened by 1 eV. (Right) Iron foil data
+   with a bit of artificial noise added.
 

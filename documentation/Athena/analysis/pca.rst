@@ -63,14 +63,14 @@ reconstruction of an intermeidate time point using the top 3 components.
 
 .. subfigstart::
 
-.. _fig-pca-components:
+.. _fig-pcacomponents:
    
 .. figure:: ../../_images/pca_components.png
    :target: ../_images/pca_components.png
    :width: 100%
    :align: left
 	   
-.. _fig-pca-recon:
+.. _fig-pcarecon:
    
 .. figure:: ../../_images/pca_recon.png
    :target: ../_images/pca_recon.png
@@ -79,7 +79,7 @@ reconstruction of an intermeidate time point using the top 3 components.
 
 .. subfigend::
    :width: 0.45
-   :label: fig-pca-basics
+   :label: _fig-pcabasics
 
    (Left) The principle components of this data ensemble. (Right) PCA
    reconstruction
@@ -88,7 +88,7 @@ Selecting one of the standards in the group list enables the target
 transform button. Clicking it shows the result of the transform and
 displays the coefficients of the transform in the smaller text box.
 
-.. _fig-pca-tt:
+.. _fig-pcatt:
 
 .. figure:: ../../_images/pca_tt.png
    :target: ../_images/pca_tt.png
@@ -100,14 +100,14 @@ displays the coefficients of the transform in the smaller text box.
 
 .. subfigstart::
 
-.. _fig-pca-tt-good:
+.. _fig-pcattgood:
 
 .. figure:: ../../_images/pca_tt_good.png
    :target: ../_images/pca_tt_good.png
    :width: 100%
    :align: center
 
-.. _fig-pca-tt-bad:
+.. _fig-pcattbad:
 
 .. figure:: ../../_images/pca_tt_bad.png
    :target: ../_images/pca_tt_bad.png
@@ -116,7 +116,7 @@ displays the coefficients of the transform in the smaller text box.
 
 .. subfigend::
    :width: 0.45
-   :label: fig-pca-tt-goodbad
+   :label: _fig-pcattgoodbad
 
    (Left) A successful target transform on Au foil. Au foil is certainly a
    constituent of the data ensemble used in the PCA. (Right) A unsuccessful

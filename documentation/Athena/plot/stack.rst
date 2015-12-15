@@ -21,21 +21,21 @@ sets these values for each marked group.
 .. _fig-stacktab:
 
 .. figure::  ../../_images/plot_stack.png
-    :target: ../_images/plot_stack.png
-    :width: 50%
+   :target: ../_images/plot_stack.png
+   :width: 50%
 
 .. _fig-stacked:
 
 .. figure::  ../../_images/plot_stacked.png
-    :target: ../_images/plot_stacked.png
-    :width: 100%
+   :target: ../_images/plot_stacked.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_stack
+   :width: 0.45
+   :label: _fig-stack
 
-    (Left) The plot stacking tab. (Right) An example of a stacked plot. Note
-    that the stacking increment is negative so that that order of the colors
-    is the same in the legend as in the plot.
+   (Left) The plot stacking tab. (Right) An example of a stacked plot. Note
+   that the stacking increment is negative so that that order of the colors
+   is the same in the legend as in the plot.
 

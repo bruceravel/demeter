@@ -56,28 +56,28 @@ excitation at about 120 volts above the edge.
 
 .. subfigstart::
 
-.. _fig-mee_e:
+.. _fig-meee:
 
 .. figure::  ../../_images/mee_e.png
-    :target: ../_images/mee_e.png
-    :width: 100%
+   :target: ../_images/mee_e.png
+   :width: 100%
 
-.. _fig-mee_k:
+.. _fig-meek:
 
 .. figure::  ../../_images/mee_k.png
-    :target: ../_images/mee_k.png
-    :width: 100%
+   :target: ../_images/mee_k.png
+   :width: 100%
 
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_meedone
+   :width: 0.45
+   :label: _fig-meedone
 
-    The results of removing the [3p4d]5d multi-electron excitation in
-    La L\ :sub:`III`-edge data, which occurs at about 120 volts above
-    the edge.  This excitation is seen near the cursor in the energy
-    plot. Its effect is much more pronounced in the |chi| (k) data on
-    the right.
+   The results of removing the [3p4d]5d multi-electron excitation in
+   La L\ :sub:`III`-edge data, which occurs at about 120 volts above
+   the edge.  This excitation is seen near the cursor in the energy
+   plot. Its effect is much more pronounced in the |chi| (k) data on
+   the right.
 
 For more information about multi-electron excitations, see
 

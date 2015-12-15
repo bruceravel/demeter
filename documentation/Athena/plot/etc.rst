@@ -190,7 +190,7 @@ Special plots for merged groups
 When data are merged, the standard deviation spectrum is also computed
 and saved in `project files <../output/project.html>`__. The merged
 data can be plotted along with its standard deviation as shown in the
-merge section (Figure :num:`fig-mergestddev`) in a couple of
+merge section (Figure :num:`Fig. #fig-mergestddev`) in a couple of
 interesting ways.
 
 **Merge + standard deviation**

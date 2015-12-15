@@ -109,7 +109,7 @@ file by clicking the :quoted:`Save ratio data and fit` button.
 
 .. subfigend::
    :width: 0.4
-   :label: lr
+   :label: _fig-lrplots
 
    The results of the log-ratio/phase-difference fit to the Cu metal.
 

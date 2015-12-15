@@ -21,7 +21,7 @@ contents of the project file.
    The project selection dialog.
 
 Project files, like any other files are imported using the file
-selection dialog (Figure :num:`fig-importfiledialog`). :demeter:`athena`
+selection dialog (:num:`Fig. #fig-importfiledialog`). :demeter:`athena`
 will recognize a project file and present the project selection dialog.
 Alternately, you can drag one or more project files from your computer's
 file manager and drop them onto the group list.

@@ -66,24 +66,24 @@ characteristic of the metallic gold spectrum.
 .. _fig-aucldata:
 
 .. figure::  ../../_images/ex_aucl_data.png
-    :target: ../_images/ex_aucl_data.png
-    :width: 100%
+   :target: ../_images/ex_aucl_data.png
+   :width: 100%
 
 .. _fig-auclstandards:
 
 .. figure::  ../../_images/ex_aucl_standards.png
-    :target: ../_images/ex_aucl_standards.png
-    :width: 100%
+   :target: ../_images/ex_aucl_standards.png
+   :width: 100%
 
 .. subfigend::
-    :width: 0.45
-    :label: fig_aucllcf
+   :width: 0.45
+   :label: _fig-aucllcf
 
-    (Left) The sequence of measurements from 0.12 through 720
-    hours. The top-most trace shows the starting material,aqueous Au\
-    :sup:`3+` chloride. The bottom trace shows the end product,
-    metallic gold. (Right) All of the standards contained in the
-    project file.
+   (Left) The sequence of measurements from 0.12 through 720
+   hours. The top-most trace shows the starting material, aqueous Au\
+   :sup:`3+` chloride. The bottom trace shows the end product,
+   metallic gold. (Right) All of the standards contained in the
+   project file.
 
 The purpose of this experiment is two-fold. One goal is to determine the
 reaction kinetics of the reduction. To that end, we will assume that the
@@ -96,23 +96,23 @@ mixture of aqueous Au\ :sup:`3+` chloride and metallic gold to see if
 the data are better described by a ternary rather than binary mixture of
 standard materials.
 
-To begin, select one of the time points in the group list. Most figures
-in this section show the data measured at 7.03 hours. Next, select
-:quoted:`Linear combination fit` from the main menu. This replaces the main
-window with the linear combination fitting tool and plots the data along
-with vertical lines indicating the extent of the fitting range. From the
-first two drop-down menus, select :quoted:`Au foil` and :quoted:`Au3 Cl aq`, as shown
-below.
+To begin, select one of the time points in the group list. Most
+figures in this section show the data measured at 7.03 hours. Next,
+select :quoted:`Linear combination fit` from the main menu. This
+replaces the main window with the linear combination fitting tool and
+plots the data along with vertical lines indicating the extent of the
+fitting range. From the first two drop-down menus, select :quoted:`Au
+foil` and :quoted:`Au3 Cl aq`, as shown below.
 
-.. _fig-lcf2:
+.. _fig-lcfagain:
 
 .. figure:: ../../_images/lcf.png
    :target: ../_images/lcf.png
    :width: 65%
    :align: center
 
-:demeter:`athena`'s linear combination fitting tool with the end member standard
-compounds selected for the initial fit.
+   The linear combination fitting tool with the end member standard
+   compounds selected for the initial fit.
 
 In the operations list, click on :kbd:`Fit this group,light` to perform
 the initial fit to these data. After the fit finishes, the result of

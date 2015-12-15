@@ -44,7 +44,7 @@ yield channel is divided by the incident channel.
 The controls in the tabs at the bottom left are the discussed in later
 sections.
 
-.. _fig-import_colsel:
+.. _fig-importcolsel:
 
 .. figure:: ../../_images/import_colsel.png
    :target: ../_images/import_colsel.png
@@ -96,7 +96,7 @@ The other choices are:
 
 -  xmu.dat : the xmu.dat file from FEFF
 
-.. _fig-import_types:
+.. _fig-importtypes:
 
 .. figure:: ../../_images/import_types.png
    :target: ../_images/import_types.png
@@ -105,7 +105,7 @@ The other choices are:
 
    Data types in the column selection dialog.
 
-.. _fig-import_changetype:
+.. _fig-importchangetype:
 
 .. figure:: ../../_images/import_changetype.png
    :target: ../_images/import_changetype.png
@@ -143,7 +143,7 @@ with multi-element detectors. You can select all the channels of the MED
 as elements of the numerator, as shown in this example of the column
 selection dialog.
 
-.. _fig-import_med:
+.. _fig-importmed:
 
 .. figure:: ../../_images/import_med.png
    :target: ../_images/import_med.png
@@ -158,7 +158,7 @@ group containing the summation of the channels in the group list.
 You have the option of clicking the button that says :quoted:`Save
 each channel as a group`, as shown here.
 
-.. _fig-import_medch:
+.. _fig-importmedch:
 
 .. figure:: ../../_images/import_medch.png
    :target: ../_images/import_medch.png
@@ -173,7 +173,7 @@ will be imported as an individual group and given its own entry in the
 group list. This is handy for examining the channels and discarding any
 that are not of usable quality.
 
-.. _fig-import_medchimported:
+.. _fig-importmedchimported:
 
 .. figure:: ../../_images/import_medchimported.png
    :target: ../_images/import_medchimported.png

@@ -27,7 +27,7 @@ Athena: XAS Data Processing
 .. endpar::
 
 				
-!Contents:
+**Contents:**
 
 .. toctree::
    :maxdepth: 2
