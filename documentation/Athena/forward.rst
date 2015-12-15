@@ -140,12 +140,19 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
+- The `pybtex <http://pybtex.org/>`_ bibliography processor for
+  python.
+
+- The `sphinxcontrib-bibtex
+  <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
+  package, which is Sphinx extension for BibTeX style citations.
+
+- The `sphinxtr <https://github.com/jterrace/sphinxtr>`_ package,
+  which is Sphinx extension for supporting a few LaTeX environments.
+  
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
   
-.. todo:: links to extensions used (esp. sphinxcontrib-bibtex,
-          sphinxtr, sphinx-clatex)
-
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
 <http://www.kde.org>`__. The screenshots of spreadsheets made from `a

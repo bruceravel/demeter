@@ -219,10 +219,10 @@ def depart_kbd_html(self, node):
     self.body.append('</kbd>')
 
 def visit_kbd_latex(self, node):
-    self.body.append("``")
+    self.body.append("\\texttt{")
 
 def depart_kbd_latex(self, node):
-    self.body.append("''")
+    self.body.append("}")
 
 
 

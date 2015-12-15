@@ -48,17 +48,46 @@ use in Demeter's documents, including:
 
 - decoration of names of programs in Demeter, as well as Feff,
   Ifeffit, and Larch (colored and smallcaps)
+  ::
+   
+     :demeter:`program`
 
 - decoration of configuration parameters (colored, preceded by a
   colored diamond, right arrow between group and parameter names)
+  ::
+   
+     :configparam:`group,param`
+
 
 - decoration of data processing parameters (colored and surrounded by
-  guillemots)
+  guillemots) (``:procparam:``)
+  ::
+   
+     :procparam:`text`
 
 - quoted text (default text, surrounded by proper opening and closing
   double quotation marks)
+  ::
+   
+     :quote:`text`
 
+- insert static images such as the lightning bolt or the bend sign,
+  image is one of lightning, bend, somerights, soon,
+  ::
+   
+     :mark:`image`
+  
+- insert a linebreak which also break figure wrapping
+  ::
+   
+     :linebreak:
 
+- decorate characters and words to look like keyboard keys in one of
+  our styles (dark, light, purple, orange)
+  ::
+
+     :kbd:`key,style`
+  
 The ``_templates`` folder contains some customizations for the html
 pages, including:
 
