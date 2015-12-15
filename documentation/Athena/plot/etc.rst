@@ -244,11 +244,8 @@ as new plots are made. When you switch to a new terminal, other active
 terminals will become unchanging. This means you can save a particular
 plot on screen while continuing to make new plots.
 
-.. todo:: Consider other file types. SVG and EPS should
-	  work. Gnuplot's GIF and JPG terminals are not sufficiently
-	  featureful to replicate all the details of :demeter:`athena`'s plots.
-	  Consider making the number of terminals a configuration
-	  parameter.
+.. todo:: Consider other vector output images, like SVG or EPS.
+   Consider making the number of terminals a configuration parameter.
 
 
 Phase corrected plots

@@ -2,9 +2,6 @@
 Pluck buttons
 =============
 
-Interaction between Athena and the plot window
-----------------------------------------------
-
 Almost every text entry box that takes an energy or wavenumber value as
 its parameter has a little button next to it which is decorated with a
 small blue X, one of which is highlighted in the figure below. These are

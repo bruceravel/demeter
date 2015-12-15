@@ -6,16 +6,10 @@ Forward
 
 .. todo::
    #. translate examples section to rst
-
    #. installation instructions, document building instructions
-
    #. CC image in epilog + linebreak as a directive (not a role)
-
    #. mark index entries
-   
    #. link to AuCl plot in examples chapter
-
-   #. need a strikethrough role
 
       
 The best way to learn how to use :demeter:`athena` is to **use**

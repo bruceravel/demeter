@@ -1,9 +1,6 @@
 
-Using different k-weights
-=========================
-
-k-weighting plots and Fourier transforms
-----------------------------------------
+k-weights in plots and Fourier transforms
+=========================================
 
 It is common practice in EXAFS to multiply |chi| (k) by different
 *k-weights*. That is, the |chi| (k) array is multiplied point-by-point

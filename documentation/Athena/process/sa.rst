@@ -183,7 +183,7 @@ thickness. Try changing all those things to see how they effect the
 correction.
 
 .. todo:: The Booth algorithm has been updated and corrected. It now
-	  requires that the density of the material be provided.
+   requires that the density of the material be provided.
 
 
 

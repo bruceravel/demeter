@@ -1,12 +1,14 @@
+.. role:: strike
 
 Project files
 =============
 
 
-.. todo:: Save button, change indicator, update discussion of file
-	  format.
+.. todo::
+   #. Save button, change indicator, update discussion of file format.
+   #. Explain how the metadata dictionary works.
+   #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
 
-.. todo:: document the new json-style project format
 	  
 The most important type of output file is the project file. A project
 file contains all of the data you have imported, all of the parameters
@@ -90,6 +92,23 @@ files.
 The new JSON-style project file
 -------------------------------
 
+.. versionadded:: 0.9.21 A new feature in :demeter:`athena` allows one
+   to write project files in the form of a compressed `JSON
+   <http://www.json.org/>`_ file.  That is, the data that are
+   compressed can be interpreted by any JSON parser.  Thus, if you
+   want to use some other language to handle data processed by
+   :demeter:`athena` and you want a good pipeline from
+   :demeter:`athena` into your code, you could save your project file
+   in the new, JSON format.  See the
+   :configparam:`athena,project_format` `configuration parameter
+   <../other/prefs.html>`__.
+
+Note, however, that this project file format is entirely incompatible
+with earlier versions of :demeter:`athena`.  Versions since 0.9.21
+will recognize and read the JSON-style project file regardless of the
+value of :configparam:`athena,project_format`.
+
+
 Summary
 ^^^^^^^
 
@@ -97,38 +116,42 @@ Summary
 
 #. File contains a single dictionary
 
-#. An entry with the key contains the string and is in the first four
-   lines of the file. This is used by :demeter:`Demeter` to recognize the project
-   file.
+#. An entry with the key ``_____header1`` contains the string and is
+   in the first four lines of the file. This is used by
+   :demeter:`Demeter` to recognize the project file.
 
-#. An entry with the key takes a list of strings as its value. This is
-   used to presevre the order of presentation of the data regardless of
-   how a JSON parser orders the keys in the dictionary.
+#. An entry with the key ``_____order`` takes a list of strings as
+   its value. This is used to presevre the order of presentation of
+   the data regardless of how a JSON parser orders the keys in the
+   dictionary.
 
-#. Data groups use a group name as the key and take a dictionary as the
-   value. This dictionary contains a key called which takes a dictionary
-   of attributes and values, a key called with a vlue of a list
-   containing the abscissa array, and a key called with a vlue of a list
-   containing the abscissa array. Other optional arrays are possible.
+#. Data groups use a group name as the key and take a dictionary as
+   the value. This dictionary contains a key called ``args`` which
+   takes a dictionary of attributes and values, a key ``x`` called
+   with a vlue of a list containing the abscissa array, and a key
+   ``y`` called with a value of a list containing the abscissa
+   array. Other optional arrays are possible.
 
 #. Every data group has a unique group name used as its dictionary key.
 
-#. The dictionary has several required attributes, including , which is
-   used to interpret the content of and .
+#. The ``args`` dictionary has several required attributes, including
+   ``datatype``, which is used to interpret the content of ``x`` and
+   ``y``.
 
-#. Other data processing attributes can be specified in or
+#. Other data processing attributes can be specified in ``args`` or
    :demeter:`athena` can be relied upon to set sensible defaults.
 
-#. A project journal is optionally specified with the key and a list of
-   strings containing the jounral text.
+#. A project journal is optionally specified with the key
+   ``_____journal`` and a list of strings containing the jounral text.
 
 Fields in the JSON file
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The JSON-style project file is typically saved as a gzipped file with
-a extension. :demeter:`athena`/:demeter:`artemis` are able to read the
-file gzipped or as plain text. That is, an external application can
-save an :demeter:`athena` project file with or without compression.
+a ``.prj`` extension. :demeter:`athena`/:demeter:`artemis` are able to
+read the file gzipped or as plain text. That is, an external
+application can save an :demeter:`athena` project file with or without
+compression.
 
 The project file is a single serialized dictionary. (I'll use pythonic
 language in this document. By dictionary, I mean what another language
@@ -144,9 +167,6 @@ preceeding underscores is unlikely to carry special meaning in any
 programming language, yet underscores are likely to be valid characters
 for variable or dictionary key names in most languages.
 
-`Here is an example <file:../../examples/athena_json.prj>`__ of a
-JSON-style project file. This is the cyanobacteria example data exported
-into the JSON format.
 
 Headers
 ^^^^^^^
@@ -163,43 +183,48 @@ The first several lines should look something like this
          "_____header2": "# This file created at 2015-02-04T17:23:22",
          "_____header3": "# Using Demeter 0.9.21 with perl 5.018002 and using Larch 0.9.24 on linux",
 
-The line is a convenience for Bruce. That will cause the file to display
-in a helpful way in Emacs, which will help him troubleshoot problems.
-That line is **not required**, but Bruce will be grateful if you include
-it.
+The ``_____emacs_mode`` line is a convenience for Bruce. That will
+cause the file to display in a helpful way in Emacs, which will help
+him troubleshoot problems.  That line is **not required**, but Bruce
+will be grateful if you include it.
 
-The lines identify the file as an :demeter:`athena` project file, identify the
-moment of creation, and identify the program that and computing
-environment that did the creating.
+The ``_____headerN`` lines identify the file as an :demeter:`athena`
+project file, identify the moment of creation, and identify the
+program that and computing environment that did the creating.
 
-The line is **required** and it **must** appear in the first four
-lines of the file or :demeter:`athena`/:demeter:`artemis` will not
-recognize the file as a project file. In fact, :demeter:`demeter`
-tries to match this regexp in the first four lines:
+The ``_____header1`` line is **required** and it **must** appear in
+the first four lines of the file or
+:demeter:`athena`/:demeter:`artemis` will not recognize the file as a
+project file. In fact, :demeter:`demeter` tries to match this regexp
+in the first four lines:
 
 .. code:: perl
 
          m{_____header\d.+Athena project file}
 
 This regexp is insensitive to the type of quote or the amount of
-whitespace. The index N in is not important. But one of the header
-fields **must** contain and **must** show up in the first four lines of
-the file.
+whitespace. The index N in ``_____headerN`` is not important. But one
+of the header fields **must** contain the string ``Athena project
+file`` and **must** show up in the first four lines of the file.
 
-The and lines are **recommended**, including them is good form and may
-help with troubleshooting. It is **recommended** that use an ISO 8601
-combined date and time timestamp. It is **recommended** that clearly
-identify the tool that wrote the file. That said, those two headers are
-not used in any way by :demeter:`athena` or :demeter:`artemis`.
+The ``_____header2`` and ``_____header3`` lines are **recommended**,
+including them is good form and may help with troubleshooting. It is
+**recommended** that ``_____header2`` use an `ISO 8601
+<https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations>`_
+combined date and time timestamp. It is **recommended** that
+``_____header3`` clearly identify the tool that wrote the file. That
+said, those two headers are not used in any way by :demeter:`athena`
+or :demeter:`artemis`.
 
 Other fields
 ^^^^^^^^^^^^
 
-There **must** be a field called which is a list of group names in the
-order of display. Because the decoded JSON file is a dictionary, the
-order of entries cannot be guaranteed once decoded. The :demeter:`athena` user
-expects to see the data in the same order when a project file is
-re-opened. , then, is used to specify the order.
+There **must** be a field called ``_____order`` which is a list of
+group names in the order of display. Because the decoded JSON file is
+a dictionary, the order of entries cannot be guaranteed once
+decoded. The :demeter:`athena` user expects to see the data in the
+same order when a project file is re-opened. , then, is used to
+specify the order.
 
 Here is an example from a project file with two data groups:
 
@@ -207,30 +232,32 @@ Here is an example from a project file with two data groups:
 
      "_____order": ["ftaja","cyrlv"]
 
-A field called is optional. If provided, it is a list of strings that
-together are user-supplied commentary on the project file. In the
-context of :demeter:`athena`, this is the content of the `project
-journal <http://bruceravel.github.io/demeter/aug/other/journal.html>`__.
+A field called ``_____journal`` is optional. If provided, it is a list
+of strings that together are user-supplied commentary on the project
+file. In the context of :demeter:`athena`, this is the content of the
+`project journal <../other/journal.html>`__.
 
 Data fields
 ^^^^^^^^^^^
 
-A data field has a key which is used as the :demeter:`Demeter` group attribute, the
-Ifeffit group name, and the Larch group name. In the Larch context, a
-data group might be defined like so:
+A data field has a key which is used as the :demeter:`Demeter` group
+attribute, the :demeter:`ifeffit` group name, and the :demeter:`larch`
+group name. In the :demeter:`larch` context, a data group might be
+defined like so:
 
 .. code::
 
           ftaja = read_ascii('mydata.dat')
 
-while in the Ifeffit context
+while in the :demeter:`ifeffit` context
 
 .. code::
 
           read_data(file=mydata.dat, type=raw, group=ftaja)
 
-In each case, "ftaja" is the group name which should be used as the key
-for the data field. In :demeter:`Demeter`, "ftaja" will be the return value of
+In each case, :quoted:`ftaja` is the group name which should be used
+as the key for the data field. In :demeter:`Demeter`, :quoted:`ftaja`
+will be the return value of
 
 .. code:: perl
 
@@ -257,11 +284,13 @@ lists of numbers representing data arrays associated with the group.
 | xdi             | metadata dictionary                    | no         |
 +-----------------+----------------------------------------+------------+
 
-:demeter:`athena` figures out whether to interpret as energy/|mu| or k/|chi| based on
-the value of the attribute from the dictionary.
+:demeter:`athena` figures out whether to interpret ``x`` and ``y`` as
+energy/|mu| or k/|chi| based on the value of the attribute from the
+``args`` dictionary.
 
-Here's an example of a data field for a group named "ftaja". (:demeter:`athena`
-uses, but does not require, random 5-character strings as group names.)
+Here's an example of a data field for a group named
+:quoted:`ftaja`. (:demeter:`athena` uses, but does not require, random
+5-character strings as group names.)
 
 .. code:: json
 
@@ -277,10 +306,6 @@ A proper JSON parser is used to read the project file. The content must
 be valid JSON, but can be linted in any way. :demeter:`athena` writes the data
 subfields as single lines, but that is **not required**.
 
-.. TODO:: Explain how the metadata dictionary works.
-
-.. TODO:: Serialization of analysis results (i.e. LCF, peak fitting,
-	  PCA)
 
 Attributes
 ^^^^^^^^^^
@@ -306,8 +331,8 @@ writing a project file. Those attributes are either evaluated by
 
 The lexicon of attribute names is open for discussion. The
 :demeter:`athena` project file is basically a serialization of
-:demeter:`demeter` Data objects and the keys of the dictionary are the
-attribute names used by that object.
+:demeter:`demeter` Data objects and the keys of the ``args``
+dictionary are the attribute names used by that object.
 
 The `object system <https://metacpan.org/pod/Moose>`__ used by :demeter:`demeter`
 has a convenient aliasing system for symbol names. It will be
@@ -318,7 +343,7 @@ Essential attributes
 ^^^^^^^^^^^^^^^^^^^^
 
 A data entry in the project file cannot be considered complete without
-these attributes included in the dictionary.
+these attributes included in the ``args`` dictionary.
 
 +----------------+--------------------------------------------------------------+------------------------------------------+
 | attribute name | description                                                  | options                                  |
@@ -327,13 +352,13 @@ these attributes included in the dictionary.
 +----------------+--------------------------------------------------------------+------------------------------------------+
 | group          | string used as the group name                                | Athena uses random 5-character strings   |
 +----------------+--------------------------------------------------------------+------------------------------------------+
-| Label          | string used as a label, for example in Athena's group list   | default is the file name                 |
+| label          | string used as a label, for example in Athena's group list   | default is the file name                 |
 +----------------+--------------------------------------------------------------+------------------------------------------+
 | is_nor         | flag indicating |mu| (E) data is already normalized          | false                                    |
 +----------------+--------------------------------------------------------------+------------------------------------------+
 
-I suppose that is not necessary since the same string is used as the
-key. Hmmm....
+I suppose that ``group`` is not necessary since the same string is
+used as the key. Hmmm....
 
 Note that the ``label`` need not be unique, but the ``name`` **must**
 be.
@@ -470,41 +495,41 @@ attributes.
 Fitting parameters
 ^^^^^^^^^^^^^^^^^^
 
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| attribute name     | description                                                      | :demeter:`Demeter`'s default         |
-+====================+==================================================================+======================================+
-| fit_k1             | flag to use k=1 weighting in fit                                 | true                                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_k2             | flag to use k=2 weighting in fit                                 | true                                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_k3             | flag to use k=3 weighting in fit                                 | true                                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_karb           | flag to use user-supplied k weighting in fit                     | false                                |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_karbvalue      | user-supplied k-weighting                                        | 0.5                                  |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_space          | space in which to evaluate fit (k, R, q)                         | R                                    |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_epsilon        | measurement uncertainty                                          | 0 (i.e. use Larch's estimate)        |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_cormin         | smallest correlation to report in log file                       | 0.4                                  |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_include        | flag to include this data set in a fit                           | true                                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_data           | data count in a multiple data set fit                            | *set at time of fit*                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_plotafterfit   | flag for pushing data to Artemis' plot list after fit finishes   | true for first data set in project   |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_dobkg          | flag for background corefinement                                 | false                                |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_rfactor1       | R-factor computed with k-weight = 1                              | *output*                             |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_rfactor2       | R-factor computed with k-weight = 2                              | *output*                             |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_rfactor3       | R-factor computed with k-weight = 3                              | *output*                             |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
-| fit_group          | pointer to the fit group that this data is a part of             | *set at time of fit*                 |
-+--------------------+------------------------------------------------------------------+--------------------------------------+
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| attribute name     | description                                                      | :demeter:`Demeter`'s default             |
++====================+==================================================================+==========================================+
+| fit_k1             | flag to use k=1 weighting in fit                                 | true                                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_k2             | flag to use k=2 weighting in fit                                 | true                                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_k3             | flag to use k=3 weighting in fit                                 | true                                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_karb           | flag to use user-supplied k weighting in fit                     | false                                    |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_karbvalue      | user-supplied k-weighting                                        | 0.5                                      |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_space          | space in which to evaluate fit (k, R, q)                         | R                                        |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_epsilon        | measurement uncertainty                                          | 0 (i.e. use :demeter:`Larch`'s estimate) |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_cormin         | smallest correlation to report in log file                       | 0.4                                      |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_include        | flag to include this data set in a fit                           | true                                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_data           | data count in a multiple data set fit                            | *set at time of fit*                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_plotafterfit   | flag for pushing data to Artemis' plot list after fit finishes   | true for first data set in project       |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_dobkg          | flag for background corefinement                                 | false                                    |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_rfactor1       | R-factor computed with k-weight = 1                              | *output*                                 |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_rfactor2       | R-factor computed with k-weight = 2                              | *output*                                 |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_rfactor3       | R-factor computed with k-weight = 3                              | *output*                                 |
++--------------------+------------------------------------------------------------------+------------------------------------------+
+| fit_group          | pointer to the fit group that this data is a part of             | *set at time of fit*                     |
++--------------------+------------------------------------------------------------------+------------------------------------------+
 
 Note that the fitting range in :demeter:`artemis` is the back-transform range in
 :demeter:`athena` and uses the same attributes.
@@ -593,7 +618,7 @@ to specify.
 +----------------------+--------------------------------------------------------------------------------+------------------------------+
 | is_special           | ???                                                                            |                              |
 +----------------------+--------------------------------------------------------------------------------+------------------------------+
-| [STRIKEOUT:is_xmu]   | flag indicating |mu| (E) data (**deprecated**, but seen in old project files)  | true                         |
+| :strike:`is_xmu`     | flag indicating |mu| (E) data (**deprecated**, but seen in old project files)  | true                         |
 +----------------------+--------------------------------------------------------------------------------+------------------------------+
 | rebinned             | flag indicating data group was made by rebinning data                          |                              |
 +----------------------+--------------------------------------------------------------------------------+------------------------------+
@@ -631,11 +656,11 @@ now....
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
 | from_yaml             | flag stating whether the data group was imported from an Artemis project      | false (set true wehn reading Artemis project)   |
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
-| [STRIKEOUT:frozen]    | **deprecated**                                                                | false                                           |
+| :strike:`frozen`      | **deprecated**                                                                | false                                           |
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
 | generated             | flag set true if the data are generated (e.g. a merged group)                 | false                                           |
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
-| [STRIKEOUT:mark]      | *apparently not used for anything*                                            |                                                 |
+| :strike:`mark`        | *apparently not used for anything*                                            |                                                 |
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+
 | marked                | flag stating whether the data group is marked in Athena's group list          | false                                           |
 +-----------------------+-------------------------------------------------------------------------------+-------------------------------------------------+

@@ -6,10 +6,11 @@ Principle component analysis
 Abstract decomposition of a data sequence
 -----------------------------------------
 
-.. todo::
-   Document all the buttons and whatnot. Explain what useful
-   features are still missing. Explain what PCA means, what it does, and
-   what it does not do.
+.. todo:: Document all the buttons and whatnot. Document the many
+   useful features are still missing.
+
+.. todo:: Need a tutorial on math/science of PCA.  Explain what PCA
+   means, what it does, and what it does not do.
 
 Here, I have imported a project file containing well-processed data on a
 time series of samples in which gold chloride is being reduced to gold

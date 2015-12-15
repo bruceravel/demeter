@@ -1,5 +1,9 @@
 
 /* color of top/bottom bars in nature theme */
 div.related {
-    background-color: #4619A8;
+    background-color: #4F0B80;
+}
+
+.strike {
+  text-decoration: line-through;
 }

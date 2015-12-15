@@ -2,14 +2,12 @@
 Plot styles
 ===========
 
-Quickly switching plotting parameters
--------------------------------------
 
 Plot styles are a mechanism for storing the contents of the plot options
 tabs. For example, you can save plotting parameters good for viewing
 XANES data and another set for viewing the full EXAFS spectrum. You can
 save any number of sets of parameters. When you save a set of
-parameters, you are prompted for a name. After that you can select a
+parameters, you are prompted for a name. After that, you can select a
 parameter set by name. These parameter sets are saved to disk, thus
 persist between sessions.
 
