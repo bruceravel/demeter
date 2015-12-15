@@ -11,7 +11,7 @@ To import a data file, select Open file from the File menu or type
 your computer's file manager and drop them onto the group list. A file
 selection dialog opens. On my Linux computer, it looks like this:
 
-.. _fig-import_filedialog:
+.. _fig-importfiledialog:
 
 .. figure:: ../../_images/import_filedialog.png
    :target: ../_images/import_filedialog.png

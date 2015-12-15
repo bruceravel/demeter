@@ -8,12 +8,12 @@ Handling quick scan data
 Some beamlines offer the option of slewing the monochromator
 continuously from the beginning of the scan to the end. A typical
 implementation of this works by driving the mono at a given speed and
-reading the measurement channels continuously. The signal is integrated
-for bins of time. After each time interval, the integrate signals are
-stored in a buffer. At the end of the scan, the buffer is dumped to
-disk. At my old beamline (`MRCAT, Sector 10 at the
-APS <http://mrcat.iit.edu>`__), a typical EXAFS scan measured in this
-mode takes under 3 minutes.
+reading the measurement channels continuously. The signal is
+integrated for bins of time. After each time interval, the integrated
+signals are stored in a buffer. At the end of the scan, the buffer is
+dumped to disk. At my old beamline (`MRCAT, Sector 10 at the APS
+<http://mrcat.iit.edu>`__), a typical EXAFS scan measured in this mode
+takes 3 minutes or less.
 
 The drawback of this measurement mode (other than the generation of tons
 of data that needs to be analyzed!) is that the data are vastly over
@@ -46,7 +46,7 @@ You can bulk process data by marking a number of groups and clicking the
 depending on how many groups are being processed.
 
 This deglitching algorithm is the same as the one used by `the rebinning
-feature <../import/preproc.html#rebinningquickscandata>`__ of the column
+feature <../import/preproc.html#rebinning-quick-scan-data>`__ of the column
 selection dialog.
 
 .. _fig-rebinplot:

@@ -46,7 +46,7 @@ way of saying :quoted:`pattern matching`. When you :quoted:`mark
 regex`, you will be prompted for a string in the echo area at the
 bottom of the :demeter:`athena` window. This prompt is exactly like
 the one used `to rename groups
-<glist.html#reorganizingthegrouplist>`__. This string is compared to
+<glist.html#reorganizing-the-group-list>`__. This string is compared to
 the names of all the groups in the Data groups list. Those which match
 the string become marked and those which fail to match become
 unmarked. Let me give you some examples. In a project file containing

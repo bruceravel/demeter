@@ -29,6 +29,6 @@ the marked groups.
    :target: ../_images/export_excelreport.png
    :width: 100%
    :align: center
-
+	   
    An example of the Excel spreadsheet output displayed in Libre Office.
 

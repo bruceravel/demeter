@@ -124,7 +124,7 @@ through the middle of the data in their respective ranges.
 
 Data can be plotted with the pre-edge and normalization lines using
 controls in the `energy plot
-tabs <../plot/tabs.html#plottinginenergy>`__. It is a very good idea to
+tabs <../plot/tabs.html#plotting-in-energy>`__. It is a very good idea to
 visually inspect the pre-edge and normalization lines for at least some
 of your data to verify that your choice of normalization parameters is
 reasonable.
@@ -185,7 +185,7 @@ fitting <../analysis/peak.html>`__, and many other chores often benefit
 from using flattened data rather than simply normalized data.
 
 This idea was swiped from
-`SixPACK <http://www-ssrl.slac.stanford.edu/~swebb/sixpack.htm>`__.
+`SixPACK <http://www.sams-xrays.com/#!sixpack/rovht>`__.
 
 
 Getting the post-edge right

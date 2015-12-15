@@ -20,8 +20,8 @@ contents of the project file.
 
    The project selection dialog.
 
-Project files, like any other files are imported using the `file
-selection dialog <../import/columns.html#import_filedialog>`__. :demeter:`athena`
+Project files, like any other files are imported using the file
+selection dialog (Figure :num:`fig-importfiledialog`). :demeter:`athena`
 will recognize a project file and present the project selection dialog.
 Alternately, you can drag one or more project files from your computer's
 file manager and drop them onto the group list.
@@ -55,7 +55,7 @@ finer grained control over how items from the group list are selected.
 The :quoted:`Select every` line allows selection by a regular pattern. “Select
 matching” allows you to select groups that match a specified pattern
 using the full strength of perl's `regular
-expression <../ui/mark.html#usingregularexpressionstomarkgroups>`__.
+expressions <../ui/mark.html#using-regular-expressions-to-mark-groups>`__.
 
 Once you have selected the groups you want to import, click the :quoted:`Import`
 button. If no groups are selected then all the groups will be imported.

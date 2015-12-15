@@ -80,7 +80,7 @@ all of your data will be nicely aligned.
 
 This alignment algorithm is the same as the one used by `the
 preprocessing
-feature <../import/preproc.html#otherpre-processingchores>`__ of the
+feature <../import/preproc.html#other-pre-processing-chores>`__ of the
 column selection dialog.
 
 If you have imported `a reference channel <../import/ref.html>`__ with

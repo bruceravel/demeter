@@ -100,7 +100,7 @@ Special plots for the current group
     2, and, 3. The FT of the k¹-weighted spectrum is scaled up to be
     about the same size as the FT or the k²-weighted spectrum.
     Similarly, the FT of the k³-weighted spectrum is scaled down. The
-    current setting in the `R tab <tabs.html#plottinginr-space>`__ is
+    current setting in the `R tab <tabs.html#plotting-in-r-space>`__ is
     used to make this plot. For this figure, the magnitude setting was
     selected. This plot can also be made by right-clicking on the R
     button.
@@ -188,9 +188,9 @@ Special plots for merged groups
 -------------------------------
 
 When data are merged, the standard deviation spectrum is also computed
-and saved in `project files <../output/project.html>`__. The merged data
-can be plotted along with its standard deviation `as shown in the merge
-section <../process/merge.html#merge_stddev>`__ in a couple of
+and saved in `project files <../output/project.html>`__. The merged
+data can be plotted along with its standard deviation as shown in the
+merge section (Figure :num:`fig-mergestddev`) in a couple of
 interesting ways.
 
 **Merge + standard deviation**

@@ -9,13 +9,15 @@ Forward
 
    #. installation instructions, document building instructions
 
-   #. need to make sure all internal links point at actual targets
-
    #. CC image in epilog + linebreak as a directive (not a role)
 
    #. mark index entries
+   
+   #. link to AuCl plot in examples chapter
 
-	  
+   #. need a strikethrough role
+
+      
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
 just to see what happens. And above all, remember the physical and
@@ -155,8 +157,8 @@ The following great software tools were used to create this document:
   
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
-<http://www.kde.org>`__. The screenshots of spreadsheets made from `a
-report file <output/report.html#export_excelreport>`__ and `an LCF fit
+<http://www.kde.org>`__. The screenshots of spreadsheets made from a
+report (Figure :num:`fig-exportexcel`) and `an LCF fit
 report <examples/aucl.html#ex_aucl_excel>`__ are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
 

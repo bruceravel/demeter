@@ -78,6 +78,7 @@ This can be done by marking the two groups you want to tie together as
 data and reference, then selecting :quoted:`Tie reference channel` from the
 Group menu.
 
-.. todo:: It should be possible to tie together two or more data groups
-   in a reference relationship -- that would be useful for multi-element
-   detector data and some other situations.
+.. todo:: :demeter:`athena` is missing the ability to tie together
+   three or more data groups in a reference relationship -- that would
+   be useful for multi-element detector data and some other
+   situations.

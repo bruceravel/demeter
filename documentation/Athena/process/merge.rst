@@ -41,10 +41,10 @@ manner. The type of merge plot is controled by the
 <../other/prefs.html>`__. The default is to show the data along with
 the data ± the standard devaition, as shown below. The other options
 are the `the variance plot
-<../plot/etc.html#specialplotsformergedgroups>`__ or a plot with the
+<../plot/etc.html#special-plots-for-merged-groups>`__ or a plot with the
 merge and all the data that entered the merge.
 
-.. _fig-merge_stddev:
+.. _fig-mergestddev:
 
 .. figure:: ../../_images/merge_stddev.png
    :target: ../_images/merge_stddev.png

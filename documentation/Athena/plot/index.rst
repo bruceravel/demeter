@@ -78,7 +78,7 @@ next section <../plot/tabs.html>`__.
 
 Several of the plot buttons will respond to a right click by making
 one of `the special plots
-<../plot/etc.html#specialplotsforthecurrentgroup>`__ from the Plot
+<../plot/etc.html#special-plots-for-the-current-group>`__ from the Plot
 menu.
 
 - Right click the :kbd:`E,orange` button: plot |mu| (E) with I\ :sub:`0` and

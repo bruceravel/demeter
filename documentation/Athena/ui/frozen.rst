@@ -41,7 +41,7 @@ set the frozen state of multiple groups using the items in the
 :quoted:`Freeze` menu. There you will find options for freezing or
 unfreezing all groups, all marked groups, or groups which match
 `regular expressions
-<mark.html#usingregularexpressionstomarkgroups>`__.
+<mark.html#using-regular-expressions-to-mark-groups>`__.
 
 There are various visual changes when a group is frozen. The highlight
 color in the group list changes to light green and all the widgets on
