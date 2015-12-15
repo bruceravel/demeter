@@ -105,10 +105,10 @@ def procparam_role(name, rawtext, text, lineno, inliner, options={}, content=[])
     return [procparam_node], []
 
 def visit_procparam_html(self, node):
-    self.body.append('<kbd><font color="%s">' % node['color_spec'])
+    self.body.append('<tt><font color="%s">' % node['color_spec'])
 
 def depart_procparam_html(self, node):
-    self.body.append('</font></kbd>')
+    self.body.append('</font></tt>')
 
 def visit_procparam_latex(self, node):
     color_spec = node['color_spec'][1:]
@@ -197,6 +197,32 @@ def depart_linebreak_latex(self, node):
     self.body.append("")
 
 
+class kbd(nodes.Element):
+    '''kbd letters using keys.css
+    '''
+    pass
+
+def kbd_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    words =text.strip().split(',')
+    key = words[0]
+    color = 'dark'
+    if len(words) > 1: color = words[1]
+    kbd_node = kbd()
+    kbd_node['color'] = color
+    kbd_node.children.append(nodes.Text(key))
+    return [kbd_node], []
+
+def visit_kbd_html(self, node):
+    self.body.append('<kbd class="%s">' % node['color'])
+
+def depart_kbd_html(self, node):
+    self.body.append('</kbd>')
+
+def visit_kbd_latex(self, node):
+    self.body.append("``")
+
+def depart_kbd_latex(self, node):
+    self.body.append("''")
 
 
 
@@ -230,5 +256,10 @@ def setup(app):
     app.add_node(linebreak,
             html = (visit_linebreak_html, depart_linebreak_html),
             latex = (visit_linebreak_latex, depart_linebreak_latex)
+            )
+    app.add_role('kbd', kbd_role)
+    app.add_node(kbd,
+            html = (visit_kbd_html, depart_kbd_html),
+            latex = (visit_kbd_latex, depart_kbd_latex)
             )
 

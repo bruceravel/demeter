@@ -146,7 +146,7 @@ putting the pre-edge portion of the data on the y=0 axis. The pre-edge
 subtracted data are then divided by |mu| |sub0| (E |sub0| ). The result is shown on the
 right side of the figure above.
 
-.. todo:: In version 0.9.18, an option was added to the context menu
+.. versionadded:: 0.9.18, an option was added to the context menu
    attached to the :procparam:`edge step` label for approximating the
    error bar on the edge step.
 

@@ -6,11 +6,12 @@ Multiple data set import
 How Athena handles large volumes of data
 ----------------------------------------
 
-You can import multiple data sets in the same manner that was explained
-in the last section. Select Open file from the File menu or type
-``Control-o``. When the file selection dialog opens, you can select more
-than one data file by clicking on file names while holding down the
-``Control`` key. On my Linux computer, it looks like this.
+You can import multiple data sets in the same manner that was
+explained in the last section. Select Open file from the File menu or
+type :kbd:`Control`-:kbd:`o`. When the file selection dialog opens,
+you can select more than one data file by clicking on file names while
+holding down the :kbd:`Control` key. On my Linux computer, it looks
+like this.
 
 .. _fig-multiple:
 
@@ -21,11 +22,12 @@ than one data file by clicking on file names while holding down the
 
    Importing multiple data sets with the file selection dialog.
 
-Note that three files are highlighted in the file listing and that those
-three files are listed below in the :quoted:`File name` box. Another way of
-selecting multiple files is to click on a file in the listing then click
-on another file while holding down the Shift key. When you do this, all
-files between the two you clicked on will be selected.
+Note that three files are highlighted in the file listing and that
+those three files are listed below in the :quoted:`File name`
+box. Another way of selecting multiple files is to click on a file in
+the listing then click on another file while holding down the
+:kbd:`Shift` key. When you do this, all files between the two you
+clicked on will be selected.
 
 When you click the OK button, all of the selected files will be
 imported. If all of the files are of the same type, :demeter:`athena`

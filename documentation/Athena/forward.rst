@@ -49,7 +49,7 @@ presentation media.
 - File names look ``C:\\like\\this``.
 
 - The names of parameters for data processing look
-  :procparam:`like\_this`.
+  :procparam:`like this`.
 
 - Emphasized text looks *like this*.
 
@@ -60,8 +60,9 @@ presentation media.
 - Internal links look `like this
   <forward.html#layout-and-typesetting-conventions>`__.
   
-- Keyboard shortcuts look like this: ``Control-q``. This example means
-  to hit the ``q`` key while holding the ``Control`` (or ``Ctrl``) key.
+- Keyboard shortcuts look like this:
+  :kbd:`Control,dark`-:kbd:`q`. This example means to hit the :kbd:`q`
+  key while holding the :kbd:`Control` (or :kbd:`Ctrl`) key.
 
 - Program names from the :demeter:`demeter`'s extended family look
   like this: :demeter:`athena`.
@@ -139,6 +140,9 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
+- The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
+  which I modified to add options for purple and orange stylings.
+  
 .. todo:: links to extensions used (esp. sphinxcontrib-bibtex,
           sphinxtr, sphinx-clatex)
 

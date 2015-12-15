@@ -39,11 +39,12 @@ of the project file. The group listing uses extended selection:
 
 -  Click on an item in the list to select one group
 
-- ``Control-click`` (i.e. hold down the ``Control`` key while
-   clicking) on an item in the list to add it to the selection
+- :kbd:`Control`-:kbd:`Left` (i.e. hold down the :kbd:`Control` key
+   while clicking theleft mouse button) on an item in the list to add
+   it to the selection
 
--  ``Shift-click`` to on a group to select all groups between it and the
-   previously selected group.
+- :kbd:`Shift`-:kbd:`click` to on a group to select all groups between
+   it and the previously selected group.
 
 The buttons labeled :quoted:`All`, and :quoted:`None` can be used to
 select all groups or to clear the selection. The :quoted:`Invert`

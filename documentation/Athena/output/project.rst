@@ -45,11 +45,11 @@ highlighted in this figure.
 The first two options saves the entire current state of
 :demeter:`athena`. If the project has already been saved, the
 :quoted:`Save project` option overwrites the previous file with the
-new state of your project. Hitting ``Control-s`` does the same
-thing. Clicking on the modified indicator -- the other highlighted
-region in the screenshot -- also saves the project.  Alternately, you
-can select :quoted:`Save project as...` and you will be prompted for a
-new file name for the project.
+new state of your project. Hitting :kbd:`Control`-:kbd:`s` does the
+same thing. Clicking on the modified indicator -- the other
+highlighted region in the screenshot -- also saves the project.
+Alternately, you can select :quoted:`Save project as...` and you will
+be prompted for a new file name for the project.
 
 The final option will write only the marked groups to a project file.
 You can think of this as a sort of :quoted:`sub-project` file. This is another

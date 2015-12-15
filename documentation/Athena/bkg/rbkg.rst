@@ -20,10 +20,10 @@ site <http://bruceravel.github.io/XAS-Education/>`__.
 
 Among these example files is one called ``fe.060``, which contains a
 spectrum from an iron foil measured at 60 K. Import this by selecting
-Open file from the File menu or by pressing ``Control-o``. Navigate to
-the location of your example files and select ``fe.060``. The `column
-selection dialog <../import/columns.html>`__ then appears. For now,
-just click OK.
+Open file from the File menu or by pressing
+:kbd:`Control`-:kbd:`o`. Navigate to the location of your example
+files and select ``fe.060``. The `column selection dialog
+<../import/columns.html>`__ then appears. For now, just click OK.
 
 The data is imported and :procparam:`rbkg` is set to its default value
 of 1. The data and the background function found using the default
@@ -75,7 +75,7 @@ Now let's examine the effect of choosing different values for
 :procparam:`rbkg`.  First, make a copy of the data so we can directly
 compare different values. Do that by selecting :quoted:`Copy current
 group` from the Group menu or by pressing
-``Shift-y``. :demeter:`athena` now looks like this.
+:kbd:`Alt`-:kbd:`y`. :demeter:`athena` now looks like this.
 
 .. _fig-rbkg:
 

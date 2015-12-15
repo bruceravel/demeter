@@ -32,11 +32,12 @@ the status bar.
 
 The :quoted:`Hephaestus` menu in the menu bar provides another way of
 navigating between the tools. The mouse can be used, as can the
-keyboard. ``Alt-e`` and ``Alt-h`` post the :quoted:`Hephaestus` and
-:quoted:`Help` menus. ``Control-1`` through ``Control-9`` change the
-display the various tools. ``Control-m`` displays the document in a
-web browser, while ``Control-c`` changes the display to the
-configuration tool.
+keyboard. :kbd:`Alt`-:kbd:`e` and :kbd:`Alt`-:kbd:`h` post the
+:quoted:`Hephaestus` and :quoted:`Help` menus. :kbd:`Control`-:kbd:`1`
+through :kbd:`Control`-:kbd:`9` change the display the various
+tools. :kbd:`Control`-:kbd:`m` displays the document in a web browser,
+while :kbd:`Control`-:kbd:`c` changes the display to the configuration
+tool.
 
 
 

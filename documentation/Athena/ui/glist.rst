@@ -34,11 +34,11 @@ the group list.
 Copying groups
 --------------
 
-You can copy a group by hitting Shift-y or by selecting :quoted:`Copy group`
-from the Group menu. This makes an identical copy of the current group
-and places it at the end of the groups list. All parameters are
-identical and the data arrays in :demeter:`ifeffit` are all copied --
-only the :demeter:`ifeffit` group name in different.
+You can copy a group by hitting :kbd:`Alt`-:kbd:`y` or by selecting
+:quoted:`Copy group` from the Group menu. This makes an identical copy
+of the current group and places it at the end of the groups list. All
+parameters are identical and the data arrays in :demeter:`ifeffit` are
+all copied -- only the :demeter:`ifeffit` group name in different.
 
 Copying is very useful for examining how changes in parameter values
 propagate through the data processing. You can make one or more copies,
@@ -54,9 +54,10 @@ Reorganizing the group list
 
 When a file is imported into :demeter:`athena`, the name of the file
 is used as the label in the group list. That's fine, but you can
-change the label by selecting :quoted:`Rename group` from the Group menu,
-typing Shift-l, or double clicking on an item in the group list. This
-posts a dialog for entering the new label for the group, shown here.
+change the label by selecting :quoted:`Rename group` from the Group
+menu, typing :kbd:`Alt`-:kbd:`l`, or double clicking on an item in
+the group list. This posts a dialog for entering the new label for the
+group, shown here.
 
 .. _fig-renaming:
 
@@ -83,13 +84,14 @@ Making one or more copies is an excellent tool for exploring the effects
 of the various parameters in the main window.
 
 There are several other useful tools for modifying the contents of the
-group list. You can reorder the items in the groups list using ``Alt-k`` or
-``Alt-j`` to move the current group up or down in the list.
+group list. You can reorder the items in the groups list using
+:kbd:`Alt`-:kbd:`k` or :kbd:`Alt`-:kbd:`j` to move the current group
+up or down in the list.
 
-Hitting ``Control-k`` or ``Control-j`` changes the current group to the one
-above or below.
+Hitting :kbd:`Control`-:kbd:`k` or :kbd:`Control`-:kbd:`j` changes the
+current group to the one above or below.
 
-.. caution:: As of version 0.9.20, ``Control-drag-and-drop`` is no longer
+.. caution:: As of version 0.9.20, :kbd:`Control`-drag-and-drop is no longer
 	     available for reorganizing group list items. That feature
 	     has been discontinued in favor of file drag and drop.
 
@@ -97,7 +99,7 @@ Items can be removed from the list. The current group or the marked
 groups can be removed from the project by selecting :quoted:`Remove group` or
 :quoted:`Remove marked groups` from the Group menu. You can remove all the
 groups from the list by selecting :quoted:`Close project` from the File or Group
-menu or by hitting ``Control-w``.
+menu or by hitting :kbd:`Control`-:kbd:`w`.
 
 
 Information about items in the group list
@@ -138,7 +140,7 @@ to remove the group and re-import it.
 
 .. versionadded:: 0.9.20 there is a label on the main window
    displaying the data type. You can toggle between |mu| (E) and XANES
-   data by ``Control-Shift left`` clicking on that label.
+   data by :kbd:`Control`-:kbd:`Alt` left clicking on that label.
 
 
 

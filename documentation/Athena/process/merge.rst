@@ -118,9 +118,9 @@ Keyboard shortcuts
 
 There are keyboard shortcuts for merging:
 
--  ``Control-shift-m`` : merge as |mu| (E)
+-  :kbd:`Control`-:kbd:`shift`-:kbd:`m` : merge as |mu| (E)
 
--  ``Control-shift-n`` : merge as normalized |mu| (E)
+-  :kbd:`Control`-:kbd:`shift`-:kbd:`n` : merge as normalized |mu| (E)
 
--  ``Control-shift-c`` : merge as |chi| (k)
+-  :kbd:`Control`-:kbd:`shift`-:kbd:`c` : merge as |chi| (k)
 

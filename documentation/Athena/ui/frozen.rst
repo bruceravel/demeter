@@ -35,19 +35,20 @@ below.
    Several visual cues indicate that a group is frozen, including the green
    highlighting the group list and the disabling of most controls.
 
-The frozen state of the current group can be toggled using the :quoted:`Freeze`
-button or by typing Shift-f. You can set the frozen state of multiple
-groups using the items in the :quoted:`Freeze` menu. There you will find options
-for freezing or unfreezing all groups, all marked groups, or groups
-which match `regular
-expressions <mark.html#usingregularexpressionstomarkgroups>`__.
+The frozen state of the current group can be toggled using the
+:quoted:`Freeze` button or by typing :kbd:`Alt`-:kbd:`f`. You can
+set the frozen state of multiple groups using the items in the
+:quoted:`Freeze` menu. There you will find options for freezing or
+unfreezing all groups, all marked groups, or groups which match
+`regular expressions
+<mark.html#usingregularexpressionstomarkgroups>`__.
 
 There are various visual changes when a group is frozen. The highlight
 color in the group list changes to light green and all the widgets on
 the main window become disabled.
 
-When a group is frozen, direct edits of parameter values are disallowed.
-Frozen groups are skipped for algorithmic edits, such as parameter
-constraints or alignment. You can, however, still remove a frozen group
-from the project. Unfreezing a group is a simple as hitting Shift-f
-again.
+When a group is frozen, direct edits of parameter values are
+disallowed.  Frozen groups are skipped for algorithmic edits, such as
+parameter constraints or alignment. You can, however, still remove a
+frozen group from the project. Unfreezing a group is a simple as
+hitting :kbd:`Alt`-:kbd:`f` again.

@@ -12,11 +12,12 @@ example, the marked groups are the ones plotted when a purple plotting
 button is pressed, merging is done on the set of marked groups and, many
 of the data processing and data analysis chores use the marked groups.
 
-:demeter:`athena` offers a number of simple tools for marking or unmarking groups.
-These are found in the Mark menu, as shown below, and also have keyboard
-bindings. Shift-a marks all groups, Shift-u unmarks all groups, and
-Shift-i inverts the markings such that the marked groups become unmarked
-and the unmarked ones become marked. The three buttons above the group
+:demeter:`athena` offers a number of simple tools for marking or
+unmarking groups.  These are found in the Mark menu, as shown below,
+and also have keyboard bindings. :kbd:`Alt`-:kbd:`a` marks all groups,
+:kbd:`Alt`-:kbd:`u` unmarks all groups, and :kbd:`Alt`-:kbd:`i`
+inverts the markings such that the marked groups become unmarked and
+the unmarked ones become marked. The three buttons above the group
 list also serve to make all, mark none, and invert the marks.
 
 .. _fig-mark:
@@ -36,7 +37,7 @@ Using regular expressions to mark groups
 
 :mark:`lightning,..` There is one more tool which is considerably more
 powerful and flexible.  In the Mark menu, this last marking tool it is
-called *Mark regex* and it is bound to Shift-r.
+called *Mark regex* and it is bound to :kbd:`Alt`-:kbd:`r`.
 
 So, what does *regex* mean?
 
@@ -68,11 +69,11 @@ the other five samples. There are two scans of each sample, as indicated
 by the ``.1`` and ``.2``.
 
 To make plots of arbitrary combinations of spectra, you can click the
-appropriate mark buttons on and off. Using regular expression marking is
-quicker and easier. I'll start with a couple simple examples. If you
-want to mark only the vanadium foil spectra, hit Shift-r and then enter
-foil. To mark the V2O3 and V2O5, but none of the others, hit Shift-r and
-enter V2.
+appropriate mark buttons on and off. Using regular expression marking
+is quicker and easier. I'll start with a couple simple examples. If
+you want to mark only the vanadium foil spectra, hit
+:kbd:`Alt`-:kbd:`r` and then enter foil. To mark the V2O3 and V2O5,
+but none of the others, hit :kbd:`Alt`-:kbd:`r` and enter V2.
 
 In fact, you get to use the entire power of perl's regular expression
 language (see `the regular expression documentation at
@@ -95,7 +96,7 @@ represent conceptual aspects of strings. Here are a few examples:
    would have worked in this case, given this set of group names.
 
 Regular expressions are a large and fascinating topic of study, but
-beyond the scope of this document. Check out the link above read
+beyond the scope of this document. Try
 Wikipedia's `excellent article on regular
 expressions <http://en.wikipedia.org/wiki/Regular_expression>`__ for
 more information. `Mastering Regular

@@ -123,13 +123,13 @@ Getting help
 ------------
 
 There is quite a bit of help built right into
-:demeter:`athena`. Typing ``Control-m`` or selecting :title:`Document`
-from the Help menu will display :demeter:`athena`'s document in a web
-browser or in the built-in document viewer. The :title:`Document
-sections` submenu allows you to jump directly to a particular
-topic. Also, many parts of the program have a button which will take
-you directly to the part of the document that describes that part of
-the program.
+:demeter:`athena`. Typing :kbd:`Control`-:kbd:`m` or selecting
+:title:`Document` from the Help menu will display :demeter:`athena`'s
+document in a web browser or in the built-in document viewer. The
+:title:`Document sections` submenu allows you to jump directly to a
+particular topic. Also, many parts of the program have a button which
+will take you directly to the part of the document that describes that
+part of the program.
 
 
 

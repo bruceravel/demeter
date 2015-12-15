@@ -7,7 +7,7 @@ Converting raw data to mu(E)
 ----------------------------
 
 To import a data file, select Open file from the File menu or type
-``Control-o``. Alternately, you can drag one or more data files from
+:kbd:`Control`-:kbd:`o`. Alternately, you can drag one or more data files from
 your computer's file manager and drop them onto the group list. A file
 selection dialog opens. On my Linux computer, it looks like this:
 
@@ -129,11 +129,10 @@ gets it wrong, you can specify the energy unit with the :quoted:`Energy units`
 menu. `Dispersive XAS <../process/pixel.html>`__, i.e. data which is a
 function of pixel index, requires special treatment.
 
-.. versionadded:: 0.9.20
-   There is now a label on the main page right next to the
-   :quoted:`Freeze` button which identifies the file type of the data. You can
-   toggle between xanes and xmu data by ``Control-Alt-Left`` clicking on that
-   label.
+.. versionadded:: 0.9.20 There is now a label on the main page right
+   next to the :quoted:`Freeze` button which identifies the file type
+   of the data. You can toggle between xanes and xmu data by
+   :kbd:`Control`-:kbd:`Alt`-:kbd:`Left` clicking on that label.
 
 
 Multi-element detector data
