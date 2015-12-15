@@ -83,7 +83,7 @@ use in Demeter's documents, including:
      :linebreak:
 
 - decorate characters and words to look like keyboard keys in one of
-  our styles (dark, light, purple, orange)
+  four styles (dark, light, purple, orange)
   ::
 
      :kbd:`key,style`
