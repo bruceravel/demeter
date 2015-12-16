@@ -107,9 +107,10 @@ sometimes oscillate wildly, as shown in the example below.
    :width: 45%
    :align: center
 
-   Noisy data with |mu| ₀(E) computed using the default :procparam:`kweight`
-   of 2. With a :procparam:`kweight` of 1, the data are still noisy (of course!)
-   but the background function properly follows the data.
+   Noisy data with |mu| \ :sub:`0`(E) computed using the default
+   :procparam:`kweight` of 2. With a :procparam:`kweight` of 1, the
+   data are still noisy (of course!)  but the background function
+   properly follows the data.
 
 The interaction between spline clamps and k-weight
 --------------------------------------------------

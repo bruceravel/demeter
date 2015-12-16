@@ -113,11 +113,11 @@ have been added: one arc-tangent to model the main edge step, a
 pseudo-Voigt function to model the first pre-edge peak, and a Gaussian
 to model the second pre-edge peak.
 
-:demeter:`athena` cannot know what feature in the data each line shape is intended
-to model. You **must** select the centroid of each line shape. This can
-be done by typing an energy value into the box labeled either :quoted:`Center`
-or E₀. Alternately, you can use the pluck button to take the energy
-value from the plot using the mouse.
+:demeter:`athena` cannot know what feature in the data each line shape
+is intended to model. You **must** select the centroid of each line
+shape. This can be done by typing an energy value into the box labeled
+either :quoted:`Center` or E\ :sub:`0`. Alternately, you can use the
+pluck button to take the energy value from the plot using the mouse.
 
 When the pluck button is used, :demeter:`athena` will make a guess for the initial
 value of the height of the lineshape. This is the value of the data at

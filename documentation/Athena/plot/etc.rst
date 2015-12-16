@@ -61,13 +61,14 @@ Special plots for the current group
        Norm and deriv of Fe foil
        
 **Data + I0 + signal**
-    I₀ can be plotted along with |mu| (E) and the signal as shown below. The
-    I₀ and signal channel is among the data saved in `a project
-    file <../output/project.html>`__. This example shows |mu| (E) of Au
-    chloride along with the signal and I₀ channels.This plot can also be
-    made by right-clicking on the E button. (The norm+deriv plot can be
-    configured for right-click use with the :configparam:`Artemis,right\_single\_e`
-    `configuration parameter <../other/prefs.html>`__.)
+    I\ :sub:`0` can be plotted along with |mu| (E) and the signal as
+    shown below. The I\ :sub:`0` and signal channel is among the data
+    saved in `a project file <../output/project.html>`__. This example
+    shows |mu| (E) of Au chloride along with the signal and I\ :sub:`0`
+    channels. This plot can also be made by right-clicking on the E
+    button. (The norm+deriv plot can be configured for right-click use
+    with the :configparam:`Artemis,right\_single\_e` `configuration
+    parameter <../other/prefs.html>`__.)
 
     .. _fig-mui0plot:
 
@@ -139,7 +140,7 @@ to the set of groups in the group list that have been
 **Plot with E0 at 0**
     This special plot is used to visualize |mu| (E) spectra measured at
     different edges. Each spectrum, Cu and Fe in this example, is
-    shifted so that its point of E₀ is displayed at 0 on the energy
+    shifted so that its point of E\ :sub:`0` is displayed at 0 on the energy
     axis.
 
     .. _fig-e00plot:
@@ -152,7 +153,7 @@ to the set of groups in the group list that have been
        Plot of Fe and Cu foils with E0 at 0.
        
 **Plot I0 of marked groups**
-    This plot allows examination of the I₀ signals of a set of marked
+    This plot allows examination of the I\ :sub:`0` signals of a set of marked
     groups. This plot can also be made by right-clicking on the E
     button. (The other two special marked groups plots can be configured
     for right-click use with the :configparam:`Artemis,right\_marked\_e`
