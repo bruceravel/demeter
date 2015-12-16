@@ -69,13 +69,13 @@ Fitting normalized |mu| (E), derivative |mu| (E), or |chi| (k) is chosen using t
 radio buttons just above the table of standards. When fitting |chi| (k)
 spectra, you have the option of fitting a single spectrum to the data.
 
-When fitting normalized or derivative |mu| (E) spectra, you have the option
-of floating an E₀ for each standard independently. This is intended to
-fix up any inconsistencies in the energy alignment of the various
-spectra (although it is much better to do a good job of aligning your
-data *before* doing your linear combination fitting). These E₀ variables
-can be introduced by clicking on the checkbuttons in the table of
-standard spectra.
+When fitting normalized or derivative |mu| (E) spectra, you have the
+option of floating an E\ :sub:`0` for each standard
+independently. This is intended to fix up any inconsistencies in the
+energy alignment of the various spectra (although it is much better to
+do a good job of aligning your data *before* doing your linear
+combination fitting). These E\ :sub:`0` variables can be introduced by
+clicking on the checkbuttons in the table of standard spectra.
 
 You can introduce a linear offset to the fit to normalized |mu| (E)
 spectra.  This is simple a line added to the sum of spectra in the
@@ -143,7 +143,7 @@ checkbuttons near the bottom of the tool.
     standards is not appropriate to the data.
 
 **Constrain all standards to use a single E0 shift**
-    You can force all standards to use a single E₀ shift parameter in
+    You can force all standards to use a single E\ :sub:`0` shift parameter in
     the fit. This is equivalent (albeit with a sign change) to fixing
     all the standards and using an E\ :sub:`0` shift on the unknown data.
 **Adding noise to the data**
@@ -162,7 +162,7 @@ checkbuttons near the bottom of the tool.
     actions list.
 **Adding a linear term to the fit**
     A line with a variable slope and offset can be added to a fit. The
-    line is only evaluated after the E₀ value of data being fit.
+    line is only evaluated after the E\ :sub:`0` value of data being fit.
 
 
 
