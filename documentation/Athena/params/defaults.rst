@@ -2,9 +2,6 @@
 Default parameter values
 ========================
 
-How ATHENA determines its default values
-----------------------------------------
-
 When data is imported in :demeter:`athena`, all parameters are set to
 their default values. For most data, these defaults are reasonable in
 the sense that using them will result in a decent first stab at

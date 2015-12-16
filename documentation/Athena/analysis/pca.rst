@@ -1,16 +1,21 @@
 .. _pca_sec:
 
-Principle component analysis
-============================
+Principle components analysis
+=============================
 
-Abstract decomposition of a data sequence
------------------------------------------
 
 .. todo:: Document all the buttons and whatnot. Document the many
    useful features are still missing.
 
 .. todo:: Need a tutorial on math/science of PCA.  Explain what PCA
    means, what it does, and what it does not do.
+
+---------------
+
+
+Principle components analysis (PCA) is an abstract decomposition of a
+data sequence....
+
 
 Here, I have imported a project file containing well-processed data on a
 time series of samples in which gold chloride is being reduced to gold
@@ -39,17 +44,18 @@ enabled or disabled depending on whether the selected group is marked
 (and therefore one of the data sets in the PCA) or not (and therefore
 a subject for target transformation).
 
-Clicking the :quoted:`Perform PCA` button will perform normalization on all the
-data as needed, then perform the components analysis. Upon completion,
-some results are printed to the text box and several buttons become
-enabled.
+Clicking the :kbd:`Perform PCA,light` button will perform
+normalization on all the data as needed, then perform the components
+analysis. Upon completion, some results are printed to the text box
+and several buttons become enabled.
 
 After the PCA completes, a plot is made of the extracted components.
-This plot can be recovered by clicking the :quoted:`Components` button under the
-:quoted:`Plots` heading. The number spinner is used to restrict which components
-are plotted. Because the first component is often so much bigger than
-the rest, it is often useful to set that number to 2, in which case the
-first (and largest) component is left off the plot.
+This plot can be recovered by clicking the :quoted:`Components` button
+under the :quoted:`Plots` heading. The number spinner is used to
+restrict which components are plotted. Because the first component is
+often so much bigger than the rest, it is often useful to set that
+number to 2, in which case the first (and largest) component is left
+off the plot.
 
 Other plotting options include a plot of the data stack, as interpolated
 into the analysis range, a scree plot (i.e. the eigenvalues of the PCA)
@@ -69,7 +75,9 @@ reconstruction of an intermeidate time point using the top 3 components.
    :target: ../_images/pca_components.png
    :width: 100%
    :align: left
-	   
+
+   The principle components of this data ensemble.	  
+ 
 .. _fig-pcarecon:
    
 .. figure:: ../../_images/pca_recon.png
@@ -77,16 +85,16 @@ reconstruction of an intermeidate time point using the top 3 components.
    :width: 100%
    :align: right
 
+   PCA reconstruction
+
 .. subfigend::
    :width: 0.45
    :label: _fig-pcabasics
 
-   (Left) The principle components of this data ensemble. (Right) PCA
-   reconstruction
-
-Selecting one of the standards in the group list enables the target
-transform button. Clicking it shows the result of the transform and
-displays the coefficients of the transform in the smaller text box.
+Selecting one of the standards in the group list enables the
+:kbd:`Target transform` button. Clicking it shows the result of the
+transform and displays the coefficients of the transform in the
+smaller text box.
 
 .. _fig-pcatt:
 
@@ -107,6 +115,9 @@ displays the coefficients of the transform in the smaller text box.
    :width: 100%
    :align: center
 
+   A successful target transform on Au foil. Au foil is certainly a
+   constituent of the data ensemble used in the PCA.
+
 .. _fig-pcattbad:
 
 .. figure:: ../../_images/pca_tt_bad.png
@@ -114,14 +125,13 @@ displays the coefficients of the transform in the smaller text box.
    :width: 100%
    :align: center
 
+   An unsuccessful target transform on Au cyanide. Au cyanide is
+   certainly not a constituent of the data ensemble used in the PCA.
+
 .. subfigend::
    :width: 0.45
    :label: _fig-pcattgoodbad
 
-   (Left) A successful target transform on Au foil. Au foil is certainly a
-   constituent of the data ensemble used in the PCA. (Right) A unsuccessful
-   target transform on Au cyanide. Au cyanide is certainly not a
-   constituent of the data ensemble used in the PCA.
 
 The list of chores still undone for the PCA tool can be found at `my
 Github

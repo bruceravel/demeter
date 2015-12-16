@@ -35,18 +35,17 @@ import latex_mods
 # ones.
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.extlinks',
-    'sphinx.ext.intersphinx',
+    #'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-    'sphinx.ext.mathjax',
+    #'sphinx.ext.mathjax',
 ]
 
 # from sphinxtr
 extensions.extend([
     'fix_equation_ref',
     'subfig',
-    'numfig',
+    #'numfig',
     'numsec',
-    #'natbib',
     'figtable',
     'singlehtml_toc',
     'singletext',
@@ -56,16 +55,9 @@ extensions.extend([
 ])
 
 # Turns on numbered figures for HTML output
-number_figures = True
+#number_figures = True
+numfig = True
 # configures bibliography
-# see http://wnielson.bitbucket.org/projects/sphinx-natbib/
-natbib = {
-    'file': 'athena.bib',
-    'brackets': '[]',
-    'separator': ',',
-    'style': 'authoryear',
-    'sort': True,
-}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [os.path.abspath(os.path.join('..', '_templates'))]
@@ -105,7 +97,21 @@ release = '0.9.24'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst']
+exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst', 'contents.rst',
+                    # 'forward',
+                    # 'intro',
+                    # 'import',
+                    # 'bkg',
+                    # 'plot',
+                    # 'ui',
+                    # 'params',
+                    # 'output',
+                    # 'process',
+                    # 'analysis',
+                    # 'other',
+                    # 'examples',
+                    # 'hephaestus.rst',
+]
 
 #sphinxtr
 # Ideally, we wouldn't have to do this, but sphinx seems to have trouble with
@@ -413,7 +419,7 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+# intersphinx_mapping = {'http://docs.python.org/': None}
 
 
 todo_include_todos = True

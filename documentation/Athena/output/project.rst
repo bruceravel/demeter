@@ -9,6 +9,8 @@ Project files
    #. Explain how the metadata dictionary works.
    #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
 
+----------------------
+
 	  
 The most important type of output file is the project file. A project
 file contains all of the data you have imported, all of the parameters
@@ -55,10 +57,10 @@ The final option will write only the marked groups to a project file.
 You can think of this as a sort of :quoted:`sub-project` file. This is another
 of the many ways that the group markings are used by :demeter:`athena`.
 
-The :quoted:`Save` button at the top of the screen will save the current
-project, prompting for a file name if needed. As you work with :demeter:`athena`.
-this button turns increasingly red, reminding you of the need to save
-your work early and often.
+The :kbd:`Save,light` button at the top of the screen will save the
+current project, prompting for a file name if needed. As you work with
+:demeter:`athena`.  this button turns increasingly red, reminding you
+of the need to save your work early and often.
 
 .. caution:: As with any software, you should save your work early and
 	     often. :demeter:`athena` and :demeter:`ifeffit` have

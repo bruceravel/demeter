@@ -1,4 +1,3 @@
-.. _intro_chapter:
 
 Introduction to ATHENA
 ======================
@@ -67,13 +66,11 @@ divided into several parts.  We will discuss each of these parts and
 give each a name.
 
 .. _fig-athenamain:
-
 .. figure:: ../_images/athena_main.png
-   :target: _images/athena_main.png
    :width: 65%
    :align: center
 
-   The parts of the ATHENA.
+   The parts of ATHENA.
 
 At the top of the window is a menu bar. This works much like the menu
 bar in any program. Much of the functionality in :demeter:`athena` is
@@ -91,15 +88,16 @@ normalization and background removal, forward Fourier transforms, and
 reverse Fourier transforms. At the bottom of the main window are a
 couple of parameters associated with plotting.
 
-At the bottom of the screen is the echo area. This very important space
-is used by :demeter:`athena` to communicate with you, the user. This space is used
-to display informational messages while :demeter:`athena` is working on your data,
-error messages when it runs into trouble, and other kinds of messages.
+At the bottom of the screen is the echo area. This very important
+space is used by :demeter:`athena` to communicate with you, the
+user. This space is used to display informational messages while
+:demeter:`athena` is working on your data, error messages when it runs
+into trouble, and other kinds of messages.
 
-The large blank area on the right is `the group list
-area <ui/glist.html>`__. As data are imported into :demeter:`athena`, they will be
-listed in this space. Access to the data already imported is made by
-clicking in this space.
+The large blank area on the right is `the group list area
+<ui/glist.html>`__. As data are imported into :demeter:`athena`, they
+will be listed in this space. Access to the data already imported is
+made by clicking in this space.
 
 Above the group list area are `the mark buttons <ui/mark.html>`__ The
 blank space next to the mark buttons is the modified project indicator.
@@ -112,13 +110,11 @@ when making a forward Fourier transform. Below that are various other
 `plotting controls <ui/mark.html>`__ in the plotting options section.
 
 .. _fig-athenawithdata:
-
 .. figure:: ../_images/athena_withdata.png
-   :target: _images/athena_withdata.png
    :width: 65%
    :align: center
 
-   Athena, after importing some data.
+   ATHENA, after importing some data.
 
 After importing several data files, each is made into a *data group* and
 listed in the group list. The label and the check button next to it are
@@ -142,17 +138,29 @@ part of the program.
 Folders and log files
 ---------------------
 
-On occasion, it is helpful to know something about how :demeter:`athena` writes
-information to disk during its operations.
+
+Many of :demeter:`athena`'s chores involve writing temporary
+files. Many file type plugins write temporary files after performing
+some transformation on the original data.  GNUPLOT writes temporary
+files as part of its plot creation.
 
 **working folder**
-    Many of :demeter:`athena`'s chores involve writing temporary files. Many file
-    type plugins write temporary files after performing some
-    transformation on the original data. GNUPLOT writes temporary
-    files as part of its plot creation. These files are stored in the
-    :title:`stash folder`. On linux (and other unixes) this is
-    ``$HOME/.horae/stash/``. On Windows this is
+    These files are stored in the :quoted:`stash folder`. On linux (and
+    other unixes) this is ``$HOME/.horae/stash/``. On Windows this is
     ``%APPDATA%\\demeter\\stash``.
+
+
+:demeter:`athena` writes information to screen or to disk during its
+operations.  This information is essential when making a bug report.
+While the content of this operations log may be inscrutable to you, it
+contains information that is invaluable for troubleshooting a bug
+report.  If you make a bug report and ask a question about the
+operation of the program, it is essential that you include this
+information.  If you post a message to the `mailing list
+<http://cars9.uchicago.edu/mailman/listinfo/ifeffit/>`_ reporting some
+kind of problem and you do not include this information, it will be
+the first thing Bruce asks for.
+
 
 **log files**
     When :demeter:`athena` runs into problems, it attempts to write enough
@@ -171,7 +179,7 @@ information to disk during its operations.
 
 ``%APPDATA% is C:\\Users\\<username>\\AppDataRoaming\\`` on Windows 7 and 8.
 
-It is ``C:\\Documents and Settings\\<username>\\Application Data\\`` on
+It is ``C:\\Documents and Settings\\<username>\\Application Data\\`` on
 Windows XP and Vista.
 
 In either case, ``<username>`` is your log-in name.

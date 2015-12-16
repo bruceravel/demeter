@@ -33,12 +33,13 @@ the group's name in the list on the left side of the tool. This will
 open a branch containing all the parameters in tat group. Click on one
 of them and it will be displayed in the controls on the left.
 
-Click on the default button to restore :demeter:`athena`'s default
-value or use the control below the default button to set a new
-value. That control will vary depending on the type of parameter. A
-text or numeric parameter will offer an entry box. A color parameter
-will offer a button which pops up a color selection dialog. A list
-parameter will offer a menu with the choices. And so on.
+Click on the :kbd:`default,light` button to restore
+:demeter:`athena`'s default value or use the control below the
+:kbd:`default,light` button to set a new value. That control will vary
+depending on the type of parameter. A text or numeric parameter will
+offer an entry box. A color parameter will offer a button which pops
+up a color selection dialog. A list parameter will offer a menu with
+the choices. And so on.
 
 The text area below these controls displays an explanation of the
 function served by that preference. Underneath that are buttons for

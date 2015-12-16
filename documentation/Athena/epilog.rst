@@ -13,7 +13,7 @@ copyright |copy| 2015 Bruce Ravel
 
 This document is licensed under `The Creative Commons Attribution-ShareAlike License <http://creativecommons.org/licenses/by-sa/3.0/>`__.
 
-.. :linebreak:`.`
+.. linebreak
 
 If :demeter:`demeter` and this document are useful to you, please
 consider `supporting The Creative Commons
@@ -21,3 +21,4 @@ consider `supporting The Creative Commons
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 .. |ndash|  unicode:: U+2013  .. EN DASH
+

@@ -2,9 +2,6 @@
 Convoluting data groups
 =======================
 
-Adding artificial broadening and artificial noise to your data
---------------------------------------------------------------
-
 This is one of :demeter:`athena`'s odder tools. It takes perfectly
 fine normalized |mu| (E) data and makes it worse by adding artificial
 broadening, artificial noise, or both. The broadening can be a
@@ -36,17 +33,18 @@ example of data with artificial noise is shown on the right.
    :target: ../_images/convolution_conv.png
    :width: 100%
 
+   Iron foil data broadened by 1 eV.
+
 .. _fig-convnoise:
 
 .. figure::  ../../_images/convolution_noise.png
    :target: ../_images/convolution_noise.png
    :width: 100%
 
+   Iron foil data with a bit of artificial noise added.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-convoluting
 
-   (Left) Iron foil data broadened by 1 eV. (Right) Iron foil data
-   with a bit of artificial noise added.
 

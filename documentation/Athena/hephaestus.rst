@@ -44,8 +44,8 @@ tool.
 Absorption
 ----------
 
-This is the start page for :demeter:`hephaestus` and is used to display information
-about edge and line energies for the elements.
+This is the start page for :demeter:`hephaestus` and is used to
+display information about edge and line energies for the elements.
 
 A periodic table is displayed atop three lists that will be filled in
 with data associated with an element. Clicking on an element in the
@@ -53,13 +53,14 @@ periodic table displays data about that element.
 
 The data table will be filled with some basic information about the
 element, including its name and Z number, its atomic weight, and bulk
-density under standard temperature and pressure. Beneath this table are
-two controls for determining the appropriate Z-1 or Z-2 filter to use in
-a fluorescence experiment. The :quoted:`Filter` text box will be filled with the
-likeliest candidate for the element selected from the periodic table.
-This can be edited by hand. Clicking the :quoted:`Plot filter` button will
-display a plot showing the relative locations of the edge energy, the
-dominant fluorescence lines, and the filter edge energy.
+density under standard temperature and pressure. Beneath this table
+are two controls for determining the appropriate Z-1 or Z-2 filter to
+use in a fluorescence experiment. The :quoted:`Filter` text box will
+be filled with the likeliest candidate for the element selected from
+the periodic table.  This can be edited by hand. Clicking the
+:kbd:`Plot filter,light` button will display a plot showing the
+relative locations of the edge energy, the dominant fluorescence
+lines, and the filter edge energy.
 
 The :quoted:`edges` table shows the value in eV of each edge associated with the
 element selected from the periodic table and the core-hole lifetime in
@@ -133,9 +134,10 @@ Beamline customization
 ~~~~~~~~~~~~~~~~~~~~~~
 
 When beamline customization is enabled, the two buttons labeled
-:quoted:`Show K edges` and :quoted:`Show L edges` will be visible. These are
-both toggle buttons. When pressed, they will disable all elements that
-cannot be measured by that edge at the beamline.
+:kbd:`Show K edges,light` and :kbd:`Show L edges,light` will be
+visible. These are both toggle buttons. When pressed, they will
+disable all elements that cannot be measured by that edge at the
+beamline.
 
 .. _fig-hephbeamline:
 
@@ -372,9 +374,9 @@ given energy. The calculation requires several parameters, including
    pressure is 760 Torr.
 
 The percentage absorbed by the ion chamber will usually auto-update as
-you change the parameters. Clicking the :quoted:`Compute` button forces an
-update. Clicking the :quoted:`Reset` button returns all the parameters to their
-initial values.
+you change the parameters. Clicking the :kbd:`Compute,light` button
+forces an update. Clicking the :kbd:`Reset,light` button returns all
+the parameters to their initial values.
 
 As a rule of thumb, 10% is a good amount of absorption for the I0
 chamber. This will allow for a good measurement of incidence flux while
@@ -546,8 +548,8 @@ The XANES data can be plotted as normalized mu(E) or as the derivative
 of mu(E). The data present have all been annotated so that interesting
 points are marked on the plots.
 
-The :quoted:`Save` button will prompt for a file name and save the mu(E) data to
-a file.
+The :kbd:`Save,light` button will prompt for a file name and save the
+mu(E) data to a file.
 
 One point of this tool is to make obsolete the :quoted:`Reference Spectra`
 printout from EXAFS Materials that is found at many beamlines.
@@ -620,10 +622,10 @@ are presented.
 Click on a group in the :quoted:`Parameters` list to open a
 group. Click on a parameter to display it in the controls on the
 right. You will be given controls appropriate to each parameter's data
-type for setting the parameter value. The :quoted:`Your value` and
-:quoted:`Demeter s value` buttons can be used to restore a parameter's
-value. A description of the displayed parameter will be written in the
-large text box.
+type for setting the parameter value. The :kbd:`Your value,light` and
+:kbd:`Demeter's value,light` buttons can be used to restore a
+parameter's value. A description of the displayed parameter will be
+written in the large text box.
 
 Parameters can be applied for the current session or applied and saved
 to your configuration file.

@@ -11,7 +11,7 @@ controlled by the contents of the plot options tabs in the lower right
 hand corner of :demeter:`athena`. This is highlighted in the following figure.
 
 In energy, you have the option of plotting |mu| (E) normalized or not and
-derivative or not. The red buttons on the left control how the current
+derivative or not. The orange buttons on the left control how the current
 group is plotted. The purple buttons on the right control how marked
 groups are plotted. For the current group, you also have the option of
 plotting the background function, the pre-edge line, or the post-edge

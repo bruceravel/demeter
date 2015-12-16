@@ -19,18 +19,18 @@ by adding an additional term to the |chi|\ :sup:`2` metric used to fit
 the spline to the |mu| (E) data. The difference between the spline and
 the data is computed for the first and last five data points. This sum
 of differences computed in energy is multiplied by a user-chosen
-scaling factor and added to the |chi| |sup2| computed from the R-range
-below :procparam:`rbkg`. This has the effect of :quoted:`clamping` the spline to the ends
-of the data range. In other words, we use the prior knowledge that
-|mu| |sub0| (E) is a smooth function through the oscillatory structure
-of |mu| (E) to put a restraint on the fit used to determine |mu|
-|sub0| (E).
+scaling factor and added to the |chi|\ :sup:`2`  computed from the R-range
+below :procparam:`rbkg`. This has the effect of :quoted:`clamping` the
+spline to the ends of the data range. In other words, we use the prior
+knowledge that |mu|\ :sub:`0`\ (E) is a smooth function through the
+oscillatory structure of |mu| (E) to put a restraint on the fit used
+to determine |mu|\ :sub:`0`\ (E).
 
 The user-selected multiplicative coefficient takes one of six
 predefined values: :quoted:`none`, :quoted:`slight`, :quoted:`weak`,
 :quoted:`medium`, :quoted:`strong`, or :quoted:`rigid`. These have
 values of 0, 3, 6, 12, 24, and 96, respectively and serve to set the
-strength of the clamp in the evaluation of |chi| |sup2|.
+strength of the clamp in the evaluation of |chi|\ :sup:`2`.
 
 .. subfigstart::
 
@@ -40,25 +40,25 @@ strength of the clamp in the evaluation of |chi| |sup2|.
    :target: ../_images/clamp_mu.png
    :width: 100%
 
+   EuTiO\ :sub:`3` Ti K-edge data with the background
+   subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
+   :quoted:`none`. Note that the end of the spline deviates significantly
+   from the end of the data.
 .. _fig-clamp_chi:
 
 .. figure::  ../../_images/clamp_chi.png
    :target: ../_images/clamp_chi.png
    :width: 100%
 
+   Comparing the effects of different values of the high-end spline
+   clamp on the EuTiO\ :sub:`3` data with all other parameters
+   equal. The data using the :quoted:`rigid` clamp show the most
+   physically reasonable behavior at the end of the data range.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-clamp
 
-   (Left) EuTiO\ :sub:`3` Ti K-edge data with the background
-   subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
-   :quoted:`none`. Note that the end of the spline deviates significantly
-   from the end of the data.  (Right) Comparing the effects of
-   different values of the high-end spline clamp on the EuTiO\
-   :sub:`3` data with all other parameters equal. The data using the
-   :quoted:`rigid` clamp show the most physically reasonable behavior at the
-   end of the data range.
 
 The default value of the clamp is :quoted:`none` at the low end of the energy
 range and :quoted:`strong` at the high end. Clamps tend not to help at the low
@@ -96,7 +96,7 @@ highest value of the spline clamp shown in the image above.
 
 However, in data which are quite noisy, amplifying the noise by a
 large value of :procparam:`kweight` can have a dramatic effect leading to a very
-poor evaluation of |mu| |sub0| (E). Indeed, the |mu| |sub0| (E)
+poor evaluation of |mu|\ :sub:`0`\ (E). Indeed, the |mu|\ :sub:`0`\ (E)
 evaluated from noisy data with a large value of :procparam:`kweight` will
 sometimes oscillate wildly, as shown in the example below.
 
@@ -107,7 +107,7 @@ sometimes oscillate wildly, as shown in the example below.
    :width: 45%
    :align: center
 
-   Noisy data with |mu| \ :sub:`0`(E) computed using the default
+   Noisy data with |mu| \ :sub:`0`\ (E) computed using the default
    :procparam:`kweight` of 2. With a :procparam:`kweight` of 1, the
    data are still noisy (of course!)  but the background function
    properly follows the data.
@@ -116,7 +116,7 @@ The interaction between spline clamps and k-weight
 --------------------------------------------------
 
 The spline clamp and :procparam:`kweight` parameters sometimes interact strongly.
-The criterion that |mu| |sub0| (E) follow closely to the end of the data that is
+The criterion that |mu|\ :sub:`0`\ (E) follow closely to the end of the data that is
 imposed by the spline clamp can have a surprising effect on noisy,
 heavily k-weighted data. This is what happened in the data shown in the
 previous section. Reducing the strength of the spline clamp can

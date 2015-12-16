@@ -13,7 +13,7 @@ of the marked groups sequentially.
 This tab contains two text entry boxes. The first is used to set the
 :procparam:`y-axis offset` parameter of the first marked group. Subsequent marked
 groups have their :procparam:`y-axis offset` parameters incremented by the amount
-of the second text entry box. Clicking the :quoted:`Set y-offset values` button
+of the second text entry box. Clicking the :kbd:`Apply to marked,light` button
 sets these values for each marked group.
 
 .. subfigstart::
@@ -24,18 +24,20 @@ sets these values for each marked group.
    :target: ../_images/plot_stack.png
    :width: 50%
 
+   The plot stacking tab.
+
 .. _fig-stacked:
 
 .. figure::  ../../_images/plot_stacked.png
    :target: ../_images/plot_stacked.png
    :width: 100%
 
+   An example of a stacked plot. Note that the stacking increment is
+   negative so that that order of the colors is the same in the legend
+   as in the plot.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-stack
 
-   (Left) The plot stacking tab. (Right) An example of a stacked plot. Note
-   that the stacking increment is negative so that that order of the colors
-   is the same in the legend as in the plot.
 

@@ -51,7 +51,7 @@ is selected from the menu labeled :quoted:`Form`. The multiplier is a
 scaling factor that can be applied to the standard before subtraction.
 
 If you have accidentally swapped the standard and data, click the
-:title:`invert` button to change the order of the subtraction.
+:kbd:`invert,light` button to change the order of the subtraction.
 
 You can select two points, shown in the plot below by the brown markers,
 and integrate the area under that part of the spectrum.
@@ -59,7 +59,7 @@ and integrate the area under that part of the spectrum.
 The difference spectra saved to data groups. Those data groups are
 treated in every way like any other data group. By default, difference
 groups are marked as normalized groups – that is, a flag is set which
-skips the normalization algorithm. The :title:`renormalize` button can
+skips the normalization algorithm. The :kbd:`renormalize,light` button can
 be ticked to make the resulting group a normal |mu| (E) group. When
 the form of the difference is set to plain |mu| (E), that button will
 be ticked.
@@ -92,26 +92,27 @@ will be substituted by specific values.
    :target: ../_images/diff_diff.png
    :width: 100%
 
+   The difference spectra between the first group in the list and
+   the current group in the screenshot of the difference tool.
+
 .. _fig-diffdiffsequence:
    
 .. figure:: ../../_images/diff_diffsequence.png
    :target: ../_images/diff_diffsequence.png
    :width: 100%
 
+   The difference spectra plotted after making data groups from each
+   one.
+
 .. subfigend::
    :width: 0.4
    :label: _fig-diffdiffplot
 
-   (Left) The difference spectra between the first group in the list and
-   the current group in the screenshot of the difference tool. (Right) The
-   difference spectra plotted after making data groups from each one.
-
-
 
 The integrated areas obtained by computing a sequence over all groups
 marked in the group list can be plotted by clicking the button labeled
-:quoted:`Plot integrated areas for all marked groups.` The reult of this shown
-below.
+:kbd:`Plot integrated areas for all marked groups,light`.  The result
+of this shown below.
 
 .. _fig-diffareas:
 
@@ -124,8 +125,8 @@ below.
 
 
 
-Uses of difference spectra
---------------------------
+Here are some example uses of difference spectra:
+
 
 **Magnetic dichroism**
     This part of :demeter:`athena` is directly applicable to dichroism studies. The

@@ -3,8 +3,6 @@
 Log-ratio/phase-difference analysis
 ===================================
 
-Purely empirical analysis of EXAFS data
----------------------------------------
 
 Log-ratio/phase-difference analysis is a purely empirical technique
 that can be used to determine changes in the distribution parameters
@@ -84,14 +82,15 @@ replaced with the log-ratio/phase-difference tool, shown below.
    The log-ratio/phase-difference tool.
 
 Once you select Fourier transform parameters and ranges for use in the
-analysis, you can click the :quoted:`Fit` button to perform the fit. The fit to
-the log-ratio of the amplitudes is plotted when the fit is over. The
-buttons can be used to plot either the fit to the log-ratio of
-amplitudes or the fit to the phase difference. The fits use all
-cumulants up to the fourth. Depending on your data quality, choice of
-Fourier transform ranges can be important and quite sensitive. You can
-save the log-ratio and phase-difference data along with the fits to a
-file by clicking the :quoted:`Save ratio data and fit` button.
+analysis, you can click the :kbd:`Fit,light` button to perform the
+fit. The fit to the log-ratio of the amplitudes is plotted when the
+fit is over. The buttons can be used to plot either the fit to the
+log-ratio of amplitudes or the fit to the phase difference. The fits
+use all cumulants up to the fourth. Depending on your data quality,
+choice of Fourier transform ranges can be important and quite
+sensitive. You can save the log-ratio and phase-difference data along
+with the fits to a file by clicking the :kbd:`Save ratio data and
+fit,light` button.
 
 
 .. subfigstart::
@@ -102,17 +101,20 @@ file by clicking the :quoted:`Save ratio data and fit` button.
    :target: ../_images/lr_fit.png
    :width: 100%
 
+   The results of the log-ratio fit to the Cu metal.
+
+
 .. _lr_pd_fit:
    
 .. figure:: ../../_images/lr_pd_fit.png
    :target: ../_images/lr_pd_fit.png
    :width: 100%
 
+   The results of the phase-difference fit to the Cu metal.
+
 .. subfigend::
    :width: 0.4
    :label: _fig-lrplots
-
-   The results of the log-ratio/phase-difference fit to the Cu metal.
 
 The three plot buttons behave just like the purple plot buttons would
 behave were only the standard and unknown marked.

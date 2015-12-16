@@ -102,11 +102,16 @@ the corrected spectra are shown on the bottom.
    :target: ../_images/selfabs_plot.png
    :width: 100%
 
+   This is the 0.94M data corrected by this algorithm.
+
 .. _fig-sabefore:
 
 .. figure:: ../../_images/selfabs_before.png 
    :target: ../_images/selfabs_before.png
    :width: 100%
+
+   Here is the raw data for the three samples. You can see the effect
+   of self-absorption growing for the more concentrated samples.
 
 .. _fig-saafter:
 
@@ -114,14 +119,12 @@ the corrected spectra are shown on the bottom.
    :target: ../_images/selfabs_after.png
    :width: 100%
 
+   The corrected data. Not bad, eh?
+
 .. subfigend::
    :width: 0.45
    :label: _fig-sa
 
-   (Left) This is the 0.94M data corrected by this algorithm. (Right)
-   Here is the raw data for the three samples. You can see the effect
-   of self-absorption growing for the more concentrated
-   samples. (Bottom) The corrected data. Not bad, eh?
 
 Thanks to Dani Haskel and Zhang Ghong for these data.
 
@@ -207,19 +210,20 @@ provides a useful metric for whether a film sample can be considered
    :target: ../_images/sa_info_e.png
    :width: 100%
 
+   The information depth for an iron/gallium alloy, plotted in energy.
+
 .. _fig-sainfok:
 
 .. figure:: ../../_images/sa_info_k.png
    :target: ../_images/sa_info_k.png
    :width: 100%
 
+   The same plot, but in wavenumber.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-sainfo
 
-   (Left) The information depth for an iron/gallium alloy, plotted in
-   energy. (Right) The same plot, but in wavenumber.
 
 
 Algorithm references

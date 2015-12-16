@@ -2,8 +2,6 @@
 Project journal
 ===============
 
-Recording notes and comments in project files
----------------------------------------------
 
 :demeter:`athena` provides a simple yet powerful way of documenting
 your work. The project journal tool provides a blank text box in which

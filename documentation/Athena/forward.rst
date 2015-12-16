@@ -1,15 +1,14 @@
 
-.. _forward_chapter:
-
 Forward
 =======
 
+
 .. todo::
    #. installation instructions, document building instructions
-   #. CC image in epilog + linebreak as a directive (not a role)
+   #. CC image in epilog
    #. mark index entries
-   #. use :kbd:`Button,light` throughout
-   #. fix image numbering
+
+----------------
       
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
@@ -144,6 +143,8 @@ The following great software tools were used to create this document:
 
 - The `sphinxtr <https://github.com/jterrace/sphinxtr>`_ package,
   which is Sphinx extension for supporting a few LaTeX environments.
+  Currently, the ``subfig`` package is used for grouping figures, but
+  the ``numfig`` package is not used for figure numbering.
   
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
@@ -151,8 +152,8 @@ The following great software tools were used to create this document:
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
 <http://www.kde.org>`__. The screenshots of spreadsheets made from a
-report (:num:`Fig. #fig-exportexcel`) and an LCF fit
-report (:num:`Fig. #fig-auclexcel`) are displayed in
+report (:numref:`Fig. %s <fig-exportexcel>`) and an LCF fit
+report (:numref:`Fig. %s <fig-auclexcel>`) are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
 
 
@@ -261,9 +262,6 @@ copy of the source out and downloads it onto your computer:
         git clone https://github.com/bruceravel/demeter.git
 
 
-.. todo::
-   explain use of Sphinx
-   
 Contributions to the document are extremely welcome. The very best
 sort of contribution would be to directly edit the source templates
 and make a pull request to the `git repository
@@ -280,48 +278,11 @@ your changes into the source.)
 Building the html document
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After downloading and unpacking the source for :demeter:`demeter`, you
-must configure it to build correctly on your computer. This is simple:
-
-::
-
-    cd doc/aug
-    ./configure
-
-To build the entire document as html
-
-::
-
-    ./bin/build -a
-
-Individual pages can be built by specifying them on the command line:
-
-::
-
-    ./bin/build bkg/norm.tt forward.tt
 
 
 Building the LaTeX document
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The L\ :sup:`A`\ T\ :sub:`E`\ X document is built by
-
-::
-
-    ./bin/tex -a
-    cd tex/
-    pdflatex athena.ltx
-    pdflatex athena.ltx
-
-You need to run ``pdflatex`` two or three times to get all of the
-section numbering and cross referencing correct. The varioref package,
-used to handle cross-referencing, is sometimes a little fragile. If you
-see the following error message: simply hit return. The message should
-disappear when you recompile the document.
-
-::
-
-    ! Package varioref Error: vref at page boundary 142-143 (may loop).
 
 
 Using the document with ATHENA

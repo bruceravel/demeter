@@ -3,9 +3,6 @@
 The AUTOBK Algorithm and the Rbkg Parameter
 ===========================================
 
-Understanding the most important background removal parameter
--------------------------------------------------------------
-
 The frequency cutoff between the background and the data discussed in
 the previous section is determined by the :procparam:`rbkg`
 parameter. This is the second parameter displayed in the background
@@ -27,8 +24,8 @@ files and select ``fe.060``. The `column selection dialog
 
 The data is imported and :procparam:`rbkg` is set to its default value
 of 1. The data and the background function found using the default
-parameter values can be found by pressing the E button. This is shown
-here on the left.
+parameter values can be found by pressing the :kbd:`E,orange`
+button. This is shown here on the left.
 
 .. subfigstart::
 
@@ -38,11 +35,15 @@ here on the left.
    :target: ../_images/rbkg_initial.png
    :width: 100%
 
+   The ``fe.060`` data and its default background function.
+
 .. _fig-rbkginitial_k:
 
 .. figure::  ../../_images/rbkg_initial_k.png
    :target: ../_images/rbkg_initial_k.png
    :width: 100%
+
+   The ``fe.060`` |chi| (k) data with its default background function.
 
 .. _fig-rbkginitial_r:
 
@@ -50,21 +51,19 @@ here on the left.
    :target: ../_images/rbkg_initial_r.png
    :width: 100%
 
+   The ``fe.060`` |chi| (R) data with its default background function.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-rbkginitial
 
-   (Right) The ``fe.060`` data and its default background function. (Left) The
-   ``fe.060`` |chi| (k) data with its default background function. (Bottom) The
-   ``fe.060`` |chi| (R) data with its default background function.
 
 The background function is subtracted from the data and normalized,
-resulting in a |chi| (k) function. Press the k button to see |chi| (k), shown in
-the right panel above.
+resulting in a |chi| (k) function. Press the :kbd:`k,orange` button to
+see |chi| (k), shown in the right panel above.
 
-When you press the R button, the Fourier transform is plotted, as in the
-bottom panel above.
+When you press the :kbd:`R,orange` button, the Fourier transform is
+plotted, as in the bottom panel above.
 
 So :procparam:`rbkg` is the value below which the :demeter:`autobk`
 algorithm removes Fourier components. As you can see, below 1 the
@@ -93,8 +92,8 @@ multiple items in the groups list involves the row of purple plotting
 buttons and the little check buttons next to the items in the group
 list. Click on the little check buttons next to *fe.060* and *Copy 1
 of fe.060*, as shown in the screenshot above. Now plot these two items
-by clicking the R button. It should look something like this.
-
+by clicking the :kbd:`R,purple` button. It should look something like
+this.
 
 .. subfigstart::
 
@@ -104,11 +103,17 @@ by clicking the R button. It should look something like this.
    :target: ../_images/rbkg_1_0_2.png
    :width: 100%
 
+   Comparing |chi| (R) for the data and its copy with
+   :procparam:`rbkg` values of 1 and 0.2.
+
 .. _fig-rbkg102k:
 
 .. figure::  ../../_images/rbkg_1_0_2k.png
    :target: ../_images/rbkg_1_0_2k.png
    :width: 100%
+
+   Comparing |chi| (k) for the data and its copy with
+   :procparam:`rbkg` values of 1 and 0.2.
 
 .. _fig-rbkg02e:
 
@@ -116,15 +121,13 @@ by clicking the R button. It should look something like this.
    :target: ../_images/rbkg_0_2e.png
    :width: 100%
 
+   |mu| (E) and the background for the copy with an :procparam:`rbkg`
+   value 0.2.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-rbkg10
 
-   (Left) Comparing |chi| (R) for the data and its copy with :procparam:`rbkg` values
-   of 1 and 0.2. (Right) Comparing |chi| (k) for the data and its copy
-   with :procparam:`rbkg` values of 1 and 0.2. (Bottom) |mu| (E) and the background
-   for the copy with an :procparam:`rbkg` value 0.2.
 
 I suspect the blue spectrum is something like what you expect EXAFS data
 to look like, while the red one seems somehow worse. In fact, it is easy

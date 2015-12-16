@@ -1,17 +1,43 @@
-'''
-Sphinx roles for use with Demeter's documentation
+'''Sphinx roles for use with Demeter's documentation
 
 - decoration of names of programs in Demeter, as well as Feff,
   Ifeffit, and Larch (colored and smallcaps)
 
+     :demeter:`athena`
+
 - decoration of configuration parameters (colored, preceded by a
   colored diamond, right arrow between group and parameter names)
+
+     :configparam:`athena,autosave_frequency`
 
 - decoration of data processing parameters (colored and surrounded by
   guillemots)
 
+     :procparam:`e0`
+
 - quoted text (default text, surrounded by proper opening and closing
   double quotation marks)
+
+     :quoted:`this`
+
+- mark -- insert a static image as a wrapped image, second argument
+  refers to depth of page in source tree
+
+     :mark:`bend,..`
+
+- kbd -- write the text to look like a button, first argument is the
+  text, second is the button style.  choices are light (Athena
+  button), dark (keyboard key, default), orange (single group plot
+  button), and purple (multiple group plot button)
+
+     :kbd:`E,purple`
+
+Sphinx directive
+
+- linebreak, like sphinxtr's endpar, but intended for breaking wrapped
+  figures.  in html, it inserts <br clear="all">
+
+     .. linebreak::
 
 Bruce Ravel (https://github.com/bruceravel/demeter)
 
@@ -175,26 +201,31 @@ def depart_mark_latex(self, node):
 
 
 class linebreak(nodes.Element):
-    '''linebreak text (default text, surrounded by proper opening and closing
-       double quotation marks)
-    '''
     pass
 
-def linebreak_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    linebreak_node = linebreak()
-    return [linebreak_node], []
+class LineBreakDirective(Directive):
 
-def visit_linebreak_html(self, node):
-    self.body.append('<br clear="all">')
+    required_arguments = 0
+    optional_arguments = 0
 
-def depart_linebreak_html(self, node):
-    self.body.append('')
+    has_content = False
+
+    def run(self):
+        return [linebreak()]
 
 def visit_linebreak_latex(self, node):
-    self.body.append("\\hfill\\break")
+    self.body.append('\n\n')
 
 def depart_linebreak_latex(self, node):
-    self.body.append("")
+    pass
+
+def visit_linebreak_html(self, node):
+    self.body.append('\n<br clear="all">\n')
+
+def depart_linebreak_html(self, node):
+    pass
+    
+
 
 
 class kbd(nodes.Element):
@@ -252,7 +283,7 @@ def setup(app):
             html = (visit_mark_html, depart_mark_html),
             latex = (visit_mark_latex, depart_mark_latex)
             )
-    app.add_role('linebreak', linebreak_role)
+    app.add_directive('linebreak', LineBreakDirective)
     app.add_node(linebreak,
             html = (visit_linebreak_html, depart_linebreak_html),
             latex = (visit_linebreak_latex, depart_linebreak_latex)

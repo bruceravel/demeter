@@ -8,7 +8,7 @@ Dispersive XAS
 
 :mark:`soon,..`
 
-:linebreak:`.`
+.. linebreak::
 
    
 Dispersive XAS correction is on ATHENA's to do list.

@@ -33,12 +33,13 @@ monochromator so that I would have a data set for explaining the use of
 calibrate these data.
 
 Open the `calibration tool <../process/cal.html>`__ by selecting
-“Calibrate energies” from the Data menu. The derivative of |mu| (E) for
-these data will be plotted, shown below on the left. The choice of edge
-position, denoted by the little orange circle, is reasonable in that it
-is close to the first peak of the first derivative, as one expects. The
-monochromator calibration is obviously wrong as the orange circle is at
-7105.5 eV, while the tabulated value for the iron K edge is 7112 eV.
+:quoted:`Calibrate energies` from the Data menu. The derivative of
+|mu| (E) for these data will be plotted, shown below on the left. The
+choice of edge position, denoted by the little orange circle, is
+reasonable in that it is close to the first peak of the first
+derivative, as one expects. The monochromator calibration is obviously
+wrong as the orange circle is at 7105.5 eV, while the tabulated value
+for the iron K edge is 7112 eV.
 
 .. subfigstart::
 
@@ -48,18 +49,21 @@ monochromator calibration is obviously wrong as the orange circle is at
    :target: ../_images/ex_data_calib.png
    :width: 100%
 
+   The iron foil data, as plotted in the calibration tool. 
+   Derivative of |mu| (E). 
+
 .. _fig-fedatasecond:
 
 .. figure::  ../../_images/ex_data_second.png
    :target: ../_images/ex_data_second.png
    :width: 100%
 
+   Second derivative of |mu| (E).
+
 .. subfigend::
    :width: 0.45
    :label: _fig-febegin
 
-   The iron foil data, as plotted in the calibration tool. (Left)
-   Derivative of |mu| (E). (Right) Second derivative of |mu| (E).
 
 We want to select the peak of the first derivative and set that point
 to 7112 eV. We can simply use the currently selected point -- it is
@@ -102,11 +106,16 @@ energy by clicking on the :kbd:`E,purple` button.
    :target: ../_images/ex_data_misaligned.png
    :width: 100%
 
+   Misaligned iron foil |mu| (E) data.
+
 .. _fig-fedataalign:
 
 .. figure::  ../../_images/ex_data_align.png
    :target: ../_images/ex_data_align.png
    :width: 100%
+
+   The derivatives of the misaligned data, as plotted in the alignment
+   tool.
 
 .. _fig-fedatachik:
 
@@ -114,23 +123,22 @@ energy by clicking on the :kbd:`E,purple` button.
    :target: ../_images/ex_data_chik.png
    :width: 100%
 
+   Aligned data plotted in k, but with :procparam:`E0` unconstrained.
+
 .. _fig-fedataaligned:
 
 .. figure::  ../../_images/ex_data_aligned.png
    :target: ../_images/ex_data_aligned.png
    :width: 100%
 
+   Aligned data plotted in k after constraining :procparam:`E0`. Once
+   aligned and constrained in :procparam:`E0`, these successive scans
+   are quite consistent.
+
 .. subfigend::
    :width: 0.45
    :label: _fig-fealign
 
-   (Upper left) Misaligned iron foil |mu| (E) data. (Upper right) The
-   derivatives of the misaligned data, as plotted in the alignment
-   tool.  (Lower left) Aligned data plotted in k, but with
-   :procparam:`E0` unconstrained.  (Lower right) Aligned data plotted
-   in k after constraining :procparam:`E0`. Once aligned and
-   constrained in :procparam:`E0`, these successive scans are quite
-   consistent.
 
 The upper left of the image above shows that these data are not aligned.
 Since they are successive scans on the same iron foil under the same
@@ -168,7 +176,7 @@ from ``fe.060`` -- 7112 eV -- into the :procparam:`E0` text entry box
 after clicking on ``fe.061`` in the group list. Alternately, you can
 select ``fe.060`` in the group list, then right click on the
 :procparam:`E0` parameter to raise its `context menu
-<../params/constrain.html#constrainingindividualparameters>`__ and
+<../params/constrain.html#constraining-individual-parameters>`__ and
 select :quoted:`Set all groups to this value of E0`. Once the
 :procparam:`E0` parameters are set the same for these data sets, we
 see above in the lower right that the data are quite consistent
@@ -222,7 +230,7 @@ Of course, ``fe.061`` has already be aligned. If you select any other
 group by clicking on it in the group list, you will see that it it is
 not yet aligned. You can align the remaining groups by selecting each
 on in turn and clicking the :kbd:`Auto align,light` button --- but that
-seems tedious. Much better to click the “Align marked groups”
+seems tedious. Much better to click the :quoted:`Align marked groups`
 button. Since all the groups are aligned, the automated alignment
 algorithm will be applied to each one in turn.
 

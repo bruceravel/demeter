@@ -3,17 +3,13 @@
 Reference channel
 =================
 
-Importing a reference spectrum for use as a data alignment standard
--------------------------------------------------------------------
-
-The column selection dialog offers several other features related to
-data import. In this section we will see how to import a reference
-channel. It is common to place a third ionization chamber in line after
-the transmission chamber and to place good transmission standard between
-the two. The point of measuring the standard is that it is measured in
-parallel with your real sample. This standard can then be used to align
-the actual data using the `data alignment
-tool <../process/align.html>`__.
+A reference spectrum is used by :demeter:`athena` as a data alignment
+standard.  It is common to place a third ionization chamber in line
+after the transmission chamber and to place good transmission standard
+between the two. The point of measuring the standard is that it is
+measured in parallel with your real sample. This standard can then be
+used to align the actual data using the `data alignment tool
+<../process/align.html>`__.
 
 The standard often is a zero-valent foil, but the most important thing
 is that it is an excellent standard which will yield consistently
@@ -43,18 +39,18 @@ elastically scattered radiation through the standard with a PIN diode.
 In that case, I0 is the numerator and the diode is the denominator.
 
 You can plot the reference channel to make sure that you have selected
-the correct channels with the :quoted:`Plot reference` button. If your reference
-standard is of an element with a nearby edge energy, uncheck the button
-labeled :quoted:`Same element`. If you use some other kind of reference
-measurement that is not a transmission measurement, you can uncheck the
-:quoted:`Natural log` button.
+the correct channels with the :quoted:`Plot reference` check
+button. If your reference standard is of an element with a nearby edge
+energy, uncheck the button labeled :quoted:`Same element`. If you use
+some other kind of reference measurement that is not a transmission
+measurement, you can uncheck the :quoted:`Natural log` button.
 
-When you click the OK button, the data are imported and inserted into
-the group list. The reference channel is placed in the group list below
-its data. The reference channel is just like any other group, with one
-distinction. The data and its reference channel are *tied* together in
-the sense that the values for their :procparam:`energy shift` parameters will
-always be the same.
+When you click the :kbd:`OK,light` button, the data are imported and
+inserted into the group list. The reference channel is placed in the
+group list below its data. The reference channel is just like any
+other group, with one distinction. The data and its reference channel
+are *tied* together in the sense that the values for their
+:procparam:`energy shift` parameters will always be the same.
 
 This relationship is shown visually by the change in color of the text
 in the box for :procparam:`energy shift`, as seen in this screenshot.

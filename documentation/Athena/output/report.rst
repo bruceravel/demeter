@@ -2,13 +2,13 @@
 Parameter report files
 ======================
 
-ATHENA output for spreadsheet programs
---------------------------------------
 
-The final kind of output file is a parameter report. In the Edit menu,
-you will find a submenu labeled :quoted:`Write a report`, shown below. The
-various options in that submenu write out files containing the
-parameters from the main window.
+The final kind of output file is a parameter report.  Many of these
+take the form of a file that can be imported into a spreadsheet
+program.   In the Edit menu, you will find a submenu labeled
+:quoted:`Export`, shown below. The various options in that
+submenu write out files containing the parameters from the main
+window.
 
 .. _fig-expoertreport:
 
@@ -32,3 +32,6 @@ the marked groups.
 	   
    An example of the Excel spreadsheet output displayed in Libre Office.
 
+The final option in that submenu exports a file that can be used by
+:demeter:`artemis` as an empirical fitting standard.  See the 
+:demeter:`artemis` manual for more information.

@@ -68,7 +68,8 @@ group, shown here.
 
    Renaming a group list entry.
 
-Hitting Return or clicking the OK button renames the group, shown here.
+Hitting Return or clicking the :kbd:`OK,light` button renames the
+group, shown here.
 
 .. _fig-renamed:
 
@@ -177,7 +178,7 @@ The last item in the plotting options tabs, labeled :quoted:`Shrink`,
 causes the k-weight buttons and plot options tabs to be hidden,
 causing the group list to expand, and allowing the display of more
 data groups. When the plot options tabs is shrunk, it is replaced by a
-button labeled :quoted:`Restore plot options`. Clicking this will
+button labeled :kbd:`Restore plot options,light`. Clicking this will
 return the k-weight buttons and the group list to their original
 places and the group list to its original original size.
 

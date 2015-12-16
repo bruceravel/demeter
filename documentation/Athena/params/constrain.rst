@@ -42,7 +42,7 @@ current group is, of course, the one whose values are currently
 displayed in the main window and the one which is highlighted in the
 group list. This parameter value can be applied to all groups or to the
 set of marked groups. The set of marked groups are the ones with their
-little purple buttons in the group list checked. So here we see again
+little check buttons in the group list checked. So here we see again
 one of the many uses of the mark buttons.
 
 The last options involves resetting a parameter to its default value.

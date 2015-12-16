@@ -2,9 +2,6 @@
 Column output files
 ===================
 
-Writing output for your favorite plotting program
--------------------------------------------------
-
 After doing a lot of analysis, you will eventually need to make
 beautiful pictures for publication. As a glance at any of the
 screenshots in this document will attest, the graphical output of
@@ -121,8 +118,8 @@ the complex back transform, as well as the magnitude and phase.
 In certain situations, it is much more convenient to write column data
 files containing data from many groups. This is done with the help of
 the mark buttons. The data from each of the marked groups can be saved
-in a variety of forms using the :quoted:`saved marked groups` submenu, as shown
-below.
+in a variety of forms using the :quoted:`Save marked groups` submenu,
+as shown below.
 
 .. _fig-exportmarked:
 

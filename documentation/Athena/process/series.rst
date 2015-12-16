@@ -2,8 +2,6 @@
 Copy series
 ===========
 
-Examining systematic trends in a data set
------------------------------------------
 
 This tool allows you to examine systemic trends in a measurement by
 varying a single processing parameter over a specified range. The

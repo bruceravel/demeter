@@ -2,6 +2,10 @@
 Plotting Your Data in ATHENA
 ============================
 
+.. todo:: Write document page for title, legends, single file tab.
+
+--------------
+
 Two of the main design goals of :demeter:`athena` are to make basic
 data processing, i.e. background removal and Fourier transforms, as
 transparent as possible and to make processing of large amounts of
@@ -10,10 +14,10 @@ are no buttons or other kinds of controls that explicitly tell
 :demeter:`athena` to perform the basic processing chores. Instead,
 there are the plot buttons. When you click one of the plot buttons,
 the data processing which is required will be performed before the
-plot is made. For example, if you press the :kbd:`R,orange` button, the background
-will be removed from the current group and the |chi| (k) will be
-Fourier transformed to |chi| (R). Once all that is finished, the plot
-in R-space will be made.
+plot is made. For example, if you press the :kbd:`R,orange` button,
+the background will be removed from the current group and the
+|chi| (k) will be Fourier transformed to |chi| (R). Once all that is
+finished, the plot in R-space will be made.
 
 As you change the values of the parameters in the main window,
 :demeter:`athena` keeps track of what has been changed and which data
@@ -21,8 +25,6 @@ processing steps need to be redone. If you change the
 :procparam:`krange` parameters, then press the :kbd:`R,orange` button
 again, the Fourier transform will be updated, but :demeter:`athena`
 will recognize that the background removal is still up-to-date.
-
-.. todo:: Write document page for title, legends, single file tab.
 
 
 **Plotting the current group**
@@ -33,22 +35,22 @@ whose parameter values are displayed in the main window. The controls
 used to determine how the plots are displayed are described in `the
 next section <../plot/tabs.html>`__.
 
-#. Clicking the :kbd:`E,orange` button brings the background removal up to date and
-   plots the |mu| (E) data.
+#. Clicking the :kbd:`E,orange` button brings the background removal
+   up to date and plots the |mu| (E) data
 
-#. Clicking the :kbd:`k,orange` button brings the background removal up to date and
-   plots the |chi| (k) data.
+#. Clicking the :kbd:`k,orange` button brings the background removal
+   up to date and plots the |chi| (k) data
 
-#. Clicking the :kbd:`R,orange` button brings the background removal and Fourier
-   transform up to date and plots the |chi| (R) data.
+#. Clicking the :kbd:`R,orange` button brings the background removal
+   and Fourier transform up to date and plots the |chi| (R) data
 
-#. Clicking the :kbd:`q,orange` button brings the background removal, Fourier
-   transform, and backwards transform up to date and plots the
-   |chi| (q) data.
+#. Clicking the :kbd:`q,orange` button brings the background removal,
+   Fourier transform, and backwards transform up to date and plots the
+   |chi| (q) data
 
-#. Clicking the :kbd:`kq,orange` button brings the background removal, Fourier
-   transform, and backwards transform up to date and plots the
-   |chi| (k) data along with the real part of the |chi| (q) data.
+#. Clicking the :kbd:`kq,orange` button brings the background removal,
+   Fourier transform, and backwards transform up to date and plots the
+   |chi| (k) data along with the real part of the |chi| (q) data
 
 
 **Plotting many groups**
@@ -60,42 +62,46 @@ found `elsewhere in this document <../ui/mark.html>`__. The controls
 used to determine how the plots are displayed are described in `the
 next section <../plot/tabs.html>`__.
 
-#. Clicking the :kbd:`E,purple` button brings the background removal up to date for
-   all marked groups and plots their |mu| (E) data.
+#. Clicking the :kbd:`E,purple` button brings the background removal
+   up to date for all marked groups and plots their |mu| (E) data
 
-#. Clicking the :kbd:`k,purple` button brings the background removal up to date for
-   all marked groups and plots their |chi| (k) data.
+#. Clicking the :kbd:`k,purple` button brings the background removal
+   up to date for all marked groups and plots their |chi| (k) data
 
-#. Clicking the :kbd:`R,purple` button brings the background removal and Fourier
-   transform up to date for all marked groups and plots their |chi| (R) data.
+#. Clicking the :kbd:`R,purple` button brings the background removal
+   and Fourier transform up to date for all marked groups and plots
+   their |chi| (R) data
 
-#. Clicking the :kbd:`q,purple` button brings the background removal, Fourier
-   transform, and backwards transform up to date for all marked groups
-   and plots their |chi| (q) data.
+#. Clicking the :kbd:`q,purple` button brings the background removal,
+   Fourier transform, and backwards transform up to date for all
+   marked groups and plots their |chi| (q) data
 
 
 **Right clicking on plot buttons**
 
 Several of the plot buttons will respond to a right click by making
-one of `the special plots
-<../plot/etc.html#special-plots-for-the-current-group>`__ from the Plot
-menu.
+one of `the special plots <../plot/etc.html>`__ from the Plot menu.
 
-- Right click the :kbd:`E,orange` button: plot |mu| (E) with I\ :sub:`0` and
-  the signal.
+- Right click the :kbd:`E,orange` button: plot |mu| (E) with I\
+  :sub:`0` and the signal
 
-- Right click the :kbd:`k,orange` button: display the k123 plot.
+- Right click the :kbd:`k,orange` button: display the k123 plot
 
-- Right click the :kbd:`R,orange` button: display the R123 plot.
+- Right click the :kbd:`R,orange` button: display the R123 plot
 
-- Right click the :kbd:`kq,orange` button: display the quad plot.
+- Right click the :kbd:`kq,orange` button: display the quad plot
 
-- Right click the :kbd:`E,purple` button: plot I\ :sub:`0` for each marked group.
+- Right click the :kbd:`E,purple` button: plot I\ :sub:`0` for each
+  marked group
 
-All other plot keys respond normally when right-clicked.
+- Right click the :kbd:`q,purple` button: display the bi-quad plot
 
-The responses of the :kbd:`E,orange` button and the :kbd:`E,purple` button can be configured with
-the :configparam:`athena,right\_single\_e` and
+All other plot keys respond to a right-click in the same way as a
+left-click.
+
+The responses of the :kbd:`E,orange` button and the :kbd:`E,purple`
+button can be configured with the
+:configparam:`athena,right\_single\_e` and
 :configparam:`athena,right\_marked\_e` `configuration parameters
 <../other/prefs.html>`__.
 

@@ -3,13 +3,12 @@
 Project selection dialog
 ========================
 
-Importing data from ATHENA project files
-----------------------------------------
-
-`Project files <../output/project.html>`__ are :demeter:`athena`'s mechanism for
+The project selection dialog is used to importing data from
+:demeter:`athena` project files.  `Project files
+<../output/project.html>`__ are :demeter:`athena`'s mechanism for
 saving the state of an analysis project. The project selection dialog,
-shown below, provides a way of selectively importing part or all of the
-contents of the project file.
+shown below, provides a way of selectively importing part or all of
+the contents of the project file.
 
 .. _fig-projsel:
 
@@ -21,7 +20,7 @@ contents of the project file.
    The project selection dialog.
 
 Project files, like any other files are imported using the file
-selection dialog (:num:`Fig. #fig-importfiledialog`). :demeter:`athena`
+selection dialog (:numref:`Fig. %s <fig-importfiledialog>`). :demeter:`athena`
 will recognize a project file and present the project selection dialog.
 Alternately, you can drag one or more project files from your computer's
 file manager and drop them onto the group list.
@@ -40,22 +39,24 @@ of the project file. The group listing uses extended selection:
 -  Click on an item in the list to select one group
 
 - :kbd:`Control`-:kbd:`Left` (i.e. hold down the :kbd:`Control` key
-   while clicking theleft mouse button) on an item in the list to add
+   while clicking the left mouse button) on an item in the list to add
    it to the selection
 
 - :kbd:`Shift`-:kbd:`click` to on a group to select all groups between
    it and the previously selected group.
 
-The buttons labeled :quoted:`All`, and :quoted:`None` can be used to
-select all groups or to clear the selection. The :quoted:`Invert`
-button will invert the selection of each group.
+The buttons labeled :kbd:`Select all,light`, and :kbd:`Select none,light` can be
+used to select all groups or to clear the selection. The
+:kbd:`Invert,light` button will invert the selection of each group.
 
 Below those three buttons are a series of controls allowing somewhat
 finer grained control over how items from the group list are selected.
-The :quoted:`Select every` line allows selection by a regular pattern. “Select
-matching” allows you to select groups that match a specified pattern
-using the full strength of perl's `regular
-expressions <../ui/mark.html#using-regular-expressions-to-mark-groups>`__.
+The :kbd:`Select every,light` line allows selection by a regular
+pattern.  :kbd:`Select matching,light` allows you to select groups
+that match a specified pattern using the full strength of perl's
+`regular expressions
+<../ui/mark.html#using-regular-expressions-to-mark-groups>`__.
 
-Once you have selected the groups you want to import, click the :quoted:`Import`
-button. If no groups are selected then all the groups will be imported.
+Once you have selected the groups you want to import, click the
+:kbd:`Import selected data,light` button.  If no groups are selected
+then *all* the groups will be imported.

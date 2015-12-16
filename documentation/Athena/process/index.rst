@@ -15,9 +15,9 @@ return to the main menu. Clicking on a group label in the group list
 will make that group current, display parameters appropriate to the data
 processing tool, sometimes plotting the data in some appropriate manner.
 
-When you are finished using the data processing tool, you can press the
-button labeled :quoted:`Return to the main window`. Doing so will close the
-special tool and redisplay the main window.
+When you are finished using the data processing tool, you can press
+the button labeled :kbd:`Return to the main window,light`. Doing so
+will close the special tool and redisplay the main window.
 
 .. _fig-process:
 

@@ -33,22 +33,24 @@ and data analysis tools use pluck buttons, as does the
    :target: ../_images/ui_pluckpoint.png
    :width: 100%
 
+   After clicking on the pluck button, the program waits for you to
+   click on the plot, which shows |mu| (E) for BaTiO\ :sub:`3`. Only
+   the x-axis value of the click on the plot is used by the pluck
+   button.
+
 .. _fig-plucked:
 
 .. figure:: ../../_images/ui_plucked.png
    :target: ../_images/ui_plucked.png
    :width: 100%
 
+   After clicking on the point shown in the
+   previous figure, the value of about 243 is inserted as the value of
+   the upper edge of the normalization range – clearly a better value
+   for that parameter.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-plucking
 
-   (Left) After clicking on the pluck button, the program waits for
-   you to click on the plot, which shows |mu| (E) for BaTiO\
-   :sub:`3`. Only the x-axis value of the click on the plot is used by
-   the pluck button. (Right) After clicking on the point shown in the
-   previous figure, the value of about 243 is inserted as the value of
-   the upper edge of the normalization range – clearly a better value
-   for that parameter.
 

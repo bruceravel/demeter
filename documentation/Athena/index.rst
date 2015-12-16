@@ -18,9 +18,10 @@ ATHENA: XAS Data Processing
 
 .. endpar::
 
-.. figure:: ../_images/greek_delphi.jpg
-   :width: 85%
-   :align: center
+..
+   .. figure:: ../_images/greek_delphi.jpg
+      :width: 85%
+      :align: center
 
 .. endpar::
 

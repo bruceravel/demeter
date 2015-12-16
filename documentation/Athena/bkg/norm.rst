@@ -14,19 +14,19 @@ computed by FEFF is chosen for comparison to normalized data.
 
 The relationship between |mu| (E) and |chi| (k) is:
 
-|mu| (E) = |mu| |sub0| (E) \* (1 + |chi| (E))
+   |mu| (E) = |mu|\ :sub:`0`\ (E) \* (1 + |chi| (E))
 
 which means that
 
-|chi| (E) = (|mu| (E) - |mu| |sub0| (E)) / |mu| |sub0| (E)
+   |chi| (E) = (|mu| (E) - |mu|\ :sub:`0`\ (E)) / |mu|\ :sub:`0`\ (E)
 
-The approximation of |mu| |sub0| (E) in an experimental spectrum is a topic `that
+The approximation of |mu|\ :sub:`0`\ (E) in an experimental spectrum is a topic `that
 will be discussed shortly <rbkg.html>`__.
 
 This equation is not, in fact, the equation that is commonly used to
 extract |chi| (k) from the measured spectrum. The reason that equation is
-problematic is the factor of |mu| |sub0| (E) in the denominator. In practice, one
-cannot trust the |mu| |sub0| (E) to be sufficiently well behaved that it can be
+problematic is the factor of |mu|\ :sub:`0`\ (E) in the denominator. In practice, one
+cannot trust the |mu|\ :sub:`0`\ (E) to be sufficiently well behaved that it can be
 used as a multiplicative factor. An example is shown below.
 
 .. _fig-zerocross:
@@ -40,28 +40,29 @@ used as a multiplicative factor. An example is shown below.
    region.
 
 In the case of the gold spectrum, the detector setting were such that
-the spectrum crosses the zero-axis. Dividing these spectra by |mu| |sub0| (E)
-would be a disaster as the division would invert the phase of the
-extracted |chi| (k) data at the point of the zero-crossing.
+the spectrum crosses the zero-axis. Dividing these spectra by |mu|\
+:sub:`0`\ (E) would be a disaster as the division would invert the
+phase of the extracted |chi| (k) data at the point of the
+zero-crossing.
 
 To address this problem, we typically avoid functional normalization and
 instead perform an *edge step normalization*. The formula is
 
-|chi| (E) = (|mu| (E) - |mu| |sub0| (E)) / |mu| |sub0| (E |sub0| )
+|chi| (E) = (|mu| (E) - |mu|\ :sub:`0` (E)) / |mu|\ :sub:`0`\ (E\ :sub:`0`)
 
-The difference is the term in the denominator. |mu| |sub0| (E |sub0| )
-is the value of the background function evaluated at the edge
-energy. This addresses the problem of a poorly behaved |mu| |sub0| (E)
-function, but introduces another issue. Because the true |mu|
-|sub0| (E) function should have some energy dependence, normalizing by
-|mu| |sub0| (E |sub0| ) introduces an attenuation into |chi| (k) that
-is roughly linear in energy. An attenuation that is linear in energy
-is quadratic in wavenumber. Consequently, the edge step normalization
-introduces an artificial |sigma| |sup2| term to the |chi| (k) data
-that adds to whatever thermal and static |sigma| |sup2| may exist in
-the data.
+The difference is the term in the denominator. |mu|\ :sub:`0`\ (E\
+:sub:`0`) is the value of the background function evaluated at the
+edge energy. This addresses the problem of a poorly behaved |mu|\
+:sub:`0` (E) function, but introduces another issue. Because the true
+|mu|\ :sub:`0` (E) function should have some energy dependence,
+normalizing by |mu|\ :sub:`0`\ (E\ :sub:`0`) introduces an attenuation
+into |chi| (k) that is roughly linear in energy. An attenuation that
+is linear in energy is quadratic in wavenumber. Consequently, the edge
+step normalization introduces an artificial |sigma|\ :sup:`2` term to
+the |chi| (k) data that adds to whatever thermal and static |sigma|\
+:sup:`2` may exist in the data.
 
-This artificial |sigma| |sup2| term is typically quite small and
+This artificial |sigma|\ :sup:`2` term is typically quite small and
 represents a much less severe problem than a misbehaving functional
 normalization.
 
@@ -108,19 +109,19 @@ through the middle of the data in their respective ranges.
    :target: ../_images/bkg_prepost.png
    :width: 100%
 
+   Cu foil |mu| (E) with pre and post lines.
+
 .. _fig-norm:
 
 .. figure::  ../../_images/bkg_norm.png
    :target: ../_images/bkg_norm.png
    :width: 100%
 
+   Normalized |mu| (E) data for a copper foil.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-normalization
-
-   (Left) Cu foil |mu| (E) with pre and post lines. (Right) Normalized |mu| (E)
-   data for a copper foil.
 
 Data can be plotted with the pre-edge and normalization lines using
 controls in the `energy plot
@@ -135,7 +136,7 @@ parameters are shown by the little orange markers. (The upper bound of
 the :procparam:`normalization range` is off screen in the plot above of the
 copper foil.)
 
-The normalization constant, |mu| |sub0| (E |sub0| ) is evaluated by extrapolating the
+The normalization constant, |mu|\ :sub:`0`\ (E\ :sub:`0`) is evaluated by extrapolating the
 pre- and post-edge lines to :procparam:`e0` and subtracting the e0-crossing of the
 pre-edge line from the e0-crossing of the post-edge line. This
 difference is the value of the :procparam:`edge step` parameter.
@@ -143,8 +144,8 @@ difference is the value of the :procparam:`edge step` parameter.
 The pre-edge line is extrapolated to all energies in the measurement
 range of the data and subtracted from |mu| (E). This has the effect of
 putting the pre-edge portion of the data on the y=0 axis. The pre-edge
-subtracted data are then divided by |mu| |sub0| (E |sub0| ). The result is shown on the
-right side of the figure above.
+subtracted data are then divided by |mu|\ :sub:`0`\ (E\ :sub:`0`). The
+result is shown on the right side of the figure above.
 
 .. versionadded:: 0.9.18, an option was added to the context menu
    attached to the :procparam:`edge step` label for approximating the
@@ -209,21 +210,22 @@ the flattened data are highly distorted.
    :target: ../_images/bkg_postbad.png
    :width: 100%
 
+   The post-edge line is chosen very poorly for this BaTiO\ :sub:`3`
+   spectrum. The upper end of the normalization range is on the other side
+   of the Ba L\ :sub:`III` edge.
+
 .. _fig-normbad:
 
 .. figure::  ../../_images/bkg_normbad.png
    :target: ../_images/bkg_normbad.png
    :width: 100%
 
+   The poor choice of normalization range for BaTiO\ :sub:`3` results
+   in very poorly normalized Ti K edge data.
+
 .. subfigend::
    :width: 0.45
    :label: _fig-badnorm
-
-   (Left) The post-edge line is chosen very poorly for this BaTiO\ :sub:`3`
-   spectrum. The upper end of the normalization range is on the other side
-   of the Ba L\ :sub:`III` edge. (Right) The poor choice of normalization
-   range for BaTiO\ :sub:`3` results in very poorly normalized Ti K edge
-   data.
 
 The previous example is obviously an extreme case, but it illustrates
 the need to examine the normalization parameters as you process your
@@ -240,11 +242,15 @@ in how the |chi| (k) data are normalized.
    :target: ../_images/bkg_subtlepost.png
    :width: 100%
 
+   One choice of :procparam:`norm1`.
+
 .. _fig-subtlepost2:
 
 .. figure::  ../../_images/bkg_subtlepost2.png
    :target: ../_images/bkg_subtlepost2.png
    :width: 100%
+
+   Another choice of :procparam:`norm1`.
 
 .. _fig-subtlepost3:
 
@@ -252,15 +258,14 @@ in how the |chi| (k) data are normalized.
    :target: ../_images/bkg_subtlepost_compare.png
    :width: 100%
 
+   Example of a subtle effect in how the post-edge line is chosen in a
+   hydrated uranyl species.  This compared the flattened XANES data
+   for different choices of post-edge line in a hydrated uranyl
+   species.
 
 .. subfigend::
    :width: 0.45
    :label: _fig-subtlepost
-
-   (Left) Example of a subtle effect in how the post-edge line is
-   chosen in a hydrated uranyl species. (Right) Comparing the
-   flattened XANES data for different choices of post-edge line in a
-   hydrated uranyl species.
 
 In this example, the different choice for the lower bound of the
 normalization range (42 eV in one case, 125 eV in the other) has an

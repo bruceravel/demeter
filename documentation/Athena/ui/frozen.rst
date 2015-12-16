@@ -2,9 +2,6 @@
 Frozen groups
 =============
 
-Avoiding mistakes with uneditable groups
-----------------------------------------
-
 There is a feature that :demeter:`athena` shares with almost any other
 computer program -- not just analysis programs, but any program. Soon
 after starting to use :demeter:`athena`, you will do something silly

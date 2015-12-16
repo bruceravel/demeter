@@ -22,7 +22,7 @@ selection dialog opens. On my Linux computer, it looks like this:
 
 It looks somewhat different on Windows, but behaves the same. It allows
 you to navigate your disk to find the file you want to import. Once you
-find that file, click on it then click on the Open button.
+find that file, click on it then click on the :kbd:`Open` button.
 
 Once you have selected a file to import the column selection dialog,
 shown below, appears.
@@ -130,8 +130,8 @@ menu. `Dispersive XAS <../process/pixel.html>`__, i.e. data which is a
 function of pixel index, requires special treatment.
 
 .. versionadded:: 0.9.20 There is now a label on the main page right
-   next to the :quoted:`Freeze` button which identifies the file type
-   of the data. You can toggle between xanes and xmu data by
+   next to the :quoted:`Freeze` check button which identifies the file
+   type of the data. You can toggle between xanes and xmu data by
    :kbd:`Control`-:kbd:`Alt`-:kbd:`Left` clicking on that label.
 
 
@@ -155,8 +155,8 @@ selection dialog.
 Importing the data will then add up the channels on the fly and put a
 group containing the summation of the channels in the group list.
 
-You have the option of clicking the button that says :quoted:`Save
-each channel as a group`, as shown here.
+You have the option of clicking the check button that says
+:quoted:`Save each channel as a group`, as shown here.
 
 .. _fig-importmedch:
 

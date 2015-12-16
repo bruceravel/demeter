@@ -114,6 +114,21 @@ location in ``_build/html/_images``.  As a result, the path to image
 always has one more ``../`` than the target.
 
 
+Figure numbering
+----------------
+
+I am currently the using `built-in numfig
+<http://sphinx-doc.org/markup/inline.html#cross-referencing-figures-by-figure-number>`_
+for figure numbering.  This only supports the html builder.  The
+numfig extension purports to support LaTeX, but it fails to do the
+html figure numbering correctly.  That said, I am using the subfig
+extension for figure grouping, but I am labeling and numbering the
+individual figures.
+
+Since this won't work for LaTeX, this is going to have to be addressed
+at some point.  But trying to track down the problem with numfig is
+beyond my patience right now.
+
   
 Building the html document
 --------------------------

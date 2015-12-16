@@ -6,11 +6,11 @@ Energy-dependent normalization
 When measuring fluorescence data at low energy, the data might have an
 unusual overall shape as shown in the S K-edge data in the figure below.
 This behavior is due to the energy dependence of the signal on the
-gas-filled I |sub0| chamber.
+gas-filled I\ :sub:`0` chamber.
 
 As the energy of the incident beam increases, the absorption of the
 gasses in I\ :sub:`0` significantly decreases. Since the fluorescence
-signal if I\ :sub:`f`/I |sub0|, the |mu| (E) grows with energy. Since
+signal if I\ :sub:`f`/I\ :sub:`0`, the |mu| (E) grows with energy. Since
 the edge-step normalization of the data is made by dividing out a
 constant edge-step value, the energy-dependence of I\ :sub:`0` results
 in a |chi| (k) signal that is somewhat amplified.
@@ -23,21 +23,22 @@ in a |chi| (k) signal that is somewhat amplified.
     :target: ../_images/bkg_s_mu.png
     :width: 100%
 
+    Sulfur K edge spectrum measured in fluorescence.
+
 .. _fig-bkgschi:
 
 .. figure::  ../../_images/bkg_s_chi.png
     :target: ../_images/bkg_s_chi.png
     :width: 100%
 
+    The blue trace is the |chi| (k) data extracted directly from the
+    |mu| (E) data to the right. The red trace is the same data, but
+    with the energy-dependent normalization applied.
 
 .. subfigend::
     :width: 0.45
     :label: _fig-bkgs
 
-    (Left) Sulfur K edge spectrum measured in fluorescence. (Right)
-    The blue trace is the |chi| (k) data extracted directly from the
-    |mu| (E) data to the right. The red trace is the same data, but
-    with the energy-dependent normalization applied.
 
 This amplification effect can be approximately corrected by an
 energy-dependent normalization. This is implemented using the pre- and

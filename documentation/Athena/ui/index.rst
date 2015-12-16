@@ -3,6 +3,10 @@ ATHENA's User Interface
 =======================
 
 
+.. todo:: Need chapter on contents (and purpose) of the Monitor menu
+
+-------------
+
 :demeter:`athena` can be used successfully by using relatively few of
 its capabilities. For instance, it's fairly obvious that you can
 import data by opening a file using the File menu, change a parameter
@@ -12,8 +16,6 @@ window, or plot data by clicking one of the :kbd:`E,orange`,
 is, however, a lot more to :demeter:`athena` at the level of its user
 interface. Part of making the leap from beginner to expert is learning
 about the various user interface features.
-
-.. todo:: Need chapter on contents (and purpose) of the Monitor menu
 
 
 .. toctree::

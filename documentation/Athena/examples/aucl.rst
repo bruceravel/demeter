@@ -69,21 +69,22 @@ characteristic of the metallic gold spectrum.
    :target: ../_images/ex_aucl_data.png
    :width: 100%
 
+   The sequence of measurements from 0.12 through 720 hours. The
+   top-most trace shows the starting material, aqueous Au\ :sup:`3+`
+   chloride. The bottom trace shows the end product, metallic gold.
+
 .. _fig-auclstandards:
 
 .. figure::  ../../_images/ex_aucl_standards.png
    :target: ../_images/ex_aucl_standards.png
    :width: 100%
 
+   All of the standards contained in the project file.
+
 .. subfigend::
    :width: 0.45
    :label: _fig-aucllcf
 
-   (Left) The sequence of measurements from 0.12 through 720
-   hours. The top-most trace shows the starting material, aqueous Au\
-   :sup:`3+` chloride. The bottom trace shows the end product,
-   metallic gold. (Right) All of the standards contained in the
-   project file.
 
 The purpose of this experiment is two-fold. One goal is to determine the
 reaction kinetics of the reduction. To that end, we will assume that the
