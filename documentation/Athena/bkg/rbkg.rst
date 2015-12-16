@@ -1,6 +1,6 @@
 .. _rbkg_sec:
 
-The Autobk Algorithm and the Rbkg Parameter
+The AUTOBK Algorithm and the Rbkg Parameter
 ===========================================
 
 Understanding the most important background removal parameter
@@ -66,7 +66,7 @@ the right panel above.
 When you press the R button, the Fourier transform is plotted, as in the
 bottom panel above.
 
-So :procparam:`rbkg` is the value below which the :demeter:`AUTOBK`
+So :procparam:`rbkg` is the value below which the :demeter:`autobk`
 algorithm removes Fourier components. As you can see, below 1 the
 |chi| (R) function is essentially 0, but above 1 the spectrum is
 non-zero.

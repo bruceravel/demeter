@@ -7,15 +7,16 @@ Interpreting data as a sum of line shapes
 -----------------------------------------
 
 Peak fitting involves fitting a number of analytical line shapes to
-XANES data. The typical approach is to simulate the XANES data using one
-or two step-like functions and several peak functions for the peaks in
-the data. The centroids, amplitudes, and widths of the various line
-shapes are either fixed or varied to best fit the data. In :demeter:`athena`'s
-implementation of peak fitting, a Levenberg-Marquardt non-linear
-least-squares minimization is used. (To be specific, :demeter:`ifeffit`'s
-``minimize`` command is used after constructing an array with a sum of
-line shapes or LARCH's ``minimize`` function is using an objective
-function which contructs an array with a sum of the line shapes.)
+XANES data. The typical approach is to simulate the XANES data using
+one or two step-like functions and several peak functions for the
+peaks in the data. The centroids, amplitudes, and widths of the
+various line shapes are either fixed or varied to best fit the
+data. In :demeter:`athena`'s implementation of peak fitting, a
+Levenberg-Marquardt non-linear least-squares minimization is used. (To
+be specific, :demeter:`ifeffit`'s ``minimize`` command is used after
+constructing an array with a sum of line shapes or :demeter:`larch`'s
+``minimize`` function is using an objective function which contructs
+an array with a sum of the line shapes.)
 
 Peak fitting is an inherently empirical analysis technique. By
 themselves, the line shapes used have little physical meaning. The
@@ -52,7 +53,7 @@ shapes when useing :demeter:`ifeffit` include
 
 -  pseudo-Voigt (peak)
 
-LARCH adds one step-like function and several peak functions:
+:demeter:`larch` adds one step-like function and several peak functions:
 
 -  logistic (step-like)
 

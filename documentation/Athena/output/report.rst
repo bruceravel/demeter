@@ -2,7 +2,7 @@
 Parameter report files
 ======================
 
-Athena output for spreadsheet programs
+ATHENA output for spreadsheet programs
 --------------------------------------
 
 The final kind of output file is a parameter report. In the Edit menu,

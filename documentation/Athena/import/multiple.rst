@@ -3,7 +3,7 @@
 Multiple data set import
 ========================
 
-How Athena handles large volumes of data
+How ATHENA handles large volumes of data
 ----------------------------------------
 
 You can import multiple data sets in the same manner that was

@@ -1,5 +1,5 @@
 
-Configuring Athena to work for you
+Configuring ATHENA to work for you
 ----------------------------------
 
 :demeter:`athena` allows you to set an enormous number of preferences. Many dozens

@@ -221,7 +221,7 @@ Data citations
 
 
    
-Installing Athena on your computer
+Installing ATHENA on your computer
 ----------------------------------
 
 **Linux, BSD, and other unixes**
@@ -324,7 +324,7 @@ disappear when you recompile the document.
     ! Package varioref Error: vref at page boundary 142-143 (may loop).
 
 
-Using the document with Athena
+Using the document with ATHENA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The html document files can be used by :demeter:`athena`. They are

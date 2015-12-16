@@ -2,7 +2,7 @@
 File type plugins
 =================
 
-Extending Athena to read new file types
+Extending ATHENA to read new file types
 ---------------------------------------
 
 :mark:`bend,..` :demeter:`athena` uses :demeter:`ifeffit`'s `read\_data()
@@ -292,7 +292,7 @@ data butmakes no suggestions of fluorescence data.
 
 
 
-Athena's plugin registry
+ATHENA's plugin registry
 ------------------------
 
 Because there might be a large number of file type plugins, it is

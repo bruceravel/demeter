@@ -3,7 +3,7 @@
 Project selection dialog
 ========================
 
-Importing data from Athena project files
+Importing data from ATHENA project files
 ----------------------------------------
 
 `Project files <../output/project.html>`__ are :demeter:`athena`'s mechanism for

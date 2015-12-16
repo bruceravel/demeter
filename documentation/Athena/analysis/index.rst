@@ -1,5 +1,5 @@
 
-Data analysis in Athena
+Data analysis in ATHENA
 =======================
 
 :demeter:`athena` provides various kinds of data analysis. None of the

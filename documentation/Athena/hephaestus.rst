@@ -612,9 +612,10 @@ Preferences
 -----------
 
 The behavior of :demeter:`hephaestus` can be configured via the
-preferences tool.  This uses the same preferences tool as Athena and
-Artemis, although only those preference groups relevant to
-:demeter:`hephaestus` and to plotting are presented.
+preferences tool.  This uses the same preferences tool as
+:demeter:`athena` and :demeter:`artemis`, although only those
+preference groups relevant to :demeter:`hephaestus` and to plotting
+are presented.
 
 Click on a group in the :quoted:`Parameters` list to open a
 group. Click on a parameter to display it in the controls on the

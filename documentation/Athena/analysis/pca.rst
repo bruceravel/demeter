@@ -31,13 +31,13 @@ I then select the PCA tool from the main menu.
    The PCA tool.
 
 The operational concept for the PCA tool makes use of the standard
-Athena group selection tools. The ensemble of marked groups are used as
-the data on which the PCA will be performed. The selected group (i.e.
-the one highlighted in the group list) can be either reconstructed or
-target transformed. The relevant controls will be enabled or disabled
-depending on whether the selected group is marked (and therefore one of
-the data sets in the PCA) or not (and therefore a subject for target
-transformation).
+:demeter:`athena` group selection tools. The ensemble of marked groups
+are used as the data on which the PCA will be performed. The selected
+group (i.e.  the one highlighted in the group list) can be either
+reconstructed or target transformed. The relevant controls will be
+enabled or disabled depending on whether the selected group is marked
+(and therefore one of the data sets in the PCA) or not (and therefore
+a subject for target transformation).
 
 Clicking the :quoted:`Perform PCA` button will perform normalization on all the
 data as needed, then perform the components analysis. Upon completion,

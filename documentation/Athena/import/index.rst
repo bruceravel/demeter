@@ -66,7 +66,7 @@ significant deviation from the format described above.
    marking character, :demeter:`ifeffit` will not be able to recognize headers or
    column labels. As long as no text follows the data, the columns will
    still be understood as columns of data and the data can be imported
-   by Athena.
+   by :demeter:`athena`.
 
 -  If the line of dashes is missing, again the headers and column labels
    will not be recognized, but the columns of data will be.

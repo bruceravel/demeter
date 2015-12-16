@@ -74,7 +74,7 @@ in the following screenshot.
    for turning on the energy-dependent normalization is enabled.
 
 This control is normally disabled. To enable it, you must toggle on the
-:configparam:`Athena,show\_funnorm` `configuration
+:configparam:`athena,show\_funnorm` `configuration
 parameter <../other/prefs.html>`__. If you import a project file which
 has one or more groups using the energy-dependent normalization, then
 the control will be turned on automatically.

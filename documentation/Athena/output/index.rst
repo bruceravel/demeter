@@ -16,8 +16,8 @@ on the following pages:
 
 - Project files which capture the entire state of your current work in
   :demeter:`athena`. These can be re-imported into :demeter:`athena`,
-  imported into ARTEMIS, or emailed to your collaborator in another time
-  zone.
+  imported into :demeter:`artemis`, or emailed to your collaborator in
+  another time zone.
 
 - Report files summarizing parameter values for all the data groups in
   your project. These report files can be imported into spreadsheet

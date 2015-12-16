@@ -1,5 +1,5 @@
 
-Setting parameters in Athena
+Setting parameters in ATHENA
 ============================
 
 The interface for setting parameter values in the main window is quite

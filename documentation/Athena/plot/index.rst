@@ -1,5 +1,5 @@
 
-Plotting Your Data in Athena
+Plotting Your Data in ATHENA
 ============================
 
 Two of the main design goals of :demeter:`athena` are to make basic
@@ -95,8 +95,8 @@ menu.
 All other plot keys respond normally when right-clicked.
 
 The responses of the :kbd:`E,orange` button and the :kbd:`E,purple` button can be configured with
-the :configparam:`Athena,right\_single\_e` and
-:configparam:`Athena,right\_marked\_e` `configuration parameters
+the :configparam:`athena,right\_single\_e` and
+:configparam:`athena,right\_marked\_e` `configuration parameters
 <../other/prefs.html>`__.
 
 .. toctree::

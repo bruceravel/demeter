@@ -321,7 +321,7 @@ can be skipped in a project file written outside of
 that are missing.
 
 For example, a project file can have only parameters related to
-Autobk.  Those will be used by :demeter:`athena` and
+:demeter:`autobk`.  Those will be used by :demeter:`athena` and
 :demeter:`athena`'s defaults will be used elsewhere.
 
 Attributes described with things like *output*, *determined from
@@ -488,7 +488,7 @@ Backward transform parameters
 | bft_rwindow    | functional form of window                  | hanning                      |
 +----------------+--------------------------------------------+------------------------------+
 
-Note that the fitting range in :demeter:`Artemis` is the
+Note that the fitting range in :demeter:`artemis` is the
 back-transform range in :demeter:`athena` and uses the same
 attributes.
 

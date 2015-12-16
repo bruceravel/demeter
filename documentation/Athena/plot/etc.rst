@@ -66,7 +66,7 @@ Special plots for the current group
     file <../output/project.html>`__. This example shows |mu| (E) of Au
     chloride along with the signal and I₀ channels.This plot can also be
     made by right-clicking on the E button. (The norm+deriv plot can be
-    configured for right-click use with the :configparam:`Artemis,right\_single\_e`
+    configured for right-click use with the :configparam:`athena,right\_single\_e`
     `configuration parameter <../other/prefs.html>`__.)
 
     .. _fig-mui0plot:
@@ -155,7 +155,7 @@ to the set of groups in the group list that have been
     This plot allows examination of the I₀ signals of a set of marked
     groups. This plot can also be made by right-clicking on the E
     button. (The other two special marked groups plots can be configured
-    for right-click use with the :configparam:`Artemis,right\_marked\_e`
+    for right-click use with the :configparam:`athena,right\_marked\_e`
     `configuration parameter <../other/prefs.html>`__.)
 
     .. _fig-i0plot:
@@ -198,7 +198,7 @@ interesting ways.
     deviation. The standard deviation has been added to and subtracted
     from the merged data. This is the plot that is displayed by default
     when a merge is made. This behavior is controled by the
-    :configparam:`Athena,merge\_plot` `configuration
+    :configparam:`athena,merge\_plot` `configuration
     parameter <../other/prefs.html>`__.
 
     .. _fig-stddevplot:

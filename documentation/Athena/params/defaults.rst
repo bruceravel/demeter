@@ -2,7 +2,7 @@
 Default parameter values
 ========================
 
-How Athena determines its default values
+How ATHENA determines its default values
 ----------------------------------------
 
 When data is imported in :demeter:`athena`, all parameters are set to

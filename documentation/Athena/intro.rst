@@ -1,68 +1,70 @@
 .. _intro_chapter:
 
-Introduction to Athena
+Introduction to ATHENA
 ======================
 
-:demeter:`athena` is an interactive graphical utility for processing EXAFS data. It
-handles most of the common data handling chores of interest at the
-beamline or for preparing your data to begin analysis. :demeter:`athena` is a
-graphical front end to Matt Newville's :demeter:`ifeffit` library written entirely
-in the Perl programming language and using the Gnuplot program for data
-display. It is being developed on Linux and tested on various flavors of
-Windows, but should work on any unix-like, Windows, or Mac operating
-system.
+:demeter:`athena` is an interactive graphical utility for processing
+EXAFS data. It handles most of the common data handling chores of
+interest at the beamline or for preparing your data to begin
+analysis. :demeter:`athena` is a graphical front end to Matt
+Newville's :demeter:`ifeffit` library written entirely in the Perl
+programming language and using the Gnuplot program for data
+display. It is being developed on Linux and tested on various flavors
+of Windows, but should work on any unix-like, Windows, or Mac
+operating system.
 
-:demeter:`athena` is intended to provide high quality analysis with a highly usable
-interface. It allows very fine grained control over the processing and
-plotting of individual data sets while still enabling the processing and
-visualization of large quantities of data.
+:demeter:`athena` is intended to provide high quality analysis with a
+highly usable interface. It allows very fine grained control over the
+processing and plotting of individual data sets while still enabling
+the processing and visualization of large quantities of data.
 
 Among :demeter:`athena`'s many, many features, you will find:
 
--  Convert raw data to μ(E)
+- Convert raw data to |mu| (E)
 
--  File import plugins for reading arbitrary data files
+- File import plugins for reading arbitrary data files
 
--  Process and plot multiple data scans simultaneously
+- Process and plot multiple data scans simultaneously
 
--  Merge data as μ(E), normalized μ(E), or χ(k)
+- Merge data as |mu| (E), normalized |mu| (E), or |chi| (k)
 
--  Energy calibration
+- Energy calibration
 
--  Align data scans with or without a reference channel
+- Align data scans with or without a reference channel
 
--  Deglitch, truncate, convolve, or smooth μ(E) data
+- Deglitch, truncate, convolve, or smooth |mu| (E) data
 
--  Self-absorption corrections for fluorescence spectra
+- Self-absorption corrections for fluorescence spectra
 
--  Compute difference spectra
+- Compute difference spectra
 
--  Fit linear combinations of standards to μ(E), derivative of μ(E), or
-   χ(k) data
+- Fit linear combinations of standards to |mu| (E), derivative of |mu| (E), or
+  |chi| (k) data
 
--  Fit peak functions to XANES data
+- Fit peak functions to XANES data
 
--  Log-ratio/phase-difference analysis
+- Log-ratio/phase-difference analysis
 
--  Background removal using the AUTOBK algorithm
+- Background removal using the :demeter:`autobk` algorithm
 
--  Forward and backward Fourier transforms
+- Forward and backward Fourier transforms
 
--  Save data as μ(E), normalized μ(E), χ(k), χ(R), or back-transformed
-   χ(k)
+- Save data as |mu| (E), normalized |mu| (E), |chi| (k), |chi| (R), or
+  back-transformed |chi| (k)
 
--  Save project files, allowing you to return to your analysis later
+- Save project files, allowing you to return to your analysis later
 
--  ... and much, MUCH more!
+- ... and much, MUCH more!
 
 
 
 First Look at ATHENA
 --------------------
 
-When :demeter:`athena` first starts, something like the picture below appears on
-your computer screen. The :demeter:`athena` window is divided into several parts.
-We will discuss each of these parts and give each a name.
+When :demeter:`athena` first starts, something like the picture below
+appears on your computer screen. The :demeter:`athena` window is
+divided into several parts.  We will discuss each of these parts and
+give each a name.
 
 .. _fig-athenamain:
 
@@ -71,11 +73,11 @@ We will discuss each of these parts and give each a name.
    :width: 65%
    :align: center
 
-   The parts of the Athena.
+   The parts of the ATHENA.
 
 At the top of the window is a menu bar. This works much like the menu
-bar in any program. Much of the functionality in :demeter:`athena` is accessed
-through those menus.
+bar in any program. Much of the functionality in :demeter:`athena` is
+accessed through those menus.
 
 The largest part is the main window, highlighted in the picture above
 with a red border. The red border does not happen in the real program --

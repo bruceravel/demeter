@@ -93,10 +93,11 @@ has been written. The plugin is contained in a ``.pm`` file in the
 installation. This is a piece of perl code which performs the
 following chores:
 
-#. Very quickly recognize whether a file comes from the beamline. Speed
-   is essential as every file will be checked sequentially against every
-   beamline plugin. If a beamline plugin is slow to determine this, then
-   the use of Athena or other applications will be noticeably affected.
+#. Very quickly recognize whether a file comes from the
+   beamline. Speed is essential as every file will be checked
+   sequentially against every beamline plugin. If a beamline plugin is
+   slow to determine this, then the use of :demeter:`athena` or other
+   applications will be noticeably affected.
 
 #. Recognize semantic content from the file header. Where possible, map
    this content onto defined XDI headers. Other semantic content is

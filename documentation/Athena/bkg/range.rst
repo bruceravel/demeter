@@ -16,7 +16,7 @@ updated. The same is true if you use `the pluck buttons
 
 There are good reasons to try changing the lower or upper bounds of
 the spline range. In the case of data with a large, sharp white line,
-the :demeter:`AUTOBK` algorithm might have a hard time following that
+the :demeter:`autobk` algorithm might have a hard time following that
 swiftly changing part of |mu| (E). The background removal might be
 improved by starting the spline range at a higher value. A good way to
 test the effect of spline range is to make a copy (:kbd:`Alt`-:kbd:`y`) of the

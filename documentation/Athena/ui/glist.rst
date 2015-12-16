@@ -149,7 +149,7 @@ Using the mouse in the group list
 
 You can turn on automated replotting when you select a new group by
 clicking on it in the group list. This is done by setting
-:configparam:`Athena,select\_replot` with the `preferences
+:configparam:`athena,select\_replot` with the `preferences
 tool <../other/prefs.html>`__.
 
 If you right click on any item in the group list, a context menu is

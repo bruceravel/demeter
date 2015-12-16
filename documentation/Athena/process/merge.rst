@@ -37,7 +37,7 @@ each data set is weighted the same in the merge.
 
 After a merge is made, a plot is displayed showing the merge in some
 manner. The type of merge plot is controled by the
-:configparam:`Athena,merge\_plot` `configuration parameter
+:configparam:`athena,merge\_plot` `configuration parameter
 <../other/prefs.html>`__. The default is to show the data along with
 the data ± the standard devaition, as shown below. The other options
 are the `the variance plot
