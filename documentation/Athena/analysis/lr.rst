@@ -6,16 +6,17 @@ Log-ratio/phase-difference analysis
 Purely empirical analysis of EXAFS data
 ---------------------------------------
 
-Log-ratio/phase-difference analysis is a purely empirical technique that
-can be used to determine changes in the distribution parameters of the
-first coordination shell for certain kinds of data. This technique is
-most useful for data with a well-separated first coordination shell,
-i.e. one for which data from higher coordination shells is spectrally
-isolated from the first shell. An excellent example of a situation where
-this analysis would be useful would be a temperature series. In that
-case, log-ratio analysis can be used to measure the variation in σ² as a
-function of temperature and phase difference analysis can be used to
-measure variation in bond length.
+Log-ratio/phase-difference analysis is a purely empirical technique
+that can be used to determine changes in the distribution parameters
+of the first coordination shell for certain kinds of data. This
+technique is most useful for data with a well-separated first
+coordination shell, i.e. one for which data from higher coordination
+shells is spectrally isolated from the first shell. An excellent
+example of a situation where this analysis would be useful would be a
+temperature series. In that case, log-ratio analysis can be used to
+measure the variation in |sigma|\ :sup:`2` as a function of
+temperature and phase difference analysis can be used to measure
+variation in bond length.
 
 The approach of log-ratio/phase-difference analysis is to compare
 unknown data to a well known standard. The standard might be a room

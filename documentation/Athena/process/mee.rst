@@ -15,12 +15,13 @@ The cross-section of this secondary edge can be quite small. In the
 example of the L\ :sub:`III`\ N\ :sub:`6,7` transition, the secondary
 cross section is about 3 orders of magnitude smaller than the primary
 L\ :sub:`III` edge. If, in this example, you have very good data with
-measurable EXAFS beyond about 10.5 Å⁻¹, the multi-electron excitation
-will not be small compared to the L\ :sub:`III` EXAFS. Other
-multi-electron excitations have even larger cross-sections compared to
-their primary excitations. For a much more complete discussion of
-multi-electron excitations see `Iztok Arcon's Mulielectron
-Photoexcitations page <http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
+measurable EXAFS beyond about 10.5 |AA|\ :sup:`-1`, the multi-electron
+excitation will not be small compared to the L\ :sub:`III`
+EXAFS. Other multi-electron excitations have even larger
+cross-sections compared to their primary excitations. For a much more
+complete discussion of multi-electron excitations see `Iztok Arcon's
+Mulielectron Photoexcitations page
+<http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
 
 Another similar phenomenon is the presence of a small impurity of the
 Z+1 element, leading to a small edge step well above the measured edge.

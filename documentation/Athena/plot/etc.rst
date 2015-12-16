@@ -80,11 +80,12 @@ Special plots for the current group
        mu(E) of Au chloride along with the signal and I0 channels.
        
 **k123 plot**
-    A k123 plot is a way of visualizing the effect of k-weighting on the
-    |chi| (k) spectrum. The k¹-weighted spectrum is scaled up to be about the
-    same size as the k²-weighted spectrum. Similarly, the k³-weighted
-    spectrum is scaled down. This plot can also be made by
-    right-clicking on the k button.
+    A k123 plot is a way of visualizing the effect of k-weighting on
+    the |chi| (k) spectrum. The k\ :sup:`1`-weighted spectrum is scaled
+    up to be about the same size as the k\ :sup:`2`-weighted
+    spectrum. Similarly, the k\ :sup:`3`-weighted spectrum is scaled
+    down. This plot can also be made by right-clicking on the k
+    button.
 
     .. _fig-k123plot:
 
@@ -98,9 +99,9 @@ Special plots for the current group
 **R123 plot**
     A R123 plot is a way of visualizing the effect of k-weighting on the
     |chi| (R) spectrum. The Fourier transform is made with k-weightings of 1,
-    2, and, 3. The FT of the k¹-weighted spectrum is scaled up to be
-    about the same size as the FT or the k²-weighted spectrum.
-    Similarly, the FT of the k³-weighted spectrum is scaled down. The
+    2, and, 3. The FT of the k\ :sup:`1`-weighted spectrum is scaled up to be
+    about the same size as the FT or the k\ :sup:`2`-weighted spectrum.
+    Similarly, the FT of the k\ :sup:`3`-weighted spectrum is scaled down. The
     current setting in the `R tab <tabs.html#plotting-in-r-space>`__ is
     used to make this plot. For this figure, the magnitude setting was
     selected. This plot can also be made by right-clicking on the R
