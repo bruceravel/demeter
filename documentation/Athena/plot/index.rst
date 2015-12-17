@@ -80,7 +80,8 @@ next section <../plot/tabs.html>`__.
 **Right clicking on plot buttons**
 
 Several of the plot buttons will respond to a right click by making
-one of `the special plots <../plot/etc.html>`__ from the Plot menu.
+one of `the special plots <../plot/etc.html>`__ from the
+:guilabel:`Plot` menu.
 
 - Right click the :kbd:`E,orange` button: plot |mu| (E) with I\
   :sub:`0` and the signal

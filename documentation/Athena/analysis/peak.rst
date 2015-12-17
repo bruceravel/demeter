@@ -109,11 +109,11 @@ labeled :kbd:`Add step,light` or :kbd:`Add peak,light`. The functional
 form of the lineshape is chosen by selection from the menu to the left
 of those buttons.
 
-Clicking one of the :quoted:`Add` buttons inserts a field for that lineshape in
-the area below the buttons. In the screenshot above, three lineshapes
-have been added: one arc-tangent to model the main edge step, a
-pseudo-Voigt function to model the first pre-edge peak, and a Gaussian
-to model the second pre-edge peak.
+Clicking one of the :guilabel:`Add` buttons inserts a field for that
+lineshape in the area below the buttons. In the screenshot above,
+three lineshapes have been added: one arc-tangent to model the main
+edge step, a pseudo-Voigt function to model the first pre-edge peak,
+and a Gaussian to model the second pre-edge peak.
 
 :demeter:`athena` cannot know what feature in the data each line shape
 is intended to model. You **must** select the centroid of each line
@@ -128,12 +128,12 @@ of the line shape is 0.5 eV for peak shapes and the core-hole lifetime
 in eV units for the absorbing element of the data being fitted.
 
 Which parameters are fixed and which are varied are controlled by the
-check buttons labeled :quoted:`Fix` next to each parameter value. By default,
-the centroid is fixed and the other two (or three) parameters are
-floated in the fit. In my experience, the fits are fairly unstable when
-the centroids are varied, particularly with peak functions placed close
-together. I typically leave the centroid values fixed, adjusting them by
-hand and rerunning the fits if necessary.
+check buttons labeled :guilabel:`Fix` next to each parameter value. By
+default, the centroid is fixed and the other two (or three) parameters
+are floated in the fit. In my experience, the fits are fairly unstable
+when the centroids are varied, particularly with peak functions placed
+close together. I typically leave the centroid values fixed, adjusting
+them by hand and rerunning the fits if necessary.
 
 The :kbd:`Reset,light` button (which becomes enabled only after a fit
 is performed) is used to restore parameters for each lineshape to
@@ -142,8 +142,8 @@ due to some numerical instability of the fitting model, which might
 happen, for example, if centroids are floated.
 
 If you wish to try a different lineshape at the same energy position,
-you can click on the :quoted:`change function` hot text to post a menu of other
-choices for line shape.
+you can click on the :guilabel:`change function` hot text to post a menu
+of other choices for line shape.
 
 .. _fig-peakchange:
 

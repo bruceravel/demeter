@@ -2,12 +2,12 @@
 Configuring ATHENA to work for you
 ----------------------------------
 
-:demeter:`athena` allows you to set an enormous number of preferences. Many dozens
-of things that could conceivably be configured can, in fact, be
-configured using this tool. In any situation where is was not obvious to
-me that there was a best, most proper value for a parameter, I chose a
-default and made an entry for it in the preference tool. The preference
-tool is shown here.
+:demeter:`athena` allows you to set an enormous number of
+preferences. Many dozens of things that could conceivably be
+configured can, in fact, be configured using this tool. In any
+situation where is was not obvious to me that there was a best, most
+proper value for a parameter, I chose a default and made an entry for
+it in the preference tool. The preference tool is shown here.
 
 .. _fig-prefs:
 

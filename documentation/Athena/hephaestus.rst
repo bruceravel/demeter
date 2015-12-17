@@ -20,21 +20,22 @@ On the left of the :demeter:`hephaestus` window is a stack of icons which are us
 to select the different tools. Clicking on one of the icons enables that
 tool.
 
-At the bottom of the :demeter:`hephaestus` window is a status bar which :demeter:`hephaestus`
-uses to convey information during the course of operation. Along with
-information about the most recently completed calculation, the status
-bar shows topical information. As the mouse passes over an element in
-the periodic table, the element name, symbol, and Z number are
-displayed. In the Absorption tool, clicking on an edge or line energy
-will display that energy in wavelength units in the status bar. In the
-Standards tool, some information about the plotted data is displayed in
-the status bar.
+At the bottom of the :demeter:`hephaestus` window is a status bar
+which :demeter:`hephaestus` uses to convey information during the
+course of operation. Along with information about the most recently
+completed calculation, the status bar shows topical information. As
+the mouse passes over an element in the periodic table, the element
+name, symbol, and Z number are displayed. In the Absorption tool,
+clicking on an edge or line energy will display that energy in
+wavelength units in the status bar. In the Standards tool, some
+information about the plotted data is displayed in the status bar.
 
-The :quoted:`Hephaestus` menu in the menu bar provides another way of
-navigating between the tools. The mouse can be used, as can the
-keyboard. :kbd:`Alt`-:kbd:`e` and :kbd:`Alt`-:kbd:`h` post the
-:quoted:`Hephaestus` and :quoted:`Help` menus. :kbd:`Control`-:kbd:`1`
-through :kbd:`Control`-:kbd:`9` change the display the various
+The :guilabel:`Hephaestus` menu in the menu bar provides another way
+of navigating between the tools. The mouse can be used, as can the
+keyboard. :kbd:`Alt`-:kbd:`e`, :kbd:`Alt`-:kbd:`p` and
+:kbd:`Alt`-:kbd:`h` post the :guilabel:`Hephaestus`, :guilabel:`Plot`,
+or :guilabel:`Help` menus. :kbd:`Control`-:kbd:`1` through
+:kbd:`Control`-:kbd:`9` change the display the various
 tools. :kbd:`Control`-:kbd:`m` displays the document in a web browser,
 while :kbd:`Control`-:kbd:`c` changes the display to the configuration
 tool.
@@ -55,27 +56,29 @@ The data table will be filled with some basic information about the
 element, including its name and Z number, its atomic weight, and bulk
 density under standard temperature and pressure. Beneath this table
 are two controls for determining the appropriate Z-1 or Z-2 filter to
-use in a fluorescence experiment. The :quoted:`Filter` text box will
+use in a fluorescence experiment. The :guilabel:`Filter` text box will
 be filled with the likeliest candidate for the element selected from
 the periodic table.  This can be edited by hand. Clicking the
 :kbd:`Plot filter,light` button will display a plot showing the
 relative locations of the edge energy, the dominant fluorescence
 lines, and the filter edge energy.
 
-The :quoted:`edges` table shows the value in eV of each edge associated with the
-element selected from the periodic table and the core-hole lifetime in
-eV of each edge. Clicking on a line in this table will display a message
-in the status bar giving the edge energy expressed in wavelength units
-and the core-hole lifetime expressed in approximate time units. Double
-clicking on a line will highlight all fluorescence lines associated with
-that edge in the :quoted:`lines` table.
+The :guilabel:`Absorption edges` table shows the value in eV of each
+edge associated with the element selected from the periodic table and
+the core-hole lifetime in eV of each edge. Clicking on a line in this
+table will display a message in the status bar giving the edge energy
+expressed in wavelength units and the core-hole lifetime expressed in
+approximate time units. Double clicking on a line will highlight all
+fluorescence lines associated with that edge in the
+:guilabel:`Fluorescence lines` table.
 
-The :quoted:`lines` table shows the transitions and emission energies in eV of
-every line associated with the element selected from the periodic table.
-Also shown is the approximate strength, or branching ratio, of each
-line. The strengths for all lines associated with a particular edge will
-sum to 1. Clicking on a line in this table will display a message in the
-status bar giving the emission energy expressed in wavelength units.
+The :guilabel:`Fluorescence lines` table shows the transitions and
+emission energies in eV of every line associated with the element
+selected from the periodic table.  Also shown is the approximate
+strength, or branching ratio, of each line. The strengths for all
+lines associated with a particular edge will sum to 1. Clicking on a
+line in this table will display a message in the status bar giving the
+emission energy expressed in wavelength units.
 
 .. _fig-hephabsorption:
 
@@ -166,10 +169,10 @@ Formulas
 --------
 
 This tool is used to compute approximate absorption lengths for common
-or user-specified materials. To the left is a list of materials commonly
-found at synchrotron beamlines. Clicking one of those items inserts its
-stoichiometric formula into the :quoted:`Formula` box and the density into the
-:quoted:`Density` box.
+or user-specified materials. To the left is a list of materials
+commonly found at synchrotron beamlines. Clicking one of those items
+inserts its stoichiometric formula into the :guilabel:`Formula` box
+and the density into the :guilabel:`Density` box.
 
 At the top of the right hand part of this tool are controls for entering
 the parameters of the absorption length calculation. The formula must be
@@ -418,10 +421,11 @@ properties of the elements. Selecting an element from the periodic table
 will fill in a table with the data for that element.
 
 Beneath the periodic table is a tabbed notebook. Each tab contains a
-different data table. The :quoted:`Elemental data` tab contains a variety of
-general information. The :quoted:`Ionic radii` tab contains the Shannon ionic
-radii. The :quoted:`Neutron data` tab conatins data on thermal neutron
-scattering lengths and cross sections for the major isotopes.
+different data table. The :guilabel:`Elemental data` tab contains a
+variety of general information. The :guilabel:`Ionic radii` tab
+contains the Shannon ionic radii. The :guilabel:`Neutron data` tab
+conatins data on thermal neutron scattering lengths and cross sections
+for the major isotopes.
 
 .. _fig-hephdata:
 
@@ -463,7 +467,8 @@ Transitions
 This tool displays a non-interactive chart explaining the transitions
 for each of the emission lines. The initial and final states for each
 named K and L transition is shown. The chart follows Figure 1.1 in the
-Center for X-Ray Optics X-Ray Data Booklet.
+`Center for X-Ray Optics X-Ray Data Booklet
+<http://cxro.lbl.gov/x-ray-data-booklet>`_ .
 
 .. _fig-hephtransitions:
 
@@ -537,19 +542,19 @@ Demeter is distributed with a small library of data on standard
 materials. These XANES spectra can be access via this tool. You will
 find that this library is quite tiny at this time. The hope is that a
 future effort in an XAS standards library will take off. When that
-happens, this will be :demeter:`hephaestus`' interface to that effort.
+happens, this will be :demeter:`hephaestus`'s interface to that effort.
 
 Clicking on an element in the periodic table displays a list of all the
 standards in the library measured for that element. The disabled
 elements in the periodic table are ones for which the library has no
 entries.
 
-The XANES data can be plotted as normalized mu(E) or as the derivative
-of mu(E). The data present have all been annotated so that interesting
+The XANES data can be plotted as normalized |mu| (E) or as the derivative
+of |mu| (E). The data present have all been annotated so that interesting
 points are marked on the plots.
 
 The :kbd:`Save,light` button will prompt for a file name and save the
-mu(E) data to a file.
+|mu| (E) data to a file.
 
 One point of this tool is to make obsolete the :quoted:`Reference Spectra`
 printout from EXAFS Materials that is found at many beamlines.
@@ -619,7 +624,7 @@ preferences tool.  This uses the same preferences tool as
 preference groups relevant to :demeter:`hephaestus` and to plotting
 are presented.
 
-Click on a group in the :quoted:`Parameters` list to open a
+Click on a group in the :guilabel:`Parameters` list to open a
 group. Click on a parameter to display it in the controls on the
 right. You will be given controls appropriate to each parameter's data
 type for setting the parameter value. The :kbd:`Your value,light` and
@@ -664,8 +669,9 @@ Credits
   seem to have a deeper love of pastel than do I.
 
 - The electronic transitions chart was created from scratch but
-  slavishly following Figure 1.1 in the `Center for X-Ray Optics X-Ray
-  Data Booklet <http://xdb.lbl.gov/>`_.
+  slavishly following Figure 1.1 in the 
+  `Center for X-Ray Optics X-Ray Data Booklet
+  <http://cxro.lbl.gov/x-ray-data-booklet>`_ .
 
 - :demeter:`hephaestus` makes use of several things from
   http://www.cpan.org

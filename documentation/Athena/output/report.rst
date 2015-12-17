@@ -5,8 +5,8 @@ Parameter report files
 
 The final kind of output file is a parameter report.  Many of these
 take the form of a file that can be imported into a spreadsheet
-program.   In the Edit menu, you will find a submenu labeled
-:quoted:`Export`, shown below. The various options in that
+program.   In the :guilabel:`Edit` menu, you will find a submenu labeled
+:guilabel:`Export`, shown below. The various options in that
 submenu write out files containing the parameters from the main
 window.
 

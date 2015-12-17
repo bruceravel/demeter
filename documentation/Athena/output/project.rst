@@ -32,8 +32,8 @@ can read on another computer, even if those computers use different
 operating systems. A project file can be burned to a CD, placed on a web
 site, or sent to a collaborator by email.
 
-To save a project file, simply select one of the File menu options
-highlighted in this figure.
+To save a project file, simply select one of the :guilabel:`File` menu
+options highlighted in this figure.
 
 .. _fig-exportproject:
 
@@ -46,12 +46,12 @@ highlighted in this figure.
 
 The first two options saves the entire current state of
 :demeter:`athena`. If the project has already been saved, the
-:quoted:`Save project` option overwrites the previous file with the
+:guilabel:`Save project` option overwrites the previous file with the
 new state of your project. Hitting :kbd:`Control`-:kbd:`s` does the
 same thing. Clicking on the modified indicator -- the other
 highlighted region in the screenshot -- also saves the project.
-Alternately, you can select :quoted:`Save project as...` and you will
-be prompted for a new file name for the project.
+Alternately, you can select :guilabel:`Save project as...` and you
+will be prompted for a new file name for the project.
 
 The final option will write only the marked groups to a project file.
 You can think of this as a sort of :quoted:`sub-project` file. This is another

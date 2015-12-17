@@ -68,9 +68,10 @@ standard for the fit.
 This algorithm works quite well for data that are fairly clean and are
 misaligned by less than 5 or 10 volts. For noisy data, the fit may be
 more successful if you choose to fit smoother data by selecting that
-option from the menu labeled :quoted:`Fit as:`. For very misaligned data, you
-may need to manually set an approximate value for :procparam:`Energy
-shift` before clicking the :kbd:`Auto align,light` button.
+option from the menu labeled :guilabel:`Fit as:`. For very misaligned
+data, you may need to manually set an approximate value for
+:procparam:`Energy shift` before clicking the :kbd:`Auto align,light`
+button.
 
 You can apply the automated alignment algorithm to many groups in
 sequence. First mark all the groups that need to be aligned, then

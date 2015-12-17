@@ -54,7 +54,7 @@ and the last defines the grid in wavenumber in the EXAFS region.
 :demeter:`athena` will remember the values of these parameters between
 data sets.  However, the default is to turn off rebinning for each new
 data set.  Therefor you must click to the rebinning tab for every data
-set you import, and click on the :quoted:`Perform rebinning` check
+set you import, and click on the :guilabel:`Perform rebinning` check
 button. When you import multiple data sets, though, rebinning will be
 performed on each one without intervention according to the normal
 rules of multiple data set import.

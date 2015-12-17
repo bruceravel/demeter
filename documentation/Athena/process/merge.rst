@@ -32,8 +32,8 @@ each data set is weighted the same in the merge.
    :width: 65%
    :align: center
 
-   The contents of the Merge menu, showing the various ways that data can
-   merged.
+   The contents of the :guilabel:`Merge` menu, showing the various
+   ways that data can merged.
 
 After a merge is made, a plot is displayed showing the merge in some
 manner. The type of merge plot is controled by the
@@ -99,7 +99,7 @@ Merging options
     data measured in fluorescence, a more concentrated sample has a
     larger edge step and is likely to give higher quality data.  The
     choice between the three weighting options is made using the radio
-    buttons in the Merge menu.
+    buttons in the :guilabel:`Merge` menu.
 
 **Preferences**
     There are `preferences <../other/prefs.html>`__ which have some

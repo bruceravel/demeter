@@ -33,7 +33,7 @@ monochromator so that I would have a data set for explaining the use of
 calibrate these data.
 
 Open the `calibration tool <../process/cal.html>`__ by selecting
-:quoted:`Calibrate energies` from the Data menu. The derivative of
+:guilabel:`Calibrate energies` from the main menu. The derivative of
 |mu| (E) for these data will be plotted, shown below on the left. The
 choice of edge position, denoted by the little orange circle, is
 reasonable in that it is close to the first peak of the first
@@ -76,7 +76,7 @@ displayed.
 
 A third, highly accurate way of finding the exact peak of the first
 derivative is to plot the second derivative of the data by selecting
-:quoted:`second deriv` from the :quoted:`display` menu. The second
+:guilabel:`second deriv` from the :guilabel:`display` menu. The second
 derivative of the data along with the currently selected value of edge
 position are shown on the right of the figure above.
 
@@ -147,11 +147,11 @@ statistical noise. The reason that they are different is that the second
 scan has not yet been calibrated.
 
 Fixing this requires two steps. First, open the `alignment tool
-<../process/align.html>`__ by selecting :quoted:`Align scans` from the
-Data menu. The two scans are plotted as the derivative of |mu|
+<../process/align.html>`__ by selecting :guilabel:`Align scans` from
+the main menu. The two scans are plotted as the derivative of |mu|
 (E). The first scan in the list, ``fe.060``, is automatically selected
-in the :quoted:`Standard` menu. The second scan is highlighted in the
-groups list and is displayed as the :quoted:`Other`.
+in the :guilabel:`Standard` menu. The second scan is highlighted in
+the groups list and is displayed as the :guilabel:`Other`.
 
 These are very clean data, so the automatic alignment algorithm should
 work well. Click the :kbd:`Auto align,light` button. If you data is
@@ -159,7 +159,7 @@ noisy, the automated alignment might not work well, in which case you
 can use the other buttons to adjust the energy shift until you are
 satisfied that the data are well aligned.
 
-Returning to the main menu, we find that the :procparam:`eshift`
+Returning to the main window, we find that the :procparam:`eshift`
 parameter for ``fe.061`` is now about 6.7 eV. When plotted together in
 energy, the data are well aligned. However when plotted together in
 k-space by pressing the :kbd:`k,purple` button, there remains a
@@ -177,7 +177,7 @@ after clicking on ``fe.061`` in the group list. Alternately, you can
 select ``fe.060`` in the group list, then right click on the
 :procparam:`E0` parameter to raise its `context menu
 <../params/constrain.html#constraining-individual-parameters>`__ and
-select :quoted:`Set all groups to this value of E0`. Once the
+select :guilabel:`Set all groups to this value of E0`. Once the
 :procparam:`E0` parameters are set the same for these data sets, we
 see above in the lower right that the data are quite consistent
 between these two scans.
@@ -221,7 +221,7 @@ Processing all 5 of the remaining data groups would be quite tedious
 if we had to handle each one individually. Fortunately
 :demeter:`athena` has lots of tools to help process large quantities
 of data. To `align <../process/align.html#align>`__ the remaining data
-to ``fe.060``, choose :quoted:`Align data` from the Data
+to ``fe.060``, choose :guilabel:`Align data` from the main
 menu. :demeter:`athena` chooses the first item in the group list as
 the data alignment standard and selects the second group as the one to
 align. These selections are shown at the top of this.
@@ -230,7 +230,7 @@ Of course, ``fe.061`` has already be aligned. If you select any other
 group by clicking on it in the group list, you will see that it it is
 not yet aligned. You can align the remaining groups by selecting each
 on in turn and clicking the :kbd:`Auto align,light` button --- but that
-seems tedious. Much better to click the :quoted:`Align marked groups`
+seems tedious. Much better to click the :kbd:`Align marked groups,light`
 button. Since all the groups are aligned, the automated alignment
 algorithm will be applied to each one in turn.
 
@@ -251,7 +251,7 @@ window,light` button to continue with the data processing.
 Each of the data groups has now been aligned, but only ``fe.061`` has
 the same value of :procparam:`E0` as ``fe.060``. Again, clicking
 through the groups list and editing the :procparam:`E0` values seems
-horribly tedious. Here we see the true value of the :quoted:`Set all
+horribly tedious. Here we see the true value of the :guilabel:`Set all
 groups to this value of E0` in the :procparam:`E0` `context menu
 <../params/constrain.html#constraining-individual-parameters>`__.
 
@@ -296,12 +296,11 @@ As a final chore in this section, we will `merge
 Since the data are properly aligned and calibrated, this is a fine
 time to perform the merge. First mark each data group that should be
 merged together. As we see in the screenshot below, the two groups
-measured at 300K are marked. Select :quoted:`Merge marked data in
-mu(E)` from the Merge menu. This will perform the merge then insert a
-new group in the group list. Then select :quoted:`Change group label`
-from the Group menu or type :kbd:`Alt`-:kbd:`l` to give the merged
-group a more suggestive name. Repeat this process for the data at each
-temperature.
+measured at 300K are marked. Select :menuselection:`Merge --> Merge
+mu(E)`. This will perform the merge then insert a new group in the
+group list. Then select :menuselection:`Group --> Rename current
+group` or type :kbd:`Alt`-:kbd:`l` to give the merged group a more
+suggestive name. Repeat this process for the data at each temperature.
 
 Now you are ready to begin analysis on the iron foil data!
 

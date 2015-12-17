@@ -6,9 +6,9 @@ Data processing
 :demeter:`ATHENA` offers a variety of data processing chores -- chores
 which modify the data or its parameters in some way to prepare it for
 more extensive analysis. With the exception of merging data groups,
-all data processing features are accesses through the Data menu, shown
-below. All the entries in the Data menu, replace the main window with
-a tool specially designed for the data processing chore.
+all data processing features are accesses through the main menu, shown
+below. All these entries in the main menu, replace the main window
+with a tool specially designed for the data processing chore.
 
 You can work on more than one data group in any tool without having to
 return to the main menu. Clicking on a group label in the group list

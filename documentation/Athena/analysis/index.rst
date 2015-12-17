@@ -12,8 +12,8 @@ analysis of EXAFS data using theory from :demeter:`feff`, often the
 empirical techniques described in this chapter are adequate to answer
 the questions you have about your data.
 
-:demeter:`athena`'s analysis tools are accessed from the Analysis menu, as shown
-below.
+:demeter:`athena`'s analysis tools are accessed from the analysis
+section of the main menu, as shown below.
 
 .. _fig-analysis:
 

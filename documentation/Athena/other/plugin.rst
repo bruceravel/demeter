@@ -297,11 +297,12 @@ ATHENA's plugin registry
 
 Because there might be a large number of file type plugins, it is
 possible for the user to turn the checks for the file types on and
-off.  In the Settings menu, you will find the Plugin Registry. This is
-a simple list of all plugins found in the system and user
-directories. The check buttons enable and disable the plugins. The
-value of the ``description`` attribute is displayed in the list (so be
-sure to choose a suitable and suitably short value for that variable).
+off.  In the main menu, you will find the :guilabel:`Plugin
+Registry`. This is a simple list of all plugins found in the system
+and user directories. The check buttons enable and disable the
+plugins. The value of the ``description`` attribute is displayed in
+the list (so be sure to choose a suitable and suitably short value for
+that variable).
 
 .. _fig-plugin:
 

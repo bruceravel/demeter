@@ -47,7 +47,7 @@ group from the group list. The difference spectrum will be plotted,
 optionally along with the data and standard used to make the
 subtraction. The form of the difference spectrum – |mu| (E),
 normalized |mu| (E), and derivative or second derivative of |mu| (E) –
-is selected from the menu labeled :quoted:`Form`. The multiplier is a
+is selected from the menu labeled :guilabel:`Form`. The multiplier is a
 scaling factor that can be applied to the standard before subtraction.
 
 If you have accidentally swapped the standard and data, click the

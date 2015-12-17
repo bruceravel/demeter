@@ -9,10 +9,15 @@ This version of the Demeter documentation uses `reSTructuredText
 <http://docutils.sourceforge.net/docs/user/rst/quickstart.html>`_ and
 the Sphinx document generation system.  Thus to generate useful
 documentation from the source files in this directory, you must have
-the following tools installed on your computer.
+the following tools installed on your computer:
 
 #. The `Sphinx <http://sphinx-doc.org/>`_ document generator.  On
    Debian based systems, the package is called ``python-sphinx``.
+   Features of sphinx 1.3 are used in this document.  Ubuntu 15.04
+   comes with version 1.2, which must be upgraded:
+   ::
+
+      sudo pip install --upgrade sphinx
 
 #. The `pybtex <http://pybtex.org/>`_ bibliography processor for
    python.
@@ -43,50 +48,50 @@ text editor.
 Customizations
 --------------
 
-The file ``sphinx/ext/demeterdocs.py`` contains some sphinx roles for
-use in Demeter's documents, including:
+The file ``sphinx/ext/demeterdocs.py`` contains some sphinx roles and
+directives for use in Demeter's documents, including:
 
 - decoration of names of programs in Demeter, as well as Feff,
   Ifeffit, and Larch (colored and smallcaps)
   ::
    
-     :demeter:`program`
+     :demeter:`athena`
 
 - decoration of configuration parameters (colored, preceded by a
   colored diamond, right arrow between group and parameter names)
   ::
    
-     :configparam:`group,param`
+     :configparam:`athena.import_plot`
 
 
 - decoration of data processing parameters (colored and surrounded by
   guillemots) (``:procparam:``)
   ::
    
-     :procparam:`text`
+     :procparam:`e0`
 
 - quoted text (default text, surrounded by proper opening and closing
   double quotation marks)
   ::
    
-     :quote:`text`
+     :quote:`This software is awesome!`, said all the critics.
 
 - insert static images such as the lightning bolt or the bend sign,
-  image is one of lightning, bend, somerights, soon,
+  image is one of (lightning, bend, somerights, soon)
   ::
    
-     :mark:`image`
+     :mark:`bend`
   
-- insert a linebreak which also break figure wrapping
-  ::
-   
-     :linebreak:
+- insert a linebreak.  This is much like ``..endpar::`` from sphinxtr,
+  but it also breaks wrapped text around a figure ::
 
-- decorate characters and words to look like keyboard keys in one of
-  four styles (dark, light, purple, orange)
+     .. linebreak::
+
+- decorate characters and words to look like keyboard keys or
+  on-screen button in one of four styles (dark, light, purple, orange)
   ::
 
-     :kbd:`key,style`
+     :kbd:`R,purple`
   
 The ``_templates`` folder contains some customizations for the html
 pages, including:
@@ -95,15 +100,23 @@ pages, including:
   section of the sidebar
 
 - ``layout.html``: this contains header lines for the html output
-  which are used to make the link to the custom style sheets in
-  ``Athena/_static/``.  Currently that style sheet, ``subfig.css``
-  contains some code lifted from `the sphinxtr extension
-  <https://github.com/jterrace/sphinxtr>`_ used to display subfigures
-  nicely in the html output
+  which are used to make the link to custom style sheets in
+  ``_static`` and ``Athena/_static/``.  Currently the style sheet
+  ``subfig.css`` contains some code lifted from `the sphinxtr
+  extension <https://github.com/jterrace/sphinxtr>`_ used to display
+  subfigures nicely in the html output
+
+- ``program.css``: this style sheet applies some program specific
+  branding to the document.  Currently it is used to set the color of
+  the navigation bar at the top and bottom of each page.
 
 
 The other content of ``sphinx/ext/`` was swiped from `Larch's document
 <https://github.com/xraypy/xraylarch/tree/master/doc>`_
+
+
+Figures and figure numbering
+----------------------------
 
 The use of figures and subfigures is a big confusing.  The repository
 versions of the images files sit in ``_images/`` underneath this
@@ -113,11 +126,7 @@ that gets linked to each image) must have a path relative to its
 location in ``_build/html/_images``.  As a result, the path to image
 always has one more ``../`` than the target.
 
-
-Figure numbering
-----------------
-
-I am currently the using `built-in numfig
+I am currently the using `built-in figref role
 <http://sphinx-doc.org/markup/inline.html#cross-referencing-figures-by-figure-number>`_
 for figure numbering.  This only supports the html builder.  The
 numfig extension purports to support LaTeX, but it fails to do the
@@ -126,7 +135,7 @@ extension for figure grouping, but I am labeling and numbering the
 individual figures.
 
 Since this won't work for LaTeX, this is going to have to be addressed
-at some point.  But trying to track down the problem with numfig is
+at some point.  But trying to track down the problems with numfig is
 beyond my patience right now.
 
   

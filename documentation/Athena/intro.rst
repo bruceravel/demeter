@@ -76,12 +76,11 @@ At the top of the window is a menu bar. This works much like the menu
 bar in any program. Much of the functionality in :demeter:`athena` is
 accessed through those menus.
 
-The largest part is the main window, highlighted in the picture above
-with a red border. The red border does not happen in the real program --
-it's there simply to clarify this discussion. The main window is divided
-into six parts. The top box identifies the file name of the current
-`project file <output/project.html>`__. Below that, are various
-parameters identifying the current data group.
+The largest part is the main window, the region with all the controls
+greyed out in :numref:`Fig. %s <fig-athenamain>`. The main window is
+divided into six parts. The top box identifies the file name of the
+current `project file <output/project.html>`__. Below that, are
+various parameters identifying the current data group.
 
 The next three boxes are used to define the parameters associated with
 normalization and background removal, forward Fourier transforms, and
@@ -99,10 +98,8 @@ The large blank area on the right is `the group list area
 will be listed in this space. Access to the data already imported is
 made by clicking in this space.
 
-Above the group list area are `the mark buttons <ui/mark.html>`__ The
-blank space next to the mark buttons is the modified project indicator.
-This indicator shows when your project has been modified and needs to be
-saved.
+Adjacent to the top of the group list area are `the mark buttons
+<ui/mark.html>`__ 
 
 Below the group list area are the plot buttons. Below that are the
 buttons used to set the k-weighting for use when plotting in k-space or
@@ -126,12 +123,10 @@ Getting help
 
 There is quite a bit of help built right into
 :demeter:`athena`. Typing :kbd:`Control`-:kbd:`m` or selecting
-:title:`Document` from the Help menu will display :demeter:`athena`'s
-document in a web browser or in the built-in document viewer. The
-:title:`Document sections` submenu allows you to jump directly to a
-particular topic. Also, many parts of the program have a button which
-will take you directly to the part of the document that describes that
-part of the program.
+:menuselection:`Help --> Document` will display :demeter:`athena`'s
+document in a web browser or in the built-in document viewer.  Many
+parts of the program have a button which will take you directly to the
+part of the document that describes that part of the program.
 
 
 
@@ -169,18 +164,21 @@ the first thing Bruce asks for.
     linux (or other unix) machine, simply run :demeter:`athena` from the command
     line and the informative screen messages will be written to the
     screen. You can cut-n-paste that text or capture the output by
-    running :demeter:`athena` through
-    `tee <http://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html>`__:
-    ``~> dathena | tee capture.log``
+    running :demeter:`athena` through `tee <http://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html>`__
+    ::
+
+       ~> dathena | tee capture.log
+
     On a Windows machine, it is uncommon to run the software from the
-    command line, so :demeter:`athena` has been instrumented to write a run-time
-    log file. This log file is called dathena.log and can be found in
-    the ``%APPDATA%\\demeter`` folder.
+    command line, so :demeter:`athena` has been instrumented to write
+    a run-time log file. This log file is called :file:`dathena.log` and
+    can be found in the ``%APPDATA%\\demeter`` folder.
 
-``%APPDATA% is C:\\Users\\<username>\\AppDataRoaming\\`` on Windows 7 and 8.
+``%APPDATA%`` is usually ``C:\\Users\\<username>\\AppDataRoaming\\`` on
+Windows 7, 8, and 10.
 
-It is ``C:\\Documents and Settings\\<username>\\Application Data\\`` on
-Windows XP and Vista.
+It is usually ``C:\\Documents and Settings\\<username>\\Application
+Data\\`` on Windows XP and Vista.
 
 In either case, ``<username>`` is your log-in name.
 

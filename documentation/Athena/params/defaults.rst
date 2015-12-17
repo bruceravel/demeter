@@ -20,9 +20,9 @@ initialization file is a system-wide file that always contains
 :demeter:`athena`'s fresh-out-of-the-box parameter defaults. The
 second initialization file is your own personal collection of
 preferences. These personal preferences are typically set using the
-preferences tool, which is found in Settings menu. The values found
-among the personal preferences will always override the system-wide
-set.
+preferences tool, which is found in :guilabel:`Settings` menu. The
+values found among the personal preferences will always override the
+system-wide set.
 
 Many of the parameter defaults which can be set in the preferences
 tool have the option of being set to relative values rather than

@@ -13,12 +13,13 @@ button is pressed, merging is done on the set of marked groups and, many
 of the data processing and data analysis chores use the marked groups.
 
 :demeter:`athena` offers a number of simple tools for marking or
-unmarking groups.  These are found in the Mark menu, as shown below,
-and also have keyboard bindings. :kbd:`Alt`-:kbd:`a` marks all groups,
-:kbd:`Alt`-:kbd:`u` unmarks all groups, and :kbd:`Alt`-:kbd:`i`
-inverts the markings such that the marked groups become unmarked and
-the unmarked ones become marked. The three buttons above the group
-list also serve to make all, mark none, and invert the marks.
+unmarking groups.  These are found in the :guilabel:`Mark` menu, as
+shown below, and also have keyboard bindings. :kbd:`Alt`-:kbd:`a`
+marks all groups, :kbd:`Alt`-:kbd:`u` unmarks all groups, and
+:kbd:`Alt`-:kbd:`i` inverts the markings such that the marked groups
+become unmarked and the unmarked ones become marked. The three buttons
+above the group list also serve to make all, mark none, and invert the
+marks.
 
 .. _fig-mark:
 
@@ -27,17 +28,18 @@ list also serve to make all, mark none, and invert the marks.
    :width: 65%
    :align: center
 
-   The group marking options are found in the Mark menu. Making all
-   groups, removing all marks, or inverting all marks can be done
-   using the mark buttons at the top of the group list.
+   The group marking options are found in the :guilabel:`Mark`
+   menu. Making all groups, removing all marks, or inverting all marks
+   can be done using the mark buttons at the top of the group list.
 
 
 Using regular expressions to mark groups
 ----------------------------------------
 
 :mark:`lightning,..` There is one more tool which is considerably more
-powerful and flexible.  In the Mark menu, this last marking tool it is
-called *Mark regex* and it is bound to :kbd:`Alt`-:kbd:`r`.
+powerful and flexible.  In the :guilabel:`Mark` menu, this last
+marking tool it is called *Mark regex* and it is bound to
+:kbd:`Alt`-:kbd:`r`.
 
 So, what does *regex* mean?
 
@@ -81,19 +83,21 @@ CPAN <http://search.cpan.org/dist/perl/pod/perlre.pod>`__ for all the
 details). This means you can use *metacharacters* -- symbols which
 represent conceptual aspects of strings. Here are a few examples:
 
--  To mark only the V2O3 and VO2 data: ``O[23]``. That tells :demeter:`athena` to
-   mark the groups whose names have the letter O followed by either 2 or
-   3.
+- To mark only the V2O3 and VO2 data: :regexp:`O[23]`. That tells
+  :demeter:`athena` to mark the groups whose names have the letter O
+  followed by either 2 or 3.
 
--  To mark only the first scans of each sample: ``1$``. The ``$``
-   metacharacter represents the end of a word, thus this regular
-   expression matches all groups whose name ends in the number 1.
+- To mark only the first scans of each sample: :regexp:`1$`. The
+  :regexp:`$` metacharacter represents the end of a word, thus this
+  regular expression matches all groups whose name ends in the
+  number 1.
 
--  To mark only the foil and unknown data: ``foil|unknown``. The ``|``
-   metacharacter means :quoted:`or`, so this regular expression matches the
-   groups with foil or unknown in the name. Actually this regular
-   expression could have been much shorter, both ``[fu]`` and ``f|u``
-   would have worked in this case, given this set of group names.
+- To mark only the foil and unknown data: :regexp:`foil|unknown`. The
+  :regexp:`|` metacharacter means :quoted:`or`, so this regular
+  expression matches the groups with foil or unknown in the
+  name. Actually this regular expression could have been much shorter,
+  both :regexp:`[fu]` and :regexp:`f|u` would have worked in this case,
+  given this set of group names.
 
 Regular expressions are a large and fascinating topic of study, but
 beyond the scope of this document. Try
@@ -112,7 +116,7 @@ sets.
 .. caution:: The regular expression is sent exactly as entered to
 	     perl's regular expression engine. You thus have the
 	     **full** power of perl's regular expression engine.  If
-	     you know what ``(?{code})`` means and do
+	     you know what :regexp:`(?{ code })` means and do
 	     something ill-advised with it, you'll get no sympathy
 	     from me!
 

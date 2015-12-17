@@ -10,11 +10,12 @@ screenshots in this document will attest, the graphical output of
 format that can be imported easily into almost any other program, such
 as a spreadsheet or a graphics package such as Origin or Kaleidegraph.
 
-The current data set -- the one marked in red in the group list and the
-one whose parameters are displayed in the main window -- can be saved in
-a number of ways. The various choices are listed under the File menu, as
-seen in the figure below. Note that |chi| (k) data can be saved with various
-k-weightings using the entries in the submenu.
+The current data set -- the one marked in red in the group list and
+the one whose parameters are displayed in the main window -- can be
+saved in a number of ways. The various choices are listed under the
+:guilabel:`File` menu, as seen in the figure below. Note that
+|chi| (k) data can be saved with various k-weightings using the
+entries in the submenu.
 
 .. _fig-exportsingle:
 
@@ -46,7 +47,7 @@ The columns in the |mu| (E) output file are:
 If the data group is marked as being XANES data, then the background
 column will be all zeros.
 
-The columns in the norm(E) output file are:
+The columns in the :guilabel:`norm(E)` output file are:
 
 #. energy
 
@@ -118,7 +119,7 @@ the complex back transform, as well as the magnitude and phase.
 In certain situations, it is much more convenient to write column data
 files containing data from many groups. This is done with the help of
 the mark buttons. The data from each of the marked groups can be saved
-in a variety of forms using the :quoted:`Save marked groups` submenu,
+in a variety of forms using the :guilabel:`Save marked groups` submenu,
 as shown below.
 
 .. _fig-exportmarked:

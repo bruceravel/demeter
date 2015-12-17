@@ -16,11 +16,11 @@ become deactivated, which means that it is impossible to type in them.
 Furthermore, any global action such as constraining parameters or using
 the alignment tool, will have no effect on the frozen group.
 
-The idea behind frozen groups is that, after working for a while to find
-parameter values that you like, you can freeze the group to avoid
+The idea behind frozen groups is that, after working for a while to
+find parameter values that you like, you can freeze the group to avoid
 inadvertently altering its parameters. The various group freezing
-functions can be found in the Freeze menu, as shown in the screenshot
-below.
+functions can be found in the :guilabel:`Freeze` menu, as shown in the
+screenshot below.
 
 .. _fig-freeze:
 
@@ -33,9 +33,9 @@ below.
    highlighting the group list and the disabling of most controls.
 
 The frozen state of the current group can be toggled using the
-:quoted:`Freeze` button or by typing :kbd:`Alt`-:kbd:`f`. You can
-set the frozen state of multiple groups using the items in the
-:quoted:`Freeze` menu. There you will find options for freezing or
+:guilabel:`Freeze` check button or by typing :kbd:`Alt`-:kbd:`f`. You
+can set the frozen state of multiple groups using the items in the
+:guilabel:`Freeze` menu. There you will find options for freezing or
 unfreezing all groups, all marked groups, or groups which match
 `regular expressions
 <mark.html#using-regular-expressions-to-mark-groups>`__.

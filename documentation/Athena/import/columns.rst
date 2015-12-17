@@ -6,10 +6,11 @@ Column selection dialog
 Converting raw data to mu(E)
 ----------------------------
 
-To import a data file, select Open file from the File menu or type
-:kbd:`Control`-:kbd:`o`. Alternately, you can drag one or more data files from
-your computer's file manager and drop them onto the group list. A file
-selection dialog opens. On my Linux computer, it looks like this:
+To import a data file, select :menuselection:`File --> Import data` or
+type :kbd:`Control`-:kbd:`o`. Alternately, you can drag one or more
+data files from your computer's file manager and drop them onto the
+group list. A file selection dialog opens. On my Linux computer, it
+looks like this:
 
 .. _fig-importfiledialog:
 
@@ -54,9 +55,9 @@ sections.
    The column selection dialog.
 
 In the example shown, the incident channel is, for some reason, called
-:quoted:`mcs3`. Since this is transmission data, I have checked the
-:quoted:`mcs3` button for the numerator. The transmission channel is
-called :quoted:`mcs4` and its button is checked for the denominator.
+:guilabel:`mcs3`. Since this is transmission data, I have checked the
+:guilabel:`mcs3` button for the numerator. The transmission channel is
+called :guilabel:`mcs4` and its button is checked for the denominator.
 
 As you check the buttons, some helpful things happen. The first is that
 equation for how the columns combine to form |mu| (E) is displayed in the
@@ -79,9 +80,9 @@ to ask the beamline scientist!
 Data types and energy units
 ---------------------------
 
-Occasionally, :demeter:`athena` needs a bit more information to interpret your data
-correctly. The data types menu is shown in the figure below. The default
-is for data to be imported as |mu| (E).
+Occasionally, :demeter:`athena` needs a bit more information to
+interpret your data correctly. The data types menu is shown in the
+figure below. The default is for data to be imported as |mu| (E).
 
 The other choices are:
 
@@ -116,21 +117,22 @@ The other choices are:
 
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued (|mu| (E), normalized |mu|
-(E), XANES, or detector) record types at any time by selecting
-:quoted:`Change data type` from the Group menu and selecting the
+(E), XANES, or detector) record types at any time by select
+:menuselection:`Group --> Change data type` and selecting the
 correct choice from the popup dialog, shown here. This dialog cannot,
 however, be used to change |chi| (k) data to an energy-value type or
 vice-versa, nor to change one of the :demeter:`feff` types to a
 non-:demeter:`feff` type.
 
-:demeter:`athena` uses electron volts as its energy unit. It uses a simple
-heuristic to figure out if an input file is in eV or keV. In case :demeter:`athena`
-gets it wrong, you can specify the energy unit with the :quoted:`Energy units`
-menu. `Dispersive XAS <../process/pixel.html>`__, i.e. data which is a
-function of pixel index, requires special treatment.
+:demeter:`athena` uses electron volts as its energy unit. It uses a
+simple heuristic to figure out if an input file is in eV or keV. In
+case :demeter:`athena` gets it wrong, you can specify the energy unit
+with the :guilabel:`Energy units` menu. `Dispersive XAS
+<../process/pixel.html>`__, i.e. data which is a function of pixel
+index, requires special treatment.
 
 .. versionadded:: 0.9.20 There is now a label on the main page right
-   next to the :quoted:`Freeze` check button which identifies the file
+   next to the :guilabel:`Freeze` check button which identifies the file
    type of the data. You can toggle between xanes and xmu data by
    :kbd:`Control`-:kbd:`Alt`-:kbd:`Left` clicking on that label.
 
@@ -156,7 +158,7 @@ Importing the data will then add up the channels on the fly and put a
 group containing the summation of the channels in the group list.
 
 You have the option of clicking the check button that says
-:quoted:`Save each channel as a group`, as shown here.
+:guilabel:`Save each channel as its own group`, as shown here.
 
 .. _fig-importmedch:
 

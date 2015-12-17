@@ -35,7 +35,7 @@ Copying groups
 --------------
 
 You can copy a group by hitting :kbd:`Alt`-:kbd:`y` or by selecting
-:quoted:`Copy group` from the Group menu. This makes an identical copy
+:menuselection:`Group --> Copy group`. This makes an identical copy
 of the current group and places it at the end of the groups list. All
 parameters are identical and the data arrays in :demeter:`ifeffit` are
 all copied -- only the :demeter:`ifeffit` group name in different.
@@ -54,8 +54,8 @@ Reorganizing the group list
 
 When a file is imported into :demeter:`athena`, the name of the file
 is used as the label in the group list. That's fine, but you can
-change the label by selecting :quoted:`Rename group` from the Group
-menu, typing :kbd:`Alt`-:kbd:`l`, or double clicking on an item in
+change the label by selecting :quoted:`Group --> Rename current group`,
+typing :kbd:`Alt`-:kbd:`l`, or double clicking on an item in
 the group list. This posts a dialog for entering the new label for the
 group, shown here.
 
@@ -97,16 +97,18 @@ current group to the one above or below.
 	     has been discontinued in favor of file drag and drop.
 
 Items can be removed from the list. The current group or the marked
-groups can be removed from the project by selecting :quoted:`Remove group` or
-:quoted:`Remove marked groups` from the Group menu. You can remove all the
-groups from the list by selecting :quoted:`Close project` from the File or Group
-menu or by hitting :kbd:`Control`-:kbd:`w`.
+groups can be removed from the project by selecting
+:menuselection:`Group --> Remove current group` or
+:menuselection:`Group --> Remove marked groups`. You can remove all
+the groups from the list by selecting :menuselection:`File --> Close`
+or :menuselection:`Group --> Close` or by hitting
+:kbd:`Control`-:kbd:`w`.
 
 
 Information about items in the group list
 -----------------------------------------
 
-In the Group menu, the option for :quoted:`Show structure of current group`
+Selecting :menuselection:`Group --> Show yaml for current group`
 displays the dialog shown here.
 
 .. _fig-about:
@@ -133,10 +135,10 @@ very useful for developing and debugging the software.
    Change type dialog
 
 If you mistakenly import a data group as the wrong record type, you
-can change it by selecting :quoted:`Change record type` from the Group
-menu. You can only change between the various record types in energy,
-though. If you import a |chi| (k) file as |mu| (E) by accident, you will have
-to remove the group and re-import it.
+can change it by selecting :menuselection:`Group --> Change record
+type`.  You can only change between the various record types in
+energy, though. If you import a |chi| (k) file as |mu| (E) by
+accident, you will have to remove the group and re-import it.
 
 
 .. versionadded:: 0.9.20 there is a label on the main window
@@ -154,7 +156,7 @@ clicking on it in the group list. This is done by setting
 tool <../other/prefs.html>`__.
 
 If you right click on any item in the group list, a context menu is
-posted, as shown below, displaying the Group menu.
+posted, as shown below, displaying the :guilabel:`Group` menu.
 
 
 .. _fig-groupcontext:

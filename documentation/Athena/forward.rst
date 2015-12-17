@@ -7,6 +7,10 @@ Forward
    #. installation instructions, document building instructions
    #. CC image in epilog
    #. mark index entries
+   #. from http://sphinx-doc.org/latest/markup/inline.html#other-semantic-markup
+      use more semantic markup, especially ``:guilabel:``, ``:file:``, ``:menuselection:``
+   #. rename my ``::kbd:`` to avoid confusion with built-in semantic
+      markup ... maybe ``:key:`` or ``:button:``
 
 ----------------
       
@@ -40,31 +44,33 @@ Here is a summary of fonts, colors, and symbols used to denote different
 kinds of text. Note that some of these may appear the same in certain
 presentation media.
 
-- File names look ``C:\\like\\this``.
+- File names look ``C:\\like\\this``
 
 - The names of parameters for data processing look
-  :procparam:`like this`.
+  :procparam:`like this`
 
-- Emphasized text looks *like this*.
+- Emphasized text looks *like this*
 
-- Bold text looks **like this**.
+- Bold text looks **like this**
 
-- Links to web sites look `like this <http://www.google.com>`__.
+- Links to web sites look `like this <http://www.google.com>`__
 
 - Internal links look `like this
-  <forward.html#layout-and-typesetting-conventions>`__.
+  <forward.html#layout-and-typesetting-conventions>`__
+
+- Menu selections look like this: :menuselection:`File --> Import data`
   
 - Keyboard shortcuts look like this:
-  :kbd:`Control,dark`-:kbd:`q`. This example means to hit the :kbd:`q`
-  key while holding the :kbd:`Control` (or :kbd:`Ctrl`) key.
+  :kbd:`Control,dark`-:kbd:`q`, which means to hit the :kbd:`q`
+  key while holding the :kbd:`Control` (or :kbd:`Ctrl`) key
 
 - Program names from the :demeter:`demeter`'s extended family look
-  like this: :demeter:`athena`.
+  like this: :demeter:`athena`
 
 - References to :demeter:`athena`'s preferences are written like this:
   :configparam:`Bkg,fraction`.  To modify this preferences, open the
   :quoted:`bkg` section of the `preferences tool <other/prefs.html>`__ and
-  then click on :quoted:`fraction`.
+  then click on :quoted:`fraction`
 
 .. CAUTION::
    Points that require special attention are indicated
@@ -92,8 +98,8 @@ over on their first reading of this document.
 .. endpar::
 
 The html version of this document makes use of HTML 4.1 character
-entities (mostly Greek symbols) and will not display correctly in very
-old browsers.
+entities (mostly Greek, math, superscript, and subscript symbols) and
+will not display correctly in very old browsers.
 
 
 

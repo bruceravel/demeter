@@ -28,7 +28,7 @@ Special plots for the current group
 
    A number of special plots and other plotting features are provided
    for visualizing particular aspects of your data. The plot types
-   described below are all available from the Plot menu.
+   described below are all available from the :guilabel:`Plot` menu.
 
 **Quad plot**
     The quad plot is the default plot that gets made when data are
@@ -236,12 +236,12 @@ Special plotting targets
 ------------------------
 
 The Plot menu provides a few more ways to control how your data are
-displayed. The :quoted:`Save last plot as` submenu allows you to send the most
-recent plot to a PNG or PDF file. You will be prompted for a filename,
-then the most recent plot will be written to that file in the format
-specified. Currently, only PNG and PDF are supported. Saving to a file
-does not work for quad plots – you'll have to rely on a screen-capture
-tool for that.
+displayed. The :guilabel:`Save last plot as` submenu allows you to
+send the most recent plot to a PNG or PDF file. You will be prompted
+for a filename, then the most recent plot will be written to that file
+in the format specified. Currently, only PNG and PDF are
+supported. Saving to a file does not work for quad plots – you'll have
+to rely on a screen-capture tool for that.
 
 Finally, you have the option of directing the on-screen plot to one of
 four terminals. The selected terminal, number 1 by default, is updated
@@ -283,8 +283,8 @@ To make use of this most essential feature, you should first download
 and install the `Humor-Sans
 font <http://antiyawn.com/uploads/humorsans.html>`__ onto your computer.
 
-Once you have installed the font, simply check the :quoted:`Plot XKCD style`
-button in the Plot menu. Enjoy!
+Once you have installed the font, simply check :menuselection:`Plot
+--> Plot XKCD style`. Enjoy!
 
 
 .. _fig-xkcd:

@@ -27,9 +27,9 @@ replotted.
 
 The selected point is shown in the plot with the orange circle, as
 shown in the plot below. You can type in a new value in the
-:quoted:`Reference` box or click the :kbd:`Select a point,light`
+:guilabel:`Reference` box or click the :kbd:`Select a point,light`
 button then click on a point in the plot. By default, the
-:quoted:`Calibrate to` box contains the tabulated edge energy of the
+:guilabel:`Calibrate to` box contains the tabulated edge energy of the
 absorber measured for these data, but that too can be edited.
 
 .. _fig-calplot:

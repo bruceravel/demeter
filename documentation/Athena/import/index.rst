@@ -2,29 +2,32 @@
 Data import
 ===========
 
-:demeter:`athena` is very versatile in how she reads in data files. Pretty much any
-data in the form of columns of numbers can be successfully read. With a
-few exceptions, :demeter:`athena` relies upon :demeter:`ifeffit`'s ``read_data()`` command to
-handle the details of data import. :demeter:`ifeffit` is clever about recognizing
-which part of a file is columns of numbers and which part is not. In the
-following, I'll explain how the ``read_data()`` command interprets
-files, explain the limits on its and :demeter:`athena`'s abilities to interpret a
-data file, and discuss the kinds of manipulations of data that can and
-cannot be performed by :demeter:`athena` as data are imported.
+:demeter:`athena` is very versatile in how she reads in data
+files. Pretty much any data in the form of columns of numbers can be
+successfully read. With a few exceptions, :demeter:`athena` relies
+upon :demeter:`ifeffit`'s ``read_data()`` command to handle the
+details of data import. :demeter:`ifeffit` is clever about recognizing
+which part of a file is columns of numbers and which part is not. In
+the following, I'll explain how the ``read_data()`` command interprets
+files, explain the limits on its and :demeter:`athena`'s abilities to
+interpret a data file, and discuss the kinds of manipulations of data
+that can and cannot be performed by :demeter:`athena` as data are
+imported.
 
-:demeter:`athena` expects data of one of a few types. Column data in which the
-columns represent such things as the energy grid and the scalars
-measured during the experiment are the most common sort of data that
-most people use import into :demeter:`athena`. :demeter:`athena`'s column selection dialog is
-used to convert the raw scalars into |mu| (E) data. Other common kinds of
-data files that might be read into :demeter:`athena` are files that contain |mu| (E) or
-chi(k) data in columns or the output files from Feff, xmu.dat and
-chi.dat.
+:demeter:`athena` expects data of one of a few types. Column data in
+which the columns represent such things as the energy grid and the
+scalars measured during the experiment are the most common sort of
+data that most people use import into
+:demeter:`athena`. :demeter:`athena`'s column selection dialog is used
+to convert the raw scalars into |mu| (E) data. Other common kinds of
+data files that might be read into :demeter:`athena` are files that
+contain |mu| (E) or |chi| (k) data in columns or the output files from
+Feff, :file:`xmu.dat` and :file:`chi.dat`.
 
-Here is an example of a data file that will make :demeter:`athena` as happy as can
-be. There are some header lines, followed by a line of dashes, followed
-by a line of column labels, followed by lines containing columns of
-data.
+Here is an example of a data file that will make :demeter:`athena` as
+happy as can be. There are some header lines, followed by a line of
+dashes, followed by a line of column labels, followed by lines
+containing columns of data.
 
 ::
 

@@ -125,8 +125,8 @@ this picture.
    :width: 65%
    :align: center
 
-   The Group menu, which contains the options for constraining all
-   parameters at once.
+   The :guilabel:`Group` menu, which contains the options for
+   constraining all parameters at once.
 
 Again, these operations work identically to the explanation above,
 except that every parameter is effected, with the exceptions of

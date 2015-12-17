@@ -99,11 +99,11 @@ standard materials.
 
 To begin, select one of the time points in the group list. Most
 figures in this section show the data measured at 7.03 hours. Next,
-select :quoted:`Linear combination fit` from the main menu. This
+select :guilabel:`Linear combination fit` from the main menu. This
 replaces the main window with the linear combination fitting tool and
 plots the data along with vertical lines indicating the extent of the
-fitting range. From the first two drop-down menus, select :quoted:`Au
-foil` and :quoted:`Au3 Cl aq`, as shown below.
+fitting range. From the first two drop-down menus, select
+:guilabel:`Au foil` and :guilabel:`Au3 Cl aq`, as shown below.
 
 .. _fig-lcfagain:
 
@@ -151,8 +151,8 @@ of the white line is pretty good. Looking at the various standards on
 the right side of the first figure on this page I suspect that the
 sulfur ligated species, Au sulfide, Au thiosulfate, or Au thiomalate,
 are likely candidates. To test one, we need to add it to the list of
-fitting standards on the :quoted:`Standards spectra` tab and rerun the
-fit. In the third row, select :quoted:`Au sulfide` from the drop-down
+fitting standards on the :guilabel:`Standards spectra` tab and rerun the
+fit. In the third row, select :guilabel:`Au sulfide` from the drop-down
 menu, then click :kbd:`Fit this group,light` from the operations list.
 
 .. _fig-auclplussulfide:

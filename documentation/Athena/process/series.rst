@@ -5,9 +5,9 @@ Copy series
 
 This tool allows you to examine systemic trends in a measurement by
 varying a single processing parameter over a specified range. The
-:quoted:`Parameter` menu contains many of the parameters on the main window. You
-give an initial value, an increment, and a number of copies, thus
-specifying the range over which the parameter is examine.
+:guilabel:`Parameter` menu contains many of the parameters on the main
+window. You give an initial value, an increment, and a number of
+copies, thus specifying the range over which the parameter is examine.
 
 Clicking the :kbd:`Make series,light` button creates copies of the
 current data group with the examined parameter set incrementally. The

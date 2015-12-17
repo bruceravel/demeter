@@ -64,15 +64,15 @@ in the box for :procparam:`energy shift`, as seen in this screenshot.
 
    Data imported with a reference channel.
 
-When you change the value of :procparam:`energy shift` for the reference, the value
-of :procparam:`energy shift` for the data changes as well. (And vice versa!) This
-feature of reference channels is put to good use `in data
-alignment <../process/align.html>`__.
+When you change the value of :procparam:`energy shift` for the
+reference, the value of :procparam:`energy shift` for the data changes
+as well. (And vice versa!) This feature of reference channels is put
+to good use `in data alignment <../process/align.html>`__.
 
-Occasionally, it is useful to tie two data groups together in this way.
-This can be done by marking the two groups you want to tie together as
-data and reference, then selecting :quoted:`Tie reference channel` from the
-Group menu.
+Occasionally, it is useful to tie two data groups together in this
+way.  This can be done by marking the two groups you want to tie
+together as data and reference, then selecting :menuselection:`Group
+--> Tie reference channel`.
 
 .. todo:: :demeter:`athena` is missing the ability to tie together
    three or more data groups in a reference relationship -- that would

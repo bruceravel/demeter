@@ -7,17 +7,17 @@ The :procparam:`e0` is central to many of the chores that
 and how it is set is essential to understanding how :demeter:`athena`
 operates and essential to using :demeter:`athena` well.
 
-By default, :demeter:`athena` has :demeter:`ifeffit` determine :procparam:`e0`
-and uses the value that :demeter:`ifeffit` finds. :demeter:`ifeffit`'s
-algorithm is to find the first peak of the first derivative of
-|mu| (E). To avoid settling on a spot in a noisy pre-edge,
-:demeter:`ifeffit` makes a series of checks to verify that its guess
-for :procparam:`e0` comes after several points in the derivative of |mu| (E) that are
-increasing in energy and is followed by several points that are
-decreasing. The details of this implementation are such that
-:demeter:`ifeffit` often chooses a point that is slightly to the high
-energy side of peak that a person would choose, but it typically is a
-very good guess.
+By default, :demeter:`athena` has :demeter:`ifeffit` determine
+:procparam:`e0` and uses the value that :demeter:`ifeffit`
+finds. :demeter:`ifeffit`'s algorithm is to find the first peak of the
+first derivative of |mu| (E). To avoid settling on a spot in a noisy
+pre-edge, :demeter:`ifeffit` makes a series of checks to verify that
+its guess for :procparam:`e0` comes after several points in the
+derivative of |mu| (E) that are increasing in energy and is followed
+by several points that are decreasing. The details of this
+implementation are such that :demeter:`ifeffit` often chooses a point
+that is slightly to the high energy side of peak that a person would
+choose, but it typically is a very good guess.
 
 The actual  value of :procparam:`e0`  is used  for many things.  It is
 compared to  a table of  edge energies to  determine the value  of the
@@ -30,15 +30,16 @@ The `calibration <../process/cal.html>`__ and `alignment
 <../process/align.html>`__ tools can be used to refine the values for
 :procparam:`e0`. You can also edit its value directly by typing in its
 entry box. The right-click context menu for :procparam:`e0` and the
-Energy menu have several options for other ways of setting
+:guilabel:`Energy` menu have several options for other ways of setting
 :procparam:`e0`.
 
 There are a few situations where the default algorithm will fail. Very
-noisy data can result in a spurious identification of :procparam:`e0`. Materials
-which have two inflections in the edge, such as zero-valent zirconium,
-might have the wrong inflection chosen. Materials with huge edge peaks,
-such as K\ :sub:`2`\ CrO\ :sub:`4`, will have a point in the leading
-edge of the peak chosen rather than a point in the main edge.
+noisy data can result in a spurious identification of
+:procparam:`e0`. Materials which have two inflections in the edge,
+such as zero-valent zirconium, might have the wrong inflection
+chosen. Materials with huge edge peaks, such as K\ :sub:`2`\ CrO\
+:sub:`4`, will have a point in the leading edge of the peak chosen
+rather than a point in the main edge.
 
 .. versionadded:: 0.9.18
 		  features related to E\ :sub:`0` moved from the Group
@@ -48,8 +49,8 @@ edge of the peak chosen rather than a point in the main edge.
 Other ways of setting e0
 ------------------------
 
-Aside from the default method described above, :demeter:`athena` offers a few other
-algorithms for setting :procparam:`E0`.
+Aside from the default method described above, :demeter:`athena`
+offers a few other algorithms for setting :procparam:`E0`.
 
 **Tabulated atomic value**
     The tabulated value of the edge energy of the zero-valent element
@@ -80,14 +81,15 @@ algorithms for setting :procparam:`E0`.
     then found as the zero crossing of the first derivative of |mu| (E)
     after the initial value of E\ :sub:`0` and is used as :procparam:`e0`.
 
-Since all of these additional algorithms rely on :demeter:`ifeffit`'s initial guess
-of :procparam:`E0`, each is subject to the same caveats given for the default
-algorithm.
+Since all of these additional algorithms rely on :demeter:`ifeffit`'s
+initial guess of :procparam:`E0`, each is subject to the same caveats
+given for the default algorithm.
 
 The :configparam:`Bkg,e0` `configuration parameter
 <../other/prefs.html>`__ can be set to one of these options, setting
 the default algorithm for determining :procparam:`E0`.
 
-Submenus under the Group menu can be used to set E0 using one of these
-algorithms for all groups, or the set of marked groups.
+Submenus under the :guilabel:`Group` menu can be used to set
+:procparam:`E0` using one of these algorithms for all groups, or the
+set of marked groups.
 
