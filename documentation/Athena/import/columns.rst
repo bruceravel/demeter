@@ -95,7 +95,7 @@ The other choices are:
 -  chi(k) : |chi| (k) data, that is data that have already been background
    subtracted from |mu| (E)
 
--  xmu.dat : the xmu.dat file from FEFF
+-  xmu.dat : the xmu.dat file from :demeter:`feff`
 
 .. _fig-importtypes:
 

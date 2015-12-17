@@ -6,11 +6,12 @@ Normalization
 
 Normalization is the process of regularizing your data with respect to
 variations in sample preparation, sample thickness, absorber
-concentration, detector and amplifier settings, and any other aspects of
-the measurement. Normalized data can be directly compared, regardless of
-the details of the experiment. Normalization of your data is essential
-for comparison to theory. The scale of the |mu| (E) and |chi| (k) spectra
-computed by FEFF is chosen for comparison to normalized data.
+concentration, detector and amplifier settings, and any other aspects
+of the measurement. Normalized data can be directly compared,
+regardless of the details of the experiment. Normalization of your
+data is essential for comparison to theory. The scale of the |mu| (E)
+and |chi| (k) spectra computed by :demeter:`feff` is chosen for
+comparison to normalized data.
 
 The relationship between |mu| (E) and |chi| (k) is:
 
