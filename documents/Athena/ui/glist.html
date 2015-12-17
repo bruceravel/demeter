@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.1. Using the group list &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="6. ATHENA&#39;s User Interface" href="index.html" />
+    <link rel="next" title="6.2. Marking groups" href="mark.html" />
+    <link rel="prev" title="6. ATHENA&#39;s User Interface" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="mark.html" title="6.2. Marking groups"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="6. ATHENA&#39;s User Interface"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">6. ATHENA's User Interface</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-the-group-list">
+<h1>6.1. Using the group list<a class="headerlink" href="#using-the-group-list" title="Permalink to this headline">¶</a></h1>
+<p>The group list is the primary mechanism for accessing and interacting
+with your data. As data files are imported in <font size=-1 color="#033B0A">ATHENA</font>, each
+gets an entry in the group list. Data generated during the course of
+using <font size=-1 color="#033B0A">ATHENA</font>, such as copied or merged groups, also get
+placed in the group list.</p>
+<p>Each group list entry consists of two parts, the label and the check
+button. The label contains text identifying the group. The default is
+for the label to be the same as the file name. Clicking with the left
+mouse button on a label makes that group the <em>current</em> group. The
+current group's label is highlighted with a light red color and its
+parameters are displayed in the main window. The current group is the
+one that gets plotted when the red plotting buttons are pressed.</p>
+<p>The check button is used to mark the group. Marking, explained in
+detail <a class="reference external" href="../ui/mark.html">in the next section</a>, is one of the
+fundamental user interface features in <font size=-1 color="#033B0A">ATHENA</font>. Any feature
+of <font size=-1 color="#033B0A">ATHENA</font> that involves more than one group uses the mark
+buttons.</p>
+<p>File can be dragged from your computers file manager (e.g. Windows
+File Explorer, KDE Dolphin, or GNOME Nautilus) and dropped onto the
+group list. These files, which can be <a class="reference external" href="../import/columns.html">data</a> or <a class="reference external" href="../import/projsel.html">project</a>
+files will be appended to the group list. You cannot drop folders onto
+the group list.</p>
+<div class="section" id="copying-groups">
+<h2>6.1.1. Copying groups<a class="headerlink" href="#copying-groups" title="Permalink to this headline">¶</a></h2>
+<p>You can copy a group by hitting <kbd class="dark">Alt</kbd>-<kbd class="dark">y</kbd> or by selecting
+<span class="menuselection">Group ‣ Copy group</span>. This makes an identical copy
+of the current group and places it at the end of the groups list. All
+parameters are identical and the data arrays in <font size=-1 color="#033B0A">IFEFFIT</font> are
+all copied -- only the <font size=-1 color="#033B0A">IFEFFIT</font> group name in different.</p>
+<p>Copying is very useful for examining how changes in parameter values
+propagate through the data processing. You can make one or more copies,
+change particular data values, and overplot the results.</p>
+<p>The process of comparing parameter values can be automated using the
+<a class="reference external" href="../process/series.html">copy series tool</a>.</p>
+</div>
+<div class="section" id="reorganizing-the-group-list">
+<h2>6.1.2. Reorganizing the group list<a class="headerlink" href="#reorganizing-the-group-list" title="Permalink to this headline">¶</a></h2>
+<p>When a file is imported into <font size=-1 color="#033B0A">ATHENA</font>, the name of the file
+is used as the label in the group list. That's fine, but you can
+change the label by selecting <span class="menuselection">Group ‣ Rename current group</span>,
+typing <kbd class="dark">Alt</kbd>-<kbd class="dark">l</kbd>, or double clicking on an item in
+the group list. This posts a dialog for entering the new label for the
+group, shown here.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-renaming"></span><a class="reference external image-reference" href="../_images/ui_renaming.png"><img alt="../_images/ui_renaming.png" src="../_images/ui_renaming.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.1 </span><span class="caption-text">Renaming a group list entry.</span></p>
+</div>
+<p>Hitting <kbd class="dark">Return</kbd> or clicking the <kbd class="light">OK</kbd> button
+renames the group, shown here.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-renamed"></span><a class="reference external image-reference" href="../_images/ui_renamed.png"><img alt="../_images/ui_renamed.png" src="../_images/ui_renamed.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.2 </span><span class="caption-text">After renaming a group list entry.</span></p>
+</div>
+<p>We have <a class="reference external" href="../bkg/rbkg.html">already seen</a> how groups can be copied.
+Making one or more copies is an excellent tool for exploring the effects
+of the various parameters in the main window.</p>
+<p>There are several other useful tools for modifying the contents of the
+group list. You can reorder the items in the groups list using
+<kbd class="dark">Alt</kbd>-<kbd class="dark">k</kbd> or <kbd class="dark">Alt</kbd>-<kbd class="dark">j</kbd> to move the current group
+up or down in the list.</p>
+<p>Hitting <kbd class="dark">Control</kbd>-<kbd class="dark">k</kbd> or <kbd class="dark">Control</kbd>-<kbd class="dark">j</kbd> changes the
+current group to the one above or below.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">As of version 0.9.20, <kbd class="dark">Control</kbd>-drag-and-drop is no longer
+available for reorganizing group list items. That feature
+has been discontinued in favor of file drag and drop.</p>
+</div>
+<p>Items can be removed from the list. The current group or the marked
+groups can be removed from the project by selecting
+<span class="menuselection">Group ‣ Remove current group</span> or
+<span class="menuselection">Group ‣ Remove marked groups</span>. You can remove all
+the groups from the list by selecting <span class="menuselection">File ‣ Close</span>
+or <span class="menuselection">Group ‣ Close</span> or by hitting
+<kbd class="dark">Control</kbd>-<kbd class="dark">w</kbd>.</p>
+</div>
+<div class="section" id="information-about-items-in-the-group-list">
+<h2>6.1.3. Information about items in the group list<a class="headerlink" href="#information-about-items-in-the-group-list" title="Permalink to this headline">¶</a></h2>
+<p>Selecting <span class="menuselection">Group ‣ Show yaml for current group</span>
+displays the dialog shown here.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-about"></span><a class="reference external image-reference" href="../_images/ui_about.png"><img alt="../_images/ui_about.png" src="../_images/ui_about.png" style="width: 35%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.3 </span><span class="caption-text">The dialog containing information about the data group.</span></p>
+</div>
+<p>This presents all of the parameter values of the current group as well
+as the contents of the data arrays associated with the group. This way
+of presenting the information is, admittedly, rather cryptic. But it is
+very useful for developing and debugging the software.</p>
+<p>If you mistakenly import a data group as the wrong record type, you
+can change it by selecting <span class="menuselection">Group ‣ Change record
+type</span>.  You can only change between the various record types in
+energy, though. If you import a χ(k) file as μ(E) by
+accident, you will have to remove the group and re-import it.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-changetype"></span><a class="reference external image-reference" href="../_images/import_changetype.png"><img alt="../_images/import_changetype1.png" src="../_images/import_changetype1.png" style="width: 30%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.4 </span><span class="caption-text">Change type dialog</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.20: </span>there is a label on the main window
+displaying the data type. You can toggle between μ(E) and XANES
+data by <kbd class="dark">Control</kbd>-<kbd class="dark">Alt</kbd>-left clicking on that label.</p>
+</div>
+</div>
+<div class="section" id="using-the-mouse-in-the-group-list">
+<h2>6.1.4. Using the mouse in the group list<a class="headerlink" href="#using-the-mouse-in-the-group-list" title="Permalink to this headline">¶</a></h2>
+<p>You can turn on automated replotting when you select a new group by
+clicking on it in the group list. This is done by setting
+<font color="#636A24">♦athena→select _replot</font> with the <a class="reference external" href="../other/prefs.html">preferences
+tool</a>.</p>
+<p>If you right click on any item in the group list, a context menu is
+posted, as shown below, displaying the <span class="guilabel">Group</span> menu.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-groupcontext"></span><a class="reference external image-reference" href="../_images/ui_groupcontext.png"><img alt="../_images/ui_groupcontext.png" src="../_images/ui_groupcontext.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.5 </span><span class="caption-text">Clicking the right mouse button on a group list entry pops up this
+context menu.</span></p>
+</div>
+<p>As mentioned above, double clicking on a group list item will post the
+dialog for renaming that group.</p>
+</div>
+<div class="section" id="shrinking-and-expanding-the-group-list">
+<h2>6.1.5. Shrinking and expanding the group list<a class="headerlink" href="#shrinking-and-expanding-the-group-list" title="Permalink to this headline">¶</a></h2>
+<p>The last item in the plotting options tabs, labeled <span class="guilabel">Shrink</span>,
+causes the k-weight buttons and plot options tabs to be hidden,
+causing the group list to expand, and allowing the display of more
+data groups. When the plot options tabs is shrunk, it is replaced by a
+button labeled <kbd class="light">Restore plot options</kbd>. Clicking this will
+return the k-weight buttons and the group list to their original
+places and the group list to its original original size.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-shrink"></span><a class="reference external image-reference" href="../_images/ui_shrink.png"><img alt="../_images/ui_shrink.png" src="../_images/ui_shrink.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.6 </span><span class="caption-text">Restore the shrunken k-weight buttons and plot options tabs.</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">6. ATHENA's User Interface</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">6.1. Using the group list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mark.html">6.2. Marking groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluck.html">6.3. Pluck buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="styles.html">6.4. Plot styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kweight.html">6.5. k-weights in plots and Fourier transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frozen.html">6.6. Frozen groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/ui/glist.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="mark.html" title="6.2. Marking groups"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="6. ATHENA&#39;s User Interface"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >6. ATHENA's User Interface</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

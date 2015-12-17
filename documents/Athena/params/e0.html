@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.2. Setting E0 &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="7. Setting parameters in ATHENA" href="index.html" />
+    <link rel="next" title="7.3. Default parameter values" href="defaults.html" />
+    <link rel="prev" title="7.1. Constraining parameters between data groups" href="constrain.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="defaults.html" title="7.3. Default parameter values"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="constrain.html" title="7.1. Constraining parameters between data groups"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Setting parameters in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="setting-e0">
+<h1>7.2. Setting E0<a class="headerlink" href="#setting-e0" title="Permalink to this headline">¶</a></h1>
+<p>The <tt><font color="#387A38">«e0»</font></tt> is central to many of the chores that
+<font size=-1 color="#033B0A">ATHENA</font> performs.  Understanding how <tt><font color="#387A38">«e0»</font></tt> is used
+and how it is set is essential to understanding how <font size=-1 color="#033B0A">ATHENA</font>
+operates and essential to using <font size=-1 color="#033B0A">ATHENA</font> well.</p>
+<p>By default, <font size=-1 color="#033B0A">ATHENA</font> has <font size=-1 color="#033B0A">IFEFFIT</font> determine
+<tt><font color="#387A38">«e0»</font></tt> and uses the value that <font size=-1 color="#033B0A">IFEFFIT</font>
+finds. <font size=-1 color="#033B0A">IFEFFIT</font>'s algorithm is to find the first peak of the
+first derivative of μ(E). To avoid settling on a spot in a noisy
+pre-edge, <font size=-1 color="#033B0A">IFEFFIT</font> makes a series of checks to verify that
+its guess for <tt><font color="#387A38">«e0»</font></tt> comes after several points in the
+derivative of μ(E) that are increasing in energy and is followed
+by several points that are decreasing. The details of this
+implementation are such that <font size=-1 color="#033B0A">IFEFFIT</font> often chooses a point
+that is slightly to the high energy side of peak that a person would
+choose, but it typically is a very good guess.</p>
+<p>The actual  value of <tt><font color="#387A38">«e0»</font></tt>  is used  for many things.  It is
+compared to  a table of  edge energies to  determine the value  of the
+<tt><font color="#387A38">«Z»</font></tt>  and <tt><font color="#387A38">«edge»</font></tt>  parameters.  It  is the  energy
+reference for  the values of  the normalization, pre-edge,  and spline
+range parameters. And  it is the edge energy  in the <font size=-1 color="#033B0A">AUTOBK</font>
+algorithm.</p>
+<p>The <a class="reference external" href="../process/cal.html">calibration</a> and <a class="reference external" href="../process/align.html">alignment</a> tools can be used to refine the values for
+<tt><font color="#387A38">«e0»</font></tt>. You can also edit its value directly by typing in its
+entry box. The right-click context menu for <tt><font color="#387A38">«e0»</font></tt> and the
+<span class="guilabel">Energy</span> menu have several options for other ways of setting
+<tt><font color="#387A38">«e0»</font></tt>.</p>
+<p>There are a few situations where the default algorithm will fail. Very
+noisy data can result in a spurious identification of
+<tt><font color="#387A38">«e0»</font></tt>. Materials which have two inflections in the edge,
+such as zero-valent zirconium, might have the wrong inflection
+chosen. Materials with huge edge peaks, such as K<sub>2</sub>CrO<sub>4</sub>, will have a point in the leading edge of the peak chosen
+rather than a point in the main edge.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.18: </span>features related to E<sub>0</sub> moved from the Group
+menu to the Energy menu.</p>
+</div>
+<div class="section" id="other-ways-of-setting-e0">
+<h2>7.2.1. Other ways of setting e0<a class="headerlink" href="#other-ways-of-setting-e0" title="Permalink to this headline">¶</a></h2>
+<p>Aside from the default method described above, <font size=-1 color="#033B0A">ATHENA</font>
+offers a few other algorithms for setting <tt><font color="#387A38">«E0»</font></tt>.</p>
+<dl class="docutils">
+<dt><strong>Tabulated atomic value</strong></dt>
+<dd>The tabulated value of the edge energy of the zero-valent element
+will be used. To determine the element, a transitory value for e0
+will be found using <font size=-1 color="#033B0A">IFEFFIT</font>. Once <tt><font color="#387A38">«Z»</font></tt> and
+<tt><font color="#387A38">«Edge»</font></tt> are found, <tt><font color="#387A38">«E0»</font></tt> is set to the
+tabulated value.</dd>
+<dt><strong>Fraction of edge step</strong></dt>
+<dd>In this algorithm, a transitory value for E<sub>0</sub> will be
+found using <font size=-1 color="#033B0A">IFEFFIT</font>. The data are normalized and the
+point on the edge which has a height equal to a specified fraction
+of the edge step is chosen as <tt><font color="#387A38">«E0»</font></tt>. This normalization is iterated
+up to 5 times to settle on a stable value. The value of the
+fraction is set by the <font color="#636A24">♦Bkg→fraction</font> preference,
+which is 0.5 by default.</dd>
+<dt><strong>Zero crossing</strong></dt>
+<dd>Again, a transitory value for E<sub>0</sub> will be found using
+<font size=-1 color="#033B0A">IFEFFIT</font>. The second derivative of μ(E) is computed and
+<font size=-1 color="#033B0A">ATHENA</font> searches in both directions in energy for the
+nearest zero-crossing of the second derivative, which is then used
+for <tt><font color="#387A38">«e0»</font></tt>.</dd>
+<dt><strong>Peak of L edge white line</strong></dt>
+<dd>A transitory value for E<sub>0</sub> will
+be found using <font size=-1 color="#033B0A">IFEFFIT</font>. The peak of the white line is
+then found as the zero crossing of the first derivative of μ(E)
+after the initial value of E<sub>0</sub> and is used as <tt><font color="#387A38">«e0»</font></tt>.</dd>
+</dl>
+<p>Since all of these additional algorithms rely on <font size=-1 color="#033B0A">IFEFFIT</font>'s
+initial guess of <tt><font color="#387A38">«E0»</font></tt>, each is subject to the same caveats
+given for the default algorithm.</p>
+<p>The <font color="#636A24">♦Bkg→e0</font> <a class="reference external" href="../other/prefs.html">configuration parameter</a> can be set to one of these options, setting
+the default algorithm for determining <tt><font color="#387A38">«E0»</font></tt>.</p>
+<p>Submenus under the <span class="guilabel">Group</span> menu can be used to set
+<tt><font color="#387A38">«E0»</font></tt> using one of these algorithms for all groups, or the
+set of marked groups.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Setting parameters in ATHENA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="constrain.html">7.1. Constraining parameters between data groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">7.2. Setting E0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="defaults.html">7.3. Default parameter values</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/params/e0.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="defaults.html" title="7.3. Default parameter values"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="constrain.html" title="7.1. Constraining parameters between data groups"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Setting parameters in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

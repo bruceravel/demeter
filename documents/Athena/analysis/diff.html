@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.5. Difference spectra &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="next" title="11. Other main window chores" href="../other/index.html" />
+    <link rel="prev" title="10.4. Log-ratio/phase-difference analysis" href="lr.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../other/index.html" title="11. Other main window chores"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="difference-spectra">
+<span id="diff-sec"></span><h1>10.5. Difference spectra<a class="headerlink" href="#difference-spectra" title="Permalink to this headline">¶</a></h1>
+<p>In many situations, the trends in a sequence measured data can be
+indicative of the of the physical process being measured. Shown in the
+figure below is a sequence of Pt L<sub>III</sub> spectra measured on a
+hydrogenated Pt catalyst. In this sequence, the hydrogen is being
+desorbed, resulting in measurable changes in the spectra.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-diffmu"></span><a class="reference external image-reference" href="../_images/diff_mu.png"><img alt="../_images/diff_mu.png" src="../_images/diff_mu.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.22 </span><span class="caption-text">The dehydrogenation sequence of a Pt-bearing catalyst.</span></p>
+</div>
+<p>Selecting one of the difference spectra options from the main menu
+replaces the main window with the difference tool, as shown below.
+Difference spectra can be computed as μ(E), normalized μ(E),
+and derivative or second derivative of μ(E).</p>
+<p>For difference spectra to be meaningful, it is essential that data
+processing be performed correctly for each data group. It is essential
+that you take great care with <a class="reference external" href="../params/constrain.html">selecting parameters</a>, <a class="reference external" href="../process/cal.html">calibrating</a>,
+<a class="reference external" href="../process/align.html">aligning</a>, and all other processing chores.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-diff"></span><a class="reference external image-reference" href="../_images/diff.png"><img alt="../_images/diff.png" src="../_images/diff.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.23 </span><span class="caption-text">The difference spectrum tool with data taken from the <code class="docutils literal"><span class="pre">diff.prj</span></code>
+demo file.</span></p>
+</div>
+<p>As you click on each group in the group list, the difference spectrum
+is computed as the difference between the groups selected as the
+standard by menu control at the top of the window and the selected
+group from the group list. The difference spectrum will be plotted,
+optionally along with the data and standard used to make the
+subtraction. The form of the difference spectrum – μ(E),
+normalized μ(E), and derivative or second derivative of μ(E) –
+is selected from the menu labeled <span class="guilabel">Form</span>. The multiplier is a
+scaling factor that can be applied to the standard before subtraction.</p>
+<p>If you have accidentally swapped the standard and data, click the
+<kbd class="light">invert</kbd> button to change the order of the subtraction.</p>
+<p>You can select two points, shown in the plot below by the brown markers,
+and integrate the area under that part of the spectrum.</p>
+<p>The difference spectra saved to data groups. Those data groups are
+treated in every way like any other data group. By default, difference
+groups are marked as normalized groups – that is, a flag is set which
+skips the normalization algorithm. The <kbd class="light">renormalize</kbd> button can
+be ticked to make the resulting group a normal μ(E) group. When
+the form of the difference is set to plain μ(E), that button will
+be ticked.</p>
+<p>The name of the resulting data group will be set using the
+<span class="guilabel">Name template</span>, which includes a mini-language of tokens
+that will be substituted by specific values.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">%d</span></code></dt>
+<dd>Replaced by the name of the data group.</dd>
+<dt><code class="docutils literal"><span class="pre">%s</span></code></dt>
+<dd>Replaced by the name of the standard group.</dd>
+<dt><code class="docutils literal"><span class="pre">%f</span></code></dt>
+<dd>Replaced by the form of the difference spectrum</dd>
+<dt><code class="docutils literal"><span class="pre">%m</span></code></dt>
+<dd>Replaced by the multiplier value</dd>
+<dt><code class="docutils literal"><span class="pre">%n</span></code></dt>
+<dd>Replaced by the lower bound of the integration range</dd>
+<dt><code class="docutils literal"><span class="pre">%x</span></code></dt>
+<dd>Replaced by the upper bound of the integration range</dd>
+<dt><code class="docutils literal"><span class="pre">%a</span></code></dt>
+<dd>Replaced by the compted area over the integration range</dd>
+</dl>
+<div class="figure compound align-center" id="_fig-diffdiffplot">
+<div style="width: 40%" class="subfigure" id="id3">
+<span id="fig-diffdiff"></span><a class="reference external image-reference" href="../_images/diff_diff.png"><img alt="../_images/diff_diff.png" src="../_images/diff_diff.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.24 </span><span class="caption-text">The difference spectra between the first group in the list and
+the current group in the screenshot of the difference tool.</span></p>
+</div>
+<div style="width: 40%" class="subfigure" id="id4">
+<span id="fig-diffdiffsequence"></span><a class="reference external image-reference" href="../_images/diff_diffsequence.png"><img alt="../_images/diff_diffsequence.png" src="../_images/diff_diffsequence.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.25 </span><span class="caption-text">The difference spectra plotted after making data groups from each
+one.</span></p>
+</div>
+</div><p id="_fig-diffdiffplot">The integrated areas obtained by computing a sequence over all groups
+marked in the group list can be plotted by clicking the button labeled
+<kbd class="light">Plot integrated areas for all marked groups</kbd>.  The result
+of this shown below.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-diffareas"></span><a class="reference external image-reference" href="../_images/diff_areas.png"><img alt="../_images/diff_areas.png" src="../_images/diff_areas.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.26 </span><span class="caption-text">Integrated areas for a sequence of difference spectra.</span></p>
+</div>
+<p>Here are some example uses of difference spectra:</p>
+<dl class="docutils">
+<dt><strong>Magnetic dichroism</strong></dt>
+<dd>This part of <font size=-1 color="#033B0A">ATHENA</font> is directly applicable to dichroism studies. The
+difference spectra is made in normalized μ(E) and the integration
+can be used to measure magnetic moments in magnetic materials.</dd>
+<dt><strong>Experimental corrections</strong></dt>
+<dd><p class="first">Certain kinds of corrections for nonlinearities in the XAS
+measurement can be corrected by normalizing measured data by a blank
+scan – that is a measurement through the same energy range using the
+same instrumentation, but measured without the sample in the beam
+path. This sort of correction, as shown in by Chantler, Barnea, et al.,
+is equivalent to a difference spectrum measured in plain μ(E)
+between the data and balnk scan.</p>
+<ul class="last simple" id="bibtex-bibliography-analysis/diff-0">
+<li>Christopher&nbsp;T. Chantler, Zwi Barnea, Chanh&nbsp;Q. Tran, Nicholas&nbsp;A. Rae, and Martin&nbsp;D. de&nbsp;Jonge. A step toward standardization: development of accurate measurements of X-ray absorption and fluorescence. <em>Journal of Synchrotron Radiation</em>, 19(6):851–862, Nov 2012. <a class="reference external" href="http://dx.doi.org/10.1107/S0909049512039544">doi:10.1107/S0909049512039544</a>.</li>
+</ul>
+</dd>
+</dl>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis in ATHENA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lcf.html">10.1. Linear combination fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="peak.html">10.3. Peak fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lr.html">10.4. Log-ratio/phase-difference analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">10.5. Difference spectra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/analysis/diff.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../other/index.html" title="11. Other main window chores"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

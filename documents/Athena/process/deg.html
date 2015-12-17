@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.5. Deglitching and truncating data &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="9. Data processing" href="index.html" />
+    <link rel="next" title="9.6. Smoothing data" href="smooth.html" />
+    <link rel="prev" title="9.4. Rebinning data groups" href="rebin.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="smooth.html" title="9.6. Smoothing data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rebin.html" title="9.4. Rebinning data groups"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">9. Data processing</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="deglitching-and-truncating-data">
+<h1>9.5. Deglitching and truncating data<a class="headerlink" href="#deglitching-and-truncating-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="deglitching">
+<h2>9.5.1. Deglitching<a class="headerlink" href="#deglitching" title="Permalink to this headline">¶</a></h2>
+<p>Occasionally your data has spurious points that are obviously different
+from the surrounding points. These so-called glitches can be caused by a
+variety of issues involving the monochromator, the electronics, or the
+sample itself. In principle, it should not be necessary to do anything
+at all about glitches. A feature in the data that is only one or two
+points wide necessarily contributes a high frequency signal to the data.
+Since the data are treated using Fourier techniques, these high
+frequency additions to the data should have scant impact on the data.</p>
+<p>In practice, there are a variety of ways that glitches like those shown
+on the right in the figure below can impact the processing of the data.
+Certainly, large glitches are unsightly and have an aesthetic impact on
+the presentation of your data.</p>
+<p>The process by which glitchy points are removed from the data is called
+deglitching. Yes, I also think that's a funny sounding word.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-deglitch"></span><a class="reference external image-reference" href="../../_images/deglitch.png"><img alt="../_images/deglitch.png" src="../_images/deglitch.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.10 </span><span class="caption-text">The deglitching tool.</span></p>
+</div>
+<p><font size=-1 color="#033B0A">ATHENA</font>'s approach to deglitching involves simply removing
+the points from the data. No effort is made to interpolate from the
+surrounding points in an effort to replace that point with a
+presumably more appropriate value. The reason that no interpolation is
+done is that EXAFS data are typically measured on a grid that is
+oversampled. When the data are converted from μ(E) to χ(k) as
+part of the background removal, the data are rebinned onto the
+standard k-grid. Since a rebinning is performed later in the data
+processing, there is no reason to interpolate at the time of
+deglitching.</p>
+<p>Deglitching only removes points from the data in <font size=-1 color="#033B0A">ATHENA</font>'s
+memory. The data on disk are never altered.</p>
+<p>There are two methods of deglitching offered by <font size=-1 color="#033B0A">ATHENA</font>'s
+deglitching tool, shown above. The first involves selecting and
+removing the glitches one by one. The points are selected by clicking
+the <kbd class="light">Choose a point</kbd> button then clicking on the glitch in
+the plot. After clicking on the plot window, the selected point is
+indicated with an orange circle, as on the left of the next
+figure. Clicking the <kbd class="light">Remove point</kbd> button removes that
+point from the data, shown in the bottom panel.</p>
+<div class="figure compound align-center" id="_fig-deglicthpoints">
+<div style="width: 45%" class="subfigure" id="id2">
+<span id="fig-degplot"></span><a class="reference external image-reference" href="../_images/deglitch_plot.png"><img alt="../_images/deglitch_plot.png" src="../_images/deglitch_plot.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.11 </span><span class="caption-text">This is an example of data the needs deglitching. In this case,
+there was a problem with data channels not arriving at the
+measurement computer in the proper sequence. This timing problem
+resulted in occasionally spikes in the data.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id3">
+<span id="fig-degpoint"></span><a class="reference external image-reference" href="../_images/deglitch_point.png"><img alt="../_images/deglitch_point.png" src="../_images/deglitch_point.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.12 </span><span class="caption-text">A point has been selected for removal. The point flagged for
+removal is indicated with a little orange circle.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id4">
+<span id="fig-degpointremoved"></span><a class="reference external image-reference" href="../_images/deglitch_pointremoved.png"><img alt="../_images/deglitch_pointremoved.png" src="../_images/deglitch_pointremoved.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.13 </span><span class="caption-text">The selected point has been removed from the data. The deglitching
+margins are displayed along with the data.</span></p>
+</div>
+</div><p id="_fig-deglicthpoints">The second method for removing glitches is more automated. In the figure
+above, the deglitching margins are shown by the pink lines. Those
+margins are drawn between the specified minimum and maximum energy
+values. The lines are drawn a set amount above and below the post-edge
+line used to normalize the data. The separation between the post-edge
+line and the margins is given by the value in the tolerance box.</p>
+<p>When you click the <kbd class="light">Remove glitches</kbd> button, and points
+that within the energy range of the margins but which lie above the
+upper margin or below the lower margin are removed from the
+data. These margins can also be drawn in the pre-edge region using the
+pre-edge line. There is no way to use margins in an energy region that
+includes the edge.</p>
+<p>This technique is handy in that it quickly removes many glitches in a
+situation like the one shown. It is very dangerous, however, if not used
+with care. If the margins extend into the white line region or are so
+tight around the post-edge line that the oscillatory structure crosses
+the margins, this technique will happily remove good points from the
+data. Set your margins well!</p>
+<p>A useful variation of the point-by-point technique involves plotting
+the χ(E) data. This can only be done for glitches above the edge,
+but it can be a very useful technique for removing small glitches from
+the data. In this figure we see μ(E) data for U<sub>3</sub>O<sub>8</sub> that appear fine.</p>
+<div class="figure compound align-center" id="_fig-deglitchchie">
+<div style="width: 45%" class="subfigure" id="id5">
+<span id="fig-degchiemu"></span><a class="reference external image-reference" href="../_images/deglitch_chie_mu.png"><img alt="../_images/deglitch_chie_mu.png" src="../_images/deglitch_chie_mu.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.14 </span><span class="caption-text">μ(E) data for U<sub>3</sub>O<sub>8</sub> that have a tiny glitch
+hidden in the high energy region.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id6">
+<span id="fig-degchiek"></span><a class="reference external image-reference" href="../_images/deglitch_chie_k.png"><img alt="../_images/deglitch_chie_k.png" src="../_images/deglitch_chie_k.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.15 </span><span class="caption-text">Plotted as χ(k), the glitch at about 12 Å<sup>-1</sup> in
+these χ(k) data is clearly seen.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id7">
+<span id="fig-degchie"></span><a class="reference external image-reference" href="../_images/deglitch_chie.png"><img alt="../_images/deglitch_chie.png" src="../_images/deglitch_chie.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.16 </span><span class="caption-text">With potting as χ(E) selected. The spurious point at about 12
+Å<sup>-1</sup> has been chosen.</span></p>
+</div>
+</div><p id="_fig-deglitchchie">When the χ(E) is displayed, the k-weight value specified by the
+k-weight controls is used. From there, the point-by-point technique is
+identical to how it used with μ(E) data. The advantage is that
+small glitches might be easier to see and to pluck from the data when
+the data is plotted as χ(E). The point-by-point deglitching
+algorithm works on the χ(E) data in the same manner as for
+μ(E) data. Points are selected by clicking on the plot, then
+removed by clicking the <kbd class="light">Remove point</kbd> button.</p>
+</div>
+<div class="section" id="truncation">
+<h2>9.5.2. Truncation<a class="headerlink" href="#truncation" title="Permalink to this headline">¶</a></h2>
+<p>If your data does something odd at one end of the scan, the easiest
+solution might be to simply trim it away. The truncation tool allows you
+to chop data before or after a selected value.</p>
+<p>The radiobox is used to tell <font size=-1 color="#033B0A">ATHENA</font> whether points should
+be trimmed from before or after the selected point. The point can be
+chosen by typing in the box or by using <a class="reference external" href="../ui/pluck.html">the pluck button</a>.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-trunplot"></span><a class="reference external image-reference" href="../_images/truncate_plot.png"><img alt="../_images/truncate_plot.png" src="../_images/truncate_plot.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.17 </span><span class="caption-text">Tin oxide data with some spurious points near the end of the scan.</span></p>
+</div>
+<p>When you select a point, it is indicated with a vertical line, as shown
+in the plot above. To remove the data before or after that line, click
+the <kbd class="light">Truncate data</kbd> button.</p>
+<p>Sometimes the issue is not simply that the data are unreliable after a
+certain point. Sometimes your sample has elements with nearby edges,
+thus limiting the range over which you can actually measure the data. An
+example is shown in the next plot, the Ti K edge is at 4966 eV and the
+Ba L<sub>III</sub> edge is at 5247 eV. A careless choice of spline and
+normalization range will lead to a data processing disaster.</p>
+<div class="figure align-center" id="id9">
+<span id="fig-trunbto"></span><a class="reference external image-reference" href="../_images/truncate_batio3.png"><img alt="../_images/truncate_batio3.png" src="../_images/truncate_batio3.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.18 </span><span class="caption-text">The Ti K and Ba L<sub>III</sub> edges of BaTiO<sub>3</sub>.</span></p>
+</div>
+<p>Of course, truncation is not the only way of dealing with this issue. A
+careful choice of the spline, pre-edge, and normalization ranges is
+usually sufficient to treat any strange features at the beginning or end
+of the data set. So which is better? I think it's a matter of
+preference. As long as you understand what you are doing and process all
+your data in a consistent, defensible manner, you can use either
+approach.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.html">9.2. Aligning data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">9.3. Merging data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rebin.html">9.4. Rebinning data groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">9.5. Deglitching and truncating data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smooth.html">9.6. Smoothing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv.html">9.7. Convoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deconv.html">9.8. Deconvoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa.html">9.9. Self-absorption approximations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pixel.html">9.10. Dispersive XAS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mee.html">9.11. Multi-electron excitation removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="series.html">9.12. Copy series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/process/deg.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="smooth.html" title="9.6. Smoothing data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rebin.html" title="9.4. Rebinning data groups"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >9. Data processing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.2. Aligning data groups &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="9. Data processing" href="index.html" />
+    <link rel="next" title="9.3. Merging data groups" href="merge.html" />
+    <link rel="prev" title="9.1. Calibrating data groups" href="cal.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="merge.html" title="9.3. Merging data groups"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cal.html" title="9.1. Calibrating data groups"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">9. Data processing</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="aligning-data-groups">
+<h1>9.2. Aligning data groups<a class="headerlink" href="#aligning-data-groups" title="Permalink to this headline">¶</a></h1>
+<p>Aligning data is the process of moving a data group in energy onto an
+absolute energy grid defined by some standard. In <font size=-1 color="#033B0A">ATHENA</font> that standard
+is chosen fairly arbitrarily -- it is simply one of the other groups in
+the group list. The alignment is done by adjusting the <tt><font color="#387A38">«Energy shift»</font></tt>
+parameter.</p>
+<p>This adjustment can be done simply by manually editing the
+<tt><font color="#387A38">«Energy shift»</font></tt> parameter, but tools exist on the alignment
+tool, shown below, to make this somewhat easier.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.18,: </span>a control was added to display the
+uncertainty in the energy shift. This value can be
+displayed via the context menu attached to the
+<tt><font color="#387A38">«Energy shift»</font></tt> label on the main page.</p>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-align"></span><a class="reference external image-reference" href="../_images/align.png"><img alt="../_images/align.png" src="../_images/align.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.4 </span><span class="caption-text">The data alignment tool.</span></p>
+</div>
+<p>There are several variations on how the alignment is performed and
+visualized. As the alignment proceeds, it can be plotted as μ(E),
+normalized μ(E), the derivative of μ(E) (as shown in the next
+plot), or the smoothed derivative of μ(E). A three-point smoothing
+function is applied three times to the derivative of the μ(E) if
+that plotting option is selected.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-alignplot"></span><a class="reference external image-reference" href="../_images/align_plot.png"><img alt="../_images/align_plot.png" src="../_images/align_plot.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.5 </span><span class="caption-text">As you work on aligning your data, the current data group is
+plotted along with the standard. This gives you visual feedback on
+how well your data are aligned.</span></p>
+</div>
+<p>The alignment is always done by moving the current data group and
+keeping the standard fixed. The standard is selected from the menu at
+the top of the tool. This menu contains the entire contents of the group
+list, excluding those groups that cannot be plotted in energy.</p>
+<p>You can perform the alignment by hand by clicking any of the buttons
+labeled with numbers. Those buttons will move the current group up or
+down in energy by the amount on the button's label. Alternately, you can
+type an energy shift value in the box that displays the current value of
+<tt><font color="#387A38">«Energy shift»</font></tt>. You can click these buttons until the data line up
+nicely.</p>
+<p>Clicking the <kbd class="light">Auto align</kbd> button performs a simple fit in an attempt to
+align your data to the standard. The fit is evaluated over an energy
+range from 50 volts below the edge to 100 volts above. The parameters in
+the fit are an energy shift and an overall scaling term. The function
+minimized is the difference between the derivative of the standard and
+the derivative of the current group modified by the fitting parameters.
+The energy shifted data is interpolated onto the energy grid of the
+standard for the fit.</p>
+<p>This algorithm works quite well for data that are fairly clean and are
+misaligned by less than 5 or 10 volts. For noisy data, the fit may be
+more successful if you choose to fit smoother data by selecting that
+option from the menu labeled <span class="guilabel">Fit as:</span>. For very misaligned
+data, you may need to manually set an approximate value for
+<tt><font color="#387A38">«Energy shift»</font></tt> before clicking the <kbd class="light">Auto align</kbd>
+button.</p>
+<p>You can apply the automated alignment algorithm to many groups in
+sequence. First mark all the groups that need to be aligned, then
+click the button that says <kbd class="light">Align marked groups</kbd>. This may
+take a few minutes, depending on how many groups you have marked, but
+at the end hopefully all of your data will be nicely aligned.</p>
+<p>This alignment algorithm is the same as the one used by <a class="reference external" href="../import/preproc.html#other-pre-processing-chores">the
+preprocessing
+feature</a> of the
+column selection dialog.</p>
+<p>If you have imported <a class="reference external" href="../import/ref.html">a reference channel</a> with
+your data, you can use this tool to align the reference channels. This
+puts your real data on a proper absolute energy grid, which is very
+important for comparing edge energies in XANES studies.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">It is very important to align your data well. Many other
+parts of <font size=-1 color="#033B0A">ATHENA</font> assume that you have already
+done a good job of aligning the data. <a class="reference external" href="../process/merge.html">Merging</a> and <a class="reference external" href="../analysis/lcf.html">linear combination
+fitting</a> are examples of this.</p>
+</div>
+<p>A common approach to processing data that I use is to import a first
+scan and to decree that one as the standard. I will calibrate the
+reference channel of that first scan. That puts the reference of the
+first scan at its proper place on an absolute energy scale. Once that is
+calibrated, I will import the rest of my data from that series of
+measurements and also import a reference channel for each one. I will
+then align each of the reference channels to the reference channel of my
+designated standard. If the data is of high quality, I will typically
+use the pre-processing feature while importing all of my data. In many
+cases, following this procedure and trusting the automated alignment is
+sufficient to prepare my data for merging and further analysis.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">9.2. Aligning data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">9.3. Merging data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rebin.html">9.4. Rebinning data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deg.html">9.5. Deglitching and truncating data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smooth.html">9.6. Smoothing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv.html">9.7. Convoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deconv.html">9.8. Deconvoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa.html">9.9. Self-absorption approximations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pixel.html">9.10. Dispersive XAS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mee.html">9.11. Multi-electron excitation removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="series.html">9.12. Copy series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/process/align.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="merge.html" title="9.3. Merging data groups"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cal.html" title="9.1. Calibrating data groups"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >9. Data processing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

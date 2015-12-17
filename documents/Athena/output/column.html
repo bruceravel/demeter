@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.1. Column output files &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="8. Data export" href="index.html" />
+    <link rel="next" title="8.2. Project files" href="project.html" />
+    <link rel="prev" title="8. Data export" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="project.html" title="8.2. Project files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="8. Data export"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Data export</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="column-output-files">
+<h1>8.1. Column output files<a class="headerlink" href="#column-output-files" title="Permalink to this headline">¶</a></h1>
+<p>After doing a lot of analysis, you will eventually need to make
+beautiful pictures for publication. As a glance at any of the
+screenshots in this document will attest, the graphical output of
+<font size=-1 color="#033B0A">ATHENA</font> is adequate but far from beautiful. Fortunately,
+<font size=-1 color="#033B0A">ATHENA</font> can export your data in a variety of ways and in a
+format that can be imported easily into almost any other program, such
+as a spreadsheet or a graphics package such as Origin or Kaleidegraph.</p>
+<p>The current data set -- the one marked in red in the group list and
+the one whose parameters are displayed in the main window -- can be
+saved in a number of ways. The various choices are listed under the
+<span class="guilabel">File</span> menu, as seen in the figure below. Note that
+χ(k) data can be saved with various k-weightings using the
+entries in the submenu.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-exportsingle"></span><a class="reference external image-reference" href="../_images/export_single.png"><img alt="../_images/export_single.png" src="../_images/export_single.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 8.1 </span><span class="caption-text">Exporting a column data file for a group.</span></p>
+</div>
+<p>The columns in the μ(E) output file are:</p>
+<ol class="arabic simple">
+<li>energy</li>
+<li>μ(E)</li>
+<li>background</li>
+<li>pre-edge line</li>
+<li>post-edge line</li>
+<li>derivative of μ(E)</li>
+<li>second derivative of μ(E)</li>
+<li>I0</li>
+</ol>
+<p>If the data group is marked as being XANES data, then the background
+column will be all zeros.</p>
+<p>The columns in the <span class="guilabel">norm(E)</span> output file are:</p>
+<ol class="arabic simple">
+<li>energy</li>
+<li>normalized μ(E)</li>
+<li>normalized background</li>
+<li>flattened μ(E)</li>
+<li>flattened background</li>
+<li>derivative of normalized μ(E)</li>
+<li>second derivative of normalized μ(E)</li>
+</ol>
+<p>If the data group is marked as being XANES data, then the normalized and
+flattened background columns will be all zeros.</p>
+<p>The columns in the χ(k) output files are:</p>
+<ol class="arabic simple">
+<li>k</li>
+<li>unweighted χ(k)</li>
+<li>k-weighted χ(k)</li>
+<li>k-squared-weighted χ(k)</li>
+<li>k-cubed-weighted χ(k)</li>
+<li>Fourier transform window</li>
+<li>Energy in absolute units</li>
+</ol>
+<p>The χ(R) output file contains both parts of the complex Fourier
+transform, as well as the magnitude and phase. That is, of course,
+redundant, but it's also convenient. The columns are:</p>
+<ol class="arabic simple">
+<li>R</li>
+<li>real part of χ(R)</li>
+<li>imaginary part of χ(R)</li>
+<li>magnitude of χ(R)</li>
+<li>phase of χ(R)</li>
+<li>back transform window</li>
+</ol>
+<p>For the sake of clarity, we use the letter “q” to represent Fourier
+filtered wavenumber. The χ(q) output file also contains both parts of
+the complex back transform, as well as the magnitude and phase.</p>
+<ol class="arabic simple">
+<li>q</li>
+<li>real part of χ(q)</li>
+<li>imaginary part of χ(q)</li>
+<li>magnitude of χ(q)</li>
+<li>phase of χ(q)</li>
+<li>Fourier transform window</li>
+<li>χ(k) with the k-weighting used in the FT</li>
+</ol>
+<p>In certain situations, it is much more convenient to write column data
+files containing data from many groups. This is done with the help of
+the mark buttons. The data from each of the marked groups can be saved
+in a variety of forms using the <span class="guilabel">Save marked groups</span> submenu,
+as shown below.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-exportmarked"></span><a class="reference external image-reference" href="../_images/export_marked.png"><img alt="../_images/export_marked.png" src="../_images/export_marked.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 8.2 </span><span class="caption-text">Exporting column data files for the set of marked groups.</span></p>
+</div>
+<p>The output file will contain the x-axis value (i.e. energy, k, R, or q)
+in the first column. The remaining columns will contain each of the
+marked data groups, in the order they appear in the group list.</p>
+<p>The final column output option is to export each of the marked groups as
+a single data column file of the sort described above. When you select
+one of the output file types shown below you are prompted to select a
+directory. Each marked group will be exported to a file in that
+directory with a file name formed from the group label.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-exporteach"></span><a class="reference external image-reference" href="../_images/export_each.png"><img alt="../_images/export_each.png" src="../_images/export_each.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 8.3 </span><span class="caption-text">Exporting column data files for each of the marked groups.</span></p>
+</div>
+<p>The standard folder selection dialog is used for exporting each marked
+group. Select a folder and each file will be recorded there.</p>
+<p>The output files discussed on this page have a header of the form
+shown below. The first line identifies the version of
+<font size=-1 color="#033B0A">ATHENA</font> used to write the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># XDI/1.0 Athena/0.9.24</span>
+<span class="c"># Element.edge:                  K</span>
+<span class="c"># Element.symbol:                Fe</span>
+<span class="c"># Column.1:                      energy eV</span>
+<span class="c"># Column.2:                      xmu</span>
+<span class="c"># Column.3:                      bkg</span>
+<span class="c"># Column.4:                      pre_edge</span>
+<span class="c"># Column.5:                      post_edge</span>
+<span class="c"># Column.6:                      der</span>
+<span class="c"># Column.7:                      sec</span>
+<span class="c"># Column.8:                      i0</span>
+<span class="c"># Athena.e0:                     7105.50673</span>
+<span class="c"># Athena.eshift:                 0</span>
+<span class="c"># Athena.rbkg:                   1.0</span>
+<span class="c"># Athena.importance:             1</span>
+<span class="c"># Athena.standard:               None</span>
+<span class="c"># Athena.bkg_kweight:            2</span>
+<span class="c"># Athena.edge_step:              2.8319775</span>
+<span class="c"># Athena.fixed_step:             no</span>
+<span class="c"># Athena.pre_edge_range:         -150.000 -30.000</span>
+<span class="c"># Athena.pre_edge_line:          3.299290 - 0.000471541 * E</span>
+<span class="c"># Athena.normalization_range:    150.000 1757.437</span>
+<span class="c"># Athena.post_edge_polynomial:   33.632797 - 0.00697211 * E + 3.70151752e-07 * E^2 + 0 * E^3</span>
+<span class="c"># Athena.spline_range_energy:    0.000 1857.468</span>
+<span class="c"># Athena.clamps:                 0 24</span>
+<span class="c"># Athena.spline_range_k:         0.000 22.080</span>
+<span class="c"># Athena.kweight:                2</span>
+<span class="c"># Athena.window:                 hanning</span>
+<span class="c"># Athena.phase_correction:       no</span>
+<span class="c"># Athena.k_range:                3.000 20.080</span>
+<span class="c"># Athena.dk:                     1</span>
+<span class="c"># Athena.r_range:                1 3</span>
+<span class="c"># Athena.dr:                     0.0</span>
+<span class="c"># Athena.window:                 hanning</span>
+<span class="c"># Athena.plot_multiplier:        1</span>
+<span class="c"># Athena.y_offset:               0</span>
+<span class="c"># ///</span>
+<span class="c">#------------------------</span>
+<span class="c">#   e         xmu        bkg        pre_edge        post_edge        der        sec        i0</span>
+</pre></div>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Data export</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">8.1. Column output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">8.2. Project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="report.html">8.3. Parameter report files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/output/column.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="project.html" title="8.2. Project files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="8. Data export"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >8. Data export</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

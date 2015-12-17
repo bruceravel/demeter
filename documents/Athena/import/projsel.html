@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.2. Project selection dialog &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="3. Data import" href="index.html" />
+    <link rel="next" title="3.3. Multiple data set import" href="multiple.html" />
+    <link rel="prev" title="3.1. Column selection dialog" href="columns.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="multiple.html" title="3.3. Multiple data set import"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="columns.html" title="3.1. Column selection dialog"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">3. Data import</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="project-selection-dialog">
+<span id="project-selection-sec"></span><h1>3.2. Project selection dialog<a class="headerlink" href="#project-selection-dialog" title="Permalink to this headline">¶</a></h1>
+<p>The project selection dialog is used to importing data from
+<font size=-1 color="#033B0A">ATHENA</font> project files.  <a class="reference external" href="../output/project.html">Project files</a> are <font size=-1 color="#033B0A">ATHENA</font>'s mechanism for
+saving the state of an analysis project. The project selection dialog,
+shown below, provides a way of selectively importing part or all of
+the contents of the project file.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-projsel"></span><a class="reference external image-reference" href="../_images/import_projsel.png"><img alt="../_images/import_projsel.png" src="../_images/import_projsel.png" style="width: 40%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.8 </span><span class="caption-text">The project selection dialog.</span></p>
+</div>
+<p>Project files, like any other files are imported using the file
+selection dialog (<a class="reference internal" href="columns.html#fig-importfiledialog"><span>Fig. 3.1</span></a>). <font size=-1 color="#033B0A">ATHENA</font>
+will recognize a project file and present the project selection dialog.
+Alternately, you can drag one or more project files from your computer's
+file manager and drop them onto the group list.</p>
+<p>The contents of the project file are listed on the left side of the
+dialog. The contents of the <a class="reference external" href="../other/journal.html">journal</a> are
+listed in the box at the top right. When you click on one of the data
+groups in the list on the left, it gets plotted and its title lines are
+inserted into the box at the lower right. Using these parts of the
+dialog, you can examine the contents of your project file before
+importing them into <font size=-1 color="#033B0A">ATHENA</font>.</p>
+<p>By selecting some of the projects from the list, you can import a subset
+of the project file. The group listing uses extended selection:</p>
+<ul>
+<li><p class="first">Click on an item in the list to select one group</p>
+</li>
+<li><dl class="first docutils">
+<dt><kbd class="dark">Control</kbd>-<kbd class="dark">Left</kbd> (i.e. hold down the <kbd class="dark">Control</kbd> key</dt>
+<dd><p class="first last">while clicking the left mouse button) on an item in the list to add
+it to the selection</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><kbd class="dark">Shift</kbd>-<kbd class="dark">click</kbd> to on a group to select all groups between</dt>
+<dd><p class="first last">it and the previously selected group.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The buttons labeled <kbd class="light">Select all</kbd>, and <kbd class="light">Select none</kbd> can be
+used to select all groups or to clear the selection. The
+<kbd class="light">Invert</kbd> button will invert the selection of each group.</p>
+<p>Below those three buttons are a series of controls allowing somewhat
+finer grained control over how items from the group list are selected.
+The <kbd class="light">Select every</kbd> line allows selection by a regular
+pattern.  <kbd class="light">Select matching</kbd> allows you to select groups
+that match a specified pattern using the full strength of perl's
+<a class="reference external" href="../ui/mark.html#using-regular-expressions-to-mark-groups">regular expressions</a>.</p>
+<p>Once you have selected the groups you want to import, click the
+<kbd class="light">Import selected data</kbd> button.  If no groups are selected
+then <em>all</em> the groups will be imported.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3. Data import</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="columns.html">3.1. Column selection dialog</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.2. Project selection dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple.html">3.3. Multiple data set import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ref.html">3.4. Reference channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/import/projsel.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="multiple.html" title="3.3. Multiple data set import"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="columns.html" title="3.1. Column selection dialog"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >3. Data import</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

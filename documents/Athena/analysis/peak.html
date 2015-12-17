@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.3. Peak fitting &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="next" title="10.4. Log-ratio/phase-difference analysis" href="lr.html" />
+    <link rel="prev" title="10.2. Principle components analysis" href="pca.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pca.html" title="10.2. Principle components analysis"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="peak-fitting">
+<span id="peak-sec"></span><h1>10.3. Peak fitting<a class="headerlink" href="#peak-fitting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="interpreting-data-as-a-sum-of-line-shapes">
+<h2>10.3.1. Interpreting data as a sum of line shapes<a class="headerlink" href="#interpreting-data-as-a-sum-of-line-shapes" title="Permalink to this headline">¶</a></h2>
+<p>Peak fitting involves fitting a number of analytical line shapes to
+XANES data. The typical approach is to simulate the XANES data using
+one or two step-like functions and several peak functions for the
+peaks in the data. The centroids, amplitudes, and widths of the
+various line shapes are either fixed or varied to best fit the
+data. In <font size=-1 color="#033B0A">ATHENA</font>'s implementation of peak fitting, a
+Levenberg-Marquardt non-linear least-squares minimization is used. (To
+be specific, <font size=-1 color="#033B0A">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">minimize</span></code> command is used after
+constructing an array with a sum of line shapes or <font size=-1 color="#033B0A">LARCH</font>'s
+<code class="docutils literal"><span class="pre">minimize</span></code> function is using an objective function which contructs
+an array with a sum of the line shapes.)</p>
+<p>Peak fitting is an inherently empirical analysis technique. By
+themselves, the line shapes used have little physical meaning. The
+utility of peak fitting is in quantifying the variation of certain
+spectral features in a sequence of data. As an example, consider the
+small peak that appears just before the main rising part of the edge in
+the perovskite PbTiO<sub>3</sub>. In the plot below, this is the peak
+around 4967 eV. This peak varies as a function of temperature as you
+approach then exceed the crystallographic phase transition. The size of
+the peak can be related to the amount of displacement of the Ti atom
+from the near-by postition of centrosymmetry. Peak fitting is a useful
+tool in this temperature-dependent study as it can quantify the
+relationship between a spectral feature and an extrinsic parameter.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-peak"></span><a class="reference external image-reference" href="../_images/peak.png"><img alt="../_images/peak.png" src="../_images/peak.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.11 </span><span class="caption-text">The peak fitting tool.</span></p>
+</div>
+<p>The screenshot above shows the peak fitting tool. The available line
+shapes when useing <font size=-1 color="#033B0A">IFEFFIT</font> include</p>
+<ul class="simple">
+<li>arc tangent (step-like)</li>
+<li>error function (step-like)</li>
+<li>Gaussian (peak)</li>
+<li>Lorentzian (peak)</li>
+<li>pseudo-Voigt (peak)</li>
+</ul>
+<p><font size=-1 color="#033B0A">LARCH</font> adds one step-like function and several peak functions:</p>
+<ul class="simple">
+<li>logistic (step-like)</li>
+<li>Voigt (step-like)</li>
+<li>Pearson7 (peak)</li>
+<li>Student's T (peak)</li>
+</ul>
+<p>An obviously useful function are not available in the current version of
+<font size=-1 color="#033B0A">ATHENA</font> is a broadened Cromer-Lieberman calculation of the bare atomic
+edge step (which might better approximate the shape of the XANES data).</p>
+<p>Each line shape has an independent centroid, amplitude, and width. A few
+line shapes have a fourth parameter. For instance, the pseudo-Voigt
+function has a parameter for mixing Gaussian and Lorentzian content. By
+default, the centroids are fixed and the other parameters are varied in
+the fit.</p>
+<p>The peak shapes are unit normalized. This means that the amplitude
+<strong>is</strong> the area under the peak.</p>
+<p>Here is the result of a fit to the PbTiO<sub>3</sub> after slightly
+tweaking the centroids of the three lineshapes from the values shown
+above.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-peakfit"></span><a class="reference external image-reference" href="../_images/peak_fit.png"><img alt="../_images/peak_fit.png" src="../_images/peak_fit.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.12 </span><span class="caption-text">Fit to PbTiO<sub>3</sub> data measured at room temperature using an
+arc-tangent, a Lorentzian, and a Gaussian.</span></p>
+</div>
+</div>
+<div class="section" id="fitting-a-single-data-group">
+<h2>10.3.2. Fitting a single data group<a class="headerlink" href="#fitting-a-single-data-group" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id3">
+<span id="fig-peakselect"></span><a class="reference external image-reference" href="../_images/peak_select.png"><img alt="../_images/peak_select.png" src="../_images/peak_select.png" style="width: 30%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.13 </span><span class="caption-text">Choosing the lineshape to add to the model.</span></p>
+</div>
+<p>Line shapes are added to the fitting model by clicking the buttons
+labeled <kbd class="light">Add step</kbd> or <kbd class="light">Add peak</kbd>. The functional
+form of the lineshape is chosen by selection from the menu to the left
+of those buttons.</p>
+<p>Clicking one of the <span class="guilabel">Add</span> buttons inserts a field for that
+lineshape in the area below the buttons. In the screenshot above,
+three lineshapes have been added: one arc-tangent to model the main
+edge step, a pseudo-Voigt function to model the first pre-edge peak,
+and a Gaussian to model the second pre-edge peak.</p>
+<p><font size=-1 color="#033B0A">ATHENA</font> cannot know what feature in the data each line shape
+is intended to model. You <strong>must</strong> select the centroid of each line
+shape. This can be done by typing an energy value into the box labeled
+either <span class="guilabel">Center</span> or E<sub>0</sub>. Alternately, you can use the
+pluck button to take the energy value from the plot using the mouse.</p>
+<p>When the pluck button is used, <font size=-1 color="#033B0A">ATHENA</font> will make a guess for the initial
+value of the height of the lineshape. This is the value of the data at
+the position plucked for the centroid. The initial guess for the width
+of the line shape is 0.5 eV for peak shapes and the core-hole lifetime
+in eV units for the absorbing element of the data being fitted.</p>
+<p>Which parameters are fixed and which are varied are controlled by the
+check buttons labeled <span class="guilabel">Fix</span> next to each parameter value. By
+default, the centroid is fixed and the other two (or three) parameters
+are floated in the fit. In my experience, the fits are fairly unstable
+when the centroids are varied, particularly with peak functions placed
+close together. I typically leave the centroid values fixed, adjusting
+them by hand and rerunning the fits if necessary.</p>
+<p>The <kbd class="light">Reset</kbd> button (which becomes enabled only after a fit
+is performed) is used to restore parameters for each lineshape to
+their default values. This is handy if a fit results in strange values
+due to some numerical instability of the fitting model, which might
+happen, for example, if centroids are floated.</p>
+<p>If you wish to try a different lineshape at the same energy position,
+you can click on the <span class="guilabel">change function</span> hot text to post a menu
+of other choices for line shape.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-peakchange"></span><a class="reference external image-reference" href="../_images/peak_change.png"><img alt="../_images/peak_change.png" src="../_images/peak_change.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.14 </span><span class="caption-text">The peak fitting results tab.</span></p>
+</div>
+<p>With <font size=-1 color="#033B0A">IFEFFIT</font>, there are only two step-like shapes. So for
+changing the shape of a step-like function, the hot text simply
+toggles between the two.</p>
+<p>Once you have set all the parameters of the fitting model, the fit is
+performed by clicking the <kbd class="light">Fit</kbd> button in the
+<span class="guilabel">Actions</span> section at the top of the page. Alternately, you
+can examine the current state of the model without running the fit by
+clicking the <kbd class="light">Plot sum</kbd> button.</p>
+</div>
+<div class="section" id="the-fit-results-tab">
+<h2>10.3.3. The fit results tab<a class="headerlink" href="#the-fit-results-tab" title="Permalink to this headline">¶</a></h2>
+<p>After a fit finishes, the remaining buttons in the <span class="guilabel">Actions</span>
+section are enabled and the text box on the results tab is filled in
+with the outcome of the fit.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-peakresults"></span><a class="reference external image-reference" href="../_images/peak_results.png"><img alt="../_images/peak_results.png" src="../_images/peak_results.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.15 </span><span class="caption-text">The peak fitting results tab.</span></p>
+</div>
+<p>The <kbd class="light">Plot data and fit</kbd> button at the bottom of the results
+tab makes the same plot as the <kbd class="light">Plot sum</kbd> button on the
+main tab. The plot can be modified to include traces for each
+individual line shape and for the residual of the fit by toggling the
+checkbuttons above the note tabs.</p>
+<p>The result of the fit can be saved to a column data file by clicking
+that button at the bottom of the results tab. (The same thing happens
+with the <kbd class="light">Save fit</kbd> button on the main tab.) The output
+file contains the fit results in the header and has columns of</p>
+<ol class="arabic simple">
+<li>energy</li>
+<li>the data</li>
+<li>the fit</li>
+<li>the residual</li>
+<li>one column for each component</li>
+</ol>
+</div>
+<div class="section" id="fitting-multiple-groups-and-the-sequence-tab">
+<h2>10.3.4. Fitting multiple groups and the sequence tab<a class="headerlink" href="#fitting-multiple-groups-and-the-sequence-tab" title="Permalink to this headline">¶</a></h2>
+<p>Once you have found a fitting model that works for a representative
+data set, <font size=-1 color="#033B0A">ATHENA</font> offers soem automation for examining an
+ensemble of data.  The button on the main tab labeled <kbd class="light">Fit
+marked</kbd> will apply the current fitting model to every marked
+group in the data list in sequence. For example, in the case of the
+temperature dependent PbTiO<sub>3</sub> data measured at the Ti K edge,
+we see the first pre-edge peak reduces in size in the measured data as
+the temperature rises. Consequently, we would expect to see measured
+height of that peak get smaller with temperature.</p>
+<p>The results of the sequence of fits using the fitting model are shown
+in the <span class="guilabel">Sequence</span> tab. You can have each fit plotted during
+the sequence by setting the <font color="#636A24">♦Peakfit→plot _during</font>
+parameter.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-peaksequence"></span><a class="reference external image-reference" href="../_images/peak_sequence.png"><img alt="../_images/peak_sequence.png" src="../_images/peak_sequence.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.16 </span><span class="caption-text">The peak fitting sequence tab.</span></p>
+</div>
+<p>The table at the top shows the R-factor and reduced χ<sup>2</sup>
+for each fit in the sequence. Selecting a row of this table by
+clicking on it will display the detailed results from that fit in the
+text box and will plot the result of that fit.</p>
+<p><font size=-1 color="#033B0A">ATHENA</font> provides a couple of ways of examining the results of the fit
+sequence. The list of parameters that were varied in the fit are loaded
+into the menu just below the text box. Selecting a parameter then
+clicking on the adjacent plot button will show the evolution of that
+parameter over the ensemble of data.</p>
+<p>Here we see the example of the height of the pseudo-Voigt line shape as
+a function of temperature. As expected, the value trends downward.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-peakheight"></span><a class="reference external image-reference" href="../_images/peak_height.png"><img alt="../_images/peak_height.png" src="../_images/peak_height.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.17 </span><span class="caption-text">The results for peak height for the feature 4967 eV as measured over
+the entire data ensemble.</span></p>
+</div>
+<p>Finally, the results of the fitting sequence can be exported to a
+spreadsheet file for easy viewing and manipulation in a spreadsheet
+program, such as Excel, LibreOffice Calc, or Google Docs. This
+spreadsheet contains the statistics for each fit along with all the
+parameter values and their uncertainties.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-peakexcel"></span><a class="reference external image-reference" href="../_images/peak_excel.png"><img alt="../_images/peak_excel.png" src="../_images/peak_excel.png" style="width: 75%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.18 </span><span class="caption-text">The results for of a fit sequence exported as a spreadsheet.</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis in ATHENA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lcf.html">10.1. Linear combination fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">10.3. Peak fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lr.html">10.4. Log-ratio/phase-difference analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff.html">10.5. Difference spectra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/analysis/peak.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pca.html" title="10.2. Principle components analysis"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

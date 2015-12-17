@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.4. Reference channel &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="3. Data import" href="index.html" />
+    <link rel="next" title="3.5. Preprocessing data" href="preproc.html" />
+    <link rel="prev" title="3.3. Multiple data set import" href="multiple.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="preproc.html" title="3.5. Preprocessing data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="multiple.html" title="3.3. Multiple data set import"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">3. Data import</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="reference-channel">
+<span id="reference-sec"></span><h1>3.4. Reference channel<a class="headerlink" href="#reference-channel" title="Permalink to this headline">¶</a></h1>
+<p>A reference spectrum is used by <font size=-1 color="#033B0A">ATHENA</font> as a data alignment
+standard.  It is common to place a third ionization chamber in line
+after the transmission chamber and to place good transmission standard
+between the two. The point of measuring the standard is that it is
+measured in parallel with your real sample. This standard can then be
+used to align the actual data using the <a class="reference external" href="../process/align.html">data alignment tool</a>.</p>
+<p>The standard often is a zero-valent foil, but the most important thing
+is that it is an excellent standard which will yield consistently
+high-quality data. The other most important thing is that you always use
+the same sample as your reference standard for ever experiment you make
+at a particular edge. To this end, it is wise to make a library of
+standards and carry them with you to the synchrotron. By using the same
+standard for every experiment at an edge, you can align any data, even
+data measured years apart at different synchrotrons.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-importref"></span><a class="reference external image-reference" href="../_images/import_ref.png"><img alt="../_images/import_ref.png" src="../_images/import_ref.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.11 </span><span class="caption-text">Importing a reference channel with the column selection dialog.</span></p>
+</div>
+<p>The reference channel selection works almost the same as column
+selection for the data except that you don't need to specify the energy
+column again -- the same column is used. When a reference channel after
+the transmission channel is used, you should use the transmission
+channel as the numerator and the reference channel as the denominator.
+Another common solution to measuring a reference channel is measure
+elastically scattered radiation through the standard with a PIN diode.
+In that case, I0 is the numerator and the diode is the denominator.</p>
+<p>You can plot the reference channel to make sure that you have selected
+the correct channels with the <span class="guilabel">Plot reference</span> check
+button. If your reference standard is of an element with a nearby edge
+energy, uncheck the button labeled <span class="guilabel">Same element</span>. If you use
+some other kind of reference measurement that is not a transmission
+measurement, you can uncheck the <span class="guilabel">Natural log</span> button.</p>
+<p>When you click the <kbd class="light">OK</kbd> button, the data are imported and
+inserted into the group list. The reference channel is placed in the
+group list below its data. The reference channel is just like any
+other group, with one distinction. The data and its reference channel
+are <em>tied</em> together in the sense that the values for their
+<tt><font color="#387A38">«energy shift»</font></tt> parameters will always be the same.</p>
+<p>This relationship is shown visually by the change in color of the text
+in the box for <tt><font color="#387A38">«energy shift»</font></tt>, as seen in this screenshot.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-refimported"></span><a class="reference external image-reference" href="../_images/import_refimported.png"><img alt="../_images/import_refimported.png" src="../_images/import_refimported.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.12 </span><span class="caption-text">Data imported with a reference channel.</span></p>
+</div>
+<p>When you change the value of <tt><font color="#387A38">«energy shift»</font></tt> for the
+reference, the value of <tt><font color="#387A38">«energy shift»</font></tt> for the data changes
+as well. (And vice versa!) This feature of reference channels is put
+to good use <a class="reference external" href="../process/align.html">in data alignment</a>.</p>
+<p>Occasionally, it is useful to tie two data groups together in this
+way.  This can be done by marking the two groups you want to tie
+together as data and reference, then selecting <span class="menuselection">Group
+‣ Tie reference channel</span>.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last"><font size=-1 color="#033B0A">ATHENA</font> is missing the ability to tie together
+three or more data groups in a reference relationship -- that would
+be useful for multi-element detector data and some other
+situations.</p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3. Data import</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="columns.html">3.1. Column selection dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projsel.html">3.2. Project selection dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple.html">3.3. Multiple data set import</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.4. Reference channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/import/ref.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="preproc.html" title="3.5. Preprocessing data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="multiple.html" title="3.3. Multiple data set import"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >3. Data import</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

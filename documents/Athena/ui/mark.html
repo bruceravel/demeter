@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.2. Marking groups &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="6. ATHENA&#39;s User Interface" href="index.html" />
+    <link rel="next" title="6.3. Pluck buttons" href="pluck.html" />
+    <link rel="prev" title="6.1. Using the group list" href="glist.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pluck.html" title="6.3. Pluck buttons"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="glist.html" title="6.1. Using the group list"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">6. ATHENA's User Interface</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="marking-groups">
+<h1>6.2. Marking groups<a class="headerlink" href="#marking-groups" title="Permalink to this headline">¶</a></h1>
+<p>As data are imported in <font size=-1 color="#033B0A">ATHENA</font>, they are listed in the Data groups list.
+Each entry in the list includes the name of the data set, the text of
+which acts something like a hyperlink in that clicking on that text will
+insert the analysis parameters for that group into the main window. Each
+entry also has a little check button which is used for <em>marking</em> the
+group. Much of <font size=-1 color="#033B0A">ATHENA</font>'s functionality revolves around marked groups. For
+example, the marked groups are the ones plotted when a purple plotting
+button is pressed, merging is done on the set of marked groups and, many
+of the data processing and data analysis chores use the marked groups.</p>
+<p><font size=-1 color="#033B0A">ATHENA</font> offers a number of simple tools for marking or
+unmarking groups.  These are found in the <span class="guilabel">Mark</span> menu, as
+shown below, and also have keyboard bindings. <kbd class="dark">Alt</kbd>-<kbd class="dark">a</kbd>
+marks all groups, <kbd class="dark">Alt</kbd>-<kbd class="dark">u</kbd> unmarks all groups, and
+<kbd class="dark">Alt</kbd>-<kbd class="dark">i</kbd> inverts the markings such that the marked groups
+become unmarked and the unmarked ones become marked. The three buttons
+above the group list also serve to make all, mark none, and invert the
+marks.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-mark"></span><a class="reference external image-reference" href="../_images/ui_mark.png"><img alt="../_images/ui_mark.png" src="../_images/ui_mark.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.7 </span><span class="caption-text">The group marking options are found in the <span class="guilabel">Mark</span>
+menu. Making all groups, removing all marks, or inverting all marks
+can be done using the mark buttons at the top of the group list.</span></p>
+</div>
+<div class="section" id="using-regular-expressions-to-mark-groups">
+<h2>6.2.1. Using regular expressions to mark groups<a class="headerlink" href="#using-regular-expressions-to-mark-groups" title="Permalink to this headline">¶</a></h2>
+<p><img alt="lightning!" src="../_static/lightning.png" align="left" hspace="5"></a> There is one more tool which is considerably more
+powerful and flexible.  In the <span class="guilabel">Mark</span> menu, this last
+marking tool it is called <em>Mark regex</em> and it is bound to
+<kbd class="dark">Alt</kbd>-<kbd class="dark">r</kbd>.</p>
+<p>So, what does <em>regex</em> mean?</p>
+<p>Regex is short for <em>regular expression</em>, which is a somewhat formal
+way of saying “pattern matching”. When you “mark
+regex”, you will be prompted for a string in the echo area at the
+bottom of the <font size=-1 color="#033B0A">ATHENA</font> window. This prompt is exactly like
+the one used <a class="reference external" href="glist.html#reorganizing-the-group-list">to rename groups</a>. This string is compared to
+the names of all the groups in the Data groups list. Those which match
+the string become marked and those which fail to match become
+unmarked. Let me give you some examples. In a project file containing
+various vanadium standards, the Data groups list includes</p>
+<div class="figure align-center" id="id2">
+<span id="fig-vstan"></span><a class="reference external image-reference" href="../_images/ui_vstan.png"><img alt="../_images/ui_vstan.png" src="../_images/ui_vstan.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.8 </span><span class="caption-text">A project with several vanadium standards imported. The regular
+expression shown matches all strings with the number “1” at the end.
+Thus all groups with the “.1” extension will be marked.</span></p>
+</div>
+<p>These represent the various oxidation states of vanadium. The last item
+is an unknown sample which can be interpreted as a linear combination of
+the other five samples. There are two scans of each sample, as indicated
+by the <code class="docutils literal"><span class="pre">.1</span></code> and <code class="docutils literal"><span class="pre">.2</span></code>.</p>
+<p>To make plots of arbitrary combinations of spectra, you can click the
+appropriate mark buttons on and off. Using regular expression marking
+is quicker and easier. I'll start with a couple simple examples. If
+you want to mark only the vanadium foil spectra, hit
+<kbd class="dark">Alt</kbd>-<kbd class="dark">r</kbd> and then enter foil. To mark the V2O3 and V2O5,
+but none of the others, hit <kbd class="dark">Alt</kbd>-<kbd class="dark">r</kbd> and enter V2.</p>
+<p>In fact, you get to use the entire power of perl's regular expression
+language (see <a class="reference external" href="http://search.cpan.org/dist/perl/pod/perlre.pod">the regular expression documentation at
+CPAN</a> for all the
+details). This means you can use <em>metacharacters</em> -- symbols which
+represent conceptual aspects of strings. Here are a few examples:</p>
+<ul class="simple">
+<li>To mark only the V2O3 and VO2 data: <code class="regexp docutils literal"><span class="pre">O[23]</span></code>. That tells
+<font size=-1 color="#033B0A">ATHENA</font> to mark the groups whose names have the letter O
+followed by either 2 or 3.</li>
+<li>To mark only the first scans of each sample: <code class="regexp docutils literal"><span class="pre">1$</span></code>. The
+<code class="regexp docutils literal"><span class="pre">$</span></code> metacharacter represents the end of a word, thus this
+regular expression matches all groups whose name ends in the
+number 1.</li>
+<li>To mark only the foil and unknown data: <code class="regexp docutils literal"><span class="pre">foil|unknown</span></code>. The
+<code class="regexp docutils literal"><span class="pre">|</span></code> metacharacter means “or”, so this regular
+expression matches the groups with foil or unknown in the
+name. Actually this regular expression could have been much shorter,
+both <code class="regexp docutils literal"><span class="pre">[fu]</span></code> and <code class="regexp docutils literal"><span class="pre">f|u</span></code> would have worked in this case,
+given this set of group names.</li>
+</ul>
+<p>Regular expressions are a large and fascinating topic of study, but
+beyond the scope of this document. Try
+Wikipedia's <a class="reference external" href="http://en.wikipedia.org/wiki/Regular_expression">excellent article on regular
+expressions</a> for
+more information. <a class="reference external" href="http://www.oreilly.com/catalog/regex3/">Mastering Regular
+Expressions</a> by Jeffrey
+Freidl is a superb book on the subject.</p>
+<p>Any regular expression that works in perl will work for marking groups
+in <font size=-1 color="#033B0A">ATHENA</font>. If you enter an invalid regular expression,
+<font size=-1 color="#033B0A">ATHENA</font> will tell you. Regular expression marking is a
+wonderful tool, especially for projects containing very many data
+sets.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">The regular expression is sent exactly as entered to
+perl's regular expression engine. You thus have the
+<strong>full</strong> power of perl's regular expression engine.  If
+you know what <code class="regexp docutils literal"><span class="pre">(?{</span> <span class="pre">code</span> <span class="pre">})</span></code> means and do
+something ill-advised with it, you'll get no sympathy
+from me!</p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">6. ATHENA's User Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glist.html">6.1. Using the group list</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">6.2. Marking groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluck.html">6.3. Pluck buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="styles.html">6.4. Plot styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kweight.html">6.5. k-weights in plots and Fourier transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frozen.html">6.6. Frozen groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/ui/mark.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pluck.html" title="6.3. Pluck buttons"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="glist.html" title="6.1. Using the group list"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >6. ATHENA's User Interface</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

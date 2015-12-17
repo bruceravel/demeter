@@ -1,0 +1,80 @@
+/**
+ * KEYS.css
+ *
+ * A simple stylesheet for rendering beautiful keyboard-style elements.
+ *
+ * Author:  Michael Hüneburg
+ * Website: http://michaelhue.com/keyscss
+ * License: MIT License (see LICENSE.txt)
+ */
+
+/* Base style, essential for every key. */
+kbd, .key {
+	display: inline;
+	display: inline-block;
+	min-width: 1em;
+	padding: .2em .3em;
+	font: normal .85em/1 "Lucida Grande", Lucida, Arial, sans-serif;
+	text-align: center;
+	text-decoration: none;
+	-moz-border-radius: .3em;
+	-webkit-border-radius: .3em;
+	border-radius: .3em;
+	border: none;
+	cursor: default;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+kbd[title], .key[title] {
+	cursor: help;
+}
+
+/* I added 20 to all the dark numbers to make it a little less dark (BR) */
+/* Dark style for display on light background. This is the default style. */
+kbd, kbd.dark, .dark-keys kbd, .key, .key.dark, .dark-keys .key {
+	background: rgb(100, 100, 100);
+	background: -moz-linear-gradient(top, rgb(80, 80, 80), rgb(100, 100, 100));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(80, 80, 80)), to(rgb(100, 100, 100)));
+	color: rgb(250, 250, 250);
+	text-shadow: -1px -1px 0 rgb(90, 90, 90);
+	-moz-box-shadow: inset 0 0 1px rgb(170, 170, 170), inset 0 -.05em .4em rgb(100, 100, 100), 0 .1em 0 rgb(50, 50, 50), 0 .1em .1em rgba(0, 0, 0, .3);
+	-webkit-box-shadow: inset 0 0 1px rgb(170, 170, 170), inset 0 -.05em .4em rgb(100, 100, 100), 0 .1em 0 rgb(50, 50, 50), 0 .1em .1em rgba(0, 0, 0, .3);
+	box-shadow: inset 0 0 1px rgb(170, 170, 170), inset 0 -.05em .4em rgb(100, 100, 100), 0 .1em 0 rgb(50, 50, 50), 0 .1em .1em rgba(0, 0, 0, .3);
+}
+
+/* Light style for display on dark background. */
+kbd.light, .light-keys kbd, .key.light, .light-keys .key {
+	background: rgb(250, 250, 250);
+	background: -moz-linear-gradient(top, rgb(210, 210, 210), rgb(255, 255, 255));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(210, 210, 210)), to(rgb(255, 255, 255)));
+	color:  rgb(50, 50, 50);
+	text-shadow: 0 0 2px rgb(255, 255, 255);
+	-moz-box-shadow: inset 0 0 1px rgb(255, 255, 255), inset 0 0 .4em rgb(200, 200, 200), 0 .1em 0 rgb(130, 130, 130), 0 .11em 0 rgba(0, 0, 0, .4), 0 .1em .11em rgba(0, 0, 0, .9);
+	-webkit-box-shadow: inset 0 0 1px rgb(255, 255, 255), inset 0 0 .4em rgb(200, 200, 200), 0 .1em 0 rgb(130, 130, 130), 0 .11em 0 rgba(0, 0, 0, .4), 0 .1em .11em rgba(0, 0, 0, .9);
+	box-shadow: inset 0 0 1px rgb(255, 255, 255), inset 0 0 .4em rgb(200, 200, 200), 0 .1em 0 rgb(130, 130, 130), 0 .11em 0 rgba(0, 0, 0, .4), 0 .1em .11em rgba(0, 0, 0, .9);
+}
+
+/* purple and orange styles added for demeter document */
+
+kbd, kbd.purple, .purple-keys kbd, .key, .key.purple, .purple-keys .key {
+	background: rgb(163, 113, 250);
+	background: -moz-linear-gradient(top, rgb(137, 123, 250), rgb(163, 113, 250));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(137, 123, 250)), to(rgb(163, 113, 250)));
+	color: rgb(250, 250, 250);
+	text-shadow: -1px -1px 0 rgb(139, 133, 250);
+	-moz-box-shadow: inset 0 0 1px rgb(87, 50, 250), inset 0 -.05em .4em rgb(163, 113, 250), 0 .1em 0 rgb(186, 156, 250), 0 .1em .1em rgba(0, 0, 0, .3);
+	-webkit-box-shadow: inset 0 0 1px rgb(87, 50, 250), inset 0 -.05em .4em rgb(163, 113, 250), 0 .1em 0 rgb(186, 156, 250), 0 .1em .1em rgba(0, 0, 0, .3);
+	box-shadow: inset 0 0 1px rgb(87, 50, 250), inset 0 -.05em .4em rgb(163, 113, 250), 0 .1em 0 rgb(186, 156, 250), 0 .1em .1em rgba(0, 0, 0, .3);
+}
+
+kbd, kbd.orange, .orange-keys kbd, .key, .key.orange, .orange-keys .key {
+	background: rgb(252, 221, 159);
+	background: -moz-linear-gradient(top, rgb(252, 227, 182), rgb(252, 221, 159));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(252, 227, 182)), to(rgb(252, 221, 159)));
+	color: rgb(50, 50, 50);
+	text-shadow: -1px -1px 0 rgb(252, 185, 129);
+	-moz-box-shadow: inset 0 0 1px rgb(252, 153, 91), inset 0 -.05em .4em rgb(252, 221, 159), 0 .1em 0 rgb(252, 173, 53), 0 .1em .1em rgba(0, 0, 0, .3);
+	-webkit-box-shadow: inset 0 0 1px rgb(252, 153, 91), inset 0 -.05em .4em rgb(252, 221, 159), 0 .1em 0 rgb(252, 173, 53), 0 .1em .1em rgba(0, 0, 0, .3);
+	box-shadow: inset 0 0 1px rgb(252, 153, 91), inset 0 -.05em .4em rgb(252, 221, 159), 0 .1em 0 rgb(252, 173, 53), 0 .1em .1em rgba(0, 0, 0, .3);
+}

@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.2. Linear combination analysis &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="12. Worked examples" href="index.html" />
+    <link rel="next" title="13. Hephaestus" href="../hephaestus.html" />
+    <link rel="prev" title="12.1. Basic data processing" href="data.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../hephaestus.html" title="13. Hephaestus"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="data.html" title="12.1. Basic data processing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">12. Worked examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="linear-combination-analysis">
+<h1>12.2. Linear combination analysis<a class="headerlink" href="#linear-combination-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-xanes-data-and-lcf-to-study-system-kinetics">
+<h2>12.2.1. Using XANES data and LCF to study system kinetics<a class="headerlink" href="#using-xanes-data-and-lcf-to-study-system-kinetics" title="Permalink to this headline">¶</a></h2>
+<p>This section outlines the linear combination fitting analysis of an
+experiment to study the kinetics of the reduction of aqueous
+Au<sup>3+</sup> chloride to metallic gold. The experiment is described and
+these data are presented in</p>
+<blockquote>
+<div><ul class="simple" id="bibtex-bibliography-examples/aucl-0">
+<li>Maggy&nbsp;F. Lengke, Bruce Ravel, Michael&nbsp;E. Fleet, Gregory Wanger, Robert&nbsp;A. Gordon, and Gordon Southam. Mechanisms of gold bioaccumulation by filamentous cyanobacteria from gold(iii)−chloride complex. <em>Environmental Science &amp; Technology</em>, 40(20):6304–6309, 2006. <a class="reference external" href="http://dx.doi.org/10.1021/es061040r">doi:10.1021/es061040r</a>.</li>
+</ul>
+</div></blockquote>
+<p>The experiment probed the mechanism of bioaccumulation of gold by the
+interaction of a model cyanobacterium (Plectonema boryanum UTEX 485)
+with aqueous Au<sup>3+</sup> chloride. This resembles a common subsurface
+environment associated with gold deposits in various locations around
+the world. In those environments, Au<sup>3+</sup> chloride bearing fluids
+rise from the deep subsurface and wash over bacterial mats. The bacteria
+die but their remains interact chemically, reducing metallic gold from
+the fluid.</p>
+<p>In our experiment, a culture of P. boryanum was sampled and placed in a
+Teflon fluid cell appropriate for an XAS measurement. An aliquot of
+Au<sup>3+</sup> chloride solution was titrated into the fluid cell and we
+exited the hutch as quickly as possible. Overnight, we measured XAS
+scans continuously. In the morning we set the sample aside, remeasuring
+it every few hours until the end of the experiment. Finally we measured
+a similar sample that had been prepared a week earlier. in this way, we
+had a time sequence tracking the nearly complete reduction of
+Au<sup>3+</sup> chloride to some form of colloidal gold. (The gold is
+known to be colloidal from TEM measurements, we could not distinguish
+colloidal and bulk gold in our XAS measurements.)</p>
+<p>A project file conatining all the data shown here can be found at <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/Au%2BCyanobacteria">my
+Github
+site</a>.</p>
+</div>
+<div class="section" id="examining-the-data">
+<h2>12.2.2. Examining the data<a class="headerlink" href="#examining-the-data" title="Permalink to this headline">¶</a></h2>
+<p>Import the <font size=-1 color="#033B0A">ATHENA</font> project file containing the gold standards and
+gold/cyanobacteria data. You will see that it contains a subset of the
+reduction sequence, including data data from 0.12 hours through 1 week.
+Below the cyanobacteria data are several gold standards.</p>
+<p>Note that these data have all been carefully calibrated, aligned, and
+merged. Each measurement was made using a gold foil as an <a class="reference external" href="../import/ref.html">alignment
+reference</a>.</p>
+<p>The figure below shows the sequence of data measured on the
+cyanobacteria on the left and a variety of gold standards on the right.
+The plot on the left also shows the starting material, aqueous
+Au<sup>3+</sup> chloride, and the end product, metallic gold. The data
+clearly show the transformation over time between these two end members.
+In particular, note the reduction of the white line intensity at about
+11921.5 eV and the growth of the peak at about 11946.7 eV which is
+characteristic of the metallic gold spectrum.</p>
+<div class="figure compound align-center" id="_fig-aucllcf">
+<div style="width: 45%" class="subfigure" id="id1">
+<span id="fig-aucldata"></span><a class="reference external image-reference" href="../_images/ex_aucl_data.png"><img alt="../_images/ex_aucl_data.png" src="../_images/ex_aucl_data.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.14 </span><span class="caption-text">The sequence of measurements from 0.12 through 720 hours. The
+top-most trace shows the starting material, aqueous Au<sup>3+</sup>
+chloride. The bottom trace shows the end product, metallic gold.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id2">
+<span id="fig-auclstandards"></span><a class="reference external image-reference" href="../_images/ex_aucl_standards.png"><img alt="../_images/ex_aucl_standards.png" src="../_images/ex_aucl_standards.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.15 </span><span class="caption-text">All of the standards contained in the project file.</span></p>
+</div>
+</div><p id="_fig-aucllcf">The purpose of this experiment is two-fold. One goal is to determine the
+reaction kinetics of the reduction. To that end, we will assume that the
+data are a linear combination of aqueous Au<sup>3+</sup> chloride and
+metallic gold and measure their relative fractions as a function of
+time. The second goal is to determine whether the reduction involves an
+intermediate state and, if so, to identify that species. Our strategy to
+answer that question will involve adding other standard compound to our
+mixture of aqueous Au<sup>3+</sup> chloride and metallic gold to see if
+the data are better described by a ternary rather than binary mixture of
+standard materials.</p>
+<p>To begin, select one of the time points in the group list. Most
+figures in this section show the data measured at 7.03 hours. Next,
+select <span class="guilabel">Linear combination fit</span> from the main menu. This
+replaces the main window with the linear combination fitting tool and
+plots the data along with vertical lines indicating the extent of the
+fitting range. From the first two drop-down menus, select
+<span class="guilabel">Au foil</span> and <span class="guilabel">Au3 Cl aq</span>, as shown below.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-lcfagain"></span><a class="reference external image-reference" href="../_images/lcf.png"><img alt="../_images/lcf1.png" src="../_images/lcf1.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.16 </span><span class="caption-text">The linear combination fitting tool with the end member standard
+compounds selected for the initial fit.</span></p>
+</div>
+<p>In the operations list, click on <kbd class="light">Fit this group</kbd> to perform
+the initial fit to these data. After the fit finishes, the result of
+the fit, shown below is plotted. The tab labeled <span class="guilabel">Fit results</span>
+becomes active. Clicking on it, we see that the fit tells us that the
+data are 51±1 percent metallic gold. Given the quality of the fit, it
+seems that we are well justified in our assumption that these data can
+be modeled by a simple linear combination of the end members.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-auclinit"></span><a class="reference external image-reference" href="../_images/ex_aucl_init.png"><img alt="../_images/ex_aucl_init.png" src="../_images/ex_aucl_init.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.17 </span><span class="caption-text">The result of the initial fit to the 7.03 hour data using the end
+members as the fitting standards.</span></p>
+</div>
+</div>
+<div class="section" id="improving-the-fit">
+<h2>12.2.3. Improving the fit<a class="headerlink" href="#improving-the-fit" title="Permalink to this headline">¶</a></h2>
+<p>As nice as this quick and easy result is, it's not perfect. A close
+examination of the plot above shows quite a bit of misfit throughout
+the entire fitting range. (Note that you can examine the misfit by
+clicking the <kbd class="light">Plot difference</kbd> button and replotting the data
+by clicking <kbd class="light">Plot data + sum</kbd> in the operations list.) This
+misfit suggests that our hypothesis of an intermediate state between
+Au<sup>3+</sup> chloride and metallic gold may be valid.</p>
+<p>As a first guess for what that intermediate state might be, I think
+should be something without a strong white line. The fit in the region
+of the white line is pretty good. Looking at the various standards on
+the right side of the first figure on this page I suspect that the
+sulfur ligated species, Au sulfide, Au thiosulfate, or Au thiomalate,
+are likely candidates. To test one, we need to add it to the list of
+fitting standards on the <span class="guilabel">Standards spectra</span> tab and rerun the
+fit. In the third row, select <span class="guilabel">Au sulfide</span> from the drop-down
+menu, then click <kbd class="light">Fit this group</kbd> from the operations list.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-auclplussulfide"></span><a class="reference external image-reference" href="../_images/ex_aucl_plussulfide.png"><img alt="../_images/ex_aucl_plussulfide.png" src="../_images/ex_aucl_plussulfide.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.18 </span><span class="caption-text">The result of the fit to the 7.03 hour data using the end members along
+with gold sulfide.</span></p>
+</div>
+<p>This is a noticeably better fit. The amount of misfit throughout the
+fitting range and especially in the peak at about 11946.7 eV is smaller.
+Examining the results tab, we see that the amount of Au<sup>3+</sup>
+chloride is about the same as before but that the metallic gold content
+is only 34±2 percent, with the sulfide taking up the remaining 18±2
+percent.</p>
+</div>
+<div class="section" id="understanding-the-fit">
+<h2>12.2.4. Understanding the fit<a class="headerlink" href="#understanding-the-fit" title="Permalink to this headline">¶</a></h2>
+<p>The fit including the sulfide certainly looks better, but is it? The
+results tab also reports some simple statistics from the fit. The
+R-factor -- a measure of mean square sum of the misfit at each data
+point -- was 0.000073 for the two-standard fit and shrank by a factor of
+2 to 0.000035 for the three-standard fit. That confirms the observation
+that the degree of misfit seems smaller in the plot of the
+three-standard fit.</p>
+<p>The reduced χ<sup>2</sup> of the fit also reduced by about a factor
+of two, from 0.0000514 to 0.0000250, suggesting a substantive
+improvement in the fit quality. Those are strange numbers, though. Any
+textbook on scientific statistics will tell us that a good fit using a
+non-linear, least-squares minimization (such as that used by
+<font size=-1 color="#033B0A">IFEFFIT</font> and <font size=-1 color="#033B0A">ATHENA</font>) should give 1 for a fit in
+which the model is a good representation of the data. That is
+certainly true, but supposes that you have a good determination of the
+measurement uncertainty. We don't. In principle, the standard
+deviation spectrum from the <a class="reference external" href="../process/merge.html">merge of measured data</a> could be used as an approximation of the
+measurement uncertainty, but that is not possible in this case. The
+data at 7.03 hours are a single measurement from a time
+sequence. There is nothing to merge because each measurement is a
+solitary measurement.  Consequently, <font size=-1 color="#033B0A">ATHENA</font> has to use 1 as
+the value of the measurement uncertainty. That is grossly in excess of
+the true measurement uncertainty, resulting in very small values for
+χ<sup>2</sup>.</p>
+<p>We cannot, therefore, assert that any particular fit is a good fit
+simply by invoking what we know about Gaussian statistics. We can,
+however, compare successive fits, such as the two we have made thus
+far.  An improvement of a factor of 2 in the value of reduced χ<sup>2</sup> is certainly significant. We can, with confidence, state that
+there is an intermediate component on the basis of the analysis
+presented thus far.</p>
+<p>But what is that intermediate. We have not yet proven its identity
+(although gold sulfide is a strong contender!) because we have not yet
+considered other options. There are two algorithmically distinct but
+conceptually identical ways to attempt to solve this problem. One
+involves the use of principle component analysis (a feature not yet
+available in <font size=-1 color="#033B0A">ATHENA</font>) of the data followed by target
+transform analysis to attempt to identify the third species from among
+the standards. The approach discussed here involves using
+combinatorial techniques to directly test a library of standards
+against our data.</p>
+<p>The mathematics of these two approaches is quite different. Since they
+share one major limitation, they are practically equivalent ways of
+identifying the intermediate state. The limitation is that both
+approaches require that the intermediate species be represented by the
+library of standards. If that unknown species is absent from the
+library, neither technique is able to identify it.</p>
+</div>
+<div class="section" id="combinatorial-analysis">
+<h2>12.2.5. Combinatorial analysis<a class="headerlink" href="#combinatorial-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Testing each standard against the data sounds like an unbearably
+boring process -- particularly since we may, in principle, want to
+consider all possible binary, ternary, or higher combinations of
+standards. The project file contains 9 standards. All possible
+combinations of 2 or 3 standards from a pool of 9 results in 120
+possibilities. Performing and recording the results from that many
+fits sounds horrible. Fortunately, <font size=-1 color="#033B0A">ATHENA</font> knows how to
+automate that chore.</p>
+<p>First mark all of the standards and none of the cyanobacteria data. Then
+click the <kbd class="light">Use marked groups</kbd> button. This will insert all of the
+standards into the table.</p>
+<p>By default, the table is only four rows long. You will need to exit
+the linear combination fitting tool and open the <a class="reference external" href="../other/prefs.html">preference tool</a>. Set the
+<font color="#636A24">♦Linearcombo→maxspectra</font> preference to at least 9. Return
+to the linear combination tool and load the 9 standards into the
+table.</p>
+<p>Click the <span class="guilabel">Use at most</span> control down to three. At this point
+you could click <kbd class="light">Fit all combinations</kbd> to begin fitting all
+120 combinations of 2 and 3 standards. This is, however, a bit of a
+waste of time. We <strong>know</strong> that there is metallic gold in these
+data. The fifth column in the table of standards is labeled
+<span class="guilabel">req.</span>, which is short for <em>required</em>. Click the radiobutton
+in the <span class="guilabel">Au foil</span> row. This will cause the combinatorial
+sequence to only consider combinations which include the metallic gold
+standard. This reduces the number of binary and ternary combinations
+to 36. Now click <kbd class="light">Fit all combinations</kbd> in the operations
+list. This will take a while. It's a good time to get that cup of
+coffee.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-lcfcombo2"></span><a class="reference external image-reference" href="../_images/lcf_combo.png"><img alt="../_images/lcf_combo1.png" src="../_images/lcf_combo1.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.19 </span><span class="caption-text">The results of the combinatorial fitting sequence, as displayed on the
+in the <span class="guilabel">combinatorics</span> tab.</span></p>
+</div>
+<p>Once the sequence of fits finishes, <font size=-1 color="#033B0A">ATHENA</font> displays tables
+containing the results of all of the fits in order of increasing
+R-factor. The first column of the top table shows which standards were
+included in the fits using the numbering scheme of the bottom
+table. The other two columns show the R-factor and reduced χ<sup>2</sup> of each fit.</p>
+<p>When you click on a row in the top table, the results of that fit are
+inserted into the bottom table and the fit is plotted. When the
+combinatorial sequence finishes, the best fit of the bunch is displayed.
+It turns out the the combination of gold metal, aqueous Au<sup>3+</sup>
+chloride, and gold sulfide that we examined above is, in fact, the best
+fit. However, it is juts barely the best fit. The fit with gold
+thiomalate in place of gold sulfide is just barely worse. From a
+statistical perspective, the two fits are equivalent and the amounts of
+metal and chloride in the fits are very similar. The gold thiosulfate
+and gold thiocyanide fits are just a bit worse yet. A couple of other
+fits show similar statistics but an investigation shows that the peak
+around 11946.7 eV is not fit very well. After that, the other fits in
+the table fall off quickly in quality.</p>
+<p>The conclusion that one can comfortably draw from this is that the
+intermediate species is some sort of gold-sulfur complex. The aqueous
+gold sulfide standard gave the best result by a hair, but the other
+three species with a gold-sulfur ligand were statistically similar. To
+model the kinetics in this system, I will use the sulfide species, but
+it is probably not correct to say that the intermediate species is
+aqueous gold sulfide. Rather it is some gold-sulfur complex formed when
+the cyanobacteria bacteria cells lyse upon exposure to the Au<sup>3+</sup>
+chloride solution.</p>
+</div>
+<div class="section" id="analyzing-the-data-series">
+<h2>12.2.6. Analyzing the data series<a class="headerlink" href="#analyzing-the-data-series" title="Permalink to this headline">¶</a></h2>
+<p>To investigate the kinetics of this system, we will now apply the
+model consisting of three species -- metal, chloride, and sulfide --
+to the cyanobacteria measured at each time step. Click on the top line
+of the upper table. This will plot the result for our best fit. It
+will also insert those three standards into the table on the
+<span class="guilabel">Standards spectra</span> tab. Click on that tab, then mark all the
+cyanobacteria data groups and unmark all of the standards in the group
+list. Now click on <kbd class="light">Fit marked groups</kbd> in the operations
+list. This will step through the marked groups, applying the
+three-standard fitting model to each one. Again, you may want to relax
+as you wait.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-auclsequence"></span><a class="reference external image-reference" href="../_images/ex_aucl_sequence.png"><img alt="../_images/ex_aucl_sequence.png" src="../_images/ex_aucl_sequence.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.20 </span><span class="caption-text">A report on the results of fitting the marked groups. The report is
+written to a file that can be imported into a spreadsheet, like
+LibreOffice Calc shown here.</span></p>
+</div>
+<p>Once the sequence of fits finishes, you may want to click through the
+data groups and examine the fits at the various time steps. Note that
+the <kbd class="light">Marked fits report</kbd> option in the operations list
+becomes active.  Clicking on this prompts you for a name for an output
+file. This output file is a comma separated value text file which can
+be easily imported into a spreadsheet, much like one of
+<font size=-1 color="#033B0A">ATHENA</font>'s <a class="reference external" href="../output/report.html">report files</a>. In this
+figure we see that the metal content increases monotonically while the
+chloride content decreases monotonically. The column with the sulfide
+content is not seen in the image, but it remains roughly constant
+throughout the experiment.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-auclexcel"></span><a class="reference external image-reference" href="../_images/ex_aucl_excel.png"><img alt="../_images/ex_aucl_excel.png" src="../_images/ex_aucl_excel.png" style="width: 75%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.21 </span><span class="caption-text">A report on the results of fitting the marked groups. The report is
+written to a file that can be imported into a spreadsheet, like
+LibreOffice Calc shown here.</span></p>
+</div>
+<p>In this example, I have outlined the analysis performed in the paper
+cited at the beginning of the chapter. We have, as we set out to do,
+examined the reaction kinetics and tentatively identified an
+intermediate species. Using automation built right into
+<font size=-1 color="#033B0A">ATHENA</font> it was relatively easy to manage a large quantity of
+data.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">12. Worked examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="data.html">12.1. Basic data processing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">12.2. Linear combination analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/aucl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../hephaestus.html" title="13. Hephaestus"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="data.html" title="12.1. Basic data processing"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >12. Worked examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

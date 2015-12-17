@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ATHENA: XAS Data Processing &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="#" />
+    <link rel="next" title="1. Forward" href="forward.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="forward.html" title="1. Forward"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Athena 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="athena-xas-data-processing">
+<h1>ATHENA: XAS Data Processing<a class="headerlink" href="#athena-xas-data-processing" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre>Just as Phaeacian men excel the world at sailing, driving
+their swift ships on the open seas, so the women excel at
+all the arts of weaving. That is Athena&#39;s gift to them
+beyond all others -- a genius for lovely work, and a fine
+mind too.
+                             (Homer, The Odyssey, Book 7)
+</pre></div>
+</div>
+
+<br>
+
+<br>
+
+<br>
+<p><strong>Contents:</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#layout-and-typesetting-conventions">1.1. Layout and typesetting conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#acknowledgments">1.2. Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#data-citations">1.3. Data citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#installing-athena-on-your-computer">1.4. Installing ATHENA on your computer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#building-this-document-from-source">1.5. Building this document from source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">2. Introduction to ATHENA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#first-look-at-athena">2.1. First Look at ATHENA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#getting-help">2.2. Getting help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#folders-and-log-files">2.3. Folders and log files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="import/index.html">3. Data import</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="import/columns.html">3.1. Column selection dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="import/projsel.html">3.2. Project selection dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="import/multiple.html">3.3. Multiple data set import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="import/ref.html">3.4. Reference channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="import/preproc.html">3.5. Preprocessing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bkg/index.html">4. Normalization and the AUTOBK Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bkg/norm.html">4.1. Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bkg/rbkg.html">4.2. The AUTOBK Algorithm and the Rbkg Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bkg/kweight.html">4.3. Spline clamps and k-weight in background removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bkg/range.html">4.4. Spline range in background removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bkg/ednorm.html">4.5. Energy-dependent normalization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">5. Plotting Your Data in ATHENA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot/tabs.html">5.1. Plotting space tabs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/krange.html">5.2. Spectral resolution and k-range</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/stack.html">5.3. Stacked plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/indic.html">5.4. Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/params.html">5.5. Group specific plot parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/etc.html">5.6. Other plotting features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ui/index.html">6. ATHENA's User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui/glist.html">6.1. Using the group list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui/mark.html">6.2. Marking groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui/pluck.html">6.3. Pluck buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui/styles.html">6.4. Plot styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui/kweight.html">6.5. k-weights in plots and Fourier transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui/frozen.html">6.6. Frozen groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="params/index.html">7. Setting parameters in ATHENA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="params/constrain.html">7.1. Constraining parameters between data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params/e0.html">7.2. Setting E0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params/defaults.html">7.3. Default parameter values</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output/index.html">8. Data export</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output/column.html">8.1. Column output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output/project.html">8.2. Project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output/report.html">8.3. Parameter report files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="process/index.html">9. Data processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="process/cal.html">9.1. Calibrating data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/align.html">9.2. Aligning data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/merge.html">9.3. Merging data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/rebin.html">9.4. Rebinning data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/deg.html">9.5. Deglitching and truncating data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/smooth.html">9.6. Smoothing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/conv.html">9.7. Convoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/deconv.html">9.8. Deconvoluting data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/sa.html">9.9. Self-absorption approximations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/pixel.html">9.10. Dispersive XAS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/mee.html">9.11. Multi-electron excitation removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/series.html">9.12. Copy series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process/sum.html">9.13. Data summation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/index.html">10. Data analysis in ATHENA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis/lcf.html">10.1. Linear combination fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/pca.html">10.2. Principle components analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/peak.html">10.3. Peak fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/lr.html">10.4. Log-ratio/phase-difference analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/diff.html">10.5. Difference spectra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="other/index.html">11. Other main window chores</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="other/meta.html">11.1. File metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other/journal.html">11.2. Project journal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other/plugin.html">11.3. File type plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other/prefs.html">11.4. Configuring ATHENA to work for you</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">12. Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/data.html">12.1. Basic data processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/aucl.html">12.2. Linear combination analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hephaestus.html">13. Hephaestus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#absorption">13.1. Absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#formulas">13.2. Formulas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#ion-chambers">13.3. Ion Chambers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#data">13.4. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#transitions">13.5. Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#edge-finder">13.6. Edge Finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#line-finder">13.7. Line Finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#standards">13.8. Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#f-and-f">13.9. F' and F&quot;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#preferences">13.10. Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#credits">13.11. Credits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hephaestus.html#bugs-and-limitations">13.12. Bugs and limitations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="#">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="forward.html" title="1. Forward"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Athena 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

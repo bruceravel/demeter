@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.4. Log-ratio/phase-difference analysis &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="next" title="10.5. Difference spectra" href="diff.html" />
+    <link rel="prev" title="10.3. Peak fitting" href="peak.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="diff.html" title="10.5. Difference spectra"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="peak.html" title="10.3. Peak fitting"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="log-ratio-phase-difference-analysis">
+<span id="lr-sec"></span><h1>10.4. Log-ratio/phase-difference analysis<a class="headerlink" href="#log-ratio-phase-difference-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Log-ratio/phase-difference analysis is a purely empirical technique
+that can be used to determine changes in the distribution parameters
+of the first coordination shell for certain kinds of data. This
+technique is most useful for data with a well-separated first
+coordination shell, i.e. one for which data from higher coordination
+shells is spectrally isolated from the first shell. An excellent
+example of a situation where this analysis would be useful would be a
+temperature series. In that case, log-ratio analysis can be used to
+measure the variation in σ<sup>2</sup> as a function of
+temperature and phase difference analysis can be used to measure
+variation in bond length.</p>
+<p>The approach of log-ratio/phase-difference analysis is to compare
+unknown data to a well known standard. The standard might be a room
+temperature measurement in the case of a temperature series. Or it might
+be a well ordered oxide for comparison with more disordered oxide forms.
+In any case, the analysis returns the differences between the standard
+and the unknown of the various cumulants of the distribution of atoms in
+the first shell.</p>
+<p>The analysis is performed by first by Fourier filtering both the data
+and unknown to spectrally isolate the signal from the first coordination
+shell. Then polynomials are fitted to the log of the ratio of the
+amplitudes of the χ(q) functions and to the difference of the phases of
+the χ(q) function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Log</span><span class="o">-</span><span class="n">Ratio</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>  <span class="o">=</span> <span class="n">ln</span><span class="p">(</span> <span class="n">Amp_unknown</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">/</span> <span class="n">Amp_standard</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">Phase</span><span class="o">-</span><span class="n">Diff</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">=</span> <span class="n">Phase_unknown</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">-</span> <span class="n">Phase_standard</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These are fit using the cumulant expansion:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Log</span><span class="o">-</span><span class="n">Ratio</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>  <span class="o">=</span> <span class="n">c_0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">c_2</span> <span class="o">*</span> <span class="n">q</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">c_4</span> <span class="o">*</span> <span class="n">q</span><span class="o">^</span><span class="mi">4</span>
+<span class="n">Phase</span><span class="o">-</span><span class="n">diff</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c_1</span> <span class="o">*</span> <span class="n">q</span> <span class="o">-</span> <span class="p">(</span><span class="mi">4</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">c_3</span> <span class="o">*</span> <span class="n">q</span><span class="o">^</span><span class="mi">3</span>
+</pre></div>
+</div>
+<p>The standard is selected from the menu at the top of this tool. The
+unknown is the current group, i.e. the one highlighted in the group
+list.</p>
+<p>There are some other caveats along with the fact that this technique
+requires a spectrally isolated first shell.</p>
+<ol class="arabic simple">
+<li>A perfectly ordered coordination shell is not necessary, but the
+distribution of atoms in the first shell must be well described by an
+expansion in a small number of cumulants. Thus, this technique may be
+inappropriate for highly disordered materials.</li>
+<li>Although this analysis is often referred to in the literature as
+“model independent analysis”, that is as much a shortcoming as an
+advantage. The technique can be used to measure changes in structural
+cumulants, but cannot be used to measure absolute values of those
+cumulants.</li>
+<li>This analysis cannot be performed on higher coordination shells
+except in the vary rare case of a second shell which is spectrally
+isolated both from the first shell and from all higher shells.</li>
+<li>The presence of spectral weight from any higher shell or from any
+multiple scattering paths will add considerable systematic
+uncertainty to this analysis.</li>
+</ol>
+<p>When you select <span class="guilabel">Log-Ratio</span> from the main menu, the main window is
+replaced with the log-ratio/phase-difference tool, shown below.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-lr"></span><a class="reference external image-reference" href="../_images/lr.png"><img alt="../_images/lr.png" src="../_images/lr.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.19 </span><span class="caption-text">The log-ratio/phase-difference tool.</span></p>
+</div>
+<p>Once you select Fourier transform parameters and ranges for use in the
+analysis, you can click the <kbd class="light">Fit</kbd> button to perform the
+fit. The fit to the log-ratio of the amplitudes is plotted when the
+fit is over. The buttons can be used to plot either the fit to the
+log-ratio of amplitudes or the fit to the phase difference. The fits
+use all cumulants up to the fourth. Depending on your data quality,
+choice of Fourier transform ranges can be important and quite
+sensitive. You can save the log-ratio and phase-difference data along
+with the fits to a file by clicking the <kbd class="light">Save ratio data and
+fit</kbd> button.</p>
+<div class="figure compound align-center" id="_fig-lrplots">
+<div style="width: 40%" class="subfigure" id="id2">
+<span id="lr-fit"></span><a class="reference external image-reference" href="../_images/lr_fit.png"><img alt="../_images/lr_fit.png" src="../_images/lr_fit.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.20 </span><span class="caption-text">The results of the log-ratio fit to the Cu metal.</span></p>
+</div>
+<div style="width: 40%" class="subfigure" id="id3">
+<span id="lr-pd-fit"></span><a class="reference external image-reference" href="../_images/lr_pd_fit.png"><img alt="../_images/lr_pd_fit.png" src="../_images/lr_pd_fit.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.21 </span><span class="caption-text">The results of the phase-difference fit to the Cu metal.</span></p>
+</div>
+</div><p id="_fig-lrplots">The three plot buttons behave just like the purple plot buttons would
+behave were only the standard and unknown marked.</p>
+<p>My favorite explanation of this analysis method is</p>
+<blockquote>
+<div><ul class="simple" id="bibtex-bibliography-analysis/lr-0">
+<li>Grant Bunker. Application of the ratio method of exafs analysis to disordered systems. <em>Nuclear Instruments and Methods in Physics Research</em>, 207(3):437 – 444, 1983. <a class="reference external" href="http://dx.doi.org/10.1016/0167-5087(83)90655-5">doi:10.1016/0167-5087(83)90655-5</a>.</li>
+</ul>
+</div></blockquote>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis in ATHENA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lcf.html">10.1. Linear combination fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="peak.html">10.3. Peak fitting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">10.4. Log-ratio/phase-difference analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff.html">10.5. Difference spectra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/analysis/lr.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="diff.html" title="10.5. Difference spectra"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="peak.html" title="10.3. Peak fitting"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis in ATHENA</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
