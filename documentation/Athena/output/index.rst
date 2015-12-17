@@ -23,6 +23,7 @@ on the following pages:
   your project. These report files can be imported into spreadsheet
   or a database program.
 
+----------------
 
 .. toctree::
    :maxdepth: 2

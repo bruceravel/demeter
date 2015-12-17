@@ -68,8 +68,8 @@ group, shown here.
 
    Renaming a group list entry.
 
-Hitting Return or clicking the :button:`OK,light` button renames the
-group, shown here.
+Hitting :button:`Return` or clicking the :button:`OK,light` button
+renames the group, shown here.
 
 .. _fig-renamed:
 

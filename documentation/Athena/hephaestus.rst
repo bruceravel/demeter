@@ -488,11 +488,12 @@ This tool displays a table, ordered by increasing edge energy, of all
 edge energies on the periodic table. The table also shows the edge
 energies in wavelength units and the core-hole lifetimes.
 
-The purpose of this tool is to aid in identifying edges observed during
-measurements. To search the list, enter an energy in the text box on the
-right and click search (or hit return). The list will be recentered
-around that energy. Hopefully this will help you identify the mysterious
-feature in your measured data!
+The purpose of this tool is to aid in identifying edges observed
+during measurements. To search the list, enter an energy in the text
+box on the right and click :button:`Search,light` (or hit
+:button:`Return`). The list will be recentered around that
+energy. Hopefully this will help you identify the mysterious feature
+in your measured data!
 
 You can also search for edges at the second or third harmonic of the
 energy. This can be useful in the case of poor harmonic rejection in the
@@ -519,10 +520,11 @@ ratio) of each line relative to the other lines arising from the same
 absorption edge.
 
 The purpose of this tool is to aid in identifying emission lines
-observed during measurements. To search the list, enter an energy in the
-text box on the right and click search (or hit return). The list will be
-recentered around that energy. Hopefully this will help you identify the
-mysterious line in your fluorescence data!
+observed during measurements. To search the list, enter an energy in
+the text box on the right and click :button:`Search,light` (or hit
+:button:`Return`). The list will be recentered around that
+energy. Hopefully this will help you identify the mysterious line in
+your fluorescence data!
 
 .. _fig-hephlinefinder:
 

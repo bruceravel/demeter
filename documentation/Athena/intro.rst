@@ -7,7 +7,7 @@ EXAFS data. It handles most of the common data handling chores of
 interest at the beamline or for preparing your data to begin
 analysis. :demeter:`athena` is a graphical front end to Matt
 Newville's :demeter:`ifeffit` library written entirely in the Perl
-programming language and using the Gnuplot program for data
+programming language and using the :program:`Gnuplot` program for data
 display. It is being developed on Linux and tested on various flavors
 of Windows, but should work on any unix-like, Windows, or Mac
 operating system.
@@ -99,7 +99,8 @@ will be listed in this space. Access to the data already imported is
 made by clicking in this space.
 
 Adjacent to the top of the group list area are `the mark buttons
-<ui/mark.html>`__ 
+<ui/mark.html>`__, which are used to plot multiple data sets and for
+many other chores in :demeter:`athena`.
 
 Below the group list area are the plot buttons. Below that are the
 buttons used to set the k-weighting for use when plotting in k-space or
@@ -111,7 +112,7 @@ when making a forward Fourier transform. Below that are various other
    :width: 65%
    :align: center
 
-   ATHENA, after importing some data.
+   After importing data.
 
 After importing several data files, each is made into a *data group* and
 listed in the group list. The label and the check button next to it are
@@ -136,8 +137,8 @@ Folders and log files
 
 Many of :demeter:`athena`'s chores involve writing temporary
 files. Many file type plugins write temporary files after performing
-some transformation on the original data.  GNUPLOT writes temporary
-files as part of its plot creation.
+some transformation on the original data.  :program:`gnuplot` writes
+temporary files as part of its plot creation.
 
 **working folder**
     These files are stored in the :quoted:`stash folder`. On linux (and

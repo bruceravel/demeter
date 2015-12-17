@@ -191,3 +191,8 @@ parameter, several others should be investigated to yield a good
 background removal. Several of these are the subjects of the following
 sections.
 
+The literature reference for the :demeter:`autobk` algorithm is:
+
+.. bibliography:: ../athena.bib
+   :filter: author % "Newville" and year == '1993'
+   :list: bullet

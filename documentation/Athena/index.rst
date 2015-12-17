@@ -18,15 +18,14 @@ ATHENA: XAS Data Processing
 
 .. endpar::
 
-..
-   .. figure:: ../_images/greek_delphi.jpg
-      :width: 85%
-      :align: center
+.. image:: ../_images/greek_delphi.jpg
 
-.. endpar::
+The Tholos sanctuary of Athena Pronoia, Athena of forethought.
 
-.. endpar::
+Athena is the goddess of wisdom and craft, a fine patron for
+the XAS practitioner.
 
+----------------
 				
 **Contents:**
 
@@ -49,9 +48,10 @@ ATHENA: XAS Data Processing
    hephaestus.rst
    
 
-Indices and tables
-==================
+..
+   Index
+   =====
 
-* :ref:`genindex`
-* :ref:`search`
+   * :ref:`genindex`
+   * :ref:`search`
 

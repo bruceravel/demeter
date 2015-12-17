@@ -29,6 +29,9 @@ will close the special tool and redisplay the main window.
    The main menu is used to access almost all data processing
    functionality.
 
+
+----------------
+
 .. toctree::
    :maxdepth: 2
 

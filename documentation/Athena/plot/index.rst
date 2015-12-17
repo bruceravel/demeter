@@ -1,10 +1,7 @@
 
-Plotting Your Data in ATHENA
-============================
+Plotting Your Data
+==================
 
-.. todo:: Write document page for title, legends, single file tab.
-
---------------
 
 Two of the main design goals of :demeter:`athena` are to make basic
 data processing, i.e. background removal and Fourier transforms, as
@@ -105,6 +102,9 @@ button can be configured with the
 :configparam:`athena,right\_single\_e` and
 :configparam:`athena,right\_marked\_e` `configuration parameters
 <../other/prefs.html>`__.
+
+
+----------------
 
 .. toctree::
    :maxdepth: 2

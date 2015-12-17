@@ -15,6 +15,8 @@ related to data processing or analysis chores.
    The main menu is used to access various features of the program not directly
    related to data processing or analysis.
 
+----------------
+
 .. toctree::
    :maxdepth: 2
 

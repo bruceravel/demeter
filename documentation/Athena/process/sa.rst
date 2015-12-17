@@ -185,10 +185,12 @@ data sets were normalized, the incident and outgoing angles, and the
 thickness. Try changing all those things to see how they effect the
 correction.
 
-.. todo:: The Booth algorithm has been updated and corrected. It now
-   requires that the density of the material be provided.
+.. versionadded:: 0.9.20 
 
-
+   The Booth algorithm was updated and corrected.  It now requires
+   that the density of the material be provided.  There is a box for
+   the density next to the thickness box.  The density box becomes
+   enabled (not grayed out) when the Booth algorithm is selected.
 
 Information depth
 -----------------

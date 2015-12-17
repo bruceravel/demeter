@@ -15,6 +15,7 @@ example data <https://s3.amazonaws.com/XAS-Education/Examples.zip>`_.
     data measured on a system of cyanobacteria chemically reducing gold
     chloride to metallic gold.
 
+----------------
 
 .. toctree::
    :maxdepth: 2

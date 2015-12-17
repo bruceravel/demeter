@@ -1,6 +1,6 @@
 
-Data analysis in ATHENA
-=======================
+Data analysis
+=============
 
 :demeter:`athena` provides various kinds of data analysis. None of the
 data analysis capabilities in :demeter:`athena` require the use of
@@ -23,6 +23,8 @@ section of the main menu, as shown below.
    :align: center
 
    The data analysis tools in the main menu.
+
+----------------
 
 .. toctree::
    :maxdepth: 2

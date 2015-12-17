@@ -6,14 +6,15 @@ Other plotting features
 Zooming and cursor position
 ---------------------------
 
-Zooming on a region of a plot is done using Gnuplot's own capabilities.
-In the plot window, a zoom is initiated by a right click. The mouse is
-then dragged to cover a rectangular area on the plot. Right-clicking a
-second time will cause the plot to be redisplayed on the zoomed region.
+Zooming on a region of a plot is done using :program:`Gnuplot`'s own
+capabilities.  In the plot window, a zoom is initiated by a right
+click. The mouse is then dragged to cover a rectangular area on the
+plot. Right-clicking a second time will cause the plot to be
+redisplayed on the zoomed region.
 
-Gnuplot displays the position of the cursor in the bottom part of the
-plot window. This is continuously updated as the mouse moves over the
-plot window.
+:program:`Gnuplot` displays the position of the cursor in the bottom
+part of the plot window. This is continuously updated as the mouse
+moves over the plot window.
 
 
 Special plots for the current group
