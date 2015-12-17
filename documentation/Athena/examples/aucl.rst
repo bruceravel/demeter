@@ -115,9 +115,9 @@ fitting range. From the first two drop-down menus, select
    The linear combination fitting tool with the end member standard
    compounds selected for the initial fit.
 
-In the operations list, click on :kbd:`Fit this group,light` to perform
+In the operations list, click on :button:`Fit this group,light` to perform
 the initial fit to these data. After the fit finishes, the result of
-the fit, shown below is plotted. The tab labeled :quoted:`Fit results`
+the fit, shown below is plotted. The tab labeled :guilabel:`Fit results`
 becomes active. Clicking on it, we see that the fit tells us that the
 data are 51 |pm| 1 percent metallic gold. Given the quality of the fit, it
 seems that we are well justified in our assumption that these data can
@@ -140,8 +140,8 @@ Improving the fit
 As nice as this quick and easy result is, it's not perfect. A close
 examination of the plot above shows quite a bit of misfit throughout
 the entire fitting range. (Note that you can examine the misfit by
-clicking the :kbd:`Plot difference,light` button and replotting the data
-by clicking :kbd:`Plot data + sum,light` in the operations list.) This
+clicking the :button:`Plot difference,light` button and replotting the data
+by clicking :button:`Plot data + sum,light` in the operations list.) This
 misfit suggests that our hypothesis of an intermediate state between
 Au\ :sup:`3+` chloride and metallic gold may be valid.
 
@@ -153,7 +153,7 @@ sulfur ligated species, Au sulfide, Au thiosulfate, or Au thiomalate,
 are likely candidates. To test one, we need to add it to the list of
 fitting standards on the :guilabel:`Standards spectra` tab and rerun the
 fit. In the third row, select :guilabel:`Au sulfide` from the drop-down
-menu, then click :kbd:`Fit this group,light` from the operations list.
+menu, then click :button:`Fit this group,light` from the operations list.
 
 .. _fig-auclplussulfide:
 
@@ -244,7 +244,7 @@ fits sounds horrible. Fortunately, :demeter:`athena` knows how to
 automate that chore.
 
 First mark all of the standards and none of the cyanobacteria data. Then
-click the :kbd:`Use marked groups,light` button. This will insert all of the
+click the :button:`Use marked groups,light` button. This will insert all of the
 standards into the table.
 
 By default, the table is only four rows long. You will need to exit
@@ -254,16 +254,16 @@ the linear combination fitting tool and open the `preference tool
 to the linear combination tool and load the 9 standards into the
 table.
 
-Click the :quoted:`Use at most` control down to three. At this point
-you could click :kbd:`Fit all combinations,light` to begin fitting all
+Click the :guilabel:`Use at most` control down to three. At this point
+you could click :button:`Fit all combinations,light` to begin fitting all
 120 combinations of 2 and 3 standards. This is, however, a bit of a
 waste of time. We **know** that there is metallic gold in these
 data. The fifth column in the table of standards is labeled
-:quoted:`req.`, which is short for *required*. Click the radiobutton
-in the :quoted:`Au foil` row. This will cause the combinatorial
+:guilabel:`req.`, which is short for *required*. Click the radiobutton
+in the :guilabel:`Au foil` row. This will cause the combinatorial
 sequence to only consider combinations which include the metallic gold
 standard. This reduces the number of binary and ternary combinations
-to 36. Now click :kbd:`Fit all combinations,light` in the operations
+to 36. Now click :button:`Fit all combinations,light` in the operations
 list. This will take a while. It's a good time to get that cup of
 coffee.
 
@@ -275,7 +275,7 @@ coffee.
    :align: center
 
    The results of the combinatorial fitting sequence, as displayed on the
-   in the :quoted:`combinatorics` tab.
+   in the :guilabel:`combinatorics` tab.
 
 Once the sequence of fits finishes, :demeter:`athena` displays tables
 containing the results of all of the fits in order of increasing
@@ -318,9 +318,9 @@ model consisting of three species -- metal, chloride, and sulfide --
 to the cyanobacteria measured at each time step. Click on the top line
 of the upper table. This will plot the result for our best fit. It
 will also insert those three standards into the table on the
-:quoted:`Standards spectra` tab. Click on that tab, then mark all the
+:guilabel:`Standards spectra` tab. Click on that tab, then mark all the
 cyanobacteria data groups and unmark all of the standards in the group
-list. Now click on :kbd:`Fit marked groups,light` in the operations
+list. Now click on :button:`Fit marked groups,light` in the operations
 list. This will step through the marked groups, applying the
 three-standard fitting model to each one. Again, you may want to relax
 as you wait.
@@ -338,7 +338,7 @@ as you wait.
 
 Once the sequence of fits finishes, you may want to click through the
 data groups and examine the fits at the various time steps. Note that
-the :kbd:`Marked fits report,light` option in the operations list
+the :button:`Marked fits report,light` option in the operations list
 becomes active.  Clicking on this prompts you for a name for an output
 file. This output file is a comma separated value text file which can
 be easily imported into a spreadsheet, much like one of

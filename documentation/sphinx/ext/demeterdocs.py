@@ -25,12 +25,12 @@
 
      :mark:`bend,..`
 
-- kbd -- write the text to look like a button, first argument is the
+- button -- write the text to look like a button, first argument is the
   text, second is the button style.  choices are light (Athena
   button), dark (keyboard key, default), orange (single group plot
   button), and purple (multiple group plot button)
 
-     :kbd:`E,purple`
+     :button:`E,purple`
 
 Sphinx directive
 
@@ -228,31 +228,31 @@ def depart_linebreak_html(self, node):
 
 
 
-class kbd(nodes.Element):
-    '''kbd letters using keys.css
+class button(nodes.Element):
+    '''button letters using keys.css
     '''
     pass
 
-def kbd_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+def button_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     words =text.strip().split(',')
     key = words[0]
     color = 'dark'
     if len(words) > 1: color = words[1]
-    kbd_node = kbd()
-    kbd_node['color'] = color
-    kbd_node.children.append(nodes.Text(key))
-    return [kbd_node], []
+    button_node = button()
+    button_node['color'] = color
+    button_node.children.append(nodes.Text(key))
+    return [button_node], []
 
-def visit_kbd_html(self, node):
+def visit_button_html(self, node):
     self.body.append('<kbd class="%s">' % node['color'])
 
-def depart_kbd_html(self, node):
+def depart_button_html(self, node):
     self.body.append('</kbd>')
 
-def visit_kbd_latex(self, node):
+def visit_button_latex(self, node):
     self.body.append("\\texttt{")
 
-def depart_kbd_latex(self, node):
+def depart_button_latex(self, node):
     self.body.append("}")
 
 
@@ -288,9 +288,9 @@ def setup(app):
             html = (visit_linebreak_html, depart_linebreak_html),
             latex = (visit_linebreak_latex, depart_linebreak_latex)
             )
-    app.add_role('kbd', kbd_role)
-    app.add_node(kbd,
-            html = (visit_kbd_html, depart_kbd_html),
-            latex = (visit_kbd_latex, depart_kbd_latex)
+    app.add_role('button', button_role)
+    app.add_node(button,
+            html = (visit_button_html, depart_button_html),
+            latex = (visit_button_latex, depart_button_latex)
             )
 

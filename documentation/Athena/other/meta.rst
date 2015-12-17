@@ -79,7 +79,7 @@ inserted into a file by a data acquisition or analysis program and is
 not intended to be altered by the user. The one exception is the user
 comments area. In :demeter:`athena`, this is a normal text editing
 control into which you can type whatever you want. The contents of
-this control will be saved as user comments when the :kbd:`Save
+this control will be saved as user comments when the :button:`Save
 comments,light` button is pressed.
 
 

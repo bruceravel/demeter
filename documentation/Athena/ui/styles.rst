@@ -20,5 +20,5 @@ You can discard a plot style by double clicking on it.
    :width: 65%
    :align: center
 
-   Plot styles controls displayed from the :quoted:`Plot options` tabs.
+   Plot styles controls displayed from the :guilabel:`Plot options` tabs.
 

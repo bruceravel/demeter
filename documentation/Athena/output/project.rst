@@ -47,7 +47,7 @@ options highlighted in this figure.
 The first two options saves the entire current state of
 :demeter:`athena`. If the project has already been saved, the
 :guilabel:`Save project` option overwrites the previous file with the
-new state of your project. Hitting :kbd:`Control`-:kbd:`s` does the
+new state of your project. Hitting :button:`Control`-:button:`s` does the
 same thing. Clicking on the modified indicator -- the other
 highlighted region in the screenshot -- also saves the project.
 Alternately, you can select :guilabel:`Save project as...` and you
@@ -57,7 +57,7 @@ The final option will write only the marked groups to a project file.
 You can think of this as a sort of :quoted:`sub-project` file. This is another
 of the many ways that the group markings are used by :demeter:`athena`.
 
-The :kbd:`Save,light` button at the top of the screen will save the
+The :button:`Save,light` button at the top of the screen will save the
 current project, prompting for a file name if needed. As you work with
 :demeter:`athena`.  this button turns increasingly red, reminding you
 of the need to save your work early and often.

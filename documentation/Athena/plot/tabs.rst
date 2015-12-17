@@ -93,7 +93,7 @@ The two text entry boxes at the bottom of the tab are used to determine
 the extent of the data range plotted on the x-axis, behave much like the
 same boxes on the k tab, and have similar preferences.
 
-When the :quoted:`phase correction` button is clicked on, the Fourier transform
+When the :guilabel:`phase correction` button is clicked on, the Fourier transform
 for that data group will be made by subtracting the central atom phase
 shift. This is an incomplete phase correction – in :demeter:`athena` we know the
 central atom but do not necessarily have any knowledge about the

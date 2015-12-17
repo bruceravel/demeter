@@ -2,15 +2,10 @@
 Forward
 =======
 
-
 .. todo::
    #. installation instructions, document building instructions
    #. CC image in epilog
    #. mark index entries
-   #. from http://sphinx-doc.org/latest/markup/inline.html#other-semantic-markup
-      use more semantic markup, especially ``:guilabel:``, ``:file:``, ``:menuselection:``
-   #. rename my ``::kbd:`` to avoid confusion with built-in semantic
-      markup ... maybe ``:key:`` or ``:button:``
 
 ----------------
       
@@ -61,16 +56,16 @@ presentation media.
 - Menu selections look like this: :menuselection:`File --> Import data`
   
 - Keyboard shortcuts look like this:
-  :kbd:`Control,dark`-:kbd:`q`, which means to hit the :kbd:`q`
-  key while holding the :kbd:`Control` (or :kbd:`Ctrl`) key
+  :button:`Control,dark`-:button:`q`, which means to hit the :button:`q`
+  key while holding the :button:`Control` (or :button:`Ctrl`) key
 
 - Program names from the :demeter:`demeter`'s extended family look
   like this: :demeter:`athena`
 
 - References to :demeter:`athena`'s preferences are written like this:
   :configparam:`Bkg,fraction`.  To modify this preferences, open the
-  :quoted:`bkg` section of the `preferences tool <other/prefs.html>`__ and
-  then click on :quoted:`fraction`
+  :guilabel:`bkg` section of the `preferences tool <other/prefs.html>`__ and
+  then click on :guilabel:`fraction`
 
 .. CAUTION::
    Points that require special attention are indicated

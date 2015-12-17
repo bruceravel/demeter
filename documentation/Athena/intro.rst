@@ -122,7 +122,7 @@ Getting help
 ------------
 
 There is quite a bit of help built right into
-:demeter:`athena`. Typing :kbd:`Control`-:kbd:`m` or selecting
+:demeter:`athena`. Typing :button:`Control`-:button:`m` or selecting
 :menuselection:`Help --> Document` will display :demeter:`athena`'s
 document in a web browser or in the built-in document viewer.  Many
 parts of the program have a button which will take you directly to the

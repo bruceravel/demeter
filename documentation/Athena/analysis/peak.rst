@@ -105,7 +105,7 @@ Fitting a single data group
    Choosing the lineshape to add to the model.
 
 Line shapes are added to the fitting model by clicking the buttons
-labeled :kbd:`Add step,light` or :kbd:`Add peak,light`. The functional
+labeled :button:`Add step,light` or :button:`Add peak,light`. The functional
 form of the lineshape is chosen by selection from the menu to the left
 of those buttons.
 
@@ -118,7 +118,7 @@ and a Gaussian to model the second pre-edge peak.
 :demeter:`athena` cannot know what feature in the data each line shape
 is intended to model. You **must** select the centroid of each line
 shape. This can be done by typing an energy value into the box labeled
-either :quoted:`Center` or E\ :sub:`0`. Alternately, you can use the
+either :guilabel:`Center` or E\ :sub:`0`. Alternately, you can use the
 pluck button to take the energy value from the plot using the mouse.
 
 When the pluck button is used, :demeter:`athena` will make a guess for the initial
@@ -135,7 +135,7 @@ when the centroids are varied, particularly with peak functions placed
 close together. I typically leave the centroid values fixed, adjusting
 them by hand and rerunning the fits if necessary.
 
-The :kbd:`Reset,light` button (which becomes enabled only after a fit
+The :button:`Reset,light` button (which becomes enabled only after a fit
 is performed) is used to restore parameters for each lineshape to
 their default values. This is handy if a fit results in strange values
 due to some numerical instability of the fitting model, which might
@@ -159,19 +159,19 @@ changing the shape of a step-like function, the hot text simply
 toggles between the two.
 
 Once you have set all the parameters of the fitting model, the fit is
-performed by clicking the :kbd:`Fit,light` button in the :quoted:`Actions`
-section at the top of the page. Alternately, you can examine the
-current state of the model without running the fit by clicking the
-:kbd:`Plot sum,light` button.
+performed by clicking the :button:`Fit,light` button in the
+:guilabel:`Actions` section at the top of the page. Alternately, you
+can examine the current state of the model without running the fit by
+clicking the :button:`Plot sum,light` button.
 
 
 
 The fit results tab
 -------------------
 
-After a fit finishes, the remaining buttons in the :quoted:`Actions` section are
-enabled and the text box on the results tab is filled in with the
-outcome of the fit.
+After a fit finishes, the remaining buttons in the :guilabel:`Actions`
+section are enabled and the text box on the results tab is filled in
+with the outcome of the fit.
 
 .. _fig-peakresults:
 
@@ -182,15 +182,15 @@ outcome of the fit.
 
    The peak fitting results tab.
 
-The :kbd:`Plot data and fit,light` button at the bottom of the results
-tab makes the same plot as the :kbd:`Plot sum,light` button on the
+The :button:`Plot data and fit,light` button at the bottom of the results
+tab makes the same plot as the :button:`Plot sum,light` button on the
 main tab. The plot can be modified to include traces for each
 individual line shape and for the residual of the fit by toggling the
 checkbuttons above the note tabs.
 
 The result of the fit can be saved to a column data file by clicking
 that button at the bottom of the results tab. (The same thing happens
-with the :kbd:`Save fit,light` button on the main tab.) The output
+with the :button:`Save fit,light` button on the main tab.) The output
 file contains the fit results in the header and has columns of
 
 #. energy
@@ -209,7 +209,7 @@ Fitting multiple groups and the sequence tab
 
 Once you have found a fitting model that works for a representative
 data set, :demeter:`athena` offers soem automation for examining an
-ensemble of data.  The button on the main tab labeled :kbd:`Fit
+ensemble of data.  The button on the main tab labeled :button:`Fit
 marked,light` will apply the current fitting model to every marked
 group in the data list in sequence. For example, in the case of the
 temperature dependent PbTiO\ :sub:`3` data measured at the Ti K edge,
@@ -217,9 +217,10 @@ we see the first pre-edge peak reduces in size in the measured data as
 the temperature rises. Consequently, we would expect to see measured
 height of that peak get smaller with temperature.
 
-The results of the sequence of fits using the fitting model are shown in
-the :quoted:`Sequence` tab. You can have each fit plotted during the sequence by
-setting the :configparam:`Peakfit,plot\_during` parameter.
+The results of the sequence of fits using the fitting model are shown
+in the :guilabel:`Sequence` tab. You can have each fit plotted during
+the sequence by setting the :configparam:`Peakfit,plot\_during`
+parameter.
 
 .. _fig-peaksequence:
 

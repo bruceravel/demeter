@@ -5,9 +5,9 @@ Multiple data set import
 
 You can import multiple data sets in the same manner that was
 explained in the last section. Select :menuselection:`File --> Import data` or
-type :kbd:`Control`-:kbd:`o`. When the file selection dialog opens,
+type :button:`Control`-:button:`o`. When the file selection dialog opens,
 you can select more than one data file by clicking on file names while
-holding down the :kbd:`Control` key. On my Linux computer, it looks
+holding down the :button:`Control` key. On my Linux computer, it looks
 like this.
 
 .. _fig-multiple:
@@ -23,10 +23,10 @@ Note that three files are highlighted in the file listing and that
 those three files are listed below in the :guilabel:`File name`
 box. Another way of selecting multiple files is to click on a file in
 the listing then click on another file while holding down the
-:kbd:`Shift` key. When you do this, all files between the two you
+:button:`Shift` key. When you do this, all files between the two you
 clicked on will be selected.
 
-When you click the :kbd:`OK,light` button, all of the selected files
+When you click the :button:`OK,light` button, all of the selected files
 will be imported. If all of the files are of the same type,
 :demeter:`athena` will import them all with only one interaction of
 the column selection dialog. Thus, if you select several files that

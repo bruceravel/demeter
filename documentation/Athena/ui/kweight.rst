@@ -35,11 +35,12 @@ By weighting |chi| (k) with different k-weightings, the low and high portions
 of the |chi| (k) spectrum can be differently emphasized in a Fourier
 transform. Doing so may help you better understand your data.
 
-The k-weighting is controlled by the bank of buttons labeled
-:quoted:`0`, :quoted:`1`, :quoted:`2`, :quoted:`3`, and :quoted:`kw`,
-and located just beneath the purple plot buttons.  This is highlighted
-in the figure below The buttons selected determines the k-weighting
-used in a plot of |chi| (k) data or in a Fourier transform.
+The k-weighting is controlled by the bank of check buttons labeled
+:guilabel:`0`, :guilabel:`1`, :guilabel:`2`, :guilabel:`3`, and
+:guilabel:`kw`, and located just beneath the purple plot buttons.
+This is highlighted in the figure below The buttons selected
+determines the k-weighting used in a plot of |chi| (k) data or in a
+Fourier transform.
 
 .. _fig-uikweights:
 
@@ -51,8 +52,8 @@ used in a plot of |chi| (k) data or in a Fourier transform.
    The controls for setting the amount of k-weighting in a plot or
    Fourier transform.
 
-The k-weight button labeled :quoted:`kw` is used in conjunction with the
-:procparam:`arbitrary k-weight` parameter. When the :quoted:`kw` button is
+The k-weight button labeled :guilabel:`kw` is used in conjunction with the
+:procparam:`arbitrary k-weight` parameter. When the :guilabel:`kw` button is
 selected, the |chi| (k) data are weighted by the value of the
 :procparam:`arbitrary k-weight`. This can be used in a number of
 ways. The simplest is if you simply want a non-integer weight. If you

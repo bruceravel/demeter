@@ -15,16 +15,16 @@ This example, like many of the examples in this Users' Guide, can be
 found `among the examples at my XAS-Education
 site <http://bruceravel.github.io/XAS-Education/>`__.
 
-Among these example files is one called ``fe.060``, which contains a
+Among these example files is one called :file:`fe.060`, which contains a
 spectrum from an iron foil measured at 60 K. Import this by selecting
 :menuselection:`File --> Import data` or by pressing
-:kbd:`Control`-:kbd:`o`. Navigate to the location of your example
-files and select ``fe.060``. The `column selection dialog
+:button:`Control`-:button:`o`. Navigate to the location of your example
+files and select :file:`fe.060`. The `column selection dialog
 <../import/columns.html>`__ then appears. For now, just click OK.
 
 The data is imported and :procparam:`rbkg` is set to its default value
 of 1. The data and the background function found using the default
-parameter values can be found by pressing the :kbd:`E,orange`
+parameter values can be found by pressing the :button:`E,orange`
 button. This is shown here on the left.
 
 .. subfigstart::
@@ -35,7 +35,7 @@ button. This is shown here on the left.
    :target: ../_images/rbkg_initial.png
    :width: 100%
 
-   The ``fe.060`` data and its default background function.
+   The :file:`fe.060` data and its default background function.
 
 .. _fig-rbkginitial_k:
 
@@ -43,7 +43,7 @@ button. This is shown here on the left.
    :target: ../_images/rbkg_initial_k.png
    :width: 100%
 
-   The ``fe.060`` |chi| (k) data with its default background function.
+   The :file:`fe.060` |chi| (k) data with its default background function.
 
 .. _fig-rbkginitial_r:
 
@@ -51,7 +51,7 @@ button. This is shown here on the left.
    :target: ../_images/rbkg_initial_r.png
    :width: 100%
 
-   The ``fe.060`` |chi| (R) data with its default background function.
+   The :file:`fe.060` |chi| (R) data with its default background function.
 
 .. subfigend::
    :width: 0.45
@@ -59,10 +59,10 @@ button. This is shown here on the left.
 
 
 The background function is subtracted from the data and normalized,
-resulting in a |chi| (k) function. Press the :kbd:`k,orange` button to
+resulting in a |chi| (k) function. Press the :button:`k,orange` button to
 see |chi| (k), shown in the right panel above.
 
-When you press the :kbd:`R,orange` button, the Fourier transform is
+When you press the :button:`R,orange` button, the Fourier transform is
 plotted, as in the bottom panel above.
 
 So :procparam:`rbkg` is the value below which the :demeter:`autobk`
@@ -74,7 +74,7 @@ Now let's examine the effect of choosing different values for
 :procparam:`rbkg`.  First, make a copy of the data so we can directly
 compare different values. Do that by selecting :menuselection:`Group
 --> Copy current group` or by pressing
-:kbd:`Alt`-:kbd:`y`. :demeter:`athena` now looks like this.
+:button:`Alt`-:button:`y`. :demeter:`athena` now looks like this.
 
 .. _fig-rbkg:
 
@@ -83,17 +83,17 @@ compare different values. Do that by selecting :menuselection:`Group
    :width: 65%
    :align: center
 
-   The original ``fe.060`` data and a copy of that data.
+   The original :file:`fe.060` data and a copy of that data.
 
 Click on the group *Copy of fe.060* to display its parameters in the
 main window. Change :procparam:`rbkg` to 0.2. Now we want to directly
 compare these two ways of removing the background. The way of plotting
 multiple items in the groups list involves the row of purple plotting
 buttons and the little check buttons next to the items in the group
-list. Click on the little check buttons next to *fe.060* and *Copy 1
-of fe.060*, as shown in the screenshot above. Now plot these two items
-by clicking the :kbd:`R,purple` button. It should look something like
-this.
+list. Click on the little check buttons next to :guilabel:`fe.060` and
+:guilabel:`Copy 1 of fe.060`, as shown in the screenshot above. Now
+plot these two items by clicking the :button:`R,purple` button. It should
+look something like this.
 
 .. subfigstart::
 

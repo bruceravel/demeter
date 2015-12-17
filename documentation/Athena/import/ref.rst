@@ -39,13 +39,13 @@ elastically scattered radiation through the standard with a PIN diode.
 In that case, I0 is the numerator and the diode is the denominator.
 
 You can plot the reference channel to make sure that you have selected
-the correct channels with the :quoted:`Plot reference` check
+the correct channels with the :guilabel:`Plot reference` check
 button. If your reference standard is of an element with a nearby edge
-energy, uncheck the button labeled :quoted:`Same element`. If you use
+energy, uncheck the button labeled :guilabel:`Same element`. If you use
 some other kind of reference measurement that is not a transmission
-measurement, you can uncheck the :quoted:`Natural log` button.
+measurement, you can uncheck the :guilabel:`Natural log` button.
 
-When you click the :kbd:`OK,light` button, the data are imported and
+When you click the :button:`OK,light` button, the data are imported and
 inserted into the group list. The reference channel is placed in the
 group list below its data. The reference channel is just like any
 other group, with one distinction. The data and its reference channel

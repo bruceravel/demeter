@@ -19,9 +19,9 @@ heterogeneous sample.
 A worked example of linear combination fitting is shown `later in this
 manual <../examples/aucl.html>`__.
 
-To access this feature, choose :quoted:`Linear combination fit` from the main
-menu. The normal parameter view will be replaced by the tool in the
-following figure for performing the linear combination fit.
+To access this feature, choose :guilabel:`Linear combination fit` from
+the main menu. The normal parameter view will be replaced by the tool
+in the following figure for performing the linear combination fit.
 
 .. _fig-lcf:
 
@@ -85,7 +85,7 @@ E\ :sub:`0` of the unknown. Thus the linear offset is introduced only after the
 edge of the unknown. The purpose of this offset is to accommodate any
 variations in how the normalization is performed on the various
 spectra. To turn on the linear offset in the fit just click on the
-button labeled :quoted:`Add a linear term after e0?`
+button labeled :guilabel:`Add a linear term after e0?`
 
 .. CAUTION::
    For best results, you should do a good job of aligning and
@@ -103,7 +103,7 @@ checkbuttons near the bottom of the tool.
 
 **Weights between 0 and 1** 
     You can constrain the variable weights to be between 0 and 1 by
-    clicking on the button labeled :quoted:`Weights between 0 & 1`.
+    clicking on the button labeled :guilabel:`Weights between 0 & 1`.
     In this case, each weight used is computed from the variable using
     this formula:
 
@@ -158,7 +158,7 @@ checkbuttons near the bottom of the tool.
     necessary to find a suitable level of noise for your test. For fits
     to |chi| (k), note that the noise is added to the data **before**
     k-weighting. You can examine the level of noise relative to your
-    data before fitting by using the :kbd:`Plot data and sum,light` button from the
+    data before fitting by using the :button:`Plot data and sum,light` button from the
     actions list.
 **Adding a linear term to the fit**
     A line with a variable slope and offset can be added to a fit. The
@@ -169,11 +169,11 @@ checkbuttons near the bottom of the tool.
 Fitting, statistics, reports
 ----------------------------
 
-To perform the fit, click :kbd:`Fit,light` from the actions
+To perform the fit, click :button:`Fit,light` from the actions
 list. After the fit finishes, the data and the linear combination will
 be plotted along with vertical bars indicating the range over which
 the fit was evaluated. The values of all the fitting parameters are
-written to the :quoted:`Fit results` tab.
+written to the :guilabel:`Fit results` tab.
 
 Interpretation of the statistical parameters in the linear combination
 fit is somewhat challenging. There are two reasons for this, both of
@@ -215,17 +215,17 @@ results of sample fractions must be meaningful in the context of any
 external knowledge you have about the system.
 
 You can replot the data and the fit using the most recent values for the
-fitted parameters by clicking :kbd:`Plot,light` in the actions list.
+fitted parameters by clicking :button:`Plot,light` in the actions list.
 
 You can save the text from the fit results box to a file by clicking
-:kbd:`Write a report,light` in the actions list. This writes a column data file
+:button:`Write a report,light` in the actions list. This writes a column data file
 with the fit results as the header information. The columns in the file
 are x-axis (either energy or k), the data, the best fit, the residual,
 and each of the weighted components.
 
 You can make a data group out of the linear combination by clicking
-:kbd:`Make fit group,light` in the actions list or out of the residual
-by clicking :kbd:`Make difference group,light` in the actions
+:button:`Make fit group,light` in the actions list or out of the residual
+by clicking :button:`Make difference group,light` in the actions
 list. This will allow you to plot and manipulate the fit or difference
 after leaving the linear combination tool. The data group containing
 the fit result will be treated as normal data that can have a
@@ -233,7 +233,7 @@ background removed or be Fourier transformed. When you save a fit
 using the derivative spectra, the fit group will be saved as a normal
 |mu| (E) spectrum.
 
-:kbd:`Reset,light` in the actions list returns almost everything in
+:button:`Reset,light` in the actions list returns almost everything in
 the tool back to its original state.
 
 If you need more than four standards, the number of standards as well as
@@ -245,11 +245,11 @@ using the `preferences tool <../other/prefs.html>`__.
 Batch processing
 ----------------
 
-One of the choices in the actions list is to :kbd:`Fit marked
+One of the choices in the actions list is to :button:`Fit marked
 groups,light`. All groups marked by having their mark buttons checked
 will be fit in the manner described above using the current selection
 of fitting standards and other fitting options. When the sequence of
-fits is finished, the :kbd:`Write marked report,light` option will
+fits is finished, the :button:`Write marked report,light` option will
 become enabled in the operation list.  This will allow you to write a
 report in the form of a comma separated value file which summarizes
 the results of the sequence of fits. This report file can be read into
@@ -285,7 +285,7 @@ how it works:
    for all of the standards that you wish to consider.
 
 #. You can limit the number of standards used in each fit with the
-   incrementer widget just below the button marked :kbd:`Use marked
+   incrementer widget just below the button marked :button:`Use marked
    groups,light`.  By default this number is 4, which says that the
    fits will consider all possible binary, ternary, and quaternary
    combinations of standards. Increase this number to consider higher
@@ -297,13 +297,13 @@ how it works:
    contain the required standards, thus greatly reducing the scope of
    the combinatorial problem.
 
-#. Click :kbd:`Fit all possible combinations,light` in the actions list and go get
+#. Click :button:`Fit all possible combinations,light` in the actions list and go get
    a cup of coffee. If the number of possible standards is large, this
    series of fits could take a while. For example, with 11 standards and
    considering up to the quaternary combinations, :demeter:`athena` will perform
    550 fits. (Really! C(11, 2) + C(11, 3) + C(11, 4) = 550!)
 
-Once this series of fits finishes, the tab labeled :quoted:`Combinatorics` will
+Once this series of fits finishes, the tab labeled :guilabel:`Combinatorics` will
 become active and raise to the top. In this tab, you will see two
 tables. The top table concisely summarizes all the fits that were
 performed, in order of increasing R-factor. Initially, the first item in
@@ -349,11 +349,11 @@ Clicking the right mouse button on a fit in the upper table will post a
 context menu with options relevant to the selected fit. These options
 include saving the fit as a data group; writing a data file with columns
 for the data, fit, residual, and each weighted standard; saving the
-report from the :quoted:`Fit results` tab to a file; and writing a
+report from the :guilabel:`Fit results` tab to a file; and writing a
 comma-separated-value report for the entire combinatorial sequence which
 can be imported into a spreadsheet program.
 
-Beneath the tables is a button labeled :kbd:`Write CSV report for all
+Beneath the tables is a button labeled :button:`Write CSV report for all
 fits,light`.  Clicking this will prompt you for a file name and
 location, then write a comma-separated-value report of all fits.
 

@@ -20,10 +20,10 @@ the :demeter:`autobk` algorithm might have a hard time following that
 swiftly changing part of |mu| (E). The background removal might be
 improved by starting the spline range at a higher value. A good way to
 test the effect of spline range is to make a copy
-(:kbd:`Alt`-:kbd:`y`) of the data group, change the lower spline
+(:button:`Alt`-:button:`y`) of the data group, change the lower spline
 boundary to a large value for the copy, and plot both groups as
-|chi| (k) or |chi| (R) using the :kbd:`k,purple` button or the
-:kbd:`R,purple` button.
+|chi| (k) or |chi| (R) using the :button:`k,purple` button or the
+:button:`R,purple` button.
 
 Changing the upper bound of the spline range is often helpful in data
 where the signal becomes very small at high k such that the level of

@@ -38,25 +38,25 @@ of the project file. The group listing uses extended selection:
 
 -  Click on an item in the list to select one group
 
-- :kbd:`Control`-:kbd:`Left` (i.e. hold down the :kbd:`Control` key
+- :button:`Control`-:button:`Left` (i.e. hold down the :button:`Control` key
    while clicking the left mouse button) on an item in the list to add
    it to the selection
 
-- :kbd:`Shift`-:kbd:`click` to on a group to select all groups between
+- :button:`Shift`-:button:`click` to on a group to select all groups between
    it and the previously selected group.
 
-The buttons labeled :kbd:`Select all,light`, and :kbd:`Select none,light` can be
+The buttons labeled :button:`Select all,light`, and :button:`Select none,light` can be
 used to select all groups or to clear the selection. The
-:kbd:`Invert,light` button will invert the selection of each group.
+:button:`Invert,light` button will invert the selection of each group.
 
 Below those three buttons are a series of controls allowing somewhat
 finer grained control over how items from the group list are selected.
-The :kbd:`Select every,light` line allows selection by a regular
-pattern.  :kbd:`Select matching,light` allows you to select groups
+The :button:`Select every,light` line allows selection by a regular
+pattern.  :button:`Select matching,light` allows you to select groups
 that match a specified pattern using the full strength of perl's
 `regular expressions
 <../ui/mark.html#using-regular-expressions-to-mark-groups>`__.
 
 Once you have selected the groups you want to import, click the
-:kbd:`Import selected data,light` button.  If no groups are selected
+:button:`Import selected data,light` button.  If no groups are selected
 then *all* the groups will be imported.

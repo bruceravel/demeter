@@ -91,7 +91,7 @@ directives for use in Demeter's documents, including:
   on-screen button in one of four styles (dark, light, purple, orange)
   ::
 
-     :kbd:`R,purple`
+     :button:`R,purple`
   
 The ``_templates`` folder contains some customizations for the html
 pages, including:
@@ -107,8 +107,8 @@ pages, including:
   subfigures nicely in the html output
 
 - ``program.css``: this style sheet applies some program specific
-  branding to the document.  Currently it is used to set the color of
-  the navigation bar at the top and bottom of each page.
+  branding to the document.  Currently it is only used to set the
+  color of the navigation bar at the top and bottom of each page.
 
 
 The other content of ``sphinx/ext/`` was swiped from `Larch's document
@@ -126,7 +126,7 @@ that gets linked to each image) must have a path relative to its
 location in ``_build/html/_images``.  As a result, the path to image
 always has one more ``../`` than the target.
 
-I am currently the using `built-in figref role
+I am currently the using `built-in numref role
 <http://sphinx-doc.org/markup/inline.html#cross-referencing-figures-by-figure-number>`_
 for figure numbering.  This only supports the html builder.  The
 numfig extension purports to support LaTeX, but it fails to do the

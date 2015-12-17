@@ -14,9 +14,9 @@ of the data processing and data analysis chores use the marked groups.
 
 :demeter:`athena` offers a number of simple tools for marking or
 unmarking groups.  These are found in the :guilabel:`Mark` menu, as
-shown below, and also have keyboard bindings. :kbd:`Alt`-:kbd:`a`
-marks all groups, :kbd:`Alt`-:kbd:`u` unmarks all groups, and
-:kbd:`Alt`-:kbd:`i` inverts the markings such that the marked groups
+shown below, and also have keyboard bindings. :button:`Alt`-:button:`a`
+marks all groups, :button:`Alt`-:button:`u` unmarks all groups, and
+:button:`Alt`-:button:`i` inverts the markings such that the marked groups
 become unmarked and the unmarked ones become marked. The three buttons
 above the group list also serve to make all, mark none, and invert the
 marks.
@@ -39,7 +39,7 @@ Using regular expressions to mark groups
 :mark:`lightning,..` There is one more tool which is considerably more
 powerful and flexible.  In the :guilabel:`Mark` menu, this last
 marking tool it is called *Mark regex* and it is bound to
-:kbd:`Alt`-:kbd:`r`.
+:button:`Alt`-:button:`r`.
 
 So, what does *regex* mean?
 
@@ -74,8 +74,8 @@ To make plots of arbitrary combinations of spectra, you can click the
 appropriate mark buttons on and off. Using regular expression marking
 is quicker and easier. I'll start with a couple simple examples. If
 you want to mark only the vanadium foil spectra, hit
-:kbd:`Alt`-:kbd:`r` and then enter foil. To mark the V2O3 and V2O5,
-but none of the others, hit :kbd:`Alt`-:kbd:`r` and enter V2.
+:button:`Alt`-:button:`r` and then enter foil. To mark the V2O3 and V2O5,
+but none of the others, hit :button:`Alt`-:button:`r` and enter V2.
 
 In fact, you get to use the entire power of perl's regular expression
 language (see `the regular expression documentation at

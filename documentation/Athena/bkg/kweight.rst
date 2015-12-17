@@ -27,10 +27,11 @@ oscillatory structure of |mu| (E) to put a restraint on the fit used
 to determine |mu|\ :sub:`0`\ (E).
 
 The user-selected multiplicative coefficient takes one of six
-predefined values: :quoted:`none`, :quoted:`slight`, :quoted:`weak`,
-:quoted:`medium`, :quoted:`strong`, or :quoted:`rigid`. These have
-values of 0, 3, 6, 12, 24, and 96, respectively and serve to set the
-strength of the clamp in the evaluation of |chi|\ :sup:`2`.
+predefined values: :guilabel:`none`, :guilabel:`slight`,
+:guilabel:`weak`, :guilabel:`medium`, :guilabel:`strong`, or
+:guilabel:`rigid`. These have values of 0, 3, 6, 12, 24, and 96,
+respectively and serve to set the strength of the clamp in the
+evaluation of |chi|\ :sup:`2`.
 
 .. subfigstart::
 
@@ -40,10 +41,11 @@ strength of the clamp in the evaluation of |chi|\ :sup:`2`.
    :target: ../_images/clamp_mu.png
    :width: 100%
 
-   EuTiO\ :sub:`3` Ti K-edge data with the background
-   subtracted using a :procparam:`kweight` of 1 and a high-end spline clamp of
-   :quoted:`none`. Note that the end of the spline deviates significantly
-   from the end of the data.
+   EuTiO\ :sub:`3` Ti K-edge data with the background subtracted using
+   a :procparam:`kweight` of 1 and a high-end spline clamp of
+   :guilabel:`none`. Note that the end of the spline deviates
+   significantly from the end of the data.
+
 .. _fig-clamp_chi:
 
 .. figure::  ../../_images/clamp_chi.png
@@ -52,7 +54,7 @@ strength of the clamp in the evaluation of |chi|\ :sup:`2`.
 
    Comparing the effects of different values of the high-end spline
    clamp on the EuTiO\ :sub:`3` data with all other parameters
-   equal. The data using the :quoted:`rigid` clamp show the most
+   equal. The data using the :guilabel:`rigid` clamp show the most
    physically reasonable behavior at the end of the data range.
 
 .. subfigend::
@@ -60,8 +62,8 @@ strength of the clamp in the evaluation of |chi|\ :sup:`2`.
    :label: _fig-clamp
 
 
-The default value of the clamp is :quoted:`none` at the low end of the energy
-range and :quoted:`strong` at the high end. Clamps tend not to help at the low
+The default value of the clamp is :guilabel:`none` at the low end of the energy
+range and :guilabel:`strong` at the high end. Clamps tend not to help at the low
 energy end of the data. Since the |mu| (E) data is changing so quickly near
 the edge, biasing the spline to follow the data closely rarely helps
 improve the quality of the |chi| (k) data. A strong clamp at the high energy

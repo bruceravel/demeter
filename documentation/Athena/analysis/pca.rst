@@ -44,16 +44,16 @@ enabled or disabled depending on whether the selected group is marked
 (and therefore one of the data sets in the PCA) or not (and therefore
 a subject for target transformation).
 
-Clicking the :kbd:`Perform PCA,light` button will perform
+Clicking the :button:`Perform PCA,light` button will perform
 normalization on all the data as needed, then perform the components
 analysis. Upon completion, some results are printed to the text box
 and several buttons become enabled.
 
 After the PCA completes, a plot is made of the extracted components.
-This plot can be recovered by clicking the :quoted:`Components` button
-under the :quoted:`Plots` heading. The number spinner is used to
-restrict which components are plotted. Because the first component is
-often so much bigger than the rest, it is often useful to set that
+This plot can be recovered by clicking the :guilabel:`Components`
+button under the :guilabel:`Plots` heading. The number spinner is used
+to restrict which components are plotted. Because the first component
+is often so much bigger than the rest, it is often useful to set that
 number to 2, in which case the first (and largest) component is left
 off the plot.
 
@@ -92,7 +92,7 @@ reconstruction of an intermeidate time point using the top 3 components.
    :label: _fig-pcabasics
 
 Selecting one of the standards in the group list enables the
-:kbd:`Target transform` button. Clicking it shows the result of the
+:button:`Target transform` button. Clicking it shows the result of the
 transform and displays the coefficients of the transform in the
 smaller text box.
 

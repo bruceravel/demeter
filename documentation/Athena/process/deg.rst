@@ -48,10 +48,10 @@ memory. The data on disk are never altered.
 There are two methods of deglitching offered by :demeter:`athena`'s
 deglitching tool, shown above. The first involves selecting and
 removing the glitches one by one. The points are selected by clicking
-the :kbd:`Choose a point,light` button then clicking on the glitch in
+the :button:`Choose a point,light` button then clicking on the glitch in
 the plot. After clicking on the plot window, the selected point is
 indicated with an orange circle, as on the left of the next
-figure. Clicking the :kbd:`Remove point,light` button removes that
+figure. Clicking the :button:`Remove point,light` button removes that
 point from the data, shown in the bottom panel.
 
 .. subfigstart::
@@ -97,7 +97,7 @@ values. The lines are drawn a set amount above and below the post-edge
 line used to normalize the data. The separation between the post-edge
 line and the margins is given by the value in the tolerance box.
 
-When you click the :kbd:`Remove glitches,light` button, and points
+When you click the :button:`Remove glitches,light` button, and points
 that within the energy range of the margins but which lie above the
 upper margin or below the lower margin are removed from the
 data. These margins can also be drawn in the pre-edge region using the
@@ -158,7 +158,7 @@ small glitches might be easier to see and to pluck from the data when
 the data is plotted as |chi| (E). The point-by-point deglitching
 algorithm works on the |chi| (E) data in the same manner as for
 |mu| (E) data. Points are selected by clicking on the plot, then
-removed by clicking the :kbd:`Remove point,light` button.
+removed by clicking the :button:`Remove point,light` button.
 
 
 
@@ -185,7 +185,7 @@ chosen by typing in the box or by using `the pluck button
 
 When you select a point, it is indicated with a vertical line, as shown
 in the plot above. To remove the data before or after that line, click
-the :kbd:`Truncate data,light` button.
+the :button:`Truncate data,light` button.
 
 Sometimes the issue is not simply that the data are unreliable after a
 certain point. Sometimes your sample has elements with nearby edges,

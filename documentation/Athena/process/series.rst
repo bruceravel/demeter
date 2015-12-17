@@ -9,7 +9,7 @@ varying a single processing parameter over a specified range. The
 window. You give an initial value, an increment, and a number of
 copies, thus specifying the range over which the parameter is examine.
 
-Clicking the :kbd:`Make series,light` button creates copies of the
+Clicking the :button:`Make series,light` button creates copies of the
 current data group with the examined parameter set incrementally. The
 set of copied groups are marked and plotted in the space most
 appropriate for the examined parameter.

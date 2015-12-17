@@ -16,7 +16,7 @@ will make that group current, display parameters appropriate to the data
 processing tool, sometimes plotting the data in some appropriate manner.
 
 When you are finished using the data processing tool, you can press
-the button labeled :kbd:`Return to the main window,light`. Doing so
+the button labeled :button:`Return to the main window,light`. Doing so
 will close the special tool and redisplay the main window.
 
 .. _fig-process:

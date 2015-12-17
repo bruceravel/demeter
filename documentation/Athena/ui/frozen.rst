@@ -33,7 +33,7 @@ screenshot below.
    highlighting the group list and the disabling of most controls.
 
 The frozen state of the current group can be toggled using the
-:guilabel:`Freeze` check button or by typing :kbd:`Alt`-:kbd:`f`. You
+:guilabel:`Freeze` check button or by typing :button:`Alt`-:button:`f`. You
 can set the frozen state of multiple groups using the items in the
 :guilabel:`Freeze` menu. There you will find options for freezing or
 unfreezing all groups, all marked groups, or groups which match
@@ -48,4 +48,4 @@ When a group is frozen, direct edits of parameter values are
 disallowed.  Frozen groups are skipped for algorithmic edits, such as
 parameter constraints or alignment. You can, however, still remove a
 frozen group from the project. Unfreezing a group is a simple as
-hitting :kbd:`Alt`-:kbd:`f` again.
+hitting :button:`Alt`-:button:`f` again.

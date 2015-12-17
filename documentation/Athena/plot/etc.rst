@@ -35,7 +35,7 @@ Special plots for the current group
     first imported. Using the current set of processing parameters,
     the data are displayed in energy, k, R, and back-transform k all
     in the same plot window. This plot can also be made by
-    right-clicking on the :kbd:`kq,orange` button.
+    right-clicking on the :button:`kq,orange` button.
 
     .. _fig-quadplot:
 
@@ -66,7 +66,7 @@ Special plots for the current group
     saved in `a project file <../output/project.html>`__. This example
     shows |mu| (E) of Au chloride along with the signal and I\
     :sub:`0` channels. This plot can also be made by right-clicking on
-    the :kbd:`E,orange` button. (The norm+deriv plot can be configured
+    the :button:`E,orange` button. (The norm+deriv plot can be configured
     for right-click use with the
     :configparam:`athena,right\_single\_e` `configuration parameter
     <../other/prefs.html>`__.)
@@ -85,7 +85,7 @@ Special plots for the current group
     the |chi| (k) spectrum. The k\ :sup:`1`-weighted spectrum is scaled
     up to be about the same size as the k\ :sup:`2`-weighted
     spectrum. Similarly, the k\ :sup:`3`-weighted spectrum is scaled
-    down. This plot can also be made by right-clicking on the :kbd:`k,orange`
+    down. This plot can also be made by right-clicking on the :button:`k,orange`
     button.
 
     .. _fig-k123plot:
@@ -105,7 +105,7 @@ Special plots for the current group
     Similarly, the FT of the k\ :sup:`3`-weighted spectrum is scaled down. The
     current setting in the `R tab <tabs.html#plotting-in-r-space>`__ is
     used to make this plot. For this figure, the magnitude setting was
-    selected. This plot can also be made by right-clicking on the :kbd:`R,orange`
+    selected. This plot can also be made by right-clicking on the :button:`R,orange`
     button.
 
     .. _fig-r123plot:
@@ -121,7 +121,7 @@ Special plots for the current group
 Special plots for the marked groups
 -----------------------------------
 
-The :quoted:`Marked groups` submenu offers two special kinds of plots relating
+The :menuselection:`Plot --> Marked groups` submenu offers two special kinds of plots relating
 to the set of groups in the group list that have been
 `marked <../ui/mark.html>`__.
 
@@ -129,7 +129,7 @@ to the set of groups in the group list that have been
     This special plot is like the quad plot described above, but is
     used to compare two marked groups. To make this plot you must have
     two – and only two – groups selected from the group list. This
-    plot can also be made by right-clicking on the :kbd:`q,purple`
+    plot can also be made by right-clicking on the :button:`q,purple`
     button.
 
     .. _fig-biquadplot:
@@ -158,7 +158,7 @@ to the set of groups in the group list that have been
        
 **Plot I0 of marked groups**
     This plot allows examination of the I\ :sub:`0` signals of a set of marked
-    groups. This plot can also be made by right-clicking on the :kbd:`E,purple`
+    groups. This plot can also be made by right-clicking on the :button:`E,purple`
     button. (The other two special marked groups plots can be configured
     for right-click use with the :configparam:`athena,right\_marked\_e`
     `configuration parameter <../other/prefs.html>`__.)
@@ -236,10 +236,10 @@ Special plotting targets
 ------------------------
 
 The Plot menu provides a few more ways to control how your data are
-displayed. The :guilabel:`Save last plot as` submenu allows you to
-send the most recent plot to a PNG or PDF file. You will be prompted
-for a filename, then the most recent plot will be written to that file
-in the format specified. Currently, only PNG and PDF are
+displayed. The :menuselection:`Plot --> Save last plot as` submenu
+allows you to send the most recent plot to a PNG or PDF file. You will
+be prompted for a filename, then the most recent plot will be written
+to that file in the format specified. Currently, only PNG and PDF are
 supported. Saving to a file does not work for quad plots – you'll have
 to rely on a screen-capture tool for that.
 
@@ -256,7 +256,7 @@ plot on screen while continuing to make new plots.
 Phase corrected plots
 ---------------------
 
-When the :quoted:`phase correction` check button is clicked on, the Fourier
+When the :guilabel:`phase correction` check button is clicked on, the Fourier
 transform for that data group will be made by subtracting the central
 atom phase shift. This is an incomplete phase correction – in
 :demeter:`athena` we know the central atom but do not necessarily have
@@ -268,7 +268,7 @@ central atom phase corrected |chi| (R).
 
 Also note that the phase correction propagates through to |chi|
 (q). While the window function will display sensibly with the central
-atom phase corrected |chi| (q), a :kbd:`kq,orange` plot will be
+atom phase corrected |chi| (q), a :button:`kq,orange` plot will be
 somewhat less insightful because phase correction is not performed on
 the original |chi| (k) data.
 

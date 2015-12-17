@@ -51,7 +51,7 @@ is selected from the menu labeled :guilabel:`Form`. The multiplier is a
 scaling factor that can be applied to the standard before subtraction.
 
 If you have accidentally swapped the standard and data, click the
-:kbd:`invert,light` button to change the order of the subtraction.
+:button:`invert,light` button to change the order of the subtraction.
 
 You can select two points, shown in the plot below by the brown markers,
 and integrate the area under that part of the spectrum.
@@ -59,14 +59,14 @@ and integrate the area under that part of the spectrum.
 The difference spectra saved to data groups. Those data groups are
 treated in every way like any other data group. By default, difference
 groups are marked as normalized groups – that is, a flag is set which
-skips the normalization algorithm. The :kbd:`renormalize,light` button can
+skips the normalization algorithm. The :button:`renormalize,light` button can
 be ticked to make the resulting group a normal |mu| (E) group. When
 the form of the difference is set to plain |mu| (E), that button will
 be ticked.
 
 The name of the resulting data group will be set using the
-:quoted:`Name template`, which includes a mini-language of tokens that
-will be substituted by specific values.
+:guilabel:`Name template`, which includes a mini-language of tokens
+that will be substituted by specific values.
 
 ``%d``
     Replaced by the name of the data group.
@@ -111,7 +111,7 @@ will be substituted by specific values.
 
 The integrated areas obtained by computing a sequence over all groups
 marked in the group list can be plotted by clicking the button labeled
-:kbd:`Plot integrated areas for all marked groups,light`.  The result
+:button:`Plot integrated areas for all marked groups,light`.  The result
 of this shown below.
 
 .. _fig-diffareas:

@@ -13,7 +13,7 @@ of the marked groups sequentially.
 This tab contains two text entry boxes. The first is used to set the
 :procparam:`y-axis offset` parameter of the first marked group. Subsequent marked
 groups have their :procparam:`y-axis offset` parameters incremented by the amount
-of the second text entry box. Clicking the :kbd:`Apply to marked,light` button
+of the second text entry box. Clicking the :button:`Apply to marked,light` button
 sets these values for each marked group.
 
 .. subfigstart::

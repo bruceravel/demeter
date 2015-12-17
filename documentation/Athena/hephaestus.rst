@@ -32,12 +32,12 @@ information about the plotted data is displayed in the status bar.
 
 The :guilabel:`Hephaestus` menu in the menu bar provides another way
 of navigating between the tools. The mouse can be used, as can the
-keyboard. :kbd:`Alt`-:kbd:`e`, :kbd:`Alt`-:kbd:`p` and
-:kbd:`Alt`-:kbd:`h` post the :guilabel:`Hephaestus`, :guilabel:`Plot`,
-or :guilabel:`Help` menus. :kbd:`Control`-:kbd:`1` through
-:kbd:`Control`-:kbd:`9` change the display the various
-tools. :kbd:`Control`-:kbd:`m` displays the document in a web browser,
-while :kbd:`Control`-:kbd:`c` changes the display to the configuration
+keyboard. :button:`Alt`-:button:`e`, :button:`Alt`-:button:`p` and
+:button:`Alt`-:button:`h` post the :guilabel:`Hephaestus`, :guilabel:`Plot`,
+or :guilabel:`Help` menus. :button:`Control`-:button:`1` through
+:button:`Control`-:button:`9` change the display the various
+tools. :button:`Control`-:button:`m` displays the document in a web browser,
+while :button:`Control`-:button:`c` changes the display to the configuration
 tool.
 
 
@@ -59,7 +59,7 @@ are two controls for determining the appropriate Z-1 or Z-2 filter to
 use in a fluorescence experiment. The :guilabel:`Filter` text box will
 be filled with the likeliest candidate for the element selected from
 the periodic table.  This can be edited by hand. Clicking the
-:kbd:`Plot filter,light` button will display a plot showing the
+:button:`Plot filter,light` button will display a plot showing the
 relative locations of the edge energy, the dominant fluorescence
 lines, and the filter edge energy.
 
@@ -137,7 +137,7 @@ Beamline customization
 ~~~~~~~~~~~~~~~~~~~~~~
 
 When beamline customization is enabled, the two buttons labeled
-:kbd:`Show K edges,light` and :kbd:`Show L edges,light` will be
+:button:`Show K edges,light` and :button:`Show L edges,light` will be
 visible. These are both toggle buttons. When pressed, they will
 disable all elements that cannot be measured by that edge at the
 beamline.
@@ -377,8 +377,8 @@ given energy. The calculation requires several parameters, including
    pressure is 760 Torr.
 
 The percentage absorbed by the ion chamber will usually auto-update as
-you change the parameters. Clicking the :kbd:`Compute,light` button
-forces an update. Clicking the :kbd:`Reset,light` button returns all
+you change the parameters. Clicking the :button:`Compute,light` button
+forces an update. Clicking the :button:`Reset,light` button returns all
 the parameters to their initial values.
 
 As a rule of thumb, 10% is a good amount of absorption for the I0
@@ -553,7 +553,7 @@ The XANES data can be plotted as normalized |mu| (E) or as the derivative
 of |mu| (E). The data present have all been annotated so that interesting
 points are marked on the plots.
 
-The :kbd:`Save,light` button will prompt for a file name and save the
+The :button:`Save,light` button will prompt for a file name and save the
 |mu| (E) data to a file.
 
 One point of this tool is to make obsolete the :quoted:`Reference Spectra`
@@ -627,8 +627,8 @@ are presented.
 Click on a group in the :guilabel:`Parameters` list to open a
 group. Click on a parameter to display it in the controls on the
 right. You will be given controls appropriate to each parameter's data
-type for setting the parameter value. The :kbd:`Your value,light` and
-:kbd:`Demeter's value,light` buttons can be used to restore a
+type for setting the parameter value. The :button:`Your value,light` and
+:button:`Demeter's value,light` buttons can be used to restore a
 parameter's value. A description of the displayed parameter will be
 written in the large text box.
 

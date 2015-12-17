@@ -32,8 +32,8 @@ A `Savitsky-Golay filter
 is available when using :demeter:`larch`, but not with
 :demeter:`ifeffit`.
 
-You can overplot the data and the smoothed data using the :kbd:`Plot
-data and smoothed,light`. The :kbd:`Make smoothed group,light` button
+You can overplot the data and the smoothed data using the :button:`Plot
+data and smoothed,light`. The :button:`Make smoothed group,light` button
 makes a group out of the smoothed data and places it in the group
 list.
 

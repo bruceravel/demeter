@@ -7,7 +7,7 @@ Converting raw data to mu(E)
 ----------------------------
 
 To import a data file, select :menuselection:`File --> Import data` or
-type :kbd:`Control`-:kbd:`o`. Alternately, you can drag one or more
+type :button:`Control`-:button:`o`. Alternately, you can drag one or more
 data files from your computer's file manager and drop them onto the
 group list. A file selection dialog opens. On my Linux computer, it
 looks like this:
@@ -23,7 +23,7 @@ looks like this:
 
 It looks somewhat different on Windows, but behaves the same. It allows
 you to navigate your disk to find the file you want to import. Once you
-find that file, click on it then click on the :kbd:`Open` button.
+find that file, click on it then click on the :button:`Open` button.
 
 Once you have selected a file to import the column selection dialog,
 shown below, appears.
@@ -134,7 +134,7 @@ index, requires special treatment.
 .. versionadded:: 0.9.20 There is now a label on the main page right
    next to the :guilabel:`Freeze` check button which identifies the file
    type of the data. You can toggle between xanes and xmu data by
-   :kbd:`Control`-:kbd:`Alt`-:kbd:`Left` clicking on that label.
+   :button:`Control`-:button:`Alt`-:button:`Left` clicking on that label.
 
 
 Multi-element detector data

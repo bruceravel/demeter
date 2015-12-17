@@ -34,7 +34,7 @@ the group list.
 Copying groups
 --------------
 
-You can copy a group by hitting :kbd:`Alt`-:kbd:`y` or by selecting
+You can copy a group by hitting :button:`Alt`-:button:`y` or by selecting
 :menuselection:`Group --> Copy group`. This makes an identical copy
 of the current group and places it at the end of the groups list. All
 parameters are identical and the data arrays in :demeter:`ifeffit` are
@@ -54,8 +54,8 @@ Reorganizing the group list
 
 When a file is imported into :demeter:`athena`, the name of the file
 is used as the label in the group list. That's fine, but you can
-change the label by selecting :quoted:`Group --> Rename current group`,
-typing :kbd:`Alt`-:kbd:`l`, or double clicking on an item in
+change the label by selecting :menuselection:`Group --> Rename current group`,
+typing :button:`Alt`-:button:`l`, or double clicking on an item in
 the group list. This posts a dialog for entering the new label for the
 group, shown here.
 
@@ -68,7 +68,7 @@ group, shown here.
 
    Renaming a group list entry.
 
-Hitting Return or clicking the :kbd:`OK,light` button renames the
+Hitting Return or clicking the :button:`OK,light` button renames the
 group, shown here.
 
 .. _fig-renamed:
@@ -86,13 +86,13 @@ of the various parameters in the main window.
 
 There are several other useful tools for modifying the contents of the
 group list. You can reorder the items in the groups list using
-:kbd:`Alt`-:kbd:`k` or :kbd:`Alt`-:kbd:`j` to move the current group
+:button:`Alt`-:button:`k` or :button:`Alt`-:button:`j` to move the current group
 up or down in the list.
 
-Hitting :kbd:`Control`-:kbd:`k` or :kbd:`Control`-:kbd:`j` changes the
+Hitting :button:`Control`-:button:`k` or :button:`Control`-:button:`j` changes the
 current group to the one above or below.
 
-.. caution:: As of version 0.9.20, :kbd:`Control`-drag-and-drop is no longer
+.. caution:: As of version 0.9.20, :button:`Control`-drag-and-drop is no longer
 	     available for reorganizing group list items. That feature
 	     has been discontinued in favor of file drag and drop.
 
@@ -102,7 +102,7 @@ groups can be removed from the project by selecting
 :menuselection:`Group --> Remove marked groups`. You can remove all
 the groups from the list by selecting :menuselection:`File --> Close`
 or :menuselection:`Group --> Close` or by hitting
-:kbd:`Control`-:kbd:`w`.
+:button:`Control`-:button:`w`.
 
 
 Information about items in the group list
@@ -125,6 +125,12 @@ as the contents of the data arrays associated with the group. This way
 of presenting the information is, admittedly, rather cryptic. But it is
 very useful for developing and debugging the software.
 
+If you mistakenly import a data group as the wrong record type, you
+can change it by selecting :menuselection:`Group --> Change record
+type`.  You can only change between the various record types in
+energy, though. If you import a |chi| (k) file as |mu| (E) by
+accident, you will have to remove the group and re-import it.
+
 .. _fig-changetype:
 
 .. figure:: ../../_images/import_changetype.png
@@ -134,16 +140,10 @@ very useful for developing and debugging the software.
 
    Change type dialog
 
-If you mistakenly import a data group as the wrong record type, you
-can change it by selecting :menuselection:`Group --> Change record
-type`.  You can only change between the various record types in
-energy, though. If you import a |chi| (k) file as |mu| (E) by
-accident, you will have to remove the group and re-import it.
-
 
 .. versionadded:: 0.9.20 there is a label on the main window
    displaying the data type. You can toggle between |mu| (E) and XANES
-   data by :kbd:`Control`-:kbd:`Alt` left clicking on that label.
+   data by :button:`Control`-:button:`Alt`-left clicking on that label.
 
 
 
@@ -176,11 +176,11 @@ dialog for renaming that group.
 Shrinking and expanding the group list
 --------------------------------------
 
-The last item in the plotting options tabs, labeled :quoted:`Shrink`,
+The last item in the plotting options tabs, labeled :guilabel:`Shrink`,
 causes the k-weight buttons and plot options tabs to be hidden,
 causing the group list to expand, and allowing the display of more
 data groups. When the plot options tabs is shrunk, it is replaced by a
-button labeled :kbd:`Restore plot options,light`. Clicking this will
+button labeled :button:`Restore plot options,light`. Clicking this will
 return the k-weight buttons and the group list to their original
 places and the group list to its original original size.
 
