@@ -33,6 +33,12 @@ inserted into the box at the lower right. Using these parts of the
 dialog, you can examine the contents of your project file before
 importing them into :demeter:`athena`.
 
+The plot that is made when you select a data group is controlled by
+the :guilabel:`Plot as` box of radio buttons.  These buttons have no
+impact on how the data imported into :demeter:`athena`.  They are only
+used to determine how the data are displayed to you as you select data
+groups for import.
+
 By selecting some of the projects from the list, you can import a subset
 of the project file. The group listing uses extended selection:
 
@@ -45,9 +51,10 @@ of the project file. The group listing uses extended selection:
 - :button:`Shift`-:button:`click` to on a group to select all groups
   between it and the previously selected group.
 
-The buttons labeled :button:`Select all,light`, and :button:`Select none,light` can be
-used to select all groups or to clear the selection. The
-:button:`Invert,light` button will invert the selection of each group.
+The buttons labeled :button:`Select all,light` and :button:`Select
+none,light` can be used to select all groups or to clear the
+selection. The :button:`Invert,light` button will invert the selection
+of each group.
 
 Below those three buttons are a series of controls allowing somewhat
 finer grained control over how items from the group list are selected.

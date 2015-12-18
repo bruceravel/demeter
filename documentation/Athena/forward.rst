@@ -4,7 +4,6 @@ Forward
 
 .. todo::
    #. CC image in epilog
-   #. Write document page for title, legends, single file tab in Plot chapter
    #. Need chapter on contents (and purpose) of the
       :guilabel:`Monitor` menu in the UI chapter
 

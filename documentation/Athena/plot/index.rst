@@ -111,7 +111,6 @@ button can be configured with the
 
    tabs
    krange
-   stack
-   indic
+   other
    params
    etc

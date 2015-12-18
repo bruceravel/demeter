@@ -1,20 +1,6 @@
 
-Other plotting features
-=======================
-
-
-Zooming and cursor position
----------------------------
-
-Zooming on a region of a plot is done using :program:`Gnuplot`'s own
-capabilities.  In the plot window, a zoom is initiated by a right
-click. The mouse is then dragged to cover a rectangular area on the
-plot. Right-clicking a second time will cause the plot to be
-redisplayed on the zoomed region.
-
-:program:`Gnuplot` displays the position of the cursor in the bottom
-part of the plot window. This is continuously updated as the mouse
-moves over the plot window.
+Special plots for XAS data
+==========================
 
 
 Special plots for the current group
@@ -232,26 +218,6 @@ interesting ways.
 
        A plot of merged data and the variance for Fe foil data
 
-
-Special plotting targets
-------------------------
-
-The Plot menu provides a few more ways to control how your data are
-displayed. The :menuselection:`Plot --> Save last plot as` submenu
-allows you to send the most recent plot to a PNG or PDF file. You will
-be prompted for a filename, then the most recent plot will be written
-to that file in the format specified. Currently, only PNG and PDF are
-supported. Saving to a file does not work for quad plots – you'll have
-to rely on a screen-capture tool for that.
-
-Finally, you have the option of directing the on-screen plot to one of
-four terminals. The selected terminal, number 1 by default, is updated
-as new plots are made. When you switch to a new terminal, other active
-terminals will become unchanging. This means you can save a particular
-plot on screen while continuing to make new plots.
-
-.. todo:: Consider other vector output images, like SVG or EPS.
-   Consider making the number of terminals a configuration parameter.
 
 
 Phase corrected plots
