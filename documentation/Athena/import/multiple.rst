@@ -26,7 +26,7 @@ the listing then click on another file while holding down the
 :button:`Shift` key. When you do this, all files between the two you
 clicked on will be selected.
 
-When you click the :button:`OK,light` button, all of the selected files
+When you click the :button:`Open,light` button, all of the selected files
 will be imported. If all of the files are of the same type,
 :demeter:`athena` will import them all with only one interaction of
 the column selection dialog. Thus, if you select several files that

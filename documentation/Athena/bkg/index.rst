@@ -24,8 +24,8 @@ most important background removal parameters.
 
 For many measured |mu| (E) spectra, :demeter:`athena` will do a good
 job of normalizing data and removing the background using its default
-parameters. In other situations -- noisy data, data with large white
-lines, data which terminate in the appearance of another edge -- user
+parameters. In other situations |nd| noisy data, data with large white
+lines, data which terminate in the appearance of another edge |nd| user
 intervention is required. for those situations it is important that
 you understand well how the various parameters in the background
 removal section of the main window affect the data.

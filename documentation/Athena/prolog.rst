@@ -10,3 +10,4 @@
    :rtrim:
 .. |pm|    unicode:: U+00B1 .. PLUS-MINUS SIGN
    :trim:
+.. |nd|    unicode:: U+2013 .. EN DASH

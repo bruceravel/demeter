@@ -38,12 +38,12 @@ of the project file. The group listing uses extended selection:
 
 -  Click on an item in the list to select one group
 
-- :button:`Control`-:button:`Left` (i.e. hold down the :button:`Control` key
-   while clicking the left mouse button) on an item in the list to add
-   it to the selection
+- :button:`Control`-:button:`Left` (i.e. hold down the
+  :button:`Control` key while clicking the left mouse button) on an
+  item in the list to add it to the selection
 
-- :button:`Shift`-:button:`click` to on a group to select all groups between
-   it and the previously selected group.
+- :button:`Shift`-:button:`click` to on a group to select all groups
+  between it and the previously selected group.
 
 The buttons labeled :button:`Select all,light`, and :button:`Select none,light` can be
 used to select all groups or to clear the selection. The
@@ -58,5 +58,9 @@ that match a specified pattern using the full strength of perl's
 <../ui/mark.html#using-regular-expressions-to-mark-groups>`__.
 
 Once you have selected the groups you want to import, click the
-:button:`Import selected data,light` button.  If no groups are selected
-then *all* the groups will be imported.
+:button:`Import selected data,light` button.  
+
+.. note:: If no groups are selected then *all* the groups will be
+	  imported.  The :button:`Select all,light` button is not,
+	  strictly speaking, necessary.
+

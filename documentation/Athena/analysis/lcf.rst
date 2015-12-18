@@ -153,7 +153,7 @@ checkbuttons near the bottom of the tool.
     add pseudo-random noise to the data before performing the fit. This
     is done by generating an array of psuedo-random numbers and adding
     this array to the data. Given that normalized |mu| (E) is used in lCF
-    fits, |sigma| (the scale of the noise) has a simple interpretation -- it
+    fits, |sigma| (the scale of the noise) has a simple interpretation |nd| it
     is a fraction of the edge step. A bit of trial and error might be
     necessary to find a suitable level of noise for your test. For fits
     to |chi| (k), note that the noise is added to the data **before**
@@ -191,7 +191,7 @@ uncertainty ε for the XANES measurement. A value of 1 is used for
 |epsilon| in the equation for chi-square.
 
 These two issues, taken together, mean that chi-square and reduced
-chi-square tend to be very small numbers -- much smaller than 1. As a
+chi-square tend to be very small numbers |nd| much smaller than 1. As a
 result, it is impossible to use reduced chi-square to evaluate the
 quality of a single fit. Relative changes in chi-square between fits are
 probably meaningful. However, given the two problems described above,
@@ -307,7 +307,7 @@ Once this series of fits finishes, the tab labeled :guilabel:`Combinatorics` wil
 become active and raise to the top. In this tab, you will see two
 tables. The top table concisely summarizes all the fits that were
 performed, in order of increasing R-factor. Initially, the first item in
-the list -- which has the lowest R-factor -- is selected (i.e.
+the list |nd| which has the lowest R-factor |nd| is selected (i.e.
 highlighted in pale red).
 
 .. _fig-lcfcombo:

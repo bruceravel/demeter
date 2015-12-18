@@ -5,7 +5,7 @@ Building Demeter's documentation
 Prerequisites
 -------------
 
-This version of the Demeter documentation uses `reSTructuredText
+This version of the Demeter documentation uses `reStructuredText
 <http://docutils.sourceforge.net/docs/user/rst/quickstart.html>`_ and
 the Sphinx document generation system.  Thus to generate useful
 documentation from the source files in this directory, you must have

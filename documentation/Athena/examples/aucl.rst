@@ -178,8 +178,8 @@ Understanding the fit
 
 The fit including the sulfide certainly looks better, but is it? The
 results tab also reports some simple statistics from the fit. The
-R-factor -- a measure of mean square sum of the misfit at each data
-point -- was 0.000073 for the two-standard fit and shrank by a factor of
+R-factor |nd| a measure of mean square sum of the misfit at each data
+point |nd| was 0.000073 for the two-standard fit and shrank by a factor of
 2 to 0.000035 for the three-standard fit. That confirms the observation
 that the degree of misfit seems smaller in the plot of the
 three-standard fit.
@@ -235,7 +235,7 @@ Combinatorial analysis
 ----------------------
 
 Testing each standard against the data sounds like an unbearably
-boring process -- particularly since we may, in principle, want to
+boring process |nd| particularly since we may, in principle, want to
 consider all possible binary, ternary, or higher combinations of
 standards. The project file contains 9 standards. All possible
 combinations of 2 or 3 standards from a pool of 9 results in 120
@@ -314,7 +314,7 @@ Analyzing the data series
 -------------------------
 
 To investigate the kinetics of this system, we will now apply the
-model consisting of three species -- metal, chloride, and sulfide --
+model consisting of three species |nd| metal, chloride, and sulfide |nd|
 to the cyanobacteria measured at each time step. Click on the top line
 of the upper table. This will plot the result for our best fit. It
 will also insert those three standards into the table on the

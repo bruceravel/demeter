@@ -11,7 +11,7 @@ Extending ATHENA to read new file types
 <http://xraypy.github.io/xraylarch/data/index.html>`__ function to
 import data. This means that :demeter:`athena`'s notion of what is an
 acceptable data format is completely identical to :demeter:`ifeffit`'s
-(or :demeter:`larch`'s) notion. The contrapositive is also true -- if
+(or :demeter:`larch`'s) notion. The contrapositive is also true |nd| if
 :demeter:`ifeffit` (or :demeter:`larch`) can read a data file, so can
 :demeter:`athena`.
 

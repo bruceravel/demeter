@@ -52,5 +52,5 @@ spectrum in the plot.
 
 When you are working on data for which a good background removal is
 difficult, changing the spline range is one of the tricks you can pull
-out of your tool bag.
+out of your tool box.
 

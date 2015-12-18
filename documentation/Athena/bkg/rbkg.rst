@@ -185,7 +185,7 @@ is to find a balance.
 A good rule of thumb is that :procparam:`rbkg` should be about half the distance to
 the nearest neighbor. But that is only a rule of thumb. Real data can be
 really difficult. Noisy data, data with strong white lines, data
-truncated by the appearance of another edge -- all of these require
+truncated by the appearance of another edge |nd| all of these require
 careful consideration. While :procparam:`rbkg` is the primary background removal
 parameter, several others should be investigated to yield a good
 background removal. Several of these are the subjects of the following

@@ -23,7 +23,7 @@ looks like this:
 
 It looks somewhat different on Windows, but behaves the same. It allows
 you to navigate your disk to find the file you want to import. Once you
-find that file, click on it then click on the :button:`Open` button.
+find that file, click on it then click on the :button:`Open,light` button.
 
 Once you have selected a file to import the column selection dialog,
 shown below, appears.
@@ -39,7 +39,7 @@ of numbers. These columns need to be combined depending on the nature of
 the experiment. For a transmission experiment, the incident channel is
 divided by transmission channel and the natural log is taken at each
 point. For fluorescence data, the fluorescence channel is divided by the
-incidence channel. Electron yield data is like fluorescence data -- the
+incidence channel. Electron yield data is like fluorescence data |nd| the
 yield channel is divided by the incident channel.
 
 The controls in the tabs at the bottom left are the discussed in later
@@ -106,15 +106,6 @@ The other choices are:
 
    Data types in the column selection dialog.
 
-.. _fig-importchangetype:
-
-.. figure:: ../../_images/import_changetype.png
-   :target: ../_images/import_changetype.png
-   :width: 35%
-   :align: center
-
-   The dialog for changing data type of a group.
-
 If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued (|mu| (E), normalized |mu|
 (E), XANES, or detector) record types at any time by select
@@ -123,6 +114,15 @@ correct choice from the popup dialog, shown here. This dialog cannot,
 however, be used to change |chi| (k) data to an energy-value type or
 vice-versa, nor to change one of the :demeter:`feff` types to a
 non-:demeter:`feff` type.
+
+.. _fig-importchangetype:
+
+.. figure:: ../../_images/import_changetype.png
+   :target: ../_images/import_changetype.png
+   :width: 35%
+   :align: center
+
+   The dialog for changing data type of a group.
 
 :demeter:`athena` uses electron volts as its energy unit. It uses a
 simple heuristic to figure out if an input file is in eV or keV. In
@@ -140,10 +140,10 @@ index, requires special treatment.
 Multi-element detector data
 ---------------------------
 
-:demeter:`athena`'s column selection dialog has some special features for dealing
-with multi-element detectors. You can select all the channels of the MED
-as elements of the numerator, as shown in this example of the column
-selection dialog.
+:demeter:`athena`'s column selection dialog has some special features
+for dealing with multi-element detectors. You can select all the
+channels of the MED as elements of the numerator, as shown in this
+example of the column selection dialog.
 
 .. _fig-importmed:
 
@@ -184,3 +184,32 @@ that are not of usable quality.
 
    After importing the channels of multi-element data as individual groups.
 
+Other controls
+--------------
+
+At the top of the page are three buttons for refining how the column
+selection dialog interacts with your data.  The :button:`Select
+range,light` button pops open a dialog which allows you to specify a
+range of numerator buttons to click all at once.
+
+.. _fig-importcolumnrange:
+
+.. figure:: ../../_images/import_columnrange.png
+   :target: ../_images/import_columnrange.png
+   :width: 35%
+   :align: center
+
+   The dialog for selecting a range of columns.
+
+This expects column *numbers* not labels.  The main purpose of this
+dialog is to deal with MED data with a large number of columns.  It
+would be tedious and error prone to click through a lot of columns.
+This dialog is a way of quickly accomplishing that.
+
+The :button:`Clear numerator,light` button unselects all the numerator
+check button.
+
+The :button:`Pause plotting,light` button will suppress the re-display
+of the plots as you select check buttons in the column selection
+dialog.  This is handy if, for some reason, the re-display of the plot
+is slow or otherwise undesirable.

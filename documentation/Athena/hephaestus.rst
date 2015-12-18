@@ -180,7 +180,7 @@ a stoichiometric formula using a few simple rules.
 
 #. Element symbols must be first letter capitalized.
 
-#. White space is unimportant -- it will be removed from the string. So
+#. White space is unimportant |nd| it will be removed from the string. So
    will dollar signs, underscores, and curly braces (in an attempt to
    handle TeX). Also a sequence like this: :quoted:`/sub 3/` will be converted
    to :quoted:`3` (in an attempt to handle INSPEC).
@@ -322,14 +322,14 @@ when the total absorption is 2.6. In this case, the sample of ferrite
 in BN can be made such that both total absorption and edge step are
 close to optimal. For instance, making the sample with 2 absorption
 lengths (i.e. 8 milligrams or 16.4 microns) of ferrite will result in
-an edge step of 0.68 -- an excellent sample! Not all materials --
+an edge step of 0.68 |nd| an excellent sample! Not all materials |nd|
 particularly those for which a minority dopant is the target of the
-XAS experiment -- work out so well. In practice, sample preparation is
+XAS experiment |nd| work out so well. In practice, sample preparation is
 an exercise in compromise between total absorption and size of edge
 step.
 
     .. bibliography:: athena.bib
-       :filter: author % "Stern"
+       :filter: author % "Stern" and year == "1981"
        :list: bullet
 
 
@@ -342,8 +342,8 @@ Two final notes:
    composed of grains that are small compared to the absorption length.
    In this, you would want micron-sized or smaller grains. Note that a
    stack of laboratory metal meshes are not adequate for separating out
-   powders for this sample. A 400 mesh -- usually the finest one in a
-   common stack of sieves -- has openings of 37 microns. That is vastly
+   powders for this sample. A 400 mesh |nd| usually the finest one in a
+   common stack of sieves |nd| has openings of 37 microns. That is vastly
    too large for your ferrite XAS samples!
 
 #. Transmission XAS samples are often made with 10s of milligrams of
@@ -442,10 +442,15 @@ Data sources:
     Swiped from http://edu.kde.org/kalzium/
 **Mossbauer data**
     List of Mossbauer active isotopes is from http://mossbauer.org,
-    which does not seem to be about Mossbauer spectroscopy anymore.
+    which used to be a site about Mossbauer spectroscopy but now seems 
+    to be a unmaintained science news site.  `Wikipedia
+    <https://en.wikipedia.org/wiki/M%C3%B6ssbauer_spectroscopy>`_ has  
+    a nice periodic table of <ossbauer active elements and Darby Dyer
+    keeps `a lovely page about Mossbauer <http://serc.carleton.edu/research_education/geochemsheets/techniques/mossbauer.html>`_.
 **Ionic radii**
     .. bibliography:: athena.bib
        :filter: author % "Shannon"
+       :list: bullet
 
     Conversion of data to JSON at `Electronic Table of Shannon Ionic
     Radii, J. David Van Horn, 2001, downloaded
@@ -453,6 +458,7 @@ Data sources:
 **Neutron data**
     .. bibliography:: athena.bib
        :filter: author % "Sears"
+       :list: bullet
 
     See also https://www.ncnr.nist.gov/resources/n-lengths/list.html 
     Scattering lengths are in femtometers, cross sections are in barns
@@ -641,11 +647,11 @@ to your configuration file.
 Credits
 -------
 
-- The layout of :demeter:`hephaestus` -- with its button bar on the
-  left side which changes the mode of the main part of the program --
-  was inspired by the personal information management program I use
-  on my KDE systems, Kontact. I found it effective so I swiped it for
-  this program.
+- The layout of :demeter:`hephaestus` |nd| with its button bar on the
+  left side which changes the mode of the main part of the program
+  |nd| was inspired by the personal information management program I
+  use on my KDE systems, Kontact. I found it effective so I swiped it
+  for this program.
 
 - The pictures used on the buttons were cropped from images I found
   using Google. The picture of the ion chamber is from the Advanced
@@ -659,11 +665,6 @@ Credits
 - The formulas utility owes much to Gerry Roe, who pointed out a bug,
   and Erik Gullikson, whose similar utility on the web set me
   straight.
-
-- The information used in the chemical data utility is from the
-  kalziumrc file, which was swiped from the Kalzium package. See
-  http://edu.kde.org/kalzium/ for more details. The data for
-  Mossbauer active isotopes was taken from http://www.mossbauer.org
 
 - The ion chamber and edge finder utilities were inspired by the
   similar utilities in the data acquisition program by Lars Fuerenlid
@@ -689,16 +690,16 @@ The absorption data resources all have literature references.
        :filter: author % "Elam"
        :list: bullet
 
-    This is the source of data for the
-    edge and line finders and for the filter plot.
+    This is the source of data for the edge and line finders and for
+    the filter plot.
     
 **The McMaster tables**
     .. bibliography:: athena.bib
        :filter: author % "McMaster"
        :list: bullet
 
-    These data were originally
-    compiled in machine readable form by Pathikrit Bandyopadhyay.
+    These data were originally compiled in machine readable form by
+    Pathikrit Bandyopadhyay.
 
 **The Henke tables**
     .. bibliography:: athena.bib
@@ -713,8 +714,8 @@ The absorption data resources all have literature references.
        :filter: author % "Chantler" and year == "1995"
        :list: bullet
 
-    The data files can be found
-    at http://physics.nist.gov/PhysRefData/FFast/html/form.html
+    The data files can be found at
+    http://physics.nist.gov/PhysRefData/FFast/html/form.html
 
 **The Cromer-Liberman tables**
     .. bibliography:: athena.bib
@@ -742,11 +743,15 @@ easily readable format (i.e. plain text is lovely). Merely suggesting
 new data types is unlikely to have any effect. Supplying the data is
 highly likely to have an effect.
 
-My wish list includes auger/fluorescence branching ratios in one of
-the periodic table utilities and providing the Berger/Hubble XCOM
-tables and :demeter:`feff`'s optical calculations as
-data resources.
+My wish list includes:
+
+- auger/fluorescence branching ratios in the Data utility
+- a tool for approximating the energy response of a flat mirror, like
+  `this <http://henke.lbl.gov/optical_constants/layer2.html>`_ or
+  `that <http://henke.lbl.gov/optical_constants/bilayer.html>`_
+- providing the Berger/Hubble XCOM tables and :demeter:`feff`'s optical
+  calculations as data resources.
 
     .. bibliography:: athena.bib
-       :filter: author % "Berger"
+       :filter: author % "Berger" or author % "Prange"
        :list: bullet

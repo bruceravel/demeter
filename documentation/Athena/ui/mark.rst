@@ -80,7 +80,7 @@ but none of the others, hit :button:`Alt`-:button:`r` and enter V2.
 In fact, you get to use the entire power of perl's regular expression
 language (see `the regular expression documentation at
 CPAN <http://search.cpan.org/dist/perl/pod/perlre.pod>`__ for all the
-details). This means you can use *metacharacters* -- symbols which
+details). This means you can use *metacharacters* |nd| symbols which
 represent conceptual aspects of strings. Here are a few examples:
 
 - To mark only the V2O3 and VO2 data: :regexp:`O[23]`. That tells

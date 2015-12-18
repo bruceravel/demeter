@@ -3,7 +3,7 @@ Frozen groups
 =============
 
 There is a feature that :demeter:`athena` shares with almost any other
-computer program -- not just analysis programs, but any program. Soon
+computer program |nd| not just analysis programs, but any program. Soon
 after starting to use :demeter:`athena`, you will do something silly
 and regrettable.  Often this is as simple as changing a parameter to
 some bad value and forgetting what the good value was. To help
@@ -13,7 +13,7 @@ mitigate this sort of problem, :demeter:`athena` allows you to
 A frozen group is one for which you cannot change its parameter values.
 When a group is frozen, the entry boxes associated with parameters
 become deactivated, which means that it is impossible to type in them.
-Furthermore, any global action such as constraining parameters or using
+Furthermore, any global action, such as constraining parameters or using
 the alignment tool, will have no effect on the frozen group.
 
 The idea behind frozen groups is that, after working for a while to

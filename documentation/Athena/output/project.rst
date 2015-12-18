@@ -5,7 +5,6 @@ Project files
 
 
 .. todo::
-   #. Save button, change indicator, update discussion of file format.
    #. Explain how the metadata dictionary works.
    #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
 
@@ -48,8 +47,8 @@ The first two options saves the entire current state of
 :demeter:`athena`. If the project has already been saved, the
 :guilabel:`Save project` option overwrites the previous file with the
 new state of your project. Hitting :button:`Control`-:button:`s` does the
-same thing. Clicking on the modified indicator -- the other
-highlighted region in the screenshot -- also saves the project.
+same thing. Clicking on the modified indicator |nd| the other
+highlighted region in the screenshot |nd| also saves the project.
 Alternately, you can select :guilabel:`Save project as...` and you
 will be prompted for a new file name for the project.
 
@@ -67,6 +66,22 @@ of the need to save your work early and often.
 	     their flaws. It would be a shame to discover one of them
 	     after having done a lot of unsaved work.
 
+
+The nagging button
+------------------
+
+At the top of the main window is a :button:`Save` button that serves
+the same purpose as selecting :menuselection:`File --> Save project`.
+As you work with :demeter:`athena`, this button will slowly change
+color, becoming a brighter and brighter shade of red.  This is a
+reminder that you should save your project file.  Once you save the
+project, the button is restored to its original color.
+
+The pace at which the :button:`Save` button turns red is controlled by
+the :configparam:`athena,save_alert` `configuration parameter
+<../other/prefs.html>`__..  Setting this to a smaller number will make
+the button turn red faster, larger will make it turn slower.  Setting
+it to 0 will turn the magging feature off entirely.
 
 
 The project file format and compatibility with older versions

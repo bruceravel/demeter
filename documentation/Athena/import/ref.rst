@@ -5,20 +5,21 @@ Reference channel
 
 A reference spectrum is used by :demeter:`athena` as a data alignment
 standard.  It is common to place a third ionization chamber in line
-after the transmission chamber and to place good transmission standard
-between the two. The point of measuring the standard is that it is
-measured in parallel with your real sample. This standard can then be
-used to align the actual data using the `data alignment tool
+after the transmission chamber and to place a good transmission
+standard between the two. The point of measuring the standard is that
+it is measured in parallel with your real sample. This standard can
+then be used to align the actual data using the `data alignment tool
 <../process/align.html>`__.
 
 The standard often is a zero-valent foil, but the most important thing
 is that it is an excellent standard which will yield consistently
-high-quality data. The other most important thing is that you always use
-the same sample as your reference standard for ever experiment you make
-at a particular edge. To this end, it is wise to make a library of
-standards and carry them with you to the synchrotron. By using the same
-standard for every experiment at an edge, you can align any data, even
-data measured years apart at different synchrotrons.
+high-quality data. The other most important thing is that you always
+use the same sample as your reference standard for every experiment
+you make at a particular edge. To this end, it is wise to make a
+library of reference standards and carry them with you to the
+synchrotron. By using the same standard for every experiment at an
+edge, you can align any data, even data measured years apart or at
+different synchrotrons.
 
 .. _fig-importref:
 
@@ -31,7 +32,7 @@ data measured years apart at different synchrotrons.
 
 The reference channel selection works almost the same as column
 selection for the data except that you don't need to specify the energy
-column again -- the same column is used. When a reference channel after
+column again |nd| the same column is used. When a reference channel after
 the transmission channel is used, you should use the transmission
 channel as the numerator and the reference channel as the denominator.
 Another common solution to measuring a reference channel is measure
@@ -75,6 +76,6 @@ together as data and reference, then selecting :menuselection:`Group
 --> Tie reference channel`.
 
 .. todo:: :demeter:`athena` is missing the ability to tie together
-   three or more data groups in a reference relationship -- that would
+   three or more data groups in a reference relationship |nd| that would
    be useful for multi-element detector data and some other
    situations.

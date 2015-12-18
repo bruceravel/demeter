@@ -86,7 +86,7 @@ are highlighted in this screenshot.
    Selecting the normalization parameters in :demeter:`athena`.
 
 The :procparam:`pre-edge range` and :procparam:`normalization range`
-parameters define two regions of the data -- one before the edge and
+parameters define two regions of the data |nd| one before the edge and
 one after the edge. A line is regressed to the data in the
 :procparam:`pre-edge range` and a polynomial is regressed to the data
 in the :procparam:`normalization range`. By default, a three-term

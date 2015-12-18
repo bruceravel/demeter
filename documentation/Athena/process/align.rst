@@ -4,7 +4,7 @@ Aligning data groups
 
 Aligning data is the process of moving a data group in energy onto an
 absolute energy grid defined by some standard. In :demeter:`athena` that standard
-is chosen fairly arbitrarily -- it is simply one of the other groups in
+is chosen fairly arbitrarily |nd| it is simply one of the other groups in
 the group list. The alignment is done by adjusting the :procparam:`Energy shift`
 parameter.
 

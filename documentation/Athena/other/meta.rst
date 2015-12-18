@@ -5,9 +5,10 @@ File metadata
 Tracking the data about your data
 ---------------------------------
 
-Since version 0.9.21, :demeter:`athena` has supported import and
-export of metadata using the `XAS Data Interchange (XDI) specification
-<https://github.com/XraySpectroscopy/XAS-Data-Interchange>`__.
+.. versionadded:: 0.9.21
+   :demeter:`athena` has supported import and
+   export of metadata using the `XAS Data Interchange (XDI) specification
+   <https://github.com/XraySpectroscopy/XAS-Data-Interchange>`__.
 
 When metadata can be gleaned from the file you import, it will be stored
 in the :demeter:`athena` project file and used to make the header portion of any
@@ -88,8 +89,8 @@ Beamline plugins
 ----------------
 
 Metadata can extracted from any data file so long as a beamline plugin
-has been written. The plugin is contained in a ``.pm`` file in the
-``Plugins/Beamlines/`` folder of the :demeter:`demeter`
+has been written. The plugin is contained in a :file:`.pm` file in the
+:file:`Plugins/Beamlines/` folder of the :demeter:`demeter`
 installation. This is a piece of perl code which performs the
 following chores:
 
@@ -107,17 +108,17 @@ following chores:
    specification.
 
 #. Add versioning information for the data acquisition program into the
-   ``XDI extra\_version`` attribute. In the example above, the data file was
+   ``XDI extra_version`` attribute. In the example above, the data file was
    collected using version 1.4 of XDAC, so the string :quoted:`XDAC/1.4` is
    placed among the applications.
 
 :demeter:`demeter` also has a small database of metadata related to
-specific beamlines. This is found in the ``share/xdi/`` folder of the
-:demeter:`demeter` installation. Each of the files in that folder is a
-short .ini file containined common information about facilities and
-beamlines. Much of the metadata shown above actually came from the
+specific beamlines. This is found in the :file:`share/xdi/` folder of
+the :demeter:`demeter` installation. Each of the files in that folder
+is a short .ini file containined common information about facilities
+and beamlines. Much of the metadata shown above actually came from the
 .ini file for NSLS beamline X23A2.
 
-To add new beamlines to this part of :demeter:`athena`, it is necessary to write
-the plugin and the corresponding .ini file.
+To add new beamlines to this part of :demeter:`athena`, it is
+necessary to write the plugin and the corresponding .ini file.
 

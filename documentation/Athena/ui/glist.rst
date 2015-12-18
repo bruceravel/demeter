@@ -38,7 +38,7 @@ You can copy a group by hitting :button:`Alt`-:button:`y` or by selecting
 :menuselection:`Group --> Copy group`. This makes an identical copy
 of the current group and places it at the end of the groups list. All
 parameters are identical and the data arrays in :demeter:`ifeffit` are
-all copied -- only the :demeter:`ifeffit` group name in different.
+all copied |nd| only the :demeter:`ifeffit` group name in different.
 
 Copying is very useful for examining how changes in parameter values
 propagate through the data processing. You can make one or more copies,

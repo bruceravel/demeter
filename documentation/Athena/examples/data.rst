@@ -66,7 +66,7 @@ for the iron K edge is 7112 eV.
 
 
 We want to select the peak of the first derivative and set that point
-to 7112 eV. We can simply use the currently selected point -- it is
+to 7112 eV. We can simply use the currently selected point |nd| it is
 quite close to the peak. Alternately, we can click the :button:`Select
 a point,light` button and try to click on the plot, selecting point even
 closer to the peak.  To do that, it would be helpful to change the
@@ -172,7 +172,7 @@ k=0 is different for the two spectra and the |chi| (k) data from the
 background removal are different.
 
 To correct this, you can either enter the value for :procparam:`E0`
-from :file:`fe.060` -- 7112 eV -- into the :procparam:`E0` text entry box
+from :file:`fe.060` |nd| 7112 eV |nd| into the :procparam:`E0` text entry box
 after clicking on :file:`fe.061` in the group list. Alternately, you can
 select :file:`fe.060` in the group list, then right click on the
 :procparam:`E0` parameter to raise its `context menu
@@ -229,7 +229,7 @@ align. These selections are shown at the top of this.
 Of course, :file:`fe.061` has already be aligned. If you select any other
 group by clicking on it in the group list, you will see that it it is
 not yet aligned. You can align the remaining groups by selecting each
-on in turn and clicking the :button:`Auto align,light` button --- but that
+on in turn and clicking the :button:`Auto align,light` button |nd| but that
 seems tedious. Much better to click the :button:`Align marked groups,light`
 button. Since all the groups are aligned, the automated alignment
 algorithm will be applied to each one in turn.

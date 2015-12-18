@@ -21,7 +21,7 @@ and integrations of the detector signals are stored in intervals. The
 length of these intervals and the slewing speed of the monochromator
 determine the energy width of each measurement bin. Typically these
 measurement parameters are chosen to provide adequate resolution through
-the edge -- typically a third or a half of an electron volt. This
+the edge |nd| typically a third or a half of an electron volt. This
 results in data that are vastly over-sampled in the EXAFS region. To
 improve the statistics in the EXAFS region and to make the data arrays
 smaller, it is useful to rebin the data. This process uses a boxcar
@@ -65,7 +65,7 @@ Other pre-processing chores
 
 :mark:`lightning,..` This tab provides controls for a number of other
 things that can be done with your data as it is imported. The first
-one -- marking -- can be performed even on the first data set
+one |nd| marking |nd| can be performed even on the first data set
 imported. The other two require that a standard be specified. The menu
 at the top of the tab contains every item from the group list. The one
 specified in that menu is the standard.

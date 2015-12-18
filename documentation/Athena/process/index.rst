@@ -3,7 +3,7 @@ Data processing
 ===============
 
 
-:demeter:`ATHENA` offers a variety of data processing chores -- chores
+:demeter:`ATHENA` offers a variety of data processing chores |nd| chores
 which modify the data or its parameters in some way to prepare it for
 more extensive analysis. With the exception of merging data groups,
 all data processing features are accesses through the main menu, shown
