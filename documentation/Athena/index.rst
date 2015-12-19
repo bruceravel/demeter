@@ -1,7 +1,10 @@
 .. Athena documentation master file, created by
    sphinx-quickstart on Fri Dec 11 10:35:02 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 ATHENA: XAS Data Processing
 ===========================
