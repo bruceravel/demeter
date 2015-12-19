@@ -32,8 +32,9 @@ as new plots are made. When you switch to a new terminal, other active
 terminals will become unchanging. This means you can save a particular
 plot on screen while continuing to make new plots.
 
-.. todo:: Consider other vector output images, like SVG or EPS.
-   Consider making the number of terminals a configuration parameter.
+.. todo:: :demeter:`athena` should offer other vector output images,
+   like SVG or EPS.  Also should make the number of terminals a
+   configurable parameter.
 
 
 

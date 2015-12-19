@@ -3,14 +3,6 @@
 Project files
 =============
 
-
-.. todo::
-   #. Explain how the metadata dictionary works.
-   #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
-
-----------------------
-
-	  
 The most important type of output file is the project file. A project
 file contains all of the data you have imported, all of the parameters
 associated with each data file, the content of the journal, and several

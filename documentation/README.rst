@@ -156,3 +156,32 @@ Translations
 ------------
 
 Coming soon!
+
+Athena doc to-do list
+---------------------
+
+
+
+#. Creative Commons icon in epilog in a way that works throughout the
+   source tree
+
+#. In the PCA chapter:
+
+   #. Document all the buttons and whatnot. Document the many
+      useful features are still missing.
+
+   #. Need a tutorial on math/science of PCA.  Explain what PCA
+      means, what it does, and what it does not do.
+
+#. In project files:
+
+   #. Explain how the metadata dictionary works.
+
+   #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
+
+
+
+	  
+
+
+

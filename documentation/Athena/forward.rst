@@ -2,13 +2,6 @@
 Forward
 =======
 
-.. todo::
-   #. CC image in epilog
-   #. Need chapter on contents (and purpose) of the
-      :guilabel:`Monitor` menu in the UI chapter
-
-
-----------------
       
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things

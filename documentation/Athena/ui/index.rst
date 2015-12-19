@@ -24,4 +24,5 @@ about the various user interface features.
    styles
    kweight
    frozen
+   monitor
 

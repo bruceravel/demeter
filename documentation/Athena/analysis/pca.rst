@@ -3,18 +3,10 @@
 Principle components analysis
 =============================
 
-
-.. todo:: Document all the buttons and whatnot. Document the many
-   useful features are still missing.
-
-.. todo:: Need a tutorial on math/science of PCA.  Explain what PCA
-   means, what it does, and what it does not do.
-
----------------
-
-
 Principle components analysis (PCA) is an abstract decomposition of a
 data sequence....
+
+.. note:: This chapter is incomplete.
 
 
 Here, I have imported a project file containing well-processed data on a
