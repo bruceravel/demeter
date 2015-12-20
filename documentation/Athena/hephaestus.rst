@@ -113,9 +113,9 @@ The rules for the selection of the filter elements are:
 
 #. Use I for a Ba absorber because Xe is also a silly filter material.
 
-#. For elements above Z=57, assume the L3 edge is being measured. Use
-   the first element whose K edge is more than 90 eV above the Lalpha1
-   line of the absorber.
+#. For elements above Z=57, assume the L\ :sub:`III` edge is being
+   measured. Use the first element whose K edge is more than 90 eV
+   above the L |alpha| :sub:`1` line of the absorber.
 
 #. Use Rb for a U or Np absorber because Kr is still a silly filter
    material.
@@ -189,11 +189,11 @@ a stoichiometric formula using a few simple rules.
    handle TeX). Also a sequence like this: :quoted:`/sub 3/` will be converted
    to :quoted:`3` (in an attempt to handle INSPEC).
 
-#. Numbers can be integers or floating point numbers. Things like 5,
-   0.5, 12.87, and .5 are all acceptable, as is exponential notation
-   like 1e-2. Note that exponential notation must use a leading number
-   to avoid confusion with element symbols. That is, 1e-2 is OK, but e-2
-   is not.
+#. Numbers can be integers or floating point numbers. Things like
+   ``5``, ``0.5``, ``12.87``, and ``.5`` are all acceptable, as is
+   exponential notation like 1e-2. Note that exponential notation must
+   use a leading number to avoid confusion with element symbols. That
+   is, ``1e-2`` is OK, but ``e-2`` is not.
 
 #. Uncapitalized symbols or unrecognized symbols will flag an error.
 
@@ -254,12 +254,13 @@ lot of BN and will make a rather thick pellet. One might weigh out a
 fraction of the 175 milligrams for a real sample, giving the matrix that
 much less than 1 absorption length.
 
-As another example, here is the calculation on cobalt ferrite, CoFe2O4,
-which has a specific gravity of about 5. Computing the cross section at
-7800 eV will trigger a calculation of the sample depth corresponding to
-a unit edge step at the Co K edge. This additional calculation is
-triggered because the calculation energy, 7800 eV, is within 100 eV of
-the Co K edge energy of 7709 eV.
+As another example, here is the calculation on cobalt ferrite, CoFe\
+:sub:`2`\ O\ :sub:`4`, which has a specific gravity of
+about 5. Computing the cross section at 7800 eV will trigger a
+calculation of the sample depth corresponding to a unit edge step at
+the Co K edge. This additional calculation is triggered because the
+calculation energy, 7800 eV, is within 100 eV of the Co K edge energy
+of 7709 eV.
 
 ::
 
@@ -374,8 +375,9 @@ given energy. The calculation requires several parameters, including
    from a list of common lengths or supplied by the user.
 
 #. The relative fractions of two gasses mixed together in the ion
-   chambers. Each can be selected from a list which includes H2, N2, Ar,
-   Ne, Kr, and Xe.
+   chambers. Each can be selected from a list which includes
+   :guilabel:`H2`, :guilabel:`N2`, :guilabel:`Ar`, :guilabel:`Ne`,
+   :guilabel:`Kr`, and :guilabel:`Xe`.
 
 #. The pressure of the gas inside the ion chamber, in Torr. Atmospheric
    pressure is 760 Torr.
@@ -385,18 +387,19 @@ you change the parameters. Clicking the :button:`Compute,light` button
 forces an update. Clicking the :button:`Reset,light` button returns all
 the parameters to their initial values.
 
-As a rule of thumb, 10% is a good amount of absorption for the I0
-chamber. This will allow for a good measurement of incidence flux while
-leaving most photons for the rest of the measurement. 66 percent is a
-good amount for the It, Ir, and If chambers. This distributes the
-absorption over the entire length of the ion chamber. In the case of It,
-this leaves enough photons passing through to the reference chamber to
-allow for a reasonable measurement on Ir.
+As a rule of thumb, 10% is a good amount of absorption for the I\
+:sub:`0` chamber. This will allow for a good measurement of incidence
+flux while leaving most photons for the rest of the measurement. 66
+percent is a good amount for the I\ :sub:`t`, I\ :sub:`r`, and I\
+:sub:`f` chambers. This distributes the absorption over the entire
+length of the ion chamber. In the case of I\ :sub:`t`, this leaves
+enough photons passing through to the reference chamber to allow for a
+reasonable measurement on I\ :sub:`r`.
 
 If you know the amplifier gain and voltage signal coming from your
-current-to-voltage amplifier (such as a Keithley 427 or 428), specifying
-these will compute a crude calculation of photon flux incident upon the
-chamber.
+current-to-voltage amplifier (such as a Keithley 427 or 428),
+specifying these will compute a crude calculation of photon flux
+incident upon the chamber.
 
 ::
 
@@ -405,7 +408,7 @@ chamber.
                   IonizationEnergy
 
 The ionization energy is about 32 volts for most gasses and the electron
-charge ``e`` is about 1.6E-19 Coulombs.
+charge ``e`` is about 1.6 |times| 10\ :sup:`-19` Coulombs.
 
 .. _fig-hephion:
 
@@ -428,7 +431,7 @@ Beneath the periodic table is a tabbed notebook. Each tab contains a
 different data table. The :guilabel:`Elemental data` tab contains a
 variety of general information. The :guilabel:`Ionic radii` tab
 contains the Shannon ionic radii. The :guilabel:`Neutron data` tab
-conatins data on thermal neutron scattering lengths and cross sections
+contains data on thermal neutron scattering lengths and cross sections
 for the major isotopes.
 
 .. _fig-hephdata:
@@ -440,7 +443,6 @@ for the major isotopes.
 
    The data tool.
 
-Data sources:
 
 **General data**
     Swiped from http://edu.kde.org/kalzium/

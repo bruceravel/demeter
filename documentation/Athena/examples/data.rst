@@ -17,9 +17,10 @@ They include three scans on an iron foil measured at 60K, and two each
 at 150K and 300K.
 
 To begin, `import <../import/columns.html>`__ the first scan at 60K,
-:file:`fe.060`. This is a relatively simple data file containing columns for
-energy and the signals on the I0 and It detectors. Select columns to
-form |mu| (E) data as shown in the image below.
+:file:`fe.060`. This is a relatively simple data file containing
+columns for energy and the signals on the I\ :sub:`0` and I\ :sub:`t`
+detectors. Select columns to form |mu| (E) data as shown in the image
+below.
 
 .. _fig-fecol:
 
@@ -97,9 +98,9 @@ the value of :procparam:`E0` is now 7112 and the value of the
 calibration works by simultaneously setting those two parameters such
 that the selected point has the chosen energy value.
 
-Now, import the second scan at 60K, :file:`fe.061`. `Mark <../ui/mark.html>`__
-both groups by clicking on their little purple buttons and plot them in
-energy by clicking on the :button:`E,purple` button.
+Now, import the second scan at 60K, :file:`fe.061`. `Mark
+<../ui/mark.html>`__ both groups by clicking on their mark buttons and
+plot them in energy by clicking on the :button:`E,purple` button.
 
 
 .. subfigstart::
@@ -304,8 +305,9 @@ merged together. As we see in the screenshot below, the two groups
 measured at 300K are marked. Select :menuselection:`Merge --> Merge
 mu(E)`. This will perform the merge then insert a new group in the
 group list. Then select :menuselection:`Group --> Rename current
-group` or type :button:`Alt`-:button:`l` to give the merged group a more
-suggestive name. Repeat this process for the data at each temperature.
+group`, type :button:`Alt`-:button:`l`, or double click on the group
+list entry to give the merged group a more suggestive name. Repeat
+this process for the data at each temperature.
 
 Now you are ready to begin analysis on the iron foil data!
 

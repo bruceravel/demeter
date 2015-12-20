@@ -20,12 +20,12 @@ these data are presented in
 
 The experiment probed the mechanism of bioaccumulation of gold by the
 interaction of a model cyanobacterium (Plectonema boryanum UTEX 485)
-with aqueous Au\ :sup:`3+` chloride. This resembles a common subsurface
-environment associated with gold deposits in various locations around
-the world. In those environments, Au\ :sup:`3+` chloride bearing fluids
-rise from the deep subsurface and wash over bacterial mats. The bacteria
-die but their remains interact chemically, reducing metallic gold from
-the fluid.
+with aqueous Au\ :sup:`3+` chloride. This resembles a common
+subsurface environment associated with gold deposits in various
+locations around the world. In those environments, Au\ :sup:`3+`
+chloride bearing fluids rise from the deep subsurface and wash over
+bacterial mats. The bacteria die but their remains interact
+chemically, reducing metallic gold from the fluid.
 
 In our experiment, a culture of P. boryanum was sampled and placed in a
 Teflon fluid cell appropriate for an XAS measurement. An aliquot of

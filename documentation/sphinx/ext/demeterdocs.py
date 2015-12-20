@@ -59,7 +59,7 @@ class demeter(nodes.Element):
     pass
     
 def demeter_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    color_spec = '#033B0A'
+    color_spec = '#8C4112'
     text = text.strip().upper()
     demeter_node = demeter()
     #color_spec = //something//.builder.app.config.demeter_color

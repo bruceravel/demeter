@@ -19,10 +19,10 @@ current data group with the examined parameter set incrementally. The
 set of copied groups are marked and plotted in the space most
 appropriate for the examined parameter.
 
-For parameters, line the pre- and post-edge line parameter, which affect
-the edge step, the average edge step value and its standard devaition
-are calculated and displayed in the text control that is nortmally
-disabled.
+For parameters, line the pre- and post-edge line parameter, which
+affect the edge step, the average edge step value and its standard
+deviation are calculated and displayed in the text control that is
+nortmally disabled.
 
 .. _fig-series:
 
@@ -40,4 +40,5 @@ disabled.
    :width: 45%
    :align: center
 
-   The plot made from the series of :procparam:`Rbkg` values with the Fe foil data.
+   The plot made from the series of :procparam:`Rbkg` values with the
+   Fe foil data.

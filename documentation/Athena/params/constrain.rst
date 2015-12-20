@@ -86,12 +86,11 @@ Constraining groups of parameters
 ---------------------------------
 
 In the main window, the parameters are grouped into sets of related
-parameters. All of the parameters associated with background removal are
-in one box, all the Fourier transform parameters are in another box, and
-so on. The labels at the top of each box are sensitive to mouse clicks
-much like the entry box labels. A left click posts a helpful message in
-the echo area, while a right click posts a context menu, as shown in the
-picture below.
+parameters. All of the parameters associated with background removal
+are in one box, all the Fourier transform parameters are in another
+box, and so on. The labels at the top of each box are sensitive to
+mouse clicks much like the entry box labels. A right click posts a
+context menu, as shown in the picture below.
 
 .. _fig-paramgroup:
 
@@ -134,6 +133,6 @@ this picture.
 
 Again, these operations work identically to the explanation above,
 except that every parameter is effected, with the exceptions of
-:procparam:`file` and :procparam:`energy shift`, which would not be sensible to
-constrain.
+:procparam:`file` and :procparam:`energy shift`, which would not be
+sensible to constrain in this way.
 

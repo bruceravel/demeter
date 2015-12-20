@@ -69,7 +69,8 @@ Special plots for the current group
        :width: 55%
        :align: center
 
-       mu(E) of Au chloride along with the signal and I0 channels.
+       mu(E) of Au chloride along with the signal and I\ :sub:`0`
+       channels.
        
 **k123 plot**
     A k123 plot is a way of visualizing the effect of k-weighting on

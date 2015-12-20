@@ -36,13 +36,14 @@ different synchrotrons.
    Importing a reference channel with the column selection dialog.
 
 The reference channel selection works almost the same as column
-selection for the data except that you don't need to specify the energy
-column again |nd| the same column is used. When a reference channel after
-the transmission channel is used, you should use the transmission
-channel as the numerator and the reference channel as the denominator.
-Another common solution to measuring a reference channel is measure
-elastically scattered radiation through the standard with a PIN diode.
-In that case, I0 is the numerator and the diode is the denominator.
+selection for the data except that you don't need to specify the
+energy column again |nd| the same column is used. When a reference
+channel after the transmission channel is used, you should use the
+transmission channel as the numerator and the reference channel as the
+denominator.  Another common solution to measuring a reference channel
+is measure elastically scattered radiation through the standard with a
+PIN diode.  In that case, I\ :sub:`0` is the numerator and the diode
+is the denominator.
 
 You can plot the reference channel to make sure that you have selected
 the correct channels with the :guilabel:`Plot reference` check

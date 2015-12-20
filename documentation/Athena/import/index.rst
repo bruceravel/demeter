@@ -119,9 +119,9 @@ architecture <../other/plugin.html>`__.
 #. Dead-time corrections using columns from the data file.
 
 #. Any math expression more complicated than sums of columns in the
-   numerator and denominator, e.g. plugins allow you to multiply the If
-   column by 7 and divide by the sine of the I0 column, if that's what
-   you really want.
+   numerator and denominator, e.g. plugins allow you to multiply the
+   I\ :sub:`f` column by 7 and divide by the sine of the I\ :sub:`0`
+   column, if that's what you really want.
 
 If some of the criteria for the data file format are not met, for
 example if there is text following the data columns or if you need to

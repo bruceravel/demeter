@@ -23,8 +23,8 @@ L\ :sub:`III` edge. If, in this example, you have very good data with
 measurable EXAFS beyond about 10.5 |AA|\ :sup:`-1`, the multi-electron
 excitation will not be small compared to the L\ :sub:`III`
 EXAFS. Other multi-electron excitations have even larger
-cross-sections compared to their primary excitations. For a much more
-complete discussion of multi-electron excitations see `Iztok Arcon's
+cross-sections compared to their primary excitations. For an excellent
+discussion of multi-electron excitations see `Iztok Arcon's
 Mulielectron Photoexcitations page
 <http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
 
@@ -34,13 +34,16 @@ In some cases this small edge step might be hard to see in your |mu| (E)
 data, but are clearly visible as a step in the |chi| (k) which Fourier
 transforms into a low-R contribution in the |chi| (R) spectrum.
 
-:demeter:`athena` offers two relatively simple algorithms to attempt to remove the
-effect of a step due to multi-electron excitations or small impurities
-from your data. One models the multi-electron excitation as a reflection
-of the data translated to the position in energy of the excitation. The
-other places an arctangent function at the specified energy. Be warned
-that the algorithm described here requires considerable user input and
-sufficient knowledge to properly evaluate the results.
+:demeter:`athena` offers two relatively simple algorithms to attempt
+to remove the effect of a step due to multi-electron excitations or
+small impurities from your data. One models the multi-electron
+excitation as a reflection of the data translated to the position in
+energy of the excitation. The other places an arctangent function at
+the specified energy. 
+
+.. caution:: The algorithm described here requires considerable user
+   input and sufficient knowledge to properly evaluate the results.
+   Use this carefully!
 
 That said, let's carry on.
 
@@ -79,8 +82,7 @@ excitation at about 120 volts above the edge.
    :target: ../_images/mee_k.png
    :width: 100%
 
-   Its effect is much more pronounced in the |chi| (k) data on
-   the right.
+   Its effect is much more pronounced in the |chi| (k) data.
 
 .. subfigend::
    :width: 0.45
@@ -95,7 +97,7 @@ For more information about multi-electron excitations, see
        :list: bullet
 
 
-Using the parameter shown inthe screen shot above, the removal is
+Using the parameter shown in the screen shot above, the removal is
 performed and shown as the red line in the figures. The shift was
 first guessed as the separation between the white line in the XANES
 data and the prominant feature at 5.7 |AA|\ :sup:`-1`. That came out to

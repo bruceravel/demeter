@@ -10,8 +10,11 @@
 .. |sigma| unicode:: U+003C3 .. GREEK SMALL LETTER SIGMA
    :rtrim:
 .. |epsilon|  unicode:: U+003B5 .. GREEK SMALL LETTER EPSILON
+.. |alpha| unicode:: U+003B1 .. GREEK SMALL LETTER ALPHA
+   :trim:
 .. |AA|    unicode:: U+00C5 .. LATIN CAPITAL LETTER A WITH RING ABOVE
    :rtrim:
 .. |pm|    unicode:: U+00B1 .. PLUS-MINUS SIGN
    :trim:
 .. |nd|    unicode:: U+2013 .. EN DASH
+.. |times| unicode:: U+00D7 .. MULTIPLICATION SIGN
