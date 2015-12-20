@@ -45,6 +45,21 @@ rst files.  rst-mode is OK -- the indentation behavior is pretty
 wonky, though.  In any case, I highly recommend using an rst-sensitive
 text editor.
 
+  
+Building the html document
+--------------------------
+
+.. sourcecode:: bash
+
+   cd Athena
+   make html
+
+This will place the document tree in ``Athena/_build/html``.
+
+Artemis and other documents ... coming soon.
+
+
+
 Customizations
 --------------
 
@@ -61,11 +76,11 @@ directives for use in Demeter's documents, including:
   colored diamond, right arrow between group and parameter names)
   ::
    
-     :configparam:`athena.import_plot`
+     :configparam:`athena,import_plot`
 
 
 - decoration of data processing parameters (colored and surrounded by
-  guillemots) (``:procparam:``)
+  guillemots)
   ::
    
      :procparam:`e0`
@@ -83,7 +98,7 @@ directives for use in Demeter's documents, including:
      :mark:`bend`
   
 - insert a linebreak.  This is much like ``..endpar::`` from sphinxtr,
-  but it also breaks wrapped text around a figure ::
+  but it also breaks text wrapping around a figure ::
 
      .. linebreak::
 
@@ -102,11 +117,11 @@ pages, including:
 - ``layout.html``: this contains header lines for the html output
   which are used to make the link to custom style sheets in
   ``_static`` and ``Athena/_static/``.  Currently the style sheet
-  ``subfig.css`` contains some code lifted from `the sphinxtr
+  ``demeter.css`` contains some code lifted from `the sphinxtr
   extension <https://github.com/jterrace/sphinxtr>`_ used to display
   subfigures nicely in the html output
 
-- ``program.css``: this style sheet applies some program specific
+- ``athena.css``: this style sheet applies some program specific
   branding to the document.  Currently it is only used to set the
   color of the navigation bar at the top and bottom of each page.
 
@@ -138,29 +153,19 @@ Since this won't work for LaTeX, this is going to have to be addressed
 at some point.  But trying to track down the problems with numfig is
 beyond my patience right now.
 
-  
-Building the html document
---------------------------
-
-.. sourcecode:: bash
-
-   cd Athena
-   make html
-
-This will place the document tree in ``Athena/_build/html``.
-
-Artemis and other documents ... coming soon.
-
 
 Translations
 ------------
 
 Coming soon!
 
-Athena doc to-do list
----------------------
+To do
+-----
 
+Will eventually need some sort of top-level make script
 
+Athena doc
+~~~~~~~~~~
 
 #. Creative Commons icon in epilog in a way that works throughout the
    source tree
@@ -180,8 +185,19 @@ Athena doc to-do list
    #. Serialization of analysis results (i.e. LCF, peak fitting, PCA)
 
 
+Other document folders
+~~~~~~~~~~~~~~~~~~~~~~
 
-	  
+#. Artemis
+#. Demeter programming guide
+#. One-pagers
+   #. bugs
+   #. help
+   #. contribute
+   #. unix install + non-root + David Hughes'
+   #. mac install + Laila's
+   #. Build for windows
+  
 
 
 
