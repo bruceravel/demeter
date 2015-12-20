@@ -300,6 +300,8 @@ sub show_mossbauer {
     return;
   };
   $self->{by}->SetValue(0);
+  $self->{datelabel}->Enable(0);
+  $self->{date}->Enable(0);
   foreach my $z (1 .. 118) {
     enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{Mossbauer} !~ m{\A(?:|silent)\z}i }); # not '' or Silent
   };
