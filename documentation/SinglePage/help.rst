@@ -10,7 +10,7 @@ Asking questions, soliciting help
 =================================
 
 An excellent resource exists for anyone stumbling over the details of
-XAS experimentation or analysis -- the `Ifeffit mailing list
+XAS experimentation or analysis |nd| the `Ifeffit mailing list
 <http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>`_.  This
 low-noise, high-quality mailing list is populated by many of the
 world's expert practitioners of XAS and it handles dozens of questions

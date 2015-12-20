@@ -6,6 +6,7 @@
 Demeter: Miscellaneous documents
 ================================
 
+**Reporting bugs, asking questions, contributing to the project**
 
 .. toctree::
    :maxdepth: 1
@@ -13,4 +14,15 @@ Demeter: Miscellaneous documents
    bugs.rst
    help.rst
    contribute.rst
+
+
+**Installing Demeter software**
+
+.. toctree::
+   :maxdepth: 1
+
+   packages.rst
+   macports.rst
    installation.rst
+   demeter_nonroot.rst
+   mingw.rst

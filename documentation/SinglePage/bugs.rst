@@ -10,32 +10,31 @@ Reporting bugs in Demeter
 All software has bugs.  *This* software certainly has bugs.  This
 document explains how to report problems with the software
 effectively.  In this context :quoted:`effectively` means in a manner
-such that Bruce is likely to understand the problem and, therefore,
-likely to fix it promptly.
+such that Bruce (that's me!) is likely to understand the problem and,
+therefore, likely to fix it promptly.
 
-The basic rules to good bug reporting
--------------------------------------
+The 2 rules of good bug reporting
+---------------------------------
 
+#. Use the `Ifeffit mailing list
+   <http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>`_.  The
+   mailing list is always the appropriate place to report problems with
+   the software.
 
-- Use the `Ifeffit mailing list
-  <http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>`_.  The
-  mailing list is always the appropriate place to report problems with
-  the software.
-
-- Provide enough information that your problem can be reproduced by
-  someone else.  That may mean providing the data or project file that
-  triggers the problem.  That may mean explaining step-by-step how to
-  arrive at the problem.  That may mean taking a screenshot to
-  demonstrate the appearance of the problem.  In any case, be
-  explicit.
+#. Provide enough information that your problem can be reproduced by
+   someone else.  That may mean providing the data or project file that
+   triggers the problem.  That may mean explaining step-by-step how to
+   arrive at the problem.  That may mean taking a screenshot to
+   demonstrate the appearance of the problem.  In any case, be
+   explicit, be concise, and be precise.
  
-
+.. caution:: If a problem cannot be reproduced on my computer, I
+   cannot possibly solve it.
 
 There are good reasons to use the mailing list:
 
-- Bruce, :demeter:`demeter`'s author, reads and responds to questions
-  on the mailing list.  So do many other people, any whom may be able
-  to help you with your problem.
+- I read and respond to questions on the mailing list.  So do many
+  other people, any whom may be able to help you with your problem.
  
 - The problem and |nd| hopefully |nd| it's solution will be archived.
   That means that someone else having the same problem might find that
@@ -46,23 +45,24 @@ There are good reasons to use the mailing list:
 The corollaries to those two rules are
 
 
-- Don't send email directly to Bruce.
+#. Don't send email directly to me.
  
-- Don't be vague.
+#. Don't be vague.
  
 
-If you send mail directly to Bruce, the likely response will be to ask
+If you send mail directly to me, the likely response will be to ask
 you to use the mailing list.  If you are vague, the likely response
 will be to ask you for more information.  If you send vague mail
-directly to Bruce, you may be ignored outright.
+directly to me, you may be ignored outright.
 
 
-Capturing error messages from Demeter programs
-----------------------------------------------
+Capturing error messages
+------------------------
 
-When Demeter runs into a problem, it usually emits error messages that
-are useful for understanding the cause of the bug.  Even when Athena
-or Artemis crashes hard, some useful information is usually provided.
+When :demeter:`demeter` runs into a problem, it usually emits error
+messages that are useful for understanding the cause of the bug.  Even
+when :demeter:`athena` or :demeter:`artemis` crashes hard, some useful
+information is usually provided.
 
 A good bug report will include this information.  Don't edit this
 information, regardless of how cryptic or repetitive it may seem.
@@ -92,8 +92,8 @@ information, regardless of how cryptic or repetitive it may seem.
    This folder may normally be `hidden from view
    <http://www.blogtechnika.com/how-to-hide-files-and-folders-and-access-them-in-windows-7>`_.
  
-   Each program writes its own log file.  Athena's log file is
-   :file:`%APPDATA%\demeter\dathena.log` and so on.
+   Each program writes its own log file.  :demeter:`athena`'s log file
+   is :file:`%APPDATA%\demeter\dathena.log` and so on.
  
    This log file should be included in any bug report.
  
@@ -158,22 +158,23 @@ The DOs of reporting bugs
   explain the problem. PNG is usually the best choice for a
   screenshot.  GIF is good also.  JPG and PDF are ok.  TIF sucks.
   Attach this image file to your mail message directly and **DON'T**
-  embed it in a Word or PowerPoint file before
-  attaching it.
-  
+  embed it in a Word or PowerPoint file before attaching it.  Really,
+  **DON'T** send me a Word or PowerPoint file that consists of a
+  single image.  I frickin' *hate* that.
+
 - **DO** send any output files that help explain the problem.  Bugs
   reports about :demeter:`atoms` almost always require the faulty
-  *feff.inp* file.
+  :file:`feff.inp` file.
  
 - **DO** use compressed archives if you must send large numbers of
   files.  :file:`.zip`, :file:`.tar.gz`, or :file:`.tar.bz2` are all
   acceptable formats for compressed archiving.
  
 - **DO** send a follow-up email if a lot of time has passed without a
-  response.  Bruce may be on travel or may have set your prior email
-  aside and forgotten to return to it (which would explain but not
-  justify a period of silence).  Bruce takes bugs reports very
-  seriously, sometimes he needs a reminder.
+  response.  I may be on travel or may have set your prior email aside
+  and forgotten to return to it (which would explain but not justify a
+  period of silence).  I take bug reports very seriously, but
+  sometimes I needs a reminder.
  
 
 
@@ -185,7 +186,7 @@ The DON'Ts of reporting bugs
   :demeter:`feff9`. The only version of :demeter:`feff` that I support
   at that level is the version of :demeter:`feff6` that comes with
   :demeter:`ifeffit`.  For questions about :demeter:`feff8` or
-  :demeter:`feff9`, contact someone from the Feff project.
+  :demeter:`feff9`, contact someone from the :demeter:`feff` project.
  
 - **DON'T** send any information in the form of a Word or PowerPoint
   document.  It is exceedingly rare that the information conveyed in a
@@ -201,15 +202,15 @@ The DON'Ts of reporting bugs
  
 - **DON'T** assume that others use the same email program as you.
   Specifically **DON'T** rely upon colored text or fonts in the email
-  message to convey information -- your email may not display the same
-  for me as it does for you.
+  message to convey information |nd| your email may not display the
+  same for me as it does for you.
  
 - **DON'T** send large files (other than the suggestions above) that have
   not been requested.  If a large file is needed to understand the
   problem, you will be asked for it in a follow-up email.
  
 - **DON'T** ever send anything by fax.  **DON'T** ever send anything by
-  normal post or overnight express.  Remember, this is the 21st century.
+  normal post or overnight express.  It *is* the 21st century, after all!
  
 - **DON'T** send every file from a :demeter:`feff` run!  It is usually
   sufficient to send just the :file:`feff.inp` file.  If other files

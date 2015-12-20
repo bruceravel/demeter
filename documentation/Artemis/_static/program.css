@@ -1,0 +1,14 @@
+
+/* color of top/bottom bars in nature theme */
+div.related {
+    background-color: #BF6000;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+div.body h1 { background-color: #EBC5AE; }
+div.body h2 { background-color: #EBD0C4; }
+div.body h3 { background-color: #EBD0C4; }
+

@@ -224,7 +224,33 @@ def visit_linebreak_html(self, node):
 
 def depart_linebreak_html(self, node):
     pass
-    
+
+
+class plotwindow(nodes.Element):
+    pass
+
+class PlotWindowDirective(Directive):
+
+    required_arguments = 0
+    optional_arguments = 0
+
+    has_content = False
+
+    def run(self):
+        return [plotwindow()]
+
+def visit_plotwindow_latex(self, node):
+    self.body.append('\n\n')
+
+def depart_plotwindow_latex(self, node):
+    pass
+
+def visit_plotwindow_html(self, node):
+    self.body.append('<img alt="Plot window" src="../_static/plot.png" align="right" hspace="25">')
+
+def depart_plotwindow_html(self, node):
+    pass
+
 
 
 
@@ -287,6 +313,11 @@ def setup(app):
     app.add_node(linebreak,
             html = (visit_linebreak_html, depart_linebreak_html),
             latex = (visit_linebreak_latex, depart_linebreak_latex)
+            )
+    app.add_directive('plotwindow', PlotWindowDirective)
+    app.add_node(plotwindow,
+            html = (visit_plotwindow_html, depart_plotwindow_html),
+            latex = (visit_plotwindow_latex, depart_plotwindow_latex)
             )
     app.add_role('button', button_role)
     app.add_node(button,
