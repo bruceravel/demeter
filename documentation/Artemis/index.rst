@@ -49,7 +49,7 @@ for analysis of EXAFS data using :demeter:`feff` and
 **Contents**
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    intro.rst
    startup/index.rst

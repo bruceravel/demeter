@@ -82,9 +82,6 @@ than one of any file type, a warning will be issued in the status bar
 and no import will happen. Similarly, you may not drop a folder.
 
 
-Main menu bar
--------------
-
 The File menu
 ~~~~~~~~~~~~~
 
@@ -246,7 +243,7 @@ about :demeter:`artemis`, including its open source licensing terms.
 
 
 Status bar
-----------
+~~~~~~~~~~
 
 This area in the main window is used to display various kinds of
 messages, including updates on long-running tasks, hints about controls
@@ -271,7 +268,7 @@ progress of a long running task are not recorded in the buffer.
 
 
 The Data list
--------------
+~~~~~~~~~~~~~
 
 .. _fit-artemisdatalist:
 
@@ -372,7 +369,7 @@ Alternately, double click on your choice in the list of recent files.
 
 
 The Feff list
--------------
+~~~~~~~~~~~~~
 
 The FEFF list starts off with a single control, which is used to import
 structural data into your fitting project. Clicking the “Add” button
@@ -413,7 +410,7 @@ input files from your computer's file manager and drop them onto the
 
 
 Fit information
----------------
+~~~~~~~~~~~~~~~
 
 .. _fit-artemisfitproperties:
 
@@ -445,7 +442,7 @@ file. The default is to use the .fpj extension.
 
 
 Fit and log buttons
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 .. _fit-artemisfitlogbuttons:
 
