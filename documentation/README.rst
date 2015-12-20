@@ -189,13 +189,21 @@ Other document folders
 ~~~~~~~~~~~~~~~~~~~~~~
 
 #. Artemis
+
 #. Demeter programming guide
+
 #. One-pagers
+
    #. bugs
+
    #. help
+
    #. contribute
+
    #. unix install + non-root + David Hughes'
+
    #. mac install + Laila's
+
    #. Build for windows
   
 
