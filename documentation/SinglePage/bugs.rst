@@ -1,4 +1,3 @@
-
 ..
    This document is copyright 2016 Bruce Ravel and released under
    The Creative Commons Attribution-ShareAlike License
@@ -72,7 +71,7 @@ information, regardless of how cryptic or repetitive it may seem.
   
    Each of the GUI programs (:demeter:`athena`, :demeter:`artemis`,
    and :demeter:`hephaestus`) writes its output messages to a log
-   file.  This log file is in the :file:`%APPDATA%\demeter` folder.
+   file.  This log file is in the :file:`%APPDATA%\\demeter` folder.
    On Windows 7, ``%APPDATA%`` is typically
  
    ::
@@ -81,7 +80,7 @@ information, regardless of how cryptic or repetitive it may seem.
  
  
    where ``<username>`` is *your* login name.  For me, this ends up
-   being :file:`C:\Users\bravel\AppData\Roaming\`.  On Windows XP and
+   being :file:`C:\\Users\\bravel\\AppData\\Roaming\\`.  On Windows XP and
    Vista, ``%APPDATA%`` is typically
  
    ::
@@ -93,7 +92,7 @@ information, regardless of how cryptic or repetitive it may seem.
    <http://www.blogtechnika.com/how-to-hide-files-and-folders-and-access-them-in-windows-7>`_.
  
    Each program writes its own log file.  :demeter:`athena`'s log file
-   is :file:`%APPDATA%\demeter\dathena.log` and so on.
+   is :file:`%APPDATA%\\demeter\\dathena.log` and so on.
  
    This log file should be included in any bug report.
  

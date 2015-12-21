@@ -68,10 +68,10 @@ other hand,
 
 is a **vague, open-ended** question that is unlikely to garner much of
 a response.  We see lots of these vague, open-ended questions and the
-folks asking questions like that rarely gets the answer they're
-looking for.  Spend time thinking about how to ask the question with
-clarity, with conciseness, and with precision |nd| that time spent
-*will* pay off.
+folks asking questions like that rarely get the answer they're looking
+for.  Spend time thinking about how to ask the question with clarity,
+with conciseness, and with precision |nd| that time spent *will* pay
+off.
 
 Remember that the people who answer questions on the mailing list are
 volunteering their time and may not have much time to spend with you.

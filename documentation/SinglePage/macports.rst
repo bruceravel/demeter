@@ -9,17 +9,18 @@ installation of the :demeter:`demeter` package for MacPorts.
 #. Install Xcode and Xcode Command Line Tools: If using the latest
    operating system, then you will find Xcode in the :quoted:`App
    Store`. If using an older operating system, you will find Xcode and
-   the Command Line Tools from Mac Developer website
+   the Command Line Tools from the `Mac Developer
+   <https://developer.apple.com/>`_ website
 
 #. Open :program:`Terminal` and agree to Xcode license by typing 
 
    ::
 
-      xcodebuild –licence
+      xcodebuild --licence
 
 #. Install MacPorts for your version of Mac OS X from MacPorts website
 
-#. Open :program:`Terminal` and type in: 
+#. Open :program:`Terminal` and type in:
 
    ::
 
@@ -30,7 +31,7 @@ installation of the :demeter:`demeter` package for MacPorts.
    automated builder for El Capitan was not ready at the time of
    installation; hence, it took longer time to install Demeter.
 
-#. Launch :demeter:`athena` by typing :command:`Athena` in
+#. Launch :demeter:`athena` by typing ``Athena`` in
    :program:`Terminal`. Do the same for :demeter:`artemis` and
    :demeter:`hephaestus`
 
@@ -43,7 +44,7 @@ Problems during installation
      caused when installing a port (e.g. :file:`libpixman`) fails and
      an error message of :quoted:`no destroot found` occur. What you need to
      do is to clean the affected port and try again (example below is
-     for Libpixman port)
+     for libpixman port)
 
      ::
 
