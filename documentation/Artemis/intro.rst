@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Introduction
 ============
@@ -9,28 +13,20 @@ a wordy, finicky syntax. Both benefit by being wrapped up inside of
 something easier to use. Hopefully, :demeter:`artemis` is that something.
 
 
-Using this document
--------------------
-
-The side bar shows the top-level table of contents of the document
-along with the contents of the current chapter. The top bar provides
-additional navigation linking directly to chapters immediately before
-or after the current chapter or up and down within the current
-chapter.
-
 
 Typesetting
-~~~~~~~~~~~
+-----------
 
-I use some typesetting conventions to convey certain kinds of
+Typesetting conventions are used to convey certain kinds of
 information in this manual.
 
 #. The names of programs look like this: :demeter:`artemis`, :demeter:`feff`
 
 #. The names of files look like this: :file:`atoms.inp`
 
-#. Configuration parameters (i.e. preferences) for :demeter:`artemis` and :demeter:`demeter`
-   look like this: :configparam:`artemis,plot_after_fit`
+#. Configuration parameters (i.e. preferences) for :demeter:`artemis`
+   and :demeter:`demeter` look like this:
+   :configparam:`artemis,plot_after_fit`
 
 #. Verbatim text, such as represent specific input to or output from
    :demeter:`artemis` or text typed into a computer, looks like this:
@@ -46,6 +42,10 @@ information in this manual.
 .. todo:: Aspects of this document, or possibly of :demeter:`artemis`
    itself, which are incomplete are indicated with boxes like this.
 
+------------
+
+.. todo:: Move the next two sections into a technology document in the
+   SinglePage section.
 
 The technology behind Artemis
 -----------------------------
@@ -77,8 +77,7 @@ The technology behind Artemis
 
 **Moose**
 
-   :demeter:`demeter` uses `Moose
-   <http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod>`__.
+   :demeter:`demeter` uses `Moose <https://metacpan.org/pod/Moose>`__.
    This is, on the balance, a very good thing, indeed. Moose brings
    many powerful capabilities to the programming table. When I was
    about halfway through writing :demeter:`demeter`, I paused for a
@@ -117,7 +116,7 @@ The technology behind Artemis
 
 
 Templates, backends, and other tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 All of :demeter:`artemis`' interactions with :demeter:`feff`,
 :demeter:`ifeffit`, and its plotting tools use `a templating library

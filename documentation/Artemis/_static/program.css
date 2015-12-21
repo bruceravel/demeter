@@ -1,14 +1,15 @@
 
 /* color of top/bottom bars in nature theme */
 div.related {
-    background-color: #BF6000;
+    background-color: #B04109;
 }
 
 .strike {
   text-decoration: line-through;
 }
 
-div.body h1 { background-color: #EBC5AE; }
-div.body h2 { background-color: #EBD0C4; }
-div.body h3 { background-color: #EBD0C4; }
+
+div.body h1 { background-color: #FDAE6B; text-shadow: 0px 1px 0 #FEBE89; }
+div.body h2 { background-color: #FEE6CE; }
+div.body h3 { background-color: #FEE6CE; }
 

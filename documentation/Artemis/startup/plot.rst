@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 The plot window
 ===============
@@ -20,10 +24,10 @@ windows are explained.
 
 At the top of the Plot window is a row of three buttons used to make
 plots in k, R, or q space. These plots will be made using the contents
-of the “Plotting list” near the bottom of the Plot window. The plotting
-list gets populated with data, paths, and other plottable items. The
-details of how the plotting list gets populated will be discussed later
-in the document.
+of the :guilabel:`Plotting list` near the bottom of the Plot
+window. The plotting list gets populated with data, paths, and other
+plottable items. The details of how the plotting list gets populated
+will be discussed later in the document.
 
 Beneath that is a set of radio buttons for setting the k-weighting to
 be used in many of the kinds of plots that :demeter:`artemis` makes,
@@ -33,9 +37,9 @@ used to evaluate fits are set in the Data window. The :guilabel:`kw`
 option uses the arbitrary (possibly non-integer) k-weighting value
 specified in the Data window.
 
-Beneath the k-weight buttons is a set of tabs used to control different
-aspects of plots. The “limits” tab provides controls for the most
-commonly used plotting options.
+Beneath the k-weight buttons is a set of tabs used to control
+different aspects of plots. The :guilabel:`limits` tab provides
+controls for the most commonly used plotting options.
 
 - Because we use a complex Fourier transform, |chi| (R) and |chi| (q)
   are complex functions. The two sets of radio buttons at the top of
@@ -49,28 +53,28 @@ commonly used plotting options.
   buttons used to display additional functions related to the
   data. These are:
 
-    Fit
+    **Fit**
        When checked, whenever the data is plotted, the most recent fit
        will be plotted.
-    Background
+    **Background**
        When checked, the background function will be plotted, but only
        if it was refined in the most recent fit.
-    Window
+    **Window**
        When checked the window function will be plotted over the data.
        The window will be scaled appropriately for the current k-weight
        value. When plotting in q, the k-space window will be used.
-    Residual
+    **Residual**
        When checked, the difference between the data and the fit will be
        plotted.
-    Running R-factor
+    **Running R-factor**
        When checked, a running sum of the residual will be plotted,
        providing another way of visualizing the misfit.
 
 - The last thing on the limits tab is a series of text entry boxes for
   setting the plotting range in each of the three spaces.
 
-The other tabs will explained in `the plotting
-chapter <../plot/index.html>`__.
+The other tabs will explained in `the plotting chapter
+<../plot/index.html>`__.
 
 The last item on the Plot window is a button labeled :button:`Save
 next plot to a file,light`. When depressed, the next plot made will

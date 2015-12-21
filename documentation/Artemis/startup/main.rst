@@ -1,9 +1,14 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 The main window
 ===============
 
-The main window provides an overview of the state of ARTEMIS as well as
-of your current fitting project. This window is divided into 7 areas.
+The main window provides an overview of the state of
+:demeter:`artemis` as well as of your current fitting project. This
+window is divided into 7 areas.
 
 .. _fig_mainwindow:
 
@@ -11,7 +16,7 @@ of your current fitting project. This window is divided into 7 areas.
    :target: ../_images/main.png
    :width: 100%
 
-   The main Artemis window.
+   The main window.
 
 
 #. At the top is a menu bar. We will examine the contents of each menu
@@ -54,12 +59,13 @@ of your current fitting project. This window is divided into 7 areas.
    guess, this button is clicked to initiate a fit. The color of this
    button will change to provide a `heuristic evaluation
    <../fit/happiness.html>`__ of the quality of each fit. Below the
-   Fit button is a button used to show or hide a window containing the
-   log from the most recent fit.
+   :button:`Fit,light` button is :button:`Show log,light` button, used
+   to show or hide a window containing the results from the most
+   recent fit.
 
 
 File drag and drop
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The data set and :demeter:`feff` calculation area on the main window,
 areas 4 and 5 above, are drop targets for files dragged from your
@@ -83,7 +89,12 @@ and no import will happen. Similarly, you may not drop a folder.
 
 
 The File menu
-~~~~~~~~~~~~~
+-------------
+
+Clicking on :guilabel:`File` displays this menu, which is mostly used
+for various kinds of input and output. Note that some menu items that
+have keyboard shortcuts attached and that these shortcuts are shown in
+the menu.
 
 .. _fit-artemisfilemenu:
 
@@ -93,11 +104,6 @@ The File menu
    :align: center
 
    The :guilabel:`File` menu.
-
-Clicking on :guilabel:`File` displays this menu, which is mostly used
-for various kinds of input and output. Note that some menu items that
-have keyboard shortcuts attached and that these shortcuts are shown in
-the menu.
 
 - The first option is used to import any kind of data into
   :demeter:`artemis`, including :demeter:`artemis` or :demeter:`athena`
@@ -146,7 +152,11 @@ the menu.
 
 
 The Monitor menu
-~~~~~~~~~~~~~~~~
+----------------
+
+This menu provides several options for monitoring the state of
+:demeter:`artemis`, :demeter:`ifeffit`, and the plotting backend
+(usually :program:`Gnuplot`).
 
 .. _fit-artemismonitormenu:
 
@@ -157,28 +167,23 @@ The Monitor menu
 
    The :guilabel:`Monitor` menu.
 
-
-
-This menu provides several options for monitoring the state of
-:demeter:`artemis`, :demeter:`ifeffit`, and the plotting backend
-(usually :program:`Gnuplot`).
-
 - The command buffer contains a record of every data processing
-  command sent to :demeter:`ifeffit` and every plotting command sent
-  to the plotting backend. Bruce uses these buffers to debug the
-  prgram as he implements new features. You may want to use these
-  buffers to learn the details of interacting directly with
-  :demeter:`ifeffit` or with the plotting backend.
+  command sent to :demeter:`ifeffit` or :demeter:`larch` and every
+  plotting command sent to the plotting backend. Bruce uses these
+  buffers to debug the prgram as he implements new features. You may
+  want to use these buffers to learn the details of interacting
+  directly with :demeter:`ifeffit`, :demeter:`larch`, or the plotting
+  backend.
 
 - The status bar buffer contains a record of every message sent the
   status bar in the main window as well as those messages displayed in
   the status bars of other windows in :demeter:`artemis`. All messages
   are time stamped.
 
-- The "guilabel:`Show Ifeffit` menu will cause :demeter:`ifeffit` to
-   display detailed information in the command buffer about the
-   internal state of different kind of data. This is another thing
-   Bruce uses to debug program issues.
+- The :guilabel:`Show Ifeffit` menu will cause :demeter:`ifeffit` to
+  display detailed information in the command buffer about the
+  internal state of different kind of data. This is another thing
+  Bruce uses to debug program issues.
 
 - The :guilabel:`Debug options` menu contains several items used to
   display technical information about the current state of
@@ -194,7 +199,7 @@ This menu provides several options for monitoring the state of
   :demeter:`ifeffit`.
 
 The Plot menu
-~~~~~~~~~~~~~
+-------------
 
 .. _fit-artemisplotmenu:
 
@@ -226,7 +231,10 @@ Once you have installed the font, simply check the
 
 
 The Main help menu
-~~~~~~~~~~~~~~~~~~
+------------------
+
+This menu is used to display this document or to display information
+about :demeter:`artemis`, including its open source licensing terms.
 
 .. _fit-artemishelpmenu:
 
@@ -238,12 +246,9 @@ The Main help menu
    The :guilabel:`Help` menu.
 
 
-This menu is used to display this document or to display information
-about :demeter:`artemis`, including its open source licensing terms.
-
 
 Status bar
-~~~~~~~~~~
+----------
 
 This area in the main window is used to display various kinds of
 messages, including updates on long-running tasks, hints about controls
@@ -268,7 +273,14 @@ progress of a long running task are not recorded in the buffer.
 
 
 The Data list
-~~~~~~~~~~~~~
+-------------
+
+The data list starts off with a single control, which is used to
+import data into your fitting project. Clicking the
+:button:`Add,light` button will open the standard file selection
+dialog for your platform. That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.
 
 .. _fit-artemisdatalist:
 
@@ -279,13 +291,6 @@ The Data list
 
    The data list.
 
-
-The data list starts off with a single control, which is used to
-import data into your fitting project. Clicking the :button:`Add,light`
-button will open the standard file selection dialog for your
-platform. That is, on Windows, the standard Windows file selection
-dialog is used; on Linux, the standard Gnome file selection dialog is
-used; and so on.
 
 The standard manner of importing data into :demeter:`artemis` is to
 use an :demeter:`athena` project file. Thus the file selection dialog
@@ -308,14 +313,21 @@ hidden. `See the Data window chapter. <../data.html>`__
    typical :demeter:`athena` project will contain many |nd| perhaps
    dozens |nd| of data groups. :demeter:`artemis` expects that you
    will import only that data whose EXAFS you intend to analyze. If
-   you doing a single-data-set analysis, the :guilabel:`Data` list
+   you are doing a single-data-set analysis, the :guilabel:`Data` list
    will contain only that item. If you import many data sets without
    actually using them in the fitting model, :demeter:`artemis`
    **will** get confused. And so will you.
 
 
 The Athena project selection dialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
+
+When importing data from an :demeter:`athena` project file, the
+project selection dialog is shown. It presents you with a list of all
+data groups from the project file. The file listing is configured such
+that only one item can be selected at a time. The selected data group
+is also plotted. Any title lines from that data group are displayed in
+the text box on the upper right.
 
 .. _fit-artemisathenaselection:
 
@@ -326,16 +338,13 @@ The Athena project selection dialog
 
    The :demeter:`athena` project selection dialog.
 
-When importing data from an :demeter:`athena` project file, the
-project selection dialog is shown. It presents you with a list of all
-data groups from the project file. The file listing is configured such
-that only one item can be selected at a time. The selected data group
-is also plotted. Any title lines from that data group are displayed in
-the text box on the upper right.
-
-Beneath that is a series of radio buttons for selecting how the data are
-plotted. Each time you click on a data group from the list, it will be
-plotted as selected.
+The plot that is made when you select a data group is controlled by
+the :guilabel:`Plot as` box of radio buttons.  These buttons have no
+impact on how the data imported into :demeter:`artemis`.  They are
+only used to determine how the data are displayed to you as you select
+the data group to import.  Unlike the :demeter:`athena` project
+selection dialog, this one only allows you to select one data group at
+a time.
 
 The next set of radio buttons selects what set of Fourier transform
 and fitting parameters will be used. The first choice says to use the
@@ -349,7 +358,13 @@ To continue importing data, click the :button:`Import,light` button. The
 :button:`Cancel,light` button dismisses this dialog without importing data.
 
 The recent data dialog
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
+
+You can access a list of recently imported data by *right* clicking on
+the :button:`Add,light` button. This presents a dialog with a
+selection list. Click on one of your recent files, then click
+:button:`OK,light` or type :button:`Return`.  Alternately, double
+click on your choice in the list of recent files.
 
 .. _fit-artemisrecentdata:
 
@@ -361,15 +376,8 @@ The recent data dialog
    The recent data dialog.
 
 
-You can access a list of recently imported data by *right* clicking on
-the :button:`Add,light` button. This presents a dialog with a selection
-list. Click on one of your recent files, then click :button:`OK,light`.
-Alternately, double click on your choice in the list of recent files.
-
-
-
 The Feff list
-~~~~~~~~~~~~~
+-------------
 
 The FEFF list starts off with a single control, which is used to import
 structural data into your fitting project. Clicking the “Add” button
@@ -410,7 +418,12 @@ input files from your computer's file manager and drop them onto the
 
 
 Fit information
-~~~~~~~~~~~~~~~
+---------------
+
+This section of the main window is used to specify properties of the
+fit. The name is a short bit of text that will be used as a label for
+each fit. The number will be auto-incremented unless you explicitly
+set it.
 
 .. _fit-artemisfitproperties:
 
@@ -420,11 +433,6 @@ Fit information
    :align: center
 
    The fit properties.
-
-This section of the main window is used to specify properties of the
-fit. The name is a short bit of text that will be used as a label for
-each fit. The number will be auto-incremented unless you explicitly
-set it.
 
 The description is a longer bit of text which you can use to describe
 the current fitting model. Here, too, the number is auto-incremented
@@ -442,7 +450,15 @@ file. The default is to use the .fpj extension.
 
 
 Fit and log buttons
-~~~~~~~~~~~~~~~~~~~
+-------------------
+
+All the way to the right of the main window are the
+:button:`Fit,light` and :button:`Show log,light` buttons. Click the
+Fit button to initiate the fit. The log button is used to show and
+hide a window which displays the log from the most recent fit. `See
+the chapter on the Log and Journal windows. <../logjournal.html>`__ In
+the event of a fit that exits abnormally, error messages explaining
+the problems will be show in the log window.
 
 .. _fit-artemisfitlogbuttons:
 
@@ -454,16 +470,8 @@ Fit and log buttons
    The :button:`Fit,light` and :button:`Show log,light` buttons.
 
 
-All the way to the right of the main window are the
-:button:`Fit,light` and :button:`Show log,light` buttons. Click the
-Fit button to initiate the fit. The log button is used to show and
-hide a window which displays the log from the most recent fit. `See
-the chapter on the Log and Journal windows. <../logjournal.html>`__ In
-the event of a fit that exits abnormally, error messages explaining
-the problems will be show in the log window.
-
-At start-up the Fit button is yellow. After each fit, the color of this
-button will range from red to green as a heuristic indication of the fit
-quality. `See the happiness chapter for more
-details. <../fit/happiness.html>`__
+At start-up the Fit button is yellow. After each fit, the color of
+this button will range from red to green as a heuristic indication of
+the fit quality. `See the happiness chapter for more details
+<../fit/happiness.html>`__.
 
