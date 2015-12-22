@@ -98,7 +98,7 @@ release = '0.9.24'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst', 'contents.rst',
-                    'data.rst',
+                    'intro.rst',
                     'gds.rst',
                     'history.rst',
                     'logjournal.rst',

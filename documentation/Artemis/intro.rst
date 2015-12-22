@@ -163,8 +163,8 @@ tools from CPAN are extensively tested and highly reliable.
 Folders and log files
 ---------------------
 
-On occasion, it is helpful to know something about how ARTEMIS writes
-information to disk during its operations.
+On occasion, it is helpful to know something about how
+:demeter:`artemis` writes information to disk during its operations.
 
 **working folder**
 

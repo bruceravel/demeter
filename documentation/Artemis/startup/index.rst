@@ -1,3 +1,7 @@
+..
+   Artemis document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Starting Artemis
 ================
@@ -53,6 +57,43 @@ The following two sections provide an overview of the functionality in
 these two windows. We will return these many times throughout this
 document.
 
+
+Folders and log files
+---------------------
+
+On occasion, it is helpful to know something about how
+:demeter:`artemis` writes information to disk during its operations.
+
+**working folder**
+
+    Many of :demeter:`artemis`' chores involve writing temporary
+    files. Project files are unpacked in temporary
+    folders. :program:`Gnuplot` writes temporary files as part of its
+    plot creation. These files are stored in the :quoted:`stash
+    folder`. On linux (and other unixes) this is
+    :file:`~/.horae/stash/`.  On Windows this is
+    :file:`%APPDATA%\\demeter\\stash`.
+
+**log files**
+
+    When :demeter:`artemis` runs into problems, it attempts to write
+    enough information to the screen that the problem can be
+    addressed. This screen information is what Bruce needs to
+    troubleshoot bugs. On a linux (or other unix) machine, simply run
+    :demeter:`artemis` from the command line and the informative
+    screen messages will be written to the screen. On a Windows
+    machine, it is uncommon to run the software from the command line,
+    so :demeter:`artemis` has been instrumented to write a run-time
+    log file. This log file is called dartemis.log and can be found in
+    the :file:`%APPDATA%\\demeter` folder.
+
+``%APPDATA%`` is :file:`C:\\Users\\<username>\\AppDataRoaming\\` on
+Windows 7.
+
+It is :file:`C:\\Documents and Settings\\<username>\\Application Data`
+on Windows XP and Vista.
+
+In either case, ``<username>`` is your log-in name.
 
 -------------
 
