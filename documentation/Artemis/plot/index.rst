@@ -3,7 +3,7 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
-..
+
 Plotting data
 =============
 

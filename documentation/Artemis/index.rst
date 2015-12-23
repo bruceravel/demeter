@@ -50,12 +50,12 @@ which suggests that EXAFS data analysis is more an art than a science.
    gds.rst
    fit/index.rst
    plot/index.rst
+   logjournal.rst
+   history.rst
+   monitor.rst
+   prefs.rst
 
 .. 
-    logjournal.rst
-    history.rst
-    monitor.rst
-    prefs.rst
     examples/index.rst
     atoms/index.rst
     extended/index.rst

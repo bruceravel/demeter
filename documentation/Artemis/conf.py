@@ -99,10 +99,6 @@ release = '0.9.24'
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst', 'contents.rst',
                     'intro.rst',
-                    'history.rst',
-                    'logjournal.rst',
-                    'monitor.rst',
-                    'prefs.rst',
 ]
 
 #sphinxtr
