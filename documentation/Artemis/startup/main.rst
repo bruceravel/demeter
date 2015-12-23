@@ -133,7 +133,7 @@ the menu.
   the rare situation when :demeter:`artemis` fails to recognize one of
   its standard input data types.
 
-- The :guilabel:`export” submenu is used to generate files in the
+- The :guilabel:`export` submenu is used to generate files in the
   format of an :demeter:`ifeffit` script or a perl script using
   :demeter:`demeter`. These files attempt to capture the current state
   of your fitting project. It is unlikely that the output of either of
@@ -219,7 +219,7 @@ which of four such plot displays is active.
 The top two options are used to export the most recent plot to a PNG or
 PDF file. You will be prompted for a filename.
 
-The bottom two options tick on or off the “Plot after fit” buttons for
+The bottom two options tick on or off the :guilabel:`Plot after fit` buttons for
 each data set, which may be useful for a multiple data set fit.
 
 :demeter:`artemis` can make plots in a style that resembles the famous
@@ -379,11 +379,12 @@ click on your choice in the list of recent files.
 The Feff list
 -------------
 
-The FEFF list starts off with a single control, which is used to import
-structural data into your fitting project. Clicking the “Add” button
-will open the standard file selection dialog for your platform. That is,
-on Windows, the standard Windows file selection dialog is used; on
-Linux, the standard Gnome file selection dialog is used; and so on.
+The FEFF list starts off with a single control, which is used to
+import structural data into your fitting project. Clicking the
+:button:`Add,light` button will open the standard file selection
+dialog for your platform. That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.
 
 .. _fit-artemisfefflist:
 

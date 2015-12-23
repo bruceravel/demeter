@@ -14,8 +14,9 @@
    :rtrim:
 .. |alpha| unicode:: U+003B1 .. GREEK SMALL LETTER ALPHA
    :trim:
+.. |nu| unicode:: U+003BD .. GREEK SMALL LETTER NU
+   :ltrim:
 .. |AA|    unicode:: U+00C5 .. LATIN CAPITAL LETTER A WITH RING ABOVE
-   :rtrim:
 .. |pm|    unicode:: U+00B1 .. PLUS-MINUS SIGN
    :trim:
 .. |nd|    unicode:: U+2013 .. EN DASH

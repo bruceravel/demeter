@@ -45,16 +45,13 @@ which suggests that EXAFS data analysis is more an art than a science.
    forward.rst
    startup/index.rst
    data.rst
+   feff/index.rst
+   path/index.rst
+   gds.rst
+   fit/index.rst
+   plot/index.rst
 
 .. 
-    intro.rst
-    startup/index.rst
-    data.rst
-    feff/index.rst
-    path/index.rst
-    gds.rst
-    fit/index.rst
-    plot/index.rst
     logjournal.rst
     history.rst
     monitor.rst

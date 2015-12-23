@@ -17,6 +17,10 @@ Forward
 
 - in use by hundreds of scientists world-wide
 
+
+.. todo:: 
+   #. remove :width: from all figures ... this will cause them to
+      display at natural width. if window is wide enough
       
 
 Layout and typesetting conventions

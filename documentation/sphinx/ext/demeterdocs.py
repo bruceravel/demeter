@@ -252,6 +252,32 @@ def depart_plotwindow_html(self, node):
     pass
 
 
+class plotlist(nodes.Element):
+    pass
+
+class PlotListDirective(Directive):
+
+    required_arguments = 0
+    optional_arguments = 0
+
+    has_content = False
+
+    def run(self):
+        return [plotlist()]
+
+def visit_plotlist_latex(self, node):
+    self.body.append('\n\n')
+
+def depart_plotlist_latex(self, node):
+    pass
+
+def visit_plotlist_html(self, node):
+    self.body.append('<img alt="Plot window" src="../_static/plotlist.png" align="right" hspace="25">')
+
+def depart_plotlist_html(self, node):
+    pass
+
+
 
 
 class button(nodes.Element):
@@ -318,6 +344,11 @@ def setup(app):
     app.add_node(plotwindow,
             html = (visit_plotwindow_html, depart_plotwindow_html),
             latex = (visit_plotwindow_latex, depart_plotwindow_latex)
+            )
+    app.add_directive('plotlist', PlotListDirective)
+    app.add_node(plotlist,
+            html = (visit_plotlist_html, depart_plotlist_html),
+            latex = (visit_plotlist_latex, depart_plotlist_latex)
             )
     app.add_role('button', button_role)
     app.add_node(button,

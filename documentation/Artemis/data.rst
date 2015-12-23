@@ -197,7 +197,7 @@ to the fourth coordination shell.
 
       Rk plot
 
-   The :quoted:`Rk` plot is a stacked plot with the “Rmr” on the bottom
+   The :quoted:`Rk` plot is a stacked plot with the :quoted:`Rmr` on the bottom
    and |chi| (k) on the top. The value of k-weighting selected in the
    `Plot window <plot/index.html>`__ is used. Fourier transform windows
    are drawn over the |chi| (k) and \||chi| (R)\| spectra.
