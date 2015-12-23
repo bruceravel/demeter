@@ -27,7 +27,6 @@ Here is the Data window as it initially appears:
 .. _fig-datawindow:
 .. figure:: ../_images/datawindow.png
    :target: _images/datawindow.png
-   :width: 65%
    :align: center
 
    The Data window, immediately after data import.
@@ -97,7 +96,6 @@ Data window looks something like this.
 .. _fig-datawindowwithpaths:
 .. figure:: ../_images/datawindow_withpaths.png
    :target: _images/datawindow_withpaths.png
-   :width: 65%
    :align: center
 
    The Data window, with imported paths.
@@ -132,7 +130,6 @@ to the fourth coordination shell.
    .. _fig-plotk123:
    .. figure:: ../_images/plot_k123.png
       :target: _images/plot_k123.png
-      :width: 45%
       :align: center
 
       k123 plot
@@ -151,7 +148,6 @@ to the fourth coordination shell.
    .. _fig-plotR123:
    .. figure:: ../_images/plot_r123.png
       :target: _images/plot_r123.png
-      :width: 45%
       :align: center
 
       R123 plot
@@ -174,7 +170,6 @@ to the fourth coordination shell.
    .. _fig-plotRmr:
    .. figure:: ../_images/plot_rmr.png
       :target: _images/plot_rmr.png
-      :width: 45%
       :align: center
 
       Rmr plot
@@ -192,7 +187,6 @@ to the fourth coordination shell.
    .. _fig-plotRk:
    .. figure:: ../_images/plot_rk.png
       :target: _images/plot_rk.png
-      :width: 45%
       :align: center
 
       Rk plot
@@ -214,7 +208,6 @@ to the fourth coordination shell.
    .. _fig-plotkq:
    .. figure:: ../_images/plot_kq.png
       :target: _images/plot_kq.png
-      :width: 45%
       :align: center
 
       kq plot
@@ -234,7 +227,6 @@ The Data menu
 .. _fig-datadatamenu:
 .. figure:: ../_images/data-datamenu.png
    :target: _images/data-datamenu.png
-   :width: 25%
    :align: center
 
    This menu displays functions that can act on the data set displayed
@@ -312,7 +304,6 @@ paths associated with this data set.
 .. _fig-datapathmenu:
 .. figure:: ../_images/data-pathmenu.png
    :target: _images/data-pathmenu.png
-   :width: 25%
    :align: center
 
    The Paths menu.
@@ -347,7 +338,6 @@ paths associated with this data set.
     .. _fig-addparam:
     .. figure:: ../_images/addparam.png
        :target: _images/addparam.png
-       :width: 15%
        :align: center
 
        Add parameter dialog
@@ -378,7 +368,6 @@ The Marks menu
 .. _fig-datamarksmenu:
 .. figure:: ../_images/data-marksmenu.png
    :target: _images/data-marksmenu.png
-   :width: 25%
    :align: center
 
    The Marks menu
@@ -422,7 +411,6 @@ The Actions menu
 .. _fig-dataactionsmenu:
 .. figure:: ../_images/data-actionsmenu.png
    :target: _images/data-actionsmenu.png
-   :width: 25%
    :align: center
 
    The Actions menu.
@@ -462,7 +450,6 @@ The Debug menu
 .. _fig-datadebugmenu:
 .. figure:: ../_images/data-debugmenu.png
    :target: _images/data-debugmenu.png
-   :width: 25%
    :align: center
 
    The Debug menu.
@@ -480,7 +467,6 @@ The Data help menu
 .. _fig-datahelpmenu:
 .. figure:: ../_images/data-helpmenu.png
    :target: _images/data-helpmenu.png
-   :width: 25%
    :align: center
 
    The Help menu.

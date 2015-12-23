@@ -7,6 +7,11 @@
 Forward
 =======
 
+.. todo:: 
+   #. remove :width: from all figures ... this will cause them to
+      display at natural width. if window is wide enough
+      
+
       
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things

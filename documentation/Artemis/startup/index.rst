@@ -30,7 +30,6 @@ Once started, :demeter:`artemis` displays two windows, as shown below.
 
 .. figure:: ../../_images/startup.png
    :target: ../_images/startup.png
-   :width: 100%
 
    The program, as it appears upon starting.  The :quoted:`main
    window` is the one accross the top of the screen.  The

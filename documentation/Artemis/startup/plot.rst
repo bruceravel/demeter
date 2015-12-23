@@ -11,7 +11,6 @@ The plot window
 
    .. figure:: ../../_images/plot.png
       :target: ../_images/plot.png
-      :width: 30%
       :align: center
 
 .. plotwindow::

@@ -19,8 +19,7 @@ Forward
 
 
 .. todo:: 
-   #. remove :width: from all figures ... this will cause them to
-      display at natural width. if window is wide enough
+   #. section numbering in chapters with sections in index.rst
       
 
 Layout and typesetting conventions

@@ -14,7 +14,6 @@ window is divided into 7 areas.
 
 .. figure:: ../../_images/main.png
    :target: ../_images/main.png
-   :width: 100%
 
    The main window.
 
@@ -100,7 +99,6 @@ the menu.
 
 .. figure:: ../../_images/filemenu.png
    :target: ../_images/filemenu.png
-   :width: 20%
    :align: center
 
    The :guilabel:`File` menu.
@@ -162,7 +160,6 @@ This menu provides several options for monitoring the state of
 
 .. figure:: ../../_images/monitormenu.png
    :target: ../_images/monitormenu.png
-   :width: 20%
    :align: center
 
    The :guilabel:`Monitor` menu.
@@ -205,7 +202,6 @@ The Plot menu
 
 .. figure:: ../../_images/plotmenu.png
    :target: ../_images/plotmenu.png
-   :width: 20%
    :align: center
 
    The :guilabel:`Plot` menu.
@@ -240,7 +236,6 @@ about :demeter:`artemis`, including its open source licensing terms.
 
 .. figure:: ../../_images/helpmenu.png
    :target: ../_images/helpmenu.png
-   :width: 20%
    :align: center
 
    The :guilabel:`Help` menu.
@@ -286,7 +281,6 @@ selection dialog is used; and so on.
 
 .. figure:: ../../_images/datalist.png
    :target: ../_images/datalist.png
-   :width: 50%
    :align: center
 
    The data list.
@@ -333,7 +327,6 @@ the text box on the upper right.
 
 .. figure:: ../../_images/athenaselection.png
    :target: ../_images/athenaselection.png
-   :width: 45%
    :align: center
 
    The :demeter:`athena` project selection dialog.
@@ -370,7 +363,6 @@ click on your choice in the list of recent files.
 
 .. figure:: ../../_images/recentdata.png
    :target: ../_images/recentdata.png
-   :width: 65%
    :align: center
 
    The recent data dialog.
@@ -390,7 +382,6 @@ selection dialog is used; and so on.
 
 .. figure:: ../../_images/fefflist.png
    :target: ../_images/fefflist.png
-   :width: 50%
    :align: center
 
    The :demeter:`feff` list.
@@ -430,7 +421,6 @@ set it.
 
 .. figure:: ../../_images/fitproperties.png
    :target: ../_images/fitproperties.png
-   :width: 55%
    :align: center
 
    The fit properties.
@@ -465,7 +455,6 @@ the problems will be show in the log window.
 
 .. figure:: ../../_images/fitlogbuttons.png
    :target: ../_images/fitlogbuttons.png
-   :width: 20%
    :align: center
 
    The :button:`Fit,light` and :button:`Show log,light` buttons.
