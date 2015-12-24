@@ -3,6 +3,7 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. |transfer button| image:: ../../_static/plot-icon.png
 
 Plotting data
 =============
@@ -146,4 +147,3 @@ the plotting list in the `Plot window <plot/index.html>`__ and the plot
 will be made in R. You can then plot in other spaces using the plotting
 buttons.
 
-.. |transfer button| image:: ../../_images/plot-icon.png

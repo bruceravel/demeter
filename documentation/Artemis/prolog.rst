@@ -13,12 +13,17 @@
 .. |Delta|   unicode:: U+00394 .. GREEK CAPITAL LETTER DELTA
    :rtrim:
 .. |alpha|   unicode:: U+003B1 .. GREEK SMALL LETTER ALPHA
-   :trim:
 .. |nu|      unicode:: U+003BD .. GREEK SMALL LETTER NU
    :ltrim:
+.. |beta|    unicode:: U+003B2 .. GREEK SMALL LETTER BETA
+.. |gamma|   unicode:: U+003B3 .. GREEK SMALL LETTER GAMMA
+
 .. |AA|      unicode:: U+00C5  .. LATIN CAPITAL LETTER A WITH RING ABOVE
 .. |pm|      unicode:: U+00B1  .. PLUS-MINUS SIGN
    :trim:
 .. |nd|      unicode:: U+2013  .. EN DASH
 .. |times|   unicode:: U+00D7  .. MULTIPLICATION SIGN
-.. |smiley|  unicode:: U+263A  .. WHITE SMILING FACE
+.. |neq|     unicode:: U+2260  .. NOT EQUAL TO
+.. |deg|     unicode:: U+00B0  .. DEGREE SYMBOL
+.. |cdot|    unicode:: U+00B7  .. MIDDLE DOT
+.. |therefore| unicode:: U+2234  .. THEREFORE

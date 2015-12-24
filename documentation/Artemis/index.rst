@@ -54,8 +54,6 @@ which suggests that EXAFS data analysis is more an art than a science.
    history.rst
    monitor.rst
    prefs.rst
-
-.. 
-    examples/index.rst
-    atoms/index.rst
-    extended/index.rst
+   examples/index.rst
+   atoms/index.rst
+   extended/index.rst
