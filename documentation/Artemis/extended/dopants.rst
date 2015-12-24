@@ -1,161 +1,126 @@
-`The Artemis Users' Guide <../index.html>`__
+..
+   Artemis document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
-+--------------------------------------+--------------------------------------+
-| «\ `DEMETER <http://bruceravel.githu |
-| b.io/demeter/>`__\ »                 |
-|                                      |
-| «\ `IFEFFIT <https://github.com/newv |
-| ille/ifeffit>`__\ »                  |
-|                                      |
-| «\ `xafs.org <http://xafs.org>`__\ » |
-|                                      |
-| Back: `Fuzzy                         |
-| degeneracy <../extended/fuzzy.html>` |
-| __                                   |
-|       Up: `Extended                  |
-| topics <../extended/index.html>`__   |
-|    Next: `5 and 6 legged             |
-| paths <../extended/fivesix.html>`__  |
-+--------------------------------------+--------------------------------------+
-
-| |[Artemis logo]|
-|  `Home <../index.html>`__
-|  `Introduction <../intro.html>`__
-|  `Starting Artemis <../startup/index.html>`__
-|  `The Data window <../data.html>`__
-|  `The Atoms/Feff window <../feff/index.html>`__
-|  `The Path page <../path/index.html>`__
-|  `The GDS window <../gds.html>`__
-|  `Running a fit <../fit/index.html>`__
-|  `The Plot window <../plot/index.html>`__
-|  `The Log & Journal windows <../logjournal.html>`__
-|  `The History window <../history.html>`__
-|  `Monitoring things <../monitor.html>`__
-|  `Managing preferences <../prefs.html>`__
-|  `Worked examples <../examples/index.html>`__
-|  `Crystallography for EXAFS <../atoms/index.html>`__
-|  `Extended topics <../extended/index.html>`__
-|   ↪ `Quick first shell theory <../extended/qfs.html>`__
-|   ↪ `Characteristic value <../extended/cv.html>`__
-|   ↪ `Modeling bond length <../extended/delr.html>`__
-|   ↪ `Modeling disorder <../extended/ss.html>`__
-|   ↪ `Constraints and restraints <../extended/constraints.html>`__
-|   ↪ `Bond valence sums <../extended/bvs.html>`__
-|   ↪ `Using empirical standards <../extended/empirical.html>`__
-|   ↪ `Unique potentials <../extended/ipots.html>`__
-|   ↪ `Fuzzy degeneracy <../extended/fuzzy.html>`__
-|   ↪ Handling dopants
-|   ↪ `5 and 6 legged paths <../extended/fivesix.html>`__
 
 Handling dopants in Feff
 ========================
 
---------------
-
- 
 
 Overview
 --------
 
 This section is adapted from the answer to a `Frequently Asked
-Question <http://cars9.uchicago.edu/ifeffit/FAQ/FeffitModeling#How_do_I_handle_doped_materials.3F_Why_doesn.27t_Atoms_handle_doped_materials.3F>`__
+Question
+<http://cars9.uchicago.edu/ifeffit/FAQ/FeffitModeling#How_do_I_handle_doped_materials.3F_Why_doesn.27t_Atoms_handle_doped_materials.3F>`__
 at the Ifeffit Wiki.
 
-ATOMS is, except in extremely contrived situations, not capable of
-writing a proper feff.inp file for a doped material. This is not a
-programming shortcoming of ATOMS (or its author!), but a number
-theoretic limitation imposed by the physical model used by FEFF.
+:demeter:`atoms` is, except in extremely contrived situations, not
+capable of writing a proper :file:`feff.inp` file for a doped
+material. This is not a programming shortcoming of :demeter:`atoms`
+(or its author!), but a number theoretic limitation imposed by the
+physical model used by :demeter:`feff`.
 
-In the feff.inp file, there is a big list of atomic coordinates. The
-reason that people like using ATOMS is because, without ATOMS, it is a
-pain in the ass to generate that list. The virtue of ATOMS is that it
-automates that annoying task for a certain class of matter, i.e.
-crystals.
+In the :file:`feff.inp` file, there is a big list of atomic
+coordinates. The reason that people like using :demeter:`atoms` is
+because, without :demeter:`atoms`, it is a pain in the ass to generate
+that list. The virtue of :demeter:`atoms` is that it automates that
+annoying task for a certain class of matter, i.e.  crystals.
 
-FEFF expects a point in space to be either unoccupied or occupied by a
-specific atom. A given point may be occupied neither by a fraction of an
-atom nor by two different kinds of atoms.
+:demeter:`feff` expects a point in space to be either unoccupied or
+occupied by a specific atom. A given point may be occupied neither by
+a fraction of an atom nor by two different kinds of atoms.
 
-Let's use a very simple example -- gold doped into FCC copper. In FCC
-copper, there are 12 atoms in the first shell. If the level of doping
-was, say, 25 percent , then ATOMS could reasonably select 3 of the 12
-nearest neighbors at random and replace them with gold atoms. However,
-what should ATOMS do with the second shell, which contains 6 atoms? 25
-percent of 6 is 1.5. FEFF does not allow a site to be half occupied by
-an atomic species, thus ATOMS would have to decide either to over-dope
-or under-dope the second shell.
+Let's use a very simple example |nd| gold doped into FCC copper. In
+FCC copper, there are 12 atoms in the first shell. If the level of
+doping was, say, 25 percent , then :demeter:`atoms` could reasonably
+select 3 of the 12 nearest neighbors at random and replace them with
+gold atoms. However, what should :demeter:`atoms` do with the second
+shell, which contains 6 atoms? 25 percent of 6 is 1.5. :demeter:`feff`
+does not allow a site to be half occupied by an atomic species, thus
+:demeter:`atoms` would have to decide either to over-dope or
+under-dope the second shell.
 
 This problem only gets worse if the doping fraction is not a rational
 fraction, if the material is non-isotropic, or if the material has
 multiple sites that the dopant might want to go to.
 
-Because ATOMS cannot solve this problem correctly except in the most
-contrived of situations, its author decided that ATOMS would not attempt
-to solve it in any situation. If you specify dopants in ATOMS' input
-data, the list in the feff.inp file will be be made as if there are no
-dopants.
+Because :demeter:`atoms` cannot solve this problem correctly except in
+the most contrived of situations, its author decided that
+:demeter:`atoms` would not attempt to solve it in any situation. If
+you specify dopants in :demeter:`atoms`' input data, the list in the
+:file:`feff.inp` file will be be made as if there are no dopants.
 
 This leads to two big questions:
 
-#. Why would dopants be allowed in ATOMS in any capacity?
+#. Why would dopants be allowed in :demeter:`atoms` in any capacity?
 
 #. How does one deal with XAS of a doped sample?
 
-The first question is the easy one. At the programming level in DEMETER,
-ATOMS can do other things besides generating feff.inp files.
-Calculations involving tables of absorption coefficients, simulations of
-powder diffraction, and simulations of DAFS spectra could all
-effectively use of the dopant information. In ARTEMIS you will notice
-that there is not even a column for specifying occupancy -- in ARTEMIS
+The first question is the easy one. At the programming level in
+:demeter:`demeter`, :demeter:`atoms` can do other things besides
+generating :file:`feff.inp` files.  Calculations involving tables of
+absorption coefficients, simulations of powder diffraction, and
+simulations of DAFS spectra could all effectively use of the dopant
+information. In :demeter:`artemis` you will notice that there is not
+even a column for specifying occupancy -- in :demeter:`artemis`
 occupancy can only be 1.
 
 The second question is the tricky one and the answer is somewhat
 different for EXAFS as for XANES. The bottom line is that you need to be
-creative and willing to run FEFF more than once.
+creative and willing to run :demeter:`feff` more than once.
 
 The best approach to simulating a XANES spectrum on a doped material
-that I am aware of also involves running FEFF many times. One problem a
-colleague of mine asked me about some time ago was the situation of
-oxygen vacancies in Au2O3. After some discussion, the solution we came
-up with was to use ATOMS to generate the feff.inp for the pure material.
-This fellow then wrote a little computer program that would read in the
-feff.inp file, randomly remove oxygen atoms from the list, write the
-feff.inp file back out with the missing oxygens, and run FEFF. He would
-do this repeatedly, each time replacing a different set of randomly
-selected atoms and each time saving the result. This set of computed
-spectra was then averaged. New calculations were made and added to the
-running average until the result stopped changing. If I remember, it
-took about 10 calculations to converge.
+that I am aware of also involves running :demeter:`feff` many
+times. One problem a colleague of mine asked me about some time ago
+was the situation of oxygen vacancies in Au\ :sub:`2`\ O\
+:sub:`3`. After some discussion, the solution we came up with was to
+use :demeter:`atoms` to generate the :file:`feff.inp` for the pure
+material.  This fellow then wrote a little computer program that would
+read in the :file:`feff.inp` file, randomly remove oxygen atoms from
+the list, write the :file:`feff.inp` file back out with the missing
+oxygens, and run :demeter:`feff`. He would do this repeatedly, each time
+replacing a different set of randomly selected atoms and each time
+saving the result. This set of computed spectra was then averaged. New
+calculations were made and added to the running average until the
+result stopped changing. If I remember, it took about 10 calculations
+to converge.
 
 This random substitution approach would work just as well for dopants as
 for vacancies.
 
---------------
 
- 
 
 Crystal data with partial occupancy
 -----------------------------------
 
 A structure for the mineral zirconolite, CaZrTi\ :sub:`2`\ O\ :sub:`7`,
-was published as H. J. Rossell, *Nature*, **283**, (1980)
-p. 282--283\ `(DOI:
-10.1038/283282a0) <http://dx.doi.org/10.1038/283282a0>`__. In that
-paper, significant site swapping was found between the site occupied by
-Zr and one of the Ti sites. Consequently, the CIF file is published with
-partial occupancies for those tow sites. `Here is the CIF
-file <http://www.crystallography.net/9009220.html>`__.
+was published as
 
-When this CIF file is imported into ARTEMIS, you see this error message:
+.. bibliography:: ../artemis.bib
+   :filter: author % 'Rossell'
+   :list: bullet
 
-|image1|
+In that paper, significant site swapping was found between the site
+occupied by Zr and one of the Ti sites. Consequently, the CIF file is
+published with partial occupancies for those tow sites. `Here is the
+CIF file <http://www.crystallography.net/9009220.html>`__.
 
-ATOMS responds with an error message for crystal data with partial
-occupancy.
+When this CIF file is imported into :demeter:`artemis`, you see this
+error message:
 
-To use this crystal data in ARTEMIS, you need to edit the CIF file
-before importing it to remove the examples of partial occupancy. Change
-the last loop from this:
+.. _fig-feffatomsparticaloccupancy:
+.. figure:: ../../_images/feff_atoms_partical_occupancy.png
+   :target: ../_images/feff_atoms_partical_occupancy.png
+   :align: center
+
+   Atoms responds with an error message for crystal data with partial
+   occupancy.
+
+To use this crystal data in :demeter:`artemis`, you need to edit the
+CIF file before importing it to remove the examples of partial
+occupancy. Change the last loop from this:
 
 ::
 
@@ -206,16 +171,14 @@ to this:
 To analyze your data while considering the partical occupancy, try one
 of the techniques discussed in the following section.
 
---------------
 
- 
 
 Doped crystal and alloys
 ------------------------
 
-This section is adapted from text `posted by Scott
-Calvin <http://cars9.uchicago.edu/ifeffit/Doped>`__ to the Ifeffit Wiki
-and retains his voice.
+This section is adapted from text `posted by Scott Calvin
+<http://cars9.uchicago.edu/ifeffit/Doped>`__ to the Ifeffit Wiki and
+retains his voice.
 
 For samples which are doped crystals, there are a couple of methods
 people have used. For purposes of this article, I'll consider cases
@@ -224,18 +187,17 @@ someone could edit this article to include that case?).
 
 As an example of two methods, let's consider FeS\ :sub:`2`
 substitutionally doped with molybdenum. (I have no idea if such a
-material is possible...I'm using it because FeS\ :sub:`2` is included as
-an example in the DEMETER distrribution.)
+material is possible...I'm using it because FeS\ :sub:`2` is included
+as an example in the :demeter:`demeter` distrribution.)
 
---------------
 
 Method 1
 ^^^^^^^^
 
 Run atoms for FeS\ :sub:`2`.
 
-Now look at the feff.inp file that is generated. Under “Potentials”, it
-says the following:
+Now look at the :file:`feff.inp` file that is generated. Under
+``POTENTIALS``, it says the following:
 
 ::
 
@@ -257,13 +219,13 @@ number is **required**):
             2   16   S     
             3   42   Mo
 
-**Important**: Do not skip numbers in the “ipot” column, and make sure
-“0” is the absorber!
+**Important**: Do not skip numbers in the ``ipot`` column, and make sure
+``0`` is the absorber!
 
-Next, take the list following the word “ATOMS” in the feff.inp file, and
-arbitrarily change roughly the right number of iron atoms to moly atoms.
-Make sure to change the “ipot” column to match...it's the part feff will
-actually use:
+Next, take the list following the word ``ATOMS`` in the
+:file:`feff.inp` file, and arbitrarily change roughly the right number
+of iron atoms to molybdenum atoms.  Make sure to change the ``ipot``
+column to match...it's the part :demeter:`feff` will actually use:
 
 ::
 
@@ -301,9 +263,9 @@ actually use:
 In this case, I changed 3 of the 12 nearest iron neighbors into
 moly...reasonable if I have about 25 percent doping.
 
-If you are doing a FEFF calculation for the moly *edge*, then also
-change the very first iron to moly, and change potential 0 in the ipot
-list to moly with ipot 0.
+If you are doing a :demeter:`feff` calculation for the molybdenum
+*edge*, then also change the very first iron to molybdenum, and change
+potential ``0`` in the ipot list to molybdenum with ipot ``0``.
 
 ::
 
@@ -325,18 +287,18 @@ list to moly with ipot 0.
 If you are doing the calculation for the iron edge, leave the first iron
 alone, since it is still the absorber.
 
-Now run FEFF, and you'll get the iron scattering paths listed separately
-from the moly scattering paths.
+Now run :demeter:`feff`, and you'll get the iron scattering paths
+listed separately from the molybdenum scattering paths.
 
 One more step ... correcting for the actual doping fraction. Suppose
-there is actual 20 percent moly and not 25 percent, as we implied. We
-couldn't have handled that just through feff, because we can't change
-exactly 20 percent of 12 atoms...we have to change 2, which is 17
-percent, or 3, which is 25 percent.
+there is actual 20 percent molybdenum and not 25 percent, as we
+implied. We couldn't have handled that just through :demeter:`feff`,
+because we can't change exactly 20 percent of 12 atoms...we have to
+change 2, which is 17 percent, or 3, which is 25 percent.
 
-The fix for this is to change the S²₀ in the moly and sulfur scattering
-paths to account for this. You could, for example, use the following GDS
-parameters:
+The fix for this is to change the S\ :sup:`2`\ :sub:`0` in the
+molybdenum and sulfur scattering paths to account for this. You could,
+for example, use the following GDS parameters:
 
 ::
 
@@ -344,16 +306,16 @@ parameters:
     def: IronPercent = 1-MolyPercent
 
 Then go to the individual path representing the scattering off of
-nearest neighbor moly, and assign it an S²₀ of
+nearest neighbor molypercent, and assign it an S\ :sup:`2`\ :sub:`0` of
 
 ::
 
     amp*MolyPercent/(3/12)
 
-That way, if the MolyPercent is 20 percent, it will reduce the amplitude
+That way, if the ``MolyPercent`` is 20 percent, it will reduce the amplitude
 of those paths by 20/25 percent, as is proper.
 
-Of course, the iron scatterer would get an S²₀ of
+Of course, the iron scatterer would get an S\ :sup:`2`\ :sub:`0` of
 
 ::
 
@@ -364,27 +326,30 @@ That's more or less it!
 You could, of course, guess the ``MolyPercent`` instead of setting it,
 if for some reason it was unknown in your sample.
 
---------------
+
 
 Method 2
 ^^^^^^^^
 
 Suppose we want to analyze the iron edge.
 
-Run atoms for FeS\ :sub:`2` and then run FEFF.
+Run atoms for FeS\ :sub:`2` and then run :demeter:`feff`.
 
-Then make a new ATOMS page, type or read in the FeS\ :sub:`2` file, and
-just change the Fe to Mo. Run ATOMS again.
+Then make a new :demeter:`atoms` page, type or read in the FeS\
+:sub:`2` file, and just change the Fe to Mo. Run :demeter:`atoms`
+again.
 
 If you're doing the iron edge, then change the absorber to iron in the
-feff.inp file (this requires changing the potential list; see the
-description under "Method 1" for how to do this.) Run FEFF.
+:file:`feff.inp` file (this requires changing the potential list; see the
+description under :quoted:`Method 1` for how to do this.) Run
+:demeter:`feff`.
 
-(If you want to analyze the moly edge, then of course you change the
-feff.inp file in the first calculation to moly and leave it as moly in
-the second.)
+(If you want to analyze the molybdenum edge, then of course you change
+the :file:`feff.inp` file in the first calculation to molybdenum and leave it
+as moly in the second.)
 
-You now have **two** sets of FEFF files associated with one data set.
+You now have **two** sets of :demeter:`feff` files associated with one
+data set.
 
 Make GDS parameters:
 
@@ -393,13 +358,14 @@ Make GDS parameters:
     set: MolyPercent = 0.20
     def: IronPercent = 1-MolyPercent
 
-Now make the S²₀ for all paths calculated with the original ATOMS file:
+Now make the S\ :sup:`2`\ :sub:`0` for all paths calculated with the
+original :demeter:`atoms` file:
 
 ::
 
     amp*IronPercent
 
-and for all paths calculatged with the new ATOMS file:
+and for all paths calculatged with the new :demeter:`atoms` file:
 
 ::
 
@@ -407,7 +373,7 @@ and for all paths calculatged with the new ATOMS file:
 
 Again, you can guess the ``MolyPercent`` if it's unknown.
 
---------------
+
 
 Discussion of these two methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -426,27 +392,3 @@ going to be modeled so well by the weighted average of iron-iron and
 moly-moly paths used in method 2. But the price for this is that
 properly incorporating multiple-scattering paths via method 1 requires
 an annoying amount of counting and thinking.
-
-| 
-
---------------
-
---------------
-
-| DEMETER is copyright © 2009-2015 Bruce Ravel — This document is
-copyright © 2015 Bruce Ravel
-
-|image2|    
-
-| This document is licensed under `The Creative Commons
-Attribution-ShareAlike
-License <http://creativecommons.org/licenses/by-sa/3.0/>`__.
-|  If DEMETER and this document are useful to you, please consider
-`supporting The Creative
-Commons <http://creativecommons.org/support/>`__.
-
-.. |[Artemis logo]| image:: ../../images/Artemis_logo.jpg
-   :target: ../diana.html
-.. |image1| image:: ../../images/feff_atoms_partical_occupancy.png
-.. |image2| image:: ../../images/somerights20.png
-   :target: http://creativecommons.org/licenses/by-sa/3.0/
