@@ -4,8 +4,8 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
-Handling dopants in Feff
-========================
+Handling dopants
+================
 
 
 Overview
@@ -14,7 +14,7 @@ Overview
 This section is adapted from the answer to a `Frequently Asked
 Question
 <http://cars9.uchicago.edu/ifeffit/FAQ/FeffitModeling#How_do_I_handle_doped_materials.3F_Why_doesn.27t_Atoms_handle_doped_materials.3F>`__
-at the Ifeffit Wiki.
+at the :demeter:`ifeffit` Wiki.
 
 :demeter:`atoms` is, except in extremely contrived situations, not
 capable of writing a proper :file:`feff.inp` file for a doped
@@ -177,13 +177,12 @@ Doped crystal and alloys
 ------------------------
 
 This section is adapted from text `posted by Scott Calvin
-<http://cars9.uchicago.edu/ifeffit/Doped>`__ to the Ifeffit Wiki and
-retains his voice.
+<http://cars9.uchicago.edu/ifeffit/Doped>`__ to the :demeter:`ifeffit`
+Wiki and retains his voice.
 
 For samples which are doped crystals, there are a couple of methods
 people have used. For purposes of this article, I'll consider cases
-where the dopant is substitutional as opposed to interstitial (maybe
-someone could edit this article to include that case?).
+where the dopant is substitutional as opposed to interstitial.
 
 As an example of two methods, let's consider FeS\ :sub:`2`
 substitutionally doped with molybdenum. (I have no idea if such a
@@ -261,7 +260,7 @@ column to match...it's the part :demeter:`feff` will actually use:
        -2.07514    3.32886    2.07514  2    S1_4             4.43776
 
 In this case, I changed 3 of the 12 nearest iron neighbors into
-moly...reasonable if I have about 25 percent doping.
+molybdenum ... reasonable if I have about 25 percent doping.
 
 If you are doing a :demeter:`feff` calculation for the molybdenum
 *edge*, then also change the very first iron to molybdenum, and change
@@ -346,7 +345,7 @@ description under :quoted:`Method 1` for how to do this.) Run
 
 (If you want to analyze the molybdenum edge, then of course you change
 the :file:`feff.inp` file in the first calculation to molybdenum and leave it
-as moly in the second.)
+as molybdenum in the second.)
 
 You now have **two** sets of :demeter:`feff` files associated with one
 data set.
@@ -384,11 +383,12 @@ other hand, it generates many fewer paths, and thus makes for smaller
 files and may fit faster (you're not wasting time and effort counting
 sulfur paths twice, for example). The first method also gives you the
 potential of finding a few multiple scattering paths that involve both
-iron and moly (in this example) that you can't probe at all by the
-second method. This is most likely to be true when the dopant is in low
-concentrations but is high-Z...it's possible that there may be a
-moly-iron multiple-scattering path that is significant, and it's not
-going to be modeled so well by the weighted average of iron-iron and
-moly-moly paths used in method 2. But the price for this is that
-properly incorporating multiple-scattering paths via method 1 requires
-an annoying amount of counting and thinking.
+iron and molybdenum (in this example) that you can't probe at all by
+the second method. This is most likely to be true when the dopant is
+in low concentrations but is high-Z ... it's possible that there may
+be a molybdenum-iron multiple-scattering path that is significant, and
+it's not going to be modeled so well by the weighted average of
+iron-iron and molybdenum-molybdenum paths used in method 2. But the
+price for this is that properly incorporating multiple-scattering
+paths via method 1 requires an annoying amount of counting and
+thinking.

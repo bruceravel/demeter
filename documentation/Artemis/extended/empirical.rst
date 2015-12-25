@@ -3,9 +3,11 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. role:: guess
 
-Fitting with empirical standards
-================================
+
+Empirical standards
+===================
 
 Let me just say up front that :demeter:`artemis` is intended as a
 front-end to :demeter:`feff` for the problem of EXAFS analysis. In
@@ -153,7 +155,7 @@ its label contains the token :guilabel:`[Emp.]`.
 
 Here I have set up a 4-parameter fit typical for a first shell
 analysis, except that I have set the E\ :sub:`0` parameter to 0. The
-amplitude, |sigma|\ :sup:`2`, and |Delta| R are guess parameters.
+amplitude, |sigma|\ :sup:`2`, and |Delta| R are :guess:`guess` parameters.
 
 .. _fig-empimportes:
 .. figure:: ../../_images/emp_importes.png

@@ -4,8 +4,8 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
-5 and 6 legged paths
-====================
+5 & 6 legged paths
+==================
 
 
 Examples of situations requiring consideration of higher order paths
@@ -128,13 +128,14 @@ collinear along that unit cell diagonal.
    6-legged paths, you almost certainly **do not** want to do so!
 
 The default behavior in :demeter:`artemis` is to compute up to
-4-legged paths. For any FEFF calculation, this can be extended to
-include 5- and 6-legged paths by selecting the “6” button, as
-indicated in the screenshot below.  Note that this sets the order of
-scattering paths only for the current :demeter:`feff` calculation. The
-default for all subsequent FEFF calculations will again be 4-legged
-paths. The `aggregate calculation <../feff/aggregate.html>`__ is
-always made with up to 4-legged paths.
+4-legged paths. For any :demeter:`feff` calculation, this can be
+extended to include 5- and 6-legged paths by selecting the
+:guilabel:`6` button, as indicated in the screenshot below.  Note that
+this sets the order of scattering paths only for the current
+:demeter:`feff` calculation. The default for all subsequent
+:demeter:`feff` calculations will again be 4-legged paths. The
+`aggregate calculation <../feff/aggregate.html>`__ is always made with
+up to 4-legged paths.
 
 .. _fig-fivesixatoms:
 

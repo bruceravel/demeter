@@ -5,8 +5,8 @@
 
 .. role:: after
 
-Using bond valence sums in Artemis
-==================================
+Bond valence sums
+=================
 
 The concept of a bond in inorganic or crystal chemistry is a bit
 ambiguous. In two seminal pair of papers, Brown and Altermatt proposed

@@ -204,9 +204,9 @@ file below, but it also issues this warning.
 
 If you attempt to run :demeter:`feff` with this input data,
 :demeter:`artemis` will complain with the rather repetitious error
-message shown to the right and not run :demeter:`feff`. You have to
-fix the :demeter:`feff` input data either by hand-editing or by
-re-running :demeter:`atoms` with a different potentials style.
+message shown below and not run :demeter:`feff`. You have to fix the
+:demeter:`feff` input data either by hand-editing or by re-running
+:demeter:`atoms` with a different potentials style.
 
 .. _fig-feffsiteserror2:
 .. figure:: ../../_images/feff-siteserror2.png

@@ -4,8 +4,8 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
-The pathfinder and fuzzy degeneracy
-===================================
+Fuzzy degeneracy
+================
 
 
 
@@ -22,9 +22,10 @@ scattering paths can be found from those atoms.
 
    Constructing generations of multiple scattering paths.
 
-A heap is a tree-shaped data structure. Each node is guaranteed to
-represent a shorter path length than all nodes below it.  The top node
-is, thus, guaranteed to be the shortest path.  For more details, see
+A `heap <https://en.wikipedia.org/wiki/Heap_%28data_structure%29>`_ is
+a tree-shaped data structure. Each node is guaranteed to represent a
+shorter path length than all nodes below it.  The top node is, thus,
+guaranteed to be the shortest path.  For more details, see
 
 
 .. bibliography:: ../artemis.bib

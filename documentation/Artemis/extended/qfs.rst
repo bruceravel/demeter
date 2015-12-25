@@ -4,8 +4,8 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
-Understanding the quick first shell tool in Artemis
-===================================================
+Quick first shell
+=================
 
 :demeter:`artemis` offers several ways to get information from
 :demeter:`feff` into a fitting model. One of these is called a *quick
@@ -55,7 +55,7 @@ tool. These calculations are plotted as |chi| (k), \| |chi| (R)\|, and Re[|chi| 
    :target: ../_images/qfs-1st_k.png
    :width: 100%
 
-   |chi| (k)
+   First shell |chi| (k)
 
 .. _fig-qfs1strmag:
 
@@ -63,7 +63,7 @@ tool. These calculations are plotted as |chi| (k), \| |chi| (R)\|, and Re[|chi| 
    :target: ../_images/qfs-1st_rmag.png
    :width: 100%
 
-   The magnitude of |chi| (R)
+   First shell magnitude of |chi| (R)
 
 .. _fig-qfs1strre:
 
@@ -71,7 +71,7 @@ tool. These calculations are plotted as |chi| (k), \| |chi| (R)\|, and Re[|chi| 
    :target: ../_images/qfs-1st_rre.png
    :width: 100%
 
-   The real part of |chi| (R)
+   First shell real part of |chi| (R)
 
 .. subfigend::
    :width: 0.31
@@ -153,7 +153,7 @@ at low k, between the two.
    :target: ../_images/qfs-2nd_k.png
    :width: 100%
 
-   |chi| (k)
+   Second shell |chi| (k)
 
 .. _fig-qfs2ndrmag:
 
@@ -161,7 +161,7 @@ at low k, between the two.
    :target: ../_images/qfs-2nd_rmag.png
    :width: 100%
 
-   The magnitude of |chi| (R)
+   Second shell magnitude of |chi| (R)
 
 .. _fig-qfs2ndrre:
 
@@ -169,7 +169,7 @@ at low k, between the two.
    :target: ../_images/qfs-2nd_rre.png
    :width: 100%
 
-   The real part of |chi| (R)
+   Second shell real part of |chi| (R)
 
 .. subfigend::
    :width: 0.31
@@ -224,7 +224,7 @@ shell in FeS\ :sub:`2`, another S scatterer at 4.438 |AA|:
    :target: ../_images/qfs-4th_k.png
    :width: 100%
 
-   |chi| (k)
+   Fourth shell |chi| (k)
 
 .. _fig-qfs4thrmag:
 
@@ -232,7 +232,7 @@ shell in FeS\ :sub:`2`, another S scatterer at 4.438 |AA|:
    :target: ../_images/qfs-4th_rmag.png
    :width: 100%
 
-   The magnitude of |chi| (R)
+   Fourth shell magnitude of |chi| (R)
 
 .. _fig-qfs4thrre:
 
@@ -240,7 +240,7 @@ shell in FeS\ :sub:`2`, another S scatterer at 4.438 |AA|:
    :target: ../_images/qfs-4th_rre.png
    :width: 100%
 
-   The real part of |chi| (R)
+   Fourth shell real part of |chi| (R)
 
 .. subfigend::
    :width: 0.31
@@ -343,14 +343,15 @@ extent to which that guess is consistent with your data.
 
 
 
-Reproducing the images above
-----------------------------
+Reproducing the plots above
+---------------------------
 
-To start, I imported the FeS\ :sub:`2` data and crystal structure into :demeter:`artemis`.
-`(You can find them
-here.) <https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`__
-I ran :demeter:`atoms`, then :demeter:`feff`. I then dragged and dropped the nearest neighbor
-path onto the Data page. At this stage, :demeter:`artemis` looks like this:
+To start, I imported the FeS\ :sub:`2` data and crystal structure into
+:demeter:`artemis`.  `(You can find them here.)
+<https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`__
+I ran :demeter:`atoms`, then :demeter:`feff`. I then dragged and
+dropped the nearest neighbor path onto the Data page. At this stage,
+:demeter:`artemis` looks like this:
 
 .. _fig-qfsstartqfs:
 .. figure:: ../../_images/qfs-start_qfs.png
@@ -360,8 +361,8 @@ path onto the Data page. At this stage, :demeter:`artemis` looks like this:
 
    Getting started with the comparison
 
-I begin a QFS calculation by selecting that option from the menu on the
-Data page:
+I begin a QFS calculation by selecting that option from the menu on
+the Data page:
 
 .. _fig-qfspath:
 .. figure:: ../../_images/qfs-path.png
@@ -380,13 +381,14 @@ The nearest neighbor path in FeS\ :sub:`2` is a S atom at 2.257 |AA|.
 
    Set the QFS parameters
 
-Clicking OK, the QFS path is generated. I set the degeneracy of the QFS
-path to 6 so that I can directly compare the normally calculated path
-(there are 6 nearest neighbor S atoms in FeS\ :sub:`2`) to the QFS path.
-I mark both paths and transfer them to the plotting list. I am now ready
-to compare these two calculations. To examine another single scattering
-path, I drag and drop that path from the :demeter:`feff` page to the Data page and
-redo the QFS calculation at that distance.
+Clicking OK, the QFS path is generated. I set the degeneracy of the
+QFS path to 6 so that I can directly compare the normally calculated
+path (there are 6 nearest neighbor S atoms in FeS\ :sub:`2`) to the
+QFS path.  I mark both paths and transfer them to the plotting list. I
+am now ready to compare these two calculations. To examine another
+single scattering path, I drag and drop that path from the
+:demeter:`feff` page to the Data page and redo the QFS calculation at
+that distance.
 
 .. _fig-qfscompare:
 .. figure:: ../../_images/qfs-compare.png
