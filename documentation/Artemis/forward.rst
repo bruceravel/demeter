@@ -29,7 +29,7 @@ Here is a summary of fonts, colors, and symbols used to denote different
 kinds of text. Note that some of these may appear the same in certain
 presentation media.
 
-- File names look ``C:\\like\\this``
+- File names look ``C:\like\this``
 
 - The names of parameters for data processing look
   :procparam:`like this`
@@ -43,8 +43,11 @@ presentation media.
 - Internal links look `like this
   <forward.html#layout-and-typesetting-conventions>`__
 
-- Menu selections look like this: :menuselection:`File --> Import data`
+- References to menu selections look like this: :menuselection:`File --> Import data`
   
+- References to buttons in :demeter:`artemis` that can be pushed
+  :button:`look like this,light`
+
 - Keyboard shortcuts look like this:
   :button:`Control,dark`-:button:`q`, which means to hit the :button:`q`
   key while holding the :button:`Control` (or :button:`Ctrl`) key
@@ -53,9 +56,9 @@ presentation media.
   like this: :demeter:`artemis`
 
 - References to :demeter:`artemis`'s preferences are written like this:
-  :configparam:`Bkg,fraction`.  To modify this preferences, open the
-  :guilabel:`bkg` section of the `preferences tool <other/prefs.html>`__ and
-  then click on :guilabel:`fraction`
+  :configparam:`Fit,k1`.  To modify this preferences, open the
+  :guilabel:`fit` section of the `preferences tool <other/prefs.html>`__ and
+  then click on :guilabel:`k1`
 
 .. CAUTION::
    Points that require special attention are indicated
@@ -71,7 +74,7 @@ presentation media.
    Usually this is because I have been too lazy to make screenshots.
 
 :mark:`lightning,.` This symbol indicates a section describing one of
-:demeter:`athena`'s features that I consider especially
+:demeter:`artemis`' features that I consider especially
 powerful and central to the effective use of the program.
 
 .. endpar::
@@ -92,17 +95,17 @@ Acknowledgments
 ----------------
 
 I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
-there wouldn't be an :demeter:`artemis`. Some content of this document
-was inspired by a recent XAS review article by Shelly Kelly and Dean
-Hesterberg, the first draft of which I had the pleasure of editing and
-the final draft of which I ended up on the author list. I have a huge
-debt of gratitude to all the folks on the :demeter:`ifeffit` mailing
-list. Without the incredible support and wonderful feedback that I've
-received over the years, :demeter:`artemis` would be a shadow of what
-it is today.
+and :demeter:`larch` there wouldn't be an :demeter:`artemis`. Some
+content of this document was inspired by a recent XAS review article
+by Shelly Kelly and Dean Hesterberg, the first draft of which I had
+the pleasure of editing and the final draft of which I ended up on the
+author list. I have a huge debt of gratitude to all the folks on the
+:demeter:`ifeffit` mailing list. Without the incredible support and
+wonderful feedback that I've received over the years,
+:demeter:`artemis` would be a shadow of what it is today.
 
 .. bibliography:: artemis.bib
-   :filter: author % "Kelly"
+   :filter: author % "Kelly" and year == '2008'
    :list: bullet
 
 An excellent review of the fundamental principles of X-ray absorption
@@ -157,8 +160,8 @@ by Matthew Marcus.
 `The image at the top of the navigation sidebar
 <http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg>`_
 is a votive relief from the Archaeological Museum of Brauron in
-Brauron, Greece.  It depicts a family of worshippers sacrificing a
-goat to the goddess Artemis.
+Brauron, Greece and is in the public domain.  It depicts a family of
+worshippers sacrificing a goat to the goddess Artemis.
 
 
 The image used as the :demeter:`artemis` program icon is Detail from
@@ -167,6 +170,14 @@ marble. Skulpturensammlung (Inv. 9/59; acquired in 1959), Bode-Museum
 Berlin.  The image is in the public domain and can be found at
 `Wikimedia Commons
 <https://commons.wikimedia.org/wiki/File:Cametti_Diana_detail.jpg>`__.
+
+The image of the `leafhopper
+<https://www.flickr.com/photos/opoterser/3684369721/>`_ used as a
+desktop image in some screen shots is by `Thomas Shanan
+<https://www.flickr.com/photos/opoterser/>`_ and is licensed under a
+`Creative Commons attribution, non-commercial, no-derivatives
+<https://creativecommons.org/licenses/by-nc-nd/2.0/>`_ license.
+
 
 
 Data citations
@@ -276,8 +287,8 @@ Building the LaTeX document
 .. linebreak::
 
 
-Using the document with ATHENA
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the document with ARTEMIS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The html document files can be used by :demeter:`artemis`.  They are
 installed at the time that :demeter:`demeter` is installed.  If the

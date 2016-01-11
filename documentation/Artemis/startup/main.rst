@@ -47,7 +47,7 @@ window is divided into 7 areas.
    be a concise description of the current fit and is used as a label
    identifying a specific fit. The description is a lengthier,
    free-form bit of text describing the current fit in more
-   detail. This text will; be written to log files.
+   detail. This text will be written to log files.
    :demeter:`artemis` does a decent job of automatically generating
    text for both of these boxes, but providing your own text will help
    you to document the progression of your fitting project. This
@@ -105,11 +105,11 @@ the menu.
 
 - The first option is used to import any kind of data into
   :demeter:`artemis`, including :demeter:`artemis` or :demeter:`athena`
-  project files, ASCII files containing |chi| (k) data, FEFF or ATOMS
-  input files, CIF files, or a few other things. :demeter:`artemis` is usually good
-  about properly identifying the type of input file and doing the right
-  thing with it. In the rare situation where this doesn't work, try the
-  :guilabel:`import` submenu.
+  project files, ASCII files containing |chi| (k) data, :demeter:`feff`
+  or :demeter:`atoms` input files, CIF files, or a few other
+  things. :demeter:`artemis` is usually good about properly identifying
+  the type of input file and doing the right thing with it. In the rare
+  situation where this doesn't work, try the :guilabel:`import` submenu.
 
 - The second option provides a submenu of recently imported files
   broken down by file type, including :demeter:`artemis` projects,
@@ -172,10 +172,10 @@ This menu provides several options for monitoring the state of
   directly with :demeter:`ifeffit`, :demeter:`larch`, or the plotting
   backend.
 
-- The status bar buffer contains a record of every message sent the
-  status bar in the main window as well as those messages displayed in
-  the status bars of other windows in :demeter:`artemis`. All messages
-  are time stamped.
+- The `status bar buffer <../monitor.html#the-status-buffer>`_ contains a
+  record of nearly every message sent the status bar in the main
+  window as well as those messages displayed in the status bars of
+  other windows in :demeter:`artemis`. All messages are time stamped.
 
 - The :guilabel:`Show Ifeffit` menu will cause :demeter:`ifeffit` to
   display detailed information in the command buffer about the
@@ -246,24 +246,26 @@ Status bar
 ----------
 
 This area in the main window is used to display various kinds of
-messages, including updates on long-running tasks, hints about controls
-underneath the mouse, and other announcements.
+messages, including updates on long-running tasks, hints about
+controls underneath the mouse, and other announcements.
 
-On some platforms, the status bar is able to display color. If you are
-one one of those platforms, the status bar will display with a green
-background during a long running task and with a red background when an
-error has occured or when something needs your immediate attention.
+On some platforms, the status bar is able to display color.  If you
+are one one of those platforms, the status bar will display with a
+green background during a long running task and with a red background
+when an error has occured or when something needs your immediate
+attention.
 
 Many controls in the main window and elsewhere have hints attached to
 them which will be displayed in this status bar when the mouse passes
-over. These hints are intended to teach about the functionality of the
-control beheath the mouse. Hints are not recorded in the status bar
-buffer.
+over.  These hints are intended to teach about the functionality of
+the control beheath the mouse.  Hints are not recorded in the status
+bar buffer.
 
-Many short and long running tasks display updates of various kinds. Many
-of these are recorded in the status bar buffer. Messages displayed in
-the status bar with a green or red background are recorded in the status
-bar buffer with green or red text. Messages which only indicate the
+Many short and long running tasks display updates of various
+kinds. Many of these are recorded in the `status bar buffer
+<../monitor.html#the-status-buffer>`_.  Messages displayed in the status
+bar with a green or red background are recorded in the status bar
+buffer with green or red text.  Messages which only indicate the
 progress of a long running task are not recorded in the buffer.
 
 
@@ -302,15 +304,15 @@ as indicated by the depressed state of the button labeled
 hidden. `See the Data window chapter. <../data.html>`__
 
 .. caution:: :demeter:`artemis` has a very different relationship to
-   your data than :demeter:`athena`. The very purpose of
+   your data than :demeter:`athena`.  The very purpose of
    :demeter:`athena` is to process large quantities of data, thus a
    typical :demeter:`athena` project will contain many |nd| perhaps
    dozens |nd| of data groups. :demeter:`artemis` expects that you
-   will import only that data whose EXAFS you intend to analyze. If
+   will import only that data whose EXAFS you intend to analyze.  If
    you are doing a single-data-set analysis, the :guilabel:`Data` list
-   will contain only that item. If you import many data sets without
+   will contain only that item.  If you import many data sets without
    actually using them in the fitting model, :demeter:`artemis`
-   **will** get confused. And so will you.
+   may get confused.  *And so will you*.
 
 
 The Athena project selection dialog
@@ -371,8 +373,8 @@ click on your choice in the list of recent files.
 The Feff list
 -------------
 
-The FEFF list starts off with a single control, which is used to
-import structural data into your fitting project. Clicking the
+The :demeter:`feff` list starts off with a single control, which is
+used to import structural data into your fitting project. Clicking the
 :button:`Add,light` button will open the standard file selection
 dialog for your platform. That is, on Windows, the standard Windows
 file selection dialog is used; on Linux, the standard Gnome file
@@ -462,6 +464,6 @@ the problems will be show in the log window.
 
 At start-up the Fit button is yellow. After each fit, the color of
 this button will range from red to green as a heuristic indication of
-the fit quality. `See the happiness chapter for more details
+the fit quality. `See the happiness section for more details
 <../fit/happiness.html>`__.
 

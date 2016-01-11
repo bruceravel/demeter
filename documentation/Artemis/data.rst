@@ -3,6 +3,8 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. |transfer button| image:: ../_static/plot-icon.png
+
 The Data window
 ===============
 
@@ -31,7 +33,7 @@ Here is the Data window as it initially appears:
 
    The Data window, immediately after data import.
 
-#. This button is used to transfer this data set into the plotting list
+#. The |transfer button| button is used to transfer this data set into the plotting list
    in the `Plot window <plot/index.html>`__.
 
 #. This is the `characteristic value <extended/cv.html>`__ of this data
@@ -191,15 +193,16 @@ to the fourth coordination shell.
 
       Rk plot
 
-   The :quoted:`Rk` plot is a stacked plot with the :quoted:`Rmr` on the bottom
-   and |chi| (k) on the top. The value of k-weighting selected in the
-   `Plot window <plot/index.html>`__ is used. Fourier transform windows
-   are drawn over the |chi| (k) and \||chi| (R)\| spectra.
+   The :quoted:`Rk` plot is a stacked plot with the :quoted:`Rmr` on
+   the bottom and |chi| (k) on the top.  The value of k-weighting
+   selected in the `Plot window <plot/index.html>`__ is used. Fourier
+   transform windows are drawn over the |chi| (k) and \|\ |chi| (R)|
+   spectra.
    
-   This is Bruce's favorite way of presenting data for publication. It
-   is a compact representation of the data and the fit. All the
-   interesting ways of visualizing the data and fit are presented on
-   equal footing.
+   This is Bruce's favorite way of presenting EXAFS data and fit for
+   publication.  It is a compact representation of the data and the
+   fit.  All the interesting ways of visualizing the data and fit are
+   presented on equal footing.
 
 
 
@@ -248,7 +251,7 @@ The Data menu
     k\ :sup:`3`\ |chi| (k), and the window function. The |chi| (R) output option will write
     a file with columns for R, the real part, the imaginary part, the
     magnitude, the phase, and the window function. The |chi| (q) option is of
-    the same form a the |chi| (R) option.
+    the same form as the |chi| (R) option.
 **Save data and fit**
     Write the data, the fit, and several other arrays to a data file in
     one of various forms of k, R, or q. This will have columns for the
@@ -261,10 +264,10 @@ The Data menu
 **Other fitting standards**
     This submenu allows you to import a variety of special path types,
     including `quick first shell paths <extended/qfs.html>`__ and
-    `empirical standards <extended/empirical.html>`__. (Structural units
-    have not yet been implemented in Artemis.)
+    `empirical standards <extended/empirical.html>`__. *(Structural units
+    have not yet been implemented)*
 **Balance interstitial energies**
-    (This feature has not yet been implemented in Artemis.)
+    *(This feature has not yet been implemented)*
 **Set all degeneracies**
     These two options allow you to control the degeneracy values of all
     the paths in the fit. The choices are to set them all to 1 or to
@@ -281,10 +284,11 @@ The Data menu
     :guilabel:`user`.
 **Export parameters**
     In a multiple data set fit, this allows you to constrain the data
-    sets to have the same choice of Fourier transform parameters. (This
-    feature has not yet been implemented in :demeter:`artemis`.)
+    sets to have the same choice of Fourier transform parameters. *(This
+    feature has not yet been implemented)*
 **Set kmax to Ifeffit's suggestion**
-    Use :demeter:`ifeffit`'s suggestion for an appropriate value of k\ :sub:`max`.
+    Use :demeter:`ifeffit`'s (or :demeter:`larch`'s) suggestion for an
+    appropriate value of k\ :sub:`max`.
 **Show epsilon**
     Show the value of |epsilon| computed from the noise in this data set. The
     value will be displayed in the Data window status bar.
