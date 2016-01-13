@@ -7,13 +7,13 @@
 The Path-like tab
 =================
 
-One of the powerful new features in :demeter:`artemis` is the ability
-to define :quoted:`path-like` objects. A path-like object is one which
+One of the powerful features in :demeter:`artemis` is the ability to
+define :quoted:`path-like` objects. A path-like object is one which
 can be treated like a normal path from :demeter:`feff`. It can be used
 in a fit and it can be plotted.  It is not, however, the result of a
 normal :demeter:`feff` calculation. Instead, :demeter:`feff` has been
-run in some special way to generate a theoretical |chi| (k) spectrum for
-something different from all the items listed on the Paths tab.
+run in some special way to generate a theoretical |chi| (k) spectrum
+for something different from all the items listed on the Paths tab.
 
 :demeter:`artemis` defines a number of kinds of path-like
 objects. Controls for generating these things are divided into
@@ -74,6 +74,13 @@ real structure – to make the special path. Using the quick first shell
 technique on a path this long results in poorly constructed
 potentials. This is explained in detail in `the extended discussions
 chapter <../extended/qfs.html>`__.
+
+The SSPath is discussed in
+
+.. bibliography:: ../artemis.bib
+   :filter: title % "Muffin"
+   :list: bullet
+
 
 
 FSPaths

@@ -30,10 +30,10 @@ math expressions are functions of the actual fitting parameters.
 Some of these math expressions are quite simple. For example, in the
 gold metal example in `the previous chapter <path/mathexp.html>`__,
 the math expressions for S\ :sup:`2`\ :sub:`0` and E\ :sub:`0` were
-simple function of a single parameter. The math expression for |Delta|
-R, however, was a function of ``alpha`` and ``reff``, while the
-|sigma|\ :sup:`2` math expression used the ``debye`` function and two
-parameters.
+simple functions, each of a single parameter. The math expression for
+|Delta| R, however, was a function of ``alpha`` and ``reff``, while
+the |sigma|\ :sup:`2` math expression used the ``debye`` function and
+two parameters.
 
 All of these parameters must be defined in the GDS window. This window
 contains a grid with a series of buttons down the right side. It is

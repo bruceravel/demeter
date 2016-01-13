@@ -49,13 +49,13 @@ paths to the Plotting list.
    :menuselection:`Actions --> Transfer marked` is selected. This is
    probably the most common way of constructing plots involving paths.
 
-Another new feature in this version of :demeter:`artemis` related to
-plotting is called a :quoted:`virtual path`, or a :quoted:`VPath`. A
-VPath is an ensemble of normal paths which are summed. The sum is then
-plotted in k-, R-, or q-space. A VPath is made by marking a set of
-paths then selecting :menuselection:`Actions --> Make VPath from
-marked`.  VPaths are discussed in more detail `the chapter on the Plot
-window <../plot/vpaths.html>`__.
+:demeter:`artemis` offers a concept called a :quoted:`virtual path`,
+or a :quoted:`VPath`.  A VPath is an ensemble of normal paths which
+are summed.  The sum is then plotted in k-, R-, or q-space.  A VPath
+is made by marking a set of paths then selecting
+:menuselection:`Actions --> Make VPath from marked`.  VPaths are
+discussed in more detail `the chapter on the Plot window
+<../plot/vpaths.html>`__.
 
 .. subfigstart::
 
@@ -102,7 +102,7 @@ correction`, plots using that data set and/or any of its paths will be
 plotted with phase correction. This means that the contributions of
 the central and scattering atom phase shifts will be removed before
 the Fourier transform. This has the effect of shifting the peaks in
-|chi| (R) by about +0.5 |AA|, such that the first shell peaks at an R
+|chi| (R) by about -0.5 |AA|, such that the first shell peaks at an R
 value close to the physical interatomic distance between the absorber
 and first shell scatterer.
 

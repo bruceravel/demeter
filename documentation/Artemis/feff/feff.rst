@@ -6,11 +6,11 @@
 The Feff tab
 ============
 
-The :demeter:`feff6` document can be `found
-here <http://www.feffproject.org/FEFF/Docs/feff6/feff6.html>`__.
+The :demeter:`feff6` document can be `found here
+<http://www.feffproject.org/FEFF/Docs/feff6/feff6.html>`__.
 
-The :demeter:`feff9` document can be `found
-here <http://leonardo.phys.washington.edu/feff/wiki/index.php>`__.
+The :demeter:`feff9` document can be `found here
+<http://leonardo.phys.washington.edu/feff/wiki/static/f/e/f/FEFF_Documentation_b0ae.html>`__.
 
 When you click the :button:`Run Atoms,light` button on the
 :demeter:`atoms` tab, the resulting input data for :demeter:`feff`,
