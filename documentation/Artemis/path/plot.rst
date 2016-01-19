@@ -3,6 +3,9 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. |transfer button| image:: ../../_static/plot-icon.png
+
+
 Marking and Plotting
 ====================
 
@@ -10,8 +13,8 @@ The check buttons next to each path in the path list are central to
 many features in :demeter:`artemis` related to plotting and other
 tasks. Along with all of the tools in the Mark menu, you can mark a
 group of paths by clicking elsewhere on the path list while holding
-down the shift key. Doing so marks all paths between the selected one
-and the one shift-clicked upon.
+down the :button:`Shift` key. Doing so marks all paths between the
+selected one and the one :button:`Shift`-clicked upon.
 
 :button:`Control`-clicking on the path list is also a special function
 used for two purposes. Doing a :button:`Control`-click starts a
@@ -23,7 +26,8 @@ to the end of the path list.
 
 .. caution:: Mistakenly :button:`Control`-clicking rather than
    :button:`Shift`-clicking will likely result in a path being
-   cloned. This can be surprising and confusing, so take care!
+   cloned. This can be surprising and confusing, so please take care
+   and be mindful!
 
 .. todo:: Write a page about tools for building MDS fits
 
@@ -40,14 +44,16 @@ using the Plotting list on the `Plot window
 paths to the Plotting list.
 
 #. The blue button with the squiggly line in the upper left corner of
-   the Path page transfers that path to the Plotting list.
+   the Path page |transfer button| transfers that path to
+   the Plotting list.
 
 #. A path will be transferred automatically after a fit if its
    :guilabel:`Plot after fit` button is checked.
 
 #. The set of marked groups will be transferred when
-   :menuselection:`Actions --> Transfer marked` is selected. This is
-   probably the most common way of constructing plots involving paths.
+   :menuselection:`Actions --> Transfer marked` is selected or
+   :button:`Alt`-:button:`Shift`-:button:`T` is used.  This is probably the most
+   common way of constructing plots involving many paths.
 
 :demeter:`artemis` offers a concept called a :quoted:`virtual path`,
 or a :quoted:`VPath`.  A VPath is an ensemble of normal paths which
@@ -113,12 +119,15 @@ can have its button ticked on. The phase information from that path is
 used for the phase corrected plots.
 
 If you turn on phase corrected plotting without having selected a path
-to use, :demeter:`artemis` will issue a warning in te status bar and
+to use, :demeter:`artemis` will issue a warning in the status bar and
 turn phase corrected plotting back off. You **must** select a path to
 use as the source of the phase information.
 
-Note that, when making a phase corrected plot, the window function in R
-is not corrected in any way.
+Note that, when making a phase corrected plot, the window function in
+R is not corrected in any way.  The window is plotted using the
+R-range of the fit.  If you change the R-range so that the window
+lines up with the phase corrected plot, you **must** remember to
+change it back before making a new fit or making a plot in q-space.
 
 Also note that the phase correction propagates through to |chi|
 (q). While the window function will display sensibly with the central

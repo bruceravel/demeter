@@ -9,13 +9,13 @@
 Sanity checking your fitting model
 ==================================
 
-:demeter:`artemis` is complex and it is quite easy to make
-mistakes. Many common mistakes are obvious and discoverable by
-automated analysis of the fitting model. Before running a fit,
+:demeter:`artemis` is complex and it is quite easy to make mistakes.
+Many common mistakes are obvious and discoverable by automated
+analysis of the fitting model.  Before running a fit,
 :demeter:`artemis` applies each of the following test to your fitting
-model. If any of them are triggered, the fit is halted and a
-(hopefully) useful error message is posted in the Log window. Think of
-this like :demeter:`artemis`' spell checker!
+model.  If any of them are triggered, the fit is halted and a
+(hopefully) useful error message is posted in the Log window.  Think
+of this like :demeter:`artemis`' spell checker!
 
 Any problems that are found must be corrected before
 :demeter:`artemis` will allow the fit to proceed.
@@ -51,12 +51,12 @@ Disable sanity checks` menu in the Main window.
 #. Check that the number of :guess:`guess` parameters is less than N\
    :sub:`idp`.
 
-#. Verify that R\ :sub:`min`\ ≥R\ :sub:`bkg` for data imported from an
+#. Verify that R\ :sub:`min`\ |ge| R\ :sub:`bkg` for data imported from an
    :demeter:`athena` project file.
 
 #. Verify that R\ :sub:`eff` for each path is not well beyond
    R\ :sub:`max`. The margin beyond R\ :sub:`max` that a value of
-   R\ :sub:`eff` is acceptable is set by R\ :sub:`max`\ plus the
+   R\ :sub:`eff` is acceptable is set by R\ :sub:`max`\, plus the
    value of :configparam:`Warnings,reff_margin`.
 
 #. Check that various compiled-in limits (e.g. maximum number of paths

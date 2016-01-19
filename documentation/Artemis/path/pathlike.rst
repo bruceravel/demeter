@@ -14,6 +14,9 @@ Using path-like objects
 SSPaths
 -------
 
+Single scattering paths (SSPaths) are explained `an earlier section of
+the document <../feff/pathlike.html#single-scattering-paths>`_.
+
 .. bibliography:: ../artemis.bib
    :filter: title % "Muffin"
    :list: bullet
@@ -22,12 +25,14 @@ SSPaths
 Quick first shell paths
 -----------------------
 
-`quick first shell paths <extended/qfs.html>`__
+Quick first shell paths are explained in the section on `quick first
+shell paths <../extended/qfs.html>`__ in the extended topics chapter.
 
 
 Empirical paths
 ---------------
 
-`empirical paths <extended/empirical.html>`__
+Uisng empirical paths is explained in the section on `empirical paths
+<../extended/empirical.html>`__ in the extended topics chapter.
 
 

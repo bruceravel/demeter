@@ -34,8 +34,9 @@ also given in the text box.
    paths contributing to the degeneracy + report on fuzziness of the
    degeneracy.
 
-Beneath the scattering geometry is a table of path parameters labels and
-text boxes. Math expressions are entered into these text boxes.
+Beneath the scattering geometry is a table of labels and text boxes
+for the path parameters.  Math expressions are entered into these text
+boxes.
 
 .. _fig-pathfirst:
 .. figure:: ../../_images/path-first.png
@@ -46,25 +47,25 @@ text boxes. Math expressions are entered into these text boxes.
 
 In the preceding image, a simple fitting model appropriate for a
 cubic, monoatomic material like our gold foil has been entered for the
-first shell path. This includes simple expressions for S\ :sup:`2`\
+first shell path.  This includes simple expressions for S\ :sup:`2`\
 :sub:`0` and E\ :sub:`0` consisting of variables that will be floated
 in the fit. A `model of isotropic expansion <../extended/delr.html>`__
-is provided for |Delta| R. The |sigma|\ :sup:`2` path parameter is
-expressed using `the correlated Debye model
-<../extended/ss.html>`__. The other path parameter text boxes have
-been left blank and will not be modified in the fit.
+is provided for |Delta| R.  The |sigma|\ :sup:`2` path parameter is
+expressed using `the correlated Debye model <../extended/ss.html>`__.
+The other path parameter text boxes have been left blank and will not
+be modified in the fit.
 
 .. bibliography:: ../artemis.bib
    :filter: author % 'Sevillano'
    :list: bullet
 
 This, of course, establishes the parameterization only for the first
-path. The same editing of path parameter math expressions must happen
+path.  The same editing of path parameter math expressions must happen
 for all the other paths used in the fit.
 
-The most straightforward way to do this editing chore is to click on
-each successive path in the path list, then click into each text box,
-then type in the math expressions. That, however, is both tedious and
+The most obvious way to do this editing chore is to click on each
+successive path in the path list, then click into each text box, then
+type in the math expressions.  That, however, is both tedious and
 error-prone.
 
 .. _fig-pathmenu:

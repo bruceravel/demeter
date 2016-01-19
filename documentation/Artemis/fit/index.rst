@@ -3,6 +3,9 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. role:: guess
+.. role:: def
+.. role:: set
 
 Running a fit
 =============
@@ -25,50 +28,55 @@ As a consequence, we have the GDS window where the parameters of the fit
 are *defined* and the various Path pages where those parameters are
 *used*.
 
-It is instructive to understand a little bit about how the fitting model
-is structured internally. The basic definition of a fit consists of
-three things: (1) a list of one or more GDS parameters, (2) a list of
-one or more data sets, and (3) a list of one or more paths. To make a
-fit, all three of those lists must somehow be defined.
+It is useful to understand a little bit about how the fitting model
+is structured internally.  The basic definition of a fit consists of
+three things:
+
+#. a list of one or more GDS parameters, 
+#. a list of one or more data sets, and
+#.  a list of one or more paths. 
+
+To make a fit, all three of those lists must somehow be defined.
 
 The list of data sets is taken from the Data list in the Main window.
 All data sets in the Data list which have the :guilabel:`Include in
 fit` button checked on will be used in the fit.
 
-Each data set has a list of one or more paths associated with it. In
+Each data set has a list of one or more paths associated with it.  In
 :demeter:`artemis` a path is associated with a data set by dragging
-and dropping it onto a data set's path list. The contrapositive is
-also true. All paths used in a fit must be associated with a Data set.
+and dropping it onto a data set's path list.  The converse is also
+true.  All paths used in a fit must be associated with a Data set.
 
 Paths typically come from a :demeter:`feff` calculation explicitly
-initiated by the user. That is, the user imports an :demeter:`atoms`
+initiated by the user.  That is, the user imports an :demeter:`atoms`
 input file, a :demeter:`feff` input file, or a CIF
 file. :demeter:`feff` is run and the interpretation list is displayed
-in the :demeter:`feff` window. Paths are dragged from that list and
-dropped on a Data set. Thus paths are not only associated with a Data
+in the :demeter:`feff` window.  Paths are dragged from that list and
+dropped on a Data set.  Thus paths are not only associated with a Data
 set, they are also associated with a specific :demeter:`feff`
 calculation.
 
-Each path must have its path parameters set in some manner, even if they
-are merely set to 0 or some other constant. Typically, path parameters
-are set to math expressions which depend functionally upon one or more
-parameters from the GDS page. Every GDS parameter used in a path
-parameter math expression must be defined on the GDS window. Similarly,
-every guess or def parameter from the GDS window must be used in at
-least one math expression in your fitting model.
+Each path must have its path parameters set in some manner, even if
+they are merely set to 0 or some other constant.  Typically, path
+parameters are set to math expressions which depend functionally upon
+one or more parameters from the GDS page.  Every GDS parameter used in
+a path parameter math expression must be defined on the GDS window.
+Similarly, every :guess:`guess` or :def:`def` parameter from the GDS
+window must be used in at least one math expression in your fitting
+model.
 
 All paths which have their :guilabel:`Include in fit` button checked
 on will be used in the fit.
 
 When the fit begins, :demeter:`artemis` digs through all the windows,
-finding all data sets, paths, and GDS parameters. It runs a number of
+finding all data sets, paths, and GDS parameters.  It runs a number of
 sanity checks to avoid certain obvious situations which will result in
-an unsuccessful fit. It then makes sure that all of
-:demeter:`ifeffit`'s data structure are up to date with respect to
-your current settings in :demeter:`artemis`. The fit is run.
-Statistics, including error bars and correlations, are calculated. A
-log file is written, a plot is made, and the various colored buttons
-are set according to the fit happiness.
+an unsuccessful fit.  It then makes sure that all of
+:demeter:`ifeffit`'s (or :demeter:`larch`'s) data structures are up to
+date with respect to your current settings in :demeter:`artemis`.  The
+fit is run.  Statistics, including error bars and correlations, are
+calculated.  A log file is written, a plot is made, and the various
+colored buttons are set according to the fit happiness.
 
 That's a fit!
 
@@ -79,10 +87,10 @@ fit finishes. You can also choose not to have it display automatically.
 This is set by :configparam:`Artemis,show_after_fit`.
 
 The plot that is made upon completion of the fit is also configurable.
-The default is to have `an Rmr plot <../data.html#thermrplot>`__ made
-containing the data and the fit. Any of the five plot types from the
-Data window can be chosen as the after-fit plot. You may also choose
-to have the contents of the plotting list plotted in k-, R-, or
+The default is to have an Rmr plot (:numref:`see Fig. %s <fig-plotRmr>`)
+made containing the data and the fit. Any of the five plot types from
+the Data window can be chosen as the after-fit plot. You may also
+choose to have the contents of the plotting list plotted in k-, R-, or
 q-space.  This adds value to the :guilabel:`Plot after fit` buttons on
 the Data window and Path pages. You may also choose to have no plot
 displayed automatically after the fit. This is set by
