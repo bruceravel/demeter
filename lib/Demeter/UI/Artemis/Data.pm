@@ -558,10 +558,10 @@ sub initial_page_panel {
 
   my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(200);
-  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $emp     = Wx::HyperlinkCtrl -> new($panel, -1, 'Import an empirical standard',              q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a feff.inp file', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',          q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                    wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $emp     = Wx::HyperlinkCtrl -> new($panel, -1, 'Import an empirical standard',           q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 
   EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});

@@ -181,9 +181,9 @@ sub OnInit {
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
   $importmenu->Append($IMPORT_DPJ,      "Demeter fit serialization",     "Import a Demeter fit serialization (.dpj) file");
-  $importmenu->AppendSeparator;
-  $importmenu->Append($IMPORT_FEFF,     "an external Feff calculation",  "Import a Feff input file and the results of a calculation already made with that file");
-  $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
+  #$importmenu->AppendSeparator;
+  #$importmenu->Append($IMPORT_FEFF,     "an external Feff calculation",  "Import a Feff input file and the results of a calculation already made with that file");
+  #$importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,   "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
