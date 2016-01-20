@@ -120,7 +120,7 @@ to the set of groups in the group list that have been
 **Bi-Quad plot**
     This special plot is like the quad plot described above, but is
     used to compare two marked groups. To make this plot you must have
-    two – and only two – groups selected from the group list. This
+    two |nd| and only two |nd| groups selected from the group list. This
     plot can also be made by right-clicking on the :button:`q,purple`
     button.
 
@@ -230,7 +230,7 @@ Phase corrected plots
 
 When the :guilabel:`phase correction` check button is clicked on, the Fourier
 transform for that data group will be made by subtracting the central
-atom phase shift. This is an incomplete phase correction – in
+atom phase shift. This is an incomplete phase correction |nd| in
 :demeter:`athena` we know the central atom but do not necessarily have
 any knowledge about the scattering atom.
 

@@ -21,8 +21,8 @@ fit.
    Fit history window
 
 Interactions with the fit history are via the History window, which is
-shown and hidden using the History button on the left side of the Main
-window.
+shown and hidden using the :button:`History,light` button on the left
+side of the Main window.
 
 The History window shows two major controls. On the left is a list all
 fits performed as part of the fitting prject. Like many other lists in
@@ -76,7 +76,7 @@ Reports on fits
 ---------------
 
 The second tab is used to analyze groups of fits. In the example shown
-above, the progression of |chi|\ :sup:`2`\ :sub:`ν` values throughout
+above, the progression of |chi|\ :sup:`2`\ :sub:`v` values throughout
 the development of the fitting model is shown both as a textual report
 and as a plot.  Similar plots can be made for individual parameter
 values.
@@ -118,9 +118,9 @@ fit. All parameter types are included. Selecting a new item from the
 menu or clicking the :button:`Write report,light` button will generate
 a new report and its plot.
 
-For statistics, all of |chi|\ :sup:`2`, |chi|\ :sup:`2`\ :sub:`ν`,
+For statistics, all of |chi|\ :sup:`2`, |chi|\ :sup:`2`\ :sub:`v`,
 R-factor, and the happiness are reported. You can choose which of
-|chi|\ :sup:`2`\ :sub:`ν`, R-factor, and happiness to have displayed
+|chi|\ :sup:`2`\ :sub:`v`, R-factor, and happiness to have displayed
 in the resulting plot. Clicking the :guilabel:`Show y=0` button forces
 the plot to be scaled of the y-axis such that y=0 is shown.
 
@@ -146,12 +146,12 @@ single button associated with it.
    Fit history plotting tool
 
 Clicking one of the buttons on the :guilabel:`Plot tool` page makes an
-entry in the plotting list. These will then be plotted just like any
-other item in `the plotting list <plot/index.html>`_. Note that it is
+entry in the plotting list.  These will then be plotted just like any
+other item in `the plotting list <plot/index.html>`_.  Note that it is
 usually not necessary to put the most recent plot in the plotting list
-in this way.  If the “Plot fit” button is checked on and a data group
-is in the plotting list, the most recent will be plotted by
-default. Fit items in the plotting list will `be stacked
+in this way.  If the :guilabel:`Plot fit` button is checked on and a
+data group is in the plotting list, the most recent will be plotted by
+default.  Fit items in the plotting list will `be stacked
 <plot/stack.html>`_ when the stacking option is in play.
 
 .. _fig-historyplotlist:

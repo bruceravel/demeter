@@ -359,7 +359,7 @@ paths associated with this data set.
     S\ :sup:`2`\ :sub:`0`, E\ :sub:`0`, |Delta| R, and
     |sigma|\ :sup:`2` for each path assigned to this data set. This is
     intended only for a one-path, one-shell fit. While it may be
-    tempting to expect broader utility out of this function – don't. It
+    tempting to expect broader utility out of this function |nd| don't. It
     really only serves this narrow purpose.
 **Discard**
     Discard the displayed path, removing its window, and removing it

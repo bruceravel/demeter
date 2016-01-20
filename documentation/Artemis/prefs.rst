@@ -8,23 +8,24 @@ Managing preferences
 ====================
 
 :demeter:`demeter` has a mountain of preferences available for the
-user to tinker with. This may, I suppose, be a problem. There is a
+user to tinker with.  This may, I suppose, be a problem.  There is a
 school of thought in user interface design that asserts that a program
 should be simple, offering the user a small number of carefully
-considered configurable options, all of which have sensible
-defaults. That sort of thing is usually considered :quoted:`user
-friendly`, while a dizzying array of configrable options if considered
-to be hostile to the user.
+considered configurable options, all of which have sensible defaults.
+That sort of thing is usually considered :quoted:`user friendly`,
+while a dizzying array of configrable options is considered to be
+hostile to the user.
 
-I don't disagree with that. However, I am not so lucky as to have teams
-dedicated to user interface design and product testing. I don't have the
-luxury of testing design decisions to determine if they are successful.
+I don't disagree with that.  However, I am not so lucky as to have
+teams dedicated to user interface design and product testing.  I don't
+have the luxury of testing design decisions to determine if they are
+successful.
 
 Unfortunately, there are a lot of aspects of the software that need
 sensible default values. In general, I have a good idea what a
 sensible value might be, but I am rarely certain. My solution for any
 option or parameter whose sensible default is open to interpretation
-is to make it configurable. As a result, there are over 300 aspects of
+is to make it configurable.  As a result, there are 100s of aspects of
 :demeter:`demeter` that can be configured, ranging from default
 parameter values to the colors of things that get plotted.
 

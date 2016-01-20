@@ -6,8 +6,8 @@
 Crystal data
 ============
 
-The crystal cell data – including lattice constants and angles, the
-space group symbol, and the elements of the shift vector – are placed
+The crystal cell data |nd| including lattice constants and angles, the
+space group symbol, and the elements of the shift vector |nd| are placed
 in text boxes for easy editing. The coordinates of the unique sites
 are listed in the grid at the bottom of the window. The absorber is
 chosen by clicking one of the boxes on the :guilabel:`Core` column.

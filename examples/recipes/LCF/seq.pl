@@ -3,7 +3,7 @@
 ## This script reproduces (in a somewhat simplified form) the LCF fit shown in
 ##    Mechanisms of Gold Bioaccumulation by Filamentous Cyanobacteria from Gold(III)−Chloride Complex
 ##    Maggy F. Lengke, Bruce Ravel, Michael E. Fleet, Gregory Wanger, Robert A. Gordon, and Gordon Southam
-##    Environ. Sci. Technol., 2006, 40 (20), pp 6304–6309
+##    Environ. Sci. Technol., 2006, 40 (20), pp 6304-6309
 ##    doi:10.1021/es061040r
 ##
 ## This has long been one of the teaching examples I have used to

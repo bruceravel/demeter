@@ -36,13 +36,12 @@ user identically. Each kind of path-like object is displayed using all
 the same controls as a normal path and each is parametered and used in
 a fit in the same way.
 
--  For information about SSPaths, see Chapter XXX
+-  `Information about SSPaths <../feff/pathlike.html#single-scattering-paths>`_
 
--  For information about histograms, see Chapter XXX
+-  Information about histograms (*not written yet*)
 
--  For information about the quick first shell theory, see Chapter XXX
+-  `Information about the quick first shell theory <../extended/qfs.html>`_
 
--  For information about empirical standards, see Chapter XXX
+-  `Information about empirical standards <../extended/empirical.html>`_
 
-.. todo:: Make these links, flesh out this discussion
 

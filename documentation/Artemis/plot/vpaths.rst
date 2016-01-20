@@ -44,8 +44,8 @@ shows how those three affect the fit when added together.
 
    A plot with the overlapping paths made into a single VPath
 
-The VPath is made by marking the contributing paths and choosing
-:menuselection:Actions --> Make VPath`. You will be prompted for a
+The VPath is made by marking the contributing paths, then choosing
+:menuselection:`Actions --> Make VPath`. You will be prompted for a
 name for the VPath. This name will be used to identify the VPath in a
 plot. The VPath is then inserted into the list of the VPaths tab.
 
@@ -56,6 +56,13 @@ plot. The VPath is then inserted into the list of the VPaths tab.
 
    The make VPath dialog
 
+Here is another example of how a VPath can help visualize the
+components of a fit.  The data in the following figures are of uranium
+L\ :sub:`III` edge EXAFS of uranyl acetate in solution. Uranyl
+compounds are notable for having two, very short double-bonded oxygen
+atoms in a trans configuration and at a distance of about 1.78 |AA|.
+The remaining oxygen atoms lie in an equatorial plane.  These are
+single-bonded and at a distance of around 2.4 |AA|.
 
 .. _fig-uranyl:
 .. figure:: ../../_images/uranyl.png
@@ -65,23 +72,16 @@ plot. The VPath is then inserted into the list of the VPaths tab.
    A schematic of the uranyl moiety.
 
 
-Here is another example of how a VPath can help visualize the
-components of a fit. The data in the follow two figures are of uranium
-L\ :sub:`III` edge EXAFS of uranyl acetate in solution. Uranyl
-compounds are notable for having two, very short double-bonded oxygen
-atoms in a trans configuration and at a distance of about 1.78
-|AA|. The remaining oxygen atoms lie in an equatorial plane. These are
-single-bonded and at a distance of around 2.4 |AA|.
-
-The two axial oxygen atoms usually have a rather small σ² and contribute
-very strongly at low R in the Fourier transform. Because those oxygen
-atoms are at such a short distance, there are a few multiple scattering
-paths that contribute significant spectral weight just beyond the region
-dominated by single scattering from the equatorial oxygen atoms.
+The two axial oxygen atoms usually have a rather small |sigma|\
+:sup:`2` and contribute very strongly at low R in the Fourier
+transform. Because those oxygen atoms are at such a short distance,
+there are a few multiple scattering paths that contribute significant
+spectral weight just beyond the region dominated by single scattering
+from the equatorial oxygen atoms.
 
 Here is the plot the fit to the uranyl acetate data along with each of
 the single and multiple scattering paths that involve the axial oxygen
-atoms. Again, it is ahrd to appreciate how the various multiple
+atoms.  Again, it is hard to appreciate how the various multiple
 scattering paths contribute to the fit.
 
 

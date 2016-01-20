@@ -58,3 +58,30 @@ div.bigtrick {
     background-color: #e00;
     font-weight: bold;
 }
+
+
+.blueatom {
+    color: #0000AA;
+    font-weight: bold;
+}
+.redatom {
+    color: #A90000;
+    font-weight: bold;
+}
+.greenatom {
+    color: #00912E;
+    font-weight: bold;
+}
+.pinkatom {
+    color: #A900AA;
+    font-weight: bold;
+}
+.yellowatom {
+    color: #A9A800;
+    font-weight: bold;
+}
+.brownatom {
+    color: #8F7A2E;
+    font-weight: bold;
+}
+    

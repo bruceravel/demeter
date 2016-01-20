@@ -3,6 +3,9 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. role:: guess
+.. role:: def
+.. role:: set
 .. role:: after
 
 Bond valence sums
@@ -145,9 +148,9 @@ Using a bond valance sum as an after parameter
 The last :demeter:`artemis` trick related to evaluations of bond
 valence sums is to use an `after parameter
 <../gds.html#parameter-types>`__ to record the bond valence sum to the
-`log file <../logjournal.html>`__. Using the same set parameters as in
-the restrain example, set the BVS formula instead to an :after:`after`
-parameter.
+`log file <../logjournal.html>`__.  Using the same set of parameters
+as in the restraint example, set the BVS formula instead to an
+:after:`after` parameter.
 
 .. _fig-bvsafter:
 .. figure:: ../../_images/bvs_after.png
@@ -157,8 +160,9 @@ parameter.
    Defining an :after:`after` parameter which reports the evaluated
    bond valence sum to the log file.
 
-At the end of the fit, the BVS will be evaluated and reported in the log
-file just below the guess, def, and set parameters, like so:
+At the end of the fit, the BVS will be evaluated and reported in the
+log file just below the :guess:`guess`, :def:`def`, and :set:`set`
+parameters, like so:
 
 ::
 

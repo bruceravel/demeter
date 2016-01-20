@@ -258,7 +258,7 @@ is a bit smaller than we might expect for a S\ :sup:`2`\ :sub:`0`
 value.
 
 The correlations between parameters are of a size that we expect. The
-R-factor evaluates to about 2% misfit. |chi|\ :sup:`2`\ :sub:`ν` is
+R-factor evaluates to about 2% misfit. |chi|\ :sup:`2`\ :sub:`v` is
 really huge, but that likely means that |epsilon| was not evaluated
 correctly. All in all, this is a reasonable fit.
 

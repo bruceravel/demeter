@@ -98,7 +98,7 @@ displayed automatically after the fit. This is set by
 
 The fit name and fit description text boxes from the Main window are
 also useful for customizing your fit as well as the course of a fitting
-project. The fit name is used in many places – most notably in the
+project. The fit name is used in many places |nd| most notably in the
 legends of plots. Thus you may find it useful to select descriptive
 names for each of your fits. The fit description is written to every log
 file and can be used to document features of your current fitting model

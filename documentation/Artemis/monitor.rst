@@ -25,7 +25,8 @@ window is the plotting buffer, which contains every command sent to
 the plotting backend (usually :program:`Gnuplot`).
 
 These are very useful both for diagnosing problems and for learning
-the details of how :demeter:`ifeffit` and :program:`Gnuplot` work.
+the details of how :demeter:`ifeffit`, :demeter:`larch` and
+:program:`Gnuplot` work.
 
 .. _fig-commandbuffer:
 .. figure:: ../_images/command_buffer.png
@@ -37,7 +38,7 @@ the details of how :demeter:`ifeffit` and :program:`Gnuplot` work.
 
 
 At the bottom of the window is a simple command line for sending
-instructions directly to :demeter:`ifeffit`.
+instructions directly to :demeter:`ifeffit` or :demeter:`larch`.
 
 
 The Status buffer

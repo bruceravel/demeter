@@ -133,7 +133,7 @@ The rules for the selection of the filter elements are:
    :align: center
 
    A filter plot showing why manganese is a good choice for an iron
-   absorber – it passes the fluorescence, which is below the Mn K edge, but
+   absorber |nd| it passes the fluorescence, which is below the Mn K edge, but
    preferentially absorbes the elastically scattered radiation.
 
 
@@ -162,7 +162,7 @@ To enable beamline customization, set the
 <other/prefs.html>`__ to true.
 
 You will want to set the :configparam:`Hephaestus,beamline\_name`
-parameter to the name of your beamline. Keep it short – it needs to
+parameter to the name of your beamline. Keep it short |nd| it needs to
 fit on the button!  Finally, set the
 :configparam:`Hephaestus,beamline\_emin` and
 :configparam:`Hephaestus,beamline\_emax` parameters to the lower and

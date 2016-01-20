@@ -50,8 +50,8 @@ is computed as the difference between the groups selected as the
 standard by menu control at the top of the window and the selected
 group from the group list. The difference spectrum will be plotted,
 optionally along with the data and standard used to make the
-subtraction. The form of the difference spectrum – |mu| (E),
-normalized |mu| (E), and derivative or second derivative of |mu| (E) –
+subtraction. The form of the difference spectrum |nd| |mu| (E),
+normalized |mu| (E), and derivative or second derivative of |mu| (E) |nd|
 is selected from the menu labeled :guilabel:`Form`. The multiplier is a
 scaling factor that can be applied to the standard before subtraction.
 
@@ -63,7 +63,7 @@ and integrate the area under that part of the spectrum.
 
 The difference spectra saved to data groups. Those data groups are
 treated in every way like any other data group. By default, difference
-groups are marked as normalized groups – that is, a flag is set which
+groups are marked as normalized groups |nd| that is, a flag is set which
 skips the normalization algorithm. The :button:`renormalize,light` button can
 be ticked to make the resulting group a normal |mu| (E) group. When
 the form of the difference is set to plain |mu| (E), that button will
@@ -140,7 +140,7 @@ Here are some example uses of difference spectra:
 **Experimental corrections**
     Certain kinds of corrections for nonlinearities in the XAS
     measurement can be corrected by normalizing measured data by a blank
-    scan – that is a measurement through the same energy range using the
+    scan |nd| that is a measurement through the same energy range using the
     same instrumentation, but measured without the sample in the beam
     path. This sort of correction, as shown in by Chantler, Barnea, et al.,
     is equivalent to a difference spectrum measured in plain |mu| (E)

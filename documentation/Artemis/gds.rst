@@ -178,7 +178,7 @@ of the main functions of the GDS window.
 :button:`Evaluate,light`
     Clicking this button will evaluate all parameters and insert their
     evaluations into the fourth column of the grid. This is used to
-    “spell-check” your math expressions for def and other parameters. In
+    :quoted:`spell-check` your math expressions for def and other parameters. In
     the image above, this button has been clicked and the evaluations
     have been inserted into the fourth column.
 

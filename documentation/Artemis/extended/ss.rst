@@ -121,7 +121,7 @@ Colinear multiple scattering paths
 
 This valuable paper explains the relationships between |sigma|\
 :sup:`2` parameters for single scattering paths and certain multiple
-scattering paths.
+scattering paths:
 
 .. bibliography:: ../artemis.bib
    :filter: author % 'Hudson'
@@ -203,7 +203,7 @@ model. In short, you have three choices:
    :sup:`2` parameter.
 
 #. Include the MS path, but approximate it's |sigma|\ :sup:`2` in
-   terms of parameters which are already part ofthe fitting model,
+   terms of parameters which are already part of the fitting model,
    presumably the parameters of the SS |sigma|\ :sup:`2` values.
 
 The Abs-Fe-S-Abs path in FeS\ :sub:`2` was really quite large. Going for
@@ -211,7 +211,7 @@ choice number 1 and leaving it out of the fit is clearly a poor choice.
 
 Number 2 is, in principle, the best choice. As an independently
 floated parameter, it's |sigma|\ :sup:`2` will account for the mean
-square vriation in path length **and** the effect of variation in t he
+square vriation in path length **and** the effect of variation in the
 scattering angle.  Unfortunately, this parameter is likely not to be
 highly robust because it is only used for this one path. There just is
 not much information available to determine its proper value. And if

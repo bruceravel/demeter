@@ -87,7 +87,7 @@ file.
 For a discussion of the cumulant expansion in EXAFS, see
 
 .. bibliography:: ../artemis.bib
-   :filter: author % "Bunker"
+   :filter: author % "Bunker" and year == "1983"
    :list: bullet
 
 

@@ -4,25 +4,25 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 .. role:: guess
+.. role:: set
 
 
 Empirical standards
 ===================
 
 Let me just say up front that :demeter:`artemis` is intended as a
-front-end to :demeter:`feff` for the problem of EXAFS analysis. In
+front-end to :demeter:`feff` for the problem of EXAFS analysis.  In
 almost all cases, :demeter:`feff` is the right tool for that job and
-there are extremely few cases where the use of empirical standards is
-preferable to using :demeter:`feff`. As discussed elsewhere in this
-manual, there are a situations where the application of
-:demeter:`feff` to a particular problem may not be obvious. Any
-situation for which the choice of a starting configuration of atomic
-coordinates, as needed for :demeter:`feff`'s input data, is not
-obvious might fall into that category. In one of those situations, you
-might be tempted to puruse empirical standards. You would, however,
-usually be better served by adopting one of the strategies that have
-been developed for applying :demeter:`feff` calculations to unknown
-structures.
+there are few cases where the use of empirical standards is preferable
+to using :demeter:`feff`.  As discussed elsewhere in this manual,
+there are a situations where the application of :demeter:`feff` to a
+particular problem may not be obvious.  Any situation for which the
+choice of a starting configuration of atomic coordinates, as needed
+for :demeter:`feff`'s input data, is not obvious might fall into that
+category.  In one of those situations, you might be tempted to puruse
+empirical standards.  You would, however, usually be better served by
+adopting one of the strategies that have been developed for applying
+:demeter:`feff` calculations to unknown structures.
 
 That said, there are a small handful of situations where the use of
 empirical standards is justified. In fact, I can think of two. The
@@ -100,8 +100,9 @@ shell. Here, I chose 1.8 |AA| to 2.8 |AA|.
    :label: _fig-empplot
 
 Select the data set from which you wish to make an empirical standard,
-in this case the data measured at 10 K. In the File menu is a “Export”.
-One of the options is to export an empirical standard.
+in this case the data measured at 10 K.  Select the
+:menuselection:`File --> Export` submenu.  One of the options is to
+export an empirical standard.
 
 .. _fig-empexport:
 .. figure:: ../../_images/emp_export.png
@@ -154,8 +155,9 @@ like a normal path. You can tell it is an empirical standard because
 its label contains the token :guilabel:`[Emp.]`.
 
 Here I have set up a 4-parameter fit typical for a first shell
-analysis, except that I have set the E\ :sub:`0` parameter to 0. The
-amplitude, |sigma|\ :sup:`2`, and |Delta| R are :guess:`guess` parameters.
+analysis, except that I have :set:`set` the E\ :sub:`0` parameter
+to 0.  The amplitude, |sigma|\ :sup:`2`, and |Delta| R are
+:guess:`guess` parameters.
 
 .. _fig-empimportes:
 .. figure:: ../../_images/emp_importes.png

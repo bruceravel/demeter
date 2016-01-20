@@ -201,7 +201,7 @@ running :demeter:`feff`. Here are some examples.
          *   x          y          z     ipot tag           distance
             0.00000    0.00000    0.00000  0  Nb            0.00000
 
-    Note that the labels (i.e. the instances of the string “Nb”) are
+    Note that the labels (i.e. the instances of the string :quoted:`Nb`) are
     for the benefit of the human reader of the file and are also used
     by :demeter:`demeter` to provide some information for the
     user. The essential edit is to change the Z number of the absorber

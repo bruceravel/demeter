@@ -100,7 +100,7 @@ same boxes on the k tab, and have similar preferences.
 
 When the :guilabel:`phase correction` button is clicked on, the Fourier transform
 for that data group will be made by subtracting the central atom phase
-shift. This is an incomplete phase correction – in :demeter:`athena` we know the
+shift. This is an incomplete phase correction |nd| in :demeter:`athena` we know the
 central atom but do not necessarily have any knowledge about the
 scattering atom.
 

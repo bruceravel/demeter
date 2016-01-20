@@ -4,6 +4,13 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
+.. role:: blueatom
+.. role:: redatom
+.. role:: greenatom
+.. role:: yellowatom
+.. role:: brownatom
+.. role:: pinkatom
+
 Fuzzy degeneracy
 ================
 
@@ -33,24 +40,28 @@ guaranteed to be the shortest path.  For more details, see
    :list: bullet
 
 
-#. Find all paths :quoted:`(0i0)`, i |neq| 0 in the cluster. These
-   paths are represented by the two-leg diagram to the right. Put each
-   such path in a heap.
+#. Find all paths (:blueatom:`0` :redatom:`i` :blueatom:`0`),
+   :redatom:`i` |neq| :blueatom:`0` in the cluster. These paths are
+   represented by the two-leg diagram in :numref:`Fig. %s
+   <fig-pathfinder>`.  Put each such path in a heap.
 
-#. For each such path, add a leg with j |neq| i, j |neq| 0. Put all
-   :quoted:`(0ij0)` in the heap. These paths are represented by the
-   three-leg diagram to the right.
+#. For each such path, add a leg with :yellowatom:`j` |neq|
+   :redatom:`i` and :yellowatom:`j` |neq| :blueatom:`0`. Put all
+   (:blueatom:`0` :redatom:`i` :yellowatom:`j` :blueatom:`0`) in the
+   heap. These paths are represented by the three-leg diagram in
+   :numref:`Fig. %s <fig-pathfinder>`.
 
 #. Up to some order of scattering, populate the heap with
-   :quoted:`(0i...x0)`.
+   (:blueatom:`0` :redatom:`i` ... x :blueatom:`0`)
 
-#. Test each path :quoted:`(0i...x0)` for magnitude. If small, discard
-   and do not consider any :quoted:`(0i...xy0).`
+#. Test each path (:blueatom:`0` :redatom:`i` ... x :blueatom:`0`)
+   for magnitude. If small, discard
+   and do not consider any 
+   (:blueatom:`0` :redatom:`i` ... x y :blueatom:`0`)
 
 #. Use up all atoms in the cluster and up to some order of scattering
    (:demeter:`feff`'s default is 7 legs).
 
-.. todo:: color to match pathfinder figure
 
 
 .. _fig-heap:
@@ -93,8 +104,8 @@ The new path finder has two huge advantages over :demeter:`feff`'s:
    are available for use and examination.  :demeter:`feff` discards
    the details of the degenerate paths.
 
-The first point – the use of fuzzy degneracy – is the topic of this
-section.
+The first point |nd| the use of fuzzy degeneracy |nd| is the topic of
+this section.
 
 :demeter:`feff`'s path finder, however, has its advantages over
 :demeter:`artemis`':
@@ -111,13 +122,11 @@ section.
    some simple heuristics to trim the tree of paths.
 
 #. :demeter:`feff`'s path finder considers up to seven-legged
-   paths. :demeter:`artemis` currently stops at four-legged
-   paths. This could be fixed in :demeter:`artemis`, but without
-   :demeter:`feff`'s plane wave approximation, the cost of computing
-   so many paths would be prohibitive. In any case, it is rather
-   unusual to need more than four-legged paths in an EXAFS
-   analysis. (Cubic metals analyzed beyond about 6 Å and cyanide
-   bridged structures like prussian blue are two examples.)
+   paths. :demeter:`artemis` can do five- and six-legged paths, but it
+   is slow.  In any case, it is rather unusual to need more than
+   four-legged paths in an EXAFS analysis.  (Cubic metals analyzed
+   beyond about 6 |AA| and cyanide bridged structures like prussian
+   blue are two examples.)
 
 .. todo:: :demeter:`artemis`' path finder does not currently handle
    ellipticity.  So that's another advantage at the moment for

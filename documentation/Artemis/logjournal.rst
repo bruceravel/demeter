@@ -32,7 +32,7 @@ left of the Main window is used to display and hide this window.
 All of the details of the fit are recorded in the text displayed in
 this window. Below the descriptive fitting properties displayed at the
 top in blue text are the main fitting statistics, including |chi|\
-:sup:`2`, |chi|\ :sup:`2`\ :sub:`ν`, the R-factor, |epsilon| (k),
+:sup:`2`, |chi|\ :sup:`2`\ :sub:`v`, the R-factor, |epsilon| (k),
 |epsilon| (R), and counts of the number of independent points and the
 number of guess parameters. Those are followed by the details of `the
 happiness evaluation <fit/happiness.html>`__. Two lines of the fitting
@@ -68,9 +68,9 @@ blank text box in which you can write notes about your fitting project
 (or love letters) to your collaborators.  The text found in
 this box will be saved to and restored from the project file.
 
-The :button:`Save` button at the bottom of the Log window can be used
-to save the journal to a text file.  You will be prompted for the name
-of the file.
+The :button:`Save,light` button at the bottom of the Log window can be
+used to save the journal to a text file.  You will be prompted for the
+name of the file.
 
 .. _figure-journal:
 .. figure:: ../_images/artemis_journal.png

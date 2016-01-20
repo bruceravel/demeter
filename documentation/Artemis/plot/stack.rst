@@ -47,9 +47,9 @@ Stacked plot
 ------------
 
 
-.. _fig-plotinvert:
-.. figure:: ../../_images/plot-invert.png
-   :target: ../_images/plot-invert.png
+.. _fig-plotstack:
+.. figure:: ../../_images/plot-stack.png
+   :target: ../_images/plot-stack.png
    :align: center
 
    A stacked plot
@@ -59,15 +59,15 @@ function, and the fitting window. Offset downward are the paths from
 the first two coordination shells as evaluated in the fit. Note that
 the size of an appropriate offset depends on the k-weighting and on
 the space the plot is made it.  :demeter:`artemis` does not attempt to
-compute a sensible value – that is up to you.
+compute a sensible value |nd| that is up to you.
 
 
 Inverted plot
 -------------
 
-.. _fig-plotstack:
-.. figure:: ../../_images/plot-stack.png
-   :target: ../_images/plot-stack.png
+.. _fig-plotinvert:
+.. figure:: ../../_images/plot-invert.png
+   :target: ../_images/plot-invert.png
    :align: center
 
    Plotting with inversion

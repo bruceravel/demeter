@@ -110,7 +110,7 @@ onto the other data sets.
 
 Using the two strategies summarized above, you would need to do
 considerable editing after pushing the path parameter values. That sort
-of editing is often error-prone.
+of editing is error-prone.
 
 Here is a third way of solving this problem.
 
@@ -142,7 +142,7 @@ the CV saves quite a bit of editing. Furthermore, you can use the CV
 value in many path parameter math expressions. For example, suppose you
 were to model the |Delta| R values with a temperature-dependent, linear
 explansion coefficient. The use of the CV in those math expressions
-saves even more error-prone, manual editing!
+saves a lot of error-prone, manual editing!
 
 
 

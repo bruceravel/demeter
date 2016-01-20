@@ -114,7 +114,7 @@ and first shell scatterer.
 
 The phase information is taken from one of the paths. Each path has a
 button labeled :guilabel:`Use this path for phase corrected
-plotting`. These buttons are exclusive – only one path per data set
+plotting`. These buttons are exclusive |nd| only one path per data set
 can have its button ticked on. The phase information from that path is
 used for the phase corrected plots.
 
@@ -131,6 +131,6 @@ change it back before making a new fit or making a plot in q-space.
 
 Also note that the phase correction propagates through to |chi|
 (q). While the window function will display sensibly with the central
-atom phase corrected |chi| (q), a “kq” plot will be somewhat less
+atom phase corrected |chi| (q), a :quoted:`kq` plot will be somewhat less
 insightful because phase correction is not performed on the original
 |chi| (k) data.

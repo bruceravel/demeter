@@ -7,23 +7,25 @@
 Quick first shell
 =================
 
-:demeter:`artemis` offers several ways to get information from
-:demeter:`feff` into a fitting model. One of these is called a *quick
-first shell* path. It's purpose is to provide a model-free way of
+:demeter:`artemis` offers several ways to get information from 
+:demeter:`feff` into a fitting model.  One of these is called a *quick
+first shell* path.  It's purpose is to provide a structureless way of
 computing the scattering amplitude and phase shift well enough to be
-used for a quick analysis of the first coordination shell.
+used for a quick analysis of the first coordination shell. 
 
-The way it works is quite simple. Given the species of the absorber and
-the scatterer, the absorption edge (usually K or L\ :sub:`III`), and a
-nominal distance between the absorber and the scatterer, :demeter:`artemis`
-constructs input for :demeter:`feff`. This input data assumes that the absorber and
-scatterer are present in a `rock salt
-structured <http://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure>`__
+The way it works is quite simple. Given the species of the absorber
+and the scatterer, the absorption edge (usually K or L\ :sub:`III`),
+and a nominal distance between the absorber and the scatterer,
+:demeter:`artemis` constructs input for :demeter:`feff`. This input
+data assumes that the absorber and scatterer are present in a `rock
+salt structured
+<http://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure>`__
 crystal. The lattice constant of this notional cubic crystal is such
 that the nearest neighbor distance is the nominal distance supplied by
-the user. :demeter:`feff` is run and the scattering path for the nearest neighbor
-is retained. The rest of the :demeter:`feff` calculation is discarded. The nearest
-neighbor path is imported into :demeter:`artemis` with the degeneracy set to 1.
+the user. :demeter:`feff` is run and the scattering path for the
+nearest neighbor is retained. The rest of the :demeter:`feff`
+calculation is discarded. The nearest neighbor path is imported into
+:demeter:`artemis` with the degeneracy set to 1.
 
 The assumption here is that the notional crystal will produce a
 scattering amplitude and phase shift for the nearest neighbor path that
@@ -88,7 +90,7 @@ Why does this work?
 
 :demeter:`feff` starts by calculating neutral atoms then placing these neutral
 atoms at the positions indicated by :demeter:`feff`'s input data. Each neutral atom
-has an associated radius – the radius within which the “cloud” of
+has an associated radius |nd| the radius within which the :quoted:`cloud` of
 electrons has the same charge as the nucleus of the atom. The
 neutral-atom radii are fairly large. When placed at the positions in the
 :demeter:`feff` input data, these neutral-atom radii overlap significantly. This is
@@ -114,14 +116,14 @@ All the details are explained in
 
 
 The scattering amplitude and phase shift is then computed from atoms
-that have a specific size – the size of the muffin-tin spheres – and
+that have a specific size |nd| the size of the muffin-tin spheres |nd| and
 with the electron density associated with those spheres.
 
 The reason that the two calculations shown above are so similar is
 because the muffin-tin radii of the Fe and S atoms are almost identical.
 This should not be surprising. Either way of constructing the muffin
-tins – using the proper FeS\ :sub:`2` structure or using the rock-salt
-structure – start with Fe and S atoms separated by the same amount. The
+tins |nd| using the proper FeS\ :sub:`2` structure or using the rock-salt
+structure |nd| start with Fe and S atoms separated by the same amount. The
 application of the algorithm for producing muffin-tin sizes ends up with
 nearly identical values. As a result the scattering amplitudes and phase
 shifts are nearly the same and the resulting |chi| (k) functions are nearly
@@ -132,11 +134,11 @@ the same.
 ------------------------------------------------------------
 
 This is awesome! It would seem that we have a model independent way to
-generate fitting standards for use in :demeter:`artemis`. No more
-mucking around with Atoms, no more looking up metalloprotein
-structures. Just use QFS!
+generate fitting standards for use in :demeter:`artemis`.  No more
+mucking around with :demeter:`atoms`, no more looking up
+metalloprotein structures. Just use QFS!
 
-If you think that seems too good to be true – you get a gold star. It
+If you think that seems too good to be true |nd| you get a gold star. It
 most certainly is.
 
 Following the example above, I now show the second neighbor from the
@@ -199,7 +201,7 @@ muffin tins is much too small, and the scattering amplitude and phase
 shift are calculated wrongly.
 
 The central problem here is not that the red line is different from
-the blue line – although that is certainly the case and it is
+the blue line |nd| although that is certainly the case and it is
 certainly a problem. The central problem is that, by misusing the QFS
 tool in this way, you introduce a large systematic error into your
 data analysis.  This systematic error affects both amplitude and phase
@@ -302,7 +304,7 @@ extent to which that guess is consistent with your data.
     reliably and with good muffin tin radii.
 
     There is yet another advantage to this over attempting to use QFS
-    for higher shells – consideration of multiple scattering paths. In
+    for higher shells |nd| consideration of multiple scattering paths. In
     the example from Shelly's paper, there are several small but
     non-negligible MS paths to be considered for both carboxyl and
     phosphoryl ligands. Neglecting those in favor of a
@@ -381,14 +383,14 @@ The nearest neighbor path in FeS\ :sub:`2` is a S atom at 2.257 |AA|.
 
    Set the QFS parameters
 
-Clicking OK, the QFS path is generated. I set the degeneracy of the
-QFS path to 6 so that I can directly compare the normally calculated
-path (there are 6 nearest neighbor S atoms in FeS\ :sub:`2`) to the
-QFS path.  I mark both paths and transfer them to the plotting list. I
-am now ready to compare these two calculations. To examine another
-single scattering path, I drag and drop that path from the
-:demeter:`feff` page to the Data page and redo the QFS calculation at
-that distance.
+Clicking :button:`OK,light`, the QFS path is generated.  I set the
+degeneracy of the QFS path to 6 so that I can directly compare the
+normally calculated path (there are 6 nearest neighbor S atoms in FeS\
+:sub:`2`) to the QFS path.  I mark both paths and transfer them to the
+plotting list. I am now ready to compare these two calculations. To
+examine another single scattering path, I drag and drop that path from
+the :demeter:`feff` page to the Data page and redo the QFS calculation
+at that distance.
 
 .. _fig-qfscompare:
 .. figure:: ../../_images/qfs-compare.png

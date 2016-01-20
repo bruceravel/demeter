@@ -264,4 +264,4 @@ number of guess parameters.
    :list: bullet
 
 
-.. todo:: Need more examples
+.. todo:: Summarize parametrization from J Phys Conf Proc paper

@@ -69,8 +69,8 @@ simply jump ahead and compare the normal Co scatterer at 3.83 |AA|
 Use of :guilabel:`SSPath` for modeling scatterers at such a long
 distance is much superior to using a `quick first shell theory
 <../path/pathlike.html>`__. The advantage of this approach is that it
-uses well constructed scattering potentials – i.e. potentials from a
-real structure – to make the special path. Using the quick first shell
+uses well constructed scattering potentials |nd| i.e. potentials from a
+real structure |nd| to make the special path. Using the quick first shell
 technique on a path this long results in poorly constructed
 potentials. This is explained in detail in `the extended discussions
 chapter <../extended/qfs.html>`__.

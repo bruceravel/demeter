@@ -51,7 +51,7 @@ and data analysis tools use pluck buttons, as does the
 
    After clicking on the point shown in the
    previous figure, the value of about 243 is inserted as the value of
-   the upper edge of the normalization range – clearly a better value
+   the upper edge of the normalization range |nd| clearly a better value
    for that parameter.
 
 .. subfigend::

@@ -294,7 +294,7 @@ will, by default, look for files with the :file:`.prj` extension. You
 may also drag :file:`.prj` files from your computer's file manager and
 drop them onto the data list.
 
-As you import data, a stack of buttons – one for each data group – is
+As you import data, a stack of buttons |nd| one for each data group |nd| is
 made. These buttons are used to show or hide the windows associated
 with each data group. In this example, a multiple data set fit
 (i.e. one in which models for more than one data set are co-refined)

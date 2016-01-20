@@ -28,7 +28,7 @@ displayed. The :menuselection:`Plot --> Save last plot as` submenu
 allows you to send the most recent plot to a PNG or PDF file. You will
 be prompted for a filename, then the most recent plot will be written
 to that file in the format specified. Currently, only PNG and PDF are
-supported. Saving to a file does not work for quad plots – you'll have
+supported. Saving to a file does not work for quad plots |nd| you'll have
 to rely on a screen-capture tool for that.
 
 Finally, you have the option of directing the on-screen plot to one of

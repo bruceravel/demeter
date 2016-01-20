@@ -7,19 +7,17 @@
 The heuristic happiness parameter
 =================================
 
-.. todo:: fix nu character
-
 :demeter:`artemis` evaluates a variety of statistical parameters
-relevant to the evaluation of your fit. These include the fitting
+relevant to the evaluation of your fit.  These include the fitting
 metric |chi|\ :sup:`2`, the fitting metric normalized by the degrees
-of freedom in the fit |chi|\ :sup:`2`\ :sub:`ν`, an R-factor, and
-uncertainties on and correlations between the variable parameters.
+of freedom in the fit |chi|\ :sup:`2`\ :sub:`v`, an R-factor, and the
+uncertainties of and correlations between the variable parameters.
 
 In a formal sense, the most important of these parameters is |chi|\
-:sup:`2`\ :sub:`ν`, which is the statistical parameter allowing you to
+:sup:`2`\ :sub:`v`, which is the statistical parameter allowing you to
 distinguish between different fitting models applied to the same data.
-Unfortunately, |chi|\ :sup:`2`\ :sub:`ν` is difficult to interpret
-directly. In practice, the EXAFS analysis problem using
+Unfortunately, |chi|\ :sup:`2`\ :sub:`v` is difficult to interpret
+directly.  In practice, the EXAFS analysis problem using
 :demeter:`feff` is not a well-posed problem in the sense required by
 Gaussian statistics. This is true for a variety of reasons. In EXAFS,
 the signal is not ideally packed |nd| that is, the signal is not
@@ -29,11 +27,13 @@ general, we cannot actually identify and enumerate all sources of
 measurement error, many of which are complex and systematic, such as
 sample inhomogeneity, detector non-linearity, and so on.  Finally, we
 do not know the true line shape of our signal |nd| instead we use
-:demeter:`feff` to approximate the lineshape.
+:demeter:`feff` to approximate the lineshape.  All of this is
+discussed further in my `Advanced Topics in EXAFS Analysis talk
+<https://speakerdeck.com/bruceravel/advanced-topics-in-exafs-analysis?slide=6>`_
 
-For all those reasons, |chi|\ :sup:`2`\ :sub:`ν` is rarely |nd| if
+For all those reasons, |chi|\ :sup:`2`\ :sub:`v` is rarely |nd| if
 ever |nd| close to 1 as expected for a good fit. Although |chi|\
-:sup:`2`\ :sub:`ν` for different fitting models can be compared
+:sup:`2`\ :sub:`v` for different fitting models can be compared
 effectively, it is, generally speaking, not a sufficient criterion for
 evaluating the quality of an individual fit.
 
@@ -54,10 +54,10 @@ reported in the log file.  It has no meaning other that to give you a
 general sense of how the fit came out.
 
 .. caution:: The word :quoted:`happiness` was chosen for this
-   parameter because it is a silly word in a statistics
-   context. Happiness is an ad-hoc, semantic metric. It has no basis
-   in formal statistics. It is essentially meaningless and should
-   **NEVER** be published. **NEVER**!
+   parameter because it is a silly word in a statistics context.
+   Happiness is an ad-hoc, semantic metric.  It has no basis in formal
+   statistics. It is a functionally meaningless parameter and should
+   **NEVER** be published.  **NEVER**!
 
 
 Evaluation of the happiness parameter
@@ -99,8 +99,7 @@ color the Fit and plot buttons.
 
 **Penalty parameters**
     Assess a penalty equal to the evaluation of a penalty parameter.
-
-.. todo:: Penalty parameters have not yet been implemented... 
+    *Penalty parameters have not yet been implemented.*
 
 
 Configuring the happiness evaluation
@@ -134,8 +133,10 @@ negative |sigma|\ :sup:`2` can be turned off by toggling
 :configparam:`warnings,ss2_neg`.
 
 Since this happiness thing is an artificial and statistically
-meaningless creation, it can be changed as you like. Do you have any
-ideas for penalty assessments? Let Bruce know! Do you have a suggestion
-for how the existing penalties should be tuned? Send your configuration
-parameter values to Bruce!
+meaningless creation, it can be changed as you like.  Do you have any
+ideas for penalty assessments?  Open `an issue
+<https://github.com/bruceravel/demeter/issues>`_ at the
+:demeter:`demeter` website.  Do you have a suggestion for how the
+existing penalties should be tuned?  Post your configuration parameter
+values `as an issue <https://github.com/bruceravel/demeter/issues>`_.
 

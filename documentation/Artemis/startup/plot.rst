@@ -30,7 +30,7 @@ will be discussed later in the document.
 
 Beneath that is a set of radio buttons for setting the k-weighting to
 be used in many of the kinds of plots that :demeter:`artemis` makes,
-including those made when pressingt he buttons above. Note that these
+including those made when pressing the buttons above. Note that these
 k-weight values are *only* used for making plots. The k-weight values
 used to evaluate fits are set in the Data window. The :guilabel:`kw`
 option uses the arbitrary (possibly non-integer) k-weighting value

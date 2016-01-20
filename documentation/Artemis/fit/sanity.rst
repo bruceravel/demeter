@@ -38,7 +38,9 @@ Disable sanity checks` menu in the Main window.
 
 #. Check that all function names used in math expression (i.e. a word
    followed by parentheses) are valid functions in :demeter:`ifeffit`
-   or :demeter:`larch` (as appropriate).
+   or :demeter:`larch` (as appropriate).  :demeter:`artemis` does not
+   make any check that the arguments of the function are sensible,
+   however.
 
 #. Check that all GDS parameters have unique names.
 
@@ -69,7 +71,8 @@ Disable sanity checks` menu in the Main window.
    those strings for other purposes. Although not strictly necessary,
    this check is enforced by default when using :demeter:`larch`.
 
-#. Check that there are no unresolved merge parameters.
+#. Check that there are no unresolved merge parameters. *This feature
+   is not yet implemented.*
 
 #. Check that GDS math expressions do not have loops or cycles in their
    definitions. For example, either of the following would trigger this
