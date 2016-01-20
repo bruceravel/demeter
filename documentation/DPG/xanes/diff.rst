@@ -1,0 +1,5 @@
+
+Difference spectra
+==================
+
+.. todo:: Content!

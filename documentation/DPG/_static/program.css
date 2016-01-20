@@ -1,0 +1,62 @@
+
+/* color of top/bottom bars in nature theme */
+div.related {
+    background-color: #006699;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+
+div.body h1 { background-color: #488299; text-shadow: 0px 1px 0 #779099; }
+div.body h2 { background-color: #779099; }
+div.body h3 { background-color: #779099; }
+
+div.bigtrick {
+    border: 2px solid #000099;
+    color: #000099;
+    background-color: #DCF6F7;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.guess {
+    color: #a300a3;
+    font-weight: bold;
+}
+.def {
+    color: #008b00;
+    font-weight: bold;
+}
+.set {
+    color: #000;
+    font-weight: bold;
+}
+.lguess {
+    color: #3E1C8F;
+    font-weight: bold;
+}
+.skip {
+    color: #B2B2B2;
+    font-weight: bold;
+}
+.restrain {
+    color: #cd9b1d;
+    font-weight: bold;
+}
+.after {
+    color: #4a708b;
+    font-weight: bold;
+}
+.penalty {
+    color: #8b5a2b;
+    font-weight: bold;
+}
+.merge {
+    color: #fff;
+    background-color: #e00;
+    font-weight: bold;
+}
+
+

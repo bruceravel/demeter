@@ -1,0 +1,5 @@
+
+Rebinning data
+==============
+
+.. todo:: Content!

@@ -1,0 +1,5 @@
+
+Smoothing data
+==============
+
+.. todo:: Content!
