@@ -9,9 +9,9 @@ div.related {
 }
 
 
-div.body h1 { background-color: #488299; text-shadow: 0px 1px 0 #779099; }
-div.body h2 { background-color: #779099; }
-div.body h3 { background-color: #779099; }
+div.body h1 { background-color: #C5CFDD; text-shadow: 0px 1px 0 #779099; }
+div.body h2 { background-color: #BBBBBB; border: 2px solid #999999;}
+div.body h3 { background-color: #FFFFFF; border: 2px solid #999999;}
 
 div.bigtrick {
     border: 2px solid #000099;
