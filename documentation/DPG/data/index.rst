@@ -52,9 +52,9 @@ imported automatically when :demeter:`demeter` is imported.  That is,
 :demeter:`demeter` requires that your programs conform to these two
 pragmas.  That is such an inherently good idea that :demeter:`demeter`
 insists upon it.  Exporting these two perl pragmata is accomplished in
-the same manner as for `Moose <https://metacpan.org/pod/Moose>`__. The
-magic behind this is `explained here
-<http://hanekomu.at/blog/dev/20080924-1114-dissecting_the_moose_2-pragmatic_goodness.html>`__.
+the same manner as for `Modern::Perl
+<https://metacpan.org/pod/Modern::Perl>`_ (see `lines 38 and 39
+<https://metacpan.org/source/CHROMATIC/Modern-Perl-1.20150127/lib/Modern/Perl.pm#L38>`_).
 
 ---------------------
 
