@@ -36,6 +36,14 @@ from the scatterer. The following snippet of code imports a :demeter:`feff`
 calculation from its serialization file and finds the path meeting that
 description:
 
+.. code-block:: perl
+
+      my $feff = Demeter::Feff->new(yaml=>'myfeff.yaml', workspace=>'mycalc');
+      my $this_sp = $feff->find_path(gt => 3, lt=>4, tag=>['Al']);
+      my $path = Demeter::Path -> new(feff => $feff,
+                                      sp   => $this_sp,
+                                     ); 
+
 The ``find_path`` method examines all the paths in a Feff objects path
 list and compares them against the semantic descriptions given as
 arguments to the method. In this case, the path that gets returned
@@ -101,6 +109,10 @@ when any of the list valued criteria are used.
 Here is an example of using the ``find_all_paths`` method to find all
 single scattering paths in a :demeter:`feff` calculcation which are
 shorter than 6 |AA|.
+
+.. code-block:: perl
+
+  my @list = $feff->find_all_paths( lt=>6, nleg=>2 );
 
 For more details, see the Demeter::Feff::Paths documentation.
 

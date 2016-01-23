@@ -32,6 +32,10 @@ re-done.
 up-to-date in order to properly perform any method, including
 plotting. Thus if you do this:
 
+.. code-block:: perl
+      
+   $data -> plot('k');
+
 :demeter:`demeter` knows to check wether the background removal,
 normalization, and forward transform are up to date and to perform
 them if they are not.
@@ -92,8 +96,7 @@ There are also a number of pre-defined, specialty plots.
 
    .. figure:: ../../_images/plot_quad.png
       :target: ../_images/plot_quad.png
-      :width: 55%
-      :align: center
+      :align: left
 
       This quad plot shows data on an Fe foil in all four spaces. The
       current value of k-weighting in the Plot object is used in this
@@ -103,6 +106,11 @@ There are also a number of pre-defined, specialty plots.
 
 There are two more pre-packaged plot types which are specifically about
 visualizing merged data and its standard deviation:
+
+.. code-block:: perl
+
+   $data->plot('stddev');
+   $data->plot('variance'); 
 
 See `the section on merged data <../mue/merge.html>`__ for details of
 those two plot types.

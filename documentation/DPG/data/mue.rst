@@ -33,13 +33,16 @@ analyze the contents of the data file and recognize it as |mu| (E)
 data. In the rare case that |mu| (E) data is not recognized as such,
 it can be explicitly specified like so:
 
+.. code-block:: perl
+
+   $data -> datatype('xmu');
+
 Parameters for normalization, background removal, and Fourier transforms
 are set as attributes of the Data object. In this example, several basic
 data processing parameters (discussed in detail in the documentation for
 the Demeter::Data module) are set using the ``set`` method.
 
 .. code-block:: perl
-
 
     #!/usr/bin/perl
     use Demeter;
@@ -68,7 +71,15 @@ those defined by the MooseX::SetGet module which comes with
 To obtain ``bkg_rbkg``, the R\ :sub:`bkg` value for background removal,
 you can do this:
 
+.. code-block:: perl
+
+   my $rbkg = $data -> bkg_rbkg; 
+
 To set a new value for R\ :sub:`bkg`, do this:
+
+.. code-block:: perl
+
+      $data -> bkg_rbkg(1.2); 
 
 Each attribute has an accessor method for getting and setting the value
 of the attribute that has the same name as the attribute itself.
@@ -76,10 +87,14 @@ of the attribute that has the same name as the attribute itself.
 To get and set several parameters at a time, you can use the ``get`` and
 ``set`` methods, which are thin wrappers around the normal accessors:
 
+.. code-block:: perl
+		
+   my @values = $data -> get('bkg_rbkg', 'bkg_nor1', 'bkg_nor2');
+   $data -> set(bkg_rbkg => 1.2, bkg_nor1 => 50, bkg_nor2 => 600); 
+
 Finally, parameters can be set at the time of object creation:
 
 .. code-block:: perl
-
 
     #!/usr/bin/perl
     use Demeter;

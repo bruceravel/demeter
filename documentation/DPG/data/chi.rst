@@ -34,6 +34,10 @@ analyze the contents of the data file and recognize it as |chi| (k)
 data. In the rare case that |chi| (k) data is not recognized as such,
 it can be explicitly specified like so:
 
+.. code-block:: perl
+
+   $data -> datatype('chi');
+
 Note also that data that are imported as |chi| (k) cannot be plotted in
 energy. Attempting to do so will trigger an error and end your program.
 Note that you can set attributes related to normalization or background

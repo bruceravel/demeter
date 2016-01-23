@@ -16,7 +16,6 @@ not* return a new object.
 
 .. code-block:: perl
 
-
     #!/usr/bin/perl
     use Demeter;
     my $d0 = Demeter::Data -> new(file        => "$where/data/fe.060",
@@ -34,9 +33,17 @@ In the example above, all points after 7500 eV are removed from the
 data. Here is an example of removing points from the front end of the
 data.
 
+
+.. code-block:: perl
+
+  $d0 -> Truncate('before', 7050);
+
 .. _fig-truncate:
 .. figure:: ../../_images/truncate.png
    :target: ../_images/truncate.png
-   :align: center
+   :align: left
 
    These are the data as plotted by the example script above.
+
+
+.. linebreak::

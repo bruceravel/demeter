@@ -20,6 +20,12 @@ but it is unusual to need or want a second instance of a Plot object.
 Each of these special objects has an associated method of the base class
 used for accessing the object. They are demonstrated here:
 
+.. code-block:: perl
+
+      my $mode_object   = $object -> mo;
+      my $plot_object   = $object -> po;
+      my $config_object = $object -> co; 
+
 In this example, ``$object`` can be any :demeter:`demeter`
 object. Every object type inherits these three methods, each of which
 returns its object.  That is, ``mo`` returns the Mode object, ``co``

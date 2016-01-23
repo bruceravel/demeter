@@ -18,9 +18,17 @@ the ``po`` method is a method of the base class and is inherited by all
 :demeter:`demeter` objects. Thus, given any object, you can :quoted:`find` the Plot object
 like so:
 
+.. code-block:: perl
+
+   $the_plot_object = $any_object -> po;
+
 Any method of the plot object is easily called by chaining with the
 ``po`` method. For example to start a new plot (as opposed to
 overplotting), you do this
+
+.. code-block:: perl
+
+   $any_object -> po -> start_plot;
 
 The ``start_plot`` method reinitializes the Plot object to begin a new
 plot. Along with clearing the plotting display, this restarts the trace
@@ -36,7 +44,6 @@ Data, background, pre-edge, & post-edge
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: perl
-
 
     my @eplot = (e_mu      => 1,     e_bkg     => 1,
                  e_norm    => 0,     e_der     => 0,

@@ -6,6 +6,10 @@ Merging data is one of the essential data processing steps. As with
 every thing, :demeter:`demeter` tries to make merging as easy as
 possible:
 
+.. code-block:: perl
+
+   my $merged = $data[0]->merge('e', @data); 
+
 The first argument to the ``merge`` method specifies which spectrum is
 merged: ``e`` means to merge |mu| (E), ``n`` means to merge normalized
 |mu| (E), and ``k`` means to merge |chi| (k).
@@ -53,11 +57,12 @@ Plot merged data with standard deviation
 .. _fig-stddev:
 .. figure:: ../../_images/merge_stddev.png
    :target: ../_images/merge_stddev.png
-   :width: 55%
-   :align: center
+   :align: left
 
    This shows the merge of |mu| (E) of 3 iron foil scans along with
    the standard deviation array. 
+
+.. linebreak::
 
 The standard deviation has been added to and subtracted from the
 |mu| (E) spectrum, so the red trace is an error margin for the
@@ -65,6 +70,7 @@ The standard deviation has been added to and subtracted from the
 a Data object which contains the data from a merge. Trying to plot a
 non-merged Data object in this way will return a warning without
 plotting anything.
+
 
 Plot merged data with standard deviation
 ----------------------------------------
@@ -79,12 +85,13 @@ Change line 20 in the script shown above to this:
 
 .. figure:: ../../_images/merge_variance.png
    :target: ../_images/merge_variance.png
-   :width: 55%
-   :align: center
+   :align: left
 
 
    This shows the merge of |mu| (E) of 3 iron foil scans along with
    the standard deviation array. 
+
+.. linebreak::
 
 The standard deviation has been scaled to plot with the |mu| (E)
 spectrum, with the scaling factor is given in the legend. This, then,
@@ -93,3 +100,4 @@ across the spectrum. Note that this plot type can only be plotted
 using a Data object which contains the data from a merge. Trying to
 plot a non-merged Data object in this way will return a warning
 without plotting anything.
+

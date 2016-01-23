@@ -12,6 +12,10 @@ provide parameters for the Fourier transforms. For a data object, this
 attribute points to itself. For example, to change the lower bound of
 the Fourier transform range, you are able to do something like this:
 
+.. code-block:: perl
+
+  $any_plottable_object -> data -> kmin(3);
+
 That construct is guaranteed to do what you want for any Data, Path or
 path-like object.
 
@@ -20,6 +24,11 @@ Path, and path-like objects from other object types in the :demeter:`demeter`
 system. Trying to plot something that cannot be plotted, like the sample
 below, will trigger an error and probably cause your program to exit,
 but it certainly will not behave in some strange and unexpected manner.
+
+.. code-block:: perl
+
+  ## this will trigger an error:
+  $gds_object -> plot('k');
 
 ScatteringPath objects are not plottable objects (and, so, have their
 ``plottable`` set to 0). To visualize the contribution from the

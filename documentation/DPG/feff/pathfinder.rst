@@ -165,6 +165,10 @@ constituent paths.
 Resetting the :configparam:`Pathfinder,fuzz` to 0.01 separates those
 two nearly degenerate paths into separate scattering paths.
 
+.. code-block:: perl
+
+  $any_object -> co -> set_default('pathfinder', 'fuzz', 0.01);
+
 ::
 
     #     degen   Reff       scattering path                       I legs   type              

@@ -50,13 +50,14 @@ removed from the data.
 .. _fig-deglitchpointremoved:
 .. figure:: ../../_images/deglitch_pointremoved.png
    :target: ../_images/deglitch_pointremoved.png
-   :align: center
+   :align: left
 
    Here are the data from the code example above with one of the four
    glitchy point removed.  In the case of these data, the glitches are
    due to a signal problem at the beamline and obviously represent
    spurious points.
 
+.. linebreak::
 
 The ``deglitch`` method is not the easiest thing to
 use. :demeter:`demeter` has no built in way of identifying potential

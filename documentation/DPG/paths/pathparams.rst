@@ -43,6 +43,13 @@ strings which are for interpretion as math expressions by
 The accessor methods for each of these path parameters is label in the
 list above. For example:
 
+.. code-block:: perl
+
+  ## get path parameter math expression:
+  printf "deltaR=%s and sigma2=%s\n", $path->delr, $path->sigma2;
+  ## set a path parameter:
+  $path->s02("(1-x) * amp");
+
 For the path parameter attributes that take math expression text
 strings, there is another set of attributes that have the same names
 but with ``_value`` appended to the end. Whenever a Path object is
@@ -53,6 +60,11 @@ will usually have no effect as the value will be overwritten the next
 time :demeter:`demeter` uses the path.  However, the ``_value``
 attributes are very useful for obtaining the evaluations of the math
 expressions:
+
+.. code-block:: perl
+
+      ## get path parameter math expression:
+      printf "deltaR evaluated to =%.5d\n", $path->delr_value; 
 
 In fact, this is done repeatedly during the construction of `the
 logfile <../fit/after.html>`__.
@@ -70,6 +82,9 @@ The R method
 The ``R`` method is used to return the fitted half path length, that is
 the sum of R\ :sub:`eff` and ``delr``.
 
+.. code-block:: perl
+
+  printf "half path length is %.5d\n", $path->R;
 
 The paragraph method
 ~~~~~~~~~~~~~~~~~~~~
@@ -79,7 +94,9 @@ evaluation of the Path's math expressions. This text looks very much
 like the text that :demeter:`ifeffit` returns when you use
 :demeter:`ifeffit`'s ``show @group`` command.
 
+.. code-block:: perl
 
+        print $path_object -> paragraph; 
 
 The make\_name method
 ~~~~~~~~~~~~~~~~~~~~~
@@ -132,7 +149,9 @@ removed from the ends.
 This line resets the default Path label to a string that includes the
 half path length and the path degeneracy
 
+.. code-block:: perl
 
+   $path_object -> co -> set_default("pathfinder", "label", '%r (%d)';
 
 Uncertainties in path parameters
 --------------------------------
