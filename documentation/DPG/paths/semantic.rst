@@ -68,7 +68,7 @@ Here are all the criteria available to the ``find_path`` and
 ``tag``
     This criterion takes a string or an anonymous array of strings and
     requires that the returned path contain the atoms which have this
-    (these) tags. The tag is the optional fifth column in a feff.inp
+    (these) tags. The tag is the optional fifth column in a :file:`feff.inp`
     file written by Demeter's Atoms. This criterion requires that the
     tags are lexically equal. See the tagmatch criterion for matching
     tags in the sense of regular expressions.
@@ -76,7 +76,7 @@ Here are all the criteria available to the ``find_path`` and
     This criterion takes a string or an anonymous array of strings and
     requires that the returned path contain the atoms which have tags
     matching the arguments of this criterion. The tag is the optional
-    fifth column in a feff.inp file written by Demeter's Atoms. This
+    fifth column in a :file:`feff.inp` file written by Demeter's Atoms. This
     criterion requires that the tags match in the sense of regular
     expressions. See the tag criterion for requiring that tags be
     lexically equal.
