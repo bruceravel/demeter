@@ -6,8 +6,8 @@
 		      
 --------------
 
-:demeter:`demeter` is copyright |copy| 2009-2015 Bruce Ravel |ndash| This document is
-copyright |copy| 2015 Bruce Ravel
+:demeter:`demeter` is copyright |copy| 2009-2016 Bruce Ravel |ndash| This document is
+copyright |copy| 2016 Bruce Ravel
 
 .. :mark:`somerights,.`
 
