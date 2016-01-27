@@ -14,6 +14,8 @@
      bringing this to my attention)
    - Fixed missing columns from mu(E) and norm(E) output files for
      XANES data (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012912.html][Jeff Catalano]])
+   - Fixed a problem with selections in data summer being unset in
+     certain situations (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008429.html][Ian Godrey]])
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab

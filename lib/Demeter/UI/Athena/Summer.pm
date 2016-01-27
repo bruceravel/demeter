@@ -91,7 +91,9 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   foreach my $i (1 .. $this->{n}) {
+    my $save = $this->{'standard'.$i}->GetStringSelection;
     $this->{'standard'.$i}->fill($::app, 0, 0);
+    $this->{'standard'.$i}->SetStringSelection($save);
   };
 };
 
