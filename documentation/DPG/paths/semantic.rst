@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Semantic path descriptions
 ==========================
@@ -36,6 +40,14 @@ from the scatterer. The following snippet of code imports a :demeter:`feff`
 calculation from its serialization file and finds the path meeting that
 description:
 
+.. code-block:: perl
+
+      my $feff = Demeter::Feff->new(yaml=>'myfeff.yaml', workspace=>'mycalc');
+      my $this_sp = $feff->find_path(gt => 3, lt=>4, tag=>['Al']);
+      my $path = Demeter::Path -> new(feff => $feff,
+                                      sp   => $this_sp,
+                                     ); 
+
 The ``find_path`` method examines all the paths in a Feff objects path
 list and compares them against the semantic descriptions given as
 arguments to the method. In this case, the path that gets returned
@@ -68,7 +80,7 @@ Here are all the criteria available to the ``find_path`` and
 ``tag``
     This criterion takes a string or an anonymous array of strings and
     requires that the returned path contain the atoms which have this
-    (these) tags. The tag is the optional fifth column in a feff.inp
+    (these) tags. The tag is the optional fifth column in a :file:`feff.inp`
     file written by Demeter's Atoms. This criterion requires that the
     tags are lexically equal. See the tagmatch criterion for matching
     tags in the sense of regular expressions.
@@ -76,7 +88,7 @@ Here are all the criteria available to the ``find_path`` and
     This criterion takes a string or an anonymous array of strings and
     requires that the returned path contain the atoms which have tags
     matching the arguments of this criterion. The tag is the optional
-    fifth column in a feff.inp file written by Demeter's Atoms. This
+    fifth column in a :file:`feff.inp` file written by Demeter's Atoms. This
     criterion requires that the tags match in the sense of regular
     expressions. See the tag criterion for requiring that tags be
     lexically equal.
@@ -101,6 +113,10 @@ when any of the list valued criteria are used.
 Here is an example of using the ``find_all_paths`` method to find all
 single scattering paths in a :demeter:`feff` calculcation which are
 shorter than 6 |AA|.
+
+.. code-block:: perl
+
+  my @list = $feff->find_all_paths( lt=>6, nleg=>2 );
 
 For more details, see the Demeter::Feff::Paths documentation.
 

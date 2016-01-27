@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Config object
 =============
@@ -18,10 +22,17 @@ program, the ``co`` method is a method of the base class and is
 inherited by all :demeter:`demeter` objects. Thus, given any object,
 you can :quoted:`find` the Config object like so:
 
+.. code-block:: perl
+
+   $the_config_object = $any_object -> co;
+
 Any method of the plot object is easily called by chaining with the
 ``co`` method. For example to get the configured default value for the
 ``bkg_rbkg`` attribute of the Data object, you do this
 
+.. code-block:: perl
+
+   $any_object -> po -> default('bkg', 'rbkg'); 
 
 The configuration file format
 -----------------------------

@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 .. role:: guess
 .. role:: def
@@ -34,7 +38,7 @@ evaluated by :demeter:`ifeffit`.
 
 ``gds``, ``name``, and ``mathexp`` are normal attributes of the GDS
 object and can be treated like attributes of any object. So, for
-instance, if you wish to change the starting valule of the ``deltar``
+instance, if you wish to change the starting value of the ``deltar``
 parameter, you can do like so:
 
 .. code-block:: perl
@@ -57,28 +61,30 @@ Simplified interface
 
 Although the syntax for the GDS object is identical to the syntax for
 all other :demeter:`demeter` objects, it seems somehow more cumbersome
-in this case |nd| particularly for anyone who goes back to the good ol'
-days of writing :file:`feffit.inp` files. As a bit of syntactic sugar,
-the :demeter:`demeter` base class offers a method that takes a
-character string as its sole argument. That character string is parsed
-the same way as a parameter definition in a :file:`feffit.inp` file.
+in this case |nd| particularly for anyone who goes back to the good
+ol' days of writing :file:`feffit.inp` files.  As a bit of syntactic
+sugar, the :demeter:`demeter` base class offers a method that takes a
+character string as its sole argument.  That character string is
+parsed the same way as a parameter definition in a :file:`feffit.inp`
+file.
 
 .. code-block:: perl
 
       my $new_param = $any_object->simpleGDS('guess deltar = 0.0'); 
 
-The ``simpleGDS`` simply parses the string and uses that to create a GDS
-object, which it then returns. The normal and simple syntax can be used
-interchangeably and for all GDS types. They are completely equivalent.
+The ``simpleGDS`` simply parses the string and uses that to create a
+GDS object, which it then returns. The normal and simple syntax can be
+used interchangeably and for all GDS types.  They are completely
+equivalent.
 
 
 Parameter types
 ---------------
 
 There are 9 types of GDS parameters, that is, 9 possible values for
-the ``gds`` attribute. Several of these will be familiar to users of
-:demeter:`ifeffit` and :demeter:`artemis`, a few are newly introduced
-by :demeter:`demeter`.
+the ``gds`` attribute.  Three of these will be familiar to users of
+:demeter:`ifeffit` and :demeter:`artemis`, the others are newly
+introduced by :demeter:`demeter`.
 
 :guess:`guess`
     A parameter which is varied in a fit.
@@ -93,50 +99,57 @@ by :demeter:`demeter`.
 
 :lguess:`lguess`
     A locally guessed parameter. In a multiple data set fit, this will
-    be expanded to one :guess:`guess` parameter per data set. See `the section on
-    local guess parameters <../lgcv.html>`__ for more details.
+    be expanded to one :guess:`guess` parameter per data set. See `the
+    section on local guess parameters <../lgcv.html>`__ for more
+    details.
 
 :restrain:`restrain`
-    A restrain parameter is defined in an :demeter:`ifeffit` script as a :def:`def`
-    parameter but is used as a restraint in the call to :demeter:`ifeffit`'s
-    ``feffit`` command. In a multiple data set fit, all restraints are
-    defined in the first call to the ``feffit`` command.
+    A restrain parameter is defined in an :demeter:`ifeffit` script as
+    a :def:`def` parameter but is used as a restraint in the call to
+    :demeter:`ifeffit`'s ``feffit`` command. In a multiple data set
+    fit, all restraints are defined in the first call to the
+    ``feffit`` command.
 
 :skip:`skip`
     A skip is a parameter that is defined but then ignored. Setting a
-    variable to a :skip:`skip` is useful in a GUI as a way of :quoted:`commenting out` a
-    parameter without removing it from the fitting project.
+    variable to a :skip:`skip` is useful in a GUI as a way of
+    :quoted:`commenting out` a parameter without removing it from the
+    fitting project.
 
 :after:`after`
-    This is like a :def:`def` parameter, but is not used in the fitting model
-    and only evaluated when the fit finishes. It is then reported in the
-    log file.
+    This is like a :def:`def` parameter, but is not used in the
+    fitting model and only evaluated when the fit finishes. It is then
+    reported in the log file.
 
 :penalty:`penalty`
-    This is like a :def:`def` parameter, but is used as a user-defined penalty
-    to the `happiness parameter <../fit/happiness.html>`__, which is
-    evaluated at the end of the fit.  *This is not currently implemented.*
+    This is like a :def:`def` parameter, but is used as a user-defined
+    penalty to the `happiness parameter <../fit/happiness.html>`__,
+    which is evaluated at the end of the fit.  *This is not currently
+    implemented.*
 
 :merge:`merge`
     A merge is the type given to a parameter that cannot be
-    unambiguously resolved when two Fit objects are merged into a single
-    Fit object.  A fit cannot proceed until all merge parameters are
-    resolved.  It is unlikely that a variable would ever be declared as a
-    merge by a user, although if a user script makes use of any of
-    :demeter:`demeter`'s (*as yet unimplemented*) project merging features, it will
-    certainly be necessary to resolve a merge parameter by renaming it
-    globally and resetting the ``gds`` attribute.
+    unambiguously resolved when two Fit objects are merged into a
+    single Fit object.  A fit cannot proceed until all merge
+    parameters are resolved.  It is unlikely that a variable would
+    ever be declared as a merge by a user, although if a user script
+    makes use of any of :demeter:`demeter`'s (*as yet unimplemented*)
+    project merging features, it will certainly be necessary to
+    resolve a merge parameter by renaming it globally and resetting
+    the ``gds`` attribute.
 
-.. todo:: :penalty:`penalty` and :merge:`merge` types are currently unimplemented.
+.. todo:: :penalty:`penalty` and :merge:`merge` types are currently
+          unimplemented.
 
 
 Reporting on and annotating GDS parameters
 ------------------------------------------
 
-:demeter:`demeter` provides several ways of examining GDS objects. Along with
-direct examination of the attributes, such as ``bestfit`` and ``error``,
-there are several kinds of textual reports on the state of the GDS
-object and its parameter. This example shows three of these:
+:demeter:`demeter` provides several ways of examining GDS
+objects. Along with direct examination of the attributes, such as
+``bestfit`` and ``error``, there are several kinds of textual reports
+on the state of the GDS object and its parameter. This example shows
+three of these:
 
 .. code-block:: perl
 
@@ -168,8 +181,9 @@ used here, you might annotate the parameter like so:
 
    $amp_param -> note("This parameter represents S_0^2."); 
 
-The ``report`` method is used after a fit to write out parameter results
-to a log file. It looks like this:
+The ``report`` method is used after a fit to write out parameter
+results to a log file. It looks like this, giving the best fit value,
+the uncertainty, and the initial guess in brackets:
 
 ::
 

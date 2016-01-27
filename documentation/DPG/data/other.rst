@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Handling arbitrary data
 =======================
@@ -9,6 +13,10 @@ most bare-bones approach to creating a Data object.
 
 The ``put`` method is used to create a new Data object from two perl
 arrays containg the energy and |mu| (E) data.
+
+.. code-block:: perl
+
+   $data = Demeter::Data -> put(\@energy, \@xmu);
 
 The ``put`` method returns a normal Data object. The two arguments are
 array references containing the data.
@@ -22,7 +30,14 @@ algorithmically.
 You can supply attribute values in the same manner as the ``new`` or
 ``set`` methods.
 
+.. code-block:: perl
+
+   $data = Demeter::Data -> put(\@energy, \@xmu, @args); 
+
 If you are creating a Data object to hold |chi| (k) data rather than
 |mu| (E) data, you must use the additional arguments, as this method
 sets the ``datatype`` attribute to “xmu”.
 
+.. code-block:: perl
+
+   $data = Demeter::Data -> put(\@energy, \@xmu, datatype=>'chi');

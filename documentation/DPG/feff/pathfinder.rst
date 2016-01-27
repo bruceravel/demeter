@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 The path finder
 ===============
@@ -164,6 +168,10 @@ constituent paths.
 
 Resetting the :configparam:`Pathfinder,fuzz` to 0.01 separates those
 two nearly degenerate paths into separate scattering paths.
+
+.. code-block:: perl
+
+  $any_object -> co -> set_default('pathfinder', 'fuzz', 0.01);
 
 ::
 

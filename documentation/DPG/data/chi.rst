@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 |chi| (k) data files
 =====================
@@ -33,6 +37,10 @@ to explicitly identify the data as such. :demeter:`demeter` will
 analyze the contents of the data file and recognize it as |chi| (k)
 data. In the rare case that |chi| (k) data is not recognized as such,
 it can be explicitly specified like so:
+
+.. code-block:: perl
+
+   $data -> datatype('chi');
 
 Note also that data that are imported as |chi| (k) cannot be plotted in
 energy. Attempting to do so will trigger an error and end your program.

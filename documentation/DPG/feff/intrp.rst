@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Path interpretation
 ===================
@@ -73,8 +77,8 @@ degeneracy, the half-path-length, and a textual description of the
 atoms in the path.
 
 The line labeled *I* is the :quoted:`importance` of the path.  This is
-an integer -- 0, 1, or 2 -- which :demeter:`demeter` assigns based on
-some heuristics for the likelihood that the path will contribute
+an integer |nd| 0, 1, or 2 |nd| which :demeter:`demeter` assigns based
+on some heuristics for the likelihood that the path will contribute
 significantly to the fit. The high importance paths with value 2 are
 the single scattering and colinear multiple scattering paths. The mid
 importance paths tend to be short triangles.
@@ -104,6 +108,16 @@ the header or to the importance of the path.
 The anonymous hash option allows you to specify a different set of
 starting and ending tags for the lines in the interpretation. It looks
 like this:
+
+.. code-block:: perl
+
+  my $formatting = {'comment' => $comment_start_tag,
+                    'close'   => $closing_tag,
+                    '1'       => $mid_start_tag,
+                    '2'       => $high_start_tag,
+                    '0'       => $low_start_tag,
+                   };
+  $feff -> intrp($formatting);
 
 The command line ``intrp`` program that comes with :demeter:`demeter`
 colorizes the text on the screen by assigning ANSI color control

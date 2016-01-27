@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Command disposal and command templates
 ======================================
@@ -57,6 +61,11 @@ all objects. It is used all throughout :demeter:`demeter` to get things done and
 available for explicit use in :demeter:`demeter` programs. The syntax is quite
 simple:
 
+.. code-block:: perl
+
+      $any_object -> dispose($text);
+      $any_object -> dispose($text, 'plotting'); 
+
 The first line is used for any data processing command. The second form,
 with the second argument to the method, is used to identify command text
 which is explicitly used to make plots. When using the PGPLOT plotting
@@ -75,6 +84,10 @@ The targets of the ``dispose`` method are set using the ``set_mode``
 method, another method of the base class which is inherited by all
 objects. The syntax of ``set_mode`` is consistent with other methods in
 :demeter:`demeter`:
+
+.. code-block:: perl
+
+   $any_object -> set_mode(screen=>1, backend=>1);
 
 Any command can be sent to multiple targets. The disposal targets which
 can be set using ``set_mode`` are:

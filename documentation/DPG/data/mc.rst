@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Multichannel data files
 =======================
@@ -27,7 +31,6 @@ Data object. Once all the channels are imported, they are plotted in
 energy for direct comparison.
 
 .. code-block:: perl
-
 
     #!/usr/bin/perl
     use Demeter;
@@ -66,6 +69,11 @@ way to Data objects created in other ways.
 
 Of course, another option is to use a normal Data object to import MED
 data and do the summation on the fly, like so
+
+.. code-block:: perl
+
+      $data = Demeter::Data->new(numerator   => '$4+$5+$6+$7', denominator => '$2',
+                                 ln          => 0,             name        => 'MED data' ); 
 
 The performance penalty discussed above wouold not be a problem for the
 on-the-fly summation. However, importing each individual channel into

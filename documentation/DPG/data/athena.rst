@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Athena project files
 ====================
@@ -21,7 +25,6 @@ object from that record.
 
 .. code-block:: perl
 
-
     #!/usr/bin/perl
     use Demeter;
 
@@ -31,6 +34,10 @@ object from that record.
 
 The ``$data`` scalar contains a Data object. Internally, the ``record``
 method does the following
+
+.. code-block:: perl
+
+   $data = Demeter::Data->new();
 
 setting attributes appropriately and pushing the associated data arrays
 into :demeter:`ifeffit`.
@@ -57,7 +64,6 @@ You can import all records easily using the ``slurp`` method.
 
 .. code-block:: perl
 
-
     #!/usr/bin/perl
     use Demeter;
 
@@ -73,8 +79,29 @@ You can query an :demeter:`athena` project file for its content in several ways.
 obtain a listing of contents of the project file, use the ``list``
 method.
 
+.. code-block:: perl
+
+  print $prj -> list;
+     ## ==prints==>
+     #  #     record
+     #  # -------------------------------------------
+     #    1 : Iron foil
+     #    2 : Iron oxide
+     #    3 : Iron sulfide
+
 To create a simple table of parameter values, supply a list of attribute
 names to the ``list`` method.
+
+.. code-block:: perl
+
+
+  print $prj -> list(qw(bkg_rbkg fft_kmin));
+    ## ==prints==>
+    #  #     record         bkg_rbkg   fft_kmin
+    #  # -------------------------------------------
+    #    1 : Iron foil      1.6        2.0
+    #    2 : Iron oxide     1.0        2.0
+    #    3 : Iron sulfide   1.0        3.0
 
 The ``list`` method is used extensively by the ``lsprj`` program, which
 is distributed with :demeter:`demeter`.

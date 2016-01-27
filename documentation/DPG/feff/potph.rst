@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Computng potentials
 ===================
@@ -36,8 +40,8 @@ of R in the EXAFS equation.
 At this time, there is not an obvious mechanism in :demeter:`demeter`
 to close this loop in the situation where the potentials need to be
 recalculated. That is, there are no tools for rewriting the atoms list
-in feff.inp based on changes in inter-atomic distance uncovered in a
-fit.
+in :file:`feff.inp` based on changes in inter-atomic distance
+uncovered in a fit.
 
 .. todo:: Track geometric parameters from :demeter:`atoms` to every
 	  site in the :demeter:`feff` input file. Then provide tools

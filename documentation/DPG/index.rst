@@ -41,3 +41,6 @@ Demeter Programmer's Guide: Middleware for Feff and Ifeffit
    feff/index.rst
    paths/index.rst
    gds.rst
+   fit/index.rst
+   perl.rst
+   lgcv.rst
