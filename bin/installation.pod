@@ -122,7 +122,8 @@ which uses L<sudo|http://en.wikipedia.org/wiki/Sudo>.  If your
 machine does not use C<sudo>, then replace C<sudo> with C<su -s> in
 the instructions that follow.
 
-In a section below (see L<"Installing Demeter without root privileges">)
+In a section below
+(see L<Installing Demeter without root privileges>)
 instructions are given for installation without root privileges.  All
 the instructions are the same, once you do an additional preparatory
 step.
