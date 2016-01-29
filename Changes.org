@@ -35,6 +35,7 @@
      [[https://github.com/bruceravel/demeter/issues/25][@roentgenium]])
    - Explicitly set SIGALRM in several more places, which is helpful
      for command line scripts
+   - Remove t/t symlink.  See #26. (thanks to @dkriegner)
 
 *** Documentation
    - Fixed a misstatement in the Athena document about the order of

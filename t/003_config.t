@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 24;
+use Test::More tests => 23;
 
 use File::Basename;
 use File::Spec;
@@ -25,7 +25,7 @@ my $here  = dirname($0);
 
 my @plugins = qw(10bmmultichannel x23a2med);
 my $plregex = join("|", @plugins);
-my $number_of_groups = 37;
+my $number_of_groups = 38;
 
 use Demeter qw(:none);
 
@@ -60,7 +60,8 @@ ok( $demeter2->co->get("var2") eq 'foo',          'wrote and read an arbitrary c
 my @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
 ok( ($groups[1] eq 'artemis' and $#groups == $number_of_groups), 'configuration system introspection works: groups '.$#groups.' '.$groups[1]);
 my $groups = $demeter->co->main_groups;
-ok( ($#{$groups} == $number_of_groups),                          'configuration system introspection works: main_groups '.$#groups);
+## includes 3 plugin groups
+ok( ($#{$groups} == $number_of_groups+2),                        'configuration system introspection works: main_groups');
 
 my @parameters = $demeter->co->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 13),  'configuration system introspection works: group parameters');
@@ -73,7 +74,6 @@ ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real f
 @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
 ok( ($#groups == $number_of_groups+1),                           'introspection after reading new group: groups');
 $groups = $demeter->co->main_groups;
-ok( ($#{$groups} == $number_of_groups),                          'introspection after reading new group: main_groups');
 
 #my $first = $demeter->co;
 #my $new = Demeter::Config->new('Demeter::Config');
