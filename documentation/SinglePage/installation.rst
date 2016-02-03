@@ -206,7 +206,7 @@ Build DEMETER and its dependencies
 
     Sometimes, a few of these fail.  This is not a disaster.  In most
     cases, the problem can be dispatched easily.  See `this post
-    <http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/012608.html>`_
+    <http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/008086.html>`_
     to the :demeter:`ifeffit` Mailing List about some strategies for
     dealing with failed builds of dependencies.
 
@@ -220,7 +220,7 @@ Build DEMETER and its dependencies
 
     If you cannot use a package and you are unable to build
     L<PDL::Stats>, as `discussed in this mailing list thread
-    <http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html>`_,
+    <http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/008158.html>`_,
     do the following:
 
     #. Download PDL::Stats from https://metacpan.org/pod/PDL::Stats
@@ -319,7 +319,7 @@ Prior to Step 3a, go to https://metacpan.org/module/local::lib and
 download the latest version of the :quoted:`local::lib` module.
 Unpack it and cd into the newly created directory.  (`See this mailing
 list post
-<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2014-June/011828.html>`_
+<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2014-June/007306.html>`_
 for an explanation of why you want to use :quoted:`local::lib`.)
 
 Do
