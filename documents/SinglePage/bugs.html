@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reporting bugs in Demeter &mdash; Miscellaneous Demeter  documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Miscellaneous Demeter  documentation" href="index.html" />
+    <link rel="next" title="Asking questions, soliciting help" href="help.html" />
+    <link rel="prev" title="Demeter: Miscellaneous documents" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="help.html" title="Asking questions, soliciting help"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Demeter: Miscellaneous documents"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="reporting-bugs-in-demeter">
+<h1>Reporting bugs in Demeter<a class="headerlink" href="#reporting-bugs-in-demeter" title="Permalink to this headline">¶</a></h1>
+<p>All software has bugs.  <em>This</em> software certainly has bugs.  This
+document explains how to report problems with the software
+effectively.  In this context “effectively” means in a manner
+such that Bruce (that's me!) is likely to understand the problem and,
+therefore, likely to fix it promptly.</p>
+<div class="section" id="the-2-rules-of-good-bug-reporting">
+<h2>The 2 rules of good bug reporting<a class="headerlink" href="#the-2-rules-of-good-bug-reporting" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Use the <a class="reference external" href="http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit">Ifeffit mailing list</a>.  The
+mailing list is always the appropriate place to report problems with
+the software.</li>
+<li>Provide enough information that your problem can be reproduced by
+someone else.  That may mean providing the data or project file that
+triggers the problem.  That may mean explaining step-by-step how to
+arrive at the problem.  That may mean taking a screenshot to
+demonstrate the appearance of the problem.  In any case, be
+explicit, be concise, and be precise.</li>
+</ol>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">If a problem cannot be reproduced on my computer, I
+cannot possibly solve it.</p>
+</div>
+<p>There are good reasons to use the mailing list:</p>
+<ul class="simple">
+<li>I read and respond to questions on the mailing list.  So do many
+other people, any whom may be able to help you with your problem.</li>
+<li>The problem and – hopefully – it's solution will be archived.
+That means that someone else having the same problem might find that
+solution.</li>
+</ul>
+<p>The corollaries to those two rules are</p>
+<ol class="arabic simple">
+<li>Don't send email directly to me.</li>
+<li>Don't be vague.</li>
+</ol>
+<p>If you send mail directly to me, the likely response will be to ask
+you to use the mailing list.  If you are vague, the likely response
+will be to ask you for more information.  If you send vague mail
+directly to me, you may be ignored outright.</p>
+</div>
+<div class="section" id="capturing-error-messages">
+<h2>Capturing error messages<a class="headerlink" href="#capturing-error-messages" title="Permalink to this headline">¶</a></h2>
+<p>When <font size=-1 color="#8C4112">DEMETER</font> runs into a problem, it usually emits error
+messages that are useful for understanding the cause of the bug.  Even
+when <font size=-1 color="#8C4112">ATHENA</font> or <font size=-1 color="#8C4112">ARTEMIS</font> crashes hard, some useful
+information is usually provided.</p>
+<p>A good bug report will include this information.  Don't edit this
+information, regardless of how cryptic or repetitive it may seem.</p>
+<p><strong>Windows</strong></p>
+<blockquote>
+<div><p>Each of the GUI programs (<font size=-1 color="#8C4112">ATHENA</font>, <font size=-1 color="#8C4112">ARTEMIS</font>,
+and <font size=-1 color="#8C4112">HEPHAESTUS</font>) writes its output messages to a log
+file.  This log file is in the <code class="file docutils literal"><span class="pre">%APPDATA%\demeter</span></code> folder.
+On Windows 7, <code class="docutils literal"><span class="pre">%APPDATA%</span></code> is typically</p>
+<div class="highlight-python"><div class="highlight"><pre>C:\Users\&lt;username&gt;\AppData\Roaming\
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">&lt;username&gt;</span></code> is <em>your</em> login name.  For me, this ends up
+being <code class="file docutils literal"><span class="pre">C:\Users\bravel\AppData\Roaming\</span></code>.  On Windows XP and
+Vista, <code class="docutils literal"><span class="pre">%APPDATA%</span></code> is typically</p>
+<div class="highlight-python"><div class="highlight"><pre>C:\Documents and Settings\&lt;username&gt;\Application Data\
+</pre></div>
+</div>
+<p>This folder may normally be <a class="reference external" href="http://www.blogtechnika.com/how-to-hide-files-and-folders-and-access-them-in-windows-7">hidden from view</a>.</p>
+<p>Each program writes its own log file.  <font size=-1 color="#8C4112">ATHENA</font>'s log file
+is <code class="file docutils literal"><span class="pre">%APPDATA%\demeter\dathena.log</span></code> and so on.</p>
+<p>This log file should be included in any bug report.</p>
+<p>Please note that this log file is overwritten <em>every</em> time you fire
+up the associated program.  When reporting a bug, be sure to use
+the log file you find <em>immediately</em> after encountering your problem
+and before you relaunch the program.</p>
+</div></blockquote>
+<p><strong>Linux or other Unix systems</strong></p>
+<blockquote>
+<div><p>On Linux and other Unixes, the GUI programs do not record log files
+as described above.  Top capture the error message, you should
+start the program from the command line.  <font size=-1 color="#8C4112">ATHENA</font> is
+started by typing the command <strong class="command">dathena</strong>,
+<font size=-1 color="#8C4112">ARTEMIS</font> by typing <strong class="command">dartemis</strong> and so on.  When
+the bug is encountered, the error messages will be written to the
+screen.  These can be copied and pasted into an email message.</p>
+<p>Alternatively, you can use the
+<a class="reference external" href="http://www.gnu.org/software/coreutils/manual/coreutils.html#tee-invocation">tee</a>
+program to record the error messages.  Here is an example:</p>
+<div class="highlight-python"><div class="highlight"><pre>dathena | tee screen_messages.txt
+</pre></div>
+</div>
+<p>The file <code class="file docutils literal"><span class="pre">screen_messages.txt</span></code> can then be appended to an
+email message.</p>
+</div></blockquote>
+</div>
+<div class="section" id="the-dos-of-reporting-bugs">
+<h2>The DOs of reporting bugs<a class="headerlink" href="#the-dos-of-reporting-bugs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>DO</strong> try downloading the latest version of the software.  Your
+problem may already be solved.</li>
+<li><strong>DO</strong> subscribe to the <a class="reference external" href="http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit">Ifeffit mailing list</a> and
+<strong>DO</strong> try asking your question there.  Your problem may have been
+discussed there or it may be of interest to other users.</li>
+<li><strong>DO</strong> say which program and which version number you are using.</li>
+<li><strong>DO</strong> say what operating system you are using.</li>
+<li><strong>DO</strong> provide the crystallographic data and a literature reference
+to the crystallographic data when reporting a problem with
+<font size=-1 color="#8C4112">ATOMS</font>.</li>
+<li><strong>DO</strong> explain clearly and concisely how to replicate the problem.</li>
+<li><strong>DO</strong> send a project file that demonstrates a problem with
+<font size=-1 color="#8C4112">ATHENA</font>, or <font size=-1 color="#8C4112">ARTEMIS</font>.  For a problem with
+<font size=-1 color="#8C4112">ATHENA</font>, you may also need to send raw data.</li>
+<li><strong>DO</strong> send a screenshot of the program in action if that helps
+explain the problem. PNG is usually the best choice for a
+screenshot.  GIF is good also.  JPG and PDF are ok.  TIF sucks.
+Attach this image file to your mail message directly and <strong>DON'T</strong>
+embed it in a Word or PowerPoint file before attaching it.  Really,
+<strong>DON'T</strong> send me a Word or PowerPoint file that consists of a
+single image.  I frickin' <em>hate</em> that.</li>
+<li><strong>DO</strong> send any output files that help explain the problem.  Bugs
+reports about <font size=-1 color="#8C4112">ATOMS</font> almost always require the faulty
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file.</li>
+<li><strong>DO</strong> use compressed archives if you must send large numbers of
+files.  <code class="file docutils literal"><span class="pre">.zip</span></code>, <code class="file docutils literal"><span class="pre">.tar.gz</span></code>, or <code class="file docutils literal"><span class="pre">.tar.bz2</span></code> are all
+acceptable formats for compressed archiving.</li>
+<li><strong>DO</strong> send a follow-up email if a lot of time has passed without a
+response.  I may be on travel or may have set your prior email aside
+and forgotten to return to it (which would explain but not justify a
+period of silence).  I take bug reports very seriously, but
+sometimes I needs a reminder.</li>
+</ul>
+</div>
+<div class="section" id="the-don-ts-of-reporting-bugs">
+<h2>The DON'Ts of reporting bugs<a class="headerlink" href="#the-don-ts-of-reporting-bugs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>DON'T</strong> ask questions about compiling <font size=-1 color="#8C4112">FEFF8</font> or
+<font size=-1 color="#8C4112">FEFF9</font>. The only version of <font size=-1 color="#8C4112">FEFF</font> that I support
+at that level is the version of <font size=-1 color="#8C4112">FEFF6</font> that comes with
+<font size=-1 color="#8C4112">IFEFFIT</font>.  For questions about <font size=-1 color="#8C4112">FEFF8</font> or
+<font size=-1 color="#8C4112">FEFF9</font>, contact someone from the <font size=-1 color="#8C4112">FEFF</font> project.</li>
+<li><strong>DON'T</strong> send any information in the form of a Word or PowerPoint
+document.  It is exceedingly rare that the information conveyed in a
+bug report requires formatting capabilities that exist in a word
+processor and that don't exist in plain text email.  RTF,
+LibreOffice, and the like are not an improvement on Word for the
+purpose of reporting a bug.  Indeed, there are situations where
+using a word processor makes it harder for me to troubleshoot the
+problem. For example, if I ask you to cut and paste some text
+displayed by one of the programs, a word processor will change where
+lines are broken in a way that is confusing for me.  On Windows, use
+NotePad rather than Word for such things.</li>
+<li><strong>DON'T</strong> assume that others use the same email program as you.
+Specifically <strong>DON'T</strong> rely upon colored text or fonts in the email
+message to convey information – your email may not display the
+same for me as it does for you.</li>
+<li><strong>DON'T</strong> send large files (other than the suggestions above) that have
+not been requested.  If a large file is needed to understand the
+problem, you will be asked for it in a follow-up email.</li>
+<li><strong>DON'T</strong> ever send anything by fax.  <strong>DON'T</strong> ever send anything by
+normal post or overnight express.  It <em>is</em> the 21st century, after all!</li>
+<li><strong>DON'T</strong> send every file from a <font size=-1 color="#8C4112">FEFF</font> run!  It is usually
+sufficient to send just the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file.  If other files
+are needed from the <font size=-1 color="#8C4112">FEFF</font> run, you will be asked for them
+in a follow-up email.</li>
+</ul>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Reporting bugs in Demeter</a><ul>
+<li><a class="reference internal" href="#the-2-rules-of-good-bug-reporting">The 2 rules of good bug reporting</a></li>
+<li><a class="reference internal" href="#capturing-error-messages">Capturing error messages</a></li>
+<li><a class="reference internal" href="#the-dos-of-reporting-bugs">The DOs of reporting bugs</a></li>
+<li><a class="reference internal" href="#the-don-ts-of-reporting-bugs">The DON'Ts of reporting bugs</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b></b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bugs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="help.html" title="Asking questions, soliciting help"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Demeter: Miscellaneous documents"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing Demeter from packages: Windows, Mac, Linux &mdash; Miscellaneous Demeter  documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Miscellaneous Demeter  documentation" href="index.html" />
+    <link rel="next" title="Additional notes on installing the MacPorts package" href="macports.html" />
+    <link rel="prev" title="Making contributions to the Demeter project" href="contribute.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="macports.html" title="Additional notes on installing the MacPorts package"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="contribute.html" title="Making contributions to the Demeter project"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-demeter-from-packages-windows-mac-linux">
+<h1>Installing Demeter from packages: Windows, Mac, Linux<a class="headerlink" href="#installing-demeter-from-packages-windows-mac-linux" title="Permalink to this headline">¶</a></h1>
+<p>If you run into problems, use <a class="reference external" href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">The Ifeffit mailing list</a>.  Be as
+explicit as possible about the nature of the problem and remember that
+saying “This is my problem and this what I've tried so far to
+fix it” is much more valuable than just “This is my problem.”.</p>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>Most people installing Demeter on a Windows machine will want to use
+the installer and updater packages.  The latest packages can be <a class="reference external" href="http://bruceravel.github.io/demeter#windows">found
+here</a>.</p>
+<p>Download, double click, answer a few questions.  It's that simple.</p>
+<p>There is <strong>not</strong> an automated updater for the software.  You must
+download the updater and install it yourself.</p>
+</div>
+<div class="section" id="macintosh-osx">
+<h2>Macintosh OSX<a class="headerlink" href="#macintosh-osx" title="Permalink to this headline">¶</a></h2>
+<p>Frank Schima and Joe Fowler have performed yeoman's duty by making
+Demeter and its tool chain available on <a class="reference external" href="http://www.macports.org/">MacPorts</a>.</p>
+<p>The Macintosh package uses <a class="reference external" href="http://www.macports.org/">MacPorts</a> and
+may lag a bit behind the <font size=-1 color="#8C4112">DEMETER</font> source code.</p>
+<ol class="arabic">
+<li><p class="first"><strong>Carefully</strong> follow the steps to install Macports at
+<a class="reference external" href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>.</p>
+</li>
+<li><p class="first">Open a new Terminal window and type the following:</p>
+<div class="highlight-python"><div class="highlight"><pre> sudo port install xorg-server demeter
+
+It will take a while depending on your computer and network speed.
+</pre></div>
+</div>
+</li>
+<li><p class="first">If this is your first time installing <code class="docutils literal"><span class="pre">xorg-server</span></code>, log out and
+log back in. This is needed to set the <code class="docutils literal"><span class="pre">DISPLAY</span></code> environment
+variable.</p>
+</li>
+<li><p class="first">If you have recently upgraded to a new version of the Mac
+operating system, you must re-install all of MacPorts for the new
+OS. There is no shortcut.</p>
+</li>
+</ol>
+<p>When installation of MacPorts is done, launch <font size=-1 color="#8C4112">ATHENA</font> by
+typing the following in Terminal:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">athena</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>..Note:: Make sure you are in a directory you have write permission to</dt>
+<dd>(like your home directory) because hidden files are created at
+launch time.</dd>
+</dl>
+<p>To update a previously installed version of Demeter to the latest,
+open a Terminal window and do</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port selfupdate &amp;&amp; sudo port upgrade demeter
+</pre></div>
+</div>
+<p>If you are not using a system-wide MacPorts installation, running
+commands as sudo is not necessary.</p>
+<p><a class="reference external" href="mac.rst">Laila Al-Madhagi's hints for successfully installing on the Mac.</a></p>
+</div>
+<div class="section" id="windows-under-emulation-on-the-macintosh">
+<h2>Windows under emulation on the Macintosh<a class="headerlink" href="#windows-under-emulation-on-the-macintosh" title="Permalink to this headline">¶</a></h2>
+<p>The Windows installer can be used under emulation.</p>
+<p>While there is not yet a native Mac OS installer for Demeter, it can
+be run under Windows using the <a class="reference external" href="http://www.parallels.com/">Parallels virtual environment</a>. This has been tested using Windows XP
+in Parallels 6 running under Snow Leopard, but should also work under
+other configurations.  There are two
+special notes for installation:</p>
+<ol class="arabic simple">
+<li>Copy the .exe installer file to the Windows virtual disk, and
+launch the installer from there.</li>
+<li>When prompted, choose a location on the Windows virtual disk to
+install Strawberry Perl.</li>
+</ol>
+<p>Other than that, the software should be able to run normally. For
+example, you can write and read data files from your Mac OS X disk, if
+you so choose.</p>
+</div>
+<div class="section" id="debian-based-or-other-linux-distributions">
+<h2>Debian-based or other Linux distributions<a class="headerlink" href="#debian-based-or-other-linux-distributions" title="Permalink to this headline">¶</a></h2>
+<p>There are no Linux packages yet available because no one has yet
+volunteered to do this work.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing Demeter from packages: Windows, Mac, Linux</a><ul>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#macintosh-osx">Macintosh OSX</a></li>
+<li><a class="reference internal" href="#windows-under-emulation-on-the-macintosh">Windows under emulation on the Macintosh</a></li>
+<li><a class="reference internal" href="#debian-based-or-other-linux-distributions">Debian-based or other Linux distributions</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b></b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/packages.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="macports.html" title="Additional notes on installing the MacPorts package"
+             >next</a></li>
+        <li class="right" >
+          <a href="contribute.html" title="Making contributions to the Demeter project"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

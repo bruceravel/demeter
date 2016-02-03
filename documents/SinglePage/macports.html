@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Additional notes on installing the MacPorts package &mdash; Miscellaneous Demeter  documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Miscellaneous Demeter  documentation" href="index.html" />
+    <link rel="next" title="Installing Demeter from source code" href="installation.html" />
+    <link rel="prev" title="Installing Demeter from packages: Windows, Mac, Linux" href="packages.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="installation.html" title="Installing Demeter from source code"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  
+<br clear="all">
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Laila Al-Madhagi contributed the following notes gathered during an
+installation of the <font size=-1 color="#8C4112">DEMETER</font> package for MacPorts.</p>
+</div>
+<div class="section" id="additional-notes-on-installing-the-macports-package">
+<h1>Additional notes on installing the MacPorts package<a class="headerlink" href="#additional-notes-on-installing-the-macports-package" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p class="first">Install Xcode and Xcode Command Line Tools: If using the latest
+operating system, then you will find Xcode in the “App
+Store”. If using an older operating system, you will find Xcode and
+the Command Line Tools from the <a class="reference external" href="https://developer.apple.com/">Mac Developer</a> website</p>
+</li>
+<li><p class="first">Open <strong class="program">Terminal</strong> and agree to Xcode license by typing</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">xcodebuild</span> <span class="o">--</span><span class="n">licence</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install MacPorts for your version of Mac OS X from MacPorts website</p>
+</li>
+<li><p class="first">Open <strong class="program">Terminal</strong> and type in:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port install xorg-server demeter
+</pre></div>
+</div>
+<p>My operating system is El Capitan (Mac OS X 10.11.1) and it took me
+a long time to install <font size=-1 color="#8C4112">DEMETER</font> because MacPorts
+automated builder for El Capitan was not ready at the time of
+installation; hence, it took longer time to install Demeter.</p>
+</li>
+<li><p class="first">Launch <font size=-1 color="#8C4112">ATHENA</font> by typing <code class="docutils literal"><span class="pre">Athena</span></code> in
+<strong class="program">Terminal</strong>. Do the same for <font size=-1 color="#8C4112">ARTEMIS</font> and
+<font size=-1 color="#8C4112">HEPHAESTUS</font></p>
+</li>
+</ol>
+<div class="section" id="problems-during-installation">
+<h2>Problems during installation<a class="headerlink" href="#problems-during-installation" title="Permalink to this headline">¶</a></h2>
+<p>“No destroot found”</p>
+<blockquote>
+<div><p>caused when installing a port (e.g. <code class="file docutils literal"><span class="pre">libpixman</span></code>) fails and
+an error message of “no destroot found” occur. What you need to
+do is to clean the affected port and try again (example below is
+for libpixman port)</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port clean libpixman
+</pre></div>
+</div>
+<p>Then</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port install xorg-server demeter
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="problems-after-installation">
+<h2>Problems after installation<a class="headerlink" href="#problems-after-installation" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">After Launching <font size=-1 color="#8C4112">ATHENA</font> and whenever I tried to import
+data, I got a message saying that I need to install the <code class="docutils literal"><span class="pre">Encoding::</span>
+<span class="pre">FixLatin::XS</span></code> module. So, go to <strong class="program">Terminal</strong> and type</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port install p5.22-encoding-fixlatin-xs
+</pre></div>
+</div>
+<p>At the beginning I could not launch <font size=-1 color="#8C4112">ARTEMIS</font> and I would
+get the following message in <strong class="program">Terminal</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Can’t locate Heap/Fibobacci...
+</pre></div>
+</div>
+<p>So, go to <strong class="program">Terminal</strong> and type</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo port install p5.22-heap
+</pre></div>
+</div>
+</li>
+<li><p class="first">No plot window in Athena: the <font color="#636A24">♦gnuplot→terminal</font> value
+should be <code class="docutils literal"><span class="pre">wxt</span></code>. If no plot window appears, it is because
+<font color="#636A24">♦gnuplot→terminal</font> is not <code class="docutils literal"><span class="pre">wxt</span></code>. Launch
+<font size=-1 color="#8C4112">ATHENA</font>, Open <span class="guilabel">Preferences</span> from
+<font size=-1 color="#8C4112">ATHENA</font>'s main menu. Open <span class="guilabel">gnuplot</span>, choose
+<span class="guilabel">terminal</span>, then set the value to <code class="docutils literal"><span class="pre">wxt</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">aqua</span></code> is another terminal choice that may work, although
+deglitching and the pluck buttons probably won't work with the
+<code class="docutils literal"><span class="pre">aqua</span></code> terminal.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="great-help-from-macports">
+<h2>Great help from Macports<a class="headerlink" href="#great-help-from-macports" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Macports problem hotlist: <a class="reference external" href="https://trac.macports.org/wiki/ProblemHotlist#nodestrootfound">Macports problem hotlist</a></li>
+<li>Remember to browse through the older tickets <a class="reference external" href="https://trac.macports.org/search?portsummarysearch=on">Macports ticket search</a></li>
+<li>File new ticket <a class="reference external" href="https://trac.macports.org/newticket">Macports new ticket</a></li>
+</ul>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
+copyright © 2015 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Additional notes on installing the MacPorts package</a><ul>
+<li><a class="reference internal" href="#problems-during-installation">Problems during installation</a></li>
+<li><a class="reference internal" href="#problems-after-installation">Problems after installation</a></li>
+<li><a class="reference internal" href="#great-help-from-macports">Great help from Macports</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b></b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/macports.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="installation.html" title="Installing Demeter from source code"
+             >next</a></li>
+        <li class="right" >
+          <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
