@@ -1,9 +1,13 @@
 
+.. linebreak::
+
+.. note:: Laila Al-Madhagi contributed the following notes gathered during an
+	  installation of the :demeter:`demeter` package for MacPorts.
+
+
+
 Additional notes on installing the MacPorts package
 ===================================================
-
-Laila Al-Madhagi contributed the following notes gathered during an
-installation of the :demeter:`demeter` package for MacPorts.
 
 
 #. Install Xcode and Xcode Command Line Tools: If using the latest
@@ -87,6 +91,10 @@ Problems after installation
   :demeter:`athena`, Open :guilabel:`Preferences` from
   :demeter:`athena`'s main menu. Open :guilabel:`gnuplot`, choose
   :guilabel:`terminal`, then set the value to ``wxt``.
+
+  ``aqua`` is another terminal choice that may work, although
+  deglitching and the pluck buttons probably won't work with the
+  ``aqua`` terminal.
 
 Great help from Macports
 ------------------------
