@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.3. Geometric parametrization of bond length &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.4. Modeling disorder" href="ss.html" />
+    <link rel="prev" title="15.2. Characteristic value" href="cv.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ss.html" title="15.4. Modeling disorder"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="cv.html" title="15.2. Characteristic value"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="geometric-parametrization-of-bond-length">
+<h1>15.3. Geometric parametrization of bond length<a class="headerlink" href="#geometric-parametrization-of-bond-length" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="volumetric-expansion-coefficient">
+<h2>15.3.1. Volumetric expansion coefficient<a class="headerlink" href="#volumetric-expansion-coefficient" title="Permalink to this headline">¶</a></h2>
+<p>FeS<sub>2</sub> is a cubic crystal. Here is the crystal data</p>
+<div class="highlight-python"><div class="highlight"><pre>title name:     Iron sulfide (pyrite)
+title formula:  FeS_2
+title refer1:   Elliot (1960) J.Chem. Phys. 33(3), 903.
+space  P a 3
+a    = 5.404
+rmax = 9.00     rpath = 6.00
+core = Fe
+atoms
+  Fe     0.00000   0.00000   0.00000  Fe
+  S      0.38400   0.38400   0.38400  S
+</pre></div>
+</div>
+<p>In this case, there are only two parameters that determine the locations
+of all the atoms in the cluster – the lattice constant <code class="docutils literal"><span class="pre">a</span></code> and the
+position of the S atom in the unit cell. For now, we'll neglect the
+effect of the position of the S atom.</p>
+<p>In the <a class="reference external" href="../examples/fes2.html">FeS2 worked example</a>, a
+parameterization was used which related ΔR for all the paths to a
+volumetric expansion coefficient, ΔR=|alpha| ·R<sub>eff</sub>. Why does this
+work?</p>
+<p>The distance d<sub>eff</sub> between any two atoms in a cubic crystal is
+some geometrical factor multiplied by the lattice constant. That factor
+depends on the positions of the atoms in the unit cell, but is a pure
+number.</p>
+<p>Thus, from the <font size=-1 color="#8C4112">FEFF</font> calculation, d<sub>eff</sub>(i, j) =
+c<sub>i,j</sub>· a<sub>0</sub> for any two atoms i and j. For any two pairs
+of atoms, c<sub>i,j</sub> is a different number, but the distances between
+all pairs of atoms are related by simple geometry and the value of the
+lattice constant.</p>
+<p>We consider an isotropic expansion (or contraction, if α  is negative) of
+the unit, which is reasonable for a cubic lattice that does not undergo
+a phase transition. So a = (1 + α) · a<sub>0</sub>.</p>
+<p>The distance between any two atoms, after accounting for the isotropic
+expansion (or contraction) is</p>
+<ul class="simple">
+<li>d<sub>i,j</sub> = d<sub>eff</sub>(i,j) + Δd(i,j)</li>
+<li>d<sub>i,j</sub> = c<sub>i,j</sub> ·  a</li>
+<li>d<sub>i,j</sub> = c<sub>i,j</sub> ·  (1+|alpha| )|cdot| a:sub:<cite>0</cite></li>
+<li>d<sub>i,j</sub> = c<sub>i,j</sub>· a<sub>0</sub> + c<sub>i,j</sub>· α · a<sub>0</sub></li>
+<li>∴ Δd(i,j) = c<sub>i,j</sub>· α · a<sub>0</sub></li>
+<li>and Δd(i,j) = α · d<sub>eff</sub>(i,j)</li>
+</ul>
+<p>The expression α · d<sub>eff</sub> works for all legs of any
+SS or MS path in a cubic crystal (assuming that there are no internal
+degrees of freedom, like the parameter for the position of the S atom
+in ). The length of a path, then, is the sum of the length of each
+leg. ΔR for a path is the sum of Δd for each leg. The
+sum of the d<sub>eff</sub> values is R<sub>eff</sub>, thus ΔR= α · R<sub>eff</sub>.</p>
+<p>While this trick is only valid for a cubic crystal, it does ilustrate
+two important points about <font size=-1 color="#8C4112">ARTEMIS</font>. First, it is an example
+of an interesting math expression relating a path's ΔR value to
+a fitting parameter. The ΔR of the path is not itself a
+variable of the fit, rather it is written in terms of α, which
+is a variable of the fit.</p>
+<p>Second, it is an example of a constraint which uses the information
+content of the data very well. We can include any number of paths with
+introducing new parameters for their ΔR values. α is a
+robust fitting parameter in the sense that every path is involved in
+its determination.</p>
+</div>
+<div class="section" id="propagating-crystal-distortion-parameters">
+<h2>15.3.2. Propagating crystal distortion parameters<a class="headerlink" href="#propagating-crystal-distortion-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The room temperature structure of PbTiO<sub>3</sub> is a tetragonal
+modification of the perovskite structure. The c-axis is considerably
+longer than the a-axis. The Pb atoms lie at the corners of the
+tetragonal cell, the Ti atom lies near the center of the cell, and the
+O atoms lie near the centers of the faces.</p>
+<p>In a setting which places the Pb atoms at positions of high symmetry,
+i.e. right on the cell corners, the other atoms are displaced from
+sites of symmetry c-direction. Here is the crystal data:</p>
+<div class="highlight-python"><div class="highlight"><pre>title PbTiO3 25C
+title Glazer and Mabud, Acta Cryst. B34, 1065-1070 (1978)
+core = ti    Space = P 4 m m
+a = 3.905    c = 4.156
+rmax=3.6
+atoms
+! At.type  x        y       z      tag
+   Pb     0.0      0.0     0.0
+   Ti     0.5      0.5     0.539
+   O      0.5      0.5     0.1138  axial
+   O      0.0      0.5     0.6169  planar
+</pre></div>
+</div>
+<p>There are 5 parameters that detrmine the positions of all the atoms in
+the crystal, thus there are 5 parameters that determine the lengths of
+all scattering paths. They are the two lattice constants, the
+z-displacement of the Ti away from z=0, the z-displacement of the
+axial oxygen atom away from z=0.5, and the z-displacement of the
+planar oxygen atom away from z=0.5.</p>
+<p>We set up a set of guess, def, and set parameters to encode this:</p>
+<div class="highlight-python"><div class="highlight"><pre>set   a0     = 3.905
+guess dela   = 0
+def   a      = a0 + dela
+
+set   c0     = 4.156
+guess delc   = 0
+def   c      = c0 + delc
+
+guess dti    = 0.039
+guess doax   = 0.1138
+guess dopl   = 0.1169
+
+after volume = a*a*c
+</pre></div>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-pto"></span><a class="reference external image-reference" href="../_images/pto.png"><img alt="../_images/pto.png" src="../_images/pto.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.14 </span><span class="caption-text">Schematic of the displacement in PbTiO<sub>3</sub>.</span></p>
+</div>
+<p>I have also defined an after parameter which computes the
+volume of the unit cell. While this will not serve a purpose in the
+fitting model, it is useful information to report to the log file.</p>
+<p>A 2-dimensional cut through this distorted perovskite is shown to the
+right. The Pb atoms are above and below this plane, the axial oxygen
+atoms are in line with the titanium atoms. The planar oxygen atoms are
+in a slightly non-collinear, buckled alignment with the Ti atoms.</p>
+<p>The distortions of the Ti and O atoms split the first coordination shell
+into three distance. Along the z-direction, there is a short Ti-O
+distance and long one. In the buckled plane, there are four equivalent
+Ti-O distances.</p>
+<p>Computing these distances requires some simple geometry, with the planar
+distance being just a bit more complicated.</p>
+<div class="highlight-python"><div class="highlight"><pre>def    rtio_sh = (0.5 - (doax-dti)) * c
+def    rtio_lo = (0.5 - (doax+dti)) * c
+
+def    rtio_pl = sqrt( (a/2)^2 + ((dopl+dti)*c)^2 )
+</pre></div>
+</div>
+<p>The second shell Pb atoms are similarly computed using trigonometry and
+the appropriate structural parameters.</p>
+<div class="highlight-python"><div class="highlight"><pre>def    rtipb_sh = sqrt( (a/2)^2 + c^2*(0.5 - dti)^2 )
+def    rtipb_lo = sqrt( (a/2)^2 + c^2*(0.5 + dti)^2 )
+</pre></div>
+</div>
+<p>Finally, the Ti-Ti distances in the thrid coordination shell are
+comparatively trivial. This shell is split by the tetragonal disortion
+into two subshells. The distances are the lattice constants, as you can
+be seen in the schematic above.</p>
+<p>We now have math expressions for the interatomic distances between the
+Ti absorber and each type of scatterer up to the third coordination
+shell. These math expressions for these 7 paths are expressed in terms
+of the 5 guess parameters above. The nice thing about these expressions
+is that the interatomic distances are expressed in terms of easily
+intepretable parameters of the crystal structure.</p>
+<p>Now, encoding the ΔR path parameter for each of these paths is simple.
+We just subtract R<sub>eff</sub> from the corresponding math expression.</p>
+<div class="highlight-python"><div class="highlight"><pre>path short axial oxygen:
+   delr = rtio_sh - reff
+
+path planar oxygen:
+   delr = rtio_pl - reff
+
+path long axial oxygen:
+   delr = rtio_lo - reff
+
+path short lead:
+   delr = rtipb_sh - reff
+
+path long lead:
+   delr = rtipb_lo - reff
+
+path short titanium:
+   delr = a - reff
+
+path long titanium:
+   delr = c - reff
+</pre></div>
+</div>
+<p>There are important collinear or nearly-collinear multiple scattering
+paths at the distance of the third shell Ti atom. These are shown in the
+yellow and green shaded areas of the schematic above.</p>
+<p>The ΔR parameters for the axial multiple scattering paths are simply the
+same as for the corresponding single scattering path. This is the case
+because the distortions in PbTiO<sub>3</sub> are all in the ẑ direction,
+so those MS paths must have the same length as the corresponding SS
+paths.</p>
+<p>In the planar direction, you need to add up the lengths of the legs and
+subtract R<sub>eff</sub> for their ΔR parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>path planar double scattering:
+   delr = (a + 2*rtio_pl)/2  - reff
+
+path planar triple scattering:
+   delr = 2*rtio_pl - reff
+</pre></div>
+</div>
+<p>This strategy of adding up leg lengths works for any kind of multiple
+scattering path you include in this fit.</p>
+<p>This is lovely! With 5 guess parameters and some well-considered math
+expressions, we are able to encode ΔR parameters for all the paths in
+the fit. As more scattering paths are considered for the fit, it is not
+necessary to include any more guess parameters for ΔR.</p>
+</div>
+<div class="section" id="parametrizations-of-distance-in-non-crystalline-materials">
+<h2>15.3.3. Parametrizations of distance in non-crystalline materials<a class="headerlink" href="#parametrizations-of-distance-in-non-crystalline-materials" title="Permalink to this headline">¶</a></h2>
+<p>Interesting geometrical constraints on distance are not the sole
+province of crystalline materials. In the following two papers, I show
+the details of an analysis of Hg bound to the pyrimidine ring of a
+nucleotide in a synthetic DNA structure. To cope with severe information
+limits in my data, I made some simplifying assumptions about the
+structure of the Hg/DNA complex. I then employed a bit of trigonometry
+to express all the absorber-scatterer distances as functions of a small
+number of guess parameters.</p>
+<ul class="simple" id="bibtex-bibliography-extended/delr-0">
+<li>B&nbsp;Ravel. Composing complex EXAFS problems with severe information constraints. <em>Journal of Physics: Conference Series</em>, 190:012026, 2009. <a class="reference external" href="http://dx.doi.org/10.1088/1742-6596/190/1/012026">doi:10.1088/1742-6596/190/1/012026</a>.</li>
+<li>B.&nbsp;Ravel, S.&nbsp;C. Slimmer, X.&nbsp;Meng, G.&nbsp;C.&nbsp;L. Wong, and Y.&nbsp;Lu. EXAFS studies of catalytic DNA sensors for mercury contamination of water. <em>Radiation Physics and Chemistry</em>, 78(10, Supplement):S75 – S79, 2009. <a class="reference external" href="http://dx.doi.org/10.1016/j.radphyschem.2009.05.024">doi:10.1016/j.radphyschem.2009.05.024</a>.</li>
+</ul>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Summarize parametrization from J Phys Conf Proc paper</p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/delr.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ss.html" title="15.4. Modeling disorder"
+             >next</a></li>
+        <li class="right" >
+          <a href="cv.html" title="15.2. Characteristic value"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

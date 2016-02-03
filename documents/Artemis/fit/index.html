@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Running a fit &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="7.1. Sanity checking your fitting model" href="sanity.html" />
+    <link rel="prev" title="6. The GDS window" href="../gds.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="sanity.html" title="7.1. Sanity checking your fitting model"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../gds.html" title="6. The GDS window"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="running-a-fit">
+<h1>7. Running a fit<a class="headerlink" href="#running-a-fit" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> is, admittedly, a complex and non-intuitive
+program. There are good reasons for <font size=-1 color="#8C4112">ARTEMIS</font> being the way
+it is, although those reasons may not be clear if you are coming to
+the program for the first time. While it is important that easy things
+be easy in <font size=-1 color="#8C4112">ARTEMIS</font>, letting hard things be possible is
+central to the intent of the program.</p>
+<div class="bigtrick admonition">
+<p class="first admonition-title">The central premise of Ifeffit and Artemis</p>
+<p class="last">The parameters of the EXAFS equation are not the parameters of the fit.
+The parameters of the EXAFS equation are written <em>in terms of</em> the
+parameters of the fit.</p>
+</div>
+<p>As a consequence, we have the GDS window where the parameters of the fit
+are <em>defined</em> and the various Path pages where those parameters are
+<em>used</em>.</p>
+<p>It is useful to understand a little bit about how the fitting model
+is structured internally.  The basic definition of a fit consists of
+three things:</p>
+<ol class="arabic simple">
+<li>a list of one or more GDS parameters,</li>
+<li>a list of one or more data sets, and</li>
+<li>a list of one or more paths.</li>
+</ol>
+<p>To make a fit, all three of those lists must somehow be defined.</p>
+<p>The list of data sets is taken from the Data list in the Main window.
+All data sets in the Data list which have the <span class="guilabel">Include in
+fit</span> button checked on will be used in the fit.</p>
+<p>Each data set has a list of one or more paths associated with it.  In
+<font size=-1 color="#8C4112">ARTEMIS</font> a path is associated with a data set by dragging
+and dropping it onto a data set's path list.  The converse is also
+true.  All paths used in a fit must be associated with a Data set.</p>
+<p>Paths typically come from a <font size=-1 color="#8C4112">FEFF</font> calculation explicitly
+initiated by the user.  That is, the user imports an <font size=-1 color="#8C4112">ATOMS</font>
+input file, a <font size=-1 color="#8C4112">FEFF</font> input file, or a CIF
+file. <font size=-1 color="#8C4112">FEFF</font> is run and the interpretation list is displayed
+in the <font size=-1 color="#8C4112">FEFF</font> window.  Paths are dragged from that list and
+dropped on a Data set.  Thus paths are not only associated with a Data
+set, they are also associated with a specific <font size=-1 color="#8C4112">FEFF</font>
+calculation.</p>
+<p>Each path must have its path parameters set in some manner, even if
+they are merely set to 0 or some other constant.  Typically, path
+parameters are set to math expressions which depend functionally upon
+one or more parameters from the GDS page.  Every GDS parameter used in
+a path parameter math expression must be defined on the GDS window.
+Similarly, every <span class="guess">guess</span> or <span class="def">def</span> parameter from the GDS
+window must be used in at least one math expression in your fitting
+model.</p>
+<p>All paths which have their <span class="guilabel">Include in fit</span> button checked
+on will be used in the fit.</p>
+<p>When the fit begins, <font size=-1 color="#8C4112">ARTEMIS</font> digs through all the windows,
+finding all data sets, paths, and GDS parameters.  It runs a number of
+sanity checks to avoid certain obvious situations which will result in
+an unsuccessful fit.  It then makes sure that all of
+<font size=-1 color="#8C4112">IFEFFIT</font>'s (or <font size=-1 color="#8C4112">LARCH</font>'s) data structures are up to
+date with respect to your current settings in <font size=-1 color="#8C4112">ARTEMIS</font>.  The
+fit is run.  Statistics, including error bars and correlations, are
+calculated.  A log file is written, a plot is made, and the various
+colored buttons are set according to the fit happiness.</p>
+<p>That's a fit!</p>
+<p>There are some details of the fitting process that are
+<a class="reference external" href="../prefs.html">configurable</a>. For instance, the log file can be
+displayed in either the Log window or in the History window after the
+fit finishes. You can also choose not to have it display automatically.
+This is set by <font color="#636A24">♦Artemis→show_after_fit</font>.</p>
+<p>The plot that is made upon completion of the fit is also configurable.
+The default is to have an Rmr plot (<a class="reference internal" href="../data.html#fig-plotrmr"><span>see Fig. 3.5</span></a>)
+made containing the data and the fit. Any of the five plot types from
+the Data window can be chosen as the after-fit plot. You may also
+choose to have the contents of the plotting list plotted in k-, R-, or
+q-space.  This adds value to the <span class="guilabel">Plot after fit</span> buttons on
+the Data window and Path pages. You may also choose to have no plot
+displayed automatically after the fit. This is set by
+<font color="#636A24">♦Artemis→plot_after_fit</font>.</p>
+<p>The fit name and fit description text boxes from the Main window are
+also useful for customizing your fit as well as the course of a fitting
+project. The fit name is used in many places – most notably in the
+legends of plots. Thus you may find it useful to select descriptive
+names for each of your fits. The fit description is written to every log
+file and can be used to document features of your current fitting model
+and how it relates to the development of your fitting project.</p>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sanity.html">7.1. Sanity checking your fitting model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="happiness.html">7.2. The heuristic happiness parameter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="happiness.html#evaluation-of-the-happiness-parameter">7.2.1. Evaluation of the happiness parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="happiness.html#configuring-the-happiness-evaluation">7.2.2. Configuring the happiness evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike.html">7.3. Using path-like objects</a></li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">7. Running a fit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sanity.html">7.1. Sanity checking your fitting model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="happiness.html">7.2. The heuristic happiness parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">7.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/fit/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="sanity.html" title="7.1. Sanity checking your fitting model"
+             >next</a></li>
+        <li class="right" >
+          <a href="../gds.html" title="6. The GDS window"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

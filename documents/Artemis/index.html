@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="#" />
+    <link rel="next" title="1. Forward" href="forward.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="forward.html" title="1. Forward"
+             accesskey="N">next</a></li>
+        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="artemis-exafs-data-analysis-using-feff-with-larch-or-ifeffit">
+<h1>Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit<a class="headerlink" href="#artemis-exafs-data-analysis-using-feff-with-larch-or-ifeffit" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre>I sing of Artemis, whose shafts are of gold, who cheers on the hounds, the pure maiden, shooter
+of stags, who delights in archery, own sister to Apollo with the golden sword. Over the shadowy
+hills and windy peaks she draws her golden bow, rejoicing in the chase, and sends out grievous
+shafts. The tops of the high mountains tremble and the tangled wood echoes awesomely with the
+outcry of beasts: earthquakes and the sea also where fishes shoal. But the goddess with a bold
+heart turns every way destroying the race of wild beasts: and when she is satisfied and has
+cheered her heart, this huntress who delights in arrows slackens her supple bow and goes to the
+great house of her dear brother Phoebus Apollo, to the rich land of Delphi, there to order the
+lovely dance of the Muses and Graces.
+
+                                               Homeric Hymns XXVII
+                                               Translated by H. G. Evelyn-White
+</pre></div>
+</div>
+
+<br>
+<a class="reference internal image-reference" href="_images/Artemis_sm.jpg"><img alt="_images/Artemis_sm.jpg" src="_images/Artemis_sm.jpg" style="width: 80%;" /></a>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> is the goddess of the hunt, which is an apt
+metaphor for the chore of data analysis. The name also suggests a
+fallacious pun which works in English and in the Romance languages and
+which suggests that EXAFS data analysis is more an art than a science.</p>
+<hr class="docutils" />
+<p><strong>Contents</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#layout-and-typesetting-conventions">1.1. Layout and typesetting conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#acknowledgments">1.2. Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#data-citations">1.3. Data citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#installing-athena-on-your-computer">1.4. Installing ATHENA on your computer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html#building-this-document-from-source">1.5. Building this document from source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="startup/index.html#folders-and-log-files">2.1. Folders and log files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#special-plots">3.1. Special plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#data-menu-bar">3.2. Data menu bar</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="feff/xtal.html">4.1. Crystal data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff/feff.html">4.2. The Feff tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff/paths.html">4.3. The Paths tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff/pathlike.html">4.4. The Path-like tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff/console.html">4.5. The Console tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff/aggregate.html">4.6. Aggregate Feff calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="path/mathexp.html">5.1. Setting math expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path/plot.html">5.2. Marking and Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path/pathlike.html">5.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gds.html#parameter-types">6.1. Parameter types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gds.html#user-interaction">6.2. User interaction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fit/sanity.html">7.1. Sanity checking your fitting model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit/happiness.html">7.2. The heuristic happiness parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit/pathlike.html">7.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot/plotlist.html">8.1. Using the plot list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/stack.html">8.2. Stacked plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/indic.html">8.3. Plot Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot/vpaths.html">8.4. Creating and plotting VPaths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="logjournal.html#the-log-window">9.1. The Log window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logjournal.html#the-journal-window">9.2. The Journal window</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="history.html#reports-on-fits">10.1. Reports on fits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#plotting-fits">10.2. Plotting fits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitor.html#the-command-buffer">11.1. The Command buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitor.html#the-status-buffer">11.2. The Status buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitor.html#interacting-with-ifeffit">11.3. Interacting with Ifeffit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitor.html#debugging-demeter">11.4. Debugging Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/fes2.html">13.1. Example 1: FeS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/methyltin.html">13.2. Example 2: Methyltin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atoms/space.html">14.1. Understanding and denoting space groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atoms/abs.html">14.2. Absorption calculations and experimental corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atoms/example.html">14.3. A worked example (in text!)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extended/qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended/fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="#">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="forward.html" title="1. Forward"
+             >next</a></li>
+        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

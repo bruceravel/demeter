@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.3. Plot object &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="5. High level actions of the object model" href="index.html" />
+    <link rel="next" title="5.4. Config object" href="config.html" />
+    <link rel="prev" title="5.2. Mode object" href="mode.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="config.html" title="5.4. Config object"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="mode.html" title="5.2. Mode object"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. High level actions of the object model</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plot-object">
+<h1>5.3. Plot object<a class="headerlink" href="#plot-object" title="Permalink to this headline">¶</a></h1>
+<p>The Plot object is used to control the details of how plots are made and
+displayed by <font size=-1 color="#8C4112">DEMETER</font> programs. It is useful to consider how <font size=-1 color="#8C4112">ATHENA</font> works
+in order to understand the relationship of the Plot object to the rest
+of <font size=-1 color="#8C4112">DEMETER</font>. In <font size=-1 color="#8C4112">ATHENA</font>, the plot controls are separate from the controls
+for the parameters of any individual data set. For example, the range
+over which data are plotted in energy or R-space is, in some, sense, a
+global parameter not associated with a particular data set. The Plot
+object serves this role. The details of the plot in <font size=-1 color="#8C4112">DEMETER</font> are global.
+To plot a plottable object (Data, Path, or any of the Path-like
+objects), <font size=-1 color="#8C4112">DEMETER</font> consults the Plot object for those details.</p>
+<p>To make the Plot object readily accessible at all times in your program,
+the <code class="docutils literal"><span class="pre">po</span></code> method is a method of the base class and is inherited by all
+<font size=-1 color="#8C4112">DEMETER</font> objects. Thus, given any object, you can “find” the Plot object
+like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$the_plot_object</span> <span class="o">=</span> <span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">po</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Any method of the plot object is easily called by chaining with the
+<code class="docutils literal"><span class="pre">po</span></code> method. For example to start a new plot (as opposed to
+overplotting), you do this</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">start_plot</span></code> method reinitializes the Plot object to begin a new
+plot. Along with clearing the plotting display, this restarts the trace
+colors and resets the plot title.</p>
+<div class="section" id="plotting-in-energy">
+<h2>5.3.1. Plotting in energy<a class="headerlink" href="#plotting-in-energy" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-background-pre-edge-post-edge">
+<h3>5.3.1.1. Data, background, pre-edge, &amp; post-edge<a class="headerlink" href="#data-background-pre-edge-post-edge" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@eplot</span> <span class="o">=</span> <span class="p">(</span><span class="n">e_mu</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_bkg</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_norm</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_der</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_pre</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_post</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_i0</span>      <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_signal</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_markers</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
+             <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+            <span class="p">);</span>  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id1">
+<span id="fig-ploteprepost"></span><a class="reference external image-reference" href="../_images/plot_e_prepost.png"><img alt="../_images/plot_e_prepost.png" src="../_images/plot_e_prepost.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.1 </span><span class="caption-text">This example demonstrates the common and useful plot showing the data
+along with the background function and the regressed polynomials used
+to normalize the data.  Note that the Plot object has a number of
+boolean attributes which turn features of the energy plot on and
+off. Also note that the range of the plot is set by the values of the
+<code class="docutils literal"><span class="pre">emin</span></code> and <code class="docutils literal"><span class="pre">emax</span></code> attributes of the Plot object.</span></p>
+</div>
+<p>Also note that, as was discussed in <a class="reference external" href="../data/index.html">the chapter on the Data object</a>, there is no need to explicitly perform the
+data normalization or background removal.  <font size=-1 color="#8C4112">DEMETER</font> knows
+what needs to be done to bring the data up to date for plotting and
+will perform all necessary chores before actually generating the
+plot. This allows you to focus on what you need to accomplish.</p>
+<p>One final point about this example. I have created the <code class="docutils literal"><span class="pre">&#64;eplot</span></code> array
+to hold the attributes of the Plot object. I then pass that array as the
+argument of the <code class="docutils literal"><span class="pre">set</span></code> method of the Plot object. Those attributes
+could be listed as explicit arguments of the <code class="docutils literal"><span class="pre">set</span></code> method. As always
+in perl, <a class="reference external" href="http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it">there's more than one way to do
+it</a>.</p>
+</div>
+<div class="section" id="normalized-data-background">
+<h3>5.3.1.2. Normalized data &amp; background<a class="headerlink" href="#normalized-data-background" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@eplot</span> <span class="o">=</span> <span class="p">(</span><span class="n">e_mu</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_bkg</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_norm</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_der</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_pre</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_post</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_i0</span>      <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_signal</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_markers</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
+             <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+            <span class="p">);</span>  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">bkg_flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id2">
+<span id="fig-plotenorm"></span><a class="reference external image-reference" href="../_images/plot_e_norm.png"><img alt="../_images/plot_e_norm.png" src="../_images/plot_e_norm.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.2 </span><span class="caption-text">This example shows how to plot data and background function after
+normalization.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="flattened-data-background">
+<h3>5.3.1.3. Flattened data &amp; background<a class="headerlink" href="#flattened-data-background" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@eplot</span> <span class="o">=</span> <span class="p">(</span><span class="n">e_mu</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_bkg</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_norm</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_der</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_pre</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_post</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_i0</span>      <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_signal</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_markers</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
+             <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+            <span class="p">);</span>  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">bkg_flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id3">
+<span id="fig-ploteflat"></span><a class="reference external image-reference" href="../_images/plot_e_flat.png"><img alt="../_images/plot_e_flat.png" src="../_images/plot_e_flat.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.3 </span><span class="caption-text">This example shows how to plot the flattened data and background
+function, that is, the normalized data with the difference in slope
+and quadrature between the pre- and post-edge lines subtracted out
+after the edge.</span></p>
+</div>
+<p>Note that the switch for turning flattening on and off is an attribute
+of the Data object <strong>not</strong> the Plot object. This allows the option of
+overplotting one data set that is normalized with another that is
+flattened.</p>
+</div>
+<div class="section" id="derivative-of-mu">
+<h3>5.3.1.4. Derivative of mu<a class="headerlink" href="#derivative-of-mu" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@eplot</span> <span class="o">=</span> <span class="p">(</span><span class="n">e_mu</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_bkg</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_norm</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_der</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_pre</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_post</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_i0</span>      <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_signal</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_markers</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>   <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">120</span><span class="p">,</span>
+             <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+            <span class="p">);</span>  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;derivative&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">e_norm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;norm. deriv.&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id4">
+<span id="fig-plotederiv"></span><a class="reference external image-reference" href="../_images/plot_e_deriv.png"><img alt="../_images/plot_e_deriv.png" src="../_images/plot_e_deriv.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.4 </span><span class="caption-text">This example shows two interesting features we haven't yet seen. This
+shows how things get overplotted, in this case the derivative of
+μ(E) and the derivative of normalized μ(E). The overplotting
+happens simply by calling the <code class="docutils literal"><span class="pre">plot</span></code> mthod a second time without
+calling <code class="docutils literal"><span class="pre">start_plot</span></code>. In this way, any number of things can be
+overplotted.</span></p>
+</div>
+<p>Also note the use of chained method calls to set the Data object's
+<code class="docutils literal"><span class="pre">name</span></code> attribute appropriately before plotting. The <code class="docutils literal"><span class="pre">name</span></code> method
+always returns the object that called it, which allows for this sort
+of chaining magic to happen. There is no advantage to chained method
+calls -- you could rename the Data object and then plot it in the
+subsequent line. The cahined calls are a bit more concise.</p>
+</div>
+<div class="section" id="data-i0-channel-signal-channel">
+<h3>5.3.1.5. Data, I0 channel, &amp; signal channel<a class="headerlink" href="#data-i0-channel-signal-channel" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@eplot</span> <span class="o">=</span> <span class="p">(</span><span class="n">e_mu</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_bkg</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_norm</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_der</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_pre</span>     <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="n">e_post</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_i0</span>      <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">e_signal</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_markers</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>   <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">120</span><span class="p">,</span>
+             <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+            <span class="p">);</span>  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id5">
+<span id="fig-plotei0signal"></span><a class="reference external image-reference" href="../_images/plot_e_i0signal.png"><img alt="../_images/plot_e_i0signal.png" src="../_images/plot_e_i0signal.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.5 </span><span class="caption-text"><font size=-1 color="#8C4112">DEMETER</font> saves arrays containing I<sub>0</sub> and the
+signal channel, which can then be plotted along with the data.
+<font size=-1 color="#8C4112">DEMETER</font> takes care to scale these arrays so that they
+plot nicely with the data.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="data-at-two-different-edges-with-e0-subtracted">
+<h3>5.3.1.6. Data at two different edges with E0 subtracted<a class="headerlink" href="#data-at-two-different-edges-with-e0-subtracted" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@common</span> <span class="o">=</span> <span class="p">(</span><span class="n">bkg_rbkg</span>    <span class="o">=&gt;</span> <span class="mf">1.5</span><span class="p">,</span>
+              <span class="n">bkg_spl1</span>    <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>    <span class="n">bkg_spl2</span>    <span class="o">=&gt;</span> <span class="mi">18</span><span class="p">,</span>
+              <span class="n">bkg_nor2</span>    <span class="o">=&gt;</span> <span class="mi">1800</span><span class="p">,</span>
+              <span class="n">bkg_flatten</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@data</span> <span class="o">=</span> <span class="p">(</span><span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
+            <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
+           <span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">@data</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">)</span> <span class="p">};</span>
+<span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;$where/data/fe.060.xmu&quot;</span><span class="p">,</span>
+                <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;$where/data/cu010k.dat&quot;</span><span class="p">,</span>
+                <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;Cu 10K&#39;</span><span class="p">,</span> <span class="p">);</span>
+
+<span class="c1">## decide how to plot the data</span>
+<span class="nv">$plot</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">e_mu</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>   <span class="n">e_bkg</span>   <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_norm</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">e_pre</span>   <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>   <span class="n">e_post</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">e_zero</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">emin</span>    <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">emax</span>    <span class="o">=&gt;</span> <span class="mi">150</span><span class="p">,</span>
+            <span class="p">);</span>
+<span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">@data</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">)</span> <span class="p">};</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id6">
+<span id="fig-ploteezero"></span><a class="reference external image-reference" href="../_images/plot_e_ezero.png"><img alt="../_images/plot_e_ezero.png" src="../_images/plot_e_ezero.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.6 </span><span class="caption-text"><font size=-1 color="#8C4112">DEMETER</font> offers an easy way to plot μ(E) data with
+the E<sub>0</sub> value subtracted. This places the edge at 0 on the
+x-axis, allowing you to overplot data from different edges.  When
+the <code class="docutils literal"><span class="pre">e_zero</span></code> attribute of the Plot object is set to 1, each Data
+object's <code class="docutils literal"><span class="pre">bkg_eshift</span></code> attribute is temporarily set so that the
+edge will show up at 0 in the plot.</span></p>
+</div>
+
+<br clear="all">
+</div>
+</div>
+<div class="section" id="plotting-in-k">
+<h2>5.3.2. Plotting in k<a class="headerlink" href="#plotting-in-k" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plotting-in-k-space">
+<h3>5.3.2.1. Plotting in k-space<a class="headerlink" href="#plotting-in-k-space" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id7">
+<span id="fig-plotk"></span><a class="reference external image-reference" href="../_images/plot_k.png"><img alt="../_images/plot_k.png" src="../_images/plot_k.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.7 </span><span class="caption-text">Again, <font size=-1 color="#8C4112">DEMETER</font> will take care of the background removal
+when you request a plot in k-space. Note that the k-weight to use for
+plotting is an attribute of the Plot object.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="plotting-in-chi-k-in-energy">
+<h3>5.3.2.2. Plotting in chi(k) in energy<a class="headerlink" href="#plotting-in-chi-k-in-energy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">chie</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id8">
+<span id="fig-plotchie"></span><a class="reference external image-reference" href="../_images/plot_chie.png"><img alt="../_images/plot_chie.png" src="../_images/plot_chie.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.8 </span><span class="caption-text">Here the x-axis of the χ(k) plot has been converted to
+absolute energy.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="k-space-with-all-three-k-weights">
+<h3>5.3.2.3. k-space with all three k-weights<a class="headerlink" href="#k-space-with-all-three-k-weights" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id9">
+<span id="fig-plotkk123"></span><a class="reference external image-reference" href="../_images/plot_k_k123.png"><img alt="../_images/plot_k_k123.png" src="../_images/plot_k_k123.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.9 </span><span class="caption-text"><font size=-1 color="#8C4112">DEMETER</font> has several types of interesting, pre-defined
+plots. One of these, the “k123 plot”, will overplot the data
+three times, once each with k-weight values of 1, 2, and 3. The copy
+of the data with k-weight of two is plotted normally.  The other two
+copies are scaled up or down to be about the same size as the k-weight
+of 2 copy. The data are analyzed and the scaling and offset constants
+are chosen to be appropriate to the data.</span></p>
+</div>
+
+<br clear="all">
+</div>
+</div>
+<div class="section" id="plotting-in-r">
+<h2>5.3.3. Plotting in R<a class="headerlink" href="#plotting-in-r" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="magnitude-in-r-space-r-space-window">
+<h3>5.3.3.1. Magnitude in R-space &amp; R-space window<a class="headerlink" href="#magnitude-in-r-space-r-space-window" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span> <span class="o">-&gt;</span> <span class="n">plot_window</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id10">
+<span id="fig-plotrmagwin"></span><a class="reference external image-reference" href="../_images/plot_r_magwin.png"><img alt="../_images/plot_r_magwin.png" src="../_images/plot_r_magwin.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.10 </span><span class="caption-text">This example shows a common kind of plot, χ(R) data with the
+back-Transform windowing function, which is also used by
+<font size=-1 color="#8C4112">DEMETER</font> as the fitting range when a fit is evaluated in
+R-space. The <code class="docutils literal"><span class="pre">r_pl</span></code> attribute of the Plot object is set to <code class="docutils literal"><span class="pre">m</span></code>,
+indicating that the magnitude of χ(R) should be plotted.</span></p>
+</div>
+<p>Note that the <code class="docutils literal"><span class="pre">plot_window</span></code> method was indicated in a chained method
+call. This is not required, but is possible because the <code class="docutils literal"><span class="pre">plot</span></code>
+method returns the calling object.</p>
+<p>The <code class="docutils literal"><span class="pre">plot_window</span></code> method observes the value of the Plot object's
+<code class="docutils literal"><span class="pre">space</span></code> attribute. That is, if the plot s being made in k or q, the
+k-space window will be plotted. If the plot is being made in R, the
+R-space window will be plotted.</p>
+</div>
+<div class="section" id="data-in-r-space-as-envelope-real-part-imaginary-part">
+<h3>5.3.3.2. Data in R-space as envelope, real part, &amp; imaginary part<a class="headerlink" href="#data-in-r-space-as-envelope-real-part-imaginary-part" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;e&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;Real part&#39;</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;Imaginary part&#39;</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id11">
+<span id="fig-plotrmri"></span><a class="reference external image-reference" href="../_images/plot_r_mri.png"><img alt="../_images/plot_r_mri.png" src="../_images/plot_r_mri.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.11 </span><span class="caption-text">Multiple parts of the complex χ(R) are overplotted by repeatedly
+plotting data in R-space without calling the <code class="docutils literal"><span class="pre">start_plot</span></code> method.
+The value of <code class="docutils literal"><span class="pre">r_pl</span></code> is set between each part of the plot. Note that
+the “envelope” is the magnitude plotted twice, once multiplied by -1.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="r-space-with-all-three-k-weights">
+<h3>5.3.3.3. R-space with all three k-weights<a class="headerlink" href="#r-space-with-all-three-k-weights" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;r123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id12">
+<span id="fig-plotrr123"></span><a class="reference external image-reference" href="../_images/plot_r_r123.png"><img alt="../_images/plot_r_r123.png" src="../_images/plot_r_r123.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.12 </span><span class="caption-text">The “R123 plot” is the second of the pre-packaged specialty
+plot types.  This one, is just like the k123 plot in that three copies
+of the data are overplotted using each of the three k-weights with
+scaling and offset computed automatically. This R123 plot was plotted
+as the magnitude of χ(R). The R123 plot respects the value of the
+<code class="docutils literal"><span class="pre">r_pl</span></code> attribute of the Plot object.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="magnitude-and-real-part-in-r-space">
+<h3>5.3.3.4. Magnitude and real part in R space<a class="headerlink" href="#magnitude-and-real-part-in-r-space" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;rmr&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id13">
+<span id="fig-plotrrmr"></span><a class="reference external image-reference" href="../_images/plot_r_rmr.png"><img alt="../_images/plot_r_rmr.png" src="../_images/plot_r_rmr.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.13 </span><span class="caption-text">The “Rmr plot” is the third of the pre-packaged specialty plot
+types.  This one plots the magnitude and real part of χ(R) with
+an appropriate offset between them.  This is the default plot type
+made after a fit finishes. In that case, the data and fit are
+overplotted as magnitude and real.</span></p>
+</div>
+
+<br clear="all">
+</div>
+</div>
+<div class="section" id="plotting-in-q">
+<h2>5.3.4. Plotting in q<a class="headerlink" href="#plotting-in-q" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plotting-in-back-transform-k-space">
+<h3>5.3.4.1. Plotting in back-transform k-space<a class="headerlink" href="#plotting-in-back-transform-k-space" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="sx">q_pl =&gt; &#39;r&#39;);</span>
+<span class="sx">$data -&gt; po -&gt; start_</span><span class="n">plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id14">
+<span id="fig-plotq"></span><a class="reference external image-reference" href="../_images/plot_q.png"><img alt="../_images/plot_q.png" src="../_images/plot_q.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.14 </span><span class="caption-text">Plotting the back-transformed χ(q) is specified by plotting
+in q. The part of the complex χ(q) is specified using the
+<code class="docutils literal"><span class="pre">q_pl</span></code> attribute of the Plot object.</span></p>
+</div>
+
+<br clear="all">
+</div>
+<div class="section" id="k-space-the-real-part-of-back-transform-k-space">
+<h3>5.3.4.2. k-space &amp; the real part of back-transform k-space<a class="headerlink" href="#k-space-the-real-part-of-back-transform-k-space" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;kq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-left" id="id15">
+<span id="fig-plotkq"></span><a class="reference external image-reference" href="../_images/plot_kq.png"><img alt="../_images/plot_kq.png" src="../_images/plot_kq.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.15 </span><span class="caption-text">The final specialty plot type in <font size=-1 color="#8C4112">DEMETER</font> is the
+“kq plot”. This overplots χ(k) with the real part of
+χ(q).</span></p>
+</div>
+
+<br clear="all">
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. High level actions of the object model</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dispose.html">5.1. Command disposal and command templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">5.2. Mode object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">5.3. Plot object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">5.4. Config object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">5.5. Other high level object methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/highlevel/plot.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="config.html" title="5.4. Config object"
+             >next</a></li>
+        <li class="right" >
+          <a href="mode.html" title="5.2. Mode object"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >5. High level actions of the object model</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

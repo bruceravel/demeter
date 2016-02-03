@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.1. Input data for Feff &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="7. Feff" href="index.html" />
+    <link rel="next" title="7.2. Computng potentials" href="potph.html" />
+    <link rel="prev" title="7. Feff" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="potph.html" title="7.2. Computng potentials"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="7. Feff"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Feff</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="input-data-for-feff">
+<h1>7.1. Input data for Feff<a class="headerlink" href="#input-data-for-feff" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="starting-from-a-conventional-feff-inp-file">
+<h2>7.1.1. Starting from a conventional feff.inp file<a class="headerlink" href="#starting-from-a-conventional-feff-inp-file" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">FEFF</font> is, let's face it, a bit long in the tooth. It
+requires that its instructions be contained is a rather rigidly
+structured textual input file. The keywords of the file are called
+“cards” in the <font size=-1 color="#8C4112">FEFF</font> documentation – a word whose
+etymology probably escapes <font size=-1 color="#8C4112">FEFF</font>'s younger users.</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> goes through some serious gymnastics in an attempt
+to hide <font size=-1 color="#8C4112">FEFF</font>'s clunky interface. The need for an input file
+is unavoidable and <font size=-1 color="#8C4112">DEMETER</font> does, in fact, read in and write
+out <code class="file docutils literal"><span class="pre">feff.inp</span></code> files repeatedly.  It does so, however, in a
+stealthy way that should require the attention of the programmer using
+<font size=-1 color="#8C4112">DEMETER</font> only at the very beginning of the process.</p>
+<p>Creating a Feff object and populating it with the contents of a
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file is done in a way that should be quite familiar
+at this point:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
+<span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Because <font size=-1 color="#8C4112">FEFF</font> is heavily dependent on disk-based IO to do
+its work, you must specify a <code class="docutils literal"><span class="pre">workspace</span></code>. This is a directory on
+disk where the various files that <font size=-1 color="#8C4112">FEFF</font> needs to do its
+business can be written. In the example that will be running through
+this section, that workspace is a subdirectory called <code class="file docutils literal"><span class="pre">feff/</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">screen</span></code> attribute is a boolean which will suppress the messages
+the FEFF would normally write to standard output when set to 0.</p>
+<p>When the <code class="docutils literal"><span class="pre">file</span></code> attribute is set, that input file will be parsed and
+its contents stored as attributes of the Feff object. At this point, the
+new Feff object is fully instrumented and ready to start being used for
+interesting work.</p>
+</div>
+<div class="section" id="starting-from-an-atoms-object">
+<h2>7.1.2. Starting from an Atoms object<a class="headerlink" href="#starting-from-an-atoms-object" title="Permalink to this headline">¶</a></h2>
+<p>If you are running <font size=-1 color="#8C4112">FEFF</font> on a crystalline material for which
+you have an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> or CIF file, then <font size=-1 color="#8C4112">DEMETER</font>
+also allows you to skip the step fo explicitly writing the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file. Insetad of setting the <code class="docutils literal"><span class="pre">file</span></code> attribute of
+the Feff object, you can set the <code class="docutils literal"><span class="pre">atoms</span></code> attribute to an Atoms
+object.  The <code class="file docutils literal"><span class="pre">feff.inp</span></code> still gets generated, but it is done
+behind the scenes using a temporary file that is quickly discarded.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;atoms.inp&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">atoms</span> <span class="o">=&gt;</span> <span class="nv">$atoms</span><span class="p">);</span>
+<span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>When the <code class="docutils literal"><span class="pre">atoms</span></code> attribute is set, the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file is created,
+parsed, then deleted. Its contents are stored as attributes of the Feff
+object. At this point, the new Feff object is fully instrumented and
+ready to start being used for interesting work.</p>
+<p>This approach is convenient in any situation for which you do not need
+to modify <font size=-1 color="#8C4112">FEFF</font> input data in any way from the form that the
+<font size=-1 color="#8C4112">ATOMS</font> calculation generates. In that situation, this
+approach to <font size=-1 color="#8C4112">FEFF</font> is identical in every way to starting from
+a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file.</p>
+</div>
+<div class="section" id="starting-from-a-molecular-structure-file">
+<h2>7.1.3. Starting from a molecular structure file<a class="headerlink" href="#starting-from-a-molecular-structure-file" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Integration with <a class="reference external" href="http://openbabel.org/">OpenBabel</a> so
+that other cluster file formats can be used directly as
+input to <font size=-1 color="#8C4112">FEFF</font>.</p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Feff</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">7.1. Input data for Feff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="potph.html">7.2. Computng potentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathfinder.html">7.3. The path finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intrp.html">7.4. Path interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/feff/input.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="potph.html" title="7.2. Computng potentials"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="7. Feff"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Feff</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

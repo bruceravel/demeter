@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.1. Sanity checking your fitting model &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="7. Running a fit" href="index.html" />
+    <link rel="next" title="7.2. The heuristic happiness parameter" href="happiness.html" />
+    <link rel="prev" title="7. Running a fit" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="happiness.html" title="7.2. The heuristic happiness parameter"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="7. Running a fit"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Running a fit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sanity-checking-your-fitting-model">
+<h1>7.1. Sanity checking your fitting model<a class="headerlink" href="#sanity-checking-your-fitting-model" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> is complex and it is quite easy to make mistakes.
+Many common mistakes are obvious and discoverable by automated
+analysis of the fitting model.  Before running a fit,
+<font size=-1 color="#8C4112">ARTEMIS</font> applies each of the following test to your fitting
+model.  If any of them are triggered, the fit is halted and a
+(hopefully) useful error message is posted in the Log window.  Think
+of this like <font size=-1 color="#8C4112">ARTEMIS</font>' spell checker!</p>
+<p>Any problems that are found must be corrected before
+<font size=-1 color="#8C4112">ARTEMIS</font> will allow the fit to proceed.</p>
+<p>Some of these tests can be disabled using the <span class="menuselection">Fit ‣
+Disable sanity checks</span> menu in the Main window.</p>
+<ol class="arabic">
+<li><p class="first">Check that any files associated with the data or the
+<font size=-1 color="#8C4112">FEFF</font> calculations exist.</p>
+</li>
+<li><p class="first">Check that all <span class="guess">guess</span> parameters are used in at least one
+<span class="def">def</span> parameter or path parameter.</p>
+</li>
+<li><p class="first">Check that no <span class="def">def</span> parameter or path parameter uses an
+undefined parameter.</p>
+</li>
+<li><p class="first">Check that none of these typos appear in any math expressions:
+<code class="docutils literal"><span class="pre">++</span></code>, <code class="docutils literal"><span class="pre">--</span></code>, <code class="docutils literal"><span class="pre">//</span></code>, or <code class="docutils literal"><span class="pre">***</span></code></p>
+</li>
+<li><p class="first">Check that all function names used in math expression (i.e. a word
+followed by parentheses) are valid functions in <font size=-1 color="#8C4112">IFEFFIT</font>
+or <font size=-1 color="#8C4112">LARCH</font> (as appropriate).  <font size=-1 color="#8C4112">ARTEMIS</font> does not
+make any check that the arguments of the function are sensible,
+however.</p>
+</li>
+<li><p class="first">Check that all GDS parameters have unique names.</p>
+</li>
+<li><p class="first">Check that parentheses match in all math expressions, i.e. that every
+open parenthesis has a matching close parenthesis.</p>
+</li>
+<li><p class="first">Check that Fourier transform and fit parameters are sensible (for
+example R<sub>min</sub> &lt; R<sub>max</sub>) for all data sets.</p>
+</li>
+<li><p class="first">Check that the number of <span class="guess">guess</span> parameters is less than N<sub>idp</sub>.</p>
+</li>
+<li><p class="first">Verify that R<sub>min</sub>≥ R<sub>bkg</sub> for data imported from an
+<font size=-1 color="#8C4112">ATHENA</font> project file.</p>
+</li>
+<li><p class="first">Verify that R<sub>eff</sub> for each path is not well beyond
+R<sub>max</sub>. The margin beyond R<sub>max</sub> that a value of
+R<sub>eff</sub> is acceptable is set by R<sub>max</sub>, plus the
+value of <font color="#636A24">♦Warnings→reff_margin</font>.</p>
+</li>
+<li><p class="first">Check that various compiled-in limits (e.g. maximum number of paths
+or maximum number of set parameters) in <font size=-1 color="#8C4112">IFEFFIT</font> are not
+exceeded.  This check is ignored when using <font size=-1 color="#8C4112">LARCH</font>.</p>
+</li>
+<li><p class="first">Check that parameters do not have the same names as
+<font size=-1 color="#8C4112">IFEFFIT</font> program variables. For example, things like
+<code class="docutils literal"><span class="pre">pi</span></code> or <code class="docutils literal"><span class="pre">dr1</span></code> are not allowed since <font size=-1 color="#8C4112">IFEFFIT</font> uses
+those strings for other purposes. Although not strictly necessary,
+this check is enforced by default when using <font size=-1 color="#8C4112">LARCH</font>.</p>
+</li>
+<li><p class="first">Check that there are no unresolved merge parameters. <em>This feature
+is not yet implemented.</em></p>
+</li>
+<li><p class="first">Check that GDS math expressions do not have loops or cycles in their
+definitions. For example, either of the following would trigger this
+error.</p>
+<div class="highlight-python"><div class="highlight"><pre>guess x = x  # a nod to Laurie Anderson fans....
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>guess a = b
+def   b = c
+def   c = a
+</pre></div>
+</div>
+</li>
+<li><p class="first">Check for obvious cases of a data set used more than once.</p>
+</li>
+<li><p class="first">Check that each data set used in the fit has at least one path
+assigned to it.</p>
+</li>
+<li><p class="first">Check that each Path object has a way of computing its
+contribution, i.e. has an associated ScatteringPath object or is a
+valid pathlike object.</p>
+</li>
+</ol>
+<p>As a side note, item 15 is particularly interesting.
+<font size=-1 color="#8C4112">DEMETER</font> does a simple lexical analysis on the ensemble of
+math expressions defined on the GDS window, then uses <a class="reference external" href="https://metacpan.org/module/Graph">a formal graph
+theory tool</a> to develop a graph
+depiction of the parameters. Loops (like the first example) and cycles
+(like the second) a trivially evident when the parameters are viewed
+as a formal graph. That was a really fun part of <font size=-1 color="#8C4112">DEMETER</font> to
+write.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Running a fit</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">7.1. Sanity checking your fitting model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="happiness.html">7.2. The heuristic happiness parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">7.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/fit/sanity.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="happiness.html" title="7.2. The heuristic happiness parameter"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="7. Running a fit"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Running a fit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

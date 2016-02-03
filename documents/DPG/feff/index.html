@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Feff &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="7.1. Input data for Feff" href="input.html" />
+    <link rel="prev" title="6. Atoms" href="../atoms.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="input.html" title="7.1. Input data for Feff"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../atoms.html" title="6. Atoms"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="feff">
+<h1>7. Feff<a class="headerlink" href="#feff" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">IFEFFIT</font> ships with a free copy of <font size=-1 color="#8C4112">FEFF</font>. Although
+deep support for <font size=-1 color="#8C4112">FEFF8</font> is on the long range list of
+objectives for <font size=-1 color="#8C4112">DEMETER</font>, currently only <font size=-1 color="#8C4112">FEFF6</font> is
+well supported. This seems reasonable as <font size=-1 color="#8C4112">DEMETER</font> currently
+have no special capabilities for XANES or other inner shell
+spectroscopy analysis beyond basic, <font size=-1 color="#8C4112">ATHENA</font>-level
+functionality.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-feff6"></span><a class="reference external image-reference" href="../_images/feff6.png"><img alt="../_images/feff6.png" src="../_images/feff6.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 7.1 </span><span class="caption-text">This is a rough flow diagram for <font size=-1 color="#8C4112">FEFF6</font>. The
+configuration of atoms in the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file is used to
+compute the potentials in the <em>potph</em> part of <font size=-1 color="#8C4112">FEFF6</font> and
+to find all possible scattering geometries with the cluster in the
+<em>pathfinder</em> part. The output files from those two parts,
+<code class="file docutils literal"><span class="pre">phase.bin</span></code> and <code class="file docutils literal"><span class="pre">paths.dat</span></code>, are used by <em>genfmt</em> to
+compute the <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files, each of which contains the
+contribution to the EXAFS from an individual scattering
+geometry. The various scattering contributions are then summed by
+<em>ff2chi</em> to make the theoretical χ(k).</span></p>
+</div>
+<p>When run outside of <font size=-1 color="#8C4112">DEMETER</font>, <font size=-1 color="#8C4112">FEFF6</font> is usually
+treated as a single program that starts by reading an input file and
+ends by writing out <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files containing the
+contributions from each individual scattering path. In fact,
+<font size=-1 color="#8C4112">FEFF</font> runs in five distinct steps:</p>
+<ol class="arabic simple">
+<li>Read the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file</li>
+<li>Compute the atomic potentials (called <em>potph</em> in the internal
+language of the <font size=-1 color="#8C4112">FEFF</font> program)</li>
+<li>Find all possible scattering paths with the cluster defined by the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file (<em>pathfinder</em>)</li>
+<li>Using the geometric information from the paths finder and the atomic
+potentials, compute the contribution from each scattering path
+(<em>genfmt</em>)</li>
+<li>Sum the contributions from the scattering paths into a calculated
+χ(k) (<em>ff2chi</em>)</li>
+</ol>
+<p>In <font size=-1 color="#8C4112">IFEFFIT</font> and in the older version of <font size=-1 color="#8C4112">ARTEMIS</font>,
+we simply drop <em>ff2chi</em>.  <font size=-1 color="#8C4112">IFEFFIT</font> is a high-functionality
+replacement for <em>ff2chi</em>. It takes all the contributions computed by
+the <font size=-1 color="#8C4112">FEFF</font> calculation and adds them up with parameterization
+for the path parameters.</p>
+<p>That was the only part of <font size=-1 color="#8C4112">FEFF6</font> that was unused in old
+<font size=-1 color="#8C4112">ARTEMIS</font>.  When you imported a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file into
+<font size=-1 color="#8C4112">ARTEMIS</font>, <font size=-1 color="#8C4112">FEFF6</font> was run all the way through the
+<em>genfmt</em> stage. Hidden somewhere out of the way were all the oputput
+files from <font size=-1 color="#8C4112">FEFF</font>.  This is why old <font size=-1 color="#8C4112">ARTEMIS</font>
+project files are so very large. It is because they contain the
+<code class="file docutils literal"><span class="pre">phase.bin</span></code> file and possibly hundreds of <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code>
+files -- one for each scattering path computed in each <font size=-1 color="#8C4112">FEFF</font>
+calculation performed.</p>
+<p><font size=-1 color="#8C4112">FEFF</font>, however, does not have to be run this way.  Using the
+<code class="docutils literal"><span class="pre">CONTROL</span></code> keyword, you can specify which parts of <font size=-1 color="#8C4112">FEFF</font>
+actually run.  Each of <em>potph</em>, <em>pathfinder</em>, <em>genfmt</em>, and <em>ff2chi</em>
+can be turned on and off individually, so long as the all the
+necessary input information is somehow available.  For example, to run
+just <em>genfmt</em>, you must somehow have already calculated the
+<code class="file docutils literal"><span class="pre">phase.bin</span></code> and <code class="file docutils literal"><span class="pre">paths.dat</span></code> files.</p>
+<p>An aside about <font size=-1 color="#8C4112">FEFF</font>'s <em>pathfinder</em>: it is fast, but is
+missing useful features. One missing feature is that, when it
+determines which scattering geometries are degenerate (i.e. they
+provide the same contributions to the EXAFS), it throws each
+degenerate path away. That is, the <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> file for the
+first coordination shell in an BCC metal tells you the coordinates of
+one such scattering atom and it tells you that the degeneracy is 8. It
+does not, however, retain the coordinates of the other 7 atoms. The
+other shortcoming of the <em>pathfinder</em> is that it treats scattering
+paths as non-degenerate if their half path lengths differ by 0.00001
+Å or more. That is, in most cases, a ridiculously tight tolerance
+which leads to a substantial proliferation of very similar paths.</p>
+<p>OK, back to how <font size=-1 color="#8C4112">FEFF</font> is use in <font size=-1 color="#8C4112">ARTEMIS</font>. In the
+new <font size=-1 color="#8C4112">ARTEMIS</font>, I take a much more fine-grained approach.
+<font size=-1 color="#8C4112">FEFF</font> is never run from beginning to end.  When
+<font size=-1 color="#8C4112">FEFF</font> is run, the <em>potph</em> part is run and the resulting
+<code class="file docutils literal"><span class="pre">phase.bin</span></code> file is saved.</p>
+<p>Then the <em>pathfinder</em> is run, but not <font size=-1 color="#8C4112">FEFF</font>'s <em>pathfinder</em>.
+The <em>pathfinder</em> has been completely rewritten as part of
+<font size=-1 color="#8C4112">DEMETER</font> The new <em>pathfinder</em> is missing one important
+feature. It has no way of doing <font size=-1 color="#8C4112">FEFF</font>'s quick and dirty
+estimation of path amplitude, the so-called curved-wave importance
+factor, thus <font size=-1 color="#8C4112">DEMETER</font>'s <em>pathfinder</em> does not have that way
+of discarding obviously small paths and all higher-order scattering
+paths based on that geometry. Also, <font size=-1 color="#8C4112">DEMETER</font>'s <em>pathfinder</em>
+is pretty slow compared to <font size=-1 color="#8C4112">FEFF</font>'s. However,
+<font size=-1 color="#8C4112">DEMETER</font>'s <em>pathfinder</em> retains information about all
+scattering geometries that contribute to the degeneracy of a path. In
+the future, this will allow propagattion of distortions to the
+starting structure through all the scattering paths.</p>
+<p>Secondly, <font size=-1 color="#8C4112">DEMETER</font>'s <em>pathfinder</em> introduces something
+called “fuzzy degeneracy”. This is a configurable parameter
+that defines a length scale below which paths of similar length are
+considered degenerate. The default is 0.03 Å, but can be set as you
+wish. Thus paths that differ in length by less than 0.03 Å are
+considered degenerate and the resulting path is computed at the
+average length of the paths that are considered degenerate.</p>
+<p>So, the <em>pathfinder</em> introduces a number of new features. But the
+really powerful bit is how <font size=-1 color="#8C4112">ARTEMIS</font> interacts with
+<em>genfmt</em>. Basically, <em>genfmt</em> is run on demand the first time that the
+corresponding <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> file is needed (perhaps for a fit,
+perhaps for a plot). When the current instance of <font size=-1 color="#8C4112">DEMETER</font>
+is finished (say, by quitting <font size=-1 color="#8C4112">ARTEMIS</font>) all the
+<code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files are deleted. The next time you fire up your
+program, they will be recalcualted. It turns out that the call to
+<em>genfmt</em> is so fast that it is better to recompute the
+<code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files rather than carry them around. Thus
+<font size=-1 color="#8C4112">ARTEMIS</font> project files are much, much smaller.  The
+<code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files are given names based on random strings, so
+there is no chance of accidentally over-writing them if you happen to
+re-run earlier parts of <font size=-1 color="#8C4112">FEFF</font>. The way this on-demand
+calcualtion of <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files works is by having
+<font size=-1 color="#8C4112">DEMETER</font> generate short replacements for the
+<code class="file docutils literal"><span class="pre">paths.dat</span></code> file which contain only the single path that you
+want to calculate. The <code class="file docutils literal"><span class="pre">paths.dat</span></code> file is deleted immediately
+after it is used.</p>
+<p>This approach makes it very easy to define interesting abstractions of
+paths. For instance, suppose you want to consider the possibility that
+one of the atoms in your material is at a position very different from
+the examples in the cluster. This approach makes it easy to compute
+that. It's called an SSPath.</p>
+<p>There are a number of other tricks that this capability will enable,
+including things like considering variation in scattering angle of a MS
+path or consideration of arbitrary radial distribution functions.</p>
+<hr class="docutils" />
+<p><strong>Contents</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="input.html">7.1. Input data for Feff</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input.html#starting-from-a-conventional-feff-inp-file">7.1.1. Starting from a conventional feff.inp file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html#starting-from-an-atoms-object">7.1.2. Starting from an Atoms object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html#starting-from-a-molecular-structure-file">7.1.3. Starting from a molecular structure file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="potph.html">7.2. Computng potentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathfinder.html">7.3. The path finder</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pathfinder.html#comparing-pathfinders">7.3.1. Comparing Pathfinders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathfinder.html#fuzzy-degeneracy">7.3.2. Fuzzy degeneracy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intrp.html">7.4. Path interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intrp.html#interpretaton-output-targets">7.4.1. Interpretaton output targets.</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">7. Feff</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input.html">7.1. Input data for Feff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="potph.html">7.2. Computng potentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathfinder.html">7.3. The path finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intrp.html">7.4. Path interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/feff/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="input.html" title="7.1. Input data for Feff"
+             >next</a></li>
+        <li class="right" >
+          <a href="../atoms.html" title="6. Atoms"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

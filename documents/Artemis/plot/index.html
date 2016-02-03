@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Plotting data &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="8.1. Using the plot list" href="plotlist.html" />
+    <link rel="prev" title="7.3. Using path-like objects" href="../fit/pathlike.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plotlist.html" title="8.1. Using the plot list"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../fit/pathlike.html" title="7.3. Using path-like objects"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plotting-data">
+<h1>8. Plotting data<a class="headerlink" href="#plotting-data" title="Permalink to this headline">¶</a></h1>
+<img alt="Plot window" src="../_static/plotlist.png" align="right" hspace="25"><p>You have <a class="reference external" href="../startup/plot.html">already been introduced</a> to the
+basic functionality of the Plot window. In this chapter, all the
+details of <font size=-1 color="#8C4112">ARTEMIS</font>' plotting system will be
+explained. While <font size=-1 color="#8C4112">ARTEMIS</font> does not provide all the plotting
+capabilities offered by real plotting tools like Gnuplot, Origin,
+Excel, Kaleidagraph, and others, it does provide enough options to
+create interesting and instructive visualization of your EXAFS fitting
+project.</p>
+<p>Let's briefly go over the basic features of the Plot window. The buttons
+at the top are used to make plots of data and paths in one of the three
+spaces. The data listed in the plotting list at the bottom of the Plot
+window will be included in the plots made with those three buttons.</p>
+<p>The part of the complex χ(R) or χ(q) functions is controled
+by the two sets of radiobuttons at the top of the <span class="guilabel">limits</span>
+tab. Additional traces – the fit, the window, and so on – can be
+included by clicking on their check buttons. Finally, the plotting
+range along the x-axis can be set for each of the three spaces. At the
+top of the Plot window are a series of radio buttons used to set the
+k-weighting used in plots. A plot of χ(k) will be weighted by the
+specified factor of k. Plots of χ(R) or χ(q) will use that
+valule of k-weighting for the forward Fourier transform.</p>
+<p>The <span class="guilabel">kw</span> option for k-weighting will use the user-specified
+value of k-weight for each data set included in the plot. That value
+will also be used for any paths associated with that data set.</p>
+<p>Please note that the value of k-weight selected for plotting has no
+bearing on how the fit is performed. The k-weighting specified on the
+Data window is used to evaluate the fit. Fit evaluation and
+visualization are different tasks, each with their own value of
+k-weight.</p>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotlist.html">8.1. Using the plot list</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plotlist.html#populating-the-plotting-list-manually">8.1.1. Populating the plotting list manually</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotlist.html#refreshing-the-plotting-list-after-a-fit">8.1.2. Refreshing the plotting list after a fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotlist.html#plotting-a-sum-of-paths-without-performing-a-fit">8.1.3. Plotting a sum of paths without performing a fit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stack.html">8.2. Stacked plots</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stack.html#stacked-plot">8.2.1. Stacked plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html#inverted-plot">8.2.2. Inverted plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html#data-stack-plot">8.2.3. Data stack plot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indic.html">8.3. Plot Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vpaths.html">8.4. Creating and plotting VPaths</a></li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">8. Plotting data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plotlist.html">8.1. Using the plot list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html">8.2. Stacked plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indic.html">8.3. Plot Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpaths.html">8.4. Creating and plotting VPaths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/plot/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plotlist.html" title="8.1. Using the plot list"
+             >next</a></li>
+        <li class="right" >
+          <a href="../fit/pathlike.html" title="7.3. Using path-like objects"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

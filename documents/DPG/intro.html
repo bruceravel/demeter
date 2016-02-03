@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Introduction &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="2. The basics of data processing" href="data/index.html" />
+    <link rel="prev" title="Demeter Programmer&#39;s Guide: Middleware for Feff and Ifeffit" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="data/index.html" title="2. The basics of data processing"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Demeter Programmer&#39;s Guide: Middleware for Feff and Ifeffit"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> are amazing tools. Together and
+over the years, they have enabled the analysis and interpretation of
+many thousands of EXAFS experiments spanning an impressive broad range
+of scientific disciplines.</p>
+<p>Unfortunately, each of these tools is quite difficult to use to its
+full capabilities. The lack of readily accessible, flexible,
+highly-capable high-level tools has, for the most part, limited the
+use of <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> to relatively simple
+problem. Most examples of their use in the literature are restricted
+to fairly simple parameterization of a model structure that is
+calculated using <font size=-1 color="#8C4112">FEFF</font> in the most straight-forward manner.</p>
+<p>Certainly examples exist of highly sophisticated used of
+<font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font>. For instance, we see the
+clever use of multiple <font size=-1 color="#8C4112">FEFF</font> calculations on crystalline
+materials as analogs for metallo-organic environments by S. Kelly, et
+al.  As another example, we find a very complete accounting of the
+effects of anti-site disorder in a crystal by S. Calvin, et al.  Both
+of these examples, however, are the work of particularly dedicated and
+talented experts in the application of <font size=-1 color="#8C4112">FEFF</font> and
+<font size=-1 color="#8C4112">IFEFFIT</font> and both represent many months of painstaking
+effort to develop idiosyncratic analytical methodology.</p>
+<ul class="simple" id="bibtex-bibliography-intro-0">
+<li>S.&nbsp;Calvin, E.&nbsp;E. Carpenter, B.&nbsp;Ravel, V.&nbsp;G. Harris, and S.&nbsp;A. Morrison. Multiedge refinement of extended x-ray-absorption fine structure of manganese zinc ferrite nanoparticles. <em>Phys. Rev. B</em>, 66:224405, Dec 2002. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.66.224405">doi:10.1103/PhysRevB.66.224405</a>.</li>
+<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+</ul>
+<p>There <strong>has</strong> to be a better way.</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is my attempt to provide a set of tools to enable
+the sort of high-level approach to EXAFS data analysis that has always
+been the province of the dedicated few. It is also the result of more
+than a decade of writing software specifically intended to enable the
+use of <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
+<p>Many people reading this wil be familiar with my programs
+<font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font>. They are in wide use
+throughout the XAS community and around the world.  As graphical
+interfaces to XAS data management and the use of <font size=-1 color="#8C4112">FEFF</font> and
+<font size=-1 color="#8C4112">IFEFFIT</font>, each has proven successful to a certain
+degree. Each one, however, suffers from one major flaw (and any number
+of minor flaws).  <em>There is no easy way to write a small, personal
+program that replicates the exact behavior of the GUI programs.</em></p>
+<p>As convenient as <font size=-1 color="#8C4112">ATHENA</font> is for processing modest amounts of
+data at the beamline or upon returning home from a beam run, it is not
+really the right tool for managing huge volumes of data. In several
+days at a beamline with quick-XAS capabilities, it is quite common to
+generate many hundreds, even many thousands, of XAS scans. The
+interactivity that makes <font size=-1 color="#8C4112">ATHENA</font> so appealing when handling
+small amounts of data becomes a tedious, repetitive nightmare when
+processing large amounts of data.  Unfortunately, there is no way of
+separating the data processing capabilities of <font size=-1 color="#8C4112">ATHENA</font> from
+the graphical interface. (This is not an inherent flaw of any of the
+tools used to create <font size=-1 color="#8C4112">ATHENA</font> -- it is entirely due to my own
+inexperience when I began writing <font size=-1 color="#8C4112">ATHENA</font>.)</p>
+<p>This problem is where <font size=-1 color="#8C4112">DEMETER</font> starts. <font size=-1 color="#8C4112">DEMETER</font> is
+“middleware” -- it is a system of software tools that sit
+between <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> and the program that
+the user actually interacts with.  <font size=-1 color="#8C4112">DEMETER</font> is not, by
+itself, a computer program. Rather it is the tool from which computer
+programs for XAS data processing and analysis are built.</p>
+<p>The package containing the <font size=-1 color="#8C4112">DEMETER</font> libraries actually does
+include various kinds of interface tools. For example, there is a
+version of <font size=-1 color="#8C4112">ARTEMIS</font> written using
+<font size=-1 color="#8C4112">DEMETER</font>. However, this version of <font size=-1 color="#8C4112">ARTEMIS</font> does
+not add any functionality related to XAS data management not already
+present in the <font size=-1 color="#8C4112">DEMETER</font> libraries. It is merely a graphical
+shell layered on top of <font size=-1 color="#8C4112">DEMETER</font>'s capabilities. As a
+result, it is possible -- indeed, often quite easy -- to write a small
+program which performs a fit to EXAFS data in exactly the same manner
+as <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
+<p>Armed with this middleware layer, it is much easier to consider
+implementing tools for automating large quantities of data or writing
+tools for special, one-off data processing chores. And <font size=-1 color="#8C4112">DEMETER</font> offers
+tools for easily passing data between <font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font> and your own
+<font size=-1 color="#8C4112">DEMETER</font>-using programs.</p>
+<p>Tools for automation and for easy access to the capabilities available
+in the GUI programs would be benefit enough to merit the creation of a
+software library. <font size=-1 color="#8C4112">DEMETER</font>, however, offers quite a bit more than that.
+It has capabilities already written or under development for very
+sophisticated uses of <font size=-1 color="#8C4112">FEFF</font>. Inspired by the articles cited above and by
+other interesting uses of XAS theory, <font size=-1 color="#8C4112">DEMETER</font> offers easy access to a
+variety of ways of manipulating the output of <font size=-1 color="#8C4112">FEFF</font> that had previously
+required a deep understanding of <font size=-1 color="#8C4112">FEFF</font>'s inner workings.</p>
+<p>So there you have it. <font size=-1 color="#8C4112">DEMETER</font> is a software tool for making
+easy XAS chores very easy and for making difficult XAS chores
+tractable. This document is full of code samples which demonstrate the
+<font size=-1 color="#8C4112">DEMETER</font> way of solving XAS data management and analysis
+problems. In many cases, you should be able to cut-and-paste examples
+into your own programs, modifying them slightly to suite your
+particular problem. Hopefully, <font size=-1 color="#8C4112">DEMETER</font> has enough flexibility that you
+can begin working on problems that have not even crossed my mind.</p>
+<div class="section" id="the-technology-behind-demeter">
+<h2>1.1. The technology behind Demeter<a class="headerlink" href="#the-technology-behind-demeter" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> uses <a class="reference external" href="http://perl.org">perl</a>. This is, I
+suppose, an unsexy choice these days.  All the cool kids are, after
+all, using python or ruby.  I like perl.  I can think in perl. And I can
+code quickly and fluently in perl.  What's more, perl has <a class="reference external" href="http://www.cpan.org/">CPAN</a>, the worlds largest repository of language
+extensions.  CPAN means that I have far fewer wheels to recreate (and
+probably get wrong). Virtually any language extension I need in
+pursuit of making <font size=-1 color="#8C4112">DEMETER</font> awesome probably already exists.</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> uses <a class="reference external" href="https://metacpan.org/pod/Moose">Moose</a>.
+This is, on the balance, a very good thing, indeed. Moose brings many
+powerful capabilities to the programming table. When I was about
+halfway through writing <font size=-1 color="#8C4112">DEMETER</font>, I paused for a bit less
+than a month to rewrite everything I had thus far created to use
+Moose. This left me with about 2/3 as many lines of code and a code
+base that was more robust and more featureful. Neat-o!</p>
+<p>For the nerdly, Moose is an implementation of a <a class="reference external" href="http://en.wikipedia.com/wiki/Metaobject">meta-object
+protocol</a>. This interesting
+and powerful tool allows for the semantics of the object system to be
+modified at either compile or run time. The problem of adding features
+and functionality to the object system is therefore pushed downstream
+from the developers of the language to the users of the language. In
+good CPAN fashion, a healthy and robust ecosystem has evolved around
+Moose producing a whole host of useful extensions.</p>
+<p>Moose offers lots of great features, including an extremely powerful
+attribute system, a type attribute system, method modifiers, an ability
+to mix object and aspect orientation, and a wonderfully deep set of
+automated tests. I am confident that simply by using Moose, my code is
+better code and, because Moose testing is so deep, I am confident that
+any bugs in <font size=-1 color="#8C4112">DEMETER</font> are my fault and not the fault of the people whose
+work I depend on.</p>
+<p>For all the wonderfulness of Moose, it does have one big wart that I
+need to be up-front about. Moose is slow at start-up. Since <font size=-1 color="#8C4112">DEMETER</font> is
+big and Moose starts slowly, any program using <font size=-1 color="#8C4112">DEMETER</font> will take about 2
+extra second to start. For a long-running program like a complicated
+fitting script or a GUI, an additional couple of seconds at start-up is
+no big deal. For quick-n-dirty or one-off application, that may a bit
+annoying. The Moose folk claim to be working on start-up issues. I am
+keeping my fingers crossed. Until then, I live with the slow start-up,
+confident that the rest of <font size=-1 color="#8C4112">DEMETER</font> is worth the wait.</p>
+</div>
+<div class="section" id="some-vocabulary">
+<h2>1.2. Some vocabulary<a class="headerlink" href="#some-vocabulary" title="Permalink to this headline">¶</a></h2>
+<p>Throughout this document, I use the language of object systems to
+describe <font size=-1 color="#8C4112">DEMETER</font>. I don't expect than everyone using
+<font size=-1 color="#8C4112">DEMETER</font> should know much about object oriented
+programming. indeed, my hope is that the examples in this document can
+be followed and adapted by anyone with a basic grounding in the use of
+perl. To help introduce that person to the prospect of coding with
+<font size=-1 color="#8C4112">DEMETER</font>, I'll define a few terms. (More specifically, I'll
+relate my understanding of those terms. I have no formal training in
+computer science and am probably wrong a lot about this
+stuff. <font size=-1 color="#8C4112">DEMETER</font> seems to work nonetheless.) For a bit more
+Moose-specific information, see <a class="reference external" href="https://metacpan.org/pod/distribution/Moose/lib/Moose/Manual/Concepts.pod">the concepts page from the Moose
+manual</a>.</p>
+<dl class="docutils">
+<dt><strong>Object</strong></dt>
+<dd>Think of an object as a box containing data. This box comes with a
+set of instructions for how to manipulate the stuff in the box. The
+data are called the attributes of the object and tend to be things
+like numbers, strings, booleans, or other data structures. The set
+of instructions are called methods and are very similar to
+subroutines in a non-object-oriented perl script with the caveat
+that there is an important syntax relation between an object and any
+of its methods.</dd>
+<dt><strong>Attribute</strong></dt>
+<dd>An attribute is a piece of information about the object that is
+either set by the user or computed as a result of some interaction
+with the object. You can always query an object about an attribute
+value. Some attributes are read-write, which means that they can be
+set in your program. Others are read-only, which means they have a
+value that is set when the object is created and cannot be further
+modified in your program. See <a class="reference external" href="https://metacpan.org/pod/distribution/Moose/lib/Moose/Manual/Attributes.pod">the attributes page from the Moose
+manual</a>
+for more details.</dd>
+<dt><strong>Accessor</strong></dt>
+<dd>An accessor is a kind of method whose specific job is to query an
+object for an attribute value or to set the attribute to a new
+value. <font size=-1 color="#8C4112">DEMETER</font> uses a feature of Moose whereby an attribute is given
+a name and this name is used as the name of the accessor method.
+When the accessor is called without an argument, it gets the value
+of the attribute. When it is called with a value, it attempts to set
+the attribute to that value. <font size=-1 color="#8C4112">DEMETER</font> defines two additional accessor
+functions, <code class="docutils literal"><span class="pre">set</span></code> and <code class="docutils literal"><span class="pre">get</span></code> which are used to access multiple
+attributes with a single method call.</dd>
+<dt><strong>Type constraints</strong></dt>
+<dd>Moose offers a flexible type constraint system, which means that an
+attribute can be restricted to have a value that meets a defined
+criterion. For example, the value for the <code class="docutils literal"><span class="pre">kmin</span></code> parameter of the
+Fourier transform can be defined to be a non-negative number.
+Attempting to set it to a negative value triggers an error. In this
+way, sanity checking of parameters is built deeply into <font size=-1 color="#8C4112">DEMETER</font>. See
+<a class="reference external" href="https://metacpan.org/pod/distribution/Moose/lib/Moose/Manual/Types.pod">the types page from the Moose
+manual</a>
+for more details.</dd>
+<dt><strong>Method</strong></dt>
+<dd>A method is a thing that can be done to an object. For example,
+there is an object type in <font size=-1 color="#8C4112">DEMETER</font> that is used to contain an XAS
+spectrum. That object has a method called <code class="docutils literal"><span class="pre">plot</span></code> whose purpose is
+to prepare and display a plot of the data. Another object type is
+used to define an EXAFS fitting model. That object has a method
+called <code class="docutils literal"><span class="pre">fit</span></code> which is used to actually perform the fit and store
+the resulting statistical parameters. Many other methods serve
+rather more mundane chores. In every case, though, the method is
+something that is done to or with a particular object. Each object
+has a set of methods that can be called. This set of methods defines
+the complete behavior of the object.</dd>
+<dt><strong>Trigger</strong></dt>
+<dd>A trigger is something that happens what an accessor is used to set
+an attribute value. It is an action that takes place as a result of
+changing an attribute value. For example, when the value of
+R<sub>bkg</sub> is changed for an object associated with XAS data, the
+trigger is used to set a flag that assures that the background
+removal is performed anew the next time it is necessary to do a
+Fourier transform of those data. Triggers are used to control much
+of the high-level functionality in <font size=-1 color="#8C4112">DEMETER</font>.</dd>
+</dl>
+<p>I will, on occassion in this document, point the reader to web sites
+where more of the programming details can be found.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">1. Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-technology-behind-demeter">1.1. The technology behind Demeter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-vocabulary">1.2. Some vocabulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/intro.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="data/index.html" title="2. The basics of data processing"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Demeter Programmer&#39;s Guide: Middleware for Feff and Ifeffit"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

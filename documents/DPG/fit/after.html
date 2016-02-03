@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.3. After a fit &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="10. Fitting EXAFS data" href="index.html" />
+    <link rel="next" title="10.4. The non-statistical happiness metric" href="happiness.html" />
+    <link rel="prev" title="10.2. Sanity checks" href="sanity.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="happiness.html" title="10.4. The non-statistical happiness metric"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="sanity.html" title="10.2. Sanity checks"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Fitting EXAFS data</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="after-a-fit">
+<h1>10.3. After a fit<a class="headerlink" href="#after-a-fit" title="Permalink to this headline">¶</a></h1>
+<p>After a fit finishes, each of the following tasks happens:</p>
+<ol class="arabic simple">
+<li>Best fit values and error bars are stored for each GDS object
+defining a <span class="guess">guess</span> parameter.</li>
+<li>Final values are stored for each GDS object defining a <span class="def">def</span> parameter.</li>
+<li>All <span class="after">after</span> parameters are evaluated.</li>
+<li>The residual of the fit is calculated.</li>
+<li>The statistics of the fit, including χ<sup>2</sup>, reduced
+χ<sup>2</sup>, R-factor, and all correlations between guess
+parameters are stored in the Fit object.</li>
+<li>All path parameters are evaluated and stored in the Path objects.</li>
+<li>The fit's “happiness” (see the next section for details) is
+evaluated.</li>
+<li>All GDS parameters flagged for automatic annotation are annotated.</li>
+</ol>
+<p>All of that is a detailed way of saying that every object involved in
+the fit is ready to be used for useful and interesting chores after
+the fit.  All Data and Path objects are ready to be plotted.  The fit
+can be saved a Fit serialization.  Column data files can be exported.
+A log file can be written.  Any of the chores can happen with
+confidence that every thing is completely up-to-date with the results
+of the fit.</p>
+<p>Picking up from the example of <a class="reference external" href="collection.html">the multiple data set fit</a>, the following example demonstrates how to
+perform several of the common after-fit chores that might be part of a
+fitting script.  The previous example demonstrated how to make an
+interesting plot using the two data sets and their fits.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">### ... picking up at line 61 of the previous example ...</span>
+
+ <span class="c1">## do the fit</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
+
+ <span class="c1">## write a log file</span>
+ <span class="k">my</span> <span class="p">(</span><span class="nv">$header</span><span class="p">,</span> <span class="nv">$footer</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">);</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">logfile</span><span class="p">(</span><span class="s">&quot;cufit.log&quot;</span><span class="p">,</span> <span class="nv">$header</span><span class="p">,</span> <span class="nv">$footer</span><span class="p">);</span>
+
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">freeze</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&quot;cu_temperature.dpj&quot;</span><span class="p">);</span>
+
+ <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;cu_10K.fit&quot;</span><span class="p">);</span>
+ <span class="nv">$data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;cu_150K.fit&quot;</span><span class="p">);</span>
+
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">interview</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="docutils">
+<dt><strong>Log file</strong></dt>
+<dd>At line 8 a log file is written. The first argument of the
+<code class="docutils literal"><span class="pre">logfile</span></code> method is the name of the output log file. The other two
+arguments, both set to empty strings in this example, contain
+user-specified text that is written to the beginning and end of log
+file.</dd>
+<dt><strong>Fit serialization</strong></dt>
+<dd>At line 10 the fit is serialized. This serialization file is simply
+a normal zip file containing the serializations of all the objects
+used in the fit along with a log file and a few other results of the
+fit. The convention is for this zip file to have the extension
+<code class="docutils literal"><span class="pre">.dpj</span></code> (i.e. <font size=-1 color="#8C4112">DEMETER</font> project).</dd>
+<dt><strong>Saving column data</strong></dt>
+<dd>At lines 12 and 13, the results of the fit to each data set are
+saved as column data files. These files contain columns with the k,
+data, the fit, the window, the residual, and the background function
+is it was corefined. See the <a class="reference external" href="../output.html">chapter on output
+formats</a> for more details on this and other
+column output formats.</dd>
+<dt><strong>Fit interview</strong></dt>
+<dd>At line 15, the <code class="docutils literal"><span class="pre">interview</span></code> method is called. This is a simple
+terminal application for examining the results of the fit. The log
+file and statistical parameters of the fit can be examined using
+this application and simple plots can be made. The interview is a
+bare-bones tool. But it is a nice compromise between using a GUI
+and writing your own tools to examine the results of the
+fit. <font size=-1 color="#8C4112">DEMETER</font> ships with a command line program called
+<code class="docutils literal"><span class="pre">rdfit</span></code> which is a wrapper around the <code class="docutils literal"><span class="pre">interview</span></code> method. It
+reads a <code class="docutils literal"><span class="pre">.dpj</span></code> file specified at the command line, imports it
+into a Fit object, then runs the <code class="docutils literal"><span class="pre">interview</span></code> method. The
+<code class="docutils literal"><span class="pre">interview</span></code> method and the <code class="docutils literal"><span class="pre">rdfit</span></code> program are described in
+more detail in <a class="reference external" href="../ui.html">chapter on user interfaces</a>.</dd>
+</dl>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Fitting EXAFS data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="collection.html">10.1. Setting up a fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity.html">10.2. Sanity checks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">10.3. After a fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="happiness.html">10.4. The non-statistical happiness metric</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/fit/after.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="happiness.html" title="10.4. The non-statistical happiness metric"
+             >next</a></li>
+        <li class="right" >
+          <a href="sanity.html" title="10.2. Sanity checks"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Fitting EXAFS data</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

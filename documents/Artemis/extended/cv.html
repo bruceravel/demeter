@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.2. Characteristic value &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.3. Geometric parametrization of bond length" href="delr.html" />
+    <link rel="prev" title="15.1. Quick first shell" href="qfs.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="delr.html" title="15.3. Geometric parametrization of bond length"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="qfs.html" title="15.1. Quick first shell"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="characteristic-value">
+<h1>15.2. Characteristic value<a class="headerlink" href="#characteristic-value" title="Permalink to this headline">¶</a></h1>
+<p>At the top of <a class="reference external" href="../data.html">the Data window</a> is the control for
+setting the <em>characteristic value</em>, or <em>CV</em>, of a data group. In this
+section, the purpose and use of the CV is explained.</p>
+<p>The CV is a user-defined number which is associated with the data set
+and is used for special purposes when evaluating the math expressions
+associated with <span class="def">def</span> and path parameters. By default,
+<font size=-1 color="#8C4112">ARTEMIS</font> simply increments the CV value for each data set
+imported – the first is set to 1, the second to 2, and so on. These
+values can be changed, but should always be integer-valued.</p>
+<p>The CV value is used in two ways to construct rich math expressions and
+expressive fitting models.</p>
+<div class="section" id="the-cv-token">
+<h2>15.2.1. The CV token<a class="headerlink" href="#the-cv-token" title="Permalink to this headline">¶</a></h2>
+<p>Consider a multiple data set fit to a material measured at various
+temperatures. For this discussion, let's consider a rock salt structured
+metal oxide, for instance ZnO. Let's also suppose that we have measured
+data at three temperatures, 10 K, 300 K, and 500 K.</p>
+<p>In a multiple data set fit, you may choose to model the σ<sup>2</sup> of the first shell Zn-O bond using an Einstein model. This
+allows you to parameterize the σ<sup>2</sup> at each temperature
+as a function of a single variable parameter, the Einstein
+temperature. To do this, you must define a <span class="guess">guess</span> parameter to
+represent the Einstein temperature like so:</p>
+<div class="highlight-python"><div class="highlight"><pre>guess thetae = 500
+</pre></div>
+</div>
+<p>The functional form of the Einstein model takes the variable Einstein
+temperature and the sample's measurement temperature as its arguments.</p>
+<ul class="simple" id="bibtex-bibliography-extended/cv-0">
+<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>path {
+       sigma2 = eins(temp, thetae)
+}
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">temp</span></code> represents the sample temparature. The pseudo-syntax
+used here is simply meant to represent the σ<sup>2</sup> parameter
+on a <a class="reference external" href="../path/index.html">the Path page</a>.</p>
+<p>In a multiple data set fit, you would have to take care that <code class="docutils literal"><span class="pre">temp</span></code> is
+replaced each time it is used. That could be done in two ways. You could
+use various <span class="set">set</span> parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>set temp1 = 10
+set temp2 = 300
+set temp3 = 500
+
+path for data set 1 {
+       sigma2 = eins(temp1, thetae)
+}
+path for data set 2 {
+       sigma2 = eins(temp2, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(temp3, thetae)
+}
+</pre></div>
+</div>
+<p>Or you could simply state the temperature explicitly in the path
+parameter math expressions:</p>
+<div class="highlight-python"><div class="highlight"><pre>path for data set 1 {
+       sigma2 = eins(10,  thetae)
+}
+path for data set 2 {
+       sigma2 = eins(300, thetae)
+}
+path for data set 3 {
+       sigma2 = eins(500, thetae)
+}
+</pre></div>
+</div>
+<p>Both of those solutions work. But neither make effective use of the
+model building automation in <font size=-1 color="#8C4112">ARTEMIS</font>. In the chapter on
+<a class="reference external" href="../path/mathexp.html">the Path window</a>, you learned about various
+ways of pushing path parameter values onto other paths. One efficient
+way of setting up a multiple data set fit would be to edit the path
+parameters for one of the data sets, then push the path parameters
+onto the other data sets.</p>
+<p>Using the two strategies summarized above, you would need to do
+considerable editing after pushing the path parameter values. That sort
+of editing is error-prone.</p>
+<p>Here is a third way of solving this problem.</p>
+<ol class="arabic">
+<li><p class="first">Set the CV for the three data sets to the temperature at which the
+data were measured. In our example, the three data sets would get CV
+values of 10, 300, and 500.</p>
+</li>
+<li><p class="first">Next, edit the σ<sup>2</sup> path parameter for one of the data
+sets to read</p>
+<div class="highlight-python"><div class="highlight"><pre>path for data set 1 {
+       sigma2 = eins([CV],  thetae)
+}
+</pre></div>
+</div>
+</li>
+<li><p class="first">Finally, push this σ<sup>2</sup> value on the other data sets
+without editing those to which it is pushed.</p>
+</li>
+</ol>
+<p>When <font size=-1 color="#8C4112">ARTEMIS</font> evaluates the fitting model, it will replace
+the <code class="docutils literal"><span class="pre">[CV]</span></code> token with the appropriate characteristic value. In
+short, the computer handles the error-prone (for a human) task of
+editing the many σ<sup>2</sup> path parameters.</p>
+<p>While this may seem like a small improvement over handling the editing
+chores yourself, use of the CV really pays off for large or complicated
+fitting models. For a multiple data set fit with many data sets, use of
+the CV saves quite a bit of editing. Furthermore, you can use the CV
+value in many path parameter math expressions. For example, suppose you
+were to model the ΔR values with a temperature-dependent, linear
+explansion coefficient. The use of the CV in those math expressions
+saves a lot of error-prone, manual editing!</p>
+</div>
+<div class="section" id="use-in-lguess-parameters">
+<h2>15.2.2. Use in lguess parameters<a class="headerlink" href="#use-in-lguess-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The second use of the CV is along with <span class="lguess">lguess</span>
+parameters. These parameters are an eficient way of generating
+per-data-set guess parameters in a multiple data set fit while still
+making good use of the automation in <font size=-1 color="#8C4112">ARTEMIS</font> for pushing
+path parameter math expressions between data sets.</p>
+<p>Let's again consider the ZnO sample measured at the same three
+temparatures. This time, however, we choose to float an independent σ²
+parameter at each temperature.</p>
+<p>The straightforward way of doing this would be something like</p>
+<div class="highlight-python"><div class="highlight"><pre>guess ss1 = 0.002
+guess ss2 = 0.004
+guess ss3 = 0.006
+
+path for data set 1 {
+       sigma2 = ss1
+}
+path for data set 2 {
+       sigma2 = ss2
+}
+path for data set 3 {
+       sigma2 = ss3
+}
+</pre></div>
+</div>
+<p>Here is how this can be done using the CV and an <span class="lguess">lguess</span>
+parameter.  First, set the CV values to the temperature values, as
+before. Next, do the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>lguess ss = 0.002
+
+path for data set 1 {
+       sigma2 = ss
+}
+path for data set 2 {
+       sigma2 = ss
+}
+path for data set 3 {
+       sigma2 = ss
+}
+</pre></div>
+</div>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> will notice that <code class="docutils literal"><span class="pre">ss</span></code> is an <span class="lguess">lguess</span>
+parameter. For each data set in which it is used, <font size=-1 color="#8C4112">ARTEMIS</font>
+will create a <span class="guess">guess</span> parameters named <code class="docutils literal"><span class="pre">ss_[CV]</span></code>, where, as before,
+the <code class="docutils literal"><span class="pre">[CV]</span></code> is replaced by the CV value.</p>
+<p>In the case of our example, three <span class="guess">guess</span> parameters will be
+created called <code class="docutils literal"><span class="pre">ss_10</span></code>, <code class="docutils literal"><span class="pre">ss_300</span></code>, and <code class="docutils literal"><span class="pre">ss_500</span></code>. Each of those
+will be given the initial value of the coresponding <span class="lguess">lguess</span>
+parameter (0.002 in this case). The <span class="lguess">lguess</span> parameter will
+not be used in the fit, but each of the generated <span class="guess">guess</span>
+parameters will be floated. At the end of the fit, the log file will
+report on each as for any other <span class="guess">guess</span> parameter.</p>
+<p>The utility of the <span class="lguess">lguess</span> parameter is that it allows you to
+define a common fitting model used across many data sets. You can use
+the automation built into <font size=-1 color="#8C4112">ARTEMIS</font> to push those path
+parameter math expressions between paths and data sets. Without
+further editing, the desired fitting model – with one
+<span class="guess">guess</span> parameter for each data set – is correctly made.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/cv.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="delr.html" title="15.3. Geometric parametrization of bond length"
+             >next</a></li>
+        <li class="right" >
+          <a href="qfs.html" title="15.1. Quick first shell"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

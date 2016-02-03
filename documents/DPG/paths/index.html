@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Scattering paths &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="8.1. Calculating individual scattering paths" href="paths.html" />
+    <link rel="prev" title="7.4. Path interpretation" href="../feff/intrp.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="paths.html" title="8.1. Calculating individual scattering paths"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../feff/intrp.html" title="7.4. Path interpretation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scattering-paths">
+<h1>8. Scattering paths<a class="headerlink" href="#scattering-paths" title="Permalink to this headline">¶</a></h1>
+<p>This chapter explains how to use the results of a <font size=-1 color="#8C4112">FEFF</font>
+calculation. The Path object is the component of a fitting model that
+encapsolates the contribution from an individual scattering
+geometry. Here is an example of a typical Path object:</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre> <span class="k">my</span> <span class="nv">$paths</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">parent</span> <span class="o">=&gt;</span> <span class="nv">$feff_object</span><span class="p">,</span>
+                                  <span class="n">data</span>   <span class="o">=&gt;</span> <span class="nv">$data_object</span><span class="p">,</span>
+                                  <span class="n">sp</span>     <span class="o">=&gt;</span> <span class="nv">$sp_object</span><span class="p">,</span>
+                                  <span class="n">s02</span>    <span class="o">=&gt;</span> <span class="s">&quot;amp&quot;</span><span class="p">,</span>
+                                  <span class="n">e0</span>     <span class="o">=&gt;</span> <span class="s">&quot;enot&quot;</span><span class="p">,</span>
+                                  <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;deltaa&quot;</span><span class="p">,</span>
+                                  <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssn&quot;</span><span class="p">,</span>
+                                 <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>In lines 4 through 7, the path parameters are set using the names of
+<a class="reference external" href="../gds/index.html">GDS parameters</a>. More information about setting
+and querying path parameter values <a class="reference external" href="pathparams.html">later in this
+chapter</a>.</p>
+<p>Lines 1 through 3 show the hierarchy of the Path object. The Path object
+relies upon connections to <font size=-1 color="#8C4112">DEMETER</font> objects to do its work.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">parent</span></code></dt>
+<dd>At line 1, the “parent” <a class="reference external" href="../feff/index.html">Feff object</a>. is
+identified. The parent is the Feff object that was used to run the
+<font size=-1 color="#8C4112">FEFF</font> calulcation that generated this scattering path. The Path
+object needs to know</dd>
+<dt><code class="docutils literal"><span class="pre">data</span></code></dt>
+<dd><p class="first">At line 2, the <a class="reference external" href="../feff/index.html">Data object</a> containing the
+data for which this scattering path is being used to model. This
+connection is required for two reasons. The <a class="reference external" href="../feff/index.html">Fit
+object</a> uses this linkage to properly create
+the <font size=-1 color="#8C4112">IFEFFIT</font> commands involved in running the fit. The other use of
+the Data object connection is to plot the Path object properly. The
+Fourier transform parameters of the Data object are used to process
+the scattering path for plotting.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">data</span></code> attribute is not stricly required. When <font size=-1 color="#8C4112">DEMETER</font> is
+imported at the beginning of your program, a <a class="reference external" href="../highlevel/methods.html">default Data
+object</a> is created using a sensible
+set of processing parameters. If the <code class="docutils literal"><span class="pre">data</span></code> attribute is not
+explicitly set, the default Data object is used. This allows you to
+sensibly plot scattering paths without actually importing data into
+a Data object. When using a Path object as part of a simulation or a
+fit, it is important to properly identify the <code class="docutils literal"><span class="pre">data</span></code> attribute so
+that the path is Fourier transformed in the same manner as its
+associated data.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">sp</span></code></dt>
+<dd>The final part of the Path object's hierarchy is shown in line 3.
+The ScatteringPath object is the thing that links the <font size=-1 color="#8C4112">FEFF</font>
+calculation with the Path object. This is explained in detail in
+<a class="reference external" href="paths.html">the next section</a>. As it might seem confusing that
+two different objects are involved in defining a scattering path,
+here is the way to think about it. The Path object is outward
+expression of the scattering path and is intended to resemble a path
+paragraph in a <code class="file docutils literal"><span class="pre">feffit.inp</span></code> file or a <code class="docutils literal"><span class="pre">path</span></code> command in an <font size=-1 color="#8C4112">IFEFFIT</font>
+script. The ScatteringPath object is aware of all the details of the
+path finder and encapsolates the results of the <font size=-1 color="#8C4112">FEFF</font> calculation,
+much like the <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> but with lots of object-oriented
+functionality surrounding it.</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Contents</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">8.1. Calculating individual scattering paths</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#writing-feffnnnn-dat-files">8.1.1. Writing feffNNNN.dat files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#examining-the-degenerate-paths">8.1.2. Examining the degenerate paths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="semantic.html">8.2. Semantic path descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathparams.html">8.3. Path parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pathparams.html#other-methods">8.3.1. Other methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathparams.html#uncertainties-in-path-parameters">8.3.2. Uncertainties in path parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">8.4. Plotting individual paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="existing.html">8.5. Running Feff outside of Demeter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="existing.html#using-a-single-feffnnnn-dat-file">8.5.1. Using a single feffNNNN.dat file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="existing.html#importing-an-external-feff-calculation">8.5.2. Importing an external Feff calculation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">8. Scattering paths</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">8.1. Calculating individual scattering paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semantic.html">8.2. Semantic path descriptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathparams.html">8.3. Path parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">8.4. Plotting individual paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="existing.html">8.5. Running Feff outside of Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/paths/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="paths.html" title="8.1. Calculating individual scattering paths"
+             >next</a></li>
+        <li class="right" >
+          <a href="../feff/intrp.html" title="7.4. Path interpretation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

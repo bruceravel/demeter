@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.2. Absorption calculations and experimental corrections &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="14. Crystallography for EXAFS" href="index.html" />
+    <link rel="next" title="14.3. A worked example (in text!)" href="example.html" />
+    <link rel="prev" title="14.1. Understanding and denoting space groups" href="space.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="example.html" title="14.3. A worked example (in text!)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="space.html" title="14.1. Understanding and denoting space groups"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">14. Crystallography for EXAFS</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="absorption-calculations-and-experimental-corrections">
+<h1>14.2. Absorption calculations and experimental corrections<a class="headerlink" href="#absorption-calculations-and-experimental-corrections" title="Permalink to this headline">¶</a></h1>
+<p>Included in <font size=-1 color="#8C4112">ATOMS</font> is absorption data for the elements from
+various sources. Using this and the crystallographic information from
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code>, <font size=-1 color="#8C4112">ATOMS</font> is able to make several
+calculations useful for XAFS analysis. It approximates the absorption
+depth and edge step size of the material at the edge energy of the
+core atom and estimates three corrections needed for the analysis of
+XAFS data. These corrections are the “McMaster correction”,
+the energy response of the I<sub>0</sub> chamber in a fluorescence
+experiment, and the self-absorption of a thick material in a
+fluorescence experiment. All of these numbers are written at the top
+of the output file. For more information on these calculations see</p>
+<ul class="simple" id="bibtex-bibliography-atoms/abs-0">
+<li>EA&nbsp;Stern and SM&nbsp;Heald. Basic principles and applications of EXAFS. <em>Handbook on Synchrotron Radiation</em>, 1:955–1014, 1983.</li>
+</ul>
+<div class="section" id="absorption-calculation">
+<h2>14.2.1. Absorption Calculation<a class="headerlink" href="#absorption-calculation" title="Permalink to this headline">¶</a></h2>
+<p>Proper sample preparation for an XAFS experiment requires knowledge of
+the absorption depth and edge step size of the material of interest. The
+statistics of data collection can be optimized by choosing the correct
+sample thickness. It is also necessary to avoid distortions to the data
+due to thickness and large particle size effects.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> calculates the total cross section of the material above the edge
+energy of the central atom and divides by the unit cell volume. The
+number obtained, μ<sub>total</sub>, has units of cm<sup>-1</sup>. Thus, if
+<code class="docutils literal"><span class="pre">x</span></code> is the thickness of the sample in cm, the x-ray beam passing
+through the sample will be attenuated by exp(μ<sub>total</sub> * <code class="docutils literal"><span class="pre">x</span></code>).</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> also calculates the change in cross section of the
+central atom below and above the absorption edge and divides by the
+unit cell volume.  This number, Δμ, multiplied by the
+sample thickness in cm gives the approximate edge step in a
+transmission experiment.</p>
+<p>The density of the material is also reported. This number assumes that
+the bulk material will have the same density as the unit cell. It is
+included as an aid to sample preparation.</p>
+</div>
+<div class="section" id="mcmaster-correction">
+<h2>14.2.2. McMaster Correction<a class="headerlink" href="#mcmaster-correction" title="Permalink to this headline">¶</a></h2>
+<p>Typically, XAFS data is normalized to a single number representing the
+size of the edge step. While there are compelling reasons to use this
+simple normalization, it can introduce an important distortion to the
+amplitude of the χ(k) extracted from the absorption data. This
+distortion comes from energy response of the bare atom absorption of
+the central atom. This is poorly approximated away from the edge by a
+single number. Because this affects the amplitude of χ(k) and not
+the phase, it can be corrected by including a Debye-Waller factor and
+a fourth cumulant in the analysis of the data. These two
+“McMaster corrections” are intended to be additive corrections
+to any thermal or structural disorder included in the analysis of the
+XAFS.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> uses data from Elam to construct the bare atom
+absorption for the central atom. <font size=-1 color="#8C4112">ATOMS</font> then regresses a
+quadratic polynomial in energy to the natural logarithm of the
+constructed central atom absorption.  Because energy and
+photo-electron wave number are simply related, E is proportional to k<sup>2</sup>, the coefficients of this regression can be related to the
+XAFS Debye-Waller factor and fourth cumulant. The coefficient of the
+term linear in energy equals <code class="docutils literal"><span class="pre">sigma_MM^2</span></code> and the coefficient of the
+quadratic term equals <code class="docutils literal"><span class="pre">4/3</span> <span class="pre">*</span> <span class="pre">sigma_MM^4</span></code>. The values of
+<code class="docutils literal"><span class="pre">sigma_MM^2</span></code> and <code class="docutils literal"><span class="pre">sigma_MM^4</span></code> are written at the top of the output
+file.</p>
+<ul class="simple" id="bibtex-bibliography-atoms/abs-1">
+<li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
+</ul>
+<p>For a discussion of the cumulant expansion in EXAFS, see</p>
+<ul class="simple" id="bibtex-bibliography-atoms/abs-2">
+<li>Grant Bunker. Application of the ratio method of EXAFS analysis to disordered systems. <em>Nuclear Instruments and Methods in Physics Research</em>, 207(3):437 – 444, 1983. <a class="reference external" href="http://dx.doi.org/10.1016/0167-5087(83)90655-5">doi:10.1016/0167-5087(83)90655-5</a>.</li>
+</ul>
+</div>
+<div class="section" id="i0-correction">
+<h2>14.2.3. I0 Correction<a class="headerlink" href="#i0-correction" title="Permalink to this headline">¶</a></h2>
+<p>The response of the I<sub>0</sub> chamber varies with energy during an XAFS
+experiment. In a fluorescence experiment, the absorption signal is
+obtained by normalizing the I<sub>f</sub> signal by the I<sub>0</sub> signal. There
+is no energy response in the I<sub>f</sub> signal since all atoms
+fluoresce at set energies. The energy response of I<sub>0</sub> is ignored by this
+normalization. At low energies this can be a significant effect. Like
+the McMaster correction, this effect attenuates the amplitude of χ(k)
+and is is well approximated by an additional Debye-Waller factor and
+fourth cumulant.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> uses the values of the <code class="docutils literal"><span class="pre">nitrogen</span></code>, <code class="docutils literal"><span class="pre">argon</span></code> and
+<code class="docutils literal"><span class="pre">krypton</span></code> keywords in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> to determine the content of
+the I<sub>0</sub> chamber by pressure.  It assumes that the remainder
+of the chamber is filled with helium.  It then uses McMaster's data
+to construct the energy response of the chamber and regresses a
+polynomial to it in the manner described above.  <code class="docutils literal"><span class="pre">sigma_I0^2</span></code> and
+are also written at the top of the output file and intended as
+additive corrections in the analysis.</p>
+</div>
+<div class="section" id="self-absorption-correction">
+<h2>14.2.4. Self-Absorption Correction<a class="headerlink" href="#self-absorption-correction" title="Permalink to this headline">¶</a></h2>
+<p>If the thickness of a sample is large compared to absorption length of
+the sample and the absorbing atom is sufficiently concentrated in the
+sample, then the amplitude of the χ(k) extracted from the data taken on
+it in fluorescence will be distorted by self-absorption effects in a way
+that is easily estimated. The absorption depth of the material might
+vary significantly through the absorption edge and the XAFS wiggles. The
+correction for this effect is well approximated as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">1</span> <span class="o">+</span> <span class="n">mu_abs</span> <span class="o">/</span> <span class="p">(</span><span class="n">mu_background</span><span class="o">+</span><span class="n">mu_fluor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where μ<sub>background</sub> is the absorption of the non-resonant atoms
+in the material and μ<sub>fluo</sub> is the total absorption of the
+material at the fluorescent energy of the absorbing atom. <font size=-1 color="#8C4112">ATOMS</font>
+constructs this function using the McMaster tables then regresses a
+polynomial to it in the manner described above. <code class="docutils literal"><span class="pre">sigma_self^2</span></code> and
+<code class="docutils literal"><span class="pre">sigma_self^4</span></code> are written at the top of the output file and
+intended as additive corrections in the analysis. Because the size of
+the edge step is affected by self-absorption, the amplitude of
+χ(k) is attenuated when normalized to the edge step. Since the
+amplitude is a measure of S<sup>2</sup><sub>0</sub>, this is an important
+effect. The number reported in <code class="file docutils literal"><span class="pre">feff.inp</span></code> as the amplitude
+factor is intended to be a multiplicative correction to the data or to
+the measured S<sup>2</sup><sub>0</sub>.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">14. Crystallography for EXAFS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="space.html">14.1. Understanding and denoting space groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">14.2. Absorption calculations and experimental corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html">14.3. A worked example (in text!)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/atoms/abs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="example.html" title="14.3. A worked example (in text!)"
+             >next</a></li>
+        <li class="right" >
+          <a href="space.html" title="14.1. Understanding and denoting space groups"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >14. Crystallography for EXAFS</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

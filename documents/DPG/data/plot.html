@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.8. Plotting and basic data processing &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="2. The basics of data processing" href="index.html" />
+    <link rel="next" title="3. Processing μ(E) data" href="../mue/index.html" />
+    <link rel="prev" title="2.7. Handling arbitrary data" href="other.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../mue/index.html" title="3. Processing μ(E) data"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="other.html" title="2.7. Handling arbitrary data"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plotting-and-basic-data-processing">
+<h1>2.8. Plotting and basic data processing<a class="headerlink" href="#plotting-and-basic-data-processing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="types-of-plots">
+<h2>2.8.1. Types of plots<a class="headerlink" href="#types-of-plots" title="Permalink to this headline">¶</a></h2>
+<p>Once you have imported data, you will want to start doing interesting
+things with it. “Interesting things” are, of course, the topic
+of the rest of this programming guide. The first interesting thing to
+discuss is plotting.</p>
+<p>One might think that topics such as background removal, normalization,
+and Fourier transforms are discussion-worthy. In fact,
+<font size=-1 color="#8C4112">DEMETER</font> goes to great lengths to assure that you do not
+need to ever worry about having to explicitly do any of those data
+processing chores.  Certainly methods exist for doing those data
+processing chores, but it should never be necessary to call them
+explicitly.  (If you find a case where you need to do so, please
+consider that as a bug and report it to Bruce.)</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> keeps track of the state of the Data object and
+will re-perform data processing steps as necessary. For example, if
+you change the value of one of the back-Fourier transform range
+attributes, <font size=-1 color="#8C4112">DEMETER</font> will know that the back-transform must
+be recomputed the next time the χ(q) data is in some way
+used. Similarly, if a background removal attribute is changed, then
+<font size=-1 color="#8C4112">DEMETER</font> will know that all steps of data processing must be
+re-done.</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is also aware of what data processing steps must be
+up-to-date in order to properly perform any method, including
+plotting. Thus if you do this:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><font size=-1 color="#8C4112">DEMETER</font> knows to check wether the background removal,
+normalization, and forward transform are up to date and to perform
+them if they are not.</p>
+<p>Plotting in the four spaces is quite straightforward:</p>
+<dl class="docutils">
+<dt><strong>plot in energy</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot in k</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot in R</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot in back-transform k</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>There are also a number of pre-defined, specialty plots.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Show examples of rmr, r123, k123, and kq.</p>
+</div>
+<dl class="docutils">
+<dt><strong>plot the magnitude and real part of chi(R)</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;rmr&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot chi(k) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot chi(R) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>plot in chi(k) with the real part of chi(q)</strong></dt>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;kq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>quad plot with data in all four spaces</strong></dt>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;quad&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="last figure align-left" id="id1">
+<span id="fig-quadplot"></span><a class="reference external image-reference" href="../_images/plot_quad.png"><img alt="../_images/plot_quad.png" src="../_images/plot_quad.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.1 </span><span class="caption-text">This quad plot shows data on an Fe foil in all four spaces. The
+current value of k-weighting in the Plot object is used in this
+kind of plot.  <em>This kind of plot cannot be made with the pgplot
+plotting backend.</em></span></p>
+</div>
+</dd>
+</dl>
+<p>There are two more pre-packaged plot types which are specifically about
+visualizing merged data and its standard deviation:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;stddev&#39;</span><span class="p">);</span>
+<span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;variance&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="../mue/merge.html">the section on merged data</a> for details of
+those two plot types.</p>
+<p>Finally, it is plossible to plot χ(k) data in energy. This is done by
+setting the <code class="docutils literal"><span class="pre">chie</span></code> attribute of the Plot object to a true value. When
+that attribute is true and the data are plotted in k, the x-axis values
+will instead be absolute energy.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">chie</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that the argument of the <code class="docutils literal"><span class="pre">plot</span></code> method is case insensitive.
+Little attempt is made to glean meaning from that argument.  If it is
+not one of the strings shown above, the <code class="docutils literal"><span class="pre">plot</span></code> method will likely
+return an error.</p>
+</div>
+<div class="section" id="plotting-and-overplotting">
+<h2>2.8.2. Plotting and overplotting<a class="headerlink" href="#plotting-and-overplotting" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">plot</span></code> method typically will overplot data, that is add a new
+trace to the existing plot. If you wish to start a new plot, you must
+explicitly do so, as shown on line 8 of this example.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+<span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
+<span class="nb">sleep</span> <span class="mi">3</span><span class="p">;</span>
+<span class="nv">$data1</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The quad plot is an exception, however. There is an implicit
+<code class="docutils literal"><span class="pre">start_plot</span></code> when a quad plot is made.</p>
+<p>The details of the funny syntax using the <code class="docutils literal"><span class="pre">po</span></code> method is explained in
+<a class="reference external" href="../highlevel/plot.html">the section on the Plot object</a>.</p>
+</div>
+<div class="section" id="the-singlefile-plotting-backend">
+<h2>2.8.3. The singlefile plotting backend<a class="headerlink" href="#the-singlefile-plotting-backend" title="Permalink to this headline">¶</a></h2>
+<p>Although the <strong class="program">PGPLOT</strong> and <strong class="program">Gnuplot</strong> plotting
+backends work just fine, sometimes you would like to be able to
+replicate a particular plot in another plotting program. To that end,
+<font size=-1 color="#8C4112">DEMETER</font> provides a special plotting backend called the
+“SingleFile” backend. This will replicate a plot form of a
+column data file. The data in those columns include whatever
+y-offsets, energy shifts, or scaling factors were included in the
+plot. The plot can then be replicated in another program simply by
+importing and plotting the columns.</p>
+<p>Here is an example. The fit is the standard copper fit. At the end, the
+data, the fit, the window, and the paths are plotted usin the gnuplot
+backend. Then, at line 67, the “SingleFile” backend is used to output
+that plot to a file.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
+ <span class="k">print</span> <span class="s">&quot;Sample fit to copper data demonstrating the singlefile plotting backend.\n&quot;</span><span class="p">;</span>
+
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">set_mode</span><span class="p">(</span><span class="n">screen</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">file</span>       <span class="o">=&gt;</span> <span class="s">&quot;../../cu/cu10k.chi&quot;</span><span class="p">,</span>
+             <span class="n">fft_kmin</span>   <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>        <span class="n">fft_kmax</span>   <span class="o">=&gt;</span> <span class="mi">14</span><span class="p">,</span>
+             <span class="n">fit_space</span>  <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span>
+             <span class="n">fit_k1</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>        <span class="n">fit_k3</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">bft_rmin</span>   <span class="o">=&gt;</span> <span class="mf">1.6</span><span class="p">,</span>      <span class="n">bft_rmax</span>   <span class="o">=&gt;</span> <span class="mf">4.3</span><span class="p">,</span>
+             <span class="n">fit_do_bkg</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">name</span>       <span class="o">=&gt;</span> <span class="s">&#39;My copper data&#39;</span><span class="p">,</span>
+            <span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span>  <span class="p">(</span><span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
+             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>   <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">),</span>
+             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
+             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;theta&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">500</span><span class="p">),</span>
+             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;temp&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">300</span><span class="p">),</span>
+             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;sigmm&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mf">0.00052</span><span class="p">),</span>
+            <span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;../../cu/orig.inp&#39;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&#39;temp/&#39;</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">rmax</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">run</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">@sp</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span> <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">pathlist</span> <span class="p">};</span>
+
+ <span class="k">my</span> <span class="nv">@paths</span> <span class="o">=</span> <span class="p">();</span>
+ <span class="k">foreach</span> <span class="k">my</span> <span class="nv">$i</span> <span class="p">(</span><span class="mi">0</span> <span class="o">..</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nv">$paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+   <span class="nv">$paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">data</span>     <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span>
+                   <span class="n">sp</span>       <span class="o">=&gt;</span> <span class="nv">$sp</span><span class="p">[</span><span class="nv">$i</span><span class="p">],</span>
+                   <span class="n">s02</span>      <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
+                   <span class="n">e0</span>       <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>
+                   <span class="n">delr</span>     <span class="o">=&gt;</span> <span class="s">&#39;alpha*reff&#39;</span><span class="p">,</span>
+                   <span class="n">sigma2</span>   <span class="o">=&gt;</span> <span class="s">&#39;debye(temp, theta) + sigmm&#39;</span><span class="p">,</span>
+                  <span class="p">);</span>
+ <span class="p">};</span>
+
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gds</span><span class="p">,</span>
+                               <span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$data</span><span class="p">],</span>
+                               <span class="n">paths</span> <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@paths</span>
+                              <span class="p">);</span>
+
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
+
+ <span class="c1">## plot normally using gnuplot</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">plot_data</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plot_fit</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">plot_bkg</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">plot_res</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="n">plot_win</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plot_run</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="n">kweight</span>   <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="n">r_pl</span>      <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="s">&#39;q_pl&#39;</span>    <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span>
+               <span class="p">);</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">space</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot_with</span><span class="p">(</span><span class="s">&#39;gnuplot&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1"># stack the plot interestingly...</span>
+ <span class="k">foreach</span> <span class="k">my</span> <span class="nv">$obj</span> <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">@paths</span><span class="p">,)</span> <span class="p">{</span>
+     <span class="nv">$obj</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+     <span class="nv">$step</span> <span class="o">-=</span> <span class="mf">0.8</span><span class="p">;</span>
+     <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
+ <span class="p">};</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">;</span>
+
+ <span class="c1">## replicate that plot in a single file</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot_with</span><span class="p">(</span><span class="s">&#39;singlefile&#39;</span><span class="p">);</span>           <span class="c1"># 1: switch to single file backend</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">prep</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;nifty_plot.dat&#39;</span><span class="p">,</span> <span class="n">standard</span><span class="o">=&gt;</span><span class="nv">$data</span><span class="p">,</span> <span class="n">space</span><span class="o">=&gt;</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+
+ <span class="nv">$step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+ <span class="k">foreach</span> <span class="k">my</span> <span class="nv">$obj</span> <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">@paths</span><span class="p">,)</span> <span class="p">{</span>        <span class="c1"># 5: make the plot</span>
+     <span class="nv">$obj</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
+     <span class="nv">$step</span> <span class="o">-=</span> <span class="mf">0.8</span><span class="p">;</span>
+     <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
+ <span class="p">};</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">finish</span><span class="p">;</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">unset_standard</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Note that at line 68, some additional information is provided to make
+the SingleFile output, including the name of the output file. A Data
+object with data included in the file is set as the SingleFile standard.
+The x-axis in the file will be the x-axis of that Data object. in the
+case of a plot in energy, all other data will be interpolated onto that
+energy grid.</p>
+<p>The plot is then remade at lines 70-76. The <code class="docutils literal"><span class="pre">finish</span></code> method is called
+at line 77 to actually write out the file. It is good practice to unset
+the standard, as at line 78, to avoid future confusion.</p>
+<p>The <code class="docutils literal"><span class="pre">prep</span></code> method at line 68 is a convenience method which does the
+following:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">space</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+<span class="nv">$data</span><span class="o">-&gt;</span><span class="n">standard</span><span class="p">;</span>
+<span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">(</span><span class="s">&#39;nifty_plot.dat&#39;</span><span class="p">);</span>
+<span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">start_plot</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-odds-and-ends">
+<h2>2.8.4. Other odds and ends<a class="headerlink" href="#other-odds-and-ends" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">plotkey</span></code> atribute of the Data object is a convenient way to
+override the label of a plotted object. Normally, the <code class="docutils literal"><span class="pre">name</span></code> attribute
+is used for this purpose, but it is sometimes useful to not rename an
+object but still provide a specific bit of text to use as a plotting
+label.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. The basics of data processing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mue.html">2.1. μ(E) data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chi.html">2.2. χ(k) data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html">2.3. Column data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="athena.html">2.4. Athena project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mc.html">2.5. Multichannel data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special.html">2.6. Special data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html">2.7. Handling arbitrary data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">2.8. Plotting and basic data processing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/data/plot.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../mue/index.html" title="3. Processing μ(E) data"
+             >next</a></li>
+        <li class="right" >
+          <a href="other.html" title="2.7. Handling arbitrary data"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+`The Demeter Programmer' Guide <../index.html>`__
+
++--------------------------------------+--------------------------------------+
+| «\ `DEMETER <http://bruceravel.githu |
+| b.io/demeter/>`__\ »                 |
+|                                      |
+| «\ `IFEFFIT <https://github.com/newv |
+| ille/ifeffit>`__\ »                  |
+|                                      |
+| «\ `xafs.org <http://xafs.org>`__\ » |
+|                                      |
+|    Up: `Guess/Def/Set                |
+| parameters <../gds/index.html>`__    |
+| Next: `Reporting on GDS              |
+| parameters <../gds/reporting.html>`_ |
+| _                                    |
++--------------------------------------+--------------------------------------+
+
+| |[Demeter logo]|
+|  `Home <../index.html>`__
+|  `Introduction <../intro.html>`__
+|  `Importing data <../data/index.html>`__
+|  `Processing mu(E) data <../mue/index.html>`__
+|  `Analysis of XANES data <../xanes/index.html>`__
+|  `High level actions for Demeter objects <../highlevel/index.html>`__
+|  `Atoms <../atoms/index.html>`__
+|  `Feff <../feff/index.html>`__
+|  `Scattering paths <../paths/index.html>`__
+|  `Guess/Def/Set parameters <../gds/index.html>`__
+|   ↪ Parameter types
+|   ↪ `Reporting on GDS parameters <../gds/reporting.html>`__
+| `Fitting EXAFS data <../fit/index.html>`__
+|  `Using perl to create a fitting model <../perl/index.html>`__
+|  `Local guess parameters and the characteristic
+value <../lgcv.html>`__
+|  `Path-like objects <../pathlike/index.html>`__
+|  `Structural Units <../su.html>`__
+|  `User interfaces <../ui.html>`__
+|  `Output formats <../output.html>`__
+|  `Full examples <../examples/index.html>`__
+
+Parameter types
+===============
+
+There are 9 types of GDS parameetrs, that is, 9 possible values for the
+``gds`` attribute. Several of these will be familiar to users of IFEFFIT
+and ARTEMIS, a few are newly introduced by DEMETER.
+
+ guess
+    A parameter which is varied in a fit.
+ def
+    A parameter whose math expression is continuously updated throughout
+    the fit.
+ set
+    A parameter which is evaluated at the beginning of the fit and
+    remains unchanged after that.
+ lguess
+    A locally guessed parameter. In a multiple data set fit, this will
+    be expanded to one guess parameter per data set. See `the section on
+    local guess parameters <../lgcv.html>`__ for more details.
+ restrain
+    A restrain parameter is defined in an IFEFFIT script as a def
+    parameter but is used as a restraint in the call to IFEFFIT's
+    ``feffit`` command. In a multiple data set fit, all restraints are
+    defined in the first call to the ``feffit`` command.
+ skip
+    A skip is a parameter that is defined but then ignored. Setting a
+    variable to a skip is useful in a GUI as a way of “commenting out” a
+    parameter without removing it from the fitting project.
+ after
+    This is like a def parameter, but is not used in the fitting model
+    and only evaluated when the fit finishes. It is then reported in the
+    log file.
+ penalty
+    This is like a def parameter, but is used as a user-defined penalty
+    to the `happiness parameter <../fit/happiness.html>`__, which is
+    evaluated at the end of the fit. This is not currently implemented.
+ merge
+    A merge is the type given to a parameter that cannot be
+    unambiguously resolved when two Fit objects are merged into a single
+    Fit object. A fit cannot proceed until all merge parameters are
+    resolved. It is unlikely that a variable would ever be declared as a
+    merge by a user, although if a user script makes use of any of
+    DEMETER's (as yet unimplemented) project merging features, it will
+    certainly be necessary to resolve a merge parameter by renaming it
+    globally and resetting the ``gds`` attribute.
+
+|To do!| Penalty and merge types are currently unimplemented.
+
+| 
+
+--------------
+
+--------------
+
+| DEMETER is copyright © 2009-2015 Bruce Ravel — This document is
+copyright © 2015 Bruce Ravel
+
+|image2|    
+
+| This document is licensed under `The Creative Commons
+Attribution-ShareAlike
+License <http://creativecommons.org/licenses/by-sa/3.0/>`__.
+|  If DEMETER and this document are useful to you, please consider
+`supporting The Creative
+Commons <http://creativecommons.org/support/>`__.
+
+.. |[Demeter logo]| image:: ../../images/Isis-Sothis-Demeter_sm.jpg
+   :target: ../ceres.html
+.. |To do!| image:: ../../images/todo.png
+.. |image2| image:: ../../images/somerights20.png
+   :target: http://creativecommons.org/licenses/by-sa/3.0/

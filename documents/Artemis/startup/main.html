@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.1.1. The main window &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="2. Starting Artemis" href="index.html" />
+    <link rel="next" title="2.1.2. The plot window" href="plot.html" />
+    <link rel="prev" title="2. Starting Artemis" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="2.1.2. The plot window"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="2. Starting Artemis"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. Starting Artemis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-main-window">
+<h1>2.1.1. The main window<a class="headerlink" href="#the-main-window" title="Permalink to this headline">¶</a></h1>
+<p>The main window provides an overview of the state of
+<font size=-1 color="#8C4112">ARTEMIS</font> as well as of your current fitting project. This
+window is divided into 7 areas.</p>
+<div class="figure" id="id2">
+<span id="fig-mainwindow"></span><a class="reference external image-reference" href="../_images/main.png"><img alt="../_images/main.png" src="../_images/main.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.2 </span><span class="caption-text">The main window.</span></p>
+</div>
+<ol class="arabic simple">
+<li>At the top is a menu bar. We will examine the contents of each menu
+below.</li>
+<li>At the bottom is the status bar. This area is used to convey messages
+to you during the course of operating the program.</li>
+<li>On the left is a stack of buttons used to show and hide various
+parts of <font size=-1 color="#8C4112">ARTEMIS</font>. Each of these will be described in
+detail later in the document.</li>
+<li>To the right is the listing of data groups. The <kbd class="light">Add</kbd>
+button is used to import a new data set into <font size=-1 color="#8C4112">ARTEMIS</font>. As
+data are imported, they will listed as a stack of buttons below the
+<kbd class="light">Add</kbd> button.</li>
+<li>Next comes the listing of <font size=-1 color="#8C4112">FEFF</font> calculations. The
+<kbd class="light">Add</kbd> button is used to import new structural data set into
+<font size=-1 color="#8C4112">ARTEMIS</font>. This may be input data for <font size=-1 color="#8C4112">FEFF</font>, an
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code> file, or a CIF file containing crystal structure
+data. As <font size=-1 color="#8C4112">FEFF</font> calculations are started, they will listed as a stack of
+buttons below the <kbd class="light">Add</kbd> button.</li>
+<li>The wide area to the right of the <font size=-1 color="#8C4112">FEFF</font> calculations
+contains several controls for the current fitting project. The
+<span class="guilabel">Name</span> and <span class="guilabel">Description</span> boxes are used to
+describe the current state of your fitting project. The name should
+be a concise description of the current fit and is used as a label
+identifying a specific fit. The description is a lengthier,
+free-form bit of text describing the current fit in more
+detail. This text will be written to log files.
+<font size=-1 color="#8C4112">ARTEMIS</font> does a decent job of automatically generating
+text for both of these boxes, but providing your own text will help
+you to document the progression of your fitting project. This
+section also has controls for selecting the space in which your fit
+is evaluated and for saving a project file in a single click.</li>
+<li>On the far right is the <kbd class="light">Fit</kbd> button. As you might
+guess, this button is clicked to initiate a fit. The color of this
+button will change to provide a <a class="reference external" href="../fit/happiness.html">heuristic evaluation</a> of the quality of each fit. Below the
+<kbd class="light">Fit</kbd> button is <kbd class="light">Show log</kbd> button, used
+to show or hide a window containing the results from the most
+recent fit.</li>
+</ol>
+<div class="section" id="file-drag-and-drop">
+<h2>2.1.1.1. File drag and drop<a class="headerlink" href="#file-drag-and-drop" title="Permalink to this headline">¶</a></h2>
+<p>The data set and <font size=-1 color="#8C4112">FEFF</font> calculation area on the main window,
+areas 4 and 5 above, are drop targets for files dragged from your
+computer's file manager.</p>
+<ul class="simple">
+<li>You can drop <font size=-1 color="#8C4112">ATHENA</font> project files (<code class="file docutils literal"><span class="pre">.prj</span></code>) onto the
+data set area. To import data from some other source, you are
+required to use the <span class="guilabel">File</span> menu.</li>
+<li>You can drop CIF, <font size=-1 color="#8C4112">ATOMS</font> input, or <font size=-1 color="#8C4112">FEFF</font> input
+files onto the <font size=-1 color="#8C4112">FEFF</font> calculation area.</li>
+<li>You can drop an <font size=-1 color="#8C4112">ARTEMIS</font> project file (<code class="file docutils literal"><span class="pre">.fpj</span></code>) onto
+either of the data set and <font size=-1 color="#8C4112">FEFF</font> calculation areas. To
+import old-style artemis project files or <font size=-1 color="#8C4112">DEMETER</font>
+serializations, you are required to use the <code class="file docutils literal"><span class="pre">File</span></code> menu.</li>
+</ul>
+<p>You can only drag and drop one file at a time. If you try to drag more
+than one of any file type, a warning will be issued in the status bar
+and no import will happen. Similarly, you may not drop a folder.</p>
+</div>
+<div class="section" id="the-file-menu">
+<h2>2.1.1.2. The File menu<a class="headerlink" href="#the-file-menu" title="Permalink to this headline">¶</a></h2>
+<p>Clicking on <span class="guilabel">File</span> displays this menu, which is mostly used
+for various kinds of input and output. Note that some menu items that
+have keyboard shortcuts attached and that these shortcuts are shown in
+the menu.</p>
+<div class="figure align-center" id="id3">
+<span id="fit-artemisfilemenu"></span><a class="reference external image-reference" href="../_images/filemenu.png"><img alt="../_images/filemenu.png" src="../_images/filemenu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.3 </span><span class="caption-text">The <span class="guilabel">File</span> menu.</span></p>
+</div>
+<ul class="simple">
+<li>The first option is used to import any kind of data into
+<font size=-1 color="#8C4112">ARTEMIS</font>, including <font size=-1 color="#8C4112">ARTEMIS</font> or <font size=-1 color="#8C4112">ATHENA</font>
+project files, ASCII files containing χ(k) data, <font size=-1 color="#8C4112">FEFF</font>
+or <font size=-1 color="#8C4112">ATOMS</font> input files, CIF files, or a few other
+things. <font size=-1 color="#8C4112">ARTEMIS</font> is usually good about properly identifying
+the type of input file and doing the right thing with it. In the rare
+situation where this doesn't work, try the <span class="guilabel">import</span> submenu.</li>
+<li>The second option provides a submenu of recently imported files
+broken down by file type, including <font size=-1 color="#8C4112">ARTEMIS</font> projects,
+<font size=-1 color="#8C4112">ATHENA</font> projects, structure data for <font size=-1 color="#8C4112">ATOMS</font> or
+<font size=-1 color="#8C4112">FEFF</font>, and a couple of other more obscure file types.</li>
+<li>The next three items are used to save <font size=-1 color="#8C4112">ARTEMIS</font> project
+files. <span class="guilabel">Save project</span> saves the current state of the
+project to its current, prompting for a name if it does not yet have
+one. <span class="guilabel">Save project as</span> will prompt for the name to which
+to save the current state of the project. <span class="guilabel">Save current
+fit</span> will save a project file containing only the current fit,
+without any of the history. These project files are the sort that
+can be dragged from your computer's file manager onto the data or
+<font size=-1 color="#8C4112">FEFF</font> list.</li>
+<li>The <span class="guilabel">import</span> submenu is used to specify the file type to
+import.  Typically, this is not necessary and is only provided for
+the rare situation when <font size=-1 color="#8C4112">ARTEMIS</font> fails to recognize one of
+its standard input data types.</li>
+<li>The <span class="guilabel">export</span> submenu is used to generate files in the
+format of an <font size=-1 color="#8C4112">IFEFFIT</font> script or a perl script using
+<font size=-1 color="#8C4112">DEMETER</font>. These files attempt to capture the current state
+of your fitting project. It is unlikely that the output of either of
+these export options will be immediately useful without some
+editing. The purpose of these export options is to allow you to use
+<font size=-1 color="#8C4112">ARTEMIS</font> to develop a fitting model, then use the exported
+file in some other way, for instance as part of a script for
+automated batch processing.</li>
+<li>The next menu item displays a window used to set <a class="reference external" href="../prefs.html">program
+preferences.</a></li>
+<li>Finally, there are menu items for closing the current fitting
+project and for exiting the program. Each of these will prompt you
+to save your fitting option if you have not recently done so.</li>
+</ul>
+</div>
+<div class="section" id="the-monitor-menu">
+<h2>2.1.1.3. The Monitor menu<a class="headerlink" href="#the-monitor-menu" title="Permalink to this headline">¶</a></h2>
+<p>This menu provides several options for monitoring the state of
+<font size=-1 color="#8C4112">ARTEMIS</font>, <font size=-1 color="#8C4112">IFEFFIT</font>, and the plotting backend
+(usually <strong class="program">Gnuplot</strong>).</p>
+<div class="figure align-center" id="id4">
+<span id="fit-artemismonitormenu"></span><a class="reference external image-reference" href="../_images/monitormenu.png"><img alt="../_images/monitormenu.png" src="../_images/monitormenu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.4 </span><span class="caption-text">The <span class="guilabel">Monitor</span> menu.</span></p>
+</div>
+<ul class="simple">
+<li>The command buffer contains a record of every data processing
+command sent to <font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> and every
+plotting command sent to the plotting backend. Bruce uses these
+buffers to debug the prgram as he implements new features. You may
+want to use these buffers to learn the details of interacting
+directly with <font size=-1 color="#8C4112">IFEFFIT</font>, <font size=-1 color="#8C4112">LARCH</font>, or the plotting
+backend.</li>
+<li>The <a class="reference external" href="../monitor.html#the-status-buffer">status bar buffer</a> contains a
+record of nearly every message sent the status bar in the main
+window as well as those messages displayed in the status bars of
+other windows in <font size=-1 color="#8C4112">ARTEMIS</font>. All messages are time stamped.</li>
+<li>The <span class="guilabel">Show Ifeffit</span> menu will cause <font size=-1 color="#8C4112">IFEFFIT</font> to
+display detailed information in the command buffer about the
+internal state of different kind of data. This is another thing
+Bruce uses to debug program issues.</li>
+<li>The <span class="guilabel">Debug options</span> menu contains several items used to
+display technical information about the current state of
+<font size=-1 color="#8C4112">ARTEMIS</font>. Again, this is a tool Bruce uses when developing
+the program. After reporting a bug to the <font size=-1 color="#8C4112">IFEFFIT</font> mailing
+list, Bruce may ask for information obtained using these menu
+items. This submenu is only displayed if the
+<font color="#636A24">♦artemis→debug_menus</font> configuration parameter is set to
+a true value.</li>
+<li><span class="guilabel">Show Ifeffit's memory use</span> item displays a crude,
+somewhat unreliable calculation of the resources still available to
+<font size=-1 color="#8C4112">IFEFFIT</font>.</li>
+</ul>
+</div>
+<div class="section" id="the-plot-menu">
+<h2>2.1.1.4. The Plot menu<a class="headerlink" href="#the-plot-menu" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id5">
+<span id="fit-artemisplotmenu"></span><a class="reference external image-reference" href="../_images/plotmenu.png"><img alt="../_images/plotmenu.png" src="../_images/plotmenu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.5 </span><span class="caption-text">The <span class="guilabel">Plot</span> menu.</span></p>
+</div>
+<p>When using <strong class="program">Gnuplot</strong> as the plotting backend, you have an
+option to direct plots to multiple windows, thus allowing you to plot
+something new without removing an existing plot. This menu controls
+which of four such plot displays is active.</p>
+<p>The top two options are used to export the most recent plot to a PNG or
+PDF file. You will be prompted for a filename.</p>
+<p>The bottom two options tick on or off the <span class="guilabel">Plot after fit</span> buttons for
+each data set, which may be useful for a multiple data set fit.</p>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> can make plots in a style that resembles the famous
+<a class="reference external" href="http://xkcd.com/">XKCD comic</a>. To make use of this most essential
+feature, you should first download and install the <a class="reference external" href="http://antiyawn.com/uploads/humorsans.html">Humor-Sans font</a> onto your computer.
+Once you have installed the font, simply check the
+<span class="menuselection">Plot ‣ Plot XKCD style</span> button. Enjoy!</p>
+</div>
+<div class="section" id="the-main-help-menu">
+<h2>2.1.1.5. The Main help menu<a class="headerlink" href="#the-main-help-menu" title="Permalink to this headline">¶</a></h2>
+<p>This menu is used to display this document or to display information
+about <font size=-1 color="#8C4112">ARTEMIS</font>, including its open source licensing terms.</p>
+<div class="figure align-center" id="id6">
+<span id="fit-artemishelpmenu"></span><a class="reference external image-reference" href="../_images/helpmenu.png"><img alt="../_images/helpmenu.png" src="../_images/helpmenu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.6 </span><span class="caption-text">The <span class="guilabel">Help</span> menu.</span></p>
+</div>
+</div>
+<div class="section" id="status-bar">
+<h2>2.1.1.6. Status bar<a class="headerlink" href="#status-bar" title="Permalink to this headline">¶</a></h2>
+<p>This area in the main window is used to display various kinds of
+messages, including updates on long-running tasks, hints about
+controls underneath the mouse, and other announcements.</p>
+<p>On some platforms, the status bar is able to display color.  If you
+are one one of those platforms, the status bar will display with a
+green background during a long running task and with a red background
+when an error has occured or when something needs your immediate
+attention.</p>
+<p>Many controls in the main window and elsewhere have hints attached to
+them which will be displayed in this status bar when the mouse passes
+over.  These hints are intended to teach about the functionality of
+the control beheath the mouse.  Hints are not recorded in the status
+bar buffer.</p>
+<p>Many short and long running tasks display updates of various
+kinds. Many of these are recorded in the <a class="reference external" href="../monitor.html#the-status-buffer">status bar buffer</a>.  Messages displayed in the status
+bar with a green or red background are recorded in the status bar
+buffer with green or red text.  Messages which only indicate the
+progress of a long running task are not recorded in the buffer.</p>
+</div>
+<div class="section" id="the-data-list">
+<h2>2.1.1.7. The Data list<a class="headerlink" href="#the-data-list" title="Permalink to this headline">¶</a></h2>
+<p>The data list starts off with a single control, which is used to
+import data into your fitting project. Clicking the
+<kbd class="light">Add</kbd> button will open the standard file selection
+dialog for your platform. That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.</p>
+<div class="figure align-center" id="id7">
+<span id="fit-artemisdatalist"></span><a class="reference external image-reference" href="../_images/datalist.png"><img alt="../_images/datalist.png" src="../_images/datalist.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.7 </span><span class="caption-text">The data list.</span></p>
+</div>
+<p>The standard manner of importing data into <font size=-1 color="#8C4112">ARTEMIS</font> is to
+use an <font size=-1 color="#8C4112">ATHENA</font> project file. Thus the file selection dialog
+will, by default, look for files with the <code class="file docutils literal"><span class="pre">.prj</span></code> extension. You
+may also drag <code class="file docutils literal"><span class="pre">.prj</span></code> files from your computer's file manager and
+drop them onto the data list.</p>
+<p>As you import data, a stack of buttons – one for each data group – is
+made. These buttons are used to show or hide the windows associated
+with each data group. In this example, a multiple data set fit
+(i.e. one in which models for more than one data set are co-refined)
+is shown. One of the associated data windows is displayed on screen,
+as indicated by the depressed state of the button labeled
+<span class="guilabel">Dimethyltin dichloride</span>. The other data window is
+hidden. <a class="reference external" href="../data.html">See the Data window chapter.</a></p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last"><font size=-1 color="#8C4112">ARTEMIS</font> has a very different relationship to
+your data than <font size=-1 color="#8C4112">ATHENA</font>.  The very purpose of
+<font size=-1 color="#8C4112">ATHENA</font> is to process large quantities of data, thus a
+typical <font size=-1 color="#8C4112">ATHENA</font> project will contain many – perhaps
+dozens – of data groups. <font size=-1 color="#8C4112">ARTEMIS</font> expects that you
+will import only that data whose EXAFS you intend to analyze.  If
+you are doing a single-data-set analysis, the <span class="guilabel">Data</span> list
+will contain only that item.  If you import many data sets without
+actually using them in the fitting model, <font size=-1 color="#8C4112">ARTEMIS</font>
+may get confused.  <em>And so will you</em>.</p>
+</div>
+</div>
+<div class="section" id="the-athena-project-selection-dialog">
+<h2>2.1.1.8. The Athena project selection dialog<a class="headerlink" href="#the-athena-project-selection-dialog" title="Permalink to this headline">¶</a></h2>
+<p>When importing data from an <font size=-1 color="#8C4112">ATHENA</font> project file, the
+project selection dialog is shown. It presents you with a list of all
+data groups from the project file. The file listing is configured such
+that only one item can be selected at a time. The selected data group
+is also plotted. Any title lines from that data group are displayed in
+the text box on the upper right.</p>
+<div class="figure align-center" id="id8">
+<span id="fit-artemisathenaselection"></span><a class="reference external image-reference" href="../_images/athenaselection.png"><img alt="../_images/athenaselection.png" src="../_images/athenaselection.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.8 </span><span class="caption-text">The <font size=-1 color="#8C4112">ATHENA</font> project selection dialog.</span></p>
+</div>
+<p>The plot that is made when you select a data group is controlled by
+the <span class="guilabel">Plot as</span> box of radio buttons.  These buttons have no
+impact on how the data imported into <font size=-1 color="#8C4112">ARTEMIS</font>.  They are
+only used to determine how the data are displayed to you as you select
+the data group to import.  Unlike the <font size=-1 color="#8C4112">ATHENA</font> project
+selection dialog, this one only allows you to select one data group at
+a time.</p>
+<p>The next set of radio buttons selects what set of Fourier transform
+and fitting parameters will be used. The first choice says to use the
+values found in the <font size=-1 color="#8C4112">ATHENA</font> project file. The second choice
+says to use <font size=-1 color="#8C4112">ARTEMIS</font>'s default values. The third choice is
+only relevant when replacing the data in a current fitting project. In
+that case, the values currently selected for the data being replaced
+will be retained.</p>
+<p>To continue importing data, click the <kbd class="light">Import</kbd> button. The
+<kbd class="light">Cancel</kbd> button dismisses this dialog without importing data.</p>
+</div>
+<div class="section" id="the-recent-data-dialog">
+<h2>2.1.1.9. The recent data dialog<a class="headerlink" href="#the-recent-data-dialog" title="Permalink to this headline">¶</a></h2>
+<p>You can access a list of recently imported data by <em>right</em> clicking on
+the <kbd class="light">Add</kbd> button. This presents a dialog with a
+selection list. Click on one of your recent files, then click
+<kbd class="light">OK</kbd> or type <kbd class="dark">Return</kbd>.  Alternately, double
+click on your choice in the list of recent files.</p>
+<div class="figure align-center" id="id9">
+<span id="fit-artemisrecentdata"></span><a class="reference external image-reference" href="../_images/recentdata.png"><img alt="../_images/recentdata.png" src="../_images/recentdata.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.9 </span><span class="caption-text">The recent data dialog.</span></p>
+</div>
+</div>
+<div class="section" id="the-feff-list">
+<h2>2.1.1.10. The Feff list<a class="headerlink" href="#the-feff-list" title="Permalink to this headline">¶</a></h2>
+<p>The <font size=-1 color="#8C4112">FEFF</font> list starts off with a single control, which is
+used to import structural data into your fitting project. Clicking the
+<kbd class="light">Add</kbd> button will open the standard file selection
+dialog for your platform. That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.</p>
+<div class="figure align-center" id="id10">
+<span id="fit-artemisfefflist"></span><a class="reference external image-reference" href="../_images/fefflist.png"><img alt="../_images/fefflist.png" src="../_images/fefflist.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.10 </span><span class="caption-text">The <font size=-1 color="#8C4112">FEFF</font> list.</span></p>
+</div>
+<p>The standard manner of importing structural data into
+<font size=-1 color="#8C4112">ARTEMIS</font> is to import an input file for <font size=-1 color="#8C4112">ATOMS</font> or
+<font size=-1 color="#8C4112">FEFF</font> or to import a CIF file containing crystal data. Thus
+the file selection dialog will, by default, look for files with the
+<code class="file docutils literal"><span class="pre">.inp</span></code> or <code class="file docutils literal"><span class="pre">.cif</span></code> extension.</p>
+<p>As you import structural data, a stack of buttons – one for each
+<font size=-1 color="#8C4112">FEFF</font> calculation – is made. These buttons are used to
+show or hide the windows associated with each data group. In this
+example, two <font size=-1 color="#8C4112">FEFF</font> calculations have been made. Neither is
+being displayed on screen. <a class="reference external" href="../feff/index.html">See the Atoms/Feff
+chapter.</a></p>
+<p><em>Right</em> clicking on the <kbd class="light">Add</kbd> button will present the same
+recent file selection dialog as for the data list. In this case, the
+list will contain recently imported <font size=-1 color="#8C4112">ATOMS</font>, <font size=-1 color="#8C4112">FEFF</font>,
+or CIF files.</p>
+<p>You may also drag CIF, <font size=-1 color="#8C4112">ATOMS</font> input, or <font size=-1 color="#8C4112">FEFF</font>
+input files from your computer's file manager and drop them onto the
+<font size=-1 color="#8C4112">FEFF</font> list.</p>
+</div>
+<div class="section" id="fit-information">
+<h2>2.1.1.11. Fit information<a class="headerlink" href="#fit-information" title="Permalink to this headline">¶</a></h2>
+<p>This section of the main window is used to specify properties of the
+fit. The name is a short bit of text that will be used as a label for
+each fit. The number will be auto-incremented unless you explicitly
+set it.</p>
+<div class="figure align-center" id="id11">
+<span id="fit-artemisfitproperties"></span><a class="reference external image-reference" href="../_images/fitproperties.png"><img alt="../_images/fitproperties.png" src="../_images/fitproperties.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.11 </span><span class="caption-text">The fit properties.</span></p>
+</div>
+<p>The description is a longer bit of text which you can use to describe
+the current fitting model. Here, too, the number is auto-incremented
+unless you explcitly set it. The text from this box is written to the
+log file, thus can be used to document your fitting model.</p>
+<p>The set of radio buttons is used to select the space in which the fit
+will be evaluated. The default is to evaluate the fit in R space.</p>
+<p>Finally, the <kbd class="light">Save</kbd> button is used to quickly save your
+fitting model to a project file. If you model is already associated
+with a file, this is a quick one-click saving tool. If no project file
+is associated, the file selection dialog will prompt you for a
+file. The default is to use the .fpj extension.</p>
+</div>
+<div class="section" id="fit-and-log-buttons">
+<h2>2.1.1.12. Fit and log buttons<a class="headerlink" href="#fit-and-log-buttons" title="Permalink to this headline">¶</a></h2>
+<p>All the way to the right of the main window are the
+<kbd class="light">Fit</kbd> and <kbd class="light">Show log</kbd> buttons. Click the
+Fit button to initiate the fit. The log button is used to show and
+hide a window which displays the log from the most recent fit. <a class="reference external" href="../logjournal.html">See
+the chapter on the Log and Journal windows.</a> In
+the event of a fit that exits abnormally, error messages explaining
+the problems will be show in the log window.</p>
+<div class="figure align-center" id="id12">
+<span id="fit-artemisfitlogbuttons"></span><a class="reference external image-reference" href="../_images/fitlogbuttons.png"><img alt="../_images/fitlogbuttons.png" src="../_images/fitlogbuttons.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.12 </span><span class="caption-text">The <kbd class="light">Fit</kbd> and <kbd class="light">Show log</kbd> buttons.</span></p>
+</div>
+<p>At start-up the Fit button is yellow. After each fit, the color of
+this button will range from red to green as a heuristic indication of
+the fit quality. <a class="reference external" href="../fit/happiness.html">See the happiness section for more details</a>.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Starting Artemis</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#folders-and-log-files">2.1. Folders and log files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/startup/main.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="2.1.2. The plot window"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="2. Starting Artemis"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >2. Starting Artemis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

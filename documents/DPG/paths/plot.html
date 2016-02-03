@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.4. Plotting individual paths &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="8. Scattering paths" href="index.html" />
+    <link rel="next" title="8.5. Running Feff outside of Demeter" href="existing.html" />
+    <link rel="prev" title="8.3. Path parameters" href="pathparams.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="existing.html" title="8.5. Running Feff outside of Demeter"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="pathparams.html" title="8.3. Path parameters"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Scattering paths</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plotting-individual-paths">
+<h1>8.4. Plotting individual paths<a class="headerlink" href="#plotting-individual-paths" title="Permalink to this headline">¶</a></h1>
+<p>Data, Path, and the various <a class="reference external" href="../pathlike/index.tt">path-like objects</a>
+can all be plotted using a very consistent interface. This is made
+possible due to two attributes which are inherited by every object from
+the base class -- <code class="docutils literal"><span class="pre">data</span></code> and <code class="docutils literal"><span class="pre">plottable</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">data</span></code> attribute points to the Data object which is used to
+provide parameters for the Fourier transforms. For a data object, this
+attribute points to itself. For example, to change the lower bound of
+the Fourier transform range, you are able to do something like this:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_plottable_object</span> <span class="o">-&gt;</span> <span class="n">data</span> <span class="o">-&gt;</span> <span class="n">kmin</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>That construct is guaranteed to do what you want for any Data, Path or
+path-like object.</p>
+<p>The <code class="docutils literal"><span class="pre">plottable</span></code> attribute is boolean and is used to distinguish Data,
+Path, and path-like objects from other object types in the <font size=-1 color="#8C4112">DEMETER</font>
+system. Trying to plot something that cannot be plotted, like the sample
+below, will trigger an error and probably cause your program to exit,
+but it certainly will not behave in some strange and unexpected manner.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">## this will trigger an error:</span>
+<span class="nv">$gds_object</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>ScatteringPath objects are not plottable objects (and, so, have their
+<code class="docutils literal"><span class="pre">plottable</span></code> set to 0). To visualize the contribution from the
+scattering geometry described by a ScatteringPath object, you must
+create a Path object. Revisiting the example of plotting the first few
+paths in a <font size=-1 color="#8C4112">FEFF</font> calculation:</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="s">&quot;athena.prj&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">record</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">potph</span><span class="p">;</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">pathfinder</span><span class="p">;</span>
+
+ <span class="k">my</span> <span class="nv">@list_of_paths</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span> <span class="nv">$feff</span><span class="o">-&gt;</span> <span class="n">pathlist</span> <span class="p">};</span>
+ <span class="k">my</span> <span class="nv">@paths</span><span class="p">;</span>
+ <span class="k">foreach</span> <span class="p">(</span><span class="nv">@list_of_paths</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">5</span><span class="p">])</span> <span class="p">{</span>
+   <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nn">Demeter::</span><span class="n">Path</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">parent</span> <span class="o">=&gt;</span> <span class="nv">$feff</span><span class="p">,</span>
+                                   <span class="n">data</span>   <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span>
+                                   <span class="n">sp</span>     <span class="o">=&gt;</span> <span class="nv">$_</span><span class="p">);</span>
+ <span class="p">};</span>
+ <span class="c1">## plot data and paths together in R space</span>
+ <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">@paths</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>Data is imported from an <font size=-1 color="#8C4112">ATHENA</font> project file at line 4
+(using chained method calls!) and a <font size=-1 color="#8C4112">FEFF</font> calculation is
+made between lines 6 and 9.  Path objects are created at lines 14 to
+16 in a loop over the first few ScatteringPath objects from the
+<font size=-1 color="#8C4112">FEFF</font> calculation. Finally at line 19, everything is plotted
+in R space.</p>
+<p>Note that the syntax for plotting Data and Path objects is
+identical. Of course, different things are required to get Data and
+Path objects ready to be plotted, but those interface details are
+handled by <font size=-1 color="#8C4112">DEMETER</font>. For the programmer, the chore is easy.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Scattering paths</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="paths.html">8.1. Calculating individual scattering paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semantic.html">8.2. Semantic path descriptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathparams.html">8.3. Path parameters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">8.4. Plotting individual paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="existing.html">8.5. Running Feff outside of Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/paths/plot.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="existing.html" title="8.5. Running Feff outside of Demeter"
+             >next</a></li>
+        <li class="right" >
+          <a href="pathparams.html" title="8.3. Path parameters"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >8. Scattering paths</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. The Path page &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="5.1. Setting math expressions" href="mathexp.html" />
+    <link rel="prev" title="4.6. Aggregate Feff calculation" href="../feff/aggregate.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mathexp.html" title="5.1. Setting math expressions"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../feff/aggregate.html" title="4.6. Aggregate Feff calculation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-path-page">
+<h1>5. The Path page<a class="headerlink" href="#the-path-page" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, the method for associating paths with data sets is
+explained. We will also see how to begin constructing a fitting model.</p>
+<p>Shown below is the Data window, <a class="reference external" href="../data.html">which we have already seen</a>, with some data from a gold foil already imported. I
+have passed the cursor over the active text which says
+<span class="guilabel">Import crystal data or a Feff calculation</span>. Clicking will
+open the standard file selection dialog, prompting you for an
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code>, <code class="file docutils literal"><span class="pre">feff.inp</span></code> or CIF file. The same thing can be
+done by clicking the <kbd class="light">Add</kbd> button above the
+<span class="guilabel">Feff</span> list in the Main window, by selecting
+<span class="menuselection">File ‣ Open project of data</span> in the Main window, or
+by using the <kbd class="dark">Control</kbd>-<kbd class="dark">o</kbd> keyboard shortcut.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-pathempty"></span><a class="reference external image-reference" href="../_images/path-empty.png"><img alt="../_images/path-empty.png" src="../_images/path-empty.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.1 </span><span class="caption-text">The Data window with no paths associated.</span></p>
+</div>
+<p>From the file dialog, I select an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file containing
+these crystal data:</p>
+<div class="highlight-python"><div class="highlight"><pre>title  gold
+space  f m 3 m
+a = 4.08   rmax = 6.00    core = Au1
+atoms
+  Au     0.00000   0.00000   0.00000  Au1
+</pre></div>
+</div>
+<p>This crystal data is entered in a <font size=-1 color="#8C4112">FEFF</font> window and posted to the screen.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-pathatoms"></span><a class="reference external image-reference" href="../_images/path-atoms.png"><img alt="../_images/path-atoms.png" src="../_images/path-atoms.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.2 </span><span class="caption-text">The Atoms and Feff window containing gold metal crystal data.</span></p>
+</div>
+<p>Running <font size=-1 color="#8C4112">ATOMS</font> then <font size=-1 color="#8C4112">FEFF</font> results in this path list:</p>
+<div class="figure align-center" id="id3">
+<span id="fig-pathpathlist"></span><a class="reference external image-reference" href="../_images/path-pathlist.png"><img alt="../_images/path-pathlist.png" src="../_images/path-pathlist.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.3 </span><span class="caption-text">The path list for the gold metal calculation.</span></p>
+</div>
+<p>By clicking on path <span class="guilabel">0000</span> in the list then shift-clicking
+on path <span class="guilabel">0012</span>, the first 13 paths are selected</p>
+<div class="figure align-center" id="id4">
+<span id="fig-pathselected"></span><a class="reference external image-reference" href="../_images/path-selected.png"><img alt="../_images/path-selected.png" src="../_images/path-selected.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.4 </span><span class="caption-text">The first 13 paths have been selected.</span></p>
+</div>
+<p>Now click on any of the selected paths. While holding down the left
+mouse button, drag those paths over to the right side of the Data window
+and drop them by releasing the mouse button. This will place all 13 of
+those paths in the path list on the Data window containing the data on
+the gold foil.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-pathpopulated"></span><a class="reference external image-reference" href="../_images/path-populated.png"><img alt="../_images/path-populated.png" src="../_images/path-populated.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.5 </span><span class="caption-text">The Data window has been populated with the 13 paths from the Feff
+calculation.</span></p>
+</div>
+<p>At this point we can begin examining the paths by plotting them along
+with the data. The path plotting tools are explained in <a class="reference external" href="../plot/index.html">the chapter on
+the Plot window</a>.</p>
+<p>Also at this point, we can begin creating a fitting model to fit the
+gold foil data using these paths from the <font size=-1 color="#8C4112">FEFF</font> calculation.</p>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mathexp.html">5.1. Setting math expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">5.2. Marking and Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#moving-paths-to-the-plotting-list">5.2.1. Moving paths to the Plotting list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#phase-corrected-plots">5.2.2. Phase corrected plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike.html">5.3. Using path-like objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#sspaths">5.3.1. SSPaths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#quick-first-shell-paths">5.3.2. Quick first shell paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#empirical-paths">5.3.3. Empirical paths</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">5. The Path page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathexp.html">5.1. Setting math expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">5.2. Marking and Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">5.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/path/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mathexp.html" title="5.1. Setting math expressions"
+             >next</a></li>
+        <li class="right" >
+          <a href="../feff/aggregate.html" title="4.6. Aggregate Feff calculation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

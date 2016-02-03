@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. Managing preferences &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="13. Worked examples" href="examples/index.html" />
+    <link rel="prev" title="11. Monitoring things" href="monitor.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples/index.html" title="13. Worked examples"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="monitor.html" title="11. Monitoring things"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="managing-preferences">
+<h1>12. Managing preferences<a class="headerlink" href="#managing-preferences" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">DEMETER</font> has a mountain of preferences available for the
+user to tinker with.  This may, I suppose, be a problem.  There is a
+school of thought in user interface design that asserts that a program
+should be simple, offering the user a small number of carefully
+considered configurable options, all of which have sensible defaults.
+That sort of thing is usually considered “user friendly”,
+while a dizzying array of configrable options is considered to be
+hostile to the user.</p>
+<p>I don't disagree with that.  However, I am not so lucky as to have
+teams dedicated to user interface design and product testing.  I don't
+have the luxury of testing design decisions to determine if they are
+successful.</p>
+<p>Unfortunately, there are a lot of aspects of the software that need
+sensible default values. In general, I have a good idea what a
+sensible value might be, but I am rarely certain. My solution for any
+option or parameter whose sensible default is open to interpretation
+is to make it configurable.  As a result, there are 100s of aspects of
+<font size=-1 color="#8C4112">DEMETER</font> that can be configured, ranging from default
+parameter values to the colors of things that get plotted.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-prefsart"></span><a class="reference external image-reference" href="_images/prefsart.png"><img alt="_images/prefsart.png" src="_images/prefsart.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 12.1 </span><span class="caption-text">The preferences dialog in Artemis.</span></p>
+</div>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> presents all of <font size=-1 color="#8C4112">DEMETER</font>'s configuration
+options in the Preferences window, which can be displayed from the
+File Menu.  Shown here, the <span class="guilabel">artemis</span> group has been opened
+and the <font color="#636A24">♦Artemis→plot_after_fit</font> option has been
+selected. Since it takes one of predefined list of possible values,
+you are presented with an option menu for selecting among the
+possibilities. The default value can be restored by pressing the
+button labeled as <font size=-1 color="#8C4112">DEMETER</font>'s default. In the text area, the
+option is described. Once you change an option, you can apply it to
+the current session or apply it and save its value to
+<font size=-1 color="#8C4112">DEMETER</font>'s initialization file.</p>
+<p>Different configuration options take different kinds of values. For
+example, some are filenames, strings, real numbers, integers, colors,
+and so on. Controls appropriate to the value type will be provided when
+the option is clicked on.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/prefs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples/index.html" title="13. Worked examples"
+             >next</a></li>
+        <li class="right" >
+          <a href="monitor.html" title="11. Monitoring things"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

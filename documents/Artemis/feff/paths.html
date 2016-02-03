@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.3. The Paths tab &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="4. The Atoms and Feff Window" href="index.html" />
+    <link rel="next" title="4.4. The Path-like tab" href="pathlike.html" />
+    <link rel="prev" title="4.2. The Feff tab" href="feff.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="pathlike.html" title="4.4. The Path-like tab"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="feff.html" title="4.2. The Feff tab"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. The Atoms and Feff Window</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-paths-tab">
+<h1>4.3. The Paths tab<a class="headerlink" href="#the-paths-tab" title="Permalink to this headline">¶</a></h1>
+<p>When you click the <kbd class="light">Run Feff</kbd> button on the
+<font size=-1 color="#8C4112">FEFF</font> tab, the <font size=-1 color="#8C4112">FEFF</font> calculation is run. Once
+finished, a succinct summary of the calculation is displayed on the
+Paths tab.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-feffpaths"></span><a class="reference external image-reference" href="../_images/feff-paths.png"><img alt="../_images/feff-paths.png" src="../_images/feff-paths.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.6 </span><span class="caption-text">The Paths tab.</span></p>
+</div>
+<p>Some statistics about the <font size=-1 color="#8C4112">FEFF</font> calculation are shown in the
+<span class="guilabel">Description</span> text box. Below that is the summary of the
+paths found in the <font size=-1 color="#8C4112">FEFF</font> calculation. This summary is
+presented in the form of a table. Each row describes a scattering
+path. The columns contain the following information:</p>
+<ol class="arabic simple">
+<li>The first column shows a path index, similar to the index that
+<font size=-1 color="#8C4112">FEFF</font> uses when run by hand from the command line.</li>
+<li>The second column shows the degeneracy of the path.</li>
+<li>The third column shows its nominal path length, R<sub>eff</sub>. That
+is value that will be used in any <a class="reference external" href="../path/mathexp.html">path parameter math
+expression</a> containing the <code class="docutils literal"><span class="pre">reff</span></code> token.</li>
+<li>The fourth column shows a simple view of the scattering path. The
+<code class="docutils literal"><span class="pre">&#64;</span></code> token represents the absorber, thus appears as the first and
+last token in each description. The tokens representing the
+scattering atoms are taken from the tags on the <font size=-1 color="#8C4112">FEFF</font>
+tab. You can change the absorber token by setting the
+<font color="#636A24">♦Pathfinder→token</font> configuration parameter.</li>
+<li>The fifth column contains the rank of the path. This is an attempt to
+predict how important of each path will be to your fitting model.
+Paths with large spectral weight have a large rank and paths with
+little spectral weight have small rank. Highly ranked paths are
+colored green, mid-rank paths are colored yellow, and low-rank paths
+are grey. Don't put too much faith in this assessment of importance.
+You should explicitly check all paths to decide if they should be
+included in a fit.</li>
+<li>The sixth column gives the number of legs in each path.</li>
+<li>The final column is a simple explanation of the shape of the
+scattering geometry.</li>
+</ol>
+<p>The rows in this table are selectable by mouse click. Left clicking on
+a row selects that row. <kbd class="dark">Control</kbd>-clicking on another row adds
+it to the selection. <kbd class="dark">Shift</kbd>-clicking adds to the selection
+all rows between the one clicked upon and the previously clicked upon
+row.</p>
+<p>Much of the functionality of this page rests upon the set of selected
+paths. Most importantly, selecting paths is the first step to using
+paths in a fitting model. This will be explained in the <a class="reference external" href="../path/index.html">next
+chapter</a>.</p>
+<p>At the top of the page is a bar of buttons used to perform tasks
+specific to the path list. The <kbd class="light">Doc</kbd> button will open a
+browser displaying this documentation for the interpretation page. The
+<kbd class="light">Rank</kbd> button is described below. The remaining buttons
+are related to making plots of the selected paths.</p>
+<div class="section" id="polarization">
+<h2>4.3.1. Polarization<a class="headerlink" href="#polarization" title="Permalink to this headline">¶</a></h2>
+<p>If <font size=-1 color="#8C4112">FEFF</font> has been run considering linear polarization, the
+path list may be considerably longer. The degeneracy checker in the
+path finder calculation will recognize the effect of polarization on
+path degeneracy. Paths with common outgoing and incoming angles of the
+photoelectron with respect to the specified polarization vector will
+be treated as degenerate. Paths which would be degenerate in the
+absence of polarization, but which have distinct outgoing and/or
+incoming angles will be presented as separate paths in the path list.</p>
+<p>When the polarization calculation is performed, the outgoing and
+incoming angles will be displayed in <span class="guilabel">Scattering path</span>
+column (although you may need to widen the column by clicking on and
+dragging the little vertical line that separates the
+<span class="guilabel">Scattering path</span> and <span class="guilabel">Rank</span> columns in the header
+row).</p>
+<p>Also, when dragging a path onto the data page, the angles out and in
+will be displayed in the path geometry box on the <a class="reference external" href="../path/index.html">path
+page</a>.</p>
+<p>Optionally, the angles can be displayed in the path list label by
+setting the <font color="#636A24">♦Pathfinder→label</font> configuration parameter
+appropriately.</p>
+<p>Low ranking paths are, by default, not displayed in the paths list. In
+a polarization calculation, typically, paths close to or at 90 degrees
+in either angle will have very small amplitude and so will not be
+displayed in the path list. This behavior of suppressing low-ranking
+paths can be controlled by setting the
+<font color="#636A24">♦Pathfinder→postcrit</font> configuration parameter. Setting it
+to 0 will cause all paths, even the right angle ones, to be displayed
+in the paths list.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last"><font size=-1 color="#8C4112">FEFF</font>'s <code class="docutils literal"><span class="pre">ELLIPTICITY</span></code> keyword is not
+supported at this time.  That means the trick of modeling
+“polarization in the plane” is not yet supported by
+<font size=-1 color="#8C4112">ARTEMIS</font>.</p>
+</div>
+</div>
+<div class="section" id="path-plotting-and-path-geometry">
+<h2>4.3.2. Path plotting and path geometry<a class="headerlink" href="#path-plotting-and-path-geometry" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id2">
+<a class="reference external image-reference" href="../_images/feff-plot.png"><img alt="../_images/feff-plot.png" src="../_images/feff-plot.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.7 </span><span class="caption-text">This is a plot of paths from the raw Feff calculation.</span></p>
+</div>
+<p>In this example, the first three single scattering paths from the
+sodium uranyl triacetate calculation were selected along with a
+low-rank multiple scattering path. Then the <span class="guilabel">Plot selection</span>
+button was pressed.  In this plot, we see that the three single
+scattering paths are, indeed, quite large. The multiple scattering
+path can barely be seen on this scale. It truly is a low importance
+path.</p>
+<p>The meaning of a “raw” <font size=-1 color="#8C4112">FEFF</font> calculation is that it
+is displayed as χ(k) with S<sup>2</sup><sub>0</sub> set to 1.0 and
+each of E<sub>0</sub>, ΔR, and σ<sup>2</sup> set to 0. A plot
+of χ(R) for the “raw” <font size=-1 color="#8C4112">FEFF</font> calculation, then,
+displays the Fourier transform of χ(k) parameterized with those
+values.</p>
+<p>It is, therefore, very quick and easy to examine the results of a
+<font size=-1 color="#8C4112">FEFF</font> calculation. The other four buttons are used to select
+how the plot of paths is made. The options are χ(k), | χ(R)|, Re[χ(R)], and Im[χ(R)].  The k-weight selected in the
+Plot window is used to make the plot of paths.</p>
+<p>Right clicking on an entry in the paths list will post a menu. The first
+item on the menu opens a dialog window with more details about the
+geomtery of the selected scattering path. In the following figure, the
+selected path (0006) was right-clicked on, opening the dialog depicted
+below.</p>
+<p>The other context menu options are used to set the path select on the
+basis of distance, ranking, or scattering geometry. These options are
+useful for selecting groups of paths to drag and drop onto the Data
+window.</p>
+<div class="figure align-center" id="id3">
+<a class="reference external image-reference" href="../_images/feff-pathsinfo.png"><img alt="../_images/feff-pathsinfo.png" src="../_images/feff-pathsinfo.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.8 </span><span class="caption-text">Information about the geometry of a scattering path.</span></p>
+</div>
+<p>The contents of the path interpretation can be filtered after running
+the <font size=-1 color="#8C4112">FEFF</font> calculation by setting the <font color="#636A24">♦Pathfinder→postcrit</font>
+parameter. By default, it is set to 3, which means that only paths
+with a ranking above 3 will be displayed in the path
+interpretation. Resetting this parameter allows you tune how many
+paths get displayed after the calculation.</p>
+</div>
+<div class="section" id="path-ranking">
+<h2>4.3.3. Path ranking<a class="headerlink" href="#path-ranking" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">FEFF</font> provides a crude evaluation of the importance of each
+path called the “curved wave importance factor”. This is
+computed as a very sparse – computed at four points between 0 Å<sup>-1</sup> and 20Å<sup>-1</sup> – trapezoidal integration of
+| χ(k)|. This amplitude is then expressed as a percentage with
+the largest path having an amplitude of 100.</p>
+<p>There are a few shortcomings of <font size=-1 color="#8C4112">FEFF</font>'s amplitude
+factor. First, the percentages are computed serially. So the first
+path is always given as 100%. If a subsequent path is larger than the
+first path, it, so, will be given as 100%. All following paths will be
+scaled to size of the later path. This is somewhat confusing.</p>
+<p>Second, the integration is very sparse. This made sense back in the
+mid-90s, when computers were slower and had less memory. But it means
+the amplitude is not very accurate.</p>
+<p>Finally, the integration is over a much wider range in k-space than is
+typically measured in a real experiment. It would make more sense to
+evaluate a measure of the importance of a path over a range in k that is
+expressed in a real measurement or, at least, a range that is more
+typical of a normal experiment.</p>
+<p>To this end, <font size=-1 color="#8C4112">ARTEMIS</font> offers a variety of new ways to rank the
+importance of a path. Some use χ(k) and some use χ(R) of the
+paths. All are evaluated over a restricted range in k or R. By
+default, the range in k is 3Å<sup>-1</sup> and 12Å<sup>-1</sup>
+and in R it is 1 Å and 4 Å. All are evaluated using the full k
+or R grid which is used internally. Some consider k-weighting.</p>
+<p>They all have funny acronyms:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>akc</strong></dt>
+<dd>This is the sum over the k-range of the absolute value of k χ(k).</dd>
+<dt><strong>aknc</strong></dt>
+<dd>This is the sum over the k-range of the absolute value of
+k<sup>n</sup>χ(k) where the plotting k-weight is used for n.</dd>
+<dt><strong>sqkc</strong></dt>
+<dd>This is the square root of the sum over the k-range of the square of
+k χ(k).</dd>
+<dt><strong>sqknc</strong></dt>
+<dd>This is the square root of the sum over the k-range of the square of
+k<sup>n</sup>χ(k) where the plotting k-weight is used for n.</dd>
+<dt><strong>mkc</strong></dt>
+<dd>This is the sum over the k-range of k| χ(k)|.</dd>
+<dt><strong>mknc</strong></dt>
+<dd>This is the sum over the k-range of k<sup>n</sup>||chi| (k)| where the
+plotting k-weight is used for n.</dd>
+<dt><strong>mft</strong></dt>
+<dd>This is the maximum value of | χ(R)| within the R-range where the
+plotting k-weight is used for the Fourier transform.</dd>
+<dt><strong>sft</strong></dt>
+<dd>This is the sum over the R-range of | χ(R)| where the plotting
+k-weight is used for the Fourier transform.</dd>
+</dl>
+</div></blockquote>
+<p>These new ranking criteria tend to do a better job of correctly
+predicting which paths are important to a fit. That's a good thing. The
+bad thing is that they take quite a bit longer to compute than simply
+relying on <font size=-1 color="#8C4112">FEFF</font>'s amplitude ratios.</p>
+<p>The full suite of options are provided in order to replicate the
+analysis shown in the paper by K. Provost, et al. The “akc”
+and “aknc” choices tend to be reliable.</p>
+<p>You can select which criterion to use on the interpretation page by
+setting the <font color="#636A24">♦Pathfinder→rank</font> configuration parameter to
+<span class="guilabel">feff</span> or to one of the acronyms above.</p>
+<p>You can compare the evaluations of the ranking criteria by pressing
+the <kbd class="light">Rank</kbd> button in the toolbar. This calculation takes
+about a third of a second per path. If there are a lot of paths in the
+interpretation, this can be a bit time consuming. At the end, a text
+dialog with the various rankings for each path is displayed. As can be
+seen in the figure below, there is some variation between the
+criteria, but all of them differ substantially from <font size=-1 color="#8C4112">FEFF</font>'s
+importance factors.</p>
+<div class="figure align-center" id="id4">
+<a class="reference external image-reference" href="../_images/feff-rank.png"><img alt="../_images/feff-rank.png" src="../_images/feff-rank.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.9 </span><span class="caption-text">The report on the path ranking calculation.</span></p>
+</div>
+<p>This improvement upon <font size=-1 color="#8C4112">FEFF</font>'s path selection tool is adapted from</p>
+<ul class="simple" id="bibtex-bibliography-feff/paths-0">
+<li>K.&nbsp;Provost, B.&nbsp;Ravel, and A.&nbsp;Michelowicz. Improving the estimation of scattering paths amplitude for path selection in EXAFS fit. Application to bis(S-thiocyanato)(cyclohexanediamino)platinum(II). <em>J. Synchrotron. Radiat.</em>, 2015. submitted.</li>
+</ul>
+<p>None of the path ranking criteria currently use σ<sup>2</sup> when
+they are being evaluated, but that would be an interesting
+consideration.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. The Atoms and Feff Window</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xtal.html">4.1. Crystal data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff.html">4.2. The Feff tab</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">4.3. The Paths tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">4.4. The Path-like tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html">4.5. The Console tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">4.6. Aggregate Feff calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/feff/paths.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="pathlike.html" title="4.4. The Path-like tab"
+             >next</a></li>
+        <li class="right" >
+          <a href="feff.html" title="4.2. The Feff tab"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >4. The Atoms and Feff Window</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

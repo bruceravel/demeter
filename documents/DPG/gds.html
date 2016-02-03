@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9. Guess/Def/Set Parameters &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="10. Fitting EXAFS data" href="fit/index.html" />
+    <link rel="prev" title="8.5. Running Feff outside of Demeter" href="paths/existing.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fit/index.html" title="10. Fitting EXAFS data"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="paths/existing.html" title="8.5. Running Feff outside of Demeter"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="guess-def-set-parameters">
+<h1>9. Guess/Def/Set Parameters<a class="headerlink" href="#guess-def-set-parameters" title="Permalink to this headline">¶</a></h1>
+<p>In <font size=-1 color="#8C4112">DEMETER</font>, every part of a fit is an object. The same is true of the
+parameters of the fit. A new guess parameter is defined like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
+                                  <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;deltar&#39;</span><span class="p">,</span>
+                                  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mf">0.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Every GDS object requires specifying these three attributes. The type
+of parameter, denoted by the <code class="docutils literal"><span class="pre">gds</span></code> attribute, is explained in detail
+below.  The <code class="docutils literal"><span class="pre">name</span></code> is the string that identifies the parameter and
+is used in the math expressions for path parameters and other kinds of
+GDS objects. In the case of a guess parameter, the <code class="docutils literal"><span class="pre">mathexp</span></code> is the
+initial value of the parameter to be used at the start of the fit. For
+other kinds of GDS ojbects, the <code class="docutils literal"><span class="pre">mathexp</span></code> attributes might take an
+actual math expression, i.e. a character string to be interpreted and
+evaluated by <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
+<p><code class="docutils literal"><span class="pre">gds</span></code>, <code class="docutils literal"><span class="pre">name</span></code>, and <code class="docutils literal"><span class="pre">mathexp</span></code> are normal attributes of the GDS
+object and can be treated like attributes of any object. So, for
+instance, if you wish to change the starting value of the <code class="docutils literal"><span class="pre">deltar</span></code>
+parameter, you can do like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="n">mathexp</span><span class="p">(</span><span class="mf">0.025</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here is another example, this time for a def parameter that takes an
+actual math expression:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;def&#39;</span><span class="p">,</span>
+                                  <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;c&#39;</span><span class="p">,</span>
+                                  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="s">&#39;(a + b) * tan(angle/2) / (a - b)&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="simplified-interface">
+<h2>9.1. Simplified interface<a class="headerlink" href="#simplified-interface" title="Permalink to this headline">¶</a></h2>
+<p>Although the syntax for the GDS object is identical to the syntax for
+all other <font size=-1 color="#8C4112">DEMETER</font> objects, it seems somehow more cumbersome
+in this case – particularly for anyone who goes back to the good
+ol' days of writing <code class="file docutils literal"><span class="pre">feffit.inp</span></code> files.  As a bit of syntactic
+sugar, the <font size=-1 color="#8C4112">DEMETER</font> base class offers a method that takes a
+character string as its sole argument.  That character string is
+parsed the same way as a parameter definition in a <code class="file docutils literal"><span class="pre">feffit.inp</span></code>
+file.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nv">$any_object</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&#39;guess deltar = 0.0&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">simpleGDS</span></code> simply parses the string and uses that to create a
+GDS object, which it then returns. The normal and simple syntax can be
+used interchangeably and for all GDS types.  They are completely
+equivalent.</p>
+</div>
+<div class="section" id="parameter-types">
+<h2>9.2. Parameter types<a class="headerlink" href="#parameter-types" title="Permalink to this headline">¶</a></h2>
+<p>There are 9 types of GDS parameters, that is, 9 possible values for
+the <code class="docutils literal"><span class="pre">gds</span></code> attribute.  Three of these will be familiar to users of
+<font size=-1 color="#8C4112">IFEFFIT</font> and <font size=-1 color="#8C4112">ARTEMIS</font>, the others are newly
+introduced by <font size=-1 color="#8C4112">DEMETER</font>.</p>
+<dl class="docutils">
+<dt><span class="guess">guess</span></dt>
+<dd>A parameter which is varied in a fit.</dd>
+<dt><span class="def">def</span></dt>
+<dd>A parameter whose math expression is continuously updated throughout
+the fit.</dd>
+<dt><span class="set">set</span></dt>
+<dd>A parameter which is evaluated at the beginning of the fit and
+remains unchanged after that.</dd>
+<dt><span class="lguess">lguess</span></dt>
+<dd>A locally guessed parameter. In a multiple data set fit, this will
+be expanded to one <span class="guess">guess</span> parameter per data set. See <a class="reference external" href="../lgcv.html">the
+section on local guess parameters</a> for more
+details.</dd>
+<dt><span class="restrain">restrain</span></dt>
+<dd>A restrain parameter is defined in an <font size=-1 color="#8C4112">IFEFFIT</font> script as
+a <span class="def">def</span> parameter but is used as a restraint in the call to
+<font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">feffit</span></code> command. In a multiple data set
+fit, all restraints are defined in the first call to the
+<code class="docutils literal"><span class="pre">feffit</span></code> command.</dd>
+<dt><span class="skip">skip</span></dt>
+<dd>A skip is a parameter that is defined but then ignored. Setting a
+variable to a <span class="skip">skip</span> is useful in a GUI as a way of
+“commenting out” a parameter without removing it from the
+fitting project.</dd>
+<dt><span class="after">after</span></dt>
+<dd>This is like a <span class="def">def</span> parameter, but is not used in the
+fitting model and only evaluated when the fit finishes. It is then
+reported in the log file.</dd>
+<dt><span class="penalty">penalty</span></dt>
+<dd>This is like a <span class="def">def</span> parameter, but is used as a user-defined
+penalty to the <a class="reference external" href="../fit/happiness.html">happiness parameter</a>,
+which is evaluated at the end of the fit.  <em>This is not currently
+implemented.</em></dd>
+<dt><span class="merge">merge</span></dt>
+<dd>A merge is the type given to a parameter that cannot be
+unambiguously resolved when two Fit objects are merged into a
+single Fit object.  A fit cannot proceed until all merge
+parameters are resolved.  It is unlikely that a variable would
+ever be declared as a merge by a user, although if a user script
+makes use of any of <font size=-1 color="#8C4112">DEMETER</font>'s (<em>as yet unimplemented</em>)
+project merging features, it will certainly be necessary to
+resolve a merge parameter by renaming it globally and resetting
+the <code class="docutils literal"><span class="pre">gds</span></code> attribute.</dd>
+</dl>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last"><span class="penalty">penalty</span> and <span class="merge">merge</span> types are currently
+unimplemented.</p>
+</div>
+</div>
+<div class="section" id="reporting-on-and-annotating-gds-parameters">
+<h2>9.3. Reporting on and annotating GDS parameters<a class="headerlink" href="#reporting-on-and-annotating-gds-parameters" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> provides several ways of examining GDS
+objects. Along with direct examination of the attributes, such as
+<code class="docutils literal"><span class="pre">bestfit</span></code> and <code class="docutils literal"><span class="pre">error</span></code>, there are several kinds of textual reports
+on the state of the GDS object and its parameter. This example shows
+three of these:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$amp_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
+                                    <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
+                                    <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="c1">## ... some time later, after a fit ...</span>
+<span class="k">print</span> <span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">note</span><span class="p">,</span> <span class="vg">$/</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">report</span><span class="p">,</span> <span class="vg">$/</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">full_report</span><span class="p">,</span> <span class="vg">$/</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">note</span></code> attribute contains the annotation. By default, the
+annotation for a <span class="guess">guess</span> parameter is set after a fit using the
+best fit value and the uncertainty, as shown below. For most other
+parameter types, annotation is set using the evaluation of the
+parameter as stored in the <code class="docutils literal"><span class="pre">bestfit</span></code> attribute.</p>
+<div class="highlight-python"><div class="highlight"><pre>amp:   0.98096480 +/-   0.08074672
+</pre></div>
+</div>
+<p>There is the option of annotating a parameter to a user-defined string.
+When explicitly set, the automatic annotation after a fit finishes does
+not happen. The purpose of the annotation is to store a description of
+the purpose served in a fitting model by a parameter.  In the example
+used here, you might annotate the parameter like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">note</span><span class="p">(</span><span class="s">&quot;This parameter represents S_0^2.&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">report</span></code> method is used after a fit to write out parameter
+results to a log file. It looks like this, giving the best fit value,
+the uncertainty, and the initial guess in brackets:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span>                <span class="o">=</span>   <span class="mf">0.98096480</span>    <span class="c"># +/-   0.08074672     [1]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">full_report</span></code> writes out a more complete description of the state
+of the object. It looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>amp
+  guess parameter
+  math expression: 1
+  evaluates to   0.98096480 +/-   0.08074672
+  annotation: &quot;This parameter represents S_0^2.&quot;
+</pre></div>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">9. Guess/Def/Set Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simplified-interface">9.1. Simplified interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-types">9.2. Parameter types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reporting-on-and-annotating-gds-parameters">9.3. Reporting on and annotating GDS parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/gds.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fit/index.html" title="10. Fitting EXAFS data"
+             >next</a></li>
+        <li class="right" >
+          <a href="paths/existing.html" title="8.5. Running Feff outside of Demeter"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

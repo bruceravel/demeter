@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.8. Unique potential styles &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.9. Fuzzy degeneracy" href="fuzzy.html" />
+    <link rel="prev" title="15.7. Empirical standards" href="empirical.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fuzzy.html" title="15.9. Fuzzy degeneracy"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="empirical.html" title="15.7. Empirical standards"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="unique-potential-styles">
+<h1>15.8. Unique potential styles<a class="headerlink" href="#unique-potential-styles" title="Permalink to this headline">¶</a></h1>
+<p>Consider this <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file for sodium uranyl triacetate:</p>
+<div class="highlight-python"><div class="highlight"><pre>title = Templeton et al.
+title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+title = Acta Cryst 1985 C41 1439-1441
+space = P 21 3
+a =  10.6890    b =  10.6890    c =  10.6890
+alpha =  90.0   beta =   90.0   gamma =  90.0
+core =  U   edge =  L3  rmax =    7.0
+shift   0.00000   0.00000   0.00000
+atoms
+! elem   x          y          z     tag           occ.
+  U     0.42940    0.42940    0.42940  U             1.00000
+  Na    0.82860    0.82860    0.82860  Na            1.00000
+  O     0.33430    0.33430    0.33430  Oax           1.00000
+  O     0.52420    0.52420    0.52420  Oax           1.00000
+  O     0.38340    0.29450    0.61100  Oeq           1.00000
+  O     0.54640    0.24430    0.50070  Oeq           1.00000
+  C     0.47860    0.22600    0.59500  C             1.00000
+  C     0.50880    0.12400    0.68620  C             1.00000
+</pre></div>
+</div>
+<p>This crystal has 4 elemental species distributed over 8 crystallographic
+positions. Two of the oxygen sites are the two oxygenyl sites with U-O
+double bond distance of about 1.76 Å. The remaining oxygen sites are
+single bonded at a distance of about 2.46 Å.</p>
+<p>In <a class="reference external" href="../feff/index.html">the Atoms and Feff chapter</a>, the concept of
+unique potential styles was introduced. Here we show examples of how
+these work using sodium uranyl triacetate.</p>
+<div class="section" id="each-element-gets-a-unique-potential">
+<h2>15.8.1. Each element gets a unique potential<a class="headerlink" href="#each-element-gets-a-unique-potential" title="Permalink to this headline">¶</a></h2>
+<p>Choosing the <span class="guilabel">elements</span> style assigns a unique potenitial to
+each atomic species in the crystal. Using this style results in the
+following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
+<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+TITLE Acta Cryst 1985 C41 1439-1441
+
+HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+*         mphase,mpath,mfeff,mchi
+CONTROL   1      1     1     1
+PRINT     1      0     0     0
+
+RMAX      5.0
+*NLEG      4
+
+POTENTIALS
+ * ipot   Z      tag
+    0     92     U
+    1     92     U
+    2     11     Na
+    3     8      O
+    4     6      C
+
+
+ATOMS                  * this list contains 81 atoms
+*   x          y          z     ipot tag           distance
+   0.00000    0.00000    0.00000  0  U             0.00000
+   1.01332    1.01332    1.01332  3  Oax.1         1.75512
+  -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+   1.25061   -1.97853    0.76213  3  Oeq.1         2.46160
+  -1.97853    0.76213    1.25061  3  Oeq.1         2.46160
+           ... (more atoms follow)
+</pre></div>
+</div>
+<p>This is reasonable input for <font size=-1 color="#8C4112">FEFF</font>. Indeed, for many
+crystals, the elements style is exactly what you want. With four
+elements in the cyrstal, five unique potentials are made. The absorber
+is always potential index 0. The remaining uranium atoms are given
+potential index 1.</p>
+<p>For this material, it is probably a poor idea to give the axial
+(double bonded, distance 1.76 Å) and equatorial (single bonded,
+distance 2.46 Å) the same potential index. Doing so forces their
+muffin tin radii to be the same. Given this substantial difference in
+distance, it is probably a good idea to let the two types of oxygen
+atoms have different muffin tin radii so that their scattering
+amplitudes and phase shifts can be computed differently. That
+introduces a more chemically reasonable potential model.</p>
+</div>
+<div class="section" id="each-tag-gets-a-unique-potential">
+<h2>15.8.2. Each tag gets a unique potential<a class="headerlink" href="#each-tag-gets-a-unique-potential" title="Permalink to this headline">¶</a></h2>
+<p>The two oxygen types can get differnt unique potentials by choosing
+the <span class="guilabel">tags</span> style. Note that in the atoms.inp pairs of oxygen
+sites were given the tags “Oax” and “Oeq”. Also note
+that the two carbon sites were given the same tag. With all this, we
+get the following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
+<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+TITLE Acta Cryst 1985 C41 1439-1441
+
+HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+*         mphase,mpath,mfeff,mchi
+CONTROL   1      1     1     1
+PRINT     1      0     0     0
+
+RMAX      5.0
+*NLEG      4
+
+POTENTIALS
+ * ipot   Z      tag
+    0     92     U
+    1     92     U
+    2     11     Na
+    3     8      O
+    4     8      O
+    5     6      C
+
+
+ATOMS                  * this list contains 81 atoms
+*   x          y          z     ipot tag           distance
+   0.00000    0.00000    0.00000  0  U             0.00000
+   1.01332    1.01332    1.01332  3  Oax.1         1.75512
+  -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+   1.25061   -1.97853    0.76213  4  Oeq.1         2.46160
+  -1.97853    0.76213    1.25061  4  Oeq.1         2.46160
+           ... (more atoms follow)
+</pre></div>
+</div>
+<p>Note that potential indeces 3 and 4 are both for oxygen atoms. 3 is for
+the short, axial oxygens and 4 is for the longer, equatorial oxygens.</p>
+</div>
+<div class="section" id="each-site-gets-a-unique-potential">
+<h2>15.8.3. Each site gets a unique potential<a class="headerlink" href="#each-site-gets-a-unique-potential" title="Permalink to this headline">¶</a></h2>
+<p>The final option for potential assignement is the <span class="guilabel">sites</span>
+style. In this style, each crystallographic position gets its own
+potential index.</p>
+<p>This is a somewhat dangerous option because <font size=-1 color="#8C4112">FEFF</font> only
+allows up to 7 potentials beyond the absorber (for a total of 8). In
+this crystal, we have 8 sites which results in 8 unique
+potentials. The software dutifully writes out the <code class="file docutils literal"><span class="pre">feff.inp</span></code>
+file below, but it also issues this warning.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-feffsiteserror"></span><a class="reference external image-reference" href="../_images/feff-siteserror.png"><img alt="../_images/feff-siteserror.png" src="../_images/feff-siteserror.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.30 </span><span class="caption-text">The sites error dialog.</span></p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+ TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+ TITLE Acta Cryst 1985 C41 1439-1441
+
+ HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      5.0
+ *NLEG      4
+
+ POTENTIALS
+  * ipot   Z      tag
+     0     92     U
+     1     92     U
+     2     11     Na
+     3     8      O
+     4     8      O
+     5     8      O
+     6     8      O
+     7     6      C
+     8     6      C
+
+
+ ATOMS                  * this list contains 81 atoms
+ *   x          y          z     ipot tag           distance
+    0.00000    0.00000    0.00000  0  U             0.00000
+    1.01332    1.01332    1.01332  4  Oax.1         1.75512
+   -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
+    1.25061   -1.97853    0.76213  6  Oeq.1         2.46160
+   -1.97853    0.76213    1.25061  6  Oeq.1         2.46160
+            ... (more atoms follow)
+</pre></div>
+</div>
+<p>If you attempt to run <font size=-1 color="#8C4112">FEFF</font> with this input data,
+<font size=-1 color="#8C4112">ARTEMIS</font> will complain with the rather repetitious error
+message shown below and not run <font size=-1 color="#8C4112">FEFF</font>. You have to fix the
+<font size=-1 color="#8C4112">FEFF</font> input data either by hand-editing or by re-running
+<font size=-1 color="#8C4112">ATOMS</font> with a different potentials style.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-feffsiteserror2"></span><a class="reference external image-reference" href="../_images/feff-siteserror2.png"><img alt="../_images/feff-siteserror2.png" src="../_images/feff-siteserror2.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.31 </span><span class="caption-text">Too many unique potentials in the Feff run.</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/ipots.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fuzzy.html" title="15.9. Fuzzy degeneracy"
+             >next</a></li>
+        <li class="right" >
+          <a href="empirical.html" title="15.7. Empirical standards"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.7. Empirical standards &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.8. Unique potential styles" href="ipots.html" />
+    <link rel="prev" title="15.6. Bond valence sums" href="bvs.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ipots.html" title="15.8. Unique potential styles"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="bvs.html" title="15.6. Bond valence sums"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="empirical-standards">
+<h1>15.7. Empirical standards<a class="headerlink" href="#empirical-standards" title="Permalink to this headline">¶</a></h1>
+<p>Let me just say up front that <font size=-1 color="#8C4112">ARTEMIS</font> is intended as a
+front-end to <font size=-1 color="#8C4112">FEFF</font> for the problem of EXAFS analysis.  In
+almost all cases, <font size=-1 color="#8C4112">FEFF</font> is the right tool for that job and
+there are few cases where the use of empirical standards is preferable
+to using <font size=-1 color="#8C4112">FEFF</font>.  As discussed elsewhere in this manual,
+there are a situations where the application of <font size=-1 color="#8C4112">FEFF</font> to a
+particular problem may not be obvious.  Any situation for which the
+choice of a starting configuration of atomic coordinates, as needed
+for <font size=-1 color="#8C4112">FEFF</font>'s input data, is not obvious might fall into that
+category.  In one of those situations, you might be tempted to puruse
+empirical standards.  You would, however, usually be better served by
+adopting one of the strategies that have been developed for applying
+<font size=-1 color="#8C4112">FEFF</font> calculations to unknown structures.</p>
+<p>That said, there are a small handful of situations where the use of
+empirical standards is justified. In fact, I can think of two. The
+situation where an absorber and a scatterer are bound by a hydrogen
+atom – i.e. there is a hydrogen atom in the space between the
+absorber and scatterer from which the photoelectron might scatter –
+is poorly handled by <font size=-1 color="#8C4112">FEFF</font>. In that case, finding a suitable
+empirical standard will likely be an improvement over the systematic
+error introduced by <font size=-1 color="#8C4112">FEFF</font>'s poor handlng of the
+hydrogen. The second example would be a heterogeneous sample – like
+a soil – which contains a component which varies little from sample
+to sample. In that case, using an emirical standard to represent the
+unchanging component and using <font size=-1 color="#8C4112">FEFF</font> to model the behavior
+of the component(s) which do change across the ensemble of
+measurements might be a fruitful strategy.</p>
+<p>To this end, <font size=-1 color="#8C4112">DEMETER</font> offers a mechanism for generating an
+empirical standard from measured data. This is saved in a form that
+can be used by <font size=-1 color="#8C4112">ARTEMIS</font> as if it were a normal path imported
+into the fit in the normal way.</p>
+<p>My example will use the copper foil data at 10 K and 150 K, which can be
+found at <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples">at my Github
+site</a>.
+In order to demonstrate the gneration and use of an empirical standard,
+I will use the uncomplicated example of using the low temperature data
+as the standard for the analysis of the higher temperature data. Of
+course, a real-world scenario will be much more complicated that this
+example, but it should demonstrate the mechanics of making and using the
+empirical standard.</p>
+<div class="section" id="preparing-the-empirical-standard">
+<h2>15.7.1. Preparing the empirical standard<a class="headerlink" href="#preparing-the-empirical-standard" title="Permalink to this headline">¶</a></h2>
+<p>It starts by processing the data properly. First, import the two data
+sets into <font size=-1 color="#8C4112">ATHENA</font>. Take care that the data are aligned and
+have the same values for E<sub>0</sub>. Choose a k-range over which both
+data sets are of good quality. I have chosen a range of 3 Å<sup>-1</sup> to 12 Å<sup>-1</sup>. Then choose an R-range to enclose and
+isolate the first peak, which corresponds to the first coordination
+shell. Here, I chose 1.8 Å to 2.8 Å.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-empathena"></span><a class="reference external image-reference" href="../_images/emp_athena.png"><img alt="../_images/emp_athena.png" src="../_images/emp_athena.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.19 </span><span class="caption-text">The Cu foil data at two temperatures have been imported into Athena,
+aligned, and processed.</span></p>
+</div>
+<div class="figure compound align-center" id="_fig-empplot">
+<div style="width: 45%" class="subfigure" id="id2">
+<span id="fig-emprplot"></span><a class="reference external image-reference" href="../_images/emp_rplot.png"><img alt="../_images/emp_rplot.png" src="../_images/emp_rplot.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.20 </span><span class="caption-text">Here are the Cu foil data at the two temperatures plotted in R-space ...</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id3">
+<span id="fig-empqplot"></span><a class="reference external image-reference" href="../_images/emp_qplot.png"><img alt="../_images/emp_qplot.png" src="../_images/emp_qplot.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.21 </span><span class="caption-text">And plotted in back-transform k-space</span></p>
+</div>
+</div><p id="_fig-empplot">Select the data set from which you wish to make an empirical standard,
+in this case the data measured at 10 K.  Select the
+<span class="menuselection">File ‣ Export</span> submenu.  One of the options is to
+export an empirical standard.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-empexport"></span><a class="reference external image-reference" href="../_images/emp_export.png"><img alt="../_images/emp_export.png" src="../_images/emp_export.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.22 </span><span class="caption-text">Exporting the processed data as an empirical standard.</span></p>
+</div>
+<p>This will prompt you for a file name using the standard file selection
+dialog. The default file is the name of the data group with .es as the
+extension. It will then prompt you for the species of the scattering
+element using a periodic table dialog. <font size=-1 color="#8C4112">ATHENA</font> has no way of
+knowing the scatterer species, so you have to provide this
+information. In this case, you would click on Cu since this is a
+copper foil.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-empptabel"></span><a class="reference external image-reference" href="../_images/emp_ptable.png"><img alt="../_images/emp_ptable.png" src="../_images/emp_ptable.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.23 </span><span class="caption-text">Select the species of the scatterer from the periodic table interface.</span></p>
+</div>
+</div>
+<div class="section" id="using-the-empirical-standard">
+<h2>15.7.2. Using the empirical standard<a class="headerlink" href="#using-the-empirical-standard" title="Permalink to this headline">¶</a></h2>
+<p>Now fire up <font size=-1 color="#8C4112">ARTEMIS</font> and import the 150 K data from the
+<font size=-1 color="#8C4112">ATHENA</font> project file you saved before closing
+<font size=-1 color="#8C4112">ATHENA</font>. (You <strong>did</strong> save your work, didn't you?!) The k-
+and R-ranges will be imported as they were set in
+<font size=-1 color="#8C4112">ATHENA</font>. To begin the analysis using the empirical standard,
+click on the hot text indicated in the figure below. You can also
+import this sort of standard from the <span class="menuselection">Data ‣ Other
+fitting standards...</span> menu.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-empimportdata"></span><a class="reference external image-reference" href="../_images/emp_importdata.png"><img alt="../_images/emp_importdata.png" src="../_images/emp_importdata.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.24 </span><span class="caption-text">The 150 K data have been imported into Artemis and we are ready to
+import the prepared empirical standard.</span></p>
+</div>
+<p>Once the empirical standard is imported, it will be displayed just
+like a normal path. You can tell it is an empirical standard because
+its label contains the token <span class="guilabel">[Emp.]</span>.</p>
+<p>Here I have set up a 4-parameter fit typical for a first shell
+analysis, except that I have <span class="set">set</span> the E<sub>0</sub> parameter
+to 0.  The amplitude, σ<sup>2</sup>, and ΔR are
+<span class="guess">guess</span> parameters.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-empimportes"></span><a class="reference external image-reference" href="../_images/emp_importes.png"><img alt="../_images/emp_importes.png" src="../_images/emp_importes.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.25 </span><span class="caption-text">The 150 K data and the empirical standard have been imported into
+Artemis.</span></p>
+</div>
+<p>We are now ready to hit the <kbd class="light">Fit</kbd> button. Shown below
+are the results of the fit with the fitting space chosen first as R,
+then as q.</p>
+<div class="figure compound align-center" id="_fig-empfit">
+<div style="width: 45%" class="subfigure" id="id8">
+<span id="fig-empfitr"></span><a class="reference external image-reference" href="../_images/emp_fitr.png"><img alt="../_images/emp_fitr.png" src="../_images/emp_fitr.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.26 </span><span class="caption-text">The fit with the fitting space selected as R and the plot
+displayed in R.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id9">
+<span id="fig-empgdsr"></span><a class="reference external image-reference" href="../_images/emp_gdsr.png"><img alt="../_images/emp_gdsr.png" src="../_images/emp_gdsr.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.27 </span><span class="caption-text">The parameter values from the fit inR.</span></p>
+</div>
+</div><div class="figure compound align-center" id="_fig-empfit">
+<div style="width: 45%" class="subfigure" id="id10">
+<span id="fig-empfitq"></span><a class="reference external image-reference" href="../_images/emp_fitq.png"><img alt="../_images/emp_fitq.png" src="../_images/emp_fitq.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.28 </span><span class="caption-text">The fit with the fitting space selected as q and the plot
+displayed in q.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id11">
+<span id="fig-empgdsq"></span><a class="reference external image-reference" href="../_images/emp_gdsq.png"><img alt="../_images/emp_gdsq.png" src="../_images/emp_gdsq.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.29 </span><span class="caption-text">The parameter values from the fit in q.</span></p>
+</div>
+</div><p id="_fig-empfit">The results fitting in R or q are pretty similar, which is reassuring.</p>
+<p>The value for the amplitude is consistent with and close to 1, which is
+should be since the copper metal is 12-fold coordinate at both
+temperatures.</p>
+<p>The value for the change in σ<sup>2</sup> is 0.0017±3, which
+seems reasonable for this change in temperature.</p>
+<p>The value for ΔR fitted in q space is 0.001±1. Fitted in R
+space, the uncertainty is 0.002. That's kind of interesting. In either
+case, the uncertainty in R is smaller than for a <font size=-1 color="#8C4112">FEFF</font>-based
+fit for a number of reasons. Probably the most significant is that
+both standard and data are of excellent quality. Were the data the
+sort of marginal data that comes from most research problems on
+difficult materials, the effects of statistical and systematic noise
+would be much more dramatic. Also relevant to the small uncertainty is
+that this fitting problem has been contrived (by virtue of careful
+alignment and choice of E<sub>0</sub> back in <font size=-1 color="#8C4112">ATHENA</font>) to
+remove the fitted change in E<sub>0</sub> from the problem. By removing
+the parameter most correlated with ΔR, we significantly reduces
+the uncertainty in ΔR.</p>
+<p>I would not interpret all of this to mean that use of empirical
+standards is superior to the use of <font size=-1 color="#8C4112">FEFF</font>. In the specific
+case where the first coordination shell is of known contents and can
+be well isolated from higher shells and where you are confident that
+your unknown is identical to your standard except for small changes in
+N, R, or σ<sup>2</sup>, then empirical standards are a useful tool
+for your EXAFS toolbox.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/empirical.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ipots.html" title="15.8. Unique potential styles"
+             >next</a></li>
+        <li class="right" >
+          <a href="bvs.html" title="15.6. Bond valence sums"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

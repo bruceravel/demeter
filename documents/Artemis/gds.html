@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. The GDS window &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="7. Running a fit" href="fit/index.html" />
+    <link rel="prev" title="5.3. Using path-like objects" href="path/pathlike.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fit/index.html" title="7. Running a fit"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="path/pathlike.html" title="5.3. Using path-like objects"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-gds-window">
+<h1>6. The GDS window<a class="headerlink" href="#the-gds-window" title="Permalink to this headline">¶</a></h1>
+<div class="bigtrick admonition">
+<p class="first admonition-title">The Big Trick in Artemis</p>
+<p class="last">The parameters of the EXAFS equation are not the parameters of the fit.
+The parameters of the EXAFS equation are written <em>in terms of</em> the
+parameters of the fit.</p>
+</div>
+<p>As a consequence, path parameter values (<a class="reference internal" href="path/index.html#fig-pathpopulated"><span>see Fig. 5.5</span></a>) are <em>math expressions</em>. These math expressions
+are functions of the actual fitting parameters.</p>
+<p>Some of these math expressions are quite simple. For example, in the
+gold metal example in <a class="reference external" href="path/mathexp.html">the previous chapter</a>,
+the math expressions for S<sup>2</sup><sub>0</sub> and E<sub>0</sub> were
+simple functions, each of a single parameter. The math expression for
+ΔR, however, was a function of <code class="docutils literal"><span class="pre">alpha</span></code> and <code class="docutils literal"><span class="pre">reff</span></code>, while
+the σ<sup>2</sup> math expression used the <code class="docutils literal"><span class="pre">debye</span></code> function and
+two parameters.</p>
+<p>All of these parameters <strong>must</strong> be defined in the GDS window.  This
+window contains a grid with a series of buttons down the right side.
+It is displayed and hidden using the GDS button on the left side of
+the Main window.  Here are the contents of the GDS window from the
+gold metal example.  The four variable parameters in the fit along
+with the fixed sample temperature needed by the <code class="docutils literal"><span class="pre">debye</span></code> function are
+shown.  A new variable parameter is being defined in line 6.</p>
+<p>The second, third, and fourth columns in the grid are filled by simple
+text boxes.  The first column contains a drop down menu from which the
+parameter types can be chosen.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-gds"></span><a class="reference external image-reference" href="_images/gds.png"><img alt="_images/gds.png" src="_images/gds.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.1 </span><span class="caption-text">The GDS window.</span></p>
+</div>
+<div class="section" id="parameter-types">
+<h2>6.1. Parameter types<a class="headerlink" href="#parameter-types" title="Permalink to this headline">¶</a></h2>
+<p>Every parameter of any type used in any math expression must be defined
+on the GDS widow. Any variable parameter defined on the GDS window must
+be used in a math expression.</p>
+<p>There are 9 types of parameters in <font size=-1 color="#8C4112">ARTEMIS</font>. They are color
+coded in the grid to give you a visual indication of each parameter's
+type.</p>
+<dl class="docutils">
+<dt><span class="guess">guess</span></dt>
+<dd>This is a parameter of the fit.  Its value will be adjusted to
+find the best fit of the model to your data.  Its initial value is
+usually a number, but can be a math expression.  In that case, the
+initial value will be the initial evaluation of the math expression.</dd>
+<dt><span class="def">def</span></dt>
+<dd>This is a parameter that is defined as a math expression dependent
+upon other <span class="guess">guess</span>, <span class="def">def</span>, or <span class="set">set</span>
+parameters. Its value is updated throughout the fit. As discussed
+elsewhere in this manual, sophisticated use of <span class="def">def</span>
+parameters is key to successful model building and effective use
+of <font size=-1 color="#8C4112">ARTEMIS</font>.</dd>
+<dt><span class="set">set</span></dt>
+<dd>A <span class="set">set</span> parameter is one that is evaluated at the beginning of
+the fit, but not evaluated subsequently. Although a <span class="set">set</span> parameter
+can take a math expression as its value, it is more typically used
+to represent a constant (i.e. a number) used elsewhere in the fitting model.</dd>
+<dt><span class="lguess">lguess</span></dt>
+<dd>An <span class="lguess">lguess</span> parameter is a tool used to simplify model
+creation for a multiple data set fit.  It can be used in math
+expressions for two or more data sets.  When the fit is started,
+an actual guess parameter will be created for each data set in
+which the <span class="lguess">lguess</span> is used.  As an example, suppose your
+multiple data set fit includes data on a series of binary alloys.
+If <code class="docutils literal"><span class="pre">x</span></code> is a mixing parameter between the two alloys and is
+different for each sample, you might then use math expressions
+containing <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">(1-x)</span></code> for S<sup>2</sup><sub>0</sub>
+parameters of paths representing the two metallic species in each
+fit. With <code class="docutils literal"><span class="pre">x</span></code> an <span class="lguess">lguess</span> parameter, independent mixing
+parameters will be floated for each data set.  The point, then, of
+an <span class="lguess">lguess</span> is to facilitate the chore of editing path
+parameter math expressions using <font size=-1 color="#8C4112">ARTEMIS</font>' tools for
+pushing path parameter values across paths.  This is discussed in
+more detail in <a class="reference external" href="extended/cv.html#useinlguessparameters">the discussion of the characteristic value</a>.</dd>
+<dt><span class="skip">skip</span></dt>
+<dd>A <span class="skip">skip</span> parameter is one that is not used in any capacity
+in the fit, but which you do not want to discard from your fitting
+project.  Changing a parameter to <span class="skip">skip</span> is rather like
+“commenting it out”.</dd>
+<dt><span class="restrain">restrain</span></dt>
+<dd>A <span class="restrain">restraint</span> is a math expression that is evaluated and
+added in quadrature to χ<sup>2</sup> to evaluate the fit. That is, the fit is
+optimized in the presence of the restraint. The point of this is to
+add prior knowledge to a fit. Restraints will be discussed in more
+detail later in this document.</dd>
+<dt><span class="after">after</span></dt>
+<dd>An <span class="after">after</span> parameter is very similar to a <span class="def">def</span>
+parameter in that it takes a math expression that depends on other
+parameters. It is not, however, used in any way in the
+fit. Instead, it is evaluated at the end of the fit and reported
+to the log file. This is used to make interesting calculations
+based on other parameters as part of the record of the fit.  An
+<span class="after">after</span> parameter should never be used in the math
+expression for a path parameter.  <a class="reference external" href="extended/bvs.html#using-a-bond-valance-sum-as-an-after-parameter">Here's an example.</a></dd>
+<dt><span class="penalty">penalty</span></dt>
+<dd>This takes a math expression representing a user defined
+penalty to the happiness calculation. <em>This feature has not yet been
+implemented in</em> <font size=-1 color="#8C4112">ARTEMIS</font>.</dd>
+<dt><span class="merge">merge</span></dt>
+<dd>A merge parameter is a parameter which has been
+multiply defined under the same name as part of combining fitting
+projects or importing structural units. A fit cannot proceed with
+any parameters in this state. <em>This feature has not yet been
+implemented in</em> <font size=-1 color="#8C4112">ARTEMIS</font>.</dd>
+</dl>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Penalty and merge parameters have not been implemented.</p>
+</div>
+</div>
+<div class="section" id="user-interaction">
+<h2>6.2. User interaction<a class="headerlink" href="#user-interaction" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Explain drag and drop</p>
+</div>
+<div class="section" id="button-bar">
+<h3>6.2.1. Button bar<a class="headerlink" href="#button-bar" title="Permalink to this headline">¶</a></h3>
+<p>The stack of buttons on the right side of the GDS window contains many
+of the main functions of the GDS window.</p>
+<dl class="docutils">
+<dt><kbd class="light">Use best fit</kbd></dt>
+<dd>This button makes the most recent best fit value into the initial
+guess for every <span class="guess">guess</span> parameter in the grid.</dd>
+<dt><kbd class="light">Reset all</kbd></dt>
+<dd>This button tells <font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> to reset
+all parameters to their initial values.</dd>
+<dt><kbd class="light">Highlight</kbd></dt>
+<dd>This button prompts you for a string. All parameters with names or
+math expressions matching the string provided will be highlighted
+with a yellow background. This feature is particularly useful in
+large fitting models with many parameters. In the image above, you
+can see that all parameters matching <code class="regexp docutils literal"><span class="pre">brc1</span></code> have been highlighted.
+The string to match can actually be any valid Perl regular
+expression.</dd>
+<dt><kbd class="light">Evaluate</kbd></dt>
+<dd>Clicking this button will evaluate all parameters and insert their
+evaluations into the fourth column of the grid. This is used to
+“spell-check” your math expressions for def and other parameters. In
+the image above, this button has been clicked and the evaluations
+have been inserted into the fourth column.</dd>
+<dt><kbd class="light">Import GDS</kbd>, <kbd class="light">Export GDS</kbd></dt>
+<dd>The next two buttons are used to import or export a simple text file
+with the names and definitions of all the parameters.</dd>
+<dt><kbd class="light">Discard all</kbd></dt>
+<dd>This button does just that, after prompting to be sure that is what
+you want to do.</dd>
+<dt><kbd class="light">Add a site</kbd></dt>
+<dd>This button appends a blank row to the end of the grid.</dd>
+</dl>
+</div>
+<div class="section" id="keyboard-shortcuts">
+<h3>6.2.2. Keyboard shortcuts<a class="headerlink" href="#keyboard-shortcuts" title="Permalink to this headline">¶</a></h3>
+<p>When one or more rows are selected, you can use the following keyboard
+shortcuts to change the parameter type of that set of parameters.</p>
+<ul class="simple">
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">g</kbd>: <span class="guess">convert to guess</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">d</kbd>: <span class="def">convert to def</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">s</kbd>: <span class="set">convert to set</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">l</kbd>: <span class="lguess">convert to lguess</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">k</kbd>: <span class="skip">convert to skip</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">r</kbd>: <span class="restrain">convert to restrain</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">a</kbd>: <span class="after">convert to after</span></li>
+<li><kbd class="dark">Alt</kbd>-<kbd class="dark">p</kbd>: <span class="penalty">convert to penalty</span></li>
+</ul>
+</div>
+<div class="section" id="context-menu">
+<h3>6.2.3. Context menu<a class="headerlink" href="#context-menu" title="Permalink to this headline">¶</a></h3>
+<p>Clicking on a line in the grid selects the entire line.
+<kbd class="dark">Control</kbd> clicking of a line adds that line to the
+selection. <kbd class="dark">Shift</kbd> clicking adds all lines between the
+selected and clicked upon lines.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-gdsmenu"></span><a class="reference external image-reference" href="_images/gds-menu.png"><img alt="_images/gds-menu.png" src="_images/gds-menu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.2 </span><span class="caption-text">Right clicking on any line in the grid, including the label containing
+the line number, will post this menu.</span></p>
+</div>
+<dl class="docutils">
+<dt><span class="guilabel">Copy, cut, paste</span></dt>
+<dd>These three options copy, cut, and paste lines from or to the GDS
+grid. The cut function is one way of discarding a parameter. Another
+is to simply delete the name in the second column.</dd>
+<dt><span class="guilabel">Insert blank lines</span></dt>
+<dd>The insertion options complement the <kbd class="light">Add a site</kbd> button by adding
+blank rows to the middle of the grid.</dd>
+<dt><span class="guilabel">Change selected to</span></dt>
+<dd>This sub-menu provides yet another way of changing the parameter
+type of the selected lines of the grid. If you have more than one
+line selected, they will all get changed to the option you choose
+from the submenu.</dd>
+<dt><span class="guilabel">Grab best fit</span></dt>
+<dd>This changes theinitial guess of the selected lines to the most
+recent best fit value(s).</dd>
+<dt><span class="guilabel">Build restraint</span></dt>
+<dd><div class="first figure align-center" id="id3">
+<span id="fig-gdsrestraint"></span><a class="reference external image-reference" href="_images/gds-restraint.png"><img alt="_images/gds-restraint.png" src="_images/gds-restraint.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.3 </span><span class="caption-text">This posts a dialog that helps you name and define a restraint based
+upon the value of the parameter in the line clicked upon.</span></p>
+</div>
+<p>This will use <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">penalty</span></code> function with the
+lower and upper bounds as its arguments and multiplied by the
+scaling factor. The example shown will make this restraint:</p>
+<div class="highlight-python"><div class="highlight"><pre>restrain res_enot = 1000 * penalty(enot, -5, 5)
+</pre></div>
+</div>
+<p class="last">and add it to the end of the grid. The penalty function will
+evaluate to 0 when enot stays between -5 and 5. As the value of
+enot strays outside that range, the restraint will evaluate to a
+value of 100 times the distance outside the range. This, then, is
+added in quadrature to χ<sup>2</sup> when the fit is
+minimized. You can read more about this, including how to choose
+the value of the scaling parameter, in the <a class="reference external" href="extended/constraints.html">discussion of
+restraints</a>.</p>
+</dd>
+<dt><span class="guilabel">Annotate</span></dt>
+<dd>This prompts you for a text string to describe the parameter in the
+line clicked upon. The intent is to allow you document the role of
+the parameter in your fitting model. This annotation is displayed in
+the GDS window's status bar when that line is selected.</dd>
+<dt><span class="guilabel">Find parameter</span></dt>
+<dd>This posts a small window with a text box reporting all GDS
+parameters and path parameters which have math expressions
+containing this parameter.</dd>
+<dt><span class="guilabel">Rename parameter globally</span></dt>
+<dd>This allows you to rename a parameter and have its new name inserted
+every place in the fit where that parameter is used. All instances
+in other parameters on the GDS page and in the math expressions for
+parameters of all paths will be changed. Essentially, this is a
+global search and replace for parameter names.</dd>
+<dt><span class="guilabel">Explain</span></dt>
+<dd>Finally, the items in this submenu write a short text to the status
+bar explaining the various parameter types.</dd>
+</dl>
+</div>
+<div class="section" id="creating-parameters-from-math-expressions-on-the-path-page">
+<h3>6.2.4. Creating parameters from math expressions on the path page<a class="headerlink" href="#creating-parameters-from-math-expressions-on-the-path-page" title="Permalink to this headline">¶</a></h3>
+<p>Parameters can be created from the <a class="reference external" href="path/index.html">path page</a>. When
+you right click on a word in a math expression for the one of the <a class="reference external" href="path/mathexp.html">path
+parameters</a>, a menu pops up which allows you to
+set the word you clicked upon as GDS parameter.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-gdspath"></span><a class="reference external image-reference" href="_images/gds_path.png"><img alt="_images/gds_path.png" src="_images/gds_path.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 6.4 </span><span class="caption-text">Creating GDS parameters by right clicking on a math expression on the
+Path page.</span></p>
+</div>
+<p>If you have not yet defined the word you click on, then the GDS window
+will appear on screen, and the parameter will be inserted into the GDS
+table as the type of parameter selected from the menu.</p>
+<p>If the word has already been defined, then its type will be changed to
+the type you select from the menu.</p>
+<p>If the word is something that is not allowed in <font size=-1 color="#8C4112">IFEFFIT</font> as
+a parameter name (things like <code class="docutils literal"><span class="pre">dr1</span></code> and <code class="docutils literal"><span class="pre">cos</span></code> are reserved words
+and cannot be used as parameter names) then the menu will not be
+posted. Likewise, the menu will not be posted if you right click on a
+number.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">6. The GDS window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-types">6.1. Parameter types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#user-interaction">6.2. User interaction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/gds.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fit/index.html" title="7. Running a fit"
+             >next</a></li>
+        <li class="right" >
+          <a href="path/pathlike.html" title="5.3. Using path-like objects"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

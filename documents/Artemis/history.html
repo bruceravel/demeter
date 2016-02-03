@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10. The History window &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="11. Monitoring things" href="monitor.html" />
+    <link rel="prev" title="9. The Log and Journal windows" href="logjournal.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="monitor.html" title="11. Monitoring things"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="logjournal.html" title="9. The Log and Journal windows"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-history-window">
+<h1>10. The History window<a class="headerlink" href="#the-history-window" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> keeps a complete history of your fitting
+project. After each fit, your fitting model and the state of the
+program are saved as part of the fitting project. When a project file
+is written, this history is stored in the project file. This allows
+you to compare fits or even to revert <font size=-1 color="#8C4112">ARTEMIS</font> to an earlier
+fit.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-historylog"></span><a class="reference external image-reference" href="_images/history-log.png"><img alt="_images/history-log.png" src="_images/history-log.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.1 </span><span class="caption-text">Fit history window</span></p>
+</div>
+<p>Interactions with the fit history are via the History window, which is
+shown and hidden using the <kbd class="light">History</kbd> button on the left
+side of the Main window.</p>
+<p>The History window shows two major controls. On the left is a list all
+fits performed as part of the fitting prject. Like many other lists in
+<font size=-1 color="#8C4112">ARTEMIS</font>, this contains elements that can be selected and
+marked. This list uses multiple selection, so control-clicking can be
+used to add to the selection and shift-clicking can be used to select
+groups of fits.  Much of the analysis discussed below uses the
+selection. Some functionality uses the set of marked fits.</p>
+<p>On the right is a notebook. The first tab is for displaying the log
+files from old fits. The log file displayed when the most recent fit is
+clicked upon is identical to the log file displayed in the Log window.</p>
+<p>You may find that there is a short pause between clicking on a fit and
+seeing its log file displayed. When importing a project file,
+<font size=-1 color="#8C4112">ARTEMIS</font> delays importing the fits until one is explicitly
+needed. For a large project file, this greatly speeds up import at the
+small cost of a pause when examining log files.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-historymenu"></span><a class="reference external image-reference" href="_images/history-menu.png"><img alt="_images/history-menu.png" src="_images/history-menu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.2 </span><span class="caption-text">The history context menu</span></p>
+</div>
+<p>Each fit in the list will display a context menu when right
+clicked. Again, there may be a short pause before the menu gets
+posted. In that menu are a variety of functions related to the fit
+history.</p>
+<dl class="docutils">
+<dt><span class="guilabel">Restore fitting model</span></dt>
+<dd>An prior fitting model can be restored. This will clear all of
+<font size=-1 color="#8C4112">ARTEMIS</font>' windows and replace them with content from that fit.</dd>
+<dt><span class="guilabel">Save log file</span></dt>
+<dd>The log file displayed can be written to a text file. You will be
+prompted for a file name and location.</dd>
+<dt><span class="guilabel">Export fit</span></dt>
+<dd>The fit can be exported to an <font size=-1 color="#8C4112">ARTEMIS</font> project file containing only
+that fit in the fit history.</dd>
+<dt><span class="guilabel">Discard fit(s)</span></dt>
+<dd>The current or the set of marked fits can be discarded from the
+project.</dd>
+<dt><span class="guilabel">Show YAML</span></dt>
+<dd>The last item is a tool used to help debug problems in ARTEMIS. It
+displays <font size=-1 color="#8C4112">ARTEMIS</font>' internal representation of the fit in a text
+window.</dd>
+</dl>
+<div class="section" id="reports-on-fits">
+<h2>10.1. Reports on fits<a class="headerlink" href="#reports-on-fits" title="Permalink to this headline">¶</a></h2>
+<p>The second tab is used to analyze groups of fits. In the example shown
+above, the progression of χ<sup>2</sup><sub>v</sub> values throughout
+the development of the fitting model is shown both as a textual report
+and as a plot.  Similar plots can be made for individual parameter
+values.</p>
+<div class="figure compound align-center" id="_fig-historyreporting">
+<div style="width: 45%" class="subfigure" id="id3">
+<span id="fig-historyreport"></span><a class="reference external image-reference" href="_images/history-report.png"><img alt="_images/history-report.png" src="_images/history-report.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.3 </span><span class="caption-text">Generate a report from the marked fits.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id4">
+<span id="fig-historyreportplot"></span><a class="reference external image-reference" href="_images/history-reportplot.png"><img alt="_images/history-reportplot.png" src="_images/history-reportplot.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.4 </span><span class="caption-text">A plot of the generated report.</span></p>
+</div>
+</div><p id="_fig-historyreporting">Only the marked fits are included in the report. If no fits are
+marked, then all fits will be marked before the report is
+generated. Simple controls for setting the marks are at the bottom of
+the list. The buttons marked <kbd class="light">All</kbd> and
+<kbd class="light">None</kbd> set and clear all marks. The
+<kbd class="light">Regexp</kbd> button will prompt you for a pattern to match
+against all fit names.</p>
+<p>When a fit is selected from the list, the <span class="guilabel">Select parameter</span>
+menu is populated with the names of the parameters used in that
+fit. All parameter types are included. Selecting a new item from the
+menu or clicking the <kbd class="light">Write report</kbd> button will generate
+a new report and its plot.</p>
+<p>For statistics, all of χ<sup>2</sup>, χ<sup>2</sup><sub>v</sub>,
+R-factor, and the happiness are reported. You can choose which of
+χ<sup>2</sup><sub>v</sub>, R-factor, and happiness to have displayed
+in the resulting plot. Clicking the <span class="guilabel">Show y=0</span> button forces
+the plot to be scaled of the y-axis such that y=0 is shown.</p>
+<p>Buttons at the bottom of this tab allow you to save the report as a text
+file or to send it to the printer.</p>
+</div>
+<div class="section" id="plotting-fits">
+<h2>10.2. Plotting fits<a class="headerlink" href="#plotting-fits" title="Permalink to this headline">¶</a></h2>
+<p>The plot tool tab is used to place old fits in the Plotting list for
+comparison with data and with the current fit. As you perform fits (or
+when a project file is imported), an entry on the <span class="guilabel">Plot
+tool</span> page is made for each fit. Within the box associated with each
+fit is one button for each data set included in the fit. The example
+below is of a single data set fit to Co metal, thus each fit has a
+single button associated with it.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-historyplottool"></span><a class="reference external image-reference" href="_images/history-plottool.png"><img alt="_images/history-plottool.png" src="_images/history-plottool.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.5 </span><span class="caption-text">Fit history plotting tool</span></p>
+</div>
+<p>Clicking one of the buttons on the <span class="guilabel">Plot tool</span> page makes an
+entry in the plotting list.  These will then be plotted just like any
+other item in <a class="reference external" href="plot/index.html">the plotting list</a>.  Note that it is
+usually not necessary to put the most recent plot in the plotting list
+in this way.  If the <span class="guilabel">Plot fit</span> button is checked on and a
+data group is in the plotting list, the most recent will be plotted by
+default.  Fit items in the plotting list will <a class="reference external" href="plot/stack.html">be stacked</a> when the stacking option is in play.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-historyplotlist"></span><a class="reference external image-reference" href="_images/history-plotlist.png"><img alt="_images/history-plotlist.png" src="_images/history-plotlist.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 10.6 </span><span class="caption-text">Historical fits placed in the plotting list</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">10. The History window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reports-on-fits">10.1. Reports on fits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-fits">10.2. Plotting fits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/history.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="monitor.html" title="11. Monitoring things"
+             >next</a></li>
+        <li class="right" >
+          <a href="logjournal.html" title="9. The Log and Journal windows"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

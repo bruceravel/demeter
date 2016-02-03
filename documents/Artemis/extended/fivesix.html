@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.11. 5 &amp; 6 legged paths &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="prev" title="15.10. Handling dopants" href="dopants.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="dopants.html" title="15.10. Handling dopants"
+             accesskey="P">previous</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="legged-paths">
+<h1>15.11. 5 &amp; 6 legged paths<a class="headerlink" href="#legged-paths" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="examples-of-situations-requiring-consideration-of-higher-order-paths">
+<h2>15.11.1. Examples of situations requiring consideration of higher order paths<a class="headerlink" href="#examples-of-situations-requiring-consideration-of-higher-order-paths" title="Permalink to this headline">¶</a></h2>
+<p>Normally, the <a class="reference external" href="../feff/paths.html">pathfinder</a> in
+<font size=-1 color="#8C4112">ARTEMIS</font>'s implementation of <font size=-1 color="#8C4112">FEFF</font> only considers
+up to triple scattering (4-legged) paths. This is for two
+reasons. First, <font size=-1 color="#8C4112">ARTEMIS</font>'s pathfinder is a bit slow. Second,
+it is rather uncommon to need higher order paths in an EXAFS
+analysis. Here are a few examples.</p>
+<p>Paradibromobenzene is a benzene molecule – a ring of 6 carbon atoms
+– with two of the hydrogen ligands replaced by bromine. The bromine
+atoms are in the para (1-4) arrangement, i.e. on opposite corners of
+the benzene ring.</p>
+<p>Being the only heavy scatterer in a rigid structure, the second bromine
+atom is quite evident in the EXAFS, giving rise to the large peak just
+above 6 Å in the χ(R) data shown below.</p>
+<div class="figure compound align-center" id="_fig-paradibromobenzene">
+<div style="width: 45%" class="subfigure" id="id1">
+<span id="fig-fivesixparadibromobenzene"></span><a class="reference external image-reference" href="../_images/fivesix-paradibromobenzene.png"><img alt="../_images/fivesix-paradibromobenzene.png" src="../_images/fivesix-paradibromobenzene.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.35 </span><span class="caption-text">The paradibromobenzene molecule</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id2">
+<span id="fig-fivesixbrchir"></span><a class="reference external image-reference" href="../_images/fivesix-br-chir.png"><img alt="../_images/fivesix-br-chir.png" src="../_images/fivesix-br-chir.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.36 </span><span class="caption-text">χ(R) data for paradibromobenzene.</span></p>
+</div>
+</div><p id="_fig-paradibromobenzene">That big peak resulting from the second bromine atom includes not just
+the single scattering contribution, but a number of collinear multiple
+scattering paths. This includes the 5-legged paths that scatter from
+both carbon atoms on the way to (or from) the bromine atoms, and the
+6-legged path that includes forward scattering from both carbon atoms in
+both directions.</p>
+<p>5- and 6-legged paths are, in general, only important in EXAFS for
+structures that are both rigid and have 4 collinear atoms. This is
+pretty high bar, which is why examples are few and far between. That
+said, here are a couple more examples.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-fivesixprussianblue"></span><a class="reference external image-reference" href="../_images/fivesix-prussian-blue.png"><img alt="../_images/fivesix-prussian-blue.png" src="../_images/fivesix-prussian-blue.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.37 </span><span class="caption-text">Prussian blue</span></p>
+</div>
+<p>Prussian blue, ferric ferrocyanate, represents a class of
+framework-structured materials that have metal atoms at corner
+positions in the unit cell. These metal atoms are bridged by cyanide
+molecules. This is much like a rocksalt structure, but with the cation
+replaced by a cyanide molecule oriented in the direction of the bond.</p>
+<p>The metal anions are separated by about 5.1 Å, thus are at a
+distance that can easily be resolved and analyzed with good EXAFS
+data. To interpret that part of the EXAFS signal, however, it is
+necessary to consider all the multiple scattering paths involving the
+C, N, and Fe atoms. This includes significant, collinear 5- and
+6-legged paths.</p>
+<p>The final example is good ol' copper metal, which is often analyzed out
+to about 5 Å, a distance which includes 5 coordination shells and a
+number of double and triple scattering paths. To analyze farther in R,
+one eventual gets to the single scattering path which includes the face
+center atom in the diagonally adjacent cell. In the figure below, the
+absorber is represented by the pink atom. The distant neighbor is the
+farthest lavender-colored atom. To analyze the single scattering
+contribution from that distance would require consideration of all the
+multiple scattering among the pink and lavender atoms, which are
+collinear along that unit cell diagonal.</p>
+<div class="figure compound align-center" id="_fig-fivesixcopper">
+<div style="width: 45%" class="subfigure" id="id4">
+<span id="fig-fivesixcu7a"></span><a class="reference external image-reference" href="../_images/fivesix-cu7A.png"><img alt="../_images/fivesix-cu7A.png" src="../_images/fivesix-cu7A.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.38 </span><span class="caption-text">4 unit cells of FCC copper with the collinear atoms contributing at
+about 7 Å highlighted in lavender.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id5">
+<span id="fig-fivesixchir"></span><a class="reference external image-reference" href="../_images/fivesix-chir.png"><img alt="../_images/fivesix-chir.png" src="../_images/fivesix-chir.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.39 </span><span class="caption-text">On the right is χ(R) data for copper
+metal. The signal from the various SS and MS involving the lavender
+atoms paths contributes to the the peaks around 7 Å.</span></p>
+</div>
+</div></div>
+<div class="section" id="and-6-legged-paths-in-artemis">
+<span id="_fig-fivesixcopper"></span><h2>15.11.2. 5 and 6 legged paths in Artemis<a class="headerlink" href="#and-6-legged-paths-in-artemis" title="Permalink to this headline">¶</a></h2>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">Enabling the calculation of 5- and 6-legged paths
+significantly slows down the pathfinder calculation in
+<font size=-1 color="#8C4112">ARTEMIS</font>. If you are unsure whether you need 5- and
+6-legged paths, you almost certainly <strong>do not</strong> want to do so!</p>
+</div>
+<p>The default behavior in <font size=-1 color="#8C4112">ARTEMIS</font> is to compute up to
+4-legged paths. For any <font size=-1 color="#8C4112">FEFF</font> calculation, this can be
+extended to include 5- and 6-legged paths by selecting the
+<span class="guilabel">6</span> button, as indicated in the screenshot below.  Note that
+this sets the order of scattering paths only for the current
+<font size=-1 color="#8C4112">FEFF</font> calculation. The default for all subsequent
+<font size=-1 color="#8C4112">FEFF</font> calculations will again be 4-legged paths. The
+<a class="reference external" href="../feff/aggregate.html">aggregate calculation</a> is always made with
+up to 4-legged paths.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-fivesixatoms"></span><a class="reference external image-reference" href="../_images/fivesix-atoms.png"><img alt="../_images/fivesix-atoms.png" src="../_images/fivesix-atoms.png" style="width: 45%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.40 </span><span class="caption-text">The Feff tool showing the check box for selecting order of multiple
+scattering.</span></p>
+</div>
+<p>Besides being slow, the other consequence of setting the upper order
+of multiple scattering to 6 is that the <a class="reference external" href="../feff/paths.html">path list</a> will be much longer and possibly more
+confusing. Really, truly! Don't use this feature of <font size=-1 color="#8C4112">ARTEMIS</font>
+unless you have a very good reason to do so.</p>
+<p>Some <a class="reference external" href="../prefs.html">configuration parameters</a> that relate to choice
+of the order of multiple scattering:</p>
+<ol class="arabic simple">
+<li><font color="#636A24">♦Pathfinder→suppress_5_6_not_straight</font>: When true,
+only consider 5- and 6-legged paths that have scattering angles
+within <font color="#636A24">♦Pathfinder→fs_angle</font> (typically 20 degrees) of
+0 or 180 degrees.  That is, suppress all paths with angles far from
+forward and backward scattering.</li>
+<li><font color="#636A24">♦Atoms→suppress_nleg_warning</font>: When true, this will
+suppress the dialog box posted by <font size=-1 color="#8C4112">ATOMS</font> when you select
+the <span class="guilabel">6</span> button warning you against considering 5- and
+6-legged paths.</li>
+<li><font color="#636A24">♦Pathfinder→eta_suppress</font>: If you need to consider
+nearly collinear paths in a structure with buckling of atomic
+planes, you may need to set this parameter to false. When true, it
+suppresses any path with a non-zero Eulerian η angle. In most
+cases, this is a good heuristic for removing irrelevant paths from
+the path list, however for orders of scattering above 4 and nearly
+collinear paths, this filter might remove desirable paths. Use this
+with caution as it will greatly expand the size of the path list.</li>
+</ol>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/fivesix.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="dopants.html" title="15.10. Handling dopants"
+             >previous</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

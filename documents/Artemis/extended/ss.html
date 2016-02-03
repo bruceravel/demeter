@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.4. Modeling disorder &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.5. Constraints and restraints" href="constraints.html" />
+    <link rel="prev" title="15.3. Geometric parametrization of bond length" href="delr.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="constraints.html" title="15.5. Constraints and restraints"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="delr.html" title="15.3. Geometric parametrization of bond length"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="modeling-disorder">
+<h1>15.4. Modeling disorder<a class="headerlink" href="#modeling-disorder" title="Permalink to this headline">¶</a></h1>
+<p>The σ<sup>2</sup> term in the EXAFS equation accounts for the mean
+square variation in path length. This variation can be due to thermal
+or structural disorder. Even in a well-ordered material, like Cu or
+another FCC metal, data are measured at finite temperature. The
+absorber and scatterer are both in motion due to the finite
+temperature. Each interaction of the incident X-ray and the absorber
+is like a femtosecond snapshot of the coordination environment. As
+those snapshots are averaged in the EXAFS measurement, σ<sup>2</sup> is non-zero, even in the well-ordered material.</p>
+<p>A structural disordered contributes another term to σ<sup>2</sup>. Due to structural disorder, the scatterers which are
+nominally contained in a scattering shell may be centered around
+somehwat different distances.  When the contributions from those
+scatterers are considered, σ<sup>2</sup> will be larger than what
+is expected from purely thermal effects.</p>
+<p>Consequently, σ<sup>2</sup> is always non-zero in an EXAFS fit and
+a proper interpretation of the fitted value of σ<sup>2</sup> will
+take into account both the thermal and structural component.</p>
+<p>It is usually a challenge to distinguish the thermal and structural
+contributions to σ<sup>2</sup>. As with any highly correlated
+effects, the only way to disentangle the two contributions is to do
+something in the experiment which is sensitive to one or both.</p>
+<p>One common approach for understanding the thermal part of σ<sup>2</sup> is to measure the sample at two or more
+temperatures. Assuming the material does not change phase in that
+temperature range, we expect the thermal part of σ<sup>2</sup> to
+have a temperature dependence while the structural part may reman
+fixed (or at least change much less). Another possible way to
+disentangle the two contributions is to measure EXAFS data as a
+function of pressure. In that case the thermal contribution can be
+modeled as a function of pressure and a Grüneisen parameter.</p>
+<div class="section" id="debye-and-einstein-models">
+<h2>15.4.1. Debye and Einstein models<a class="headerlink" href="#debye-and-einstein-models" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">IFEFFIT</font> provides two bult-in functions for modeling
+σ<sup>2</sup> as a function of temperature.</p>
+<dl class="docutils">
+<dt><strong>Einstein model</strong></dt>
+<dd><p class="first">The Einstein model assumes that the absorber and scatter are balls
+connected by a quantum spring. They oscillate with a single
+frequency and the low-temperature motion saturates to a zero-point
+motion. The function for computing σ<sup>2</sup> from the
+Einstein is a function of the measurement temperature, an Einstein
+temperature, and the reduced mass of the absorber/scatterer
+pair. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
+<div class="highlight-python"><div class="highlight"><pre>path:
+    sigma2 = eins(temperature, thetae)
+</pre></div>
+</div>
+<p>Typically, <code class="docutils literal"><span class="pre">temeprature</span></code> is a set parameter whise value is the
+mesurement tempreature of the data and <code class="docutils literal"><span class="pre">thetae</span></code> is a guess
+parameter representing the Einstein temprature – i.e. the
+characteristic frequency of vibration expressed in temeprature
+units – of the absorber-scatterer pair. The reduced mass is
+computed by <font size=-1 color="#8C4112">IFEFFIT</font> from the information provided by
+<font size=-1 color="#8C4112">FEFF</font> about the scattering path.</p>
+<p>The Einstein function is most useful as part of a multiple data
+set fit. In that case, a path can have its σ<sup>2</sup>
+parametrized using the <code class="docutils literal"><span class="pre">eins</span></code> function and a single ϴ<sub>E</sub> guess parameter is used for all temperatures.</p>
+<p class="last">When using <font size=-1 color="#8C4112">IFEFFIT</font>, the Einstein function is called
+<code class="docutils literal"><span class="pre">eins()</span></code>.  When using <font size=-1 color="#8C4112">LARCH</font>, it is called
+<code class="docutils literal"><span class="pre">sigma2_eins()</span></code>. The user of <font size=-1 color="#8C4112">ARTEMIS</font> can use either
+form with either backend and the correct thing will happen.</p>
+</dd>
+<dt><strong>Correlated Debye model</strong></dt>
+<dd><p class="first">The correlated Debye model assumes that the σ<sup>2</sup> for
+any pair of atoms can be computed from the acoustic phonon
+spectrum. That is, a single charcteristic energy – the same
+Debye temperature, , that is determined from the heat capacity of
+the material – can be used to compute σ<sup>2</sup> for any
+path in the material. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
+<div class="highlight-python"><div class="highlight"><pre>path:
+    sigma2 = debye(temperature, thetae)
+</pre></div>
+</div>
+<p>This is a very powerful concept. All σ<sup>2</sup> parameters
+in the fit are determined from a single variable ϴ<sub>D</sub>. The caveat is that the correlated Debye model is only
+strictly valid for a monoatomic material. In practice, the Debye
+model works well for metals like Cu, Au, and Pt. It works poorly
+for any material that has two or more atomic species.</p>
+<p class="last">When using <font size=-1 color="#8C4112">IFEFFIT</font>, the Debye function is called
+<code class="docutils literal"><span class="pre">debye()</span></code>. When using <font size=-1 color="#8C4112">LARCH</font>, it is called
+<code class="docutils literal"><span class="pre">sigma2_debye()</span></code>. The user of <font size=-1 color="#8C4112">ARTEMIS</font> can use either
+form with either backend and the correct thing will happen.</p>
+</dd>
+</dl>
+<p>Both models are described in</p>
+<ul class="simple" id="bibtex-bibliography-extended/ss-0">
+<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
+</ul>
+</div>
+<div class="section" id="colinear-multiple-scattering-paths">
+<h2>15.4.2. Colinear multiple scattering paths<a class="headerlink" href="#colinear-multiple-scattering-paths" title="Permalink to this headline">¶</a></h2>
+<p>This valuable paper explains the relationships between σ<sup>2</sup> parameters for single scattering paths and certain multiple
+scattering paths:</p>
+<ul class="simple" id="bibtex-bibliography-extended/ss-1">
+<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: Comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
+</ul>
+<div class="figure align-center" id="id1">
+<span id="fig-colinear"></span><a class="reference external image-reference" href="../_images/collinear.png"><img alt="../_images/collinear.png" src="../_images/collinear.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.15 </span><span class="caption-text">This diagram demonstrates the various kinds of collinear MS paths
+and how they relate to the corresponding SS path.</span></p>
+</div>
+<p>To begin, we define guess parameters for the σ<sup>2</sup> of the
+SS paths to atoms 1 and 2.</p>
+<div class="highlight-python"><div class="highlight"><pre>guess  ss1 = 0.003
+guess  ss2 = 0.003
+</pre></div>
+</div>
+<p>The next two paths are double and triple scattering paths that scatter
+in the forward direction from atom 1, then in the backward direction
+atom 2. As explained by Hudson, et al., these paths have the same
+σ<sup>2</sup> as the SS path to atom 2, i.e. σ<sup>2</sup> =
+<code class="docutils literal"><span class="pre">ss2</span></code> for both these paths.</p>
+<p>The next three paths involve scattering from the absorber. The
+collinear DS and TS paths simply have σ<sup>2</sup> =
+<code class="docutils literal"><span class="pre">2*ss1</span></code>. The path in which the photoelectron rattles back and forth
+between the absorber and atom 1 has σ<sup>2</sup> = <code class="docutils literal"><span class="pre">4*ss1</span></code>.</p>
+<p>The caveat to these relationships is that the motion of the intervening
+atom in the perpendicular direction is presumed to be a negligible
+contribution to the mean square variation in path length. This is, of
+course, not strictly true. In very high quality data, you may see
+deviations from the expressions presented by Hudson, et al., but in most
+cases they are an excellent approximation and a powerful constraint that
+you can apply to the paths in your fit.</p>
+</div>
+<div class="section" id="sensible-approximations-for-triangular-multiple-scattering-paths">
+<h2>15.4.3. Sensible approximations for triangular multiple scattering paths<a class="headerlink" href="#sensible-approximations-for-triangular-multiple-scattering-paths" title="Permalink to this headline">¶</a></h2>
+<p>In <a class="reference external" href="../examples/fes2.html">the FeS2 example</a>, we saw that a couple
+of non-collinear multiple scattering paths contributed significantly
+to the EXAFS. For these triangular paths, unlike for collinear paths,
+there is no obvious relationship between their σ<sup>2</sup>
+parameters and the σ<sup>2</sup> for the SS paths.</p>
+<p>One of the triangular paths in the FeS<sub>2</sub> fit was of the form
+Abs-Fe-S-Abs. The S-Abs leg is like half the first neighbor path. The
+Fe-S is also like half the first neighbor path. The mean square
+vairation in path length along those two legs of the path <strong>is</strong> the
+σ<sup>2</sup> for the first path. Finally, the Abs-Fe leg is like
+half the fourth shell path.</p>
+<p>The math epression for the σ<sup>2</sup> of this triangle path was
+set as</p>
+<div class="highlight-python"><div class="highlight"><pre>path Fe-S triangle:
+    sigma2 = ss1 + ss_fe/2
+</pre></div>
+</div>
+<p>This approximation of σ<sup>2</sup> has the great virtue of not
+introducing a new parameter to the fit. It neglects any attenuation
+to the path due to thermal variation in sattering angle. While that is
+an important effect, there is no simple and accurate way to model it.</p>
+<p>This example demonstrates the decision that must be made every time a
+non-colinear multiple scattering path is considered for a fitting
+model. In short, you have three choices:</p>
+<ol class="arabic simple">
+<li>Do nothing, leave the MS path out of the fit.</li>
+<li>Include the MS path, but allow it to have it's own σ<sup>2</sup> parameter.</li>
+<li>Include the MS path, but approximate it's σ<sup>2</sup> in
+terms of parameters which are already part of the fitting model,
+presumably the parameters of the SS σ<sup>2</sup> values.</li>
+</ol>
+<p>The Abs-Fe-S-Abs path in FeS<sub>2</sub> was really quite large. Going for
+choice number 1 and leaving it out of the fit is clearly a poor choice.</p>
+<p>Number 2 is, in principle, the best choice. As an independently
+floated parameter, it's σ<sup>2</sup> will account for the mean
+square vriation in path length <strong>and</strong> the effect of variation in the
+scattering angle.  Unfortunately, this parameter is likely not to be
+highly robust because it is only used for this one path. There just is
+not much information available to determine its proper value. And if
+the fit includes several triangle paths, each of which has a σ<sup>2</sup> parameter of similarly weak robustness, the problem becomes
+amplified.</p>
+<p>In almost all cases, option number 3 is the best choice. The
+approximation is not horribly wrong, thus it introduces only a little
+bit of systematic error into the fitting model. Including the Fourier
+components from the path is better than neglecting the path. Since a
+reasonable approximation can be made without introducing new variable
+parameters to the fit, the triangle path should be included.</p>
+<p>The Abs-Fe-S-Abs path had the virtue that all of its legs were
+represented by SS paths already included in the fit. Another triangle
+path was included: Abs-S-S-Abs. In this case, the first and last legs
+are related to the first coordination shell. The middle leg, S-S, has
+no corresponding SS path. In <a class="reference external" href="../examples/fes2.html">the FeS2 example</a>, this triangle path was given a σ<sup>2</sup> math expression of 1.5 times the first shell σ<sup>2</sup>.</p>
+<p>This is obviously not accurate. Like all such triangle paths, the
+decision outlined above must be worked through. In this case, the fit
+benefits by including this triangle path, but it does not merit having
+its own floating parameter. I assert that value of σ<sup>2</sup>
+that is “a bit more than the first shell” is reasonable.</p>
+<p>This is discussed in more detail in Scott Calvin's book,</p>
+<ul class="simple" id="bibtex-bibliography-extended/ss-2">
+<li>Scott Calvin. <em>XAFS for Everyone</em>. CRC Press, Boca Raton, 2013. <a class="reference external" href="https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637">URL: https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637</a>.</li>
+</ul>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/ss.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="constraints.html" title="15.5. Constraints and restraints"
+             >next</a></li>
+        <li class="right" >
+          <a href="delr.html" title="15.3. Geometric parametrization of bond length"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.1. Using the plot list &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="8. Plotting data" href="index.html" />
+    <link rel="next" title="8.2. Stacked plots" href="stack.html" />
+    <link rel="prev" title="8. Plotting data" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="stack.html" title="8.2. Stacked plots"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="8. Plotting data"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Plotting data</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-the-plot-list">
+<h1>8.1. Using the plot list<a class="headerlink" href="#using-the-plot-list" title="Permalink to this headline">¶</a></h1>
+<img alt="Plot window" src="../_static/plotlist.png" align="right" hspace="25"><p>The contents of the plotting list are included in a plot made from the
+Plot window. There are a number of ways of populating the plotting list
+manually and there are tools for repopulating the list upon completion
+of a fit.</p>
+<div class="section" id="populating-the-plotting-list-manually">
+<h2>8.1.1. Populating the plotting list manually<a class="headerlink" href="#populating-the-plotting-list-manually" title="Permalink to this headline">¶</a></h2>
+<p>The most basic way of moving a data set or a path to the plotting list
+is to click on a plot transfer button. These are the light blue buttons,
+<img alt="transfer button" src="../_images/plot-icon3.png" />, at the top of the Data window. There is one to the
+left of the name of the data set. Clicking on this button inserts that
+data at the end of the plotting list. There is also a transfer button on
+each Path page to the left of the path's name.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-plottransfer"></span><a class="reference external image-reference" href="../_images/plot-transfer.png"><img alt="../_images/plot-transfer.png" src="../_images/plot-transfer.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 8.1 </span><span class="caption-text">The plot transfer buttons on the Data window and Path page</span></p>
+</div>
+<p>Clicking on any of the path transfer buttons inserts that path at the
+end of the plotting list.</p>
+<p>In this way, the plotting list can be built up item by item. The order
+in which items are inserted into the plotting list is the order in which
+they are displayed in the plot. An item can be removed from a plot
+without removing it from the plotting list by unchecking its check box.</p>
+<p>Of course, adding a number of paths to the plotting list by checking
+on their individual transfer buttons can be quite tedious. Transfering
+of items into the plotting list is another of the many chores that use
+the set of marked paths. Marking a path is done is by checking its
+check box in the Path list or by using one of the handy options in
+<a class="reference external" href="../data.html#themarksmenu">the Marks menu</a>. Once a set of paths is
+marked, selecting <span class="menuselection">Actions ‣ Transfer marked</span> will
+move that set in order to the end of the plotting list. By learning to
+use path marks effectively, you can quickly build interesting plots
+which include data along with many paths. Note that keyboard shortcuts
+exist for everything in the Mark and Actions menus. These are shown in
+the menus themselves. Learning these shortcuts makes setting up
+interesting plots much faster and easier.</p>
+<p>The <kbd class="light">Clear</kbd> button at the bottom of the Plot window is
+used to remove all content from the plotting list.</p>
+<p>Items in the list can be reordered by dragging and dropping while
+holding down the control key. Note that an item will be placed <em>after</em>
+the item on which it is dropped.</p>
+<p>Right clicking on an item will post a pop-up button for removing that
+item from the list. Selecting more than one path then right-clicking
+will post a menu with options for removing the selected paths or for
+altering their check buttons.</p>
+</div>
+<div class="section" id="refreshing-the-plotting-list-after-a-fit">
+<h2>8.1.2. Refreshing the plotting list after a fit<a class="headerlink" href="#refreshing-the-plotting-list-after-a-fit" title="Permalink to this headline">¶</a></h2>
+<p>After a fit finishes, the plotting list will be populated with all of
+the data sets and paths which have their <span class="guilabel">Plot after fit</span>
+button checked. On the Data window, this checkbutton is found in the
+<span class="guilabel">Other parameters</span> section at the bottom of the page. On the Path
+page, this checkbutton is directly below the name of the path at the
+top of the page.</p>
+<p>Upon completion of the fit, the plotting list is cleared the repopulated
+with all the items selected for plotting after the fit. The data are
+inserted in the order they appear in the Data sets list in the Main
+window. Paths associated with that data set are inserted after their
+data set in the order they appear in that data set's path list.</p>
+<p>The refreshing of the plotting list can be turned off by checking the
+<span class="guilabel">Freeze</span> button below the plotting list. This will
+preserve the state of the plotting list as it appeared before starting
+the fit.</p>
+</div>
+<div class="section" id="plotting-a-sum-of-paths-without-performing-a-fit">
+<h2>8.1.3. Plotting a sum of paths without performing a fit<a class="headerlink" href="#plotting-a-sum-of-paths-without-performing-a-fit" title="Permalink to this headline">¶</a></h2>
+<p>There are several ways to do this, but the easiest is to select
+<span class="menuselection">Actions ‣ Make sum of all paths and plot in R</span> on
+the Data page.  This will create <a class="reference external" href="plot/vpaths.html">a VPath</a> out of
+all the paths included in the fitting model for the data. The VPath
+will be placed in the plotting list in the <a class="reference external" href="plot/index.html">Plot window</a> and the plot will be made in R. You can then plot
+in other spaces using the plotting buttons.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Plotting data</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">8.1. Using the plot list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html">8.2. Stacked plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indic.html">8.3. Plot Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpaths.html">8.4. Creating and plotting VPaths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/plot/plotlist.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="stack.html" title="8.2. Stacked plots"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="8. Plotting data"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >8. Plotting data</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

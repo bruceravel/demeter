@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Forward &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="2. Starting Artemis" href="startup/index.html" />
+    <link rel="prev" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="startup/index.html" title="2. Starting Artemis"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="forward">
+<h1>1. Forward<a class="headerlink" href="#forward" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> is:</p>
+<ul class="simple">
+<li>a graphical front-end for <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> (or
+<font size=-1 color="#8C4112">LARCH</font>) built using <font size=-1 color="#8C4112">DEMETER</font></li>
+<li>a tool which makes easy analysis problems easy and hard analysis
+problem possible</li>
+<li>in use by hundreds of scientists world-wide</li>
+</ul>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ol class="last arabic simple">
+<li>section numbering in chapters with sections in index.rst</li>
+</ol>
+</div>
+<div class="section" id="layout-and-typesetting-conventions">
+<h2>1.1. Layout and typesetting conventions<a class="headerlink" href="#layout-and-typesetting-conventions" title="Permalink to this headline">¶</a></h2>
+<p>Here is a summary of fonts, colors, and symbols used to denote different
+kinds of text. Note that some of these may appear the same in certain
+presentation media.</p>
+<ul class="simple">
+<li>File names look <code class="docutils literal"><span class="pre">C:\like\this</span></code></li>
+<li>The names of parameters for data processing look
+<tt><font color="#387A38">«like this»</font></tt></li>
+<li>Emphasized text looks <em>like this</em></li>
+<li>Bold text looks <strong>like this</strong></li>
+<li>Links to web sites look <a class="reference external" href="http://www.google.com">like this</a></li>
+<li>Internal links look <a class="reference external" href="forward.html#layout-and-typesetting-conventions">like this</a></li>
+<li>References to menu selections look like this: <span class="menuselection">File ‣ Import data</span></li>
+<li>References to buttons in <font size=-1 color="#8C4112">ARTEMIS</font> that can be pushed
+<kbd class="light">look like this</kbd></li>
+<li>Keyboard shortcuts look like this:
+<kbd class="dark">Control</kbd>-<kbd class="dark">q</kbd>, which means to hit the <kbd class="dark">q</kbd>
+key while holding the <kbd class="dark">Control</kbd> (or <kbd class="dark">Ctrl</kbd>) key</li>
+<li>Program names from the <font size=-1 color="#8C4112">DEMETER</font>'s extended family look
+like this: <font size=-1 color="#8C4112">ARTEMIS</font></li>
+<li>References to <font size=-1 color="#8C4112">ARTEMIS</font>'s preferences are written like this:
+<font color="#636A24">♦Fit→k1</font>.  To modify this preferences, open the
+<span class="guilabel">fit</span> section of the <a class="reference external" href="other/prefs.html">preferences tool</a> and
+then click on <span class="guilabel">k1</span></li>
+</ul>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">Points that require special attention are indicated
+like this.</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Notes about features missing from the document are indicated
+like this.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.2.3: </span>Features that have been recently added to <font size=-1 color="#8C4112">ARTEMIS</font> are
+indicated like this if they have not yet been properly documented.
+Usually this is because I have been too lazy to make screenshots.</p>
+</div>
+<p><img alt="lightning!" src="./_static/lightning.png" align="left" hspace="5"></a> This symbol indicates a section describing one of
+<font size=-1 color="#8C4112">ARTEMIS</font>' features that I consider especially
+powerful and central to the effective use of the program.</p>
+
+<br>
+<p><img alt="bend!" src="./_static/bend.png" align="left" hspace="5"></a> This symbol indicates a section with difficult
+information that newcomers to <font size=-1 color="#8C4112">ARTEMIS</font> might pass
+over on their first reading of this document.</p>
+
+<br>
+<p>The html version of this document makes use of Unicode characters
+(mostly Greek, math, superscript, and subscript symbols) and may not
+display correctly in very old browsers.</p>
+</div>
+<div class="section" id="acknowledgments">
+<h2>1.2. Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
+<p>I have to thank Matt Newville, of course. Without <font size=-1 color="#8C4112">IFEFFIT</font>
+and <font size=-1 color="#8C4112">LARCH</font> there wouldn't be an <font size=-1 color="#8C4112">ARTEMIS</font>. Some
+content of this document was inspired by a recent XAS review article
+by Shelly Kelly and Dean Hesterberg, the first draft of which I had
+the pleasure of editing and the final draft of which I ended up on the
+author list. I have a huge debt of gratitude to all the folks on the
+<font size=-1 color="#8C4112">IFEFFIT</font> mailing list. Without the incredible support and
+wonderful feedback that I've received over the years,
+<font size=-1 color="#8C4112">ARTEMIS</font> would be a shadow of what it is today.</p>
+<ul class="simple" id="bibtex-bibliography-forward-0">
+<li>S.D. Kelly, D.&nbsp;Hesterberg, and B.&nbsp;Ravel. Analysis of Soils and Minerals using X-ray Absorption Spectroscopy. In L.R. Drees and A.L. Ulery, editors, <em>Methods of Soil Analysis - Part 5: Mineralogical Methods</em>, chapter 14. American Society of Agronomy, 2008. <a class="reference external" href="https://dl.sciencesocieties.org/publications/books/tocs/sssabookseries/methodsofsoilan5">URL: https://dl.sciencesocieties.org/publications/books/tocs/sssabookseries/methodsofsoilan5</a>.</li>
+</ul>
+<p>An excellent review of the fundamental principles of X-ray absorption
+spectroscopy is</p>
+<ul class="simple" id="bibtex-bibliography-forward-1">
+<li>Matthew Newville. Fundamentals of XAFS. <em>Reviews in Mineralogy and Geochemistry</em>, 78(1):33–74, 2014. <a class="reference external" href="http://dx.doi.org/10.2138/rmg.2014.78.2">doi:10.2138/rmg.2014.78.2</a>.</li>
+</ul>
+<p>Scott Calvin has written an excellent XAFS text book which covers a
+lot of the material covered by <font size=-1 color="#8C4112">ARTEMIS</font>:</p>
+<ul class="simple" id="bibtex-bibliography-forward-2">
+<li>Scott Calvin. <em>XAFS for Everyone</em>. CRC Press, Boca Raton, 2013. <a class="reference external" href="https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637">URL: https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637</a>.</li>
+</ul>
+<p>The following great software tools were used to create this document:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://sphinx-doc.org/">The Sphinx Documentation Generator</a> and
+<a class="reference external" href="http://sphinx-doc.org/rest.html">reStructuredText</a></li>
+<li>The <a class="reference external" href="http://www.gnu.org/software/emacs/">Emacs</a> text editor along
+with <a class="reference external" href="http://docutils.sourceforge.net/docs/user/emacs.html">rst-mode</a> and the
+simply wonderful <a class="reference external" href="http://ecb.sourceforge.net/">Emacs Code Browser</a></li>
+<li>The <a class="reference external" href="http://pybtex.org/">pybtex</a> bibliography processor for
+python.</li>
+<li>The <a class="reference external" href="https://sphinxcontrib-bibtex.readthedocs.org/en/latest/">sphinxcontrib-bibtex</a>
+package, which is Sphinx extension for BibTeX style citations.</li>
+<li>The <a class="reference external" href="https://github.com/jterrace/sphinxtr">sphinxtr</a> package,
+which is Sphinx extension for supporting a few LaTeX environments.
+Currently, the <code class="docutils literal"><span class="pre">subfig</span></code> package is used for grouping figures, but
+the <code class="docutils literal"><span class="pre">numfig</span></code> package is not used for figure numbering.</li>
+<li>The <a class="reference external" href="https://github.com/michaelhue/keyscss">keys.css stylesheet</a>,
+which I modified to add options for purple and orange stylings.</li>
+</ul>
+<p>Almost all screenshots were made of either <font size=-1 color="#8C4112">ARTEMIS</font> or the
+<a class="reference external" href="http://gnuplot.info/">Gnuplot</a> window on my <a class="reference external" href="http://www.kde.org">KDE desktop</a>.</p>
+<p>The image of <a class="reference external" href="http://en.wikipedia.org/wiki/Temple_of_Artemis_(Jerash)">the Temple of Artemis at Jerash, Jordan</a> is courtesy of
+by Matthew Marcus.</p>
+<p><a class="reference external" href="http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg">The image at the top of the navigation sidebar</a>
+is a votive relief from the Archaeological Museum of Brauron in
+Brauron, Greece and is in the public domain.  It depicts a family of
+worshippers sacrificing a goat to the goddess Artemis.</p>
+<p>The image used as the <font size=-1 color="#8C4112">ARTEMIS</font> program icon is Detail from
+“Bernardino Cametti: Diana as Huntress”, Rome 1717/1720,
+marble. Skulpturensammlung (Inv. 9/59; acquired in 1959), Bode-Museum
+Berlin.  The image is in the public domain and can be found at
+<a class="reference external" href="https://commons.wikimedia.org/wiki/File:Cametti_Diana_detail.jpg">Wikimedia Commons</a>.</p>
+<p>The image of the <a class="reference external" href="https://www.flickr.com/photos/opoterser/3684369721/">leafhopper</a> used as a
+desktop image in some screen shots is by <a class="reference external" href="https://www.flickr.com/photos/opoterser/">Thomas Shanan</a> and is licensed under a
+<a class="reference external" href="https://creativecommons.org/licenses/by-nc-nd/2.0/">Creative Commons attribution, non-commercial, no-derivatives</a> license.</p>
+</div>
+<div class="section" id="data-citations">
+<h2>1.3. Data citations<a class="headerlink" href="#data-citations" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="installing-athena-on-your-computer">
+<h2>1.4. Installing ATHENA on your computer<a class="headerlink" href="#installing-athena-on-your-computer" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>Linux, BSD, and other unixes</strong></dt>
+<dd>It is not especially hard to build <font size=-1 color="#8C4112">ARTEMIS</font>
+from source code. The
+procedure is explained in detail on this web page:
+<a class="reference external" href="http://bruceravel.github.io/demeter/pods/installation.pod.html">http://bruceravel.github.io/demeter/pods/installation.pod.html</a>. An
+excellent addendum to those instructions is at
+<a class="reference external" href="https://gist.github.com/3959252">https://gist.github.com/3959252</a>.</dd>
+<dt><strong>Windows</strong></dt>
+<dd>Follow the links to <a class="reference external" href="http://bruceravel.github.io/demeter/#windows">the Windows instructions on the Demeter
+homepage</a> to download the
+installer and updater packages. Just download, double-click, and
+answer the questions.</dd>
+<dt><strong>Macintosh</strong></dt>
+<dd>Follow the links to <a class="reference external" href="http://bruceravel.github.io/demeter/#mac">the Macintosh instructions on the Demeter
+homepage</a> and carefully
+follow the instructions you find there.</dd>
+<dt><strong>Debian and debian-based Linux</strong></dt>
+<dd>There are no packages for Debian of any other Linux distribution
+at this time.</dd>
+</dl>
+</div>
+<div class="section" id="building-this-document-from-source">
+<h2>1.5. Building this document from source<a class="headerlink" href="#building-this-document-from-source" title="Permalink to this headline">¶</a></h2>
+<p>The source files and all images files for this document can be
+downloaded using Git. To grab the source, you will need an <a class="reference external" href="http://git-scm.com/">Git
+client</a> on your computer. This command checks a
+copy of the source out and downloads it onto your computer:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/bruceravel/demeter.git
+</pre></div>
+</div>
+<p>The document is found in the <code class="file docutils literal"><span class="pre">documentation/Artemis</span></code> folder.</p>
+<p>Contributions to the document are extremely welcome. The very best
+sort of contribution would be to directly edit the <a class="reference external" href="http://sphinx-doc.org">sphinx</a> source files and make a pull request to the
+<a class="reference external" href="https://github.com/bruceravel/demeter">git repository</a>. The second
+best sort would be a patch file against the templates in the
+repository. If sphinx is more than you want to deal with, but you have
+corrections to suggest, I'd cheerfully accept almost any other format
+for the contribution.  (Although I have to discourage using an html
+editing tool to edit the html directly. Tools like that tend to insert
+lots of additional html tags into the text, making it more difficult
+for me to incorporate your changes into the source.)</p>
+<div class="section" id="building-the-html-document">
+<h3>1.5.1. Building the html document<a class="headerlink" href="#building-the-html-document" title="Permalink to this headline">¶</a></h3>
+<p>Building the <font size=-1 color="#8C4112">ARTEMIS</font> document requires at least version 1.3
+of <strong class="program">sphinx-build</strong>.  Note that Ubuntu 15.04 comes with version
+1.2, so you will need to upgrade by doing</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>sudo pip install --upgrade sphinx
+</pre></div>
+</div>
+<p>You will also need to install the following python packages</p>
+<ol class="arabic simple">
+<li>The <a class="reference external" href="http://pybtex.org/">pybtex</a> bibliography processor for
+python.</li>
+<li>The <a class="reference external" href="https://sphinxcontrib-bibtex.readthedocs.org/en/latest/">sphinxcontrib-bibtex</a>
+package, which is Sphinx extension for BibTeX style citations.</li>
+</ol>
+<p>These can be installed at the command line by</p>
+<div class="code highlight-python"><div class="highlight"><pre>sudo pip install pybtex
+sudo pip install sphinxcontrib-bibtex
+</pre></div>
+</div>
+<p>To build the html document, do the following</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>cd documentation/
+cd Artemis/
+make html
+</pre></div>
+</div>
+<p>This will use <strong class="program">sphinx-build</strong> to convert the source code into
+html pages.  The html pages will be placed in <code class="file docutils literal"><span class="pre">_build/html/</span></code>.
+This folder is a self-contained package.  The <code class="file docutils literal"><span class="pre">html/</span></code> folder can
+be copied and placed somewhere else.  The web pages can be accessed
+with full functionality in any location.</p>
+</div>
+<div class="section" id="building-the-latex-document">
+<h3>1.5.2. Building the LaTeX document<a class="headerlink" href="#building-the-latex-document" title="Permalink to this headline">¶</a></h3>
+<p><img alt="soon!" src="./_static/soon.png" align="left" hspace="5"></a></p>
+
+<br clear="all">
+</div>
+<div class="section" id="using-the-document-with-artemis">
+<h3>1.5.3. Using the document with ARTEMIS<a class="headerlink" href="#using-the-document-with-artemis" title="Permalink to this headline">¶</a></h3>
+<p>The html document files can be used by <font size=-1 color="#8C4112">ARTEMIS</font>.  They are
+installed at the time that <font size=-1 color="#8C4112">DEMETER</font> is installed.  If the
+html pages cannot be found, <font size=-1 color="#8C4112">ARTEMIS</font> will try to use your
+internet connection to fetch them from <a class="reference external" href="http://bruceravel.github.io/demeter/">the Demeter homepage</a>.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">1. Forward</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#layout-and-typesetting-conventions">1.1. Layout and typesetting conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgments">1.2. Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-citations">1.3. Data citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-athena-on-your-computer">1.4. Installing ATHENA on your computer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-this-document-from-source">1.5. Building this document from source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/forward.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="startup/index.html" title="2. Starting Artemis"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

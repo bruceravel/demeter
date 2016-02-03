@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. The basics of data processing &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="2.1. μ(E) data files" href="mue.html" />
+    <link rel="prev" title="1. Introduction" href="../intro.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mue.html" title="2.1. μ(E) data files"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../intro.html" title="1. Introduction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-basics-of-data-processing">
+<h1>2. The basics of data processing<a class="headerlink" href="#the-basics-of-data-processing" title="Permalink to this headline">¶</a></h1>
+<p>This chapter introduces you to data import using <font size=-1 color="#8C4112">DEMETER</font>
+and provides an overview of the most basic data processing and
+plotting chores. At the end of this chapter, you will be able to
+import XAS data from a variety of sources and make attractive plots of
+one or more data sets in any of energy, k-space, R-space, or
+back-transform k-space.</p>
+<p>The sections of this chapter deal with importing data from each of the
+following kinds of files.</p>
+<ul class="simple">
+<li>ASCII data file containing columns of energy and μ(E)</li>
+<li>ASCII data file containing columns of wavenumber and χ(k)</li>
+<li>ASCII data file containing columns of energy and detector readings</li>
+<li><font size=-1 color="#8C4112">ATHENA</font> project files</li>
+<li>ASCII data file containing columns of energy and detector readings
+for multiple channels of data</li>
+<li>Data files from beamlines that cannot be imported using any of the
+above.</li>
+</ul>
+<p>These is also a section explaining how to deal with data coming from a
+source that is not addressed by any of the above, for instance, data
+conatined in a spreadsheet file or data being genereated algorithmically
+by a program.</p>
+<p>The final section provides an overview of <font size=-1 color="#8C4112">DEMETER</font>'s plotting
+capabilities.</p>
+<p>As you will see in every example to follow, a <font size=-1 color="#8C4112">DEMETER</font>
+program is just a perl program which makes extensive use of the
+capabilities of the <font size=-1 color="#8C4112">DEMETER</font> library, which is itself
+written in perl.  A <font size=-1 color="#8C4112">DEMETER</font> program requires a small amount
+of boilerplate at the beginning. Just put the following line at the
+top of your perl program and you are using <font size=-1 color="#8C4112">DEMETER</font>:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that the <a class="reference external" href="http://perldoc.perl.org/strict.html">strict</a> and
+<a class="reference external" href="http://perldoc.perl.org/warnings.html">warnings</a> pragmas are
+imported automatically when <font size=-1 color="#8C4112">DEMETER</font> is imported.  That is,
+<font size=-1 color="#8C4112">DEMETER</font> requires that your programs conform to these two
+pragmas.  That is such an inherently good idea that <font size=-1 color="#8C4112">DEMETER</font>
+insists upon it.  Exporting these two perl pragmata is accomplished in
+the same manner as for <a class="reference external" href="https://metacpan.org/pod/Modern::Perl">Modern::Perl</a> (see <a class="reference external" href="https://metacpan.org/source/CHROMATIC/Modern-Perl-1.20150127/lib/Modern/Perl.pm#L38">lines 38 and 39</a>).</p>
+<hr class="docutils" />
+<p><strong>Contents</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mue.html">2.1. μ(E) data files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mue.html#setting-attributes">2.1.1. Setting attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chi.html">2.2. χ(k) data files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="columns.html">2.3. Column data files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="columns.html#transmission-data">2.3.1. Transmission data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html#fluorescence-data">2.3.2. Fluorescence data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html#multi-element-detector-fluorescence-data">2.3.3. Multi-element detector fluorescence data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html#preprocessing-column-data-on-the-fly">2.3.4. Preprocessing column data on the fly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="athena.html">2.4. Athena project files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="athena.html#creating-data-objects">2.4.1. Creating Data objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="athena.html#obtaining-other-information-from-project-files">2.4.2. Obtaining other information from project files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mc.html">2.5. Multichannel data files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mc.html#importing-multi-element-detector-data">2.5.1. Importing multi-element detector data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mc.html#importing-data-and-reference">2.5.2. Importing data and reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mc.html#multicolumn-transmission-data">2.5.3. Multicolumn transmission data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">2.6. Special data types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="special.html#filetype-plugins">2.6.1. Filetype plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special.html#plugins-that-ship-with-demeter">2.6.2. Plugins that ship with Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">2.7. Handling arbitrary data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">2.8. Plotting and basic data processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#types-of-plots">2.8.1. Types of plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-and-overplotting">2.8.2. Plotting and overplotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#the-singlefile-plotting-backend">2.8.3. The singlefile plotting backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#other-odds-and-ends">2.8.4. Other odds and ends</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">2. The basics of data processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mue.html">2.1. μ(E) data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chi.html">2.2. χ(k) data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html">2.3. Column data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="athena.html">2.4. Athena project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mc.html">2.5. Multichannel data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special.html">2.6. Special data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html">2.7. Handling arbitrary data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">2.8. Plotting and basic data processing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/data/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mue.html" title="2.1. μ(E) data files"
+             >next</a></li>
+        <li class="right" >
+          <a href="../intro.html" title="1. Introduction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

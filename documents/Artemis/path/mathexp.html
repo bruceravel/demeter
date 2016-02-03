@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.1. Setting math expressions &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="5. The Path page" href="index.html" />
+    <link rel="next" title="5.2. Marking and Plotting" href="plot.html" />
+    <link rel="prev" title="5. The Path page" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="5.2. Marking and Plotting"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="5. The Path page"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. The Path page</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="setting-math-expressions">
+<h1>5.1. Setting math expressions<a class="headerlink" href="#setting-math-expressions" title="Permalink to this headline">¶</a></h1>
+<p>Once some paths have been dragged from the <font size=-1 color="#8C4112">FEFF</font> window onto
+the Data window containing the gold foil data, it is time to begin
+defining math expressions for the path parameters. In the following
+figure, the path corresponding to the first coordination shell has
+been selected from the path list. A path is selected by left clicking
+on its label in the path list. Doing so, displays that path on the
+right side of the Data window.</p>
+<p>At the top of the Path page are two checkboxes. One is used to include
+and exclude a path from the fitting model. In this way, you can control
+which paths are used in a fit without having to remove them from the
+path list. The other check box is used to indicate if the current path
+should be transfered to the plotting list in the Plot window at the end
+of a fit.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Implement and explain the two items in the <span class="guilabel">other
+path options</span> pane.</p>
+</div>
+<p>The text box contains a brief description of the geometry of the
+scattering path. For a path with degeneracy greater than 1, the
+scattering geometry of one of the degenerate paths is shown. The simple
+explanation of the shape of the path and its heuristic importance are
+also given in the text box.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Implement a way to display a text box which shows all the
+paths contributing to the degeneracy + report on fuzziness of the
+degeneracy.</p>
+</div>
+<p>Beneath the scattering geometry is a table of labels and text boxes
+for the path parameters.  Math expressions are entered into these text
+boxes.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-pathfirst"></span><a class="reference external image-reference" href="../_images/path-first.png"><img alt="../_images/path-first.png" src="../_images/path-first.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.6 </span><span class="caption-text">Math expressions have been set for the first shell path.</span></p>
+</div>
+<p>In the preceding image, a simple fitting model appropriate for a
+cubic, monoatomic material like our gold foil has been entered for the
+first shell path.  This includes simple expressions for S<sup>2</sup><sub>0</sub> and E<sub>0</sub> consisting of variables that will be floated
+in the fit. A <a class="reference external" href="../extended/delr.html">model of isotropic expansion</a>
+is provided for ΔR.  The σ<sup>2</sup> path parameter is
+expressed using <a class="reference external" href="../extended/ss.html">the correlated Debye model</a>.
+The other path parameter text boxes have been left blank and will not
+be modified in the fit.</p>
+<ul class="simple" id="bibtex-bibliography-path/mathexp-0">
+<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
+</ul>
+<p>This, of course, establishes the parameterization only for the first
+path.  The same editing of path parameter math expressions must happen
+for all the other paths used in the fit.</p>
+<p>The most obvious way to do this editing chore is to click on each
+successive path in the path list, then click into each text box, then
+type in the math expressions.  That, however, is both tedious and
+error-prone.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-pathmenu"></span><a class="reference external image-reference" href="../_images/path-menu.png"><img alt="../_images/path-menu.png" src="../_images/path-menu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.7 </span><span class="caption-text">The path parameter context menu.</span></p>
+</div>
+<p>For math expressions that are the same for every path – E<sub>0</sub>
+is a common example – <font size=-1 color="#8C4112">ARTEMIS</font> provides some automation
+tools. Each of the path parameter labels on the Path page is sensitive
+to either left or right click. Either kind of click posts a menu like
+the one of the right. The top option is used to erase the contents of
+the associated text both, but only on this path.</p>
+<p>The next four options are used to push the math expression for the
+associated path parameter onto other paths. These four options allow
+some control over the paths that are targeted to receive the pushed path
+parameter values.</p>
+<p>The last two options are used to grab the math expression from one of
+the surrounding paths.</p>
+<p>The menu that pops up for the σ<sup>2</sup> parameter has two
+additional options.  One inserts a math expression for using the
+correlated Debye function for σ<sup>2</sup>, the other inserts the math
+expression for an Einstein model.  <a class="reference external" href="../extended/ss.html">Both the Debye and Einstein
+functions</a> depend on the measurement
+temeprature and a characteristic temperature.  Typically, the
+measurement temperature is a set variable and the characteristic
+temperature is a guess. When either function is inserted into the text
+box, parameters are automatically created <a class="reference external" href="../gds.html">on the GDS page</a>.</p>
+<p>The Path menu on the Data page offers a way of pushing all the path
+parameters from the displayed path to other paths. The same options for
+targeting other paths are presented.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-pathpush"></span><a class="reference external image-reference" href="../_images/path-push.png"><img alt="../_images/path-push.png" src="../_images/path-push.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.8 </span><span class="caption-text">Push all path parameters to other paths.</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. The Path page</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">5.1. Setting math expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">5.2. Marking and Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">5.3. Using path-like objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/path/mathexp.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="5.2. Marking and Plotting"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="5. The Path page"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >5. The Path page</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

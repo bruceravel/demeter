@@ -1,0 +1,2349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.1. Understanding and denoting space groups &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="14. Crystallography for EXAFS" href="index.html" />
+    <link rel="next" title="14.2. Absorption calculations and experimental corrections" href="abs.html" />
+    <link rel="prev" title="14. Crystallography for EXAFS" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="abs.html" title="14.2. Absorption calculations and experimental corrections"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="14. Crystallography for EXAFS"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">14. Crystallography for EXAFS</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="understanding-and-denoting-space-groups">
+<h1>14.1. Understanding and denoting space groups<a class="headerlink" href="#understanding-and-denoting-space-groups" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="notation-conventions">
+<h2>14.1.1. Notation conventions<a class="headerlink" href="#notation-conventions" title="Permalink to this headline">¶</a></h2>
+<p>The two most commonly used standards for the designation of three
+dimensional space groups are the <a class="reference external" href="https://en.wikipedia.org/wiki/Hermann%E2%80%93Mauguin_notation">Hermann-Maguin</a> and
+<a class="reference external" href="https://en.wikipedia.org/wiki/Schoenflies_notation">Schoenflies</a>
+conventions. <font size=-1 color="#8C4112">ATOMS</font> recognizes both conventions. Each of the
+230 space groups as designated in each convention is listed later in
+this chapter.</p>
+<p>The Hermann-Maguin system uses four symbols to uniquely specify the
+group properties of each of the 230 space groups. The first symbol is a
+single letter <code class="docutils literal"><span class="pre">P</span></code>, <code class="docutils literal"><span class="pre">I</span></code>, <code class="docutils literal"><span class="pre">R</span></code>, <code class="docutils literal"><span class="pre">F</span></code>, <code class="docutils literal"><span class="pre">A</span></code>, <code class="docutils literal"><span class="pre">B</span></code>, or <code class="docutils literal"><span class="pre">C</span></code> which
+refers to the Bravais lattice type. The remaining three letters refer to
+the point group of the crystal.</p>
+<p>Some modifications to the notation convention are made for use with a
+keyboard. Spaces must separate each of the four symbols. Subscripted
+numbers are printed next to the number being modified (e.g. 6<sub>3</sub>
+is printed as <code class="docutils literal"><span class="pre">63</span></code>). A bar above a number is entered with a minus
+sign.</p>
+<p>Occasionally there are variations in how space groups are referenced.
+For example, the hausmannite structure of Mn<sub>3</sub>O<sub>4</sub> is
+placed in space group <code class="docutils literal"><span class="pre">I</span> <span class="pre">41/A</span> <span class="pre">M</span> <span class="pre">D</span></code> by the conventions laid out in
+<a class="reference external" href="http://it.iucr.org/A/">The International Tables</a>.  In <em>Crystal
+Structures</em> v. 3, Wyckoff denotes this space group as <code class="docutils literal"><span class="pre">I</span> <span class="pre">4/A</span> <span class="pre">M</span>
+<span class="pre">D</span></code>. This sort of incongruity is unfortunate. The list of
+Hermann-Maguin space group designations as recognized by
+<font size=-1 color="#8C4112">ATOMS</font> is shown below. If you cannot resolve the incongruity
+using this list, try using the Schoenflies notation.</p>
+<ul class="simple" id="bibtex-bibliography-atoms/space-0">
+<li>Theo Hahn, editor. <em>International Tables for Crystallography, Space-Group Symmetry</em>. Wiley, 5 edition, 6 2005. <a class="reference external" href="http://it.iucr.org/A/">URL: http://it.iucr.org/A/</a>.</li>
+<li>Ralph Walter&nbsp;Graystone Wyckoff. <em>Crystal structures</em>. volume 1-6. Interscience New York, 1960.</li>
+</ul>
+<p>The Schoenflies conventions are also recognized by <font size=-1 color="#8C4112">ATOMS</font>.
+In the literature there is less variation in the application of these
+conventions.  The Schoenflies convention is, in fact, less precise
+than the Hermann-Maguin in that the complete symmetry characteristics
+of the crystal are not encoded in the space group
+designation. Adaptations to the keyboard have been made here as
+well. Subscripts are denoted with an underscore (<code class="docutils literal"><span class="pre">_</span></code>) and
+superscripts are denoted with a caret (<code class="docutils literal"><span class="pre">^</span></code>).  Spaces are not allowed
+in the keyboard designation.  A couple of examples: <code class="docutils literal"><span class="pre">d_4^8</span></code>, and
+<code class="docutils literal"><span class="pre">O_5</span></code>.  The underscore does not need to precede to
+superscript. <code class="docutils literal"><span class="pre">C_2V^9</span></code> can also be written <code class="docutils literal"><span class="pre">C_9^2V</span></code>.  Each of the
+230 space groups as designated by the Schoenflies notation is listed
+below in the same order as the listing of the Hermann-Maguin notation.
+The two conventions are equally supported in the code.</p>
+</div>
+<div class="section" id="unique-crystallographic-positions">
+<h2>14.1.2. Unique Crystallographic Positions<a class="headerlink" href="#unique-crystallographic-positions" title="Permalink to this headline">¶</a></h2>
+<p>The atoms list in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> is a list of the unique
+crystallographic sites in the unit cell. A unique site is one (and
+only one) of a group of equivalent positions. The equivalent positions
+are related to one another by the symmetry properties of the
+crystal. <font size=-1 color="#8C4112">ATOMS</font> determines the symmetry properties of the
+crystal from the name of the space group and applies those symmetry
+operations to each unique site to generate all of the equivalent
+positions.</p>
+<p>If you include more than one of a group of equivalent positions in the
+atom list, then a few odd things will happen. A series of run-time
+messages will issued telling you that atom positions were found that
+were coincident in space. This is because each of the equivalent
+positions generated the same set of points in the unit
+cell. <font size=-1 color="#8C4112">ATOMS</font> removes these redundancies from the atom
+list. The atom list and the potentials list written to
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> will be correct and <font size=-1 color="#8C4112">FEFF</font> can be run
+correctly using this output. However, the site tags and the indexing
+of the atoms will certainly make no sense. Also the density of the
+crystal will be calculated incorrectly, thus the absorption
+calculation and the self-absorption correction will be calculated
+incorrectly as well. The McMaster correction is unaffected.</p>
+</div>
+<div class="section" id="specially-recognized-lattice-types">
+<h2>14.1.3. Specially Recognized Lattice Types<a class="headerlink" href="#specially-recognized-lattice-types" title="Permalink to this headline">¶</a></h2>
+<p>For some common crystal types it is convenient to have a shorthand way
+of designating the space group. For instance, one might remember that
+copper is an fcc crystal, but not that it is in space group <code class="docutils literal"><span class="pre">F</span> <span class="pre">M</span> <span class="pre">3</span>
+<span class="pre">M</span></code> (or <code class="docutils literal"><span class="pre">O_H^5</span></code>). In this spirit, <font size=-1 color="#8C4112">ATOMS</font> will recognize
+the following words for common crystal types. These words may be used
+as the value of the keyword space and <font size=-1 color="#8C4112">ATOMS</font> will supply the
+correct space group. Note that several of the common crystal types are
+in the same space groups. For copper it will still be necessary to
+specify that an atom lies at (0,0,0), but it isn't necessary to
+remember that the space group is <code class="docutils literal"><span class="pre">F</span> <span class="pre">M</span> <span class="pre">3</span> <span class="pre">M</span></code>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="42%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">description</th>
+<th class="head">shorthand</th>
+<th class="head">space group</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>cubic</td>
+<td><code class="docutils literal"><span class="pre">cubic</span></code></td>
+<td>P M 3 M</td>
+</tr>
+<tr class="row-odd"><td>body-centered cubic</td>
+<td><code class="docutils literal"><span class="pre">bcc</span></code></td>
+<td>I M 3 M</td>
+</tr>
+<tr class="row-even"><td>face-centered cubic</td>
+<td><code class="docutils literal"><span class="pre">fcc</span></code></td>
+<td>F M 3 M</td>
+</tr>
+<tr class="row-odd"><td>halite</td>
+<td><code class="docutils literal"><span class="pre">salt</span></code> or <code class="docutils literal"><span class="pre">nacl</span></code></td>
+<td>F M 3 M</td>
+</tr>
+<tr class="row-even"><td>zincblende</td>
+<td><code class="docutils literal"><span class="pre">zincblende</span></code> or <code class="docutils literal"><span class="pre">zns</span></code></td>
+<td>F -4 3 M</td>
+</tr>
+<tr class="row-odd"><td>cesium chloride</td>
+<td><code class="docutils literal"><span class="pre">cscl</span></code></td>
+<td>P M 3 M</td>
+</tr>
+<tr class="row-even"><td>perovskite</td>
+<td><code class="docutils literal"><span class="pre">perovskite</span></code></td>
+<td>P M 3 M</td>
+</tr>
+<tr class="row-odd"><td>diamond</td>
+<td><code class="docutils literal"><span class="pre">diamond</span></code></td>
+<td>F D 3 M</td>
+</tr>
+<tr class="row-even"><td>hexagonal close pack</td>
+<td><code class="docutils literal"><span class="pre">hex</span></code> or <code class="docutils literal"><span class="pre">hcp</span></code></td>
+<td>P 63/M M C</td>
+</tr>
+<tr class="row-odd"><td>graphite</td>
+<td><code class="docutils literal"><span class="pre">graphite</span></code></td>
+<td>P 63 M C</td>
+</tr>
+</tbody>
+</table>
+<p>When <code class="docutils literal"><span class="pre">space</span></code> is set to <code class="docutils literal"><span class="pre">hex</span></code>, <code class="docutils literal"><span class="pre">hcp</span></code>, or <code class="docutils literal"><span class="pre">graphite</span></code>, γ is
+automatically set to 120.</p>
+</div>
+<div class="section" id="bravais-lattice-conventions">
+<h2>14.1.4. Bravais Lattice Conventions<a class="headerlink" href="#bravais-lattice-conventions" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">ATOMS</font> assumes certain conventions for each of the Bravais
+lattice types.  Listed here are the labeling conventions for the axes
+and angles in each Bravais lattice.</p>
+<ul class="simple">
+<li><strong>Triclinic</strong>: All axes and angles must be specified.</li>
+<li><strong>Monoclinic</strong>: <code class="docutils literal"><span class="pre">B</span></code> is the perpendicular axis, thus β is the
+angle not equal to 90.</li>
+<li><strong>Orthorhombic</strong>: <code class="docutils literal"><span class="pre">A</span></code>, <code class="docutils literal"><span class="pre">B</span></code>, and <code class="docutils literal"><span class="pre">C</span></code> must all be specified.</li>
+<li><strong>Tetragonal</strong>: The <code class="docutils literal"><span class="pre">C</span></code> axis is the unique axis in a tetragonal
+cell. The <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code> axes are equivalent. Specify <code class="docutils literal"><span class="pre">A</span></code> and
+<code class="docutils literal"><span class="pre">C</span></code> in <code class="file docutils literal"><span class="pre">atoms.inp</span></code>.</li>
+<li><strong>Trigonal</strong>: If the cell is rhombohedral then the three axes are
+equivalent as are the three angles. Specify <code class="docutils literal"><span class="pre">A</span></code> and α. If
+the cell has hexagonal axes, specify <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">C</span></code>. γ will
+be set to 120 by the program.</li>
+<li><strong>Hexagonal</strong>: The equivalent axes are <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code>. Specify
+<code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">C</span></code> in <code class="file docutils literal"><span class="pre">atoms.inp</span></code>. γ will be set to 120 by the
+program.</li>
+<li><strong>Cubic</strong>: Specify <code class="docutils literal"><span class="pre">A</span></code> in <code class="file docutils literal"><span class="pre">atoms.inp</span></code>. The other axes will
+be set equal to <code class="docutils literal"><span class="pre">A</span></code> and the angles will all be set to 90.</li>
+</ul>
+</div>
+<div class="section" id="low-symmetry-space-groups">
+<h2>14.1.5. Low Symmetry Space Groups<a class="headerlink" href="#low-symmetry-space-groups" title="Permalink to this headline">¶</a></h2>
+<p>In three dimensional space there is an ambiguity in choice of right
+handed coordinate systems. Given a set of mutually orthogonal axes,
+there are six choices for how to label the positive <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code>, and
+<code class="docutils literal"><span class="pre">z</span></code> directions. For some specific physical problem, the
+crystallographer might choose a non-standard setting for a crystal. The
+choice of standard setting is described in detail in
+<code class="docutils literal"><span class="pre">The</span> <span class="pre">International</span> <span class="pre">Tables</span></code>. The Hermann-Maguin symbol describes the
+symmetries of the space group relative to this choice of coordinate
+system.</p>
+<p>The symbols for triclinic crystals and for crystals of high symmetry are
+insensitive to choice of axes. Monoclinic and orthorhombic notations
+reflect the choice of axes for those groups that possess a unique axis.
+Tetragonal crystals may be rotated by 45 degrees about the z axis to
+produce a unit cell of doubled volume and of a different Bravais type.
+Alternative symbols for those space groups that have them are listed in
+Appendix A.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> recognizes those non-standard notations for these
+crystal classes that are tabulated in <code class="docutils literal"><span class="pre">The</span> <span class="pre">International</span>
+<span class="pre">Tables</span></code>. <code class="file docutils literal"><span class="pre">atoms.inp</span></code> may use any of these alternate notations
+so long as the specified cell dimensions and atomic positions are
+consistent with the choice of notation. Any notation not tabulated in
+chapter 6 of the 1969 edition of <code class="docutils literal"><span class="pre">The</span> <span class="pre">International</span> <span class="pre">Tables</span></code> will not
+be recognized by <font size=-1 color="#8C4112">ATOMS</font>.</p>
+<p>This resolution of ambiguity in choice of coordinate system is one of
+the main advantages of the Hermann-Maguin notation system over that of
+Shoenflies. In a situation where a non-standard setting has been
+chosen in the literature, use of the Schoenflies notation will, for
+many space groups, result in unsatisfactory output from
+<font size=-1 color="#8C4112">ATOMS</font>. In these situations, <font size=-1 color="#8C4112">ATOMS</font> requires the
+use of the Hermann-Maguinn notation to resolve the choice of axes.</p>
+<p>Here is an example. In the literature, La<sub>2</sub>CuO<sub>4</sub> was
+given in the non-standard <code class="docutils literal"><span class="pre">b</span> <span class="pre">m</span> <span class="pre">a</span> <span class="pre">b</span></code> setting rather than the standard
+<code class="docutils literal"><span class="pre">c</span> <span class="pre">m</span> <span class="pre">c</span> <span class="pre">a</span></code>. As you can see from the axes and coordinates, these
+settings differ by a 90 degree rotation about the <code class="docutils literal"><span class="pre">A</span></code> axis. The
+coordination geometry of the output atom list will be the same with
+either of these input files, but the actual coordinates will reflect
+this 90 degree rotation.</p>
+<div class="highlight-python"><div class="highlight"><pre>title La2CuO4 structure at 10K from Radaelli et al.
+title standard setting
+space c m c a
+a= 5.3269 b= 13.1640 c= 5.3819
+rmax= 8.0 core= la
+atom
+  la  0      0.3611   0.0074
+  Cu  0      0        0
+  O   0.25  -0.0068  -0.25    o1
+  O   0      0.1835  -0.0332  o2
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>title La2CuO4 structure at 10K from Radaelli et al.
+title non standard setting, rotated by 90 degrees about A axis
+space b m a b
+a= 5.3269 b= 5.3819 c= 13.1640
+rmax= 8.0 core= la
+atom
+  la  0     -0.0074   0.3611
+  Cu  0      0        0
+  O   0.25   0.25    -0.0068   o1
+  O   0      0.0332   0.1835   o2
+</pre></div>
+</div>
+</div>
+<div class="section" id="rhombohedral-space-groups">
+<h2>14.1.6. Rhombohedral Space Groups<a class="headerlink" href="#rhombohedral-space-groups" title="Permalink to this headline">¶</a></h2>
+<p>There are seven rhombohedral space groups. Crystals in any of these
+space groups that may be represented as either monomolecular
+rhombohedral cells or as trimolecular hexagonal cells. These two
+representations are entirely equivalent. The rhombohedral space groups
+are the ones beginning with the letter <code class="docutils literal"><span class="pre">R</span></code> in the Hermann-Maguin
+notation. <font size=-1 color="#8C4112">ATOMS</font> does not care which representation you use,
+but a simple convention must be maintained. If the rhombohedral
+representation is used then the keyword α must be specified in
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code> to designate the angle between the rhombohedral axes
+and the keyword <code class="docutils literal"><span class="pre">a</span></code> must be specified to designate the length of the
+rhombohedral axes. If the hexagonal representation is used, then <code class="docutils literal"><span class="pre">a</span></code>
+and <code class="docutils literal"><span class="pre">c</span></code> must be specified in <code class="file docutils literal"><span class="pre">atoms.inp</span></code>. γ will be set
+to 120 by the code. Atomic coordinates consistent with the choice of
+axes must be used.</p>
+</div>
+<div class="section" id="multiple-origins-and-the-shift-keyword">
+<h2>14.1.7. Multiple Origins and the Shift Keyword<a class="headerlink" href="#multiple-origins-and-the-shift-keyword" title="Permalink to this headline">¶</a></h2>
+<p>Some space groups in <em>The International Tables</em> are listed with two
+possible origins. The difference is only in which symmetry point is
+placed at (0,0,0). <font size=-1 color="#8C4112">ATOMS</font> always wants the orientation
+labeled “origin-at-centre”. This orientation places (0,0,0) at a point
+of highest crystallographic symmetry. Wyckoff and other authors have
+the unfortunate habit of not choosing the “origin-at-centre”
+orientation when there is a choice. Again Mn<sub>3</sub>O<sub>4</sub> is an
+example. Wyckoff uses the “origin at -4m2” option, which
+places one Mn atom at (0,0,0) and another at (0,1/4,5/8).
+<font size=-1 color="#8C4112">ATOMS</font> wants the “origin-at-centre” orientation
+which places these atoms at (0,3/4,1/8) and (0,0,1/2). Admittedly,
+this is an arcane and frustrating limitation of the code, but it is
+not possible to conclusively check if the “origin-at-centre”
+orientation has been chosen.</p>
+<p>Twenty one of the space groups are listed with two origins in <em>The
+International Tables</em>. <font size=-1 color="#8C4112">ATOMS</font> knows which groups these are
+and by how much the two origins are offset, but <strong>cannot</strong> know if you
+chose the correct one for your crystal. If you use one of these
+groups, <font size=-1 color="#8C4112">ATOMS</font> will print a run-time message warning you of
+the potential problem and telling you by how much to shift the atomic
+coordinates in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> if the incorrect orientation was
+used. This warning will also be printed at the top of the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file. If you use the “origin-at-center”
+orientation, you may ignore this message.</p>
+<p>If you use one of these space groups, it usually isn't hard to know if
+you have used the incorrect orientation. Some common problems include
+atoms in the atom list that are very close together (less than 1
+Å), unphysically large densities, and interatomic distances that do
+not agree with values published in the crystallography
+literature. Because it is tedious to edit the atomic coordinates in
+the input file every time this problem is encountered and because
+forcing the user to do arithmetic invites trouble, there is a useful
+keyword called <code class="docutils literal"><span class="pre">shift</span></code>. For the Mn<sub>3</sub>O<sub>4</sub> example
+discussed above, simply insert this line in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> if you have
+supplied coordinates referenced to the incorrect origin:</p>
+<div class="highlight-python"><div class="highlight"><pre>shift = 0.0  0.25 -0.125
+</pre></div>
+</div>
+<p>This vector will be added to all of the coordinates in the atom list
+after the input file is read.</p>
+<p>Here is the input file for Mn<sub>3</sub>O<sub>4</sub> using the shift
+keyword:</p>
+<div class="highlight-python"><div class="highlight"><pre>title Mn3O4, hausmannite structure, using the shift keyword
+a       5.75    c       9.42  core    Mn2
+rmax    7.0     Space   i 41/a m d
+shift   0.0  0.25  -0.125
+atom
+* At       x   y    z     tag
+  Mn      0.0 0.0  0.0    Mn1
+  Mn      0.0 0.25 0.625  Mn2
+  O       0.0 0.25 0.375
+</pre></div>
+</div>
+<p>The above input file gives the same output as the following. Here the
+shift keyword has been removed and the shift vector has been added to
+all of the fractional coordinates. These two input files give equivalent
+output.</p>
+<div class="highlight-python"><div class="highlight"><pre>title Mn3O4, hausmannite structure, no shift keyword
+a       5.75    c       9.42  core      Mn2
+rmax    7.0     Space   i 41/a m d
+atom
+* At       x    y     z     tag
+  Mn      0.0  0.25 -0.125  Mn1
+  Mn      0.0  0.50  0.50   Mn2
+  O       0.0  0.50  0.25
+</pre></div>
+</div>
+</div>
+<div class="section" id="denoting-space-groups">
+<h2>14.1.8. Denoting Space Groups<a class="headerlink" href="#denoting-space-groups" title="Permalink to this headline">¶</a></h2>
+<p>The following is my attempt to demystify the crazy symbolism used by the
+Hermann-Maguin and Schoenflies conventions. This is by no means an
+adequate explanation of the rich and beautiful field of crystallography.
+For that, I recommend a real crystallography text.</p>
+<p>An important part of the demystification process is to define some of
+the important terms used to describe crystal symmetries. The words
+<em>system</em>, <em>Bravais lattice</em>, <em>crystal class</em>, and <em>space group</em> have
+well-defined meanings. The symbols used in each of the notation
+conventions specifically relate the various symmetries of crystals. In
+crystallography, a symmetry operation is defined as a sequence of
+reflections, translations, and/or rotations that map the crystal back
+onto itself in such a way that the crystal after the mapping is
+indistinguishable from the crystal before the mapping.</p>
+<div class="section" id="a-quick-review-of-crystallography">
+<h3>14.1.8.1. A Quick Review of Crystallography<a class="headerlink" href="#a-quick-review-of-crystallography" title="Permalink to this headline">¶</a></h3>
+<p>To start, here are some definitions. These will be elaborated below.</p>
+<ul class="simple">
+<li><strong>System</strong>: The undecorated shape of the unit cell.</li>
+<li><strong>Bravais Lattice</strong>: An undecorated lattice of equivalent points.</li>
+<li><strong>Crystal Class</strong>: The description of the symmetries about a point.</li>
+<li><strong>Space Group</strong>: The complete description of three dimensional
+crystal symmetries.</li>
+</ul>
+<p>There are seven systems of crystals. The system refers to the shape of
+the undecorated unit cell. They are:</p>
+<ul class="simple">
+<li><strong>Triclinic</strong>: a ≠ b ≠ c, α ≠ β ≠ γ ≠ 90°</li>
+<li><strong>Monoclinic</strong>: a ≠ b ≠ c, α = γ = 90°, β ≠ 90°</li>
+<li><strong>Orthorhombic</strong>: a ≠ b ≠ c, α = β = γ = 90°</li>
+<li><strong>Tetragonal</strong>: a = b ≠ c, α = β = γ = 90°</li>
+<li><strong>Hexagonal</strong>: a = b ≠ c, α = β = 90°, γ = 120°</li>
+<li><strong>Trigonal</strong>: (rhombohedral axes): a = b = c, α = β = γ &lt; 120° ≠ 90°
+(hexagonal axes): a = b ≠ c, α = β = 90°, γ = 120°</li>
+<li><strong>Cubic</strong>: a = b = c, α = β = γ = 90°</li>
+</ul>
+<p>There are fourteen Bravais lattices. The Bravais lattices are
+constructed from the simplest translational symmetries applied to the
+seven crystal systems. A <code class="docutils literal"><span class="pre">P</span></code> lattice has decoration only at the
+corners of the unit cell. An <code class="docutils literal"><span class="pre">I</span></code> lattice has decoration at the body
+center of the cell as well as at the corners. An <code class="docutils literal"><span class="pre">F</span></code> lattice has
+decoration at the face centers as well as at the corners. A <code class="docutils literal"><span class="pre">C</span></code>
+lattice has decoration at the center of the (001) face as well as at the
+corners. Likewise <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code> lattices have decoration at the
+centers of the (100) and (010) faces respectively. <code class="docutils literal"><span class="pre">R</span></code> lattices are a
+special type in the trigonal system which possess rhombohedral symmetry.</p>
+<p>All seven crystal systems have <code class="docutils literal"><span class="pre">P</span></code> lattices, but not all the classes
+have the other type of Bravais lattices. This is because there is
+degeneracy when all the Bravais lattice types are applied to all the
+crystal systems. For example, a face centered tetragonal cell can be
+expressed as a body centered tetragonal cell by rotating the two
+equivalent axes by 45° and shortening them by a factor of square
+root of 2. Considering such degeneracies reduces the possible
+decorations of the seven systems to these 14 unique three dimensional
+lattices:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Lattice</th>
+<th class="head">symbol</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Triclinic</td>
+<td>P</td>
+</tr>
+<tr class="row-odd"><td>Monoclinic</td>
+<td>P, C</td>
+</tr>
+<tr class="row-even"><td>Orthorhombic</td>
+<td>P, C, I, F</td>
+</tr>
+<tr class="row-odd"><td>Tetragonal</td>
+<td>P, I</td>
+</tr>
+<tr class="row-even"><td>Hexagonal</td>
+<td>P</td>
+</tr>
+<tr class="row-odd"><td>Trigonal</td>
+<td>P, R</td>
+</tr>
+<tr class="row-even"><td>Cubic</td>
+<td>P, I, F</td>
+</tr>
+</tbody>
+</table>
+<p>For historic reasons, hexagonal cells are sometimes called <code class="docutils literal"><span class="pre">C</span></code>
+lattices. <font size=-1 color="#8C4112">ATOMS</font> will recognize hexagonal <code class="docutils literal"><span class="pre">P</span></code> cells
+denoted in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> by the letter <code class="docutils literal"><span class="pre">C</span></code>. Modern literature
+usually uses the <code class="docutils literal"><span class="pre">P</span></code> designation.</p>
+<p>The decorations placed on the Bravais lattices come in 32 flavors called
+classes or point groups which represent the possible symmetries within
+the decorations. Each type of symmetry is defined either by a reflection
+plane, a rotation axis, or a rotary inversion axis. A reflection plane
+can either be a simple mirror plane or a glide plane, which defines the
+symmetry operation of reflecting through a mirror followed by
+translating along a direction in the plane. A rotation axis can either
+define a simple rotation or a screw rotation, which is the symmetry
+operation of rotating about the axis followed by translating along that
+axis. A rotary inversion axis defines the symmetry operation of
+reflecting through a plane followed by rotating about an axis in that
+plane.</p>
+<p>These three symmetry types, reflection plane, rotation axis, and rotary
+inversion axis, can be combined in 32 non-degenerate ways. (An example
+degeneracy: the symmetry operation of combining a 180° rotary inversion
+with a mirror reflection is identical to the operation of a simple 180°
+rotation.) It would seem that the 32 classes could decorate the 14
+Bravais lattices in 458 ways. In fact, the number might be larger as
+there are numerous types of screw axes and glide planes. Again,
+considering degeneracies reduces the total number of combinations,
+leaving 230 unique decorations of the Bravais lattices. These are called
+space groups. The 230 space groups are a rigorously complete set of
+descriptions of crystal symmetries in three dimensional space. That is,
+there may be new crystals but there are no new space groups. Here I am
+only considering space-filling crystals with translational periodicity.
+3-D Penrose structures and quasi-crystals are outside the realm of this
+appendix and of the code.</p>
+</div>
+<div class="section" id="decoding-the-hermann-maguin-notation">
+<h3>14.1.8.2. Decoding the Hermann-Maguin Notation<a class="headerlink" href="#decoding-the-hermann-maguin-notation" title="Permalink to this headline">¶</a></h3>
+<p>The Hermann-Maguin notation uses a set of two to four symbols to
+completely specify the symmetries of a space group. The first symbol is
+always a single letter specifying the Bravais lattice. The next three
+symbols specify the class of the space group. These three symbols are
+some combination of the following characters:</p>
+<div class="highlight-python"><div class="highlight"><pre>1 2 3 4 5 6 A B C D M N / -
+</pre></div>
+</div>
+<p>These are sufficient to completely specify the various planar and axial
+symmetries of the classes and sub-classes. The following is a discussion
+of the most important rules of this convention. Some details are
+neglected but sufficient information is provided to appreciate the
+information contained in the notation.</p>
+<p>The second symbol in the Hermann-Maguin notation, i.e. the one after the
+Bravais lattice symbol, tells about symmetries involving the primary
+axis of the cell and/or of the plane normal to the primary axis. The
+primary axis is defined as follows:</p>
+<ul class="simple">
+<li><strong>Triclinic</strong>: none</li>
+<li><strong>Monoclinic</strong>: the B axis</li>
+<li><strong>Orthorhombic</strong>: the C axis</li>
+<li><strong>Tetragonal</strong>: the C axis</li>
+<li><strong>Hexagonal</strong>: the C axis</li>
+<li><strong>Trigonal</strong>: the A axis</li>
+<li><strong>Cubic</strong>: the A axis</li>
+</ul>
+<p>In cubic or rhombohedral lattices the axes are equivalent, thus the
+primary axis is arbitrary. For orthorhombic lattices the third and
+fourth symbols specify the symmetries of the a and b axes respectively.
+In other lattices, the last two symbols encode the remaining symmetries
+as described below.</p>
+<p>A space filling crystal will always show a symmetry when rotated through
+<code class="docutils literal"><span class="pre">(360/n)</span></code> degrees, where n is one of <code class="docutils literal"><span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">3</span></code>, <code class="docutils literal"><span class="pre">4</span></code>, or
+<code class="docutils literal"><span class="pre">6</span></code>. The second symbol often tells the rotational symmetry properties
+of the primary axis. Notice that all trigonal, tetragonal, and hexagonal
+groups have a <code class="docutils literal"><span class="pre">3</span></code>, <code class="docutils literal"><span class="pre">4</span></code>, or <code class="docutils literal"><span class="pre">6</span></code> respectively in their designations.
+Many orthorhombic and monoclinic groups have a <code class="docutils literal"><span class="pre">2</span></code>, which is the
+highest degree of rotational symmetry available to those lattices. Cubic
+groups may possess 2- or 4-fold rotational symmetry about the cell axes,
+thus have <code class="docutils literal"><span class="pre">2</span></code> or <code class="docutils literal"><span class="pre">4</span></code> in the second symbol.</p>
+<p>Many second symbols contain a second number. This is the subscripted
+number when the Hermann-Maguin notation is typeset. This refers to the
+type of screw symmetry associated with the axis. A screw symmetric
+lattice is mapped onto itself by an anti-clockwise rotation through
+<code class="docutils literal"><span class="pre">m*(360/n)</span></code> degrees and a translation of <code class="docutils literal"><span class="pre">1/n</span></code> up the primary axis.
+Here n is the degree of rotational symmetry, m is the type of screw, and
+the definition of rotation and direction is right-handed. Two types of
+screw symmetry that are different only in handedness of rotation are
+called enantiomorphous. The enantiomorphous pairs are <code class="docutils literal"><span class="pre">31</span></code> and <code class="docutils literal"><span class="pre">32</span></code>,
+<code class="docutils literal"><span class="pre">41</span></code> and <code class="docutils literal"><span class="pre">43</span></code>, <code class="docutils literal"><span class="pre">61</span></code> and <code class="docutils literal"><span class="pre">65</span></code>, and <code class="docutils literal"><span class="pre">62</span></code> and <code class="docutils literal"><span class="pre">64</span></code>.</p>
+<p>Several of the second symbols are one or two numbers followed by a slash
+and a letter, e.g. <code class="docutils literal"><span class="pre">P</span> <span class="pre">63/M</span> <span class="pre">M</span> <span class="pre">C</span></code>. The letter specifies the type of
+reflection plane that is normal to the rotation axis.</p>
+<p>There are several types of reflection planes. The simplest is a mirror
+plane, denoted by the letter <code class="docutils literal"><span class="pre">M</span></code>. This says the crystal is mapped onto
+itself by reflecting all atoms through a mirror placed in an appropriate
+plane in the crystal. The letters <code class="docutils literal"><span class="pre">A</span></code>, <code class="docutils literal"><span class="pre">B</span></code>, or <code class="docutils literal"><span class="pre">C</span></code> denote glide
+planes. These map the crystal onto itself by reflecting through the
+plane then translating elements of the crystal by half the length of the
+cell axis normal to the reflection plane. A <code class="docutils literal"><span class="pre">D</span></code> glide plane is similar
+but involves translations of a quarter of the cell axis length. Finally,
+the letter <code class="docutils literal"><span class="pre">N</span></code> denotes a diagonal glide plane, which is a reflection
+through a plane followed by a translation in the same plane of half the
+length of both cell axes in that plane.</p>
+<p>The symbol <code class="docutils literal"><span class="pre">-</span></code> before a number indicates a rotary inversion axis. This
+maps the crystal back onto itself by rotating through <code class="docutils literal"><span class="pre">(360/n)</span></code>
+degrees then reflecting through a plane parallel to the rotation axis.</p>
+<p>A final word about the Hermann-Maguin notation, all cubic space groups
+have four three-fold rotational axes through the body diagonals. Thus
+all cubic groups have the number 3 as the third symbol, e.g.
+<code class="docutils literal"><span class="pre">F</span> <span class="pre">M</span> <span class="pre">3</span> <span class="pre">M</span></code>.</p>
+</div>
+<div class="section" id="decoding-the-schoenflies-notation">
+<h3>14.1.8.3. Decoding the Schoenflies Notation<a class="headerlink" href="#decoding-the-schoenflies-notation" title="Permalink to this headline">¶</a></h3>
+<p>The Schoenflies notation uses a set of three symbols to classify sets
+of space groups by their dominant symmetry features. The letters
+<code class="docutils literal"><span class="pre">C</span></code>, <code class="docutils literal"><span class="pre">D</span></code>, <code class="docutils literal"><span class="pre">S</span></code>, <code class="docutils literal"><span class="pre">T</span></code>, and <code class="docutils literal"><span class="pre">O</span></code> denote the character of the
+center of symmetry. The symbol after the underscore (the subscript
+when typeset) indicates the presence of symmetry planes and additional
+symmetry axes.  The number after the caret (the superscript when
+typeset) is simply an indexing of all the distinct space groups that
+share major symmetry properties. In the older literature, <code class="docutils literal"><span class="pre">D</span></code>
+symmetry centers are occasionally referred to as
+<code class="docutils literal"><span class="pre">V</span></code>. <font size=-1 color="#8C4112">ATOMS</font> will probably understand a space group
+referred to by the letter <code class="docutils literal"><span class="pre">V</span></code>, but using the <code class="docutils literal"><span class="pre">D</span></code> notation is
+recommended.</p>
+<p>The letter <code class="docutils literal"><span class="pre">C</span></code> indicates an rotation axis where the crystal is mapped
+onto itself when rotated by <code class="docutils literal"><span class="pre">(360/n)</span></code> deg, where n is the number after
+the underscore. An <code class="docutils literal"><span class="pre">H</span></code> after the underscore indicates the presence of
+a plane of symmetry normal to the rotation axis. A <code class="docutils literal"><span class="pre">V</span></code> after the
+underscore indicates one or two planes of symmetry parallel to the
+rotation axis. The letter <code class="docutils literal"><span class="pre">S</span></code> after the underscore indicates a normal
+plane of symmetry in a crystal where the degree of rotational symmetry
+is 1. The letter <code class="docutils literal"><span class="pre">I</span></code> after the underscore indicates the presence of a
+point center of symmetry.</p>
+<p>The letter <code class="docutils literal"><span class="pre">S</span></code> indicates a rotary inversion axis. The degree of
+rotation is the number after the underscore.</p>
+<p>The letter <code class="docutils literal"><span class="pre">D</span></code> denotes a primary rotation axis with another rotation
+axis normal to it. The degree of rotation of both axes is the number
+after the underscore. The letters <code class="docutils literal"><span class="pre">H</span></code> and <code class="docutils literal"><span class="pre">V</span></code> have the same meanings
+as they did in groups beginning with the letter <code class="docutils literal"><span class="pre">C</span></code>. The letter <code class="docutils literal"><span class="pre">D</span></code>
+indicates the presence of a diagonal symmetry plane.</p>
+<p>Cubic groups are all specified by the letters <code class="docutils literal"><span class="pre">T</span></code> and <code class="docutils literal"><span class="pre">O</span></code>. <code class="docutils literal"><span class="pre">T</span></code>
+indicates tetrahedral symmetry, that is, the presence of the four
+three-fold axes and three two-fold axes. <code class="docutils literal"><span class="pre">O</span></code> indicates octahedral
+symmetry, i.e. four three-fold axes with three four-fold axes. <code class="docutils literal"><span class="pre">H</span></code> and
+<code class="docutils literal"><span class="pre">D</span></code> after the underscore carry the same meaning as before.</p>
+</div>
+<div class="section" id="the-hermann-maguin-notation">
+<h3>14.1.8.4. The Hermann-Maguin Notation<a class="headerlink" href="#the-hermann-maguin-notation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="notation-for-the-standard-settings">
+<h4>14.1.8.4.1. Notation for the Standard Settings<a class="headerlink" href="#notation-for-the-standard-settings" title="Permalink to this headline">¶</a></h4>
+<p><strong>2 Triclinic and 13 Monoclinic Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="13%" />
+<col width="15%" />
+<col width="13%" />
+<col width="13%" />
+<col width="15%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[1]</td>
+<td>P 1</td>
+<td>P -1</td>
+<td>P 2</td>
+<td>P 21</td>
+<td>C 2</td>
+<td>P M</td>
+</tr>
+<tr class="row-even"><td>[7]</td>
+<td>P C</td>
+<td>C M</td>
+<td>C C</td>
+<td>P 2/M</td>
+<td>P 21/M</td>
+<td>C 2/M</td>
+</tr>
+<tr class="row-odd"><td>[13]</td>
+<td>P 2/C</td>
+<td>P 21/C</td>
+<td>C 2/C</td>
+<td colspan="3">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>59 Orthorhombic Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[16]</td>
+<td>P 2 2 2</td>
+<td>P 2 2 21</td>
+<td>P 21 21 2</td>
+<td>P 21 21 21</td>
+<td>C 2 2 21</td>
+<td>C 2 2 2</td>
+</tr>
+<tr class="row-even"><td>[22]</td>
+<td>F 2 2 2</td>
+<td>I 2 2 2</td>
+<td>I 21 21 21</td>
+<td>P M M 2</td>
+<td>P M C 21</td>
+<td>P C C 2</td>
+</tr>
+<tr class="row-odd"><td>[28]</td>
+<td>P M A 2</td>
+<td>P C A 21</td>
+<td>P N C 2</td>
+<td>P M N 21</td>
+<td>P B A 2</td>
+<td>P N A 21</td>
+</tr>
+<tr class="row-even"><td>[34]</td>
+<td>P N N 2</td>
+<td>C M M 2</td>
+<td>C M C 21</td>
+<td>C C C 2</td>
+<td>A M M 2</td>
+<td>A B M 2</td>
+</tr>
+<tr class="row-odd"><td>[40]</td>
+<td>A M A 2</td>
+<td>A B A 2</td>
+<td>F M M 2</td>
+<td>F D D 2</td>
+<td>I M M 2</td>
+<td>I B A 2</td>
+</tr>
+<tr class="row-even"><td>[46]</td>
+<td>I M A 2</td>
+<td>P M M M</td>
+<td>P N N N</td>
+<td>P C C M</td>
+<td>P B A N</td>
+<td>P M M A</td>
+</tr>
+<tr class="row-odd"><td>[52]</td>
+<td>P N N A</td>
+<td>P M N A</td>
+<td>P C C A</td>
+<td>P B A M</td>
+<td>P C C N</td>
+<td>P B C M</td>
+</tr>
+<tr class="row-even"><td>[58]</td>
+<td>P N N M</td>
+<td>P M M N</td>
+<td>P B C N</td>
+<td>P B C A</td>
+<td>P N M A</td>
+<td>C M C M</td>
+</tr>
+<tr class="row-odd"><td>[64]</td>
+<td>C M C A</td>
+<td>C M M M</td>
+<td>C C C M</td>
+<td>C M M A</td>
+<td>C C C A</td>
+<td>F M M M</td>
+</tr>
+<tr class="row-even"><td>[70]</td>
+<td>F D D D</td>
+<td>I M M M</td>
+<td>I B A M</td>
+<td>I B C A</td>
+<td>I M M A</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>68 Tetragonal Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[75]</td>
+<td>P 4</td>
+<td>P 41</td>
+<td>P 42</td>
+<td>P 43</td>
+<td>I 4</td>
+<td>I 41</td>
+</tr>
+<tr class="row-even"><td>[81]</td>
+<td>P -4</td>
+<td>I -4</td>
+<td>P 4/M</td>
+<td>P 42/M</td>
+<td>P 4/N</td>
+<td>P 42/N</td>
+</tr>
+<tr class="row-odd"><td>[87]</td>
+<td>I 4/M</td>
+<td>I 41/A</td>
+<td>P 4 2 2</td>
+<td>P 4 21 2</td>
+<td>P 41 2 2</td>
+<td>P 41 21 2</td>
+</tr>
+<tr class="row-even"><td>[93]</td>
+<td>P 42 2 2</td>
+<td>P 42 21 2</td>
+<td>P 43 2 2</td>
+<td>P 43 21 2</td>
+<td>I 4 2 2</td>
+<td>I 41 2 2</td>
+</tr>
+<tr class="row-odd"><td>[99]</td>
+<td>P 4 M M</td>
+<td>P 4 B M</td>
+<td>P 42 C M</td>
+<td>P 42 N M</td>
+<td>P 4 C C</td>
+<td>P 4 N C</td>
+</tr>
+<tr class="row-even"><td>[105]</td>
+<td>P 42 M C</td>
+<td>P 42 B C</td>
+<td>I 4 M M</td>
+<td>I 4 C M</td>
+<td>I 41 M D</td>
+<td>I 41 C D</td>
+</tr>
+<tr class="row-odd"><td>[111]</td>
+<td>P -4 2 M</td>
+<td>P -4 2 C</td>
+<td>P -4 21 M</td>
+<td>P -4 21 C</td>
+<td>P -4 M 2</td>
+<td>P -4 C 2</td>
+</tr>
+<tr class="row-even"><td>[117]</td>
+<td>P -4 B 2</td>
+<td>P -4N2</td>
+<td>I -4 M 2</td>
+<td>I -4 C 2</td>
+<td>I -42 M</td>
+<td>I -42 D</td>
+</tr>
+<tr class="row-odd"><td>[123]</td>
+<td>P 4/M M M</td>
+<td>P 4/M C C</td>
+<td>P 4/N B M</td>
+<td>P 4/N N C</td>
+<td>P 4/M B M</td>
+<td>P 4/M N C</td>
+</tr>
+<tr class="row-even"><td>[129]</td>
+<td>P 4/N M M</td>
+<td>P 4/N C C</td>
+<td>P 42/M M C</td>
+<td>P 42/M C M</td>
+<td>P 42/N B C</td>
+<td>P 42/N N M</td>
+</tr>
+<tr class="row-odd"><td>[135]</td>
+<td>P 42/M B C</td>
+<td>P 42/M N M</td>
+<td>P 42/N M C</td>
+<td>P 42/N C M</td>
+<td>I 4/M M M</td>
+<td>I 4/M C M</td>
+</tr>
+<tr class="row-even"><td>[141]</td>
+<td>I 41/A M D</td>
+<td>I 41/A C D</td>
+<td colspan="4">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>25 Trigonal Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[143]</td>
+<td>P 3</td>
+<td>P 3 1</td>
+<td>P 32</td>
+<td>R3</td>
+<td>P -3</td>
+<td>R -3</td>
+</tr>
+<tr class="row-even"><td>[149]</td>
+<td>P 3 1 2</td>
+<td>P 3 2 1</td>
+<td>P 31 1 2</td>
+<td>P 31 2 1</td>
+<td>P 32 1 2</td>
+<td>P 32 2 1</td>
+</tr>
+<tr class="row-odd"><td>[155]</td>
+<td>R 32</td>
+<td>P 3 M 1</td>
+<td>P 3 1 M</td>
+<td>P 3 C 1</td>
+<td>P 3 1 C</td>
+<td>R 3 M</td>
+</tr>
+<tr class="row-even"><td>[161]</td>
+<td>R 3C</td>
+<td>P -3 1 M</td>
+<td>P -3 1 C</td>
+<td>P -3 M 1</td>
+<td>P -3 C 1</td>
+<td>R -3 M</td>
+</tr>
+<tr class="row-odd"><td>[167]</td>
+<td>R -3 C</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>27 Hexagonal Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[168]</td>
+<td>P 6</td>
+<td>P 61</td>
+<td>P 65</td>
+<td>P 62</td>
+<td>P 64</td>
+<td>P 63</td>
+</tr>
+<tr class="row-even"><td>[174]</td>
+<td>P -6</td>
+<td>P 6/M</td>
+<td>P 63/M</td>
+<td>P 62 2</td>
+<td>P 61 2 2</td>
+<td>P 65 2 2</td>
+</tr>
+<tr class="row-odd"><td>[180]</td>
+<td>P 62 2 2</td>
+<td>P 64 2 2</td>
+<td>P 63 2 2</td>
+<td>P 6 M M</td>
+<td>P 6 C C</td>
+<td>P 63 C M</td>
+</tr>
+<tr class="row-even"><td>[186]</td>
+<td>P 63 M C</td>
+<td>P -6 M 2</td>
+<td>P -6 C 2</td>
+<td>P -6 2 M</td>
+<td>P -62 C</td>
+<td>P 6/M M M</td>
+</tr>
+<tr class="row-odd"><td>[192]</td>
+<td>P 6/M C C</td>
+<td>P 63/M C M</td>
+<td>P 63/M M C</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>36 Cubic Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[195]</td>
+<td>P 2 3</td>
+<td>F 2 3</td>
+<td>I 2 3</td>
+<td>P 21 3</td>
+<td>I 21 3</td>
+<td>P M 3</td>
+</tr>
+<tr class="row-even"><td>[201]</td>
+<td>P N 3</td>
+<td>F M 3</td>
+<td>F D 3</td>
+<td>I M 3</td>
+<td>P A 3</td>
+<td>I A 3</td>
+</tr>
+<tr class="row-odd"><td>[217]</td>
+<td>P 4 3 2</td>
+<td>P 42 3 2</td>
+<td>F 4 3 2</td>
+<td>F 41 3 2</td>
+<td>I 4 3 2</td>
+<td>P 43 3 2</td>
+</tr>
+<tr class="row-even"><td>[213]</td>
+<td>P 41 3 2</td>
+<td>I 41 3 2</td>
+<td>P -4 3 M</td>
+<td>F -4 3 M</td>
+<td>I -4 3 M</td>
+<td>P -4 3 N</td>
+</tr>
+<tr class="row-odd"><td>[219]</td>
+<td>F -4 3 C</td>
+<td>I -4 3 D</td>
+<td>P M 3 M</td>
+<td>P N 3 N</td>
+<td>P M 3 N</td>
+<td>P N 3 M</td>
+</tr>
+<tr class="row-even"><td>[225]</td>
+<td>F M 3 M</td>
+<td>F M 3 C</td>
+<td>F D 3 M</td>
+<td>F D 3 C</td>
+<td>I M 3 M</td>
+<td>I A 3 D</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="non-standard-settings">
+<h4>14.1.8.4.2. Non-Standard Settings<a class="headerlink" href="#non-standard-settings" title="Permalink to this headline">¶</a></h4>
+<p>Here are the notations for the alternate settings of the monoclinic and
+orthorhombic space groups. Also presented are the notations for
+tetragonal space groups that have been rotated by 45 degrees resulting
+in a unit cell of doubled volume and of a different Bravais type.</p>
+<p>In an monoclinic or orthorhombic space group, the Hermann-Maguin symbols
+are identical for the various settings if none of the three axes possess
+special symmetry properties. In this case the three axes are
+distinguished only by length and the symbol is the same for all
+settings.</p>
+<p>The column headings below indicate the orientations of the alternative
+settings relative to the standard setting. For instance, <code class="docutils literal"><span class="pre">cab</span></code> is a
+setting with axes and coordinates cyclically permuted from the
+standard setting. This is equivalent to a rotation of 120 degrees
+about an axis in a &lt;111&gt; direction relative to the Cartesian axes. The
+setting <code class="docutils literal"><span class="pre">a-cb</span></code> is rotated by 90 degrees about the A axis. Thus the
+<code class="docutils literal"><span class="pre">B</span></code> and <code class="docutils literal"><span class="pre">C</span></code> axes are swapped and the <code class="docutils literal"><span class="pre">y</span></code> and <code class="docutils literal"><span class="pre">z</span></code> coordinates
+in the standard setting map onto the <code class="docutils literal"><span class="pre">z</span></code> and <code class="docutils literal"><span class="pre">-y</span></code> coordinates of
+the alternate setting. In <font size=-1 color="#8C4112">ATOMS</font>, when an alternative
+setting is specified in <code class="file docutils literal"><span class="pre">atoms.inp</span></code>, the axes and coordinates are
+multiplied by the appropriate permutation matrix onto the standard
+setting. The positions in the unit cell are expanded according to the
+Hermann-Maguin symbol for the standard setting. The contents of the
+unit cell are then permuted back to the specified setting.</p>
+<p><strong>Symbols for Monoclinic Groups of Various Settings</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">standard abc</th>
+<th class="head">bca</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>3</td>
+<td>P 2</td>
+<td>P 2</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>B 2</td>
+<td>C 2</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>P B</td>
+<td>P C</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>B B</td>
+<td>C C</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>P 21/M</td>
+<td>P 21/M</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>P 2/B</td>
+<td>P 2/C</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>B 2/B</td>
+<td>C 2/C</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>P 21</td>
+<td>P 21</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>P M</td>
+<td>P M</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>B M</td>
+<td>C M</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>P 2/M</td>
+<td>P 2/M</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>B 2/M</td>
+<td>C 2/M</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>P 21/B</td>
+<td>P 2/C</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Symbols for Orthorhombic Groups of Various Settings</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">(standard)
+abc</th>
+<th class="head">cab</th>
+<th class="head">bca</th>
+<th class="head">a-cb</th>
+<th class="head">ba-c</th>
+<th class="head">-cab</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>16</td>
+<td>P 2 2 2</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-odd"><td>17</td>
+<td>P 2 2 21</td>
+<td>P 21 2 2</td>
+<td>P 2 21 2</td>
+<td>P 2 21 2</td>
+<td>P 2 2 21</td>
+<td>P 21 2 2</td>
+</tr>
+<tr class="row-even"><td>18</td>
+<td>P 21 21 2</td>
+<td>P 2 21 21</td>
+<td>P 21 2 21</td>
+<td>P 21 2 21</td>
+<td>P 21 21 2</td>
+<td>P 2 21 21</td>
+</tr>
+<tr class="row-odd"><td>19</td>
+<td>P 21 21 21</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-even"><td>20</td>
+<td>C 2 2 21</td>
+<td>A 21 2 2</td>
+<td>B 2 21 2</td>
+<td>B 2 21 2</td>
+<td>C 2 2 21</td>
+<td>A 21 2 2</td>
+</tr>
+<tr class="row-odd"><td>21</td>
+<td>C 2 2 2</td>
+<td>A 2 2 2</td>
+<td>B 2 2 2</td>
+<td>B 2 2 2</td>
+<td>C 2 2 2</td>
+<td>A 2 2 2</td>
+</tr>
+<tr class="row-even"><td>22</td>
+<td>F 2 2 2</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-odd"><td>23</td>
+<td>I 2 2 2</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-even"><td>24</td>
+<td>I 21 21 21</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-odd"><td>25</td>
+<td>P M M 2</td>
+<td>P 2 M M</td>
+<td>P M 2 M</td>
+<td>P M 2 M</td>
+<td>P M M 2</td>
+<td>P 2 M M</td>
+</tr>
+<tr class="row-even"><td>26</td>
+<td>P M C 21</td>
+<td>P 21 M A</td>
+<td>P B 21 M</td>
+<td>P M 21 B</td>
+<td>P C M 21</td>
+<td>P 21 A M</td>
+</tr>
+<tr class="row-odd"><td>27</td>
+<td>P C C 2</td>
+<td>P 2 A A</td>
+<td>P B 2 B</td>
+<td>P B 2 B</td>
+<td>P C C 2</td>
+<td>P 2 A A</td>
+</tr>
+<tr class="row-even"><td>28</td>
+<td>P M A 2</td>
+<td>P 2 M B</td>
+<td>P C 2 M</td>
+<td>P M 2 A</td>
+<td>P B M 2</td>
+<td>P 2 C M</td>
+</tr>
+<tr class="row-odd"><td>29</td>
+<td>P C A 21</td>
+<td>P 21 A B</td>
+<td>P C 21 B</td>
+<td>P B 21 A</td>
+<td>P B C 21</td>
+<td>P 21 C A</td>
+</tr>
+<tr class="row-even"><td>30</td>
+<td>P N C 2</td>
+<td>P 2 N A</td>
+<td>P B 2 N</td>
+<td>P N 2 B</td>
+<td>P C N 2</td>
+<td>P 2 A N</td>
+</tr>
+<tr class="row-odd"><td>31</td>
+<td>P M N 21</td>
+<td>P 21 M N</td>
+<td>P N 21 M</td>
+<td>P M 21 N</td>
+<td>P N M 21</td>
+<td>P 2 N M</td>
+</tr>
+<tr class="row-even"><td>32</td>
+<td>P B A 2</td>
+<td>P 2 C B</td>
+<td>P C 2 A</td>
+<td>P C 2 A</td>
+<td>P B A 2</td>
+<td>P 2 C B</td>
+</tr>
+<tr class="row-odd"><td>33</td>
+<td>P N A 21</td>
+<td>P 21 N B</td>
+<td>P C 21 N</td>
+<td>P N 21 A</td>
+<td>P B N 21</td>
+<td>P 2 C N</td>
+</tr>
+<tr class="row-even"><td>34</td>
+<td>P N N 2</td>
+<td>P 2 N N</td>
+<td>P N 2 N</td>
+<td>P N 2 N</td>
+<td>P N N 2</td>
+<td>P 2 N N</td>
+</tr>
+<tr class="row-odd"><td>35</td>
+<td>C M M 2</td>
+<td>A 2 M M</td>
+<td>B M 2 M</td>
+<td>B M 2 M</td>
+<td>C M M 2</td>
+<td>A 2 M M</td>
+</tr>
+<tr class="row-even"><td>36</td>
+<td>C M C 21</td>
+<td>A 21 M A</td>
+<td>B B 21 M</td>
+<td>B M 21 B</td>
+<td>C C M 21</td>
+<td>A 21 A M</td>
+</tr>
+<tr class="row-odd"><td>37</td>
+<td>C C C 2</td>
+<td>A 2 C A</td>
+<td>B B 2 C</td>
+<td>B B 2 B</td>
+<td>C C C 2</td>
+<td>A 2 A A</td>
+</tr>
+<tr class="row-even"><td>38</td>
+<td>A M M 2</td>
+<td>B 2 M M</td>
+<td>C M 2 M</td>
+<td>A M 2 M</td>
+<td>B M M 2</td>
+<td>C 2 M M</td>
+</tr>
+<tr class="row-odd"><td>39</td>
+<td>A B M 2</td>
+<td>B 2 C M</td>
+<td>C M 2 A</td>
+<td>A C 2 M</td>
+<td>B M A 2</td>
+<td>C 2 M B</td>
+</tr>
+<tr class="row-even"><td>40</td>
+<td>A M A 2</td>
+<td>B 2 M B</td>
+<td>C C 2 M</td>
+<td>A M 2 A</td>
+<td>B B M 2</td>
+<td>C 2 C M</td>
+</tr>
+<tr class="row-odd"><td>41</td>
+<td>A B A 2</td>
+<td>B 2 C B</td>
+<td>C C 2 A</td>
+<td>A C 2 A</td>
+<td>B B A 2</td>
+<td>C 2 C B</td>
+</tr>
+<tr class="row-even"><td>42</td>
+<td>F M M 2</td>
+<td>F 2 M M</td>
+<td>F M 2 M</td>
+<td>F M 2 M</td>
+<td>F M M 2</td>
+<td>F 2 M M</td>
+</tr>
+<tr class="row-odd"><td>43</td>
+<td>F D D 2</td>
+<td>F 2 D D</td>
+<td>F D 2 D</td>
+<td>F D 2 D</td>
+<td>F D D 2</td>
+<td>F 2 D D</td>
+</tr>
+<tr class="row-even"><td>44</td>
+<td>I M M 2</td>
+<td>I 2 M M</td>
+<td>I M 2 M</td>
+<td>I M 2 M</td>
+<td>I M M 2</td>
+<td>I 2 M M</td>
+</tr>
+<tr class="row-odd"><td>45</td>
+<td>I B A 2</td>
+<td>I 2 C B</td>
+<td>I C 2 A</td>
+<td>I C 2 A</td>
+<td>I B A 2</td>
+<td>I 2 C B</td>
+</tr>
+<tr class="row-even"><td>46</td>
+<td>I M A 2</td>
+<td>I 2 M B</td>
+<td>I C 2 M</td>
+<td>I M 2 A</td>
+<td>I B M 2</td>
+<td>I 2 C M</td>
+</tr>
+<tr class="row-odd"><td>47</td>
+<td>P M M M</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-even"><td>48</td>
+<td>P N N N</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-odd"><td>49</td>
+<td>P C C M</td>
+<td>P M A A</td>
+<td>P B M B</td>
+<td>P B M B</td>
+<td>P C C M</td>
+<td>P M A A</td>
+</tr>
+<tr class="row-even"><td>50</td>
+<td>P B A N</td>
+<td>P N C B</td>
+<td>P C N A</td>
+<td>P C N A</td>
+<td>P B A N</td>
+<td>P N C B</td>
+</tr>
+<tr class="row-odd"><td>51</td>
+<td>P M M A</td>
+<td>P B M M</td>
+<td>P M C M</td>
+<td>P M A M</td>
+<td>P M M B</td>
+<td>P C M M</td>
+</tr>
+<tr class="row-even"><td>52</td>
+<td>P N N A</td>
+<td>P B N N</td>
+<td>P N C N</td>
+<td>P N A N</td>
+<td>P N N B</td>
+<td>P C N N</td>
+</tr>
+<tr class="row-odd"><td>53</td>
+<td>P M N A</td>
+<td>P B M N</td>
+<td>P N C M</td>
+<td>P M A N</td>
+<td>P N M B</td>
+<td>P C N M</td>
+</tr>
+<tr class="row-even"><td>54</td>
+<td>P C C A</td>
+<td>P B A A</td>
+<td>P B C B</td>
+<td>P B A B</td>
+<td>P C C B</td>
+<td>P C A A</td>
+</tr>
+<tr class="row-odd"><td>55</td>
+<td>P B A M</td>
+<td>P M C B</td>
+<td>P C M A</td>
+<td>P C M A</td>
+<td>P B A M</td>
+<td>P M C B</td>
+</tr>
+<tr class="row-even"><td>56</td>
+<td>P C C N</td>
+<td>P N A A</td>
+<td>P B N B</td>
+<td>P B N B</td>
+<td>P C C N</td>
+<td>P N A A</td>
+</tr>
+<tr class="row-odd"><td>57</td>
+<td>P B C M</td>
+<td>P M C A</td>
+<td>P B M A</td>
+<td>P C M B</td>
+<td>P C A M</td>
+<td>P M A B</td>
+</tr>
+<tr class="row-even"><td>58</td>
+<td>P N N M</td>
+<td>P M N N</td>
+<td>P N M N</td>
+<td>P N M N</td>
+<td>P N N M</td>
+<td>P M N N</td>
+</tr>
+<tr class="row-odd"><td>59</td>
+<td>P M M N</td>
+<td>P N M M</td>
+<td>P M N M</td>
+<td>P M N M</td>
+<td>P M M N</td>
+<td>P N M M</td>
+</tr>
+<tr class="row-even"><td>60</td>
+<td>P B C N</td>
+<td>P N C A</td>
+<td>P B N A</td>
+<td>P C N B</td>
+<td>P C A N</td>
+<td>P N A B</td>
+</tr>
+<tr class="row-odd"><td>61</td>
+<td>P B C A</td>
+<td>P B C A</td>
+<td>P B C A</td>
+<td>P C A B</td>
+<td>P C A B</td>
+<td>P C A B</td>
+</tr>
+<tr class="row-even"><td>62</td>
+<td>P N M A</td>
+<td>P B N M</td>
+<td>P M C N</td>
+<td>P N A M</td>
+<td>P M N B</td>
+<td>P C M N</td>
+</tr>
+<tr class="row-odd"><td>63</td>
+<td>C M C M</td>
+<td>A M M A</td>
+<td>B B M M</td>
+<td>B M M B</td>
+<td>C C M M</td>
+<td>A M A M</td>
+</tr>
+<tr class="row-even"><td>64</td>
+<td>C M C A</td>
+<td>A B M A</td>
+<td>B B C M</td>
+<td>B M A B</td>
+<td>C C M B</td>
+<td>A C A M</td>
+</tr>
+<tr class="row-odd"><td>65</td>
+<td>C M M M</td>
+<td>A M M M</td>
+<td>B M M M</td>
+<td>B M M M</td>
+<td>C M M M</td>
+<td>A M M M</td>
+</tr>
+<tr class="row-even"><td>66</td>
+<td>C C C M</td>
+<td>A M A A</td>
+<td>B B M B</td>
+<td>B B M B</td>
+<td>C C C M</td>
+<td>A M A A</td>
+</tr>
+<tr class="row-odd"><td>67</td>
+<td>C M M A</td>
+<td>A B M M</td>
+<td>B M C M</td>
+<td>B M A M</td>
+<td>C M M B</td>
+<td>A C M M</td>
+</tr>
+<tr class="row-even"><td>68</td>
+<td>C C C A</td>
+<td>A B A A</td>
+<td>B B C B</td>
+<td>B B A B</td>
+<td>C C C B</td>
+<td>A C A A</td>
+</tr>
+<tr class="row-odd"><td>69</td>
+<td>F M M M</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-even"><td>70</td>
+<td>F D D D</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-odd"><td>71</td>
+<td>I M M M</td>
+<td colspan="5">each setting</td>
+</tr>
+<tr class="row-even"><td>72</td>
+<td>I B A M</td>
+<td>I M C B</td>
+<td>I C M A</td>
+<td>I C M A</td>
+<td>I B A M</td>
+<td>I M C B</td>
+</tr>
+<tr class="row-odd"><td>73</td>
+<td>I B C A</td>
+<td>I B C A</td>
+<td>I B C A</td>
+<td>I C A B</td>
+<td>I C A B</td>
+<td>I C A B</td>
+</tr>
+<tr class="row-even"><td>74</td>
+<td>I M M A</td>
+<td>I B M M</td>
+<td>I M C M</td>
+<td>I M A M</td>
+<td>I M M B</td>
+<td>I C M M</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Symbols for Tetragonal Groups of Various Orientations</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">(standard) abc</th>
+<th class="head">(a+b)(b-a)c</th>
+<th class="head">&nbsp;</th>
+<th class="head">(standard) abc</th>
+<th class="head">(a+b)(b-a)c</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>75</td>
+<td>P 4</td>
+<td>C 4</td>
+<td>76</td>
+<td>P 41</td>
+<td>C 41</td>
+</tr>
+<tr class="row-odd"><td>77</td>
+<td>P 42</td>
+<td>C 42</td>
+<td>78</td>
+<td>P 43</td>
+<td>C 43</td>
+</tr>
+<tr class="row-even"><td>79</td>
+<td>I 4</td>
+<td>F 4</td>
+<td>80</td>
+<td>I 41</td>
+<td>F 41</td>
+</tr>
+<tr class="row-odd"><td>81</td>
+<td>P -4</td>
+<td>C -4</td>
+<td>82</td>
+<td>I -4</td>
+<td>F -4</td>
+</tr>
+<tr class="row-even"><td>83</td>
+<td>P 4/M</td>
+<td>C 4/M</td>
+<td>84</td>
+<td>P 42/M</td>
+<td>C 42/M</td>
+</tr>
+<tr class="row-odd"><td>85</td>
+<td>P 4/N</td>
+<td>C 4/A</td>
+<td>86</td>
+<td>P 42/M</td>
+<td>C 42/A</td>
+</tr>
+<tr class="row-even"><td>87</td>
+<td>I 4/M</td>
+<td>F 4/M</td>
+<td>88</td>
+<td>I 41/A</td>
+<td>F 41/D</td>
+</tr>
+<tr class="row-odd"><td>89</td>
+<td>P 4 2 2</td>
+<td>C 4 2 2</td>
+<td>90</td>
+<td>P 4 2 21</td>
+<td>C 4 2 21</td>
+</tr>
+<tr class="row-even"><td>91</td>
+<td>P 41 2 2</td>
+<td>C 41 2 2</td>
+<td>92</td>
+<td>P 41 2 21</td>
+<td>C 41 2 21</td>
+</tr>
+<tr class="row-odd"><td>93</td>
+<td>P 42 2 2</td>
+<td>C 42 2 2</td>
+<td>94</td>
+<td>P 42 2 21</td>
+<td>C 42 2 21</td>
+</tr>
+<tr class="row-even"><td>95</td>
+<td>P 43 2 2</td>
+<td>C 43 2 2</td>
+<td>96</td>
+<td>P 43 2 21</td>
+<td>C 43 2 21</td>
+</tr>
+<tr class="row-odd"><td>97</td>
+<td>I 4 2 2</td>
+<td>F 4 2 2</td>
+<td>98</td>
+<td>I 41 2 2</td>
+<td>F 41 2 2</td>
+</tr>
+<tr class="row-even"><td>99</td>
+<td>P 4 M M</td>
+<td>C 4 M M</td>
+<td>100</td>
+<td>P 4 B M</td>
+<td>C 4 M B</td>
+</tr>
+<tr class="row-odd"><td>101</td>
+<td>P 42 C M</td>
+<td>C 42 M C</td>
+<td>102</td>
+<td>P 42 N M</td>
+<td>C 42 M N</td>
+</tr>
+<tr class="row-even"><td>103</td>
+<td>P 4 C C</td>
+<td>C 4 C C</td>
+<td>104</td>
+<td>P 4 N C</td>
+<td>C 4 C N</td>
+</tr>
+<tr class="row-odd"><td>105</td>
+<td>P 42 M C</td>
+<td>C 42 C M</td>
+<td>106</td>
+<td>P 42 B C</td>
+<td>C 42 C B</td>
+</tr>
+<tr class="row-even"><td>107</td>
+<td>I 4 M M</td>
+<td>F 4 M M</td>
+<td>108</td>
+<td>I 4 C M</td>
+<td>F 4 M C</td>
+</tr>
+<tr class="row-odd"><td>109</td>
+<td>I 41 M D</td>
+<td>F 41 D M</td>
+<td>110</td>
+<td>I 41 C D</td>
+<td>F 41 D C</td>
+</tr>
+<tr class="row-even"><td>111</td>
+<td>P -4 2 M</td>
+<td>C -4 M 2</td>
+<td>112</td>
+<td>P -4 2 C</td>
+<td>C -4 C 2</td>
+</tr>
+<tr class="row-odd"><td>113</td>
+<td>P -4 21 M</td>
+<td>C -4 M 21</td>
+<td>114</td>
+<td>P -4 21 C</td>
+<td>C -4 C 21</td>
+</tr>
+<tr class="row-even"><td>115</td>
+<td>P -4 M 2</td>
+<td>C -4 2 M</td>
+<td>116</td>
+<td>P -4 C 2</td>
+<td>C -4 2 C</td>
+</tr>
+<tr class="row-odd"><td>117</td>
+<td>P -4 B 2</td>
+<td>C -4 2 B</td>
+<td>118</td>
+<td>P -4 N 2</td>
+<td>C -4 2 N</td>
+</tr>
+<tr class="row-even"><td>119</td>
+<td>I -4 M 2</td>
+<td>F -4 2 M</td>
+<td>120</td>
+<td>I -4 C 2</td>
+<td>F -4 2 C</td>
+</tr>
+<tr class="row-odd"><td>121</td>
+<td>I -4 2 M</td>
+<td>F -4 M 2</td>
+<td>122</td>
+<td>I -4 2 D</td>
+<td>F -4 D 2</td>
+</tr>
+<tr class="row-even"><td>123</td>
+<td>P 4/M M M</td>
+<td>C 4/M M M</td>
+<td>124</td>
+<td>P 4/M C C</td>
+<td>C 4/M C C</td>
+</tr>
+<tr class="row-odd"><td>125</td>
+<td>P 4/N B M</td>
+<td>C 4/A M B</td>
+<td>126</td>
+<td>P 4/N N C</td>
+<td>C 4/A C N</td>
+</tr>
+<tr class="row-even"><td>127</td>
+<td>P 4/M B M</td>
+<td>C 4/M M B</td>
+<td>128</td>
+<td>P 4/M N C</td>
+<td>C 4/M C N</td>
+</tr>
+<tr class="row-odd"><td>129</td>
+<td>P 4/N M M</td>
+<td>C 4/A M M</td>
+<td>130</td>
+<td>P 4/N C C</td>
+<td>C 4/A C C</td>
+</tr>
+<tr class="row-even"><td>131</td>
+<td>P 42/M M C</td>
+<td>C 42/M C M</td>
+<td>132</td>
+<td>P 42/M C M</td>
+<td>C 42/M M C</td>
+</tr>
+<tr class="row-odd"><td>133</td>
+<td>P 42/N B C</td>
+<td>C 42/A C B</td>
+<td>134</td>
+<td>P 42/N N M</td>
+<td>C 42/A M N</td>
+</tr>
+<tr class="row-even"><td>135</td>
+<td>P 42/M B C</td>
+<td>C 42/M C B</td>
+<td>136</td>
+<td>P 42/M N M</td>
+<td>C 42/M M N</td>
+</tr>
+<tr class="row-odd"><td>137</td>
+<td>P 42/N M C</td>
+<td>C 42/A C M</td>
+<td>138</td>
+<td>P 42/N C M</td>
+<td>C 42/A M C</td>
+</tr>
+<tr class="row-even"><td>139</td>
+<td>I 4/M M M</td>
+<td>F 4/M M M</td>
+<td>140</td>
+<td>I 4/M C M</td>
+<td>F 4/M M C</td>
+</tr>
+<tr class="row-odd"><td>141</td>
+<td>I 41/A M D</td>
+<td>F 41/D D M</td>
+<td>142</td>
+<td>I 41/A C D</td>
+<td>F 41/D D C</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="the-schoenflies-notation">
+<h3>14.1.8.5. The Schoenflies Notation<a class="headerlink" href="#the-schoenflies-notation" title="Permalink to this headline">¶</a></h3>
+<p><strong>2 Triclinic and 13 Monoclinic Space Groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[1]</td>
+<td>C_1^1</td>
+<td>C_I^1</td>
+<td>C_2^1</td>
+<td>C_2^2</td>
+<td>C_2^3</td>
+<td>C_S^1</td>
+</tr>
+<tr class="row-even"><td>[7]</td>
+<td>C_S^2</td>
+<td>C_S^3</td>
+<td>C_S^4</td>
+<td>C_2H^1</td>
+<td>C_2H^2</td>
+<td>C_2H^3</td>
+</tr>
+<tr class="row-odd"><td>[13]</td>
+<td>C_2H^4</td>
+<td>C_2H^5</td>
+<td>C_2H^6</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>59 orthorhombic space groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[16]</td>
+<td>D_2^1</td>
+<td>D_2^2</td>
+<td>D_2^3</td>
+<td>D_2^4</td>
+<td>D_2^5</td>
+<td>D_2^6</td>
+</tr>
+<tr class="row-even"><td>[22]</td>
+<td>D_2^7</td>
+<td>D_2^8</td>
+<td>D_2^9</td>
+<td>C_2V^1</td>
+<td>C_2V^2</td>
+<td>C_2V^3</td>
+</tr>
+<tr class="row-odd"><td>[28]</td>
+<td>C_2V^4</td>
+<td>C_2V^5</td>
+<td>C_2V^6</td>
+<td>C_2V^7</td>
+<td>C_2V^8</td>
+<td>C_2V^9</td>
+</tr>
+<tr class="row-even"><td>[34]</td>
+<td>C_2V^10</td>
+<td>C_2V^11</td>
+<td>C_2V^12</td>
+<td>C_2V^13</td>
+<td>C_2V^14</td>
+<td>C_2V^15</td>
+</tr>
+<tr class="row-odd"><td>[40]</td>
+<td>C_2V^16</td>
+<td>C_2V^17</td>
+<td>C_2V^18</td>
+<td>C_2V^19</td>
+<td>C_2V^20</td>
+<td>C_2V^21</td>
+</tr>
+<tr class="row-even"><td>[46]</td>
+<td>C_2V^22</td>
+<td>D_2H^1</td>
+<td>D_2H^2</td>
+<td>D_2H^3</td>
+<td>D_2H^4</td>
+<td>D_2H^5</td>
+</tr>
+<tr class="row-odd"><td>[52]</td>
+<td>D_2H^6</td>
+<td>D_2H^7</td>
+<td>D_2H^8</td>
+<td>D_2H^9</td>
+<td>D_2H^10</td>
+<td>D_2H^11</td>
+</tr>
+<tr class="row-even"><td>[58]</td>
+<td>D_2H^12</td>
+<td>D_2H^13</td>
+<td>D_2H^14</td>
+<td>D_2H^15</td>
+<td>D_2H^16</td>
+<td>D_2H^17</td>
+</tr>
+<tr class="row-odd"><td>[64]</td>
+<td>D_2H^18</td>
+<td>D_2H^19</td>
+<td>D_2H^20</td>
+<td>D_2H^21</td>
+<td>D_2H^22</td>
+<td>D_2H^23</td>
+</tr>
+<tr class="row-even"><td>[70]</td>
+<td>D_2H^24</td>
+<td>D_2H^25</td>
+<td>D_2H^26</td>
+<td>D_2H^27</td>
+<td>D_2H^28</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>68 Tetragonal space groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[75]</td>
+<td>C_4^1</td>
+<td>C_4^2</td>
+<td>C_4^3</td>
+<td>C_4^4</td>
+<td>C_4^5</td>
+<td>C_4^6</td>
+</tr>
+<tr class="row-even"><td>[81]</td>
+<td>S_4^1</td>
+<td>S_4^2</td>
+<td>C_4H^1</td>
+<td>C_4H^2</td>
+<td>C_4H^3</td>
+<td>C_4H^4</td>
+</tr>
+<tr class="row-odd"><td>[87]</td>
+<td>C_4H^5</td>
+<td>C_4H^6</td>
+<td>D_4^1</td>
+<td>D_4^2</td>
+<td>D_4^3</td>
+<td>D_4^4</td>
+</tr>
+<tr class="row-even"><td>[93]</td>
+<td>D_4^5</td>
+<td>D_4^6</td>
+<td>D_4^7</td>
+<td>D_4^8</td>
+<td>D_4^9</td>
+<td>D_4^10</td>
+</tr>
+<tr class="row-odd"><td>[99]</td>
+<td>C_4V^1</td>
+<td>C_4V^2</td>
+<td>C_4V^3</td>
+<td>C_4V^4</td>
+<td>C_4V^5</td>
+<td>C_4V^6</td>
+</tr>
+<tr class="row-even"><td>[105]</td>
+<td>C_4V^7</td>
+<td>C_4V^8</td>
+<td>C_4V^9</td>
+<td>C_4V^10</td>
+<td>C_4V^11</td>
+<td>C_4V^12</td>
+</tr>
+<tr class="row-odd"><td>[111]</td>
+<td>D_2D^1</td>
+<td>D_2D^2</td>
+<td>D_2D^3</td>
+<td>D_2D^4</td>
+<td>D_2D^5</td>
+<td>D_2D^6</td>
+</tr>
+<tr class="row-even"><td>[117]</td>
+<td>D_2D^7</td>
+<td>D_2D^8</td>
+<td>D_2D^9</td>
+<td>D_2D^10</td>
+<td>D_2D^11</td>
+<td>D_2D^12</td>
+</tr>
+<tr class="row-odd"><td>[123]</td>
+<td>D_4H^1</td>
+<td>D_4H^2</td>
+<td>D_4H^3</td>
+<td>D_4H^4</td>
+<td>D_4H^5</td>
+<td>D_4H^6</td>
+</tr>
+<tr class="row-even"><td>[129]</td>
+<td>D_4H^7</td>
+<td>D_4H^8</td>
+<td>D_4H^9</td>
+<td>D_4H^10</td>
+<td>D_4H^11</td>
+<td>D_4H^12</td>
+</tr>
+<tr class="row-odd"><td>[135]</td>
+<td>D_4H^13</td>
+<td>D_4H^14</td>
+<td>D_4H^15</td>
+<td>D_4H^16</td>
+<td>D_4H^17</td>
+<td>D_4H^18</td>
+</tr>
+<tr class="row-even"><td>[141]</td>
+<td>D_4H^19</td>
+<td>D_4H^20</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>25 Trigonal space groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[143]</td>
+<td>C_3^1</td>
+<td>C_3^2</td>
+<td>C_3^3</td>
+<td>C_3^4</td>
+<td>C_3I^1</td>
+<td>C_3I^2</td>
+</tr>
+<tr class="row-even"><td>[149]</td>
+<td>D_3^1</td>
+<td>D_3^2</td>
+<td>D_3^3</td>
+<td>D_3^4</td>
+<td>D_3^5</td>
+<td>D_3^6</td>
+</tr>
+<tr class="row-odd"><td>[155]</td>
+<td>D_3^7</td>
+<td>C_3V^1</td>
+<td>C_3V^2</td>
+<td>C_3V^3</td>
+<td>C_3V^4</td>
+<td>C_3V^5</td>
+</tr>
+<tr class="row-even"><td>[161]</td>
+<td>T^1</td>
+<td>D_3D^1</td>
+<td>D_3D^2</td>
+<td>D_3D^3</td>
+<td>D_3D^4</td>
+<td>D_3D^5</td>
+</tr>
+<tr class="row-odd"><td>[167]</td>
+<td>D_3D^6</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>27 Hexagonal space groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[168]</td>
+<td>C_6^1</td>
+<td>C_6^2</td>
+<td>C_6^3</td>
+<td>C_6^4</td>
+<td>C_6^5</td>
+<td>C_6^6</td>
+</tr>
+<tr class="row-even"><td>[174]</td>
+<td>C_3H^1</td>
+<td>C_6H^1</td>
+<td>C_6H^2</td>
+<td>D_6^1</td>
+<td>D_6^2</td>
+<td>D_6^3</td>
+</tr>
+<tr class="row-odd"><td>[180]</td>
+<td>D_6^4</td>
+<td>D_6^5</td>
+<td>D_6^6</td>
+<td>C_6V^1</td>
+<td>C_6V^2</td>
+<td>C_6V^3</td>
+</tr>
+<tr class="row-even"><td>[186]</td>
+<td>C_6V^4</td>
+<td>D_3H^1</td>
+<td>D_3H^2</td>
+<td>D_3H^3</td>
+<td>D_3H^4</td>
+<td>D_6H^1</td>
+</tr>
+<tr class="row-odd"><td>[192]</td>
+<td>D_6H^2</td>
+<td>D_6H^3</td>
+<td>D_6H^4</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>36 Cubic space groups</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[195]</td>
+<td>T^1</td>
+<td>T^2</td>
+<td>T^3</td>
+<td>T^4</td>
+<td>T^5</td>
+<td>T_H^1</td>
+</tr>
+<tr class="row-even"><td>[201]</td>
+<td>T_H^2</td>
+<td>T_H^3</td>
+<td>T_H^4</td>
+<td>T_H^5</td>
+<td>T_H^6</td>
+<td>T_H^7</td>
+</tr>
+<tr class="row-odd"><td>[217]</td>
+<td>O^1</td>
+<td>O^2</td>
+<td>O^3</td>
+<td>O^4</td>
+<td>O^5</td>
+<td>O^6</td>
+</tr>
+<tr class="row-even"><td>[213]</td>
+<td>O^7</td>
+<td>O^8</td>
+<td>T_D^1</td>
+<td>T_D^2</td>
+<td>T_D^3</td>
+<td>T_D^4</td>
+</tr>
+<tr class="row-odd"><td>[219]</td>
+<td>T_D^5</td>
+<td>T_D^6</td>
+<td>O_H^1</td>
+<td>O_H^2</td>
+<td>O_H^3</td>
+<td>O_H^4</td>
+</tr>
+<tr class="row-even"><td>[225]</td>
+<td>O_H^5</td>
+<td>O_H^6</td>
+<td>O_H^7</td>
+<td>O_H^8</td>
+<td>O_H^9</td>
+<td>O_H^10</td>
+</tr>
+</tbody>
+</table>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">14. Crystallography for EXAFS</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">14.1. Understanding and denoting space groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abs.html">14.2. Absorption calculations and experimental corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html">14.3. A worked example (in text!)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/atoms/space.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="abs.html" title="14.2. Absorption calculations and experimental corrections"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="14. Crystallography for EXAFS"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >14. Crystallography for EXAFS</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

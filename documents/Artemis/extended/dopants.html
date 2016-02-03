@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.10. Handling dopants &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.11. 5 &amp; 6 legged paths" href="fivesix.html" />
+    <link rel="prev" title="15.9. Fuzzy degeneracy" href="fuzzy.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fivesix.html" title="15.11. 5 &amp; 6 legged paths"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="fuzzy.html" title="15.9. Fuzzy degeneracy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="handling-dopants">
+<h1>15.10. Handling dopants<a class="headerlink" href="#handling-dopants" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>15.10.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This section is adapted from the answer to a <a class="reference external" href="http://cars9.uchicago.edu/ifeffit/FAQ/FeffitModeling#How_do_I_handle_doped_materials.3F_Why_doesn.27t_Atoms_handle_doped_materials.3F">Frequently Asked
+Question</a>
+at the <font size=-1 color="#8C4112">IFEFFIT</font> Wiki.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> is, except in extremely contrived situations, not
+capable of writing a proper <code class="file docutils literal"><span class="pre">feff.inp</span></code> file for a doped
+material. This is not a programming shortcoming of <font size=-1 color="#8C4112">ATOMS</font>
+(or its author!), but a number theoretic limitation imposed by the
+physical model used by <font size=-1 color="#8C4112">FEFF</font>.</p>
+<p>In the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file, there is a big list of atomic
+coordinates. The reason that people like using <font size=-1 color="#8C4112">ATOMS</font> is
+because, without <font size=-1 color="#8C4112">ATOMS</font>, it is a pain in the ass to generate
+that list. The virtue of <font size=-1 color="#8C4112">ATOMS</font> is that it automates that
+annoying task for a certain class of matter, i.e.  crystals.</p>
+<p><font size=-1 color="#8C4112">FEFF</font> expects a point in space to be either unoccupied or
+occupied by a specific atom. A given point may be occupied neither by
+a fraction of an atom nor by two different kinds of atoms.</p>
+<p>Let's use a very simple example – gold doped into FCC copper. In
+FCC copper, there are 12 atoms in the first shell. If the level of
+doping was, say, 25 percent , then <font size=-1 color="#8C4112">ATOMS</font> could reasonably
+select 3 of the 12 nearest neighbors at random and replace them with
+gold atoms. However, what should <font size=-1 color="#8C4112">ATOMS</font> do with the second
+shell, which contains 6 atoms? 25 percent of 6 is 1.5. <font size=-1 color="#8C4112">FEFF</font>
+does not allow a site to be half occupied by an atomic species, thus
+<font size=-1 color="#8C4112">ATOMS</font> would have to decide either to over-dope or
+under-dope the second shell.</p>
+<p>This problem only gets worse if the doping fraction is not a rational
+fraction, if the material is non-isotropic, or if the material has
+multiple sites that the dopant might want to go to.</p>
+<p>Because <font size=-1 color="#8C4112">ATOMS</font> cannot solve this problem correctly except in
+the most contrived of situations, its author decided that
+<font size=-1 color="#8C4112">ATOMS</font> would not attempt to solve it in any situation. If
+you specify dopants in <font size=-1 color="#8C4112">ATOMS</font>' input data, the list in the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file will be be made as if there are no dopants.</p>
+<p>This leads to two big questions:</p>
+<ol class="arabic simple">
+<li>Why would dopants be allowed in <font size=-1 color="#8C4112">ATOMS</font> in any capacity?</li>
+<li>How does one deal with XAS of a doped sample?</li>
+</ol>
+<p>The first question is the easy one. At the programming level in
+<font size=-1 color="#8C4112">DEMETER</font>, <font size=-1 color="#8C4112">ATOMS</font> can do other things besides
+generating <code class="file docutils literal"><span class="pre">feff.inp</span></code> files.  Calculations involving tables of
+absorption coefficients, simulations of powder diffraction, and
+simulations of DAFS spectra could all effectively use of the dopant
+information. In <font size=-1 color="#8C4112">ARTEMIS</font> you will notice that there is not
+even a column for specifying occupancy -- in <font size=-1 color="#8C4112">ARTEMIS</font>
+occupancy can only be 1.</p>
+<p>The second question is the tricky one and the answer is somewhat
+different for EXAFS as for XANES. The bottom line is that you need to be
+creative and willing to run <font size=-1 color="#8C4112">FEFF</font> more than once.</p>
+<p>The best approach to simulating a XANES spectrum on a doped material
+that I am aware of also involves running <font size=-1 color="#8C4112">FEFF</font> many
+times. One problem a colleague of mine asked me about some time ago
+was the situation of oxygen vacancies in Au<sub>2</sub>O<sub>3</sub>. After some discussion, the solution we came up with was to
+use <font size=-1 color="#8C4112">ATOMS</font> to generate the <code class="file docutils literal"><span class="pre">feff.inp</span></code> for the pure
+material.  This fellow then wrote a little computer program that would
+read in the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file, randomly remove oxygen atoms from
+the list, write the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file back out with the missing
+oxygens, and run <font size=-1 color="#8C4112">FEFF</font>. He would do this repeatedly, each time
+replacing a different set of randomly selected atoms and each time
+saving the result. This set of computed spectra was then averaged. New
+calculations were made and added to the running average until the
+result stopped changing. If I remember, it took about 10 calculations
+to converge.</p>
+<p>This random substitution approach would work just as well for dopants as
+for vacancies.</p>
+</div>
+<div class="section" id="crystal-data-with-partial-occupancy">
+<h2>15.10.2. Crystal data with partial occupancy<a class="headerlink" href="#crystal-data-with-partial-occupancy" title="Permalink to this headline">¶</a></h2>
+<p>A structure for the mineral zirconolite, CaZrTi<sub>2</sub>O<sub>7</sub>,
+was published as</p>
+<ul class="simple" id="bibtex-bibliography-extended/dopants-0">
+<li>H.&nbsp;J. Rossell. Zirconolite — a fluorite-related superstructure. <em>Nature</em>, 283(5744):282–283, Jan 1980. <a class="reference external" href="http://dx.doi.org/10.1038/283282a0">doi:10.1038/283282a0</a>.</li>
+</ul>
+<p>In that paper, significant site swapping was found between the site
+occupied by Zr and one of the Ti sites. Consequently, the CIF file is
+published with partial occupancies for those tow sites. <a class="reference external" href="http://www.crystallography.net/9009220.html">Here is the
+CIF file</a>.</p>
+<p>When this CIF file is imported into <font size=-1 color="#8C4112">ARTEMIS</font>, you see this
+error message:</p>
+<div class="figure align-center" id="id1">
+<span id="fig-feffatomsparticaloccupancy"></span><a class="reference external image-reference" href="../_images/feff_atoms_partical_occupancy.png"><img alt="../_images/feff_atoms_partical_occupancy.png" src="../_images/feff_atoms_partical_occupancy.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.34 </span><span class="caption-text">Atoms responds with an error message for crystal data with partial
+occupancy.</span></p>
+</div>
+<p>To use this crystal data in <font size=-1 color="#8C4112">ARTEMIS</font>, you need to edit the
+CIF file before importing it to remove the examples of partial
+occupancy. Change the last loop from this:</p>
+<div class="highlight-python"><div class="highlight"><pre>loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+CaM1 0.37180 0.12450 0.49520 1.00000
+ZrM2 0.12250 0.12220 -0.02580 0.93000
+TiM2 0.12250 0.12220 -0.02580 0.07000
+TiM3 0.24980 0.12230 0.74650 1.00000
+TiM4 0.50000 0.05500 0.25000 0.86000
+ZrM4 0.50000 0.05500 0.25000 0.14000
+TiM5 0.00000 0.12700 0.25000 1.00000
+O1 0.31000 0.13300 0.27500 1.00000
+O2 0.47000 0.14600 0.10200 1.00000
+O3 0.19700 0.08300 0.57300 1.00000
+O4 0.40300 0.17400 0.71900 1.00000
+O5 0.70200 0.16900 0.59000 1.00000
+O6 -0.00100 0.11100 0.41400 1.00000
+O7 0.11900 0.05500 0.78800 1.00000
+</pre></div>
+</div>
+<p>to this:</p>
+<div class="highlight-python"><div class="highlight"><pre>loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+CaM1 0.37180 0.12450 0.49520 1.00000
+ZrM2 0.12250 0.12220 -0.02580 1.00000
+TiM3 0.24980 0.12230 0.74650 1.00000
+TiM4 0.50000 0.05500 0.25000 1.00000
+TiM5 0.00000 0.12700 0.25000 1.00000
+O1 0.31000 0.13300 0.27500 1.00000
+O2 0.47000 0.14600 0.10200 1.00000
+O3 0.19700 0.08300 0.57300 1.00000
+O4 0.40300 0.17400 0.71900 1.00000
+O5 0.70200 0.16900 0.59000 1.00000
+O6 -0.00100 0.11100 0.41400 1.00000
+O7 0.11900 0.05500 0.78800 1.00000
+</pre></div>
+</div>
+<p>To analyze your data while considering the partical occupancy, try one
+of the techniques discussed in the following section.</p>
+</div>
+<div class="section" id="doped-crystal-and-alloys">
+<h2>15.10.3. Doped crystal and alloys<a class="headerlink" href="#doped-crystal-and-alloys" title="Permalink to this headline">¶</a></h2>
+<p>This section is adapted from text <a class="reference external" href="http://cars9.uchicago.edu/ifeffit/Doped">posted by Scott Calvin</a> to the <font size=-1 color="#8C4112">IFEFFIT</font>
+Wiki and retains his voice.</p>
+<p>For samples which are doped crystals, there are a couple of methods
+people have used. For purposes of this article, I'll consider cases
+where the dopant is substitutional as opposed to interstitial.</p>
+<p>As an example of two methods, let's consider FeS<sub>2</sub>
+substitutionally doped with molybdenum. (I have no idea if such a
+material is possible...I'm using it because FeS<sub>2</sub> is included
+as an example in the <font size=-1 color="#8C4112">DEMETER</font> distrribution.)</p>
+<div class="section" id="method-1">
+<h3>15.10.3.1. Method 1<a class="headerlink" href="#method-1" title="Permalink to this headline">¶</a></h3>
+<p>Run atoms for FeS<sub>2</sub>.</p>
+<p>Now look at the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file that is generated. Under
+<code class="docutils literal"><span class="pre">POTENTIALS</span></code>, it says the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+*    ipot   Z  element
+       0   26   Fe
+       1   26   Fe
+       2   16   S
+</pre></div>
+</div>
+<p>Add another line for the Mo, which is atomic number 42 (the atomic
+number is <strong>required</strong>):</p>
+<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+*    ipot   Z  element
+       0   26   Fe
+       1   26   Fe
+       2   16   S
+       3   42   Mo
+</pre></div>
+</div>
+<p><strong>Important</strong>: Do not skip numbers in the <code class="docutils literal"><span class="pre">ipot</span></code> column, and make sure
+<code class="docutils literal"><span class="pre">0</span></code> is the absorber!</p>
+<p>Next, take the list following the word <code class="docutils literal"><span class="pre">ATOMS</span></code> in the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file, and arbitrarily change roughly the right number
+of iron atoms to molybdenum atoms.  Make sure to change the <code class="docutils literal"><span class="pre">ipot</span></code>
+column to match...it's the part <font size=-1 color="#8C4112">FEFF</font> will actually use:</p>
+<div class="highlight-python"><div class="highlight"><pre>ATOMS                          * this list contains 71 atoms
+*   x          y          z      ipot  tag              distance
+   0.00000    0.00000    0.00000  0    Fe1              0.00000
+   2.07514    0.62686    0.62686  2    S1_1             2.25657
+   0.62686   -2.07514    0.62686  2    S1_1             2.25657
+  -0.62686    0.62686    2.07514  2    S1_1             2.25657
+  -0.62686    2.07514   -0.62686  2    S1_1             2.25657
+  -2.07514   -0.62686   -0.62686  2    S1_1             2.25657
+   0.62686   -0.62686   -2.07514  2    S1_1             2.25657
+  -3.32886    0.62686    0.62686  2    S1_2             3.44488
+   0.62686    3.32886    0.62686  2    S1_2             3.44488
+   0.62686   -0.62686    3.32886  2    S1_2             3.44488
+   3.32886   -0.62686   -0.62686  2    S1_2             3.44488
+  -0.62686   -3.32886   -0.62686  2    S1_2             3.44488
+  -0.62686    0.62686   -3.32886  2    S1_2             3.44488
+  -2.07514   -2.07514    2.07514  2    S1_3             3.59425
+   2.07514    2.07514   -2.07514  2    S1_3             3.59425
+   2.70200    2.70200    0.00000  1    Fe1_1            3.82121
+  -2.70200    2.70200    0.00000  3    Mo1_1            3.82121
+   2.70200   -2.70200    0.00000  1    Fe1_1            3.82121
+  -2.70200   -2.70200    0.00000  1    Fe1_1            3.82121
+   2.70200    0.00000    2.70200  1    Fe1_1            3.82121
+  -2.70200    0.00000    2.70200  3    Mo1_1            3.82121
+   0.00000    2.70200    2.70200  1    Fe1_1            3.82121
+   0.00000   -2.70200    2.70200  1    Fe1_1            3.82121
+   2.70200    0.00000   -2.70200  1    Fe1_1            3.82121
+  -2.70200    0.00000   -2.70200  3    Mo1_1            3.82121
+   0.00000    2.70200   -2.70200  1    Fe1_1            3.82121
+   0.00000   -2.70200   -2.70200  1    Fe1_1            3.82121
+  -2.07514    3.32886    2.07514  2    S1_4             4.43776
+</pre></div>
+</div>
+<p>In this case, I changed 3 of the 12 nearest iron neighbors into
+molybdenum ... reasonable if I have about 25 percent doping.</p>
+<p>If you are doing a <font size=-1 color="#8C4112">FEFF</font> calculation for the molybdenum
+<em>edge</em>, then also change the very first iron to molybdenum, and change
+potential <code class="docutils literal"><span class="pre">0</span></code> in the ipot list to molybdenum with ipot <code class="docutils literal"><span class="pre">0</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+*    ipot   Z  element
+       0   42   Mo
+       1   26   Fe
+       2   16   S
+       3   43   Mo
+
+ATOMS                          * this list contains 71 atoms
+*   x          y          z      ipot  tag              distance
+   0.00000    0.00000    0.00000  0    Mo1              0.00000
+   2.07514    0.62686    0.62686  2    S1_1             2.25657
+   0.62686   -2.07514    0.62686  2    S1_1             2.25657
+  -0.62686    0.62686    2.07514  2    S1_1             2.25657
+  -0.62686    2.07514   -0.62686  2    S1_1             2.25657
+</pre></div>
+</div>
+<p>If you are doing the calculation for the iron edge, leave the first iron
+alone, since it is still the absorber.</p>
+<p>Now run <font size=-1 color="#8C4112">FEFF</font>, and you'll get the iron scattering paths
+listed separately from the molybdenum scattering paths.</p>
+<p>One more step ... correcting for the actual doping fraction. Suppose
+there is actual 20 percent molybdenum and not 25 percent, as we
+implied. We couldn't have handled that just through <font size=-1 color="#8C4112">FEFF</font>,
+because we can't change exactly 20 percent of 12 atoms...we have to
+change 2, which is 17 percent, or 3, which is 25 percent.</p>
+<p>The fix for this is to change the S<sup>2</sup><sub>0</sub> in the
+molybdenum and sulfur scattering paths to account for this. You could,
+for example, use the following GDS parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>set: MolyPercent = 0.20
+def: IronPercent = 1-MolyPercent
+</pre></div>
+</div>
+<p>Then go to the individual path representing the scattering off of
+nearest neighbor molypercent, and assign it an S<sup>2</sup><sub>0</sub> of</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That way, if the <code class="docutils literal"><span class="pre">MolyPercent</span></code> is 20 percent, it will reduce the amplitude
+of those paths by 20/25 percent, as is proper.</p>
+<p>Of course, the iron scatterer would get an S<sup>2</sup><sub>0</sub> of</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That's more or less it!</p>
+<p>You could, of course, guess the <code class="docutils literal"><span class="pre">MolyPercent</span></code> instead of setting it,
+if for some reason it was unknown in your sample.</p>
+</div>
+<div class="section" id="method-2">
+<h3>15.10.3.2. Method 2<a class="headerlink" href="#method-2" title="Permalink to this headline">¶</a></h3>
+<p>Suppose we want to analyze the iron edge.</p>
+<p>Run atoms for FeS<sub>2</sub> and then run <font size=-1 color="#8C4112">FEFF</font>.</p>
+<p>Then make a new <font size=-1 color="#8C4112">ATOMS</font> page, type or read in the FeS<sub>2</sub> file, and just change the Fe to Mo. Run <font size=-1 color="#8C4112">ATOMS</font>
+again.</p>
+<p>If you're doing the iron edge, then change the absorber to iron in the
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file (this requires changing the potential list; see the
+description under “Method 1” for how to do this.) Run
+<font size=-1 color="#8C4112">FEFF</font>.</p>
+<p>(If you want to analyze the molybdenum edge, then of course you change
+the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file in the first calculation to molybdenum and leave it
+as molybdenum in the second.)</p>
+<p>You now have <strong>two</strong> sets of <font size=-1 color="#8C4112">FEFF</font> files associated with one
+data set.</p>
+<p>Make GDS parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>set: MolyPercent = 0.20
+def: IronPercent = 1-MolyPercent
+</pre></div>
+</div>
+<p>Now make the S<sup>2</sup><sub>0</sub> for all paths calculated with the
+original <font size=-1 color="#8C4112">ATOMS</font> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span>
+</pre></div>
+</div>
+<p>and for all paths calculatged with the new <font size=-1 color="#8C4112">ATOMS</font> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span>
+</pre></div>
+</div>
+<p>Again, you can guess the <code class="docutils literal"><span class="pre">MolyPercent</span></code> if it's unknown.</p>
+</div>
+<div class="section" id="discussion-of-these-two-methods">
+<h3>15.10.3.3. Discussion of these two methods<a class="headerlink" href="#discussion-of-these-two-methods" title="Permalink to this headline">¶</a></h3>
+<p>Which method you use is largely a matter of taste. The first method is
+easier to screw up, since there's a lot of counting involved. On the
+other hand, it generates many fewer paths, and thus makes for smaller
+files and may fit faster (you're not wasting time and effort counting
+sulfur paths twice, for example). The first method also gives you the
+potential of finding a few multiple scattering paths that involve both
+iron and molybdenum (in this example) that you can't probe at all by
+the second method. This is most likely to be true when the dopant is
+in low concentrations but is high-Z ... it's possible that there may
+be a molybdenum-iron multiple-scattering path that is significant, and
+it's not going to be modeled so well by the weighted average of
+iron-iron and molybdenum-molybdenum paths used in method 2. But the
+price for this is that properly incorporating multiple-scattering
+paths via method 1 requires an annoying amount of counting and
+thinking.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/dopants.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fivesix.html" title="15.11. 5 &amp; 6 legged paths"
+             >next</a></li>
+        <li class="right" >
+          <a href="fuzzy.html" title="15.9. Fuzzy degeneracy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. The Atoms and Feff Window &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="4.1. Crystal data" href="xtal.html" />
+    <link rel="prev" title="3. The Data window" href="../data.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="xtal.html" title="4.1. Crystal data"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../data.html" title="3. The Data window"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-atoms-and-feff-window">
+<h1>4. The Atoms and Feff Window<a class="headerlink" href="#the-atoms-and-feff-window" title="Permalink to this headline">¶</a></h1>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Reorganize content so that table of contents makes sense.</p>
+</div>
+<p>When you import crystal data from an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> or CIF file,
+three things happen:</p>
+<ol class="arabic simple">
+<li>A new <font size=-1 color="#8C4112">ATOMS</font> and <font size=-1 color="#8C4112">FEFF</font> window is created for
+interacting with the structural data and the various controls are
+set to values taken from the atoms.inp or CIF file,</li>
+<li>A message is written to the status bar in the Main window.</li>
+<li>An entry is placed in the <font size=-1 color="#8C4112">FEFF</font> list on the main window.</li>
+</ol>
+<p>You can also import a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file directly. This is discussed in the
+<a class="reference external" href="../feff/feff.html">next section</a></p>
+<p>This new window looks like this. In this example, crystal data for
+anatase TiO<sub>2</sub> have been imported from an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-feffatoms"></span><a class="reference external image-reference" href="../_images/feff-atoms.png"><img alt="../_images/feff-atoms.png" src="../_images/feff-atoms.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.1 </span><span class="caption-text">The Atoms and Feff window.</span></p>
+</div>
+<p>At the top of the window is a tool bar with four buttons. The first of
+these is used to change the name of this <font size=-1 color="#8C4112">FEFF</font>
+calculation. Among other things, this is the label used in the
+<font size=-1 color="#8C4112">FEFF</font> list on the Main window. The second button is used to
+discard the <font size=-1 color="#8C4112">FEFF</font> calculation and this window.  The final
+two buttons open a web browser and take you either to the
+<font size=-1 color="#8C4112">FEFF</font> document or to this page in the <font size=-1 color="#8C4112">ARTEMIS</font>
+document.</p>
+<p>There are a series of tabs across the top. These will contain
+different stages of the structural calculation. Here we will examine
+the <font size=-1 color="#8C4112">ATOMS</font> tab. The other tabs will be examined in the
+following sections.</p>
+<p>The toolbar across the top of the <font size=-1 color="#8C4112">ATOMS</font> tab offers several
+functions.</p>
+<p>Clicking the open button will post the standard file selection dialog
+for importing a new atoms.inp or CIF file. This is more useful in the
+stand-along version of <font size=-1 color="#8C4112">ATOMS</font> than in <font size=-1 color="#8C4112">ARTEMIS</font>
+where the crystal data file imported in other ways. <em>Right clicking</em>
+this button will post the recent files dialog populated with recently
+imported <code class="file docutils literal"><span class="pre">atoms.inp</span></code>, <code class="file docutils literal"><span class="pre">feff.inp</span></code>, and CIF files.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-feffexport"></span><a class="reference external image-reference" href="../_images/feff-export.png"><img alt="../_images/feff-export.png" src="../_images/feff-export.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.2 </span><span class="caption-text">The save button will prompt you for a filename for an output
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code> saving the current state of the tab.</span></p>
+</div>
+<p>Clicking the <kbd class="light">Export</kbd> button will post the dialog in
+<a class="reference internal" href="#fig-feffexport"><span>Fig. 4.2</span></a>, which offers several different
+kinds of output files based on the crystal data.</p>
+<ul class="simple">
+<li>The <span class="guilabel">Feff6</span> and <span class="guilabel">Feff8</span> options will write input
+files for <font size=-1 color="#8C4112">FEFF6</font> and <font size=-1 color="#8C4112">FEFF8</font>.</li>
+<li>The <span class="guilabel">Atoms</span> option write the same file as the save button.</li>
+<li>The <span class="guilabel">P1</span> option writes the crystal data to an
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code> file using the <code class="docutils literal"><span class="pre">P</span> <span class="pre">1</span></code> space group and with a fully
+decorated unit cell.</li>
+<li>The <span class="guilabel">Spacegroup</span> option writes a file that fully describes
+the space group.</li>
+<li>The <span class="guilabel">Absorption</span> option writes a file containing some
+calculations based on tables of X-ray absorption coefficients.</li>
+<li><span class="guilabel">XYZ</span> and <span class="guilabel">Alchemy</span> are formats that are
+commonly understood by molecule rendering software.</li>
+<li><span class="guilabel">Overfull</span> is an “XYZ” file with the contents of
+the unit cell in Cartesian coordinates and with all atoms near a
+cell wall replicated near the opposite cell wall. The purpose of
+this output type is generate nice figures of unit cells with
+decorations on all the corners, sides, and edges, like
+<a class="reference internal" href="../extended/fivesix.html#fig-fivesixprussianblue"><span>Fig. 15.37</span></a>.</li>
+</ul>
+<p>The <kbd class="light">Clear</kbd> button is used to clear all data from all
+controls on the <font size=-1 color="#8C4112">ATOMS</font> tab.</p>
+<p>The <kbd class="light">Run</kbd> button is pressed to convert the crystal data
+into input data for <font size=-1 color="#8C4112">FEFF</font> then displays <a class="reference external" href="../feff/feff.html">the next tab</a>.</p>
+<p>The <kbd class="light">Aggregate</kbd> button is discussed in detail in <a class="reference external" href="../feff/aggregate.html">a
+later section</a></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="xtal.html">4.1. Crystal data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xtal.html#polarization">4.1.1. Polarization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="feff.html">4.2. The Feff tab</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="feff.html#feff-documentation">4.2.1. Feff documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff.html#feff-input-templates">4.2.2. Feff input templates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">4.3. The Paths tab</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#polarization">4.3.1. Polarization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#path-plotting-and-path-geometry">4.3.2. Path plotting and path geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#path-ranking">4.3.3. Path ranking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike.html">4.4. The Path-like tab</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#single-scattering-paths">4.4.1. Single Scattering Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#fspaths">4.4.2. FSPaths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html#histogram-paths">4.4.3. Histogram paths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="console.html">4.5. The Console tab</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html">4.6. Aggregate Feff calculation</a></li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">4. The Atoms and Feff Window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xtal.html">4.1. Crystal data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff.html">4.2. The Feff tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">4.3. The Paths tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">4.4. The Path-like tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html">4.5. The Console tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">4.6. Aggregate Feff calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/feff/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="xtal.html" title="4.1. Crystal data"
+             >next</a></li>
+        <li class="right" >
+          <a href="../data.html" title="3. The Data window"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

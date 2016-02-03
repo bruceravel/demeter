@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.3. Path parameters &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="8. Scattering paths" href="index.html" />
+    <link rel="next" title="8.4. Plotting individual paths" href="plot.html" />
+    <link rel="prev" title="8.2. Semantic path descriptions" href="semantic.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="8.4. Plotting individual paths"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="semantic.html" title="8.2. Semantic path descriptions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Scattering paths</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="path-parameters">
+<h1>8.3. Path parameters<a class="headerlink" href="#path-parameters" title="Permalink to this headline">¶</a></h1>
+<p>Once the ScatteringPath object is imported, the next step to setting up
+a Path object for use in a fit is to set the path parameters. The
+available path parameters are</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">label</span></code></dt>
+<dd>A text string describing the path.</dd>
+<dt><code class="docutils literal"><span class="pre">degen</span></code></dt>
+<dd>The path degeneracy. This typically is set the degeneracy of the
+ScatteringPath object when the <code class="docutils literal"><span class="pre">sp</span></code> attribute is set, but can be
+modified by the user as part o fthe fitting model.</dd>
+<dt><code class="docutils literal"><span class="pre">s02</span></code></dt>
+<dd>Nominally, this is the amplitude reduction factor, but can be
+parameterized to include any amplitude effects in the fitting model.</dd>
+<dt><code class="docutils literal"><span class="pre">e0</span></code></dt>
+<dd>The energy shift, which changes the zero of k.</dd>
+<dt><code class="docutils literal"><span class="pre">delr</span></code></dt>
+<dd>A change in the path length.</dd>
+<dt><code class="docutils literal"><span class="pre">sigma2</span></code></dt>
+<dd>The mean square disorder parameters, σ<sup>2</sup>.</dd>
+<dt><code class="docutils literal"><span class="pre">ei</span></code></dt>
+<dd>An adjustment to the “simaginary energy”, which has the effect of
+adjusting the broadening due to core-hole lifetime, instrumental
+resolution, etc. This has usings of eV.</dd>
+<dt><code class="docutils literal"><span class="pre">third</span></code></dt>
+<dd>The third cumulant of the partial pair distribution.</dd>
+<dt><code class="docutils literal"><span class="pre">fourth</span></code></dt>
+<dd>The fourth cumulant of the partial pair distribution.</dd>
+<dt><code class="docutils literal"><span class="pre">dphase</span></code></dt>
+<dd>A constant offset to the scattering phase shift. Note that this
+should only be used for fits to χ(k) data derived from a DAFS or
+reflectivity-XAFS measurement. For normal XAFS, this path parameter
+has no physical intepretation.</dd>
+</dl>
+<p>Except for <code class="docutils literal"><span class="pre">label</span></code> which takes a descriptive string and <code class="docutils literal"><span class="pre">degen</span></code>
+which takes a number, all the path parameter attributes take text
+strings which are for interpretion as math expressions by
+<font size=-1 color="#8C4112">IFEFFIT</font>.</p>
+<p>The accessor methods for each of these path parameters is label in the
+list above. For example:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">## get path parameter math expression:</span>
+<span class="nb">printf</span> <span class="s">&quot;deltaR=%s and sigma2=%s\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">delr</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">sigma2</span><span class="p">;</span>
+<span class="c1">## set a path parameter:</span>
+<span class="nv">$path</span><span class="o">-&gt;</span><span class="n">s02</span><span class="p">(</span><span class="s">&quot;(1-x) * amp&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>For the path parameter attributes that take math expression text
+strings, there is another set of attributes that have the same names
+but with <code class="docutils literal"><span class="pre">_value</span></code> appended to the end. Whenever a Path object is
+plotted, used in a fit, or other wise evaluated in <font size=-1 color="#8C4112">IFEFFIT</font>,
+the evaluation of the math expression is stored in the <code class="docutils literal"><span class="pre">_value</span></code>
+attribute. Although you can set one of the <code class="docutils literal"><span class="pre">_value</span></code> attributes, that
+will usually have no effect as the value will be overwritten the next
+time <font size=-1 color="#8C4112">DEMETER</font> uses the path.  However, the <code class="docutils literal"><span class="pre">_value</span></code>
+attributes are very useful for obtaining the evaluations of the math
+expressions:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">## get path parameter math expression:</span>
+<span class="nb">printf</span> <span class="s">&quot;deltaR evaluated to =%.5d\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">delr_value</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In fact, this is done repeatedly during the construction of <a class="reference external" href="../fit/after.html">the
+logfile</a>.</p>
+<div class="section" id="other-methods">
+<h2>8.3.1. Other methods<a class="headerlink" href="#other-methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-r-method">
+<h3>8.3.1.1. The R method<a class="headerlink" href="#the-r-method" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">R</span></code> method is used to return the fitted half path length, that is
+the sum of R<sub>eff</sub> and <code class="docutils literal"><span class="pre">delr</span></code>.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nb">printf</span> <span class="s">&quot;half path length is %.5d\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">R</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-paragraph-method">
+<h3>8.3.1.2. The paragraph method<a class="headerlink" href="#the-paragraph-method" title="Permalink to this headline">¶</a></h3>
+<p>This method returns a multiline text string reporting on the
+evaluation of the Path's math expressions. This text looks very much
+like the text that <font size=-1 color="#8C4112">IFEFFIT</font> returns when you use
+<font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">show</span> <span class="pre">&#64;group</span></code> command.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">paragraph</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-make-name-method">
+<h3>8.3.1.3. The make_name method<a class="headerlink" href="#the-make-name-method" title="Permalink to this headline">¶</a></h3>
+<p>This method is used to construct a descriptive label for the path and
+is called when the <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> file is imported. Since that
+usually happens behind the scenes, it is very rarely necessry to call
+this method. However, it is important to understand how this method
+works as it can be used to configure how the Path object gets
+labeled. This is determined using the <font color="#636A24">♦Pathfinder→name</font>
+configuration parameter. The default value of this parameter is
+<code class="docutils literal"><span class="pre">%P</span></code>, which means that the default label is the the interpretation
+list of the associated ScatteringPath object with the absorber tokens
+removed from the ends.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">%i</span></code>: Replaced by the path index used by <font size=-1 color="#8C4112">IFEFFIT</font> for
+this path.  Note that this may not be constant throughout a
+session.</li>
+<li><code class="docutils literal"><span class="pre">%I</span></code>: Like the <code class="docutils literal"><span class="pre">%i</span></code> tag, but zero padded to be 4 characters
+wide.</li>
+<li><code class="docutils literal"><span class="pre">%p</span></code>: Replaced with the return value of the ScatteringPath
+<code class="docutils literal"><span class="pre">intrplist</span></code> method.</li>
+<li><code class="docutils literal"><span class="pre">%P</span></code>: Like the <code class="docutils literal"><span class="pre">%p</span></code> but with the absorber tokens removed from
+both ends.</li>
+<li><code class="docutils literal"><span class="pre">%r</span></code>: The R<sub>eff</sub> of the path. In the case of a fuzzily
+degenerate path, the average R<sub>eff</sub> value of the fuzzily
+degenerate paths is reported.</li>
+<li><code class="docutils literal"><span class="pre">%n</span></code>: The number of legs of the path.</li>
+<li><code class="docutils literal"><span class="pre">%d</span></code>: The (fuzzy) degeneracy of the Path.</li>
+<li><code class="docutils literal"><span class="pre">%t</span></code>: The description of the scattering geometry as determined by
+<font size=-1 color="#8C4112">DEMETER</font>'s path finder.</li>
+<li><code class="docutils literal"><span class="pre">%m</span></code>: The importance of this Path as determined by
+<font size=-1 color="#8C4112">DEMETER</font>'s path finder.</li>
+<li><code class="docutils literal"><span class="pre">%g</span></code>: The group name used in <font size=-1 color="#8C4112">IFEFFIT</font> to hold the arrays
+of this path.</li>
+<li><code class="docutils literal"><span class="pre">%f</span></code>: The name of the associated Feff object.</li>
+<li><code class="docutils literal"><span class="pre">%%</span></code>: A literal percent sign.</li>
+</ul>
+<p>This line resets the default Path label to a string that includes the
+half path length and the path degeneracy</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">co</span> <span class="o">-&gt;</span> <span class="n">set_default</span><span class="p">(</span><span class="s">&quot;pathfinder&quot;</span><span class="p">,</span> <span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="s">&#39;%r (%d)&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="uncertainties-in-path-parameters">
+<h2>8.3.2. Uncertainties in path parameters<a class="headerlink" href="#uncertainties-in-path-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Propagation of uncertainties into path parameter math
+expressions is a missing feature of <font size=-1 color="#8C4112">DEMETER</font>.</p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Scattering paths</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="paths.html">8.1. Calculating individual scattering paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semantic.html">8.2. Semantic path descriptions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">8.3. Path parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">8.4. Plotting individual paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="existing.html">8.5. Running Feff outside of Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/paths/pathparams.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="plot.html" title="8.4. Plotting individual paths"
+             >next</a></li>
+        <li class="right" >
+          <a href="semantic.html" title="8.2. Semantic path descriptions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >8. Scattering paths</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

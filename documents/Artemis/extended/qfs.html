@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.1. Quick first shell &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="next" title="15.2. Characteristic value" href="cv.html" />
+    <link rel="prev" title="15. Extended discussions" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="cv.html" title="15.2. Characteristic value"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="15. Extended discussions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-first-shell">
+<h1>15.1. Quick first shell<a class="headerlink" href="#quick-first-shell" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> offers several ways to get information from
+<font size=-1 color="#8C4112">FEFF</font> into a fitting model.  One of these is called a <em>quick
+first shell</em> path.  It's purpose is to provide a structureless way of
+computing the scattering amplitude and phase shift well enough to be
+used for a quick analysis of the first coordination shell.</p>
+<p>The way it works is quite simple. Given the species of the absorber
+and the scatterer, the absorption edge (usually K or L<sub>III</sub>),
+and a nominal distance between the absorber and the scatterer,
+<font size=-1 color="#8C4112">ARTEMIS</font> constructs input for <font size=-1 color="#8C4112">FEFF</font>. This input
+data assumes that the absorber and scatterer are present in a <a class="reference external" href="http://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure">rock
+salt structured</a>
+crystal. The lattice constant of this notional cubic crystal is such
+that the nearest neighbor distance is the nominal distance supplied by
+the user. <font size=-1 color="#8C4112">FEFF</font> is run and the scattering path for the
+nearest neighbor is retained. The rest of the <font size=-1 color="#8C4112">FEFF</font>
+calculation is discarded. The nearest neighbor path is imported into
+<font size=-1 color="#8C4112">ARTEMIS</font> with the degeneracy set to 1.</p>
+<p>The assumption here is that the notional crystal will produce a
+scattering amplitude and phase shift for the nearest neighbor path that
+is close enough to what would be calculated by <font size=-1 color="#8C4112">FEFF</font> were the local
+structure actually known. Does this really work?</p>
+<div class="section" id="using-the-quick-first-shell-tool-to-model-first-shell-data">
+<h2>15.1.1. Using the quick first shell tool to model first shell data<a class="headerlink" href="#using-the-quick-first-shell-tool-to-model-first-shell-data" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate what QFS does and to explain the constraints on the
+situations in which it can be expected to work, let's take a look at my
+favorite teaching example, FeS<sub>2</sub>. Anyone who has attended one of
+my XAS training courses has seen this example.</p>
+<p>These three figures show the S atom in the first coordination shell
+computed using the known crystal structure for FeS<sub>2</sub>. This
+calculation is the blue trace. The red trace is the contribution from a
+S atom at the same distance as computed using the quick first shell
+tool. These calculations are plotted as χ(k), | χ(R)|, and Re[χ(R)].</p>
+<div class="figure compound align-center" id="_fig-qfs1st">
+<div style="width: 31%" class="subfigure" id="id1">
+<span id="fig-qfs1stk"></span><a class="reference external image-reference" href="../_images/qfs-1st_k.png"><img alt="../_images/qfs-1st_k.png" src="../_images/qfs-1st_k.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.1 </span><span class="caption-text">First shell χ(k)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id2">
+<span id="fig-qfs1strmag"></span><a class="reference external image-reference" href="../_images/qfs-1st_rmag.png"><img alt="../_images/qfs-1st_rmag.png" src="../_images/qfs-1st_rmag.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.2 </span><span class="caption-text">First shell magnitude of χ(R)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id3">
+<span id="fig-qfs1strre"></span><a class="reference external image-reference" href="../_images/qfs-1st_rre.png"><img alt="../_images/qfs-1st_rre.png" src="../_images/qfs-1st_rre.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.3 </span><span class="caption-text">First shell real part of χ(R)</span></p>
+</div>
+</div><p id="_fig-qfs1st">As you can see, these two calculations are identical. You cannot even
+see the blue trace underneath the red trace. It is clear that the QFS
+calculation can be substituted for the more proper <font size=-1 color="#8C4112">FEFF</font>
+calculation of the contribution from the nearest neighbor.</p>
+<p>Why does this work?</p>
+<p><font size=-1 color="#8C4112">FEFF</font> starts by calculating neutral atoms then placing these neutral
+atoms at the positions indicated by <font size=-1 color="#8C4112">FEFF</font>'s input data. Each neutral atom
+has an associated radius – the radius within which the “cloud” of
+electrons has the same charge as the nucleus of the atom. The
+neutral-atom radii are fairly large. When placed at the positions in the
+<font size=-1 color="#8C4112">FEFF</font> input data, these neutral-atom radii overlap significantly. This is
+a problem for <font size=-1 color="#8C4112">FEFF</font>'s calculation of the atomic potentials in the
+material because it means that electrons in the overlapping regions
+cannot be positively identified as belonging to a particular atom.</p>
+<p>To address this situation, <font size=-1 color="#8C4112">FEFF</font> uses an algorithm called the Mattheis
+prescription, which inscribes spheres in <a class="reference external" href="http://en.wikipedia.org/wiki/Wigner%E2%80%93Seitz_cell">Wigner-Seitz
+cells</a>, to
+reduce the radii of all atoms in the material together until the reduced
+radii are just touching and never overlapping. These smaller radii are
+called the muffin-tin radii. The electron density within one muffin-tin
+radius is associated with the atom at the center of that sphere. All of
+the electron density that falls outside of the muffin-tin spheres is
+volumetrically averaged and treated as interstitial electron density.
+All the details are explained in</p>
+<ul class="simple" id="bibtex-bibliography-extended/qfs-0">
+<li>J.&nbsp;J. Rehr and R.&nbsp;C. Albers. Theoretical approaches to x-ray absorption fine structure. <em>Reviews of Modern Physics</em>, 72(3):621, 2000. <a class="reference external" href="http://dx.doi.org/10.1103/RevModPhys.72.621">doi:10.1103/RevModPhys.72.621</a>.</li>
+<li>S.&nbsp;I. Zabinsky, J.&nbsp;J. Rehr, A.&nbsp;Ankudinov, R.&nbsp;C. Albers, and M.&nbsp;J. Eller. Multiple-scattering calculations of x-ray-absorption spectra. <em>Phys. Rev. B</em>, 52:2995–3009, Jul 1995. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.52.2995">doi:10.1103/PhysRevB.52.2995</a>.</li>
+</ul>
+<p>The scattering amplitude and phase shift is then computed from atoms
+that have a specific size – the size of the muffin-tin spheres – and
+with the electron density associated with those spheres.</p>
+<p>The reason that the two calculations shown above are so similar is
+because the muffin-tin radii of the Fe and S atoms are almost identical.
+This should not be surprising. Either way of constructing the muffin
+tins – using the proper FeS<sub>2</sub> structure or using the rock-salt
+structure – start with Fe and S atoms separated by the same amount. The
+application of the algorithm for producing muffin-tin sizes ends up with
+nearly identical values. As a result the scattering amplitudes and phase
+shifts are nearly the same and the resulting χ(k) functions are nearly
+the same.</p>
+</div>
+<div class="section" id="mis-using-the-quick-first-shell-tool-beyond-the-first-shell">
+<h2>15.1.2. (Mis)Using the quick first shell tool beyond the first shell<a class="headerlink" href="#mis-using-the-quick-first-shell-tool-beyond-the-first-shell" title="Permalink to this headline">¶</a></h2>
+<p>This is awesome! It would seem that we have a model independent way to
+generate fitting standards for use in <font size=-1 color="#8C4112">ARTEMIS</font>.  No more
+mucking around with <font size=-1 color="#8C4112">ATOMS</font>, no more looking up
+metalloprotein structures. Just use QFS!</p>
+<p>If you think that seems too good to be true – you get a gold star. It
+most certainly is.</p>
+<p>Following the example above, I now show the second neighbor from the
+proper FeS<sub>2</sub> calculation, which is also a S atom and which is at
+3.445 Å. The red trace is a QFS path computed with a nominal distance of
+3.445 Å. As you can see, there are substantial differences, particularly
+at low k, between the two.</p>
+<div class="figure compound align-center" id="_fig-qfs2nd">
+<div style="width: 31%" class="subfigure" id="id4">
+<span id="fig-qfs2ndk"></span><a class="reference external image-reference" href="../_images/qfs-2nd_k.png"><img alt="../_images/qfs-2nd_k.png" src="../_images/qfs-2nd_k.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.4 </span><span class="caption-text">Second shell χ(k)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id5">
+<span id="fig-qfs2ndrmag"></span><a class="reference external image-reference" href="../_images/qfs-2nd_rmag.png"><img alt="../_images/qfs-2nd_rmag.png" src="../_images/qfs-2nd_rmag.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.5 </span><span class="caption-text">Second shell magnitude of χ(R)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id6">
+<span id="fig-qfs2ndrre"></span><a class="reference external image-reference" href="../_images/qfs-2nd_rre.png"><img alt="../_images/qfs-2nd_rre.png" src="../_images/qfs-2nd_rre.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.6 </span><span class="caption-text">Second shell real part of χ(R)</span></p>
+</div>
+</div><p id="_fig-qfs2nd">So, why does this not work so well? In the proper calculation, the size
+of the S muffin-tin has been determined in large part by the Fe-S
+nearest neighbor distance. This same muffin-tin radius is used for all
+the S atoms in the cluster. Thus, in the real calculation, the
+contribution from the second neighbor S atom is determined using the
+same well-constrained S muffin-tin radius as in the first shell
+calculation.</p>
+<p>In contrast, the QFS calculation has been made with an unphysically
+large Fe-S nearest neighbor distance. Remember, the QFS algorithm works
+by putting the absorber and scatterer in a rock-salt crystal with a
+lattice constant such that the nearest neighbor distance is equal to the
+distance supplied by the user. In this case, that nearest neighbor
+distance is 3.445 Å!</p>
+<p>The algorithm for constructing the muffin tins requires that the
+muffin-tin spheres touch. Supplied with a distance of 3.445 Å, the
+muffin-tin radii are much too large, the electron density within the
+muffin tins is much too small, and the scattering amplitude and phase
+shift are calculated wrongly.</p>
+<p>The central problem here is not that the red line is different from
+the blue line – although that is certainly the case and it is
+certainly a problem. The central problem is that, by misusing the QFS
+tool in this way, you introduce a large systematic error into your
+data analysis.  This systematic error affects both amplitude and phase
+(as you can clearly see in the figures above). What's worse, you have
+no way of quantifying this systematic error. Your results for
+coordination number, ΔR, and σ<sup>2</sup> <strong>will</strong> be
+wrong. And you have <strong>no way of knowing</strong> by how much.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">In short, if you misuse the QFS tool in this way, you
+cannot possibly report a defensible analysis of your data.</p>
+</div>
+<p>To add even more ill cheer to this discussion, the problem gets worse
+and worse as the nominal distance of the QFS calculation gets larger.
+Here I show the same comparison, this time for the fifth coordination
+shell in FeS<sub>2</sub>, another S scatterer at 4.438 Å:</p>
+<div class="figure compound align-center" id="_fig-qfs4th">
+<div style="width: 31%" class="subfigure" id="id7">
+<span id="fig-qfs4thk"></span><a class="reference external image-reference" href="../_images/qfs-4th_k.png"><img alt="../_images/qfs-4th_k.png" src="../_images/qfs-4th_k.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.7 </span><span class="caption-text">Fourth shell χ(k)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id8">
+<span id="fig-qfs4thrmag"></span><a class="reference external image-reference" href="../_images/qfs-4th_rmag.png"><img alt="../_images/qfs-4th_rmag.png" src="../_images/qfs-4th_rmag.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.8 </span><span class="caption-text">Fourth shell magnitude of χ(R)</span></p>
+</div>
+<div style="width: 31%" class="subfigure" id="id9">
+<span id="fig-qfs4thrre"></span><a class="reference external image-reference" href="../_images/qfs-4th_rre.png"><img alt="../_images/qfs-4th_rre.png" src="../_images/qfs-4th_rre.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.9 </span><span class="caption-text">Fourth shell real part of χ(R)</span></p>
+</div>
+<span class="target" id="_fig-qfs4th"></span></div></div>
+<div class="section" id="executive-summary">
+<h2>15.1.3. Executive summary<a class="headerlink" href="#executive-summary" title="Permalink to this headline">¶</a></h2>
+<p>The quick first shell tool is given that name because it is only valid
+for first shell analysis.</p>
+<p>If you attempt to use the QFS tool at larger distances, you introduce
+large systematic error into your data analysis. Don't do that!</p>
+</div>
+<div class="section" id="so-what-should-you-do">
+<h2>15.1.4. So, what should you do?<a class="headerlink" href="#so-what-should-you-do" title="Permalink to this headline">¶</a></h2>
+<p>Presumably, you have measured EXAFS on your sample because you because
+you do not know its structure. The point of the EXAFS analysis is to
+determine the structure. The upshot of this discussion would seem to be
+that you need to know the structure in order to measure the structure.
+That's a
+<a class="reference external" href="http://en.wikipedia.org/wiki/Catch-22_%28logic%29">catch-22</a>, right?</p>
+<p>Not really. As I often say in my lectures during XAS training courses:
+you never know nothing. It is rare that you cannot make an educated
+guess about what your unknown material might resemble. With that guess,
+you can run <font size=-1 color="#8C4112">FEFF</font>, parameterize your fitting model, and determine the
+extent to which that guess is consistent with your data.</p>
+<dl class="docutils">
+<dt><strong>Crystalline analogs</strong></dt>
+<dd><p class="first">In the paper below,
+Shelly Kelly demonstrates how to use <font size=-1 color="#8C4112">FEFF</font> calculations on
+crystalline materials as the basis for interpreting the EXAFS of
+uranyl ions adsorbed onto biomass. In that paper, she shows the pH
+dependence of the fractionation of the uranyl ions among phosphoryl,
+carboxyl, and hydroxyl binding sites. Obviously, there is no way to
+make <font size=-1 color="#8C4112">FEFF</font> input data for uranyl ions on organic goo. However, Shelly
+realized that the basic structure of the uranyl-phosphoryl or
+uranyl-carboxyl ligands are very similar in the organic and
+inorganic cases. Thus she ran <font size=-1 color="#8C4112">FEFF</font> on the inorganic structure and
+pulled out those paths that describe the uranyl ion in its similar
+ligation environment in the organic case.</p>
+<p>The great advantage of using the inorganic structures is that the
+muffin-tin radii are very likely to be computed well. The paths that
+describe the uranyl ligation environment have thus been computed
+reliably and with good muffin tin radii.</p>
+<p>There is yet another advantage to this over attempting to use QFS
+for higher shells – consideration of multiple scattering paths. In
+the example from Shelly's paper, there are several small but
+non-negligible MS paths to be considered for both carboxyl and
+phosphoryl ligands. Neglecting those in favor of a
+single-scattering-only model introduces further systematic
+uncertainty into the determination of coordination number, ΔR, and
+σ<sup>2</sup>.</p>
+<ul class="last simple" id="bibtex-bibliography-extended/qfs-1">
+<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+</ul>
+</dd>
+<dt><strong>SSPaths</strong></dt>
+<dd><p class="first"><font size=-1 color="#8C4112">ARTEMIS</font> offers another tool called <a class="reference external" href="../feff/pathlike.html#sspaths">an
+SSPath</a>. An SSPath is a way of
+using well-constructed muffin tins to compute a scattering path that
+is not represented in the input structure provided for the <font size=-1 color="#8C4112">FEFF</font>
+calculation. For example, suppose you run a <font size=-1 color="#8C4112">FEFF</font> calculation on
+LaCoO<sub>3</sub>, a trigonal perovskite-like material with 6 oxygen
+scatterers at 1.93 Å, 8 La scatterers at 3.28 Å or 3.34 Å, and 6 Co
+scatterers at 3.83 Å. Suppose you have some reason to consider a Co
+scatterer at 3 Å. You can tell <font size=-1 color="#8C4112">ARTEMIS</font> to compute that using the
+muffin-tin potentials from the LaCoO<sub>3</sub> calculation, but with
+a Co scatterer at that distance, which is not represented in the
+LaCoO<sub>3</sub> structure. Unlike an attempt to use a QFS Co path at
+that distance, the SSPath uses a scattering potential with a
+properly calculated muffin tin.
+The advantage of the SSPath is that it it results in a much more
+accurate calculation than QFS. The disadvantage is that it can only
+be calculated on a scattering element already present in the <font size=-1 color="#8C4112">FEFF</font>
+calculation.</p>
+<ul class="last simple" id="bibtex-bibliography-extended/qfs-2">
+<li>B.&nbsp;Ravel. Muffin-tin potentials in EXAFS analysis. <em>Journal of Synchrotron Radiation</em>, 22(5):1258–1262, Sep 2015. <a class="reference external" href="http://dx.doi.org/10.1107/S1600577515013521">doi:10.1107/S1600577515013521</a>.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="reproducing-the-plots-above">
+<h2>15.1.5. Reproducing the plots above<a class="headerlink" href="#reproducing-the-plots-above" title="Permalink to this headline">¶</a></h2>
+<p>To start, I imported the FeS<sub>2</sub> data and crystal structure into
+<font size=-1 color="#8C4112">ARTEMIS</font>.  <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2">(You can find them here.)</a>
+I ran <font size=-1 color="#8C4112">ATOMS</font>, then <font size=-1 color="#8C4112">FEFF</font>. I then dragged and
+dropped the nearest neighbor path onto the Data page. At this stage,
+<font size=-1 color="#8C4112">ARTEMIS</font> looks like this:</p>
+<div class="figure align-center" id="id10">
+<span id="fig-qfsstartqfs"></span><a class="reference external image-reference" href="../_images/qfs-start_qfs.png"><img alt="../_images/qfs-start_qfs.png" src="../_images/qfs-start_qfs.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.10 </span><span class="caption-text">Getting started with the comparison</span></p>
+</div>
+<p>I begin a QFS calculation by selecting that option from the menu on
+the Data page:</p>
+<div class="figure align-center" id="id11">
+<span id="fig-qfspath"></span><a class="reference external image-reference" href="../_images/qfs-path.png"><img alt="../_images/qfs-path.png" src="../_images/qfs-path.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.11 </span><span class="caption-text">Compute the QFS path</span></p>
+</div>
+<p>The nearest neighbor path in FeS<sub>2</sub> is a S atom at 2.257 Å.</p>
+<div class="figure align-center" id="id12">
+<span id="fig-qfsmakeqfs"></span><a class="reference external image-reference" href="../_images/qfs-make_qfs.png"><img alt="../_images/qfs-make_qfs.png" src="../_images/qfs-make_qfs.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.12 </span><span class="caption-text">Set the QFS parameters</span></p>
+</div>
+<p>Clicking <kbd class="light">OK</kbd>, the QFS path is generated.  I set the
+degeneracy of the QFS path to 6 so that I can directly compare the
+normally calculated path (there are 6 nearest neighbor S atoms in FeS<sub>2</sub>) to the QFS path.  I mark both paths and transfer them to the
+plotting list. I am now ready to compare these two calculations. To
+examine another single scattering path, I drag and drop that path from
+the <font size=-1 color="#8C4112">FEFF</font> page to the Data page and redo the QFS calculation
+at that distance.</p>
+<div class="figure align-center" id="id13">
+<span id="fig-qfscompare"></span><a class="reference external image-reference" href="../_images/qfs-compare.png"><img alt="../_images/qfs-compare.png" src="../_images/qfs-compare.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 15.13 </span><span class="caption-text">Ready to plot the comparison</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/qfs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="cv.html" title="15.2. Characteristic value"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="15. Extended discussions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

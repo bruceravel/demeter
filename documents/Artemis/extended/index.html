@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15. Extended discussions &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="next" title="15.1. Quick first shell" href="qfs.html" />
+    <link rel="prev" title="14.3. A worked example (in text!)" href="../atoms/example.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="qfs.html" title="15.1. Quick first shell"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../atoms/example.html" title="14.3. A worked example (in text!)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="extended-discussions">
+<h1>15. Extended discussions<a class="headerlink" href="#extended-discussions" title="Permalink to this headline">¶</a></h1>
+<p>This section is a catch-all for topics of data analysis and the
+operation of <font size=-1 color="#8C4112">ARTEMIS</font> that simply did not fit in other parts
+of this users' guide.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Pages are needed explaining: (1) Histograms, (2) background
+co-refinement (3) constraints and restraints</p>
+</div>
+<hr class="docutils" />
+<p><strong>Topics related to fitting EXAFS data</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html#using-the-quick-first-shell-tool-to-model-first-shell-data">15.1.1. Using the quick first shell tool to model first shell data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html#mis-using-the-quick-first-shell-tool-beyond-the-first-shell">15.1.2. (Mis)Using the quick first shell tool beyond the first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html#executive-summary">15.1.3. Executive summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html#so-what-should-you-do">15.1.4. So, what should you do?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html#reproducing-the-plots-above">15.1.5. Reproducing the plots above</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cv.html">15.2. Characteristic value</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cv.html#the-cv-token">15.2.1. The CV token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html#use-in-lguess-parameters">15.2.2. Use in lguess parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="delr.html#volumetric-expansion-coefficient">15.3.1. Volumetric expansion coefficient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html#propagating-crystal-distortion-parameters">15.3.2. Propagating crystal distortion parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html#parametrizations-of-distance-in-non-crystalline-materials">15.3.3. Parametrizations of distance in non-crystalline materials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ss.html#debye-and-einstein-models">15.4.1. Debye and Einstein models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html#colinear-multiple-scattering-paths">15.4.2. Colinear multiple scattering paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html#sensible-approximations-for-triangular-multiple-scattering-paths">15.4.3. Sensible approximations for triangular multiple scattering paths</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html#computing-a-bond-valence-sum-from-a-fit">15.6.1. Computing a bond valence sum from a fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html#using-a-bond-valance-sum-as-a-restraint">15.6.2. Using a bond valance sum as a restraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html#using-a-bond-valance-sum-as-an-after-parameter">15.6.3. Using a bond valance sum as an after parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html#preparing-the-empirical-standard">15.7.1. Preparing the empirical standard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html#using-the-empirical-standard">15.7.2. Using the empirical standard</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><strong>Topics related to running Feff</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html#each-element-gets-a-unique-potential">15.8.1. Each element gets a unique potential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html#each-tag-gets-a-unique-potential">15.8.2. Each tag gets a unique potential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html#each-site-gets-a-unique-potential">15.8.3. Each site gets a unique potential</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html#how-the-path-finder-works">15.9.1. How the path finder works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html#the-pathfinder-in-feff-and-artemis">15.9.2. The pathfinder in Feff and Artemis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html#an-example-of-using-fuzzy-degeneracy">15.9.3. An example of using fuzzy degeneracy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html#overview">15.10.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html#crystal-data-with-partial-occupancy">15.10.2. Crystal data with partial occupancy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html#doped-crystal-and-alloys">15.10.3. Doped crystal and alloys</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html#examples-of-situations-requiring-consideration-of-higher-order-paths">15.11.1. Examples of situations requiring consideration of higher order paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html#and-6-legged-paths-in-artemis">15.11.2. 5 and 6 legged paths in Artemis</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">15. Extended discussions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/extended/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="qfs.html" title="15.1. Quick first shell"
+             >next</a></li>
+        <li class="right" >
+          <a href="../atoms/example.html" title="14.3. A worked example (in text!)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

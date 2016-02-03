@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.1. Example 1: FeS2 &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="13. Worked examples" href="index.html" />
+    <link rel="next" title="13.2. Example 2: Methyltin" href="methyltin.html" />
+    <link rel="prev" title="13. Worked examples" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="methyltin.html" title="13.2. Example 2: Methyltin"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="13. Worked examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">13. Worked examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-1-fes2">
+<h1>13.1. Example 1: FeS2<a class="headerlink" href="#example-1-fes2" title="Permalink to this headline">¶</a></h1>
+<p>Introduction, blah blah, known crystal structure, blah blah, learn the
+mechanics of the program, blah blah</p>
+<p><a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">Lecture notes</a></p>
+<div class="section" id="import-data">
+<h2>13.1.1. Import data<a class="headerlink" href="#import-data" title="Permalink to this headline">¶</a></h2>
+<p>After starting <font size=-1 color="#8C4112">ARTEMIS</font>, click on the <kbd class="light">Add</kbd>
+button at the top of the <span class="guilabel">Data sets</span> list in the Main
+window. This will open a file selection dialog. Click to find the
+<font size=-1 color="#8C4112">ATHENA</font> project file containing the data you want to
+analyze. Opening that project file displays the project selection
+dialog.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-fes2importdata"></span><a class="reference external image-reference" href="../_images/fes2-importdata.png"><img alt="../_images/fes2-importdata.png" src="../_images/fes2-importdata.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.1 </span><span class="caption-text">Import data into Artemis</span></p>
+</div>
+<p>The project file used here has several iron standards. Select
+FeS<sub>2</sub> from the list. That data set gets plotted when selected.</p>
+<p>Now click the <kbd class="light">Import</kbd> button. That data set gets
+imported into <font size=-1 color="#8C4112">ARTEMIS</font>.  An entry for the FeS<sub>2</sub> is
+created in the Data list, a window for interacting with the FeS<sub>2</sub> data is created, and the FeS<sub>2</sub> data are plotted as
+χ(k).</p>
+<p>The next step is to prepare for the <font size=-1 color="#8C4112">FEFF</font> calculation using
+the known FeS<sub>2</sub> crystal structure. Clicking on the line in the
+Data window that says <span class="guilabel">Import crystal data or a Feff
+calculation</span> will post a file selection ddialog. Click to find the
+atoms.inp file containing the FeS<sub>2</sub> crystal structure.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-fes2importatoms"></span><a class="reference external image-reference" href="../_images/fes2-importatoms.png"><img alt="../_images/fes2-importatoms.png" src="../_images/fes2-importatoms.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.2 </span><span class="caption-text">Import crystal data into Artemis</span></p>
+</div>
+<p>With the FeS<sub>2</sub> crystal data imported, run <font size=-1 color="#8C4112">ATOMS</font> by
+clicking the <kbd class="light">Run Atoms</kbd> button on the <font size=-1 color="#8C4112">ATOMS</font>
+tab of the <font size=-1 color="#8C4112">FEFF</font> windows. That will display the
+<font size=-1 color="#8C4112">FEFF</font> tab containing the <font size=-1 color="#8C4112">FEFF</font> input data. Click
+the <kbd class="light">Run Feff</kbd> button to compute the scattering
+potentials and to run the pathfinder.</p>
+<p>Once the <font size=-1 color="#8C4112">FEFF</font> calculation is finished, the path
+intepretation list is shown in the Paths tab. This is the list of
+scattering paths, sorted by increasing path length. Select the first
+11 paths by clicking on the path <span class="guilabel">0000</span>, then shift-clicking
+on path <span class="guilabel">0010</span>. These group of selected paths will be
+highlighted. Click on one of the highlighted paths and, without
+letting go of the mouse button, drag the paths over to the Data
+window. Drop the paths on the empty Path list.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-fes2pathsdnd"></span><a class="reference external image-reference" href="../_images/fes2-pathsdnd.png"><img alt="../_images/fes2-pathsdnd.png" src="../_images/fes2-pathsdnd.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.3 </span><span class="caption-text">Drag and drop paths onto a data set</span></p>
+</div>
+<p>Dropping the paths on the Path list will associate those paths with that
+data set. That is, that group of paths is now available to be used in
+the fitting model for understanding the FeS<sub>2</sub> data.</p>
+<p>Each path will get its own Path page. The Path page for a path is
+displayed when that path is clicked upon in the Path list. Shown below
+is the FeS<sub>2</sub> data with its 11 paths. The first path in the list,
+the one representing the contribution to the EXAFS from the S single
+scattering path at 2.257 Å, is currently displayed.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-fes2pathsimported"></span><a class="reference external image-reference" href="../_images/fes2-pathsimported.png"><img alt="../_images/fes2-pathsimported.png" src="../_images/fes2-pathsimported.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.4 </span><span class="caption-text">Paths associated with a data set</span></p>
+</div>
+</div>
+<div class="section" id="examine-the-scattering-paths">
+<h2>13.1.2. Examine the scattering paths<a class="headerlink" href="#examine-the-scattering-paths" title="Permalink to this headline">¶</a></h2>
+<p>The first chore is to understand how the various paths from the
+<font size=-1 color="#8C4112">FEFF</font> calculation relate to the data. To this end, we need
+to populate the Plotting list with data and paths and make some plots.</p>
+<p>First let's examine how the single scattering paths relate to the
+data.  Mark each of the first four single scattring paths – the
+ones labeled <span class="guilabel">S.1</span>, <span class="guilabel">S.2</span>, <span class="guilabel">S.3</span>, and
+<span class="guilabel">Fe.1</span> – by clicking on their check buttons.  Transfer
+those four paths to the Plotting list by selecting
+<span class="menuselection">Actions ‣ Transfer marked</span>.</p>
+<p>With the Plotting list poluated as shown below, click on the
+<kbd class="light">R</kbd> plot button in the Plot window to make the plot
+shown.</p>
+<div class="figure align-center" id="id5">
+<span id="fig-fes2sspaths"></span><a class="reference external image-reference" href="../_images/fes2-sspaths.png"><img alt="../_images/fes2-sspaths.png" src="../_images/fes2-sspaths.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.5 </span><span class="caption-text">FeS2 data plotted with the first four single scattering paths</span></p>
+</div>
+<p>The first interesting thing to note is that the first peak in the data
+seems to be entirely explained by the path from the S atom at 2.257
+Å.  None of the other single scattering paths contribute
+significantly to the region of R-space.</p>
+<p>The second interesting thing to note is that the next three single
+scattering paths are not so well separated from one another. While it
+may be tempting to point at the peaks at 2.93 Å and 3.45 Å and assert
+that they are due to the second shell S and the fourth shell Fe, it is
+already clear that the situation is more complicated. Those three single
+scattering paths overlap one another. Each contriobutes at least some
+spectral weight to both of the peaks at 2.93 Å and 3.45 Å.</p>
+<p>The first peak shold be reather simple to interpret, but higher shells
+are some kind of superposition of many paths.</p>
+<p>What about the multiple scattering paths?</p>
+<p>To examine those, first clear the Plotting list by clicking the
+<kbd class="light">Clear</kbd> button at the bottom of the Plot
+window. Transfer the FeS<sub>2</sub> data back to the Plotting list by
+clicking its transfer button, <img alt="transfer button" src="../_images/plot-icon1.png" />. Mark the first three
+multiple scattering paths by clicking their mark buttons. Select
+<span class="menuselection">Actions ‣ Transfer marked</span>.</p>
+<p>With the Plotting list newly populated, make a new plot of | χ(R)|.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-fes2mspaths1"></span><a class="reference external image-reference" href="../_images/fes2-mspaths1.png"><img alt="../_images/fes2-mspaths1.png" src="../_images/fes2-mspaths1.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.6 </span><span class="caption-text">FeS2 data plotted with the first three multiple scattering paths</span></p>
+</div>
+<p>The two paths labeled <span class="guilabel">S.1 S.1</span>, which represent two
+different ways for the photoelectron to scatter from a S atom in the
+first coordination shell then scatter from another S atom in the first
+coordination shell, contribute rather little spectra weight. Given
+their small size, it seems possible that we may be able to ignore
+those paths when we analyze our FeS<sub>2</sub> data.</p>
+<p>The <span class="guilabel">S.1 S.2</span> path, which first scatters from a S in the
+first coordination shell then from a S in the second coordination
+shell, contributes significantly to the peak at 2.93 Å. It seems
+unlikely that we will be able to ignore that path.</p>
+<p>To examine the next three multiple scattering paths, clear the Plotting
+list, mark those paths, and repopulate the Plotting list.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-fes2mspaths2"></span><a class="reference external image-reference" href="../_images/fes2-mspaths2.png"><img alt="../_images/fes2-mspaths2.png" src="../_images/fes2-mspaths2.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.7 </span><span class="caption-text">FeS2 data plotted with the next three multiple scattering paths</span></p>
+</div>
+<p>The <span class="guilabel">S.1 Fe.1</span> path, which scatters from a S atom in the
+first coordination shell then scatters from an Fe atom in the fourth
+coordination shell, is quite substantial. It will certainly need to be
+considered in our fit. The other two paths are tiny.</p>
+</div>
+<div class="section" id="fit-to-the-first-coordination-shell">
+<h2>13.1.3. Fit to the first coordination shell<a class="headerlink" href="#fit-to-the-first-coordination-shell" title="Permalink to this headline">¶</a></h2>
+<p>We begin by doing an analysis of the first shell. As we saw above, we
+only need the first path in the path list. To prepare for the fit, we do
+the following:</p>
+<ol class="arabic simple">
+<li>Exclude all but the first path from the fit. With the first path
+selected in the path list and displayed, select
+<span class="menuselection">Marks ‣ Mark after current</span>. This will mark all
+paths except for the first one. Then select <span class="menuselection">Actions
+‣ Exclude marked</span>. This will exclude those paths from the
+fit. That is indicated by the triple parentheses in the path list.</li>
+<li>Set the values of R<sub>min</sub> and R<sub>max</sub> to cover just the
+first peak.</li>
+<li>For this simple first shell fit, we set up a simple, four-parameter
+model. The parameters <code class="docutils literal"><span class="pre">amp</span></code>, <code class="docutils literal"><span class="pre">enot</span></code>, <code class="docutils literal"><span class="pre">delr</span></code>, and <code class="docutils literal"><span class="pre">ss</span></code> are
+defined in the GDS window and given sensible initial guess values.</li>
+<li>The path parameters for the first shell path are set. S<sup>2</sup><sub>0</sub> is set to <code class="docutils literal"><span class="pre">amp</span></code>, E<sub>0</sub> is set to <code class="docutils literal"><span class="pre">enot</span></code>, ΔR is set to <code class="docutils literal"><span class="pre">delr</span></code>, and σ<sup>2</sup> is set to <code class="docutils literal"><span class="pre">ss</span></code>.</li>
+</ol>
+<p>Note that the current settings for k- and R-range result in a bit more
+than 7 independent points, as computed from the Nyquist criterion. With
+only 4 guess parameters, this should be a reasonable fitting model.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-fes21stshell"></span><a class="reference external image-reference" href="../_images/fes2-1stshell.png"><img alt="../_images/fes2-1stshell.png" src="../_images/fes2-1stshell.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.8 </span><span class="caption-text">Setting up for a first shell fit</span></p>
+</div>
+<p>Now hit the <kbd class="light">Fit</kbd> button. Upon completion of the fit,
+the following things happen:</p>
+<ol class="arabic simple">
+<li>An “Rmr” plot is made of the data and the fit.</li>
+<li>The log Window is displayed with the results of the fit</li>
+<li>The <kbd class="light">Fit</kbd> and plot buttons are recolored according to
+the evaluation of the happiness parameter.</li>
+<li>The Plotting list is cleared and repopulated with the data.</li>
+<li>The fit is entered into the History window (which is not in the
+screenshot below).</li>
+</ol>
+<div class="figure align-center" id="id9">
+<span id="fig-fes2firstshellfit"></span><a class="reference external image-reference" href="../_images/fes2-firstshellfit.png"><img alt="../_images/fes2-firstshellfit.png" src="../_images/fes2-firstshellfit.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.9 </span><span class="caption-text">Results of the first shell fit</span></p>
+</div>
+<p>This is not a bad result. The value of <code class="docutils literal"><span class="pre">enot</span></code> is small, indicatng
+that a reasonable value of E<sub>0</sub> was chosen back in
+<font size=-1 color="#8C4112">ATHENA</font>. <code class="docutils literal"><span class="pre">delr</span></code> is small and consistent with 0, as we
+should expect for a known crystal. <code class="docutils literal"><span class="pre">ss</span></code> is a reasonable value with a
+reasonable error bar. The only confusing parameter is <code class="docutils literal"><span class="pre">amp</span></code>, which
+is a bit smaller than we might expect for a S<sup>2</sup><sub>0</sub>
+value.</p>
+<p>The correlations between parameters are of a size that we expect. The
+R-factor evaluates to about 2% misfit. χ<sup>2</sup><sub>v</sub> is
+really huge, but that likely means that ε was not evaluated
+correctly. All in all, this is a reasonable fit.</p>
+</div>
+<div class="section" id="extending-the-fit-to-higher-shells">
+<h2>13.1.4. Extending the fit to higher shells<a class="headerlink" href="#extending-the-fit-to-higher-shells" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="the-final-fitting-model">
+<h2>13.1.5. The final fitting model<a class="headerlink" href="#the-final-fitting-model" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="additional-questions">
+<h2>13.1.6. Additional questions<a class="headerlink" href="#additional-questions" title="Permalink to this headline">¶</a></h2>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">13. Worked examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">13.1. Example 1: FeS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methyltin.html">13.2. Example 2: Methyltin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/fes2.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="methyltin.html" title="13.2. Example 2: Methyltin"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="13. Worked examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >13. Worked examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11. Monitoring things &mdash; Artemis 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="12. Managing preferences" href="prefs.html" />
+    <link rel="prev" title="10. The History window" href="history.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="prefs.html" title="12. Managing preferences"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="history.html" title="10. The History window"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="monitoring-things">
+<h1>11. Monitoring things<a class="headerlink" href="#monitoring-things" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ARTEMIS</font> provides a number of tools for keeping track of
+things going on behind the scenes. These tools are found either in the
+Monitor menu on the Main window or the Debug menu on the Data window.</p>
+<p>In the normal course of operations, consulting the monitoring tools
+should not be necessary. But if something is not working quite right,
+they can be invaluable for diagnosing the problem.</p>
+<div class="section" id="the-command-buffer">
+<h2>11.1. The Command buffer<a class="headerlink" href="#the-command-buffer" title="Permalink to this headline">¶</a></h2>
+<p>The command buffer window contains a record of every data processing
+and fitting command sent to <font size=-1 color="#8C4112">IFEFFIT</font>. At the bottom of this
+window is the plotting buffer, which contains every command sent to
+the plotting backend (usually <strong class="program">Gnuplot</strong>).</p>
+<p>These are very useful both for diagnosing problems and for learning
+the details of how <font size=-1 color="#8C4112">IFEFFIT</font>, <font size=-1 color="#8C4112">LARCH</font> and
+<strong class="program">Gnuplot</strong> work.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-commandbuffer"></span><a class="reference external image-reference" href="_images/command_buffer.png"><img alt="_images/command_buffer.png" src="_images/command_buffer.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 11.1 </span><span class="caption-text">The command buffer window</span></p>
+</div>
+<p>At the bottom of the window is a simple command line for sending
+instructions directly to <font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font>.</p>
+</div>
+<div class="section" id="the-status-buffer">
+<h2>11.2. The Status buffer<a class="headerlink" href="#the-status-buffer" title="Permalink to this headline">¶</a></h2>
+<p>Every message sent to any of the status bars in <font size=-1 color="#8C4112">ARTEMIS</font> is
+time-stamped and logged in the status buffer. This provides a sort of
+record of the major actions taken during your current
+<font size=-1 color="#8C4112">ARTEMIS</font> session. The contents of this buffer can be saved
+to a file.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-statusbuffer"></span><a class="reference external image-reference" href="_images/status_buffer.png"><img alt="_images/status_buffer.png" src="_images/status_buffer.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 11.2 </span><span class="caption-text">The status buffer window</span></p>
+</div>
+</div>
+<div class="section" id="interacting-with-ifeffit">
+<h2>11.3. Interacting with Ifeffit<a class="headerlink" href="#interacting-with-ifeffit" title="Permalink to this headline">¶</a></h2>
+<p>One of the submenus in the Monitor menu on the Main window allows you
+to examine <font size=-1 color="#8C4112">IFEFFIT</font> data structures. The results of these
+examination commands are displayed in the command buffer. In this
+example, all arrays currently defined in <font size=-1 color="#8C4112">IFEFFIT</font> have been
+shown.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-showarrays"></span><a class="reference external image-reference" href="_images/show_arrays.png"><img alt="_images/show_arrays.png" src="_images/show_arrays.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 11.3 </span><span class="caption-text">Showing Ifeffit arrays</span></p>
+</div>
+<p>Options exist for showing specific <font size=-1 color="#8C4112">IFEFFIT</font> data group, all
+arrays, all scalars, all strings, all paths, or all <font size=-1 color="#8C4112">FEFF</font>
+paths. The last one is simply a listing all <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files
+imported into <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
+<p>You can also inquire about how much of <font size=-1 color="#8C4112">IFEFFIT</font>'s
+statically allocated memory is in use and whether you are in danger of
+exceeding capacity.  This information is displayed in the Main window
+status bar.</p>
+</div>
+<div class="section" id="debugging-demeter">
+<h2>11.4. Debugging Demeter<a class="headerlink" href="#debugging-demeter" title="Permalink to this headline">¶</a></h2>
+<p>Several additional menu items are turned on when
+<font color="#636A24">♦Artemis→debug_menus</font> is set to a true value. The items
+in these menus provide tools for debugging <font size=-1 color="#8C4112">ARTEMIS</font> by
+showing the current state of <font size=-1 color="#8C4112">DEMETER</font> and its data
+structures. These tools are invaluable for developing the software,
+but are probably of limited value to the general user.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">3. The Data window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">4. The Atoms and Feff Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">10. The History window</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">11. Monitoring things</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-command-buffer">11.1. The Command buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-status-buffer">11.2. The Status buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interacting-with-ifeffit">11.3. Interacting with Ifeffit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-demeter">11.4. Debugging Demeter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/monitor.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="prefs.html" title="12. Managing preferences"
+             >next</a></li>
+        <li class="right" >
+          <a href="history.html" title="10. The History window"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
