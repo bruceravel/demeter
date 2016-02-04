@@ -63,7 +63,6 @@ sets these values for each marked group.
 .. subfigstart::
 
 .. _fig-stacktab:
-
 .. figure::  ../../_images/plot_stack.png
    :target: ../_images/plot_stack.png
    :width: 50%
@@ -71,7 +70,6 @@ sets these values for each marked group.
    The plot stacking tab.
 
 .. _fig-stacked:
-
 .. figure::  ../../_images/plot_stacked.png
    :target: ../_images/plot_stacked.png
    :width: 100%
@@ -109,7 +107,6 @@ range are ignored.
 .. subfigstart::
 
 .. _fig-indictab:
-
 .. figure::  ../../_images/plot_indic.png
    :target: ../_images/plot_indic.png
    :width: 50%
@@ -117,7 +114,6 @@ range are ignored.
    The indicator tab.
 
 .. _fig-indicplot:
-
 .. figure::  ../../_images/plot_indicplot.png
    :target: ../_images/plot_indicplot.png
    :width: 100%
@@ -147,10 +143,8 @@ Fine grained control over the title and legend of the plot is
 available in the :guilabel:`Title, legend, single file` tab.
 
 .. _fig-plottlsf:
-
 .. figure:: ../../_images/plot_tlsf.png
    :target: ../_images/plot_tlsf.png
-   :width: 25%
    :align: center
 
    The tab with controls for the title and legend of the plot as well
@@ -176,10 +170,8 @@ or outside of the frame of the plot is controlled by the
 legend` button causes the legend not to be displayed.
 
 .. _fig-plotlegendoutside:
-
 .. figure:: ../../_images/plot_legend_outside.png
    :target: ../_images/plot_legend_outside.png
-   :width: 45%
    :align: center
 
    Plot of Fe metal showing the legend outside the plot frame and in
@@ -200,10 +192,8 @@ hexavalent chromium to trivalent chromium.  Standards for these two
 forms of chromium are shown below.  
 
 .. _fig-plotcr:
-
 .. figure:: ../../_images/Cr.png
    :target: ../_images/Cr.png
-   :width: 45%
    :align: center
 
    Hexavalent chromium, with its large pre-edge peak, plotted with

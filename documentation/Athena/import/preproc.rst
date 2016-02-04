@@ -38,10 +38,8 @@ In this screenshot, I have imported some data on a uranyl compound
 measured in quick scan mode:
 
 .. _fig-rebin:
-
 .. figure:: ../../_images/import_rebin.png
    :target: ../_images/import_rebin.png
-   :width: 65%
    :align: center
 
    Rebinning data on the fly as it is imported using the column
@@ -76,10 +74,8 @@ at the top of the tab contains every item from the group list. The one
 specified in that menu is the standard.
 
 .. _fig-preproc:
-
 .. figure:: ../../_images/import_preproc.png
    :target: ../_images/import_preproc.png
-   :width: 65%
    :align: center
 
    Pre-processing data as it is imported using the file selection dialog.

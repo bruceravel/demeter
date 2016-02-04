@@ -23,7 +23,6 @@ section of the main menu, as shown below.
 
 .. figure:: ../../_images/analysis.png
    :target: ../_images/analysis.png
-   :width: 65%
    :align: center
 
    The data analysis tools in the main menu.

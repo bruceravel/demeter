@@ -48,10 +48,8 @@ determines the k-weighting used in a plot of |chi| (k) data or in a
 Fourier transform.
 
 .. _fig-uikweights:
-
 .. figure:: ../../_images/ui_kweights.png
    :target: ../_images/ui_kweights.png
-   :width: 65%
    :align: center
 
    The controls for setting the amount of k-weighting in a plot or

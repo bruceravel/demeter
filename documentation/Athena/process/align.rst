@@ -23,10 +23,8 @@ tool, shown below, to make this somewhat easier.
 		  :procparam:`Energy shift` label on the main page.
 
 .. _fig-align:
-
 .. figure:: ../../_images/align.png
    :target: ../_images/align.png
-   :width: 65%
    :align: center
 
    The data alignment tool.
@@ -39,10 +37,8 @@ function is applied three times to the derivative of the |mu| (E) if
 that plotting option is selected.
 
 .. _fig-alignplot:
-
 .. figure:: ../../_images/align_plot.png
    :target: ../_images/align_plot.png
-   :width: 45%
    :align: center
 
    As you work on aligning your data, the current data group is

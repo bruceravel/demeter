@@ -65,10 +65,8 @@ the group list. This posts a dialog for entering the new label for the
 group, shown here.
 
 .. _fig-renaming:
-
 .. figure:: ../../_images/ui_renaming.png
    :target: ../_images/ui_renaming.png
-   :width: 65%
    :align: center
 
    Renaming a group list entry.
@@ -77,10 +75,8 @@ Hitting :button:`Return` or clicking the :button:`OK,light` button
 renames the group, shown here.
 
 .. _fig-renamed:
-
 .. figure:: ../../_images/ui_renamed.png
    :target: ../_images/ui_renamed.png
-   :width: 65%
    :align: center
 
    After renaming a group list entry.
@@ -117,10 +113,8 @@ Selecting :menuselection:`Group --> Show yaml for current group`
 displays the dialog shown here.
 
 .. _fig-about:
-
 .. figure:: ../../_images/ui_about.png
    :target: ../_images/ui_about.png
-   :width: 35%
    :align: center
 
    The dialog containing information about the data group.
@@ -137,10 +131,8 @@ energy, though. If you import a |chi| (k) file as |mu| (E) by
 accident, you will have to remove the group and re-import it.
 
 .. _fig-changetype:
-
 .. figure:: ../../_images/import_changetype.png
    :target: ../_images/import_changetype.png
-   :width: 30%
    :align: center
 
    Change type dialog
@@ -165,10 +157,8 @@ posted, as shown below, displaying the :guilabel:`Group` menu.
 
 
 .. _fig-groupcontext:
-
 .. figure:: ../../_images/ui_groupcontext.png
    :target: ../_images/ui_groupcontext.png
-   :width: 45%
    :align: center
 
    Clicking the right mouse button on a group list entry pops up this
@@ -190,10 +180,8 @@ return the k-weight buttons and the group list to their original
 places and the group list to its original original size.
 
 .. _fig-shrink:
-
 .. figure:: ../../_images/ui_shrink.png
    :target: ../_images/ui_shrink.png
-   :width: 45%
    :align: center
 
    Restore the shrunken k-weight buttons and plot options tabs.

@@ -32,10 +32,8 @@ To save a project file, simply select one of the :guilabel:`File` menu
 options highlighted in this figure.
 
 .. _fig-exportproject:
-
 .. figure:: ../../_images/export_project.png
    :target: ../_images/export_project.png
-   :width: 65%
    :align: center
 
    Saving a project file.

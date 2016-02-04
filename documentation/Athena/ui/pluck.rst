@@ -21,10 +21,8 @@ and data analysis tools use pluck buttons, as does the
 `indicator <../plot/indic.html>`__ plot options tab.
 
 .. _fig-pluck:
-
 .. figure:: ../../_images/ui_pluck.png
    :target: ../_images/ui_pluck.png
-   :width: 65%
    :align: center
 
    Using the pluck button for the upper edge of the normalization range.
@@ -33,7 +31,6 @@ and data analysis tools use pluck buttons, as does the
 .. subfigstart::
 
 .. _fig-pluckpoint:
-
 .. figure:: ../../_images/ui_pluckpoint.png
    :target: ../_images/ui_pluckpoint.png
    :width: 100%
@@ -44,7 +41,6 @@ and data analysis tools use pluck buttons, as does the
    button.
 
 .. _fig-plucked:
-
 .. figure:: ../../_images/ui_plucked.png
    :target: ../_images/ui_plucked.png
    :width: 100%

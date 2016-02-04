@@ -22,10 +22,8 @@ saved in a number of ways. The various choices are listed under the
 entries in the submenu.
 
 .. _fig-exportsingle:
-
 .. figure:: ../../_images/export_single.png
    :target: ../_images/export_single.png
-   :width: 65%
    :align: center
 
    Exporting a column data file for a group.
@@ -127,10 +125,8 @@ in a variety of forms using the :guilabel:`Save marked groups` submenu,
 as shown below.
 
 .. _fig-exportmarked:
-
 .. figure:: ../../_images/export_marked.png
    :target: ../_images/export_marked.png
-   :width: 65%
    :align: center
 
    Exporting column data files for the set of marked groups.
@@ -146,10 +142,8 @@ directory. Each marked group will be exported to a file in that
 directory with a file name formed from the group label.
 
 .. _fig-exporteach:
-
 .. figure:: ../../_images/export_each.png
    :target: ../_images/export_each.png
-   :width: 65%
    :align: center
 
    Exporting column data files for each of the marked groups.

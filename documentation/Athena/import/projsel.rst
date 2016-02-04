@@ -16,10 +16,8 @@ shown below, provides a way of selectively importing part or all of
 the contents of the project file.
 
 .. _fig-projsel:
-
 .. figure:: ../../_images/import_projsel.png
    :target: ../_images/import_projsel.png
-   :width: 40%
    :align: center
 
    The project selection dialog.

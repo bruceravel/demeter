@@ -35,7 +35,6 @@ button. This is shown here on the left.
 .. subfigstart::
 
 .. _fig-rbkginitial1:
-
 .. figure::  ../../_images/rbkg_initial.png
    :target: ../_images/rbkg_initial.png
    :width: 100%
@@ -43,7 +42,6 @@ button. This is shown here on the left.
    The :file:`fe.060` data and its default background function.
 
 .. _fig-rbkginitial_k:
-
 .. figure::  ../../_images/rbkg_initial_k.png
    :target: ../_images/rbkg_initial_k.png
    :width: 100%
@@ -51,7 +49,6 @@ button. This is shown here on the left.
    The :file:`fe.060` |chi| (k) data with its default background function.
 
 .. _fig-rbkginitial_r:
-
 .. figure::  ../../_images/rbkg_initial_r.png
    :target: ../_images/rbkg_initial_r.png
    :width: 100%
@@ -82,10 +79,8 @@ compare different values. Do that by selecting :menuselection:`Group
 :button:`Alt`-:button:`y`. :demeter:`athena` now looks like this.
 
 .. _fig-rbkg:
-
 .. figure:: ../../_images/rbkg.png
    :target: ../_images/rbkg.png
-   :width: 65%
    :align: center
 
    The original :file:`fe.060` data and a copy of that data.
@@ -103,7 +98,6 @@ look something like this.
 .. subfigstart::
 
 .. _fig-rbkg102:
-
 .. figure::  ../../_images/rbkg_1_0_2.png
    :target: ../_images/rbkg_1_0_2.png
    :width: 100%
@@ -112,7 +106,6 @@ look something like this.
    :procparam:`rbkg` values of 1 and 0.2.
 
 .. _fig-rbkg102k:
-
 .. figure::  ../../_images/rbkg_1_0_2k.png
    :target: ../_images/rbkg_1_0_2k.png
    :width: 100%
@@ -121,7 +114,6 @@ look something like this.
    :procparam:`rbkg` values of 1 and 0.2.
 
 .. _fig-rbkg02e:
-
 .. figure::  ../../_images/rbkg_0_2e.png
    :target: ../_images/rbkg_0_2e.png
    :width: 100%
@@ -158,16 +150,29 @@ that is not able to follow the actual shape of the data.
 What happens if the value of :procparam:`rbkg` is set to a very large
 value? The |chi| (R) data for the values 1 and 2.5 are shown here.
 
-.. _fig-rbkg_125:
 
-.. figure:: ../../_images/rbkg_1_2_5.png
+.. subfigstart::
+
+.. _fig-rbkg125k:
+.. figure::  ../../_images/rbkg_1_2_5.png
    :target: ../_images/rbkg_1_2_5.png
-   :width: 45%
-   :align: center
+   :width: 100%
 
-   (Right) Comparing |chi| (R) for the data and its copy with :procparam:`rbkg` values
-   of 1 and 2.5. (Left) |mu| (E) and the background for the copy with an
-   :procparam:`rbkg` value 2.5.
+   Comparing |chi| (R) for the data and its copy with
+   :procparam:`rbkg` values of 1 and 2.5.
+
+.. _fig-rbkg125ee:
+.. figure::  ../../_images/rbkg_2_5e.png
+   :target: ../_images/rbkg_2_5e.png
+   :width: 100%
+
+   |mu| (E) and the background for the copy with an :procparam:`rbkg`
+   value 2.5.
+
+.. subfigend::
+   :width: 0.45
+   :label: _fig-rbkg125
+
 
 Using a very large value of :procparam:`rbkg` results in significant change to the
 first peak in |chi| (R). We can see why by looking at the background function

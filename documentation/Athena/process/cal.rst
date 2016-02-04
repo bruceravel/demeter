@@ -14,10 +14,8 @@ to put your data onto an absolute energy grid.  For metals, that
 value is usually the tabulated edge energy.
 
 .. _fig-calibrate:
-
 .. figure:: ../../_images/calibrate.png
    :target: ../_images/calibrate.png
-   :width: 65%
    :align: center
 
    This is the calibration tool.
@@ -38,10 +36,8 @@ button then click on a point in the plot. By default, the
 absorber measured for these data, but that too can be edited.
 
 .. _fig-calplot:
-
 .. figure:: ../../_images/calibrate_plot.png
    :target: ../_images/calibrate_plot.png
-   :width: 45%
    :align: center
 
    As you work on calibrating your data, the current reference point is

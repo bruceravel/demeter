@@ -11,10 +11,8 @@ Special plots for the current group
 -----------------------------------
 
 .. _fig-specialplot:
-
 .. figure:: ../../_images/plot_special.png
    :target: ../_images/plot_special.png
-   :width: 65%
    :align: center
 
    A number of special plots and other plotting features are provided
@@ -29,10 +27,8 @@ Special plots for the current group
     right-clicking on the :button:`kq,orange` button.
 
     .. _fig-quadplot:
-
     .. figure:: ../../_images/plot_quad.png
        :target: ../_images/plot_quad.png
-       :width: 55%
        :align: center
 
        Quad plot of Fe foil.
@@ -43,10 +39,8 @@ Special plots for the current group
     makes it display nicely along with the normalized data.
 
     .. _fig-ndplot:
-
     .. figure:: ../../_images/plot_nd.png
        :target: ../_images/plot_nd.png
-       :width: 55%
        :align: center
 
        Norm and deriv of Fe foil
@@ -63,10 +57,8 @@ Special plots for the current group
     <../other/prefs.html>`__.)
 
     .. _fig-mui0plot:
-
     .. figure:: ../../_images/plot_mui0.png
        :target: ../_images/plot_mui0.png
-       :width: 55%
        :align: center
 
        mu(E) of Au chloride along with the signal and I\ :sub:`0`
@@ -81,10 +73,8 @@ Special plots for the current group
     button.
 
     .. _fig-k123plot:
-
     .. figure:: ../../_images/plot_k123.png
        :target: ../_images/plot_k123.png
-       :width: 55%
        :align: center
 
        k123 plot of Fe foil
@@ -101,10 +91,8 @@ Special plots for the current group
     button.
 
     .. _fig-r123plot:
-
     .. figure:: ../../_images/plot_r123.png
        :target: ../_images/plot_r123.png
-       :width: 55%
        :align: center
 
        R123 plot of Fe foil
@@ -125,10 +113,8 @@ to the set of groups in the group list that have been
     button.
 
     .. _fig-biquadplot:
-
     .. figure:: ../../_images/plot_biquad.png
        :target: ../_images/plot_biquad.png
-       :width: 55%
        :align: center
 
        A quad plot comparing two marked groups.
@@ -140,10 +126,8 @@ to the set of groups in the group list that have been
     axis.
 
     .. _fig-e00plot:
-
     .. figure:: ../../_images/plot_e0_0.png
        :target: ../_images/plot_e0_0.png
-       :width: 55%
        :align: center
 
        Plot of Fe and Cu foils with E0 at 0.
@@ -156,10 +140,8 @@ to the set of groups in the group list that have been
     `configuration parameter <../other/prefs.html>`__.)
 
     .. _fig-i0plot:
-
     .. figure:: ../../_images/plot_marked_i0.png
        :target: ../_images/plot_marked_i0.png
-       :width: 55%
        :align: center
 
        The I0 signals of three marked groups
@@ -172,10 +154,8 @@ to the set of groups in the group list that have been
     will oscillate around the level of the edge step size.
 
     .. _fig-scaledplot:
-
     .. figure:: ../../_images/plot_scaled.png
        :target: ../_images/plot_scaled.png
-       :width: 55%
        :align: center
 
        Plot of normalized data scaled by edge step.
@@ -199,10 +179,8 @@ interesting ways.
     parameter <../other/prefs.html>`__.
 
     .. _fig-stddevplot:
-
     .. figure:: ../../_images/merge_stddev.png
        :target: ../_images/merge_stddev.png
-       :width: 55%
        :align: center
 
        A plot of merged data +/- the standard deviation for Au hydroxide
@@ -215,10 +193,8 @@ interesting ways.
     is distributed in energy.
 
     .. _fig-varianceplot:
-
     .. figure:: ../../_images/merge_variance.png
        :target: ../_images/merge_variance.png
-       :width: 55%
        :align: center
 
        A plot of merged data and the variance for Fe foil data
@@ -260,10 +236,8 @@ Once you have installed the font, simply check :menuselection:`Plot
 
 
 .. _fig-xkcd:
-
 .. figure:: ../../_images/plot_xkcd.png
    :target: ../_images/plot_xkcd.png
-   :width: 55%
    :align: center
 
    A plot sort of in the XKCD style.

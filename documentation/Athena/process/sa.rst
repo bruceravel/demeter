@@ -60,10 +60,8 @@ The self-absorption tool below allows you to choose between the four
 algorithms and to provide the parameters of the correction.
 
 .. _fig-selfabs:
-
 .. figure:: ../../_images/selfabs.png
    :target: ../_images/selfabs.png
-   :width: 65%
    :align: center
 
    The self-absorption tool.
@@ -102,7 +100,6 @@ the corrected spectra are shown on the bottom.
 .. subfigstart::
 
 .. _fig-saplot:
-
 .. figure:: ../../_images/selfabs_plot.png
    :target: ../_images/selfabs_plot.png
    :width: 100%
@@ -110,7 +107,6 @@ the corrected spectra are shown on the bottom.
    This is the 0.94M data corrected by this algorithm.
 
 .. _fig-sabefore:
-
 .. figure:: ../../_images/selfabs_before.png 
    :target: ../_images/selfabs_before.png
    :width: 100%
@@ -119,7 +115,6 @@ the corrected spectra are shown on the bottom.
    of self-absorption growing for the more concentrated samples.
 
 .. _fig-saafter:
-
 .. figure:: ../../_images/selfabs_after.png 
    :target: ../_images/selfabs_after.png
    :width: 100%
@@ -143,10 +138,8 @@ is suitable for samples of finite thickness. The other three all assume
 that samples are infinitely thick.
 
 .. _fig-sabooth:
-
 .. figure:: ../../_images/selfabs_booth.png
    :target: ../_images/selfabs_booth.png
-   :width: 65%
    :align: center
 
    The self-absorption tool with copper data for correction using the
@@ -174,10 +167,8 @@ corrected data group and compare it to the transmission data, as shown
 in the plot below.
 
 .. _fig-saboothplot:
-
 .. figure:: ../../_images/selfabs_boothplot.png
    :target: ../_images/selfabs_boothplot.png
-   :width: 45%
    :align: center
 
    It works pretty well. The green trace is the corrected fluorescence
@@ -212,7 +203,6 @@ provides a useful metric for whether a film sample can be considered
 .. subfigstart::
 
 .. _fig-sainfoe:
-
 .. figure:: ../../_images/sa_info_e.png
    :target: ../_images/sa_info_e.png
    :width: 100%
@@ -220,7 +210,6 @@ provides a useful metric for whether a film sample can be considered
    The information depth for an iron/gallium alloy, plotted in energy.
 
 .. _fig-sainfok:
-
 .. figure:: ../../_images/sa_info_k.png
    :target: ../_images/sa_info_k.png
    :width: 100%

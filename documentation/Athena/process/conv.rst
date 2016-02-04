@@ -21,10 +21,8 @@ of broadened data is shown in on the left in the next figure and an
 example of data with artificial noise is shown on the right.
 
 .. _fig-convolution:
-
 .. figure:: ../../_images/convolution.png
    :target: ../_images/convolution.png
-   :width: 65%
    :align: center
 
    The convolution tool.
@@ -33,7 +31,6 @@ example of data with artificial noise is shown on the right.
 .. subfigstart::
 
 .. _fig-convconv:
-
 .. figure::  ../../_images/convolution_conv.png
    :target: ../_images/convolution_conv.png
    :width: 100%
@@ -41,7 +38,6 @@ example of data with artificial noise is shown on the right.
    Iron foil data broadened by 1 eV.
 
 .. _fig-convnoise:
-
 .. figure::  ../../_images/convolution_noise.png
    :target: ../_images/convolution_noise.png
    :width: 100%

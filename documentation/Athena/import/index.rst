@@ -25,7 +25,7 @@ data that most people use import into :demeter:`athena`.
 :demeter:`athena`'s column selection dialog is used to convert the raw
 scalars into |mu| (E) data. Other common kinds of data files that
 might be read into :demeter:`athena` are files that contain |mu| (E)
-or |chi| (k) data in columns or the output files from Feff,
+or |chi| (k) data in columns or the output files from :demeter:`feff`,
 :file:`xmu.dat` and :file:`chi.dat`.
 
 Here is an example of a data file that will make :demeter:`athena`

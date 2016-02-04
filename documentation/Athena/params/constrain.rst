@@ -32,10 +32,8 @@ mouse click* on any of the parameter labels on the main window will post
 a context menu, as shown in this figure.
 
 .. _fig-paramparam:
-
 .. figure:: ../../_images/param_param.png
    :target: ../_images/param_param.png
-   :width: 65%
    :align: center
 
    Posting a context menu for an individual parameter.
@@ -93,10 +91,8 @@ mouse clicks much like the entry box labels. A right click posts a
 context menu, as shown in the picture below.
 
 .. _fig-paramgroup:
-
 .. figure:: ../../_images/param_group.png
    :target: ../_images/param_group.png
-   :width: 65%
    :align: center
 
    Posting a context menu for a group of parameters.
@@ -122,10 +118,8 @@ These all-parameter operations are found in the Group menu, as shown in
 this picture.
 
 .. _fig-paramall:
-
 .. figure:: ../../_images/param_all.png
    :target: ../_images/param_all.png
-   :width: 65%
    :align: center
 
    The :guilabel:`Group` menu, which contains the options for

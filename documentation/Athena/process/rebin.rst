@@ -23,10 +23,8 @@ sampled. The energy grid is typically 0.3 to 0.5 eV. That is fine in the
 edge region, but much too fine for the EXAFS region.
 
 .. _fig-rebintool:
-
 .. figure:: ../../_images/rebin.png
    :target: ../_images/rebin.png
-   :width: 65%
    :align: center
 
    The rebinning tool.
@@ -53,10 +51,8 @@ feature <../import/preproc.html#rebinning-quick-scan-data>`__ of the column
 selection dialog.
 
 .. _fig-rebinplot:
-
 .. figure:: ../../_images/rebin_plot.png
    :target: ../_images/rebin_plot.png
-   :width: 45%
    :align: center
 
    Quick scan data that have been rebinned onto a normal EXAFS energy grid.

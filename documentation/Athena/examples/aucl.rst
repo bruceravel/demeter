@@ -68,7 +68,6 @@ characteristic of the metallic gold spectrum.
 .. subfigstart::
 
 .. _fig-aucldata:
-
 .. figure::  ../../_images/ex_aucl_data.png
    :target: ../_images/ex_aucl_data.png
    :width: 100%
@@ -78,7 +77,6 @@ characteristic of the metallic gold spectrum.
    chloride. The bottom trace shows the end product, metallic gold.
 
 .. _fig-auclstandards:
-
 .. figure::  ../../_images/ex_aucl_standards.png
    :target: ../_images/ex_aucl_standards.png
    :width: 100%
@@ -110,10 +108,8 @@ fitting range. From the first two drop-down menus, select
 :guilabel:`Au foil` and :guilabel:`Au3 Cl aq`, as shown below.
 
 .. _fig-lcfagain:
-
 .. figure:: ../../_images/lcf.png
    :target: ../_images/lcf.png
-   :width: 65%
    :align: center
 
    The linear combination fitting tool with the end member standard
@@ -128,10 +124,8 @@ seems that we are well justified in our assumption that these data can
 be modeled by a simple linear combination of the end members.
 
 .. _fig-auclinit:
-
 .. figure:: ../../_images/ex_aucl_init.png
    :target: ../_images/ex_aucl_init.png
-   :width: 45%
    :align: center
 
    The result of the initial fit to the 7.03 hour data using the end
@@ -160,10 +154,8 @@ fit. In the third row, select :guilabel:`Au sulfide` from the drop-down
 menu, then click :button:`Fit this group,light` from the operations list.
 
 .. _fig-auclplussulfide:
-
 .. figure:: ../../_images/ex_aucl_plussulfide.png
    :target: ../_images/ex_aucl_plussulfide.png
-   :width: 45%
    :align: center
 
    The result of the fit to the 7.03 hour data using the end members along
@@ -272,10 +264,8 @@ list. This will take a while. It's a good time to get that cup of
 coffee.
 
 .. _fig-lcfcombo2:
-
 .. figure:: ../../_images/lcf_combo.png
    :target: ../_images/lcf_combo.png
-   :width: 65%
    :align: center
 
    The results of the combinatorial fitting sequence, as displayed on the
@@ -330,10 +320,8 @@ three-standard fitting model to each one. Again, you may want to relax
 as you wait.
 
 .. _fig-auclsequence:
-
 .. figure:: ../../_images/ex_aucl_sequence.png
    :target: ../_images/ex_aucl_sequence.png
-   :width: 65%
    :align: center
 	
    A report on the results of fitting the marked groups. The report is
@@ -353,10 +341,8 @@ content is not seen in the image, but it remains roughly constant
 throughout the experiment.
 
 .. _fig-auclexcel:
-
 .. figure:: ../../_images/ex_aucl_excel.png
    :target: ../_images/ex_aucl_excel.png
-   :width: 75%
    :align: center
 
    A report on the results of fitting the marked groups. The report is

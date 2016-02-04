@@ -85,10 +85,8 @@ line in this table will display a message in the status bar giving the
 emission energy expressed in wavelength units.
 
 .. _fig-hephabsorption:
-
 .. figure:: ../_images/Hephaestus_absorption.png
    :target: _images/Hephaestus_absorption.png
-   :width: 65%
    :align: center
 
    The absorption tool.
@@ -125,11 +123,9 @@ The rules for the selection of the filter elements are:
    with a K-edge between the line and absorption energies of the
    absorber.
 
-.. _fig-hephfilterplot:
-   
+.. _fig-hephfilterplot:   
 .. figure:: ../_images/Hephaestus_filterplot.png
    :target: _images/Hephaestus_filterplot.png
-   :width: 45%
    :align: center
 
    A filter plot showing why manganese is a good choice for an iron
@@ -147,10 +143,8 @@ disable all elements that cannot be measured by that edge at the
 beamline.
 
 .. _fig-hephbeamline:
-
 .. figure:: ../_images/Hephaestus_beamline.png
    :target: _images/Hephaestus_beamline.png
-   :width: 65%
    :align: center
 
    The absorption tool with beamline customization for the NSLS-II BMM
@@ -211,10 +205,8 @@ Finally, an energy in eV is required at which to make the calculation.
 
 
 .. _fig-hephformulas:
-
 .. figure:: ../_images/Hephaestus_formulas.png
    :target: _images/Hephaestus_formulas.png
-   :width: 65%
    :align: center
 
    The formulas tool.
@@ -411,10 +403,8 @@ The ionization energy is about 32 volts for most gasses and the electron
 charge ``e`` is about 1.6 |times| 10\ :sup:`-19` Coulombs.
 
 .. _fig-hephion:
-
 .. figure:: ../_images/Hephaestus_ionchambers.png
    :target: _images/Hephaestus_ionchambers.png
-   :width: 65%
    :align: center
 
    The ion chambers tool.
@@ -435,10 +425,8 @@ contains data on thermal neutron scattering lengths and cross sections
 for the major isotopes.
 
 .. _fig-hephdata:
-
 .. figure:: ../_images/Hephaestus_data.png
    :target: _images/Hephaestus_data.png
-   :width: 65%
    :align: center
 
    The data tool.
@@ -483,10 +471,8 @@ named K and L transition is shown. The chart follows Figure 1.1 in the
 <http://cxro.lbl.gov/x-ray-data-booklet>`_ .
 
 .. _fig-hephtransitions:
-
 .. figure:: ../_images/Hephaestus_transitions.png
    :target: _images/Hephaestus_transitions.png
-   :width: 65%
    :align: center
 
    The transitions tool.
@@ -512,10 +498,8 @@ energy. This can be useful in the case of poor harmonic rejection in the
 incident beam and the excitation of a much higher energy edge.
 
 .. _fig-hephedgefinder:
-
 .. figure:: ../_images/Hephaestus_edgefinder.png
    :target: _images/Hephaestus_edgefinder.png
-   :width: 65%
    :align: center
 
    The edge finder tool.
@@ -539,10 +523,8 @@ energy. Hopefully this will help you identify the mysterious line in
 your fluorescence data!
 
 .. _fig-hephlinefinder:
-
 .. figure:: ../_images/Hephaestus_linefinder.png
    :target: _images/Hephaestus_linefinder.png
-   :width: 65%
    :align: center
 
    The line finder tool.
@@ -575,19 +557,15 @@ printout from EXAFS Materials that is found at many beamlines.
 http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
 .. _fig-hephstandards:
-
 .. figure:: ../_images/Hephaestus_standards.png
    :target: _images/Hephaestus_standards.png
-   :width: 65%
    :align: center
 
    The standards tool.
 
 .. _fig-hephstandardsplot:
-
 .. figure:: ../_images/Hephaestus_standards_plot.png
    :target: _images/Hephaestus_standards_plot.png
-   :width: 45%
    :align: center
 
    An anotated standards plot for manganese oxalate.
@@ -610,19 +588,15 @@ The f' and f" data can be saved to a file.
 
 
 .. _fig-hephf1f2:
-
 .. figure:: ../_images/Hephaestus_f1f2.png
    :target: _images/Hephaestus_f1f2.png
-   :width: 65%
    :align: center
 
    The f' and f" tool.
 	   
 .. _fig-hephf1f2plot:
-
 .. figure:: ../_images/Hephaestus_f1f2_plot.png
    :target: _images/Hephaestus_f1f2_plot.png
-   :width: 45%
    :align: center
 
    An f' and f" plot for vanadium.

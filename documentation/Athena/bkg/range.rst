@@ -40,10 +40,8 @@ This shows an example of a change in the upper bound of the spline
 range.
 
 .. _fig-bkg_splinerange:
-
 .. figure:: ../../_images/bkg_splinerange.png
    :target: ../_images/bkg_splinerange.png
-   :width: 45%
    :align: center
 
    Gold foil data showing the effect of changing the upper end of the

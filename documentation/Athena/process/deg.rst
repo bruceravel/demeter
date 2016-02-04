@@ -28,10 +28,8 @@ The process by which glitchy points are removed from the data is called
 deglitching. Yes, I also think that's a funny sounding word.
 
 .. _fig-deglitch:
-
 .. figure:: ../../_images/deglitch.png
    :target: ../../_images/deglitch.png
-   :width: 65%
    :align: center
 
    The deglitching tool.
@@ -62,7 +60,6 @@ point from the data, shown in the bottom panel.
 .. subfigstart::
 
 .. _fig-degplot:
-
 .. figure::  ../../_images/deglitch_plot.png
    :target: ../_images/deglitch_plot.png
    :width: 100%
@@ -73,7 +70,6 @@ point from the data, shown in the bottom panel.
    resulted in occasionally spikes in the data.
 
 .. _fig-degpoint:
-
 .. figure::  ../../_images/deglitch_point.png
    :target: ../_images/deglitch_point.png
    :width: 100%
@@ -82,7 +78,6 @@ point from the data, shown in the bottom panel.
    removal is indicated with a little orange circle.
 
 .. _fig-degpointremoved:
-
 .. figure::  ../../_images/deglitch_pointremoved.png
    :target: ../_images/deglitch_pointremoved.png
    :width: 100%
@@ -125,7 +120,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
 .. subfigstart::
 
 .. _fig-degchiemu:
-
 .. figure::  ../../_images/deglitch_chie_mu.png
    :target: ../_images/deglitch_chie_mu.png
    :width: 100%
@@ -134,7 +128,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
    hidden in the high energy region.
 
 .. _fig-degchiek:
-
 .. figure::  ../../_images/deglitch_chie_k.png
    :target: ../_images/deglitch_chie_k.png
    :width: 100%
@@ -143,7 +136,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
    these |chi| (k) data is clearly seen.
 
 .. _fig-degchie:
-
 .. figure::  ../../_images/deglitch_chie.png
    :target: ../_images/deglitch_chie.png
    :width: 100%
@@ -180,10 +172,8 @@ chosen by typing in the box or by using `the pluck button
 <../ui/pluck.html>`__.
 
 .. _fig-trunplot:
-
 .. figure:: ../../_images/truncate_plot.png
    :target: ../_images/truncate_plot.png
-   :width: 45%
    :align: center
 
    Tin oxide data with some spurious points near the end of the scan.
@@ -200,10 +190,8 @@ Ba L\ :sub:`III` edge is at 5247 eV. A careless choice of spline and
 normalization range will lead to a data processing disaster.
 
 .. _fig-trunbto:
-
 .. figure:: ../../_images/truncate_batio3.png
    :target: ../_images/truncate_batio3.png
-   :width: 45%
    :align: center
 
    The Ti K and Ba L\ :sub:`III` edges of BaTiO\ :sub:`3`.

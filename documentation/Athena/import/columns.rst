@@ -18,10 +18,8 @@ group list. A file selection dialog opens. On my Linux computer, it
 looks like this:
 
 .. _fig-importfiledialog:
-
 .. figure:: ../../_images/import_filedialog.png
    :target: ../_images/import_filedialog.png
-   :width: 60%
    :align: center
 
    The file selection dialog on a Linux computer.
@@ -51,10 +49,8 @@ The controls in the tabs at the bottom left are the discussed in later
 sections.
 
 .. _fig-importcolsel:
-
 .. figure:: ../../_images/import_colsel.png
    :target: ../_images/import_colsel.png
-   :width: 75%
    :align: center
 
    The column selection dialog.
@@ -103,10 +99,8 @@ The other choices are:
 -  xmu.dat : the xmu.dat file from :demeter:`feff`
 
 .. _fig-importtypes:
-
 .. figure:: ../../_images/import_types.png
    :target: ../_images/import_types.png
-   :width: 75%
    :align: center
 
    Data types in the column selection dialog.
@@ -121,10 +115,8 @@ vice-versa, nor to change one of the :demeter:`feff` types to a
 non-:demeter:`feff` type.
 
 .. _fig-importchangetype:
-
 .. figure:: ../../_images/import_changetype.png
    :target: ../_images/import_changetype.png
-   :width: 35%
    :align: center
 
    The dialog for changing data type of a group.
@@ -139,7 +131,7 @@ index, requires special treatment.
 .. versionadded:: 0.9.20 There is now a label on the main page right
    next to the :guilabel:`Freeze` check button which identifies the file
    type of the data. You can toggle between xanes and xmu data by
-   :button:`Control`-:button:`Alt`-:button:`Left` clicking on that label.
+   :button:`Control`-:button:`Alt`-left clicking on that label.
 
 
 Multi-element detector data
@@ -151,10 +143,8 @@ channels of the MED as elements of the numerator, as shown in this
 example of the column selection dialog.
 
 .. _fig-importmed:
-
 .. figure:: ../../_images/import_med.png
    :target: ../_images/import_med.png
-   :width: 65%
    :align: center
 
    Importing multi-element data in the column selection dialog.
@@ -166,10 +156,8 @@ You have the option of clicking the check button that says
 :guilabel:`Save each channel as its own group`, as shown here.
 
 .. _fig-importmedch:
-
 .. figure:: ../../_images/import_medch.png
    :target: ../_images/import_medch.png
-   :width: 75%
    :align: center
 
    Importing multi-element data in the column selection dialog and saving
@@ -181,10 +169,8 @@ group list. This is handy for examining the channels and discarding any
 that are not of usable quality.
 
 .. _fig-importmedchimported:
-
 .. figure:: ../../_images/import_medchimported.png
    :target: ../_images/import_medchimported.png
-   :width: 65%
    :align: center
 
    After importing the channels of multi-element data as individual groups.
@@ -198,10 +184,8 @@ range,light` button pops open a dialog which allows you to specify a
 range of numerator buttons to click all at once.
 
 .. _fig-importcolumnrange:
-
 .. figure:: ../../_images/import_columnrange.png
    :target: ../_images/import_columnrange.png
-   :width: 35%
    :align: center
 
    The dialog for selecting a range of columns.

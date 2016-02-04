@@ -71,7 +71,6 @@ give each a name.
 
 .. _fig-athenamain:
 .. figure:: ../_images/athena_main.png
-   :width: 65%
    :align: center
 
    The parts of ATHENA.
@@ -113,7 +112,6 @@ when making a forward Fourier transform. Below that are various other
 
 .. _fig-athenawithdata:
 .. figure:: ../_images/athena_withdata.png
-   :width: 65%
    :align: center
 
    After importing data.

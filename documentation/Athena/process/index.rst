@@ -25,10 +25,8 @@ the button labeled :button:`Return to the main window,light`. Doing so
 will close the special tool and redisplay the main window.
 
 .. _fig-process:
-
 .. figure:: ../../_images/process.png
    :target: ../_images/process.png
-   :width: 65%
    :align: center
 
    The main menu is used to access almost all data processing

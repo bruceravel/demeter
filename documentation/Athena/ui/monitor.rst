@@ -34,10 +34,8 @@ copied into the bottom part of Figure :numref:`Fig. %s
 
 
 .. _fig-monitorcommand:
-
 .. figure:: ../../_images/monitor_command.png
    :target: ../_images/monitor_command.png
-   :width: 50%
    :align: center
 
    The processing and plotting command buffers
@@ -54,10 +52,8 @@ serves as a loose record of the actions taken during this session with
 :demeter:`athena`.
 
 .. _fig-monitorstatus:
-
 .. figure:: ../../_images/monitor_status.png
    :target: ../_images/monitor_status.png
-   :width: 50%
    :align: center
 
    The status bar buffer
@@ -79,10 +75,8 @@ features or debugging problems.  A :quoted:`yaml` is a way of
 `serializing data <http://www.yaml.org/>`_ into readable text.
 
 .. _fig-monitordebug:
-
 .. figure:: ../../_images/monitor_debug.png
    :target: ../_images/monitor_debug.png
-   :width: 20%
    :align: center
 
    The debugging submenu

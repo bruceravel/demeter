@@ -48,10 +48,8 @@ the specified energy.
 That said, let's carry on.
 
 .. _fig-mee:
-
 .. figure:: ../../_images/mee.png
    :target: ../_images/mee.png
-   :width: 65%
    :align: center
 
    The multi-electron excitation removal tool.
@@ -66,7 +64,6 @@ excitation at about 120 volts above the edge.
 .. subfigstart::
 
 .. _fig-meee:
-
 .. figure::  ../../_images/mee_e.png
    :target: ../_images/mee_e.png
    :width: 100%
@@ -77,7 +74,6 @@ excitation at about 120 volts above the edge.
    plot. 
 
 .. _fig-meek:
-
 .. figure::  ../../_images/mee_k.png
    :target: ../_images/mee_k.png
    :width: 100%

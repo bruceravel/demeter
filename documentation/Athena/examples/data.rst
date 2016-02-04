@@ -23,10 +23,8 @@ detectors. Select columns to form |mu| (E) data as shown in the image
 below.
 
 .. _fig-fecol:
-
 .. figure:: ../../_images/ex_data_col.png
    :target: ../_images/ex_data_col.png
-   :width: 65%
    :align: center
 
    The column selection dialog with columns chosen correctly for the iron
@@ -49,7 +47,6 @@ for the iron K edge is 7112 eV.
 .. subfigstart::
 
 .. _fig-fedatacalib:
-
 .. figure::  ../../_images/ex_data_calib.png
    :target: ../_images/ex_data_calib.png
    :width: 100%
@@ -58,7 +55,6 @@ for the iron K edge is 7112 eV.
    Derivative of |mu| (E). 
 
 .. _fig-fedatasecond:
-
 .. figure::  ../../_images/ex_data_second.png
    :target: ../_images/ex_data_second.png
    :width: 100%
@@ -106,7 +102,6 @@ plot them in energy by clicking on the :button:`E,purple` button.
 .. subfigstart::
 
 .. _fig-fedatamisaligned:
-
 .. figure::  ../../_images/ex_data_misaligned.png
    :target: ../_images/ex_data_misaligned.png
    :width: 100%
@@ -114,7 +109,6 @@ plot them in energy by clicking on the :button:`E,purple` button.
    Misaligned iron foil |mu| (E) data.
 
 .. _fig-fedataalign:
-
 .. figure::  ../../_images/ex_data_align.png
    :target: ../_images/ex_data_align.png
    :width: 100%
@@ -123,7 +117,6 @@ plot them in energy by clicking on the :button:`E,purple` button.
    tool.
 
 .. _fig-fedatachik:
-
 .. figure::  ../../_images/ex_data_chik.png
    :target: ../_images/ex_data_chik.png
    :width: 100%
@@ -131,7 +124,6 @@ plot them in energy by clicking on the :button:`E,purple` button.
    Aligned data plotted in k, but with :procparam:`E0` unconstrained.
 
 .. _fig-fedataaligned:
-
 .. figure::  ../../_images/ex_data_aligned.png
    :target: ../_images/ex_data_aligned.png
    :width: 100%
@@ -193,10 +185,8 @@ described in `the section on multiple file
 import <../import/multiple.html>`__ and shown below.
 
 .. _fig-datamany:
-
 .. figure:: ../../_images/ex_data_many.png
    :target: ../_images/ex_data_many.png
-   :width: 65%
    :align: center
 
    Importing the remaining iron foil data.
@@ -210,10 +200,8 @@ on it in the group list. Once you have done all of that,
 :demeter:`athena` will look like this.
 
 .. _fig-datamarked:
-
 .. figure:: ../../_images/ex_data_marked.png
    :target: ../_images/ex_data_marked.png
-   :width: 65%
    :align: center
 	
    All of the iron foil data have been imported and marked.
@@ -240,10 +228,8 @@ button. Since all the groups are aligned, the automated alignment
 algorithm will be applied to each one in turn.
 
 .. _fit-dataalignmarked:
-
 .. figure:: ../../_images/ex_data_alignmarked.png
    :target: ../_images/ex_data_alignmarked.png
-   :width: 65%
    :align: center
 
    All of the iron foil data are marked and waiting to be aligned.
@@ -264,10 +250,8 @@ values seems horribly tedious. Here we see the true value of the
 The |chi| (k) data for the aligned and constrained data are shown below.
 
 .. _fig-dataallchik:
-
 .. figure:: ../../_images/ex_data_allchik.png
    :target: ../_images/ex_data_allchik.png
-   :width: 45%
    :align: center
 
    The |chi| (k) spectra for all the iron foil data.
@@ -281,10 +265,8 @@ standard, then click the :guilabel:`Mark`, :guilabel:`Align`, and
 :guilabel:`Set parameters` checkbuttons.
 
 .. _fig-datapreproc:
-
 .. figure:: ../../_images/ex_data_preproc.png
    :target: ../_images/ex_data_preproc.png
-   :width: 65%
    :align: center
 	
    Using the preprocessing features of the column selection dialog to align
@@ -312,10 +294,8 @@ this process for the data at each temperature.
 Now you are ready to begin analysis on the iron foil data!
 
 .. _fig-datamerge:
-
 .. figure:: ../../_images/ex_data_merge.png
    :target: ../_images/ex_data_merge.png
-   :width: 45%
    :align: center
 
    Merging the data at each temperature and renaming the merged groups.

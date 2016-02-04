@@ -34,10 +34,8 @@ associated with the file that has meaning to the user but which does not
 fit neatly into semantic groupings.
 
 .. _fig-metadata:
-
 .. figure:: ../../_images/metadata.png
    :target: ../_images/metadata.png
-   :width: 65%
    :align: center
 
    The metadata display tool.

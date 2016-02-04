@@ -70,10 +70,8 @@ near the bottom of the background removal section of controls, as seen
 in the following screenshot.
 
 .. _fig-bkg_ednorm:
-
 .. figure:: ../../_images/bkg_ednorm.png
    :target: ../_images/bkg_ednorm.png
-   :width: 45%
    :align: center
 
    S K-edge EXAFS data measured in fluorescence. Note that the control

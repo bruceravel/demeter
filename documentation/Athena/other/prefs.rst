@@ -14,10 +14,8 @@ proper value for a parameter, I chose a default and made an entry for
 it in the preference tool. The preference tool is shown here.
 
 .. _fig-prefs:
-
 .. figure:: ../../_images/prefs.png
    :target: ../_images/prefs.png
-   :width: 65%
    :align: center
 
    The preferences tool.

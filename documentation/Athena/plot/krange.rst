@@ -24,10 +24,8 @@ when :procparam:`kmax` is set to 22 |AA| :sup:`-1`, the entire measured data
 range, is the second coordination visible as a resolved peak.
 
 .. _fig-krange:
-
 .. figure:: ../../_images/plot_fe_krange.png
    :target: ../_images/plot_fe_krange.png
-   :width: 45%
    :align: center
 
    Iron foil data, plotted with three different k-ranges.

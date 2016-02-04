@@ -19,7 +19,6 @@ desorbed, resulting in measurable changes in the spectra.
 
 .. figure:: ../../_images/diff_mu.png
    :target: ../_images/diff_mu.png
-   :width: 45%
    :align: center
 
    The dehydrogenation sequence of a Pt-bearing catalyst.
@@ -39,7 +38,6 @@ that you take great care with `selecting parameters
 
 .. figure:: ../../_images/diff.png
    :target: ../_images/diff.png
-   :width: 65%
    :align: center
 
    The difference spectrum tool with data taken from the ``diff.prj``
@@ -123,7 +121,6 @@ of this shown below.
 
 .. figure:: ../../_images/diff_areas.png
    :target: ../_images/diff_areas.png
-   :width: 45%
    :align: center
 
    Integrated areas for a sequence of difference spectra.

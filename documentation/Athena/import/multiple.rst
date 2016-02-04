@@ -16,10 +16,8 @@ holding down the :button:`Control` key. On my Linux computer, it looks
 like this.
 
 .. _fig-multiple:
-
 .. figure:: ../../_images/import_multiple.png
    :target: ../_images/import_multiple.png
-   :width: 45%
    :align: center
 
    Importing multiple data sets with the file selection dialog.
@@ -48,10 +46,8 @@ Each file imported in this way will be listed in the group list, shown
 here
 
 .. _fig-multipleimported:
-
 .. figure:: ../../_images/import_multipleimported.png
    :target: ../_images/import_multipleimported.png
-   :width: 65%
    :align: center
 
    After importing multiple data sets.

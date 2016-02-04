@@ -27,10 +27,8 @@ edge, you can align any data, even data measured years apart or at
 different synchrotrons.
 
 .. _fig-importref:
-
 .. figure:: ../../_images/import_ref.png
    :target: ../_images/import_ref.png
-   :width: 65%
    :align: center
 
    Importing a reference channel with the column selection dialog.
@@ -63,10 +61,8 @@ This relationship is shown visually by the change in color of the text
 in the box for :procparam:`energy shift`, as seen in this screenshot.
 
 .. _fig-refimported:
-
 .. figure:: ../../_images/import_refimported.png
    :target: ../_images/import_refimported.png
-   :width: 65%
    :align: center
 
    Data imported with a reference channel.

@@ -81,7 +81,6 @@ replaced with the log-ratio/phase-difference tool, shown below.
 
 .. figure:: ../../_images/lr.png
    :target: ../_images/lr.png
-   :width: 65%
    :align: center
 
    The log-ratio/phase-difference tool.

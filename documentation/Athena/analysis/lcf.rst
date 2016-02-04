@@ -32,7 +32,6 @@ in the following figure for performing the linear combination fit.
 
 .. figure:: ../../_images/lcf.png
    :target: ../_images/lcf.png
-   :width: 65%
    :align: center
 
    The linear combination fitting tool.
@@ -319,7 +318,6 @@ highlighted in pale red).
 
 .. figure:: ../../_images/lcf_combo.png
    :target: ../_images/lcf_combo.png
-   :width: 65%
    :align: center
 
    The combinatorial fitting results tab.
@@ -338,7 +336,6 @@ below.
 
 .. figure:: ../../_images/lcf_combofit.png
    :target: ../_images/lcf_combofit.png
-   :width: 45%
    :align: center
 
    The best fit from a combinatorial sequence.

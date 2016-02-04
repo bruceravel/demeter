@@ -37,10 +37,8 @@ tool in this temperature-dependent study as it can quantify the
 relationship between a spectral feature and an extrinsic parameter.
 
 .. _fig-peak:
-
 .. figure:: ../../_images/peak.png
    :target: ../_images/peak.png
-   :width: 65%
    :align: center
 
    The peak fitting tool.
@@ -86,10 +84,8 @@ tweaking the centroids of the three lineshapes from the values shown
 above.
 
 .. _fig-peakfit:
-
 .. figure:: ../../_images/peak_fit.png
    :target: ../_images/peak_fit.png
-   :width: 45%
    :align: center
 
    Fit to PbTiO\ :sub:`3` data measured at room temperature using an
@@ -101,10 +97,8 @@ Fitting a single data group
 ---------------------------
 
 .. _fig-peakselect:
-
 .. figure:: ../../_images/peak_select.png
    :target: ../_images/peak_select.png
-   :width: 30%
    :align: center
 
    Choosing the lineshape to add to the model.
@@ -151,10 +145,8 @@ you can click on the :guilabel:`change function` hot text to post a menu
 of other choices for line shape.
 
 .. _fig-peakchange:
-
 .. figure:: ../../_images/peak_change.png
    :target: ../_images/peak_change.png
-   :width: 50%
    :align: center
 
    The peak fitting results tab.
@@ -179,10 +171,8 @@ section are enabled and the text box on the results tab is filled in
 with the outcome of the fit.
 
 .. _fig-peakresults:
-
 .. figure:: ../../_images/peak_results.png
    :target: ../_images/peak_results.png
-   :width: 65%
    :align: center
 
    The peak fitting results tab.
@@ -228,10 +218,8 @@ the sequence by setting the :configparam:`Peakfit,plot\_during`
 parameter.
 
 .. _fig-peaksequence:
-
 .. figure:: ../../_images/peak_sequence.png
    :target: ../_images/peak_sequence.png
-   :width: 65%
    :align: center
 
    The peak fitting sequence tab.
@@ -251,10 +239,8 @@ Here we see the example of the height of the pseudo-Voigt line shape as
 a function of temperature. As expected, the value trends downward.
 
 .. _fig-peakheight:
-
 .. figure:: ../../_images/peak_height.png
    :target: ../_images/peak_height.png
-   :width: 45%
    :align: center
 
    The results for peak height for the feature 4967 eV as measured over
@@ -267,10 +253,8 @@ spreadsheet contains the statistics for each fit along with all the
 parameter values and their uncertainties.
 
 .. _fig-peakexcel:
-
 .. figure:: ../../_images/peak_excel.png
    :target: ../_images/peak_excel.png
-   :width: 75%
    :align: center
 
    The results for of a fit sequence exported as a spreadsheet.

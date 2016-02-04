@@ -25,19 +25,15 @@ deviation are calculated and displayed in the text control that is
 nortmally disabled.
 
 .. _fig-series:
-
 .. figure:: ../../_images/series.png
    :target: ../_images/series.png
-   :width: 65%
    :align: center
 
    The copy series tool.
 
 .. _fig-seriesplot:
-
 .. figure:: ../../_images/series_plot.png
    :target: ../_images/series_plot.png
-   :width: 45%
    :align: center
 
    The plot made from the series of :procparam:`Rbkg` values with the

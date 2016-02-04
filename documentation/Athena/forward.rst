@@ -7,12 +7,6 @@
 Forward
 =======
 
-.. todo:: 
-   #. remove :width: from all figures ... this will cause them to
-      display at natural width. if window is wide enough
-      
-
-      
 The best way to learn how to use :demeter:`athena` is to **use**
 :demeter:`athena`. Poke at the buttons, poke at the menus, try things
 just to see what happens. And above all, remember the physical and
@@ -189,9 +183,7 @@ Data citations
 - The copper foil data shown here and there are the data that Matt
   Newville, Yanjun Zhang, and I measured one day back in 1992 that
   has, inscrutably, become *the* copper foil data shown and
-  referenced often in the XAS theory literature. The copper film in
-  `the self-absorption section <process/sa.html>`__ comes from Corwin
-  Booth.
+  referenced often in the XAS theory literature.
 
 - The platinum catalyst data shown in `the difference spectrum section
   <analysis/diff.html>`__ were donated by Simon Bare.
@@ -226,9 +218,9 @@ Data citations
 
 - Tin edge data which appear in several places are from
    
-   .. bibliography:: athena.bib
-      :filter: author % "Impellitteri"
-      :list: bullet
+  .. bibliography:: athena.bib
+     :filter: author % "Impellitteri"
+     :list: bullet
 
 - Data on PbTiO\ :sub:`3`, BaTiO\ :sub:`3`, and EuTiO\ :sub:`3` are
   taken from my own PhD thesis.

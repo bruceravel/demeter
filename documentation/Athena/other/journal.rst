@@ -15,10 +15,8 @@ imported into :demeter:`athena`, any journal text will be restored to
 this text box.
 
 .. _fig-journal:
-
 .. figure:: ../../_images/journal.png
    :target: /../_images/journal.png
-   :width: 65%
    :align: center
 
    The journal tool.

@@ -22,10 +22,8 @@ menus <../params/constrain.html>`__ accessed by right clicking on the
 labels can be used to constrain these parameters across data groups.
 
 .. _fig-plotparams:
-
 .. figure:: ../../_images/plot_plotparams.png
    :target: ../_images/plot_plotparams.png
-   :width: 65%
    :align: center
 
    The plot parameters group in the main window.

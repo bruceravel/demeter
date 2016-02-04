@@ -24,10 +24,8 @@ of garbage-in/garbage-out.
 I then select the PCA tool from the main menu.
 
 .. _fig-pca:
-
 .. figure:: ../../_images/pca.png
    :target: ../_images/pca.png
-   :width: 65%
    :align: center
 
    The PCA tool.
@@ -89,15 +87,13 @@ reconstruction of an intermeidate time point using the top 3 components.
    :label: _fig-pcabasics
 
 Selecting one of the standards in the group list enables the
-:button:`Target transform` button. Clicking it shows the result of the
-transform and displays the coefficients of the transform in the
+:button:`Target transform,light` button. Clicking it shows the result
+of the transform and displays the coefficients of the transform in the
 smaller text box.
 
 .. _fig-pcatt:
-
 .. figure:: ../../_images/pca_tt.png
    :target: ../_images/pca_tt.png
-   :width: 65%
    :align: center
 
    Performing a target transform against a data standard

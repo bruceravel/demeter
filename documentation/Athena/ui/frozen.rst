@@ -28,10 +28,8 @@ functions can be found in the :guilabel:`Freeze` menu, as shown in the
 screenshot below.
 
 .. _fig-freeze:
-
 .. figure:: ../../_images/ui_freeze.png
    :target: ../_images/ui_freeze.png
-   :width: 65%
    :align: center
 
    Several visual cues indicate that a group is frozen, including the green

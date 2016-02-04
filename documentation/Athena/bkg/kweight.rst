@@ -108,10 +108,8 @@ evaluated from noisy data with a large value of :procparam:`kweight` will
 sometimes oscillate wildly, as shown in the example below.
 
 .. _fig-bkgbadkw:
-
 .. figure:: ../../_images/bkg_badkw.png
    :target: ../_images/bkg_badkw.png
-   :width: 45%
    :align: center
 
    Noisy data with |mu| \ :sub:`0`\ (E) computed using the default
@@ -130,10 +128,8 @@ previous section. Reducing the strength of the spline clamp can
 sometimes help.
 
 .. _fig-bkg_badkw_clamp0:
-
 .. figure:: ../../_images/bkg_badkw_clamp0.png
    :target: ../_images/bkg_badkw_clamp0.png
-   :width: 45%
    :align: center
 
    The same noisy data as in the last figure, also with a background
