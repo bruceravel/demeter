@@ -47,12 +47,12 @@ of the project file. The group listing uses extended selection:
 
 -  Click on an item in the list to select one group
 
-- :button:`Control`-:button:`Left` (i.e. hold down the
+- :button:`Control`-:mark:`leftclick,..` (i.e. hold down the
   :button:`Control` key while clicking the left mouse button) on an
   item in the list to add it to the selection
 
-- :button:`Shift`-:button:`click` to on a group to select all groups
-  between it and the previously selected group.
+- :button:`Shift`-:mark:`leftclick,..` to on a group to select all
+  groups between it and the previously selected group.
 
 The buttons labeled :button:`Select all,light` and :button:`Select
 none,light` can be used to select all groups or to clear the

@@ -3,7 +3,6 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
-
 Forward
 =======
 
@@ -154,6 +153,12 @@ The following great software tools were used to create this document:
   
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
+
+- The left-click :mark:`leftclick,..` and right-click :mark:`rightclick,..` mouse icons
+  were made by `Freepik <http://www.freepik.com>`_ from
+  http://www.flaticon.com and are available under `the Creative
+  Commons Attribution License 3.0
+  <http://creativecommons.org/licenses/by/3.0/>`_.
   
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop

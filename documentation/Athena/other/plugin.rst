@@ -3,6 +3,7 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+
 File type plugins
 =================
 
@@ -322,11 +323,11 @@ alphabetically. If you want your system plugins to be checked against
 the data first, choose a name that comes early in the alphabetical
 sense.
 
-Right-clicking on an item in the registry posts the context menu shown
-in the figure above. All such context menus have at least one item for
-reading the documentation contained in the plugin source code file. Some
-plugins, such as the one shown, also provide a way of configuring the
-behavior of the plugin.
+Right-clicking :mark:`rightclick,..` on an item in the registry posts the
+context menu shown in the figure above. All such context menus have at
+least one item for reading the documentation contained in the plugin
+source code file. Some plugins, such as the one shown, also provide a
+way of configuring the behavior of the plugin.
 
 
 

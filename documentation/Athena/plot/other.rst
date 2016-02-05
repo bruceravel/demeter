@@ -3,6 +3,7 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+
 Other plotting options
 ======================
 
@@ -11,9 +12,9 @@ Zooming and cursor position
 
 Zooming on a region of a plot is done using :program:`Gnuplot`'s own
 capabilities.  In the plot window, a zoom is initiated by a right
-click. The mouse is then dragged to cover a rectangular area on the
-plot. Right-clicking a second time will cause the plot to be
-redisplayed on the zoomed region.
+click :mark:`rightclick,..`. The mouse is then dragged to cover a rectangular
+area on the plot. Right-clicking :mark:`rightclick,..` a second time will cause
+the plot to be redisplayed on the zoomed region.
 
 :program:`Gnuplot` displays the position of the cursor in the bottom
 part of the plot window. This is continuously updated as the mouse

@@ -36,20 +36,20 @@ whose parameter values are displayed in the main window. The controls
 used to determine how the plots are displayed are described in `the
 next section <../plot/tabs.html>`__.
 
-#. Clicking the :button:`E,orange` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`E,orange` button brings the background removal
    up to date and plots the |mu| (E) data
 
-#. Clicking the :button:`k,orange` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`k,orange` button brings the background removal
    up to date and plots the |chi| (k) data
 
-#. Clicking the :button:`R,orange` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`R,orange` button brings the background removal
    and Fourier transform up to date and plots the |chi| (R) data
 
-#. Clicking the :button:`q,orange` button brings the background removal,
+#. Clicking :mark:`leftclick,..` the :button:`q,orange` button brings the background removal,
    Fourier transform, and backwards transform up to date and plots the
    |chi| (q) data
 
-#. Clicking the :button:`kq,orange` button brings the background removal,
+#. Clicking :mark:`leftclick,..` the :button:`kq,orange` button brings the background removal,
    Fourier transform, and backwards transform up to date and plots the
    |chi| (k) data along with the real part of the |chi| (q) data
 
@@ -63,17 +63,17 @@ found `elsewhere in this document <../ui/mark.html>`__. The controls
 used to determine how the plots are displayed are described in `the
 next section <../plot/tabs.html>`__.
 
-#. Clicking the :button:`E,purple` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`E,purple` button brings the background removal
    up to date for all marked groups and plots their |mu| (E) data
 
-#. Clicking the :button:`k,purple` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`k,purple` button brings the background removal
    up to date for all marked groups and plots their |chi| (k) data
 
-#. Clicking the :button:`R,purple` button brings the background removal
+#. Clicking :mark:`leftclick,..` the :button:`R,purple` button brings the background removal
    and Fourier transform up to date for all marked groups and plots
    their |chi| (R) data
 
-#. Clicking the :button:`q,purple` button brings the background removal,
+#. Clicking :mark:`leftclick,..` the :button:`q,purple` button brings the background removal,
    Fourier transform, and backwards transform up to date for all
    marked groups and plots their |chi| (q) data
 
@@ -84,22 +84,22 @@ Several of the plot buttons will respond to a right click by making
 one of `the special plots <../plot/etc.html>`__ from the
 :guilabel:`Plot` menu.
 
-- Right click the :button:`E,orange` button: plot |mu| (E) with I\
+- Right click :mark:`rightclick,..` the :button:`E,orange` button: plot |mu| (E) with I\
   :sub:`0` and the signal
 
-- Right click the :button:`k,orange` button: display the k123 plot
+- Right click :mark:`rightclick,..` the :button:`k,orange` button: display the k123 plot
 
-- Right click the :button:`R,orange` button: display the R123 plot
+- Right click :mark:`rightclick,..` the :button:`R,orange` button: display the R123 plot
 
-- Right click the :button:`kq,orange` button: display the quad plot
+- Right click :mark:`rightclick,..` the :button:`kq,orange` button: display the quad plot
 
-- Right click the :button:`E,purple` button: plot I\ :sub:`0` for each
+- Right click :mark:`rightclick,..` the :button:`E,purple` button: plot I\ :sub:`0` for each
   marked group
 
-- Right click the :button:`q,purple` button: display the bi-quad plot
+- Right click :mark:`rightclick,..` the :button:`q,purple` button: display the bi-quad plot
 
-All other plot keys respond to a right-click in the same way as a
-left-click.
+All other plot keys respond to a right-click :mark:`rightclick,..` in the same way as a
+left-click :mark:`leftclick,..`.
 
 The responses of the :button:`E,orange` button and the :button:`E,purple`
 button can be configured with the

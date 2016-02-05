@@ -131,7 +131,7 @@ index, requires special treatment.
 .. versionadded:: 0.9.20 There is now a label on the main page right
    next to the :guilabel:`Freeze` check button which identifies the file
    type of the data. You can toggle between xanes and xmu data by
-   :button:`Control`-:button:`Alt`-left clicking on that label.
+   :button:`Control`-:button:`Alt`-:mark:`leftclick,..` on that label.
 
 
 Multi-element detector data
@@ -194,6 +194,12 @@ This expects column *numbers* not labels.  The main purpose of this
 dialog is to deal with MED data with a large number of columns.  It
 would be tedious and error prone to click through a lot of columns.
 This dialog is a way of quickly accomplishing that.
+
+You can specify a list of comma-separated column numbers or indicate a
+range using a dash.  In the first example in the text in
+:numref:`Fig. %s <fig-importcolumnrange>`, columns 8 through 20 would
+be selected.  In the second, column 7 and column 9 along with columns
+12, 13, 14, and 15 would be selected.
 
 The :button:`Clear numerator,light` button unselects all the numerator
 check button.

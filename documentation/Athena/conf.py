@@ -51,7 +51,8 @@ extensions.extend([
     'singletext',
     'sphinx_clatex',
     'demeterdocs',
-    'sphinxcontrib.bibtex'
+    'sphinxcontrib.bibtex',
+    #'sphinxcontrib.images'
 ])
 
 # Turns on numbered figures for HTML output
