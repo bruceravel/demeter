@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.2. FSPath object &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="13. Path-like objects" href="index.html" />
+    <link rel="next" title="13.3. FPath object" href="fpath.html" />
+    <link rel="prev" title="13.1. VPath object" href="vpath.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fpath.html" title="13.3. FPath object"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="vpath.html" title="13.1. VPath object"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">13. Path-like objects</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fspath-object">
+<h1>13.2. FSPath object<a class="headerlink" href="#fspath-object" title="Permalink to this headline">¶</a></h1>
+<p>Sometimes <font size=-1 color="#8C4112">DEMETER</font> is just too much. A simple, first shell,
+single scattering problem should have a simple solution. The FSPath,
+or <font size=-1 color="#8C4112">FIRST SHELL PATH</font>, is intended to be that simple
+solution.</p>
+<p>You provide the element symbol of the absorber and scatterer, their
+distance apart, and the absorption edge. <font size=-1 color="#8C4112">DEMETER</font> will then
+construct a simple <font size=-1 color="#8C4112">FEFF</font> input file, run <font size=-1 color="#8C4112">FEFF</font>,
+return the single scattering path at the specified distance, and even
+create a set of guess parameters for you. It's pretty simple. In this
+example, we create an oxygen scattering shell at 2 Å around an iron
+absorber and use it to fit some iron oxide data contained in an
+<font size=-1 color="#8C4112">ATHENA</font> project file.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;FeO.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">record</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$fspath</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">FSPath</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="nb">abs</span>       <span class="o">=&gt;</span> <span class="s">&#39;Fe&#39;</span><span class="p">,</span>
+                                   <span class="n">scat</span>      <span class="o">=&gt;</span> <span class="s">&#39;O&#39;</span><span class="p">,</span>
+                                   <span class="n">edge</span>      <span class="o">=&gt;</span> <span class="s">&#39;K&#39;</span><span class="p">,</span>
+                                   <span class="n">distance</span>  <span class="o">=&gt;</span> <span class="mf">2.0</span><span class="p">,</span>
+                                   <span class="n">data</span>      <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span>
+                                   <span class="n">workspace</span> <span class="o">=&gt;</span> <span class="s">&quot;/path/to/work/space&quot;</span><span class="p">,</span>
+                                  <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$data_object</span><span class="p">],</span>
+                             <span class="n">paths</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$fspath</span><span class="p">],</span>
+                             <span class="n">gds</span>   <span class="o">=&gt;</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">gds</span><span class="p">);</span>
+ <span class="c1">## now do something with the results of the fit ...</span>
+</pre></div>
+</td></tr></table></div>
+<p>When the object if created, <font size=-1 color="#8C4112">DEMETER</font> will construct a
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> for a simple cubic structure containing the absorber
+and scatterer. The lattice constant of this notional crystal is such
+that the first neighbor distance is as specified. The edge can be
+asserted explicitly, but it can usually be guessed from the atomic
+species of the absorber -- the K edge is assumed for elements lighter
+than La, otherwise the L<sub>III</sub> edge is assumed.</p>
+<p>Like a normal Path, the FSPath must be associated with a Data object
+via its <code class="docutils literal"><span class="pre">data</span></code> attribute.  Because, a <font size=-1 color="#8C4112">FEFF</font> calculation is
+done behind the scenes, a <code class="docutils literal"><span class="pre">workspace</span></code> attribute must be specified so
+that <font size=-1 color="#8C4112">DEMETER</font> has a place to perform the calculation.</p>
+<p>All the details of the <font size=-1 color="#8C4112">FEFF</font> calculation are handled
+automatically. The FSPath will always be up-to-date for use in a plot
+or a fit.</p>
+<p>Also behind the scenes, a set of guess parameters is created. For the
+example shown, these parameters will be named <code class="docutils literal"><span class="pre">aa_fe_o</span></code>, <code class="docutils literal"><span class="pre">ee_fe_o</span></code>,
+<code class="docutils literal"><span class="pre">dr_fe_o</span></code>, and <code class="docutils literal"><span class="pre">ss_fe_o</span></code>. The second and third parts of those names
+are taken from the element symbols of the abosorber and scatterer. The
+<code class="docutils literal"><span class="pre">new</span></code> method can also take <code class="docutils literal"><span class="pre">use_third</span></code> and <code class="docutils literal"><span class="pre">use_fourth</span></code> as
+arguments.  When true, additional guess parameters will be made to
+represent the third and fourth cumulants and will be called <code class="docutils literal"><span class="pre">c3_fe_o</span></code>
+and <code class="docutils literal"><span class="pre">c4_fe_o</span></code>. These parameters are then used as the math expressions
+for the appropriate pathparameters of the path. If you choose to use
+this simple parameterization of the FSPath, you are then ready to begin
+fitting.</p>
+<p>The <code class="docutils literal"><span class="pre">gds</span></code> method, shown at line 14, returns a list containing the GDS
+objects associated with the automatically generated parameters. Because
+the FSPath is derived from the Path object, it behaves in every other
+way like a normal Path object.  Thus, if you want to overwrite the path
+parameter math expressions, simply set them the way you would for any
+Path object.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$fspath</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">s02</span> <span class="o">=&gt;</span> <span class="s">&#39;(1-x)*amp&#39;</span><span class="p">,</span> <span class="n">enot</span><span class="o">=&gt;</span><span class="s">&#39;enot_o&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The values of the <code class="docutils literal"><span class="pre">scat</span></code> and <code class="docutils literal"><span class="pre">abs</span></code> attributes can be the one- or
+two-letter symbols, the full English names of the elements, or the Z
+number.  The <code class="docutils literal"><span class="pre">absorber</span></code> and <code class="docutils literal"><span class="pre">scatterer</span></code> attributes are filled
+automatically with the resolved one- or two-letter atomic symbols.</p>
+<p>There are a couple more methods involved with the automatically
+generated parameters.  The <code class="docutils literal"><span class="pre">parameter</span></code> method is used to obtain the
+GDS objects that were automatically created.  It takes a single
+argument for identifying the parameter being queried.  Here is every
+possible example of its use. In each case, the reference to the GDS
+object is returned.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$amp_gds</span>    <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;s02&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$e0_gds</span>     <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;e0&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$delr_gds</span>   <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;delr&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$sigma2_gds</span> <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;sigma2&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$third_gds</span>  <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;third&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$fourth_gds</span> <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;fourth&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Finally, the <code class="docutils literal"><span class="pre">unset_parameters</span></code> method is used to clear the
+autogenerated path parameters, setting them all literally to 0 --
+except for s02, which is set literally to 1.  This is useful in a
+situation where you wish to use the quick first shell scattering path
+in some other context than the quick first shell fit.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">13. Path-like objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vpath.html">13.1. VPath object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">13.2. FSPath object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fpath.html">13.3. FPath object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sspath.html">13.4. SSPath object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mspath.html">13.5. MSPath object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threebody.html">13.6. ThreeBody object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forward.html">13.7. Forward object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="su.html">13.8. Structural units</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/pathlike/fspath.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fpath.html" title="13.3. FPath object"
+             >next</a></li>
+        <li class="right" >
+          <a href="vpath.html" title="13.1. VPath object"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >13. Path-like objects</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
