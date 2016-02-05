@@ -278,19 +278,20 @@ included in the fits using the numbering scheme of the bottom
 table. The other two columns show the R-factor and reduced |chi|\
 :sup:`2` of each fit.
 
-When you click on a row in the top table, the results of that fit are
-inserted into the bottom table and the fit is plotted. When the
-combinatorial sequence finishes, the best fit of the bunch is displayed.
-It turns out the the combination of gold metal, aqueous Au\ :sup:`3+`
-chloride, and gold sulfide that we examined above is, in fact, the best
-fit. However, it is juts barely the best fit. The fit with gold
-thiomalate in place of gold sulfide is just barely worse. From a
-statistical perspective, the two fits are equivalent and the amounts of
-metal and chloride in the fits are very similar. The gold thiosulfate
-and gold thiocyanide fits are just a bit worse yet. A couple of other
-fits show similar statistics but an investigation shows that the peak
-around 11946.7 eV is not fit very well. After that, the other fits in
-the table fall off quickly in quality.
+When you :mark:`leftclick,..` click on a row in the top table, the
+results of that fit are inserted into the bottom table and the fit is
+plotted. When the combinatorial sequence finishes, the best fit of the
+bunch is displayed.  It turns out the the combination of gold metal,
+aqueous Au\ :sup:`3+` chloride, and gold sulfide that we examined
+above is, in fact, the best fit. However, it is juts barely the best
+fit. The fit with gold thiomalate in place of gold sulfide is just
+barely worse. From a statistical perspective, the two fits are
+equivalent and the amounts of metal and chloride in the fits are very
+similar. The gold thiosulfate and gold thiocyanide fits are just a bit
+worse yet. A couple of other fits show similar statistics but an
+investigation shows that the peak around 11946.7 eV is not fit very
+well. After that, the other fits in the table fall off quickly in
+quality.
 
 The conclusion that one can comfortably draw from this is that the
 intermediate species is some sort of gold-sulfur complex. The aqueous
@@ -308,16 +309,16 @@ Analyzing the data series
 -------------------------
 
 To investigate the kinetics of this system, we will now apply the
-model consisting of three species |nd| metal, chloride, and sulfide |nd|
-to the cyanobacteria measured at each time step. Click on the top line
-of the upper table. This will plot the result for our best fit. It
-will also insert those three standards into the table on the
-:guilabel:`Standards spectra` tab. Click on that tab, then mark all the
-cyanobacteria data groups and unmark all of the standards in the group
-list. Now click on :button:`Fit marked groups,light` in the operations
-list. This will step through the marked groups, applying the
-three-standard fitting model to each one. Again, you may want to relax
-as you wait.
+model consisting of three species |nd| metal, chloride, and sulfide
+|nd| to the cyanobacteria measured at each time step.
+:mark:`leftclick,..` Click on the top line of the upper table. This
+will plot the result for our best fit. It will also insert those three
+standards into the table on the :guilabel:`Standards spectra`
+tab. Click on that tab, then mark all the cyanobacteria data groups
+and unmark all of the standards in the group list. Now click on
+:button:`Fit marked groups,light` in the operations list. This will
+step through the marked groups, applying the three-standard fitting
+model to each one. Again, you may want to relax as you wait.
 
 .. _fig-auclsequence:
 .. figure:: ../../_images/ex_aucl_sequence.png
@@ -328,17 +329,17 @@ as you wait.
    written to a file that can be imported into a spreadsheet, like
    LibreOffice Calc shown here.
 
-Once the sequence of fits finishes, you may want to click through the
-data groups and examine the fits at the various time steps. Note that
-the :button:`Marked fits report,light` option in the operations list
-becomes active.  Clicking on this prompts you for a name for an output
-file. This output file is a comma separated value text file which can
-be easily imported into a spreadsheet, much like one of
-:demeter:`athena`'s `report files <../output/report.html>`__. In this
-figure we see that the metal content increases monotonically while the
-chloride content decreases monotonically. The column with the sulfide
-content is not seen in the image, but it remains roughly constant
-throughout the experiment.
+Once the sequence of fits finishes, you may want to
+:mark:`leftclick,..` click through the data groups and examine the
+fits at the various time steps. Note that the :button:`Marked fits
+report,light` option in the operations list becomes active.  Clicking
+on this prompts you for a name for an output file. This output file is
+a comma separated value text file which can be easily imported into a
+spreadsheet, much like one of :demeter:`athena`'s `report files
+<../output/report.html>`__. In this figure we see that the metal
+content increases monotonically while the chloride content decreases
+monotonically. The column with the sulfide content is not seen in the
+image, but it remains roughly constant throughout the experiment.
 
 .. _fig-auclexcel:
 .. figure:: ../../_images/ex_aucl_excel.png

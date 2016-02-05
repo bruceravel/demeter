@@ -27,9 +27,10 @@ the problem of constraining parameter values.
 Constraining individual parameters
 ----------------------------------
 
-The first such tool is used to constrain individual parameters. A *right
-mouse click* on any of the parameter labels on the main window will post
-a context menu, as shown in this figure.
+The first such tool is used to constrain individual parameters. A
+:mark:`rightclick,..` *right mouse click* on any of the parameter
+labels on the main window will post a context menu, as shown in this
+figure.
 
 .. _fig-paramparam:
 .. figure:: ../../_images/param_param.png
@@ -87,8 +88,9 @@ In the main window, the parameters are grouped into sets of related
 parameters. All of the parameters associated with background removal
 are in one box, all the Fourier transform parameters are in another
 box, and so on. The labels at the top of each box are sensitive to
-mouse clicks much like the entry box labels. A right click posts a
-context menu, as shown in the picture below.
+:mark:`rightclick,..` mouse clicks much like the entry box labels. A
+:mark:`rightclick,..` right click posts a context menu, as shown in
+the picture below.
 
 .. _fig-paramgroup:
 .. figure:: ../../_images/param_group.png

@@ -9,11 +9,11 @@ Multiple data set import
 ========================
 
 You can import multiple data sets in the same manner that was
-explained in the last section. Select :menuselection:`File --> Import data` or
-type :button:`Control`-:button:`o`. When the file selection dialog opens,
-you can select more than one data file by clicking on file names while
-holding down the :button:`Control` key. On my Linux computer, it looks
-like this.
+explained in the last section. Select :menuselection:`File --> Import
+data` or type :button:`Control`-:button:`o`. When the file selection
+dialog opens, you can select more than one data file by
+:mark:`leftclick,..` clicking on file names while holding down the
+:button:`Control` key. On my Linux computer, it looks like this.
 
 .. _fig-multiple:
 .. figure:: ../../_images/import_multiple.png
@@ -24,9 +24,10 @@ like this.
 
 Note that three files are highlighted in the file listing and that
 those three files are listed below in the :guilabel:`File name`
-box. Another way of selecting multiple files is to click on a file in
-the listing then click on another file while holding down the
-:button:`Shift` key. When you do this, all files between the two you
+box.  Another way of selecting multiple files is to
+:mark:`leftclick,..` click on a file in the listing then
+:mark:`leftclick,..` click on another file while holding down the
+:button:`Shift` key.  When you do this, all files between the two you
 clicked on will be selected.
 
 When you click the :button:`Open,light` button, all of the selected files

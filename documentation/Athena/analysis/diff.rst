@@ -43,7 +43,7 @@ that you take great care with `selecting parameters
    The difference spectrum tool with data taken from the ``diff.prj``
    demo file.
 
-As you click on each group in the group list, the difference spectrum
+As you :mark:`leftclick,..` click on each group in the group list, the difference spectrum
 is computed as the difference between the groups selected as the
 standard by menu control at the top of the window and the selected
 group from the group list. The difference spectrum will be plotted,

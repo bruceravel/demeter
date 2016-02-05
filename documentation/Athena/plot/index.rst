@@ -103,8 +103,8 @@ left-click :mark:`leftclick,..`.
 
 The responses of the :button:`E,orange` button and the :button:`E,purple`
 button can be configured with the
-:configparam:`athena,right\_single\_e` and
-:configparam:`athena,right\_marked\_e` `configuration parameters
+:configparam:`Athena,right\_single\_e` and
+:configparam:`Athena,right\_marked\_e` `configuration parameters
 <../other/prefs.html>`__.
 
 

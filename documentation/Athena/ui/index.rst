@@ -12,7 +12,7 @@ User Interface
 its capabilities. For instance, it's fairly obvious that you can
 import data by opening a file using the :guilabel:`File` menu, change
 a parameter value by editing the number in one of the little boxes in
-the main window, or plot data by clicking one of the
+the main window, or plot data by :mark:`leftclick,..` clicking one of the
 :button:`E,orange`, :button:`k,orange`, :button:`R,orange`, or
 :button:`q,orange`, buttons.  There is, however, a lot more to
 :demeter:`athena` at the level of its user interface. Part of making

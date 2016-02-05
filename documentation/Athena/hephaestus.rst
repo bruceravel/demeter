@@ -20,19 +20,20 @@ Hephaestus
 experimentalist using a periodic table, tables of X-ray absorption
 coefficients, and other elemental data.
 
-On the left of the :demeter:`hephaestus` window is a stack of icons which are used
-to select the different tools. Clicking on one of the icons enables that
-tool.
+On the left of the :demeter:`hephaestus` window is a stack of icon
+buttons which are used to select the different tools.  Clicking on one
+of the icon buttons enables that tool.
 
 At the bottom of the :demeter:`hephaestus` window is a status bar
 which :demeter:`hephaestus` uses to convey information during the
-course of operation. Along with information about the most recently
+course of operation.  Along with information about the most recently
 completed calculation, the status bar shows topical information. As
 the mouse passes over an element in the periodic table, the element
-name, symbol, and Z number are displayed. In the Absorption tool,
-clicking on an edge or line energy will display that energy in
-wavelength units in the status bar. In the Standards tool, some
-information about the plotted data is displayed in the status bar.
+name, symbol, and Z number are displayed.  In the Absorption tool,
+:mark:`leftclick,.` clicking on an edge or line energy will display
+that energy in wavelength units in the status bar.  In the Standards
+tool, some information about the plotted data is displayed in the
+status bar.
 
 The :guilabel:`Hephaestus` menu in the menu bar provides another way
 of navigating between the tools. The mouse can be used, as can the
@@ -69,20 +70,22 @@ lines, and the filter edge energy.
 
 The :guilabel:`Absorption edges` table shows the value in eV of each
 edge associated with the element selected from the periodic table and
-the core-hole lifetime in eV of each edge. Clicking on a line in this
-table will display a message in the status bar giving the edge energy
-expressed in wavelength units and the core-hole lifetime expressed in
-approximate time units. Double clicking on a line will highlight all
+the core-hole lifetime in eV of each edge.  :mark:`leftclick,.`
+Clicking on a line in this table will display a message in the status
+bar giving the edge energy expressed in wavelength units and the
+core-hole lifetime expressed in approximate time units.
+:mark:`leftclick,.` Double-clicking on a line will highlight all
 fluorescence lines associated with that edge in the
 :guilabel:`Fluorescence lines` table.
 
 The :guilabel:`Fluorescence lines` table shows the transitions and
 emission energies in eV of every line associated with the element
 selected from the periodic table.  Also shown is the approximate
-strength, or branching ratio, of each line. The strengths for all
-lines associated with a particular edge will sum to 1. Clicking on a
-line in this table will display a message in the status bar giving the
-emission energy expressed in wavelength units.
+strength, or branching ratio, of each line.  The strengths for all
+lines associated with a particular edge will sum to 1.
+:mark:`leftclick,.` Clicking on a line in this table will display a
+message in the status bar giving the emission energy expressed in
+wavelength units.
 
 .. _fig-hephabsorption:
 .. figure:: ../_images/Hephaestus_absorption.png
@@ -167,10 +170,11 @@ Formulas
 --------
 
 This tool is used to compute approximate absorption lengths for common
-or user-specified materials. To the left is a list of materials
-commonly found at synchrotron beamlines. Clicking one of those items
-inserts its stoichiometric formula into the :guilabel:`Formula` box
-and the density into the :guilabel:`Density` box.
+or user-specified materials.  To the left is a list of materials
+commonly found at synchrotron beamlines.  :mark:`leftclick,.`
+Clicking one of those items inserts its stoichiometric formula into
+the :guilabel:`Formula` box and the density into the
+:guilabel:`Density` box.
 
 At the top of the right hand part of this tool are controls for entering
 the parameters of the absorption length calculation. The formula must be
@@ -612,13 +616,14 @@ preferences tool.  This uses the same preferences tool as
 preference groups relevant to :demeter:`hephaestus` and to plotting
 are presented.
 
-Click on a group in the :guilabel:`Parameters` list to open a
-group. Click on a parameter to display it in the controls on the
-right. You will be given controls appropriate to each parameter's data
-type for setting the parameter value. The :button:`Your value,light` and
-:button:`Demeter's value,light` buttons can be used to restore a
-parameter's value. A description of the displayed parameter will be
-written in the large text box.
+:mark:`leftclick,.` Click on a group in the :guilabel:`Parameters`
+list to open a group.  :mark:`leftclick,.` Click on a parameter to
+display it in the controls on the right.  You will be given controls
+appropriate to each parameter's data type for setting the parameter
+value.  The :button:`Your value,light` and :button:`Demeter's
+value,light` buttons can be used to restore a parameter's value.  A
+description of the displayed parameter will be written in the large
+text box.
 
 Parameters can be applied for the current session or applied and saved
 to your configuration file.

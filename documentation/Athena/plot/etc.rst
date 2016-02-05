@@ -24,7 +24,8 @@ Special plots for the current group
     first imported. Using the current set of processing parameters,
     the data are displayed in energy, k, R, and back-transform k all
     in the same plot window. This plot can also be made by
-    right-clicking on the :button:`kq,orange` button.
+    right-clicking :mark:`rightclick,..` on the :button:`kq,orange`
+    button.
 
     .. _fig-quadplot:
     .. figure:: ../../_images/plot_quad.png
@@ -52,8 +53,8 @@ Special plots for the current group
     shows |mu| (E) of Au chloride along with the signal and I\
     :sub:`0` channels. This plot can also be made by right-clicking on
     the :button:`E,orange` button. (The norm+deriv plot can be configured
-    for right-click use with the
-    :configparam:`athena,right\_single\_e` `configuration parameter
+    for right-click :mark:`rightclick,..` use with the
+    :configparam:`Athena,right\_single\_e` `configuration parameter
     <../other/prefs.html>`__.)
 
     .. _fig-mui0plot:
@@ -69,8 +70,8 @@ Special plots for the current group
     the |chi| (k) spectrum. The k\ :sup:`1`-weighted spectrum is scaled
     up to be about the same size as the k\ :sup:`2`-weighted
     spectrum. Similarly, the k\ :sup:`3`-weighted spectrum is scaled
-    down. This plot can also be made by right-clicking on the :button:`k,orange`
-    button.
+    down. This plot can also be made by right-clicking 
+    :mark:`rightclick,..` on the :button:`k,orange` button.
 
     .. _fig-k123plot:
     .. figure:: ../../_images/plot_k123.png
@@ -87,7 +88,8 @@ Special plots for the current group
     Similarly, the FT of the k\ :sup:`3`-weighted spectrum is scaled down. The
     current setting in the `R tab <tabs.html#plotting-in-r-space>`__ is
     used to make this plot. For this figure, the magnitude setting was
-    selected. This plot can also be made by right-clicking on the :button:`R,orange`
+    selected. This plot can also be made by right-clicking 
+    :mark:`rightclick,..` on the :button:`R,orange`
     button.
 
     .. _fig-r123plot:
@@ -109,8 +111,8 @@ to the set of groups in the group list that have been
     This special plot is like the quad plot described above, but is
     used to compare two marked groups. To make this plot you must have
     two |nd| and only two |nd| groups selected from the group list. This
-    plot can also be made by right-clicking on the :button:`q,purple`
-    button.
+    plot can also be made by right-clicking :mark:`rightclick,..` on the
+    :button:`q,purple` button.
 
     .. _fig-biquadplot:
     .. figure:: ../../_images/plot_biquad.png
@@ -133,11 +135,13 @@ to the set of groups in the group list that have been
        Plot of Fe and Cu foils with E0 at 0.
        
 **Plot I0 of marked groups**
-    This plot allows examination of the I\ :sub:`0` signals of a set of marked
-    groups. This plot can also be made by right-clicking on the :button:`E,purple`
-    button. (The other two special marked groups plots can be configured
-    for right-click use with the :configparam:`athena,right\_marked\_e`
-    `configuration parameter <../other/prefs.html>`__.)
+    This plot allows examination of the I\ :sub:`0` signals of a set
+    of marked groups. This plot can also be made by right-clicking on
+    the :button:`E,purple` button. (The other two special marked
+    groups plots can be configured for right-click
+    :mark:`rightclick,..` use with the
+    :configparam:`Athena,right\_marked\_e` `configuration parameter
+    <../other/prefs.html>`__.)
 
     .. _fig-i0plot:
     .. figure:: ../../_images/plot_marked_i0.png
@@ -175,7 +179,7 @@ interesting ways.
     deviation. The standard deviation has been added to and subtracted
     from the merged data. This is the plot that is displayed by default
     when a merge is made. This behavior is controled by the
-    :configparam:`athena,merge\_plot` `configuration
+    :configparam:`Athena,merge\_plot` `configuration
     parameter <../other/prefs.html>`__.
 
     .. _fig-stddevplot:

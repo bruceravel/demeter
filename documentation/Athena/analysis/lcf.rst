@@ -60,14 +60,15 @@ fits.
 To do the fit, weighting parameters are defined for each standards
 spectrum except for the last one in the list. The weight for the last
 spectrum is one minus the sum of the other weights, thus constraining
-the standards to be 100 percent of the unknown. Thus, if you used three
-standards, the first two would have weights ``x`` and ``y`` and the
-third would have weight ``1-x-y``. ``x`` and ``y`` would then be varied
-to best fit the data. Each standard spectrum is interpolated onto the
-energy grid of the unknown when the fit is performed as normalized or
-derivative |mu| (E). The fit is performed over the data range indicated by
-the text boxes near the top of the window. There are pluck buttons which
-can be used to set the fitting range by clicking on a plot of the data.
+the standards to be 100 percent of the unknown. Thus, if you used
+three standards, the first two would have weights ``x`` and ``y`` and
+the third would have weight ``1-x-y``. ``x`` and ``y`` would then be
+varied to best fit the data. Each standard spectrum is interpolated
+onto the energy grid of the unknown when the fit is performed as
+normalized or derivative |mu| (E). The fit is performed over the data
+range indicated by the text boxes near the top of the window. There
+are pluck buttons which can be used to set the fitting range by
+:mark:`leftclick,..` double-clicking on a plot of the data.
 
 Fitting normalized |mu| (E), derivative |mu| (E), or |chi| (k) is chosen using the
 radio buttons just above the table of standards. When fitting |chi| (k)
@@ -325,12 +326,12 @@ highlighted in pale red).
 The second table contains each of the standards and its weight and
 E\ :sub:`0` from the fit selected in the upper table.
 
-You can select a fit from the upper table by clicking on its line. When
-you do so, that fit becomes highlighted in pale red, its fitting results
-are inserted in the bottom table, its best fit function is plotted along
-with the data, and its results are inserted into the other two tabs. In
-this way, you can examine any fit from the series, as seen in the plot
-below.
+You can select a fit from the upper table by :mark:`leftclick,..`
+clicking on its line. When you do so, that fit becomes highlighted in
+pale red, its fitting results are inserted in the bottom table, its
+best fit function is plotted along with the data, and its results are
+inserted into the other two tabs. In this way, you can examine any fit
+from the series, as seen in the plot below.
 
 .. _fig-lcfcombofit:
 
@@ -347,13 +348,14 @@ to invoke some a priori knowledge to help choose between the similar
 fits. Other fits farther down in the list will be obviously worse both
 by statistical metric and by examination of their results.
 
-Clicking the right mouse button on a fit in the upper table will post a
-context menu with options relevant to the selected fit. These options
-include saving the fit as a data group; writing a data file with columns
-for the data, fit, residual, and each weighted standard; saving the
-report from the :guilabel:`Fit results` tab to a file; and writing a
-comma-separated-value report for the entire combinatorial sequence which
-can be imported into a spreadsheet program.
+:mark:`rightclick,..` Clicking the right mouse button on a fit in the
+upper table will post a context menu with options relevant to the
+selected fit. These options include saving the fit as a data group;
+writing a data file with columns for the data, fit, residual, and each
+weighted standard; saving the report from the :guilabel:`Fit results`
+tab to a file; and writing a comma-separated-value report for the
+entire combinatorial sequence which can be imported into a spreadsheet
+program.
 
 Beneath the tables is a button labeled :button:`Write CSV report for all
 fits,light`.  Clicking this will prompt you for a file name and

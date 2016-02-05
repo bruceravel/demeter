@@ -33,9 +33,9 @@ algorithm.
 The `calibration <../process/cal.html>`__ and `alignment
 <../process/align.html>`__ tools can be used to refine the values for
 :procparam:`e0`. You can also edit its value directly by typing in its
-entry box. The right-click context menu for :procparam:`e0` and the
-:guilabel:`Energy` menu have several options for other ways of setting
-:procparam:`e0`.
+entry box. The :mark:`rightclick,..` right-click context menu for
+:procparam:`e0` and the :guilabel:`Energy` menu have several options
+for other ways of setting :procparam:`e0`.
 
 There are a few situations where the default algorithm will fail. Very
 noisy data can result in a spurious identification of

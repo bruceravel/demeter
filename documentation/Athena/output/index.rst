@@ -7,7 +7,7 @@ Data export
 ===========
 
 
-Although :demeter:`athena` handles all of your XAS data processing
+Although :demeter:`athena` handles many of your XAS data processing
 chores, there are many other things you may want to do with you data,
 such as preparing beautiful plots for publication or importing data
 into :demeter:`artemis`. This chapter explains the various kinds of

@@ -69,11 +69,11 @@ for the iron K edge is 7112 eV.
 We want to select the peak of the first derivative and set that point
 to 7112 eV. We can simply use the currently selected point |nd| it is
 quite close to the peak. Alternately, we can click the :button:`Select
-a point,light` button and try to click on the plot, selecting point even
-closer to the peak.  To do that, it would be helpful to change the
-value of emin and emax in the `energy plot tab <../plot/tabs.html>`__
-the replot the data such that a tighter region around the peak is
-displayed.
+a point,light` button and try to :mark:`leftclick,..` double-click on
+the plot, selecting point even closer to the peak.  To do that, it
+would be helpful to change the value of emin and emax in the `energy
+plot tab <../plot/tabs.html>`__ the replot the data such that a
+tighter region around the peak is displayed.
 
 A third, highly accurate way of finding the exact peak of the first
 derivative is to plot the second derivative of the data by selecting
@@ -169,10 +169,11 @@ k=0 is different for the two spectra and the |chi| (k) data from the
 background removal are different.
 
 To correct this, you can either enter the value for :procparam:`E0`
-from :file:`fe.060` |nd| 7112 eV |nd| into the :procparam:`E0` text entry box
-after clicking on :file:`fe.061` in the group list. Alternately, you can
-select :file:`fe.060` in the group list, then right click on the
-:procparam:`E0` parameter to raise its `context menu
+from :file:`fe.060` |nd| 7112 eV |nd| into the :procparam:`E0` text
+entry box after :mark:`leftclick,..` clicking on :file:`fe.061` in the
+group list. Alternately, you can select :file:`fe.060` in the group
+list, then :mark:`rightclick,..` right click on the :procparam:`E0`
+parameter to raise its `context menu
 <../params/constrain.html#constraining-individual-parameters>`__ and
 select :guilabel:`Set all groups to this value of E0`. Once the
 :procparam:`E0` parameters are set the same for these data sets, we
@@ -191,13 +192,13 @@ import <../import/multiple.html>`__ and shown below.
 
    Importing the remaining iron foil data.
 
-Clicking the :button:`Open button,light` will import all those data files
-and list them in the group list. Once they are imported, `mark
+Clicking the :button:`Open button,light` will import all those data
+files and list them in the group list. Once they are imported, `mark
 <../ui/mark.html>`__ all of the groups either by typing
-:button:`Alt`-:button:`a` or by clicking the :button:`A,light` mark button
-above the group list. Finally select the :file:`fe.060` group by clicking
-on it in the group list. Once you have done all of that,
-:demeter:`athena` will look like this.
+:button:`Alt`-:button:`a` or by clicking the :button:`A,light` mark
+button above the group list. Finally select the :file:`fe.060` group
+by :mark:`leftclick,..` clicking on it in the group list. Once you
+have done all of that, :demeter:`athena` will look like this.
 
 .. _fig-datamarked:
 .. figure:: ../../_images/ex_data_marked.png
@@ -219,13 +220,14 @@ menu. :demeter:`athena` chooses the first item in the group list as
 the data alignment standard and selects the second group as the one to
 align. These selections are shown at the top of this.
 
-Of course, :file:`fe.061` has already be aligned. If you select any other
-group by clicking on it in the group list, you will see that it it is
-not yet aligned. You can align the remaining groups by selecting each
-on in turn and clicking the :button:`Auto align,light` button |nd| but that
-seems tedious. Much better to click the :button:`Align marked groups,light`
-button. Since all the groups are aligned, the automated alignment
-algorithm will be applied to each one in turn.
+Of course, :file:`fe.061` has already be aligned. If you select any
+other group by :mark:`leftclick,..` clicking on it in the group list,
+you will see that it it is not yet aligned. You can align the
+remaining groups by selecting each on in turn and clicking the
+:button:`Auto align,light` button |nd| but that seems tedious. Much
+better to click the :button:`Align marked groups,light` button. Since
+all the groups are aligned, the automated alignment algorithm will be
+applied to each one in turn.
 
 .. _fit-dataalignmarked:
 .. figure:: ../../_images/ex_data_alignmarked.png
@@ -234,17 +236,18 @@ algorithm will be applied to each one in turn.
 
    All of the iron foil data are marked and waiting to be aligned.
 
-Once finished, you can click on groups to check on the quality of the
-alignment. Since these are very good data, the automated alignment
-should have worked well. Click on the :button:`Return to the main
-window,light` button to continue with the data processing.
+Once finished, you can :mark:`leftclick,..` click on groups to check
+on the quality of the alignment. Since these are very good data, the
+automated alignment should have worked well.  Click on the
+:button:`Return to the main window,light` button to continue with the
+data processing.
 
 Each of the data groups has now been aligned, but only :file:`fe.061`
 has the same value of :procparam:`E0` as :file:`fe.060`. Again,
-clicking through the groups list and editing the :procparam:`E0`
-values seems horribly tedious. Here we see the true value of the
-:guilabel:`Set all groups to this value of E0` in the :procparam:`E0`
-`context menu
+:mark:`leftclick,..` clicking through the groups list and editing the
+:procparam:`E0` values seems horribly tedious. Here we see the true
+value of the :guilabel:`Set all groups to this value of E0` in the
+:procparam:`E0` `context menu
 <../params/constrain.html#constraining-individual-parameters>`__.
 
 The |chi| (k) data for the aligned and constrained data are shown below.
@@ -258,8 +261,8 @@ The |chi| (k) data for the aligned and constrained data are shown below.
 
 There is another, perhaps quicker, way of doing everything that is
 described above. To start, import the :file:`fe.060` data and calibrate it
-as explained at the start of this section. Then use the file selection
-dialog to select all of the remaining data. Click to the
+as explained at the start of this section.  Then use the file selection
+dialog to select all of the remaining data.  Click to the
 :guilabel:`Preprocess` tab, select the :file:`fe.060` data as the
 standard, then click the :guilabel:`Mark`, :guilabel:`Align`, and
 :guilabel:`Set parameters` checkbuttons.
@@ -287,9 +290,9 @@ merged together. As we see in the screenshot below, the two groups
 measured at 300K are marked. Select :menuselection:`Merge --> Merge
 mu(E)`. This will perform the merge then insert a new group in the
 group list. Then select :menuselection:`Group --> Rename current
-group`, type :button:`Alt`-:button:`l`, or double click on the group
-list entry to give the merged group a more suggestive name. Repeat
-this process for the data at each temperature.
+group`, type :button:`Alt`-:button:`l`, or :mark:`leftclick,..`
+double-click on the group list entry to give the merged group a more
+suggestive name. Repeat this process for the data at each temperature.
 
 Now you are ready to begin analysis on the iron foil data!
 

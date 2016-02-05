@@ -226,8 +226,8 @@ parameter.
 
 The table at the top shows the R-factor and reduced |chi|\ :sup:`2`
 for each fit in the sequence. Selecting a row of this table by
-clicking on it will display the detailed results from that fit in the
-text box and will plot the result of that fit.
+:mark:`leftclick,..` clicking on it will display the detailed results
+from that fit in the text box and will plot the result of that fit.
 
 :demeter:`athena` provides a couple of ways of examining the results of the fit
 sequence. The list of parameters that were varied in the fit are loaded

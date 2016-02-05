@@ -16,9 +16,10 @@ below. All these entries in the main menu, replace the main window
 with a tool specially designed for the data processing chore.
 
 You can work on more than one data group in any tool without having to
-return to the main menu. Clicking on a group label in the group list
-will make that group current, display parameters appropriate to the data
-processing tool, sometimes plotting the data in some appropriate manner.
+return to the main menu.  :mark:`leftclick,..` Clicking on a group
+label in the group list will make that group current, display
+parameters appropriate to the data processing tool, sometimes plotting
+the data in some appropriate manner.
 
 When you are finished using the data processing tool, you can press
 the button labeled :button:`Return to the main window,light`. Doing so

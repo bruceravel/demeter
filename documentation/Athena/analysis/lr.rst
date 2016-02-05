@@ -43,7 +43,7 @@ the χ(q) function.
 These are fit using the cumulant expansion:
 
 
-::
+.. code-block:: text
    
       Log-Ratio(q)  = c_0 + 2*c_2 * q^2 + (2/3)*c_4 * q^4
       Phase-diff(q) = 2 * c_1 * q - (4/3) * c_3 * q^3

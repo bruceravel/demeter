@@ -59,10 +59,10 @@ Reorganizing the group list
 
 When a file is imported into :demeter:`athena`, the name of the file
 is used as the label in the group list. That's fine, but you can
-change the label by selecting :menuselection:`Group --> Rename current group`,
-typing :button:`Alt`-:button:`l`, or double clicking on an item in
-the group list. This posts a dialog for entering the new label for the
-group, shown here.
+change the label by selecting :menuselection:`Group --> Rename current
+group`, typing :button:`Alt`-:button:`l`, or double
+:mark:`leftclick,..` clicking on an item in the group list. This posts
+a dialog for entering the new label for the group, shown here.
 
 .. _fig-renaming:
 .. figure:: ../../_images/ui_renaming.png
@@ -140,7 +140,8 @@ accident, you will have to remove the group and re-import it.
 
 .. versionadded:: 0.9.20 there is a label on the main window
    displaying the data type. You can toggle between |mu| (E) and XANES
-   data by :button:`Control`-:button:`Alt`-left clicking on that label.
+   data by :button:`Control`-:button:`Alt`-:mark:`leftclick,..`
+   clicking on that label.
 
 
 
@@ -149,7 +150,7 @@ Using the mouse in the group list
 
 You can turn on automated replotting when you select a new group by
 clicking on it in the group list. This is done by setting
-:configparam:`athena,select\_replot` with the `preferences
+:configparam:`Athena,select\_replot` with the `preferences
 tool <../other/prefs.html>`__.
 
 If you right click on any item in the group list, a context menu is
@@ -164,8 +165,8 @@ posted, as shown below, displaying the :guilabel:`Group` menu.
    Clicking the right mouse button on a group list entry pops up this
    context menu.
 
-As mentioned above, double clicking on a group list item will post the
-dialog for renaming that group.
+As mentioned above, double :mark:`leftclick,..` clicking on a group
+list item will post the dialog for renaming that group.
 
 
 Shrinking and expanding the group list

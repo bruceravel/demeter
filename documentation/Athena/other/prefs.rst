@@ -30,10 +30,11 @@ The preference parameters are divided into related groups. For
 example, there are groups for background removal parameters, alignment
 parameters, colors, and so on.
 
-To view a group of preferences, click on the little cross sign next to
-the group's name in the list on the left side of the tool. This will
-open a branch containing all the parameters in tat group. Click on one
-of them and it will be displayed in the controls on the left.
+To view a group of preferences, :mark:`leftclick,..` click on the
+little cross sign next to the group's name in the list on the left
+side of the tool. This will open a branch containing all the
+parameters in that group.  :mark:`leftclick,..` Click on one of them
+and it will be displayed in the controls on the left.
 
 Click on the :button:`default,light` button to restore
 :demeter:`athena`'s default value or use the control below the

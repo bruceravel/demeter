@@ -82,7 +82,7 @@ features or debugging problems.  A :quoted:`yaml` is a way of
    The debugging submenu
 
 
-If you set the :configparam:`athena,debug_menus` `configuration
+If you set the :configparam:`Athena,debug_menus` `configuration
 parameter <../other/prefs.html>`_ to false, the debug menu will not be
 shown.
 

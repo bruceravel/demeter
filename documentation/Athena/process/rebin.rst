@@ -13,9 +13,9 @@ implementation of this works by driving the mono at a given speed and
 reading the measurement channels continuously. The signal is
 integrated for bins of time. After each time interval, the integrated
 signals are stored in a buffer. At the end of the scan, the buffer is
-dumped to disk. At my old beamline (`MRCAT, Sector 10 at the APS
-<http://mrcat.iit.edu>`__), a typical EXAFS scan measured in this mode
-takes 3 minutes or less.
+dumped to disk.  When I was at my old beamline (`MRCAT, Sector 10 at
+the APS <http://mrcat.iit.edu>`__), a typical EXAFS scan measured in
+this mode took 3 minutes or less back in those days.
 
 The drawback of this measurement mode (other than the generation of tons
 of data that needs to be analyzed!) is that the data are vastly over

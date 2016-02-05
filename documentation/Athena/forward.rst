@@ -154,7 +154,7 @@ The following great software tools were used to create this document:
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
 
-- The left-click :mark:`leftclick,..` and right-click :mark:`rightclick,..` mouse icons
+- The left-click :mark:`leftclick,.` and right-click :mark:`rightclick,.` mouse icons
   were made by `Freepik <http://www.freepik.com>`_ from
   http://www.flaticon.com and are available under `the Creative
   Commons Attribution License 3.0

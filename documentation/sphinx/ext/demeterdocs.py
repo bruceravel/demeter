@@ -187,11 +187,14 @@ def mark_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     return [mark_node], []
 
 def visit_mark_html(self, node):
-    titles = {'rightclick' : 'Right mouse button',
+    titles = {'somerights' : 'This is a Creative Commons Attribution-ShareAlike document',
+              'rightclick' : 'Right mouse button',
               'leftclick'  : 'Left mouse button',
               'soon'       : 'Coming soon!',
               'bend'       : 'This is difficult material',
               'lightning'  : 'This is material an skilled user should know',
+              'plot-icon'  : 'Transfer to the Plot list',
+              'plotlist'   : 'The plotting tool',
               }
     thistitle = titles[node['image']]
     self.body.append('<img alt="%s" title="%s" src="%s/_static/%s.png" hspace="3">' % (node['image'], thistitle, node['path'], node['image']))

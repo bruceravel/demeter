@@ -51,11 +51,12 @@ memory. The data on disk are never altered.
 There are two methods of deglitching offered by :demeter:`athena`'s
 deglitching tool, shown above. The first involves selecting and
 removing the glitches one by one. The points are selected by clicking
-the :button:`Choose a point,light` button then clicking on the glitch in
-the plot. After clicking on the plot window, the selected point is
-indicated with an orange circle, as on the left of the next
-figure. Clicking the :button:`Remove point,light` button removes that
-point from the data, shown in the bottom panel.
+the :button:`Choose a point,light` button then :mark:`leftclick,..`
+double-clicking on the glitch in the plot. After :mark:`leftclick,..`
+double-clicking on the plot
+window, the selected point is indicated with an orange circle, as on
+the left of the next figure. Clicking the :button:`Remove point,light`
+button removes that point from the data, shown in the bottom panel.
 
 .. subfigstart::
 
@@ -154,8 +155,9 @@ identical to how it used with |mu| (E) data. The advantage is that
 small glitches might be easier to see and to pluck from the data when
 the data is plotted as |chi| (E). The point-by-point deglitching
 algorithm works on the |chi| (E) data in the same manner as for
-|mu| (E) data. Points are selected by clicking on the plot, then
-removed by clicking the :button:`Remove point,light` button.
+|mu| (E) data. Points are selected by :mark:`leftclick,..`
+double-clicking on the plot, then removed by clicking the
+:button:`Remove point,light` button.
 
 
 
