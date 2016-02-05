@@ -119,18 +119,18 @@ values.
 
 For example, to tune the assessment of the penalty for an excessive
 number of guess parameters, you can change two configuration
-parameters.  :configparam:`happiness,nidp_cutoff` default to 2/3 and
+parameters.  :configparam:`Happiness,nidp_cutoff` default to 2/3 and
 sets the cutoff below which no penalty is assessed. This parameter is
 interpreted as a fraction of total number of independent points in the
-fit. :configparam:`happiness,nidp_scale` sets the maximum penalty to
+fit. :configparam:`Happiness,nidp_scale` sets the maximum penalty to
 assess for using up all the independent points.
 
 The path parameter penalties can also be fine tuned. A couple
 examples: the value above which a penalty is assessed for an
 excessively large E\ :sub:`0` is set with
-:configparam:`warnings,e0_max` and the assessment of a penalty for a
+:configparam:`Warnings,e0_max` and the assessment of a penalty for a
 negative |sigma|\ :sup:`2` can be turned off by toggling
-:configparam:`warnings,ss2_neg`.
+:configparam:`Warnings,ss2_neg`.
 
 Since this happiness thing is an artificial and statistically
 meaningless creation, it can be changed as you like.  Do you have any

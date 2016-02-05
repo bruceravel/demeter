@@ -20,6 +20,7 @@ Forward
 
 .. todo:: 
    #. section numbering in chapters with sections in index.rst
+   #. Data citations
       
 
 Layout and typesetting conventions
@@ -59,6 +60,10 @@ presentation media.
   :configparam:`Fit,k1`.  To modify this preferences, open the
   :guilabel:`fit` section of the `preferences tool <other/prefs.html>`__ and
   then click on :guilabel:`k1`
+
+- A click of the left mouse button is often indicated with this icon:
+  :mark:`leftclick,.`.  A click of the right mouse button is indicated
+  by this icon: :mark:`rightclick,.`.
 
 .. CAUTION::
    Points that require special attention are indicated
@@ -147,6 +152,12 @@ The following great software tools were used to create this document:
   
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
+
+- The left-click :mark:`leftclick,.` and right-click :mark:`rightclick,.` mouse icons
+  were made by `Freepik <http://www.freepik.com>`_ from
+  http://www.flaticon.com and are available under `the Creative
+  Commons Attribution License 3.0
+  <http://creativecommons.org/licenses/by/3.0/>`_.
   
 Almost all screenshots were made of either :demeter:`artemis` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
@@ -177,7 +188,7 @@ desktop image in some screen shots is by `Thomas Shanan
 <https://www.flickr.com/photos/opoterser/>`_ and is licensed under a
 `Creative Commons attribution, non-commercial, no-derivatives
 <https://creativecommons.org/licenses/by-nc-nd/2.0/>`_ license.
-
+You should check out his macro photography.  It's amazing!
 
 
 Data citations

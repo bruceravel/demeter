@@ -188,7 +188,7 @@ This menu provides several options for monitoring the state of
   the program. After reporting a bug to the :demeter:`ifeffit` mailing
   list, Bruce may ask for information obtained using these menu
   items. This submenu is only displayed if the
-  :configparam:`artemis,debug_menus` configuration parameter is set to
+  :configparam:`Artemis,debug_menus` configuration parameter is set to
   a true value.
 
 - :guilabel:`Show Ifeffit's memory use` item displays a crude,
@@ -355,11 +355,12 @@ To continue importing data, click the :button:`Import,light` button. The
 The recent data dialog
 ----------------------
 
-You can access a list of recently imported data by *right* clicking on
-the :button:`Add,light` button. This presents a dialog with a
-selection list. Click on one of your recent files, then click
-:button:`OK,light` or type :button:`Return`.  Alternately, double
-click on your choice in the list of recent files.
+You can access a list of recently imported data by
+:mark:`rightclick,..` *right* clicking on the :button:`Add,light`
+button. This presents a dialog with a selection list.  Click on one of
+your recent files, then click :button:`OK,light` or type
+:button:`Return`.  Alternately, :mark:`leftclick,..` double-click on
+your choice in the list of recent files.
 
 .. _fit-artemisrecentdata:
 
@@ -374,8 +375,8 @@ The Feff list
 -------------
 
 The :demeter:`feff` list starts off with a single control, which is
-used to import structural data into your fitting project. Clicking the
-:button:`Add,light` button will open the standard file selection
+used to import structural data into your fitting project.  Clicking
+the :button:`Add,light` button will open the standard file selection
 dialog for your platform. That is, on Windows, the standard Windows
 file selection dialog is used; on Linux, the standard Gnome file
 selection dialog is used; and so on.
@@ -401,10 +402,10 @@ example, two :demeter:`feff` calculations have been made. Neither is
 being displayed on screen. `See the Atoms/Feff
 chapter. <../feff/index.html>`__
 
-*Right* clicking on the :button:`Add,light` button will present the same
-recent file selection dialog as for the data list. In this case, the
-list will contain recently imported :demeter:`atoms`, :demeter:`feff`,
-or CIF files.
+:mark:`rightclick,..` *Right* clicking on the :button:`Add,light`
+button will present the same recent file selection dialog as for the
+data list. In this case, the list will contain recently imported
+:demeter:`atoms`, :demeter:`feff`, or CIF files.
 
 You may also drag CIF, :demeter:`atoms` input, or :demeter:`feff`
 input files from your computer's file manager and drop them onto the
@@ -446,7 +447,7 @@ Fit and log buttons
 -------------------
 
 All the way to the right of the main window are the
-:button:`Fit,light` and :button:`Show log,light` buttons. Click the
+:button:`Fit,light` and :button:`Show log,light` buttons.  Click the
 Fit button to initiate the fit. The log button is used to show and
 hide a window which displays the log from the most recent fit. `See
 the chapter on the Log and Journal windows. <../logjournal.html>`__ In

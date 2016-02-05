@@ -64,6 +64,10 @@ presentation media.
   :guilabel:`bkg` section of the `preferences tool <other/prefs.html>`__ and
   then click on :guilabel:`fraction`
 
+- A click of the left mouse button is often indicated with this icon:
+  :mark:`leftclick,.`.  A click of the right mouse button is indicated
+  by this icon: :mark:`rightclick,.`.
+
 .. CAUTION::
    Points that require special attention are indicated
    like this.

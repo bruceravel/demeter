@@ -87,10 +87,11 @@ Here is the Data window as it initially appears:
    this data set. How that works will be explained in `the next
    chapter <path/index.html>`__.
 
-#. When no paths have yet been associated with a data set, this default
-   page is displayed. The lines of blue text are sensitive to mouse
-   clicks and initiate the import of certain kinds of data. All of those
-   import options will be explained elsewhere in this document.
+#. When no paths have yet been associated with a data set, this
+   default page is displayed. The lines of blue text are sensitive to
+   :mark:`leftclick,.` mouse clicks and initiate the import of certain
+   kinds of data. All of those import options will be explained
+   elsewhere in this document.
 
 After one or more paths have been associated with this data set, the
 Data window looks something like this.
@@ -104,16 +105,16 @@ Data window looks something like this.
 
 Note that the paths list is populated with the paths assigned to these
 data and that the right hand side of the Data window displays the
-details about a particular path. Clicking on an item in the paths list
-causes that path to be displayed on the right.
+details about a particular path.  :mark:`leftclick,..` Clicking on an
+item in the paths list causes that path to be displayed on the right.
 
 Note that each path in the path list has a check button associated with
-it. These check buttons are involved in much of the functionality
+it.  These check buttons are involved in much of the functionality
 described below.
 
 Some vocabulary: The highlighted path is displayed on the right and is
-said to be :quoted:`selected`. When a paths check button is checked,
-it is said to be :quoted:`marked`. In this example, the first path is
+said to be :quoted:`selected`.  When a paths check button is checked,
+it is said to be :quoted:`marked`.  In this example, the first path is
 selected and no paths have yet been marked.
 
 

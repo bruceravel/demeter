@@ -26,7 +26,7 @@ information in this manual.
 
 #. Configuration parameters (i.e. preferences) for :demeter:`artemis`
    and :demeter:`demeter` look like this:
-   :configparam:`artemis,plot_after_fit`
+   :configparam:`Artemis,plot_after_fit`
 
 #. Verbatim text, such as represent specific input to or output from
    :demeter:`artemis` or text typed into a computer, looks like this:

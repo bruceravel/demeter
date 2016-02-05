@@ -7,13 +7,14 @@ Starting Artemis
 ================
 
 The :demeter:`artemis` program is launched on Windows by
-double-clicking the :demeter:`artemis` icon on the desk top, by
-selecting ``artemis`` from the :demeter:`demeter` menu in the Start
-Menu, or by typing :command:`dartemis` (with a silent :button:`d`) at
-the command prompt. If you installed :demeter:`demeter` using the
-standard installer package, you can also double click on an
-:demeter:`artemis` project file (i.e. one with a :file:`.fpj`
-extension) to open it in :demeter:`artemis`.
+:mark:`leftclick,..` double-clicking the :demeter:`artemis` icon on
+the desk top, by selecting ``artemis`` from the :demeter:`demeter`
+menu in the Start Menu, or by typing :command:`dartemis` (with a
+silent :button:`d`) at the command prompt.  If you installed
+:demeter:`demeter` using the standard installer package, you can also
+:mark:`leftclick,..` double-click on an :demeter:`artemis` project
+file (i.e. one with a :file:`.fpj` extension) to open it in
+:demeter:`artemis`.
 
 On a unix computer, :demeter:`artemis` is launched by typing
 :command:`dartemis` in the shell. Depending on how :demeter:`demeter`
