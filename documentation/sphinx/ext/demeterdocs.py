@@ -192,9 +192,8 @@ def visit_mark_html(self, node):
               'leftclick'  : 'Left mouse button',
               'soon'       : 'Coming soon!',
               'bend'       : 'This is difficult material',
-              'lightning'  : 'This is material an skilled user should know',
+              'lightning'  : 'This is material a skilled user should know',
               'plot-icon'  : 'Transfer to the Plot list',
-              'plotlist'   : 'The plotting tool',
               }
     thistitle = titles[node['image']]
     self.body.append('<img alt="%s" title="%s" src="%s/_static/%s.png" hspace="3">' % (node['image'], thistitle, node['path'], node['image']))
