@@ -7,15 +7,14 @@
 Forward
 =======
 
-:demeter:`artemis` is:
+.. admonition:: :demeter:`artemis` is
 
-- a graphical front-end for :demeter:`feff` and :demeter:`ifeffit` (or
-  :demeter:`larch`) built using :demeter:`demeter`
-
-- a tool which makes easy analysis problems easy and hard analysis
-  problem possible
-
-- in use by hundreds of scientists world-wide
+   - a graphical interface for EXAFS data analysis 
+   - a front-end for :demeter:`feff` and :demeter:`ifeffit` (or
+     :demeter:`larch`) built using :demeter:`demeter`
+   - a tool which makes easy analysis problems easy and hard analysis
+     problem possible
+   - in use by hundreds of scientists world-wide
 
 
 .. todo:: 
@@ -102,14 +101,14 @@ display correctly in very old browsers.
 Acknowledgments
 ----------------
 
-I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
-and :demeter:`larch` there wouldn't be an :demeter:`artemis`. Some
+I have to thank Matt Newville, of course.  Without :demeter:`ifeffit`
+and :demeter:`larch` there wouldn't be an :demeter:`artemis`.  Some
 content of this document was inspired by a recent XAS review article
 by Shelly Kelly and Dean Hesterberg, the first draft of which I had
-the pleasure of editing and the final draft of which I ended up on the
-author list. I have a huge debt of gratitude to all the folks on the
-:demeter:`ifeffit` mailing list. Without the incredible support and
-wonderful feedback that I've received over the years,
+the pleasure of reviewing and the final draft of which I ended up on
+the author list.  I have a huge debt of gratitude to all the folks on
+the :demeter:`ifeffit` mailing list.  Without the incredible support
+and wonderful feedback that I've received over the years,
 :demeter:`artemis` would be a shadow of what it is today.
 
 .. bibliography:: artemis.bib
@@ -175,7 +174,8 @@ by Matthew Marcus.
 <http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg>`_
 is a votive relief from the Archaeological Museum of Brauron in
 Brauron, Greece and is in the public domain.  It depicts a family of
-worshippers sacrificing a goat to the goddess Artemis.
+worshippers sacrificing a goat to the goddess Artemis.  Good advice!
+You should do that, too.
 
 
 The image used as the :demeter:`artemis` program icon is Detail from
