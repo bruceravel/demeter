@@ -101,10 +101,10 @@ Each tag gets a unique potential
 --------------------------------
 
 The two oxygen types can get differnt unique potentials by choosing
-the :guilabel:`tags` style. Note that in the atoms.inp pairs of oxygen
-sites were given the tags :quoted:`Oax` and :quoted:`Oeq`. Also note
-that the two carbon sites were given the same tag. With all this, we
-get the following :file:`feff.inp` file:
+the :guilabel:`tags` style. Note that, in the :file:`atoms.inp` file,
+pairs of oxygen sites were given the tags :quoted:`Oax` and
+:quoted:`Oeq`.  Also note that the two carbon sites were given the
+same tag. With all this, we get the following :file:`feff.inp` file:
 
 ::
 

@@ -33,10 +33,10 @@ straight away, there are a number of situations where directly editing
 the input data prior to running :demeter:`feff` is desirable.
 
 The :button:`Open,light` button can be used to import a different
-:file:`feff.inp` file.  *Right clicking* that button posts the
-recently used file dialog. The :button:`Save,light` button will post
-the standard column selection dialog for choosing a file name for
-saving the current :demeter:`feff` input data. The
+:file:`feff.inp` file.  :mark:`rightclick,..` *Right clicking* that
+button posts the recently used file dialog. The :button:`Save,light`
+button will post the standard column selection dialog for choosing a
+file name for saving the current :demeter:`feff` input data. The
 :button:`Clear,light` button will remove all text from the big text
 box.
 
@@ -57,9 +57,10 @@ Feff documentation
 ------------------
 
 This page allows you to link directly to :demeter:`feff`'s
-documentation.  Right clicking on the text window containing the
-:file:`feff.inp` usually posts the standard :guilabel:`cut/copy/paste`
-menu. However, if you right click on one of :demeter:`feff`'s keywords
+documentation.  :mark:`rightclick,..` Right clicking on the text
+window containing the :file:`feff.inp` usually posts the standard
+:guilabel:`cut/copy/paste` menu.  However, if you
+:mark:`rightclick,..` right click on one of :demeter:`feff`'s keywords
 (or :quoted:`cards`), you will get a small menu which will link you to
 the documentation for that keyword. Clicking on the posted menu will
 open a browser and display the appropriate document page from `The

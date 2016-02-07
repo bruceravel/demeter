@@ -91,7 +91,7 @@ type.
     An :lguess:`lguess` parameter is a tool used to simplify model
     creation for a multiple data set fit.  It can be used in math
     expressions for two or more data sets.  When the fit is started,
-    an actual guess parameter will be created for each data set in
+    an actual :guess:`guess` parameter will be created for each data set in
     which the :lguess:`lguess` is used.  As an example, suppose your
     multiple data set fit includes data on a series of binary alloys.
     If ``x`` is a mixing parameter between the two alloys and is
@@ -221,18 +221,19 @@ shortcuts to change the parameter type of that set of parameters.
 Context menu
 ~~~~~~~~~~~~
 
-Clicking on a line in the grid selects the entire line.
-:button:`Control` clicking of a line adds that line to the
-selection. :button:`Shift` clicking adds all lines between the
-selected and clicked upon lines.
+:mark:`leftclick,.` Clicking on a line in the grid selects the entire
+line.  :button:`Control`-:mark:`leftclick,.` clicking of a line adds
+that line to the selection.  :button:`Shift`-:mark:`leftclick,.`
+clicking adds all lines between the selected and clicked upon lines.
 
 .. _fig-gdsmenu:
 .. figure:: ../_images/gds-menu.png
    :target: _images/gds-menu.png
    :align: center
 
-   Right clicking on any line in the grid, including the label containing
-   the line number, will post this menu.
+   :mark:`rightclick,.` Right clicking on any line in the grid,
+   including the label containing the line number, will post this
+   menu.
 
 :guilabel:`Copy, cut, paste`
     These three options copy, cut, and paste lines from or to the GDS
@@ -247,7 +248,7 @@ selected and clicked upon lines.
     line selected, they will all get changed to the option you choose
     from the submenu.
 :guilabel:`Grab best fit`
-    This changes theinitial guess of the selected lines to the most
+    This changes the initial guess of the selected lines to the most
     recent best fit value(s).
 :guilabel:`Build restraint`
     .. _fig-gdsrestraint:
@@ -255,8 +256,9 @@ selected and clicked upon lines.
        :target: _images/gds-restraint.png
        :align: center
 
-       This posts a dialog that helps you name and define a restraint based
-       upon the value of the parameter in the line clicked upon. 
+       This posts a dialog that helps you name and define a restraint
+       based upon the value of the parameter in the line
+       :mark:`rightclick,.` clicked upon.
 
     This will use :demeter:`ifeffit`'s ``penalty`` function with the
     lower and upper bounds as its arguments and multiplied by the
@@ -277,7 +279,7 @@ selected and clicked upon lines.
 
 :guilabel:`Annotate`
     This prompts you for a text string to describe the parameter in the
-    line clicked upon. The intent is to allow you document the role of
+    line :mark:`rightclick,.` clicked upon. The intent is to allow you document the role of
     the parameter in your fitting model. This annotation is displayed in
     the GDS window's status bar when that line is selected.
 :guilabel:`Find parameter`
@@ -298,22 +300,24 @@ selected and clicked upon lines.
 Creating parameters from math expressions on the path page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Parameters can be created from the `path page <path/index.html>`__. When
-you right click on a word in a math expression for the one of the `path
-parameters <path/mathexp.html>`__, a menu pops up which allows you to
-set the word you clicked upon as GDS parameter.
+Parameters can be created from the `path page
+<path/index.html>`__. When you :mark:`rightclick,.` right click on a
+word in a math expression for the one of the `path parameters
+<path/mathexp.html>`__, a menu pops up which allows you to set the
+word you :mark:`rightclick,.` clicked upon as GDS parameter.
 
 .. _fig-gdspath:
 .. figure:: ../_images/gds_path.png
    :target: _images/gds_path.png
    :align: center
 
-   Creating GDS parameters by right clicking on a math expression on the
-   Path page.
+   Creating GDS parameters by :mark:`rightclick,.` right clicking on
+   a math expression on the Path page.
 
-If you have not yet defined the word you click on, then the GDS window
-will appear on screen, and the parameter will be inserted into the GDS
-table as the type of parameter selected from the menu.
+If you have not yet defined the word you :mark:`rightclick,.` right
+click on, then the GDS window will appear on screen, and the parameter
+will be inserted into the GDS table as the type of parameter selected
+from the menu.
 
 If the word has already been defined, then its type will be changed to
 the type you select from the menu.
@@ -321,6 +325,6 @@ the type you select from the menu.
 If the word is something that is not allowed in :demeter:`ifeffit` as
 a parameter name (things like ``dr1`` and ``cos`` are reserved words
 and cannot be used as parameter names) then the menu will not be
-posted. Likewise, the menu will not be posted if you right click on a
-number.
+posted. Likewise, the menu will not be posted if you
+:mark:`rightclick,.` right click on a number.
 

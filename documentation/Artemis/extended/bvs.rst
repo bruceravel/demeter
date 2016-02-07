@@ -7,6 +7,7 @@
 .. role:: def
 .. role:: set
 .. role:: after
+.. role:: restrain
 
 Bond valence sums
 =================
@@ -104,40 +105,41 @@ the feedback box in bold red text.
 Using a bond valance sum as a restraint
 ---------------------------------------
 
-The bond valence sum can be used a restraint on a fit. That is, the
-relationship between formal valence, coordination number, and bond
-distance can be used as prior knowledge guiding the fit. If the
-absorber/scatterer pair are in the bond valence database, values for
-R\ :sub:`0,ij`, B, and the formal valence of the obsorber can be defined
-as set parameters. The bond valence sum is expressed as a def parameter.
-Finally, the difference between the bond valence sum and the formal
-valence are expressed as a restrain parameter. These are shown below for
-the Fe-O bond in FeO. In FeO the iron atom is of valence 2+ and the
-oxygen is 2-.
+The bond valence sum can be used a :restrain:`restraint` on a
+fit. That is, the relationship between formal valence, coordination
+number, and bond distance can be used as prior knowledge guiding the
+fit. If the absorber/scatterer pair are in the bond valence database,
+values for R\ :sub:`0,ij`, B, and the formal valence of the obsorber
+can be defined as set parameters. The bond valence sum is expressed as
+a def parameter.  Finally, the difference between the bond valence sum
+and the formal valence are expressed as a :restrain:`restrain`
+parameter. These are shown below for the Fe-O bond in FeO. In FeO the
+iron atom is of valence 2+ and the oxygen is 2-.
 
 .. _fig-bvsrestrain:
 .. figure:: ../../_images/bvs_restrain.png
    :target: ../_images/bvs_restrain.png
    :align: center
 
-   Defining a group of parameters to make a restraint based on a bond
-   valence sum.
+   Defining a group of parameters to make a :restrain:`restraint`
+   based on a bond valence sum.
 
-When the fit is evaluated, the restrain parameter will be added in
-quadrature to the evaluation of |chi|\ :sup:`2`. This sum will be
-minimized in the fit. In a fit to FeO, the coordination number is
-fixed to 6, the value known from crystallography. By using this
-restraint, the value of |Delta| R will be encouraged to assume a value
-that results in a bond valence sum of 2. By increasing the value of
-the scale parameter, the strength of the restraint is increased. For a
-very large value of scale, |Delta| R will constrained to a value that
-forces the bond valence sum to 2. For a very small value of scale, the
-restraint will be weak and |Delta| R will be given more freedom to
-deviate from a value that casues a bond valence sum of 2.
+When the fit is evaluated, the :restrain:`restrain` parameter will be
+added in quadrature to the evaluation of |chi|\ :sup:`2`. This sum
+will be minimized in the fit. In a fit to FeO, the coordination number
+is fixed to 6, the value known from crystallography. By using this
+:restrain:`restraint`, the value of |Delta| R will be encouraged to
+assume a value that results in a bond valence sum of 2. By increasing
+the value of the scale parameter, the strength of the
+:restrain:`restraint` is increased. For a very large value of scale,
+|Delta| R will constrained to a value that forces the bond valence sum
+to 2. For a very small value of scale, the :restrain:`restraint` will
+be weak and |Delta| R will be given more freedom to deviate from a
+value that casues a bond valence sum of 2.
 
 This example shows the simplest case of a single scattering path
 contributing to the bond valence sum. The math expressions to establish
-the restraint would be more complicated for a more disrodered first
+the :restrain:`restraint` would be more complicated for a more disrodered first
 shell, but those math expressions would follow the same pattern as this
 example.
 
@@ -149,7 +151,7 @@ The last :demeter:`artemis` trick related to evaluations of bond
 valence sums is to use an `after parameter
 <../gds.html#parameter-types>`__ to record the bond valence sum to the
 `log file <../logjournal.html>`__.  Using the same set of parameters
-as in the restraint example, set the BVS formula instead to an
+as in the :restrain:`restraint` example, set the BVS formula instead to an
 :after:`after` parameter.
 
 .. _fig-bvsafter:

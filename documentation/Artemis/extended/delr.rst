@@ -34,7 +34,7 @@ effect of the position of the S atom.
 
 In the `FeS2 worked example <../examples/fes2.html>`__, a
 parameterization was used which related |Delta| R for all the paths to a
-volumetric expansion coefficient, |Delta| R=|alpha| ·R\ :sub:`eff`. Why does this
+volumetric expansion coefficient, |Delta| R= |alpha| |cdot| R\ :sub:`eff`. Why does this
 work?
 
 The distance d\ :sub:`eff` between any two atoms in a cubic crystal is

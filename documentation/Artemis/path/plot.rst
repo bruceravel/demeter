@@ -12,22 +12,24 @@ Marking and Plotting
 The check buttons next to each path in the path list are central to
 many features in :demeter:`artemis` related to plotting and other
 tasks. Along with all of the tools in the Mark menu, you can mark a
-group of paths by clicking elsewhere on the path list while holding
-down the :button:`Shift` key. Doing so marks all paths between the
-selected one and the one :button:`Shift`-clicked upon.
+group of paths by :mark:`leftclick,..` clicking elsewhere on the path
+list while holding down the :button:`Shift` key. Doing so marks all
+paths between the selected one and the one
+:button:`Shift`-:mark:`leftclick,..` clicked upon.
 
-:button:`Control`-clicking on the path list is also a special function
-used for two purposes. Doing a :button:`Control`-click starts a
-drag-and-drop with the path you click on. Dropping the path on another
-data window, copies If you drop the path on the same path list, that
-path to that Data set.  Dropping the path on the same path list is
-equivalent to cloning the dragged path, with the clone being appended
-to the end of the path list.
+:button:`Control`-:mark:`leftclick,..` clicking on the path list is
+also a special function used for two purposes. Doing a
+:button:`Control`-:mark:`leftclick,..` click starts a drag-and-drop
+with the path you click on. Dropping the path on another data window,
+copies If you drop the path on the same path list, that path to that
+Data set.  Dropping the path on the same path list is equivalent to
+cloning the dragged path, with the clone being appended to the end of
+the path list.
 
-.. caution:: Mistakenly :button:`Control`-clicking rather than
-   :button:`Shift`-clicking will likely result in a path being
-   cloned. This can be surprising and confusing, so please take care
-   and be mindful!
+.. caution:: Mistakenly :button:`Control`-:mark:`leftclick,..`
+   clicking rather than :button:`Shift`-:mark:`leftclick,..` clicking
+   will likely result in a path being cloned. This can be surprising
+   and confusing, so please take care and be mindful!
 
 .. todo:: Write a page about tools for building MDS fits
 
@@ -44,7 +46,7 @@ using the Plotting list on the `Plot window
 paths to the Plotting list.
 
 #. The blue button with the squiggly line in the upper left corner of
-   the Path page |transfer button| transfers that path to
+   the Path page |nd| |transfer button| |nd| transfers that path to
    the Plotting list.
 
 #. A path will be transferred automatically after a fit if its

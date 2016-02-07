@@ -20,11 +20,12 @@ Populating the plotting list manually
 -------------------------------------
 
 The most basic way of moving a data set or a path to the plotting list
-is to click on a plot transfer button. These are the light blue buttons,
-|transfer button|, at the top of the Data window. There is one to the
-left of the name of the data set. Clicking on this button inserts that
-data at the end of the plotting list. There is also a transfer button on
-each Path page to the left of the path's name.
+is to click on a plot transfer button. These are the light blue
+buttons |nd| |transfer button| |nd| at the top of the Data
+window. There is one to the left of the name of the data set. Clicking
+on this button inserts that data at the end of the plotting
+list. There is also a transfer button on each Path page to the left of
+the path's name.
 
 .. _fig-plottransfer:
 .. figure:: ../../_images/plot-transfer.png
@@ -62,10 +63,11 @@ Items in the list can be reordered by dragging and dropping while
 holding down the control key. Note that an item will be placed *after*
 the item on which it is dropped.
 
-Right clicking on an item will post a pop-up button for removing that
-item from the list. Selecting more than one path then right-clicking
-will post a menu with options for removing the selected paths or for
-altering their check buttons.
+:mark:`rightclick,..` Right clicking on an item will post a pop-up
+button for removing that item from the list. Selecting more than one
+path then :mark:`rightclick,..` right clicking will post a menu with
+options for removing the selected paths or for altering their check
+buttons.
 
 
 Refreshing the plotting list after a fit

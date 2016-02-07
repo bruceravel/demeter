@@ -54,11 +54,12 @@ path. The columns contain the following information:
 #. The final column is a simple explanation of the shape of the
    scattering geometry.
 
-The rows in this table are selectable by mouse click. Left clicking on
-a row selects that row. :button:`Control`-clicking on another row adds
-it to the selection. :button:`Shift`-clicking adds to the selection
-all rows between the one clicked upon and the previously clicked upon
-row.
+The rows in this table are selectable by mouse
+click. :mark:`leftclick,..` Left clicking on a row selects that
+row. :button:`Control`-:mark:`leftclick,..` clicking on another row
+adds it to the selection. :button:`Shift`-:mark:`leftclick,..`
+clicking adds to the selection all rows between the one clicked upon
+and the previously clicked upon row.
 
 Much of the functionality of this page rests upon the set of selected
 paths. Most importantly, selecting paths is the first step to using
@@ -145,10 +146,11 @@ how the plot of paths is made. The options are |chi| (k), \| |chi|
 (R)\|, Re[|chi| (R)], and Im[|chi| (R)].  The k-weight selected in the
 Plot window is used to make the plot of paths.
 
-Right clicking on an entry in the paths list will post a menu. The first
-item on the menu opens a dialog window with more details about the
-geomtery of the selected scattering path. In the following figure, the
-selected path (0006) was right-clicked on, opening the dialog depicted
+:mark:`rightclick,..` Right clicking on an entry in the paths list
+will post a menu. The first item on the menu opens a dialog window
+with more details about the geomtery of the selected scattering
+path. In the following figure, the selected path (0006) was
+:mark:`rightclick,..` right-clicked on, opening the dialog depicted
 below.
 
 The other context menu options are used to set the path select on the

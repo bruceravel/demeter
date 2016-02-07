@@ -230,3 +230,8 @@ two nearly degenerate paths into separate scattering paths.
 To make the pathfinder neglect fuzzy degeneracy, thus behaving like
 :demeter:`feff`'s pathfinder, set :configparam:`Pathfinder,fuzz` to 0.
 
+Fuzzy degeneracy is discussed in
+
+.. bibliography:: ../artemis.bib
+   :filter: author % "Ravel" and year == '2014'
+   :list: bullet

@@ -21,11 +21,12 @@ positions in k or q are also plotted in q or k.
 
    The Indicator tab
 
-To set an indicator, click the target button, then click on a point in
-the current plot. Once set, the position and space can be edited using
-the associated choice menu and text control. The check button turns the
-indicator on or off in subsequent plots. The buttons at the bottom
-toggle the check buttons for each indicator.
+To set an indicator, click the target button, then
+:mark:`leftclick,..` double-click on a point in the current plot. Once
+set, the position and space can be edited using the associated choice
+menu and text control. The check button turns the indicator on or off
+in subsequent plots. The buttons at the bottom toggle the check
+buttons for each indicator.
 
 
 .. _fig-indicplot:

@@ -263,8 +263,8 @@ In this case, I changed 3 of the 12 nearest iron neighbors into
 molybdenum ... reasonable if I have about 25 percent doping.
 
 If you are doing a :demeter:`feff` calculation for the molybdenum
-*edge*, then also change the very first iron to molybdenum, and change
-potential ``0`` in the ipot list to molybdenum with ipot ``0``.
+absorber, then also change the very first iron to molybdenum, and
+change potential ``0`` in the ipot list to molybdenum with ipot ``0``.
 
 ::
 
@@ -304,8 +304,9 @@ for example, use the following GDS parameters:
     set: MolyPercent = 0.20
     def: IronPercent = 1-MolyPercent
 
-Then go to the individual path representing the scattering off of
-nearest neighbor molypercent, and assign it an S\ :sup:`2`\ :sub:`0` of
+Then go to the individual path representing the scattering from the
+nearest neighbor molybdenum atom, and assign it an S\ :sup:`2`\
+:sub:`0` of
 
 ::
 

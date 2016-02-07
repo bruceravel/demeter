@@ -55,8 +55,8 @@ window is divided into 7 areas.
    is evaluated and for saving a project file in a single click.
 
 #. On the far right is the :button:`Fit,light` button. As you might
-   guess, this button is clicked to initiate a fit. The color of this
-   button will change to provide a `heuristic evaluation
+   imagine, this button is clicked to initiate a fit. The color of
+   this button will change to provide a `heuristic evaluation
    <../fit/happiness.html>`__ of the quality of each fit. Below the
    :button:`Fit,light` button is :button:`Show log,light` button, used
    to show or hide a window containing the results from the most

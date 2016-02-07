@@ -19,8 +19,11 @@ Forward
 
 
 .. todo:: 
-   #. section numbering in chapters with sections in index.rst
-   #. Data citations
+   #. `Data citations <#id1>`_
+   #. Finish `FeS2 section <examples/fes2.html>`_
+   #. Write `methyltin section <examples/methyltin.html>`_
+   #. Write `constraints and restraints section <extended/constraints.html>`_
+   #. Document histograms
       
 
 Layout and typesetting conventions
@@ -203,10 +206,10 @@ Installing ATHENA on your computer
 **Linux, BSD, and other unixes**
     It is not especially hard to build :demeter:`artemis`
     from source code. The 
-    procedure is explained in detail on this web page:
-    http://bruceravel.github.io/demeter/pods/installation.pod.html. An
-    excellent addendum to those instructions is at
-    https://gist.github.com/3959252.
+    procedure is explained in detail `at this link
+    <http://bruceravel.github.io/demeter/documents/SinglePage/installation.html>`_. An
+    excellent addendum to those instructions was `provided by David Hughes
+    <http://bruceravel.github.io/demeter/documents/SinglePage/demeter_nonroot.html>`_
 **Windows**
     Follow the links to `the Windows instructions on the Demeter
     homepage <http://bruceravel.github.io/demeter/#windows>`__ to download the
