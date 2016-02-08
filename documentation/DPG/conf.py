@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Artemis documentation build configuration file, created by
-# sphinx-quickstart on Fri Dec 11 10:35:02 2015.
+# sphinx-quickstart on Fri Dec 11 10:35:02 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.

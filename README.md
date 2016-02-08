@@ -2,11 +2,9 @@
 
 Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Larch
 
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.20631.svg)](http://dx.doi.org/10.5281/zenodo.20631)
-
 # VERSION
 
-This documentation refers to Demeter version 0.9.21
+This documentation refers to Demeter version 0.9.24
 
 # SYNOPSIS
 
@@ -456,7 +454,7 @@ Bruce Ravel ([http://bruceravel.github.io/home](http://bruceravel.github.io/home
 
 # LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel ([http://bruceravel.github.io/home](http://bruceravel.github.io/home)). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel ([http://bruceravel.github.io/home](http://bruceravel.github.io/home)). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See [perlgpl](https://metacpan.org/pod/perlgpl).

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # SingleFile documentation build configuration file, created by
-# sphinx-quickstart on Fri Dec 11 10:35:02 2015.
+# sphinx-quickstart on Fri Dec 11 10:35:02 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -74,7 +74,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'Miscellaneous Demeter'
 author = u'Bruce Ravel'
-copyright = u'2015, Bruce Ravel'
+copyright = u'2016, Bruce Ravel'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -356,7 +356,7 @@ texinfo_documents = [
 epub_title = u'SingleFile'
 epub_author = u'Bruce Ravel'
 epub_publisher = u'Bruce Ravel'
-epub_copyright = u'2015, Bruce Ravel'
+epub_copyright = u'2016, Bruce Ravel'
 
 # The basename for the epub file. It defaults to the project name.
 #epub_basename = u'SingleFile'
