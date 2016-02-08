@@ -98,21 +98,7 @@ release = '0.9.24'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst', 'contents.rst',
-                    # 'forward',
-                    # 'intro',
-                    # 'import',
-                    # 'bkg',
-                    # 'plot',
-                    # 'ui',
-                    # 'params',
-                    # 'output',
-                    # 'process',
-                    # 'analysis',
-                    # 'other',
-                    # 'examples',
-                    # 'hephaestus.rst',
-]
+exclude_patterns = ['_build', 'prolog.rst', 'epilog.rst', 'contents.rst',]
 
 #sphinxtr
 # Ideally, we wouldn't have to do this, but sphinx seems to have trouble with
@@ -127,9 +113,9 @@ else:
 #sphinxtr
 # A string of reStructuredText that will be included at the end of
 # every source file that is read.
-rst_epilog = open(os.path.join(CURDIR, 'epilog.rst'),'r').read().decode('utf8')
+rst_epilog = open(os.path.join(CURDIR, '..', 'rst', 'epilog.rst'),'r').read().decode('utf8')
 
-rst_prolog = open(os.path.join(CURDIR, 'prolog.rst'),'r').read().decode('utf8')
+rst_prolog = open(os.path.join(CURDIR, '..', 'rst', 'prolog.rst'),'r').read().decode('utf8')
 
 demeter_color = '#aa0000'
 

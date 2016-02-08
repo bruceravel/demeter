@@ -114,9 +114,9 @@ else:
 #sphinxtr
 # A string of reStructuredText that will be included at the end of
 # every source file that is read.
-rst_epilog = open(os.path.join(CURDIR, 'epilog.rst'),'r').read().decode('utf8')
+rst_epilog = open(os.path.join(CURDIR, '..', 'rst', 'epilog.rst'),'r').read().decode('utf8')
 
-rst_prolog = open(os.path.join(CURDIR, 'prolog.rst'),'r').read().decode('utf8')
+rst_prolog = open(os.path.join(CURDIR, '..', 'rst', 'prolog.rst'),'r').read().decode('utf8')
 
 demeter_color = '#aa0000'
 
