@@ -65,10 +65,10 @@ expansion (or contraction) is
 The expression |alpha| |cdot| d\ :sub:`eff` works for all legs of any
 SS or MS path in a cubic crystal (assuming that there are no internal
 degrees of freedom, like the parameter for the position of the S atom
-in ). The length of a path, then, is the sum of the length of each
-leg. |Delta| R for a path is the sum of |Delta| d for each leg. The
-sum of the d\ :sub:`eff` values is R\ :sub:`eff`, thus |Delta|
-R= |alpha| |cdot| R\ :sub:`eff`.
+in FeS\ :sub:`2`). The length of a path, then, is the sum of the
+length of each leg. |Delta| R for a path is the sum of |Delta| d for
+each leg. The sum of the d\ :sub:`eff` values is R\ :sub:`eff`, thus
+|Delta| R= |alpha| |cdot| R\ :sub:`eff`.
 
 While this trick is only valid for a cubic crystal, it does ilustrate
 two important points about :demeter:`artemis`. First, it is an example
