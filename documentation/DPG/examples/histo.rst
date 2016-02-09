@@ -80,8 +80,8 @@ The approach the :demeter:`demeter` offers is to compute an `SSPath
 <../pathlike/sspath.html>`__ at each bin of the histogram. The at each
 bin is set to the population of that bin. Each bin should get the same
 E\ :sub:`0` parameter. If the histogram accurately represents all
-soruces of disorder -- both structural and thermal, something that is
-certainly possible in an MD simulation -- then no |sigma|\ :sup:`2` or
+soruces of disorder |nd| both structural and thermal, something that is
+certainly possible in an MD simulation |nd| then no |sigma|\ :sup:`2` or
 |Delta| R parameters would be needed. Of course, they could be
 introduced to account for any shortcomings of the MD simulation
 compared to the measured data.
@@ -144,7 +144,7 @@ first coordination shell is stored in the ``$firstshell`` variable.
 All the interesting stuff in this example happens between lines 21 and
 26. First, the locations and populations of the histogram are read from
 a column data file at line 21. The ``histogram_from_file`` method (which
-is a method of the ScatteringPath object) takes 5 arguments -- the file
+is a method of the ScatteringPath object) takes 5 arguments |nd| the file
 name, the column numbers of the bin positions and bin populations, and
 the range in R-space. Bins in the histogram that lie outside the R-range
 will not be considered. An example of a histogram file is shown above.
@@ -161,7 +161,7 @@ At line 22, an anonymous array of path parameters values is created.
 These values will be used for every Path object created by histogram
 generating method. Note that I am using this anonymous array to pass
 various attributes to the Path objects in the histogram. Passing these
-in this way is just a convenience -- they could be set after the fact
+in this way is just a convenience |nd| they could be set after the fact
 instead.
 
 At line 24, the set of Path objects representing the contribution from

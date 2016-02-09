@@ -10,7 +10,7 @@ After the path finder is run, the Feff object has its ``pathlist``
 attribute filled with a reference to a list of ScatteringPath objects.
 The ScatteringPath object is an abstract representation of a
 scattering path. In :demeter:`demeter`, the ScatteringPath object is
-somewhat like a :file:`feffNNNN.dat` is to :demeter:`ifeffit` -- it
+somewhat like a :file:`feffNNNN.dat` is to :demeter:`ifeffit` |nd| it
 does indeed describe the path, but it needs to imported and
 parametrized before it can be used to make a plot or a fit.
 

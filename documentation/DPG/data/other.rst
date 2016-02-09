@@ -36,7 +36,7 @@ You can supply attribute values in the same manner as the ``new`` or
 
 If you are creating a Data object to hold |chi| (k) data rather than
 |mu| (E) data, you must use the additional arguments, as this method
-sets the ``datatype`` attribute to “xmu”.
+sets the ``datatype`` attribute to :quoted:`xmu`.
 
 .. code-block:: perl
 

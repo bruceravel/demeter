@@ -35,8 +35,8 @@ Demeter Programmer's Guide: Middleware for Feff and Ifeffit
    intro.rst
    data/index.rst
    mue/index.rst
-   xanes/index.rst
    highlevel/index.rst
+   xanes/index.rst
    atoms.rst
    feff/index.rst
    paths/index.rst

@@ -13,10 +13,10 @@ attributes of the mode are used to set the `disposal
 channel <dispose.html#commanddisposal>`__ and the `template
 set <dispose.html#templatesets>`__.
 
-To make the Mode object readily accessible at all times in your program,
-the ``mo`` method is a method of the base class and is inherited by all
-:demeter:`demeter` objects. Thus, given any object, you can “find” the Mode object
-like so:
+To make the Mode object readily accessible at all times in your
+program, the ``mo`` method is a method of the base class and is
+inherited by all :demeter:`demeter` objects.  Thus, given any object,
+you can :quoted:`find` the Mode object like so:
 
 .. code-block:: perl
 

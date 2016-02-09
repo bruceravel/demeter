@@ -162,7 +162,7 @@ exception <../feff/pathfinder.html>`__) always the slowest thing that
 :demeter:`demeter` does. One of the optimizations implemented by :demeter:`demeter` is the
 reprocessing of commands targeted for disposal to :demeter:`ifeffit`.
 
-Command strings in :demeter:`ifeffit` can be quite long -- up to 2048
+Command strings in :demeter:`ifeffit` can be quite long |nd| up to 2048
 characters as it is normally compiled. A command that is split over
 multiple lines, as the example at the beginning of this section is,
 will be processed much faster if :demeter:`demeter` pre-processes the
@@ -209,9 +209,9 @@ Command templates
 
 :demeter:`demeter` ships with **a lot** of templates. Each template
 encapsulates a small bit of functionality and :demeter:`demeter` does
-many things. The templates are organized into “:quoted:`template
-sets`, which are written for specific backend targets, and “template
-groups” which, are groups of templates which serve related
+many things. The templates are organized into :quoted:`template sets`,
+which are written for specific backend targets, and :quoted:`template
+groups` which, are groups of templates which serve related
 functions. All template sets must have a complete representation of
 template groups to be fully functional.
 
@@ -289,10 +289,10 @@ found in `the user interface chapter <../ui.html>`__.
    :demeter:`demeter`.
 
 #. ``singlefile``, this set of templates is used to export the data to
-   be plotted to a single column file. The main use of this is in a GUI
-   to exprt a file that can be used to replicate an interesting plot --
-   with offsets, energy shifts, and scaling factors -- in an external
-   plotting program.
+   be plotted to a single column file.  The main use of this is in a
+   GUI to exprt a file that can be used to replicate an interesting
+   plot |nd| with offsets, energy shifts, and scaling factors |nd| in
+   an external plotting program.
 
 In the future, I would like to add more plotting backends to
 :demeter:`demeter`.  Certainly, any of the plot creation tools from
@@ -356,7 +356,7 @@ which that template is evaluated. Some more examples will be seen below.
 Here is the complete list of these special variables.
 
 ``$S``
-    This is the “self” object, i.e. the object that called the
+    This is the "quoted:`self` object, i.e. the object that called the
     ``template`` method.
 ``$D``
     The is the Data object of the calling object. When a Data object is

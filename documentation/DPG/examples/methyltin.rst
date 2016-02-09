@@ -175,7 +175,7 @@ this list.
 At lines 31-49, these two paths are parameterized and assigned to the
 dimethyl tin data.  At lines 50 and 51, these two paths are cloned and
 assigned to the monomethyl tin data.  The ``n`` attributes of the two
-cloned paths are set to 1 and 4 -- appropriate for the monomethyl tin
+cloned paths are set to 1 and 4 |nd| appropriate for the monomethyl tin
 trichloride.
 
 This is a fairly simple fitting model that assumes that the tin-carbon

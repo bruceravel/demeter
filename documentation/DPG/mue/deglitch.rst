@@ -66,7 +66,7 @@ removed from the data.
 The ``deglitch`` method is not the easiest thing to
 use. :demeter:`demeter` has no built in way of identifying potential
 spurious points.  This method is the most bare-boned implementation
-possible. :quoted:`Here are some data points, remove them!` This
+possible: :quoted:`Here are some data points ... remove them!` This
 method is intended to be the backend of some kind of interactive,
 graphical deglitching tool, like the one in :demeter:`athena`.
 

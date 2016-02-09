@@ -186,7 +186,7 @@ Also note the use of chained method calls to set the Data object's
 ``name`` attribute appropriately before plotting. The ``name`` method
 always returns the object that called it, which allows for this sort
 of chaining magic to happen. There is no advantage to chained method
-calls -- you could rename the Data object and then plot it in the
+calls |nd| you could rename the Data object and then plot it in the
 subsequent line. The cahined calls are a bit more concise.
 
 
@@ -391,10 +391,11 @@ Data in R-space as envelope, real part, & imaginary part
    :target: ../_images/plot_r_mri.png
    :align: left
 
-   Multiple parts of the complex |chi| (R) are overplotted by repeatedly
-   plotting data in R-space without calling the ``start_plot`` method.
-   The value of ``r_pl`` is set between each part of the plot. Note that
-   the “envelope” is the magnitude plotted twice, once multiplied by -1.
+   Multiple parts of the complex |chi| (R) are overplotted by
+   repeatedly plotting data in R-space without calling the
+   ``start_plot`` method.  The value of ``r_pl`` is set between each
+   part of the plot.  Note that the :quoted:`envelope` is the magnitude
+   plotted twice, multiplied by -1.
 
 
 .. linebreak::

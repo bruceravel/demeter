@@ -66,7 +66,7 @@ That was the only part of :demeter:`feff6` that was unused in old
 files from :demeter:`feff`.  This is why old :demeter:`artemis`
 project files are so very large. It is because they contain the
 :file:`phase.bin` file and possibly hundreds of :file:`feffNNNN.dat`
-files -- one for each scattering path computed in each :demeter:`feff`
+files |nd| one for each scattering path computed in each :demeter:`feff`
 calculation performed.
 
 :demeter:`feff`, however, does not have to be run this way.  Using the

@@ -9,7 +9,7 @@ Plotting individual paths
 Data, Path, and the various `path-like objects <../pathlike/index.tt>`__
 can all be plotted using a very consistent interface. This is made
 possible due to two attributes which are inherited by every object from
-the base class -- ``data`` and ``plottable``.
+the base class |nd| ``data`` and ``plottable``.
 
 The ``data`` attribute points to the Data object which is used to
 provide parameters for the Fourier transforms. For a data object, this

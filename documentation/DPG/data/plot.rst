@@ -15,7 +15,7 @@ of the rest of this programming guide. The first interesting thing to
 discuss is plotting.
 
 One might think that topics such as background removal, normalization,
-and Fourier transforms are discussion-worthy. In fact,
+and Fourier transforms are discussion-worthy.  In fact,
 :demeter:`demeter` goes to great lengths to assure that you do not
 need to ever worry about having to explicitly do any of those data
 processing chores.  Certainly methods exist for doing those data
@@ -38,9 +38,9 @@ plotting. Thus if you do this:
 
 .. code-block:: perl
       
-   $data -> plot('k');
+   $data -> plot('R');
 
-:demeter:`demeter` knows to check wether the background removal,
+:demeter:`demeter` knows to check whether the background removal,
 normalization, and forward transform are up to date and to perform
 them if they are not.
 
@@ -68,27 +68,72 @@ Plotting in the four spaces is quite straightforward:
 
 There are also a number of pre-defined, specialty plots. 
 
-.. todo:: Show examples of rmr, r123, k123, and kq.
+.. todo:: Show biquad plot
 
 **plot the magnitude and real part of chi(R)**
    .. code-block:: perl
       
        $data->plot('rmr');
 
+   .. _fig-rmrplot:
+   .. figure:: ../../_images/plot_r_rmr.png
+      :target: ../_images/plot_r_rmr.png
+      :align: left
+
+      The :quoted:`rmr` plot displays a stack plot with the magnitude
+      and real part of |chi| (R).
+
+.. linebreak::
+
 **plot chi(k) with k-weights of 1, 2, and 3, scaled to be the same size**
    .. code-block:: perl
       
        $data->plot('k123');
+
+   .. _fig-k123plot:
+   .. figure:: ../../_images/plot_k_k123.png
+      :target: ../_images/plot_k_k123.png
+      :align: left
+
+      The :quoted:`k123` plot displays a stack plot with the |chi| (k)
+      weighted by k\ :sup:`1`, k\ :sup:`2`, and k\ :sup:`3`.  The k\
+      :sup:`1` and k\ :sup:`3` plots are scaled to be about the same
+      size as the k\ :sup:`2` plot.
+
+.. linebreak::
 
 **plot chi(R) with k-weights of 1, 2, and 3, scaled to be the same size**
    .. code-block:: perl
       
        $data->plot('R123');
 
+   .. _fig-r123plot:
+   .. figure:: ../../_images/plot_r_r123.png
+      :target: ../_images/plot_r_r123.png
+      :align: left
+
+      The :quoted:`r123` plot displays a stack plot with the |chi| (R)
+      with the Fourier transforms made with k\ :sup:`1`, k\ :sup:`2`,
+      and k\ :sup:`3` weighting.  The k\ :sup:`1` and k\ :sup:`3`
+      plots are scaled to be about the same size as the k\ :sup:`2`
+      plot.
+
+.. linebreak::
+
 **plot in chi(k) with the real part of chi(q)**
    .. code-block:: perl
       
        $data->plot('kq');
+
+   .. _fig-kqplot:
+   .. figure:: ../../_images/plot_kq.png
+      :target: ../_images/plot_kq.png
+      :align: left
+
+      The :quoted:`k123` plot displays |chi| (k) and the real part of
+      |chi| (q) overplotted.
+
+.. linebreak::
 
 **quad plot with data in all four spaces**
    .. code-block:: perl
@@ -97,7 +142,6 @@ There are also a number of pre-defined, specialty plots.
 
 
    .. _fig-quadplot:
-
    .. figure:: ../../_images/plot_quad.png
       :target: ../_images/plot_quad.png
       :align: left
@@ -129,10 +173,18 @@ will instead be absolute energy.
     $data -> po -> set(kweight => 2, space => 'k', chie => 1);
     $data -> plot;
 
-Note that the argument of the ``plot`` method is case insensitive.
-Little attempt is made to glean meaning from that argument.  If it is
-not one of the strings shown above, the ``plot`` method will likely
-return an error.
+.. _fig-chieplot:
+.. figure:: ../../_images/plot_chie.png
+   :target: ../_images/plot_chie.png
+   :align: center
+
+   |chi| (k) plotted in energy.
+
+
+.. note:: The argument of the ``plot`` method is case insensitive.
+   Little attempt is made to glean meaning from that argument.  If it
+   is not one of the strings shown above, the ``plot`` method will
+   likely return an error.
 
 
 
@@ -144,6 +196,7 @@ trace to the existing plot. If you wish to start a new plot, you must
 explicitly do so, as shown on line 8 of this example.
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -166,7 +219,7 @@ The details of the funny syntax using the ``po`` method is explained in
 The singlefile plotting backend
 -------------------------------
 
-Although the :program:`PGPLOT` and :program:`Gnuplot` plotting
+Although the :program:`Gnuplot` and :program:`PGPLOT` plotting
 backends work just fine, sometimes you would like to be able to
 replicate a particular plot in another plotting program. To that end,
 :demeter:`demeter` provides a special plotting backend called the
@@ -176,10 +229,10 @@ y-offsets, energy shifts, or scaling factors were included in the
 plot. The plot can then be replicated in another program simply by
 importing and plotting the columns.
 
-Here is an example. The fit is the standard copper fit. At the end, the
-data, the fit, the window, and the paths are plotted usin the gnuplot
-backend. Then, at line 67, the “SingleFile” backend is used to output
-that plot to a file.
+Here is an example. The fit is the standard copper fit. At the end,
+the data, the fit, the window, and the paths are plotted usin the
+gnuplot backend. Then, at line 67, the :quoted:`SingleFile` backend is
+used to output that plot to a file.
 
 .. code-block:: perl
    :linenos:

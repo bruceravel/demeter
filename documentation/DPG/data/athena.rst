@@ -33,14 +33,14 @@ object from that record.
     $data -> plot('E');
 
 The ``$data`` scalar contains a Data object. Internally, the ``record``
-method does the following
+method does the following behind the scenes:
 
 .. code-block:: perl
 
    $data = Demeter::Data->new();
 
-setting attributes appropriately and pushing the associated data arrays
-into :demeter:`ifeffit`.
+then sets attributes from values in the project file.  It then pushes the
+associated data arrays into :demeter:`ifeffit` (or :demeter:`larch`).
 
 You can import several records at a time by specifying a list of record
 identifiers:
@@ -56,7 +56,7 @@ identifiers:
     $_ -> plot('E') foreach @several;
 
 Note that ``records`` is just an alias for ``record``. They point at the
-same method. The two spellings are offered as a nod to English grammer.
+same method. The two spellings are offered as a nod to English grammar.
 The method will recognize if it is called in scalar or list context and
 properly return a single Data object or an array of Data objects.
 
@@ -75,9 +75,9 @@ You can import all records easily using the ``slurp`` method.
 Obtaining other information from project files
 ----------------------------------------------
 
-You can query an :demeter:`athena` project file for its content in several ways. To
-obtain a listing of contents of the project file, use the ``list``
-method.
+You can query an :demeter:`athena` project file for its content in
+several ways. To obtain a listing of contents of the project file, use
+the ``list`` method.
 
 .. code-block:: perl
 
@@ -107,6 +107,6 @@ The ``list`` method is used extensively by the ``lsprj`` program, which
 is distributed with :demeter:`demeter`.
 
 The ``allnames`` method will return an array of record labels (the
-strings in the groups list in :demeter:`athena`). For complete details on these
-methods, see the Demeter::Data::Prj documentation.
+strings in the groups list in :demeter:`athena`).  For complete
+details on these methods, see the Demeter::Data::Prj documentation.
 

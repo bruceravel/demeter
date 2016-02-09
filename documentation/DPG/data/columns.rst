@@ -6,11 +6,11 @@
 Column data files
 =================
 
-The most common situation for data import involves raw data from a
-beamline. In this case, :demeter:`demeter` assumes that your data are
-in columns, that one of the columns represents energy, and that two or
+A common situation for data import involves raw data from a beamline.
+In this case, :demeter:`demeter` assumes that your data are in
+columns, that one of the columns represents energy, and that two or
 more of the remaining columns represent signals on the various
-detectors. You must explicitly specify which column is which when you
+detectors.  You must explicitly specify which column is which when you
 define the Data object.
 
 Transmission data
@@ -19,7 +19,7 @@ Transmission data
 This first example is for a file containing transmission XAS data:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -51,7 +51,7 @@ quotes. Another useful syntax for column speficiation would be to use
 like so:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -77,10 +77,8 @@ transmission data, i.e. |mu| (E)=ln(I\ :sub:`0`/I\ :sub:`t`) . Set to
 processed as fluorescence data, i.e.  |mu| (E)=I\ :sub:`f`/I\
 :sub:`0`.
 
-In this example, the I₀ detector is in column 2 of the data file and the
-I\ :sub:`t` detector is in column 3.
-
---------------
+In this example, the I\ :sub:`0` detector is in column 2 of the data
+file and the I\ :sub:`t` detector is in column 3.
 
  
 
@@ -90,7 +88,7 @@ Fluorescence data
 The next example is for a file containing fluorescence XAS data:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -121,7 +119,7 @@ This is accomplished by adding multiple channels in the ``numerator``
 attribute:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -150,16 +148,17 @@ Preprocessing column data on the fly
 ------------------------------------
 
 You may have some reason to do a bit of additional processing of the
-columns in the data file. As an example, the `data handling section of
-the Ifeffit FAQ <http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling>`__
-explains how to import data from the Ferrel Lytle database which were
-recorded as a function of motor position for the monochromator angle.
-For data like thse, it is necessary to convert motor position to energy
-using some knowledge of the monochromator crystal and motor and a few
-fundamental constants. This can be implemented in DEMETER like so:
+columns in the data file.  As an example, the `data handling section
+of the Ifeffit FAQ
+<http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling>`__ explains how
+to import data from the Ferrel Lytle database which were recorded as a
+function of motor position for the monochromator angle.  For data like
+thse, it is necessary to convert motor position to energy using some
+knowledge of the monochromator crystal and motor and a few fundamental
+constants.  This can be implemented in :demeter:`demeter` like so:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -167,13 +166,17 @@ fundamental constants. This can be implemented in DEMETER like so:
     ## d-spacing = 1.92017    steps/deg = 4000    hc = 12398.61    rads->degs = 57.29577951
     my $data = Demeter::Data -> new();
     $data -> set(file        => "lytle.dat",
-                 name        => 'Fe 60K',
+                 name        => 'some weird old data',
                  energy      => '12398.61 / (2*1.92017) / sin($1/(57.29577951*4000))',
                  numerator   => '$2',
                  denominator => '$3',
                  ln          => 1,
                 );
     $data -> plot('E');
+
+This example demonstrates why the dollar sign (``$``) is needed to
+indicate column number.  Using that sigil allows for ``energy``,
+``numerator``, and ``denominator`` to take math expressions as values.
 
 As another example, you might wish to do a simple deadtime correction
 for MED data based on the measured input and output count-rates of the
@@ -187,7 +190,7 @@ multiplying by the measured input/output ratio. This can be implemented
 for a single channel like so:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;

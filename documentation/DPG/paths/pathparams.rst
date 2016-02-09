@@ -15,24 +15,24 @@ available path parameters are
 ``degen``
     The path degeneracy. This typically is set the degeneracy of the
     ScatteringPath object when the ``sp`` attribute is set, but can be
-    modified by the user as part o fthe fitting model.
+    modified by the user as part of the fitting model.
 ``s02``
     Nominally, this is the amplitude reduction factor, but can be
     parameterized to include any amplitude effects in the fitting model.
 ``e0``
-    The energy shift, which changes the zero of k.
+    The energy shift, in units of eV, which changes the zero of k.
 ``delr``
-    A change in the path length.
+    A change in the path length, in units of |AA|.
 ``sigma2``
-    The mean square disorder parameters, |sigma|\ :sup:`2`.
+    The mean square disorder parameters, |sigma|\ :sup:`2`, in units of |AA|\ :sup:`2`.
 ``ei``
-    An adjustment to the “simaginary energy”, which has the effect of
-    adjusting the broadening due to core-hole lifetime, instrumental
-    resolution, etc. This has usings of eV.
+    An adjustment to the :quoted:`imaginary energy`, which has the
+    effect of adjusting the broadening due to core-hole lifetime,
+    instrumental resolution, etc.  This has units of eV.
 ``third``
-    The third cumulant of the partial pair distribution.
+    The third cumulant of the partial pair distribution in units of |AA|\ :sup:`3`.
 ``fourth``
-    The fourth cumulant of the partial pair distribution.
+    The fourth cumulant of the partial pair distribution in units of |AA|\ :sup:`4`.
 ``dphase``
     A constant offset to the scattering phase shift. Note that this
     should only be used for fits to |chi| (k) data derived from a DAFS or
