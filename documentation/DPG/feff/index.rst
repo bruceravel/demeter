@@ -6,14 +6,13 @@
 Feff
 ====
 
-:demeter:`ifeffit` ships with a free copy of :demeter:`feff`. Although
-deep support for :demeter:`feff8` is on the long range list of
-objectives for :demeter:`demeter`, currently only :demeter:`feff6` is
-well supported. This seems reasonable as :demeter:`demeter` currently
-have no special capabilities for XANES or other inner shell
-spectroscopy analysis beyond basic, :demeter:`athena`-level
+:demeter:`ifeffit` ships with a free copy of :demeter:`feff6`.
+Although deep support for :demeter:`feff8` is on the long range list
+of objectives for :demeter:`demeter`, currently only :demeter:`feff6`
+is well supported.  This seems reasonable as :demeter:`demeter`
+currently have no special capabilities for XANES or other inner shell
+spectroscopy analysis beyond empirical, :demeter:`athena`-level
 functionality.
-
 
 .. _fig-feff6:
 .. figure:: ../../_images/feff6.png

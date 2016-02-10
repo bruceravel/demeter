@@ -22,10 +22,7 @@ Atoms object is created. In this example, an :file:`atoms.inp` file is
 imported and an input file for :demeter:`feff6` is written to standard
 output.
 
-.. todo:: link to atoms.inp documentation
-
 .. code-block:: perl
-
 
     #!/usr/bin/perl
     use Demeter;
@@ -39,12 +36,11 @@ beyond this example.
 
 Importing crystal data from a CIF file is no more difficult, however
 you need to explicitly tell the Atoms object that the input data is in
-CIF format. The Atoms object assumes that the value of the ``file``
+CIF format.  The Atoms object assumes that the value of the ``file``
 attribute points at an :file:`atoms.inp` file, so the ``cif``
 attribute must be used to specify a CIF file.
 
 .. code-block:: perl
-
 
     #!/usr/bin/perl
     use Demeter;
@@ -69,12 +65,15 @@ and to do the translation behind the scenes.
 
 .. code-block:: perl
 
-
     #!/usr/bin/perl
     use Demeter;
 
     my $atoms = Demeter::Atoms->new(cif => "AuCl.cif", record=>1);
     print $atoms->Write("feff6");
+
+`The Artemis document
+<http://bruceravel.github.io/demeter/documents/Artemis/index.html>`_
+offers more discussion of the content of the :file:`atoms.inp` file.
 
 
 Object methods
@@ -134,7 +133,8 @@ object will take care of populating the cell and explanding the cluster.
 
 Note the odd syntax in lines 8 through 15 for loading the ``sites``
 attribute. The elements of that array are strings of
-vertical-bar-separated values of 
+vertical-bar-separated (awkward, perhaps, but that's how it works)
+values of
 
  * element symbol
  * fractional x coordinate
@@ -225,7 +225,7 @@ come with :demeter:`demeter` are:
     A file containing several interesting calculations using tables of
     absorption coefficients. Here's an example:
 
-    ::
+    .. code-block:: text
 
         ## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
         ##  total mu*x=1:  8.160 microns,  unit edge step:  23.243 microns
@@ -282,7 +282,21 @@ come with :demeter:`demeter` are:
                x        -y         z
               -x         y         z
 
-.. todo:: Show overfull, xyz, and alchemy output
+``xyz`` and ``alchemy``
+    These are two common formats for molecule visualization software.
+
+``overfull``
+    This is an ``xyz`` file containing the contents of the fully
+    decorated unit cell, also including atoms that are near to all the
+    corners, edges, and walls.  This helps to make a figure like this
+    of a well-decorated unit cell:
+
+    .. image:: ../_images/fivesix-prussian-blue.png
+
+    The :configparam:`Atoms,overfull_margin` parameter is used to set
+    what is meant by :quoted:`near` the remaining corners, edges, and
+    walls.
+
 
 
 

@@ -56,7 +56,8 @@ Data, background, pre-edge, & post-edge
                  e_markers => 1,
                  emin      => -200,  emax      => 2000,
                  space     => 'E',
-                );  $data -> po -> set(@eplot);
+                );
+    $data -> po -> set(@eplot);
     $data -> po -> start_plot;
     $data -> plot;
 
@@ -100,7 +101,8 @@ Normalized data & background
                  e_markers => 1,
                  emin      => -200,  emax      => 2000,
                  space     => 'E',
-                );  $data -> po -> set(@eplot);
+                );
+    $data -> po -> set(@eplot);
     $data -> bkg_flatten(0);
     $data -> po -> start_plot;
     $data -> plot;
@@ -129,7 +131,8 @@ Flattened data & background
                  e_markers => 1,
                  emin      => -200,  emax      => 2000,
                  space     => 'E',
-                );  $data -> po -> set(@eplot);
+                );
+    $data -> po -> set(@eplot);
     $data -> bkg_flatten(1);
     $data -> po -> start_plot;
     $data -> plot;
@@ -164,7 +167,8 @@ Derivative of mu
                  e_markers => 0,
                  emin      => -20,   emax      => 120,
                  space     => 'E',
-                );  $data -> po -> start_plot;
+                );
+    $data -> po -> start_plot;
     $data -> set(name=>'derivative') -> plot;
     $data -> po -> e_norm(1);
     $data -> set(name=>'norm. deriv.') -> plot;
@@ -175,12 +179,15 @@ Derivative of mu
    :target: ../_images/plot_e_deriv.png
    :align: left
 
-   This example shows two interesting features we haven't yet seen. This
-   shows how things get overplotted, in this case the derivative of
-   |mu| (E) and the derivative of normalized |mu| (E). The overplotting
-   happens simply by calling the ``plot`` mthod a second time without
-   calling ``start_plot``. In this way, any number of things can be
-   overplotted.
+   This shows how things get overplotted, in this case the derivative
+   of |mu| (E) and the derivative of normalized |mu| (E).
+
+.. linebreak::
+
+This example shows two interesting features we haven't yet seen.  The
+overplotting happens simply by calling the ``plot`` mthod a second
+time without calling ``start_plot``. In this way, any number of things
+can be overplotted.
                          
 Also note the use of chained method calls to set the Data object's
 ``name`` attribute appropriately before plotting. The ``name`` method
@@ -204,7 +211,8 @@ Data, I0 channel, & signal channel
                  e_markers => 0,
                  emin      => -20,   emax      => 120,
                  space     => 'E',
-                );  $data -> po -> start_plot;
+                );
+    $data -> po -> start_plot;
     $data -> plot;
 
 
@@ -330,8 +338,6 @@ k-space with all three k-weights
    of 2 copy. The data are analyzed and the scaling and offset constants
    are chosen to be appropriate to the data.
 
- 
-
 .. linebreak::
 
 
@@ -343,7 +349,6 @@ Magnitude in R-space & R-space window
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: perl
-
 
     $data -> po -> set(kweight => 2, r_pl => 'm', space => 'r', );
     $data -> po -> start_plot;
@@ -386,6 +391,8 @@ Data in R-space as envelope, real part, & imaginary part
     $data -> po->set(r_pl => 'i', );
     $data -> plot;
 
+    $data -> set(name=>'fe.060');  ## reset original name
+
 .. _fig-plotrmri:
 .. figure:: ../../_images/plot_r_mri.png
    :target: ../_images/plot_r_mri.png
@@ -413,12 +420,13 @@ R-space with all three k-weights
    :target: ../_images/plot_r_r123.png
    :align: left
 
-   The :quoted:`R123 plot` is the second of the pre-packaged specialty
-   plot types.  This one, is just like the k123 plot in that three copies
-   of the data are overplotted using each of the three k-weights with
-   scaling and offset computed automatically. This R123 plot was plotted
-   as the magnitude of |chi| (R). The R123 plot respects the value of the
-   ``r_pl`` attribute of the Plot object.
+   The :quoted:`R123 plot` is another pre-packaged specialty plot
+   types.  This one, is just like the :quoted:`k123` plot in that
+   three copies of the data are overplotted using each of the three
+   k-weights with scaling and offset computed automatically.  This
+   :quoted:`R123` plot was plotted as the magnitude of |chi| (R).  The
+   :quoted:`R123` plot respects the value of the ``r_pl`` attribute of
+   the Plot object.
 
 .. linebreak::
 
@@ -437,16 +445,13 @@ Magnitude and real part in R space
    :target: ../_images/plot_r_rmr.png
    :align: left
 
-   The :quoted:`Rmr plot` is the third of the pre-packaged specialty plot
-   types.  This one plots the magnitude and real part of |chi| (R) with
-   an appropriate offset between them.  This is the default plot type
-   made after a fit finishes. In that case, the data and fit are
-   overplotted as magnitude and real.
-
+   The :quoted:`Rmr plot` is the third of the pre-packaged specialty
+   plot types.  This one plots the magnitude and real part of
+   |chi| (R) with an appropriate offset between them.  This is the
+   default plot type made after a fit finishes.  In that case, the
+   data and fit are overplotted as magnitude and real.
 
 .. linebreak::
-
-
  
 
 Plotting in q
@@ -487,10 +492,8 @@ k-space & the real part of back-transform k-space
    :target: ../_images/plot_kq.png
    :align: left
 
-   The final specialty plot type in :demeter:`demeter` is the
-   :quoted:`kq plot`. This overplots |chi| (k) with the real part of
-   |chi| (q).
-
+   Another specialty plot type in :demeter:`demeter`, the :quoted:`kq
+   plot`.  This overplots |chi| (k) with the real part of |chi| (q).
 
 .. linebreak::
 

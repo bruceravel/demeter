@@ -92,20 +92,23 @@ objects. The syntax of ``set_mode`` is consistent with other methods in
 Any command can be sent to multiple targets. The disposal targets which
 can be set using ``set_mode`` are:
 
-``ifeffit``
-    When true, commands will be sent to :demeter:`ifeffit`. It is often useful to
-    turn this disposal target off when debugging :demeter:`demeter` programs.
+``backend``
+    When true, commands will be sent to :demeter:`ifeffit` or
+    :demeter:`larch`. It is often useful to turn this disposal target
+    off when debugging :demeter:`demeter` programs.  ``ifeffit`` and
+    ``larch`` are aliases for ``backend``.
 ``screen``
     When true, commands will be sent to standard output (usually the
     screen). Turning this disposal target on is often useful when
     debugging :demeter:`demeter` programs.
 ``plotscreen``
     When true, plotting commands will be sent to standard output
-    (usually the screen). Turning this disposal target on is ofetn
+    (usually the screen). Turning this disposal target on is often
     useful when debugging :demeter:`demeter` programs.
 ``repscreen``
-    When true, the reprocessed commands (discussed below) will be sent
-    to standard output (usually the screen).
+    When true, the reprocessed commands (`discussed below
+    <#reprocessed-commands>`_) will be sent to standard output
+    (usually the screen).
 ``file``
     When set to a string value, that string will be interpretted as a
     file name to be opened for writing and the commands will then be
@@ -119,9 +122,9 @@ can be set using ``set_mode`` are:
 ``repfile``
     When set to a string value, that string will be interpretted as a
     file name to be opened for writing and the reprocessed commands
-    (discussed below) will then be written to that file. To append text
-    to a file, the ``file`` mode string should begin with the ``>``
-    character.
+    (`discussed below <#reprocessed-commands>`_) will then be written
+    to that file. To append text to a file, the ``file`` mode string
+    should begin with the ``>`` character.
 ``buffer``
     When set to an array reference, commands will be pushed onto that
     array. When set to a scalar reference, commands will be concatinated
@@ -143,24 +146,27 @@ can be set using ``set_mode`` are:
     example, this disposal mode is used by :demeter:`artemis` to display colorized
     text in its plotting buffer.
 ``feedback``
-    When set to a code reference, the text of :demeter:`ifeffit`'s response to
-    commands will be sent to that code reference as the sole argument.
-    This is useful for user interfaces that want to post-process the
-    commands. For example, this disposal mode is used by :demeter:`artemis` to
-    display colorized text in its command buffer.
+    When set to a code reference, the text of :demeter:`ifeffit`'s (or
+    :demeter:`larch`'s) response to commands will be sent to that code
+    reference as the sole argument.  This is useful for user
+    interfaces that want to post-process the commands. For example,
+    this disposal mode is used by :demeter:`artemis` to display
+    colorized text in its command buffer.
 
 
 
 Reprocessed commands
 --------------------
 
-:demeter:`demeter` tries to use :demeter:`ifeffit` as efficiently as possibly. On one hand,
-:demeter:`ifeffit` the one of the things that makes :demeter:`demeter` go and so is
-indispensible. On the other hand, the business of communicating between
-perl code and the :demeter:`ifeffit` library is (`with one
-exception <../feff/pathfinder.html>`__) always the slowest thing that
-:demeter:`demeter` does. One of the optimizations implemented by :demeter:`demeter` is the
-reprocessing of commands targeted for disposal to :demeter:`ifeffit`.
+:demeter:`demeter` tries to use :demeter:`ifeffit` as efficiently as
+possibly. On one hand, :demeter:`ifeffit` the one of the things that
+makes :demeter:`demeter` go and so is indispensible. On the other
+hand, the business of communicating between perl code and the
+:demeter:`ifeffit` library is (`with one exception
+<../feff/pathfinder.html>`__) always the slowest thing that
+:demeter:`demeter` does. One of the optimizations implemented by
+:demeter:`demeter` is the reprocessing of commands targeted for
+disposal to :demeter:`ifeffit`.
 
 Command strings in :demeter:`ifeffit` can be quite long |nd| up to 2048
 characters as it is normally compiled. A command that is split over
@@ -175,7 +181,7 @@ is then sent to :demeter:`ifeffit`.
 As a small example of how reprocessing works, this human-friendly
 command:
 
-::
+.. code-block:: text
 
     pre_edge("data0.energy+0",
              data0.xmu,
@@ -189,7 +195,7 @@ command:
 will be reprocessed into this one-line command before being shuffled off
 to :demeter:`ifeffit`.
 
-::
+.. code-block:: text
 
     pre_edge("data0.energy+0", data0.xmu, e0=-9999999, pre1=-150, pre2=-30, norm_order=3, norm1=150, norm2=1800)
 
@@ -201,6 +207,10 @@ debug the behavior of this optimization. Reprocessing is quite well
 tested.  However, if you suspect that reprocessing is damaging the
 commands sent to :demeter:`ifeffit`, use one of those disposal
 channels to see the text that is actually being sent.
+
+
+.. note:: :demeter:`larch` does not use reprocessed commands.  When
+   :demeter:`larch` is the backend, the reprocessing step is skipped.
 
 
 
@@ -233,19 +243,9 @@ section <mode.html>`__.
 Template sets
 ~~~~~~~~~~~~~
 
-Template sets describe backend targets for disposed commands. There are
-four different categories of template sets:
 
-#. Data processing commands
-
-#. Plotting commands
-
-#. :demeter:`feff` input templates
-
-#. :demeter:`atoms` input templates
-
-:demeter:`demeter` currently ships with five different sets in the data processing
-category.
+:demeter:`demeter` currently ships with five different sets in the
+data processing, XANES analysis, EXAFS fitting, and plugin categories:
 
 #. ``ifeffit``, templates which write the syntax of :demeter:`ifeffit`
    in a compact form
@@ -261,32 +261,34 @@ category.
 #. ``demeter``, templates which write out perl syntax using
    :demeter:`demeter`.  *incomplete*
 
-The ``demeter`` category might seem a bit strange. Its purpose is,
-indeed, to allow :demeter:`demeter` programs to write
-:demeter:`demeter` programs. The intent is to allow a GUI to export a
-file containing a :demeter:`demeter` program that can be used to make
-a fit using the same fitting model that was created using the GUI.
+
+The ``demeter`` category might seem a bit strange. Its purpose is to
+allow :demeter:`demeter` programs to write :demeter:`demeter`
+programs.  The intent is to allow a GUI to export a file containing a
+:demeter:`demeter` program that can be used to make a fit using the
+same fitting model that was created using the GUI.
 
 The possibility of having these different output targets is the main
-reason for using a templating system. Having command creation
-containined in these small template files separate from the code may
+reason for using a templating system.  Having command creation
+contained in these small template files separate from the code may
 seem like an unnecessary layer of abstraction and misdirection, but it
-offers :demeter:`demeter` a lot of flexibility and power. This is even
+offers :demeter:`demeter` a lot of flexibility and power.  This is even
 more evident for the plotting backends.
 
-:demeter:`demeter` currently ships with three different sets in the
-plotting category. More information about plotting backends can be
-found in `the user interface chapter <../ui.html>`__.
+:demeter:`demeter` currently ships with four sets in the plotting
+category. More information about plotting backends can be found in
+`the user interface chapter <../ui.html>`__.
+
+#. ``gnuplot``, templates which write :program:`Gnuplot` plotting
+   scripts.  This is the default plotting backend.  Using
+   :program:`Gnuplot` involves writing lots of temporary files which
+   contain the data to be plotted.  It also requires that
+   :program:`Gnuplot` be installed on your computer, which is
+   something that you have to do separate from the installation of
+   :demeter:`demeter`.
 
 #. ``pgplot``, templates which write the syntax of :demeter:`ifeffit` plotting
    commands, which talk directly to :program:`PGPLOT`.
-
-#. ``gnuplot``, templates which write :program:`Gnuplot` plotting
-   scripts. Using :program:`Gnuplot` involves writing lots of temporary
-   files which contain the data to be plotted. It also requires that
-   :program:`Gnuplot` be installed on your computer, which is something
-   that you have to do separate from the installation of
-   :demeter:`demeter`.
 
 #. ``singlefile``, this set of templates is used to export the data to
    be plotted to a single column file.  The main use of this is in a
@@ -294,20 +296,20 @@ found in `the user interface chapter <../ui.html>`__.
    plot |nd| with offsets, energy shifts, and scaling factors |nd| in
    an external plotting program.
 
-In the future, I would like to add more plotting backends to
-:demeter:`demeter`.  Certainly, any of the plot creation tools from
-CPAN (such as `GD <http://search.cpan.org/~lds/GD/>`__ or `Chart
-<http://search.cpan.org/~chartgrp/Chart/>`__) would be possible, as
-would something like `Grace
-<http://plasma-gate.weizmann.ac.il/Grace/>`__, which uses a text file
-as its input.
+#. ``demeter``, templates which write out perl syntax using
+   :demeter:`demeter`.  *incomplete*
+
+
+In the future, there might be more plotting backends.  A backend for
+:demeter:`larch`'s matplotlib interface would make sense.
 
 :demeter:`demeter` currently ships with two different sets in the
 :demeter:`feff` input template category, one for :demeter:`feff6` and
 one for :demeter:`feff8`. (Actually the :demeter:`feff8` set has not
 yet been written at the time this document is being written.  In fact,
 :demeter:`demeter`'s :demeter:`feff8` interface has not yet been
-started.
+started.  Support for :demeter:`feff8` will use `feff85exafs
+<https://github.com/xraypy/feff85exafs>`_.
 
 There is only one set in the :demeter:`atoms` input template
 category. It seems unlikely that other sets will actually be required.
@@ -324,9 +326,8 @@ Template groups define related chores. These chores are
 
 #. ``fit``: all chores associated with fitting |chi| (k) data.
 
-#. ``analysis``: all analysis chores other than those associated with
-   fitting |chi| (k) data. This might include things like linear
-   combination fitting. principle component analysis, or
+#. ``analysis``: XANES analysis chores.  This includes things
+   like linear combination fitting. principle component analysis, or
    log-ratio/phase-difference analysis.
 
 #. ``plot``: all chores associated with plotting data
@@ -335,6 +336,11 @@ Template groups define related chores. These chores are
 
 #. ``plugin``: data processing chores performed by filetype or other
    plugins
+
+#. ``feff``: :demeter:`feff` input templates
+
+#. ``atoms``: :demeter:`atoms` input templates
+
 
 The first four groups must be provided completely by any template set.
 Although if a template is missing from a template set,
@@ -356,7 +362,7 @@ which that template is evaluated. Some more examples will be seen below.
 Here is the complete list of these special variables.
 
 ``$S``
-    This is the "quoted:`self` object, i.e. the object that called the
+    This is the :quoted:`self` object, i.e. the object that called the
     ``template`` method.
 ``$D``
     The is the Data object of the calling object. When a Data object is

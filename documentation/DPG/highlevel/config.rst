@@ -6,20 +6,19 @@
 Config object
 =============
 
-The Config object is a `singleton
-object <http://en.wikipedia.org/wiki/Singleton_pattern>`__ which is used
-to contain all of :demeter:`demeter`'s configuration parameters as well as
-providing an simple way for user-defined parameters to be stored and
-made available to the `templating system <dispose.html>`__.
+The Config object contains all of :demeter:`demeter`'s configuration
+parameters as well as providing an simple way for user-defined
+parameters to be stored and made available to the `templating system
+<dispose.html>`_.
 
 At start-up, :demeter:`demeter` reads the :demeter:`demeter`
-configuration files, then updates those values from the demeter.ini
-file, which is stored in :file:`$HOME/.horae` on unix systems and in
-:file:`%APPDATA%/demeter` on Windows systems.
+configuration files, then updates those values from the
+:file:`demeter.ini` file, which is stored in :file:`$HOME/.horae` on
+unix systems and in :file:`%APPDATA%/demeter` on Windows systems.
 
 To make the Config object readily accessible at all times in your
 program, the ``co`` method is a method of the base class and is
-inherited by all :demeter:`demeter` objects. Thus, given any object,
+inherited by all :demeter:`demeter` objects.  Thus, given any object,
 you can :quoted:`find` the Config object like so:
 
 .. code-block:: perl
@@ -27,12 +26,12 @@ you can :quoted:`find` the Config object like so:
    $the_config_object = $any_object -> co;
 
 Any method of the plot object is easily called by chaining with the
-``co`` method. For example to get the configured default value for the
+``co`` method.  For example to get the configured default value for the
 ``bkg_rbkg`` attribute of the Data object, you do this
 
 .. code-block:: perl
 
-   $any_object -> po -> default('bkg', 'rbkg'); 
+   $any_object -> co -> default('bkg', 'rbkg'); 
 
 The configuration file format
 -----------------------------
