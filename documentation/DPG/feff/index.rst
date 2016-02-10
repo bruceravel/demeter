@@ -35,7 +35,7 @@ When run outside of :demeter:`demeter`, :demeter:`feff6` is usually
 treated as a single program that starts by reading an input file and
 ends by writing out :file:`feffNNNN.dat` files containing the
 contributions from each individual scattering path. In fact,
-:demeter:`feff` runs in five distinct steps:
+:demeter:`feff6` runs in five distinct steps:
 
 #. Read the :file:`feff.inp` file
 
@@ -61,12 +61,12 @@ for the path parameters.
 That was the only part of :demeter:`feff6` that was unused in old
 :demeter:`artemis`.  When you imported a :file:`feff.inp` file into
 :demeter:`artemis`, :demeter:`feff6` was run all the way through the
-*genfmt* stage. Hidden somewhere out of the way were all the oputput
-files from :demeter:`feff`.  This is why old :demeter:`artemis`
+*genfmt* stage. Hidden somewhere out of the way were all the output
+files from :demeter:`feff`.  This is why old-style :demeter:`artemis`
 project files are so very large. It is because they contain the
 :file:`phase.bin` file and possibly hundreds of :file:`feffNNNN.dat`
-files |nd| one for each scattering path computed in each :demeter:`feff`
-calculation performed.
+files |nd| one for each scattering path computed in each
+:demeter:`feff` calculation performed.
 
 :demeter:`feff`, however, does not have to be run this way.  Using the
 ``CONTROL`` keyword, you can specify which parts of :demeter:`feff`
@@ -89,7 +89,7 @@ paths as non-degenerate if their half path lengths differ by 0.00001
 |AA| or more. That is, in most cases, a ridiculously tight tolerance
 which leads to a substantial proliferation of very similar paths.
 
-OK, back to how :demeter:`feff` is use in :demeter:`artemis`. In the
+OK, back to how :demeter:`feff` is used in :demeter:`artemis`.  In the
 new :demeter:`artemis`, I take a much more fine-grained approach.
 :demeter:`feff` is never run from beginning to end.  When
 :demeter:`feff` is run, the *potph* part is run and the resulting
@@ -97,53 +97,54 @@ new :demeter:`artemis`, I take a much more fine-grained approach.
 
 Then the *pathfinder* is run, but not :demeter:`feff`'s *pathfinder*.
 The *pathfinder* has been completely rewritten as part of
-:demeter:`demeter` The new *pathfinder* is missing one important
-feature. It has no way of doing :demeter:`feff`'s quick and dirty
-estimation of path amplitude, the so-called curved-wave importance
-factor, thus :demeter:`demeter`'s *pathfinder* does not have that way
-of discarding obviously small paths and all higher-order scattering
-paths based on that geometry. Also, :demeter:`demeter`'s *pathfinder*
-is pretty slow compared to :demeter:`feff`'s. However,
-:demeter:`demeter`'s *pathfinder* retains information about all
-scattering geometries that contribute to the degeneracy of a path. In
-the future, this will allow propagattion of distortions to the
-starting structure through all the scattering paths.
+:demeter:`demeter`.  The new *pathfinder* is missing one important
+feature.  It has no way of doing :demeter:`feff`'s quick and dirty
+plane wave estimation of path amplitude, thus :demeter:`demeter`'s
+*pathfinder* does not have that way of discarding obviously small
+paths and all higher-order scattering paths based on that geometry.
+Also, :demeter:`demeter`'s *pathfinder* is pretty slow compared to
+:demeter:`feff`'s.  However, :demeter:`demeter`'s *pathfinder* retains
+information about all scattering geometries that contribute to the
+degeneracy of a path.  In the future, this could allow propagation of
+distortions to the starting structure through all the scattering
+paths.
 
 Secondly, :demeter:`demeter`'s *pathfinder* introduces something
-called :quoted:`fuzzy degeneracy`. This is a configurable parameter
-that defines a length scale below which paths of similar length are
-considered degenerate. The default is 0.03 |AA|, but can be set as you
-wish. Thus paths that differ in length by less than 0.03 |AA| are
-considered degenerate and the resulting path is computed at the
-average length of the paths that are considered degenerate.
+called :quoted:`fuzzy degeneracy`.  :configparam:`Pathfinder,fuzz` is
+the configurable parameter that defines a length scale below which
+paths of similar length are considered degenerate.  The default is
+0.03 |AA|, but can be set as you wish.  Thus paths that differ in
+length by less than 0.03 |AA| are considered degenerate and the
+resulting path is computed at the average length of the nearly
+degenerate set of paths.
 
-So, the *pathfinder* introduces a number of new features. But the
-really powerful bit is how :demeter:`artemis` interacts with
-*genfmt*. Basically, *genfmt* is run on demand the first time that the
+So, the *pathfinder* introduces a number of new features.  But the
+really powerful bit is how :demeter:`artemis` interacts with *genfmt*.
+Basically, *genfmt* is run on demand the first time that the
 corresponding :file:`feffNNNN.dat` file is needed (perhaps for a fit,
-perhaps for a plot). When the current instance of :demeter:`demeter`
+perhaps for a plot).  When the current instance of :demeter:`demeter`
 is finished (say, by quitting :demeter:`artemis`) all the
-:file:`feffNNNN.dat` files are deleted. The next time you fire up your
-program, they will be recalcualted. It turns out that the call to
-*genfmt* is so fast that it is better to recompute the
-:file:`feffNNNN.dat` files rather than carry them around. Thus
-:demeter:`artemis` project files are much, much smaller.  The
-:file:`feffNNNN.dat` files are given names based on random strings, so
-there is no chance of accidentally over-writing them if you happen to
-re-run earlier parts of :demeter:`feff`. The way this on-demand
-calcualtion of :file:`feffNNNN.dat` files works is by having
-:demeter:`demeter` generate short replacements for the
-:file:`paths.dat` file which contain only the single path that you
-want to calculate. The :file:`paths.dat` file is deleted immediately
-after it is used.
+:file:`feffNNNN.dat` files are deleted.  The next time you fire up
+your program, they will be recalcualted.  It turns out that the call
+to *genfmt* is so fast that it is preferable to recompute the
+:file:`feffNNNN.dat` files rather than carry them around.  Thus
+:demeter:`artemis` project files are much smaller that the old-style
+project files.  The :file:`feffNNNN.dat` files are given names based
+on random strings, so it is extremely unlikely that you will
+accidentally over-write them if you happen to re-run earlier parts
+of :demeter:`feff`.  The way this on-demand calcualtion of
+:file:`feffNNNN.dat` files works is by having :demeter:`demeter`
+generate short replacements for the :file:`paths.dat` file which
+contain only the single path that you want to calculate.  The
+:file:`paths.dat` file is deleted immediately after it is used.
 
 This approach makes it very easy to define interesting abstractions of
-paths. For instance, suppose you want to consider the possibility that
+paths.  For instance, suppose you want to consider the possibility that
 one of the atoms in your material is at a position very different from
-the examples in the cluster. This approach makes it easy to compute
-that. It's called an SSPath.
+the examples in the cluster.  This approach makes it easy to compute
+that.  It's called `an SSPath <../pathlike/sspath.html>`_.
 
-There are a number of other tricks that this capability will enable,
+There are a number of other tricks that this capability could enable,
 including things like considering variation in scattering angle of a MS
 path or consideration of arbitrary radial distribution functions.
 
