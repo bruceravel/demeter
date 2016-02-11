@@ -83,6 +83,10 @@ significantly to the fit. The high importance paths with value 2 are
 the single scattering and colinear multiple scattering paths. The mid
 importance paths tend to be short triangles.
 
+The configuration parameters :configparam:`Pathfinder,rank_high` and
+:configparam:`Pathfinder,rank_low` are used to determine the heuristic
+importance from the path ranking.
+
 The last column is a description of the shape of the path. The header
 contains some statistics about the cluster and the values of some of the
 relevant configuration parameters.
@@ -100,10 +104,10 @@ format the path interpretation. The argument can be either a string or
 `an anonymous hash <http://perldoc.perl.org/perlref.html>`__. The
 string can be either ``latex`` or ``css``. With those, the path
 interpretation will be mark-up such that it can be inserted into a
-latex document using a tabular environment or into an html document
-using CSS and span tags to format the text. This formatting works by
-inserting text at the beginning and ending of each line appropriate to
-the header or to the importance of the path.
+latex document using a LaTeX tabular environment or into an HTML
+document using CSS and span tags to format the text. This formatting
+works by inserting text at the beginning and ending of each line
+appropriate to the header or to the importance of the path.
 
 The anonymous hash option allows you to specify a different set of
 starting and ending tags for the lines in the interpretation. It looks

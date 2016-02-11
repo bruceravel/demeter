@@ -63,16 +63,17 @@ shortest paths from a :demeter:`feff` calculation.
     };
 
 At line 9, the reference to the list of ScatteringPath objects is read
-into a normal array (the ``@{ }`` syntax dereferences the array). The
-first 6 elements of this array is then looped over and a Path object is
-created using those 6 ScatteringPath objects. Each Path object is then
-plotted at line 13.
+into a normal array (the ``@{ }`` syntax `dereferences
+<http://perldoc.perl.org/perlref.html#Using-References>`_ the
+array).  The first 6 elements of this array is then looped over and a
+Path object is created using those 6 ScatteringPath objects. Each Path
+object is then plotted at line 13.
 
 
  
 
-Writing feffNNNN.dat files
---------------------------
+Writing ``feffNNNN.dat`` files
+------------------------------
 
 As demonstrated above, generation of the individual
 :file:`feffNNNN.dat` files is something that happens behind the

@@ -57,9 +57,10 @@ element, the path that returns must be a single scattering path. The
 scatterer must have a site tag that equals the string :quoted:`Al`.
 
 If there are more than one path meeting the criteria outlined in the
-argument, then the ``find_path`` method returns the shortest such path.
-The ``find_all_paths`` takes the same sort of argument list as
-``find_path`` and will return a list of paths meeting the criteria.
+argument, then the ``find_path`` method returns the shortest such
+path.  The ``find_all_paths`` takes the same sort of argument list as
+``find_path`` and will return a list of paths meeting the criteria and
+ordered by increasing half path length.
 
 Here are all the criteria available to the ``find_path`` and
 ``find_all_paths`` methods:
@@ -106,9 +107,10 @@ This method returns 0 if a path meeting the criteria cannot be found or
 if there is an error in specifying the criteria.
 
 The list-valued criterion are compared in order with the scattering
-atoms in a path and the match is only true is each element mataches a
-scatterer in a path. Thus is not necessary to specify the nleg criterion
-when any of the list valued criteria are used.
+atoms in a path and the match is only true if each element hits with
+the corresponding scatterer in a path.  Thus, it is not necessary to
+specify the nleg criterion when any of the list valued criteria are
+used.
 
 Here is an example of using the ``find_all_paths`` method to find all
 single scattering paths in a :demeter:`feff` calculcation which are
