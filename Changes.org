@@ -19,6 +19,8 @@
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab
+   - Don't consider skip parameters when checking for unique parameter
+     names
 
 *** Demeter
    - When saving LCF results, sort the standards alphabetically.
