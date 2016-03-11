@@ -333,6 +333,7 @@ sub S_gds_unique_names {
   my @gds = @{ $self->gds };
   my %seen = ();
   foreach my $g (@gds) {
+    next if ($g->gds eq 'skip');
     ++$seen{lc($g->name)};
     $g->add_trouble('notunique') if ($seen{lc($g->name)} > 1);
   };
