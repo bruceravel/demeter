@@ -297,7 +297,7 @@ sub rfactor {
 };
 
 
-const my %MU_HASH         => (1=>'energy eV',          2=>'xmu',     3=>'bkg',      4=>'pre_edge',  5=>'post_edge', 6=>'der',     7=>'sec', 8=>'i0');
+const my %MU_HASH         => (1=>'energy eV', 2=>'xmu',3=>'bkg',     4=>'pre_edge', 5=>'post_edge', 6=>'der',       7=>'sec', 8=>'i0', 9=>'chi(e)');
 const my %NORM_HASH       => (1=>'energy eV',          2=>'norm',    3=>'nbkg',     4=>'flat',      5=>'fbkg',      6=>'nder',    7=>'nsec');
 const my %CHIK_HASH       => (1=>'k inverse Angstrom', 2=>'chi',     3=>'chik',     4=>'chik2',     5=>'chik3',     6=>'window',  7=>'energy');
 const my %CHIKW_HASH      => (1=>'k inverse Angstrom', 2=>'chi');

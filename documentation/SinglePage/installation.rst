@@ -283,6 +283,22 @@ Here is an example:
 Special cases
 -------------
 
+A Demeter program fails, complaining that Carp::Clan is missing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This may happen after an upgrade.  A recent version of one of
+Demeter's dependencies `(MooseX::Types)
+<https://metacpan.org/pod/MooseX::Types>`_ depends on `(Carp::Clan)
+<https://metacpan.org/pod/Carp::Clan>`_ but may not be installed after
+an OS upgrade.  If this happens, either use CPAN to install Carp::Clan:
+
+::
+
+    sudo cpanm Carp::Clan
+
+or install the debian package `libcarp-clan-perl`.
+
+
 Installing Demeter without root privileges
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
