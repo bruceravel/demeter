@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use Demeter qw(:ui=screen);
 use Getopt::Long;
