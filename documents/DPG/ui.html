@@ -71,7 +71,11 @@ explicitly enabled in your <font size=-1 color="#8C4112">DEMETER</font>-using pr
 set the <code class="docutils literal"><span class="pre">ui</span></code> attibute of the Mode object to be <code class="docutils literal"><span class="pre">screen</span></code>. The best
 way to do this is at the very beginning of your program, when you import
 <font size=-1 color="#8C4112">DEMETER</font>.</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -81,7 +85,11 @@ using a command line UI.  Doing so at this stage will enable the full
 compliment of rich CLI features.</p>
 <p>You can also switch to screen mode during the course of your program,
 like so:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">mo</span> <span class="o">-&gt;</span> <span class="n">ui</span><span class="p">(</span><span class="s">&#39;screen&#39;</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">mo</span> <span class="o">-&gt;</span> <span class="n">ui</span><span class="p">(</span><span class="s">&#39;screen&#39;</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>However, setting screen mode this way cannot enable all the features.</p>
@@ -111,7 +119,11 @@ efforts.</dd>
 keyboard driven interaction for plotting, examining parameter
 values, reading and log files. You can think of this as a poor man's
 <font size=-1 color="#8C4112">ARTEMIS</font>. Just do</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fit_object</span> <span class="o">-&gt;</span> <span class="n">interview</span><span class="p">;</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$fit_object</span> <span class="o">-&gt;</span> <span class="n">interview</span><span class="p">;</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p class="last">after a fit.</p>
@@ -119,13 +131,21 @@ values, reading and log files. You can think of this as a poor man's
 <dt><strong>Pause</strong></dt>
 <dd><p class="first">You have a simple way of pausing the flow of your script and
 displaying a prompt.</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">;</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">;</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>This will pause the flow of your program and print
 <code class="docutils literal"><span class="pre">Hit</span> <span class="pre">return</span> <span class="pre">to</span> <span class="pre">continue&gt;</span></code> in underlined text. You can specify the
 text by doing:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">(</span><span class="s">&quot;Try to jump up and down three times before the fit finishes...&quot;</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">(</span><span class="s">&quot;Try to jump up and down three times before the fit finishes...&quot;</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p class="last">This is particularly useful when using the gnuplot plotting backend.
@@ -187,8 +207,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
+<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
+=======
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
@@ -213,6 +238,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -223,6 +249,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+=======
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 

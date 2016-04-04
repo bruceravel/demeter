@@ -81,7 +81,11 @@ simulations. From these MD simulations, we have files containing the
 local structure in the form of a histogram. These files contain some
 measure of the probability of finding a neighboring atom on a grid of
 radial distances. It looks something like this:</p>
+<<<<<<< HEAD
 <div class="highlight-python"><div class="highlight"><pre><span></span>0.000  0.000000E+00
+=======
+<div class="highlight-python"><div class="highlight"><pre>0.000  0.000000E+00
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 .
   .
     .
@@ -117,8 +121,13 @@ result from truncation effects at the relatively large surface.</p>
 <p>The approach the <font size=-1 color="#8C4112">DEMETER</font> offers is to compute an <a class="reference external" href="../pathlike/sspath.html">SSPath</a> at each bin of the histogram. The at each
 bin is set to the population of that bin. Each bin should get the same
 E<sub>0</sub> parameter. If the histogram accurately represents all
+<<<<<<< HEAD
 soruces of disorder – both structural and thermal, something that is
 certainly possible in an MD simulation – then no σ<sup>2</sup> or
+=======
+soruces of disorder -- both structural and thermal, something that is
+certainly possible in an MD simulation -- then no σ<sup>2</sup> or
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 ΔR parameters would be needed. Of course, they could be
 introduced to account for any shortcomings of the MD simulation
 compared to the measured data.</p>
@@ -161,7 +170,11 @@ compared to the measured data.</p>
 37
 38
 39
+<<<<<<< HEAD
 40</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+=======
+40</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
 
  <span class="c1">## -------- Import the results of a Feff calculation on bulk Au</span>
@@ -215,7 +228,11 @@ first coordination shell is stored in the <code class="docutils literal"><span c
 <p>All the interesting stuff in this example happens between lines 21 and
 26. First, the locations and populations of the histogram are read from
 a column data file at line 21. The <code class="docutils literal"><span class="pre">histogram_from_file</span></code> method (which
+<<<<<<< HEAD
 is a method of the ScatteringPath object) takes 5 arguments – the file
+=======
+is a method of the ScatteringPath object) takes 5 arguments -- the file
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 name, the column numbers of the bin positions and bin populations, and
 the range in R-space. Bins in the histogram that lie outside the R-range
 will not be considered. An example of a histogram file is shown above.
@@ -223,14 +240,22 @@ This method returns two scalars which are references to the arrays
 containing the bin positions and populations, i.e. the x and y arrays of
 the histogram. To examine these arrays, you would have to dereference
 these scalars:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">@bin_positions</span> <span class="o">=</span> <span class="nv">@$rx</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">@bin_positions</span> <span class="o">=</span> <span class="nv">@$rx</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>At line 22, an anonymous array of path parameters values is created.
 These values will be used for every Path object created by histogram
 generating method. Note that I am using this anonymous array to pass
 various attributes to the Path objects in the histogram. Passing these
+<<<<<<< HEAD
 in this way is just a convenience – they could be set after the fact
+=======
+in this way is just a convenience -- they could be set after the fact
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 instead.</p>
 <p>At line 24, the set of Path objects representing the contribution from
 each bin of the histogram is actually generated using the
@@ -314,8 +339,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
+=======
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -340,6 +370,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -350,6 +381,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+=======
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 

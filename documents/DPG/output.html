@@ -87,7 +87,11 @@ magnitude, phase, and the window function in k for a Data, Path, or
 pathlike object. The current value of k-weighting in the Plot object
 is used to generate the data for this file.</dd>
 </dl>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;xmu&#39;</span><span class="p">,</span>  <span class="s">&#39;myfit.dat&#39;</span><span class="p">)</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;xmu&#39;</span><span class="p">,</span>  <span class="s">&#39;myfit.dat&#39;</span><span class="p">)</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;chir&#39;</span><span class="p">,</span> <span class="s">&#39;mypath.dat&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -101,11 +105,19 @@ from the data_report.tmpl <a class="reference external" href="highlevel/dispose.
 <p class="last">The following is out of date, now using XDI headers</p>
 </div>
 <p>This line of code:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">data_parameter_report</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>generates this text:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>.  Element=Au   Edge=l3
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">data_parameter_report</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>generates this text:</p>
+<div class="highlight-python"><div class="highlight"><pre>.  Element=Au   Edge=l3
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 Background parameters
 .  E0=11919.166  Eshift=0  Rbkg=1.6
 .  Standard=None
@@ -152,7 +164,11 @@ the file. It can take a value of <code class="docutils literal"><span class="pre
 the space, the k-weighting for k-space output, or the part of the
 complex function for R- or q-space output. The default (no argument) is
 <code class="docutils literal"><span class="pre">k</span></code>, i.e. un-k-weighted χ(k).</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;cufit.fit&quot;</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;cufit.fit&quot;</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rmag.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rmag&#39;</span><span class="p">);</span>
 <span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rre.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rre&#39;</span><span class="p">);</span>
 <span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rim.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rim&#39;</span><span class="p">);</span>
@@ -164,11 +180,19 @@ complex function for R- or q-space output. The default (no argument) is
 <code class="docutils literal"><span class="pre">fit_parameter_report</span></code> method which, in turn, takes its formatting
 from the fit_report.tmpl <a class="reference external" href="highlevel/dispose.html">template file</a>.</p>
 <p>This line of code:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">fit_parameter_report</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>generates this text:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>Demeter fit file -- Demeter 0.4.1
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">fit_parameter_report</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>generates this text:</p>
+<div class="highlight-python"><div class="highlight"><pre>Demeter fit file -- Demeter 0.4.1
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 : file                = cu10k.chi
 : name                = My copper data
 : k-range             = 3.000 - 14.000
@@ -193,7 +217,11 @@ which can be easily imported into a plotting or spreadsheet
 program. The x-axis of the export space will be in the first column,
 followed by one column for each object exported. Those columns will be
 in the order specified in the method call.</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">save_many</span><span class="p">(</span><span class="s">&quot;many.out&quot;</span><span class="p">,</span> <span class="s">&#39;chik3&#39;</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$carbon</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">save_many</span><span class="p">(</span><span class="s">&quot;many.out&quot;</span><span class="p">,</span> <span class="s">&#39;chik3&#39;</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$carbon</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>The first argument is the output file name. The second argument is the
@@ -243,7 +271,11 @@ argument list.</li>
 <h2>15.4. Athena project files<a class="headerlink" href="#athena-project-files" title="Permalink to this headline">¶</a></h2>
 <p>You can export an <font size=-1 color="#8C4112">ATHENA</font> project files from a group of data
 objects like so:</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">write_athena</span><span class="p">(</span><span class="s">&quot;myproject.prj&quot;</span><span class="p">,</span> <span class="nv">@list_of_data</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">write_athena</span><span class="p">(</span><span class="s">&quot;myproject.prj&quot;</span><span class="p">,</span> <span class="nv">@list_of_data</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>The first argument is the filename for the project file. This is
@@ -269,12 +301,20 @@ file can be read by most compression or archiving programs on all
 platforms.</p>
 <p>An object is written to a yaml file using the <code class="docutils literal"><span class="pre">freeze</span></code> method. It's
 argument is the name of the output file.</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">freeze</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">freeze</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>You can import one of these serialization using the <code class="docutils literal"><span class="pre">thaw</span></code> method.
 It's argument is the name of the file to import. It returns the object.</p>
+<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$new_object</span> <span class="o">=</span> <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">thaw</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+=======
+<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$new_object</span> <span class="o">=</span> <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">thaw</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 </div>
@@ -320,8 +360,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
+<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
+=======
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
@@ -351,6 +396,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -361,6 +407,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+=======
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+>>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 
